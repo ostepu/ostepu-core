@@ -1,0 +1,181 @@
+body {
+    font-size: 100%;
+    font-family: Helvetica, Arial, sans-serif;
+}
+
+#body-wrapper {
+    width: 960px;
+    margin-left:auto;
+    margin-right:auto;
+    color: #6f6f6f;
+}
+
+#header {
+    overflow: auto;
+}
+
+#content-wrapper {
+    
+}
+
+.session-title {
+    padding-top: 20px;
+    font-size: 170%;
+    text-transform: uppercase;
+    padding-bottom: 20px;
+}
+
+.session-info {
+    color: #ffffff;
+    background-color: #79C425;
+    float: left;
+    padding-left: 40px;
+    width: 475px;
+    height: 110px;
+}
+
+.change-session {
+    text-size: 60%;
+}
+
+.session-points {
+    height: 110px;
+    color: #9E8061;
+    float: left;
+    width: 215px;
+    background-color: #79D435;
+}
+
+.points-huge {
+    padding-top: 10px;
+    text-align: center;
+    font-size: 400%;
+}
+
+.total-points {
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.user-info {
+    height: 110px;
+    width: 160px;
+    float: right;
+    padding-right: 40px;
+    padding-left: 30px;
+    background-color: #b9E475;
+}
+
+.user-name {
+    padding-top: 20px;    
+}
+
+.user-id {
+    padding-bottom: 20px;
+}
+
+.log-out {
+    color: #6f6f6f;
+}
+
+.issue-wrapper {
+    background-color: #dbdbdb;
+    width: 960px;
+    display: block;
+    overflow: auto;
+    margin-top: 30px;
+}
+
+.issue-header {
+    padding-right: 40px;
+    padding-left: 40px;
+    padding-top: 30px;
+    padding-bottom: 25px;
+    overflow: auto;
+    height: auto;
+}
+
+
+.isuue-body-wrapper {
+
+}
+
+.issue-body {
+    font-size: 
+}
+
+.issue-body-left {
+    padding-bottom: 30px;
+    padding-left: 40px;
+    float: left;
+}
+
+.issue-body-extras {
+    padding-bottom: 30px;
+    padding-right: 40px;
+    float: right;
+}
+
+ol {
+    list-style-type: none;
+}
+
+li {
+    padding-bottom: 10px;
+}
+
+.exercise-list {
+    counter-reset: item;
+}
+
+.exercise-list li:before {
+    content: counter(item, decimal) ' | ';
+    counter-increment: item;
+}
+
+.body-options {
+
+}
+
+.issue-title {
+    width: 565px;
+    float: left;
+    font-size: 130%;
+    text-transform: uppercase;
+}
+
+.issue-end {
+    float: right;
+    color: red;
+}
+
+.issue-percent {
+    float: right;
+    color: #79C425;
+    padding-right: 105px;
+}
+
+.exercise-type {
+    width: 100px;
+    padding-left: 5px;
+    display: inline-block;
+}
+
+.exercise-points {
+    display: inline-block;
+    width: 50px;
+    color: #79C425;
+}
+
+a {
+    text-decoration: none;
+    color: #FFFFFF;
+}
+
+a:after {
+    content: ' >';
+}
+
+.body-option {
+    color: #6f6f6f;    
+}
