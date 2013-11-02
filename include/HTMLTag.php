@@ -167,28 +167,32 @@ abstract class HTMLTag {
 	}
 	
 	/**
-	* A method to output the tag.
+	* Turns the element into a string.
 	*/
 	public function __toString() {
+		$strVal = "";
+			
 		if ($this->accesskey != NULL && $this->accesskey != "") {
-			echo "accesskey=\"" . $this->accesskey . "\" ";
+			$strVal .= " accesskey=\"{$this->accesskey}\"";
 		}
 		
 		if ($this->class != NULL && $this->class != "") {
-			echo "class=\"" . $this->class . "\" ";
+			$strVal .= " class=\"{$this->class}\"";
 		}
 		
 		if ($this->dir != NULL && $this->dir != "") {
-			echo "dir=\"" . $this->dir . "\" ";
+			$strVal .= " dir=\"{$this->dir}\"";
 		}
 		
 		if ($this->id != NULL && $this->id != "") {
-			echo "id=\"" . $this->id . "\" ";
+			$strVal .= " id=\"{$this->id}\"";
 		}
 		
 		if ($this->lang != NULL && $this->lang != "") {
-			echo "lang=\"" . $this->lang . "\" ";
+			$strVal .= "lang=\"{$this->lang}\"";
 		}
+		
+		return $strVal;
 	}
 }
 ?>
