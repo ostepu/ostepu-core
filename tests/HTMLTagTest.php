@@ -1,11 +1,12 @@
 <?php
 include dirname(__FILE__) . '/../include/HTMLTag.php';
 
+/**
+ * HTMLTagTest class
+ * Dummy class for testing the abstract class HTMLTag
+ */
 class HTMLTagTest extends HTMLTag {
-	public function __toString()
-	{
-		return parent::__toString();
-	}
+	
 }
 
 $test = new HTMLTagTest();
