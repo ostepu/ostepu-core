@@ -9,6 +9,8 @@ abstract class HTMLTagClosing extends HTMLTag {
 	
 	/**
 	* Turns the element into a string.
+	*
+	* @return The string representation of the element. (the element as html source code)
 	*/
 	public function __toString()
 	{
