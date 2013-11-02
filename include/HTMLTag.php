@@ -189,7 +189,15 @@ abstract class HTMLTag {
 		}
 		
 		if ($this->lang != NULL && $this->lang != "") {
-			$strVal .= "lang=\"{$this->lang}\"";
+			$strVal .= " lang=\"{$this->lang}\"";
+		}
+		
+		if ($this->tabindex != NULL && $this->tabindex != "") {
+			$strVal .= " tabindex=\"{$this->tabindex}\"";
+		}
+		
+		if ($this->title != NULL && $this->title != "") {
+			$strVal .= " title=\"{$this->title}\"";
 		}
 		
 		return $strVal;
