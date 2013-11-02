@@ -16,6 +16,8 @@ abstract class HTMLTagClosing extends HTMLTag {
 	{
 		$strVal = parent::__toString();
 		$strVal .= " />";
+		
+		return $strVal;
 	}
 }
 ?>
