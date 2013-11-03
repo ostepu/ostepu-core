@@ -15,5 +15,7 @@ class HTMLTagClosingTest extends HTMLTagClosing {
 
 $test = new HTMLTagClosingTest();
 
+assert_options(ASSERT_BAIL);
+
 assert($test->__toString() == " />");
 ?>

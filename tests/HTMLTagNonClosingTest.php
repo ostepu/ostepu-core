@@ -15,6 +15,8 @@ class HTMLTagNonClosingTest extends HTMLTagNonClosing {
 
 $test = new HTMLTagNonClosingTest();
 
+assert_options(ASSERT_BAIL);
+
 assert($test->__toString() == ">\n    ");
 
 $test->setContent("a");
