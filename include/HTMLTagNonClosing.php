@@ -25,7 +25,7 @@ abstract class HTMLTagNonClosing extends HTMLTag {
 	*/
 	public function __toString() {
 		$strVal = parent::__toString();
-		$strVal .= ">\n    {$content}";
+		$strVal .= ">\n    " . $this->getContent();
 		
 		return $strVal;
 	}
