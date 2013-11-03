@@ -39,4 +39,13 @@ assert($test->__toString() == " accesskey=\"a\" class=\"b\" dir=\"c\" " .
 $test->setAttribute("test1", "test2");
 assert($test->getAttribute("test1") == "test2");
 
+$test->setClass(NULL);
+assert($test->getClass() == NULL);
+
+$test->addClass("a")
+	 ->addClass("b")
+	 ->addClass("c")
+	 ->removeClass("a");
+assert($test->getClass() == "b c");
+
 ?>

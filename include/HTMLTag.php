@@ -1,4 +1,5 @@
 <?php
+include 'Helpers.php';
 /**
  * An abstract class that represents an html element. 
  * Provides attributes for all global HTML attributes. Can be turned
@@ -40,7 +41,7 @@ abstract class HTMLTag {
 	* @return The current class of the element.
 	*/
 	public function getClass() {
-		return $this->attributes['class'];
+		return join(" ", $this->attributes['class']);
 	}
 
 	/**
@@ -50,7 +51,43 @@ abstract class HTMLTag {
 	* @return $this
 	*/
 	public function setClass($class) {
-		$this->attributes['class'] = $class;
+		$this->attributes['class'] = NULL;
+		$this->addClass($class);
+		
+		return $this;
+	}
+	
+	/**
+	 * Add a class to the element
+	 * 
+	 * @param $class The name of the class to add to the element.
+	 * @return $this
+	 */
+	public function addClass($class)
+	{
+		$classes = $this->attributes['class'];
+		
+		if ($classes == NULL) {
+			$classes = array();
+		}
+		
+		$classes[] = $class;
+		$this->attributes['class'] = $classes;
+		
+		return $this;
+	}
+	
+	/**
+	 * Remove a class from the element
+	 *
+	 * @param $class The name of the class to remove from the element
+	 * @return $this
+	 */
+	public function removeClass($className)
+	{
+		$classes = $this->attributes['class'];
+		$classes = unsetValue($classes, $class);
+		$this->attributes['class'] = $classes;
 		
 		return $this;
 	}
@@ -193,7 +230,11 @@ abstract class HTMLTag {
 		$strVal = "";
 			
 		foreach ($this->attributes as $key => $value) {
-			$strVal .= " {$key}=\"{$value}\"";
+			if ($key == "class") {
+				$strVal .= " class =\"{$this->getClass()}\"";
+			} else {
+				$strVal .= " {$key}=\"{$value}\"";
+			}
 		}
 		
 		return $strVal;
