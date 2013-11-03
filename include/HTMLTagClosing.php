@@ -2,8 +2,8 @@
 include 'HTMLTag.php';
 
 /**
- * HTMLTagContained
- * An abstract class that represents an html element that is self-closing (such as <br />)
+ * An abstract class that represents an html element that is self-closing
+ * (such as \<br /\>)
  */
 abstract class HTMLTagClosing extends HTMLTag {
 	

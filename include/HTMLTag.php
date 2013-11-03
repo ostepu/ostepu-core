@@ -1,8 +1,9 @@
 <?php
 /**
-* HTMLTag class
-* An abstract class that represents an html element. Provides attributes for all global HTML attributes. Provides a way to output these to the user.
-*/
+ * An abstract class that represents an html element. 
+ * Provides attributes for all global HTML attributes. Can be turned
+ * into a string.
+ */
 abstract class HTMLTag {
 	/**
 	* Specifies a shortcut key to activate/focus the element.

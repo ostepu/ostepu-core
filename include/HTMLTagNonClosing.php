@@ -2,7 +2,6 @@
 include 'HTMLTag.php';
 
 /**
- * HTMLTagContained
  * An abstract class that represents an html element that can have a content
  */
 abstract class HTMLTagNonClosing extends HTMLTag {
