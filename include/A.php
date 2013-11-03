@@ -72,6 +72,20 @@ class A extends HTMLTagNonClosing
 	{
 		return $this->attributes['href'];
 	}
+	
+	/**
+	* Turns the element into a string.
+	*
+	* @return The string representation of the element. (the element 
+	* as html source code)
+	*/
+	public function __toString()
+	{
+		$strVal = "<a" . parent::__toString();
+		$strVal .= "\n</a>";
+		
+		return $strVal;
+	}
 }
 
 
