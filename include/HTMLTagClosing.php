@@ -2,6 +2,11 @@
 include 'HTMLTag.php';
 
 /**
+ * @file HTMLTagClosing.php
+ * Contains the HTMLTagClosing class
+ */
+
+/**
  * An abstract class that represents an html element that is self-closing
  * (such as \<br /\>)
  */

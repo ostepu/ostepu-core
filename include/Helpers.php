@@ -1,4 +1,8 @@
 <?php
+/** 
+ * @file Helpers.php
+ * A collection of helper methods that can be used by classes
+ */ 
 /**
  * Remove a value fom an array
  *

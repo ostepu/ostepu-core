@@ -1,5 +1,11 @@
 <?php
 include 'Helpers.php';
+
+/**
+ * @file HTMLTag.php
+ * Conatins the HTMLTag class.
+ */
+
 /**
  * An abstract class that represents an html element. 
  * Provides attributes for all global HTML attributes. Can be turned
@@ -83,7 +89,7 @@ abstract class HTMLTag {
 	 * @param $class The name of the class to remove from the element
 	 * @return $this
 	 */
-	public function removeClass($className)
+	public function removeClass($class)
 	{
 		$classes = $this->attributes['class'];
 		$classes = unsetValue($classes, $class);

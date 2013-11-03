@@ -2,6 +2,11 @@
 include dirname(__FILE__) . '/../include/HTMLTag.php';
 
 /**
+ * @file HTMLTagTest.php
+ * Contains a dummy class to test the HTMLTag class.
+ */
+
+/**
  * Dummy class for testing the abstract class HTMLTag
  */
 class HTMLTagTest extends HTMLTag {

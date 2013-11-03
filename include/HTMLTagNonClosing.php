@@ -49,15 +49,32 @@ abstract class HTMLTagNonClosing extends HTMLTag {
 		return $this;
 	}
 	
+	/**
+	 * Add content to an element.
+	 * The content that is contained by the element after this method is
+	 * called, is the content that was in the element before the method was
+	 * called, plus the content that was passed as an argument.
+	 *
+	 * @param $content The content that the element should contain
+	 * @return $this
+	 */
 	public function addContent($content) {
 		$this->content[] = $content;
 		
 		return $this;
 	}
 	
+	/**
+	 * Remove content from the element.
+	 *
+	 * @param $content The content that should be removed from the element
+	 * @return $this
+	 */
 	public function removeContent($content)
 	{
 		$contents = $this->content;
+		
+		// remove $content from $contents
 		$contents = unsetValue($contents, $content);
 		$this->content = $contents;
 		
