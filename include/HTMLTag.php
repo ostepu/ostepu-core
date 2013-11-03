@@ -6,41 +6,12 @@
  */
 abstract class HTMLTag {
 	/**
-	* Specifies a shortcut key to activate/focus the element.
-	*/
-	protected $accesskey;
-	
-	/**
-	* Specifies one or more classnames for the element (refers to a class in a style sheet).
-	*/
-	protected $class;
-	
-	/**
-	* Specifies the text direction for the content in the element
-	*/
-	protected $dir;
-	
-	/**
-	* Specifies a unique id for the element.
-	*/
-	protected $id;
-	
-	/**
-	* Specifies the language of the element's content.
-	*/
-	protected $lang;
-	
-	
-	/**
-	* Specifies the tabbing order of an element.
-	*/
-	protected $tabindex;
-	
-	/**
-	* Specifies extra information about the element.
-	*/
-	protected $title; 
-	
+	 * Attributes
+	 *
+	 * An associative array that holds the attributes for the represented
+	 * element
+	 */
+	protected $attributes = array();
 	
 	/**
 	* Getter for the accesskey attribute.
@@ -48,16 +19,19 @@ abstract class HTMLTag {
 	* @return The current accesskey of the element.
 	*/
 	public function getAccesskey() {
-		return $this->accesskey;
+		return $this->attributes['accesskey'];
 	}
 	
 	/**
 	* Setter for the accesskey attribute.
 	*
 	* @param $accesskey The new acesskey for the html element.
+	* @return $this
 	*/
 	public function setAccesskey($accesskey) {
-		$this->accesskey = $accesskey;
+		$this->attributes['accesskey'] = $accesskey;
+		
+		return $this;
 	}
 	
 	/**
@@ -66,16 +40,19 @@ abstract class HTMLTag {
 	* @return The current class of the element.
 	*/
 	public function getClass() {
-		return $this->class;
+		return $this->attributes['class'];
 	}
 
 	/**
 	* Setter for the class attribute.
 	*
 	* @param $class The new class of the element.
+	* @return $this
 	*/
 	public function setClass($class) {
-		$this->class = $class;
+		$this->attributes['class'] = $class;
+		
+		return $this;
 	}
 
 	/**
@@ -84,16 +61,19 @@ abstract class HTMLTag {
 	* @return The currend text direction of the element.
 	*/
 	public function getDir() {
-		return $this->dir;
+		return $this->attributes['dir'];
 	}
 
 	/**
 	* Setter for the dir attribute.
 	* 
 	* @param $dir The new text direction in the element.
+	* @return $this
 	*/
 	public function setDir($dir) {
-		$this->dir = $dir;
+		$this->attributes['dir'] = $dir;
+		
+		return $this;
 	}
 
 	/**
@@ -102,16 +82,19 @@ abstract class HTMLTag {
 	* @return The current id of the Element.
 	*/
 	public function getId() {
-		return $this->id;
+		return $this->attributes['id'];
 	}
 
 	/**
 	* Setter for the id attribute.
 	* 
 	* @param $id The new id of the element.
+	* @return $this
 	*/
 	public function setId($id) {
-		$this->id = $id;
+		$this->attributes['id'] = $id;
+		
+		return $this;
 	}
 
 	/**
@@ -120,16 +103,19 @@ abstract class HTMLTag {
 	* @return The current laguage ot the element.
 	*/
 	public function getLang() {
-		return $this->lang;
+		return $this->attributes['lang'];
 	}
 
 	/**
 	* Setter for the lang attribute.
 	*
 	* @param $lang The new language of the element;
+	* @return $this
 	*/
 	public function setLang($lang) {
-		$this->lang = $lang;
+		$this->attributes['lang'] = $lang;
+		
+		return $this;
 	}
 
 	/**
@@ -138,23 +124,26 @@ abstract class HTMLTag {
 	* @return The current tabindex of the element.
 	*/
 	public function getTabindex() {
-		return $this->tabindex;
+		return $this->attributes['tabindex'];
 	}
 
 	/**
 	* Setter for the tabindex attribute.
 	* 
 	* @param $tabindex The new tabindex of the element.
+	* @return $this
 	*/
 	public function setTabindex($tabindex) {
-		$this->tabindex = $tabindex;
+		$this->attributes['tabindex'] = $tabindex;
+		
+		return $this;
 	}
 
 	/**
 	* Setter for the tile attribute.
 	*/
 	public function getTitle() {
-		return $this->title;
+		return $this->attributes['title'];
 	}
 
 	/**
@@ -162,9 +151,37 @@ abstract class HTMLTag {
 	* Sets the title attribute of the html tag.
 	*
 	* @param $title the new title of the html tag
+	* @return $this
 	*/
 	public function setTitle($title) {
-		$this->title = $title;
+		$this->attributes['title'] = $title;
+		
+		return $this;
+	}
+	
+	/**
+	 * Get the value of an attribute.
+	 * 
+	 * @param $attributeName The name of the attribute to return
+	 * @return The current value of the attribute named $attributeName
+	 */
+	public function getAttribute($attributeName)
+	{
+		return $this->attributes[$attributeName];
+	}
+	
+	/**
+	 * Set an attribute.
+	 * Set an attribute that does not have its own accessor method
+	 *
+	 * @param $attributeName The name of the attribute as in name="value"
+	 * @param $attributeValue The value of the atribute as in name="value"
+	 */
+	public function setAttribute($attributeName, $attributeValue)
+	{
+		$this->attributes[$attributeName] = $attributeValue;
+		
+		return $this;
 	}
 	
 	/**
@@ -175,32 +192,8 @@ abstract class HTMLTag {
 	public function __toString() {
 		$strVal = "";
 			
-		if ($this->accesskey != NULL && $this->accesskey != "") {
-			$strVal .= " accesskey=\"{$this->accesskey}\"";
-		}
-		
-		if ($this->class != NULL && $this->class != "") {
-			$strVal .= " class=\"{$this->class}\"";
-		}
-		
-		if ($this->dir != NULL && $this->dir != "") {
-			$strVal .= " dir=\"{$this->dir}\"";
-		}
-		
-		if ($this->id != NULL && $this->id != "") {
-			$strVal .= " id=\"{$this->id}\"";
-		}
-		
-		if ($this->lang != NULL && $this->lang != "") {
-			$strVal .= " lang=\"{$this->lang}\"";
-		}
-		
-		if ($this->tabindex != NULL && $this->tabindex != "") {
-			$strVal .= " tabindex=\"{$this->tabindex}\"";
-		}
-		
-		if ($this->title != NULL && $this->title != "") {
-			$strVal .= " title=\"{$this->title}\"";
+		foreach ($this->attributes as $key => $value) {
+			$strVal .= " {$key}=\"{$value}\"";
 		}
 		
 		return $strVal;

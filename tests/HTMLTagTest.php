@@ -33,6 +33,10 @@ assert($test->getTabindex() == "f");
 $test->setTitle("g");
 assert($test->getTitle() == "g");
 
-assert($test->__toString() == " accesskey=\"a\" class=\"b\" dir=\"c\" id=\"d\" lang=\"e\" tabindex=\"f\" title=\"g\"");
+assert($test->__toString() == " accesskey=\"a\" class=\"b\" dir=\"c\" " . 
+	"id=\"d\" lang=\"e\" tabindex=\"f\" title=\"g\"");
+
+$test->setAttribute("test1", "test2");
+assert($test->getAttribute("test1") == "test2");
 
 ?>
