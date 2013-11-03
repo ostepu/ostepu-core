@@ -1,5 +1,5 @@
 <?php
-include 'Helpers.php';
+require_once 'Helpers.php';
 
 /**
  * @file HTMLTag.php

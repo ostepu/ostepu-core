@@ -1,5 +1,5 @@
 <?php
-include dirname(__FILE__) . '/../include/HTMLTagNonClosing.php';
+require_once dirname(__FILE__) . '/../include/HTMLTagNonClosing.php';
 
 /**
  * @file HTMLTagNonClosingTest.php

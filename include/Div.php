@@ -1,5 +1,5 @@
 <?php
-include 'HTMLTagNonClosing.php';
+require_once 'HTMLTagNonClosing.php';
 
 /**
  * @file Div.php

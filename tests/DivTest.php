@@ -1,5 +1,5 @@
 <?php
-include dirname(__FILE__) . '/../include/Div.php';
+require_once dirname(__FILE__) . '../include/Div.php';
 
 $d = new Div();
 

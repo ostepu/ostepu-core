@@ -1,5 +1,5 @@
 <?php
-include 'HTMLTag.php';
+require_once 'HTMLTag.php';
 
 /**
  * @file HTMLTagClosing.php
