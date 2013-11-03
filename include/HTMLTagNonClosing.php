@@ -31,7 +31,7 @@ abstract class HTMLTagNonClosing extends HTMLTag {
 	}
 	
 	/**
-	 * Getter for the content element.
+	 * Getter for the content of the element.
 	 */
 	public function getContent() {
 		return join("\n", $this->content);
