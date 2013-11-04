@@ -1,6 +1,11 @@
 <?php
 require_once dirname(__FILE__) . '/../include/Div.php';
 
+/**
+ * @file DivTest.php
+ * Contains tests for the Div class.
+ */
+
 $d = new Div();
 
 assert_options(ASSERT_BAIL);
