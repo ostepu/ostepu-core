@@ -18,14 +18,14 @@ body {
     
 }
 
-.session-title {
+.course-title {
     padding-top: 20px;
     font-size: 170%;
     text-transform: uppercase;
     padding-bottom: 20px;
 }
 
-.session-info {
+.course-info {
     color: #ffffff;
     background-color: #79C425;
     float: left;
@@ -34,11 +34,11 @@ body {
     height: 110px;
 }
 
-.change-session {
+.change-course {
     text-size: 60%;
 }
 
-.session-points {
+.course-points {
     height: 110px;
     color: #9E8061;
     float: left;
@@ -78,7 +78,7 @@ body {
     color: #6f6f6f;
 }
 
-.issue-wrapper {
+.exercise-sheet-wrapper {
     background-color: #dbdbdb;
     width: 960px;
     display: block;
@@ -86,7 +86,7 @@ body {
     margin-top: 30px;
 }
 
-.issue-header {
+.exercise-sheet-header {
     padding-right: 40px;
     padding-left: 40px;
     padding-top: 30px;
@@ -100,17 +100,17 @@ body {
 
 }
 
-.issue-body {
+.exercise-sheet-body {
     font-size: 
 }
 
-.issue-body-left {
+.exercise-sheet-body-left {
     padding-bottom: 30px;
     padding-left: 40px;
     float: left;
 }
 
-.issue-body-extras {
+.exercise-sheet-body-extras {
     padding-bottom: 30px;
     padding-right: 40px;
     float: right;
@@ -137,19 +137,19 @@ li {
 
 }
 
-.issue-title {
+.exercise-sheet-title {
     width: 565px;
     float: left;
     font-size: 130%;
     text-transform: uppercase;
 }
 
-.issue-end {
+.exercise-sheet-end {
     float: right;
     color: red;
 }
 
-.issue-percent {
+.exercise-sheet-percent {
     float: right;
     color: #79C425;
     padding-right: 105px;
