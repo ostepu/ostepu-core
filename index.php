@@ -13,7 +13,11 @@
 	<div id="body-wrapper">
 
 <?php
-    $h = new Header("Datenstrukturen", "", "Florian Lücke", "211221492");
+    $h = new Header("Datenstrukturen",
+                    "",
+                    "Florian Lücke",
+                    "211221492", 
+                    "75%");
     $h->show();
 ?>
 	    <div id="content-wrapper">
