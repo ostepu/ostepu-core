@@ -1,4 +1,4 @@
-﻿<?php
+<?php
     include 'Header.php';
 ?>
 
