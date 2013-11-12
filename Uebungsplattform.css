@@ -3,18 +3,18 @@ body {
     font-family: Helvetica, Arial, sans-serif;
 }
 
-#body-wrapper {
+.body-wrapper {
     width: 960px;
     margin-left:auto;
     margin-right:auto;
     color: #6f6f6f;
 }
 
-#header {
+.header {
     overflow: auto;
 }
 
-#content-wrapper {
+.content-wrapper {
     
 }
 
@@ -35,7 +35,7 @@ body {
 }
 
 .change-course {
-    text-size: 60%;
+
 }
 
 .course-points {
@@ -87,21 +87,13 @@ body {
 }
 
 .exercise-sheet-header {
-    padding-right: 40px;
-    padding-left: 40px;
-    padding-top: 30px;
-    padding-bottom: 25px;
+    padding: 40px 40px 25px 40px;
     overflow: auto;
     height: auto;
 }
 
-
-.isuue-body-wrapper {
-
-}
-
 .exercise-sheet-body {
-    font-size: 
+
 }
 
 .exercise-sheet-body-left {
@@ -134,7 +126,7 @@ li {
 }
 
 .body-options {
-
+    text-align: right;
 }
 
 .exercise-sheet-title {

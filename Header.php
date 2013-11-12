@@ -1,6 +1,6 @@
 <?php
 
-include 'include/Helpers.php';
+include_once 'include/Helpers.php';
 
 class Header {
     private $title;
