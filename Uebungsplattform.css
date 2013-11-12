@@ -179,3 +179,17 @@ a:after {
 .body-option {
     color: #6f6f6f;    
 }
+
+.accept-button {
+    float: right;
+    padding-right: 40px;
+}
+
+.deny-button {
+    float: right;
+    padding-right: 40px;
+}
+
+.invitation-list {
+    width: 920px;
+}
