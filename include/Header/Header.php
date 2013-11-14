@@ -2,7 +2,8 @@
 
 include_once 'include/Helpers.php';
 
-class Header {
+class Header
+{
     private $title;
     private $extraInfo;
     private $username;
@@ -12,7 +13,8 @@ class Header {
     private $backTitle = "Veranstaltung wechseln";
 
     function __construct($title,$extraInfo, $username,
-                         $userid, $points = 0) {
+                         $userid, $points = 0)
+    {
         $this->title = $title;
         $this->extraInfo = $extraInfo;
         $this->username = $username;
@@ -20,7 +22,8 @@ class Header {
         $this->points = $points;
     }
 
-    public function show() {
+    public function show() 
+    {
         $prototypeHeader = file_get_contents('include/Header/Header.template.html');
 
         $prototypeHeader = str_replace("%title%",
@@ -55,7 +58,8 @@ class Header {
      *
      * @return mixed
      */
-    public function getBackURL() {
+    public function getBackURL()
+    {
         return $this->backURL;
     }
     
@@ -66,7 +70,8 @@ class Header {
      *
      * @return self
      */
-    public function setBackURL($backURL) {
+    public function setBackURL($backURL)
+    {
         $this->backURL = $backURL;
 
         return $this;
