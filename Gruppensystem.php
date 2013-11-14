@@ -27,7 +27,7 @@ include 'Header.php';
         ?>
 
         <div id="content-wrapper">
-            <div class="exercise-sheet-wrapper">
+            <div class="content-wrapper">
                 <div class="exercise-sheet-header">
                     <div class="exercise-sheet-title">Gruppe verwalten</div>
                     <div class="exercise-sheet-end">
@@ -55,7 +55,7 @@ include 'Header.php';
                 </div> <!-- end: exercise-sheet-body-wrapper -->
             </div> <!-- end: exercise-sheet-wrapper -->
 
-            <div class="exercise-sheet-wrapper">
+            <div class="content-wrapper">
                 <div class="exercise-sheet-header">
                     <div class="exercise-sheet-title">Erstellen</div>
                     <div class="exercise-sheet-end">
@@ -80,7 +80,7 @@ include 'Header.php';
                 </div> <!-- end: exercise-sheet-body-wrapper -->
             </div> <!-- end: exercise-sheet-wrapper -->
 
-            <div class="exercise-sheet-wrapper">
+            <div class="content-wrapper">
                 <div class="exercise-sheet-header">
                     <div class="exercise-sheet-title">Einladungen</div>     
                 </div>
