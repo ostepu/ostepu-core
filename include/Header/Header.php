@@ -21,7 +21,7 @@ class Header {
     }
 
     public function show() {
-        $prototypeHeader = getIncludeContents('Header.template.html');
+        $prototypeHeader = file_get_contents('include/Header/Header.template.html');
 
         $prototypeHeader = str_replace("%title%",
                                        $this->title,
