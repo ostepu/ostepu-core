@@ -5,12 +5,13 @@ include 'Header.php';
 <!DOCTYPE HTML>
 <html>
 <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <link rel="stylesheet" type="text/css" href="CSSReset.css"> 
     <link rel="stylesheet" type="text/css" href="Uebungsplattform.css"> 
     <title>Übungsplattform</title>
 </head>
 <body>
-    <div id="body-wrapper">
+    <div id="body-wrapper" class="body-wrapper">
 
         <?php
             $h = new Header("Datenstrukturen",
@@ -26,7 +27,7 @@ include 'Header.php';
         ?>
 
         <div id="content-wrapper">
-            <div class="exercise-sheet-wrapper">
+            <div class="content-wrapper">
                 <div class="exercise-sheet-header">
                     <div class="exercise-sheet-title">Gruppe verwalten</div>
                     <div class="exercise-sheet-end">
@@ -54,7 +55,7 @@ include 'Header.php';
                 </div> <!-- end: exercise-sheet-body-wrapper -->
             </div> <!-- end: exercise-sheet-wrapper -->
 
-            <div class="exercise-sheet-wrapper">
+            <div class="content-wrapper">
                 <div class="exercise-sheet-header">
                     <div class="exercise-sheet-title">Erstellen</div>
                     <div class="exercise-sheet-end">
@@ -79,7 +80,7 @@ include 'Header.php';
                 </div> <!-- end: exercise-sheet-body-wrapper -->
             </div> <!-- end: exercise-sheet-wrapper -->
 
-            <div class="exercise-sheet-wrapper">
+            <div class="content-wrapper">
                 <div class="exercise-sheet-header">
                     <div class="exercise-sheet-title">Einladungen</div>     
                 </div>

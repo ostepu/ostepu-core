@@ -15,7 +15,11 @@ body {
 }
 
 .content-wrapper {
-    
+    background-color: #dbdbdb;
+    width: 960px;
+    display: block;
+    overflow: auto;
+    margin-top: 30px;
 }
 
 .course-title {
@@ -76,14 +80,6 @@ body {
 
 .log-out {
     color: #6f6f6f;
-}
-
-.exercise-sheet-wrapper {
-    background-color: #dbdbdb;
-    width: 960px;
-    display: block;
-    overflow: auto;
-    margin-top: 30px;
 }
 
 .exercise-sheet-header {
