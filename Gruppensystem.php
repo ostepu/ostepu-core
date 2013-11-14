@@ -11,7 +11,7 @@ include 'Header.php';
     <title>Übungsplattform</title>
 </head>
 <body>
-    <div id="body-wrapper">
+    <div id="body-wrapper" class="body-wrapper">
 
         <?php
             $h = new Header("Datenstrukturen",
