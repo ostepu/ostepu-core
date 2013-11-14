@@ -5,6 +5,7 @@ include 'Header.php';
 <!DOCTYPE HTML>
 <html>
 <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <link rel="stylesheet" type="text/css" href="CSSReset.css"> 
     <link rel="stylesheet" type="text/css" href="Uebungsplattform.css"> 
     <title>Übungsplattform</title>
