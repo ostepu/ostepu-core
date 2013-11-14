@@ -23,7 +23,16 @@ include_once 'ExerciseSheet.php';
         ?>
         <div id="content-wrapper" class="content-wrapper">
             <?php 
-            $s = new ExerciseSheet("Serie 2", array());
+            $s = new ExerciseSheet("Serie 2", array(
+                                   array("exerciseType" => "Normal",
+                                         "points" => "10",
+                                         "maxPoints" => "10"
+                                         ),
+                                   array("exerciseType" => "Bonus",
+                                         "points" => "10",
+                                         "maxPoints" => "10"
+                                         ),
+                                   ));
             $s->show();
             ?>
         </div> <!-- end: content-wrapper -->

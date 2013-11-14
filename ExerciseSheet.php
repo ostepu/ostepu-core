@@ -1,7 +1,6 @@
 <?php 
 
 include_once 'include/Helpers.php';
-
 /**
 * 
 */
@@ -18,10 +17,29 @@ class ExerciseSheet
 
     public function show()
     {
-        $content = getIncludeContents('ExerciseSheet.template.html');
+        $exerciseTemplate = file_get_contents('Exercise.template.html');
+        $content = file_get_contents('ExerciseSheet.template.html');
+
+        $exerciseHTML = "";
+        foreach ($this->exercises as $exercise) {
+            $thisExercise = str_replace('%exerciseType%',
+                                        $exercise["exerciseType"],
+                                        $exerciseTemplate);
+            $thisExercise = str_replace('%points%',
+                                        $exercise["points"],
+                                        $thisExercise);
+            $thisExercise = str_replace('%maxPoints%', 
+                                        $exercise["maxPoints"],
+                                        $thisExercise);
+            $exerciseHTML .= "{$thisExercise}\n";
+        }
 
         $content = str_replace('%sheetName%',
                                $this->sheetName,
+                               $content);
+
+        $content = str_replace('%exercises%',
+                               $exerciseHTML,
                                $content);
 
         print $content;
