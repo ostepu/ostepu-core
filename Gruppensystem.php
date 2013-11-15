@@ -2,6 +2,7 @@
 include 'include/Header/Header.php';
 include 'include/HTMLWrapper.php';
 
+// construct a new Header
 $h = new Header("Datenstrukturen",
                 "",
                 "Florian Lücke",
@@ -11,6 +12,7 @@ $h = new Header("Datenstrukturen",
 $h->setBackURL("index.php")
 ->setBackTitle("zur Veranstaltung");
 
+// construct a content element for managing groups
 $manageGroup = '<div class="content">
     <div class="exercise-sheet-header">
         <div class="exercise-sheet-title">Gruppe verwalten</div>
@@ -39,6 +41,7 @@ $manageGroup = '<div class="content">
     </div> <!-- end: exercise-sheet-body-wrapper -->
 </div> <!-- end: exercise-sheet-wrapper -->';
 
+// construct a content element for creating groups
 $createGroup = '<div class="content">
     <div class="exercise-sheet-header">
         <div class="exercise-sheet-title">Erstellen</div>
@@ -64,6 +67,7 @@ $createGroup = '<div class="content">
     </div> <!-- end: exercise-sheet-body-wrapper -->
 </div> <!-- end: exercise-sheet-wrapper -->';
 
+// construct a content element for joining groups
 $invitations = '<div class="content">
     <div class="exercise-sheet-header">
         <div class="exercise-sheet-title">Einladungen</div>     
@@ -104,6 +108,7 @@ $invitations = '<div class="content">
     </div> <!-- end: exercise-sheet-body-wrapper -->
 </div> <!-- end: exercise-sheet-wrapper -->';
 
+// wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $manageGroup, $createGroup, $invitations);
 $w->show();
 ?>

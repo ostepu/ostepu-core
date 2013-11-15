@@ -1,11 +1,24 @@
 <?php 
+/**
+ * @file HTMLWrapper.php
+ * Contains the HTMLWrapper class
+ */
+
 include_once 'include/Header/Header.php';
     /**
     * Wraps the header and the contents in a default HTML 
     */
     class HTMLWrapper
     {
+        /**
+         * @var Header The element that should be displayed
+         * as the page header
+         */
         private $header;
+
+        /**
+         * @var array An array of elements that make up the pages contents
+         */
         private $contentElements;
 
         /**
@@ -25,7 +38,7 @@ include_once 'include/Header/Header.php';
         }
 
         /**
-         * 
+         * A function that displays the wrapper
          */
         public function show()
         {
@@ -46,7 +59,9 @@ include_once 'include/Header/Header.php';
 
                     print '<div id="content-wrapper" class="content-wrapper">';
 
+                    // try to print all the elements in contentElements
                     foreach ($this->contentElements as $contentElement) {
+                        // check check if we can somehow print the content
                         if (method_exists($contentElement, 'show')) {
                             $contentElement->show();
                         } elseif (method_exists($contentElement, '__toString')) {
