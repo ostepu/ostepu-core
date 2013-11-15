@@ -17,8 +17,8 @@ class ExerciseSheet
 
     public function show()
     {
-        $exerciseTemplate = file_get_contents('Exercise.template.html');
-        $content = file_get_contents('ExerciseSheet.template.html');
+        $exerciseTemplate = file_get_contents('include/ExerciseSheet/Exercise.template.html');
+        $content = file_get_contents('include/ExerciseSheet/ExerciseSheet.template.html');
 
         $exerciseHTML = "";
         foreach ($this->exercises as $exercise) {

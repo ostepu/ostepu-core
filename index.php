@@ -1,6 +1,6 @@
 <?php
 include_once 'include/Header/Header.php';
-include_once 'ExerciseSheet.php';
+include_once 'include/ExerciseSheet/ExerciseSheet.php';
 include_once 'include/HTMLWrapper.php';
 
 // construct a new header
