@@ -15,13 +15,13 @@ $h->setBackURL("index.php")
 // construct a content element for managing groups
 $manageGroup = '<div class="content">
     <div class="content-header">
-        <div class="exercise-sheet-title">Gruppe verwalten</div>
+        <div class="content-title">Gruppe verwalten</div>
         <div class="exercise-sheet-end">
             <a href="#" class="body-option">verlassen</a>
         </div>   
     </div>
 
-    <div class="exercise-sheet-body-wrapper">
+    <div class="content-body-wrapper">
         <div class="exercise-sheet-body-left exercise-sheet-body">
             <ol class="exercise-list invitation-list">
                 <li >
@@ -38,19 +38,19 @@ $manageGroup = '<div class="content">
                 </li>
             </ol>
         </div>
-    </div> <!-- end: exercise-sheet-body-wrapper -->
-</div> <!-- end: exercise-sheet-wrapper -->';
+    </div> <!-- end: content-body-wrapper -->
+</div> <!-- end: content-wrapper -->';
 
 // construct a content element for creating groups
 $createGroup = '<div class="content">
     <div class="content-header">
-        <div class="exercise-sheet-title">Erstellen</div>
+        <div class="content-title">Erstellen</div>
         <div class="exercise-sheet-end">
             <a href="#" class="body-option">einladen</a>
         </div>     
     </div>
 
-    <div class="exercise-sheet-body-wrapper">
+    <div class="content-body-wrapper">
         <div class="exercise-sheet-body-left exercise-sheet-body">
             <ol class="exercise-list invitation-list">
                 <li>
@@ -64,16 +64,16 @@ $createGroup = '<div class="content">
                 </li>
             </ol>
         </div>
-    </div> <!-- end: exercise-sheet-body-wrapper -->
-</div> <!-- end: exercise-sheet-wrapper -->';
+    </div> <!-- end: content-body-wrapper -->
+</div> <!-- end: content-wrapper -->';
 
 // construct a content element for joining groups
 $invitations = '<div class="content">
     <div class="content-header">
-        <div class="exercise-sheet-title">Einladungen</div>     
+        <div class="content-title">Einladungen</div>     
     </div>
 
-    <div class="exercise-sheet-body-wrapper">
+    <div class="content-body-wrapper">
         <div class="exercise-sheet-body-left exercise-sheet-body">
             <ol class="exercise-list invitation-list">
                 <li >
@@ -105,8 +105,8 @@ $invitations = '<div class="content">
                 </li>
             </ol>
         </div>
-    </div> <!-- end: exercise-sheet-body-wrapper -->
-</div> <!-- end: exercise-sheet-wrapper -->';
+    </div> <!-- end: content-body-wrapper -->
+</div> <!-- end: content-wrapper -->';
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $manageGroup, $createGroup, $invitations);
