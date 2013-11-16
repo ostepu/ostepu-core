@@ -11,29 +11,21 @@ $h = new Header("Datenstrukturen",
                 "75%");
 
 // construct some exercise sheets
-$s = new ExerciseSheet("Serie 2", array(
-                       array("exerciseType" => "Normal",
-                             "points" => "10",
-                             "maxPoints" => "10"
-                             ),
-                       array("exerciseType" => "Bonus",
-                             "points" => "10",
-                             "maxPoints" => "10"
-                             ),
-                       ));
+$sheetString = file_get_contents("http://localhost/Uebungsplattform/Sheets");
 
-$s2 = new ExerciseSheet("Serie 1", array(
-                       array("exerciseType" => "Normal",
-                             "points" => "5",
-                             "maxPoints" => "10"
-                             ),
-                       array("exerciseType" => "Bonus",
-                             "points" => "3",
-                             "maxPoints" => "4"
-                             ),
-                       ));
+// convert the json string into an associative array
+$sheets = json_decode($sheetString, true);
 
-// wrap all the elements in some HTML and show them on the page
-$w = new HTMLWrapper($h, $s, $s2);
+$w = new HTMLWrapper($h);
+
+$content = array();
+
+foreach ($sheets as $sheet) {
+    $ex = $sheet['exercises'];
+    $e = new ExerciseSheet($sheet['name'], $ex);
+
+    // wrap the element in some HTML
+    $w->insert($e);
+}
 $w->show();
 ?>
