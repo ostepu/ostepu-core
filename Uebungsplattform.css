@@ -90,9 +90,10 @@ body {
 }
 
 .content-header {
-    padding: 30px 40px 25px 40px;
+    padding: 20px 40px 15px 40px;
     overflow: auto;
     height: auto;
+    background-color: #cccaca;
 }
 
 .content-body {
@@ -167,18 +168,19 @@ li {
 
 .exercise-sheet-percent {
     float: right;
-    color: #79C425;
+    color: #69a82a;
+    font-weight: bold;
     padding-right: 105px;
 }
 
 .exercise-sheet-info {
     float: right;
-    color: #79C425;
+    color: #69a82a;
     padding-right: 120px;
 }
 
 .exercise-type {
-    width: 100px;
+    width: 200px;
     padding-left: 5px;
     display: inline-block;
 }
@@ -186,7 +188,7 @@ li {
 .exercise-points {
     display: inline-block;
     width: 50px;
-    color: #79C425;
+    color: #69a82a;
 }
 
 a {
