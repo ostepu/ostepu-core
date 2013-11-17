@@ -13,13 +13,12 @@ class Header
     private $backTitle = "Veranstaltung wechseln";
 
     function __construct($title,$extraInfo, $username,
-                         $userid, $points = 0)
+                         $userid)
     {
         $this->title = $title;
         $this->extraInfo = $extraInfo;
         $this->username = $username;
         $this->userid = $userid;
-        $this->points = $points;
     }
 
     public function show() 
@@ -34,9 +33,16 @@ class Header
                                        $this->username,
                                        $prototypeHeader);
 
-        $prototypeHeader = str_replace("%points%",
-                                       $this->points,
-                                       $prototypeHeader);
+        if (!is_null($this->points)) {
+            $extraInfoTemplate = file_get_contents('include/Header/Extra-Info-Student.template.html');
+
+            $extraInfoTemplate = str_replace("%points%",
+                                           $this->points,
+                                           $extraInfoTemplate);
+            $prototypeHeader = str_replace('%extraInfo%',
+                                           $extraInfoTemplate,
+                                           $prototypeHeader);
+        }
 
         $prototypeHeader = str_replace("%userid%",
                                        $this->userid,
@@ -97,6 +103,20 @@ class Header
     public function setBackTitle($backTitle)
     {
         $this->backTitle = $backTitle;
+
+        return $this;
+    }
+
+    /**
+     * Sets the value of points.
+     *
+     * @param mixed $points the points
+     *
+     * @return self
+     */
+    public function setPoints($points)
+    {
+        $this->points = $points;
 
         return $this;
     }

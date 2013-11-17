@@ -7,8 +7,12 @@ include_once 'include/HTMLWrapper.php';
 $h = new Header("Datenstrukturen",
                 "",
                 "Florian Lücke",
-                "211221492", 
-                "75%");
+                "211221492");
+
+/*
+ * if (is_student($user))
+ */
+$h->setPoints(75);
 
 // construct some exercise sheets
 $s = new ExerciseSheet("Serie 2", array(
