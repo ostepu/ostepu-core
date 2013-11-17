@@ -95,6 +95,19 @@ body {
     height: auto;
 }
 
+.content-body {
+    width: 960px;
+    display: block;
+    overflow: auto;
+    margin-top: 30px;
+}
+
+.content-footer {
+    padding: 30px 40px 25px 40px;
+    overflow: auto;
+    height: auto;
+}
+
 .exercise-sheet-body {
 
 }
