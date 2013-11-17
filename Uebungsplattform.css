@@ -133,7 +133,7 @@ li {
 }
 
 .content-title {
-    width: 565px;
+    width: 400px;
     float: left;
     font-size: 130%;
     text-transform: uppercase;
@@ -153,7 +153,7 @@ li {
 .exercise-sheet-info {
     float: right;
     color: #79C425;
-    padding-right: 250px;
+    padding-right: 120px;
 }
 
 .exercise-type {
