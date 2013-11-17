@@ -38,6 +38,19 @@ include_once 'include/Header/Header.php';
         }
 
         /**
+         * insert an element into te content area.
+         *
+         * @param mixed $element The element that should be inserted;
+         * @return self
+         */
+        public function insert($element)
+        {
+            $this->contentElements[] = $element;
+
+            return $this;
+        }
+
+        /**
          * A function that displays the wrapper
          */
         public function show()

@@ -6,43 +6,56 @@ include_once 'include/Helpers.php';
 */
 class ExerciseSheet
 {
-    private $sheetName;
-    private $exercises;
+    protected $sheetName;
+    protected $exercises;
+    protected $endTime;
+    protected $percent; 
+    protected $content;
+    protected $contentTemplate;
 
-    public function __construct($sheetName, $exercises)
+    public function __construct($sheetName, $exercises, $percent, $endTime)
     {
         $this->sheetName = $sheetName;
         $this->exercises = $exercises;
+        $this->percent = $percent;
+        $this->endTime = $endTime;
     }
 
     public function show()
-    {
-        $exerciseTemplate = file_get_contents('include/ExerciseSheet/Exercise.template.html');
-        $content = file_get_contents('include/ExerciseSheet/ExerciseSheet.template.html');
-
-        $exerciseHTML = "";
+    {   
+        $exerciseHTML = '';
+        
         foreach ($this->exercises as $exercise) {
             $thisExercise = str_replace('%exerciseType%',
-                                        $exercise["exerciseType"],
-                                        $exerciseTemplate);
+                                        $exercise['exerciseType'],
+                                        $this->contentTemplate);
             $thisExercise = str_replace('%points%',
-                                        $exercise["points"],
+                                        $exercise['points'],
                                         $thisExercise);
             $thisExercise = str_replace('%maxPoints%', 
-                                        $exercise["maxPoints"],
+                                        $exercise['maxPoints'],
                                         $thisExercise);
             $exerciseHTML .= "{$thisExercise}\n";
         }
 
-        $content = str_replace('%sheetName%',
+
+        $this->content = str_replace('%sheetName%',
                                $this->sheetName,
-                               $content);
+                               $this->content);
 
-        $content = str_replace('%exercises%',
+        $this->content = str_replace('%percent%',
+                               $this->percent,
+                               $this->content);
+
+        $this->content = str_replace('%endTime%',
+                               $this->endTime,
+                               $this->content);
+
+        $this->content = str_replace('%exercises%',
                                $exerciseHTML,
-                               $content);
+                               $this->content);
 
-        print $content;
+        print $this->content;
     }
 }
 ?>

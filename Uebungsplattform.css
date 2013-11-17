@@ -90,9 +90,31 @@
 }
 
 .content-header {
+    padding: 20px 40px 15px 40px;
+    overflow: auto;
+    height: auto;
+    background-color: #cccaca;
+}
+
+.content-body {
+    width: 960px;
+    display: block;
+    overflow: auto;
+    margin-top: 30px;
+}
+
+.content-footer {
     padding: 30px 40px 25px 40px;
     overflow: auto;
     height: auto;
+}
+
+.footer-text {
+    list-style: none;
+    font-size: 80%;
+    display: inline;
+    padding-right: 30px;
+    color: #959494;
 }
 
 .exercise-sheet-body {
@@ -133,7 +155,7 @@ li {
 }
 
 .content-title {
-    width: 565px;
+    width: 400px;
     float: left;
     font-size: 130%;
     text-transform: uppercase;
@@ -146,12 +168,19 @@ li {
 
 .exercise-sheet-percent {
     float: right;
-    color: #79C425;
+    color: #69a82a;
+    font-weight: bold;
     padding-right: 105px;
 }
 
+.exercise-sheet-info {
+    float: right;
+    color: #69a82a;
+    padding-right: 120px;
+}
+
 .exercise-type {
-    width: 170px;
+    width: 200px;
     padding-left: 5px;
     display: inline-block;
 }
@@ -160,7 +189,7 @@ li {
     text-align: right;
     display: inline-block;
     width: 50px;
-    color: #79C425;
+    color: #69a82a;
 }
 
 a {
