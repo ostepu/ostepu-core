@@ -150,6 +150,12 @@ li {
     padding-right: 105px;
 }
 
+.exercise-sheet-info {
+    float: right;
+    color: #79C425;
+    padding-right: 250px;
+}
+
 .exercise-type {
     width: 100px;
     padding-left: 5px;
