@@ -7,8 +7,7 @@ include_once 'include/HTMLWrapper.php';
 $h = new Header("Datenstrukturen",
                 "",
                 "Florian Lücke",
-                "Kontrolleur", 
-                "--");
+                "Kontrolleur");
 
 // construct some exercise sheets
 $sheetString = file_get_contents("http://localhost/Uebungsplattform/Sheet");

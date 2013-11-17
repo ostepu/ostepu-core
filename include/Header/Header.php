@@ -39,10 +39,13 @@ class Header
             $extraInfoTemplate = str_replace("%points%",
                                            $this->points,
                                            $extraInfoTemplate);
-            $prototypeHeader = str_replace('%extraInfo%',
+        } else {
+            $extraInfoTemplate = "";
+        }
+
+        $prototypeHeader = str_replace('%extraInfo%',
                                            $extraInfoTemplate,
                                            $prototypeHeader);
-        }
 
         $prototypeHeader = str_replace("%userid%",
                                        $this->userid,
