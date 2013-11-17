@@ -21,7 +21,7 @@ $manageGroup = '<div class="content">
         </div>   
     </div>
 
-    <div class="content-body-wrapper">
+    <div class="content-body">
         <div class="exercise-sheet-body-left exercise-sheet-body">
             <ol class="exercise-list invitation-list">
                 <li >
@@ -38,7 +38,7 @@ $manageGroup = '<div class="content">
                 </li>
             </ol>
         </div>
-    </div> <!-- end: content-body-wrapper -->
+    </div> <!-- end: content-body -->
 </div> <!-- end: content-wrapper -->';
 
 // construct a content element for creating groups
@@ -50,7 +50,7 @@ $createGroup = '<div class="content">
         </div>     
     </div>
 
-    <div class="content-body-wrapper">
+    <div class="content-body">
         <div class="exercise-sheet-body-left exercise-sheet-body">
             <ol class="exercise-list invitation-list">
                 <li>
@@ -64,7 +64,7 @@ $createGroup = '<div class="content">
                 </li>
             </ol>
         </div>
-    </div> <!-- end: content-body-wrapper -->
+    </div> <!-- end: content-body -->
 </div> <!-- end: content-wrapper -->';
 
 // construct a content element for joining groups
@@ -73,7 +73,7 @@ $invitations = '<div class="content">
         <div class="content-title">Einladungen</div>     
     </div>
 
-    <div class="content-body-wrapper">
+    <div class="content-body">
         <div class="exercise-sheet-body-left exercise-sheet-body">
             <ol class="exercise-list invitation-list">
                 <li >
@@ -105,7 +105,7 @@ $invitations = '<div class="content">
                 </li>
             </ol>
         </div>
-    </div> <!-- end: content-body-wrapper -->
+    </div> <!-- end: content-body -->
 </div> <!-- end: content-wrapper -->';
 
 // wrap all the elements in some HTML and show them on the page
