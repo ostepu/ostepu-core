@@ -1,6 +1,6 @@
 <?php
 include_once 'include/Header/Header.php';
-include_once 'include/ExerciseSheet/ExerciseSheet.php';
+include_once 'include/ExerciseSheet/ExerciseSheetStudent.php';
 include_once 'include/HTMLWrapper.php';
 
 // construct a new header
@@ -22,8 +22,8 @@ $content = array();
 
 foreach ($sheets as $sheet) {
     $ex = $sheet['exercises'];
-    $e = new ExerciseSheet($sheet['name'], $ex,
-                           $sheet['percent'], $sheet['endTime']);
+    $e = new ExerciseSheetStudent($sheet['name'], $ex,
+                                  $sheet['percent'], $sheet['endTime']);
 
     // wrap the element in some HTML
     $w->insert($e);
