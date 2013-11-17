@@ -63,6 +63,10 @@
     font-size: 400%;
 }
 
+.points-huge:after {
+    content: "%";
+}
+
 .total-points {
     text-align: center;
     text-transform: uppercase;
