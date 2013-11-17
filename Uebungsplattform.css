@@ -108,6 +108,14 @@ body {
     height: auto;
 }
 
+.footer-text {
+    list-style: none;
+    font-size: 80%;
+    display: inline;
+    padding-right: 30px;
+    color: #959494;
+}
+
 .exercise-sheet-body {
 
 }
