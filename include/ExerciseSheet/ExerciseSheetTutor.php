@@ -4,7 +4,7 @@ include_once 'include/Helpers.php';
 /**
 * 
 */
-class ExerciseSheet
+class ExerciseSheetTutor
 {
     private $sheetName;
     private $exercises;

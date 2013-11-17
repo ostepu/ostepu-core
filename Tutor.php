@@ -22,7 +22,7 @@ $content = array();
 
 foreach ($sheets as $sheet) {
     $ex = $sheet['exercises'];
-    $e = new ExerciseSheet($sheet['name'], $ex);
+    $e = new ExerciseSheetTutor($sheet['name'], $ex);
 
     // wrap the element in some HTML
     $w->insert($e);
