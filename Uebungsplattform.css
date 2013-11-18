@@ -12,15 +12,16 @@ body {
 
 .header {
     overflow: auto;
-}
-
-.navigation {
-    border-bottom: 4px solid #79c325;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
 }
 
 ul.navigation {
+    margin-top: 5px;
     width: 960px;
-    height: 26px;
+    height: 28px;
+    background-color: #3aa6d0;
+    border-radius: 5px;
 }
 
 ul.navigation li {
@@ -28,17 +29,18 @@ ul.navigation li {
     padding: 0;
     margin: 0;
     font-size: 90%;
-    color: #79c325;
+    background-color: #3aa6d0;
+    border-radius: 5px;
 }
 
 ul.navigation a {
     float: left;
     padding: 7px 40px 7px 40px;
-    color: #79c325;
+    color: #024c68;
 }
 
 ul.navigation a#selected {
-    color: #5fa313;
+    color: #ffffff;
 }
 
 .content-wrapper {
@@ -51,15 +53,15 @@ ul.navigation a#selected {
 .content {
     margin-bottom: 30px;
     font-size: 90%;
-    background-color: #dbdbdb;
+    background-color: #f2f0f0;
     width: 960px;
     display: block;
     overflow: auto;
+    border-radius: 5px;
 }
 
 .course-title {
     padding-top: 20px;
-    font-family: Georgia;
     font-size: 200%;
     text-transform: uppercase;
     padding-bottom: 20px;
@@ -67,7 +69,7 @@ ul.navigation a#selected {
 
 .course-info {
     color: #ffffff;
-    background-color: #79C425;
+    background-color: #0776a0;
     font-size: 90%;
     float: left;
     padding-left: 40px;
@@ -82,10 +84,10 @@ ul.navigation a#selected {
 .course-extra-info {
     height: 110px;
     font-size: 90%;
-    color: #9E8061;
+    color: #de9738;
     float: left;
     width: 215px;
-    background-color: #79D435;
+    background-color: #0776a0;
 }
 
 .points-huge {
@@ -108,14 +110,16 @@ ul.navigation a#selected {
     height: 110px;
     width: 160px;
     float: right;
+    text-align: right;
+    color: #ffffff;
     padding-right: 40px;
     padding-left: 30px;
     font-size: 90%;
-    background-color: #b9E475;
+    background-color: #0776a0;
 }
 
 .user-name {
-    padding-top: 20px;    
+    padding-top: 20px; 
 }
 
 .user-id {
@@ -123,15 +127,14 @@ ul.navigation a#selected {
 }
 
 .log-out {
-    color: #6f6f6f;
+    color: #ffffff;
 }
 
 .content-header {
-    font-family: Georgia;
-    padding: 20px 40px 15px 40px;
+    padding: 15px 40px 15px 40px;
     overflow: auto;
     height: auto;
-    background-color: #cccaca;
+    background-color: #b9b8b8;
 }
 
 .content-body {
@@ -201,12 +204,13 @@ li {
 
 .exercise-sheet-end {
     float: right;
-    color: red;
+    font-weight: bold;
+    color: #f2f0f0;
 }
 
 .exercise-sheet-percent {
     float: right;
-    color: #69a82a;
+    color: #f2f0f0;
     font-weight: bold;
     padding-right: 105px;
 }
@@ -217,7 +221,8 @@ li {
 
 .exercise-sheet-info {
     float: right;
-    color: #69a82a;
+    color: #f2f0f0;
+    font-weight: bold;
     padding-right: 120px;
 }
 
@@ -235,7 +240,7 @@ li {
     text-align: right;
     display: inline-block;
     width: 100px;
-    color: #69a82a;
+    color: #2db22d;
 }
 
 a {
