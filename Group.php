@@ -15,6 +15,12 @@ $h = new Header("Datenstrukturen",
 $h->setBackURL("index.php")
 ->setBackTitle("zur Veranstaltung");
 
+$options = array("invitations" => array(
+                 array("persons" => array("Peter König")),
+                 array("persons" => array("Till Uhlig", "Felix Schmidt")),
+                 array("persons" => array("Till Uhlig", "Felix Schäädd"))
+                                        ));
+
 // construct a content element for managing groups
 $manageGroup = new ManageGroupSheet();
 
@@ -22,7 +28,7 @@ $manageGroup = new ManageGroupSheet();
 $createGroup = new InviteGroupSheet();
 
 // construct a content element for joining groups
-$invitations = new InvitationsGroupSheet();
+$invitations = new InvitationsGroupSheet($options['invitations']);
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $manageGroup, $createGroup, $invitations);
