@@ -71,7 +71,6 @@ ul.navigation a#selected {
 .course-title {
     padding-top: 20px;
     font-size: 200%;
-    text-transform: uppercase;
     padding-bottom: 20px;
 }
 
@@ -108,7 +107,6 @@ ul.navigation a#selected {
 
 .total-points {
     text-align: center;
-    text-transform: uppercase;
 }
 
 .user-info {
@@ -196,7 +194,6 @@ li {
     width: 400px;
     float: left;
     font-size: 130%;
-    text-transform: uppercase;
 }
 
 .exercise-sheet-end {
@@ -241,4 +238,8 @@ li {
 
 .invitation-list {
     width: 920px;
+}
+
+.uppercase {
+    text-transform: uppercase;
 }
