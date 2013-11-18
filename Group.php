@@ -15,7 +15,7 @@ $h->setBackURL("index.php")
 // construct a content element for managing groups
 $manageGroup = '<div class="content">
     <div class="content-header">
-        <div class="content-title">Gruppe verwalten</div>
+        <div class="content-title uppercase">Gruppe verwalten</div>
         <div class="exercise-sheet-end">
             <a href="#" class="body-option">verlassen</a>
         </div>   
@@ -44,7 +44,7 @@ $manageGroup = '<div class="content">
 // construct a content element for creating groups
 $createGroup = '<div class="content">
     <div class="content-header">
-        <div class="content-title">Erstellen</div>
+        <div class="content-title uppercase">Erstellen</div>
         <div class="exercise-sheet-end">
             <a href="#" class="body-option">einladen</a>
         </div>     
@@ -70,7 +70,7 @@ $createGroup = '<div class="content">
 // construct a content element for joining groups
 $invitations = '<div class="content">
     <div class="content-header">
-        <div class="content-title">Einladungen</div>     
+        <div class="content-title uppercase">Einladungen</div>     
     </div>
 
     <div class="content-body">
