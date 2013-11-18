@@ -14,29 +14,31 @@ body {
     overflow: auto;
 }
 
-ul#navigation {
-    width: 960px;
-    height: 28px;
-    background-color: #79c325;
+.navigation {
+    border-bottom: 4px solid #79c325;
 }
 
-ul#navigation li {
+ul.navigation {
+    width: 960px;
+    height: 26px;
+}
+
+ul.navigation li {
     float: left;
     padding: 0;
     margin: 0;
     font-size: 90%;
-    border-right: 5px solid #ffffff;
-    background-color: #79c325;
+    color: #79c325;
 }
 
-ul#navigation a {
+ul.navigation a {
     float: left;
     padding: 7px 40px 7px 40px;
+    color: #79c325;
 }
 
-ul#navigation a#selected {
+ul.navigation a#selected {
     color: #5fa313;
-    background-color: #b9e375;
 }
 
 .content-wrapper {

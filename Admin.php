@@ -9,14 +9,16 @@ $h = new Header("Datenstrukturen",
                 "Florian Lücke",
                 "Admin");
 
-$menu = '<ul id="navigation">
+$menu = '<ul id="navigation" class="navigation">
 <li><a href="#">Kurz</a></li>
 <li><a id="selected" href="#">Angeklickt</a></li>
 <li><a href="#">Ziemlich langer Menüpunkt</a></li>
 <li><a href="#">Blubb</a></li>
 </ul>';
 
-$w = new HTMLWrapper($h, $menu);
+$w = new HTMLWrapper($h);
+
+$w->setNavigationElement($menu);
 
 $w->show();
 ?>

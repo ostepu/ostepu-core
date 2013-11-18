@@ -22,6 +22,12 @@ include_once 'include/Header/Header.php';
         private $contentElements;
 
         /**
+         * @var string A navigation bar that should be inserted between
+         * header and body
+         */
+        private $navigationElement;
+
+        /**
          * The default contructor.
          * 
          * @param Header $header The element that should be displayed
@@ -70,6 +76,10 @@ include_once 'include/Header/Header.php';
 
                     $this->header->show();
 
+                    if (!is_null($this->navigationElement)) {
+                        print $this->navigationElement;
+                    }
+
                     print '<div id="content-wrapper" class="content-wrapper">';
 
                     // try to print all the elements in contentElements
@@ -89,5 +99,19 @@ include_once 'include/Header/Header.php';
             </body>
             </html>';
         }
+
+    /**
+     * Sets the value of navigationElement.
+     *
+     * @param $navigationElement the navigation element
+     *
+     * @return self
+     */
+    public function setNavigationElement($navigationElement)
+    {
+        $this->navigationElement = $navigationElement;
+
+        return $this;
     }
+}
     ?>

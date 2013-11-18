@@ -59,6 +59,7 @@ class Header
                                        $this->backTitle,
                                        $prototypeHeader);
 
+
         print $prototypeHeader;
     }
 
