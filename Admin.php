@@ -9,26 +9,15 @@ $h = new Header("Datenstrukturen",
                 "Florian Lücke",
                 "Admin");
 
-// construct some exercise sheets
-$sheetString = file_get_contents("http://localhost/Uebungsplattform/Sheet");
+$menu = '<ul id="navigation">
+<li><a href="#">Kurz</a></li>
+<li><a id="selected" href="#">Angeklickt</a></li>
+<li><a href="#">Ziemlich langer Menüpunkt</a></li>
+<li><a href="#">Blubb</a></li>
+</ul>';
 
+$w = new HTMLWrapper($h, $menu);
 
-
-// convert the json string into an associative array
-$sheets = json_decode($sheetString, true);
-
-$w = new HTMLWrapper($h);
-
-$content = array();
-
-foreach ($sheets as $sheet) {
-    $ex = $sheet['exercises'];
-    $e = new ExerciseSheetTutor($sheet['name'], $ex,
-                                $sheet['exerciseSheetInfo'], $sheet['endTime']);
-
-    // wrap the element in some HTML
-    $w->insert($e);
-}
 $w->show();
 ?>
 

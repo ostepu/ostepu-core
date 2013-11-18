@@ -14,6 +14,31 @@ body {
     overflow: auto;
 }
 
+ul#navigation {
+    width: 960px;
+    height: 28px;
+    background-color: #79c325;
+}
+
+ul#navigation li {
+    float: left;
+    padding: 0;
+    margin: 0;
+    font-size: 90%;
+    border-right: 5px solid #ffffff;
+    background-color: #79c325;
+}
+
+ul#navigation a {
+    float: left;
+    padding: 7px 40px 7px 40px;
+}
+
+ul#navigation a#selected {
+    color: #5fa313;
+    background-color: #b9e375;
+}
+
 .content-wrapper {
     width: 960px;
     display: block;
