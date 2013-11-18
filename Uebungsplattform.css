@@ -177,10 +177,18 @@ li {
     padding-right: 105px;
 }
 
+.exercise-sheet-percent:after {
+    content: "%";
+}
+
 .exercise-sheet-info {
     float: right;
     color: #69a82a;
     padding-right: 120px;
+}
+
+.exercise-sheet-info:after {
+    content: " unkorrigiert";
 }
 
 .exercise-type {

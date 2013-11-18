@@ -48,7 +48,7 @@ if (isset($_GET['id'])) {
         }
 
         // calculate reached points
-        $sheet['percent'] = round($sheetPoints / $sheetMaxPoints * 100, 1);
+        $sheet['exerciseSheetInfo'] = round($sheetPoints / $sheetMaxPoints * 100, 1);
 
         // crate a random end date
         $now = time() + 60 * 60 * 24 * 7;

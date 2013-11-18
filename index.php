@@ -27,7 +27,7 @@ $content = array();
 foreach ($sheets as $sheet) {
     $ex = $sheet['exercises'];
     $e = new ExerciseSheetStudent($sheet['name'], $ex,
-                                  $sheet['percent'], $sheet['endTime']);
+                                  $sheet['exerciseSheetInfo'], $sheet['endTime']);
 
     // wrap the element in some HTML
     $w->insert($e);

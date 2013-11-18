@@ -9,15 +9,15 @@ class ExerciseSheet
     protected $sheetName;
     protected $exercises;
     protected $endTime;
-    protected $percent; 
+    protected $sheetInfo; 
     protected $content;
     protected $contentTemplate;
 
-    public function __construct($sheetName, $exercises, $percent, $endTime)
+    public function __construct($sheetName, $exercises, $sheetInfo, $endTime)
     {
         $this->sheetName = $sheetName;
         $this->exercises = $exercises;
-        $this->percent = $percent;
+        $this->sheetInfo = $sheetInfo;
         $this->endTime = $endTime;
     }
 
@@ -43,8 +43,8 @@ class ExerciseSheet
                                $this->sheetName,
                                $this->content);
 
-        $this->content = str_replace('%percent%',
-                               $this->percent,
+        $this->content = str_replace('%exerciseSheetInfo%',
+                               $this->sheetInfo,
                                $this->content);
 
         $this->content = str_replace('%endTime%',
