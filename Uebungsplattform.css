@@ -23,6 +23,7 @@ a:after {
     overflow: auto;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
+    /* color 1 */
     background-color: #2B648F;
     height: 110px;
     color: #ffffff;
@@ -31,7 +32,8 @@ a:after {
 ul.navigation {
     margin-top: 5px;
     height: 28px;
-    background-color: #3aa6d0;
+    /* color 1, var 1 */
+    background-color: #5A96C3;
     border-radius: 5px;
 }
 
@@ -40,13 +42,13 @@ ul.navigation li {
     padding: 0;
     margin: 0;
     font-size: 90%;
-    background-color: #3aa6d0;
 }
 
 ul.navigation a {
     float: left;
-    padding: 7px 40px 7px 40px;
-    color: #024c68;
+    padding: 7px 40px;
+    /* color 1, var 2*/
+    color: #335570;
 }
 
 ul.navigation a#selected {
@@ -127,7 +129,7 @@ ul.navigation a#selected {
 }
 
 .content-header {
-    padding: 15px 40px 15px 40px;
+    padding: 15px 40px;
     overflow: auto;
     height: auto;
     background-color: #b9b8b8;
@@ -199,12 +201,17 @@ li {
 .exercise-sheet-end {
     float: right;
     font-weight: bold;
+    /* color 3 */
     color: #DE3838;
+}
+
+.exercise-sheet-info, .exercise-points {
+    /* color 4 */
+    color: #2DB22D;
 }
 
 .exercise-sheet-info {
     float: right;
-    color: #2DB22D;
     font-weight: bold;
     padding-right: 120px;
 }
@@ -219,19 +226,13 @@ li {
     text-align: right;
     display: inline-block;
     width: 100px;
-    color: #2DB22D;
 }
 
 .body-option {
     color: #6f6f6f;    
 }
 
-.accept-button {
-    float: right;
-    padding-right: 40px;
-}
-
-.deny-button {
+.accept-button, .deny-button {
     float: right;
     padding-right: 40px;
 }
