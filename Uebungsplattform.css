@@ -69,7 +69,7 @@ ul.navigation a#selected {
 
 .course-info {
     color: #ffffff;
-    background-color: #0776a0;
+    background-color: #2B648F;
     font-size: 90%;
     float: left;
     padding-left: 40px;
@@ -84,10 +84,10 @@ ul.navigation a#selected {
 .course-extra-info {
     height: 110px;
     font-size: 90%;
-    color: #de9738;
+    color: #DE9738;
     float: left;
     width: 215px;
-    background-color: #0776a0;
+    background-color: #2B648F;
 }
 
 .points-huge {
@@ -115,7 +115,7 @@ ul.navigation a#selected {
     padding-right: 40px;
     padding-left: 30px;
     font-size: 90%;
-    background-color: #0776a0;
+    background-color: #2B648F;
 }
 
 .user-name {
@@ -205,12 +205,12 @@ li {
 .exercise-sheet-end {
     float: right;
     font-weight: bold;
-    color: #f2f0f0;
+    color: #DE3838;
 }
 
 .exercise-sheet-percent {
     float: right;
-    color: #f2f0f0;
+    color: #2DB22D;
     font-weight: bold;
     padding-right: 105px;
 }
@@ -240,7 +240,7 @@ li {
     text-align: right;
     display: inline-block;
     width: 100px;
-    color: #2db22d;
+    color: #2DB22D;
 }
 
 a {
