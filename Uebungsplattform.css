@@ -1,6 +1,6 @@
-@body {
+body {
     font-size: 100%;
-    font-family: sans-serif;
+    font-family: "Lucida Grande";
 }
 
 .body-wrapper {
@@ -23,6 +23,7 @@
 
 .content {
     margin-bottom: 30px;
+    font-size: 90%;
     background-color: #dbdbdb;
     width: 960px;
     display: block;
@@ -31,7 +32,8 @@
 
 .course-title {
     padding-top: 20px;
-    font-size: 170%;
+    font-family: Georgia;
+    font-size: 200%;
     text-transform: uppercase;
     padding-bottom: 20px;
 }
@@ -39,6 +41,7 @@
 .course-info {
     color: #ffffff;
     background-color: #79C425;
+    font-size: 90%;
     float: left;
     padding-left: 40px;
     width: 475px;
@@ -51,6 +54,7 @@
 
 .course-extra-info {
     height: 110px;
+    font-size: 90%;
     color: #9E8061;
     float: left;
     width: 215px;
@@ -58,9 +62,10 @@
 }
 
 .points-huge {
-    padding-top: 10px;
+    padding-top: 15px;
     text-align: center;
-    font-size: 400%;
+    font-size: 380%;
+    font-weight: bold;
 }
 
 .points-huge:after {
@@ -78,6 +83,7 @@
     float: right;
     padding-right: 40px;
     padding-left: 30px;
+    font-size: 90%;
     background-color: #b9E475;
 }
 
@@ -94,6 +100,7 @@
 }
 
 .content-header {
+    font-family: Georgia;
     padding: 20px 40px 15px 40px;
     overflow: auto;
     height: auto;
