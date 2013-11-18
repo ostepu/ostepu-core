@@ -12,6 +12,10 @@ class ExerciseSheetStudent extends ExerciseSheet
         $this->contentTemplate = file_get_contents('include/ExerciseSheet/ExerciseStudent.template.html');
         $this->content = file_get_contents('include/ExerciseSheet/ExerciseSheetStudent.template.html');
 
+        $this->content = str_replace('%exerciseSheetInfo%',
+                                     $this->sheetInfo . '%',
+                                     $this->content);
+
         parent::show();
 
     }

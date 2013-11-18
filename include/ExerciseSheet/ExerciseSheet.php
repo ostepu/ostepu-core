@@ -43,9 +43,6 @@ class ExerciseSheet
                                $this->sheetName,
                                $this->content);
 
-        $this->content = str_replace('%exerciseSheetInfo%',
-                               $this->sheetInfo,
-                               $this->content);
 
         $this->content = str_replace('%endTime%',
                                $this->endTime,

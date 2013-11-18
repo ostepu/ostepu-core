@@ -3,6 +3,15 @@ body {
     font-family: "Lucida Grande";
 }
 
+a {
+    text-decoration: none;
+    color: #FFFFFF;
+}
+
+a:after {
+    content: ' >';
+}
+
 .body-wrapper {
     width: 960px;
     margin-left:auto;
@@ -14,12 +23,16 @@ body {
     overflow: auto;
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
+    /* color 1 */
+    background-color: #2B648F;
+    height: 110px;
+    color: #ffffff;
 }
 
 ul.navigation {
     margin-top: 5px;
-    width: 960px;
     height: 28px;
+    /* color 1, var 1 */
     background-color: #5A96C3;
     border-radius: 5px;
 }
@@ -29,13 +42,13 @@ ul.navigation li {
     padding: 0;
     margin: 0;
     font-size: 90%;
-    border-radius: 5px;
 }
 
 ul.navigation a {
     float: left;
-    padding: 7px 40px 7px 40px;
-    color: #114063;
+    padding: 7px 40px;
+    /* color 1, var 2*/
+    color: #335570;
 }
 
 ul.navigation a#selected {
@@ -43,7 +56,6 @@ ul.navigation a#selected {
 }
 
 .content-wrapper {
-    width: 960px;
     display: block;
     overflow: auto;
     margin-top: 30px;
@@ -53,7 +65,6 @@ ul.navigation a#selected {
     margin-bottom: 30px;
     font-size: 90%;
     background-color: #f2f0f0;
-    width: 960px;
     display: block;
     overflow: auto;
     border-radius: 5px;
@@ -62,13 +73,11 @@ ul.navigation a#selected {
 .course-title {
     padding-top: 20px;
     font-size: 200%;
-    text-transform: uppercase;
     padding-bottom: 20px;
 }
 
 .course-info {
     color: #ffffff;
-    background-color: #2B648F;
     font-size: 90%;
     float: left;
     padding-left: 40px;
@@ -81,12 +90,10 @@ ul.navigation a#selected {
 }
 
 .course-extra-info {
-    height: 110px;
     font-size: 90%;
     color: #DE9738;
     float: left;
     width: 215px;
-    background-color: #2B648F;
 }
 
 .points-huge {
@@ -102,19 +109,15 @@ ul.navigation a#selected {
 
 .total-points {
     text-align: center;
-    text-transform: uppercase;
 }
 
 .user-info {
-    height: 110px;
     width: 160px;
     float: right;
     text-align: right;
-    color: #ffffff;
     padding-right: 40px;
     padding-left: 30px;
     font-size: 90%;
-    background-color: #2B648F;
 }
 
 .user-name {
@@ -125,19 +128,14 @@ ul.navigation a#selected {
     padding-bottom: 20px;
 }
 
-.log-out {
-    color: #ffffff;
-}
-
 .content-header {
-    padding: 15px 40px 15px 40px;
+    padding: 15px 40px;
     overflow: auto;
     height: auto;
     background-color: #b9b8b8;
 }
 
 .content-body {
-    width: 960px;
     display: block;
     overflow: auto;
     margin-top: 30px;
@@ -198,35 +196,24 @@ li {
     width: 400px;
     float: left;
     font-size: 130%;
-    text-transform: uppercase;
 }
 
 .exercise-sheet-end {
     float: right;
     font-weight: bold;
+    /* color 3 */
     color: #DE3838;
 }
 
-.exercise-sheet-percent {
-    float: right;
+.exercise-sheet-info, .exercise-points {
+    /* color 4 */
     color: #2DB22D;
-    font-weight: bold;
-    padding-right: 105px;
-}
-
-.exercise-sheet-percent:after {
-    content: "%";
 }
 
 .exercise-sheet-info {
     float: right;
-    color: #2DB22D;
     font-weight: bold;
     padding-right: 120px;
-}
-
-.exercise-sheet-info:after {
-    content: " unkorrigiert";
 }
 
 .exercise-type {
@@ -239,32 +226,21 @@ li {
     text-align: right;
     display: inline-block;
     width: 100px;
-    color: #2DB22D;
-}
-
-a {
-    text-decoration: none;
-    color: #FFFFFF;
-}
-
-a:after {
-    content: ' >';
 }
 
 .body-option {
     color: #6f6f6f;    
 }
 
-.accept-button {
-    float: right;
-    padding-right: 40px;
-}
-
-.deny-button {
+.accept-button, .deny-button {
     float: right;
     padding-right: 40px;
 }
 
 .invitation-list {
     width: 920px;
+}
+
+.uppercase {
+    text-transform: uppercase;
 }
