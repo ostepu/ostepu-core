@@ -91,6 +91,7 @@ ul.navigation a#selected {
 
 .course-extra-info {
     font-size: 90%;
+    /* color 2 */
     color: #DE9738;
     float: left;
     width: 215px;
