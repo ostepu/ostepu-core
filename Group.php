@@ -27,8 +27,33 @@ $invitations = array(array(
                                        "lastName"=>"Burris",
                                        "title"=>"Dr."), 
                      "sheetID" => ""));
+
+$group = array("members" => array(
+               array("userID"=>"ychwa",
+                     "email"=>"malesuada.fames@IntegerurnaVivamus.net",
+                     "firstName"=>"Walter",
+                     "lastName"=>"Hampton",
+                     "title"=>"Prof. Dr."),
+               array("userID"=>"cqadv",
+                     "email"=>"quam.Curabitur.vel@arcu.ca",
+                     "firstName"=>"Tarik",
+                     "lastName"=>"Harris",
+                     "title"=>"PD"),
+               array("userID"=>"mdgmt",
+                     "email"=>"lorem@et.com",
+                     "firstName"=>"Kathleen",
+                     "lastName"=>"Ayers",
+                     "title"=>""),
+               array("userID"=>"tdspc",
+                     "email"=>"tortor.at@mifelisadipiscing.net",
+                     "firstName"=>"Chaim",
+                     "lastName"=>"Guy",
+                     "title"=>"PD")),
+               "leaderID" => "mdgmt",
+               "sheetID" => "");
+
 // construct a content element for managing groups
-$manageGroup = new ManageGroupSheet();
+$manageGroup = new ManageGroupSheet($group);
 
 // construct a content element for creating groups
 $createGroup = new InviteGroupSheet();
