@@ -12,10 +12,44 @@ $h = new Header("Datenstrukturen",
 $h->setBackURL("index.php")
 ->setBackTitle("zur Veranstaltung");
 
-// construct a content element for managing groups
-$assignStudents = '<div class="content">
+$assignAutomatically = '
+<div class="content">
     <div class="content-header">
-        <div class="content-title uppercase">Kontrolleure zuweisen</div>
+        <div class="content-title uppercase">Automatische Zuweisung</div>
+        <div class="exercise-sheet-end">
+            <a href="#" class="body-option">automatisch zuteilen</a>
+        </div>   
+    </div>
+
+    <div class="content-body">
+        <div class="exercise-sheet-body-left exercise-sheet-body">
+            <div class="tutor-assign-element">
+                Unzugeordnete automatisch zuteilen an:
+            </div>    
+            <div class="tutor-assign-element">
+                <input type="checkbox" />Admin<br />
+                <input type="checkbox" />Felix<br />
+                <input type="checkbox" />Florian<br />
+            </div>
+            <div class="tutor-assign-element">
+                nach: 
+            </div>  
+            <div class="tutor-assign-element">
+                <select>
+                    <option>Zufall</option>
+                    <option>Nr. aufsteigend</option>
+                    <option>Nr. absteigend</option>
+            </select>
+            </div>      
+        </div>
+    </div> <!-- end: content-body -->
+</div> <!-- end: content-wrapper -->';
+
+
+$assignManually = '
+<div class="content">
+    <div class="content-header">
+        <div class="content-title uppercase">Manuelle Zuweisung</div>
         <div class="exercise-sheet-end">
             <a href="#" class="body-option">zu ausgewählter Gruppe hinzufügen</a>
         </div>   
@@ -25,7 +59,7 @@ $assignStudents = '<div class="content">
         <div class="exercise-sheet-body-left exercise-sheet-body">
             <div class="tutor-assign-element">
                 <div class="tutor-assign-element-title">
-                    <input type="radio" name="tutor-assign-radio" value="Unzugeordnet" checked="true" /> Unzugeordnet
+                    <input type="radio" name="tutor-assign-radio" value="Unzugeordnet" checked="true" /> Unzugeordnet (9)
                 </div>
                 <div class="checkbox-container">
                     <input type="checkbox" />102<br />
@@ -41,7 +75,7 @@ $assignStudents = '<div class="content">
             </div>
             <div class="tutor-assign-element">
                 <div class="tutor-assign-element-title">
-                    <input type="radio" name="tutor-assign-radio" value="Admin" /> Admin
+                    <input type="radio" name="tutor-assign-radio" value="Admin" /> Admin (4)
                 </div>
                 <div class="checkbox-container">
                     <input type="checkbox" />111<br />
@@ -52,7 +86,7 @@ $assignStudents = '<div class="content">
             </div>
             <div class="tutor-assign-element">
                 <div class="tutor-assign-element-title">
-                    <input type="radio" name="tutor-assign-radio" value="Felix" /> Felix
+                    <input type="radio" name="tutor-assign-radio" value="Felix" /> Felix (6)
                 </div>
                 <div class="checkbox-container">
                     <input type="checkbox" />112<br />
@@ -66,7 +100,7 @@ $assignStudents = '<div class="content">
             </div>
             <div class="tutor-assign-element">
                 <div class="tutor-assign-element-title">
-                    <input type="radio" name="tutor-assign-radio" value="Florian" /> Florian
+                    <input type="radio" name="tutor-assign-radio" value="Florian" /> Florian (6)
                 </div>
                 <div class="checkbox-container">
                     <input type="checkbox" />122<br />
@@ -82,16 +116,26 @@ $assignStudents = '<div class="content">
             </div>            
         </div>
     </div> <!-- end: content-body -->
+</div> <!-- end: content-wrapper -->';
 
-    <div class="content-footer">
-        <ol>
-            <li class="footer-text">TODO: Automatisch zuteilen, Zuteilung aufheben</li>
-        </ol>      
-    </div> 
+$assignCancel = '
+<div class="content">
+    <div class="content-header">
+        <div class="content-title uppercase">Zuweisung aufheben</div>
+        <div class="exercise-sheet-end">
+            <a href="#" class="body-option">Zuweisung aufheben</a>
+        </div>   
+    </div>
+
+    <div class="content-body">
+        <div class="exercise-sheet-body-left exercise-sheet-body">
+            Achtung: Alle Gruppen werden zu "Unzugeordnet" zugeteilt!  
+        </div>
+    </div> <!-- end: content-body -->
 </div> <!-- end: content-wrapper -->';
 
 // wrap all the elements in some HTML and show them on the page
-$w = new HTMLWrapper($h, $assignStudents);
+$w = new HTMLWrapper($h, $assignAutomatically, $assignManually, $assignCancel);
 $w->show();
 ?>
 
