@@ -27,12 +27,25 @@ class Template
         }
 
         if (!isset($template['template'])) {
-            // the template does not specify how to format the data
-            // abort.
-            die("[applyTemplate] The attribute 'template' is required!\ntemplate: {$template}\ndata: {$data}");
-        }
+            if (isset($template['templatefile'])) {
+                // check if a template file is specified
+                $templateString = file_get_contents($template['templatefile']);
 
-        $templateString = $template['template'];
+                if ($templateString == false) {
+                    // the template file could not be opened
+                    die("[applyTemplate] file could not be opened: " .
+                        $template['templatefile']);
+                }
+
+            } else {
+                // the template does not specify how to format the data
+                // abort.
+                die("[applyTemplate] The attribute 'template' is required!\n" .
+                    "template: {$template}\ndata: {$data}");
+            }
+        } else {
+            $templateString = $template['template'];
+        }
 
         foreach ($data as $key => $value) {
             // check if the element has a template and apply it
