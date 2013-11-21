@@ -36,7 +36,7 @@ class Template
 
         foreach ($data as $key => $value) {
             // check if the element has a template and apply it
-            if (in_array($key, array_keys($this->templates))) {
+            if (isset($this->templates[$key])) {
 
                 $template = $this->templates[$key];
 
