@@ -1,0 +1,14 @@
+{
+    "template": "%sheets%",
+    "sheets":
+    {
+        "template": "<div class=\"content\">\n        <div class=\"content-header\">\n        <div class=\"content-title uppercase\">%sheetName%</div>\n        <div class=\"exercise-sheet-end\">%endTime%</div>\n        <div class=\"exercise-sheet-info\">%exerciseSheetInfo%</div>          \n        </div>\n\n        <div class=\"content-body\">\n        <div class=\"exercise-sheet-body-left exercise-sheet-body\">\n        <ol class=\"exercise-list\">\n        %exercises%          \n        </ol>\n        </div>\n\n        <div class=\"exercise-sheet-body-extras exercise-sheet-body\">\n        <ol class=\"body-options\">\n        <li><a class=\"body-option\" href=\"#\">Serie ansehen</a></li>\n        <li><a class=\"body-option\" href=\"#\">Musterlösung</a></li>\n        <li><a class=\"body-option\" href=\"Group.php\">Gruppe</a></li>\n        <li><a class=\"body-option\" href=\"#\">Gruppe verlassen</a></li>\n        </ol>\n        </div>\n        </div> <!-- end: content-body -->\n        </div> <!-- end: content-wrapper -->",
+        "join": "\n"
+    },
+    
+    "exercises":
+    {
+        "template": "<li><div class=\"exercise-type\">%exerciseType%</div> <div class=\"exercise-points\">%points% / %maxPoints% P</div></li>"
+    }
+
+}
