@@ -129,7 +129,7 @@ $assignCancel = '
 
     <div class="content-body">
         <div class="exercise-sheet-body-left exercise-sheet-body">
-            Achtung: Alle Gruppen werden zu "Unzugeordnet" zugeteilt!  
+            <div class="text">Achtung: Alle Gruppen werden zu "Unzugeordnet" zugeteilt!  </div>
         </div>
     </div> <!-- end: content-body -->
 </div> <!-- end: content-wrapper -->';
