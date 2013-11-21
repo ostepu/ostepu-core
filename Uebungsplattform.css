@@ -12,6 +12,17 @@ a:after {
     content: ' >';
 }
 
+.exercise-sheet-images {
+    float: right;
+    padding-left: 50px;
+}
+
+.exercise-sheet-images img {
+    width: 17px;
+    height: 17px;
+    padding-right: 10px;
+}
+
 .body-wrapper {
     width: 960px;
     margin-left:auto;
