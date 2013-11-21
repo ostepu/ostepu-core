@@ -1,5 +1,5 @@
 <?php
-include 'include/Helpers.php';
+include_once 'include/Helpers.php';
 
 /**
 * Template class.
