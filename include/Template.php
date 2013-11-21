@@ -47,6 +47,11 @@ class Template
             $templateString = $template['template'];
         }
 
+
+        /**
+         * @todo find a way to determine which templates templateString depends
+         * on and apply only those.
+         */
         foreach ($data as $key => $value) {
             // check if the element has a template and apply it
             if (isset($this->templates[$key])) {
