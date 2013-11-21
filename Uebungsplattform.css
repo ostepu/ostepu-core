@@ -141,7 +141,7 @@ ul.navigation a#selected {
 }
 
 .content-header {
-    padding: 15px 40px;
+    padding: 10px 40px;
     overflow: auto;
     height: auto;
     background-color: #b9b8b8;
@@ -150,7 +150,7 @@ ul.navigation a#selected {
 .content-body {
     display: block;
     overflow: auto;
-    margin-top: 30px;
+    margin-top: 10px;
 }
 
 .content-footer {
@@ -171,14 +171,18 @@ ul.navigation a#selected {
 
 }
 
+.exercise-sheet-body div.text {
+	padding-bottom: 10px;
+}
+
 .exercise-sheet-body-left {
-    padding-bottom: 30px;
+    padding-bottom: 0px;
     padding-left: 40px;
     float: left;
 }
 
 .exercise-sheet-body-extras {
-    padding-bottom: 30px;
+    padding-bottom: 0px;
     padding-right: 40px;
     float: right;
 }
@@ -256,6 +260,7 @@ li {
 .tutor-assign-element {
     width: 180px;
     float: left;
+	padding-bottom: 10px;
 }
 
 .tutor-assign-element-title {
