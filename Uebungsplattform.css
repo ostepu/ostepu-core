@@ -13,8 +13,8 @@ a:after {
 }
 
 .exercise-sheet-images {
-    float: right;
     padding-left: 50px;
+	display: inline;
 }
 
 .exercise-sheet-images img {
