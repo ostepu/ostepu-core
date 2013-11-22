@@ -3,7 +3,7 @@ include 'include/Header/Header.php';
 include 'include/HTMLWrapper.php';
 include 'include/Group/InvitationsGroupSheet.php';
 include 'include/Group/InviteGroupSheet.php';
-include 'include/Group/ManageGroupSheet.php';
+include_once 'include/Template.php';
 
 // construct a new Header
 $h = new Header("Datenstrukturen",
@@ -53,7 +53,8 @@ $group = array("members" => array(
                "sheetID" => "");
 
 // construct a content element for managing groups
-$manageGroup = new ManageGroupSheet($group);
+$manageGroup = Template::WithTemplateFile('include/Group/ManageGroup.template.json');
+$manageGroup->bind($group);
 
 // construct a content element for creating groups
 $createGroup = new InviteGroupSheet();
