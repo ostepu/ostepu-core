@@ -141,16 +141,17 @@ ul.navigation a#selected {
 }
 
 .content-header {
-    padding: 10px 40px;
+    padding: 15px 40px;
     overflow: auto;
     height: auto;
+	line-height: 19px;
     background-color: #b9b8b8;
 }
 
 .content-body {
     display: block;
     overflow: auto;
-    margin-top: 10px;
+    margin-top: 20px;
 }
 
 .content-footer {
@@ -176,13 +177,13 @@ ul.navigation a#selected {
 }
 
 .exercise-sheet-body-left {
-    padding-bottom: 0px;
+    padding-bottom: 20px;
     padding-left: 40px;
     float: left;
 }
 
 .exercise-sheet-body-extras {
-    padding-bottom: 0px;
+    padding-bottom: 20px;
     padding-right: 40px;
     float: right;
 }
