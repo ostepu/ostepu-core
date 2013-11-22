@@ -1,19 +1,19 @@
 {
-    "template": "%sheets%",
+    "_template": "%sheets%",
     "sheets":
     {
-        "templatefile": "include/ExerciseSheet/ExerciseSheetStudent.template.html",
-        "join": "\n"
+        "_templatefile": "include/ExerciseSheet/ExerciseSheetStudent.template.html",
+        "_join": "\n"
     },
     
     "exercises":
     {
-        "template": "<li><div class=\"exercise-type\">%exerciseType%</div> <div class=\"exercise-points\">%points% / %maxPoints% P</div></li>"
+        "_template": "<li><div class=\"exercise-type\">%exerciseType%</div> <div class=\"exercise-points\">%points% / %maxPoints% P</div></li>"
     },
 
     "exerciseSheetInfo":
     {
-        "template": "%exerciseSheetInfo%%"
+        "_template": "%exerciseSheetInfo%%"
     }
 
 }

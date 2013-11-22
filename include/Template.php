@@ -26,25 +26,25 @@ class Template
             return $data;
         }
 
-        if (!isset($template['template'])) {
-            if (isset($template['templatefile'])) {
+        if (!isset($template['_template'])) {
+            if (isset($template['_templatefile'])) {
                 // check if a template file is specified
-                $templateString = file_get_contents($template['templatefile']);
+                $templateString = file_get_contents($template['_templatefile']);
 
                 if ($templateString == false) {
                     // the template file could not be opened
                     die("[applyTemplate] file could not be opened: " .
-                        $template['templatefile']);
+                        $template['_templatefile']);
                 }
 
             } else {
                 // the template does not specify how to format the data
                 // abort.
-                die("[applyTemplate] The attribute 'template' is required!\n" .
+                die("[applyTemplate] The attribute '_template' is required!\n" .
                     "template: {$template}\ndata: {$data}");
             }
         } else {
-            $templateString = $template['template'];
+            $templateString = $template['_template'];
         }
 
         /**
@@ -73,7 +73,7 @@ class Template
                     $template2 = $this->templates[$key];
                     $stringValue = str_replace("%{$key}%",
                                                $value,
-                                               $template2['template']);
+                                               $template2['_template']);
                 }
 
                 // remplace the placeholder by the formatted string
@@ -108,9 +108,9 @@ class Template
         // an array of elements, formatted as string
         $strings = array();
 
-        if (isset($template['join'])) {
+        if (isset($template['_join'])) {
             // the template specifies how to join elements from this array
-            $joinString = $template['join'];
+            $joinString = $template['_join'];
         } else {
             // the template does not specify how to join elements from this
             // array
@@ -134,10 +134,10 @@ class Template
      */
     public function __construct(array $templates)
     {
-        if (!isset($templates['template'])) {
-            // if the array does not contain the key 'template' it is not a
+        if (!isset($templates['_template'])) {
+            // if the array does not contain the key '_template' it is not a
             // valid template
-            die("[__contruct] The attribute 'template' is required!\n");
+            die("[__contruct] The attribute '_template' is required!\n");
         } 
 
         $this->templates = $templates;
@@ -180,10 +180,10 @@ class Template
     {
         $this->content = $this->applyTemplate($this->templates, $data);
 
-        if (isset($this->templates['import'])) {
+        if (isset($this->templates['_import'])) {
 
             //this file requires some static file includes
-            foreach ($this->templates['import'] as $key => $fileName) {
+            foreach ($this->templates['_import'] as $key => $fileName) {
 
                 // load the content of the file called $fileName
                 $importedText = file_get_contents($fileName);
