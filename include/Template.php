@@ -1,5 +1,5 @@
 <?php
-include_once 'include/Helpers.php';
+include_once 'Helpers.php';
 
 /**
 * Template class.
@@ -47,7 +47,6 @@ class Template
             $templateString = $template['template'];
         }
 
-
         /**
          * @todo find a way to determine which templates templateString depends
          * on and apply only those.
@@ -69,8 +68,12 @@ class Template
                         $stringValue = $this->applyTemplate($template, $value);
                     }
                 } else {
-                    // the element is not an array, nothing to do here
-                    $stringValue = $value;
+                    // the element is not an array, but has a template, replace
+                    // its placeholder in its template 
+                    $template2 = $this->templates[$key];
+                    $stringValue = str_replace("%{$key}%",
+                                               $value,
+                                               $template2['template']);
                 }
 
                 // remplace the placeholder by the formatted string
