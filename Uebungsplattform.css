@@ -66,6 +66,28 @@ ul.navigation a#selected {
     color: #ffffff;
 }
 
+.notification-bar {
+    padding: 7px 40px;
+    margin-top: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.error {
+    border: 3px solid #DE3838;
+    color: #DE3838;
+}
+
+.warning {
+    border: 3px solid #f4ad32;
+    color: #f4ad32;
+}
+
+.success {
+    border: 3px solid #2DB22D;
+    color: #2DB22D;
+}
+
 .content-wrapper {
     display: block;
     overflow: auto;
