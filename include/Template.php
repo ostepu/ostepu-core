@@ -135,10 +135,17 @@ class Template
     public function __construct(array $templates)
     {
         if (!isset($templates['_template'])) {
-            // if the array does not contain the key '_template' it is not a
-            // valid template
-            die("[__contruct] The attribute '_template' is required!\n");
-        } 
+            // check if a template string is specified
+
+            if (!isset($templates['_templatefile'])) {
+                // check if a template file is specified
+
+                die("[__construct] one of the attributes '_template' or"
+                    . "'_templatefile' is required. templates: "
+                    . print_r($templates, true));
+            } 
+
+        }
 
         $this->templates = $templates;
     }
