@@ -1,7 +1,6 @@
 <?php
 include 'include/Header/Header.php';
 include 'include/HTMLWrapper.php';
-include 'include/Group/InviteGroupSheet.php';
 include_once 'include/Template.php';
 
 // construct a new Header
@@ -56,7 +55,8 @@ $manageGroup = Template::WithTemplateFile('include/Group/ManageGroup.template.js
 $manageGroup->bind($group);
 
 // construct a content element for creating groups
-$createGroup = new InviteGroupSheet();
+$createGroup = Template::WithTemplateFile('include/Group/InviteGroup.template.json');
+$createGroup->bind(array());
 
 // construct a content element for joining groups
 $invitations = Template::WithTemplateFile('include/Group/Invitations.template.json');
