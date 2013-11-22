@@ -9,6 +9,11 @@
     "exercises":
     {
         "template": "<li><div class=\"exercise-type\">%exerciseType%</div> <div class=\"exercise-points\">%points% / %maxPoints% P</div></li>"
+    },
+
+    "exerciseSheetInfo":
+    {
+        "template": "%exerciseSheetInfo%%"
     }
 
 }
