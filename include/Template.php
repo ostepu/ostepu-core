@@ -179,6 +179,27 @@ class Template
     public function bind(array $data)
     {
         $this->content = $this->applyTemplate($this->templates, $data);
+
+        if (isset($this->templates['import'])) {
+
+            //this file requires some static file includes
+            foreach ($this->templates['import'] as $key => $fileName) {
+
+                // load the content of the file called $fileName
+                $importedText = file_get_contents($fileName);
+
+                if ($importedText == false) {
+                    // the file could not be opened
+                    die("Could not open file: {$fileName}");
+                }
+
+                // replace all occurences of key with the contents of the file
+                // with name $fileName
+                $this->content = str_replace("%{$key}%",
+                                             $importedText,
+                                             $this->content);
+            }
+        }
     }
 
     /**
