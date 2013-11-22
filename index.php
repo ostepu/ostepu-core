@@ -1,6 +1,5 @@
 <?php
 include_once 'include/Header/Header.php';
-include_once 'include/ExerciseSheet/ExerciseSheetStudent.php';
 include_once 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
 
