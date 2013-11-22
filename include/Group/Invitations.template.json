@@ -1,0 +1,13 @@
+{
+    "_templatefile": "include/Group/Invitations.template.html",
+
+    "invitations":
+    {
+        "_template": "<li >\n %leader%\n <a href=\"#\" class=\"body-option deny-button\">\n ablehnen\n </a>\n <a href=\"#\" class=\"body-option accept-button\">\n annehmen\n </a>\n</li>"
+    },
+
+    "leader": 
+    {
+        "_template": "%firstName% %lastName%"
+    }
+}
