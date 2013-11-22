@@ -20,6 +20,7 @@ $t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetTutor.templa
 $t->bind($sheets);
 
 $w = new HTMLWrapper($h, $t);
+$w->set_config_file('include/configs/config_admin.json');
 $w->show();
 ?>
 

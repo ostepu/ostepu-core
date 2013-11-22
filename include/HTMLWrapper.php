@@ -26,6 +26,11 @@ include_once 'include/Header/Header.php';
          * header and body
          */
         private $navigationElement;
+		
+		/**
+         * @array string defines all links in our head
+         */
+		private $config;
 
         /**
          * The default contructor.
@@ -65,11 +70,18 @@ include_once 'include/Header/Header.php';
             <html>
             <head>
                 <meta http-equiv=\"content-type\" ";
-                print "content=\"text/html; charset=utf-8\">
-                <link rel=\"stylesheet\" type=\"text/css\" ";
-                print "href=\"CSSReset.css\"> 
-                <link rel=\"stylesheet\" type=\"text/css\" href=\"Uebungsplattform.css\"> 
-                <title>Übungsplattform</title>
+				//content-def and charset
+                print "content=\"{$this->config['content']}; charset={$this->config['charset']}\">\n";
+				//print stylesheets
+				foreach ($this->config['stylesheets'] as $stylesheet) {
+					print "<link rel=\"stylesheet\" type=\"text/css\" href=\"$stylesheet\">\n";
+				}
+				//print javascripts
+                foreach ($this->config['javascripts'] as $javascript) {
+					print "<script src=\"$javascript\"></script>\n";
+				}
+				//print title
+                print "<title>{$this->config['title']}</title>
             </head>
             <body>
                 <div id=\"body-wrapper\" class=\"body-wrapper\">";
@@ -112,6 +124,27 @@ include_once 'include/Header/Header.php';
         $this->navigationElement = $navigationElement;
 
         return $this;
+    }
+	
+    /**
+    * insert an element into te content area.
+    *
+    * @param mixed $element The element that should be inserted;
+    * @return self
+    */
+    public function set_config_file($configdata)
+    {
+        //get configdata
+        $fileContents = file_get_contents($configdata);
+
+        if ($fileContents == false) {
+            die("Could not open file: {$configdata}");
+		}
+		$this->config = json_decode($fileContents, true);
+			
+		if ($this->config== false || !is_array($this->config)) {
+			die("Invalid JSON in file: {$configdata}");
+		}
     }
 }
     ?>

@@ -43,7 +43,7 @@ foreach ($sheets as $sheet) {
 
 
 $w->setNavigationElement($menu);
-
+$w->set_config_file('include/configs/config_admin.json');
 $w->show();
 ?>
 

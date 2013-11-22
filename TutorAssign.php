@@ -136,6 +136,7 @@ $assignCancel = '
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $assignAutomatically, $assignManually, $assignCancel);
+$w->set_config_file('include/configs/config_admin.json');
 $w->show();
 ?>
 
