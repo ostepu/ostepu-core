@@ -14,7 +14,7 @@ if (isset($_GET['id'])) {
         $sheet = array();
 
         $sheetName = $i + 1;
-        $sheet['name'] = "Serie {$sheetName}";
+        $sheet['sheetName'] = "Serie {$sheetName}";
 
         $sheet['exercises'] = array();
 
@@ -62,6 +62,7 @@ if (isset($_GET['id'])) {
     }
 
     $sheets = array_reverse($sheets);
+    $sheets = array("sheets" => $sheets);
 
     // return all sheets as a json object
     $sheets = json_encode($sheets);

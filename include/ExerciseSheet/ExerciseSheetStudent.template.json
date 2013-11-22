@@ -1,0 +1,19 @@
+{
+    "_template": "%sheets%",
+    "sheets":
+    {
+        "_templatefile": "include/ExerciseSheet/ExerciseSheetStudent.template.html",
+        "_join": "\n"
+    },
+    
+    "exercises":
+    {
+        "_template": "<li><div class=\"exercise-type\">%exerciseType%</div> <div class=\"exercise-points\">%points% / %maxPoints% P</div></li>"
+    },
+
+    "exerciseSheetInfo":
+    {
+        "_template": "%exerciseSheetInfo%%"
+    }
+
+}

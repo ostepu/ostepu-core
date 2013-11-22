@@ -1,0 +1,7 @@
+{
+    "_templatefile": "include/Group/ManageGroup.template.html",
+
+    "members": {
+        "_template" : "<li>\n%firstName% %lastName%\n<a href=\"#\" class=\"body-option deny-button\">\nhinauswerfen\n</a></li>"
+    }
+}

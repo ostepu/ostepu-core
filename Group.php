@@ -1,9 +1,7 @@
 <?php
 include 'include/Header/Header.php';
 include 'include/HTMLWrapper.php';
-include 'include/Group/InvitationsGroupSheet.php';
-include 'include/Group/InviteGroupSheet.php';
-include 'include/Group/ManageGroupSheet.php';
+include_once 'include/Template.php';
 
 // construct a new Header
 $h = new Header("Datenstrukturen",
@@ -15,7 +13,7 @@ $h = new Header("Datenstrukturen",
 $h->setBackURL("index.php")
 ->setBackTitle("zur Veranstaltung");
 
-$invitations = array(array( 
+$invitation = array("invitations" => array( 
                      "user" => array("userID"=>"rvjbr",
                                      "email"=>"id.erat@mauris.co.uk",
                                      "firstName"=>"Colton",
@@ -53,13 +51,16 @@ $group = array("members" => array(
                "sheetID" => "");
 
 // construct a content element for managing groups
-$manageGroup = new ManageGroupSheet($group);
+$manageGroup = Template::WithTemplateFile('include/Group/ManageGroup.template.json');
+$manageGroup->bind($group);
 
 // construct a content element for creating groups
-$createGroup = new InviteGroupSheet();
+$createGroup = Template::WithTemplateFile('include/Group/InviteGroup.template.json');
+$createGroup->bind(array());
 
 // construct a content element for joining groups
-$invitations = new InvitationsGroupSheet($invitations);
+$invitations = Template::WithTemplateFile('include/Group/Invitations.template.json');
+$invitations->bind($invitation);
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $manageGroup, $createGroup, $invitations);

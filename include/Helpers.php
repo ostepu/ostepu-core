@@ -26,13 +26,24 @@ function unsetValue(array $array, $value, $strict = TRUE)
  * @param $filename The name of the file that should be read
  * @see http://php.net/manual/en/function.include.php
  */
-function getIncludeContents($filename) {
+function getIncludeContents($filename)
+{
     if (is_file($filename)) {
         ob_start();
         include $filename;
         return ob_get_clean();
     }
     return false;
+}
+
+/**
+ * tests if an array is associative.
+ *
+ * An array is treated as associative as soon as one of its keys is a string.
+ */
+function is_assoc($array)
+{
+  return (bool)count(array_filter(array_keys($array), 'is_string'));
 }
 
 ?>
