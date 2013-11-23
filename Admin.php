@@ -10,10 +10,10 @@ $h = new Header("Datenstrukturen",
                 "Admin");
 
 $menu = '<ul id="navigation" class="navigation">
-<li><a href="#">Kurz</a></li>
-<li><a id="selected" href="#">Angeklickt</a></li>
-<li><a href="#">Ziemlich langer Menüpunkt</a></li>
-<li><a href="#">BlubbBlubb</a></li>
+<li><a href="#">Studentenrolle einnehmen</a></li>
+<li><a id="selected" href="#">Personen verwalten</a></li>
+<li><a href="#">Zulassungsbedingungen</a></li>
+<li><a href="#">Backups</a></li>
 </ul>';
 
 
