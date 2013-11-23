@@ -10,10 +10,7 @@ $h = new Header("Datenstrukturen",
                 "Dozent");
 
 $menu = '<ul id="navigation" class="navigation">
-<li><a href="#">Kurz</a></li>
-<li><a id="selected" href="#">Angeklickt</a></li>
-<li><a href="#">Ziemlich langer Menüpunkt</a></li>
-<li><a href="#">BlubbBlubb</a></li>
+<li><a href="#">Studentenrolle einnehmen</a></li>
 </ul>';
 
 
