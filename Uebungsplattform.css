@@ -1,6 +1,6 @@
 body {
     font-size: 100%;
-    font-family: "Lucida Grande";
+    font-family: "Lucida Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
 }
 
 a {
@@ -10,6 +10,17 @@ a {
 
 a:after {
     content: ' >';
+}
+
+.exercise-sheet-images {
+    padding-left: 50px;
+	display: inline;
+}
+
+.exercise-sheet-images img {
+    width: 17px;
+    height: 17px;
+    padding-right: 10px;
 }
 
 .body-wrapper {
@@ -53,6 +64,28 @@ ul.navigation a {
 
 ul.navigation a#selected {
     color: #ffffff;
+}
+
+.notification-bar {
+    padding: 7px 40px;
+    margin-top: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.error {
+    border: 3px solid #DE3838;
+    color: #DE3838;
+}
+
+.warning {
+    border: 3px solid #f4ad32;
+    color: #f4ad32;
+}
+
+.success {
+    border: 3px solid #2DB22D;
+    color: #2DB22D;
 }
 
 .content-wrapper {
@@ -133,13 +166,14 @@ ul.navigation a#selected {
     padding: 15px 40px;
     overflow: auto;
     height: auto;
+	line-height: 19px;
     background-color: #b9b8b8;
 }
 
 .content-body {
     display: block;
     overflow: auto;
-    margin-top: 30px;
+    margin-top: 20px;
 }
 
 .content-footer {
@@ -160,14 +194,18 @@ ul.navigation a#selected {
 
 }
 
+.exercise-sheet-body div.text {
+	padding-bottom: 10px;
+}
+
 .exercise-sheet-body-left {
-    padding-bottom: 30px;
+    padding-bottom: 20px;
     padding-left: 40px;
     float: left;
 }
 
 .exercise-sheet-body-extras {
-    padding-bottom: 30px;
+    padding-bottom: 20px;
     padding-right: 40px;
     float: right;
 }
@@ -245,6 +283,7 @@ li {
 .tutor-assign-element {
     width: 180px;
     float: left;
+	padding-bottom: 10px;
 }
 
 .tutor-assign-element-title {

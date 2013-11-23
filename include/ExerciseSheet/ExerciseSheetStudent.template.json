@@ -8,7 +8,7 @@
     
     "exercises":
     {
-        "_template": "<li><div class=\"exercise-type\">%exerciseType%</div> <div class=\"exercise-points\">%points% / %maxPoints% P</div></li>"
+	"_templatefile": "include/ExerciseSheet/ExerciseStudent.template.html"
     },
 
     "exerciseSheetInfo":
