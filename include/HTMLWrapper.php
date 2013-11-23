@@ -27,10 +27,10 @@ include_once 'include/Header/Header.php';
          */
         private $navigationElement;
 		
-		/**
+        /**
          * @array string defines all links in our head
          */
-		private $config;
+        private $config;
 
         /**
          * The default contructor.
@@ -70,17 +70,17 @@ include_once 'include/Header/Header.php';
             <html>
             <head>
                 <meta http-equiv=\"content-type\" ";
-				//content-def and charset
+                // print content-type (content-dev,charset)
                 print "content=\"{$this->config['content']}; charset={$this->config['charset']}\">\n";
-				//print stylesheets
-				foreach ($this->config['stylesheets'] as $stylesheet) {
-					print "<link rel=\"stylesheet\" type=\"text/css\" href=\"$stylesheet\">\n";
-				}
-				//print javascripts
+                // print stylesheets
+                foreach ($this->config['stylesheets'] as $stylesheet) {
+                    print "<link rel=\"stylesheet\" type=\"text/css\" href=\"$stylesheet\">\n";
+                }
+                // print javascripts
                 foreach ($this->config['javascripts'] as $javascript) {
-					print "<script src=\"$javascript\"></script>\n";
-				}
-				//print title
+                    print "<script src=\"$javascript\"></script>\n";
+                }
+                // print title
                 print "<title>{$this->config['title']}</title>
             </head>
             <body>
@@ -111,7 +111,7 @@ include_once 'include/Header/Header.php';
             </body>
             </html>';
         }
-
+        
     /**
      * Sets the value of navigationElement.
      *
@@ -127,24 +127,22 @@ include_once 'include/Header/Header.php';
     }
 	
     /**
-    * insert an element into te content area.
-    *
-    * @param mixed $element The element that should be inserted;
-    * @return self
-    */
+     * Sets a configfile for links etc. for the head area
+     *
+     * @param string $configdata is the configfile;
+     */
     public function set_config_file($configdata)
     {
-        //get configdata
         $fileContents = file_get_contents($configdata);
-
+        // check if file is loaded
         if ($fileContents == false) {
             die("Could not open file: {$configdata}");
-		}
-		$this->config = json_decode($fileContents, true);
-			
-		if ($this->config== false || !is_array($this->config)) {
-			die("Invalid JSON in file: {$configdata}");
-		}
+        }
+        $this->config = json_decode($fileContents, true);
+        // check if file is valid JSON
+        if ($this->config== false || !is_array($this->config)) {
+            die("Invalid JSON in file: {$configdata}");
+        }
     }
 }
     ?>
