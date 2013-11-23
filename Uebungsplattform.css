@@ -21,6 +21,7 @@ a:after {
     width: 17px;
     height: 17px;
     padding-right: 10px;
+    margin-bottom: -3px;
 }
 
 .body-wrapper {
