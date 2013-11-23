@@ -1,7 +1,7 @@
 <?php
 include_once 'include/Header/Header.php';
-include_once 'include/ExerciseSheet/ExerciseSheetTutor.php';
 include_once 'include/HTMLWrapper.php';
+include_once 'include/Template.php';
 
 // construct a new header
 $h = new Header("Datenstrukturen",
@@ -27,21 +27,17 @@ $sheetString = file_get_contents("http://localhost/Uebungsplattform/Sheet");
 // convert the json string into an associative array
 $sheets = json_decode($sheetString, true);
 
-$w = new HTMLWrapper($h);
+// construct some exercise sheets
+$sheetString = file_get_contents("http://localhost/Uebungsplattform/Sheet");
 
-$content = array();
+// convert the json string into an associative array
+$sheets = json_decode($sheetString, true);
 
-foreach ($sheets as $sheet) {
-    $ex = $sheet['exercises'];
-    $e = new ExerciseSheetTutor($sheet['name'], $ex,
-                                $sheet['exerciseSheetInfo'], $sheet['endTime']);
+$t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetTutor.template.json');
 
-    // wrap the element in some HTML
-    $w->insert($e);
-}
+$t->bind($sheets);
 
-
-
+$w = new HTMLWrapper($h, $t);
 $w->setNavigationElement($menu);
 
 $w->show();
