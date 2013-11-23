@@ -1,0 +1,13 @@
+{
+	"title" : "Übungsplattform",
+	"content":"text/html",
+	"charset":"utf-8",
+	"stylesheets":[
+		"CSSReset.css",
+		"Uebungsplattform.css"
+	],
+	"javascripts":[
+		"javascript/jquery-2.0.3.min.js",
+		"javascript/sheets.js"
+	]
+}

@@ -15,7 +15,7 @@ $h = new Header("Datenstrukturen",
 $h->setPoints(75);
 
 // construct some exercise sheets
-$sheetString = file_get_contents("http://localhost/uebungsplattform/Sheet");
+$sheetString = file_get_contents("http://localhost/Uebungsplattform/Sheet");
 
 // convert the json string into an associative array
 $sheets = json_decode($sheetString, true);
@@ -25,5 +25,6 @@ $t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetStudent.temp
 $t->bind($sheets);
 
 $w = new HTMLWrapper($h, $t);
+$w->set_config_file('include/configs/config_student_sheets.json');
 $w->show();
 ?>

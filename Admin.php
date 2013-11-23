@@ -39,7 +39,7 @@ $t->bind($sheets);
 
 $w = new HTMLWrapper($h, $t);
 $w->setNavigationElement($menu);
-
+$w->set_config_file('include/configs/config_default.json');
 $w->show();
 ?>
 

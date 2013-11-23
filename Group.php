@@ -64,6 +64,7 @@ $invitations->bind($invitation);
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $manageGroup, $createGroup, $invitations);
+$w->set_config_file('include/configs/config_default.json');
 $w->show();
 ?>
 
