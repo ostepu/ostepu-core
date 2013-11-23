@@ -9,6 +9,17 @@ $h = new Header("Datenstrukturen",
                 "Felix Schmidt",
                 "Dozent");
 
+$menu = '<ul id="navigation" class="navigation">
+<li><a href="#">Kurz</a></li>
+<li><a id="selected" href="#">Angeklickt</a></li>
+<li><a href="#">Ziemlich langer Menüpunkt</a></li>
+<li><a href="#">BlubbBlubb</a></li>
+</ul>';
+
+
+$createSheet = Template::WithTemplateFile('include/ExerciseSheet/CreateSheet.template.json');
+$createSheet->bind(array());
+
 // construct some exercise sheets
 $sheetString = file_get_contents("http://localhost/Uebungsplattform/Sheet");
 
@@ -16,10 +27,11 @@ $sheetString = file_get_contents("http://localhost/Uebungsplattform/Sheet");
 $sheets = json_decode($sheetString, true);
 
 $t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetLecturer.template.json');
-
 $t->bind($sheets);
 
-$w = new HTMLWrapper($h, $t);
+$w = new HTMLWrapper($h, $createSheet, $t);
+$w->setNavigationElement($menu);
+
 $w->show();
 ?>
 
