@@ -292,6 +292,12 @@ li {
     padding-bottom: 10px;
 }
 
+.form-field {
+    float: left;
+    width: 250px;
+    margin-bottom: 7px;
+}
+
 .checkbox-container {
     border:2px solid #ccc;
     padding: 10px;
@@ -302,4 +308,8 @@ li {
 
 .uppercase {
     text-transform: uppercase;
+}
+
+.bold {
+    font-weight: bold;
 }
