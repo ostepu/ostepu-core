@@ -46,4 +46,63 @@ function is_assoc($array)
   return (bool)count(array_filter(array_keys($array), 'is_string'));
 }
 
+function http_get($url)
+{
+    $c = curl_init();
+
+    curl_setopt($c, CURLOPT_URL, $url);
+    curl_setopt($c, CURLOPT_HTTPGET, 1);
+    curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
+
+    $retData = curl_exec($c);
+    curl_close($c);
+
+
+    return $retData;
+}
+
+function http_post_data($url, $data)
+{
+    $c = curl_init();
+
+    curl_setopt($c, CURLOPT_URL, $url);
+    curl_setopt($c, CURLOPT_POST, 1);
+    curl_setopt($c, CURLOPT_POSTFIELDS, $data);
+    curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
+
+    $retData = curl_exec($c); 
+    curl_close($c);
+
+    return $retData;
+}
+
+function http_put_data($url, $data)
+{
+    $c = curl_init();
+
+    curl_setopt($c, CURLOPT_URL, $url);
+    curl_setopt($c, CURLOPT_POSTFIELDS, $data);
+    curl_setopt($c, CURLOPT_CUSTOMREQUEST, 'PUT');
+    curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
+
+    $retData = curl_exec($c); 
+    curl_close($c);
+
+    return $retData;
+}
+
+function http_delete($url)
+{
+    $c = curl_init();
+
+    curl_setopt($c, CURLOPT_URL, $url);
+    curl_setopt($c, CURLOPT_CUSTOMREQUEST, 'DELETE');
+    curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
+
+    $retData = curl_exec($c); 
+    curl_close($c);
+
+    return $retData;
+}
+
 ?>
