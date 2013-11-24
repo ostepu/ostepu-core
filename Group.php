@@ -13,42 +13,14 @@ $h = new Header("Datenstrukturen",
 $h->setBackURL("index.php")
 ->setBackTitle("zur Veranstaltung");
 
-$invitation = array("invitations" => array( 
-                     "user" => array("userID"=>"rvjbr",
-                                     "email"=>"id.erat@mauris.co.uk",
-                                     "firstName"=>"Colton",
-                                     "lastName"=>"Gordon",
-                                     "title"=>"Dr."), 
-                     "leader" => array("userID"=>"tfead",
-                                       "email"=>"libero@antebladitviverra.net",
-                                       "firstName"=>"Yuli",
-                                       "lastName"=>"Burris",
-                                       "title"=>"Dr."), 
-                     "sheetID" => ""));
+$data = file_get_contents("http://localhost/Uebungsplattform/GroupData");
+$data = json_decode($data, true);
 
-$group = array("members" => array(
-               array("userID"=>"ychwa",
-                     "email"=>"malesuada.fames@IntegerurnaVivamus.net",
-                     "firstName"=>"Walter",
-                     "lastName"=>"Hampton",
-                     "title"=>"Prof. Dr."),
-               array("userID"=>"cqadv",
-                     "email"=>"quam.Curabitur.vel@arcu.ca",
-                     "firstName"=>"Tarik",
-                     "lastName"=>"Harris",
-                     "title"=>"PD"),
-               array("userID"=>"mdgmt",
-                     "email"=>"lorem@et.com",
-                     "firstName"=>"Kathleen",
-                     "lastName"=>"Ayers",
-                     "title"=>""),
-               array("userID"=>"tdspc",
-                     "email"=>"tortor.at@mifelisadipiscing.net",
-                     "firstName"=>"Chaim",
-                     "lastName"=>"Guy",
-                     "title"=>"PD")),
-               "leaderID" => "mdgmt",
-               "sheetID" => "");
+// print str_replace("\n", "<br/>", print_r($data, true));
+
+$group = $data['group'];
+unset($data['group']);
+$invitation = $data;
 
 // construct a content element for managing groups
 $manageGroup = Template::WithTemplateFile('include/Group/ManageGroup.template.json');
