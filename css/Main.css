@@ -133,7 +133,6 @@ ul.navigation a#selected {
     padding-top: 15px;
     text-align: center;
     font-size: 380%;
-    font-weight: bold;
 }
 
 .points-huge:after {
@@ -220,7 +219,6 @@ li {
 }
 
 .exercise-sheet-end {
-    font-weight: bold;
     /* color 3 */
     color: #DE3838;
 }
@@ -231,7 +229,6 @@ li {
 }
 
 .exercise-sheet-info {
-    font-weight: bold;
     padding-right: 120px;
 }
 
@@ -265,7 +262,6 @@ li {
 }
 
 .tutor-assign-element-title {
-    font-weight: bold;
     padding-bottom: 10px;
 }
 
