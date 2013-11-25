@@ -19,16 +19,12 @@ $menu = '<ul id="navigation" class="navigation">
 
 $w = new HTMLWrapper($h);
 
-// construct some exercise sheets
-$sheetString = file_get_contents("http://localhost/Uebungsplattform/Sheet");
-
-
 
 // convert the json string into an associative array
 $sheets = json_decode($sheetString, true);
 
 // construct some exercise sheets
-$sheetString = file_get_contents("http://localhost/Uebungsplattform/Sheet");
+$sheetString = file_get_contents("http://localhost/Uebungsplattform/SheetData");
 
 // convert the json string into an associative array
 $sheets = json_decode($sheetString, true);
