@@ -8,7 +8,20 @@
 
     <div class="content-body">
         <div class="exercise-sheet-body-left exercise-sheet-body">
-            Person auswählen: INPUT-FIELD, RADIO-BUTTON, RADIO-BUTTON 
+            <label class="form-field label bold" for="tutorRightsPerson">Person auswählen:</label> 
+            <select class="form-field text-input" name="tutorRightsPerson" id="tutorRightsPerson"> 
+                <option value="1" >Felix Schmidt</option>
+                <option value="2" >Ralf Busch</option>
+                <option value="3" >Florian Lücke (Kontrolleur)</option>
+            </select> 
+
+            <div class="form-field label bold new-line" for="tutorRightsRight">Rechte:</div>
+            <div class="form-field">
+                <input type="radio" name="tutorRightsRight" value="true"
+                 id="tutorRightsRight" checked="true" /> geben
+                <input type="radio" name="tutorRightsRight" value="false"
+                 id="tutorRightsRight" /> nehmen
+            </div>
         </div>
     </div> <!-- end: content-body -->
 </div> <!-- end: content-wrapper -->
