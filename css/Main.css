@@ -191,15 +191,11 @@ ul.navigation a#selected {
     color: #959494;
 }
 
-.exercise-sheet-body {
-
-}
-
 .exercise-sheet-body div.text {
 	padding-bottom: 10px;
 }
 
-.exercise-sheet-body-left {
+.content-body {
     padding-bottom: 20px;
     padding-left: 40px;
     float: left;
