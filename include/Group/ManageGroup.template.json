@@ -3,5 +3,9 @@
 
     "members": {
         "_template" : "<li>\n%firstName% %lastName%\n<a href=\"#\" class=\"body-option deny-button\">\nhinauswerfen\n</a></li>"
+    },
+
+    "leader": {
+        "_template" : "<li class=\"bold\">\n%firstName% %lastName% (Gruppenführer)\n<a href=\"#\" class=\"body-option deny-button\">\nhinauswerfen\n</a></li>"
     }
 }

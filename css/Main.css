@@ -303,3 +303,11 @@ li {
 .uppercase {
     text-transform: uppercase;
 }
+
+.bold {
+    font-weight: bold;
+}
+
+.bold a {
+    font-weight: normal;
+}

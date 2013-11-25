@@ -15,7 +15,7 @@ $h = new Header("Datenstrukturen",
 $h->setPoints(75);
 
 // construct some exercise sheets
-$sheetString = file_get_contents("http://localhost/Uebungsplattform/Sheet");
+$sheetString = file_get_contents("http://localhost/Uebungsplattform/SheetData");
 
 // convert the json string into an associative array
 $sheets = json_decode($sheetString, true);
