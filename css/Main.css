@@ -191,10 +191,6 @@ ul.navigation a#selected {
     color: #959494;
 }
 
-.exercise-sheet-body div.text {
-	padding-bottom: 10px;
-}
-
 .content-body {
     padding-bottom: 20px;
     padding-left: 40px;
@@ -325,4 +321,12 @@ li {
 
 .normal {
     font-weight: normal;
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
 }
