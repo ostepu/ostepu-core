@@ -14,7 +14,7 @@ a:after {
 
 .exercise-sheet-images {
     padding-left: 50px;
-	display: inline;
+    display: inline;
 }
 
 .exercise-sheet-images img {
@@ -167,7 +167,7 @@ ul.navigation a#selected {
     padding: 15px 40px;
     overflow: auto;
     height: auto;
-	line-height: 19px;
+    line-height: 19px;
     background-color: #b9b8b8;
 }
 
@@ -194,7 +194,6 @@ ul.navigation a#selected {
 .content-body {
     padding-bottom: 20px;
     padding-left: 40px;
-    float: left;
 }
 
 .exercise-sheet-body-extras {
@@ -276,7 +275,7 @@ li {
 .tutor-assign-element {
     width: 180px;
     float: left;
-	padding-bottom: 10px;
+    padding-bottom: 10px;
 }
 
 .tutor-assign-element-title {
