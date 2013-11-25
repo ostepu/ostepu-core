@@ -1,0 +1,46 @@
+.exercise-sheet-images {
+    padding-left: 50px;
+    display: inline;
+}
+
+.exercise-sheet-images img {
+    width: 17px;
+    height: 17px;
+    padding-right: 10px;
+    margin-bottom: -3px;
+}
+
+.exercise-sheet-end {
+    /* color 3 */
+    color: #DE3838;
+}
+
+.exercise-sheet-info, .exercise-points {
+    /* color 4 */
+    color: #2DB22D;
+}
+
+.exercise-sheet-info {
+    padding-right: 120px;
+}
+
+.exercise-type {
+    width: 200px;
+    padding-left: 5px;
+    display: inline-block;
+}
+
+.exercise-points {
+    text-align: right;
+    display: inline-block;
+    width: 100px;
+}
+
+.exercise-list {
+    counter-reset: item;
+}
+
+.exercise-list li:before {
+    content: counter(item, decimal) ' | ';
+    counter-increment: item;
+}

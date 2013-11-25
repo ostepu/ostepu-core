@@ -4,7 +4,8 @@
 	"charset":"utf-8",
 	"stylesheets":[
 		"css/CSSReset.css",
-		"css/Main.css"
+		"css/Main.css",
+		"css/Exercises.css"
 	],
 	"javascripts":[
 		"javascript/jquery-2.0.3.min.js",
