@@ -5,6 +5,7 @@
 	"stylesheets":[
 		"css/CSSReset.css",
 		"css/Main.css",
-        "css/Exercises.css"
+        "css/Exercises.css",
+        "css/Header.css"
 	]
 }

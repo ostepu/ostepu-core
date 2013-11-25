@@ -5,7 +5,8 @@
 	"stylesheets":[
 		"css/CSSReset.css",
 		"css/Main.css",
-		"css/Exercises.css"
+		"css/Exercises.css",
+		"css/Header.css"
 	],
 	"javascripts":[
 		"javascript/jquery-2.0.3.min.js",
