@@ -171,7 +171,7 @@ ul.navigation a#selected {
     background-color: #b9b8b8;
 }
 
-.content-body {
+.content-body-wrapper {
     display: block;
     overflow: auto;
     margin-top: 20px;
