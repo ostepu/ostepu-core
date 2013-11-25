@@ -113,7 +113,6 @@ ul.navigation a#selected {
 .course-info {
     color: #ffffff;
     font-size: 90%;
-    float: left;
     padding-left: 40px;
     width: 475px;
     height: 110px;
@@ -127,7 +126,6 @@ ul.navigation a#selected {
     font-size: 90%;
     /* color 2 */
     color: #DE9738;
-    float: left;
     width: 215px;
 }
 
@@ -148,7 +146,6 @@ ul.navigation a#selected {
 
 .user-info {
     width: 160px;
-    float: right;
     text-align: right;
     padding-right: 40px;
     padding-left: 30px;
@@ -219,12 +216,10 @@ li {
 
 .content-title {
     width: 400px;
-    float: left;
     font-size: 130%;
 }
 
 .exercise-sheet-end {
-    float: right;
     font-weight: bold;
     /* color 3 */
     color: #DE3838;
@@ -236,7 +231,6 @@ li {
 }
 
 .exercise-sheet-info {
-    float: right;
     font-weight: bold;
     padding-right: 120px;
 }
@@ -258,7 +252,6 @@ li {
 }
 
 .accept-button, .deny-button {
-    float: right;
     padding-right: 40px;
 }
 
@@ -268,7 +261,6 @@ li {
 
 .tutor-assign-element {
     width: 180px;
-    float: left;
     padding-bottom: 10px;
 }
 
@@ -278,7 +270,6 @@ li {
 }
 
 .form-field {
-    float: left;
     width: 250px;
     margin-bottom: 7px;
 }
