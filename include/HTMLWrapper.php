@@ -106,7 +106,7 @@ include_once 'include/Header/Header.php';
                         }
                     }
 
-                    print '</div> <!-- end: content-wrapper -->
+                    print '</div> <!-- end: content-element -->
                 </div>
             </body>
             </html>';
