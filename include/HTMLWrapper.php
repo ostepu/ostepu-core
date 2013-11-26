@@ -28,7 +28,7 @@ include_once 'include/Header/Header.php';
         private $navigationElement;
 		
         /**
-         * @array string defines all links in our head
+         * @var array defines all links in the document head
          */
         private $config;
 
