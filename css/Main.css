@@ -55,16 +55,21 @@ a:after {
     height: auto;
 }
 
+.content-body {
+
+}
+
+.content-title {
+    width: 400px;
+    font-size: 130%;
+}
+
 .footer-text {
     list-style: none;
     font-size: 80%;
     display: inline;
     padding-right: 30px;
     color: #959494;
-}
-
-.content-body {
-
 }
 
 ol {
@@ -77,11 +82,6 @@ li {
 
 .body-options {
     text-align: right;
-}
-
-.content-title {
-    width: 400px;
-    font-size: 130%;
 }
 
 .body-option {
@@ -103,32 +103,6 @@ li {
 
 .tutor-assign-element-title {
     padding-bottom: 10px;
-}
-
-.form-field {
-    width: 250px;
-    margin-bottom: 7px;
-}
-
-.new-line {
-    clear: left;
-}
-
-.text-input {
-    margin: 0 0 7px 0;
-    padding: 0;
-}
-
-.label {
-    line-height: 20px;
-}
-
-.checkbox-container {
-    border:2px solid #ccc;
-    padding: 10px;
-    width:100px; 
-    height: 100px; 
-    overflow-y: scroll;
 }
 
 .uppercase {
