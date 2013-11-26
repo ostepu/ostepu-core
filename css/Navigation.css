@@ -1,0 +1,25 @@
+ul.navigation {
+    margin-top: 5px;
+    height: 28px;
+    /* color 1, var 1 */
+    background-color: #5a96c3;
+    border-radius: 5px;
+}
+
+ul.navigation li {
+    float: left;
+    padding: 0;
+    margin: 0;
+    font-size: 90%;
+}
+
+ul.navigation a {
+    float: left;
+    padding: 7px 40px;
+    /* color 1, var 2*/
+    color: #335570;
+}
+
+ul.navigation a#selected {
+    color: #ffffff;
+}
