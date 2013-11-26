@@ -12,81 +12,11 @@ a:after {
     content: ' >';
 }
 
-.exercise-sheet-images {
-    padding-left: 50px;
-    display: inline;
-}
-
-.exercise-sheet-images img {
-    width: 17px;
-    height: 17px;
-    padding-right: 10px;
-    margin-bottom: -3px;
-}
-
 .body-wrapper {
     width: 960px;
     margin-left:auto;
     margin-right:auto;
     color: #6f6f6f;
-}
-
-.header {
-    overflow: auto;
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    /* color 1 */
-    background-color: #2B648F;
-    height: 110px;
-    color: #ffffff;
-}
-
-ul.navigation {
-    margin-top: 5px;
-    height: 28px;
-    /* color 1, var 1 */
-    background-color: #5A96C3;
-    border-radius: 5px;
-}
-
-ul.navigation li {
-    float: left;
-    padding: 0;
-    margin: 0;
-    font-size: 90%;
-}
-
-ul.navigation a {
-    float: left;
-    padding: 7px 40px;
-    /* color 1, var 2*/
-    color: #335570;
-}
-
-ul.navigation a#selected {
-    color: #ffffff;
-}
-
-.notification-bar {
-    padding: 7px 40px;
-    margin-top: 10px;
-    border-radius: 5px;
-    font-weight: bold;
-}
-
-.error {
-    border: 3px solid #DE3838;
-    color: #DE3838;
-}
-
-.warning {
-    border: 3px solid #f4ad32;
-    color: #f4ad32;
-}
-
-.success {
-    border: 3px solid #2DB22D;
-    color: #2DB22D;
 }
 
 .content-wrapper {
@@ -95,72 +25,13 @@ ul.navigation a#selected {
     margin-top: 30px;
 }
 
-.content {
+.content-element {
     margin-bottom: 30px;
     font-size: 90%;
     background-color: #f2f0f0;
     display: block;
     overflow: auto;
     border-radius: 5px;
-}
-
-.course-title {
-    padding-top: 20px;
-    font-size: 200%;
-    padding-bottom: 20px;
-}
-
-.course-info {
-    color: #ffffff;
-    font-size: 90%;
-    float: left;
-    padding-left: 40px;
-    width: 475px;
-    height: 110px;
-}
-
-.change-course {
-
-}
-
-.course-extra-info {
-    font-size: 90%;
-    /* color 2 */
-    color: #DE9738;
-    float: left;
-    width: 215px;
-}
-
-.points-huge {
-    padding-top: 15px;
-    text-align: center;
-    font-size: 380%;
-    font-weight: bold;
-}
-
-.points-huge:after {
-    content: "%";
-}
-
-.total-points {
-    text-align: center;
-}
-
-.user-info {
-    width: 160px;
-    float: right;
-    text-align: right;
-    padding-right: 40px;
-    padding-left: 30px;
-    font-size: 90%;
-}
-
-.user-name {
-    padding-top: 20px; 
-}
-
-.user-id {
-    padding-bottom: 20px;
 }
 
 .content-header {
@@ -171,16 +42,26 @@ ul.navigation a#selected {
     background-color: #b9b8b8;
 }
 
-.content-body {
+.content-body-wrapper {
     display: block;
     overflow: auto;
     margin-top: 20px;
+    padding: 0 40px 20px 40px;
 }
 
 .content-footer {
     padding: 30px 40px 25px 40px;
     overflow: auto;
     height: auto;
+}
+
+.content-body {
+
+}
+
+.content-title {
+    width: 400px;
+    font-size: 130%;
 }
 
 .footer-text {
@@ -191,26 +72,6 @@ ul.navigation a#selected {
     color: #959494;
 }
 
-.exercise-sheet-body {
-
-}
-
-.exercise-sheet-body div.text {
-    padding-bottom: 10px;
-}
-
-.exercise-sheet-body-left {
-    padding-bottom: 20px;
-    padding-left: 40px;
-    float: left;
-}
-
-.exercise-sheet-body-extras {
-    padding-bottom: 20px;
-    padding-right: 40px;
-    float: right;
-}
-
 ol {
     list-style-type: none;
 }
@@ -219,53 +80,8 @@ li {
     padding-bottom: 10px;
 }
 
-.exercise-list {
-    counter-reset: item;
-}
-
-.exercise-list li:before {
-    content: counter(item, decimal) ' | ';
-    counter-increment: item;
-}
-
 .body-options {
     text-align: right;
-}
-
-.content-title {
-    width: 400px;
-    float: left;
-    font-size: 130%;
-}
-
-.exercise-sheet-end {
-    float: right;
-    font-weight: bold;
-    /* color 3 */
-    color: #DE3838;
-}
-
-.exercise-sheet-info, .exercise-points {
-    /* color 4 */
-    color: #2DB22D;
-}
-
-.exercise-sheet-info {
-    float: right;
-    font-weight: bold;
-    padding-right: 120px;
-}
-
-.exercise-type {
-    width: 200px;
-    padding-left: 5px;
-    display: inline-block;
-}
-
-.exercise-points {
-    text-align: right;
-    display: inline-block;
-    width: 100px;
 }
 
 .body-option {
@@ -273,7 +89,6 @@ li {
 }
 
 .accept-button, .deny-button {
-    float: right;
     padding-right: 40px;
 }
 
@@ -283,40 +98,11 @@ li {
 
 .tutor-assign-element {
     width: 180px;
-    float: left;
     padding-bottom: 10px;
 }
 
 .tutor-assign-element-title {
-    font-weight: bold;
     padding-bottom: 10px;
-}
-
-.form-field {
-    float: left;
-    width: 250px;
-    margin-bottom: 7px;
-}
-
-.new-line {
-    clear: left;
-}
-
-.text-input {
-    margin: 0 0 7px 0;
-    padding: 0;
-}
-
-.label {
-    line-height: 20px;
-}
-
-.checkbox-container {
-    border:2px solid #ccc;
-    padding: 10px;
-    width:100px; 
-    height: 100px; 
-    overflow-y: scroll;
 }
 
 .uppercase {
@@ -327,6 +113,14 @@ li {
     font-weight: bold;
 }
 
-.bold a {
+.normal {
     font-weight: normal;
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
 }

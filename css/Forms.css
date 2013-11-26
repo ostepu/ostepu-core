@@ -1,0 +1,25 @@
+.form-field {
+    width: 250px;
+    margin-bottom: 7px;
+}
+
+.new-line {
+    clear: left;
+}
+
+.text-input {
+    margin: 0 0 7px 0;
+    padding: 0;
+}
+
+.label {
+    line-height: 20px;
+}
+
+.checkbox-container {
+    border:2px solid #ccc;
+    padding: 10px;
+    width:100px; 
+    height: 100px; 
+    overflow-y: scroll;
+}
