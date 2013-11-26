@@ -20,8 +20,12 @@ $tutorRights->bind(array());
 $lecturerRights = Template::WithTemplateFile('include/RightsManagement/LecturerRights.template.json');
 $lecturerRights->bind(array());
 
+// construct a content element for creating an user
+$createUser = Template::WithTemplateFile('include/RightsManagement/CreateUser.template.json');
+$createUser->bind(array());
+
 // wrap all the elements in some HTML and show them on the page
-$w = new HTMLWrapper($h, $tutorRights, $lecturerRights);
+$w = new HTMLWrapper($h, $tutorRights, $lecturerRights, $createUser);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
 ?>
