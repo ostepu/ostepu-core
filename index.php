@@ -25,6 +25,6 @@ $t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetStudent.temp
 $t->bind($sheets);
 
 $w = new HTMLWrapper($h, $t);
-$w->set_config_file('include/configs/config_student_sheets.json');
+$w->set_config_file('include/configs/config_student_tutor.json');
 $w->show();
 ?>
