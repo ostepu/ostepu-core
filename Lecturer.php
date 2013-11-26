@@ -28,7 +28,7 @@ $t->bind($sheets);
 
 $w = new HTMLWrapper($h, $createSheet, $t);
 $w->setNavigationElement($menu);
-$w->set_config_file('include/configs/config_default.json');
+$w->set_config_file('include/configs/config_admin_lecturer.json');
 $w->show();
 ?>
 
