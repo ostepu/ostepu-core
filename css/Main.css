@@ -53,6 +53,7 @@ a:after {
     padding: 30px 40px 25px 40px;
     overflow: auto;
     height: auto;
+    float: left;
 }
 
 .content-body {
@@ -68,7 +69,7 @@ a:after {
     list-style: none;
     font-size: 80%;
     display: inline;
-    padding-right: 30px;
+    margin-right: 10px;
     color: #959494;
 }
 
