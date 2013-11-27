@@ -9,10 +9,9 @@ $h = new Header("Datenstrukturen",
                 "Felix Schmidt",
                 "Dozent");
 
-$menu = '<ul id="navigation" class="navigation">
-<li><a href="#">Studentenrolle einnehmen</a></li>
-</ul>';
-
+// include the navigation bar
+$menu = Template::WithTemplateFile('include/Navigation/NavigationLecturer.template.json');
+$menu->bind(array());
 
 $createSheet = Template::WithTemplateFile('include/ExerciseSheet/CreateSheet.template.json');
 $createSheet->bind(array());

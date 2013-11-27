@@ -9,13 +9,9 @@ $h = new Header("Datenstrukturen",
                 "Florian Lücke",
                 "Admin");
 
-$menu = '<ul id="navigation" class="navigation">
-<li><a href="#">Studentenrolle einnehmen</a></li>
-<li><a id="selected" href="RightsManagement.php">Personen verwalten</a></li>
-<li><a href="#">Zulassungsbedingungen</a></li>
-<li><a href="Backup.php">Backups</a></li>
-</ul>';
-
+// include the navigation bar
+$menu = Template::WithTemplateFile('include/Navigation/NavigationAdmin.template.json');
+$menu->bind(array());
 
 $createSheet = Template::WithTemplateFile('include/ExerciseSheet/CreateSheet.template.json');
 $createSheet->bind(array());
