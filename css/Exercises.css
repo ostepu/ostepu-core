@@ -1,18 +1,3 @@
-.sheet-header {
-    padding: 15px 40px;
-    overflow: auto;
-    height: auto;
-    line-height: 19px;
-    background-color: #b9b8b8;
-    background-image: url(../Images/arrow.png);
-    background-repeat: no-repeat;
-    background-position: 14px 0px;
-}
-
-.sheet-header.inactive{
-    background-position: 14px -49px;
-}
-
 .exercise-sheet-images {
     padding-left: 50px;
     display: inline;
