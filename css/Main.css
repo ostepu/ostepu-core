@@ -65,6 +65,17 @@ a:after {
     font-size: 130%;
 }
 
+.collapsible .content-header {
+    background-image: url(../Images/arrow.png);
+    background-repeat: no-repeat;
+    background-position: 14px 0;
+
+}
+
+.collapsible .inactive {
+    background-position: 14px -49px;
+}
+
 .footer-text {
     list-style: none;
     font-size: 80%;
