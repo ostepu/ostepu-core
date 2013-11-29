@@ -19,33 +19,15 @@ class Template
      * @param mixed $data The data the template should be applied to.
      */
     protected function applyTemplate(array $template, $data)
-    {   
+    {
         if (!is_array($data)) {
             // data is not an array so it can be converted to string by the
             // interpreter, we can simply return it
             return $data;
         }
 
-        if (!isset($template['_template'])) {
-            if (isset($template['_templatefile'])) {
-                // check if a template file is specified
-                $templateString = file_get_contents($template['_templatefile']);
-
-                if ($templateString == false) {
-                    // the template file could not be opened
-                    die("[applyTemplate] file could not be opened: " .
-                        $template['_templatefile']);
-                }
-
-            } else {
-                // the template does not specify how to format the data
-                // abort.
-                die("[applyTemplate] The attribute '_template' is required!\n" .
-                    "template: {$template}\ndata: {$data}");
-            }
-        } else {
-            $templateString = $template['_template'];
-        }
+        // get the template as a string
+        $templateString = $this->getTemplateString($template);
 
         /**
          * @todo find a way to determine which templates templateString depends
@@ -128,6 +110,37 @@ class Template
     }
 
     /**
+     * Generate a string from a template.
+     *
+     * @param array $template The template that the string should be generated
+     * from
+     */
+    protected function getTemplateString(array $template)
+    {
+        if (!isset($template['_template'])) {
+            if (isset($template['_templatefile'])) {
+                // check if a template file is specified
+                $templateString = file_get_contents($template['_templatefile']);
+
+                if ($templateString == false) {
+                    // the template file could not be opened
+                    die("[applyTemplate] file could not be opened: " .
+                        $template['_templatefile']);
+                }
+
+            } else {
+                // the template does not specify how to format the data
+                // abort.
+                die("[applyTemplate] The attribute '_template' is required!\n" .
+                    "template: {$template}\ndata: {$data}");
+            }
+        } else {
+            $templateString = $template['_template'];
+        }
+
+        return $templateString;
+    }
+
      * Construct a new template.
      *
      * @param array $templates An associative array, that describes a template.
