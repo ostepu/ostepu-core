@@ -73,10 +73,13 @@ class Template
             }
         }
 
+        if (isset($template['_static'])) {
+            $statics = $template['_static'];
+            $templateString = $this->applyStatic($templateString, $statics);
+        }
 
         return $templateString;
     }
-
 
     /**
      * Apply a template to all elements of an array
@@ -107,6 +110,24 @@ class Template
 
         // join all the elements in a string
         return implode($joinString , $strings);
+    }
+
+    /**
+     * Apply templates that are not dynamic themseves.
+     *
+     * @param string $templateString The string in which the template should
+     * be applied.
+     * @param array $statics An array of static templates that should be applied.
+     */
+    protected function applyStatic($templateString, array $statics)
+    {
+        foreach ($statics as $key => $value) {
+            $static = $this->getTemplateString($value);
+            $static = $this->returnMultiple($static, $value['_count']);
+            $templateString = str_replace("%{$key}%", $static, $templateString);
+        }
+
+        return $templateString;
     }
 
     /**
@@ -141,6 +162,32 @@ class Template
         return $templateString;
     }
 
+    /**
+     * Join a string multiple times, with a given separator.
+     *
+     * @param string $value The string that should be multiplied.
+     * @param integer $count How many times $value should be multiplied.
+     * @param string $separator A string with which the instances of $value
+     * will be separated.
+     */
+    protected function returnMultiple($value, $count, $separator = "\n")
+    {
+        if (is_null($count)) {
+            $count = 1;
+        }
+
+        $newValue = '';
+
+        for ($i=0; $i < $count - 1; $i++) {
+            $newValue .= $value . $separator;
+        }
+
+        $newValue .= $value;
+
+        return $newValue;
+    }
+
+    /**
      * Construct a new template.
      *
      * @param array $templates An associative array, that describes a template.

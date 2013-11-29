@@ -1,3 +1,11 @@
 {
-    "_templatefile": "include/Group/InviteGroup.template.html"
+    "_templatefile": "include/Group/InviteGroup.template.html",
+    "_static":
+    {
+        "invititation":
+        {
+            "_template": "<li>Matrikel: <input type=\"text\" name=\"ids[]\" size=\"50\"></li>",
+            "_count": 5
+        }
+    }
 }
