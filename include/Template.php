@@ -75,7 +75,7 @@ class Template
 
         if (isset($template['_static'])) {
             $statics = $template['_static'];
-            $templateString = $this->applyStatic($templateString, $statics);
+            $templateString = $this->applyStatic($templateString, $statics, $data);
         }
 
         return $templateString;
@@ -119,11 +119,12 @@ class Template
      * be applied.
      * @param array $statics An array of static templates that should be applied.
      */
-    protected function applyStatic($templateString, array $statics)
+    protected function applyStatic($templateString, array $statics, array $data)
     {
         foreach ($statics as $key => $value) {
             $static = $this->getTemplateString($value);
-            $static = $this->returnMultiple($static, $value['_count']);
+            $count = $this->getCount($value, $data);
+            $static = $this->returnMultiple($static, $count);
             $templateString = str_replace("%{$key}%", $static, $templateString);
         }
 
@@ -185,6 +186,25 @@ class Template
         $newValue .= $value;
 
         return $newValue;
+    }
+
+    /**
+     * 
+     */
+    protected function getCount($template, $data)
+    {
+        if (!isset($template['_count'])) {
+            return 1;
+        }
+
+        $count = $template['_count'];
+
+        if (!is_numeric($count)) {
+            $count = $data[$count];
+        }
+
+        return $count;
+
     }
 
     /**

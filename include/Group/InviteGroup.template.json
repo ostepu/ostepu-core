@@ -5,7 +5,7 @@
         "invititation":
         {
             "_template": "<li>Matrikel: <input type=\"text\" name=\"ids[]\" size=\"50\"></li>",
-            "_count": 5
+            "_count": "maxGroupSize"
         }
     }
 }
