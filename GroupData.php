@@ -135,9 +135,12 @@ $group = array("members" => $members,
                "sheetID" => $sheetID,
                "leader" => $leader);
 
+$groupInfo = array("maxGroupSize" => rand(1,5));
+
 
 $groupData = array("group" => $group,
-                   "invitations" => $invitations);
+                   "invitations" => $invitations,
+                   "groupInfo" => $groupInfo);
 
 print json_encode($groupData);
 

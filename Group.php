@@ -16,10 +16,10 @@ $h->setBackURL("index.php")
 $data = file_get_contents("http://localhost/Uebungsplattform/GroupData");
 $data = json_decode($data, true);
 
-// print str_replace("\n", "<br/>", print_r($data, true));
-
 $group = $data['group'];
+$groupInfo = $data['groupInfo'];
 unset($data['group']);
+unset($data['groupInfo']);
 $invitation = $data;
 
 // construct a content element for managing groups
@@ -28,7 +28,7 @@ $manageGroup->bind($group);
 
 // construct a content element for creating groups
 $createGroup = Template::WithTemplateFile('include/Group/InviteGroup.template.json');
-$createGroup->bind(array());
+$createGroup->bind($groupInfo);
 
 // construct a content element for joining groups
 $invitations = Template::WithTemplateFile('include/Group/Invitations.template.json');

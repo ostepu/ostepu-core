@@ -19,33 +19,15 @@ class Template
      * @param mixed $data The data the template should be applied to.
      */
     protected function applyTemplate(array $template, $data)
-    {   
+    {
         if (!is_array($data)) {
             // data is not an array so it can be converted to string by the
             // interpreter, we can simply return it
             return $data;
         }
 
-        if (!isset($template['_template'])) {
-            if (isset($template['_templatefile'])) {
-                // check if a template file is specified
-                $templateString = file_get_contents($template['_templatefile']);
-
-                if ($templateString == false) {
-                    // the template file could not be opened
-                    die("[applyTemplate] file could not be opened: " .
-                        $template['_templatefile']);
-                }
-
-            } else {
-                // the template does not specify how to format the data
-                // abort.
-                die("[applyTemplate] The attribute '_template' is required!\n" .
-                    "template: {$template}\ndata: {$data}");
-            }
-        } else {
-            $templateString = $template['_template'];
-        }
+        // get the template as a string
+        $templateString = $this->getTemplateString($template);
 
         /**
          * @todo find a way to determine which templates templateString depends
@@ -91,10 +73,13 @@ class Template
             }
         }
 
+        if (isset($template['_static'])) {
+            $statics = $template['_static'];
+            $templateString = $this->applyStatic($templateString, $statics, $data);
+        }
 
         return $templateString;
     }
-
 
     /**
      * Apply a template to all elements of an array
@@ -125,6 +110,101 @@ class Template
 
         // join all the elements in a string
         return implode($joinString , $strings);
+    }
+
+    /**
+     * Apply templates that are not dynamic themseves.
+     *
+     * @param string $templateString The string in which the template should
+     * be applied.
+     * @param array $statics An array of static templates that should be applied.
+     */
+    protected function applyStatic($templateString, array $statics, array $data)
+    {
+        foreach ($statics as $key => $value) {
+            $static = $this->getTemplateString($value);
+            $count = $this->getCount($value, $data);
+            $static = $this->returnMultiple($static, $count);
+            $templateString = str_replace("%{$key}%", $static, $templateString);
+        }
+
+        return $templateString;
+    }
+
+    /**
+     * Generate a string from a template.
+     *
+     * @param array $template The template that the string should be generated
+     * from
+     */
+    protected function getTemplateString(array $template)
+    {
+        if (!isset($template['_template'])) {
+            if (isset($template['_templatefile'])) {
+                // check if a template file is specified
+                $templateString = file_get_contents($template['_templatefile']);
+
+                if ($templateString == false) {
+                    // the template file could not be opened
+                    die("[applyTemplate] file could not be opened: " .
+                        $template['_templatefile']);
+                }
+
+            } else {
+                // the template does not specify how to format the data
+                // abort.
+                die("[applyTemplate] The attribute '_template' is required!\n" .
+                    "template: {$template}\ndata: {$data}");
+            }
+        } else {
+            $templateString = $template['_template'];
+        }
+
+        return $templateString;
+    }
+
+    /**
+     * Join a string multiple times, with a given separator.
+     *
+     * @param string $value The string that should be multiplied.
+     * @param integer $count How many times $value should be multiplied.
+     * @param string $separator A string with which the instances of $value
+     * will be separated.
+     */
+    protected function returnMultiple($value, $count, $separator = "\n")
+    {
+        if (is_null($count)) {
+            $count = 1;
+        }
+
+        $newValue = '';
+
+        for ($i=0; $i < $count - 1; $i++) {
+            $newValue .= $value . $separator;
+        }
+
+        $newValue .= $value;
+
+        return $newValue;
+    }
+
+    /**
+     * 
+     */
+    protected function getCount($template, $data)
+    {
+        if (!isset($template['_count'])) {
+            return 1;
+        }
+
+        $count = $template['_count'];
+
+        if (!is_numeric($count)) {
+            $count = $data[$count];
+        }
+
+        return $count;
+
     }
 
     /**
