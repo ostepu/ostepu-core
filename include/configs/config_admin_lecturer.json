@@ -8,5 +8,9 @@
         "css/Exercises.css",
         "css/Header.css",
         "css/Navigation.css"
+    ],
+    "javascripts":[
+        "javascript/jquery-2.0.3.min.js",
+        "javascript/sheets.js"
     ]
 }
