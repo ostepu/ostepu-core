@@ -17,7 +17,7 @@ $createSheet = Template::WithTemplateFile('include/ExerciseSheet/CreateSheet.tem
 $createSheet->bind(array());
 
 // construct some exercise sheets
-$sheetString = file_get_contents("http://localhost/Uebungsplattform/SheetData");
+$sheetString = file_get_contents("http://localhost/Uebungsplattform/Data/SheetData");
 
 // convert the json string into an associative array
 $sheets = json_decode($sheetString, true);
