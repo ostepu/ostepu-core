@@ -12,13 +12,19 @@ $h = new Header("Datenstrukturen",
 $h->setBackURL("index.php")
 ->setBackTitle("zur Veranstaltung");
 
+$data = file_get_contents("http://localhost/Uebungsplattform/Data/TutorAssignData");
+$data = json_decode($data, true);
+
+$tutorAssignment = $data['tutorAssignment'];
+unset($data['tutorAssignment']);
+
 // construct a content element for managing groups
 $assignAutomatically = Template::WithTemplateFile('include/TutorAssign/AssignAutomatically.template.json');
-$assignAutomatically->bind(array());
+$assignAutomatically->bind($tutorAssignment);
 
 // construct a content element for creating groups
 $assignManually = Template::WithTemplateFile('include/TutorAssign/AssignManually.template.json');
-$assignManually->bind(array());
+$assignManually->bind($tutorAssignment);
 
 // construct a content element for joining groups
 $assignCancel = Template::WithTemplateFile('include/TutorAssign/AssignCancel.template.json');

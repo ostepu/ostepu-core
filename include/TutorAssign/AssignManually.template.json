@@ -1,3 +1,11 @@
 {
-    "_templatefile": "include/TutorAssign/AssignManually.template.html"
+    "_templatefile": "include/TutorAssign/AssignManually.template.html",
+
+    "_static":
+    {
+        "assignManually":
+        {
+    	    "_templatefile": "include/TutorAssign/AssignManuallyElement.template.html"
+        }
+    }
 }

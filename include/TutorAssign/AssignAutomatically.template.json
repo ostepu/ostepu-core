@@ -1,3 +1,7 @@
 {
-    "_templatefile": "include/TutorAssign/AssignAutomatically.template.html"
+    "_templatefile": "include/TutorAssign/AssignAutomatically.template.html",
+
+    "tutors": {
+        "_template" : "<input type=\"checkbox\" />test<br />"
+    }
 }
