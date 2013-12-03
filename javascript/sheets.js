@@ -4,6 +4,7 @@ $(document).ready( function() {
     console.log($('.collapsible:gt(2)'));
 
     $('.collapsible:gt(2)').children('.content-body-wrapper').hide();
+    $('.collapsible:gt(2)').children('.content-footer').hide();
     $('.collapsible:gt(2)').children('.content-header').addClass('inactive');
     /**
      * toggle function on click to hide/show .content-header elements
@@ -14,6 +15,7 @@ $(document).ready( function() {
         // toggle the next available element of .content-body-wrapper near the "trig" with duration "fast"
         if (trig.parent('.collapsible').length != 0) {
             trig.next('.content-body-wrapper').slideToggle('fast');
+            trig.parent().children('.content-footer').slideToggle('fast');
             trig.toggleClass( 'inactive',  !trig.hasClass('inactive') );
         }
     });
