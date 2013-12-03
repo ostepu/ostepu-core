@@ -44,7 +44,7 @@ class Template
                     if (!is_assoc($value)) {
                         // it is not associative, apply the template to each
                         // of its elements
-                        $stringValue = $this->applyEach($template, $value);
+                        $stringValue = $this->applyEach($template, $value, $key);
                     } else {
                         // it is asociative, apply the template to it
                         $stringValue = $this->applyTemplate($template, $value);
@@ -53,23 +53,18 @@ class Template
                     // the element is not an array, but has a template, replace
                     // its placeholder in its template 
                     $template2 = $this->templates[$key];
-                    $stringValue = str_replace("%{$key}%",
-                                               $value,
-                                               $template2['_template']);
+                    $templateString2 = $this->getTemplateString($template2);
+                    $stringValue = $this->replaceKey($key, $value, $templateString2);
                 }
 
-                // remplace the placeholder by the formatted string
-                $templateString = str_replace("%{$key}%",
-                                              $stringValue,
-                                              $templateString);
+                // replace the placeholder by the formatted string
+                $templateString = $this->replaceKey($key, $stringValue, $templateString);
             } else {
                 // the element does not have a template
 
-                // remplace the placeholder by the elements string
+                // replace the placeholder by the elements string
                 // representation
-                $templateString = str_replace("%{$key}%",
-                                              $value,
-                                              $templateString);
+                $templateString = $this->replaceKey($key, $value, $templateString);
             }
         }
 
@@ -87,8 +82,10 @@ class Template
      * @param array $template The template that should be applied.
      * @param array $data An array of elements the template should be applied
      * to.
+     * @param string $originalKey The key of $data in the original array
+     * @return string $data turned into a string by applying $template to it
      */
-    protected function applyEach(array $template, array $data)
+    protected function applyEach(array $template, array $data, $originalKey)
     {   
         // an array of elements, formatted as string
         $strings = array();
@@ -105,7 +102,14 @@ class Template
         // apply the template to each element in the array
         foreach ($data as $key => $value) {
             // append the formatted element to others
-            $strings[] = $this->applyTemplate($template, $value);
+            if (!is_array($value)) {
+                // value is not an array replace any occurence of the original key
+                // by value
+                $strings[] = $this->replaceKey($originalKey, $value, $this->getTemplateString($template));
+            } else {
+
+                $strings[] = $this->applyTemplate($template, $value);
+            }
         }
 
         // join all the elements in a string
@@ -125,10 +129,25 @@ class Template
             $static = $this->getTemplateString($value);
             $count = $this->getCount($value, $data);
             $static = $this->returnMultiple($static, $count);
-            $templateString = str_replace("%{$key}%", $static, $templateString);
+            $templateString = $this->replaceKey($key, $static, $templateString);
         }
 
         return $templateString;
+    }
+
+    /**
+     * Replace occurence keys in a template.
+     * Replace occurences of "%$key%" by $value in $string
+     *
+     * @param $key The key that is searched
+     * @param $value The value with which to replace "%$key%"
+     * @param $string The string in which the key should be raplaced
+     * @return string A string with all occurences of "%$key%" replaced by
+     * $value
+     */
+    protected function replaceKey($key, $value, $string)
+    {
+        return str_replace("%{$key}%", $value, $string);
     }
 
     /**
@@ -282,9 +301,7 @@ class Template
 
                 // replace all occurences of key with the contents of the file
                 // with name $fileName
-                $this->content = str_replace("%{$key}%",
-                                             $importedText,
-                                             $this->content);
+                $this->content =  $this->replaceKey($key, $importedText, $this->content);
             }
         }
     }
