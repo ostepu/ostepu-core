@@ -15,8 +15,7 @@ $h->setBackURL("index.php")
 $data = file_get_contents("http://localhost/Uebungsplattform/Data/TutorAssignData");
 $data = json_decode($data, true);
 
-$tutorAssignment = $data['tutorAssignment'];
-unset($data['tutorAssignment']);
+$tutorAssignment = $data;
 
 // construct a content element for managing groups
 $assignAutomatically = Template::WithTemplateFile('include/TutorAssign/AssignAutomatically.template.json');
