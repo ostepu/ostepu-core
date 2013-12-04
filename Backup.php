@@ -12,13 +12,18 @@ $h = new Header("Datenstrukturen",
 $h->setBackURL("index.php")
 ->setBackTitle("zur Veranstaltung");
 
+$data = file_get_contents("http://localhost/Uebungsplattform/Data/BackupData");
+$data = json_decode($data, true);
+
+$backups = $data;
+
 // construct a content element for creating backups
 $createBackup = Template::WithTemplateFile('include/Backup/CreateBackup.template.json');
 $createBackup->bind(array());
 
 // construct a content element for loading backups
 $loadBackup = Template::WithTemplateFile('include/Backup/LoadBackup.template.json');
-$loadBackup->bind(array());
+$loadBackup->bind($backups);
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $createBackup, $loadBackup);

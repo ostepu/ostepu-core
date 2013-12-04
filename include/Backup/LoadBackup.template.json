@@ -1,3 +1,8 @@
 {
-    "_templatefile": "include/Backup/LoadBackup.template.html"
+    "_templatefile": "include/Backup/LoadBackup.template.html",
+
+    "backup":
+    {
+        "_template": "<option value=\"%id%\" >%date%</option>"
+    }
 }
