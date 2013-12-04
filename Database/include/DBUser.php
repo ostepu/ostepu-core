@@ -6,8 +6,8 @@
 
 
 /**
-* (description)
-*/
+ * (description)
+ */
 class DBUser
 {
     public function __construct(){
@@ -22,81 +22,81 @@ class DBUser
                         array($this,'EditUser'));
                         
         // DELETE RemoveUser
-        $this->app->put('/user/user/:userid',
+        $this->app->delete('/user/user/:userid',
                         array($this,'RemoveUser'));
                         
         // POST AddUser
-        $this->app->put('/user',
+        $this->app->post('/user',
                         array($this,'AddUser'));
                         
         // GET GetUsers
-        $this->app->put('/user/user',
+        $this->app->get('/user/user',
                         array($this,'GetUsers'));
                         
         // GET GetUser
-        $this->app->put('/user/user/:userid',
+        $this->app->get('/user/user/:userid',
                         array($this,'GetUser'));
 
-        if (strpos ($this->app->request->getResourceUri(),"/user")==0){
+        if (strpos ($this->app->request->getResourceUri(),"/user")===0){
             // run Slim
             $this->app->run();
         }
     }
     
     /**
-    * (description)
-    *
-    * @param $userid (description)
-    */
+     * (description)
+     *
+     * @param $userid (description)
+     */
     // PUT SetUserRights
     public function SetUserRights($userid){
-    
+            $this->app->response->setStatus(200);  
     }
     
     /**
-    * (description)
-    *
-    * @param $userid (description)
-    */
+     * (description)
+     *
+     * @param $userid (description)
+     */
     // PUT EditUser
     public function EditUser($userid){
-    
+            $this->app->response->setStatus(200);  
     }
     
     /**
-    * (description)
-    *
-    * @param $userid (description)
-    */
+     * (description)
+     *
+     * @param $userid (description)
+     */
     // DELETE RemoveUser
     public function RemoveUser($userid){
-    
+            $this->app->response->setStatus(252);  
     }
     
     /**
-    * (description)
-    */
+     * (description)
+     */
     // POST AddUser
     public function AddUser(){
-    
+            $this->app->response->setStatus(201);  
     }
     
     /**
-    * (description)
-    */
+     * (description)
+     */
     // GET GetUsers
     public function GetUsers(){
-    
+            $this->app->response->setStatus(200);  
     }
     
     /**
-    * (description)
-    *
-    * @param $userid (description)
-    */
+     * (description)
+     *
+     * @param $userid (description)
+     */
     // GET GetUser
     public function GetUser($userid){
-    
+        $this->app->response->setStatus(200);    
     }
 }
 ?>

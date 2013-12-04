@@ -11,63 +11,80 @@
 */
 class CConf
 {
-    private $app;
+    private $_app;
     private $CONF_FILE = "CConfig.json";
+    private $_prefix = "";
     
     /**
-    * (description)
-    */
-    public function __construct(){
-        $this->app = new \Slim\Slim();
+     * (description)
+     */
+    public function __construct($prefix){
+        $this->_prefix = $prefix;
+        $this->_app = new \Slim\Slim();
 
-        $this->app->response->headers->set('Content-Type', 'application/json');
+        $this->_app->response->headers->set('Content-Type', '_application/json');
         
         // POST Config
-        $this->app->post('/Component', array($this,'postConfig'));
+        $this->_app->post('/Component', array($this,'postConfig'));
         
-        if ($this->app->request->isPost() && $this->app->request->getResourceUri()=="/Component"){
+        // GET Config
+        $this->_app->get('/Component', array($this,'getConfig'));
+        
+        if ($this->_app->request->getResourceUri()=="/Component"){
         // run Slim
-        $this->app->run();
+        $this->_app->run();
         }
     }
     
     /**
-    * (description)
-    */
+     * (description)
+     */
     // POST Config
     public function postConfig(){
-        $body = $this->app->request->getBody();
-        saveConfig($body);
-        $this->app->response->setStatus(200);
+        $body = $this->_app->request->getBody();
+        $Component = json_decode($body);
+        $Component->setPrefix($this->_prefix);
+        saveConfig(json_encode($Component));
+        $this->_app->response->setStatus(200);
     }
     
     /**
-    * (description)
-    *
-    * @param $content (description)
-    */
+     * (description)
+     */
+    // GET Config
+    public function getConfig(){
+        $configuration = loadConfig();
+        $this->_app->response->setBody($configuration);
+        $this->_app->response->setStatus(200);
+    }
+    
+    /**
+     * (description)
+     *
+     * @param $content (description)
+     */
     public function saveConfig($content){
-        $file = fopen($this->CONF_FILE,"w");
+        $file = fopen($this->CONF_FILE,"w");        
         fwrite($file, $content);
         fclose($file);
     }
     
     /**
-    * (description)
-    */
+     * (description)
+     */
     public function loadConfig(){ 
-        return json_decode(file_get_contents($this->CONF_FILE));
+        return Component::decodeComponent(file_get_contents($this->CONF_FILE));
     }
     
     /**
-    * (description)
-    *
-    * @param $linkList (description)
-    * @param $name (description)
-    */
+     * (description)
+     *
+     * @param $linkList (description)
+     * @param $name (description)
+     */
     public static function getLink($linkList,$name){
         for ($i=0;$i<count($linkList);$i++){
-            if ($linkList[$i]->name==$name)
+            if ($linkList[$i]->getName()==$name)
                 return $linkList[$i];
         }
         return null;

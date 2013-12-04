@@ -1,8 +1,8 @@
 <?php
 /**
-* @file (filename)
-* %(description)
-*/ 
+ * @file (filename)
+ * %(description)
+ */ 
 
 require 'Slim/Slim.php';
 include 'include/structures.php';
