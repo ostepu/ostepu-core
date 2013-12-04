@@ -1,3 +1,18 @@
 {
-    "_templatefile": "include/TutorAssign/AssignManually.template.html"
+    "_templatefile": "include/TutorAssign/AssignManually.template.html",
+
+    "tutorAssignments":
+    {
+        "_templatefile": "include/TutorAssign/AssignManuallyElement.template.html"
+    },
+
+    "tutor":
+    {
+        "_template": "%firstName% %lastName%"
+    },
+
+    "submissionIDs":
+    {
+        "_template": "<input type=\"checkbox\" />%submissionIDs%<br />"
+    }
 }
