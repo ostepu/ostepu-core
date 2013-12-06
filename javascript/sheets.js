@@ -1,10 +1,7 @@
 $(document).ready( function() {
     // get all elements with class .sheet-header with index greater 2 and hide the first element .content-body-wrapper
 
-    console.log($('.collapsible:gt(2)'));
-
-    $('.collapsible:gt(2)').children('.content-body-wrapper').hide();
-    $('.collapsible:gt(2)').children('.content-footer').hide();
+    $('.collapsible:gt(2)').children(('.content-body-wrapper, .content-footer')).hide();
     $('.collapsible:gt(2)').children('.content-header').addClass('inactive');
     /**
      * toggle function on click to hide/show .content-header elements
@@ -14,8 +11,7 @@ $(document).ready( function() {
         var trig = $(this);
         // toggle the next available element of .content-body-wrapper near the "trig" with duration "fast"
         if (trig.parent('.collapsible').length != 0) {
-            trig.next('.content-body-wrapper').slideToggle('fast');
-            trig.parent().children('.content-footer').slideToggle('fast');
+            trig.parent().children('.content-body-wrapper, .content-footer').slideToggle('fast');
             trig.toggleClass( 'inactive',  !trig.hasClass('inactive') );
         }
     });
