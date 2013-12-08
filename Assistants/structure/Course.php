@@ -79,13 +79,17 @@ class Course extends Object implements JsonSerializable
         );
     }
     public static function getDBPrimaryKey(){
-        return 'C_id';
+        return array('C_id');
     }
    
    
     public function __construct($_data=array()) {
         foreach ($_data AS $_key => $_value) {
-            if (isset($_key)){
+             if (isset($_key)){
+                if (is_array($_value)) {
+                    $_sub = ExerciseSheet::decodeExerciseSheet($_value);
+                    $_value = $_sub;
+                }
                 $this->{$_key} = $_value;
             }
         }
@@ -95,17 +99,18 @@ class Course extends Object implements JsonSerializable
         return json_encode($_data);
     }
     
-    public static function decodeCourse($_data){
-        $_data = json_decode($_data);
+    public static function decodeCourse($_data, $decode=true){
+        if ($decode)
+            $_data = json_decode($_data);
         if (is_array($_data)){
             $result = array();
             foreach ($_data AS $_key => $_value) {
-                array_push($result, new ExerciseSheets($_value));
+                array_push($result, new Course($_value));
             }
             return $result;   
         }
         else
-            return new Link($_data);
+            return new Course($_data);
     }
 
     public function jsonSerialize() {

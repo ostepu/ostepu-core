@@ -70,10 +70,17 @@ class DBJson
     }
     
     foreach ($data as $rw){
-    array_push($prim[$rw[$primKey]][$primAttrib], $sec[$rw[$secKey]]);
+		if (isset($sec[$rw[$secKey]])){
+			array_push($prim[$rw[$primKey]][$primAttrib], $sec[$rw[$secKey]]);
+		}
     }
     
-    return $prim;
+    $arr = array();
+    foreach ($prim as $rw){
+		array_push($arr, $rw);
+    }
+    
+    return $arr;
     }
 
 }

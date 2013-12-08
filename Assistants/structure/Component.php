@@ -53,12 +53,26 @@ class Component extends Object implements JsonSerializable
     }
 
     
+    public static function getDBConvert(){
+        return array(
+           'CO_id' => '_id',
+           'CO_name' => '_name',
+           'CO_address' => '_address',
+           'CO_option' => '_option',
+           'CO_prefix' => '_prefix',
+           'CO_links' => '_links'
+        );
+    }
+    public static function getDBPrimaryKey(){
+        return 'CO_id';
+    }
+    
     public function __construct($_data=array()) {
         foreach ($_data AS $_key => $_value) {
             if (isset($_key)){
                 if (is_array($_value)) {
-                    $_sub = new Link($_value);
-                    $this->_value = $_sub;
+                    $_sub =  Link::decodeLink($_value,false);
+                    $_value = $_sub;
                 }
             $this->{$_key} = $_value;
             }
@@ -69,8 +83,9 @@ class Component extends Object implements JsonSerializable
         return json_encode($_data);
     }
     
-    public static function decodeComponent($_data){
-        $_data = json_decode($_data);
+    public static function decodeComponent($_data, $decode=true){
+        if ($decode)
+            $_data = json_decode($_data);
         if (is_array($_data)){
             $result = array();
             foreach ($_data AS $_key => $_value) {

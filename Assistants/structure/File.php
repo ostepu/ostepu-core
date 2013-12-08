@@ -96,7 +96,22 @@ class File extends Object implements JsonSerializable
     public function setBody($_value){
         $this->_body = $_value;
     }
-        
+    
+    
+    public static function getDBConvert(){
+        return array(
+           'F_id' => '_fileId',
+           'F_displayName' => '_displayName',
+           'F_address' => '_address',
+           'F_timeStamp' => '_timeStamp',
+           'F_fileSize' => '_fileSize',
+           'F_hash' => '_hash',
+           'F_body' => '_body'
+        );
+    }
+    public static function getDBPrimaryKey(){
+        return 'F_id';
+    }        
    
     public function __construct($_data=array()) {
         foreach ($_data AS $_key => $_value) {

@@ -42,6 +42,44 @@ class Backup extends Object implements JsonSerializable
     public function setFile($_value){
         $this->_file = $_value;
     }
+    
+    
+    public static function getDBConvert(){
+        return array(
+           'B_id' => '_id',
+           'B_date' => '_date',
+           'F_id_file' => '_file',
+        );
+    }
+    public static function getDBPrimaryKey(){
+        return 'B_id';
+    }
+   
+   
+    public function __construct($_data=array()) {
+        foreach ($_data AS $_key => $_value) {
+             if (isset($_key)){
+                $this->{$_key} = $_value;
+            }
+        }
+    }
+    
+    public static function encodeBackup($_data){
+        return json_encode($_data);
+    }
+    
+    public static function decodeBackup($_data){
+        $_data = json_decode($_data);
+        if (is_array($_data)){
+            $result = array();
+            foreach ($_data AS $_key => $_value) {
+                array_push($result, new Backup($_value));
+            }
+            return $result;   
+        }
+        else
+            return new Backup($_data);
+    }
 
     public function jsonSerialize() {
         return array(

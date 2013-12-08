@@ -37,12 +37,26 @@ class Link extends Object implements JsonSerializable
         }
     }
     
+    
+    public static function getDBConvert(){
+        return array(
+           'CL_id' => '_id',
+           'CL_name' => '_name',
+           'CL_address' => '_address',
+        );
+    }
+    
+    public static function getDBPrimaryKey(){
+        return 'CL_id';
+    }
+    
     public static function encodeLink($_data){
         return json_encode($_data);
     }
     
-    public static function decodeLink($_data){
-        $_data = json_decode($_data);
+    public static function decodeLink($_data, $decode=true){
+        if ($decode)
+            $_data = json_decode($_data);
         if (is_array($_data)){
             $result = array();
             foreach ($_data AS $_key => $_value) {

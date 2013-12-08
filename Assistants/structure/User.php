@@ -120,10 +120,10 @@ class User extends Object implements JsonSerializable
         foreach ($_data AS $_key => $_value) {
             if (isset($_key)){
                 if (is_array($_value)) {
-                    $_sub = new Course($_value);
-                    $this->_value = $_sub;
+                    $_sub = Course::decodeCourse($_value);
+                    $_value = $_sub;
                 }
-            $this->{$_key} = $_value;
+                $this->{$_key} = $_value;
             }
         }
     }
@@ -132,8 +132,9 @@ class User extends Object implements JsonSerializable
         return json_encode($_data);
     }
     
-    public static function decodeUser($_data){
-        $_data = json_decode($_data);
+    public static function decodeUser($_data, $decode=true){
+        if ($decode)
+            $_data = json_decode($_data);
         if (is_array($_data)){
             $result = array();
             foreach ($_data AS $_key => $_value) {
