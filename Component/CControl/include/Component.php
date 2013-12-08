@@ -25,12 +25,12 @@ class CConf
         $this->_app->response->headers->set('Content-Type', '_application/json');
         
         // POST Config
-        $this->_app->post('/component', array($this,'postConfig'));
+        $this->_app->post('/Component', array($this,'postConfig'));
         
         // GET Config
-        $this->_app->get('/component', array($this,'getConfig'));
+        $this->_app->get('/Component', array($this,'getConfig'));
         
-        if ($this->_app->request->getResourceUri()=="/component"){
+        if ($this->_app->request->getResourceUri()=="/Component"){
         // run Slim
         $this->_app->run();
         }
@@ -42,9 +42,9 @@ class CConf
     // POST Config
     public function postConfig(){
         $body = $this->_app->request->getBody();
-        $Component = Component::decodeComponent($body);
+        $Component = json_decode($body);
         $Component->setPrefix($this->_prefix);
-        $this->saveConfig(json_encode($Component));
+        saveConfig(json_encode($Component));
         $this->_app->response->setStatus(200);
     }
     
@@ -53,7 +53,8 @@ class CConf
      */
     // GET Config
     public function getConfig(){
-        $this->_app->response->setBody(file_get_contents($this->CONF_FILE));
+        $configuration = loadConfig();
+        $this->_app->response->setBody($configuration);
         $this->_app->response->setStatus(200);
     }
     
