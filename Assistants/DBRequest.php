@@ -8,7 +8,7 @@
 /**
  * (description)
  */
-class DBRequest
+class DbRequest
 {
     public static $config = null;
     
@@ -18,15 +18,15 @@ class DBRequest
      * @param $sql_statement (description)
      */
     public static function request($sql_statement){
-        if (DBRequest::$config==null)
-            DBRequest::$config = parse_ini_file("include/config.ini", TRUE);
+        if (DbRequest::$config==null)
+            DbRequest::$config = parse_ini_file("include/config.ini", TRUE);
         
-        $dbconn = mysql_connect(DBRequest::$config['DB']['db_path'], DBRequest::$config['DB']['db_user'],DBRequest::$config['DB']['db_passwd']);    
+        $dbconn = mysql_connect(DbRequest::$config['DB']['db_path'], DbRequest::$config['DB']['db_user'],DbRequest::$config['DB']['db_passwd']);    
         if (!$dbconn) {
             die('Keine Verbindung möglich: ' . mysql_error());
         }   
 
-        mysql_select_db(DBRequest::$config['DB']['db_name']);
+        mysql_select_db(DbRequest::$config['DB']['db_name']);
         $query_result = mysql_query($sql_statement, $dbconn);
         if (!$query_result){
             die('Keine Verbindung möglich: ' . mysql_error());

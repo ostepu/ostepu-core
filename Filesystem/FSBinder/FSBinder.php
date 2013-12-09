@@ -4,37 +4,35 @@
 * %(description)
 */ 
 
-require 'Slim/Slim.php';
-include 'include/Component.php';
-include 'include/structures.php';
+require 'Include/Slim/Slim.php';
+include 'Include/Com.php';
+include 'Include/Structures.php';
 
 \Slim\Slim::registerAutoloader();
 
 $com = new CConf("");
-new FSBinder();
+
+if (!$com->used())
+    new FsBinder();
 
 /**
  * (description)
  */
-class FSBinder
+class FsBinder
 {
     private static $_baseDir = "files";
     public static function getBaseDir(){
-        return FSBinder::$_baseDir;
+        return FsBinder::$_baseDir;
     }
     public static function setBaseDir($value){
-        FSBinder::$_baseDir = $value;
+        FsBinder::$_baseDir = $value;
     }
     
     private $_app;
     private $_conf;
-    private $_relevantBegin;
-    private $_relevantEnd;
 
     /**
      * (description)
-     *
-     * @param $_conf (description)
      */
 	public function __construct(){
     
@@ -42,16 +40,17 @@ class FSBinder
 
 	    $this->_app->response->headers->set('Content-Type', 'application/json');
 	    
-	    // am besten noch ein Befehl INFO für Dateidaten abfragen
-	    
 		// POST file
 		$this->_app->post('/:data+', array($this,'postFile'));
 		
 		// GET file as document or filedata
-		$this->_app->get('/:data+', array($this,'getFileDocument'));
+		$this->_app->get('/:data+', array($this,'getFile'));
 		
 		// DELETE file
 		$this->_app->delete('/:data+', array($this,'deleteFile'));
+		
+		// INFO file
+		$this->_app->map('/:data+', array($this,'infoFile'))->via('INFO');
 		
 		// run Slim
 		$this->_app->run();
@@ -59,14 +58,15 @@ class FSBinder
     	
     
     /**
-     * (description)
+     * POST File
+     * 
+     * @param $data (description)
      */
-	// POST File
 	public function postFile($data){       
 	    $body = $this->_app->request->getBody();
 	    $fileobject = json_decode($body);
 	        
-	    $file = FSBinder::$_baseDir."/".implode("/",array_slice ($data,0));
+	    $file = FsBinder::$_baseDir."/".implode("/",array_slice ($data,0));
 	    FSFile::generatepath(dirname($file));
 	        
 	    $file = fopen($filename,"w");
@@ -81,57 +81,63 @@ class FSBinder
 	}
 	
     /**
-     * (description)
+     * GET File
      *
-     * @param $hash (description)
-     * @param $filename (description)
+     * @param $data (description)
      */
-	// GET File //$this->_app->request->getResourceUri()
-	public function getFileDocument($data){	  
+	public function getFile($data){	  
         if (count($data)==0){
             $this->_app->response->setStatus(409);
             $this->_app->stop();
             return;
         }
         
-        $file = FSBinder::$_baseDir."/".implode("/",array_slice ($data,0));
+        $file = FsBinder::$_baseDir . $this->_app->request->getResourceUri();
         
-        if ($data[0]=="data"){
-            if (strlen($file)>0 && file_exists($file)){  
-                $this->_app->response->setStatus(200);
-                $File = new File();
-                $File->setAddress($file);
-                $File->setFileSize(filesize($file));
-                $File->setHash(sha1_file($file));
-                $this->_app->response->setBody(json_encode($File));
-                $this->_app->stop();
-            }
-            else{
-                $this->_app->response->setStatus(409);
-                $this->_app->stop();
-            }
-        
-        }
-	    else{
-	       if (strlen($file)>0 && file_exists($file)){
-	           $this->_app->response->headers->set('Content-Type', 'application/octet-stream');
-	           $this->_app->response->setStatus(200);
-	           readfile($file);
-	           $this->_app->stop();
-	       }
-	       else{
-	           $this->_app->response->setStatus(409);
-	           $this->_app->stop();
-	       }
-	   }
+	    if (strlen($file)>0 && file_exists($file)){
+	       $this->_app->response->headers->set('Content-Type', 'application/octet-stream');
+	       $this->_app->response->setStatus(200);
+	       readfile($file);
+	       $this->_app->stop();
+	    } else{
+	       $this->_app->response->setStatus(409);
+	       $this->_app->stop();
+	    }
 	}
 	
+    /**
+     * INFO File
+     *
+     * @param $data (description)
+     */
+    public function infoFile($data){   
+        if (count($data)==0){
+            $this->_app->response->setStatus(409);
+            $this->_app->stop();
+            return;
+        }
+        
+        $file = FsBinder::$_baseDir . $this->_app->request->getResourceUri();
+        
+        if (strlen($file)>0 && file_exists($file)){  
+            $this->_app->response->setStatus(200);
+            $File = new File();
+            $File->setAddress($file);
+            $File->setFileSize(filesize($file));
+            $File->setHash(sha1_file($file));
+            $this->_app->response->setBody(json_encode($File));
+            $this->_app->stop();
+        } else{
+            $this->_app->response->setStatus(409);
+            $this->_app->stop();
+        }
+    }
+	
 	/**
-     * (description)
+     * DELETE File
      *
      * @param $hash (description)
      */
-	// DELETE File
     public function deleteFile($data){
         if (count($data)==0){
             $this->_app->response->setStatus(409);
@@ -139,11 +145,11 @@ class FSBinder
             return;
         }
         
-        $file = FSBinder::$_baseDir."/".implode("/",array_slice ($data,0));
+        $file = FsBinder::$_baseDir."/".implode("/",array_slice ($data,0));
         	    	
 	    if (strlen($file)>0 && file_exists($file)){ 
 	        $File = new File();
-            $File->setAddress(FSBinder::$_baseDir."/".$hash);
+            $File->setAddress(FsBinder::$_baseDir."/".$hash);
             $File->setFileSize(filesize($file));
             $File->setHash(sha1_file($file));
 	        unlink($file);
@@ -151,13 +157,12 @@ class FSBinder
 	            $this->_app->response->setStatus(452);
 	            $this->_app->response->setBody(new File());
 	            $this->_app->stop();
-	            }
+	        }
 	            
 	        $this->_app->response->setBody($File);
 	        $this->_app->response->setStatus(252);
 	        $this->_app->stop();
-	    }
-	    else{
+	    } else{
 	        // file not exists
 	        $this->_app->response->setStatus(409);
 	        $this->_app->response->setBody(new File());

@@ -4,15 +4,17 @@
  * %(description)
  */ 
 
-require 'Slim/Slim.php';
-include 'include/structures.php';
-include 'include/DBCourse.php';
-include 'include/DBUser.php';
-include 'include/Json.php';
-include 'include/DBRequest.php';
+require 'Include/Slim/Slim.php';
+include_once( 'Include/structures.php' );
+include_once( 'DbCourse.php' );
+include_once( 'DbUser.php' );
+include_once( 'Include/DbJson.php' );
+include_once( 'Include/DbRequest.php' );
+include_once( 'Include/Com.php' );
 
 \Slim\Slim::registerAutoloader();
-
-new DBCourse;
-new DBUser;
+if (!(new CConf(""))->used()){
+    new DbCourse;
+    new DbUser;
+}
 ?>

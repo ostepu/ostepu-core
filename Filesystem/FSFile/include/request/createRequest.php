@@ -8,7 +8,7 @@
 /**
  * (description)
  */
-class createRequest
+class Request_CreateRequest
 {
     /**
      * (description)
@@ -36,7 +36,7 @@ class createRequest
      * @param $content (description)
      */
     public static function createGet($target, $header,  $content){
-        return createRequest::createCustom("GET", $target, $header,  $content); 
+        return Request_CreateRequest::createCustom("GET", $target, $header,  $content); 
     }
     
     
@@ -48,7 +48,7 @@ class createRequest
      * @param $content (description)
      */
     public static function createPost($target, $header,  $content){
-        return createRequest::createCustom("POST", $target, $header,  $content); 
+        return Request_CreateRequest::createCustom("POST", $target, $header,  $content); 
     }
     
     
@@ -60,7 +60,7 @@ class createRequest
      * @param $content (description)
      */
     public static function createPut($target, $header,  $content){
-        return createRequest::createCustom("PUT", $target, $header,  $content); 
+        return Request_CreateRequest::createCustom("PUT", $target, $header,  $content); 
     }
     
     
@@ -72,7 +72,7 @@ class createRequest
      * @param $content (description)
      */
     public static function createDelete($target, $header,  $content){
-        return createRequest::createCustom("DELETE", $target, $header,  $content); 
+        return Request_CreateRequest::createCustom("DELETE", $target, $header,  $content); 
     }
 }
 ?>

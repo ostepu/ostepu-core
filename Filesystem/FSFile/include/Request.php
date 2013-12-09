@@ -3,8 +3,8 @@
  * @file (filename)
  * (description)
  */ 
-include 'request/createRequest.php';
-include 'request/multiRequest.php';
+include 'Request/CreateRequest.php';
+include 'Request/MultiRequest.php';
 
 /**
  * (description)
@@ -19,7 +19,7 @@ class Request
      * @param $content (description)
      */
     public static function custom($method, $target, $header,  $content){
-        $ch = createRequest::createCustom($method,$target,$header,$content);
+        $ch = Request_CreateRequest::createCustom($method,$target,$header,$content);
         $content = curl_exec($ch);
           
         $result = curl_getinfo($ch);

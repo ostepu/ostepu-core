@@ -4,33 +4,34 @@
 * %(description)
 */ 
 
-require 'Slim/Slim.php';
-include 'include/Component.php';
-include 'include/structures.php';
-include 'include/Request.php';
+require 'Include/Slim/Slim.php';
+include 'Include/Com.php';
+include 'Include/Structures.php';
+include 'Include/Request.php';
 
 \Slim\Slim::registerAutoloader();
 
-$com = new CConf(FSFile::getBaseDir());
-new FSFile($com->loadConfig());
+$com = new CConf(FsFile::getBaseDir());
+
+if (!$com->used())
+    new FsFile($com->loadConfig());
 
 /**
  * (description)
  */
-class FSFile
+class FsFile
 {
-    private static $_baseDir = "FILE";
+    private static $_baseDir = "file";
     public static function getBaseDir(){
-        return FSFile::$_baseDir;
+        return FsFile::$_baseDir;
     }
     public static function setBaseDir($value){
-        FSFile::$_baseDir = $value;
+        FsFile::$_baseDir = $value;
     }
     
     private $_app;
     private $_conf;
-    private $_relevantBegin;
-    private $_relevantEnd;
+    private $_fs = null;
 
     /**
      * (description)
@@ -39,35 +40,26 @@ class FSFile
      */
 	public function __construct($_conf){
 	    $this->_conf = $_conf;
-	    
-	    $arr = explode("-",$_conf->getOption());
-	    if (count($arr)<2){
-	       $this->_relevantBegin=0;
-           $this->_relevantEnd=0;
-	    }
-	    else{
-	        $this->_relevantBegin=$arr[0];
-            $this->_relevantEnd=$arr[1];
-	    }
-
+        $this->_fs = $this->_conf->getLinks();
+        echo "file";
 	    
 	    $this->_app = new \Slim\Slim();
 
 	    $this->_app->response->headers->set('Content-Type', 'application/json');
 	    
 		// POST file
-		$this->_app->post('/'.FSFile::$_baseDir, array($this,'postFile'));
+		$this->_app->post('/'.FsFile::$_baseDir, array($this,'postFile'));
 		
 		// GET filedata
-		$this->_app->get('/'.FSFile::$_baseDir.'/:hash', array($this,'getFileData'));
+		$this->_app->get('/'.FsFile::$_baseDir.'/:hash', array($this,'getFileData'));
 		
 		// GET file as document
-		$this->_app->get('/'.FSFile::$_baseDir.'/:hash/:filename', array($this,'getFileDocument'));
+		$this->_app->get('/'.FsFile::$_baseDir.'/:hash/:filename', array($this,'getFileDocument'));
 		
 		// DELETE file
-		$this->_app->delete('/'.FSFile::$_baseDir.'/:hash', array($this,'deleteFile'));
+		$this->_app->delete('/'.FsFile::$_baseDir.'/:hash', array($this,'deleteFile'));
 		
-		if (strpos($this->_app->request->getResourceUri(), '/'.FSFile::$_baseDir) === 0){
+		if (strpos($this->_app->request->getResourceUri(), '/'.FsFile::$_baseDir) === 0){
 		  // run Slim
 		  $this->_app->run();
 		}
@@ -89,7 +81,7 @@ class FSFile
         }
 	    else
 	        if ($fileobject->getBody() == null && $fileobject->gethash() != null){
-	    	    if (FSFile::isRelevant($fileobject->gethash(),$this->_relevantBegin,$this->_relevantEnd)===false){
+	    	    if (FsFile::isRelevant($fileobject->gethash(),$this->_relevantBegin,$this->_relevantEnd)===false){
 	                $this->_app->response->setStatus(455);
 	                $this->_app->stop();
 	    	    }
@@ -108,7 +100,7 @@ class FSFile
 	        // create sha1 hash
 	        $hash = sha1_file($filename);
 	        
-	    	if (FSFile::isRelevant($hash,$this->_relevantBegin,$this->_relevantEnd)===false){
+	    	if (FsFile::isRelevant($hash,$this->_relevantBegin,$this->_relevantEnd)===false){
 	    	    unlink($filename);
 	    	    $fileobject->setHash($hash);
 	    	    $this->_app->response->setBody(json_encode($fileobject));
@@ -117,11 +109,11 @@ class FSFile
 	        }
 	        
 	        // generates the filepath to save file in filesystem
-	        $savepath = FSFile::generateFilePath(FSFile::$_baseDir,$hash);
+	        $savepath = FsFile::generateFilePath(FsFile::$_baseDir,$hash);
 	        
 	        if (!file_exists($savepath)){
 	            // creates the folder structure for file
-	            FSFile::generatepath(dirname($savepath));
+	            FsFile::generatepath(dirname($savepath));
 	        
 	            $file = fopen($savepath,"w");
 	            fwrite($file, base64_decode($fileobject->getBody()));
@@ -138,7 +130,7 @@ class FSFile
 	        }
 
 		    $fileobject->setBody(null);
-		    $fileobject->setAddress(FSFile::$_baseDir . "/" . $hash);
+		    $fileobject->setAddress(FsFile::$_baseDir . "/" . $hash);
             $fileobject->setFileSize(filesize($savepath));
             $fileobject->setHash($hash);
             $this->_app->response->setBody(json_encode($fileobject));
@@ -152,12 +144,12 @@ class FSFile
      */
 	// GET File
 	public function getFileDocument($hash, $filename){
-	    if (FSFile::isRelevant($hash,$this->_relevantBegin,$this->_relevantEnd)===false){
+	    if (FsFile::isRelevant($hash,$this->_relevantBegin,$this->_relevantEnd)===false){
 	        $this->_app->response->setStatus(455);
 	        $this->_app->stop();
 	    }
 	    
-	    $file = FSFile::generateFilePath(FSFile::$_baseDir,$hash);
+	    $file = FsFile::generateFilePath(FsFile::$_baseDir,$hash);
 	    if (strlen($file)>0 && file_exists($file)){
 	         $this->_app->response->headers->set('Content-Type', 'application/octet-stream');
 	         $this->_app->response->headers->set('Content-Disposition', "attachment; filename=\"$filename\"");
@@ -177,16 +169,16 @@ class FSFile
      */
 	// GET Filedata
     public function getFileData($hash){  
-        if (FSFile::isRelevant($hash,$this->_relevantBegin,$this->_relevantEnd)===false){
+        if (FsFile::isRelevant($hash,$this->_relevantBegin,$this->_relevantEnd)===false){
 	        $this->_app->response->setStatus(455);
 	        $this->_app->stop();
 	    }
 	    	
-        $file = FSFile::generateFilePath(FSFile::$_baseDir,$hash);
+        $file = FsFile::generateFilePath(FsFile::$_baseDir,$hash);
 	    if (strlen($file)>0 && file_exists($file)){  
             $this->_app->response->setStatus(200);
             $File = new File();
-            $File->setAddress(FSFile::$_baseDir . "/" . $hash);
+            $File->setAddress(FsFile::$_baseDir . "/" . $hash);
             $File->setFileSize(filesize($file));
             $File->setHash($hash);
             $this->_app->response->setBody(json_encode($File));
@@ -202,16 +194,16 @@ class FSFile
      */
 	// DELETE File
     public function deleteFile($hash){
-        if (FSFile::isRelevant($hash,$this->_relevantBegin,$this->_relevantEnd)===false){
+        if (FsFile::isRelevant($hash,$this->_relevantBegin,$this->_relevantEnd)===false){
 	            $this->_app->response->setStatus(455);
 	            $this->_app->response->setBody(new File());
 	            $this->_app->stop();
 	    }
 	    	
-        $file = FSFile::generateFilePath(FSFile::$_baseDir,$hash);
+        $file = FsFile::generateFilePath(FsFile::$_baseDir,$hash);
 	    if (strlen($file)>0 && file_exists($file)){ 
 	        $File = new File();
-            $File->setAddress(FSFile::$_baseDir . "/" . $hash);
+            $File->setAddress(FsFile::$_baseDir . "/" . $hash);
             $File->setFileSize(filesize($file));
             $File->setHash($hash); 
 	        unlink($file);

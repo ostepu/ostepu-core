@@ -4,12 +4,11 @@
  * %(description)
  */ 
 
-require 'Slim/Slim.php';
-include 'include/Component.php';
-include 'include/structures.php';
-include 'include/Request.php';
-include 'include/DBRequest.php';
-include 'include/DBJson.php';
+require 'Include/Slim/Slim.php';
+include_once( 'Include/Structures.php' );
+include_once( 'Include/Request.php' );
+include_once( 'Include/DbRequest.php' );
+include_once( 'Include/DbJson.php' );
 
 \Slim\Slim::registerAutoloader();
 
@@ -26,23 +25,23 @@ class CControl
 
         // PUT EditComponentDefinition
         $this->app->put('/component/:componentid',
-                        array($this,'EditComponentDefinition'));
+                        array($this,'editComponentDefinition'));
         
         // DELETE DeleteComponentDefinition
         $this->app->delete('/component/:componentid',
-                           array($this,'DeleteComponentDefinition'));
+                           array($this,'deleteComponentDefinition'));
         
         // POST SetComponentDefinition
         $this->app->post('/component',
-                         array($this,'SetComponentDefinition'));
+                         array($this,'setComponentDefinition'));
                          
         // GET GetComponentDefinitions
         $this->app->get('/component',
-                         array($this,'GetComponentDefinitions'));
+                         array($this,'getComponentDefinitions'));
                          
         // GET SendComponentDefinitions
         $this->app->get('/component/send',
-                         array($this,'SendComponentDefinitions'));
+                         array($this,'sendComponentDefinitions'));
                 
         if (strpos ($this->app->request->getResourceUri(),"/component")===0){
             // run Slim
@@ -56,7 +55,7 @@ class CControl
      * @param $courseid (description)
      */
     // PUT EditComponentDefinition
-    public function EditComponentDefinition($componentid){
+    public function editComponentDefinition($componentid){
       //  $this->app->response->setStatus(200);
     }
     
@@ -66,7 +65,7 @@ class CControl
      * @param $courseid (description)
      */
     // DELETE DeleteComponentDefinition
-    public function DeleteComponentDefinition($courseid){
+    public function deleteComponentDefinition($courseid){
      //   $this->app->response->setStatus(252);
     }
     
@@ -76,7 +75,7 @@ class CControl
      * @param $path (description)
      */
     // POST SetComponentDefinition
-    public function SetComponentDefinition(){
+    public function setComponentDefinition(){
        // $this->app->response->setStatus(201);
     }
     
@@ -86,15 +85,15 @@ class CControl
      * @param $userid (description)
      */
     // GET GetComponentDefinitions
-    public function GetComponentDefinitions(){
+    public function getComponentDefinitions(){
         eval("\$sql = \"".implode('\n',file("include/sql/GetComponentDefinitions.sql"))."\";");
-        $query_result = DBRequest::request($sql);
+        $query_result = DbRequest::request($sql);
         $this->app->response->setStatus(200);
-        $data = DBJson::GetRows($query_result);
+        $data = DbJson::getRows($query_result);
 
-        $Components = DBJson::getObjectsByAttributes($data, Component::getDBPrimaryKey(), Component::getDBConvert());
-        $Links = DBJson::getObjectsByAttributes($data, Link::getDBPrimaryKey(), Link::getDBConvert());
-        $result = DBJson::ConcatObjectLists($data, $Components,Component::getDBPrimaryKey(),Component::getDBConvert()['CO_links'] ,$Links,Link::getDBPrimaryKey());  
+        $Components = DBJson::getObjectsByAttributes($data, Component::getDbPrimaryKey(), Component::getDBConvert());
+        $Links = DBJson::getObjectsByAttributes($data, Link::getDbPrimaryKey(), Link::getDBConvert());
+        $result = DBJson::concatObjectLists($data, $Components,Component::getDbPrimaryKey(),Component::getDbConvert()['CO_links'] ,$Links,Link::getDbPrimaryKey());  
         $this->app->response->setBody(Component::encodeComponent($result));
     }
     
@@ -104,25 +103,24 @@ class CControl
      * @param $courseid (description)
      */
     // GET SendComponentDefinitions
-    public function SendComponentDefinitions(){
+    public function sendComponentDefinitions(){
         eval("\$sql = \"".implode('\n',file("include/sql/GetComponentDefinitions.sql"))."\";");
-        $query_result = DBRequest::request($sql);
+        $query_result = DbRequest::request($sql);
        
         $this->app->response->setStatus(200);
-        $data = DBJson::GetRows($query_result);
+        $data = DBJson::getRows($query_result);
 
-        $Components = DBJson::getObjectsByAttributes($data, Component::getDBPrimaryKey(), Component::getDBConvert());
-        $Links = DBJson::getObjectsByAttributes($data, Link::getDBPrimaryKey(), Link::getDBConvert());
-        $result = DBJson::ConcatObjectLists($data, $Components,Component::getDBPrimaryKey(),Component::getDBConvert()['CO_links'] ,$Links,Link::getDBPrimaryKey());  
+        $Components = DBJson::getObjectsByAttributes($data, Component::getDbPrimaryKey(), Component::getDbConvert());
+        $Links = DbJson::getObjectsByAttributes($data, Link::getDbPrimaryKey(), Link::getDBConvert());
+        $result = DbJson::concatObjectLists($data, $Components,Component::getDbPrimaryKey(),Component::getDbConvert()['CO_links'] ,$Links,Link::getDBPrimaryKey());  
         
-        $request = new multiRequest();   
+        $request = new Request_MultiRequest();   
         foreach ($result as $object){
         $object = Component::decodeComponent(Component::encodeComponent($object));
-        $ch = createRequest::createPost($object->getAddress()."/component",array(),Component::encodeComponent($object));
+        $ch = Request_CreateRequest::createPost($object->getAddress()."/component",array(),Component::encodeComponent($object));
         $request->addRequest($ch); 
         }
         $res = $request->run();
-     //   echo var_dump($res);
     }
 
 }

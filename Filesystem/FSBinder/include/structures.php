@@ -5,20 +5,20 @@
 // Fragen
 // * Klasse für Punktearten in JSON?                                  gute Frage
 
-include 'structure/Backup.php';
-include 'structure/Component.php';
-include 'structure/Course.php';
-include 'structure/CourseStatus.php';
-include 'structure/Exercise.php';
-include 'structure/ExerciseSheet.php';
-include 'structure/File.php';
-include 'structure/Group.php';
-include 'structure/Invitation.php';
-include 'structure/Link.php';
-include 'structure/Marking.php';
-include 'structure/Submission.php';
-include 'structure/TutorAssignment.php';
-include 'structure/User.php';
+include 'StructBackup.php';
+include 'StructComponent.php';
+include 'StructCourse.php';
+include 'StructCourseStatus.php';
+include 'StructExercise.php';
+include 'StructExerciseSheet.php';
+include 'StructFile.php';
+include 'StructGroup.php';
+include 'StructInvitation.php';
+include 'StructLink.php';
+include 'StructMarking.php';
+include 'StructSubmission.php';
+include 'StructTutorAssignment.php';
+include 'StructUser.php';
 
 /**
 * 
@@ -31,13 +31,13 @@ abstract class Object
      *
      * type: string
      */
-    private $_sender;
+   /* private $_sender;
 	public function getSender(){
 	    return $this->_sender;
 	}
 	public function setSender($_value){
 	    $this->_sender = $_value;
-	}
+	}*/
 }
 
 ?>

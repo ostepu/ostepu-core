@@ -4,33 +4,33 @@
  * %(description)
  */ 
 
-require 'Slim/Slim.php';
-include 'include/Component.php';
-include 'include/structures.php';
-include 'include/Request.php';
+require 'Include/Slim/Slim.php';
+include 'Include/Com.php';
+include 'Include/Structures.php';
+include 'Include/Request.php';
 
 \Slim\Slim::registerAutoloader();
 
-$com = new CConf(FSZIP::getBaseDir());
-new FSZIP($com->loadConfig());
+$com = new CConf(FsZIP::getBaseDir());
+
+if (!$com->used())
+    new FsZIP($com->loadConfig());
 
 /**
  * (description)
  */
-class FSZIP
+class FsZIP
 {
-    private static $_baseDir = "ZIP";
+    private static $_baseDir = "zip";
     public static function getBaseDir(){
-        return FSZIP::$_baseDir;
+        return FsZIP::$_baseDir;
     }
     public static function setBaseDir($value){
-        FSZIP::$_baseDir = $value;
+        FsZIP::$_baseDir = $value;
     }
     
     private $_app=null;
     private $conf=null;
-    private $relevant_begin;
-    private $relevant_end;
     private $FSControl=null;
     
     /**
@@ -40,27 +40,24 @@ class FSZIP
      */
 	public function __construct($conf){
 	    $this->conf = $conf;
-	    $arr = explode("-",$conf->getOption());
-	    $this->relevant_begin=$arr[0];
-	    $this->relevant_end=$arr[1];
 	    $this->FSControl = CConf::getLink($conf->getLinks(),"FSControl");
 	    $this->_app = new \Slim\Slim();
 
         $this->_app->response->headers->set('Content-Type', '_application/json');
 		
 		// POST file
-		$this->_app->post('/'.FSZIP::$_baseDir, array($this,'postZip'));
+		$this->_app->post('/'.FsZIP::$_baseDir, array($this,'postZip'));
 		
 		// GET filedata
-		$this->_app->get('/'.FSZIP::$_baseDir.'/:hash', array($this,'getZipData'));
+		$this->_app->get('/'.FsZIP::$_baseDir.'/:hash', array($this,'getZipData'));
 		
 		// GET file as document
-		$this->_app->get('/'.FSZIP::$_baseDir.'/:hash/:filename', array($this,'getZipDocument'));
+		$this->_app->get('/'.FsZIP::$_baseDir.'/:hash/:filename', array($this,'getZipDocument'));
 		
 		// DELETE file
-		$this->_app->delete('/'.FSZIP::$_baseDir.'/:hash', array($this,'deleteZip'));
+		$this->_app->delete('/'.FsZIP::$_baseDir.'/:hash', array($this,'deleteZip'));
 		
-		if (strpos($this->_app->request->getResourceUri(), '/'.FSZIP::$_baseDir) === 0){
+		if (strpos($this->_app->request->getResourceUri(), '/'.FsZIP::$_baseDir) === 0){
 		// run Slim
 		$this->_app->run();
 		}
@@ -81,7 +78,7 @@ class FSZIP
         }
 	    else
 	    	if ($fileobject->body == null && $fileobject->hash != null){
-	    	    if (FSZIP::isRelevant($fileobject->hash,$this->relevant_begin,$this->relevant_end)===false){
+	    	    if (FsZIP::isRelevant($fileobject->hash,$this->relevant_begin,$this->relevant_end)===false){
 	                $this->_app->response->setStatus(405);
 	                $this->_app->stop();
 	    	    }
@@ -96,7 +93,7 @@ class FSZIP
 	        // create sha1 request hash
 	        $hash = sha1($fileobject->body);
 	        
-	        if (FSZIP::isRelevant($hash,$this->relevant_begin,$this->relevant_end)===false){
+	        if (FsZIP::isRelevant($hash,$this->relevant_begin,$this->relevant_end)===false){
 	        	$fileobject->hash = $hash;
 	    	    $this->_app->response->setBody(json_encode($fileobject));
 	            $this->_app->response->setStatus(405);
@@ -104,12 +101,12 @@ class FSZIP
 	        }
 	        
 	        // generates the filepath to save file in filesystem
-	        $savepath = FSZip::generateFilePath(FSZIP::$_baseDir,$hash);
+	        $savepath = FsZIP::generateFilePath(FsZIP::$_baseDir,$hash);
 	        
 	        if (!file_exists($savepath)){
 
 	            // creates the folder structure for file
-	            FSZip::generatepath(dirname($savepath));
+	            FsZIP::generatepath(dirname($savepath));
 	        
 	            $zip = new ZipArchive();
 	            
@@ -143,7 +140,7 @@ class FSZIP
 	        }
 
 		    $fileobject->body=null;
-		    $fileobject->address = FSZIP::$_baseDir."/".$hash;
+		    $fileobject->address = FsZIP::$_baseDir."/".$hash;
             $fileobject->fileSize = filesize($savepath);
             $fileobject->hash = sha1_file($savepath);
             $this->_app->response->setBody(json_encode($fileobject));
@@ -158,12 +155,12 @@ class FSZIP
      */
 	// GET Zip
 	public function getZipDocument($hash, $filename){
-	    if (FSZIP::isRelevant($hash,$this->relevant_begin,$this->relevant_end)===false){
+	    if (FsZIP::isRelevant($hash,$this->relevant_begin,$this->relevant_end)===false){
 	        $this->_app->response->setStatus(405);
 	        $this->_app->stop();
 	    }
 	    	
-	    $file = FSZIP::generateFilePath(FSZIP::$_baseDir,$hash);
+	    $file = FsZIP::generateFilePath(FsZIP::$_baseDir,$hash);
 	    if (strlen($file)>0 && file_exists($file)){
 	         $this->_app->response->headers->set('Content-Type', '_application/zip');
 	         $this->_app->response->headers->set('Content-Disposition', "attachment; filename=\"$filename\"");
@@ -186,16 +183,16 @@ class FSZIP
      */
 	// GET Zipdata
     public function getZipData($hash){   
-        if (FSZIP::isRelevant($hash,$this->relevant_begin,$this->relevant_end)===false){
+        if (FsZIP::isRelevant($hash,$this->relevant_begin,$this->relevant_end)===false){
 	        $this->_app->response->setStatus(405);
 	        $this->_app->stop();
 	    } 
 	    	
-        $file = FSZIP::generateFilePath(FSZIP::$_baseDir,$hash);
+        $file = FsZIP::generateFilePath(FsZIP::$_baseDir,$hash);
 	    if (strlen($file)>0 && file_exists($file)){  
             $this->_app->response->setStatus(200);
             $File = new File();
-            $File->address = FSZIP::$_baseDir."/".$hash;
+            $File->address = FsZIP::$_baseDir."/".$hash;
             $File->fileSize = filesize($file);
             $File->hash = $hash;
             $this->_app->response->setBody(json_encode($File));
@@ -210,15 +207,15 @@ class FSZIP
      */
 	// DELETE Zip
     public function deleteZip($hash){
-    	if (FSZIP::isRelevant($hash,$this->relevant_begin,$this->relevant_end)===false){
+    	if (FsZIP::isRelevant($hash,$this->relevant_begin,$this->relevant_end)===false){
 	        $this->_app->response->setStatus(405);
 	        $this->_app->stop();
 	    }
 	    	
-        $file = FSZIP::generateFilePath(FSZIP::$_baseDir,$hash);
+        $file = FsZIP::generateFilePath(FsZIP::$_baseDir,$hash);
 	    if (strlen($file)>0 && file_exists($file)){ 
 	        $File = new File();
-            $File->address = FSZIP::$_baseDir."/".$hash;
+            $File->address = FsZIP::$_baseDir."/".$hash;
             $File->fileSize = filesize($file);
             $File->hash = $hash; 
 	        unlink($file);
@@ -226,12 +223,11 @@ class FSZIP
 	        if (file_exists($file)){
 	            $this->_app->response->setStatus(402);
 	            $this->_app->stop();
-	        }
-	        else
+	        } else {
 	            $this->_app->response->setStatus(202);
 	            $this->_app->stop();
-	    }
-	    else{
+	        }
+	    } else{
 	        // Zip not exists
 	        $this->_app->response->setStatus(409);
 	        $this->_app->stop();
@@ -269,42 +265,6 @@ class FSZIP
 	        }
 	    }
 	}
-	
-	/**
-     * (description)
-     *
-     * @param $path (description)
-     * @param $hash (description)
-     * @param $data_to_send (description)
-     */
-    function PostToHost($host, $path,  $data_to_send) {   
-        $res = ""; 
-        $fp = pfsockopen($host, 80); 
-        fputs($fp, "POST $path HTTP/1.1\r\nHost: $host\r\nReferer: $host$path\r\nContent-type: application/x-www-form-urlencoded\r\nContent-length: ". strlen($data_to_send) ."\r\n\r\n".$data_to_send);
-        $res="";
-        while (!feof($fp)) {
-            $res=$res.fgets($fp, 128);
-        }
-        fclose($fp);   
-        return $res;
-    }
-    
-    /**
-     * (description)
-     *
-     * @param $hash (description)
-     */
-    function GetToHost($path) {         
-        $r = new HttpRequest($path, HttpRequest::METH_GET);
-        try {
-            $r->send();
-
-        } 
-        catch (HttpException $ex) {
-            echo $ex;
-        }
-            return $r;
-    }
     
     /**
      * (description)

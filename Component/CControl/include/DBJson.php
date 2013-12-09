@@ -8,7 +8,7 @@
 /**
  * (description)
  */
-class DBJson
+class DbJson
 {
 
     /**
@@ -17,7 +17,7 @@ class DBJson
      * @param $app (description)
      * @param $object (description)
      */
-    public static function get_json($object){
+    public static function getJson($object){
         if (!$object){
             throw new Exception("Invalid query. Error: " . mysql_error());
         }
@@ -33,7 +33,7 @@ class DBJson
      *
      * @param $object (description)
      */
-    public static function GetRows($data){
+    public static function getRows($data){
         $res = array();
         while ($row = mysql_fetch_assoc($data)) {                   
             array_push($res,$row);
@@ -46,7 +46,7 @@ class DBJson
      *
      * @param $object (description)
      */
-    public static function GetObjectsByAttributes($data, $id, $attributes){
+    public static function getObjectsByAttributes($data, $id, $attributes){
         $res = array();
         foreach ($data as $row) {       
             foreach ($attributes as $attrib => $value) {  
@@ -64,20 +64,20 @@ class DBJson
      *
      * @param $object (description)
      */
-    public static function ConcatObjectLists($data, $prim, $primKey, $primAttrib, $sec, $secKey){
+    public static function concatObjectLists($data, $prim, $primKey, $primAttrib, $sec, $secKey){
     foreach ($prim as &$row){
         $row[$primAttrib] = array();
     }
     
     foreach ($data as $rw){
-        if (isset($sec[$rw[$secKey]])){
-            array_push($prim[$rw[$primKey]][$primAttrib], $sec[$rw[$secKey]]);
-        }
+		if (isset($sec[$rw[$secKey]])){
+			array_push($prim[$rw[$primKey]][$primAttrib], $sec[$rw[$secKey]]);
+		}
     }
     
     $arr = array();
     foreach ($prim as $rw){
-        array_push($arr, $rw);
+		array_push($arr, $rw);
     }
     
     return $arr;

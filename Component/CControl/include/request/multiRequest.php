@@ -7,7 +7,7 @@
 /**
  * (description)
  */
-class multiRequest
+class Request_MultiRequest
 {
     private $requests;
 	private $handles=array();
@@ -33,8 +33,7 @@ class multiRequest
                 do {
                     $status_cme = curl_multi_exec($this->requests, $running_handles);
                 } while ($status_cme == CURLM_CALL_MULTI_PERFORM);
-            }
-			else
+            } else
 			$status_cme = curl_multi_exec($this->requests, $running_handles);
         }
         
@@ -44,8 +43,7 @@ class multiRequest
             if(!empty($error)){
                 $result ='';
                 array_push($res,$result);
-            }
-            else{
+            } else{
                 $content  = curl_multi_getcontent( $k );
                 $result = curl_getinfo($k);
                 $header_size = curl_getinfo($k, CURLINFO_HEADER_SIZE);
