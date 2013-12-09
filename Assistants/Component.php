@@ -14,6 +14,7 @@ class CConf
     private $_app;
     private $CONF_FILE = "CConfig.json";
     private $_prefix = "";
+    private $_used = false;
     
     /**
      * (description)
@@ -31,9 +32,16 @@ class CConf
         $this->_app->get('/component', array($this,'getConfig'));
         
         if ($this->_app->request->getResourceUri()=="/component"){
-        // run Slim
-        $this->_app->run();
+            // run Slim
+            $this->_used = true;
+            $this->_app->run();
+        } else{
+            // prüfen, ob alle daten vorhanden
         }
+    }
+    
+    public function used(){
+        return $this->_used;   
     }
     
     /**
@@ -53,8 +61,14 @@ class CConf
      */
     // GET Config
     public function getConfig(){
-        $this->_app->response->setBody(file_get_contents($this->CONF_FILE));
-        $this->_app->response->setStatus(200);
+        if (file_exists($this->CONF_FILE)){
+            $this->_app->response->setBody(file_get_contents($this->CONF_FILE));
+            $this->_app->response->setStatus(200);
+        }
+        else{
+            $this->_app->response->setStatus(409);
+            $this->_app->response->setBody(Component::encodeComponent(new Component()));   
+        }
     }
     
     /**
@@ -72,7 +86,12 @@ class CConf
      * (description)
      */
     public function loadConfig(){ 
-        return Component::decodeComponent(file_get_contents($this->CONF_FILE));
+        if (file_exists($this->CONF_FILE)){
+            return Component::decodeComponent(file_get_contents($this->CONF_FILE));
+        }
+        else{
+            return new Component();        
+        }
     }
     
     /**

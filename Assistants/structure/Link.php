@@ -4,76 +4,238 @@
  */
 class Link extends Object implements JsonSerializable
 {
+    /**
+     * (description)
+     */
     private $_id = null;
-    public function getId(){
+    
+    /**
+     * (description)
+     */
+    public function getId()
+    {
         return $this->_id;
     }
-    public function setId($_value){
-        $this->_id = $_value;
+    
+    /**
+     * (description)
+     *
+     * @param $_conf (description)
+     */
+    public function setId($value)
+    {
+        $this->_id = $value;
     }
+    
+    
+    
     
     private $_name = null;
-    public function getName(){
+    
+    /**
+     * (description)
+     */
+    public function getName()
+    {
         return $this->_name;
     }
-    public function setName($_value){
-        $this->_name = $_value;
+    
+    /**
+     * (description)
+     *
+     * @param $_conf (description)
+     */
+    public function setName($value)
+    {
+        $this->_name = $value;
     }
     
+    
+    
+    
+    /**
+     * (description)
+     */
     private $_address = null;
-    public function getAddress(){
+    
+    /**
+     * (description)
+     */
+    public function getAddress()
+    {
         return $this->_address;
     }
-    public function setAddress($_value){
-        $this->_address = $_value;
+    
+    /**
+     * (description)
+     *
+     * @param $_conf (description)
+     */
+    public function setAddress($value)
+    {
+        $this->_address = $value;
     }
     
     
-    public function __construct($_data=array()) {
-        foreach ($_data AS $_key => $_value) {
+    
+    
+    /**
+     * (description)
+     */
+    private $_relevanz = null;
+    
+    /**
+     * (description)
+     */
+    public function getRelevanz()
+    {
+        return $this->$_relevanz;
+    }
+    
+    /**
+     * (description)
+     *
+     * @param $_conf (description)
+     */
+    public function setRelevanz($value)
+    {
+        $this->$_relevanz = $value;
+    }
+    
+    
+    
+    
+    /**
+     * (description)
+     */
+    private $_prefix = null;
+    
+    /**
+     * (description)
+     */
+    public function getPrefix()
+    {
+        return $this->_prefix;
+    }
+    
+    /**
+     * (description)
+     *
+     * @param $_conf (description)
+     */
+    public function setPrefix($value)
+    {
+        $this->_prefix = $value;
+    }
+    
+    
+    
+    
+    /**
+     * (description)
+     */
+    private $_complete = null;
+    
+    /**
+     * (description)
+     */
+    public function getcomplete()
+    {
+        return $this->$_complete;
+    }
+    
+    /**
+     * (description)
+     *
+     * @param $_conf (description)
+     */
+    public function setComplete($value)
+    {
+        $this->$_complete = $value;
+    }    
+    
+    
+    
+    
+    /**
+     * (description)
+     * @param $param (description)
+     */
+    public function __construct($_data=array()) 
+    {
+        foreach ($_data AS $_key => $value) {
             if (isset($_key)){
-                $this->{$_key} = $_value;
+                $this->{$_key} = $value;
             }
         }
     }
     
-    
-    public static function getDBConvert(){
+    /**
+     * (description)
+     */
+    public static function getDbConvert()
+    {
         return array(
            'CL_id' => '_id',
            'CL_name' => '_name',
            'CL_address' => '_address',
+           'CL_prefix' => '_prefix',
+           'CL_complete' => '_complete',
+           'CL_relevanz' => '_relevanz',
         );
     }
     
-    public static function getDBPrimaryKey(){
+    /**
+     * (description)
+     */
+    public static function getDbPrimaryKey()
+    {
         return 'CL_id';
     }
     
-    public static function encodeLink($_data){
+    /**
+     * (description)
+     * 
+     * @param $param (description)
+     */
+    public static function encodeLink($_data)
+    {
         return json_encode($_data);
     }
     
-    public static function decodeLink($_data, $decode=true){
+    /**
+     * (description)
+     * 
+     * @param $param (description)
+     * @param $param (description)
+     */
+    public static function decodeLink($_data, $decode=true)
+    {
         if ($decode)
             $_data = json_decode($_data);
         if (is_array($_data)){
             $result = array();
-            foreach ($_data AS $_key => $_value) {
-                array_push($result, new Link($_value));
+            foreach ($_data AS $_key => $value) {
+                array_push($result, new Link($value));
             }
             return $result;   
-        }
-        else
+        } else
             return new Link($_data);
     }
-    
-    public function jsonSerialize() {
-        return [
+
+    /**
+     * (description)
+     */
+    public function jsonSerialize() 
+    {
+        return array(
             '_id' => $this->_id,
             '_name' => $this->_name,
-            '_address' => $this->_address
-        ];
+            '_address' => $this->_address,
+            '_prefix' => $this->_prefix,
+            '_complete' => $this->_complete,
+            '_relevanz' => $this->_relevanz
+        );
     }
 }
 ?>

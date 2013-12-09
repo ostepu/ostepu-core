@@ -12,67 +12,125 @@ class CourseStatus extends Object implements JsonSerializable
      * type: Course
      */
     private $_course;
-    public function getCourse(){
+    
+    /**
+     * (description)
+     */
+    public function getCourse()
+    {
         return $this->_course;
     }
-    public function setCourse($_value){
-        $this->_course = $_value;
+    
+    /**
+     * (description)
+     *
+     * @param $param (description)
+     */
+    public function setCourse($value)
+    {
+        $this->_course = $value;
     }
 
+    
+    
+    
     /**
      * a string that defines which status the user has in that course.
      *
      * type: string
      */
     private $_status;
-    public function getStatus(){
+    
+    /**
+     * (description)
+     */
+    public function getStatus()
+    {
         return $this->_status;
     }
-    public function setStatus($_value){
-        $this->_status = $_value;
+    
+    /**
+     * (description)
+     *
+     * @param $param (description)
+     */
+    public function setStatus($value)
+    {
+        $this->_status = $value;
     }
+
     
     
-    public static function getDBConvert(){
+    
+    /**
+     * (description)
+     */
+    public static function getDbConvert()
+    {
         return array(
            'C_course' => '_course',
            'C_name' => '_status',
         );
     }
     
+    /**
+     * (description)
+     */
     // TODO: hier fehlt noch der primary key/keys
-    public static function getDBPrimaryKey(){
+    public static function getDbPrimaryKey()
+    {
         return 'C_id';
     }
    
-   
-    public function __construct($_data=array()) {
-        foreach ($_data AS $_key => $_value) {
+    /**
+     * (description)
+     * 
+     * @param $param (description)
+     */
+    public function __construct($_data=array()) 
+    {
+        foreach ($_data AS $_key => $value) {
             if (isset($_key)){
-                $this->{$_key} = $_value;
+                $this->{$_key} = $value;
             }
         }
     }
     
-    public static function encodeCourseStatus($_data){
+    /**
+     * (description)
+     *
+     * @param $param (description)
+     */
+    public static function encodeCourseStatus($_data)
+    {
         return json_encode($_data);
     }
     
-    public static function decodeCourseStatus($_data, $decode=true){
+    /**
+     * (description)
+     * 
+     * @param $param (description)
+     * @param $param (description)
+     */
+    public static function decodeCourseStatus($_data, $decode=true)
+    {
         if ($decode)
             $_data = json_decode($_data);
         if (is_array($_data)){
             $result = array();
-            foreach ($_data AS $_key => $_value) {
-                array_push($result, new CourseStatus($_value));
+            foreach ($_data AS $_key => $value) {
+                array_push($result, new CourseStatus($value));
             }
             return $result;   
-        }
-        else
+        } else
             return new CourseStatus($_data);
     }
     
-    public function jsonSerialize() {
+    /**
+     * (description)
+     */
+    public function jsonSerialize()
+    {
         return array(
             '_course' => $this->_course,
             '_status' => $this->_status

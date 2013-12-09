@@ -11,12 +11,27 @@ class User extends Object implements JsonSerializable
      * type: int
      */
     private $_id;
-    public function getId(){
+    
+    /**
+     * (description)
+     */
+    public function getId()
+    {
         return $this->_id;
     }
-    public function setId($_value){
-        $this->_id = $_value;
+    
+    /**
+     * (description)
+     *
+     * @param $_conf (description)
+     */
+    public function setId($value)
+    {
+        $this->_id = $value;
     }
+    
+    
+    
     
     /**
      * a string that identifies the user
@@ -24,65 +39,143 @@ class User extends Object implements JsonSerializable
      * type: string
      */
     private $_userName; 
-    public function getUserName(){
+    
+    /**
+     * (description)
+     */
+    public function getUserName()
+    {
         return $this->_userName;
     }
-    public function setUserName($_value){
-        $this->_userName = $_value;
+    
+    /**
+     * (description)
+     *
+     * @param $_conf (description)
+     */
+    public function setUserName($value)
+    {
+        $this->_userName = $value;
     }
 
+    
+    
+    
     /**
      * The user's email address.
      *
      * type: string
      */
     private $_email;
-    public function getEmail(){
+    
+    /**
+     * (description)
+     */
+    public function getEmail()
+    {
         return $this->_email;
     }
-    public function setWmail($_value){
-        $this->_email = $_value;
+    
+    /**
+     * (description)
+     *
+     * @param $_conf (description)
+     */
+    public function setEmail($value)
+    {
+        $this->_email = $value;
     }
 
+    
+    
+    
     /**
      * The user's first name(s)
      *
      * type: string
      */
     private $_firstName;
-    public function getFirstName(){
+    
+    /**
+     * (description)
+     */
+    public function getFirstName()
+    {
         return $this->_firstName;
     }
-    public function setFirstName($_value){
-        $this->_firstName = $_value;
+    
+    /**
+     * (description)
+     *
+     * @param $_conf (description)
+     */
+    public function setFirstName($value)
+    {
+        $this->_firstName = $value;
     }
 
+    
+    
+    
+    
     /**
      * The user's last name(s)
      *
      * type: string
      */
     private $_lastName;
-    public function getLastName(){
+    
+    /**
+     * (description)
+     */
+    public function getLastName()
+    {
         return $this->_lastName;
     }
-    public function setLastName($_value){
-        $this->_lastName = $_value;
+    
+    /**
+     * (description)
+     *
+     * @param $_conf (description)
+     */
+    public function setLastName($value)
+    {
+        $this->_lastName = $value;
     }
 
+    
+    
+    
+    
     /**
      * possibly a title the user holds
      *
      * type: string
      */
     private $_title; 
-    public function getTitle(){
+    
+    /**
+     * (description)
+     */
+    public function getTitle()
+    {
         return $this->_title;
     }
-    public function setTitle($_value){
-        $this->_title = $_value;
+    
+    /**
+     * (description)
+     *
+     * @param $_conf (description)
+     */
+    public function setTitle($value)
+    {
+        $this->_title = $value;
     }
 
+    
+    
+    
+    
     /**
      * an array of CourseStatus objects that represents the courses
      * the user is enlisted in and which role she/he has in that course
@@ -90,16 +183,33 @@ class User extends Object implements JsonSerializable
      * type: Course[]
      */
     private $_courses = array();
-    public function getCourses(){
+    
+    /**
+     * (description)
+     */
+    public function getCourses()
+    {
         return $this->_courses;
     }
-    public function setCourses($_value){
-        $this->_courses = $_value;
+    
+    /**
+     * (description)
+     *
+     * @param $param (description)
+     */
+    public function setCourses($value)
+    {
+        $this->_courses = $value;
     }
     
     
-    public static function getDBConvert(){
     
+    
+    /**
+     * (description)
+     */
+    public static function getDbConvert()
+    {
         return array(
            'U_id' => '_id',
            'U_username' => '_userName',
@@ -110,43 +220,67 @@ class User extends Object implements JsonSerializable
            'U_courses' => '_courses'
         );
     }
-    public static function getDBPrimaryKey(){
     
+    /**
+     * (description)
+     */
+    public static function getDBbPrimaryKey()
+    {
         return 'U_id';
     }
     
-    
-    public function __construct($_data=array()) {
-        foreach ($_data AS $_key => $_value) {
+    /**
+     * (description)
+     * 
+     * @param $param (description)
+     */
+    public function __construct($_data=array()) 
+    {
+        foreach ($_data AS $_key => $value) {
             if (isset($_key)){
-                if (is_array($_value)) {
-                    $_sub = Course::decodeCourse($_value);
-                    $_value = $_sub;
+                if (is_array($value)) {
+                    $_sub = Course::decodeCourse($value);
+                    $value = $_sub;
                 }
-                $this->{$_key} = $_value;
+                $this->{$_key} = $value;
             }
         }
     }
     
+    /**
+     * (description)
+     * 
+     * @param $param (description)
+     */
     public static function encodeUser($_data){
         return json_encode($_data);
     }
     
-    public static function decodeUser($_data, $decode=true){
+    /**
+     * (description)
+     * 
+     * @param $param (description)
+     * @param $param (description)
+     */
+    public static function decodeUser($_data, $decode=true)
+    {
         if ($decode)
             $_data = json_decode($_data);
         if (is_array($_data)){
             $result = array();
-            foreach ($_data AS $_key => $_value) {
-                array_push($result, new User($_value));
+            foreach ($_data AS $_key => $value) {
+                array_push($result, new User($value));
             }
             return $result;   
-        }
-        else
+        } else
             return new User($_data);
     }
-
-    public function jsonSerialize() {
+    
+    /**
+     * (description)
+     */
+    public function jsonSerialize() 
+    {
       /*  return array(
             '_id' => $this->_id,
             '_userName' => $this->_userName,
