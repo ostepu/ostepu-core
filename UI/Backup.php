@@ -12,7 +12,7 @@ $h = new Header("Datenstrukturen",
 $h->setBackURL("index.php")
 ->setBackTitle("zur Veranstaltung");
 
-$data = file_get_contents("http://localhost/Uebungsplattform/Data/BackupData");
+$data = file_get_contents("http://localhost/Uebungsplattform/UI/Data/BackupData");
 $data = json_decode($data, true);
 
 $backups = $data;

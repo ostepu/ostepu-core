@@ -13,7 +13,7 @@ $h = new Header("Datenstrukturen",
 $h->setBackURL("index.php")
 ->setBackTitle("zur Veranstaltung");
 
-$data = file_get_contents("http://localhost/Uebungsplattform/Data/GroupData");
+$data = file_get_contents("http://localhost/Uebungsplattform/UI/Data/GroupData");
 $data = json_decode($data, true);
 
 $group = $data['group'];

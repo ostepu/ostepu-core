@@ -12,7 +12,7 @@ $h = new Header("Datenstrukturen",
 $h->setBackURL("index.php")
 ->setBackTitle("zur Veranstaltung");
 
-$data = file_get_contents("http://localhost/Uebungsplattform/Data/TutorAssignData");
+$data = file_get_contents("http://localhost/Uebungsplattform/UI/Data/TutorAssignData");
 $data = json_decode($data, true);
 
 $tutorAssignment = $data;
