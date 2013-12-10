@@ -125,6 +125,14 @@ li {
     font-weight: bold;
 }
 
+.red {
+    color: #DE3838;
+}
+
+.green {
+    color: #2DB22D;
+}
+
 .normal {
     font-weight: normal;
 }
