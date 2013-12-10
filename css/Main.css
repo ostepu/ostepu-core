@@ -40,6 +40,7 @@ a:after {
     height: auto;
     line-height: 19px;
     background-color: #b9b8b8;
+    background-size: 16px 98px;
 }
 
 .content-body-wrapper {

@@ -9,5 +9,8 @@
         "css/Header.css",
         "css/Forms.css",
         "css/Navigation.css"
-	]
+	],
+    "javascripts":[
+        "javascript/retina.js"
+    ]
 }
