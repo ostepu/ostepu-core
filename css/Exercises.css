@@ -44,3 +44,18 @@
     content: counter(item, decimal) ' | ';
     counter-increment: item;
 }
+
+.create-exercise-list {
+    counter-reset: item;
+    width: 880px;
+}
+
+.create-exercise-list li:not(.skip):before {
+    content: counter(item, lower-alpha);
+    padding-right: 20px;
+    counter-increment: item;
+}
+
+.create-exercise-list.skip:before {
+    content:"\a0\a0\a0"
+}

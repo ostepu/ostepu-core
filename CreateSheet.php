@@ -15,12 +15,15 @@ $h->setBackURL("index.php")
 $sheetSettings = Template::WithTemplateFile('include/CreateSheet/SheetSettings.template.json');
 $sheetSettings->bind(array());
 
+$createExercise = Template::WithTemplateFile('include/CreateSheet/CreateExercise.template.json');
+$createExercise->bind(array());
+
 $exerciseSettings = Template::WithTemplateFile('include/CreateSheet/ExerciseSettings.template.json');
 $exerciseSettings->bind(array());
 
 // wrap all the elements in some HTML and show them on the page
-$w = new HTMLWrapper($h, $sheetSettings, $exerciseSettings);
-$w->set_config_file('include/configs/config_default.json');
+$w = new HTMLWrapper($h, $sheetSettings, $createExercise, $exerciseSettings);
+$w->set_config_file('include/configs/config_createSheet.json');
 $w->show();
 ?>
 

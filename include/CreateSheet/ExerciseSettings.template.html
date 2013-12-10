@@ -1,67 +1,74 @@
-<div class="content-element">
+<div class="content-element collapsible">
     <div class="content-header">
         <div class="content-title left uppercase">Aufgabe 1</div>
         <div class="exercise-sheet-end bold right">
-            <a href="#" class="body-option">Teilaufgabe hinzufügen</a>
+            <a href="#" class="body-option">Aufgabe löschen</a>
         </div>   
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body left">
-            <input class="form-field left text-input very-short" name="exerciseMaxPoints" value="1" id="exerciseMaxPoints" />
-            <select class="form-field left text-input short" name="exerciseType" id="exerciseType"> 
-                <option value="1">Theorie Punkt(e)</option>
-                <option value="2">Theorie Bonus Punkt(e)</option>
-                <option value="3">Praxis Punkt(e)</option>
-                <option value="4">Praxis Bonus Punkt(e)</option>
-                <option value="5">...</option>
-            </select>
-            <input class="form-field left text-input short" name="exerciseType" value="pdf" id="exerciseType" />
-            <input class="form-field left button" type="button" name="exerciseAttachmentUpload" value="Anhang auswählen ..." />
+            <ol class="create-exercise-list">
+                <li>
+                    <input class="form-field text-input very-short" name="exerciseMaxPoints" value="1" id="exerciseMaxPoints" />
+                    <select class="form-field text-input short" name="exerciseType" id="exerciseType"> 
+                        <option value="1">Theorie Punkt(e)</option>
+                        <option value="2">Theorie Bonus Punkt(e)</option>
+                        <option value="3">Praxis Punkt(e)</option>
+                        <option value="4">Praxis Bonus Punkt(e)</option>
+                        <option value="5">...</option>
+                    </select>
+                    <input class="form-field text-input short" name="exerciseType" value="pdf" id="exerciseType" />
+                    <input class="form-field short" type="button" name="exerciseAttachmentUpload" value="Anhang auswählen ..." />
+                    <a href="#" class="body-option deny-button right">Teilaufgabe löschen</a>
+                </li>
+                <li>
+                    <a href="#" class="body-option right deny-button skip-list-item">Teilaufgabe hinzufügen</a>  
+                </li>
+            </ol>
         </div>
     </div> <!-- end: content-body -->
 </div> <!-- end: content-wrapper -->
 
-<div class="content-element">
+<div class="content-element collapsible">
     <div class="content-header">
         <div class="content-title left uppercase">Aufgabe 2</div>
         <div class="exercise-sheet-end bold right">
-            <a href="#" class="body-option">Teilaufgabe hinzufügen</a>
+            <a href="#" class="body-option">Aufgabe löschen</a>
         </div>   
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body left">
-        <ol class="exercise-list" style="width: 880px;">
-                <li style="display: block;">
-                    <input class="very-short" name="exerciseMaxPoints" value="1" id="exerciseMaxPoints" />
-                    <select class="short" name="exerciseType" id="exerciseType"> 
+            <ol class="create-exercise-list">
+                <li>
+                    <input class="form-field text-input very-short" name="exerciseMaxPoints" value="1" id="exerciseMaxPoints" />
+                    <select class="form-field text-input short" name="exerciseType" id="exerciseType"> 
                         <option value="1">Theorie Punkt(e)</option>
                         <option value="2">Theorie Bonus Punkt(e)</option>
                         <option value="3">Praxis Punkt(e)</option>
                         <option value="4">Praxis Bonus Punkt(e)</option>
                         <option value="5">...</option>
                     </select>
-                    <input class="short" name="exerciseType" value="pdf" id="exerciseType" />
-                    <input class="" type="button" name="exerciseAttachmentUpload" value="Anhang auswählen ..." />
-                    <a href="#" class="body-option deny-button right">test</a>
-
+                    <input class="form-field text-input short" name="exerciseType" value="pdf" id="exerciseType" />
+                    <input class="form-field short" type="button" name="exerciseAttachmentUpload" value="Anhang auswählen ..." />
+                    <a href="#" class="body-option deny-button right">Teilaufgabe löschen</a>
                 </li>
                 <li>
-                    <input class="very-short" name="exerciseMaxPoints" value="1" id="exerciseMaxPoints" />
-                    <select class="short" name="exerciseType" id="exerciseType"> 
+                    <input class="form-field text-input very-short" name="exerciseMaxPoints" value="1" id="exerciseMaxPoints" />
+                    <select class="form-field text-input short" name="exerciseType" id="exerciseType"> 
                         <option value="1">Theorie Punkt(e)</option>
                         <option value="2">Theorie Bonus Punkt(e)</option>
                         <option value="3">Praxis Punkt(e)</option>
                         <option value="4">Praxis Bonus Punkt(e)</option>
                         <option value="5">...</option>
                     </select>
-                    <input class="short" name="exerciseType" value="pdf" id="exerciseType" />
-                    <input class="" type="button" name="exerciseAttachmentUpload" value="Anhang auswählen ..." />
-                    <a href="#" class="body-option deny-button right">test2</a>
+                    <input class="form-field text-input short" name="exerciseType" value="pdf" id="exerciseType" />
+                    <input class="form-field short" type="button" name="exerciseAttachmentUpload" value="Anhang auswählen ..." />
+                    <a href="#" class="body-option deny-button right">Teilaufgabe löschen</a>
                 </li>
-                <li style="list-style-type: none;">
-                    <a href="#" class="body-option right deny-button">test3</a>  
+                <li>
+                    <a href="#" class="body-option right deny-button skip-list-item">Teilaufgabe hinzufügen</a>  
                 </li>
             </ol>
         </div>
