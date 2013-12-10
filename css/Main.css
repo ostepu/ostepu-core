@@ -101,11 +101,11 @@ li {
 }
 
 .accept-button, .deny-button {
-    padding-right: 40px;
+    padding-left: 40px;
 }
 
 .invitation-list {
-    width: 920px;
+    width: 880px;
 }
 
 .tutor-assign-element {

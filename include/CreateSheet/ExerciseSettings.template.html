@@ -32,29 +32,38 @@
 
     <div class="content-body-wrapper">
         <div class="content-body left">
-            <label class="form-field left label bold new-line very-short" for="exerciseMaxPoints">a:</label>
-            <input class="form-field left text-input very-short" name="exerciseMaxPoints" value="1" id="exerciseMaxPoints" />
-            <select class="form-field left text-input short" name="exerciseType" id="exerciseType"> 
-                <option value="1">Theorie Punkt(e)</option>
-                <option value="2">Theorie Bonus Punkt(e)</option>
-                <option value="3">Praxis Punkt(e)</option>
-                <option value="4">Praxis Bonus Punkt(e)</option>
-                <option value="5">...</option>
-            </select>
-            <input class="form-field left text-input short" name="exerciseType" value="pdf" id="exerciseType" />
-            <input class="form-field left button" type="button" name="exerciseAttachmentUpload" value="Anhang auswählen ..." />
+        <ol class="exercise-list" style="width: 880px;">
+                <li style="display: block;">
+                    <input class="very-short" name="exerciseMaxPoints" value="1" id="exerciseMaxPoints" />
+                    <select class="short" name="exerciseType" id="exerciseType"> 
+                        <option value="1">Theorie Punkt(e)</option>
+                        <option value="2">Theorie Bonus Punkt(e)</option>
+                        <option value="3">Praxis Punkt(e)</option>
+                        <option value="4">Praxis Bonus Punkt(e)</option>
+                        <option value="5">...</option>
+                    </select>
+                    <input class="short" name="exerciseType" value="pdf" id="exerciseType" />
+                    <input class="" type="button" name="exerciseAttachmentUpload" value="Anhang auswählen ..." />
+                    <a href="#" class="body-option deny-button right">test</a>
 
-            <label class="form-field left label bold new-line very-short" for="exerciseMaxPoints">b:</label>
-            <input class="form-field left text-input very-short" name="exerciseMaxPoints" value="1" id="exerciseMaxPoints" />
-            <select class="form-field left text-input short" name="exerciseType" id="exerciseType"> 
-                <option value="1">Theorie Punkt(e)</option>
-                <option value="2">Theorie Bonus Punkt(e)</option>
-                <option value="3">Praxis Punkt(e)</option>
-                <option value="4">Praxis Bonus Punkt(e)</option>
-                <option value="5">...</option>
-            </select>
-            <input class="form-field left text-input short" name="exerciseType" value="pdf" id="exerciseType" />
-            <input class="form-field left button" type="button" name="exerciseAttachmentUpload" value="Anhang auswählen ..." />
+                </li>
+                <li>
+                    <input class="very-short" name="exerciseMaxPoints" value="1" id="exerciseMaxPoints" />
+                    <select class="short" name="exerciseType" id="exerciseType"> 
+                        <option value="1">Theorie Punkt(e)</option>
+                        <option value="2">Theorie Bonus Punkt(e)</option>
+                        <option value="3">Praxis Punkt(e)</option>
+                        <option value="4">Praxis Bonus Punkt(e)</option>
+                        <option value="5">...</option>
+                    </select>
+                    <input class="short" name="exerciseType" value="pdf" id="exerciseType" />
+                    <input class="" type="button" name="exerciseAttachmentUpload" value="Anhang auswählen ..." />
+                    <a href="#" class="body-option deny-button right">test2</a>
+                </li>
+                <li style="list-style-type: none;">
+                    <a href="#" class="body-option right deny-button">test3</a>  
+                </li>
+            </ol>
         </div>
     </div> <!-- end: content-body -->
 </div> <!-- end: content-wrapper -->
