@@ -83,5 +83,60 @@ class Request
     public static function put($target, $header,  $content){
         return Request::custom("PUT", $target, $header, $content); 
     } 
+    
+    /**
+     * (description)
+     *
+     * @param $param (description)
+     * @param $param (description)
+     * @param $param (description)
+     * @param $param (description)
+     * @param $param (description)
+     * @param $param (description)
+     * @param $param (description)
+     */
+    public static function routeRequest($method , $resourceUri , $header ,  $content , $linkedComponents , $prefix, $linkName=NULL)
+    {
+        // get possible links
+        $else = array();
+        foreach ($linkedComponents as $links){
+            if ($linkName!=NULL && $linkName!=$links->getName())
+                continue;
+                
+            $possible = explode(',',$links->getPrefix());
+            if (in_array($prefix,$possible)){
+                $ch = Request::custom($method,
+                                      $links->getAddress().$resourceUri,
+                                      $header,
+                                      $content);
+  
+                if ($ch['status']>=200 && $ch['status']<=299){
+                    // finished
+                    return $ch;
+                }
+                                     
+            } elseif(in_array("",$possible)){
+                array_push($else, $links);
+            } 
+        }
+        
+        foreach ($else as $links){
+            $ch = Request::custom($method,
+                                  $links->getAddress().$resourceUri,
+                                  $header,
+                                  $content);
+                                  
+            if ($ch['status']>=200 && $ch['status']<=299){
+                // finished
+                return $ch;
+            }
+        }
+        
+        // no positive response or no operative link
+        $ch = array();
+        $ch['status'] = 404;
+        return $ch;
+    }
+
 }   
 ?>
