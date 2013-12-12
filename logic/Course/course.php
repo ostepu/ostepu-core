@@ -1,7 +1,7 @@
 <?php
 
 require 'Slim/Slim.php';
-include 'include/Helpers.php';
+include 'include/Assistants/request/createRequest.php';
 	
 \Slim\Slim::registerAutoloader();
 	
@@ -13,8 +13,9 @@ $LController = "";				//Einlesen aus config.ini
 $_app->post('', function() use($_app){
 
 	$req = \Slim\Slim::getInstance()->request()->getBody();
+	$header = \Slim\Slim::getInstance()->request()->getHeader();
     $URL = $LController.'/DB/course';
-    $status = http_post_data($URL, $req);
+    $status = createPost($URL, $header, $req);
     $_app->response->setStatus($status);
     
 });
@@ -24,8 +25,9 @@ $_app->post('', function() use($_app){
 $_app->put('/course/:id', function($id) use($_app){
 
 	$req = \Slim\Slim::getInstance()->request()->getBody();
+	$header = \Slim\Slim::getInstance()->request()->getHeader();
     $URL = $LController.'/DB/course/course/'. $id;
-    $status = http_put_data($URL, $req);
+    $status = createPut($URL, $header, $req);
     $_app->response->setStatus($status);
     
 });
@@ -34,8 +36,10 @@ $_app->put('/course/:id', function($id) use($_app){
 
 $_app->delete('/course/:id', function($id) use($_app){
 
+	$req = \Slim\Slim::getInstance()->request()->getBody();
+	$header = \Slim\Slim::getInstance()->request()->getHeader();
     $URL = $LController.'/DB/course/course/'. $id;
-    $status = http_delete($URL);
+    $status = createDelete($URL, $header, $req);
     $_app->response->setStatus($status);
     
 });
@@ -47,8 +51,9 @@ $_app->delete('/course/:id', function($id) use($_app){
 $_app->post('/course/:id/user/:id', function($courseid, $userid) use($_app){
 	
 	$req = \Slim\Slim::getInstance()->request()->getBody();
+	$header = \Slim\Slim::getInstance()->request()->getHeader();
     $URL = $LController.'/DB/course/'.$courseid.'/course/'.$userid;
-    $status = http_put_data($URL, $req);
+    $status = createPut($URL, $header, $req);
     $app->response->setStatus($status);
     
 });
@@ -57,8 +62,10 @@ $_app->post('/course/:id/user/:id', function($courseid, $userid) use($_app){
 
 $_app->get('/course/:id/user', function($id) use($_app){
 
+	$req = \Slim\Slim::getInstance()->request()->getBody();
+	$header = \Slim\Slim::getInstance()->request()->getHeader();
     $URL = $LController.'/DB/course/'.$id.'/user';
-    $dbAnswer = http_get($URL);
+    $dbAnswer = createGet($URL, $header, $req);
     $_app->response->headers->set('Content-Type', 'application/json');
     $_app->response->setStatus(200);
     $_app->response->setBody($dbAnswer);
@@ -68,8 +75,10 @@ $_app->get('/course/:id/user', function($id) use($_app){
 //GetCourses
 $app->get('/user/:id', function($id) use($app){
 
+	$req = \Slim\Slim::getInstance()->request()->getBody();
+	$header = \Slim\Slim::getInstance()->request()->getHeader();
     $URL = $LController.'/DB/course/user/'.$id;
-    $dbAnswer = http_get($URL);
+    $dbAnswer = createGet($URL, $header, $req);
     $_app->response->headers->set('Content-Type', 'application/json');
     $_app->response->setStatus(200);
     $_app->response->setBody($dbAnswer);
