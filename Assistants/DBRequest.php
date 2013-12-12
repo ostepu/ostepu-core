@@ -17,9 +17,10 @@ class DbRequest
      *
      * @param $sql_statement (description)
      */
-    public static function request($sql_statement){
+    public static function request($sql_statement)
+    {
         if (DbRequest::$config==null)
-            DbRequest::$config = parse_ini_file("include/config.ini", TRUE);
+            DbRequest::$config = parse_ini_file("config.ini", TRUE);
         
         $dbconn = mysql_connect(DbRequest::$config['DB']['db_path'], DbRequest::$config['DB']['db_user'],DbRequest::$config['DB']['db_passwd']);    
         if (!$dbconn) {

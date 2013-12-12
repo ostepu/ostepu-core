@@ -30,7 +30,8 @@ class Controller
      * 
      * @param $param (description)
      */
-    public static function setPrefix($value){
+    public static function setPrefix($value)
+    {
         FsControl::$_prefix = $value;
     }
     
@@ -43,7 +44,8 @@ class Controller
      *
      * @param $_conf (description)
      */
-    public function __construct($_conf){
+    public function __construct($_conf)
+    {
         $this->_conf = $_conf;
         $this->_fs = $_conf->getLinks();
     
@@ -60,7 +62,8 @@ class Controller
      * 
      * @param $param (description)
      */
-    public function getl($data){
+    public function getl($data)
+    {
         if (count($data)==0){
            $this->_app->response->setStatus(404);
            $this->_app->stop();
