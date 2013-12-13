@@ -64,6 +64,7 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`User` (
   `U_firstName` VARCHAR(45) NULL,
   `U_title` VARCHAR(45) NULL,
   `U_password` VARCHAR(45) NOT NULL,
+  `U_flag` SMALLINT NOT NULL DEFAULT 1,
   PRIMARY KEY (`U_id`),
   UNIQUE INDEX `U_username_UNIQUE` (`U_username` ASC),
   UNIQUE INDEX `U_id_UNIQUE` (`U_id` ASC),
@@ -82,6 +83,7 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`ExerciseSheet` (
   `ES_startDate` TIMESTAMP NULL,
   `ES_endDate` TIMESTAMP NULL,
   `ES_groupSize` INT NOT NULL DEFAULT 1,
+  `ES_name` VARCHAR(120) NULL,
   PRIMARY KEY (`ES_id`),
   INDEX `fk_ExerciseSheet_Course1_idx` (`C_id` ASC),
   INDEX `fk_ExerciseSheet_File1_idx` (`F_id_sampleSolution` ASC),
@@ -453,10 +455,10 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `uebungsplattform`;
-INSERT INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`) VALUES (4, 'till', 'till@email.de', 'Uhlig', 'Till', NULL, 'test');
-INSERT INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`) VALUES (2, 'lisa', 'lisa@email.de', 'Dietrich', 'Lisa', NULL, 'test');
-INSERT INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`) VALUES (3, 'jörg', 'jörg@email.de', 'Baumgarten', 'Jörg', NULL, 'test');
-INSERT INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`) VALUES (1, 'super-admin', NULL, NULL, NULL, NULL, 'test');
+INSERT INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`) VALUES (4, 'till', 'till@email.de', 'Uhlig', 'Till', NULL, 'test', 1);
+INSERT INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`) VALUES (2, 'lisa', 'lisa@email.de', 'Dietrich', 'Lisa', NULL, 'test', 1);
+INSERT INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`) VALUES (3, 'jörg', 'jörg@email.de', 'Baumgarten', 'Jörg', NULL, 'test', 1);
+INSERT INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`) VALUES (1, 'super-admin', NULL, NULL, NULL, NULL, 'test', 1);
 
 COMMIT;
 
@@ -466,13 +468,13 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `uebungsplattform`;
-INSERT INTO `uebungsplattform`.`ExerciseSheet` (`C_id`, `ES_id`, `F_id_sampleSolution`, `F_id_file`, `ES_startDate`, `ES_endDate`, `ES_groupSize`) VALUES (1, 1, NULL, NULL, '2013-12-02 00:00:01', '2013-12-31 23:59:59', 1);
-INSERT INTO `uebungsplattform`.`ExerciseSheet` (`C_id`, `ES_id`, `F_id_sampleSolution`, `F_id_file`, `ES_startDate`, `ES_endDate`, `ES_groupSize`) VALUES (1, 2, NULL, NULL, '2013-12-02 00:00:01', '2013-12-31 23:59:59', 1);
-INSERT INTO `uebungsplattform`.`ExerciseSheet` (`C_id`, `ES_id`, `F_id_sampleSolution`, `F_id_file`, `ES_startDate`, `ES_endDate`, `ES_groupSize`) VALUES (2, 3, NULL, NULL, '2013-12-02 00:00:01', '2013-12-31 23:59:59', 1);
-INSERT INTO `uebungsplattform`.`ExerciseSheet` (`C_id`, `ES_id`, `F_id_sampleSolution`, `F_id_file`, `ES_startDate`, `ES_endDate`, `ES_groupSize`) VALUES (2, 4, NULL, NULL, '2013-12-02 00:00:01', '2013-12-31 23:59:59', 1);
-INSERT INTO `uebungsplattform`.`ExerciseSheet` (`C_id`, `ES_id`, `F_id_sampleSolution`, `F_id_file`, `ES_startDate`, `ES_endDate`, `ES_groupSize`) VALUES (4, 5, NULL, NULL, '2013-12-02 00:00:01', '2013-12-31 23:59:59', 1);
-INSERT INTO `uebungsplattform`.`ExerciseSheet` (`C_id`, `ES_id`, `F_id_sampleSolution`, `F_id_file`, `ES_startDate`, `ES_endDate`, `ES_groupSize`) VALUES (5, 6, NULL, NULL, '2013-12-02 00:00:01', '2013-12-31 23:59:59', 1);
-INSERT INTO `uebungsplattform`.`ExerciseSheet` (`C_id`, `ES_id`, `F_id_sampleSolution`, `F_id_file`, `ES_startDate`, `ES_endDate`, `ES_groupSize`) VALUES (5, 7, NULL, NULL, '2013-12-02 00:00:01', '2013-12-31 23:59:59', 1);
+INSERT INTO `uebungsplattform`.`ExerciseSheet` (`C_id`, `ES_id`, `F_id_sampleSolution`, `F_id_file`, `ES_startDate`, `ES_endDate`, `ES_groupSize`, `ES_name`) VALUES (1, 1, NULL, NULL, '2013-12-02 00:00:01', '2013-12-31 23:59:59', 1, NULL);
+INSERT INTO `uebungsplattform`.`ExerciseSheet` (`C_id`, `ES_id`, `F_id_sampleSolution`, `F_id_file`, `ES_startDate`, `ES_endDate`, `ES_groupSize`, `ES_name`) VALUES (1, 2, NULL, NULL, '2013-12-02 00:00:01', '2013-12-31 23:59:59', 1, 'Bonus');
+INSERT INTO `uebungsplattform`.`ExerciseSheet` (`C_id`, `ES_id`, `F_id_sampleSolution`, `F_id_file`, `ES_startDate`, `ES_endDate`, `ES_groupSize`, `ES_name`) VALUES (2, 3, NULL, NULL, '2013-12-02 00:00:01', '2013-12-31 23:59:59', 1, NULL);
+INSERT INTO `uebungsplattform`.`ExerciseSheet` (`C_id`, `ES_id`, `F_id_sampleSolution`, `F_id_file`, `ES_startDate`, `ES_endDate`, `ES_groupSize`, `ES_name`) VALUES (2, 4, NULL, NULL, '2013-12-02 00:00:01', '2013-12-31 23:59:59', 1, 'Zusatz');
+INSERT INTO `uebungsplattform`.`ExerciseSheet` (`C_id`, `ES_id`, `F_id_sampleSolution`, `F_id_file`, `ES_startDate`, `ES_endDate`, `ES_groupSize`, `ES_name`) VALUES (4, 5, NULL, NULL, '2013-12-02 00:00:01', '2013-12-31 23:59:59', 1, NULL);
+INSERT INTO `uebungsplattform`.`ExerciseSheet` (`C_id`, `ES_id`, `F_id_sampleSolution`, `F_id_file`, `ES_startDate`, `ES_endDate`, `ES_groupSize`, `ES_name`) VALUES (5, 6, NULL, NULL, '2013-12-02 00:00:01', '2013-12-31 23:59:59', 1, 'Weihnachtsaufgabe');
+INSERT INTO `uebungsplattform`.`ExerciseSheet` (`C_id`, `ES_id`, `F_id_sampleSolution`, `F_id_file`, `ES_startDate`, `ES_endDate`, `ES_groupSize`, `ES_name`) VALUES (5, 7, NULL, NULL, '2013-12-02 00:00:01', '2013-12-31 23:59:59', 1, NULL);
 
 COMMIT;
 
@@ -527,11 +529,23 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `uebungsplattform`;
-INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (1, 'FSControl', 'localhost/Filesystem/FsControl/FsControl.php', '#');
-INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (2, 'FSFile', 'localhost/Filesystem/FsFile/FsFile.php', '#');
-INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (3, 'FSZip', 'localhost/Filesystem/FsZip/FsZip.php', '#');
-INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (4, 'DBControl', 'localhost/Database/DbControl.php', '#');
-INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (5, 'FSBinder', 'localhost/Filesystem/FsBinder/FsBinder.php', '#');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (1, 'FSControl', 'localhost/FS/FSControl/FSControl.php', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (2, 'FSFile', 'localhost/FS/FSFile/FSFile.php', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (3, 'FSZip', 'localhost/FS/FSZip/FSZip.php', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (4, 'DBControl', 'localhost/DB/DBControl/DBControl.php', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (5, 'FSBinder', 'localhost/FS/FSBinder/FSBinder.php', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (6, 'DBCourse', 'localhost/DB/DBCourse/DBCourse.php', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (7, 'DBUser', 'localhost/DB/DBUser/DBUser.php', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (8, 'DBCourseStatus', 'localhost/DB/DBCourseStatus/DBCourseStatus.php', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (9, 'DBExercise', 'localhost/DB/DBExercise/DBExercise.php', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (10, 'DBExerciseSheet', 'localhost/DB/DBExerciseSheet/DBExerciseSheet.php', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (11, 'DBExerciseType', 'localhost/DB/DBExerciseType/DBExerciseType.php', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (12, 'DBFile', 'localhost/DB/DBFile/DBFile.php', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (13, 'DBQuery', 'localhost/DB/DBQuery/DBQuery.php', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (14, 'LController', 'localhost/logic/Controller/LController.php', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (15, 'LCourse', 'localhost/logic/Course/course.php', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (16, 'LGroup', 'localhost/logic/Group/Group.php', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (17, 'LUser', 'localhost/logic/User/user.php', '');
 
 COMMIT;
 
@@ -542,10 +556,33 @@ COMMIT;
 START TRANSACTION;
 USE `uebungsplattform`;
 INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (1, 3, 1, 'getFile', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (2, 1, 2, 'out_1', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (3, 1, 3, 'out_2', '');
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (2, 1, 2, 'out1', '');
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (3, 1, 3, 'out2', '');
 INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (4, 3, 5, 'out', '0-f');
 INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (5, 2, 5, 'out', '0-f');
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (6, 6, 13, 'out', '');
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (7, 7, 13, 'out', '');
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (8, 8, 13, 'out', '');
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (9, 9, 13, 'out', '');
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (10, 10, 13, 'out', '');
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (11, 11, 13, 'out', '');
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (12, 12, 13, 'out', '');
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (13, 4, 6, 'out1', '');
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (14, 4, 7, 'out2', '');
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (15, 4, 8, 'out3', '');
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (16, 4, 9, 'out4', '');
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (17, 4, 10, 'out5', '');
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (18, 4, 11, 'out6', '');
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (19, 4, 12, 'out7', '');
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (20, 4, 13, 'out8', '');
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (21, 14, 15, 'course', '');
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (22, 14, 16, 'group', '');
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (23, 14, 17, 'user', '');
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (24, 14, 4, 'DB', '');
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (25, 14, 1, 'FS', '');
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (26, 15, 14, 'out', '');
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (27, 16, 14, 'out', '');
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (28, 17, 14, 'out', '');
 
 COMMIT;
 
