@@ -9,12 +9,12 @@ class Backup extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $_id;
+    private $id;
     public function getId(){
-        return $this->_id;
+        return $this->id;
     }
-    public function setId($_value){
-        $this->_id = $_value;
+    public function setId($value){
+        $this->id = $value;
     }
 
     /**
@@ -22,12 +22,12 @@ class Backup extends Object implements JsonSerializable
      * 
      * type: date
      */
-    private $_date;
+    private $date;
     public function getDate(){
-        return $this->_date;
+        return $this->date;
     }
-    public function setDate($_value){
-        $this->_date = $_value;
+    public function setDate($value){
+        $this->date = $value;
     }
 
     /**
@@ -35,20 +35,20 @@ class Backup extends Object implements JsonSerializable
      *
      * type: File
      */
-    private $_file;
+    private $file;
     public function getFile(){
-        return $this->_file;
+        return $this->file;
     }
-    public function setFile($_value){
-        $this->_file = $_value;
+    public function setFile($value){
+        $this->file = $value;
     }
     
     
     public static function getDBConvert(){
         return array(
-           'B_id' => '_id',
-           'B_date' => '_date',
-           'F_id_file' => '_file',
+           'B_id' => 'id',
+           'B_date' => 'date',
+           'F_id_file' => 'file',
         );
     }
     public static function getDBPrimaryKey(){
@@ -56,36 +56,36 @@ class Backup extends Object implements JsonSerializable
     }
    
    
-    public function __construct($_data=array()) {
-        foreach ($_data AS $_key => $_value) {
-             if (isset($_key)){
-                $this->{$_key} = $_value;
+    public function __construct($data=array()) {
+        foreach ($data AS $key => $value) {
+             if (isset($key)){
+                $this->{$key} = $value;
             }
         }
     }
     
-    public static function encodeBackup($_data){
-        return json_encode($_data);
+    public static function encodeBackup($data){
+        return json_encode($data);
     }
     
-    public static function decodeBackup($_data){
-        $_data = json_decode($_data);
-        if (is_array($_data)){
+    public static function decodeBackup($data){
+        $data = json_decode($data);
+        if (is_array($data)){
             $result = array();
-            foreach ($_data AS $_key => $_value) {
-                array_push($result, new Backup($_value));
+            foreach ($data AS $key => $value) {
+                array_push($result, new Backup($value));
             }
             return $result;   
         }
         else
-            return new Backup($_data);
+            return new Backup($data);
     }
 
     public function jsonSerialize() {
         return array(
-            '_id' => $this->_id,
-            '_date' => $this->_date,
-            '_file' => $this->_file
+            'id' => $this->id,
+            'date' => $this->date,
+            'file' => $this->file
         );
     }
     

@@ -6,12 +6,12 @@ class Marking extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $_id;
+    private $id;
     public function getId(){
-        return $this->_id;
+        return $this->id;
     }
-    public function setId($_value){
-        $this->_id = $_value;
+    public function setId($value){
+        $this->id = $value;
     }
     
     /**
@@ -19,12 +19,12 @@ class Marking extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $_submissionId;
+    private $submissionId;
     public function getSubmissionId(){
-        return $_submissionId;
+        return $submissionId;
     }
-    public function setSubmissionId($_value){
-        $_submissionId = $_value;
+    public function setSubmissionId($value){
+        $submissionId = $value;
     }
     
     /**
@@ -32,12 +32,12 @@ class Marking extends Object implements JsonSerializable
      * 
      * type: string
      */
-    private $_tutorId;
+    private $tutorId;
     public function getTutorId(){
-        return $this->_tutorId;
+        return $this->tutorId;
     }
-    public function setTutorId($_value){
-        $this->_tutorId = $_value;
+    public function setTutorId($value){
+        $this->tutorId = $value;
     }
     
     /**
@@ -45,12 +45,12 @@ class Marking extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $_tutorComment;
+    private $tutorComment;
     public function getTutorComment(){
-        return $this->_tutorComment;
+        return $this->tutorComment;
     }
-    public function setTutorComment($_value){
-        $this->_tutorComment = $_value;
+    public function setTutorComment($value){
+        $this->tutorComment = $value;
     }
     
     /**
@@ -58,12 +58,12 @@ class Marking extends Object implements JsonSerializable
      *
      * type: File
      */
-    private $_file;
+    private $file;
     public function getFile(){
-        return $this->_file;
+        return $this->file;
     }
-    public function setFile($_value){
-        $this->_file = $_value;
+    public function setFile($value){
+        $this->file = $value;
     }
     
     /**
@@ -71,12 +71,12 @@ class Marking extends Object implements JsonSerializable
      *
      * type: decimal
      */
-    private $_points;
+    private $points;
     public function getPoints(){
-        return $this->_points;
+        return $this->points;
     }
-    public function setPoints($_value){
-        $this->_points = $_value;
+    public function setPoints($value){
+        $this->points = $value;
     }
 
     /**
@@ -84,12 +84,12 @@ class Marking extends Object implements JsonSerializable
      *
      * type: bool
      */
-    private $_outstanding;
+    private $outstanding;
     public function getOutstanding(){
-        return $this->_outstanding;
+        return $this->outstanding;
     }
-    public function setOutstanding($_value){
-        $this->_outstanding = $_value;
+    public function setOutstanding($value){
+        $this->outstanding = $value;
     }
     
     /**
@@ -97,12 +97,12 @@ class Marking extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $_status;
+    private $status;
     public function getStatus(){
-        return $this->_status;
+        return $this->status;
     }
-    public function setStatus($_value){
-        $this->_status = $_value;
+    public function setStatus($value){
+        $this->status = $value;
     }
     
     /**
@@ -110,25 +110,25 @@ class Marking extends Object implements JsonSerializable
      *
      * type: date
      */
-    private $_date;
+    private $date;
     public function getDate(){
-        return $this->_date;
+        return $this->date;
     }
-    public function setDate($_value){
-        $this->_date = $_value;
+    public function setDate($value){
+        $this->date = $value;
     }
     
     public function jsonSerialize() {
         return array(
-            '_id' => $this->_id,
-            '_submissionId' => $_submissionId,
-            '_tutorId' => $this->_tutorId,
-            '_tutorComment' => $this->_tutorComment,
-            '_file' => $this->_file,
-            '_points' => $this->_points,
-            '_outstanding' => $this->_outstanding,
-            '_status' => $this->_status,
-            '_date' => $this->_date
+            'id' => $this->id,
+            'submissionId' => $submissionId,
+            'tutorId' => $this->tutorId,
+            'tutorComment' => $this->tutorComment,
+            'file' => $this->file,
+            'points' => $this->points,
+            'outstanding' => $this->outstanding,
+            'status' => $this->status,
+            'date' => $this->date
         );
     }
 }

@@ -10,24 +10,24 @@ class User extends Object implements JsonSerializable
      *
      * type: int
      */
-    private $_id;
+    private $id;
     
     /**
      * (description)
      */
     public function getId()
     {
-        return $this->_id;
+        return $this->id;
     }
     
     /**
      * (description)
      *
-     * @param $_conf (description)
+     * @param $conf (description)
      */
     public function setId($value)
     {
-        $this->_id = $value;
+        $this->id = $value;
     }
     
     
@@ -38,24 +38,24 @@ class User extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $_userName; 
+    private $userName; 
     
     /**
      * (description)
      */
     public function getUserName()
     {
-        return $this->_userName;
+        return $this->userName;
     }
     
     /**
      * (description)
      *
-     * @param $_conf (description)
+     * @param $conf (description)
      */
     public function setUserName($value)
     {
-        $this->_userName = $value;
+        $this->userName = $value;
     }
 
     
@@ -66,24 +66,24 @@ class User extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $_email;
+    private $email;
     
     /**
      * (description)
      */
     public function getEmail()
     {
-        return $this->_email;
+        return $this->email;
     }
     
     /**
      * (description)
      *
-     * @param $_conf (description)
+     * @param $conf (description)
      */
     public function setEmail($value)
     {
-        $this->_email = $value;
+        $this->email = $value;
     }
 
     
@@ -94,24 +94,24 @@ class User extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $_firstName;
+    private $firstName;
     
     /**
      * (description)
      */
     public function getFirstName()
     {
-        return $this->_firstName;
+        return $this->firstName;
     }
     
     /**
      * (description)
      *
-     * @param $_conf (description)
+     * @param $conf (description)
      */
     public function setFirstName($value)
     {
-        $this->_firstName = $value;
+        $this->firstName = $value;
     }
 
     
@@ -123,24 +123,24 @@ class User extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $_lastName;
+    private $lastName;
     
     /**
      * (description)
      */
     public function getLastName()
     {
-        return $this->_lastName;
+        return $this->lastName;
     }
     
     /**
      * (description)
      *
-     * @param $_conf (description)
+     * @param $conf (description)
      */
     public function setLastName($value)
     {
-        $this->_lastName = $value;
+        $this->lastName = $value;
     }
 
     
@@ -152,24 +152,24 @@ class User extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $_title; 
+    private $title; 
     
     /**
      * (description)
      */
     public function getTitle()
     {
-        return $this->_title;
+        return $this->title;
     }
     
     /**
      * (description)
      *
-     * @param $_conf (description)
+     * @param $conf (description)
      */
     public function setTitle($value)
     {
-        $this->_title = $value;
+        $this->title = $value;
     }
 
     
@@ -182,14 +182,14 @@ class User extends Object implements JsonSerializable
      *
      * type: Course[]
      */
-    private $_courses = array();
+    private $courses = array();
     
     /**
      * (description)
      */
     public function getCourses()
     {
-        return $this->_courses;
+        return $this->courses;
     }
     
     /**
@@ -199,9 +199,36 @@ class User extends Object implements JsonSerializable
      */
     public function setCourses($value)
     {
-        $this->_courses = $value;
+        $this->courses = $value;
     }
     
+    
+    
+    
+    /**
+     * (description)
+     *
+     * type: short
+     */
+    private $flag = null;
+    
+    /**
+     * (description)
+     */
+    public function getFlag()
+    {
+        return $this->flag;
+    }
+    
+    /**
+     * (description)
+     *
+     * @param $param (description)
+     */
+    public function setFlag($value)
+    {
+        $this->flag = $value;
+    }
     
     
     
@@ -211,13 +238,14 @@ class User extends Object implements JsonSerializable
     public static function getDbConvert()
     {
         return array(
-           'U_id' => '_id',
-           'U_username' => '_userName',
-           'U_email' => '_email',
-           'U_firstName' => '_firstName',
-           'U_lastName' => '_lastName',
-           'U_title' => '_title',
-           'U_courses' => '_courses'
+           'U_id' => 'id',
+           'U_username' => 'userName',
+           'U_email' => 'email',
+           'U_firstName' => 'firstName',
+           'U_lastName' => 'lastName',
+           'U_title' => 'title',
+           'U_courses' => 'courses',
+           'U_flag' => 'flag'
         );
     }
     
@@ -234,15 +262,15 @@ class User extends Object implements JsonSerializable
      * 
      * @param $param (description)
      */
-    public function __construct($_data=array()) 
+    public function __construct($data=array()) 
     {
-        foreach ($_data AS $_key => $value) {
-            if (isset($_key)){
+        foreach ($data AS $key => $value) {
+            if (isset($key)){
                 if (is_array($value)) {
-                    $_sub = Course::decodeCourse($value);
-                    $value = $_sub;
+                    $sub = Course::decodeCourse($value);
+                    $value = $sub;
                 }
-                $this->{$_key} = $value;
+                $this->{$key} = $value;
             }
         }
     }
@@ -252,8 +280,8 @@ class User extends Object implements JsonSerializable
      * 
      * @param $param (description)
      */
-    public static function encodeUser($_data){
-        return json_encode($_data);
+    public static function encodeUser($data){
+        return json_encode($data);
     }
     
     /**
@@ -262,18 +290,18 @@ class User extends Object implements JsonSerializable
      * @param $param (description)
      * @param $param (description)
      */
-    public static function decodeUser($_data, $decode=true)
+    public static function decodeUser($data, $decode=true)
     {
         if ($decode)
-            $_data = json_decode($_data);
-        if (is_array($_data)){
+            $data = json_decode($data);
+        if (is_array($data)){
             $result = array();
-            foreach ($_data AS $_key => $value) {
+            foreach ($data AS $key => $value) {
                 array_push($result, new User($value));
             }
             return $result;   
         } else
-            return new User($_data);
+            return new User($data);
     }
     
     /**
@@ -282,22 +310,23 @@ class User extends Object implements JsonSerializable
     public function jsonSerialize() 
     {
       /*  return array(
-            '_id' => $this->_id,
-            '_userName' => $this->_userName,
-            '_email' => $this->_email,
-            '_firstName' => $this->_firstName,
-            '_lastName' => $this->_lastName,
-            '_title' => $this->_title,
-            '_courses' => $this->_courses
+            'id' => $this->id,
+            'userName' => $this->userName,
+            'email' => $this->email,
+            'firstName' => $this->firstName,
+            'lastName' => $this->lastName,
+            'title' => $this->title,
+            'courses' => $this->courses
         );*/
         
-         if ($this->_id!==null) $list['_id'] = $this->_id;
-         if ($this->_userName!==null) $list['_userName'] = $this->_userName;
-         if ($this->_email!==null) $list['_email'] = $this->_email;
-         if ($this->_firstName!==null) $list['_firstName'] = $this->_firstName;
-         if ($this->_lastName!==null) $list['_lastName'] = $this->_lastName;
-         if ($this->_title!==null) $list['_title'] = $this->_title;
-         if ($this->_courses!==array()) $list['_courses'] = $this->_courses;
+         if ($this->id!==null) $list['id'] = $this->id;
+         if ($this->userName!==null) $list['userName'] = $this->userName;
+         if ($this->email!==null) $list['email'] = $this->email;
+         if ($this->firstName!==null) $list['firstName'] = $this->firstName;
+         if ($this->lastName!==null) $list['lastName'] = $this->lastName;
+         if ($this->title!==null) $list['title'] = $this->title;
+         if ($this->courses!==array()) $list['courses'] = $this->courses;
+         if ($this->flag!==null) $list['flag'] = $this->flag;
        return $list;
     }
 }

@@ -13,12 +13,12 @@ class Exercise extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $_id;
+    private $id;
     public function getId(){
-        return $this->_id;
+        return $this->id;
     }
-    public function setId($_value){
-        $this->_id = $_value;
+    public function setId($value){
+        $this->id = $value;
     }
 
     /**
@@ -26,12 +26,12 @@ class Exercise extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $_courseId;
+    private $courseId;
     public function getCourseId(){
-        return $this->_courseId;
+        return $this->courseId;
     }
-    public function setCourseId($_value){
-        $this->_courseId = $_value;
+    public function setCourseId($value){
+        $this->courseId = $value;
     }
 
     /**
@@ -39,12 +39,12 @@ class Exercise extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $_sheetId;
+    private $sheetId;
     public function getSheetId(){
-        return $this->_sheetId;
+        return $this->sheetId;
     }
-    public function setSheetId($_value){
-        $this->_sheetId = $_value;
+    public function setSheetId($value){
+        $this->sheetId = $value;
     }
 
     /**
@@ -52,12 +52,12 @@ class Exercise extends Object implements JsonSerializable
      *
      * type: decimal
      */
-    private $_maxPoints;
+    private $maxPoints;
     public function getMaxPoints(){
-        return $this->_maxPoints;
+        return $this->maxPoints;
     }
-    public function setMaxPoints($_value){
-        $this->_maxPoints = $_value;
+    public function setMaxPoints($value){
+        $this->maxPoints = $value;
     }
 
     /**
@@ -65,12 +65,12 @@ class Exercise extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $_type;
+    private $type;
     public function getType(){
-        return $this->_type;
+        return $this->type;
     }
-    public function setType($_value){
-        $this->_type = $_value;
+    public function setType($value){
+        $this->type = $value;
     }
 
     /**
@@ -78,12 +78,12 @@ class Exercise extends Object implements JsonSerializable
      *
      * type: Submission[]
      */
-    private $_submissions;
+    private $submissions;
     public function getSubmissions(){
-        return $_submissions;
+        return $submissions;
     }
-    public function setSubmissions($_value){
-        $_submissions = $_value;
+    public function setSubmissions($value){
+        $submissions = $value;
     }
     
     /**
@@ -91,24 +91,24 @@ class Exercise extends Object implements JsonSerializable
      *
      * type: File[]
      */
-    private $_attachments = array();
+    private $attachments = array();
     public function getAttachments(){
-        return $this->_attachments;
+        return $this->attachments;
     }
-    public function setAttachments($_value){
-        $this->_attachments = $_value;
+    public function setAttachments($value){
+        $this->attachments = $value;
     }
     
     
     public function jsonSerialize() {
         return array(
-            '_id' => $this->_id,
-            '_courseId' => $this->_courseId,
-            '_sheetId' => $this->_sheetId,
-            '_maxPoints' => $this->_maxPoints,
-            '_type' => $this->_type,
-            '_submissions' => $_submissions,
-            '_attachments' => $this->_attachments
+            'id' => $this->id,
+            'courseId' => $this->courseId,
+            'sheetId' => $this->sheetId,
+            'maxPoints' => $this->maxPoints,
+            'type' => $this->type,
+            'submissions' => $submissions,
+            'attachments' => $this->attachments
         );
     }
 }

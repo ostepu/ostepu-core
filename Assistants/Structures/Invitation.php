@@ -9,12 +9,12 @@ class Invitation extends Object implements JsonSerializable
      * 
      * type: User
      */
-    private $_user;
+    private $user;
     public function getUser(){
-        return $this->_user;
+        return $this->user;
     }
-    public function setUser($_value){
-        $this->_user = $_value;
+    public function setUser($value){
+        $this->user = $value;
     }
 
     /**
@@ -22,31 +22,31 @@ class Invitation extends Object implements JsonSerializable
      * 
      * type: User 
      */
-    private $_leader;
+    private $leader;
     public function getLeader(){
-        return $this->_leader;
+        return $this->leader;
     }
-    public function setLeader($_value){
-        $this->_leader = $_value;
+    public function setLeader($value){
+        $this->leader = $value;
     }
 
     /**
      * 
      * type: string
      */
-    private $_sheet;
+    private $sheet;
     public function getSheet(){
-        return $this->_sheet;
+        return $this->sheet;
     }
-    public function setSheet($_value){
-        $this->_sheet = $_value;
+    public function setSheet($value){
+        $this->sheet = $value;
     }
     
     public function jsonSerialize() {
         return array(
-            '_user' => $this->_user,
-            '_leader' => $this->_leader,
-            '_sheet' => $this->_sheet
+            'user' => $this->user,
+            'leader' => $this->leader,
+            'sheet' => $this->sheet
         );
     }
 }

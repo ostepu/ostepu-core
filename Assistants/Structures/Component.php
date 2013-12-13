@@ -7,24 +7,24 @@ class Component extends Object implements JsonSerializable
     /**
      * (description)
      */
-    private $_id = null;
+    private $id = null;
     
     /**
      * (description)
      */
     public function getId()
     {
-        return $this->_id;
+        return $this->id;
     }
     
     /**
      * (description)
      *
-     * @param $_conf (description)
+     * @param $conf (description)
      */
     public function setId($value)
     {
-        $this->_id = $value;
+        $this->id = $value;
     }
     
     
@@ -33,24 +33,24 @@ class Component extends Object implements JsonSerializable
     /**
      * (description)
      */
-    private $_name = null;
+    private $name = null;
     
     /**
      * (description)
      */
     public function getName()
     {
-        return $this->_name;
+        return $this->name;
     }
     
     /**
      * (description)
      *
-     * @param $_conf (description)
+     * @param $conf (description)
      */
     public function setName($value)
     {
-        $this->_name = $value;
+        $this->name = $value;
     }
     
     
@@ -59,24 +59,24 @@ class Component extends Object implements JsonSerializable
     /**
      * (description)
      */
-    private $_address = null;
+    private $address = null;
     
     /**
      * (description)
      */
     public function getAddress()
     {
-        return $this->_address;
+        return $this->address;
     }
     
     /**
      * (description)
      *
-     * @param $_conf (description)
+     * @param $conf (description)
      */
     public function setAddress($value)
     {
-        $this->_address = $value;
+        $this->address = $value;
     }
     
     
@@ -85,24 +85,24 @@ class Component extends Object implements JsonSerializable
     /**
      * (description)
      */ 
-    private $_option = null;
+    private $option = null;
     
     /**
      * (description)
      */
     public function getOption()
     {  
-        return $this->_option;
+        return $this->option;
     }
     
     /**
      * (description)
      *
-     * @param $_conf (description)
+     * @param $conf (description)
      */
     public function setOption($value)
     {
-        $this->_option = $value;
+        $this->option = $value;
     }
     
     
@@ -111,24 +111,24 @@ class Component extends Object implements JsonSerializable
     /**
      * (description)
      */
-    private $_prefix = null;
+    private $prefix = null;
     
     /**
      * (description)
      */
     public function getPrefix()
     {
-        return $this->_prefix;
+        return $this->prefix;
     }
     
     /**
      * (description)
      *
-     * @param $_conf (description)
+     * @param $conf (description)
      */
     public function setPrefix($value)
     {
-        $this->_prefix = $value;
+        $this->prefix = $value;
     }
     
     
@@ -137,24 +137,24 @@ class Component extends Object implements JsonSerializable
     /**
      * (description)
      */
-    private $_links = array();
+    private $links = array();
     
     /**
      * (description)
      */
     public function getLinks()
     {
-        return $this->_links;
+        return $this->links;
     }
     
     /**
      * (description)
      *
-     * @param $_conf (description)
+     * @param $conf (description)
      */
     public function setLinks($value)
     {
-        $this->_links = $value;
+        $this->links = $value;
     }
 
 
@@ -166,12 +166,12 @@ class Component extends Object implements JsonSerializable
     public static function getDbConvert()
     {
         return array(
-           'CO_id' => '_id',
-           'CO_name' => '_name',
-           'CO_address' => '_address',
-           'CO_option' => '_option',
-           'CO_prefix' => '_prefix',
-           'CO_links' => '_links'
+           'CO_id' => 'id',
+           'CO_name' => 'name',
+           'CO_address' => 'address',
+           'CO_option' => 'option',
+           'CO_prefix' => 'prefix',
+           'CO_links' => 'links'
         );
     }
     
@@ -188,15 +188,15 @@ class Component extends Object implements JsonSerializable
      * 
      * @param $param (description)
      */
-    public function __construct($_data=array()) 
+    public function __construct($data=array()) 
     {
-        foreach ($_data AS $_key => $value) {
-            if (isset($_key)){
+        foreach ($data AS $key => $value) {
+            if (isset($key)){
                 if (is_array($value)) {
-                    $_sub =  Link::decodeLink($value,false);
-                    $value = $_sub;
+                    $sub =  Link::decodeLink($value,false);
+                    $value = $sub;
                 }
-            $this->{$_key} = $value;
+            $this->{$key} = $value;
             }
         }
     }
@@ -206,9 +206,9 @@ class Component extends Object implements JsonSerializable
      * 
      * @param $param (description)
      */
-    public static function encodeComponent($_data)
+    public static function encodeComponent($data)
     {
-        return json_encode($_data);
+        return json_encode($data);
     }
 
     /**
@@ -217,18 +217,18 @@ class Component extends Object implements JsonSerializable
      * @param $param (description)
      * @param $param (description)
      */
-    public static function decodeComponent($_data, $decode=true)
+    public static function decodeComponent($data, $decode=true)
     {
         if ($decode)
-            $_data = json_decode($_data);
-        if (is_array($_data)){
+            $data = json_decode($data);
+        if (is_array($data)){
             $result = array();
-            foreach ($_data AS $_key => $value) {
+            foreach ($data AS $key => $value) {
                 array_push($result, new Component($value));
             }
             return $result;   
         } else
-            return new Component($_data);
+            return new Component($data);
     }
     
     /**
@@ -237,12 +237,12 @@ class Component extends Object implements JsonSerializable
     public function jsonSerialize() 
     {
         return array(
-            '_id' => $this->_id,
-            '_name' => $this->_name,
-            '_address' => $this->_address,
-            '_option' => $this->_option,
-            '_prefix' => $this->_prefix,
-            '_links' => $this->_links
+            'id' => $this->id,
+            'name' => $this->name,
+            'address' => $this->address,
+            'option' => $this->option,
+            'prefix' => $this->prefix,
+            'links' => $this->links
         );
     }
 

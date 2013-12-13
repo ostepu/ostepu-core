@@ -4,12 +4,12 @@ class Submission extends Object implements JsonSerializable
     /**
      * The identifier of this submission.
      */
-    private $_id;
+    private $id;
     public function getId(){
-        return $this->_id;
+        return $this->id;
     }
-    public function setId($_value){
-        $this->_id = $_value;
+    public function setId($value){
+        $this->id = $value;
     }
 
     /**
@@ -17,12 +17,12 @@ class Submission extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $_studentId;
+    private $studentId;
     public function getStudentId(){
-        return $this->_studentId;
+        return $this->studentId;
     }
-    public function setStudentId($_value){
-        $this->_studentId = $_value;
+    public function setStudentId($value){
+        $this->studentId = $value;
     }
 
     /**
@@ -30,12 +30,12 @@ class Submission extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $_exerciseId;
+    private $exerciseId;
     public function getExerciseId(){
-        return $this->_exerciseId;
+        return $this->exerciseId;
     }
-    public function setExerciseId($_value){
-        $this->_exerciseId = $_value;
+    public function setExerciseId($value){
+        $this->exerciseId = $value;
     }
 
     /**
@@ -43,12 +43,12 @@ class Submission extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $_comment;
+    private $comment;
     public function getComment(){
-        return $this->_comment;
+        return $this->comment;
     }
-    public function setComment($_value){
-        $this->_comment = $_value;
+    public function setComment($value){
+        $this->comment = $value;
     }
     
     /**
@@ -56,12 +56,12 @@ class Submission extends Object implements JsonSerializable
      *
      * type: File
      */
-    private $_file;
+    private $file;
     public function getFile(){
-        return $this->_file;
+        return $this->file;
     }
-    public function setFile($_value){
-        $this->_file = $_value;
+    public function setFile($value){
+        $this->file = $value;
     }
     
     /**
@@ -69,12 +69,12 @@ class Submission extends Object implements JsonSerializable
      *
      * type: bool
      */
-    private $_accepted;
+    private $accepted;
     public function getAccepted(){
-        return $this->_accepted;
+        return $this->accepted;
     }
-    public function setAccepted($_value){
-        $this->_accepted = $_value;
+    public function setAccepted($value){
+        $this->accepted = $value;
     }
     
     /**
@@ -82,12 +82,12 @@ class Submission extends Object implements JsonSerializable
      *
      * type: bool
      */
-    private $_selectedForGroup;
+    private $selectedForGroup;
     public function getSelectedForGroup(){
-        return $this->_selectedForGroup;
+        return $this->selectedForGroup;
     }
-    public function setSelectedForGroup($_value){
-        $this->_selectedForGroup = $_value;
+    public function setSelectedForGroup($value){
+        $this->selectedForGroup = $value;
     }
     
     /**
@@ -95,24 +95,24 @@ class Submission extends Object implements JsonSerializable
      *
      * type: date
      */
-    private $_date;
+    private $date;
     public function getDate(){
-        return $this->_date;
+        return $this->date;
     }
-    public function setDate($_value){
-        $this->_date = $_value;
+    public function setDate($value){
+        $this->date = $value;
     }
     
     public function jsonSerialize() {
         return array(
-            '_id' => $this->_id,
-            '_studentId' => $this->_studentId,
-            '_exerciseId' => $this->_exerciseId,
-            '_comment' => $this->_comment,
-            '_file' => $this->_file,
-            '_accepted' => $this->_accepted,
-            '_selectedForGroup' => $this->_selectedForGroup,
-            '_date' => $this->_date
+            'id' => $this->id,
+            'studentId' => $this->studentId,
+            'exerciseId' => $this->exerciseId,
+            'comment' => $this->comment,
+            'file' => $this->file,
+            'accepted' => $this->accepted,
+            'selectedForGroup' => $this->selectedForGroup,
+            'date' => $this->date
         );
     }
 }

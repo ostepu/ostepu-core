@@ -9,12 +9,12 @@ class TutorAssignment extends Object implements JsonSerializable
      *
      * type: User
      */
-    private $_tutor;
+    private $tutor;
     public function getTutor(){
-        return $this->_tutor;
+        return $this->tutor;
     }
-    public function setTutor($_value){
-        $this->_tutor = $_value;
+    public function setTutor($value){
+        $this->tutor = $value;
     }
 
     /**
@@ -22,18 +22,18 @@ class TutorAssignment extends Object implements JsonSerializable
      *
      * type: string[]
      */
-    private $_submissionIds = array();
+    private $submissionIds = array();
     public function getSubmissionIds(){
-        return $_submissionIds;
+        return $submissionIds;
     }
-    public function setSubmissionIds($_value){
-        $_submissionIds = $_value;
+    public function setSubmissionIds($value){
+        $submissionIds = $value;
     }
 
     public function jsonSerialize() {
         return array(
-            '_tutor' => $this->_tutor,
-            '_submissionIds' => $_submissionIds
+            'tutor' => $this->tutor,
+            'submissionIds' => $submissionIds
         );
     }
 }

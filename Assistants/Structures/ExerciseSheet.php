@@ -9,12 +9,12 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $_id;
+    private $id;
     public function getId(){
-        return $this->_id;
+        return $this->id;
     }
-    public function setId($_value){
-        $this->_id = $_value;
+    public function setId($value){
+        $this->id = $value;
     }
     
      /**
@@ -22,12 +22,12 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $_courseId;
+    private $courseId;
     public function getCourseId(){
-        return $this->_courseId;
+        return $this->courseId;
     }
-    public function setCourseId($_value){
-        $this->_courseId = $_value;
+    public function setCourseId($value){
+        $this->courseId = $value;
     }
 
     /**
@@ -35,12 +35,12 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * type: date
      */
-    private $_endDate;
+    private $endDate;
     public function getEndDate(){
-        return $this->_endDate;
+        return $this->endDate;
     }
-    public function setEndDate($_value){
-        $this->_endDate = $_value;
+    public function setEndDate($value){
+        $this->endDate = $value;
     }
 
     /**
@@ -48,12 +48,12 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * type: date
      */
-    private $_startDate;
+    private $startDate;
     public function getStartDate(){
-        return $this->_startDate;
+        return $this->startDate;
     }
-    public function setStartDate($_value){
-        $this->_startDate = $_value;
+    public function setStartDate($value){
+        $this->startDate = $value;
     }
 
     /**
@@ -62,12 +62,12 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * type: File
      */
-    private $_zipFile;
+    private $zipFile;
     public function getZipFile(){
-        return $this->_zipFile;
+        return $this->zipFile;
     }
-    public function setZipFile($_value){
-        $this->_zipFile = $_value;
+    public function setZipFile($value){
+        $this->zipFile = $value;
     }
     
     /**
@@ -75,12 +75,12 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * type: File
      */
-    private $_sampleSolution;
+    private $sampleSolution;
     public function getSampleSolution(){
-        return $this->_sampleSolution;
+        return $this->sampleSolution;
     }
-    public function setSampleSolution($_value){
-        $this->_sampleSolution = $_value;
+    public function setSampleSolution($value){
+        $this->sampleSolution = $value;
     }
 
     /**
@@ -88,12 +88,12 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * type: File
      */
-    private $_sheetFile;
+    private $sheetFile;
     public function getSheetFile(){
-        return $this->_sheetFile;
+        return $this->sheetFile;
     }
-    public function setSheetFile($_value){
-        $this->_sheetFile = $_value;
+    public function setSheetFile($value){
+        $this->sheetFile = $value;
     }
 
     /**
@@ -101,12 +101,12 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * type: Exercise[]
      */
-    private $_exercises = array();
+    private $exercises = array();
     public function getExercises(){
-        return $this->_exercises;
+        return $this->exercises;
     }
-    public function setExercises($_value){
-        $this->_exercises = $_value;
+    public function setExercises($value){
+        $this->exercises = $value;
     }
 
     /**
@@ -114,25 +114,34 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * type: integer
      */
-    private $_groupSize;
+    private $groupSize;
     public function getGroupSize(){
-        return $this->_groupSize;
+        return $this->groupSize;
     }
-    public function setGroupSize($_value){
-        $this->_groupSize = $_value;
+    public function setGroupSize($value){
+        $this->groupSize = $value;
+    }
+    
+    private $sheetName;
+    public function getSheetName(){
+        return $this->sheetName;
+    }
+    public function setSheetName($value){
+        $this->sheetName = $value;
     }
 
     public function jsonSerialize() {
         return array(
-            '_id' => $this->_id,
-            '_courseId' => $this->_courseId,
-            '_endDate' => $this->_endDate,
-            '_startDate' => $this->_startDate,
-            '_zipFile' => $this->_zipFile,
-            '_sampleSolution' => $this->_sampleSolution,
-            '_sheetFile' => $this->_sheetFile,
-            '_exercises' => $this->_exercises,
-            '_groupSize' => $this->_groupSize
+            'id' => $this->id,
+            'courseId' => $this->courseId,
+            'endDate' => $this->endDate,
+            'startDate' => $this->startDate,
+            'zipFile' => $this->zipFile,
+            'sampleSolution' => $this->sampleSolution,
+            'sheetFile' => $this->sheetFile,
+            'exercises' => $this->exercises,
+            'groupSize' => $this->groupSize,
+            'sheetName' => $this->sheetName
         );
     }
 }

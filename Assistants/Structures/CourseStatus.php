@@ -11,14 +11,14 @@ class CourseStatus extends Object implements JsonSerializable
      *
      * type: Course
      */
-    private $_course;
+    private $course;
     
     /**
      * (description)
      */
     public function getCourse()
     {
-        return $this->_course;
+        return $this->course;
     }
     
     /**
@@ -28,7 +28,7 @@ class CourseStatus extends Object implements JsonSerializable
      */
     public function setCourse($value)
     {
-        $this->_course = $value;
+        $this->course = $value;
     }
 
     
@@ -39,14 +39,14 @@ class CourseStatus extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $_status;
+    private $status;
     
     /**
      * (description)
      */
     public function getStatus()
     {
-        return $this->_status;
+        return $this->status;
     }
     
     /**
@@ -56,7 +56,7 @@ class CourseStatus extends Object implements JsonSerializable
      */
     public function setStatus($value)
     {
-        $this->_status = $value;
+        $this->status = $value;
     }
 
     
@@ -68,8 +68,8 @@ class CourseStatus extends Object implements JsonSerializable
     public static function getDbConvert()
     {
         return array(
-           'C_course' => '_course',
-           'C_name' => '_status',
+           'C_course' => 'course',
+           'C_name' => 'status',
         );
     }
     
@@ -87,11 +87,11 @@ class CourseStatus extends Object implements JsonSerializable
      * 
      * @param $param (description)
      */
-    public function __construct($_data=array()) 
+    public function __construct($data=array()) 
     {
-        foreach ($_data AS $_key => $value) {
-            if (isset($_key)){
-                $this->{$_key} = $value;
+        foreach ($data AS $key => $value) {
+            if (isset($key)){
+                $this->{$key} = $value;
             }
         }
     }
@@ -101,9 +101,9 @@ class CourseStatus extends Object implements JsonSerializable
      *
      * @param $param (description)
      */
-    public static function encodeCourseStatus($_data)
+    public static function encodeCourseStatus($data)
     {
-        return json_encode($_data);
+        return json_encode($data);
     }
     
     /**
@@ -112,18 +112,18 @@ class CourseStatus extends Object implements JsonSerializable
      * @param $param (description)
      * @param $param (description)
      */
-    public static function decodeCourseStatus($_data, $decode=true)
+    public static function decodeCourseStatus($data, $decode=true)
     {
         if ($decode)
-            $_data = json_decode($_data);
-        if (is_array($_data)){
+            $data = json_decode($data);
+        if (is_array($data)){
             $result = array();
-            foreach ($_data AS $_key => $value) {
+            foreach ($data AS $key => $value) {
                 array_push($result, new CourseStatus($value));
             }
             return $result;   
         } else
-            return new CourseStatus($_data);
+            return new CourseStatus($data);
     }
     
     /**
@@ -132,8 +132,8 @@ class CourseStatus extends Object implements JsonSerializable
     public function jsonSerialize()
     {
         return array(
-            '_course' => $this->_course,
-            '_status' => $this->_status
+            'course' => $this->course,
+            'status' => $this->status
         );
     }
 }

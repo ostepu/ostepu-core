@@ -7,47 +7,47 @@ class Link extends Object implements JsonSerializable
     /**
      * (description)
      */
-    private $_id = null;
+    private $id = null;
     
     /**
      * (description)
      */
     public function getId()
     {
-        return $this->_id;
+        return $this->id;
     }
     
     /**
      * (description)
      *
-     * @param $_conf (description)
+     * @param $conf (description)
      */
     public function setId($value)
     {
-        $this->_id = $value;
+        $this->id = $value;
     }
     
     
     
     
-    private $_name = null;
+    private $name = null;
     
     /**
      * (description)
      */
     public function getName()
     {
-        return $this->_name;
+        return $this->name;
     }
     
     /**
      * (description)
      *
-     * @param $_conf (description)
+     * @param $conf (description)
      */
     public function setName($value)
     {
-        $this->_name = $value;
+        $this->name = $value;
     }
     
     
@@ -56,24 +56,24 @@ class Link extends Object implements JsonSerializable
     /**
      * (description)
      */
-    private $_address = null;
+    private $address = null;
     
     /**
      * (description)
      */
     public function getAddress()
     {
-        return $this->_address;
+        return $this->address;
     }
     
     /**
      * (description)
      *
-     * @param $_conf (description)
+     * @param $conf (description)
      */
     public function setAddress($value)
     {
-        $this->_address = $value;
+        $this->address = $value;
     }
     
     
@@ -82,24 +82,24 @@ class Link extends Object implements JsonSerializable
     /**
      * (description)
      */
-    private $_relevanz = null;
+    private $relevanz = null;
     
     /**
      * (description)
      */
     public function getRelevanz()
     {
-        return $this->_relevanz;
+        return $this->relevanz;
     }
     
     /**
      * (description)
      *
-     * @param $_conf (description)
+     * @param $conf (description)
      */
     public function setRelevanz($value)
     {
-        $this->_relevanz = $value;
+        $this->relevanz = $value;
     }
     
     
@@ -108,24 +108,24 @@ class Link extends Object implements JsonSerializable
     /**
      * (description)
      */
-    private $_prefix = null;
+    private $prefix = null;
     
     /**
      * (description)
      */
     public function getPrefix()
     {
-        return $this->_prefix;
+        return $this->prefix;
     }
     
     /**
      * (description)
      *
-     * @param $_conf (description)
+     * @param $conf (description)
      */
     public function setPrefix($value)
     {
-        $this->_prefix = $value;
+        $this->prefix = $value;
     }
     
     
@@ -134,24 +134,24 @@ class Link extends Object implements JsonSerializable
     /**
      * (description)
      */
-    private $_complete = null;
+    private $complete = null;
     
     /**
      * (description)
      */
     public function getcomplete()
     {
-        return $this->_complete;
+        return $this->complete;
     }
     
     /**
      * (description)
      *
-     * @param $_conf (description)
+     * @param $conf (description)
      */
     public function setComplete($value)
     {
-        $this->_complete = $value;
+        $this->complete = $value;
     }    
     
     
@@ -161,11 +161,11 @@ class Link extends Object implements JsonSerializable
      * (description)
      * @param $param (description)
      */
-    public function __construct($_data=array()) 
+    public function __construct($data=array()) 
     {
-        foreach ($_data AS $_key => $value) {
-            if (isset($_key)){
-                $this->{$_key} = $value;
+        foreach ($data AS $key => $value) {
+            if (isset($key)){
+                $this->{$key} = $value;
             }
         }
     }
@@ -176,12 +176,12 @@ class Link extends Object implements JsonSerializable
     public static function getDbConvert()
     {
         return array(
-           'CL_id' => '_id',
-           'CL_name' => '_name',
-           'CL_address' => '_address',
-           'CL_prefix' => '_prefix',
-           'CL_complete' => '_complete',
-           'CL_relevanz' => '_relevanz',
+           'CL_id' => 'id',
+           'CL_name' => 'name',
+           'CL_address' => 'address',
+           'CL_prefix' => 'prefix',
+           'CL_complete' => 'complete',
+           'CL_relevanz' => 'relevanz',
         );
     }
     
@@ -198,9 +198,9 @@ class Link extends Object implements JsonSerializable
      * 
      * @param $param (description)
      */
-    public static function encodeLink($_data)
+    public static function encodeLink($data)
     {
-        return json_encode($_data);
+        return json_encode($data);
     }
     
     /**
@@ -209,18 +209,18 @@ class Link extends Object implements JsonSerializable
      * @param $param (description)
      * @param $param (description)
      */
-    public static function decodeLink($_data, $decode=true)
+    public static function decodeLink($data, $decode=true)
     {
         if ($decode)
-            $_data = json_decode($_data);
-        if (is_array($_data)){
+            $data = json_decode($data);
+        if (is_array($data)){
             $result = array();
-            foreach ($_data AS $_key => $value) {
+            foreach ($data AS $key => $value) {
                 array_push($result, new Link($value));
             }
             return $result;   
         } else
-            return new Link($_data);
+            return new Link($data);
     }
 
     /**
@@ -229,12 +229,12 @@ class Link extends Object implements JsonSerializable
     public function jsonSerialize() 
     {
         return array(
-            '_id' => $this->_id,
-            '_name' => $this->_name,
-            '_address' => $this->_address,
-            '_prefix' => $this->_prefix,
-            '_complete' => $this->_complete,
-            '_relevanz' => $this->_relevanz
+            'id' => $this->id,
+            'name' => $this->name,
+            'address' => $this->address,
+            'prefix' => $this->prefix,
+            'complete' => $this->complete,
+            'relevanz' => $this->relevanz
         );
     }
 }

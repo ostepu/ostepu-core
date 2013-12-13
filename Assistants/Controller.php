@@ -22,7 +22,7 @@ class Controller
      */
     public static function getPrefix()
     {
-        return FsControl::$_prefix;
+        return Controller::$_prefix;
     }
     
     /**
@@ -32,7 +32,7 @@ class Controller
      */
     public static function setPrefix($value)
     {
-        FsControl::$_prefix = $value;
+        Controller::$_prefix = $value;
     }
     
     protected $_app;
