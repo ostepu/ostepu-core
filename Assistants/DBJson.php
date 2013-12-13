@@ -90,20 +90,25 @@ class DbJson
      * (description)
      *
      * @param $object (description)
+     * @param $object (description)
+     * @param $object (description)
      */
-    public static function getUpdateDataFromInput($data, $attributes, $seperator)
+    public static function getInsertDataFromInput($data, $attributes, $seperator)
     {
-        $data = json_decode($data, true);
+        $data = json_decode($data);
+        if (!is_array($data))
+            $data = array($data);
         
         $res = array();
         foreach ($data as $row) {  
+            $row = get_object_vars($row);
             $temp = array();
             $t1 = "";
             $t2 = "";
             foreach ($attributes as $attrib => $value) {  
                 if (isset($row[$value]) && !is_array($row[$value])){    
                     $t1 = $t1 . $seperator . $attrib;
-                    $t2 = $t2 . $seperator . $row[$value];
+                    $t2 = $t2 . $seperator . "'" . $row[$value] . "'";
                 }
             }
             if ($t1 != "" && $t2 != ""){
@@ -117,6 +122,30 @@ class DbJson
     
         return $res;
     }
+    
+     /**
+     * (description)
+     *
+     * @param $object (description)
+     * @param $object (description)
+     * @param $object (description)
+     */
+    public static function getUpdateDataFromInput($data, $attributes, $seperator)
+    {
+        $data = json_decode($data,true);
+        
+            $temp = "";
+            foreach ($attributes as $attrib => $value) {  
+                if (isset($data[$value]) && !is_array($data[$value])){    
+                    $temp = $temp . $seperator . $attrib . '=' . "'" . $data[$value] . "'";
+                }
+            }
+            if ($temp != ""){
+                $temp=substr($temp,1);  
+            }
+    
+        return $temp;
+    } 
     
     /**
      * (description)
