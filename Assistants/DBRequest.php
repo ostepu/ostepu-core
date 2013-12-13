@@ -23,15 +23,19 @@ class DBRequest
             DBRequest::$config = parse_ini_file("config.ini", TRUE);
         
         $dbconn = mysql_connect(DBRequest::$config['DB']['db_path'], DBRequest::$config['DB']['db_user'],DBRequest::$config['DB']['db_passwd']);    
-        if (!$dbconn) {
-            die('Keine Verbindung möglich: ' . mysql_error());
-        }   
+        //if (!$dbconn) {
+        //    die('Keine Verbindung möglich: ' . mysql_error());
+        //}   
 
         mysql_select_db(DBRequest::$config['DB']['db_name']);
-        $query_result = mysql_query($sql_statement, $dbconn);
-        if (!$query_result){
-            die('Keine Verbindung möglich: ' . mysql_error());
+        $sql_statement = explode("---",$sql_statement);
+        foreach ($sql_statement as $statement){
+        $query_result = mysql_query($statement, $dbconn);
+            //if (!$query_result){
+            //    die('Keine Verbindung möglich: ' . mysql_error());
+            //}
         }
+        
         mysql_close($dbconn);
         $dbconn=null;
         return $query_result;
