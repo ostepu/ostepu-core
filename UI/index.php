@@ -1,30 +1,24 @@
 <?php
-include_once 'include/Header/Header.php';
-include_once 'include/HTMLWrapper.php';
+include 'include/Header/Header.php';
+include 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
 
-// construct a new header
-$h = new Header("Datenstrukturen",
+// construct a new Header
+$h = new Header("Übungsplattform",
                 "",
-                "Florian Lücke",
-                "211221492");
+                "",
+                "");
 
-/*
- * if (is_student($user))
- */
-$h->setPoints(75);
+$h->setBackURL("index.php")
+->setBackTitle("zur Veranstaltung");
 
-// construct some exercise sheets
-$sheetString = file_get_contents("http://localhost/Uebungsplattform/UI/Data/SheetData");
+// construct a login element
+$courseSelect = Template::WithTemplateFile('include/CourseSelect/CourseSelect.template.json');
+$courseSelect->bind(array());
 
-// convert the json string into an associative array
-$sheets = json_decode($sheetString, true);
-
-$t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetStudent.template.json');
-
-$t->bind($sheets);
-
-$w = new HTMLWrapper($h, $t);
-$w->set_config_file('include/configs/config_student_tutor.json');
+// wrap all the elements in some HTML and show them on the page
+$w = new HTMLWrapper($h, $courseSelect);
+$w->set_config_file('include/configs/config_default.json');
 $w->show();
 ?>
+
