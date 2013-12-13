@@ -1,7 +1,7 @@
 <?php
 
 require 'Slim/Slim.php';
-include 'include/Helpers.php';
+include 'include/Assistants/request/createRequest.php';
 	
 \Slim\Slim::registerAutoloader();
 	
@@ -13,8 +13,9 @@ $LController = "";				//Einlesen aus config.ini
 $_app->put('/user/:id/right', function($id) use($_app){
 
 	$req = \Slim\Slim::getInstance()->request()->getBody();
+	$header = \Slim\Slim::getInstance()->request()->getHeader();
     $URL = $LController.'/DB/user/user/'. $id.'/right';
-    $status = http_put_data($URL, $req);
+    $status = createPut($URL, $header, $req);
     $_app->response->setStatus($status);
     
 });
@@ -23,8 +24,9 @@ $_app->put('/user/:id/right', function($id) use($_app){
 $_app->post('', function() use($_app){
 
 	$req = \Slim\Slim::getInstance()->request()->getBody();
+	$header = \Slim\Slim::getInstance()->request()->getHeader();
     $URL = $LController.'/DB/user';
-    $status = http_post_data($URL, $req);
+    $status = createPost($URL, $header, $req);
     $_app->response->setStatus($status);
     
 });
@@ -33,8 +35,9 @@ $_app->post('', function() use($_app){
 $_app->put('/user/:id', function($id) use($_app){
 
 	$req = \Slim\Slim::getInstance()->request()->getBody();
+	$header = \Slim\Slim::getInstance()->request()->getHeader();
     $URL = $LController.'/DB/user/course/'. $id;
-    $status = http_put_data($URL, $req);
+    $status = createPut($URL, $header, $req);
     $_app->response->setStatus($status);
     
 });
@@ -42,8 +45,10 @@ $_app->put('/user/:id', function($id) use($_app){
 //GetUsers
 $app->get('/user', function() use($app){
 
+	$req = \Slim\Slim::getInstance()->request()->getBody();
+	$header = \Slim\Slim::getInstance()->request()->getHeader();
     $URL = $LController.'/DB/user/user';
-    $dbAnswer = http_get($URL);
+    $dbAnswer = createGet($URL, $header, $req);
     $_app->response->headers->set('Content-Type', 'application/json');
     $_app->response->setStatus(200);
     $_app->response->setBody($dbAnswer);
@@ -52,8 +57,10 @@ $app->get('/user', function() use($app){
 //GetUser
 $app->get('/user/:id', function($id) use($app){
 
+	$req = \Slim\Slim::getInstance()->request()->getBody();
+	$header = \Slim\Slim::getInstance()->request()->getHeader();
     $URL = $LController.'/DB/user/user/'.$id;
-    $dbAnswer = http_get($URL);
+    $dbAnswer = createGet($URL, $header, $req);
     $_app->response->headers->set('Content-Type', 'application/json');
     $_app->response->setStatus(200);
     $_app->response->setBody($dbAnswer);
