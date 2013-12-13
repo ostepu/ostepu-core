@@ -17,7 +17,8 @@ class DbJson
      * @param $app (description)
      * @param $object (description)
      */
-    public static function getJson($object){
+    public static function getJson($object)
+    {
         if (!$object){
             throw new Exception("Invalid query. Error: " . mysql_error());
         }
@@ -33,7 +34,8 @@ class DbJson
      *
      * @param $object (description)
      */
-    public static function getRows($data){
+    public static function getRows($data)
+    {
         $res = array();
         while ($row = mysql_fetch_assoc($data)) {                   
             array_push($res,$row);
@@ -45,8 +47,11 @@ class DbJson
      * (description)
      *
      * @param $object (description)
+     * @param $object (description)
+     * @param $object (description)
      */
-    public static function getObjectsByAttributes($data, $id, $attributes){
+    public static function getObjectsByAttributes($data, $id, $attributes)
+    {
         $res = array();
         foreach ($data as $row) {       
             foreach ($attributes as $attrib => $value) {  
@@ -55,7 +60,29 @@ class DbJson
                 }
             }
         }
-
+        return $res;
+    }
+    
+    /**
+     * (description)
+     *
+     * @param $object (description)
+     * @param $object (description)
+     * @param $object (description)
+     */
+    public static function getResultObjectsByAttributes($data, $id, $attributes)
+    {
+        $res = array();
+        foreach ($data as $row) {  
+            $temp = NULL;
+            foreach ($attributes as $attrib => $value) {  
+                if (isset($row[$attrib])){              
+                    $temp[$value] =  $row[$attrib];
+                }
+            }
+            array_push($res,$temp);
+        }
+    
         return $res;
     }
     
@@ -64,20 +91,53 @@ class DbJson
      *
      * @param $object (description)
      */
-    public static function concatObjectLists($data, $prim, $primKey, $primAttrib, $sec, $secKey){
+    public static function getUpdateDataFromInput($data, $attributes, $seperator)
+    {
+        $data = json_decode($data, true);
+        
+        $res = array();
+        foreach ($data as $row) {  
+            $temp = array();
+            $t1 = "";
+            $t2 = "";
+            foreach ($attributes as $attrib => $value) {  
+                if (isset($row[$value]) && !is_array($row[$value])){    
+                    $t1 = $t1 . $seperator . $attrib;
+                    $t2 = $t2 . $seperator . $row[$value];
+                }
+            }
+            if ($t1 != "" && $t2 != ""){
+                $t1=substr($t1,1);  
+                $t2=substr($t2,1);
+                array_push($temp, $t1);
+                array_push($temp, $t2);
+                array_push($res,$temp);
+            }
+        }
+    
+        return $res;
+    }
+    
+    /**
+     * (description)
+     *
+     * @param $object (description)
+     */
+    public static function concatObjectLists($data, $prim, $primKey, $primAttrib, $sec, $secKey)
+    {
     foreach ($prim as &$row){
         $row[$primAttrib] = array();
     }
     
     foreach ($data as $rw){
-		if (isset($sec[$rw[$secKey]])){
-			array_push($prim[$rw[$primKey]][$primAttrib], $sec[$rw[$secKey]]);
-		}
+        if (isset($sec[$rw[$secKey]])){
+            array_push($prim[$rw[$primKey]][$primAttrib], $sec[$rw[$secKey]]);
+        }
     }
     
     $arr = array();
     foreach ($prim as $rw){
-		array_push($arr, $rw);
+        array_push($arr, $rw);
     }
     
     return $arr;
