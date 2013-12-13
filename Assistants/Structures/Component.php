@@ -137,7 +137,7 @@ class Component extends Object implements JsonSerializable
     /**
      * (description)
      */
-    private $_links = null;
+    private $_links = array();
     
     /**
      * (description)

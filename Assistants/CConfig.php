@@ -35,7 +35,7 @@ class CConfig
         $this->_app = new \Slim\Slim();
 
         $this->_app->response->headers->set('Content-Type' ,
-                                            '_application/json');
+                                            'application/json');
         
         // POST Config
         $this->_app->post('/component' , array($this , 'postConfig'));
@@ -48,28 +48,28 @@ class CConfig
             // run Slim
             $this->_used = true;
             $this->_app->run();
-        } else{
+        }
+       
 
-            $conf = $this->loadConfig();
-            $links = $conf->getLinks();
-            $changed = false;
-            foreach ($links as &$link){
-                if (!$link->getComplete()){
-                    $result = Request::get($link->getAddress() . '/component',array(),"");
+        $conf = $this->loadConfig();
+        $links = $conf->getLinks();
+        $changed = false;
+        foreach ($links as &$link){
+            if (!$link->getComplete()){
+                $result = Request::get($link->getAddress() . '/component',array(),"");
                     
-                    if ($result['status'] == 200){
-                        $changed = true;
-                        $obj = Component::decodeComponent($result['content']);
-                        $link->setComplete(true);
-                        $link->setPrefix($obj->getPrefix());
-                    }        
-                }
+                if ($result['status'] == 200){
+                    $changed = true;
+                    $obj = Component::decodeComponent($result['content']);
+                    $link->setComplete(true);
+                     $link->setPrefix($obj->getPrefix());
+                }        
             }
+        }
             
-            if ($changed){
-                $conf->setLinks($links);
-                $this->saveConfig(Component::encodeComponent($conf));
-            }
+        if ($changed){
+            $conf->setLinks($links);
+            $this->saveConfig(Component::encodeComponent($conf));
         }
     }
     
@@ -130,7 +130,7 @@ class CConfig
     public function loadConfig()
     { 
         if (file_exists($this->CONF_FILE)){
-             $com = Component::decodeComponent(file_get_contents($this->CONF_FILE));
+            $com = Component::decodeComponent(file_get_contents($this->CONF_FILE));
             $com->setPrefix($this->getPrefix());
             return $com;
         } else{
@@ -148,10 +148,11 @@ class CConfig
      */
     public static function getLink($linkList,$name)
     {
-        for ($i=0;$i<count($linkList);$i++){
-            if ($linkList[$i]->getName() == $name)
-                return $linkList[$i];
+        foreach ($linkList as $link){
+            if ($link->getName() == $name)
+                return $link;
         }
+
         return null;
     }
     

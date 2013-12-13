@@ -153,7 +153,8 @@ class Course extends Object implements JsonSerializable
            'C_id' => '_id',
            'C_name' => '_name',
            'C_semester' => '_semester',
-           'C_defaultGroupSize' => '_defaultGroupSize'
+           'C_defaultGroupSize' => '_defaultGroupSize',
+           'C_exerciseSheets' => '_exerciseSheets'
         );
     }
     
@@ -162,7 +163,7 @@ class Course extends Object implements JsonSerializable
      */
     public static function getDbPrimaryKey()
     {
-        return array('C_id');
+        return 'C_id';
     }
    
     /**
