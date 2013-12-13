@@ -42,7 +42,7 @@ class DBCourse
     
     public function __construct($conf){
         $this->_conf = $conf;
-        $this->query = array(CConfig::getLink($conf->getLinks(),"query"));
+        $this->query = array(CConfig::getLink($conf->getLinks(),"out"));
         
         $this->_app = new \Slim\Slim();
         $this->_app->response->headers->set('Content-Type', 'application/json');
@@ -89,7 +89,27 @@ class DBCourse
     // PUT EditCourse
     public function editCourse($courseid)
     {
-        $this->_app->response->setStatus(200);
+       /* $obj = new Query();
+        eval("\$sql = \"" . implode('\n',file("Sql/EditCourse.sql")) . "\";");
+        $obj->setRequest($sql);
+        
+        $result = Request::routeRequest("GET",
+                                      '/query',
+                                      $this->_app->request->headers->all(),
+                                      Query::encodeQuery($obj),
+                                      $this->query,
+                                      "query");
+        
+        if ($result['status']>=200 && $result['status']<=299){
+        
+            $this->_app->response->setStatus($result['status']);
+            if (isset($result['headers']['Content-Type']))
+                header($result['headers']['Content-Type']);
+                
+        } else{
+            $this->_app->response->setStatus(409);
+            $this->_app->stop();
+        }*/
     }
     
     /**
@@ -100,7 +120,27 @@ class DBCourse
     // DELETE DeleteCourse
     public function deleteCourse($courseid)
     {
-        $this->_app->response->setStatus(252);
+        /*$obj = new Query();
+        eval("\$sql = \"" . implode('\n',file("Sql/DeleteCourse.sql")) . "\";");
+        $obj->setRequest($sql);
+        
+        $result = Request::routeRequest("GET",
+                                      '/query',
+                                      $this->_app->request->headers->all(),
+                                      Query::encodeQuery($obj),
+                                      $this->query,
+                                      "query");
+        
+        if ($result['status']>=200 && $result['status']<=299){
+        
+            $this->_app->response->setStatus($result['status']);
+            if (isset($result['headers']['Content-Type']))
+                header($result['headers']['Content-Type']);
+                
+        } else{
+            $this->_app->response->setStatus(409);
+            $this->_app->stop();
+        }*/
     }
     
     /**
@@ -112,7 +152,27 @@ class DBCourse
     // DELETE RemoveCourseMember
     public function removeCourseMember($courseid,$userid)
     {
-        $this->_app->response->setStatus(252);
+        /*$obj = new Query();
+        eval("\$sql = \"" . implode('\n',file("Sql/RemoveCourseMember.sql")) . "\";");
+        $obj->setRequest($sql);
+        
+        $result = Request::routeRequest("GET",
+                                      '/query',
+                                      $this->_app->request->headers->all(),
+                                      Query::encodeQuery($obj),
+                                      $this->query,
+                                      "query");
+        
+        if ($result['status']>=200 && $result['status']<=299){
+        
+            $this->_app->response->setStatus($result['status']);
+            if (isset($result['headers']['Content-Type']))
+                header($result['headers']['Content-Type']);
+                
+        } else{
+            $this->_app->response->setStatus(409);
+            $this->_app->stop();
+        }*/
     }
     
     /**
@@ -123,7 +183,27 @@ class DBCourse
     // POST SetCourse
     public function setCourse()
     {
-        $this->_app->response->setStatus(201);
+        /*$obj = new Query();
+        eval("\$sql = \"" . implode('\n',file("Sql/SetCourse.sql")) . "\";");
+        $obj->setRequest($sql);
+        
+        $result = Request::routeRequest("GET",
+                                      '/query',
+                                      $this->_app->request->headers->all(),
+                                      Query::encodeQuery($obj),
+                                      $this->query,
+                                      "query");
+        
+        if ($result['status']>=200 && $result['status']<=299){
+        
+            $this->_app->response->setStatus($result['status']);
+            if (isset($result['headers']['Content-Type']))
+                header($result['headers']['Content-Type']);
+                
+        } else{
+            $this->_app->response->setStatus(409);
+            $this->_app->stop();
+        }*/
     }
     
     /**
@@ -135,7 +215,27 @@ class DBCourse
     // POST AddCourseMember
     public function addCourseMember($courseid,$userid)
     {
-        $this->_app->response->setStatus(201);
+        /*$obj = new Query();
+        eval("\$sql = \"" . implode('\n',file("Sql/AddCourseMember.sql")) . "\";");
+        $obj->setRequest($sql);
+        
+        $result = Request::routeRequest("GET",
+                                      '/query',
+                                      $this->_app->request->headers->all(),
+                                      Query::encodeQuery($obj),
+                                      $this->query,
+                                      "query");
+        
+        if ($result['status']>=200 && $result['status']<=299){
+        
+            $this->_app->response->setStatus($result['status']);
+            if (isset($result['headers']['Content-Type']))
+                header($result['headers']['Content-Type']);
+                
+        } else{
+            $this->_app->response->setStatus(409);
+            $this->_app->stop();
+        }*/
     }
     
     /**
@@ -145,40 +245,33 @@ class DBCourse
      */
     // GET GetCourses
     public function getCourses($userid)
-    {
-        //eval("\$sql = \"".implode('\n',file("Sql/GetCourses.sql"))."\";");         
+    {        
         $obj = new Query();
-        $obj->setRequest(eval("\"" . implode('\n',file("Sql/GetCourses.sql")) . "\""));
+        eval("\$sql = \"" . implode('\n',file("Sql/GetCourses.sql")) . "\";");
+        $obj->setRequest($sql);
         
         $result = Request::routeRequest("GET",
-                                      '/'.$filePath,
+                                      '/query',
                                       $this->_app->request->headers->all(),
                                       Query::encodeQuery($obj),
                                       $this->query,
                                       "query");
         
         if ($result['status']>=200 && $result['status']<=299){
+            $query = Query::decodeQuery($result['content']);
             
-           // $this->_app->response->setBody($ch['content']);
-
-            $Courses = DBJson::getResultObjectsByAttributes($ch['content'], Course::getDbPrimaryKey(), Course::getDBConvert());
-            $this->_app->response->setBody(Course::encodeCourse($Courses));
+            $courses = DBJson::getResultObjectsByAttributes($query->getResponse(), Course::getDBPrimaryKey(), Course::getDBConvert());
+            $this->_app->response->setBody(Course::encodeCourse($courses));
         
-            $this->_app->response->setStatus($ch['status']);
-            if (isset($ch['headers']['Content-Type']))
-                header($ch['headers']['Content-Type']);
+            $this->_app->response->setStatus($result['status']);
+            if (isset($result['headers']['Content-Type']))
+                header($result['headers']['Content-Type']);
                 
         } else{
             $this->_app->response->setStatus(409);
             $this->_app->response->setBody(Course::encodeCourse(new Course()));
             $this->_app->stop();
         }
-        
-         /* $query_result = DbRequest::request($sql);
-        $this->_app->response->setStatus(200);
-        $data = DBJson::getRows($query_result);
-        $Courses = DBJson::getResultObjectsByAttributes($data, Course::getDbPrimaryKey(), Course::getDBConvert());
-        $this->_app->response->setBody(Course::encodeCourse($Courses));*/
     }
     
     /**
@@ -188,34 +281,34 @@ class DBCourse
      */
     // GET GetCourseMember
     public function getCourseMember($courseid)
-    {      
-        eval("\$sql = \"".implode('\n',file("Sql/GetCourseMember.sql"))."\";");
-        $query_result = DbRequest::request($sql);
-        $this->_app->response->setStatus(200);
-        $data = DBJson::getRows($query_result);
-        $Member = DBJson::getResultObjectsByAttributes($data, User::getDbPrimaryKey(), User::getDBConvert());
-        $this->_app->response->setBody(User::encodeUser($Member));
+    {             
+        $obj = new Query();
+        eval("\$sql = \"" . implode('\n',file("Sql/GetCourseMember.sql")) . "\";");
+        $obj->setRequest($sql);
         
-        
-        /*$result = Request::routeRequest("GET",
-                                      '/'.$filePath,
+        $result = Request::routeRequest("GET",
+                                      '/query',
                                       $this->_app->request->headers->all(),
-                                      "???",
+                                      Query::encodeQuery($obj),
                                       $this->query,
                                       "query");
         
         if ($result['status']>=200 && $result['status']<=299){
-            $this->_app->response->setStatus($ch['status']);
-            $this->_app->response->setBody($ch['content']);
-
-            if (isset($ch['headers']['Content-Type']))
-                header($ch['headers']['Content-Type']);
+            $query = Query::decodeQuery($result['content']);
+            
+            $member = DBJson::getResultObjectsByAttributes($query->getResponse(), User::getDBPrimaryKey(), User::getDBConvert());
+            $this->_app->response->setBody(User::encodeUser($member));
+        
+            $this->_app->response->setStatus($result['status']);
+            if (isset($result['headers']['Content-Type']))
+                header($result['headers']['Content-Type']);
                 
         } else{
             $this->_app->response->setStatus(409);
-            $this->_app->response->setBody(Course::encodeCourse(new Course()));
+            $this->_app->response->setBody(User::encodeUser(new User()));
             $this->_app->stop();
-        }*/
+        }
+
     }
 
 }

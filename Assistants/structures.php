@@ -19,7 +19,8 @@
     include 'Structures/Submission.php';
     include 'Structures/TutorAssignment.php';
     include 'Structures/User.php';
-
+    include 'Structures/Query.php';
+    
 /**
 * 
 */

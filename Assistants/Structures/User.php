@@ -318,7 +318,7 @@ class User extends Object implements JsonSerializable
             'title' => $this->title,
             'courses' => $this->courses
         );*/
-        
+         $list = array();
          if ($this->id!==null) $list['id'] = $this->id;
          if ($this->userName!==null) $list['userName'] = $this->userName;
          if ($this->email!==null) $list['email'] = $this->email;

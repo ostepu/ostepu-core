@@ -12,9 +12,7 @@ include_once( 'Include/DBRequest.php' );
 include_once( 'Include/CConfig.php' );
 
 \Slim\Slim::registerAutoloader();
-
 $com = new CConfig(DBQuery::getPrefix());
-
 if (!$com->used())
     new DBQuery($com->loadConfig());
 
@@ -23,7 +21,6 @@ if (!$com->used())
  */
 class DBQuery
 {
-    private $_app=null;
     private $_conf=null;
     
     private static $_prefix = "query";
@@ -44,7 +41,7 @@ class DBQuery
         $this->app = new \Slim\Slim();
         
         // GET queryResult
-        $this->app->put('/query',
+        $this->app->get('/query',
                         array($this,'queryResult'));
 
         if (strpos ($this->app->request->getResourceUri(),'/' . $this->getPrefix()) === 0){
@@ -58,17 +55,16 @@ class DBQuery
      */
     public function queryResult()
     {
-        $body = $this->_app->request->getBody();
+        $body = $this->app->request->getBody();
         $obj = Query::decodeQuery($body);
-        
-        $query_result = DBequest::request($sql); 
+        $query_result = DBRequest::request($obj->getRequest()); 
         $data = DBJson::getRows($query_result);
         
         $obj = new Query();
         $obj->setResponse($data);
-        $obj->setBody(Query::encodeQuery($obj));
+        $this->app->response->setBody(Query::encodeQuery($obj));
         
-        $this->_app->response->setStatus(200);
+        $this->app->response->setStatus(200);
     }
 }
 ?>

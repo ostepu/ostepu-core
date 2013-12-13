@@ -92,17 +92,18 @@ class Request
     /**
      * (description)
      *
-     * @param $param (description)
-     * @param $param (description)
-     * @param $param (description)
-     * @param $param (description)
-     * @param $param (description)
-     * @param $param (description)
-     * @param $param (description)
+     * @param $method (description)
+     * @param $resourceUri (description)
+     * @param $header (description)
+     * @param $content (description)
+     * @param $linkedComponents (description)
+     * @param $prefix (description)
+     * @param $linkName (description)
      */
     public static function routeRequest($method , $resourceUri , $header ,  $content , $linkedComponents , $prefix, $linkName=NULL)
     {
         // get possible links
+        
         $else = array();
         foreach ($linkedComponents as $links){
             if ($linkName!=NULL && $linkName!=$links->getName())
@@ -114,7 +115,6 @@ class Request
                                       $links->getAddress().$resourceUri,
                                       $header,
                                       $content);
-  
                 if ($ch['status']>=200 && $ch['status']<=299){
                     // finished
                     return $ch;
