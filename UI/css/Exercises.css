@@ -40,18 +40,3 @@
     content: counter(item, decimal) ' | ';
     counter-increment: item;
 }
-
-.create-exercise-list {
-    counter-reset: item;
-    width: 880px;
-}
-
-.create-exercise-list li:not(.skip-item):before {
-    content: counter(item, lower-alpha);
-    padding-right: 20px;
-    counter-increment: item;
-}
-
-.create-exercise-list.skip-item:before {
-    content:"\a0\a0\a0"
-}

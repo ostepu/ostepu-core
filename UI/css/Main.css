@@ -109,6 +109,28 @@ li {
     width: 880px;
 }
 
+.lower-alpha li:before {
+    content: counter(item, lower-alpha);
+}
+
+.decimal li:before {
+    content: counter(item, decimal);
+}
+
+.full-width-list {
+    counter-reset: item;
+    width: 880px;
+}
+
+.full-width-list li:not(.skip-item):before {
+    padding-right: 20px;
+    counter-increment: item;
+}
+
+.full-width-list .skip-item:before {
+    content:"\a0\a0\a0";
+}
+
 .tutor-assign-element {
     width: 180px;
     padding-bottom: 10px;
