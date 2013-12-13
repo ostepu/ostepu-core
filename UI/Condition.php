@@ -16,8 +16,11 @@ $h->setBackURL("index.php")
 $setCondition = Template::WithTemplateFile('include/Condition/SetCondition.template.json');
 $setCondition->bind(array());
 
+$userList = Template::WithTemplateFile('include/Condition/UserList.template.json');
+$userList->bind(array());
+
 // wrap all the elements in some HTML and show them on the page
-$w = new HTMLWrapper($h, $setCondition);
+$w = new HTMLWrapper($h, $setCondition, $userList);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
 ?>

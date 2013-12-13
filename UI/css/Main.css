@@ -93,6 +93,20 @@ li {
     padding-bottom: 10px;
 }
 
+table {
+    width: 850px;
+}
+
+table th {
+    text-align: left;
+    padding-bottom: 20px;
+}
+
+table td {
+    text-align: left;
+    padding-bottom: 10px;
+}
+
 .body-options {
     text-align: right;
 }
