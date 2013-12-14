@@ -81,6 +81,16 @@ class CourseStatus extends Object implements JsonSerializable
     {
         return 'C_id';
     }
+    
+    /**
+     * (description)
+     */
+    public static function getDefinition(){
+        return array(
+            '0' => 'inactive',
+            '1' => 'active',
+        );
+    }
    
     /**
      * (description)

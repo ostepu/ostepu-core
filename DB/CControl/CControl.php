@@ -63,15 +63,15 @@ class CControl
                          
                          
         // GET GetComponentDefinitions
-        $this->app->get('/components',
+        $this->app->get('/definition',
                          array($this,'getComponentDefinitions'));
                          
         // GET GetComponentDefinition
-        $this->app->get('/components/:componentid',
+        $this->app->get('/definition/:componentid',
                          array($this,'getComponentDefinition'));
                          
         // GET SendComponentDefinitions
-        $this->app->get('/send/components',
+        $this->app->get('/send',
                          array($this,'sendComponentDefinitions'));
                 
         // run Slim

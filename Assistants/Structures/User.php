@@ -248,13 +248,26 @@ class User extends Object implements JsonSerializable
            'U_flag' => 'flag'
         );
     }
-    
+        
     /**
      * (description)
      */
     public static function getDbPrimaryKey()
     {
         return 'U_id';
+    }
+    
+    /**
+     * (description)
+     */
+    public static function getDefinition(){
+        return array(
+            '0' => 'student',
+            '1' => 'tutor',
+            '2' => 'lecturer',
+            '3' => 'administrator',
+            '4' => 'super-administrator'
+        );
     }
     
     /**
