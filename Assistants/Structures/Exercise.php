@@ -72,6 +72,19 @@ class Exercise extends Object implements JsonSerializable
     public function setType($value){
         $this->type = $value;
     }
+    
+    /**
+     * The type of points this exercise yields.
+     *
+     * type: int
+     */
+    private $link;
+    public function getLink(){
+        return $this->link;
+    }
+    public function setLink($value){
+        $this->link = $value;
+    }
 
     /**
      * the submissions (?) for this exercise
@@ -107,6 +120,7 @@ class Exercise extends Object implements JsonSerializable
             'sheetId' => $this->sheetId,
             'maxPoints' => $this->maxPoints,
             'type' => $this->type,
+            'link' => $this->link,
             'submissions' => $submissions,
             'attachments' => $this->attachments
         );
