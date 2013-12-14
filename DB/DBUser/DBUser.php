@@ -7,8 +7,7 @@
 require_once( 'Include/Slim/Slim.php' );
 include_once( 'Include/Structures.php' );
 include_once( 'Include/Request.php' );
-include_once( 'Include/DbJson.php' );
-include_once( 'Include/DbRequest.php' );
+include_once( 'Include/DBJson.php' );
 include_once( 'Include/CConfig.php' );
 
 \Slim\Slim::registerAutoloader();
@@ -45,30 +44,26 @@ class DBUser
         $this->query = array(CConfig::getLink($conf->getLinks(),"query"));
         
         $this->app = new \Slim\Slim();
-        
-        // PUT SetUserRights
-        $this->app->put('/user/user/:userid/rights',
-                        array($this,'SetUserRights'));
                         
         // PUT EditUser
-        $this->app->put('/user/user/:userid',
-                        array($this,'EditUser'));
+        $this->app->put('/' . $this->getPrefix() . '/user/:userid',
+                        array($this, 'editUser'));
                         
         // DELETE RemoveUser
-        $this->app->delete('/user/user/:userid',
-                        array($this,'RemoveUser'));
+        $this->app->delete('/' . $this->getPrefix() . '/user/:userid',
+                        array($this, 'removeUser'));
                         
         // POST AddUser
-        $this->app->post('/user',
-                        array($this,'AddUser'));
+        $this->app->post('/' . $this->getPrefix(),
+                        array($this, 'addUser'));
                         
         // GET GetUsers
-        $this->app->get('/user/user',
-                        array($this,'GetUsers'));
+        $this->app->get('/' . $this->getPrefix() . '/user',
+                        array($this, 'getUsers'));
                         
         // GET GetUser
-        $this->app->get('/user/user/:userid',
-                        array($this,'GetUser'));
+        $this->app->get('/' . $this->getPrefix() . '/user/:userid',
+                        array($this, 'getUser'));
 
         if (strpos ($this->app->request->getResourceUri(),'/' . $this->getPrefix()) === 0){
             // run Slim
@@ -76,16 +71,7 @@ class DBUser
         }
     }
     
-    /**
-     * (description)
-     *
-     * @param $userid (description)
-     */
-    // PUT SetUserRights
-    public function SetUserRights($userid)
-    {
-            $this->app->response->setStatus(200);  
-    }
+
     
     /**
      * (description)
@@ -93,9 +79,9 @@ class DBUser
      * @param $userid (description)
      */
     // PUT EditUser
-    public function EditUser($userid)
+    public function editUser($userid)
     {
-            $this->app->response->setStatus(200);  
+ 
     }
     
     /**
@@ -104,27 +90,27 @@ class DBUser
      * @param $userid (description)
      */
     // DELETE RemoveUser
-    public function RemoveUser($userid)
+    public function removeUser($userid)
     {
-            $this->app->response->setStatus(252);  
+ 
     }
     
     /**
      * (description)
      */
     // POST AddUser
-    public function AddUser()
+    public function addUser()
     {
-            $this->app->response->setStatus(201);  
+
     }
     
     /**
      * (description)
      */
     // GET GetUsers
-    public function GetUsers()
+    public function getUsers()
     {
-            $this->app->response->setStatus(200);  
+ 
     }
     
     /**
@@ -133,9 +119,9 @@ class DBUser
      * @param $userid (description)
      */
     // GET GetUser
-    public function GetUser($userid)
+    public function getUser($userid)
     {
-        $this->app->response->setStatus(200);    
+   
     }
 }
 ?>
