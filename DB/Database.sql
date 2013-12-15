@@ -399,7 +399,7 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`Component` (
   `CO_id` INT NOT NULL AUTO_INCREMENT,
   `CO_name` VARCHAR(45) NOT NULL,
   `CO_address` VARCHAR(255) NOT NULL,
-  `CO_option` VARCHAR(255) NOT NULL,
+  `CO_option` VARCHAR(255) NULL,
   PRIMARY KEY (`CO_id`),
   UNIQUE INDEX `CO_id_UNIQUE` (`CO_id` ASC))
 ENGINE = InnoDB;
@@ -536,7 +536,7 @@ INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `C
 INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (5, 'FSBinder', 'localhost/FS/FSBinder/FSBinder.php', '');
 INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (6, 'DBCourse', 'localhost/DB/DBCourse/DBCourse.php', '');
 INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (7, 'DBUser', 'localhost/DB/DBUser/DBUser.php', '');
-INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (8, 'DBCourseStatus', 'localhost/DB/DBCourseStatus/DBCourseStatus.php', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (8, 'DBAttachment', 'localhost/DB/DBAttachment/DBAttachment.php', '');
 INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (9, 'DBExercise', 'localhost/DB/DBExercise/DBExercise.php', '');
 INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (10, 'DBExerciseSheet', 'localhost/DB/DBExerciseSheet/DBExerciseSheet.php', '');
 INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (11, 'DBExerciseType', 'localhost/DB/DBExerciseType/DBExerciseType.php', '');
@@ -546,6 +546,8 @@ INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `C
 INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (15, 'LCourse', 'localhost/logic/Course/course.php', '');
 INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (16, 'LGroup', 'localhost/logic/Group/Group.php', '');
 INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (17, 'LUser', 'localhost/logic/User/user.php', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (18, 'DBCourseStatus', 'localhost/DB/DBCourseStatus/DBCourseStatus.php', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (19, 'FSPdf', 'localhost/FS/FSPdf/FSPdf.php', '');
 
 COMMIT;
 
@@ -583,6 +585,18 @@ INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_i
 INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (26, 15, 14, 'out', '');
 INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (27, 16, 14, 'out', '');
 INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (28, 17, 14, 'out', '');
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (29, 19, 5, 'out', '0-f');
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (30, 1, 19, 'out3', '');
 
 COMMIT;
 
+USE `uebungsplattform`;
+
+DELIMITER $$
+USE `uebungsplattform`$$
+CREATE TRIGGER `deleteComponentLinks` BEFORE DELETE ON `Component` FOR EACH ROW
+DELETE FROM componentlink WHERE CO_id_owner = OLD.CO_id or CO_id_target = OLD.CO_id;
+$$
+
+
+DELIMITER ;
