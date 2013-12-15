@@ -111,10 +111,6 @@ table td {
     text-align: right;
 }
 
-.body-option {
-    color: #5A96C3;    
-}
-
 .accept-button, .deny-button {
     padding-left: 40px;
 }
@@ -168,6 +164,10 @@ table td {
 
 .info-color, .info-color a {
     color: #2b648f;
+}
+
+.body-option-color, .body-option-color a {
+    color: #5A96C3;
 }
 
 .normal {
