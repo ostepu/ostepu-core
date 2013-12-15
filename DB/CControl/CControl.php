@@ -39,9 +39,9 @@ class CControl
         // GET GetLink
         $this->app->get('/link/:linkid',
                          array($this,'getLink'));
+
                          
-                         
-                         
+                                                  
 
         // PUT EditComponent
         $this->app->put('/component/:componentid',
@@ -57,10 +57,10 @@ class CControl
                          
         // GET GetComponent
         $this->app->get('/component/:componentid',
-                         array($this,'getComponent'));                 
+                         array($this,'getComponent'));                               
                          
-                         
-                         
+  
+  
                          
         // GET GetComponentDefinitions
         $this->app->get('/definition',
@@ -82,15 +82,14 @@ class CControl
     
     
      /**
-     * (description)
+     * PUT EditLink
      *
      * @param $linkid (description)
      */
-    // PUT EditLink
     public function editLink($linkid)
     {
-        $edit = DBJson::getUpdateDataFromInput($this->app->request->getBody(), Link::getDBConvert(), ',');
-        $value = $edit;
+        $value = DBJson::getUpdateDataFromInput($this->app->request->getBody(), Link::getDBConvert(), ',');
+
         eval("\$sql = \"".implode('\n',file("Sql/PutLink.sql"))."\";");
         $query_result = DBRequest::request($sql);
         $this->app->response->setStatus(200);
@@ -110,12 +109,22 @@ class CControl
     }
     
     /**
-     * (description)
+     * POST SetLink
      */
-    // POST SetLink
     public function setLink()
     {
-        $insert = DBJson::getInsertDataFromInput($this->app->request->getBody(), Link::getDBConvert(), ',');
+        $body = $this->app->request->getBody();
+        $component = Component::decodeComponent($body);
+        $links = $component->getLinks();
+        $insert = array();
+        foreach ($links as $link){
+           $res = (array) $link;
+           $res['CL_id_owner'] = $component->getID();
+           $res['CL_id_target'] = "???";
+           array_push($insert, $res);
+        }
+        
+        $insert = DBJson::getInsertDataFromInput($insert, Link::getDBConvert(), ',');
         foreach ($insert as $in){
             $columns = $in[0];
             $value = $in[1];
@@ -126,15 +135,15 @@ class CControl
     }
     
     /**
-     * (description)
+     * GET GetLink
      *
      * @param $linkid (description)
      */
-    // GET GetLink
     public function getLink($linkid)
     {
         eval("\$sql = \"".implode('\n',file("Sql/GetLink.sql"))."\";");
         $query_result = DBRequest::request($sql);
+        
         $data = DBJson::getRows($query_result);
         $links = DBJson::getResultObjectsByAttributes($data, Link::getDBPrimaryKey(), Link::getDBConvert());
         $this->app->response->setBody(Link::encodeLink($links));
@@ -145,26 +154,24 @@ class CControl
 
  
     /**
-     * (description)
+     * PUT EditComponent
      *
      * @param $componentid (description)
      */
-    // PUT EditComponent
     public function editComponent($componentid)
     {
-        $edit = DBJson::getUpdateDataFromInput($this->app->request->getBody(), Component::getDBConvert(), ',');
-        $value = $edit;
+        $value = DBJson::getUpdateDataFromInput($this->app->request->getBody(), Component::getDBConvert(), ',');
+
         eval("\$sql = \"".implode('\n',file("Sql/PutComponent.sql"))."\";");
         $query_result = DBRequest::request($sql);
         $this->app->response->setStatus(200);
     }
     
     /**
-     * (description)
+     * DELETE DeleteComponent
      *
      * @param $componentid (description)
      */
-    // DELETE DeleteComponent
     public function deleteComponent($componentid)
     {
         eval("\$sql = \"".implode('\n',file("Sql/DeleteComponent.sql"))."\";");
@@ -173,9 +180,8 @@ class CControl
     }
     
     /**
-     * (description)
+     * POST SetComponent
      */
-    // POST SetComponent
     public function setComponent()
     {
         $insert = DBJson::getInsertDataFromInput($this->app->request->getBody(), Component::getDBConvert(), ',');
@@ -189,11 +195,10 @@ class CControl
     }
     
     /**
-     * (description)
+     * GET GetComponent
      *
      * @param $componentid (description)
      */
-    // GET GetComponent
     public function getComponent($componentid)
     {
         eval("\$sql = \"".implode('\n',file("Sql/GetComponent.sql"))."\";");
@@ -208,11 +213,10 @@ class CControl
     
     
     /**
-     * (description)
+     * GET GetComponentDefinitions
      *
      * @param $userid (description)
      */
-    // GET GetComponentDefinitions
     public function getComponentDefinitions()
     {
         eval("\$sql = \"".implode('\n',file("Sql/GetComponentDefinitions.sql"))."\";");
@@ -227,11 +231,10 @@ class CControl
     }
     
     /**
-     * (description)
+     * GET GetComponentDefinition
      *
      * @param $userid (description)
      */
-    // GET GetComponentDefinition
     public function getComponentDefinition($componentid)
     {
         eval("\$sql = \"".implode('\n',file("Sql/GetComponentDefinition.sql"))."\";");
@@ -247,11 +250,10 @@ class CControl
     }
     
     /**
-     * (description)
+     * GET SendComponentDefinitions
      *
      * @param $courseid (description)
      */
-    // GET SendComponentDefinitions
     public function sendComponentDefinitions()
     {
         eval("\$sql = \"".implode('\n',file("Sql/GetComponentDefinitions.sql"))."\";");

@@ -8,6 +8,7 @@ require_once( 'Include/Slim/Slim.php' );
 include_once( 'Include/Structures.php' );
 include_once( 'Include/Request.php' );
 include_once( 'Include/DBJson.php' );
+include_once( 'Include/DBRequest.php' );
 include_once( 'Include/CConfig.php' );
 
 \Slim\Slim::registerAutoloader();

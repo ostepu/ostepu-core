@@ -8,6 +8,7 @@ require_once( 'Include/Slim/Slim.php' );
 include_once( 'Include/Structures.php' );
 include_once( 'Include/Request.php' );
 include_once( 'Include/DBJson.php' );
+include_once( 'Include/DBRequest.php' );
 include_once( 'Include/CConfig.php' );
 
 \Slim\Slim::registerAutoloader();
@@ -73,24 +74,18 @@ class DBCourse
     }
     
     /**
-     * (description)
+     * PUT EditCourse
      *
      * @param $courseid (description)
      */
-    // PUT EditCourse
     public function editCourse($courseid)
     {
-       /* $obj = new Query();
-        eval("\$sql = \"" . implode('\n',file("Sql/EditCourse.sql")) . "\";");
-        $obj->setRequest($sql);
+        $values = DBJson::getUpdateDataFromInput($this->app->request->getBody(), Course::getDBConvert(), ',');
         
-        $result = Request::routeRequest("GET",
-                                      '/query',
-                                      $this->_app->request->headers->all(),
-                                      Query::encodeQuery($obj),
-                                      $this->query,
-                                      "query");
-        
+        $result = DBRequest::getRoutedSqlFile($this->query, 
+                                        "Sql/EditCourse.sql", 
+                                        array("courseid" => $courseid,"value" => $values));   
+                                        
         if ($result['status']>=200 && $result['status']<=299){
         
             $this->_app->response->setStatus($result['status']);
@@ -100,28 +95,20 @@ class DBCourse
         } else{
             $this->_app->response->setStatus(409);
             $this->_app->stop();
-        }*/
+        }
     }
     
     /**
-     * (description)
+     * DELETE DeleteCourse
      *
      * @param $courseid (description)
      */
-    // DELETE DeleteCourse
     public function deleteCourse($courseid)
     {
-        /*$obj = new Query();
-        eval("\$sql = \"" . implode('\n',file("Sql/DeleteCourse.sql")) . "\";");
-        $obj->setRequest($sql);
-        
-        $result = Request::routeRequest("GET",
-                                      '/query',
-                                      $this->_app->request->headers->all(),
-                                      Query::encodeQuery($obj),
-                                      $this->query,
-                                      "query");
-        
+        $result = DBRequest::getRoutedSqlFile($this->query, 
+                                        "Sql/DeleteCourse.sql", 
+                                        array("courseid" => $courseid));    
+                                        
         if ($result['status']>=200 && $result['status']<=299){
         
             $this->_app->response->setStatus($result['status']);
@@ -131,59 +118,49 @@ class DBCourse
         } else{
             $this->_app->response->setStatus(409);
             $this->_app->stop();
-        }*/
+        }
     }
     
     /**
-     * (description)
+     * POST SetCourse
      *
      * @param $path (description)
-     */
-    // POST SetCourse
+     */ 
     public function setCourse()
     {
-        /*$obj = new Query();
-        eval("\$sql = \"" . implode('\n',file("Sql/SetCourse.sql")) . "\";");
-        $obj->setRequest($sql);
+        $insert = DBJson::getInsertDataFromInput($this->app->request->getBody(), Course::getDBConvert(), ',');
+        foreach ($insert as $in){
+            $columns = $in[0];
+            $values = $in[1];
+
+            $result = DBRequest::getRoutedSqlFile($this->query, 
+                                            "Sql/SetCourse.sql", 
+                                            array("columns" => $columns, "values" => $values));                   
         
-        $result = Request::routeRequest("GET",
-                                      '/query',
-                                      $this->_app->request->headers->all(),
-                                      Query::encodeQuery($obj),
-                                      $this->query,
-                                      "query");
+            if ($result['status']>=200 && $result['status']<=299){
         
-        if ($result['status']>=200 && $result['status']<=299){
-        
-            $this->_app->response->setStatus($result['status']);
-            if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->setStatus($result['status']);
+                if (isset($result['headers']['Content-Type']))
+                    header($result['headers']['Content-Type']);
                 
-        } else{
-            $this->_app->response->setStatus(409);
-            $this->_app->stop();
-        }*/
+            } else{
+                $this->_app->response->setStatus(409);
+                $this->_app->stop();
+            }
+        }
     }
         
     /**
-     * (description)
+     * GET GetCourses
      *
      * @param $userid (description)
      */
-    // GET GetCourses
     public function getCourses($userid)
     {    
-        $obj = new Query();
-        eval("\$sql = \"" . implode('\n',file("Sql/GetCourses.sql")) . "\";");
-        $obj->setRequest($sql);
-        
-        $result = Request::routeRequest("GET",
-                                      '/query',
-                                      $this->_app->request->headers->all(),
-                                      Query::encodeQuery($obj),
-                                      $this->query,
-                                      "query");
-
+        $result = DBRequest::getRoutedSqlFile($this->query, 
+                                        "Sql/GetCourses.sql", 
+                                        array("userid" => $userid));
+                                        
         if ($result['status']>=200 && $result['status']<=299){
             $query = Query::decodeQuery($result['content']);
             
@@ -202,23 +179,15 @@ class DBCourse
     }
     
     /**
-     * (description)
+     * GET GetCourseMember
      *
      * @param $courseid (description)
      */
-    // GET GetCourseMember
     public function getCourseMember($courseid)
     {             
-        $obj = new Query();
-        eval("\$sql = \"" . implode('\n',file("Sql/GetCourseMember.sql")) . "\";");
-        $obj->setRequest($sql);
-        
-        $result = Request::routeRequest("GET",
-                                      '/query',
-                                      $this->_app->request->headers->all(),
-                                      Query::encodeQuery($obj),
-                                      $this->query,
-                                      "query");
+        $result = DBRequest::getRoutedSqlFile($this->query, 
+                                        "Sql/GetCourseMember.sql", 
+                                        array("courseid" => $courseid));        
 
         if ($result['status']>=200 && $result['status']<=299){
             $query = Query::decodeQuery($result['content']);
@@ -235,7 +204,6 @@ class DBCourse
             $this->_app->response->setBody(User::encodeUser(new User()));
             $this->_app->stop();
         }
-
     }
 
 }
