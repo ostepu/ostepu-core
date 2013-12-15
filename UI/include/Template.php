@@ -176,7 +176,13 @@ class Template
                     "template: {$template}\ndata: {$data}");
             }
         } else {
-            $templateString = $template['_template'];
+            $rawTemplate = $template['_template'];
+
+            if (is_array($rawTemplate)) {
+                $templateString = implode("\n" , $template['_template']);
+            } else {
+                return $rawTemplate;
+            }
         }
 
         return $templateString;
