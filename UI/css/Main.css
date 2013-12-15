@@ -162,12 +162,12 @@ table td {
     font-weight: bold;
 }
 
-.red {
+.red, .red a {
     color: #DE3838;
 }
 
-.green {
-    color: #2DB22D;
+.green, .green a {
+    color: #459522;
 }
 
 .normal {
