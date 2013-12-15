@@ -37,6 +37,9 @@
 }
 
 .exercise-list li:before {
-    content: counter(item, decimal) ' | ';
+    content: counter(item, decimal);
     counter-increment: item;
+    padding-right: 25px;
+    font-weight: bold;
+    color: #6f6f6f;
 }
