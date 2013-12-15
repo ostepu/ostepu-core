@@ -162,12 +162,12 @@ table td {
     font-weight: bold;
 }
 
-.red, .red a {
+.critical-color, .critical-color a {
     color: #DE3838;
 }
 
-.green, .green a {
-    color: #5f8a2c;
+.info-color, .info-color a {
+    color: #2b648f;
 }
 
 .normal {
