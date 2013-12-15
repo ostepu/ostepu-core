@@ -4,7 +4,11 @@
     {
         "invititation":
         {
-            "_template": "<li>Matrikel: <input type=\"text\" name=\"ids[]\" size=\"50\"></li>",
+            "_template": 
+            [
+                "<label class=\"short left label bold new-line\">Matrikel:</label>",
+                "<input class=\"form-field left text-input\" type=\"text\" name=\"ids[]\">"
+            ],
             "_count": "maxGroupSize"
         }
     }
