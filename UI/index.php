@@ -14,7 +14,6 @@ $h->setBackURL("index.php")
 
 // construct a login element
 $courseSelect = Template::WithTemplateFile('include/CourseSelect/CourseSelect.template.json');
-$courseSelect->bind(array());
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $courseSelect);

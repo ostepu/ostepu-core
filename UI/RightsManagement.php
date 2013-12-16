@@ -13,15 +13,15 @@ $h->setBackURL("index.php")
 ->setBackTitle("zur Veranstaltung");
 
 // construct a content element for setting tutor rights
-$tutorRights = Template::WithTemplateFile('include/RightsManagement/TutorRights.template.json');
+$tutorRights = Template::WithTemplateFile('include/RightsManagement/TutorRights.template.html');
 $tutorRights->bind(array());
 
 // construct a content element for setting lecturer rights
-$lecturerRights = Template::WithTemplateFile('include/RightsManagement/LecturerRights.template.json');
+$lecturerRights = Template::WithTemplateFile('include/RightsManagement/LecturerRights.template.html');
 $lecturerRights->bind(array());
 
 // construct a content element for creating an user
-$createUser = Template::WithTemplateFile('include/RightsManagement/CreateUser.template.json');
+$createUser = Template::WithTemplateFile('include/RightsManagement/CreateUser.template.html');
 $createUser->bind(array());
 
 // wrap all the elements in some HTML and show them on the page

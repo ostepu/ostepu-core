@@ -10,7 +10,7 @@ $h = new Header("Datenstrukturen",
                 "211221492", 
                 "75%");
 
-$h->setBackURL("index.php")
+$h->setBackURL("Student.php")
 ->setBackTitle("zur Veranstaltung");
 
 $data = file_get_contents("http://localhost/Uebungsplattform/UI/Data/GroupData");
@@ -23,15 +23,15 @@ unset($data['groupInfo']);
 $invitation = $data;
 
 // construct a content element for managing groups
-$manageGroup = Template::WithTemplateFile('include/Group/ManageGroup.template.json');
+$manageGroup = Template::WithTemplateFile('include/Group/ManageGroup.template.html');
 $manageGroup->bind($group);
 
 // construct a content element for creating groups
-$createGroup = Template::WithTemplateFile('include/Group/InviteGroup.template.json');
+$createGroup = Template::WithTemplateFile('include/Group/InviteGroup.template.html');
 $createGroup->bind($groupInfo);
 
 // construct a content element for joining groups
-$invitations = Template::WithTemplateFile('include/Group/Invitations.template.json');
+$invitations = Template::WithTemplateFile('include/Group/Invitations.template.html');
 $invitations->bind($invitation);
 
 // wrap all the elements in some HTML and show them on the page

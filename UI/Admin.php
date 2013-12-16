@@ -10,11 +10,8 @@ $h = new Header("Datenstrukturen",
                 "Admin");
 
 // include the navigation bar
-$menu = Template::WithTemplateFile('include/Navigation/NavigationAdmin.template.json');
+$menu = Template::WithTemplateFile('include/Navigation/NavigationAdmin.template.html');
 $menu->bind(array());
-
-$createSheet = Template::WithTemplateFile('include/ExerciseSheet/CreateSheet.template.json');
-$createSheet->bind(array());
 
 // convert the json string into an associative array
 $sheets = json_decode($sheetString, true);
@@ -25,7 +22,7 @@ $sheetString = file_get_contents("http://localhost/Uebungsplattform/UI/Data/Shee
 // convert the json string into an associative array
 $sheets = json_decode($sheetString, true);
 
-$t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetLecturer.template.json');
+$t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetLecturer.template.html');
 
 $t->bind($sheets);
 

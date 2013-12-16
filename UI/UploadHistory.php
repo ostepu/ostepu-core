@@ -13,12 +13,10 @@ $h->setBackURL("index.php")
 ->setBackTitle("zur Veranstaltung");
 
 // construct a content element for the ability to look at the upload history of a student
-$uploadHistory = Template::WithTemplateFile('include/UploadHistory/UploadHistory.template.json');
-$uploadHistory->bind(array());
+$uploadHistory = Template::WithTemplateFile('include/UploadHistory/UploadHistory.template.html');
 
 // construct a content element for sample results
-$uploadHistoryResults = Template::WithTemplateFile('include/UploadHistory/Results.template.json');
-$uploadHistoryResults->bind(array());
+$uploadHistoryResults = Template::WithTemplateFile('include/UploadHistory/Results.template.html');
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $uploadHistory, $uploadHistoryResults);

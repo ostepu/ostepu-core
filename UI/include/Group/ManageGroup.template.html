@@ -9,8 +9,20 @@
     <div class="content-body-wrapper">
         <div class="content-body left">
             <ol class="exercise-list invitation-list">
-                %leader%
-                %members%
+                <li class="bold">
+                    <?php print $leader['firstName'] . " " . $leader['lastName']; ?> (Gruppenführer)
+                    <a href="#" class="body-option-color deny-button right normal">
+                        hinauswerfen
+                    </a>
+                </li>
+                <?php foreach ($members as $member): ?>
+                    <li>
+                        <?php print $member['firstName'] . " " . $member['lastName']; ?>
+                        <a href="#" class="body-option-color deny-button right">
+                            hinauswerfen
+                        </a>
+                    </li>
+                <?php endforeach; ?>
             </ol>
         </div>
     </div> <!-- end: content-body-wrapper -->

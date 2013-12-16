@@ -9,7 +9,7 @@ class Header
     private $username;
     private $userid;
     private $points;
-    private $backURL = "#";
+    private $backURL = "index.php";
     private $backTitle = "Veranstaltung wechseln";
 
     function __construct($title,$extraInfo, $username,

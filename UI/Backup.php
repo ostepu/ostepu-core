@@ -18,11 +18,10 @@ $data = json_decode($data, true);
 $backups = $data;
 
 // construct a content element for creating backups
-$createBackup = Template::WithTemplateFile('include/Backup/CreateBackup.template.json');
-$createBackup->bind(array());
+$createBackup = Template::WithTemplateFile('include/Backup/CreateBackup.template.html');
 
 // construct a content element for loading backups
-$loadBackup = Template::WithTemplateFile('include/Backup/LoadBackup.template.json');
+$loadBackup = Template::WithTemplateFile('include/Backup/LoadBackup.template.html');
 $loadBackup->bind($backups);
 
 // wrap all the elements in some HTML and show them on the page

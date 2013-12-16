@@ -12,7 +12,15 @@
                 Unzugeordnete automatisch zuteilen an:
             </div>    
             <div class="tutor-assign-element left">
-                %tutorAssignments%
+                <?php foreach ($tutorAssignments as $tutorAssignment): ?>
+                    <input type="checkbox" />
+                    <?php print $tutorAssignment['tutor']['firstName']; ?>
+                    <?php print " "; ?>
+                    <?php print $tutorAssignment['tutor']['lastName']; ?>
+                    <?php print " "; ?>
+                    <?php print "(" . count($tutorAssignment['submissionIDs']) . ")"; ?>
+                    <br />
+                <?php endforeach; ?>
             </div>
             <div class="tutor-assign-element left">
                 nach: 
@@ -22,7 +30,7 @@
                     <option>Zufall</option>
                     <option>Nr. aufsteigend</option>
                     <option>Nr. absteigend</option>
-            </select>
+                </select>
             </div>      
         </div>
     </div> <!-- end: content-body-wrapper -->

@@ -20,7 +20,7 @@ for ($i=0; $i < $backupCount; $i++) {
     $backupElements[] = $backups[rand(0, count($backups) - 1)];
 }
 
-$backups = array("backup" => $backupElements);
+$backups = array("backups" => $backupElements);
 
 print json_encode($backups);
 

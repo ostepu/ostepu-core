@@ -10,7 +10,13 @@
         <div class="content-body left">
             <label class="form-field left label bold" for="createBackup">Backup auswählen:</label> 
             <select class="form-field text-input" name="createBackup" id="createBackup"> 
-                %backup%
+                <?php
+                foreach ($backups as $backup):
+                ?>
+                <option value="<?php print $backup['id']; ?>" >
+                <?php print $backup['date']; ?>
+                </option>
+                <?php endforeach; ?>
             </select>  
         </div>
     </div> <!-- end: content-body -->
