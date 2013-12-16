@@ -1,86 +1,117 @@
 <?php
 
 require 'Slim/Slim.php';
-include 'include/Assistants/request/createRequest.php';
-	
+include 'include/Assistants/request/createRequest.php';    
+    
 \Slim\Slim::registerAutoloader();
 	
-$_app = new \Slim\Slim();
-	
-$LController = "";				//Einlesen aus config.ini
+class Course
+{
+    //URL of the logiccontroller    
+    private $lURL = "";				//Einlesen aus config.ini
 
-//SetCourse
-$_app->post('', function() use($_app){
-
-	$req = \Slim\Slim::getInstance()->request()->getBody();
-	$header = \Slim\Slim::getInstance()->request()->getHeader();
-    $URL = $LController.'/DB/course';
-    $status = createPost($URL, $header, $req);
-    $_app->response->setStatus($status);
+    $this->app = new \Slim\Slim();
+    $this->app->response->headers->set('Content-Type', 'application/json');
     
-});
-
-//EditCourse
-
-$_app->put('/course/:id', function($id) use($_app){
-
-	$req = \Slim\Slim::getInstance()->request()->getBody();
-	$header = \Slim\Slim::getInstance()->request()->getHeader();
-    $URL = $LController.'/DB/course/course/'. $id;
-    $status = createPut($URL, $header, $req);
-    $_app->response->setStatus($status);
+    //SetCourse
+    $this->app->post(':data+', array($this, 'setCourse')); //keine URL: ''?
     
-});
-
-//DeleteCourse
-
-$_app->delete('/course/:id', function($id) use($_app){
-
-	$req = \Slim\Slim::getInstance()->request()->getBody();
-	$header = \Slim\Slim::getInstance()->request()->getHeader();
-    $URL = $LController.'/DB/course/course/'. $id;
-    $status = createDelete($URL, $header, $req);
-    $_app->response->setStatus($status);
+    //EditCourse
+    $this->app->put('/course/:courseid', array($this, 'editCourse'));    
     
-});
+    //DeleteCourse
+    $this->app->delete('/course/:courseid', array($this, 'deleteCourse'));   
     
+    //AddCourseMember
+    $this->app->post('/course/:courseid/user/:userid', array($this, 'addCourseMember'));   
+    
+    //GetCourseMember
+    $this->app->get('/course/:courseid/user', array($this, 'getCourseMember'));    
+    
+    //GetCourses
+    $this->app->get('/user/:userid', array($this, 'getCourses'));    
+    
+    
+    
+    /**
+     * set a new course
+     * 
+     * @param (param)
+     */
+    private function setCourse($data){
+        $body = $this->app->request->getBody();
+        $header = $this->app->request->getHeader();
+        $URL = $lURL.'/DB/course';
+        $status = createPost($URL, $header, $body);
+        $this->appapp->response->setStatus($status);        
+    }
+    
+    /**
+     * edit an existing course
+     * 
+     * @param (param)
+     */    
+    private function editCourse($courseid){
+        $body = $this->app->request->getBody();
+        $header = $this->app->request->getHeader();
+        $URL = $lURL.'/DB/course/course/'.$courseid;
+        $status = createPut($URL, $header, $body);
+        $this->app->response->setStatus($status);        
+    }
+
+    /**
+     * delete an existing course
+     * 
+     * @param (param)
+     */
+    private function deleteCourse($courseid){
+        $body = $this->app->request->getBody();
+        $header = $this->app->request->getHeader();
+        $URL = $lURL.'/DB/course/course/'.$courseid;
+        $status = createDelete($URL, $header, $body);
+        $this->app->response->setStatus($status);        
+    }        
+
+    /**
+     * add a user to a course
+     * 
+     * @param (param)
+     */
+    private function addCourseMember($courseid, $userid){        
+        $body = $this->app->request->getBody();
+        $header = $this->app->request->getHeader();
+        $URL = $lURL.'/DB/course/'.$courseid.'/course/'.$userid;
+        $status = createPut($URL, $header, $body);
+        $this->app->response->setStatus($status);        
+    }
+
+    /**
+     * returns a list of users who are added to the course
+     * 
+     * @param (param)
+     */
+    private function getCourseMember($courseid){
+        $body = $this->app->request->getBody();
+        $header = $this->app->request->getHeader();
+        $URL = $lURL.'/DB/course/'.$courseid.'/user';
+        $dbAnswer = createGet($URL, $header, $body);            //createGet(...).getBody?
+        $this->app->response->setStatus(200);                   //status aus createGet auslesen!
+        $this->app->response->setBody($dbAnswer);
+    }
+    
+    /**
+     * returns a list of all courses the user is added to.
+     * 
+     * @param (param)
+     */
+    private function getCourses($userid){
+
+        $body = $this->app->request->getBody();
+        $header = $this->app->request->getHeader();        
+        $URL = $lURL.'/DB/course/user/'.$userid;        
+        $dbAnswer = createGet($URL, $header, $body);            //createGet(...).getBody?
+        $this->app->response->setStatus(200);                   //status aus createGet auslesen!
+        $this->app->response->setBody($dbAnswer);
+    }
 }
-
-//AddCourseMember
-
-$_app->post('/course/:id/user/:id', function($courseid, $userid) use($_app){
-	
-	$req = \Slim\Slim::getInstance()->request()->getBody();
-	$header = \Slim\Slim::getInstance()->request()->getHeader();
-    $URL = $LController.'/DB/course/'.$courseid.'/course/'.$userid;
-    $status = createPut($URL, $header, $req);
-    $app->response->setStatus($status);
-    
-});
-
-//GetCourseMember
-
-$_app->get('/course/:id/user', function($id) use($_app){
-
-	$req = \Slim\Slim::getInstance()->request()->getBody();
-	$header = \Slim\Slim::getInstance()->request()->getHeader();
-    $URL = $LController.'/DB/course/'.$id.'/user';
-    $dbAnswer = createGet($URL, $header, $req);
-    $_app->response->headers->set('Content-Type', 'application/json');
-    $_app->response->setStatus(200);
-    $_app->response->setBody($dbAnswer);
-});
-
-
-//GetCourses
-$app->get('/user/:id', function($id) use($app){
-
-	$req = \Slim\Slim::getInstance()->request()->getBody();
-	$header = \Slim\Slim::getInstance()->request()->getHeader();
-    $URL = $LController.'/DB/course/user/'.$id;
-    $dbAnswer = createGet($URL, $header, $req);
-    $_app->response->headers->set('Content-Type', 'application/json');
-    $_app->response->setStatus(200);
-    $_app->response->setBody($dbAnswer);
-});    
 ?>   
