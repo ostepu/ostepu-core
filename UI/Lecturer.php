@@ -8,6 +8,7 @@ $h = new Header("Datenstrukturen",
                 "",
                 "Felix Schmidt",
                 "Dozent");
+$h->setBackURL('index.php');
 
 // include the navigation bar
 $menu = Template::WithTemplateFile('include/Navigation/NavigationLecturer.template.json');

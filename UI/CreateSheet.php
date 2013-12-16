@@ -9,7 +9,7 @@ $h = new Header("Datenstrukturen",
                 "Admin",
                 "211221492");
 
-$h->setBackURL("index.php")
+$h->setBackURL("Lecturer.php")
 ->setBackTitle("zur Veranstaltung");
 
 $sheetSettings = Template::WithTemplateFile('include/CreateSheet/SheetSettings.template.json');
