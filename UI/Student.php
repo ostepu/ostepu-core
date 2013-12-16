@@ -21,7 +21,7 @@ $sheetString = file_get_contents("http://localhost/Uebungsplattform/UI/Data/Shee
 // convert the json string into an associative array
 $sheets = json_decode($sheetString, true);
 
-$t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetStudent.template.json');
+$t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetStudent.template.html');
 
 $t->bind($sheets);
 
