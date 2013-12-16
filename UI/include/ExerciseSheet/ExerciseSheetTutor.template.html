@@ -1,17 +1,36 @@
+<?php
+foreach ($sheets as $sheet):
+?>
 <div class="content-element collapsible">
     <div class="content-header">
-        <div class="content-title left uppercase">%sheetName%</div>
-        <div class="critical-color bold right">%endTime%</div>
-        <div class="exercise-sheet-info info-color bold right">%exerciseSheetInfo%</div>          
+        <div class="content-title left uppercase">
+            <?php print $sheet['sheetName']; ?>
+        </div>
+        <div class="critical-color bold right">
+            <?php print $sheet['endTime']; ?>
+        </div>
+        <div class="exercise-sheet-info info-color bold right">
+            <?php print $sheet['exerciseSheetInfo'] . ' unkorrigiert'; ?>
+        </div>          
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body left">
             <ol class="exercise-list">
-                %exercises%          
+                <?php
+                foreach ($sheet['exercises'] as $exercise):
+                ?>
+                <li>
+                    <div class="exercise-type">
+                        <?php print $exercise['exerciseType']; ?>
+                    </div>
+                    <div class="exercise-points">
+                        <?php print $exercise['maxPoints'] . ' P'; ?>
+                    </div>
+                </li>
+                <?php endforeach; ?>
             </ol>
         </div>
-
         <div class="content-body right">
             <ol class="body-options body-option-color">
                 <li><a href="#">Aufgabenblatt</a></li>
@@ -22,7 +41,7 @@
                 <li><a href="#">Korrekturassistent</a></li>
             </ol>
         </div>
-    </div> 
+    </div>
 
     <div class="content-footer">
         <ol>
@@ -31,7 +50,6 @@
             <li class="footer-text">30 mit Einsendungen</li>
             <li class="footer-text">70 ohne Einsendungen</li>
         </ol>      
-    </div>
-
-    <!-- end: content-body-wrapper -->
+    </div><!-- end: content-body-wrapper -->
 </div> <!-- end: content-element -->
+<?php endforeach; ?>
