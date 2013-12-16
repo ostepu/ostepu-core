@@ -12,7 +12,7 @@ $tutorAssignment = array(
     array("tutor" => array("userID"=>"accce",
                      "email"=>"ac.tellus@actellusSuspendisse.co.uk",
                      "firstName"=>"Felix",
-                     "lastName"=>"Schmidt",
+                     "lastName"=>"Schääd",
                      "title"=>"Prof."
                     ),
           "submissionIDs" => array(5, 6, 7, 8, 9)
@@ -20,7 +20,7 @@ $tutorAssignment = array(
     array("tutor" => array("userID"=>"abcde",
                      "email"=>"ac.tellus@actellusSuspendisse.co.uk",
                      "firstName"=>"Florian",
-                     "lastName"=>"Schääd",
+                     "lastName"=>"Lücke",
                      "title"=>"Prof."
                     ),
           "submissionIDs" => array(10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20)
