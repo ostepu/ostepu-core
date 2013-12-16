@@ -19,12 +19,11 @@ $user = $data['user'];
 unset($data['user']);
 
 // construct a content element for account information
-$accountInfo = Template::WithTemplateFile('include/AccountSettings/AccountInfo.template.json');
+$accountInfo = Template::WithTemplateFile('include/AccountSettings/AccountInfo.template.html');
 $accountInfo->bind($user);
 
 // construct a content element for changing password
-$changePassword = Template::WithTemplateFile('include/AccountSettings/ChangePassword.template.json');
-$changePassword->bind(array());
+$changePassword = Template::WithTemplateFile('include/AccountSettings/ChangePassword.template.html');
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $accountInfo, $changePassword);

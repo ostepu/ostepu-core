@@ -5,10 +5,30 @@
 
     <div class="content-body-wrapper">
         <div class="content-body left">
-            <div class="form-field left bold">Vorname:</div> <div class="form-field left">%firstName%</div>
-            <div class="form-field left bold new-line">Nachname:</div> <div class="form-field left">%lastName%</div>
-            <div class="form-field left bold new-line">E-Mail:</div> <div class="form-field left">%email%</div>
-            <div class="form-field left bold new-line">Login:</div> <div class="form-field left">%userID%</div>
+            <div class="form-field left bold">
+                Vorname:
+            </div>
+            <div class="form-field left">
+                <?php print $firstName; ?>
+            </div>
+            <div class="form-field left bold new-line">
+                Nachname:
+            </div>
+            <div class="form-field left">
+                <?php print $lastName; ?>
+            </div>
+            <div class="form-field left bold new-line">
+                E-Mail:
+            </div>
+            <div class="form-field left">
+                <?php print $email; ?>
+            </div>
+            <div class="form-field left bold new-line">
+                Login:
+            </div>
+            <div class="form-field left">
+                <?php print $userID; ?>
+            </div>
         </div>
     </div> <!-- end: content-body-wrapper -->
 </div> <!-- end: content-element -->
