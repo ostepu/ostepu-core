@@ -38,10 +38,7 @@ class Template
     /**
      * Bind content to the template.
      *
-     * This replaces the placeholders in the template with the corresponding
-     * values from the data array.
-     *
-     * @param array $content An associative array that contains the content for
+     * @param array $data An associative array that contains the content for
      * the template.
      */
     public function bind(array $data)
@@ -59,12 +56,22 @@ class Template
 
     /**
      * Return the the template as a string.
+     *
+     * Content is inserted into the template in this function
      */
     public function __toString()
     {
+        // make the content available as if variables with the names of its
+        // attributes had been declared
         extract($this->content);
+
+        // buffer the output 
         ob_start();
+
+        // evaluate the template as a php script
         eval("?>" . $this->template);
+
+        // stop buffering and return the buffer's content
         $s = ob_get_contents();
         ob_end_clean();
         return $s;
