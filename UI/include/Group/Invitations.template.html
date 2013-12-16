@@ -6,7 +6,19 @@
     <div class="content-body-wrapper">
         <div class="content-body left">
             <ol class="exercise-list invitation-list">
-                %invitations%
+                <?php foreach ($invitations as $invitation): ?>
+                    <li >
+                        <?php print $invitation['leader']['firstName']; ?>
+                        <?php print " "; ?>
+                        <?php print $invitation['leader']['lastName']; ?>
+                        <a href="#" class="body-option-color deny-button right">
+                            ablehnen
+                        </a>
+                        <a href="#" class="body-option-color accept-button right">
+                            annehmen
+                        </a>
+                    </li>
+                <?php endforeach; ?>
             </ol>
         </div>
     </div> <!-- end: content-body-wrapper -->
