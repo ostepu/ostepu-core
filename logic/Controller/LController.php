@@ -1,203 +1,103 @@
 <?php 
 
 require 'Slim/Slim.php';
-include 'include/Helpers.php';
+include 'include/Assistants/request/createRequest.php';
 
 \Slim\Slim::registerAutoloader();
 
-$_app = new \Slim\Slim();
-
-$links = array();
-setLinks('config.ini');
-$DBController = $links["DBControl"];	
-$FSController = $links["FSControl"];
-
-$_app->get ('/:string+', function($string) use($_app) 
+class LController
 {
-	if ($string[0] == "DB") {
-		unset($string[0]);
-		$URI = "";
-		foreach ($string as $str) {
-			$URI = $URI.'/'.$str;
-		}
-		$_app->response->SetBody(LRequest($URI, GET, NULL));		//Rückgabe http_get??	
-	}
-	elseif ($string[0] == "FS") {
-		unset($string[0]);
-		$URI = "";
-		foreach ($string as $str) {
-			$URI = $URI.'/'.$str;
-		}
-		$_app->response->SetBody(FSRequest($URI, GET, $body));		//Rückgabe http_get??
-	}
-	else {
-		foreach ($string as $str) {
-			$URI = $URI.'/'.$str;
-		}
-		$_app->response->SetBody(UIRequest($URI, GET, NULL));		//Rückgabe http_get??	
-	}
-});
+    $this->app = new \Slim\Slim();
+    $this->app->response->headers->set('Content-Type', 'application/json');
 
-$_app->post ('/:string+', function($string) use($_app) 
-{
-	$body = \Slim\Slim::getInstance()->request()->getBody();
-	if ($string[0] == "DB") {
-		unset($string[0]);
-		$URI = "";
-		foreach ($string as $str) {
-			$URI = $URI.'/'.$str;
-		}
-		$_app->response->SetBody(LRequest($URI, POST, $body));			
-	}
-	elseif ($string[0] == "FS") {
-		unset($string[0]);
-		$URI = "";
-		foreach ($string as $str) {
-			$URI = $URI.'/'.$str;
-		}
-		$_app->response->SetBody(FSRequest($URI, POST, $body));		
-	}
-	else {
-		foreach ($string as $str) {
-			$URI = $URI.'/'.$str;
-		}
-		$_app->response->SetBody(UIRequest($URI, POST, $body));		
-	}
-});
 
-$_app->put ('/:string+', function($string) use($_app) 
-{
-	$body = \Slim\Slim::getInstance()->request()->getBody();
-	if ($string[0] == "DB") {
-		unset($string[0]);
-		$URI = "";
-		foreach ($string as $str) {
-			$URI = $URI.'/'.$str;
-		}
-		$_app->response->SetBody(LRequest($URI, PUT, $body));		
-	}
-	elseif ($string[0] == "FS") {
-		unset($string[0]);
-		$URI = "";
-		foreach ($string as $str) {
-			$URI = $URI.'/'.$str;
-		}
-		$_app->response->SetBody(FSRequest($URI, PUT, $body));		
-	}
-	else {
-		foreach ($string as $str) {
-			$URI = $URI.'/'.$str;
-		}
-		$_app->response->SetBody(UIRequest($URI, PUT, $body));		
-	}
-});
+    $links = array();
+    setLinks('config.ini');
+    $DBController = $links["DBControl"];	
+    $FSController = $links["FSControl"];
 
-$_app->delete ('/:string+', function($string) use($_app) 
-{
-	if ($string[0] == "DB") {
-		unset($string[0]);
-		$URI = "";
-		foreach ($string as $str) {
-			$URI = $URI.'/'.$str;
-		}
-		$_app->response->SetBody(LRequest($URI, DELETE, NULL));		
-	}
-	elseif ($string[0] == "FS") {
-		unset($string[0]);
-		$URI = "";
-		foreach ($string as $str) {
-			$URI = $URI.'/'.$str;
-		}
-		$_app->response->SetBody(FSRequest($URI, DELETE, NULL));	
-	}
-	else {
-		foreach ($string as $str) {
-			$URI = $URI.'/'.$str;
-		}
-		$_app->response->SetBody(UIRequest($URI, DELETE, NULL));	
-	}
-});
+    $this->app->map('/:string+', array($this, 'chooseDestination')) 
+    			->via('POST', 'GET', 'PUT', 'DELETE');
 
-/**
- * handle requests from userinterface to logic
- *
- * @param (param)
- */
-private function UIRequest($URI, $method, $data) 
-{
-	$component = explode( '/', $URI); 
-	$componentURL = $links[component[1]];				//oder 0?
-	$URL = $componentURL.$URI;
-	
-	return chooseCaseOfRequest($URL, $method, $data);
+    
+    /**
+     * pick out the config.ini file and store all addresses in $links
+     *
+     * @param (param)
+     */
+    private function setLinks($dataName){
+        $datei = file($dataName);
+        $explodedRow = array();
+
+        foreach ($datei AS $row) {
+            $explodedRow = explode(' = ' , $row);			// Trenner in Config.ini definieren
+            $links["$explodedRow[0]"] = $explodedRow[1];
+        }
+    }
+
+    /**
+     * select the case of the request based on the available method
+     * and send the selected on
+     * 
+     * @param (param)
+     */
+    private function chooseCaseOfRequest($method, $URL, $header, $data){
+        switch ($method) {
+            case 'POST' :
+                return createPost($URL, $header, $data);
+                break;
+                
+            case 'PUT' :			
+                return createPut($URL, $header, $data);
+                break;
+                
+            case 'GET' :
+                return createGet($URL, $header, $data);
+                break;
+                
+            case 'DELETE' :
+                return createDelete($URL, $header, $data);
+                break;
+                
+            default :
+                return "Fehler";			//Fehlermeldung
+        }
+    }
+       
+    private function chooseDestination($string){
+    	$method = $this->app->request->getMethod();
+    	$body = $this->app->request->getBody();
+    	$header = $this->app->request->getHeader();
+    	
+    	if ($string[0] == "DB") {
+            unset($string[0]);
+            $URI = //DB-URL;															//URI ergänzen
+            foreach ($string as $str) {
+                $URI = $URI.'/'.$str;
+            }
+            $this->app->response
+                ->SetBody(chooseCaseOfRequest($method, $URI, $header, $body));	
+        } elseif ($string[0] == "FS") {
+            unset($string[0]);
+            $URI = //FS-URL;															//URI ergänzen
+            foreach ($string as $str) {
+                $URI = $URI.'/'.$str;
+            }
+            $this->app->response
+                ->SetBody(chooseCaseOfRequest($method, $URI, $header, $body));
+        } else {
+            $URI = //L-URL
+            foreach ($string as $str) {
+                $URI = $URI.'/'.$str;
+            }
+            $this->app->response
+                ->SetBody(chooseCaseOfRequest($method, $URI, $header, $body));	
+        }
+    }
+    
+    $this->app->run();
+    
 }
 
-/**
- * handle requests from logic to database
- *
- * @param (param)
- */
-private function LRequest($URI, $method, $data) 
-{
-	$URL = $DBController.$URI;
-	return chooseCaseOfRequest($URL, $method, $data);
-}
-
-/**
- * handle requests from logic to filesystem
- *
- * @param (param)
- */
-private function FSRequest($URI, $method, $data) 
-{
-	$URL = $FSController.$URI;
-	return chooseCaseOfRequest($URL, $method, $data);
-}
-
-/**
- * pick out the config.ini file and store all addresses in $links
- *
- * @param (param)
- */
-private function setLinks($dataName) 
-{
-	$datei = file($dataName);
-	$explodedRow = array();
-
-	foreach ($datei AS $row) {
-		$explodedRow = explode(' = ' , $row);			// Trenner in Config.ini definieren
-		$links["$explodedRow[0]"] = $explodedRow[1];
-	}
-}
-
-/**
- * select the case of the request based on the available method
- * and send the selected on
- * 
- * @param (param)
- */
-private function chooseCaseOfRequest($URL, $method, $data) 
-{
-	switch ($method) {
-		case 'POST' :
-			return http_post_data($URL, $data);
-			break;
-			
-		case 'PUT' :			
-			return http_put_data($URL, $data);
-			break;
-			
-		case 'GET' :
-			return http_get($URL);
-			break;
-			
-		case 'DELETE' :
-			return http_delete($URL);
-			break;
-			
-		default :
-			return "Fehler";			//Fehlermeldung
-	}
-}
-
+new LController;
 ?>
