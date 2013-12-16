@@ -26,13 +26,27 @@
 
 .button {
     margin: 0 20px 7px 0;
-    width: 150px;
 }
 
 .checkbox-container {
-    border:2px solid #ccc;
+    border: 2px solid #ccc;
     padding: 10px;
-    width:100px; 
+    width: 100px; 
     height: 100px; 
     overflow-y: scroll;
+}
+
+/*
+ * remove bottom margin from form elements that are in a list
+ */
+li .form-field {
+    margin-bottom: 2px;
+}
+
+li .text-input {
+    margin-bottom: 2px;
+}
+
+li .button {
+    margin-bottom: 2px;
 }
