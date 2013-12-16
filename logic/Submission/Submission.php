@@ -27,12 +27,16 @@ class Submission
                     array($this, 'deleteSubmission'));
                     
     //LoadSubmissionAsZip
-    $this->app->get('exerciseSheet/:sheetid/user/:userid', 
+    $this->app->get('/exerciseSheet/:sheetid/user/:userid', 
                     array($this, 'loadSubmissionAsZip'));
     
-    //ShowSubmissions
-    $this->app->get('exerciseSheet/:sheetid/user/:userid/show', 
-                    array($this, 'loadSubmissionAsZip'));
+    //ShowSubmissionsHistory
+    $this->app->get('/exerciseSheet/:sheetid/user/:userid/history', 
+                    array($this, 'showSubmissionsHistory'));
+               
+    //GetSubmissionURL
+    $this->app->get('/submission/:submissionid', 
+                    array($this, 'getSubmissionURL'));
     
     
     
@@ -80,6 +84,24 @@ class Submission
         $header = $this->app->request->getHeader();
         $body = $this->app->request->getBody();
         $URL = $dbURL.'/exerciseSheet/'.$sheetid.'/user/'.$userid;
+        $body = createGet($URL, $header, $body);
+        $this->app->response->setBody($body);
+    }
+    
+    private function showSubmissionsHistory($sheetid, $userid){
+        
+        $header = $this->app->request->getHeader();
+        $body = $this->app->request->getBody();
+        $URL = $dbURL.'/exerciseSheet/'.$sheetid.'/user/'.$userid.'/history';
+        $body = createGet($URL, $header, $body);
+        $this->app->response->setBody($body);
+    }
+    
+    private function getSubmissionURL($submissionid){
+        
+        $header = $this->app->request->getHeader();
+        $body = $this->app->request->getBody();
+        $URL = $dbURL.'/submission/'.$submissionid;
         $body = createGet($URL, $header, $body);
         $this->app->response->setBody($body);
     }
