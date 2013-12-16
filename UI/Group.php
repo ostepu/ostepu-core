@@ -10,7 +10,7 @@ $h = new Header("Datenstrukturen",
                 "211221492", 
                 "75%");
 
-$h->setBackURL("index.php")
+$h->setBackURL("Student.php")
 ->setBackTitle("zur Veranstaltung");
 
 $data = file_get_contents("http://localhost/Uebungsplattform/UI/Data/GroupData");

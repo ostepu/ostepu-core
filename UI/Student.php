@@ -8,6 +8,7 @@ $h = new Header("Datenstrukturen",
                 "",
                 "Florian Lücke",
                 "211221492");
+$h->setBackURL('index.php');
 
 /*
  * if (is_student($user))
