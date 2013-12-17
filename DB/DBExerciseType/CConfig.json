@@ -1,0 +1,1 @@
+{"id":"11","name":"DBExerciseType","address":"localhost\/DB\/DBExerciseType\/DBExerciseType.php","option":"","prefix":"exercisetype","links":[{"id":"11","name":"out","address":"localhost\/DB\/DBQuery\/DBQuery.php","prefix":"query","complete":true,"relevanz":""}]}
