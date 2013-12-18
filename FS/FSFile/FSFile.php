@@ -6,7 +6,7 @@
 
 require_once( 'Include/Slim/Slim.php' );
 include_once( 'Include/CConfig.php' );
-include_once( 'Include/CConfig.php' );
+include_once( 'Include/Request.php' );
 include_once( 'Include/Structures.php' );
 
 \Slim\Slim::registerAutoloader();
@@ -47,20 +47,20 @@ class FSFile
         $this->_conf = $_conf;
         $this->_fs = $this->_conf->getLinks();
         
-        $this->_app = new \Slim\Slim();
+        $this->_app = new \Slim\Slim(array('debug' => false));
 
         $this->_app->response->headers->set('Content-Type', 'application/json');
         
-        // POST file
+        // POST File
         $this->_app->post('/'.FSFile::$_baseDir, array($this,'postFile'));
         
-        // GET filedata
+        // GET Filedata
         $this->_app->get('/'.FSFile::$_baseDir.'/:hash', array($this,'getFileData'));
         
-        // GET file as document
+        // GET GetFileDocument
         $this->_app->get('/'.FSFile::$_baseDir.'/:hash/:filename', array($this,'getFileDocument'));
         
-        // DELETE file
+        // DELETE File
         $this->_app->delete('/'.FSFile::$_baseDir.'/:hash', array($this,'deleteFile'));
         
         if (strpos($this->_app->request->getResourceUri(), '/'.FSFile::$_baseDir) === 0){

@@ -3,8 +3,8 @@
  * @file (filename)
  * (description)
  */ 
-include 'Request/CreateRequest.php';
-include 'Request/MultiRequest.php';
+include_once( 'Request/CreateRequest.php' );   
+include_once( 'Request/MultiRequest.php' );   
 
 /**
  * (description)
@@ -103,7 +103,6 @@ class Request
     public static function routeRequest($method , $resourceUri , $header ,  $content , $linkedComponents , $prefix, $linkName=NULL)
     {
         // get possible links
-        
         $else = array();
         foreach ($linkedComponents as $links){
             if ($linkName!=NULL && $linkName!=$links->getName())
@@ -115,6 +114,7 @@ class Request
                                       $links->getAddress().$resourceUri,
                                       $header,
                                       $content);
+                                      
                 if ($ch['status']>=200 && $ch['status']<=299){
                     // finished
                     return $ch;

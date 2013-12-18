@@ -181,7 +181,9 @@ class Link extends Object implements JsonSerializable
            'CL_address' => 'address',
            'CL_prefix' => 'prefix',
            'CL_complete' => 'complete',
-           'CL_relevanz' => 'relevanz',
+           'CL_id_owner' => 'owner',
+           'CL_id_target' => 'target',
+           'CL_relevanz' => 'relevanz'
         );
     }
     

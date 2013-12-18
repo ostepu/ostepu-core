@@ -5,21 +5,21 @@
 // Fragen
 // * Klasse für Punktearten in JSON?                                  gute Frage
 
-    include 'Structures/Backup.php';   
-    include 'Structures/Component.php';
-    include 'Structures/Course.php';
-    include 'Structures/CourseStatus.php';
-    include 'Structures/Exercise.php';
-    include 'Structures/ExerciseSheet.php';
-    include 'Structures/File.php';
-    include 'Structures/Group.php';
-    include 'Structures/Invitation.php';
-    include 'Structures/Link.php';
-    include 'Structures/Marking.php';
-    include 'Structures/Submission.php';
-    include 'Structures/TutorAssignment.php';
-    include 'Structures/User.php';
-    include 'Structures/Query.php';
+    include_once( 'Structures/Backup.php' );   
+    include_once( 'Structures/Component.php' );   
+    include_once( 'Structures/Course.php' );   
+    include_once( 'Structures/CourseStatus.php' );   
+    include_once( 'Structures/Exercise.php' );   
+    include_once( 'Structures/ExerciseSheet.php' );   
+    include_once( 'Structures/File.php' );   
+    include_once( 'Structures/Group.php' );   
+    include_once( 'Structures/Invitation.php' );   
+    include_once( 'Structures/Link.php' );   
+    include_once( 'Structures/Marking.php' );   
+    include_once( 'Structures/Submission.php' );   
+    include_once( 'Structures/TutorAssignment.php' );   
+    include_once( 'Structures/User.php' );   
+    include_once( 'Structures/Query.php' );   
     
 /**
 * 

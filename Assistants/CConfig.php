@@ -50,7 +50,6 @@ class CConfig
             $this->_app->run();
         }
        
-
         $conf = $this->loadConfig();
         $links = $conf->getLinks();
         $changed = false;
@@ -66,7 +65,7 @@ class CConfig
                 }        
             }
         }
-            
+
         if ($changed){
             $conf->setLinks($links);
             $this->saveConfig(Component::encodeComponent($conf));
