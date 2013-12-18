@@ -1,94 +1,94 @@
 <?php
 
 require 'Slim/Slim.php';
-include 'include/Assistants/request/createRequest.php';
+include 'include/Assistants/Request.php';
 	
 \Slim\Slim::registerAutoloader();
 
 
 class Group
 {	
-    $this->app = new \Slim\Slim();
     private $LController = "";				//Einlesen aus config.ini
 
-
-    //InvitateInGroup
-
-    $this->app->put('/user/:userid', 
-                        array($this, 'invitateInGroup'));
+    public function __construct()
+    {    
+        $this->app = new \Slim\Slim();
+        //InvitateInGroup
+        $this->app->put('/user/:userid', 
+                            array($this, 'invitateInGroup'));
+        
+        //JoinGroup
+        $this->app->put('/accept', array($this, 'joinGroup'));
+        
+        //LeaveGroup    
+        $this->app->put('/user/:userid/exit', 
+                            array($this, 'leaveGroup'));
+        
+        //EjectFromGroup    
+        $this->app->put('/user/:userid/deleteMember', 
+                            array($this, 'ejectFromGroup'));
+        
+        //GetGroup    
+        $this->app->get('/user/:userid/exerciseSheet/:sheetid', 
+                        array($this, 'getGroup'));
+                        
+        $this->app->run();
+    }    
     
-    //JoinGroup
-
-    $this->app->put('/accept', array($this, 'joinGroup'));
     
-    //LeaveGroup
-
-    $this->app->put('/user/:userid/exit', 
-                        array($this, 'leaveGroup'));
-    
-    //EjectFromGroup
-
-    $this->app->put('/user/:userid/deleteMember', 
-                        array($this, 'ejectFromGroup'));
-    
-    //GetGroup
-
-    $this->app->get('/user/:userid/exerciseSheet/:sheetid', 
-                    array($this, 'getGroup'));
-    
-    
-    
-    private function invitateInGroup($userid)
+    public function invitateInGroup($userid)
     {
         $req = \Slim\Slim::getInstance()->request()->getBody();
-        $header = \Slim\Slim::getInstance()->request()->getHeader();
-        $URL = $LController.'/DB/user/'.$userid;
-        $status = createPut($URL, $header, $req);
-        $this->app->response->setStatus($status);
+        $header = \Slim\Slim::getInstance()->request()->headers->all();
+        $URL = $this->LController.'/DB/user/'.$userid;
+        $answer = Request::custom('PUT', $URL, $header, $req);
+        $this->app->response->setStatus($answer['status']);
 
     }
 
-    private function joinGroup()
+    public function joinGroup()
     {
         $req = \Slim\Slim::getInstance()->request()->getBody();
-        $header = \Slim\Slim::getInstance()->request()->getHeader();
-        $URL = $LController.'/DB/accept';
-        $status = createPut($URL, $header, $req);
-        $this->app->response->setStatus($status);
+        $header = \Slim\Slim::getInstance()->request()->headers->all();
+        $URL = $this->LController.'/DB/accept';
+        $answer = Request::custom('PUT', $URL, $header, $req);
+        $this->app->response->setStatus($answer['status']);
 
     }
 
-    private function leaveGroup($userid)
+    public function leaveGroup($userid)
     {
         $req = \Slim\Slim::getInstance()->request()->getBody();
-        $header = \Slim\Slim::getInstance()->request()->getHeader();
-        $URL = $LController.'/DB/user/'.$userid.'/exit';
-        $status = createPut($URL, $header, $req);
-        $this->app->response->setStatus($status);
+        $header = \Slim\Slim::getInstance()->request()->headers->all();
+        $URL = $this->LController.'/DB/user/'.$userid.'/exit';
+        $answer = Request::custom('PUT', $URL, $header, $req);
+        $this->app->response->setStatus($answer['status']);
 
     }
 
-    private function ejectFromGroup($userid)
+    public function ejectFromGroup($userid)
     {
         $req = \Slim\Slim::getInstance()->request()->getBody();
-        $header = \Slim\Slim::getInstance()->request()->getHeader();
-        $URL = $LController.'/DB/user/'.$userid.'/deletMember';
-        $status = createPut($URL, $header, $req);
-        $this->app->response->setStatus($status);
+        $header = \Slim\Slim::getInstance()->request()->headers->all();
+        $URL = $this->LController.'/DB/user/'.$userid.'/deletMember';
+        $answer = Request::custom('PUT', $URL, $header, $req);
+        $this->app->response->setStatus($answer['status']);
 
     }
 
-    private function getGroup($userid, $sheetid);
+    public function getGroup($userid, $sheetid)
     {  
-        $req = \Slim\Slim::getInstance()->request()->getBody();
-        $header = \Slim\Slim::getInstance()->request()->getHeader();
-        $URL = $LController.'/DB/user/'.$userid.'/exerciseSheet/'.$sheetid;
-
-        $dbAnswer = createGet($URL, $header, $req);
+        //$req = \Slim\Slim::getInstance()->request()->getBody();
+        $req = "";
+        $header = \Slim\Slim::getInstance()->request()->headers->all();
+        $URL = $this->LController.'/DB/user/'.$userid.'/exerciseSheet/'.$sheetid;
+        $answer = Request::custom('GET', $URL, $header, $req);
         $this->app->response->headers->set('Content-Type', 'application/json');
-        $this->app->response->setStatus(200);
-        $this->app->response->setBody($dbAnswer);
+        $this->app->response->setStatus($answer['status']);
+        $this->app->response->setBody($answer['content']);
 
     }
 }
+
+new Group();
 ?>
