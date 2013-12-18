@@ -6,7 +6,6 @@
 
 require_once( 'Include/Slim/Slim.php' );
 include_once( 'Include/Structures.php' );
-include_once( 'Include/Request.php' );
 include_once( 'Include/DBJson.php' );
 include_once( 'Include/DBRequest.php' );
 include_once( 'Include/CConfig.php' );
@@ -39,9 +38,9 @@ class DBQuery
         $this->_conf = $conf;
         
         $this->app = new \Slim\Slim();
-        
-        // GET queryResult
-        $this->app->get('/query',
+
+        // GET QueryResult
+        $this->app->get('/' . $this->getPrefix(),
                         array($this,'queryResult'));
 
         if (strpos ($this->app->request->getResourceUri(),'/' . $this->getPrefix()) === 0){
@@ -57,9 +56,10 @@ class DBQuery
     {
         $body = $this->app->request->getBody();
         $obj = Query::decodeQuery($body);
+
         $query_result = DBRequest::request($obj->getRequest()); 
         $data = DBJson::getRows($query_result);
-        
+
         $obj = new Query();
         $obj->setResponse($data);
         $this->app->response->setBody(Query::encodeQuery($obj));

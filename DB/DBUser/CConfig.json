@@ -1,1 +1,1 @@
-{"id":"7","name":"DBUser","address":"localhost\/DB\/DBUser\/DBUser.php","option":"","prefix":"user","links":[{"id":"7","name":"out","address":"localhost\/DB\/DBQuery\/DBQuery.php","prefix":"query","complete":true,"relevanz":""}]}
+{"id":"7","name":"DBUser","address":"localhost\/uebungsplattform\/DB\/DBUser\/DBUser.php","option":"","prefix":"user","links":[{"id":"7","name":"out","address":"localhost\/uebungsplattform\/DB\/DBQuery\/DBQuery.php","prefix":"query","complete":true,"relevanz":""}]}

@@ -160,7 +160,7 @@ class DBCourse
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetCourses.sql", 
                                         array("userid" => $userid));
-                                        
+                                                 
         if ($result['status']>=200 && $result['status']<=299){
             $query = Query::decodeQuery($result['content']);
             

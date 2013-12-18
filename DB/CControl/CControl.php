@@ -270,6 +270,7 @@ class CControl
             $object = Component::decodeComponent(Component::encodeComponent($object));
             $result = Request::post($object->getAddress()."/component",array(),Component::encodeComponent($object));
             echo $object->getAddress() . '--' . $object->getName() . '--' . $result['status'] . "\n";
+            echo $result['content'] . "\n";
         }
         $this->app->response->setStatus(200);
     }

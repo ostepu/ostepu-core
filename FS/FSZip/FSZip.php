@@ -55,16 +55,16 @@ class FSZip
 
         $this->_app->response->headers->set('Content-Type', '_application/json');
         
-        // POST file
+        // POST PostZip
         $this->_app->post('/'.FSZip::$_baseDir, array($this,'postZip'));
         
-        // GET filedata
+        // GET GetZipData
         $this->_app->get('/'.FSZip::$_baseDir.'/:hash', array($this,'getZipData'));
         
-        // GET file as document
+        // GET GetZipDocument
         $this->_app->get('/'.FSZip::$_baseDir.'/:hash/:filename', array($this,'getZipDocument'));
         
-        // DELETE file
+        // DELETE DeleteZip
         $this->_app->delete('/'.FSZip::$_baseDir.'/:hash', array($this,'deleteZip'));
         
         if (strpos($this->_app->request->getResourceUri(), '/'.FSZip::$_baseDir) === 0){

@@ -1,1 +1,1 @@
-{"id":"8","name":"DBCourseStatus","address":"localhost\/DB\/DBCourseStatus\/DBCourseStatus.php","option":"","prefix":"coursestatus","links":[{"id":"8","name":"out","address":"localhost\/DB\/DBQuery\/DBQuery.php","prefix":"query","complete":true,"relevanz":""}]}
+{"id":"18","name":"DBCourseStatus","address":"localhost\/uebungsplattform\/DB\/DBCourseStatus\/DBCourseStatus.php","option":"","prefix":"coursestatus","links":[]}

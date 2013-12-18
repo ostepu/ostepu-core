@@ -48,7 +48,7 @@ class FSPdf
         $this->_conf = $_conf;
         $this->_fs = $this->_conf->getLinks();
         
-        $this->_app = new \Slim\Slim();
+        $this->_app = new \Slim\Slim(array('debug' => false));
 
         $this->_app->response->headers->set('Content-Type', 'application/json');
         

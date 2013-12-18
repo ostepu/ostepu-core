@@ -46,7 +46,7 @@ class FSBinder
         // POST file
         $this->_app->post('/:data+', array($this,'postFile'));
         
-        // GET file as document or filedata
+        // GET file as document
         $this->_app->get('/:data+', array($this,'getFile'));
         
         // DELETE file
