@@ -255,9 +255,10 @@ class File extends Object implements JsonSerializable
      * 
      * @param $param (description)
      */
-    public static function decodeFile($data)
-    {
-        $data = json_decode($data);
+    public static function decodeFile($data, $decode=true)
+    {   
+        if ($decode == true)
+            $data = json_decode($data);
         if (is_array($data)){
             $result = array();
             foreach ($data AS $key => $value) {

@@ -142,8 +142,6 @@ class Course extends Object implements JsonSerializable
     }
     
     
-    
-    
     /**
      * (description)
      */  
@@ -176,7 +174,7 @@ class Course extends Object implements JsonSerializable
         foreach ($data AS $key => $value) {
              if (isset($key)){
                 if (is_array($value)) {
-                    $sub = ExerciseSheet::decodeExerciseSheet($value);
+                    $sub = ExerciseSheet::decodeExerciseSheet($value, false);
                     $value = $sub;
                 }
                 $this->{$key} = $value;

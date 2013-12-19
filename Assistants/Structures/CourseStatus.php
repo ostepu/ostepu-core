@@ -69,7 +69,7 @@ class CourseStatus extends Object implements JsonSerializable
     {
         return array(
            'C_course' => 'course',
-           'C_name' => 'status',
+           'C_name' => 'status'
         );
     }
     
@@ -85,10 +85,13 @@ class CourseStatus extends Object implements JsonSerializable
     /**
      * (description)
      */
-    public static function getDefinition(){
+    public static function getStatusDefinition(){
         return array(
-            '0' => 'inactive',
-            '1' => 'active',
+            '0' => 'student',
+            '1' => 'tutor',
+            '2' => 'lecturer',
+            '3' => 'administrator',
+            '4' => 'super-administrator'
         );
     }
    
@@ -101,7 +104,12 @@ class CourseStatus extends Object implements JsonSerializable
     {
         foreach ($data AS $key => $value) {
             if (isset($key)){
-                $this->{$key} = $value;
+                if ($key == 'course'){
+                    $this->{$key} = Course::decodeCourse($value, false);
+                }
+                else{
+                    $this->{$key} = $value;
+                }
             }
         }
     }
