@@ -1,12 +1,15 @@
-<?php 
+<?php
 /**
  * @file HTMLWrapper.php
  * Contains the HTMLWrapper class
  */
 
 include_once 'include/Header/Header.php';
+include_once 'Logger.php';
+
+Logger::$logFile = __DIR__."/../../log.log";
     /**
-    * Wraps the header and the contents in a default HTML 
+    * Wraps the header and the contents in a default HTML
     */
     class HTMLWrapper
     {
@@ -26,7 +29,7 @@ include_once 'include/Header/Header.php';
          * header and body
          */
         private $navigationElement;
-		
+
         /**
          * @var array defines all links in the document head
          */
@@ -34,7 +37,7 @@ include_once 'include/Header/Header.php';
 
         /**
          * The default contructor.
-         * 
+         *
          * @param Header $header The element that should be displayed
          * as the page header.
          * @param mixed ... Page elements that should be displayed as
@@ -111,7 +114,7 @@ include_once 'include/Header/Header.php';
             </body>
             </html>';
         }
-        
+
     /**
      * Sets the value of navigationElement.
      *
@@ -125,7 +128,7 @@ include_once 'include/Header/Header.php';
 
         return $this;
     }
-	
+
     /**
      * Sets a configfile for links etc. for the head area
      *
@@ -136,12 +139,12 @@ include_once 'include/Header/Header.php';
         $fileContents = file_get_contents($configdata);
         // check if file is loaded
         if ($fileContents == false) {
-            die("Could not open file: {$configdata}");
+            Logger::Log("Could not open file: {$configdata}");
         }
         $this->config = json_decode($fileContents, true);
         // check if file is valid JSON
         if ($this->config== false || !is_array($this->config)) {
-            die("Invalid JSON in file: {$configdata}");
+            Logger::Log("Invalid JSON in file: {$configdata}");
         }
     }
 }
