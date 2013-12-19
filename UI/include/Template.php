@@ -71,7 +71,7 @@ class Template
         // attributes had been declared
         $extractedCount = extract($this->content);
 
-        if ($extractedCount !== count($this->content)) {
+        if ($extractedCount != count($this->content)) {
             Logger::Log("Unable to extract all content.", LogLevel::WARNING);
         }
 
