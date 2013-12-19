@@ -40,7 +40,6 @@ a:after {
     height: auto;
     line-height: 19px;
     background-color: #b9b8b8;
-    background-size: 16px 98px;
 }
 
 .content-body-wrapper {
@@ -70,11 +69,19 @@ a:after {
     background-image: url(../Images/arrow.png);
     background-repeat: no-repeat;
     background-position: 14px 0;
-
+    background-size: 16px 98px;
 }
 
 .collapsible .inactive {
     background-position: 14px -49px;
+    background-size: 16px 98px;
+}
+
+.interactive.add .content-header {
+    background-image: url(../Images/plus.png);
+    background-repeat: no-repeat;
+    background-position: 14px 0;
+    background-size: 16px 49px;
 }
 
 .footer-text {
