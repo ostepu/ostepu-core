@@ -139,12 +139,12 @@ Logger::$logFile = __DIR__."/../../log.log";
         $fileContents = file_get_contents($configdata);
         // check if file is loaded
         if ($fileContents == false) {
-            Logger::Log("Could not open file: {$configdata}");
+            Logger::Log("Could not open file: {$configdata}", LogLevel::WARNING);
         }
         $this->config = json_decode($fileContents, true);
         // check if file is valid JSON
         if ($this->config== false || !is_array($this->config)) {
-            Logger::Log("Invalid JSON in file: {$configdata}");
+            Logger::Log("Invalid JSON in file: {$configdata}", LogLevel::WARNING);
         }
     }
 }

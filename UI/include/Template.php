@@ -1,6 +1,8 @@
 <?php
 include_once 'Helpers.php';
+include_once 'Logger.php';
 
+Logger::$logFile = __DIR__."/../../log.log";
 /**
 * Template class.
 *
@@ -30,6 +32,10 @@ class Template
     public function WithTemplateFile($fileName)
     {
         $templateString = file_get_contents($fileName);
+
+        if ($templateString === FALSE) {
+            Logger::Log("Could not open file: {$fileName}", LogLevel::WARNING);
+        }
 
         $t = new Template($templateString);
         return $t;
@@ -63,17 +69,26 @@ class Template
     {
         // make the content available as if variables with the names of its
         // attributes had been declared
-        extract($this->content);
+        $extractedCount = extract($this->content);
 
-        // buffer the output 
+        if ($extractedCount !== count($this->content)) {
+            Logger::Log("Unable to extract all content.", LogLevel::WARNING);
+        }
+
+        // buffer the output
         ob_start();
 
         // evaluate the template as a php script
-        eval("?>" . $this->template);
+        $success = eval("?>" . $this->template);
 
         // stop buffering and return the buffer's content
         $s = ob_get_contents();
         ob_end_clean();
+
+        if ($success === FALSE) {
+            Logger::Log("Parse error in template: " . $this->template, LogLevel::WARNING);
+        }
+
         return $s;
     }
 }
