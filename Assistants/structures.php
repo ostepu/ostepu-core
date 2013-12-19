@@ -5,48 +5,22 @@
 // Fragen
 // * Klasse für Punktearten in JSON?                                  gute Frage
 
-//if (file_exists('StructBackup.php'))
-    include 'StructBackup.php';
+    include_once( 'Structures/Backup.php' );   
+    include_once( 'Structures/Component.php' );   
+    include_once( 'Structures/Course.php' );   
+    include_once( 'Structures/CourseStatus.php' );   
+    include_once( 'Structures/Exercise.php' );   
+    include_once( 'Structures/ExerciseSheet.php' );   
+    include_once( 'Structures/File.php' );   
+    include_once( 'Structures/Group.php' );   
+    include_once( 'Structures/Invitation.php' );   
+    include_once( 'Structures/Link.php' );   
+    include_once( 'Structures/Marking.php' );   
+    include_once( 'Structures/Submission.php' );   
+    include_once( 'Structures/TutorAssignment.php' );   
+    include_once( 'Structures/User.php' );   
+    include_once( 'Structures/Query.php' );   
     
-//if (file_exists('StructComponent.php'))
-    include 'StructComponent.php';
-
-//if (file_exists('StructCourse.php'))
-    include 'StructCourse.php';
-
-//if (file_exists('StructCourseStatus.php'))
-    include 'StructCourseStatus.php';
-
-//if (file_exists('StructExercise.php'))
-    include 'StructExercise.php';
-
-//if (file_exists('StructExerciseSheet.php'))
-    include 'StructExerciseSheet.php';
-
-//if (file_exists('StructFile.php'))
-    include 'StructFile.php';
-
-//if (file_exists('StructGroup.php'))
-    include 'StructGroup.php';
-
-//if (file_exists('StructInvitation.php'))
-    include 'StructInvitation.php';
-
-//if (file_exists('StructLink.php'))
-    include 'StructLink.php';
-
-//if (file_exists('StructMarking.php'))
-    include 'StructMarking.php';
-
-//if (file_exists('StructSubmission.php'))
-    include 'StructSubmission.php';
-
-//if (file_exists('StructTutorAssignment.php'))
-    include 'StructTutorAssignment.php';
-
-//if (file_exists('StructUser.php'))
-    include 'StructUser.php';
-
 /**
 * 
 */
@@ -59,12 +33,12 @@ abstract class Object
      * type: string
      */
    /* private $_sender;
-	public function getSender(){
-	    return $this->_sender;
-	}
-	public function setSender($_value){
-	    $this->_sender = $_value;
-	}*/
+    public function getSender(){
+        return $this->_sender;
+    }
+    public function setSender($_value){
+        $this->_sender = $_value;
+    }*/
 }
 
 ?>

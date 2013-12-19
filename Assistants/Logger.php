@@ -102,15 +102,17 @@ class Logger
 
             // try to lock the file to prevent messages from overlapping
             // or overwriting each other
-            while (!flock($fp, LOCK_EX)) {
+            if (flock($fp, LOCK_EX)) {
+                // print the message to the file
+                fwrite($fp, $infoString);
 
+                // unlock and close the file
+                flock($fp, LOCK_UN);
+
+            } else {
+                die("Getting lock on " . self::$logFile . " failed!\n");
             }
 
-            // print the message to the file
-            fwrite($fp, $infoString);
-
-            // unlock and close the file
-            flock($fp, LOCK_UN);
             fclose($fp);
         }
     }
