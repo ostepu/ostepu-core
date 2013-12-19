@@ -1,8 +1,7 @@
 <?php
 include_once 'Helpers.php';
-include_once 'Logger.php';
+include_once '../../Assistants/Logger.php';
 
-Logger::$logFile = __DIR__."/../../log.log";
 /**
 * Template class.
 *
@@ -16,7 +15,7 @@ class Template
 
     /**
      * Construct a new template.
-     *
+     *--.
      * @param string $template A template string.
      */
     public function __construct($template)
