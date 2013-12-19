@@ -16,13 +16,6 @@ $(document).ready( function() {
         }
     });
 
-    // if the content header contains an anchor tag prevent that clicking on it
-    // wil trigger the content element to collapse
-    $('.collapsible').children('.content-header').find('a').click( function(event) {
-        event.stopPropagation();
-        return false;
-    });
-
     // set mouse curser on mouse-over to pointer
     $('.collapsible').children('.content-header').css('cursor','pointer');
 });
