@@ -1,3 +1,3 @@
-insert into user ($columns)
+insert into User ($columns)
 values ( $values )
 

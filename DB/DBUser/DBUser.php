@@ -44,31 +44,31 @@ class DBUser
         $this->_conf = $conf;
         $this->query = array(CConfig::getLink($conf->getLinks(),"query"));
         
-        $this->app = new \Slim\Slim();
+        $this->_app = new \Slim\Slim();
                         
         // PUT EditUser
-        $this->app->put('/' . $this->getPrefix() . '/user/:userid',
+        $this->_app->put('/' . $this->getPrefix() . '/user/:userid',
                         array($this, 'editUser'));
                         
         // DELETE RemoveUser
-        $this->app->delete('/' . $this->getPrefix() . '/user/:userid',
+        $this->_app->delete('/' . $this->getPrefix() . '/user/:userid',
                         array($this, 'removeUser'));
                         
         // POST AddUser
-        $this->app->post('/' . $this->getPrefix(),
+        $this->_app->post('/' . $this->getPrefix(),
                         array($this, 'addUser'));
                         
         // GET GetUsers
-        $this->app->get('/' . $this->getPrefix() . '/user',
+        $this->_app->get('/' . $this->getPrefix() . '/user',
                         array($this, 'getUsers'));
                         
         // GET GetUser
-        $this->app->get('/' . $this->getPrefix() . '/user/:userid',
+        $this->_app->get('/' . $this->getPrefix() . '/user/:userid',
                         array($this, 'getUser'));
 
-        if (strpos ($this->app->request->getResourceUri(),'/' . $this->getPrefix()) === 0){
+        if (strpos ($this->_app->request->getResourceUri(),'/' . $this->getPrefix()) === 0){
             // run Slim
-            $this->app->run();
+            $this->_app->run();
         }
     }
     
@@ -82,7 +82,22 @@ class DBUser
     // PUT EditUser
     public function editUser($userid)
     {
- 
+        $values = DBJson::getUpdateDataFromInput($this->app->request->getBody(), User::getDBConvert(), ',');
+        
+        $result = DBRequest::getRoutedSqlFile($this->query, 
+                                        "Sql/EditUser.sql", 
+                                        array("userid" => $userid,"value" => $values));   
+                                        
+        if ($result['status']>=200 && $result['status']<=299){
+        
+            $this->_app->response->setStatus($result['status']);
+            if (isset($result['headers']['Content-Type']))
+                header($result['headers']['Content-Type']);
+                
+        } else{
+            $this->_app->response->setStatus(409);
+            $this->_app->stop();
+        }
     }
     
     /**
@@ -93,7 +108,20 @@ class DBUser
     // DELETE RemoveUser
     public function removeUser($userid)
     {
- 
+         $result = DBRequest::getRoutedSqlFile($this->query, 
+                                        "Sql/DeleteUser.sql", 
+                                        array("userid" => $userid));    
+                                        
+        if ($result['status']>=200 && $result['status']<=299){
+        
+            $this->_app->response->setStatus($result['status']);
+            if (isset($result['headers']['Content-Type']))
+                header($result['headers']['Content-Type']);
+                
+        } else{
+            $this->_app->response->setStatus(409);
+            $this->_app->stop();
+        }
     }
     
     /**
@@ -102,7 +130,26 @@ class DBUser
     // POST AddUser
     public function addUser()
     {
+        $insert = DBJson::getInsertDataFromInput($this->app->request->getBody(), User::getDBConvert(), ',');
+        foreach ($insert as $in){
+            $columns = $in[0];
+            $values = $in[1];
 
+            $result = DBRequest::getRoutedSqlFile($this->query, 
+                                            "Sql/AddUser.sql", 
+                                            array("columns" => $columns, "values" => $values));                   
+        
+            if ($result['status']>=200 && $result['status']<=299){
+        
+                $this->_app->response->setStatus($result['status']);
+                if (isset($result['headers']['Content-Type']))
+                    header($result['headers']['Content-Type']);
+                
+            } else{
+                $this->_app->response->setStatus(409);
+                $this->_app->stop();
+            }
+        }
     }
     
     /**
@@ -111,7 +158,25 @@ class DBUser
     // GET GetUsers
     public function getUsers()
     {
- 
+         $result = DBRequest::getRoutedSqlFile($this->query, 
+                                        "Sql/GetUsers.sql", 
+                                        array());
+                                                 
+        if ($result['status']>=200 && $result['status']<=299){
+            $query = Query::decodeQuery($result['content']);
+            
+            $user = DBJson::getResultObjectsByAttributes($query->getResponse(), User::getDBPrimaryKey(), User::getDBConvert());
+            $this->_app->response->setBody(User::encodeUser($user));
+        
+            $this->_app->response->setStatus($result['status']);
+            if (isset($result['headers']['Content-Type']))
+                header($result['headers']['Content-Type']);
+                
+        } else{
+            $this->_app->response->setStatus(409);
+            $this->_app->response->setBody(User::encodeUser(new User()));
+            $this->_app->stop();
+        }
     }
     
     /**
@@ -122,7 +187,25 @@ class DBUser
     // GET GetUser
     public function getUser($userid)
     {
-   
+         $result = DBRequest::getRoutedSqlFile($this->query, 
+                                        "Sql/GetUser.sql", 
+                                        array("userid" => $userid));
+                                                 
+        if ($result['status']>=200 && $result['status']<=299){
+            $query = Query::decodeQuery($result['content']);
+            
+            $user = DBJson::getResultObjectsByAttributes($query->getResponse(), User::getDBPrimaryKey(), User::getDBConvert());
+            $this->_app->response->setBody(User::encodeUser($user));
+        
+            $this->_app->response->setStatus($result['status']);
+            if (isset($result['headers']['Content-Type']))
+                header($result['headers']['Content-Type']);
+                
+        } else{
+            $this->_app->response->setStatus(409);
+            $this->_app->response->setBody(User::encodeUser(new User()));
+            $this->_app->stop();
+        }
     }
 }
 ?>
