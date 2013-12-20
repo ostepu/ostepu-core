@@ -4,10 +4,6 @@
  */
 class Exercise extends Object implements JsonSerializable
 {
-    // TODO
-    // TODO wie werden in Exercise die Unteraufgaben eingebaut oder ist das unwichtig???
-    // TODO
-
     /**
      * a string that identifies the exercise.
      *
@@ -112,6 +108,92 @@ class Exercise extends Object implements JsonSerializable
         $this->attachments = $value;
     }
     
+    /**
+     * (description)
+     *
+     * type: Bool
+     */
+    private $bonus = null;
+    public function getBonus(){
+        return $this->bonus;
+    }
+    public function setBonus($value){
+        $this->bonus = $value;
+    }
+    
+    /**
+     * (description)
+     */
+    public static function getDbConvert()
+    {
+        return array(
+           'E_id' => 'id',
+           'C_id' => 'courseId',
+           'ES_id' => 'sheetId',
+           'E_maxPoints' => 'maxPoints',
+           'ET_id' => 'type',
+           'E_id_link' => 'link',
+           'E_submissions' => 'submissions',
+           'E_bonus' => 'bonus',
+           'E_attachments' => 'attachments'
+        );
+    }
+    
+    /**
+     * (description)
+     */
+    public static function getDbPrimaryKey()
+    {
+        return 'E_id';
+    }
+/**
+     * (description)
+     * 
+     * @param $param (description)
+     */
+    public function __construct($data=array()) 
+    {
+        foreach ($data AS $key => $value) {
+             if (isset($key)){
+                if ($key == 'submissions'){
+                    $this->{$key} = Submission::decodeSubmission($value, false);
+                }elseif ($key == 'attachments') {
+                    $this->{$key} = File::decodeFile($value, false);
+                } else
+                $this->{$key} = $value;
+            }
+        }
+    }
+    
+    /**
+     * (description)
+     * 
+     * @param $param (description)
+     */
+    public static function encodeExercise($data)
+    {
+        return json_encode($data);
+    }
+    
+    /**
+     * (description)
+     * 
+     * @param $param (description)
+     * @param $param (description)
+     */
+    public static function decodeExercise($data, $decode=true)
+    {
+        if ($decode)
+            $data = json_decode($data);
+        if (is_array($data)){
+            $result = array();
+            foreach ($data AS $key => $value) {
+                array_push($result, new Exercise($value));
+            }
+            return $result;   
+        } else
+            return new Exercise($data);
+    }
     
     public function jsonSerialize() {
         return array(
@@ -121,7 +203,8 @@ class Exercise extends Object implements JsonSerializable
             'maxPoints' => $this->maxPoints,
             'type' => $this->type,
             'link' => $this->link,
-            'submissions' => $submissions,
+            'submissions' => $this->submissions,
+            'bonus' => $this->bonus,
             'attachments' => $this->attachments
         );
     }

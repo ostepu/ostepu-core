@@ -129,7 +129,87 @@ class ExerciseSheet extends Object implements JsonSerializable
     public function setSheetName($value){
         $this->sheetName = $value;
     }
-
+    
+    
+    
+    
+    /**
+     * (description)
+     */
+    public static function getDbConvert()
+    {
+        return array(
+           'ES_id' => 'id',
+           'C_id' => 'courseId',
+           'ES_startDate' => 'endDate',
+           'ES_endDate' => 'startDate',
+           'F_id_zip' => 'zipFile',
+           'ES_groupSize' => 'groupSize',
+           'F_id_sampleSolution' => 'sampleSolution',
+           'F_id_file' => 'sheetFile',
+           'ES_exercises' => 'exercises',
+           'ES_name' => 'sheetName'
+        );
+    }
+    
+    /**
+     * (description)
+     */
+    public static function getDbPrimaryKey()
+    {
+        return 'ES_id';
+    }
+    
+    /**
+     * (description)
+     * 
+     * @param $param (description)
+     */
+    public function __construct($data=array()) 
+    {
+        foreach ($data AS $key => $value) {
+             if (isset($key)){
+                if ($key == 'exercises') {
+                    $this->{$key} = Exercise::decodeExercise($value, false);
+                } elseif ($key == 'sheetFile' || $key == 'sampleSolution'){
+                    $this->{$key} = File::decodeFile($value, false);
+                } else{
+                    $this->{$key} = $value;
+                }
+            }
+        }
+    }
+    
+    /**
+     * (description)
+     * 
+     * @param $param (description)
+     */
+    public static function encodeExerciseSheet($data)
+    {
+        return json_encode($data);
+    }
+    
+    /**
+     * (description)
+     * 
+     * @param $param (description)
+     * @param $param (description)
+     */
+    public static function decodeExerciseSheet($data, $decode=true)
+    {
+        if ($decode)
+            $data = json_decode($data);
+        if (is_array($data)){
+            $result = array();
+            foreach ($data AS $key => $value) {
+                array_push($result, new ExerciseSheet($value));
+            }
+            return $result;   
+        } else
+            return new ExerciseSheet($data);
+    }
+    
     public function jsonSerialize() {
         return array(
             'id' => $this->id,

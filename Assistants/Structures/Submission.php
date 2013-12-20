@@ -103,6 +103,31 @@ class Submission extends Object implements JsonSerializable
         $this->date = $value;
     }
     
+    /**
+     * (description)
+     */  
+    public static function getDbConvert()
+    {
+        return array(
+           'S_id' => 'id',
+           'U_id' => 'studentId',
+           'F_id_file' => 'file',
+           'E_id' => 'exerciseId',
+           'S_comment' => 'comment',
+           'S_accepted' => 'accepted',
+           'S_date' => 'date',
+           'S_selected' => 'selectedForGroup'
+        );
+    }
+    
+    /**
+     * (description)
+     */
+    public static function getDbPrimaryKey()
+    {
+        return 'S_id';
+    }
+    
     public function jsonSerialize() {
         return array(
             'id' => $this->id,

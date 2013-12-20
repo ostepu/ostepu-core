@@ -180,7 +180,7 @@ class User extends Object implements JsonSerializable
      * an array of CourseStatus objects that represents the courses
      * the user is enlisted in and which role she/he has in that course
      *
-     * type: Course[]
+     * type: CourseStatus[]
      */
     private $courses = array();
     
@@ -260,13 +260,10 @@ class User extends Object implements JsonSerializable
     /**
      * (description)
      */
-    public static function getDefinition(){
+    public static function getFlagDefinition(){
         return array(
-            '0' => 'student',
-            '1' => 'tutor',
-            '2' => 'lecturer',
-            '3' => 'administrator',
-            '4' => 'super-administrator'
+            '0' => 'inactive',
+            '1' => 'active',
         );
     }
     
@@ -280,8 +277,8 @@ class User extends Object implements JsonSerializable
         foreach ($data AS $key => $value) {
             if (isset($key)){
                 if (is_array($value)) {
-                    $sub = Course::decodeCourse($value);
-                    $value = $sub;
+                    $this->{$key} = CourseStatus::decodeCourseStatus($value, false);
+
                 }
                 $this->{$key} = $value;
             }
