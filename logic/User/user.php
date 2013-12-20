@@ -1,43 +1,48 @@
 <?php
 
 require 'Slim/Slim.php';
-include 'include/Assistants/request/createRequest.php';
+include 'include/Assistants/Request.php';    
 	
 \Slim\Slim::registerAutoloader();
 
 class User
 {
-    $this->app = new \Slim\Slim();
-    $this->app->response->headers->set('Content-Type', 'application/json');
     //the URL of the Logic-Controller
     private $lURL = "";				//Einlesen aus config
     
-    //SetUserRights
-    $this->app->put('/user/:userid/right', array($this, 'setUserRights'));
-
-    //AddUser
-    $this->app->post(':date+', array($this, 'addUser'));        //data+ soll leerer Parameter sein
-
-    //EditUser
-    $this->app->put('/user/:userid', array($this, 'editUser'));
-
-    //GetUsers
-    $this->app->put('/user', array($this, 'getUsers'));
-
-    //GetUser
-    $this->app->put('/user/:userid', array($this, 'getUser'));
+    public function __construct()
+    {    
+        $this->app = new \Slim\Slim();
+        $this->app->response->headers->set('Content-Type', 'application/json');
     
+        //SetUserRights
+        $this->app->put('/user/:userid/right', array($this, 'setUserRights'));          //Adressen noch anpassen(kein .php;+ Compo-Namen
+
+        //AddUser
+        $this->app->post(':date+', array($this, 'addUser'));        //data+ soll leerer Parameter sein
+
+        //EditUser
+        $this->app->put('/user/:userid', array($this, 'editUser'));
+
+        //GetUsers
+        $this->app->get('/user', array($this, 'getUsers'));
+
+        //GetUser
+        $this->app->get('/user/:userid', array($this, 'getUser'));
+
+        $this->app->run();
+    }        
     /**
      *set the user rights
      * 
      * @param (param)
      */
-    private function setUserRights($userid){        
-        $body = \Slim\Slim::getInstance()->request()->getBody();
-        $header = \Slim\Slim::getInstance()->request()->getHeader();
-        $URL = $lURL.'/DB/user/user/'.$userid.'/right';
-        $status = createPut($URL, $header, $body);
-        $this->app->response->setStatus($status);   
+    public function setUserRights($userid){        
+        $body = $this->app->request->getBody();
+        $header = $this->app->request->headers->all();
+        $URL = $this->lURL.'/DB/user/user/'.$userid.'/right';
+        $answer = Request::custom('PUT', $URL, $header, $body);
+        $this->app->response->setStatus($answer['status']);       
     }
     
      /**
@@ -45,13 +50,13 @@ class User
      * 
      * @param (param)
      */
-    private function addUser($userid){
+    public function addUser($userid){
         //Parameter abfangen wenn $data "nicht leer"
-        $body = \Slim\Slim::getInstance()->request()->getBody();
-        $header = \Slim\Slim::getInstance()->request()->getHeader();
-        $URL = $lURL.'/DB/user';
-        $status = createPost($URL, $header, $body);
-        $this->app->response->setStatus($status);       
+        $body = $this->app->request->getBody();
+        $header = $this->app->request->headers->all();
+        $URL = $this->lURL.'/DB/user';
+        $answer = Request::custom('POST', $URL, $header, $body);
+        $this->app->response->setStatus($answer['status']);       
     }
     
      /**
@@ -59,12 +64,12 @@ class User
      * 
      * @param (param)
      */
-    private function editUser($userid){        
-        $body = \Slim\Slim::getInstance()->request()->getBody();
-        $header = \Slim\Slim::getInstance()->request()->getHeader();
-        $URL = $lURL.'/DB/user/course/'.$userid;
-        $status = createPut($URL, $header, $body);
-        $this->app->response->setStatus($status);      
+    public function editUser($userid){        
+        $body = $this->app->request->getBody();
+        $header = $this->app->request->headers->all();
+        $URL = $this->lURL.'/DB/user/course/'.$userid;
+        $answer = Request::custom('PUT', $URL, $header, $body);
+        $this->app->response->setStatus($answer['status']);        
     }
         
      /**
@@ -72,13 +77,13 @@ class User
      * 
      * @param (param)
      */
-    private function getUsers(){        
-        $body = \Slim\Slim::getInstance()->request()->getBody();
-        $header = \Slim\Slim::getInstance()->request()->getHeader();
-        $URL = $lURL.'/DB/user/user';
-        $dbAnswer = createGet($URL, $header, $body);                    //createGet(...).getBody?
-        $this->app->response->setStatus(200);                           //status aus createGet auslesen!
-        $this->app->response->setBody($dbAnswer);        
+    public function getUsers(){        
+        $body = $this->app->request->getBody();
+        $header = $this->app->request->headers->all();
+        $URL = $this->lURL.'/DB/user/user';
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $this->app->response->setStatus($answer['status']);                
+        $this->app->response->setBody($answer['content']);
     }
         
      /**
@@ -86,13 +91,15 @@ class User
      * 
      * @param (param)
      */
-    private function getUser(){        
-        $body = \Slim\Slim::getInstance()->request()->getBody();
-        $header = \Slim\Slim::getInstance()->request()->getHeader();
-        $URL = $lURL.'/DB/user/user'.$userid;
-        $dbAnswer = createGet($URL, $header, $body);                    //createGet(...).getBody?
-        $this->app->response->setStatus(200);                           //status aus createGet auslesen!
-        $this->app->response->setBody($dbAnswer);    
-    }; 
+    public function getUser(){        
+        $body = $this->app->request->getBody();
+        $header = $this->app->request->headers->all();
+        $URL = $this->lURL.'/DB/user/user'.$userid;
+        $answer = Request::custom('GET', $URL, $header, $body);            
+        $this->app->response->setStatus($answer['status']);                
+        $this->app->response->setBody($answer['content']);    
+    }
 }
+
+new User();
 ?>
