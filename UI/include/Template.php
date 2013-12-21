@@ -15,7 +15,7 @@ class Template
 
     /**
      * Construct a new template.
-     *
+     *--.
      * @param string $template A template string.
      */
     public function __construct($template)
