@@ -32,4 +32,15 @@ $(document).ready( function() {
     $('.full-width-list').find('.delete-subtask').click( function(event) {
         $(this).parent().remove();
     });
+
+
+    // adds a new exercise when clicking on a link with the class 'add-exercise'
+    // at the end of the page
+    $('.content-header').find('.add-exercise').click( function(event) {
+        // find last content-element
+        var lastExercise = $('.collapsible').last();
+
+        // append content to last exercise
+        $(this).load( "include/CreateSheet/ExerciseSettings.template.html" ).insertAfter(lastExercise);
+    });
 });
