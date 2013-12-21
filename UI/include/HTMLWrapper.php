@@ -5,9 +5,8 @@
  */
 
 include_once 'include/Header/Header.php';
-include_once 'Logger.php';
+include_once '../../Assistants/Logger.php';
 
-Logger::$logFile = __DIR__."/../../log.log";
     /**
     * Wraps the header and the contents in a default HTML
     */

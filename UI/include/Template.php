@@ -1,8 +1,7 @@
 <?php
 include_once 'Helpers.php';
-include_once 'Logger.php';
+include_once '../../Assistants/Logger.php';
 
-Logger::$logFile = __DIR__."/../../log.log";
 /**
 * Template class.
 *
