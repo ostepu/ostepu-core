@@ -1,6 +1,9 @@
 $(document).ready( function() {
-    // map click events
+    // suppress Propagation
     $('.collapsible').children('.content-header').find('a').on("click",suppressPropagation);
+    $('.interactive.add').children('.content-header').find('a').on("click",suppressPropagation);
+    
+    // map click events
     $('.collapsible').children('.content-header').find('.delete-exercise').on("click",deleteExercise);
     $('.full-width-list').find('.delete-subtask').on("click",deleteSubtask);
     $('.interactive.add').children('.content-header').find('.add-exercise').on("click",addExercise);
