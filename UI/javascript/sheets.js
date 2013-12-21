@@ -1,3 +1,14 @@
+$(document).ready( function() {
+    collapseCildren();
+
+    // set mouse curser on mouse-over to pointer
+    $('.collapsible').children('.content-header').css('cursor','pointer');
+
+    // map click events
+    $('.collapsible').children('.content-header').on("click",collapseElement);
+});
+
+
 /**
  * toggle function on click to hide/show .content-header elements
  */
@@ -11,15 +22,11 @@ function collapseElement(event) {
     }
 }
 
-$(document).ready( function() {
-    // get all elements with class .sheet-header with index greater 2 and hide the first element .content-body-wrapper
+
+function collapseCildren() {
+    // get all elements with class .sheet-header with index greater 2 and hide
+    // the first element .content-body-wrapper
 
     $('.collapsible:gt(2)').children(('.content-body-wrapper, .content-footer')).hide();
     $('.collapsible:gt(2)').children('.content-header').addClass('inactive');
-
-    // set mouse curser on mouse-over to pointer
-    $('.collapsible').children('.content-header').css('cursor','pointer');
-
-    // map click events
-    $('.collapsible').children('.content-header').on("click",collapseElement);
-});
+}
