@@ -32,7 +32,7 @@ class Logger
     /**
      * @var $logFile The path of the log file. Messages will be sent here.
      */
-    static $logFile = 'php://stdout';
+    static $logFile = 'php://stderr';
 
     /**
      * Log a message to the log file.
