@@ -19,11 +19,14 @@ function renumberExercises() {
     var allCollapsible = $('.collapsible');
 
     for (var i = 1; i < allCollapsible.length; i++) {
+        // add a new header text
         var current = jQuery(allCollapsible[i]);
         current.children('.content-header').children('.content-title')[0].innerText = "Aufgabe " + i;
+
+        // rename the input element
         var body = current.find('.content-body');
-        console.log(body);
-        var newHTML = body[0].innerHTML.replace(/(exercises\[)([0-9]+)(\])/, "$1" + (i - 1) + "$3");
+        var regex = /(exercises\[)([0-9]+)(\])/gm
+        var newHTML = body[0].innerHTML.replace(regex, "exercises[" + (i - 1) + "]");
         body[0].innerHTML = newHTML;
     }
 }
