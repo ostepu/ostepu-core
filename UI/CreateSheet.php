@@ -1,7 +1,19 @@
 <?php
-include 'include/Header/Header.php';
-include 'include/HTMLWrapper.php';
+include_once 'include/Header/Header.php';
+include_once 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
+include_once '../Assistants/Logger.php';
+?>
+
+<?php
+    if (isset($_POST['sheet'])) {
+        Logger::Log($_POST, LogLevel::INFO);
+    } else {
+        Logger::Log("No Sheet Data", LogLevel::INFO);
+    }
+?>
+
+<?php
 
 // construct a new Header
 $h = new Header("Datenstrukturen",
@@ -19,7 +31,7 @@ $createExercise = Template::WithTemplateFile('include/CreateSheet/CreateExercise
 $exerciseSettings = Template::WithTemplateFile('include/CreateSheet/ExerciseSettings.template.html');
 
 // wrap all the elements in some HTML and show them on the page
-$w = new HTMLWrapper($h, $sheetSettings, $createExercise, $exerciseSettings);
+$w = new HTMLWrapper($h, "<form action=\"CreateSheet.php\" method=\"POST\">", $sheetSettings, $createExercise, $exerciseSettings, "</form>");
 $w->set_config_file('include/configs/config_createSheet.json');
 $w->show();
 ?>

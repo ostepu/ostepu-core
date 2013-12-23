@@ -2,14 +2,19 @@ $(document).ready( function() {
     // suppress Propagation
     $('.collapsible').children('.content-header').find('a').on("click",suppressPropagation);
     $('.interactive.add').children('.content-header').find('a').on("click",suppressPropagation);
-    
+
     // map click events
     $('.collapsible').children('.content-header').find('.delete-exercise').on("click",deleteExercise);
     $('.full-width-list').find('.delete-subtask').on("click",deleteSubtask);
     $('.interactive.add').children('.content-header').find('.add-exercise').on("click",addExercise);
+
+    $('#submitSheet').on("click", function(event) {
+        $('#submitSheetButton').click();
+    });
 });
 
-// rename exercise headers with correct enumeration 
+// rename exercise headers with correct enumeration
+// rename inputs
 function renumberExercises() {
     var allCollapsible = $('.collapsible').children('.content-header');
 
@@ -58,7 +63,7 @@ function addExercise(event) {
     // append content to last exercise
     $.get("include/CreateSheet/ExerciseSettings.template.html", function (data) {
         $("#content-wrapper").append(data);
-        
+
         // animate new element
         $('.collapsible').last().hide().fadeIn(1000);
 
