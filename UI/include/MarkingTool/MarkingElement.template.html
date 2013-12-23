@@ -5,7 +5,7 @@
 
     <div class="content-body-wrapper">
         <div class="content-body left">
-            <ol class="full-width-list decimal">
+            <ol class="full-width-exercise-list">
                 <li>
                     <input class="form-field text-input very-short" name="exercisePoints" value="1" id="exercisePoints" />
                     <label class="form-field label very-short" for="exercisePoints">TP (2)</label> 
@@ -21,21 +21,39 @@
                         <img src="Images/DownloadCorrection.png" />
                     </div> 
                 </li>
-                <li>
-                    <input class="form-field text-input very-short" name="exercisePoints" value="1" id="exercisePoints" />
-                    <label class="form-field label" for="exercisePoints">TP (7)</label> 
-                    <input class="form-field text-input" name="markingComment" value="Kommentar ..." id="markingComment" />
-                    <select class="form-field text-input very-short" name="exerciseType" id="exerciseType"> 
-                        <option value="1">uk</option>
-                        <option value="2">k</option>
-                        <option value="3">vl</option>
-                        <option value="4">ne</option>
-                    </select>
-                    <a href="#" class="body-option-color">Kommentar des Studenten</a>
-                    <div class="exercise-sheet-images right">
-                        <img src="Images/Download.png" /> 
-                        <img src="Images/DownloadCorrection.png" />
-                    </div> 
+                <li class="skip-item">
+                    <ol class="full-width-exercise-list secondLevel">
+                        <li>
+                            <input class="form-field text-input very-short" name="exercisePoints" value="1" id="exercisePoints" />
+                            <label class="form-field label very-short" for="exercisePoints">TP (2)</label> 
+                            <input class="form-field text-input" name="markingComment" value="Kommentar ..." id="markingComment" />
+                            <select class="form-field text-input very-short" name="exerciseType" id="exerciseType"> 
+                                <option value="1">uk</option>
+                                <option value="2">k</option>
+                                <option value="3">vl</option>
+                                <option value="4">ne</option>
+                            </select>
+                            <div class="exercise-sheet-images right">
+                                    <img src="Images/Download.png" /> 
+                                    <img src="Images/DownloadCorrection.png" />
+                            </div> 
+                        </li>
+                        <li>
+                            <input class="form-field text-input very-short" name="exercisePoints" value="1" id="exercisePoints" />
+                            <label class="form-field label very-short" for="exercisePoints">TP (2)</label> 
+                            <input class="form-field text-input" name="markingComment" value="Kommentar ..." id="markingComment" />
+                            <select class="form-field text-input very-short" name="exerciseType" id="exerciseType"> 
+                                <option value="1">uk</option>
+                                <option value="2">k</option>
+                                <option value="3">vl</option>
+                                <option value="4">ne</option>
+                            </select>
+                            <div class="exercise-sheet-images right">
+                                    <img src="Images/Download.png" /> 
+                                    <img src="Images/DownloadCorrection.png" />
+                            </div> 
+                        </li>
+                    </ol>
                 </li>
                 <li>
                     <input class="form-field text-input very-short" name="exercisePoints" value="1" id="exercisePoints" />
@@ -54,6 +72,7 @@
                     </div> 
                 </li>
             </ol>
+
         </div>
     </div> <!-- end: content-body -->
 </div> <!-- end: content-wrapper -->
