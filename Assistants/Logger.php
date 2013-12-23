@@ -49,15 +49,10 @@ class Logger
         }
 
         // get the current date and time
-        $infoString = date('M j G:i:s');
+        $infoString = "[Logger] " . date('M j G:i:s');
 
         // test if the message should be logged
         if ((self::$logLevel & $logLevel) !== 0) {
-
-            // convert message to string if neccessary
-            if (!is_string($message)) {
-                $message = print_r($message, true);
-            }
 
             $info = debug_backtrace();
             if (isset($info[1])) {
@@ -93,6 +88,11 @@ class Logger
             // show the line in which the function was called
             if (isset($callerInfo['line'])) {
                 $infoString .= " (" . $callerInfo['line'] . ")";
+            }
+
+            // convert message to string if neccessary
+            if (is_string($message) == false) {
+                $message = implode("\n[Logger] ",explode("\n", print_r($message, true)));
             }
 
             $infoString .=  " [" . LogLevel::$names[$logLevel] . "]: " . $message . "\n";
