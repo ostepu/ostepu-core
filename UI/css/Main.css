@@ -151,7 +151,8 @@ ol.full-width-exercise-list {
 ol.full-width-exercise-list li:before {
     content: counter(firstLevel);
     counter-increment: firstLevel;
-    padding-right: 30px;
+    display: inline-block;
+    width: 42px;
 }
 
 ol.full-width-exercise-list .secondLevel {
@@ -164,7 +165,6 @@ ol.full-width-exercise-list .secondLevel {
 ol.full-width-exercise-list .secondLevel li:before {
     content: counter(firstLevel) " " counter(secondLevel,lower-alpha);
     counter-increment: secondLevel;
-    padding-right: 19px;
 }
 
 .full-width-exercise-list .skip-item:before {
