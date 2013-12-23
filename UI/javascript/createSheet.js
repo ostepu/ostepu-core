@@ -25,10 +25,15 @@ function renumberExercises() {
         current.children('.content-header').children('.content-title')[0].innerText = "Aufgabe " + i;
 
         // rename the input element
-        var body = current.find('.content-body');
+        var inputs = current.find('input,select');
         var regex = /(exercises\[)([0-9]+)(\])/gm;
-        var newHTML = body[0].innerHTML.replace(regex, "exercises[" + (i - 1) + "]");
-        body[0].innerHTML = newHTML;
+        inputs.each(function(index, el) {
+            var oldName = jQuery(el).attr('name');
+            var newName = oldName.replace(regex, "exercises[" + (i - 1) + "]");
+            console.log(newName);
+            jQuery(el).attr('name', newName);
+        });
+
     }
 }
 
@@ -130,5 +135,7 @@ function addSubtask(event) {
 
         // map click events on new subtask
         insertedSubtask.find('.delete-subtask').on("click",deleteSubtask);
+
+        renumberExercises();
     });
 }
