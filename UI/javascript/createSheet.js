@@ -16,10 +16,15 @@ $(document).ready( function() {
 // rename exercise headers with correct enumeration
 // rename inputs
 function renumberExercises() {
-    var allCollapsible = $('.collapsible').children('.content-header');
+    var allCollapsible = $('.collapsible');
 
     for (var i = 1; i < allCollapsible.length; i++) {
-        jQuery(allCollapsible[i]).children('.content-title')[0].innerText = "Aufgabe " + i;
+        var current = jQuery(allCollapsible[i]);
+        current.children('.content-header').children('.content-title')[0].innerText = "Aufgabe " + i;
+        var body = current.find('.content-body');
+        console.log(body);
+        var newHTML = body[0].innerHTML.replace(/(exercises\[)([0-9]+)(\])/, "$1" + (i - 1) + "$3");
+        body[0].innerHTML = newHTML;
     }
 }
 
@@ -62,7 +67,13 @@ function addExercise(event) {
 
     // append content to last exercise
     $.get("include/CreateSheet/ExerciseSettings.template.html", function (data) {
-        $("#content-wrapper").append(data);
+
+        var collapsible = $(".collapsible");
+        if (collapsible.length == 1) {
+            $(".add").last().after(data);
+        } else {
+            $(".collapsible").last().after(data);
+        }
 
         // animate new element
         $('.collapsible').last().hide().fadeIn(1000);

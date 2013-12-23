@@ -31,7 +31,7 @@ $createExercise = Template::WithTemplateFile('include/CreateSheet/CreateExercise
 $exerciseSettings = Template::WithTemplateFile('include/CreateSheet/ExerciseSettings.template.html');
 
 // wrap all the elements in some HTML and show them on the page
-$w = new HTMLWrapper($h, "<form action=\"CreateSheet.php\" method=\"POST\">", $sheetSettings, $createExercise, $exerciseSettings, "</form>");
+$w = new HTMLWrapper($h, "<form action=\"CreateSheet.php\" method=\"POST\">", $sheetSettings, $createExercise, "</form>");
 $w->set_config_file('include/configs/config_createSheet.json');
 $w->show();
 ?>
