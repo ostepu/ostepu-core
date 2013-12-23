@@ -11,6 +11,7 @@ $(document).ready( function() {
     $('#submitSheet').on("click", function(event) {
         $('#submitSheetButton').click();
     });
+    $('.body-option-color.right.deny-button.skip-list-item').on("click",addSubtask);
 });
 
 // rename exercise headers with correct enumeration
@@ -25,7 +26,7 @@ function renumberExercises() {
 
         // rename the input element
         var body = current.find('.content-body');
-        var regex = /(exercises\[)([0-9]+)(\])/gm
+        var regex = /(exercises\[)([0-9]+)(\])/gm;
         var newHTML = body[0].innerHTML.replace(regex, "exercises[" + (i - 1) + "]");
         body[0].innerHTML = newHTML;
     }
@@ -58,9 +59,20 @@ function deleteExercise(event) {
 // a link with the class 'delete-subtask'
 function deleteSubtask(event) {
     var trig = $(this);
+
     trig.parent().slideToggle('fast', function() {
         trig.parent().remove();
     });
+
+    var subtaskCount = trig.parent().parent().find('li').not( ".skip-item" ).length;
+
+    //hide delete-subtask link if there were 2 subtasks before deleting
+    if (subtaskCount == 2) {
+        // first not deleted Subtask
+        var firstSubtask = trig.parent().parent().find('li').not( ".skip-item" ).not(trig.parent()).first();
+
+        firstSubtask.find('.delete-subtask').fadeOut('fast');
+    }
 }
 
 
@@ -79,17 +91,44 @@ function addExercise(event) {
         }
 
         // animate new element
-        $('.collapsible').last().hide().fadeIn(1000);
+        $('.collapsible').last().hide().fadeIn('fast');
 
         // map click events on new exercise
         $('.collapsible').last().children('.content-header').find('a').on("click",suppressPropagation);
         $('.collapsible').last().children('.content-header').find('.delete-exercise').on("click",deleteExercise);
         $('.full-width-list').last().find('.delete-subtask').on("click",deleteSubtask);
         $('.collapsible').last().children('.content-header').on("click",collapseElement);
+        $('.body-option-color.right.deny-button.skip-list-item').last().on("click",addSubtask);
 
         // set mouse curser on mouse-over to pointer
         $('.collapsible').last().children('.content-header').css('cursor','pointer');
 
         renumberExercises();
+    });
+}
+
+
+// adds new subtask when clicking on a link with the class '.body-option-color.right.deny-button.skip-list-item'
+function addSubtask(event) {
+    var trig = $(this);
+
+    // insert subtask
+    $.get("include/CreateSheet/Subtask.template.html", function (data) {
+        trig.parent().before(data);
+
+        var insertedSubtask = trig.parent().parent().find('li').not( ".skip-item" ).last();
+        var subtaskCount = trig.parent().parent().find('li').not( ".skip-item" ).length;
+
+        // animate new element
+        insertedSubtask.hide().fadeIn('fast');
+
+        //show delete-subtask link if there are 2 subtasks
+        if (subtaskCount == 2) {
+            var firstSubtask = trig.parent().parent().find('li').not( ".skip-item" ).first();
+            firstSubtask.find('.delete-subtask').fadeIn('fast');
+        }
+
+        // map click events on new subtask
+        insertedSubtask.find('.delete-subtask').on("click",deleteSubtask);
     });
 }

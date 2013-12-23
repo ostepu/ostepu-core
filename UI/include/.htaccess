@@ -1,7 +1,7 @@
 Order Allow,Deny
 Deny from all
 
-<FilesMatch "ExerciseSettings.template.html">
+<FilesMatch "(ExerciseSettings.template.html|Subtask.template.html)">
     Order Allow,Deny
     Allow from all
 </FilesMatch>
