@@ -24,17 +24,34 @@ function renumberExercises() {
         var current = jQuery(allCollapsible[i]);
         current.children('.content-header').children('.content-title')[0].innerText = "Aufgabe " + i;
 
-        // rename the input element
-        var inputs = current.find('input,select');
-        var regex = /(exercises\[)([0-9]+)(\])/gm;
-        inputs.each(function(index, el) {
-            var oldName = jQuery(el).attr('name');
-            var newName = oldName.replace(regex, "exercises[" + (i - 1) + "]");
-            console.log(newName);
-            jQuery(el).attr('name', newName);
-        });
+        //ename the input element
+        var listElements = current.find('li');
+        listElements.each(renameSubtask(i));
 
     }
+}
+
+// return a closure that can replace the numbers in names of form elements
+function renameSubtask(i) {
+    // return a closure to rename inputs in subtasks
+    return function (index, listElement) {
+        var element = jQuery(listElement);
+        var inputs = element.find('input, select, textarea');
+        inputs.each(function(idx, el) {
+            var elem = jQuery(el);
+            // get the old name
+            var oldName = elem.attr('name');
+
+            var regex = /exercises\[[0-9]+\]\[.+?\]\[[0-9]+\]\[(.+?)]/gm;
+            var nameString = "exercises[" + (i - 1) + "][subexercises][" + index + "][$1]";
+
+            // match the regex and replace the numbers
+            var newName = oldName.replace(regex, nameString);
+
+            // set the new name
+            elem.attr('name', newName);
+        });
+    };
 }
 
 // if the content header contains an anchor tag prevent that clicking on it
