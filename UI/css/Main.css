@@ -12,6 +12,10 @@ a:after {
     content: ' >';
 }
 
+.inline:after {
+    content: ' ';
+}
+
 .body-wrapper {
     width: 960px;
     margin-left:auto;

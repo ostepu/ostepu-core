@@ -31,9 +31,15 @@
 .checkbox-container {
     border: 2px solid #ccc;
     padding: 10px;
-    width: 100px; 
-    height: 100px; 
+    width: 100px;
+    height: 100px;
     overflow-y: scroll;
+}
+
+textarea.text-input {
+    width: 748px;
+    max-width: 748px;
+    margin-right: 0;
 }
 
 /*

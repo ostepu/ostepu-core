@@ -12,7 +12,7 @@ foreach ($sheets as $sheet):
         </div>
         <div class="exercise-sheet-info info-color bold right">
             <?php print $sheet['exerciseSheetInfo'] . '%'; ?>
-        </div>          
+        </div>
     </div>
 
     <div class="content-body-wrapper">
@@ -20,7 +20,7 @@ foreach ($sheets as $sheet):
             <ol class="exercise-list">
                 <?php
                 foreach ($sheet['exercises'] as $exercise):
-                ?>
+                    ?>
                 <li>
 
                     <div class="exercise-type">
@@ -34,8 +34,10 @@ foreach ($sheets as $sheet):
                     </div>
 
                     <div class="exercise-sheet-images">
-                        <img src="Images/Upload.png" /> 
-                        <img src="Images/Download.png" /> 
+                        <a href="Upload.php" class="inline">
+                            <img src="Images/Upload.png" />
+                        </a>
+                        <img src="Images/Download.png" />
                         <img src="Images/DownloadCorrection.png" />
                         <img src="Images/attachment.png" />
                         <img src="Images/Delete.png" />
@@ -43,7 +45,7 @@ foreach ($sheets as $sheet):
                 </li>
                 <?php
                 endforeach;
-                ?>          
+                ?>
             </ol>
         </div>
 
@@ -64,7 +66,7 @@ foreach ($sheets as $sheet):
             <li class="footer-text">Ralf Busch</li>
             <li class="footer-text">Florian Lücke</li>
             <li class="footer-text">Felix Schmidt</li>
-        </ol>   
+        </ol>
     </div>
 </div> <!-- end: content-element -->
 <?php

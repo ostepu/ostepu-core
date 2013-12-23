@@ -1,6 +1,6 @@
 <?php
 include_once 'Helpers.php';
-include_once '../../Assistants/Logger.php';
+include_once '../Assistants/Logger.php';
 
 /**
 * Template class.
@@ -33,7 +33,7 @@ class Template
         $templateString = file_get_contents($fileName);
 
         if ($templateString === FALSE) {
-            Logger::Log("Could not open file: {$fileName}", LogLevel::WARNING);
+            Logger::Log("Could not open file: " .  $fileName, LogLevel::WARNING);
         }
 
         $t = new Template($templateString);
