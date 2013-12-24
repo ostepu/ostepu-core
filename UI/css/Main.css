@@ -121,10 +121,12 @@ table td {
 
 .lower-alpha li:before {
     content: counter(item, lower-alpha);
+    counter-increment: item;
 }
 
 .decimal li:before {
     content: counter(item, decimal);
+    counter-increment: item;
 }
 
 .full-width-list {
@@ -138,6 +140,34 @@ table td {
 }
 
 .full-width-list .skip-item:before {
+    content:"\a0\a0\a0";
+}
+
+ol.full-width-exercise-list {
+    counter-reset: firstLevel;
+    width: 880px;
+}
+
+ol.full-width-exercise-list li:before {
+    content: counter(firstLevel);
+    counter-increment: firstLevel;
+    display: inline-block;
+    width: 42px;
+}
+
+ol.full-width-exercise-list .secondLevel {
+    counter-reset: secondLevel;
+    width: 880px;
+    margin-bottom: -7px;
+    margin-top: -13px;
+}
+
+ol.full-width-exercise-list .secondLevel li:before {
+    content: counter(firstLevel) " " counter(secondLevel,lower-alpha);
+    counter-increment: secondLevel;
+}
+
+.full-width-exercise-list .skip-item:before {
     content:"\a0\a0\a0";
 }
 
