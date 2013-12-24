@@ -7,7 +7,8 @@ include_once '../Assistants/Logger.php';
 
 <?php
     if (isset($_POST['sheet'])) {
-        Logger::Log($_POST, LogLevel::INFO);
+        //Logger::Log($_POST, LogLevel::INFO);
+        header("Location: CreateSheet.php");
     } else {
         Logger::Log("No Sheet Data", LogLevel::INFO);
     }
