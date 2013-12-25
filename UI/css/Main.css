@@ -71,10 +71,9 @@ a:after {
 }
 
 .collapsible .content-header {
-    background-image: url(../Images/arrow.png);
+    background-image: url(../Images/Arrow.png);
     background-repeat: no-repeat;
     background-position: 14px 0;
-
 }
 
 .collapsible .inactive {
