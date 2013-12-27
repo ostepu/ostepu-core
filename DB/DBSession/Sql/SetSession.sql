@@ -1,0 +1,1 @@
+INSERT INTO `Session` SET $values
