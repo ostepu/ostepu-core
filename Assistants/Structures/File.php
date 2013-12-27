@@ -221,6 +221,25 @@ class File extends Object implements JsonSerializable
     /**
      * (description)
      */
+    public function getInsertData(){
+        $values = "";
+        
+        if ($this->fileId != null) $this->addInsertData($values, 'F_id', $this->fileId );
+        if ($this->displayName != null) $this->addInsertData($values, 'F_displayName', $this->displayName );
+        if ($this->address != null) $this->addInsertData($values, 'F_address', $this->address );
+        if ($this->timeStamp != null) $this->addInsertData($values, 'F_timeStamp', $this->timeStamp );
+        if ($this->fileSize != null) $this->addInsertData($values, 'F_fileSize', $this->fileSize );
+        if ($this->hash != null) $this->addInsertData($values, 'F_hash', $this->hash );
+        
+        if ($values != ""){
+            $values=substr($values,1);
+        }
+        return $values;
+    }
+    
+    /**
+     * (description)
+     */
     public static function getDbPrimaryKey()
     {
         return 'F_id';

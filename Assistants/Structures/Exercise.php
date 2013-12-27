@@ -142,6 +142,26 @@ class Exercise extends Object implements JsonSerializable
     /**
      * (description)
      */
+    public function getInsertData(){
+        $values = "";
+        
+        if ($this->id != null) $this->addInsertData($values, 'E_id', $this->id );
+        //if ($this->courseId != null) $this->addInsertData($values, 'C_id', $this->courseId );
+        if ($this->sheetId != null) $this->addInsertData($values, 'ES_id', $this->sheetId );
+        if ($this->maxPoints != null) $this->addInsertData($values, 'E_maxPoints', $this->maxPoints );
+        if ($this->type != null) $this->addInsertData($values, 'ET_id', $this->type );
+        if ($this->link != null) $this->addInsertData($values, 'E_id_link', $this->link );
+        if ($this->bonus != null) $this->addInsertData($values, 'E_bonus', $this->bonus);
+        
+        if ($values != ""){
+            $values=substr($values,1);
+        }
+        return $values;
+    }
+    
+    /**
+     * (description)
+     */
     public static function getDbPrimaryKey()
     {
         return 'E_id';

@@ -155,6 +155,27 @@ class ExerciseSheet extends Object implements JsonSerializable
     /**
      * (description)
      */
+    public function getInsertData(){
+        $values = "";
+        
+        if ($this->id != null) $this->addInsertData($values, 'ES_id', $this->id );
+        if ($this->courseId != null) $this->addInsertData($values, 'C_id', $this->courseId );
+        if ($this->endDate != null) $this->addInsertData($values, 'ES_endDate', $this->endDate );
+        if ($this->startDate != null) $this->addInsertData($values, 'ES_startDate', $this->startDate );
+        if ($this->groupSize != null) $this->addInsertData($values, 'ES_groupSize', $this->groupSize );
+        if ($this->sheetName != null) $this->addInsertData($values, 'ES_name', $this->sheetName );
+        if ($this->sheetFile != null) $this->addInsertData($values, 'F_id_file', $this->sheetFile->getFileId() );
+        if ($this->sampleSolution != null) $this->addInsertData($values, 'F_id_sampleSolution', $this->sampleSolution->getFileId());
+        
+        if ($values != ""){
+            $values=substr($values,1);
+        }
+        return $values;
+    }
+    
+    /**
+     * (description)
+     */
     public static function getDbPrimaryKey()
     {
         return 'ES_id';
@@ -212,7 +233,7 @@ class ExerciseSheet extends Object implements JsonSerializable
     
     public function jsonSerialize() {
         return array(
-            'id' => $this->id,
+            'id'  => $this->id,
             'courseId' => $this->courseId,
             'endDate' => $this->endDate,
             'startDate' => $this->startDate,
