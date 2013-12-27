@@ -1,2 +1,1 @@
-INSERT INTO Component ($columns)
-VALUES ($value)
+INSERT INTO Component SET $value

@@ -1,6 +1,6 @@
 <?php
 /**
- * @file (filename)
+ * @file CControl.php contains the CControl class
  * %(description)
  */ 
 
@@ -9,9 +9,11 @@ include_once( 'Include/Structures.php' );
 include_once( 'Include/Request.php' );
 include_once( 'Include/DBRequest.php' );
 include_once( 'Include/DBJson.php' );
+include_once( 'Include/Logger.php' );
 
 \Slim\Slim::registerAutoloader();
 
+// runs the CControl
 new CControl();
 
 /**
@@ -87,24 +89,37 @@ class CControl
      * @param $linkid (description)
      */
     public function editLink($linkid)
-    {
-        $value = DBJson::getUpdateDataFromInput($this->app->request->getBody(), Link::getDBConvert(), ',');
+    {        
+        $insert = Link::decodeLink($this->_app->request->getBody());
+        if (!is_array($insert))
+            $insert = array($insert);
 
-        eval("\$sql = \"".implode('\n',file("Sql/PutLink.sql"))."\";");
-        $query_result = DBRequest::request($sql);
-        $this->app->response->setStatus(200);
+        foreach ($insert as $in){
+            $data = $in->getInsertData();
+            eval("\$sql = \"".implode('\n',file("Sql/PutLink.sql"))."\";");
+            $query_result = DBRequest::request($sql)['content'];                
+           
+            if ($result['status']>=200 && $result['status']<=299){
+                $this->_app->response->setStatus(201);
+                if (isset($result['headers']['Content-Type']))
+                    header($result['headers']['Content-Type']);
+                
+            } else{
+                $this->_app->response->setStatus(451);
+                $this->_app->stop();
+            }
+        }
     }
     
     /**
-     * (description)
+     * DELETE DeleteLink
      *
      * @param $linkid (description)
      */
-    // DELETE DeleteLink
     public function deleteLink($linkid)
     {
         eval("\$sql = \"".implode('\n',file("Sql/DeleteLink.sql"))."\";");
-        $query_result = DBRequest::request($sql);
+        $query_result = DBRequest::request($sql)['content'];
         $this->app->response->setStatus(200);
     }
     
@@ -113,25 +128,31 @@ class CControl
      */
     public function setLink()
     {
-        $body = $this->app->request->getBody();
-        $component = Component::decodeComponent($body);
-        $links = $component->getLinks();
-        $insert = array();
-        foreach ($links as $link){
-           $res = (array) $link;
-           $res['CL_id_owner'] = $component->getID();
-           $res['CL_id_target'] = "???";
-           array_push($insert, $res);
-        }
-        
-        $insert = DBJson::getInsertDataFromInput($insert, Link::getDBConvert(), ',');
+        $insert = Link::decodeLink($this->_app->request->getBody());
+        if (!is_array($insert))
+            $insert = array($insert);
+
         foreach ($insert as $in){
-            $columns = $in[0];
-            $value = $in[1];
+            $values = $in->getInsertData();
             eval("\$sql = \"".implode('\n',file("Sql/PostLink.sql"))."\";");
-           $query_result = DBRequest::request($sql);
+            $query_result = DBRequest::request($sql)['content'];                
+           
+            if ($result['status']>=200 && $result['status']<=299){
+                $queryResult = Query::decodeQuery($result['content']);
+                
+                $obj = new Link();
+                $obj->setId($queryResult->getInsertId());
+            
+                $this->_app->response->setBody(Link::encodeLink($obj)); 
+                $this->_app->response->setStatus(201);
+                if (isset($result['headers']['Content-Type']))
+                    header($result['headers']['Content-Type']);
+                
+            } else{
+                $this->_app->response->setStatus(451);
+                $this->_app->stop();
+            }
         }
-        $this->app->response->setStatus(200);
     }
     
     /**
@@ -142,7 +163,7 @@ class CControl
     public function getLink($linkid)
     {
         eval("\$sql = \"".implode('\n',file("Sql/GetLink.sql"))."\";");
-        $query_result = DBRequest::request($sql);
+        $query_result = DBRequest::request($sql)['content'];
         
         $data = DBJson::getRows($query_result);
         $links = DBJson::getResultObjectsByAttributes($data, Link::getDBPrimaryKey(), Link::getDBConvert());
@@ -160,11 +181,25 @@ class CControl
      */
     public function editComponent($componentid)
     {
-        $value = DBJson::getUpdateDataFromInput($this->app->request->getBody(), Component::getDBConvert(), ',');
+        $insert = Component::decodeComponent($this->_app->request->getBody());
+        if (!is_array($insert))
+            $insert = array($insert);
 
-        eval("\$sql = \"".implode('\n',file("Sql/PutComponent.sql"))."\";");
-        $query_result = DBRequest::request($sql);
-        $this->app->response->setStatus(200);
+        foreach ($insert as $in){
+            $data = $in->getInsertData();
+            eval("\$sql = \"".implode('\n',file("Sql/PutComponent.sql"))."\";");
+            $query_result = DBRequest::request($sql)['content'];                
+           
+            if ($result['status']>=200 && $result['status']<=299){
+                $this->_app->response->setStatus(201);
+                if (isset($result['headers']['Content-Type']))
+                    header($result['headers']['Content-Type']);
+                
+            } else{
+                $this->_app->response->setStatus(451);
+                $this->_app->stop();
+            }
+        }
     }
     
     /**
@@ -175,7 +210,7 @@ class CControl
     public function deleteComponent($componentid)
     {
         eval("\$sql = \"".implode('\n',file("Sql/DeleteComponent.sql"))."\";");
-        $query_result = DBRequest::request($sql);
+        $query_result = DBRequest::request($sql)['content'];
         $this->app->response->setStatus(200);
     }
     
@@ -184,14 +219,31 @@ class CControl
      */
     public function setComponent()
     {
-        $insert = DBJson::getInsertDataFromInput($this->app->request->getBody(), Component::getDBConvert(), ',');
+        $insert = Component::decodeComponent($this->_app->request->getBody());
+        if (!is_array($insert))
+            $insert = array($insert);
+
         foreach ($insert as $in){
-            $columns = $in[0];
-            $value = $in[1];
+            $values = $in->getInsertData();
             eval("\$sql = \"".implode('\n',file("Sql/PostComponent.sql"))."\";");
-           $query_result = DBRequest::request($sql);
+            $query_result = DBRequest::request($sql)['content'];                
+           
+            if ($result['status']>=200 && $result['status']<=299){
+                $queryResult = Query::decodeQuery($result['content']);
+                
+                $obj = new Component();
+                $obj->setId($queryResult->getInsertId());
+            
+                $this->_app->response->setBody(Component::encodeComponent($obj)); 
+                $this->_app->response->setStatus(201);
+                if (isset($result['headers']['Content-Type']))
+                    header($result['headers']['Content-Type']);
+                
+            } else{
+                $this->_app->response->setStatus(451);
+                $this->_app->stop();
+            }
         }
-        $this->app->response->setStatus(200);
     }
     
     /**
@@ -202,7 +254,7 @@ class CControl
     public function getComponent($componentid)
     {
         eval("\$sql = \"".implode('\n',file("Sql/GetComponent.sql"))."\";");
-        $query_result = DBRequest::request($sql);
+        $query_result = DBRequest::request($sql)['content'];
         $data = DBJson::getRows($query_result);
         $components = DBJson::getResultObjectsByAttributes($data, Component::getDBPrimaryKey(), Component::getDBConvert());
         $this->app->response->setBody(Component::encodeComponent($components));
@@ -220,13 +272,13 @@ class CControl
     public function getComponentDefinitions()
     {
         eval("\$sql = \"".implode('\n',file("Sql/GetComponentDefinitions.sql"))."\";");
-        $query_result = DBRequest::request($sql);
+        $query_result = DBRequest::request($sql)['content'];
         $this->app->response->setStatus(200);
         $data = DBJson::getRows($query_result);
 
         $components = DBJson::getObjectsByAttributes($data, Component::getDBPrimaryKey(), Component::getDBConvert());
         $links = DBJson::getObjectsByAttributes($data, Link::getDBPrimaryKey(), Link::getDBConvert());
-        $result = DBJson::concatObjectLists($data, $components,Component::getDBPrimaryKey(),Component::getDBConvert()['CO_links'] ,$links,Link::getDBPrimaryKey());  
+        $result = DBJson::concatResultObjectLists($data, $components,Component::getDBPrimaryKey(),Component::getDBConvert()['CO_links'] ,$links,Link::getDBPrimaryKey());  
         $this->app->response->setBody(Component::encodeComponent($result));
     }
     
@@ -238,13 +290,13 @@ class CControl
     public function getComponentDefinition($componentid)
     {
         eval("\$sql = \"".implode('\n',file("Sql/GetComponentDefinition.sql"))."\";");
-        $query_result = DBRequest::request($sql);
+        $query_result = DBRequest::request($sql)['content'];
         $this->app->response->setStatus(200);
         $data = DBJson::getRows($query_result);
 
         $Components = DBJson::getObjectsByAttributes($data, Component::getDBPrimaryKey(), Component::getDBConvert());
         $Links = DBJson::getObjectsByAttributes($data, Link::getDBPrimaryKey(), Link::getDBConvert());
-        $result = DBJson::concatObjectLists($data, $Components,Component::getDBPrimaryKey(),Component::getDBConvert()['CO_links'] ,$Links,Link::getDBPrimaryKey());  
+        $result = DBJson::concatResultObjectLists($data, $Components,Component::getDBPrimaryKey(),Component::getDBConvert()['CO_links'] ,$Links,Link::getDBPrimaryKey());  
         if (count($result)>0)
             $this->app->response->setBody(Component::encodeComponent($result[0]));
     }
@@ -257,20 +309,20 @@ class CControl
     public function sendComponentDefinitions()
     {
         eval("\$sql = \"".implode('\n',file("Sql/GetComponentDefinitions.sql"))."\";");
-        $query_result = DBRequest::request($sql);
+        $query_result = DBRequest::request($sql)['content'];
        
 
         $data = DBJson::getRows($query_result);
 
         $Components = DBJson::getObjectsByAttributes($data, Component::getDBPrimaryKey(), Component::getDBConvert());
         $Links = DBJson::getObjectsByAttributes($data, Link::getDBPrimaryKey(), Link::getDBConvert());
-        $result = DBJson::concatObjectLists($data, $Components,Component::getDBPrimaryKey(),Component::getDBConvert()['CO_links'] ,$Links,Link::getDBPrimaryKey());  
+        $result = DBJson::concatResultObjectLists($data, $Components,Component::getDBPrimaryKey(),Component::getDBConvert()['CO_links'] ,$Links,Link::getDBPrimaryKey());  
         
         foreach ($result as $object){
             $object = Component::decodeComponent(Component::encodeComponent($object));
             $result = Request::post($object->getAddress()."/component",array(),Component::encodeComponent($object));
             echo $object->getAddress() . '--' . $object->getName() . '--' . $result['status'] . "\n";
-            echo $result['content'] . "\n";
+            //echo $result['content'] . "\n";
         }
         $this->app->response->setStatus(200);
     }

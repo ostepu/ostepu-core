@@ -1,2 +1,1 @@
-INSERT INTO componentlinkage ($columns)
-VALUES ($value)
+INSERT INTO ComponentLinkage SET $value

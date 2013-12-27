@@ -1,3 +1,3 @@
-DELETE
-FROM componentlinkage
-WHERE CL_id = '$linkid' or CL_name = '$linkid'
+DELETE FROM ComponentLinkage 
+WHERE
+    CL_id = '$linkid' or CL_name = '$linkid'
