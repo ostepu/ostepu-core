@@ -27,8 +27,51 @@ class Link extends Object implements JsonSerializable
         $this->id = $value;
     }
     
+    /**
+     * (description)
+     */
+    private $target = null;
     
+    /**
+     * (description)
+     */
+    public function getTarget()
+    {
+        return $this->target;
+    }
     
+    /**
+     * (description)
+     *
+     * @param $conf (description)
+     */
+    public function setTarget($value)
+    {
+        $this->target = $value;
+    }
+    
+    /**
+     * (description)
+     */
+    private $owner = null;
+    
+    /**
+     * (description)
+     */
+    public function getOwner()
+    {
+        return $this->owner;
+    }
+    
+    /**
+     * (description)
+     *
+     * @param $conf (description)
+     */
+    public function setOwner($value)
+    {
+        $this->owner = $value;
+    }
     
     private $name = null;
     
@@ -190,6 +233,24 @@ class Link extends Object implements JsonSerializable
     /**
      * (description)
      */
+    public function getInsertData(){
+        $values = "";
+        
+        if ($this->id != null) $this->addInsertData($values, 'ES_id', $this->id );
+        if ($this->name != null) $this->addInsertData($values, 'CL_name', $this->name );
+        if ($this->owner != null) $this->addInsertData($values, 'CO_id_owner', $this->owner );
+        if ($this->target != null) $this->addInsertData($values, 'CO_id_target', $this->target );
+        if ($this->relevanz != null) $this->addInsertData($values, 'CL_relevanz', $this->relevanz );
+        
+        if ($values != ""){
+            $values=substr($values,1);
+        }
+        return $values;
+    }
+    
+    /**
+     * (description)
+     */
     public static function getDbPrimaryKey()
     {
         return 'CL_id';
@@ -236,6 +297,8 @@ class Link extends Object implements JsonSerializable
             'address' => $this->address,
             'prefix' => $this->prefix,
             'complete' => $this->complete,
+            'target' => $this->target,
+            'owner' => $this->owner,
             'relevanz' => $this->relevanz
         );
     }

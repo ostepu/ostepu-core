@@ -232,6 +232,36 @@ class User extends Object implements JsonSerializable
     
     
     
+    
+    /**
+     * (description)
+     *
+     * type: string
+     */
+    private $password = null;
+    
+    /**
+     * (description)
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
+    
+    /**
+     * (description)
+     *
+     * @param $param (description)
+     */
+    public function setPassword($value)
+    {
+        $this->password = $value;
+    }
+    
+    
+    
+    
+    
     /**
      * (description)
      */
@@ -245,10 +275,32 @@ class User extends Object implements JsonSerializable
            'U_lastName' => 'lastName',
            'U_title' => 'title',
            'U_courses' => 'courses',
-           'U_flag' => 'flag'
+           'U_flag' => 'flag',
+           'U_password' => 'password'
         );
     }
+       
+    /**
+     * (description)
+     */
+    public function getInsertData(){
+        $values = "";
         
+        if ($this->id != null) $this->addInsertData($values, 'U_id', $this->id );
+        if ($this->userName != null) $this->addInsertData($values, 'U_username', $this->userName );
+        if ($this->email != null) $this->addInsertData($values, 'U_email', $this->email );
+        if ($this->firstName != null) $this->addInsertData($values, 'U_firstName', $this->firstName );
+        if ($this->lastName != null) $this->addInsertData($values, 'U_lastName', $this->lastName );
+        if ($this->title != null) $this->addInsertData($values, 'U_title', $this->title );
+        if ($this->flag != null) $this->addInsertData($values, 'U_flag', $this->flag );
+        if ($this->password != null) $this->addInsertData($values, 'U_password', $this->password );
+        
+        if ($values != ""){
+            $values=substr($values,1);
+        }
+        return $values;
+    }   
+    
     /**
      * (description)
      */
@@ -319,15 +371,6 @@ class User extends Object implements JsonSerializable
      */
     public function jsonSerialize() 
     {
-      /*  return array(
-            'id' => $this->id,
-            'userName' => $this->userName,
-            'email' => $this->email,
-            'firstName' => $this->firstName,
-            'lastName' => $this->lastName,
-            'title' => $this->title,
-            'courses' => $this->courses
-        );*/
          $list = array();
          if ($this->id!==null) $list['id'] = $this->id;
          if ($this->userName!==null) $list['userName'] = $this->userName;
@@ -337,6 +380,7 @@ class User extends Object implements JsonSerializable
          if ($this->title!==null) $list['title'] = $this->title;
          if ($this->courses!==array()) $list['courses'] = $this->courses;
          if ($this->flag!==null) $list['flag'] = $this->flag;
+         if ($this->password!==null) $list['password'] = $this->password; 
        return $list;
     }
 }
