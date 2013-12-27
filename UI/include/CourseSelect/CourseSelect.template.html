@@ -1,27 +1,20 @@
 <div class="content-element">
     <div class="content-header">
-        <div class="content-title left uppercase">Veranstaltungsübersicht</div>   
+        <div class="content-title left uppercase">Veranstaltungsübersicht</div>
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body left">
             <ol class="full-width-list decimal">
-                <li>
-                    Datenstrukturen und effiziente Algorithmen (Student)
-                    <a href="Student.php" class="body-option-color deny-button right">zur Veranstaltung</a>
-                </li>
-                <li>
-                    Konzepte der Modellierung und Mathematische Grundlagen der Informatik (Student)
-                    <a href="Student.php" class="body-option-color deny-button right">zur Veranstaltung</a>
-                </li>
-                <li>
-                    Datenbanken (Kontrolleur)
-                    <a href="Tutor.php" class="body-option-color deny-button right">zur Veranstaltung</a>
-                </li>
-                <li>
-                    Automaten und Berechenbarkeit (Dozent)
-                    <a href="Lecturer.php" class="body-option-color deny-button right">zur Veranstaltung</a>
-                </li>
+                <?php foreach ($courses as $course): ?>
+                    <li>
+                    <?php print $course['name'];
+                    print '<a href="Student.php?cid=' . $course['id'] . '&uid=';
+                    print $uid . '" class="body-option-color deny-button right">';
+                    print 'zur Veranstaltung</a>';
+                    ?>
+                    </li>
+                <?php endforeach; ?>
             </ol>
         </div>
     </div> <!-- end: content-body -->
