@@ -1,0 +1,1 @@
+INSERT INTO ApprovalCondition SET $values
