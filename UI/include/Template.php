@@ -1,6 +1,6 @@
 <?php
 include_once 'Helpers.php';
-include_once '../../Assistants/Logger.php';
+include_once '../Assistants/Logger.php';
 
 /**
 * Template class.
