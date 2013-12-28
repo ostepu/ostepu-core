@@ -1,3 +1,2 @@
-insert into User ($columns)
-values ( $values )
+insert into User SET $values
 

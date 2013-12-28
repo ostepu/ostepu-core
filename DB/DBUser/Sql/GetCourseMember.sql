@@ -19,4 +19,4 @@ FROM
         left join
     Course C ON (CS.C_id = C.C_id)
 WHERE
-    U.U_id = '$userid' or U.U_username = '$userid'
+    CS.C_id = '$courseid'
