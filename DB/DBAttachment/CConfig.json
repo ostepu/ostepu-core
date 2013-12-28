@@ -1,1 +1,1 @@
-{"id":"8","name":"DBAttachment","address":"localhost\/uebungsplattform\/DB\/DBAttachment\/DBAttachment.php","option":"","prefix":"attachment","links":[{"id":"8","name":"out","address":"localhost\/uebungsplattform\/DB\/DBQuery\/DBQuery.php","prefix":"query","complete":true,"target":"13","owner":"8","relevanz":""}]}
+{"id":"8","name":"DBAttachment","address":"localhost\/uebungsplattform\/DB\/DBAttachment","option":"","prefix":"attachment","links":[{"id":"8","name":"out","address":"localhost\/uebungsplattform\/DB\/DBQuery","prefix":null,"target":"13","owner":"8","relevanz":""}]}

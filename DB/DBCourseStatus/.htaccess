@@ -1,0 +1,2 @@
+RewriteEngine On
+RewriteRule ^ DBCourseStatus.php [QSA,L]
