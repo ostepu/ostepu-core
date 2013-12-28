@@ -322,7 +322,14 @@ class CControl
             $object = Component::decodeComponent(Component::encodeComponent($object));
             $result = Request::post($object->getAddress()."/component",array(),Component::encodeComponent($object));
             echo $object->getAddress() . '--' . $object->getName() . '--' . $result['status'] . "\n";
-            //echo $result['content'] . "\n";
+            
+            if ($result['status'] != 201){
+                $add = "";
+                if (isset($result['content']))
+                    $add = $result['content'];
+                    
+                Logger::Log($object->getAddress() . '--' . $object->getName() . '--' . $result['status'] . "\n" . $add . "\n",LogLevel::ERROR);
+            }
         }
         $this->app->response->setStatus(200);
     }
