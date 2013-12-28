@@ -170,33 +170,7 @@ class Link extends Object implements JsonSerializable
     {
         $this->prefix = $value;
     }
-    
-    
-    
-    
-    /**
-     * (description)
-     */
-    private $complete = null;
-    
-    /**
-     * (description)
-     */
-    public function getcomplete()
-    {
-        return $this->complete;
-    }
-    
-    /**
-     * (description)
-     *
-     * @param $conf (description)
-     */
-    public function setComplete($value)
-    {
-        $this->complete = $value;
-    }    
-    
+   
     
     
     
@@ -223,7 +197,6 @@ class Link extends Object implements JsonSerializable
            'CL_name' => 'name',
            'CL_address' => 'address',
            'CL_prefix' => 'prefix',
-           'CL_complete' => 'complete',
            'CO_id_owner' => 'owner',
            'CO_id_target' => 'target',
            'CL_relevanz' => 'relevanz'
@@ -296,7 +269,6 @@ class Link extends Object implements JsonSerializable
             'name' => $this->name,
             'address' => $this->address,
             'prefix' => $this->prefix,
-            'complete' => $this->complete,
             'target' => $this->target,
             'owner' => $this->owner,
             'relevanz' => $this->relevanz

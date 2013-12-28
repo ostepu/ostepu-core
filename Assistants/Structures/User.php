@@ -299,7 +299,23 @@ class User extends Object implements JsonSerializable
             $values=substr($values,1);
         }
         return $values;
-    }   
+    } 
+    
+    /**
+     * (description)
+     */
+    public function getCourseStatusInsertData(){
+        $values = "";
+                
+        if ($this->id != null) $this->addInsertData($values, 'U_id', $this->id );
+        if ($this->courses != array()) $this->addInsertData($values, 'CS_status', $this->courses[0]->getStatus() );
+        if ($this->courses != array() && $this->courses->getCourse() != null) $this->addInsertData($values, 'C_id', $this->courses[0]->getCourse()->getId() );
+        
+        if ($values != ""){
+            $values=substr($values,1);
+        }
+        return $values;
+    }
     
     /**
      * (description)

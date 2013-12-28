@@ -68,18 +68,32 @@ class CourseStatus extends Object implements JsonSerializable
     public static function getDbConvert()
     {
         return array(
-           'C_course' => 'course',
-           'C_name' => 'status'
+           'CS_course' => 'course',
+           'CS_status' => 'status'
         );
     }
     
     /**
      * (description)
      */
-    // TODO: hier fehlt noch der primary key/keys
+    public function getInsertData(){
+        $values = "";
+        
+        if ($this->status != null) $this->addInsertData($values, 'CS_status', $this->status );
+        if ($this->course != null) $this->addInsertData($values, 'C_id', $this->course->getId() );
+        
+        if ($values != ""){
+            $values=substr($values,1);
+        }
+        return $values;
+    }  
+    
+    /**
+     * (description)
+     */
     public static function getDbPrimaryKey()
     {
-        return 'C_id';
+        return array('C_id', 'U_id');
     }
     
     /**
@@ -134,6 +148,7 @@ class CourseStatus extends Object implements JsonSerializable
     {
         if ($decode)
             $data = json_decode($data);
+            
         if (is_array($data)){
             $result = array();
             foreach ($data AS $key => $value) {
