@@ -51,8 +51,8 @@ class Group extends Object implements JsonSerializable
      */  
     public static function getDBConvert(){
         return array(
-           'U_id_member' => 'members',
-           'U_id_leader' => 'leader',
+           'U_member' => 'members',
+           'U_leader' => 'leader',
            'ES_id' => 'sheetId',
         );
     }
@@ -77,7 +77,7 @@ class Group extends Object implements JsonSerializable
      * (description)
      */
     public static function getDBPrimaryKey(){
-        return array('C_id');
+        return array('U_id', 'ES_id');
     }
    
     /**
@@ -86,11 +86,11 @@ class Group extends Object implements JsonSerializable
     public function __construct($data=array()) {
         foreach ($data AS $key => $value) {
              if (isset($key)){
-                if (is_array($value)) {
-                    $sub = new User($value);
-                    $value = $sub;
+                if ($key == 'leader' || $key == 'members'){
+                    $this->{$key} = User::decodeUser($value, false);
                 }
-                $this->{$key} = $value;
+                else
+                    $this->{$key} = $value;
             }
         }
     }

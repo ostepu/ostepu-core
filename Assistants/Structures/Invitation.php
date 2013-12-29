@@ -79,7 +79,7 @@ class Invitation extends Object implements JsonSerializable
      */
     public static function getDbPrimaryKey()
     {
-        return 'U_id_leader';
+        return array('U_id','ES_id','U_id2');
     }
     
     /**
@@ -91,7 +91,7 @@ class Invitation extends Object implements JsonSerializable
     {
         foreach ($data AS $key => $value) {
              if (isset($key)){
-                if ($key == 'user' || $key == 'leader') {
+                if ($key == 'member' || $key == 'leader') {
                     $this->{$key} = User::decodeUser($value, false);
                 } else{
                     $this->{$key} = $value;
