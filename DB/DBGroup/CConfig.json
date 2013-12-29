@@ -1,1 +1,1 @@
-{"id":"22","name":"DBGroup","address":"localhost\/uebungsplattform\/DB\/DBGroup","option":"","prefix":"group","links":[{"id":"38","name":"out","address":"localhost\/uebungsplattform\/DB\/DBQuery","prefix":null,"target":"13","owner":"22","relevanz":""}]}
+{"id":"22","name":"DBGroup","address":"localhost\/uebungsplattform\/DB\/DBGroup","option":"","prefix":"group","links":[{"id":"38","name":"out","address":"localhost\/uebungsplattform\/DB\/DBQuery","prefix":"query","target":"13","owner":"22","relevanz":""}]}
