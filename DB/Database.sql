@@ -116,7 +116,7 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`Group` (
   `ES_id` INT NOT NULL,
   INDEX `fk_Group_User1_idx` (`U_id_member` ASC),
   INDEX `fk_Group_ExerciseSheet1_idx` (`ES_id` ASC),
-  PRIMARY KEY (`U_id_leader`, `U_id_member`, `ES_id`),
+  PRIMARY KEY (`U_id_leader`, `ES_id`),
   CONSTRAINT `fk_Group_User1`
     FOREIGN KEY (`U_id_member`)
     REFERENCES `uebungsplattform`.`User` (`U_id`)
@@ -145,7 +145,7 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`Invitation` (
   INDEX `fk_Invitation_User1_idx` (`U_id_member` ASC),
   INDEX `fk_Invitation_User2_idx` (`U_id_leader` ASC),
   INDEX `fk_Invitation_ExerciseSheet1_idx` (`ES_id` ASC),
-  PRIMARY KEY (`U_id_leader`, `U_id_member`, `ES_id`),
+  PRIMARY KEY (`U_id_leader`, `ES_id`, `U_id_member`),
   CONSTRAINT `fk_Invitation_User1`
     FOREIGN KEY (`U_id_member`)
     REFERENCES `uebungsplattform`.`User` (`U_id`)
@@ -544,8 +544,25 @@ COMMIT;
 START TRANSACTION;
 USE `uebungsplattform`;
 INSERT INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `ES_id`) VALUES (1, 1, 1);
-INSERT INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `ES_id`) VALUES (1, 2, 1);
-INSERT INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `ES_id`) VALUES (1, 3, 1);
+INSERT INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `ES_id`) VALUES (2, 1, 1);
+INSERT INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `ES_id`) VALUES (3, 1, 1);
+INSERT INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `ES_id`) VALUES (1, 1, 2);
+INSERT INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `ES_id`) VALUES (2, 2, 2);
+INSERT INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `ES_id`) VALUES (3, 3, 2);
+
+COMMIT;
+
+
+-- -----------------------------------------------------
+-- Data for table `uebungsplattform`.`Invitation`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `uebungsplattform`;
+INSERT INTO `uebungsplattform`.`Invitation` (`U_id_leader`, `U_id_member`, `ES_id`) VALUES (1, 2, 1);
+INSERT INTO `uebungsplattform`.`Invitation` (`U_id_leader`, `U_id_member`, `ES_id`) VALUES (1, 3, 1);
+INSERT INTO `uebungsplattform`.`Invitation` (`U_id_leader`, `U_id_member`, `ES_id`) VALUES (2, 1, 2);
+INSERT INTO `uebungsplattform`.`Invitation` (`U_id_leader`, `U_id_member`, `ES_id`) VALUES (3, 2, 2);
+INSERT INTO `uebungsplattform`.`Invitation` (`U_id_leader`, `U_id_member`, `ES_id`) VALUES (4, 2, 1);
 
 COMMIT;
 
@@ -657,32 +674,32 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `uebungsplattform`;
-INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (1, 'FSControl', 'localhost/uebungsplattform/FS/FSControl/FSControl.php', '');
-INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (2, 'FSFile', 'localhost/uebungsplattform/FS/FSFile/FSFile.php', '');
-INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (3, 'FSZip', 'localhost/uebungsplattform/FS/FSZip/FSZip.php', '');
-INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (4, 'DBControl', 'localhost/uebungsplattform/DB/DBControl/DBControl.php', '');
-INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (5, 'FSBinder', 'localhost/uebungsplattform/FS/FSBinder/FSBinder.php', '');
-INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (6, 'DBCourse', 'localhost/uebungsplattform/DB/DBCourse/DBCourse.php', '');
-INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (7, 'DBUser', 'localhost/uebungsplattform/DB/DBUser/DBUser.php', '');
-INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (8, 'DBAttachment', 'localhost/uebungsplattform/DB/DBAttachment/DBAttachment.php', '');
-INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (9, 'DBExercise', 'localhost/uebungsplattform/DB/DBExercise/DBExercise.php', '');
-INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (10, 'DBExerciseSheet', 'localhost/uebungsplattform/DB/DBExerciseSheet/DBExerciseSheet.php', '');
-INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (11, 'DBExerciseType', 'localhost/uebungsplattform/DB/DBExerciseType/DBExerciseType.php', '');
-INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (12, 'DBFile', 'localhost/uebungsplattform/DB/DBFile/DBFile.php', '');
-INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (13, 'DBQuery', 'localhost/uebungsplattform/DB/DBQuery/DBQuery.php', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (1, 'FSControl', 'localhost/uebungsplattform/FS/FSControl', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (2, 'FSFile', 'localhost/uebungsplattform/FS/FSFile', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (3, 'FSZip', 'localhost/uebungsplattform/FS/FSZip', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (4, 'DBControl', 'localhost/uebungsplattform/DB/DBControl', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (5, 'FSBinder', 'localhost/uebungsplattform/FS/FSBinder', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (6, 'DBCourse', 'localhost/uebungsplattform/DB/DBCourse', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (7, 'DBUser', 'localhost/uebungsplattform/DB/DBUser', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (8, 'DBAttachment', 'localhost/uebungsplattform/DB/DBAttachment', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (9, 'DBExercise', 'localhost/uebungsplattform/DB/DBExercise', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (10, 'DBExerciseSheet', 'localhost/uebungsplattform/DB/DBExerciseSheet', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (11, 'DBExerciseType', 'localhost/uebungsplattform/DB/DBExerciseType', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (12, 'DBFile', 'localhost/uebungsplattform/DB/DBFile', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (13, 'DBQuery', 'localhost/uebungsplattform/DB/DBQuery', '');
 INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (14, 'LController', 'localhost/uebungsplattform/logic/Controller/LController.php', '');
 INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (15, 'LCourse', 'localhost/uebungsplattform/logic/Course/course.php', '');
 INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (16, 'LGroup', 'localhost/uebungsplattform/logic/Group/Group.php', '');
 INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (17, 'LUser', 'localhost/uebungsplattform/logic/User/user.php', '');
-INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (18, 'DBCourseStatus', 'localhost/uebungsplattform/DB/DBCourseStatus/DBCourseStatus.php', '');
-INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (19, 'FSPdf', 'localhost/uebungsplattform/FS/FSPdf/FSPdf.php', '');
-INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (20, 'DBExternalId', 'localhost/uebungsplattform/DB/DBExternalId/DBExternalId.php', '');
-INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (21, 'DBApprovalCondition', 'localhost/uebungsplattform/DB/DBApprovalCondition/DBApprovalCondition.php', '');
-INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (22, 'DBGroup', 'localhost/uebungsplattform/DB/DBGroup/DBGroup.php', '');
-INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (23, 'DBInvitation', 'localhost/uebungsplattform/DB/DBInvitation/DBInvitation.php', '');
-INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (24, 'DBMarking', 'localhost/uebungsplattform/DB/DBMarking/DBMarking.php', '');
-INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (25, 'DBSession', 'localhost/uebungsplattform/DB/DBSession/DBSession.php', '');
-INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (26, 'DBSubmission', 'localhost/uebungsplattform/DB/DBSubmission/DBSubmission.php', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (18, 'DBCourseStatus', 'localhost/uebungsplattform/DB/DBCourseStatus', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (19, 'FSPdf', 'localhost/uebungsplattform/FS/FSPdf', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (20, 'DBExternalId', 'localhost/uebungsplattform/DB/DBExternalId', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (21, 'DBApprovalCondition', 'localhost/uebungsplattform/DB/DBApprovalCondition', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (22, 'DBGroup', 'localhost/uebungsplattform/DB/DBGroup', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (23, 'DBInvitation', 'localhost/uebungsplattform/DB/DBInvitation', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (24, 'DBMarking', 'localhost/uebungsplattform/DB/DBMarking', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (25, 'DBSession', 'localhost/uebungsplattform/DB/DBSession', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (26, 'DBSubmission', 'localhost/uebungsplattform/DB/DBSubmission', '');
 
 COMMIT;
 
