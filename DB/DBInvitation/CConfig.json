@@ -1,1 +1,1 @@
-{"id":"23","name":"DBInvitation","address":"localhost\/uebungsplattform\/DB\/DBInvitation","option":"","prefix":"invitation","links":[{"id":"39","name":"out","address":"localhost\/uebungsplattform\/DB\/DBQuery","prefix":null,"target":"13","owner":"23","relevanz":""}]}
+{"id":"23","name":"DBInvitation","address":"localhost\/uebungsplattform\/DB\/DBInvitation","option":"","prefix":"invitation","links":[{"id":"39","name":"out","address":"localhost\/uebungsplattform\/DB\/DBQuery","prefix":"query","target":"13","owner":"23","relevanz":""}]}
