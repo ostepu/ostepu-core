@@ -52,10 +52,19 @@ class DbJson
     public static function getObjectsByAttributes($data, $id, $attributes, $extension = "")
     {
         $res = array();
-        foreach ($data as $row) {       
+        foreach ($data as $row) { 
+            $key = "";
+            if (is_array($id)){
+                foreach ($id as $di){
+                    $key = $key . $row[$di.$extension] . ',';
+                }
+            } else{
+                $key = $row[$id.$extension];
+            }
+        //$row[$id.$extension]
             foreach ($attributes as $attrib => $value) {  
                 if (isset($row[$attrib.$extension])){          
-                    $res[$row[$id.$extension]][$value] =  $row[$attrib.$extension];
+                    $res[$key][$value] =  $row[$attrib.$extension];
                 }
             }
         }
@@ -165,21 +174,32 @@ class DbJson
         }
     
         foreach ($data as $rw){
-            if (isset($sec[$rw[$secKey.$extension]]) && true){
-                $prim[$rw[$primKey]][$primAttrib][$rw[$secKey.$extension]] = $sec[$rw[$secKey.$extension]];
+            $key = "";
+            if (is_array($primKey)){
+                foreach ($primKey as $di){
+                    $key = $key . $rw[$di] . ',';
+                }
+            } else{
+                $key = $rw[$primKey];
+            }
+            
+            if (isset($sec[$rw[$secKey.$extension]])){
+                $prim[$key][$primAttrib][$rw[$secKey.$extension]] = $sec[$rw[$secKey.$extension]];
             }
         }
-    
-       /* $arr = array();
-        foreach ($prim as $rw){
-            array_push($arr, $rw);
-        }*/
         
         foreach ($prim as &$row){
             $row[$primAttrib] = array_merge($row[$primAttrib]);
         }
         
-        $prim = array_merge($prim);
+       /* $arr = array();
+        foreach ($prim as $rw){
+            array_push($arr, array_merge( $rw));
+        }*/
+        
+    $prim = array_values($prim);
+        
+      //  
         return $prim;
     }
     
@@ -201,8 +221,17 @@ class DbJson
         }
     
         foreach ($data as $rw){
+            $key = "";
+            if (is_array($primKey)){
+                foreach ($primKey as $di){
+                    $key = $key . $rw[$di] . ',';
+                }
+            } else{
+                $key = $rw[$primKey];
+            }
+        
             if (isset($sec[$rw[$secKey.$extension]])){       
-                $prim[$rw[$primKey]][$primAttrib][$rw[$secKey.$extension]] =  $sec[$rw[$secKey.$extension]];
+                $prim[$key][$primAttrib][$rw[$secKey.$extension]] =  $sec[$rw[$secKey.$extension]];
             }
         }
     
@@ -227,8 +256,17 @@ class DbJson
         }
     
         foreach ($data as $rw){
+            $key = "";
+            if (is_array($primKey)){
+                foreach ($primKey as $di){
+                    $key = $key . $rw[$di] . ',';
+                }
+            } else{
+                $key = $rw[$primKey];
+            }
+            
             if (isset($sec[$rw[$secKey.$extension]])){        
-                $prim[$rw[$primKey]][$primAttrib][$rw[$secKey.$extension]] =  $sec[$rw[$secKey.$extension]];
+                $prim[$key][$primAttrib][$rw[$secKey.$extension]] =  $sec[$rw[$secKey.$extension]];
             }
         }
     
@@ -253,11 +291,19 @@ class DbJson
      */
     public static function concatObjectListsSingleResult($data, $prim, $primKey, $primAttrib, $sec, $secKey, $extension = "")
     {
-    
         foreach ($data as $rw){
+            $key = "";
+            if (is_array($primKey)){
+                foreach ($primKey as $di){
+                    $key = $key . $rw[$di] . ',';
+                }
+            } else{
+                $key = $rw[$primKey];
+            }
+
             if (isset($sec[$rw[$secKey.$extension]])){
-                if (!isset($prim[$rw[$primKey]][$primAttrib]))
-                    $prim[$rw[$primKey]][$primAttrib] = $sec[$rw[$secKey.$extension]];
+                if (!isset($prim[$key][$primAttrib]))
+                    $prim[$key][$primAttrib] = $sec[$rw[$secKey.$extension]];
             }
         }
    
