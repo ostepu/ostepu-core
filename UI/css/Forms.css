@@ -31,8 +31,8 @@
 .checkbox-container {
     border: 2px solid #ccc;
     padding: 10px;
-    width: 100px; 
-    height: 100px; 
+    width: 100px;
+    height: 100px;
     overflow-y: scroll;
 }
 

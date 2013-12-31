@@ -3,7 +3,7 @@
         <div class="content-title left uppercase">Manuelle Zuweisung</div>
         <div class="info-color bold right">
             <a href="#">zu ausgewählter Gruppe hinzufügen</a>
-        </div>   
+        </div>
     </div>
 
     <div class="content-body-wrapper">
@@ -11,7 +11,7 @@
             <?php foreach ($tutorAssignments as $tutorAssignment): ?>
                 <div class="tutor-assign-element left">
                     <div class="tutor-assign-element-title bold">
-                        <input type="radio" name="tutor-assign-radio" value="Unzugeordnet" checked="true" /> 
+                        <input type="radio" name="tutor-assign-radio" value="Unzugeordnet" checked="true" />
                         <?php print $tutorAssignment['tutor']['firstName']; ?>
                         <?php print " "; ?>
                         <?php print $tutorAssignment['tutor']['lastName']; ?>
@@ -26,7 +26,7 @@
                         <?php endforeach; ?>
                     </div>
                 </div>
-            <?php endforeach; ?> 
+            <?php endforeach; ?>
         </div>
     </div> <!-- end: content-body-wrapper -->
 </div> <!-- end: content-element -->

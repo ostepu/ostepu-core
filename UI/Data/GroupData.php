@@ -106,7 +106,7 @@ $users = array(
 $invitations = array();
 $invitationCount = rand(0, 3);
 
-for ($i=0; $i < $invitationCount; $i++) { 
+for ($i=0; $i < $invitationCount; $i++) {
     $userIndex = rand(0, count($users) - 1);
     $leaderIndex = rand(0, count($users) - 1);
     $sheetID = rand(1,100);
@@ -121,7 +121,7 @@ for ($i=0; $i < $invitationCount; $i++) {
 $members = array();
 $memberCount = rand(1,5);
 
-for ($i=0; $i < $memberCount; $i++) { 
+for ($i=0; $i < $memberCount; $i++) {
     $userIndex = rand(0, count($users) - 1);
 
     $members[] = $users[$userIndex];

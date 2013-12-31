@@ -1,8 +1,8 @@
 <?php
-/** 
+/**
  * @file Helpers.php
  * %A collection of helper methods that can be used by classes
- */ 
+ */
 
 /**
  * Remove a value fom an array
@@ -70,7 +70,7 @@ function http_post_data($url, $data)
     curl_setopt($c, CURLOPT_POSTFIELDS, $data);
     curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
 
-    $retData = curl_exec($c); 
+    $retData = curl_exec($c);
     curl_close($c);
 
     return $retData;
@@ -85,7 +85,7 @@ function http_put_data($url, $data)
     curl_setopt($c, CURLOPT_CUSTOMREQUEST, 'PUT');
     curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
 
-    $retData = curl_exec($c); 
+    $retData = curl_exec($c);
     curl_close($c);
 
     return $retData;
@@ -99,7 +99,7 @@ function http_delete($url)
     curl_setopt($c, CURLOPT_CUSTOMREQUEST, 'DELETE');
     curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
 
-    $retData = curl_exec($c); 
+    $retData = curl_exec($c);
     curl_close($c);
 
     return $retData;

@@ -3,13 +3,13 @@
         <div class="content-title left uppercase">Backup laden</div>
         <div class="info-color bold right">
             <a href="#">laden</a>
-        </div>   
+        </div>
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body left">
-            <label class="form-field left label bold" for="createBackup">Backup auswählen:</label> 
-            <select class="form-field text-input" name="createBackup" id="createBackup"> 
+            <label class="form-field left label bold" for="createBackup">Backup auswählen:</label>
+            <select class="form-field text-input" name="createBackup" id="createBackup">
                 <?php
                 foreach ($backups as $backup):
                 ?>
@@ -17,7 +17,7 @@
                 <?php print $backup['date']; ?>
                 </option>
                 <?php endforeach; ?>
-            </select>  
+            </select>
         </div>
     </div> <!-- end: content-body -->
 </div> <!-- end: content-wrapper -->

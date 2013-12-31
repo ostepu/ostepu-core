@@ -7,7 +7,7 @@ include_once 'include/Template.php';
 $h = new Header("Datenstrukturen",
                 "",
                 "Florian Lücke",
-                "211221492", 
+                "211221492",
                 "75%");
 
 $h->setBackURL("Student.php")

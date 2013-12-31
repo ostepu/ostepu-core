@@ -81,7 +81,7 @@ $user = array(
 
 $userCount = rand(1, 5);
 
-for ($i=0; $i < $userCount; $i++) { 
+for ($i=0; $i < $userCount; $i++) {
     $users[] = $user[rand(0, count($user) - 1)];
 }
 
