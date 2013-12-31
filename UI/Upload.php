@@ -15,7 +15,7 @@ $h->setBackURL('index.php');
  */
 $h->setPoints(75);
 
-$t = Template::WithTemplateFile('include/Upload/EerciseUpload.template.html');
+$t = Template::WithTemplateFile('include/Upload/Upload.template.html');
 
 $w = new HTMLWrapper($h, $t);
 $w->set_config_file('include/configs/config_upload_exercise.json');
