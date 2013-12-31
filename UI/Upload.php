@@ -2,7 +2,18 @@
 include_once 'include/Header/Header.php';
 include_once 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
+?>
 
+<?php
+    if (isset($_POST['sheetID'])) {
+        //Logger::Log($_POST, LogLevel::INFO);
+        header("Location: Upload.php");
+    } else {
+        Logger::Log("No Sheet Data", LogLevel::INFO);
+    }
+?>
+
+<?php
 // construct a new header
 $h = new Header("Datenstrukturen",
                 "",
