@@ -1,0 +1,2 @@
+RewriteEngine On
+RewriteRule ^ DBSession.php [QSA,L]

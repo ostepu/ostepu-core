@@ -14,7 +14,6 @@ class DbJson
     /**
      * (description)
      *
-     * @param $app (description)
      * @param $object (description)
      */
     public static function getJson($object)
@@ -32,7 +31,7 @@ class DbJson
     /**
      * (description)
      *
-     * @param $object (description)
+     * @param $data (description)
      */
     public static function getRows($data)
     {
@@ -50,13 +49,13 @@ class DbJson
      * @param $object (description)
      * @param $object (description)
      */
-    public static function getObjectsByAttributes($data, $id, $attributes)
+    public static function getObjectsByAttributes($data, $id, $attributes, $extension = "")
     {
         $res = array();
         foreach ($data as $row) {       
             foreach ($attributes as $attrib => $value) {  
-                if (isset($row[$attrib])){          
-                    $res[$row[$id]][$value] =  $row[$attrib];
+                if (isset($row[$attrib.$extension])){          
+                    $res[$row[$id.$extension]][$value] =  $row[$attrib.$extension];
                 }
             }
         }
@@ -70,14 +69,14 @@ class DbJson
      * @param $object (description)
      * @param $object (description)
      */
-    public static function getResultObjectsByAttributes($data, $id, $attributes)
+    public static function getResultObjectsByAttributes($data, $id, $attributes, $extension = "")
     {
         $res = array();
         foreach ($data as $row) {  
             $temp = NULL;
             foreach ($attributes as $attrib => $value) {  
-                if (isset($row[$attrib])){              
-                    $temp[$value] =  $row[$attrib];
+                if (isset($row[$attrib.$extension])){              
+                    $temp[$value] =  $row[$attrib.$extension];
                 }
             }
             array_push($res,$temp);
@@ -151,26 +150,115 @@ class DbJson
      * (description)
      *
      * @param $object (description)
+     * @param $param (description)
+     * @param $param (description)
+     * @param $param (description)
+     * @param $param (description)
+     * @param $param (description)
      */
-    public static function concatObjectLists($data, $prim, $primKey, $primAttrib, $sec, $secKey)
+    public static function concatResultObjectLists($data, $prim, $primKey, $primAttrib, $sec, $secKey, $extension = "")
     {
-    foreach ($prim as &$row){
-        $row[$primAttrib] = array();
-    }
-    
-    foreach ($data as $rw){
-        if (isset($sec[$rw[$secKey]])){
-            array_push($prim[$rw[$primKey]][$primAttrib], $sec[$rw[$secKey]]);
+        foreach ($prim as &$row){
+            $row[$primAttrib] = array();
         }
+    
+        foreach ($data as $rw){
+            if (isset($sec[$rw[$secKey.$extension]])){
+                array_push($prim[$rw[$primKey]][$primAttrib], $sec[$rw[$secKey.$extension]]);
+            }
+        }
+    
+        $arr = array();
+        foreach ($prim as $rw){
+            array_push($arr, $rw);
+        }
+    
+        return $arr;
     }
     
-    $arr = array();
-    foreach ($prim as $rw){
-        array_push($arr, $rw);
+    /**
+     * (description)
+     *
+     * @param $object (description)
+     * @param $param (description)
+     * @param $param (description)
+     * @param $param (description)
+     * @param $param (description)
+     * @param $param (description)
+     * @param $param (description)
+     */
+    public static function concatObjectLists($data, $prim, $primKey, $primAttrib, $sec, $secKey, $extension = "")
+    {
+        foreach ($prim as &$row){
+            $row[$primAttrib] = array();
+        }
+    
+        foreach ($data as $rw){
+            if (isset($sec[$rw[$secKey.$extension]])){
+                if (!isset($prim[$rw[$primKey]][$primAttrib]))
+                    $prim[$rw[$primKey]][$primAttrib] = array();
+        
+            $prim[$rw[$primKey]][$primAttrib][$rw[$secKey.$extension]] =  $sec[$rw[$secKey.$extension]];
+            }
+        }
+    
+        return $prim;
     }
     
-    return $arr;
+        /**
+     * (description)
+     *
+     * @param $object (description)
+     * @param $param (description)
+     * @param $param (description)
+     * @param $param (description)
+     * @param $param (description)
+     * @param $param (description)
+     * @param $param (description)
+     */
+    public static function concatObjectListsSingleResult($data, $prim, $primKey, $primAttrib, $sec, $secKey, $extension = "")
+    {
+    
+        foreach ($data as $rw){
+            if (isset($sec[$rw[$secKey]])){
+                if (!isset($prim[$rw[$primKey]][$primAttrib]))
+                    $prim[$rw[$primKey]][$primAttrib] =  $sec[$rw[$secKey]];
+            }
+        }
+   
+        return $prim;
     }
-
+    
+    /**
+     * (description)
+     *
+     * @param $object (description)
+     * @param $param (description)
+     * @param $param (description)
+     * @param $param (description)
+     * @param $param (description)
+     * @param $param (description)
+     * @param $param (description)
+     */
+    public static function concatResultObjectListAsArray($data, $prim, $primKey, $primAttrib, $sec, $secKey, $extension = "")
+    {
+        foreach ($prim as &$row){
+            $row[$primAttrib] = array();
+        }
+    
+        foreach ($data as $rw){
+            if (isset($sec[$rw[$secKey]])){
+                if (!in_array($rw[$secKey], $prim[$rw[$primKey]][$primAttrib]))
+                    array_push($prim[$rw[$primKey]][$primAttrib], $rw[$secKey]);
+            }
+        }
+    
+        $arr = array();
+        foreach ($prim as $rw){
+            array_push($arr, $rw);
+        }
+        
+        return $arr;
+    }
 }
 ?>

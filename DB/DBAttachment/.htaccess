@@ -1,0 +1,2 @@
+RewriteEngine On
+RewriteRule ^ DBAttachment.php [QSA,L]

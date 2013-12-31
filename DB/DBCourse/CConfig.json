@@ -1,1 +1,1 @@
-{"id":"6","name":"DBCourse","address":"localhost\/uebungsplattform\/DB\/DBCourse\/DBCourse.php","option":"","prefix":"course","links":[{"id":"6","name":"out","address":"localhost\/uebungsplattform\/DB\/DBQuery\/DBQuery.php","prefix":"query","complete":true,"relevanz":""}]}
+{"id":"6","name":"DBCourse","address":"localhost\/uebungsplattform\/DB\/DBCourse","option":"","prefix":"course","links":[{"id":"6","name":"out","address":"localhost\/uebungsplattform\/DB\/DBQuery","prefix":null,"target":"13","owner":"6","relevanz":""}]}
