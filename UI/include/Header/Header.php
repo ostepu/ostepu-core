@@ -1,9 +1,23 @@
 <?php
+/**
+ * @file Header.php
+ * Contains the Header class.
+ */
 
 include_once 'include/Helpers.php';
 
+/**
+ * @class Header
+ * Represents the page header
+ *
+ * @todo Make the class more convenient to use, e.g. make it easier to display
+ * different data
+ */
 class Header
 {
+    /**
+     * Strings that should be displayed in the header
+     */
     private $title;
     private $extraInfo;
     private $username;
@@ -12,7 +26,16 @@ class Header
     private $backURL = "index.php";
     private $backTitle = "Veranstaltung wechseln";
 
-    function __construct($title,$extraInfo, $username,
+    /**
+     * Contruct a page header.
+     * Place
+     *
+     * @param string $title The title that should be displayed in the header. (left side)
+     * @param string $extraInfo Additional info that should be displayed in the header
+     * @param string $username The name of the user that sees the page
+     * @param string $userid The user's user-ID
+     */
+    function __construct($title, $extraInfo, $username,
                          $userid)
     {
         $this->title = $title;
@@ -21,7 +44,10 @@ class Header
         $this->userid = $userid;
     }
 
-    public function show() 
+    /**
+     * Print the header to the page
+     */
+    public function show()
     {
         $prototypeHeader = file_get_contents('include/Header/Header.template.html');
 
@@ -34,6 +60,9 @@ class Header
                                        $prototypeHeader);
 
         if (!is_null($this->points)) {
+            /**
+             * @todo This should be moved outside the header class
+             */
             $extraInfoTemplate = file_get_contents('include/Header/Extra-Info-Student.template.html');
 
             $extraInfoTemplate = str_replace("%points%",
@@ -44,8 +73,8 @@ class Header
         }
 
         $prototypeHeader = str_replace('%extraInfo%',
-                                           $extraInfoTemplate,
-                                           $prototypeHeader);
+                                       $extraInfoTemplate,
+                                       $prototypeHeader);
 
         $prototypeHeader = str_replace("%userid%",
                                        $this->userid,
@@ -66,17 +95,17 @@ class Header
     /**
      * Gets the value of backURL.
      *
-     * @return mixed
+     * @return string
      */
     public function getBackURL()
     {
         return $this->backURL;
     }
-    
+
     /**
      * Sets the value of backURL.
      *
-     * @param mixed $backURL the back u r l
+     * @param string $backURL the back u r l
      *
      * @return self
      */
@@ -90,17 +119,17 @@ class Header
     /**
      * Gets the value of backTitle.
      *
-     * @return mixed
+     * @return string
      */
     public function getBackTitle()
     {
         return $this->backTitle;
     }
-    
+
     /**
      * Sets the value of backTitle.
      *
-     * @param mixed $backTitle the back title
+     * @param string $backTitle the back title
      *
      * @return self
      */
@@ -114,7 +143,7 @@ class Header
     /**
      * Sets the value of points.
      *
-     * @param mixed $points the points
+     * @param string $points the points
      *
      * @return self
      */
