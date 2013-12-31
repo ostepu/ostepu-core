@@ -11,6 +11,8 @@
     ],
     "javascripts":[
         "javascript/retina.js",
-        "javascript/jquery-2.0.3.min.js"
+        "javascript/jquery-2.0.3.min.js",
+        "javascript/interactive.js",
+        "javascript/upload.js"
     ]
 }
