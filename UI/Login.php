@@ -2,7 +2,22 @@
 include 'include/Header/Header.php';
 include 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
+?>
 
+<?php
+    if (isset($_POST['action'])) {
+        Logger::Log($_POST, LogLevel::INFO);
+        header("Location: Index.php");
+    } elseif (isset($_GET['action'])) {
+        if ($_GET['action'] == "logout") {
+            Logger::Log("Should log-out user now", LogLevel::INFO);
+        }
+    } else {
+        Logger::Log("No Login Data", LogLevel::INFO);
+    }
+?>
+
+<?php
 // construct a new Header
 $h = new Header("Übungsplattform",
                 "",
