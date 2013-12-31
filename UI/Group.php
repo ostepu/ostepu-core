@@ -2,12 +2,23 @@
 include 'include/Header/Header.php';
 include 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
+?>
 
+<?php
+    if (isset($_POST['action'])) {
+        Logger::Log($_POST, LogLevel::INFO);
+        header("Location: Group.php");
+    } else {
+        Logger::Log("No Group Data", LogLevel::INFO);
+    }
+?>
+
+<?php
 // construct a new Header
 $h = new Header("Datenstrukturen",
                 "",
                 "Florian Lücke",
-                "211221492", 
+                "211221492",
                 "75%");
 
 $h->setBackURL("Student.php")
@@ -36,7 +47,7 @@ $invitations->bind($invitation);
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $manageGroup, $createGroup, $invitations);
-$w->set_config_file('include/configs/config_default.json');
+$w->set_config_file('include/configs/config_group.json');
 $w->show();
 ?>
 

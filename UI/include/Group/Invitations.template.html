@@ -1,25 +1,30 @@
+<form action="Group.php" method="POST">
+<input type="hidden" name="action" value="acceptdeny">
 <div class="content-element">
     <div class="content-header">
-        <div class="content-title left">Einladungen</div>     
+        <div class="content-title left">Einladungen</div>
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body left">
             <ol class="exercise-list invitation-list">
-                <?php foreach ($invitations as $invitation): ?>
-                    <li >
-                        <?php print $invitation['leader']['firstName']; ?>
-                        <?php print " "; ?>
-                        <?php print $invitation['leader']['lastName']; ?>
-                        <a href="#" class="body-option-color deny-button right">
-                            ablehnen
-                        </a>
-                        <a href="#" class="body-option-color accept-button right">
-                            annehmen
-                        </a>
-                    </li>
-                <?php endforeach; ?>
+                <?php
+                foreach ($invitations as $invitation):
+                    print "<li>\n";
+                    print $invitation['leader']['firstName'];
+                    print " ";
+                    print $invitation['leader']['lastName'];
+                    print '<button name="accept" class="right" style="height: 10px;"  value="';
+                    print $invitation['leader']['userID'];
+                    print "\">\nablehnen\n</button>\n";
+                    print '<button name="deny" class="right" style="height: 10px;" value="';
+                    print $invitation['leader']['userID'];
+                    print "\">\nannehmen\n</button>\n";;
+                    print "</li>\n";
+                endforeach;
+                ?>
             </ol>
         </div>
     </div> <!-- end: content-body-wrapper -->
 </div> <!-- end: content-element -->
+</form>
