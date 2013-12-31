@@ -3,7 +3,7 @@
 <div class="content-element">
     <div class="content-header">
         <div class="content-title left">Gruppe verwalten</div>
-        <button name="action" value="leave" class="right critical-color" style="height: 10px">verlassen</button>
+        <button name="action" value="leave" class="right text-button critical-color bold">verlassen</button>
     </div>
 
     <div class="content-body-wrapper">
@@ -11,10 +11,10 @@
             <ol class="exercise-list invitation-list">
                 <li class="bold">
                     <?php print $leader['firstName'] . " " . $leader['lastName'];
-                        print '(Gruppenführer)';
+                        print ' (Gruppenführer)';
                         print '<button name="kick" value="';
                         print $leader['userID'];
-                        print '" class="right" style="height: 10px">hinauswerfen</button>'. "\n";
+                        print '" class="right text-button body-option-color">hinauswerfen</button>'. "\n";
                     ?>
                 </li>
                 <?php foreach ($members as $member):
@@ -22,7 +22,7 @@
                     print $member['firstName'] . " " . $member['lastName'];
                     print '<button name="kick" value="';
                     print $member['userID'];
-                    print '" class="right" style="height: 10px">hinauswerfen</button>' . "\n";
+                    print '" class="right text-button body-option-color">hinauswerfen</button>' . "\n";
                     print "</li>\n";
                 endforeach; ?>
             </ol>
