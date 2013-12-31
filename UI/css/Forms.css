@@ -56,3 +56,20 @@ li .text-input {
 li .button {
     margin-bottom: 2px;
 }
+
+.submit {
+    font-size: 100%;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    background-color: white;
+    text-align: left;
+    width: 960px;
+    color: #6f6f6f;
+    cursor: pointer;
+    margin-bottom: 30px;
+}
+
+.submit > .content-element {
+    margin-bottom: 0;
+}
