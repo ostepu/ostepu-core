@@ -8,38 +8,34 @@
 </div> <!-- end: content-wrapper -->
 
 <form action="Upload.php" method="POST" enctype="multipart/form-data">
-    <input type="hidden" name="sheetID" value="1">
+    <?php print '<input type="hidden" name="sheetID" value="' . $sheetID . '">'; ?>
 
-    <div class="content-element">
-        <div class="content-header">
-            <div class="content-title left uppercase">
-                Aufgabe 1
+    <?php foreach($exercises as $key => $exercise): ?>
+        <div class="content-element">
+            <div class="content-header">
+                <div class="content-title left uppercase">
+                    <?php print "Aufgabe " . ($key + 1); ?>
+                </div>
             </div>
-        </div>
-        <div class="content-body-wrapper">
-            <div class="content-body left">
-                <label class="short left label bold" for="studentComment">Kommentar:</label>
-                <textarea class="form-field text-input" rows="5"></textarea>
+            <div class="content-body-wrapper">
+                <div class="content-body left">
+                    <label class="short left label bold" for="studentComment">Kommentar:</label>
+                    <?php $name = "exercises[{$key}]";
+                    print '<textarea name="' . $name;
+                    print '[\'comment\']" class="form-field text-input" rows="5">';
+                    ?>
+                </textarea>
                 <label class="short left label bold new-line" for="studentComment">Datei:</label>
-                <input type="file" class="button left" name="files">
+                <?php
+                print '<input type="file" class="button left" name="';
+                print $name . '[\'file\']">';
+                print '<input type="hidden" name="' . $name;
+                $exerciseID = $exercise['exerciseID'];
+                print '[\'exerciseID\']" value="' . $exerciseID . '">';
+                ?>
+                </div>
             </div>
         </div>
-    </div>
-
-    <div class="content-element">
-        <div class="content-header">
-            <div class="content-title left uppercase">
-                Aufgabe 2
-            </div>
-        </div>
-        <div class="content-body-wrapper">
-            <div class="content-body left">
-                <label class="short left label bold" for="studentComment">Kommentar:</label>
-                <textarea class="form-field text-input" rows="5"></textarea>
-                <label class="short left label bold new-line" for="studentComment">Datei:</label>
-                <input type="file" class="button left" name="files">
-            </div>
-        </div>
-    </div>
+    <?php endforeach; ?>
     <input type="submit" style="display: none;" id="submitButton">
 </form>
