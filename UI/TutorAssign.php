@@ -5,12 +5,12 @@ include_once 'include/Template.php';
 ?>
 
 <?php
-    if (isset($_POST['action'])) {
-        Logger::Log($_POST, LogLevel::INFO);
-        header("Location: TutorAssign.php");
-    } else {
-        Logger::Log("No Assignment Data", LogLevel::INFO);
-    }
+if (isset($_POST['action'])) {
+    Logger::Log($_POST, LogLevel::INFO);
+    header("Location: TutorAssign.php");
+} else {
+    Logger::Log("No Assignment Data", LogLevel::INFO);
+}
 ?>
 
 <?php

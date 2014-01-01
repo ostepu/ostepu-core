@@ -1,32 +1,32 @@
 <form action="Group.php" method="POST" name="invitations">
-<input type="hidden" name="action" value="manage">
-<div class="content-element">
-    <div class="content-header">
-        <div class="content-title left">Gruppe verwalten</div>
-        <button name="action" value="leave" class="right text-button critical-color bold">verlassen</button>
-    </div>
+    <input type="hidden" name="action" value="manage">
+    <div class="content-element">
+        <div class="content-header">
+            <div class="content-title left">Gruppe verwalten</div>
+            <button name="action" value="leave" class="right text-button critical-color bold">verlassen</button>
+        </div>
 
-    <div class="content-body-wrapper">
-        <div class="content-body left">
-            <ol class="exercise-list invitation-list">
-                <li class="bold">
-                    <?php print $leader['firstName'] . " " . $leader['lastName'];
+        <div class="content-body-wrapper">
+            <div class="content-body left">
+                <ol class="exercise-list invitation-list">
+                    <li class="bold">
+                        <?php print $leader['firstName'] . " " . $leader['lastName'];
                         print ' (Gruppenführer)';
                         print '<button name="kick" value="';
                         print $leader['userID'];
                         print '" class="right text-button body-option-color">hinauswerfen</button>'. "\n";
-                    ?>
-                </li>
-                <?php foreach ($members as $member):
+                        ?>
+                    </li>
+                    <?php foreach ($members as $member):
                     print "<li>\n";
                     print $member['firstName'] . " " . $member['lastName'];
                     print '<button name="kick" value="';
                     print $member['userID'];
                     print '" class="right text-button body-option-color">hinauswerfen</button>' . "\n";
                     print "</li>\n";
-                endforeach; ?>
-            </ol>
-        </div>
-    </div> <!-- end: content-body-wrapper -->
-</div> <!-- end: content-element -->
+                    endforeach; ?>
+                </ol>
+            </div>
+        </div> <!-- end: content-body-wrapper -->
+    </div> <!-- end: content-element -->
 </form>
