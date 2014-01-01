@@ -6,10 +6,16 @@ include_once 'include/Template.php';
 
 <?php
     if (isset($_POST['action'])) {
+        /**
+         * @todo Set a cookie for the user, to mark him as logged in.
+         */
         Logger::Log($_POST, LogLevel::INFO);
         header("Location: Index.php");
     } elseif (isset($_GET['action'])) {
         if ($_GET['action'] == "logout") {
+            /**
+             * @todo Remove the cookie that indicates, that the user is logged in.
+             */
             Logger::Log("Should log-out user now", LogLevel::INFO);
         }
     } else {
