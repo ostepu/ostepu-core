@@ -142,8 +142,6 @@ class Course extends Object implements JsonSerializable
     }
     
     
-    
-    
     /**
      * (description)
      */  
@@ -156,6 +154,23 @@ class Course extends Object implements JsonSerializable
            'C_defaultGroupSize' => 'defaultGroupSize',
            'C_exerciseSheets' => 'exerciseSheets'
         );
+    }
+    
+    /**
+     * (description)
+     */
+    public function getInsertData(){
+        $values = "";
+        
+        if ($this->id != null) $this->addInsertData($values, 'C_id', $this->id );
+        if ($this->name != null) $this->addInsertData($values, 'C_name', $this->name );
+        if ($this->semester != null) $this->addInsertData($values, 'C_semester', $this->semester );
+        if ($this->defaultGroupSize != null) $this->addInsertData($values, 'C_defaultGroupSize', $this->defaultGroupSize );
+        
+        if ($values != ""){
+            $values=substr($values,1);
+        }
+        return $values;
     }
     
     /**
@@ -176,7 +191,7 @@ class Course extends Object implements JsonSerializable
         foreach ($data AS $key => $value) {
              if (isset($key)){
                 if (is_array($value)) {
-                    $sub = ExerciseSheet::decodeExerciseSheet($value);
+                    $sub = ExerciseSheet::decodeExerciseSheet($value, false);
                     $value = $sub;
                 }
                 $this->{$key} = $value;

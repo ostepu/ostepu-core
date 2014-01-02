@@ -9,7 +9,7 @@ class Group extends Object implements JsonSerializable
      * 
      * type: User[]
      */
-    private $members;
+    private $members = array();
     public function getMembers(){
         return $this->members;
     }
@@ -22,7 +22,7 @@ class Group extends Object implements JsonSerializable
      *
      * type: User
      */
-    private $leader;
+    private $leader = null;
     public function getLeader(){
         return $this->leader;
     }
@@ -35,7 +35,7 @@ class Group extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $sheetId;
+    private $sheetId = null;
     public function getSheetId(){
         return $this->sheetId;
     }
@@ -44,35 +44,67 @@ class Group extends Object implements JsonSerializable
     }
     
     
+    
+    
+    /**
+     * (description)
+     */  
     public static function getDBConvert(){
         return array(
-           'U_id_member' => 'members',
-           'U_id_leader' => 'leaderId',
+           'U_member' => 'members',
+           'U_leader' => 'leader',
            'ES_id' => 'sheetId',
         );
     }
     
+    /**
+     * (description)
+     */
+    public function getInsertData(){
+        $values = "";
+        
+        if ($this->sheetId != null) $this->addInsertData($values, 'ES_id', $this->sheetId );
+        if ($this->leader != null) $this->addInsertData($values, 'U_id_leader', $this->leader->getId());
+        if ($this->members != array()) $this->addInsertData($values, 'U_id_member', $this->member[0]->getId());
+        
+        if ($values != ""){
+            $values=substr($values,1);
+        }
+        return $values;
+    } 
+    
+    /**
+     * (description)
+     */
     public static function getDBPrimaryKey(){
-        return array('C_id');
+        return array('U_id', 'ES_id');
     }
    
-   
+    /**
+     * (description)
+     */
     public function __construct($data=array()) {
         foreach ($data AS $key => $value) {
              if (isset($key)){
-                if (is_array($value)) {
-                    $sub = new User($value);
-                    $value = $sub;
+                if ($key == 'leader' || $key == 'members'){
+                    $this->{$key} = User::decodeUser($value, false);
                 }
-                $this->{$key} = $value;
+                else
+                    $this->{$key} = $value;
             }
         }
     }
     
+    /**
+     * (description)
+     */
     public static function encodeGroup($data){
         return json_encode($data);
     }
     
+    /**
+     * (description)
+     */
     public static function decodeGroup($data){
         $data = json_decode($data);
         if (is_array($data)){
@@ -86,6 +118,9 @@ class Group extends Object implements JsonSerializable
             return new Group($data);
     }
     
+    /**
+     * (description)
+     */
     public function jsonSerialize() {
         return array(
             'members' => $this->members,

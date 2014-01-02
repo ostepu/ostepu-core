@@ -28,13 +28,21 @@ class DBRequest
         }*/   
 
         mysql_select_db(DBRequest::$config['DB']['db_name']);
-        $sql_statement = explode("---",$sqlStatement);
-        foreach ($sql_statement as $statement){
-        $query_result = mysql_query($statement, $dbconn);
+      //  $sql_statement = explode("---",$sqlStatement);
+        //foreach ($sql_statement as $statement){
+        $query_result['content'] = mysql_query($sqlStatement, $dbconn);
+        $query_result['affectedRows'] = mysql_affected_rows();
+        $query_result['insertId'] = mysql_insert_id();
+        $query_result['errno'] = mysql_errno();
+        
+        if (gettype($query_result['content'])!='boolean'){
+            $query_result['numRows'] = mysql_num_rows($query_result['content']);
+        }
+        
          /*   if (!$query_result){
                 die('Keine Verbindung möglich: ' . mysql_error());
             }*/
-        }
+       // }
         
         mysql_close($dbconn);
         $dbconn=null;

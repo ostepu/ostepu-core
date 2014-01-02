@@ -30,13 +30,10 @@ class Query extends Object implements JsonSerializable
         $this->request = $value;
     }
     
-    
-    
-    
-        /**
+    /**
      * (description)
      *
-     * type: String[][]
+     * type: String[]
      */
     private $response = array();
     
@@ -58,8 +55,105 @@ class Query extends Object implements JsonSerializable
         $this->response = $value;
     }
     
+    /**
+     * (description)
+     *
+     * type: int
+     */
+    private $errno = null;
     
+    /**
+     * (description)
+     */
+    public function getErrno()
+    {
+        return $this->errno;
+    }
     
+    /**
+     * (description)
+     *
+     * @param $param (description)
+     */
+    public function setErrno($value)
+    {
+        $this->errno = $value;
+    }  
+    
+    /**
+     * (description)
+     *
+     * type: int
+     */
+    private $insertId = null;
+    
+    /**
+     * (description)
+     */
+    public function getInsertId()
+    {
+        return $this->insertId;
+    }
+    
+    /**
+     * (description)
+     *
+     * @param $param (description)
+     */
+    public function setInsertId($value)
+    {
+        $this->insertId = $value;
+    } 
+    
+    /**
+     * (description)
+     *
+     * type: int
+     */
+    private $affectedRows = null;
+    
+    /**
+     * (description)
+     */
+    public function getAffectedRows()
+    {
+        return $this->affectedRows;
+    }
+    
+    /**
+     * (description)
+     *
+     * @param $param (description)
+     */
+    public function setAffectedRows($value)
+    {
+        $this->affectedRows = $value;
+    } 
+    
+    /**
+     * (description)
+     *
+     * type: int
+     */
+    private $numRows = null;
+    
+    /**
+     * (description)
+     */
+    public function getNumRows()
+    {
+        return $this->numRows;
+    }
+    
+    /**
+     * (description)
+     *
+     * @param $param (description)
+     */
+    public function setNumRows($value)
+    {
+        $this->numRows = $value;
+    } 
     
     
     /**
@@ -99,28 +193,22 @@ class Query extends Object implements JsonSerializable
         $obj = null;
         if (is_array($data) && !isset($data['response']) && !isset($data['request'])){
 
+        } else {
+            $obj = new Query();
+            if (isset($data['request']))
+                $obj->setRequest(json_decode(json_encode($data['request'])));
+            if (isset($data['response']))
+                $obj->setResponse($data['response']);                
+            if (isset($data['affectedRows']))
+                $obj->setAffectedRows($data['affectedRows']); 
+            if (isset($data['insertId']))
+                $obj->setInsertId($data['insertId']); 
+            if (isset($data['errno']))
+                $obj->setErrno($data['errno']); 
+            if (isset($data['numRows']))
+                $obj->setNumRows($data['numRows']); 
         }
-        else
-        {
-        $obj = new Query();
-        if (isset($data['request']))
-            $obj->setRequest(json_decode(json_encode($data['request'])));
-        if (isset($data['response']))
-            $obj->setResponse($data['response']);        
-        }
-    
-       /* if ($decode)
-            $data = json_decode($data);
-            
-        if (is_array($data)){
-            $result = array();
-            foreach ($data AS $key => $value) {
-                array_push($result, new Query($value));
-            }
-            return $result;   
-        } else
-            return new Query($data);*/
-            return $obj;
+        return $obj;
     }
     
     /**
@@ -128,10 +216,14 @@ class Query extends Object implements JsonSerializable
      */
     public function jsonSerialize() 
     {       
-         $list = array();
-         if ($this->request!==null) $list['request'] = $this->request;
-         if ($this->response!==array()) $list['response'] = $this->response;
-       return $list;
+        $list = array();
+        if ($this->request!==null) $list['request'] = $this->request;
+        if ($this->response!==array()) $list['response'] = $this->response;
+        if ($this->affectedRows!==null) $list['affectedRows'] = $this->affectedRows;
+        if ($this->insertId!==null) $list['insertId'] = $this->insertId;
+        if ($this->errno!==null) $list['errno'] = $this->errno;
+        if ($this->numRows!==null) $list['numRows'] = $this->numRows;
+        return $list;
     }
 }
 ?>

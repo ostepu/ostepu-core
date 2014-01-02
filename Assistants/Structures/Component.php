@@ -178,6 +178,23 @@ class Component extends Object implements JsonSerializable
     /**
      * (description)
      */
+    public function getInsertData(){
+        $values = "";
+        
+        if ($this->id != null) $this->addInsertData($values, 'CO_id', $this->id );
+        if ($this->name != null) $this->addInsertData($values, 'CO_name', $this->name );
+        if ($this->address != null) $this->addInsertData($values, 'CO_address', $this->address );
+        if ($this->option != null) $this->addInsertData($values, 'CO_option', $this->option );
+        
+        if ($values != ""){
+            $values=substr($values,1);
+        }
+        return $values;
+    }
+    
+    /**
+     * (description)
+     */
     public static function getDbPrimaryKey()
     {
         return 'CO_id';
