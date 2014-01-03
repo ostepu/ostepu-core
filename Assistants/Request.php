@@ -29,7 +29,9 @@ class Request
         $head = explode("\r\n",substr($content, 0, $header_size));
         foreach ($head as $k){
             $value = split(": ",$k);
-            $result['headers'][$value[0]] = $k;
+            if (count($value)>=2){
+                $result['headers'][$value[0]] = $value[1];
+            }
         }
 
         $result['content'] = substr($content, $header_size);

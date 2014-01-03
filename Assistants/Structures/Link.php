@@ -27,8 +27,51 @@ class Link extends Object implements JsonSerializable
         $this->id = $value;
     }
     
+    /**
+     * (description)
+     */
+    private $target = null;
     
+    /**
+     * (description)
+     */
+    public function getTarget()
+    {
+        return $this->target;
+    }
     
+    /**
+     * (description)
+     *
+     * @param $conf (description)
+     */
+    public function setTarget($value)
+    {
+        $this->target = $value;
+    }
+    
+    /**
+     * (description)
+     */
+    private $owner = null;
+    
+    /**
+     * (description)
+     */
+    public function getOwner()
+    {
+        return $this->owner;
+    }
+    
+    /**
+     * (description)
+     *
+     * @param $conf (description)
+     */
+    public function setOwner($value)
+    {
+        $this->owner = $value;
+    }
     
     private $name = null;
     
@@ -127,33 +170,7 @@ class Link extends Object implements JsonSerializable
     {
         $this->prefix = $value;
     }
-    
-    
-    
-    
-    /**
-     * (description)
-     */
-    private $complete = null;
-    
-    /**
-     * (description)
-     */
-    public function getcomplete()
-    {
-        return $this->complete;
-    }
-    
-    /**
-     * (description)
-     *
-     * @param $conf (description)
-     */
-    public function setComplete($value)
-    {
-        $this->complete = $value;
-    }    
-    
+   
     
     
     
@@ -180,11 +197,28 @@ class Link extends Object implements JsonSerializable
            'CL_name' => 'name',
            'CL_address' => 'address',
            'CL_prefix' => 'prefix',
-           'CL_complete' => 'complete',
-           'CL_id_owner' => 'owner',
-           'CL_id_target' => 'target',
+           'CO_id_owner' => 'owner',
+           'CO_id_target' => 'target',
            'CL_relevanz' => 'relevanz'
         );
+    }
+    
+    /**
+     * (description)
+     */
+    public function getInsertData(){
+        $values = "";
+        
+        if ($this->id != null) $this->addInsertData($values, 'ES_id', $this->id );
+        if ($this->name != null) $this->addInsertData($values, 'CL_name', $this->name );
+        if ($this->owner != null) $this->addInsertData($values, 'CO_id_owner', $this->owner );
+        if ($this->target != null) $this->addInsertData($values, 'CO_id_target', $this->target );
+        if ($this->relevanz != null) $this->addInsertData($values, 'CL_relevanz', $this->relevanz );
+        
+        if ($values != ""){
+            $values=substr($values,1);
+        }
+        return $values;
     }
     
     /**
@@ -235,7 +269,8 @@ class Link extends Object implements JsonSerializable
             'name' => $this->name,
             'address' => $this->address,
             'prefix' => $this->prefix,
-            'complete' => $this->complete,
+            'target' => $this->target,
+            'owner' => $this->owner,
             'relevanz' => $this->relevanz
         );
     }

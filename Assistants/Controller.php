@@ -87,9 +87,12 @@ class Controller
                     $this->_app->response->setBody($ch['content']);
 
                     if (isset($ch['headers']['Content-Type']))
-                        header($ch['headers']['Content-Type']);
+                        $this->_app->response->headers->set('Content-Type', 
+                                            $ch['headers']['Content-Type']);
+                                            
                     if (isset($ch['headers']['Content-Disposition']))
-                        header($ch['headers']['Content-Disposition']);
+                        $this->_app->response->headers->set('Content-Disposition', 
+                                            $ch['headers']['Content-Disposition']);
 
                     $this->_app->stop();
                     return;
@@ -111,9 +114,12 @@ class Controller
                 $this->_app->response->setBody($ch['content']);
 
                 if (isset($ch['headers']['Content-Type']))
-                    header($ch['headers']['Content-Type']);
+                    $this->_app->response->headers->set('Content-Type', 
+                                        $ch['headers']['Content-Type']);
+                                        
                 if (isset($ch['headers']['Content-Disposition']))
-                    header($ch['headers']['Content-Disposition']);
+                    $this->_app->response->headers->set('Content-Disposition', 
+                                        $ch['headers']['Content-Disposition']);
 
                 $this->_app->stop();
                 return;

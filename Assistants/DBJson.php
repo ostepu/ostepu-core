@@ -52,10 +52,19 @@ class DbJson
     public static function getObjectsByAttributes($data, $id, $attributes, $extension = "")
     {
         $res = array();
-        foreach ($data as $row) {       
+        foreach ($data as $row) { 
+            $key = "";
+            if (is_array($id)){
+                foreach ($id as $di){
+                    $key = $key . $row[$di.$extension] . ',';
+                }
+            } else{
+                $key = $row[$id.$extension];
+            }
+        //$row[$id.$extension]
             foreach ($attributes as $attrib => $value) {  
                 if (isset($row[$attrib.$extension])){          
-                    $res[$row[$id.$extension]][$value] =  $row[$attrib.$extension];
+                    $res[$key][$value] =  $row[$attrib.$extension];
                 }
             }
         }
@@ -94,32 +103,34 @@ class DbJson
      */
     public static function getInsertDataFromInput($data, $attributes, $seperator)
     {
-        $data = json_decode($data);
-        if (!is_array($data))
-            $data = array($data);
+      //  $data = json_decode($data);
+      //  if (!is_array($data))
+     //       $data = array($data);
         
-        $res = array();
-        foreach ($data as $row) {  
-            $row = get_object_vars($row);
+     //   $res = array();
+        $row = $data;
+       // foreach ($data as $row) {  
+            //$row = get_object_vars($row);
             $temp = array();
             $t1 = "";
             $t2 = "";
             foreach ($attributes as $attrib => $value) {  
-                if (isset($row[$value]) && !is_array($row[$value])){    
+                if (isset($row[$value]) && !is_array($row[$value]) && gettype($row[$value])!= 'object'){    
                     $t1 = $t1 . $seperator . $attrib;
                     $t2 = $t2 . $seperator . "'" . $row[$value] . "'";
                 }
             }
+
             if ($t1 != "" && $t2 != ""){
                 $t1=substr($t1,1);  
                 $t2=substr($t2,1);
-                array_push($temp, $t1);
-                array_push($temp, $t2);
-                array_push($res,$temp);
+               // array_push($temp, $t1);
+                //array_push($temp, $t2);
+               // array_push($res,$temp);
             }
-        }
+        //}
     
-        return $res;
+        return array ('columns' => $t1, 'values' => $t2);
     }
     
      /**
@@ -163,17 +174,33 @@ class DbJson
         }
     
         foreach ($data as $rw){
+            $key = "";
+            if (is_array($primKey)){
+                foreach ($primKey as $di){
+                    $key = $key . $rw[$di] . ',';
+                }
+            } else{
+                $key = $rw[$primKey];
+            }
+            
             if (isset($sec[$rw[$secKey.$extension]])){
-                array_push($prim[$rw[$primKey]][$primAttrib], $sec[$rw[$secKey.$extension]]);
+                $prim[$key][$primAttrib][$rw[$secKey.$extension]] = $sec[$rw[$secKey.$extension]];
             }
         }
-    
-        $arr = array();
-        foreach ($prim as $rw){
-            array_push($arr, $rw);
+        
+        foreach ($prim as &$row){
+            $row[$primAttrib] = array_merge($row[$primAttrib]);
         }
-    
-        return $arr;
+        
+       /* $arr = array();
+        foreach ($prim as $rw){
+            array_push($arr, array_merge( $rw));
+        }*/
+        
+    $prim = array_values($prim);
+        
+      //  
+        return $prim;
     }
     
     /**
@@ -194,18 +221,64 @@ class DbJson
         }
     
         foreach ($data as $rw){
-            if (isset($sec[$rw[$secKey.$extension]])){
-                if (!isset($prim[$rw[$primKey]][$primAttrib]))
-                    $prim[$rw[$primKey]][$primAttrib] = array();
+            $key = "";
+            if (is_array($primKey)){
+                foreach ($primKey as $di){
+                    $key = $key . $rw[$di] . ',';
+                }
+            } else{
+                $key = $rw[$primKey];
+            }
         
-            $prim[$rw[$primKey]][$primAttrib][$rw[$secKey.$extension]] =  $sec[$rw[$secKey.$extension]];
+            if (isset($sec[$rw[$secKey.$extension]])){       
+                $prim[$key][$primAttrib][$rw[$secKey.$extension]] =  $sec[$rw[$secKey.$extension]];
             }
         }
     
         return $prim;
     }
     
-        /**
+    /**
+     * (description)
+     *
+     * @param $object (description)
+     * @param $param (description)
+     * @param $param (description)
+     * @param $param (description)
+     * @param $param (description)
+     * @param $param (description)
+     * @param $param (description)
+     */
+    public static function concatObjectListResult($data, $prim, $primKey, $primAttrib, $sec, $secKey, $extension = "")
+    {
+        foreach ($prim as &$row){
+            $row[$primAttrib] = array();
+        }
+    
+        foreach ($data as $rw){
+            $key = "";
+            if (is_array($primKey)){
+                foreach ($primKey as $di){
+                    $key = $key . $rw[$di] . ',';
+                }
+            } else{
+                $key = $rw[$primKey];
+            }
+            
+            if (isset($sec[$rw[$secKey.$extension]])){        
+                $prim[$key][$primAttrib][$rw[$secKey.$extension]] =  $sec[$rw[$secKey.$extension]];
+            }
+        }
+    
+    
+        foreach ($prim as &$row){
+            $row[$primAttrib] = array_merge($row[$primAttrib]);
+        }
+        
+        return $prim;
+    }
+    
+    /**
      * (description)
      *
      * @param $object (description)
@@ -218,11 +291,19 @@ class DbJson
      */
     public static function concatObjectListsSingleResult($data, $prim, $primKey, $primAttrib, $sec, $secKey, $extension = "")
     {
-    
         foreach ($data as $rw){
-            if (isset($sec[$rw[$secKey]])){
-                if (!isset($prim[$rw[$primKey]][$primAttrib]))
-                    $prim[$rw[$primKey]][$primAttrib] =  $sec[$rw[$secKey]];
+            $key = "";
+            if (is_array($primKey)){
+                foreach ($primKey as $di){
+                    $key = $key . $rw[$di] . ',';
+                }
+            } else{
+                $key = $rw[$primKey];
+            }
+
+            if (isset($sec[$rw[$secKey.$extension]])){
+                if (!isset($prim[$key][$primAttrib]))
+                    $prim[$key][$primAttrib] = $sec[$rw[$secKey.$extension]];
             }
         }
    
@@ -248,17 +329,12 @@ class DbJson
     
         foreach ($data as $rw){
             if (isset($sec[$rw[$secKey]])){
-                if (!in_array($rw[$secKey], $prim[$rw[$primKey]][$primAttrib]))
-                    array_push($prim[$rw[$primKey]][$primAttrib], $rw[$secKey]);
+                array_push($prim[$rw[$primKey]][$primAttrib], $rw[$secKey]);
             }
         }
-    
-        $arr = array();
-        foreach ($prim as $rw){
-            array_push($arr, $rw);
-        }
         
-        return $arr;
+        $prim = array_merge($prim);
+        return $prim;
     }
 }
 ?>

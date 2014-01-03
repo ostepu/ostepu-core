@@ -2,7 +2,7 @@
 class Marking extends Object implements JsonSerializable
 {
     /**
-     * THe identifier of this marking.
+     * The identifier of this marking.
      *
      * type: string
      */

@@ -1,7 +1,6 @@
 <?php
 /**
 * @file (filename)
-* %(description)
 */ 
 
 
@@ -48,27 +47,26 @@ class CConfig
             // run Slim
             $this->_used = true;
             $this->_app->run();
-        }
-       
-        $conf = $this->loadConfig();
-        $links = $conf->getLinks();
-        $changed = false;
-        foreach ($links as &$link){
-            if (!$link->getComplete()){
-                $result = Request::get($link->getAddress() . '/component',array(),"");
+        } else {
+            $conf = $this->loadConfig();
+            $links = $conf->getLinks();
+            $changed = false;
+            foreach ($links as &$link){
+                if ($link->getPrefix()===null){
+                    $result = Request::get($link->getAddress() . '/component',array(),"");
                     
-                if ($result['status'] == 200){
-                    $changed = true;
-                    $obj = Component::decodeComponent($result['content']);
-                    $link->setComplete(true);
-                     $link->setPrefix($obj->getPrefix());
-                }        
+                    if ($result['status'] == 200){
+                        $changed = true;
+                        $obj = Component::decodeComponent($result['content']);
+                        $link->setPrefix($obj->getPrefix());
+                    }        
+                }
             }
-        }
 
-        if ($changed){
-            $conf->setLinks($links);
-            $this->saveConfig(Component::encodeComponent($conf));
+            if ($changed){
+                $conf->setLinks($links);
+                $this->saveConfig(Component::encodeComponent($conf));
+            }
         }
     }
     
@@ -95,6 +93,8 @@ class CConfig
     
     /**
      * GET Config
+     *
+     * @return 
      */
     public function getConfig()
     {
@@ -125,6 +125,8 @@ class CConfig
     
     /**
      * (description)
+     *
+     * @return 
      */
     public function loadConfig()
     { 
@@ -144,6 +146,8 @@ class CConfig
      *
      * @param $linkList (description)
      * @param $name (description)
+     *
+     * @return 
      */
     public static function getLink($linkList,$name)
     {
@@ -158,8 +162,29 @@ class CConfig
     /**
      * (description)
      *
+     * @param $linkList (description)
+     * @param $name (description)
+     *
+     * @return 
+     */
+    public static function getLinks($linkList,$name)
+    {
+        $result = array();
+        foreach ($linkList as $link){
+            if ($link->getName() == $name)
+                array_push($result, $link);
+        }
+
+        return $result;
+    }
+    
+    /**
+     * (description)
+     *
      * @param $links (description)
      * @param $linkName (description)
+     *
+     * @return 
      */
     public static function deleteFromArray($links, $linkName)
     {
