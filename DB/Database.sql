@@ -16,7 +16,8 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`Course` (
   `C_defaultGroupSize` INT NOT NULL DEFAULT 1,
   PRIMARY KEY (`C_id`),
   UNIQUE INDEX `C_id_UNIQUE` (`C_id` ASC))
-ENGINE = InnoDB;
+ENGINE = InnoDB
+AUTO_INCREMENT = 1;
 
 
 -- -----------------------------------------------------
@@ -25,14 +26,16 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `uebungsplattform`.`File` (
   `F_id` INT NOT NULL AUTO_INCREMENT,
   `F_displayName` VARCHAR(255) NULL,
-  `F_address` VARCHAR(255) NULL,
+  `F_address` CHAR(55) NULL,
   `F_timeStamp` TIMESTAMP NULL,
   `F_fileSize` INT NULL,
-  `F_hash` VARCHAR(255) NULL,
+  `F_hash` CHAR(40) NULL,
   PRIMARY KEY (`F_id`),
   UNIQUE INDEX `F_id_UNIQUE` (`F_id` ASC),
+  UNIQUE INDEX `F_hash_UNIQUE` (`F_hash` ASC),
   UNIQUE INDEX `F_address_UNIQUE` (`F_address` ASC))
-ENGINE = InnoDB;
+ENGINE = InnoDB
+AUTO_INCREMENT = 1;
 
 
 -- -----------------------------------------------------
@@ -43,7 +46,6 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`Backup` (
   `B_date` TIMESTAMP NOT NULL,
   `F_id_file` INT NOT NULL,
   PRIMARY KEY (`B_id`),
-  INDEX `fk_Backup_File1_idx` (`F_id_file` ASC),
   UNIQUE INDEX `B_id_UNIQUE` (`B_id` ASC),
   CONSTRAINT `fk_Backup_File1`
     FOREIGN KEY (`F_id_file`)
@@ -58,18 +60,18 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `uebungsplattform`.`User` (
   `U_id` INT NOT NULL AUTO_INCREMENT,
-  `U_username` VARCHAR(45) NOT NULL,
-  `U_email` VARCHAR(45) NULL,
-  `U_lastName` VARCHAR(45) NULL,
-  `U_firstName` VARCHAR(45) NULL,
-  `U_title` VARCHAR(45) NULL,
-  `U_password` VARCHAR(45) NOT NULL,
+  `U_username` VARCHAR(120) NOT NULL,
+  `U_email` VARCHAR(120) NULL,
+  `U_lastName` VARCHAR(120) NULL,
+  `U_firstName` VARCHAR(120) NULL,
+  `U_title` CHAR(10) NULL,
+  `U_password` CHAR(64) NOT NULL,
   `U_flag` SMALLINT NOT NULL DEFAULT 1,
-  `U_oldUsername` VARCHAR(45) NULL,
+  `U_oldUsername` VARCHAR(120) NULL,
   PRIMARY KEY (`U_id`),
-  UNIQUE INDEX `U_id_UNIQUE` (`U_id` ASC),
-  UNIQUE INDEX `U_email_UNIQUE` (`U_email` ASC))
-ENGINE = InnoDB;
+  UNIQUE INDEX `U_id_UNIQUE` (`U_id` ASC))
+ENGINE = InnoDB
+AUTO_INCREMENT = 1;
 
 
 -- -----------------------------------------------------
@@ -85,9 +87,6 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`ExerciseSheet` (
   `ES_groupSize` INT NOT NULL DEFAULT 1,
   `ES_name` VARCHAR(120) NULL,
   PRIMARY KEY (`ES_id`),
-  INDEX `fk_ExerciseSheet_Course1_idx` (`C_id` ASC),
-  INDEX `fk_ExerciseSheet_File1_idx` (`F_id_sampleSolution` ASC),
-  INDEX `fk_ExerciseSheet_File2_idx` (`F_id_file` ASC),
   UNIQUE INDEX `ES_id_UNIQUE` (`ES_id` ASC),
   CONSTRAINT `fk_ExerciseSheet_Course1`
     FOREIGN KEY (`C_id`)
@@ -104,7 +103,8 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`ExerciseSheet` (
     REFERENCES `uebungsplattform`.`File` (`F_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+AUTO_INCREMENT = 1;
 
 
 -- -----------------------------------------------------
@@ -113,23 +113,28 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `uebungsplattform`.`Group` (
   `U_id_leader` INT NOT NULL,
   `U_id_member` INT NOT NULL,
+  `C_id` INT NULL,
   `ES_id` INT NOT NULL,
-  INDEX `fk_Group_User1_idx` (`U_id_member` ASC),
+  PRIMARY KEY (`ES_id`, `U_id_leader`),
   INDEX `fk_Group_ExerciseSheet1_idx` (`ES_id` ASC),
-  PRIMARY KEY (`U_id_leader`, `ES_id`),
   CONSTRAINT `fk_Group_User1`
     FOREIGN KEY (`U_id_member`)
     REFERENCES `uebungsplattform`.`User` (`U_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Group_ExerciseSheet1`
-    FOREIGN KEY (`ES_id`)
-    REFERENCES `uebungsplattform`.`ExerciseSheet` (`ES_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
   CONSTRAINT `fk_Group_User2`
     FOREIGN KEY (`U_id_leader`)
     REFERENCES `uebungsplattform`.`User` (`U_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Group_ExerciseSheet2`
+    FOREIGN KEY (`C_id`)
+    REFERENCES `uebungsplattform`.`ExerciseSheet` (`C_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Group_ExerciseSheet1`
+    FOREIGN KEY (`ES_id`)
+    REFERENCES `uebungsplattform`.`ExerciseSheet` (`ES_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -142,9 +147,6 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`Invitation` (
   `U_id_leader` INT NOT NULL,
   `U_id_member` INT NOT NULL,
   `ES_id` INT NOT NULL,
-  INDEX `fk_Invitation_User1_idx` (`U_id_member` ASC),
-  INDEX `fk_Invitation_User2_idx` (`U_id_leader` ASC),
-  INDEX `fk_Invitation_ExerciseSheet1_idx` (`ES_id` ASC),
   PRIMARY KEY (`U_id_leader`, `ES_id`, `U_id_member`),
   CONSTRAINT `fk_Invitation_User1`
     FOREIGN KEY (`U_id_member`)
@@ -161,7 +163,8 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`Invitation` (
     REFERENCES `uebungsplattform`.`ExerciseSheet` (`ES_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+PACK_KEYS = 1;
 
 
 -- -----------------------------------------------------
@@ -171,8 +174,6 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`CourseStatus` (
   `C_id` INT NOT NULL,
   `U_id` INT NOT NULL,
   `CS_status` INT NOT NULL DEFAULT 0,
-  INDEX `fk_CourseStatus_Course1_idx` (`C_id` ASC),
-  INDEX `fk_CourseStatus_User1_idx` (`U_id` ASC),
   PRIMARY KEY (`C_id`, `U_id`),
   CONSTRAINT `fk_CourseStatus_Course1`
     FOREIGN KEY (`C_id`)
@@ -195,13 +196,15 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`ExerciseType` (
   `ET_name` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`ET_id`),
   UNIQUE INDEX `ET_id_UNIQUE` (`ET_id` ASC))
-ENGINE = InnoDB;
+ENGINE = InnoDB
+AUTO_INCREMENT = 1;
 
 
 -- -----------------------------------------------------
 -- Table `uebungsplattform`.`Exercise`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `uebungsplattform`.`Exercise` (
+  `C_id` INT NULL,
   `E_id` INT NOT NULL AUTO_INCREMENT,
   `ES_id` INT NOT NULL,
   `ET_id` INT NOT NULL,
@@ -209,8 +212,6 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`Exercise` (
   `E_bonus` TINYINT(1) NULL,
   `E_id_link` INT NULL,
   PRIMARY KEY (`E_id`),
-  INDEX `fk_Exercise_ExerciseSheet1_idx` (`ES_id` ASC),
-  INDEX `fk_Exercise_ExerciseTypes1_idx` (`ET_id` ASC),
   UNIQUE INDEX `E_id_UNIQUE` (`E_id` ASC),
   CONSTRAINT `fk_Exercise_ExerciseSheet1`
     FOREIGN KEY (`ES_id`)
@@ -221,8 +222,14 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`Exercise` (
     FOREIGN KEY (`ET_id`)
     REFERENCES `uebungsplattform`.`ExerciseType` (`ET_id`)
     ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Exercise_ExerciseSheet2`
+    FOREIGN KEY (`C_id`)
+    REFERENCES `uebungsplattform`.`ExerciseSheet` (`C_id`)
+    ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+AUTO_INCREMENT = 1;
 
 
 -- -----------------------------------------------------
@@ -232,14 +239,12 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`Submission` (
   `U_id` INT NOT NULL,
   `S_id` INT NOT NULL AUTO_INCREMENT,
   `F_id_file` INT NOT NULL,
-  `E_id` INT NOT NULL,
   `S_comment` VARCHAR(120) NULL,
   `S_date` TIMESTAMP NULL,
   `S_accepted` TINYINT(1) NOT NULL DEFAULT false,
+  `E_id` INT NOT NULL,
+  `ES_id` INT NULL,
   PRIMARY KEY (`S_id`),
-  INDEX `fk_Submission_Exercise_idx` (`E_id` ASC),
-  INDEX `fk_Submission_User1_idx` (`U_id` ASC),
-  INDEX `fk_Submission_File1_idx` (`F_id_file` ASC),
   UNIQUE INDEX `S_id_UNIQUE` (`S_id` ASC),
   CONSTRAINT `fk_Submission_Exercise`
     FOREIGN KEY (`E_id`)
@@ -255,8 +260,14 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`Submission` (
     FOREIGN KEY (`F_id_file`)
     REFERENCES `uebungsplattform`.`File` (`F_id`)
     ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Submission_Exercise1`
+    FOREIGN KEY (`ES_id`)
+    REFERENCES `uebungsplattform`.`Exercise` (`ES_id`)
+    ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+AUTO_INCREMENT = 1;
 
 
 -- -----------------------------------------------------
@@ -272,10 +283,9 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`Marking` (
   `M_status` INT NOT NULL DEFAULT 0,
   `M_points` INT NOT NULL,
   `M_date` TIMESTAMP NOT NULL,
+  `E_id` INT NULL,
+  `ES_id` INT NULL,
   PRIMARY KEY (`M_id`),
-  INDEX `fk_Marking_Submission1_idx` (`S_id` ASC),
-  INDEX `fk_Marking_User1_idx` (`U_id_tutor` ASC),
-  INDEX `fk_Marking_File1_idx` (`F_id_file` ASC),
   UNIQUE INDEX `M_id_UNIQUE` (`M_id` ASC),
   CONSTRAINT `fk_Marking_Submission1`
     FOREIGN KEY (`S_id`)
@@ -291,8 +301,19 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`Marking` (
     FOREIGN KEY (`F_id_file`)
     REFERENCES `uebungsplattform`.`File` (`F_id`)
     ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Marking_Submission2`
+    FOREIGN KEY (`E_id`)
+    REFERENCES `uebungsplattform`.`Submission` (`E_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Marking_Submission3`
+    FOREIGN KEY (`ES_id`)
+    REFERENCES `uebungsplattform`.`Submission` (`ES_id`)
+    ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+AUTO_INCREMENT = 1;
 
 
 -- -----------------------------------------------------
@@ -302,9 +323,8 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`Attachment` (
   `A_id` INT NOT NULL AUTO_INCREMENT,
   `E_id` INT NOT NULL,
   `F_id` INT NOT NULL,
+  `ES_id` INT NULL,
   PRIMARY KEY (`A_id`),
-  INDEX `fk_Attachment_File1_idx` (`F_id` ASC),
-  INDEX `fk_Attachment_Exercise1_idx` (`E_id` ASC),
   UNIQUE INDEX `A_id_UNIQUE` (`A_id` ASC),
   CONSTRAINT `fk_Attachment_File1`
     FOREIGN KEY (`F_id`)
@@ -315,8 +335,14 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`Attachment` (
     FOREIGN KEY (`E_id`)
     REFERENCES `uebungsplattform`.`Exercise` (`E_id`)
     ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Attachment_Exercise2`
+    FOREIGN KEY (`ES_id`)
+    REFERENCES `uebungsplattform`.`Exercise` (`ES_id`)
+    ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+AUTO_INCREMENT = 1;
 
 
 -- -----------------------------------------------------
@@ -328,9 +354,7 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`ApprovalCondition` (
   `ET_id` INT NOT NULL,
   `AC_percentage` FLOAT NOT NULL DEFAULT 0,
   PRIMARY KEY (`AC_id`),
-  INDEX `fk_ApprovalConditions_ExerciseTypes1_idx` (`ET_id` ASC),
-  INDEX `fk_ApprovalConditions_Course1_idx` (`C_id` ASC),
-  UNIQUE INDEX `AC_id_UNIQUE` (`AC_id` ASC),
+  UNIQUE INDEX `AC_id_UNIQUE` USING BTREE (`AC_id` ASC),
   CONSTRAINT `fk_ApprovalConditions_ExerciseTypes1`
     FOREIGN KEY (`ET_id`)
     REFERENCES `uebungsplattform`.`ExerciseType` (`ET_id`)
@@ -341,7 +365,8 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`ApprovalCondition` (
     REFERENCES `uebungsplattform`.`Course` (`C_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+AUTO_INCREMENT = 1;
 
 
 -- -----------------------------------------------------
@@ -352,7 +377,6 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`ZIP` (
   `Z_requestHash` VARCHAR(45) NOT NULL,
   `F_id` INT NOT NULL,
   PRIMARY KEY (`Z_id`),
-  INDEX `fk_ZIP_File1_idx` (`F_id` ASC),
   UNIQUE INDEX `Z_id_UNIQUE` (`Z_id` ASC),
   CONSTRAINT `fk_ZIP_File1`
     FOREIGN KEY (`F_id`)
@@ -369,10 +393,8 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`SelectedSubmission` (
   `U_id_leader` INT NOT NULL,
   `S_id_selected` INT NOT NULL,
   `E_id` INT NOT NULL,
-  INDEX `fk_SelectedSubmission_User1_idx` (`U_id_leader` ASC),
-  INDEX `fk_SelectedSubmission_Submission1_idx` (`S_id_selected` ASC),
-  PRIMARY KEY (`U_id_leader`, `S_id_selected`, `E_id`),
-  INDEX `fk_SelectedSubmission_Exercise1_idx` (`E_id` ASC),
+  `ES_id` INT NULL,
+  PRIMARY KEY (`U_id_leader`, `E_id`),
   CONSTRAINT `fk_SelectedSubmission_User1`
     FOREIGN KEY (`U_id_leader`)
     REFERENCES `uebungsplattform`.`User` (`U_id`)
@@ -386,6 +408,11 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`SelectedSubmission` (
   CONSTRAINT `fk_SelectedSubmission_Exercise1`
     FOREIGN KEY (`E_id`)
     REFERENCES `uebungsplattform`.`Exercise` (`E_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_SelectedSubmission_Exercise2`
+    FOREIGN KEY (`ES_id`)
+    REFERENCES `uebungsplattform`.`Exercise` (`ES_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -401,7 +428,8 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`Component` (
   `CO_option` VARCHAR(255) NULL,
   PRIMARY KEY (`CO_id`),
   UNIQUE INDEX `CO_id_UNIQUE` (`CO_id` ASC))
-ENGINE = InnoDB;
+ENGINE = InnoDB
+AUTO_INCREMENT = 1;
 
 
 -- -----------------------------------------------------
@@ -410,13 +438,11 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `uebungsplattform`.`ComponentLinkage` (
   `CL_id` INT NOT NULL AUTO_INCREMENT,
   `CO_id_owner` INT NOT NULL,
-  `CO_id_target` INT NOT NULL,
   `CL_name` VARCHAR(120) NULL,
   `CL_relevanz` VARCHAR(255) NULL,
+  `CO_id_target` INT NOT NULL,
   PRIMARY KEY (`CL_id`),
   UNIQUE INDEX `CL_id_UNIQUE` (`CL_id` ASC),
-  INDEX `fk_ComponentLinkage_Component1_idx` (`CO_id_owner` ASC),
-  INDEX `fk_ComponentLinkage_Component2_idx` (`CO_id_target` ASC),
   CONSTRAINT `fk_ComponentLinkage_Component1`
     FOREIGN KEY (`CO_id_owner`)
     REFERENCES `uebungsplattform`.`Component` (`CO_id`)
@@ -427,7 +453,8 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`ComponentLinkage` (
     REFERENCES `uebungsplattform`.`Component` (`CO_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+AUTO_INCREMENT = 1;
 
 
 -- -----------------------------------------------------
@@ -437,21 +464,22 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`ExternalId` (
   `EX_id` VARCHAR(255) NOT NULL,
   `C_id` INT NOT NULL,
   PRIMARY KEY (`EX_id`),
-  INDEX `fk_ExternalId_Course1_idx` (`C_id` ASC),
   UNIQUE INDEX `EX_id_UNIQUE` (`EX_id` ASC),
   CONSTRAINT `fk_ExternalId_Course1`
     FOREIGN KEY (`C_id`)
     REFERENCES `uebungsplattform`.`Course` (`C_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+ENGINE = InnoDB
+AUTO_INCREMENT = 1;
 
 
 -- -----------------------------------------------------
 -- Table `uebungsplattform`.`RemovableFiles`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `uebungsplattform`.`RemovableFiles` (
-  `F_address` VARCHAR(255) NULL)
+  `F_address` CHAR(55) NULL,
+  UNIQUE INDEX `F_address_UNIQUE` (`F_address` ASC))
 ENGINE = InnoDB;
 
 
@@ -460,7 +488,7 @@ ENGINE = InnoDB;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `uebungsplattform`.`Session` (
   `U_id` INT NOT NULL,
-  `SE_sessionID` VARCHAR(45) NOT NULL,
+  `SE_sessionID` CHAR(32) NOT NULL,
   PRIMARY KEY (`U_id`, `SE_sessionID`),
   UNIQUE INDEX `SE_sessionID_UNIQUE` (`SE_sessionID` ASC),
   UNIQUE INDEX `U_id_UNIQUE` (`U_id` ASC),
@@ -543,12 +571,12 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `uebungsplattform`;
-INSERT INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `ES_id`) VALUES (1, 1, 1);
-INSERT INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `ES_id`) VALUES (2, 1, 1);
-INSERT INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `ES_id`) VALUES (3, 1, 1);
-INSERT INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `ES_id`) VALUES (1, 1, 2);
-INSERT INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `ES_id`) VALUES (2, 2, 2);
-INSERT INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `ES_id`) VALUES (3, 3, 2);
+INSERT INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `C_id`, `ES_id`) VALUES (1, 1, NULL, 1);
+INSERT INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `C_id`, `ES_id`) VALUES (2, 1, NULL, 1);
+INSERT INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `C_id`, `ES_id`) VALUES (3, 1, NULL, 1);
+INSERT INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `C_id`, `ES_id`) VALUES (1, 1, NULL, 2);
+INSERT INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `C_id`, `ES_id`) VALUES (2, 2, NULL, 2);
+INSERT INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `C_id`, `ES_id`) VALUES (3, 3, NULL, 2);
 
 COMMIT;
 
@@ -604,12 +632,12 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `uebungsplattform`;
-INSERT INTO `uebungsplattform`.`Exercise` (`E_id`, `ES_id`, `ET_id`, `E_maxPoints`, `E_bonus`, `E_id_link`) VALUES (1, 1, 1, 5, true, 1);
-INSERT INTO `uebungsplattform`.`Exercise` (`E_id`, `ES_id`, `ET_id`, `E_maxPoints`, `E_bonus`, `E_id_link`) VALUES (2, 1, 2, 10, false, 1);
-INSERT INTO `uebungsplattform`.`Exercise` (`E_id`, `ES_id`, `ET_id`, `E_maxPoints`, `E_bonus`, `E_id_link`) VALUES (3, 2, 3, 12, false, 3);
-INSERT INTO `uebungsplattform`.`Exercise` (`E_id`, `ES_id`, `ET_id`, `E_maxPoints`, `E_bonus`, `E_id_link`) VALUES (4, 3, 1, 15, true, 4);
-INSERT INTO `uebungsplattform`.`Exercise` (`E_id`, `ES_id`, `ET_id`, `E_maxPoints`, `E_bonus`, `E_id_link`) VALUES (5, 4, 2, 18, false, 5);
-INSERT INTO `uebungsplattform`.`Exercise` (`E_id`, `ES_id`, `ET_id`, `E_maxPoints`, `E_bonus`, `E_id_link`) VALUES (6, 4, 3, 20, true, 6);
+INSERT INTO `uebungsplattform`.`Exercise` (`C_id`, `E_id`, `ES_id`, `ET_id`, `E_maxPoints`, `E_bonus`, `E_id_link`) VALUES (NULL, 1, 1, 1, 5, true, 1);
+INSERT INTO `uebungsplattform`.`Exercise` (`C_id`, `E_id`, `ES_id`, `ET_id`, `E_maxPoints`, `E_bonus`, `E_id_link`) VALUES (NULL, 2, 1, 2, 10, false, 1);
+INSERT INTO `uebungsplattform`.`Exercise` (`C_id`, `E_id`, `ES_id`, `ET_id`, `E_maxPoints`, `E_bonus`, `E_id_link`) VALUES (NULL, 3, 2, 3, 12, false, 3);
+INSERT INTO `uebungsplattform`.`Exercise` (`C_id`, `E_id`, `ES_id`, `ET_id`, `E_maxPoints`, `E_bonus`, `E_id_link`) VALUES (NULL, 4, 3, 1, 15, true, 4);
+INSERT INTO `uebungsplattform`.`Exercise` (`C_id`, `E_id`, `ES_id`, `ET_id`, `E_maxPoints`, `E_bonus`, `E_id_link`) VALUES (NULL, 5, 4, 2, 18, false, 5);
+INSERT INTO `uebungsplattform`.`Exercise` (`C_id`, `E_id`, `ES_id`, `ET_id`, `E_maxPoints`, `E_bonus`, `E_id_link`) VALUES (NULL, 6, 4, 3, 20, true, 6);
 
 COMMIT;
 
@@ -619,13 +647,28 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `uebungsplattform`;
-INSERT INTO `uebungsplattform`.`Submission` (`U_id`, `S_id`, `F_id_file`, `E_id`, `S_comment`, `S_date`, `S_accepted`) VALUES (1, 1, 1, 1, 'eins', '2013-12-03 00:00:01', true);
-INSERT INTO `uebungsplattform`.`Submission` (`U_id`, `S_id`, `F_id_file`, `E_id`, `S_comment`, `S_date`, `S_accepted`) VALUES (1, 2, 2, 1, 'zwei', '2013-12-04 00:00:01', true);
-INSERT INTO `uebungsplattform`.`Submission` (`U_id`, `S_id`, `F_id_file`, `E_id`, `S_comment`, `S_date`, `S_accepted`) VALUES (2, 3, 3, 1, 'drei', '2013-12-01 00:00:01', true);
-INSERT INTO `uebungsplattform`.`Submission` (`U_id`, `S_id`, `F_id_file`, `E_id`, `S_comment`, `S_date`, `S_accepted`) VALUES (2, 4, 4, 2, 'vier', '2013-11-02 00:00:01', true);
-INSERT INTO `uebungsplattform`.`Submission` (`U_id`, `S_id`, `F_id_file`, `E_id`, `S_comment`, `S_date`, `S_accepted`) VALUES (3, 5, 5, 2, 'fuenf', '2013-12-02 00:00:01', true);
-INSERT INTO `uebungsplattform`.`Submission` (`U_id`, `S_id`, `F_id_file`, `E_id`, `S_comment`, `S_date`, `S_accepted`) VALUES (4, 6, 6, 2, 'sechs', '2013-12-02 00:00:01', true);
-INSERT INTO `uebungsplattform`.`Submission` (`U_id`, `S_id`, `F_id_file`, `E_id`, `S_comment`, `S_date`, `S_accepted`) VALUES (4, 7, 9, 2, 'sieben', '2013-12-02 00:00:01', true);
+INSERT INTO `uebungsplattform`.`Submission` (`U_id`, `S_id`, `F_id_file`, `S_comment`, `S_date`, `S_accepted`, `E_id`, `ES_id`) VALUES (1, 1, 1, 'eins', '2013-12-03 00:00:01', true, 1, NULL);
+INSERT INTO `uebungsplattform`.`Submission` (`U_id`, `S_id`, `F_id_file`, `S_comment`, `S_date`, `S_accepted`, `E_id`, `ES_id`) VALUES (1, 2, 2, 'zwei', '2013-12-04 00:00:01', true, 1, NULL);
+INSERT INTO `uebungsplattform`.`Submission` (`U_id`, `S_id`, `F_id_file`, `S_comment`, `S_date`, `S_accepted`, `E_id`, `ES_id`) VALUES (2, 3, 3, 'drei', '2013-12-01 00:00:01', true, 1, NULL);
+INSERT INTO `uebungsplattform`.`Submission` (`U_id`, `S_id`, `F_id_file`, `S_comment`, `S_date`, `S_accepted`, `E_id`, `ES_id`) VALUES (2, 4, 4, 'vier', '2013-11-02 00:00:01', true, 2, NULL);
+INSERT INTO `uebungsplattform`.`Submission` (`U_id`, `S_id`, `F_id_file`, `S_comment`, `S_date`, `S_accepted`, `E_id`, `ES_id`) VALUES (3, 5, 5, 'fuenf', '2013-12-02 00:00:01', true, 2, NULL);
+INSERT INTO `uebungsplattform`.`Submission` (`U_id`, `S_id`, `F_id_file`, `S_comment`, `S_date`, `S_accepted`, `E_id`, `ES_id`) VALUES (4, 6, 6, 'sechs', '2013-12-02 00:00:01', true, 2, NULL);
+INSERT INTO `uebungsplattform`.`Submission` (`U_id`, `S_id`, `F_id_file`, `S_comment`, `S_date`, `S_accepted`, `E_id`, `ES_id`) VALUES (4, 7, 9, 'sieben', '2013-12-02 00:00:01', true, 2, NULL);
+
+COMMIT;
+
+
+-- -----------------------------------------------------
+-- Data for table `uebungsplattform`.`Marking`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `uebungsplattform`;
+INSERT INTO `uebungsplattform`.`Marking` (`M_id`, `U_id_tutor`, `F_id_file`, `S_id`, `M_tutorComment`, `M_outstanding`, `M_status`, `M_points`, `M_date`, `E_id`, `ES_id`) VALUES (1, 2, 8, 1, 'nichts', false, 0, 10, '2013-12-08 00:00:01', NULL, NULL);
+INSERT INTO `uebungsplattform`.`Marking` (`M_id`, `U_id_tutor`, `F_id_file`, `S_id`, `M_tutorComment`, `M_outstanding`, `M_status`, `M_points`, `M_date`, `E_id`, `ES_id`) VALUES (2, 2, 7, 2, 'nichts', true, 0, 12, '2013-12-08 00:00:01', NULL, NULL);
+INSERT INTO `uebungsplattform`.`Marking` (`M_id`, `U_id_tutor`, `F_id_file`, `S_id`, `M_tutorComment`, `M_outstanding`, `M_status`, `M_points`, `M_date`, `E_id`, `ES_id`) VALUES (3, 1, 6, 3, 'nichts', false, 0, 13, '2013-12-08 00:00:01', NULL, NULL);
+INSERT INTO `uebungsplattform`.`Marking` (`M_id`, `U_id_tutor`, `F_id_file`, `S_id`, `M_tutorComment`, `M_outstanding`, `M_status`, `M_points`, `M_date`, `E_id`, `ES_id`) VALUES (4, 1, 5, 4, 'nichts', true, 0, 14, '2013-12-08 00:00:01', NULL, NULL);
+INSERT INTO `uebungsplattform`.`Marking` (`M_id`, `U_id_tutor`, `F_id_file`, `S_id`, `M_tutorComment`, `M_outstanding`, `M_status`, `M_points`, `M_date`, `E_id`, `ES_id`) VALUES (5, 4, 4, 5, 'nichts', false, 0, 15, '2013-12-08 00:00:01', NULL, NULL);
+INSERT INTO `uebungsplattform`.`Marking` (`M_id`, `U_id_tutor`, `F_id_file`, `S_id`, `M_tutorComment`, `M_outstanding`, `M_status`, `M_points`, `M_date`, `E_id`, `ES_id`) VALUES (6, 4, 3, 6, 'nichts', true, 0, 16, '2013-12-08 00:00:01', NULL, NULL);
 
 COMMIT;
 
@@ -635,11 +678,11 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `uebungsplattform`;
-INSERT INTO `uebungsplattform`.`Attachment` (`A_id`, `E_id`, `F_id`) VALUES (1, 1, 1);
-INSERT INTO `uebungsplattform`.`Attachment` (`A_id`, `E_id`, `F_id`) VALUES (2, 2, 2);
-INSERT INTO `uebungsplattform`.`Attachment` (`A_id`, `E_id`, `F_id`) VALUES (3, 3, 3);
-INSERT INTO `uebungsplattform`.`Attachment` (`A_id`, `E_id`, `F_id`) VALUES (4, 4, 4);
-INSERT INTO `uebungsplattform`.`Attachment` (`A_id`, `E_id`, `F_id`) VALUES (5, 1, 5);
+INSERT INTO `uebungsplattform`.`Attachment` (`A_id`, `E_id`, `F_id`, `ES_id`) VALUES (1, 1, 1, NULL);
+INSERT INTO `uebungsplattform`.`Attachment` (`A_id`, `E_id`, `F_id`, `ES_id`) VALUES (2, 2, 2, NULL);
+INSERT INTO `uebungsplattform`.`Attachment` (`A_id`, `E_id`, `F_id`, `ES_id`) VALUES (3, 3, 3, NULL);
+INSERT INTO `uebungsplattform`.`Attachment` (`A_id`, `E_id`, `F_id`, `ES_id`) VALUES (4, 4, 4, NULL);
+INSERT INTO `uebungsplattform`.`Attachment` (`A_id`, `E_id`, `F_id`, `ES_id`) VALUES (5, 1, 5, NULL);
 
 COMMIT;
 
@@ -662,9 +705,9 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `uebungsplattform`;
-INSERT INTO `uebungsplattform`.`SelectedSubmission` (`U_id_leader`, `S_id_selected`, `E_id`) VALUES (1, 2, 1);
-INSERT INTO `uebungsplattform`.`SelectedSubmission` (`U_id_leader`, `S_id_selected`, `E_id`) VALUES (2, 3, 3);
-INSERT INTO `uebungsplattform`.`SelectedSubmission` (`U_id_leader`, `S_id_selected`, `E_id`) VALUES (3, 6, 2);
+INSERT INTO `uebungsplattform`.`SelectedSubmission` (`U_id_leader`, `S_id_selected`, `E_id`, `ES_id`) VALUES (1, 2, 1, NULL);
+INSERT INTO `uebungsplattform`.`SelectedSubmission` (`U_id_leader`, `S_id_selected`, `E_id`, `ES_id`) VALUES (2, 3, 3, NULL);
+INSERT INTO `uebungsplattform`.`SelectedSubmission` (`U_id_leader`, `S_id_selected`, `E_id`, `ES_id`) VALUES (3, 6, 2, NULL);
 
 COMMIT;
 
@@ -700,6 +743,7 @@ INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `C
 INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (24, 'DBMarking', 'localhost/uebungsplattform/DB/DBMarking', '');
 INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (25, 'DBSession', 'localhost/uebungsplattform/DB/DBSession', '');
 INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (26, 'DBSubmission', 'localhost/uebungsplattform/DB/DBSubmission', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (27, 'DBSelectedSubmission', 'localhost/uebungsplattform/DB/DBSelectedSubmission', '');
 
 COMMIT;
 
@@ -709,50 +753,54 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `uebungsplattform`;
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (1, 3, 1, 'getFile', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (2, 1, 2, 'out1', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (3, 1, 3, 'out', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (4, 3, 5, 'out', '0-f');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (5, 2, 5, 'out', '0-f');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (6, 6, 13, 'out', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (7, 7, 13, 'out', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (8, 8, 13, 'out', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (9, 9, 13, 'out', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (10, 10, 13, 'out', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (11, 11, 13, 'out', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (12, 12, 13, 'out', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (13, 4, 6, 'out', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (14, 4, 7, 'out', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (15, 4, 8, 'out', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (16, 4, 9, 'out', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (17, 4, 10, 'out', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (18, 4, 11, 'out', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (19, 4, 12, 'out', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (20, 4, 13, 'out', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (21, 14, 15, 'course', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (22, 14, 16, 'group', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (23, 14, 17, 'user', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (24, 14, 4, 'DB', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (25, 14, 1, 'FS', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (26, 15, 14, 'out', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (27, 16, 14, 'out', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (28, 17, 14, 'out', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (29, 19, 5, 'out', '0-f');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (30, 1, 19, 'out3', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (31, 4, 25, 'out', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (32, 4, 20, 'out', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (33, 25, 13, 'out', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (40, 20, 13, 'out', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (34, 4, 21, 'out', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (35, 4, 22, 'out', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (36, 4, 23, 'out', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (37, 21, 13, 'out', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (38, 22, 13, 'out', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (39, 23, 13, 'out', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (41, 4, 24, 'out', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (42, 24, 13, 'out', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (43, 4, 18, 'out', '');
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CO_id_target`, `CL_name`, `CL_relevanz`) VALUES (44, 18, 13, 'out', '');
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (1, 3, 'getFile', '', 1);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (2, 1, 'out1', '', 2);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (3, 1, 'out', '', 3);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (4, 3, 'out', '0-f', 5);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (5, 2, 'out', '0-f', 5);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (6, 6, 'out', '', 13);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (7, 7, 'out', '', 13);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (8, 8, 'out', '', 13);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (9, 9, 'out', '', 13);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (10, 10, 'out', '', 13);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (11, 11, 'out', '', 13);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (12, 12, 'out', '', 13);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (13, 4, 'out', '', 6);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (14, 4, 'out', '', 7);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (15, 4, 'out', '', 8);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (16, 4, 'out', '', 9);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (17, 4, 'out', '', 10);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (18, 4, 'out', '', 11);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (19, 4, 'out', '', 12);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (20, 4, 'out', '', 13);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (21, 14, 'course', '', 15);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (22, 14, 'group', '', 16);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (23, 14, 'user', '', 17);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (24, 14, 'DB', '', 4);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (25, 14, 'FS', '', 1);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (26, 15, 'out', '', 14);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (27, 16, 'out', '', 14);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (28, 17, 'out', '', 14);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (29, 19, 'out', '0-f', 5);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (30, 1, 'out3', '', 19);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (31, 4, 'out', '', 25);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (32, 4, 'out', '', 20);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (33, 25, 'out', '', 13);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (40, 20, 'out', '', 13);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (34, 4, 'out', '', 21);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (35, 4, 'out', '', 22);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (36, 4, 'out', '', 23);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (37, 21, 'out', '', 13);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (38, 22, 'out', '', 13);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (39, 23, 'out', '', 13);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (41, 4, 'out', '', 24);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (42, 24, 'out', '', 13);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (43, 4, 'out', '', 18);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (44, 18, 'out', '', 13);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (45, 4, 'out', '', 27);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (46, 27, 'out', '', 13);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (47, 4, 'out', '', 26);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (48, 26, 'out', '', 13);
 
 COMMIT;
 
@@ -836,6 +884,11 @@ END;$$
 USE `uebungsplattform`$$
 CREATE TRIGGER `Group_BUPD` BEFORE UPDATE ON `Group` FOR EACH ROW
 begin
+SET NEW.C_id = (select ES.C_id from ExerciseSheet ES where ES.ES_id = NEW.ES_id limit 1);
+if (NEW.C_id = NULL) then
+SIGNAL sqlstate '45001' set message_text = "no corresponding exercisesheet";
+END if;
+
 if not exists(select * from Invitation where ES_id = NEW.ES_id and U_id_member = NEW.U_id_member and U_id_leader = NEW.U_id_leader) then 
 SIGNAL sqlstate '45001' set message_text = "no invitation";
 ELSE 
@@ -845,6 +898,15 @@ end;
 
 
 $$
+
+USE `uebungsplattform`$$
+CREATE TRIGGER `Group_BINS` BEFORE INSERT ON `Group` FOR EACH ROW
+BEGIN
+SET NEW.C_id = (select ES.C_id from ExerciseSheet ES where ES.ES_id = NEW.ES_id limit 1);
+if (NEW.C_id = NULL) then
+SIGNAL sqlstate '45001' set message_text = "no corresponding exercisesheet";
+END if;
+END;$$
 
 USE `uebungsplattform`$$
 CREATE TRIGGER `ExerciseType_BDEL` BEFORE DELETE ON `ExerciseType` FOR EACH ROW
@@ -863,6 +925,20 @@ DELETE FROM `Submission` WHERE E_id = OLD.E_id;
 
 END;
 $$
+
+USE `uebungsplattform`$$
+CREATE TRIGGER `Exercise_BINS` BEFORE INSERT ON `Exercise` FOR EACH ROW
+SET NEW.C_id = (select ES.C_id from ExerciseSheet ES where ES.ES_id = NEW.ES_id limit 1);
+if (NEW.C_id = NULL) then
+SIGNAL sqlstate '45001' set message_text = "no corresponding exercisesheet";
+END if;$$
+
+USE `uebungsplattform`$$
+CREATE TRIGGER `Exercise_BUPD` BEFORE UPDATE ON `Exercise` FOR EACH ROW
+SET NEW.C_id = (select ES.C_id from ExerciseSheet ES where ES.ES_id = NEW.ES_id limit 1);
+if (NEW.C_id = NULL) then
+SIGNAL sqlstate '45001' set message_text = "no corresponding exercisesheet";
+END if;$$
 
 USE `uebungsplattform`$$
 CREATE TRIGGER `Submission_BDEL` BEFORE DELETE ON `Submission` FOR EACH ROW
@@ -923,9 +999,91 @@ end;
 $$
 
 USE `uebungsplattform`$$
+CREATE TRIGGER `Submission_BINS` BEFORE INSERT ON `Submission` FOR EACH ROW
+BEGIN
+SET NEW.ES_id = (select E.ES_id from Exercise ES where E.E_id = NEW.E_id limit 1);
+if (NEW.ES_id = NULL) then
+SIGNAL sqlstate '45001' set message_text = "no corresponding exercisesheet";
+END if;
+END;$$
+
+USE `uebungsplattform`$$
+CREATE TRIGGER `Submission_BUPD` BEFORE UPDATE ON `Submission` FOR EACH ROW
+BEGIN
+SET NEW.ES_id = (select E.ES_id from Exercise E where E.E_id = NEW.E_id limit 1);
+if (NEW.ES_id = NULL) then
+SIGNAL sqlstate '45001' set message_text = "no corresponding exercisesheet";
+END if;
+END;$$
+
+USE `uebungsplattform`$$
+CREATE TRIGGER `Marking_BINS` BEFORE INSERT ON `Marking` FOR EACH ROW
+BEGIN
+SET NEW.E_id = (select E.E_id from Submission S where S.S_id = NEW.S_id limit 1);
+if (NEW.E_id = NULL) then
+SIGNAL sqlstate '45001' set message_text = "no corresponding submission";
+END if;
+
+SET NEW.ES_id = (select E.ES_id from Submission S where S.S_id = NEW.S_id limit 1);
+if (NEW.ES_id = NULL) then
+SIGNAL sqlstate '45001' set message_text = "no corresponding submission";
+END if;
+END;$$
+
+USE `uebungsplattform`$$
+CREATE TRIGGER `Marking_BUPD` BEFORE UPDATE ON `Marking` FOR EACH ROW
+BEGIN
+SET NEW.E_id = (select E.E_id from Submission S where S.S_id = NEW.S_id limit 1);
+if (NEW.E_id = NULL) then
+SIGNAL sqlstate '45001' set message_text = "no corresponding submission";
+END if;
+
+SET NEW.ES_id = (select E.ES_id from Submission S where S.S_id = NEW.S_id limit 1);
+if (NEW.ES_id = NULL) then
+SIGNAL sqlstate '45001' set message_text = "no corresponding submission";
+END if;
+END;$$
+
+USE `uebungsplattform`$$
 CREATE TRIGGER `Attachment_ADEL` AFTER DELETE ON `Attachment` FOR EACH ROW
-Delete IGNORE From File where F_id = OLD.F_id
+Delete IGNORE From File where F_id = OLD.F_id;
 $$
+
+USE `uebungsplattform`$$
+CREATE TRIGGER `Attachment_BINS` BEFORE INSERT ON `Attachment` FOR EACH ROW
+BEGIN
+SET NEW.ES_id = (select E.ES_id from Exercise E where E.E_id = NEW.E_id limit 1);
+if (NEW.ES_id = NULL) then
+SIGNAL sqlstate '45001' set message_text = "no corresponding exercise";
+END if;
+END;$$
+
+USE `uebungsplattform`$$
+CREATE TRIGGER `Attachment_BUPD` BEFORE UPDATE ON `Attachment` FOR EACH ROW
+BEGIN
+SET NEW.ES_id = (select E.ES_id from Exercise E where E.E_id = NEW.E_id limit 1);
+if (NEW.ES_id = NULL) then
+SIGNAL sqlstate '45001' set message_text = "no corresponding exercise";
+END if;
+END;$$
+
+USE `uebungsplattform`$$
+CREATE TRIGGER `SelectedSubmission_BINS` BEFORE INSERT ON `SelectedSubmission` FOR EACH ROW
+BEGIN
+SET NEW.ES_id = (select E.ES_id from Exercise E where E.E_id = NEW.E_id limit 1);
+if (NEW.ES_id = NULL) then
+SIGNAL sqlstate '45001' set message_text = "no corresponding exercise";
+END if;
+END;$$
+
+USE `uebungsplattform`$$
+CREATE TRIGGER `SelectedSubmission_BUPD` BEFORE UPDATE ON `SelectedSubmission` FOR EACH ROW
+BEGIN
+SET NEW.ES_id = (select E.ES_id from Exercise E where E.E_id = NEW.E_id limit 1);
+if (NEW.ES_id = NULL) then
+SIGNAL sqlstate '45001' set message_text = "no corresponding exercise";
+END if;
+END;$$
 
 USE `uebungsplattform`$$
 CREATE TRIGGER `deleteComponentLinks` BEFORE DELETE ON `Component` FOR EACH ROW
