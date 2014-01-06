@@ -22,6 +22,8 @@ if (!$com->used())
     
 /**
  * A class, to abstract the "ExerciseSheet" table from database
+ *
+ * @author Till Uhlig
  */
 class DBExerciseSheet
 {
@@ -98,7 +100,7 @@ class DBExerciseSheet
                         
         // GET GetCourseSheetURLs
         $this->_app->get('/' . $this->getPrefix() . '/course/:courseid/url',
-                        array($this,'GetCourseSheetURLs'));
+                        array($this,'getCourseSheetURLs'));
                         
         // GET GetExerciseSheet
         $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid+',
@@ -481,12 +483,12 @@ class DBExerciseSheet
             if (in_array('exercise',$options)){
                 $query = Query::decodeQuery($result2['content']);
                             $data = $query->getResponse();
-                            $exercises = DBJson::getObjectsByAttributes($data, 
+                $exercises = DBJson::getObjectsByAttributes($data, 
                             Exercise::getDBPrimaryKey(), 
                             Exercise::getDBConvert());
             
                 // concatenates the exercise sheet and the associated exercises
-                $res = DBJson::concatObjectLists($data, 
+                $res = DBJson::concatResultObjectLists($data, 
                             $res,
                             ExerciseSheet::getDBPrimaryKey(),
                             ExerciseSheet::getDBConvert()['ES_exercises'], 
