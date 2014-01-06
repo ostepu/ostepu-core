@@ -118,6 +118,106 @@ class Marking extends Object implements JsonSerializable
         $this->date = $value;
     }
     
+    
+    
+    
+    /**
+     * (description)
+     */  
+    public static function getDBConvert(){
+        return array(
+           'M_id' => 'id',
+           'U_id_tutor' => 'tutorId',
+           'M_file' => 'file',
+           'S_id' => 'submissionId',
+           'M_tutorComment' => 'tutorComment',
+           'M_outstanding' => 'outstanding',
+           'M_status' => 'status',
+           'M_points' => 'points',
+           'M_date' => 'date'
+        );
+    }
+    
+    /**
+     * (description)
+     */
+    public function getInsertData(){
+        $values = "";
+        
+        if ($this->id != null) $this->addInsertData($values, 'M_id', $this->id );
+        if ($this->tutorId != null) $this->addInsertData($values, 'U_id_tutor', $this->tutorId);
+        if ($this->file != array()) $this->addInsertData($values, 'F_id_file', $this->file->getFileId());
+        if ($this->submissionId != null) $this->addInsertData($values, 'S_id', $this->submissionId);
+        if ($this->tutorComment != null) $this->addInsertData($values, 'M_tutorComment', $this->tutorComment);
+        if ($this->outstanding != null) $this->addInsertData($values, 'M_outstanding', $this->outstanding);
+        if ($this->status != null) $this->addInsertData($values, 'M_status', $this->status);
+        if ($this->points != null) $this->addInsertData($values, 'M_points', $this->points);
+        if ($this->date != null) $this->addInsertData($values, 'M_date', $this->date);
+        
+        if ($values != ""){
+            $values=substr($values,1);
+        }
+        return $values;
+    } 
+    
+    /**
+     * (description)
+     */
+    public static function getDBPrimaryKey(){
+        return 'M_id';
+    }
+    
+    /**
+     * (description)
+     */
+    public static function getStatusDefinition(){
+        return array(
+            '0' => '???', // vorläufig
+            '1' => '???', // endgültig
+        );
+    }
+    
+    /**
+     * (description)
+     */
+    public function __construct($data=array()) {
+        foreach ($data AS $key => $value) {
+             if (isset($key)){
+                if ($key == 'file'){
+                    $this->{$key} = File::decodeFile($value, false);
+                }
+                else
+                    $this->{$key} = $value;
+            }
+        }
+    }
+    
+    /**
+     * (description)
+     */
+    public static function encodeMarking($data){
+        return json_encode($data);
+    }
+    
+    /**
+     * (description)
+     */
+    public static function decodeMarking($data){
+        $data = json_decode($data);
+        if (is_array($data)){
+            $result = array();
+            foreach ($data AS $key => $value) {
+                array_push($result, new Marking($value));
+            }
+            return $result;   
+        }
+        else
+            return new Marking($data);
+    }
+    
+    /**
+     * (description)
+     */
     public function jsonSerialize() {
         return array(
             'id' => $this->id,

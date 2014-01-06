@@ -111,7 +111,7 @@ class Submission extends Object implements JsonSerializable
         return array(
            'S_id' => 'id',
            'U_id' => 'studentId',
-           'F_id_file' => 'file',
+           'S_file' => 'file',
            'E_id' => 'exerciseId',
            'S_comment' => 'comment',
            'S_accepted' => 'accepted',
@@ -123,11 +123,73 @@ class Submission extends Object implements JsonSerializable
     /**
      * (description)
      */
+    public function getInsertData(){
+        $values = "";
+        
+        if ($this->id != null) $this->addInsertData($values, 'S_id', $this->id );
+        if ($this->studentId != null) $this->addInsertData($values, 'U_id', $this->studentId);
+        if ($this->file != array()) $this->addInsertData($values, 'F_id_file', $this->file->getFileId());
+        if ($this->exerciseId != null) $this->addInsertData($values, 'E_id', $this->exerciseId);
+        if ($this->comment != null) $this->addInsertData($values, 'S_comment', $this->comment);
+        if ($this->accepted != null) $this->addInsertData($values, 'S_accepted', $this->accepted);
+        if ($this->date != null) $this->addInsertData($values, 'S_date', $this->date);
+        if ($this->selectedForGroup != null) $this->addInsertData($values, 'S_selected', $this->selectedForGroup);
+        
+        if ($values != ""){
+            $values=substr($values,1);
+        }
+        return $values;
+    } 
+    
+    /**
+     * (description)
+     */
     public static function getDbPrimaryKey()
     {
         return 'S_id';
     }
     
+    /**
+     * (description)
+     */
+    public function __construct($data=array()) {
+        foreach ($data AS $key => $value) {
+             if (isset($key)){
+                if ($key == 'file'){
+                    $this->{$key} = File::decodeFile($value, false);
+                }
+                else
+                    $this->{$key} = $value;
+            }
+        }
+    }
+    
+    /**
+     * (description)
+     */
+    public static function encodeSubmission($data){
+        return json_encode($data);
+    }
+    
+    /**
+     * (description)
+     */
+    public static function decodeSubmission($data){
+        $data = json_decode($data);
+        if (is_array($data)){
+            $result = array();
+            foreach ($data AS $key => $value) {
+                array_push($result, new Submission($value));
+            }
+            return $result;   
+        }
+        else
+            return new Submission($data);
+    }
+    
+    /**
+     * (description)
+     */
     public function jsonSerialize() {
         return array(
             'id' => $this->id,

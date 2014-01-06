@@ -1,26 +1,31 @@
 <?php
 /**
-* @file (filename)
-* %(description)
+* @file DBJson.php contains the DbJson class
 */ 
 
 
 /**
- * (description)
+ * the DBJson class is written for several tasks,
+ * - 
+ *
+ * @author Till Uhlig
  */
-class DbJson
+class DBJson
 {
 
     /**
-     * (description)
+     * the function reads the passed mysql object and converts direktly into json
      *
-     * @param $object (description)
+     * @param $object a mysql answer
+     *
+     * @return an array of json (string[]) 
      */
     public static function getJson($object)
     {
         if (!$object){
             throw new Exception("Invalid query. Error: " . mysql_error());
         }
+        
         $res = array();
         while ($row = mysql_fetch_assoc($object)) {
             array_push($res, $row);
@@ -29,9 +34,11 @@ class DbJson
     }
         
     /**
-     * (description)
+     * the function reads the passed mysql object
      *
-     * @param $data (description)
+     * @param $data a mysql answer
+     *
+     * @return an array, which represents the received columns (string[][])
      */
     public static function getRows($data)
     {
@@ -43,11 +50,14 @@ class DbJson
     }
     
     /**
-     * (description)
+     * extract an array of attributes from a data array, using a list of object attributes
      *
-     * @param $object (description)
-     * @param $object (description)
-     * @param $object (description)
+     * @param $data an array, which represents the data, received sql data
+     * @param $id the primary key/keys (string/string[])
+     * @param $attributes the object attributes (string[])
+     * @param $extension optional, a const postfix for the column names (string)
+     *
+     * @return an array of assoc arrays
      */
     public static function getObjectsByAttributes($data, $id, $attributes, $extension = "")
     {
@@ -61,7 +71,7 @@ class DbJson
             } else{
                 $key = $row[$id.$extension];
             }
-        //$row[$id.$extension]
+
             foreach ($attributes as $attrib => $value) {  
                 if (isset($row[$attrib.$extension])){          
                     $res[$key][$value] =  $row[$attrib.$extension];
@@ -72,11 +82,14 @@ class DbJson
     }
     
     /**
-     * (description)
+     * extract an array of attributes from a data array, using a list of object attributes
      *
-     * @param $object (description)
-     * @param $object (description)
-     * @param $object (description)
+     * @param $data (description)
+     * @param $id (description)
+     * @param $attributes (description)
+     * @param $extension (description)
+     *
+     * @return an array of arrays
      */
     public static function getResultObjectsByAttributes($data, $id, $attributes, $extension = "")
     {
@@ -95,50 +108,43 @@ class DbJson
     }
     
     /**
-     * (description)
+     * generates insert data from input
      *
-     * @param $object (description)
-     * @param $object (description)
-     * @param $object (description)
+     * @param $data (description)
+     * @param $attributes (description)
+     * @param $seperator (description)
+     *
+     * @return
      */
     public static function getInsertDataFromInput($data, $attributes, $seperator)
     {
-      //  $data = json_decode($data);
-      //  if (!is_array($data))
-     //       $data = array($data);
-        
-     //   $res = array();
         $row = $data;
-       // foreach ($data as $row) {  
-            //$row = get_object_vars($row);
-            $temp = array();
-            $t1 = "";
-            $t2 = "";
-            foreach ($attributes as $attrib => $value) {  
-                if (isset($row[$value]) && !is_array($row[$value]) && gettype($row[$value])!= 'object'){    
-                    $t1 = $t1 . $seperator . $attrib;
-                    $t2 = $t2 . $seperator . "'" . $row[$value] . "'";
-                }
-            }
 
-            if ($t1 != "" && $t2 != ""){
-                $t1=substr($t1,1);  
-                $t2=substr($t2,1);
-               // array_push($temp, $t1);
-                //array_push($temp, $t2);
-               // array_push($res,$temp);
+        $temp = array();
+        $t1 = "";
+        $t2 = "";
+        foreach ($attributes as $attrib => $value) {  
+            if (isset($row[$value]) && !is_array($row[$value]) && gettype($row[$value])!= 'object'){    
+                $t1 = $t1 . $seperator . $attrib;
+                $t2 = $t2 . $seperator . "'" . $row[$value] . "'";
             }
-        //}
-    
+        }
+
+        if ($t1 != "" && $t2 != ""){
+            $t1=substr($t1,1);  
+            $t2=substr($t2,1);
+        }    
         return array ('columns' => $t1, 'values' => $t2);
     }
     
-     /**
-     * (description)
+    /**
+     * generates update data from input
      *
-     * @param $object (description)
-     * @param $object (description)
-     * @param $object (description)
+     * @param $data (description)
+     * @param $attributes (description)
+     * @param $seperator (description)
+     *
+     * @return
      */
     public static function getUpdateDataFromInput($data, $attributes, $seperator)
     {
@@ -158,14 +164,17 @@ class DbJson
     } 
     
     /**
-     * (description)
+     * concatenates two arrays by using attribute lists, 
      *
-     * @param $object (description)
-     * @param $param (description)
-     * @param $param (description)
-     * @param $param (description)
-     * @param $param (description)
-     * @param $param (description)
+     * @param $data (description)
+     * @param $prim (description)
+     * @param $primKey (description)
+     * @param $primAttrib (description)
+     * @param $sec (description)
+     * @param $secKey (description)
+     * @param $extension (description)
+     *
+     * @return
      */
     public static function concatResultObjectLists($data, $prim, $primKey, $primAttrib, $sec, $secKey, $extension = "")
     {
@@ -192,27 +201,23 @@ class DbJson
             $row[$primAttrib] = array_merge($row[$primAttrib]);
         }
         
-       /* $arr = array();
-        foreach ($prim as $rw){
-            array_push($arr, array_merge( $rw));
-        }*/
-        
-    $prim = array_values($prim);
-        
-      //  
+        $prim = array_values($prim);
+
         return $prim;
     }
     
     /**
      * (description)
      *
-     * @param $object (description)
-     * @param $param (description)
-     * @param $param (description)
-     * @param $param (description)
-     * @param $param (description)
-     * @param $param (description)
-     * @param $param (description)
+     * @param $data (description)
+     * @param $prim (description)
+     * @param $primKey (description)
+     * @param $primAttrib (description)
+     * @param $sec (description)
+     * @param $secKey (description)
+     * @param $extension (description)
+     *
+     * @return
      */
     public static function concatObjectLists($data, $prim, $primKey, $primAttrib, $sec, $secKey, $extension = "")
     {
@@ -241,13 +246,15 @@ class DbJson
     /**
      * (description)
      *
-     * @param $object (description)
-     * @param $param (description)
-     * @param $param (description)
-     * @param $param (description)
-     * @param $param (description)
-     * @param $param (description)
-     * @param $param (description)
+     * @param $data (description)
+     * @param $prim (description)
+     * @param $primKey (description)
+     * @param $primAttrib (description)
+     * @param $sec (description)
+     * @param $secKey (description)
+     * @param $extension (description)
+     *
+     * @return
      */
     public static function concatObjectListResult($data, $prim, $primKey, $primAttrib, $sec, $secKey, $extension = "")
     {
@@ -281,13 +288,15 @@ class DbJson
     /**
      * (description)
      *
-     * @param $object (description)
-     * @param $param (description)
-     * @param $param (description)
-     * @param $param (description)
-     * @param $param (description)
-     * @param $param (description)
-     * @param $param (description)
+     * @param $data (description)
+     * @param $prim (description)
+     * @param $primKey (description)
+     * @param $primAttrib (description)
+     * @param $sec (description)
+     * @param $secKey (description)
+     * @param $extension (description)
+     *
+     * @return
      */
     public static function concatObjectListsSingleResult($data, $prim, $primKey, $primAttrib, $sec, $secKey, $extension = "")
     {
@@ -313,13 +322,15 @@ class DbJson
     /**
      * (description)
      *
-     * @param $object (description)
-     * @param $param (description)
-     * @param $param (description)
-     * @param $param (description)
-     * @param $param (description)
-     * @param $param (description)
-     * @param $param (description)
+     * @param $data (description)
+     * @param $prim (description)
+     * @param $primKey (description)
+     * @param $primAttrib (description)
+     * @param $sec (description)
+     * @param $secKey (description)
+     * @param $extension (description)
+     *
+     * @return
      */
     public static function concatResultObjectListAsArray($data, $prim, $primKey, $primAttrib, $sec, $secKey, $extension = "")
     {
