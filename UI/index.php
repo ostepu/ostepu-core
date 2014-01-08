@@ -4,22 +4,22 @@ include 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
 include_once 'include/Helpers.php';
 
-// construct a new Header
-$h = new Header("Übungsplattform",
-                "",
-                "",
-                "");
-
-$h->setBackURL("index.php")
-  ->setBackTitle("zur Veranstaltung");
-
 if (isset($_GET['uid'])) {
     $userid = $_GET['uid'];
 } else {
     $uid = 0;
 }
 
-$databaseURI = 'http://141.48.9.92/uebungsplattform/DB/DBCourse/DBCourse.php/course/user/';
+// construct a new Header
+$h = new Header("Übungsplattform",
+                "",
+                "",
+                "");
+
+$h->setBackURL("index.php?uid={$uid}")
+  ->setBackTitle("zur Veranstaltung");
+
+$databaseURI = 'http://141.48.9.92/uebungsplattform/DB/DBControl/course/user/';
 
 $courses = http_get($databaseURI . $userid);
 $courses = json_decode($courses, TRUE);
