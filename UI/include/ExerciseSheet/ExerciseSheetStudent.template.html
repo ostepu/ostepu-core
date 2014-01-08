@@ -8,7 +8,7 @@ foreach ($sheets as $sheet):
             <?php print $sheet['sheetName']; ?>
         </div>
         <div class="critical-color bold right">
-            <?php print $sheet['endTime']; ?>
+            <?php print $sheet['endDate']; ?>
         </div>
         <div class="exercise-sheet-info info-color bold right">
             <?php print $sheet['exerciseSheetInfo'] . '%'; ?>
@@ -53,7 +53,10 @@ foreach ($sheets as $sheet):
             <ol class="body-options body-option-color">
                 <li><a href="#">Aufgabenblatt</a></li>
                 <li><a href="#">Musterlösung</a></li>
-                <li><a href="Group.php">Gruppe verwalten</a></li>
+                <?php print '<li><a href="Group.php?uid=';
+                print $uid . '&sid=';
+                print $sheet['id'] . '&cid=';
+                print $cid . '">Gruppe verwalten</a></li>'; ?>
                 <li><a href="#">Alle Anhänge herunterladen</a></li>
                 <li><a href="#">Alle Einsendungen herunterladen</a></li>
             </ol>
