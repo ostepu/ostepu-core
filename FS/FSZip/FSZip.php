@@ -5,9 +5,9 @@
  */ 
 
 require 'Include/Slim/Slim.php';
-include 'Include/CConfig.php';
-include 'Include/Structures.php';
-include 'Include/Request.php';
+include_once( 'Include/CConfig.php' );
+include_once( 'Include/Structures.php' );
+include_once( 'Include/Request.php' );
 
 \Slim\Slim::registerAutoloader();
 
