@@ -13,10 +13,10 @@ $h->setBackURL("index.php")
 ->setBackTitle("zur Veranstaltung");
 
 // construct a content element for setting exam paper conditions
-$setCondition = Template::WithTemplateFile('include/Condition/SetCondition.template.json');
+$setCondition = Template::WithTemplateFile('include/Condition/SetCondition.template.html');
 $setCondition->bind(array());
 
-$userList = Template::WithTemplateFile('include/Condition/UserList.template.json');
+$userList = Template::WithTemplateFile('include/Condition/UserList.template.html');
 $userList->bind(array());
 
 // wrap all the elements in some HTML and show them on the page
