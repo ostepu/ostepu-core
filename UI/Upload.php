@@ -11,7 +11,7 @@ include_once '../Assistants/Logger.php';
 ?>
 
 <?php
-    if (isset($_POST['sheetID'])) {
+    if (isset($_POST['action'])) {
         Logger::Log($_POST, LogLevel::INFO);
         /**
          * @todo actually upload the data

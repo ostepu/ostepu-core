@@ -6,10 +6,9 @@ include_once '../Assistants/Logger.php';
 ?>
 
 <?php
-    if (isset($_POST['sheet'])) {
+    if (isset($_POST['action'])) {
         Logger::Log($_POST, LogLevel::INFO);
         /**
-         * @todo rename to 'action' instead of sheet
          * @todo create a new sheet or update the existing one
          */
 
@@ -22,7 +21,7 @@ include_once '../Assistants/Logger.php';
 
 <?php
 
-// construct a new Header
+// construct a new Headers
 $h = new Header("Datenstrukturen",
                 "",
                 "Admin",
