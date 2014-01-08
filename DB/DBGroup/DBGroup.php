@@ -21,6 +21,8 @@ if (!$com->used())
     
 /**
  * A class, to abstract the "Group" table from database
+ *
+ * @author Till Uhlig
  */
 class DBGroup
 {
@@ -80,11 +82,13 @@ class DBGroup
         $this->_app->response->headers->set('Content-Type', 'application/json');
 
         // PUT EditGroup
-        $this->_app->put('/' . $this->getPrefix() . '/user/:userid/exercisesheet/:esid',
+        $this->_app->put('/' . $this->getPrefix() . 
+                        '/user/:userid/exercisesheet/:esid',
                         array($this,'editGroup'));
         
         // DELETE DeleteGroup
-        $this->_app->delete('/' . $this->getPrefix() . '/user/:userid/exercisesheet/:esid',
+        $this->_app->delete('/' . $this->getPrefix() . 
+                            '/user/:userid/exercisesheet/:esid',
                            array($this,'deleteGroup'));
                                                       
         // POST SetGroup
@@ -100,7 +104,8 @@ class DBGroup
                         array($this,'getAllGroups'));
                         
         // GET GetSheetUserGroups
-        $this->_app->get('/' . $this->getPrefix() . '/user/:userid/exercisesheet/:esid',
+        $this->_app->get('/' . $this->getPrefix() . 
+                        '/user/:userid/exercisesheet/:esid',
                         array($this,'getSheetUserGroups'));
         
         // GET GetSheetGroups
@@ -239,18 +244,23 @@ class DBGroup
 
             $data = $query->getResponse();
 
-            // generates an assoc array of an user by using a defined list of its attributes
+            // generates an assoc array of an user by using a defined list of 
+            // its attributes
             $leader = DBJson::getObjectsByAttributes($data, 
                                             User::getDBPrimaryKey(), 
-                                            User::getDBConvert());
+                                            User::getDBConvert()
+                                            );
             
-            // generates an assoc array of usersby using a defined list of its attributes
+            // generates an assoc array of users by using a defined list of 
+            // its attributes
             $member = DBJson::getObjectsByAttributes($data, 
                                             User::getDBPrimaryKey(), 
-                                            User::getDBConvert(), 
-                                            '2');
+                                            User::getDBConvert(),
+                                            '2'
+                                            );
                                             
-            // generates an assoc array of groups by using a defined list of its attributes
+            // generates an assoc array of groups by using a defined list of 
+            // its attributes
             $groups = DBJson::getObjectsByAttributes($data, 
                                     Group::getDBPrimaryKey(), 
                                     Group::getDBConvert());
@@ -262,7 +272,8 @@ class DBGroup
                             Group::getDBPrimaryKey(),
                             Group::getDBConvert()['U_leader'] ,
                             $leader,
-                            User::getDBPrimaryKey());
+                            User::getDBPrimaryKey()
+                            );
        
             // concatenates the groups and the associated group member
             $res = DBJson::concatResultObjectLists($data, 
@@ -271,7 +282,8 @@ class DBGroup
                             Group::getDBConvert()['U_member'] ,
                             $member,
                             User::getDBPrimaryKey(),
-                            '2');
+                            '2'
+                            );
                             
                           
             // to reindex
@@ -306,18 +318,23 @@ class DBGroup
 
             $data = $query->getResponse();
 
-            // generates an assoc array of an user by using a defined list of its attributes
+            // generates an assoc array of an user by using a defined list of 
+            // its attributes
             $leader = DBJson::getObjectsByAttributes($data, 
                                             User::getDBPrimaryKey(), 
-                                            User::getDBConvert());
+                                            User::getDBConvert()
+                                            );
             
-            // generates an assoc array of users by using a defined list of its attributes
+            // generates an assoc array of users by using a defined list of 
+            // its attributes
             $member = DBJson::getObjectsByAttributes($data, 
                                             User::getDBPrimaryKey(), 
-                                            User::getDBConvert(), 
-                                            '2');
+                                            User::getDBConvert(),
+                                            '2'
+                                            );
                                             
-            // generates an assoc array of groups by using a defined list of its attributes
+            // generates an assoc array of groups by using a defined list of 
+            // its attributes
             $groups = DBJson::getObjectsByAttributes($data, 
                                     Group::getDBPrimaryKey(), 
                                     Group::getDBConvert());
@@ -329,7 +346,8 @@ class DBGroup
                             Group::getDBPrimaryKey(),
                             Group::getDBConvert()['U_leader'] ,
                             $leader,
-                            User::getDBPrimaryKey());
+                            User::getDBPrimaryKey()
+                            );
        
             // concatenates the groups and the associated group member
             $res = DBJson::concatResultObjectLists($data, 
@@ -338,7 +356,8 @@ class DBGroup
                             Group::getDBConvert()['U_member'] ,
                             $member,
                             User::getDBPrimaryKey(),
-                            '2');
+                            '2'
+                            );
                                                   
             // to reindex
             $res = array_merge($res);
@@ -367,7 +386,8 @@ class DBGroup
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetSheetUserGroups.sql", 
-                                        array("userid" => $userid,"esid" => $esid));  
+                                        array("userid" => $userid,
+                                            "esid" => $esid));  
                                         
         // checks the correctness of the query    
         if ($result['status']>=200 && $result['status']<=299){
@@ -375,18 +395,22 @@ class DBGroup
 
             $data = $query->getResponse();
 
-            // generates an assoc array of an user by using a defined list of its attributes
+            // generates an assoc array of an user by using a defined list of 
+            // its attributes
             $leader = DBJson::getObjectsByAttributes($data, 
                                             User::getDBPrimaryKey(), 
-                                            User::getDBConvert());
+                                            User::getDBConvert(),
+                                            '2');
             
-            // generates an assoc array of usersby using a defined list of its attributes
+            // generates an assoc array of usersby using a defined list of 
+            // its attributes
             $member = DBJson::getObjectsByAttributes($data, 
                                             User::getDBPrimaryKey(), 
-                                            User::getDBConvert(), 
-                                            '2');
+                                            User::getDBConvert()
+                                            );
                                             
-            // generates an assoc array of groups by using a defined list of its attributes
+            // generates an assoc array of groups by using a defined list of 
+            // its attributes
             $groups = DBJson::getObjectsByAttributes($data, 
                                     Group::getDBPrimaryKey(), 
                                     Group::getDBConvert());
@@ -398,7 +422,8 @@ class DBGroup
                             Group::getDBPrimaryKey(),
                             Group::getDBConvert()['U_leader'] ,
                             $leader,
-                            User::getDBPrimaryKey());
+                            User::getDBPrimaryKey()
+                            );
        
             // concatenates the groups and the associated group member
             $res = DBJson::concatResultObjectLists($data, 
@@ -407,7 +432,8 @@ class DBGroup
                             Group::getDBConvert()['U_member'] ,
                             $member,
                             User::getDBPrimaryKey(),
-                            '2');
+                            '2'
+                            );
                             
                           
             // to reindex
@@ -444,18 +470,22 @@ class DBGroup
 
             $data = $query->getResponse();
 
-            // generates an assoc array of an user by using a defined list of its attributes
+            // generates an assoc array of an user by using a defined list of 
+            // its attributes
             $leader = DBJson::getResultObjectsByAttributes($data, 
                                             User::getDBPrimaryKey(), 
-                                            User::getDBConvert());
+                                            User::getDBConvert(),
+                                            '2');
             
-            // generates an assoc array of usersby using a defined list of its attributes
+            // generates an assoc array of usersby using a defined list of 
+            // its attributes
             $member = DBJson::getObjectsByAttributes($data, 
                                             User::getDBPrimaryKey(), 
-                                            User::getDBConvert(), 
-                                            '2');
+                                            User::getDBConvert()
+                                            );
                                             
-            // generates an assoc array of groups by using a defined list of its attributes
+            // generates an assoc array of groups by using a defined list of 
+            // its attributes
             $groups = DBJson::getObjectsByAttributes($data, 
                                     Group::getDBPrimaryKey(), 
                                     Group::getDBConvert());
@@ -467,7 +497,8 @@ class DBGroup
                             Group::getDBPrimaryKey(),
                             Group::getDBConvert()['U_leader'] ,
                             $leader,
-                            User::getDBPrimaryKey());
+                            User::getDBPrimaryKey()
+                            );
        
             // concatenates the groups and the associated group member
             $res = DBJson::concatResultObjectLists($data, 
@@ -476,7 +507,8 @@ class DBGroup
                             Group::getDBConvert()['U_member'] ,
                             $member,
                             User::getDBPrimaryKey(),
-                            '2');
+                            '2'
+                            );
                             
                           
             // to reindex
