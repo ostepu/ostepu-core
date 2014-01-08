@@ -1,12 +1,13 @@
 <?php
 /**
- * @file (filename)
- * %(description)
+ * @file DBRequest.php contains the DBRequest class
  */ 
 include_once( 'Structures.php' );
 
 /**
  * (description)
+ *
+ * @author Till Uhlig
  */
 class DBRequest
 {
@@ -23,13 +24,9 @@ class DBRequest
             DBRequest::$config = parse_ini_file("config.ini", TRUE);
         
         $dbconn = mysql_connect(DBRequest::$config['DB']['db_path'], DBRequest::$config['DB']['db_user'],DBRequest::$config['DB']['db_passwd']);    
-        /*if (!$dbconn) {
-            die('Keine Verbindung möglich: ' . mysql_error());
-        }*/   
 
         mysql_select_db(DBRequest::$config['DB']['db_name']);
-      //  $sql_statement = explode("---",$sqlStatement);
-        //foreach ($sql_statement as $statement){
+
         $query_result['content'] = mysql_query($sqlStatement, $dbconn);
         $query_result['affectedRows'] = mysql_affected_rows();
         $query_result['insertId'] = mysql_insert_id();
@@ -39,11 +36,6 @@ class DBRequest
             $query_result['numRows'] = mysql_num_rows($query_result['content']);
         }
         
-         /*   if (!$query_result){
-                die('Keine Verbindung möglich: ' . mysql_error());
-            }*/
-       // }
-        
         mysql_close($dbconn);
         $dbconn=null;
         return $query_result;
@@ -52,14 +44,17 @@ class DBRequest
     /**
      * (description)
      *
-     * @param $sql_statement (description)
+     * @param $querys (description)
+     * @param $sqlFile (description)
+     * @param $vars (description)
      */
     public static function getRoutedSqlFile($querys, $sqlFile, $vars)
     {
         extract($vars, EXTR_OVERWRITE);
 
         $obj = new Query();
-        eval("\$sql = \"" . implode('\n',file($sqlFile)) . "\";");
+       // eval("\$sql = \"" . implode('\n',file($sqlFile)) . "\";");
+        eval("\$sql = \"" . file_get_contents($sqlFile) . "\";"); 
         $obj->setRequest($sql);
         
         return Request::routeRequest("GET",
