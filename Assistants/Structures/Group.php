@@ -64,8 +64,8 @@ class Group extends Object implements JsonSerializable
         $values = "";
         
         if ($this->sheetId != null) $this->addInsertData($values, 'ES_id', $this->sheetId );
-        if ($this->leader != null) $this->addInsertData($values, 'U_id_leader', $this->leader->getId());
-        if ($this->members != array()) $this->addInsertData($values, 'U_id_member', $this->member[0]->getId());
+        if ($this->members != array()) $this->addInsertData($values, 'U_id_leader', $this->member[0]->getId());
+        if ($this->leader != null) $this->addInsertData($values, 'U_id_member', $this->leader->getId());
         
         if ($values != ""){
             $values=substr($values,1);
@@ -124,7 +124,7 @@ class Group extends Object implements JsonSerializable
     public function jsonSerialize() {
         return array(
             'members' => $this->members,
-            'leaderId' => $this->leader,
+            'leader' => $this->leader,
             'sheetId' => $this->sheetId
         );
     }
