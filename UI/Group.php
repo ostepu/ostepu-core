@@ -2,6 +2,7 @@
 include 'include/Header/Header.php';
 include 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
+include_once 'include/Helpers.php';
 ?>
 
 <?php
@@ -32,12 +33,19 @@ if (isset($_GET['uid'])) {
     die('no user id!\n');
 }
 
-// construct a new Header
-$h = new Header("Datenstrukturen",
+$databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/user/user/{$uid}";
+$user = http_get($databaseURI);
+$user = json_decode($user, true);
+
+$databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/course/course/{$cid}";
+$course = http_get($databaseURI);
+$course = json_decode($course, true)[0];
+
+// construct a new header
+$h = new Header($course['name'],
                 "",
-                "Florian Lücke",
-                "211221492",
-                "75%");
+                $user['firstName'] . ' ' . $user['lastName'],
+                $user['userName']);
 
 $h->setBackURL("Student.php?cid={$cid}&uid={$uid}")
 ->setBackTitle("zur Veranstaltung");
@@ -46,12 +54,15 @@ $databaseURL = "http://141.48.9.92/uebungsplattform/DB/DBGroup/group/user/{$uid}
 
 
 $data = http_get($databaseURL);
-$data = json_decode($data, true);
 
-$group = $data[0];
+if ($data) {
+    $data = json_decode($data, true);
+    $group = $data[0];
+} else {
+    $group = array("leader" => $user);
+}
+
 $groupInfo = array();
-//unset($data['group']);
-//unset($data['groupInfo']);
 $invitation = array();
 
 // construct a content element for managing groups

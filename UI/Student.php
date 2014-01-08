@@ -16,11 +16,20 @@ if (isset($_GET['uid'])) {
     die('no user id!\n');
 }
 
+$databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/user/user/{$uid}";
+$user = http_get($databaseURI);
+$user = json_decode($user, true);
+
+$databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/course/course/{$cid}";
+$course = http_get($databaseURI);
+$course = json_decode($course, true)[0];
+
 // construct a new header
-$h = new Header("Datenstrukturen",
+$h = new Header($course['name'],
                 "",
-                "Florian Lücke",
-                "211221492");
+                $user['firstName'] . ' ' . $user['lastName'],
+                $user['userName']);
+
 $h->setBackURL("index.php?uid={$uid}");
 
 /*
