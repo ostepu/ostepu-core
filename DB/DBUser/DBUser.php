@@ -22,6 +22,8 @@ if (!$com->used())
     
 /**
  * A class, to abstract the "User" table from database
+ *
+ * @author Till Uhlig
  */
 class DBUser
 {
