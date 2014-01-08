@@ -14,6 +14,24 @@ if (isset($_POST['action'])) {
 ?>
 
 <?php
+if (isset($_GET['sid'])) {
+    $sid = $_GET['sid'];
+} else {
+    die('no sheet id!\n');
+}
+
+if (isset($_GET['cid'])) {
+    $cid = $_GET['cid'];
+} else {
+    die('no course id!\n');
+}
+
+if (isset($_GET['uid'])) {
+    $uid = $_GET['uid'];
+} else {
+    die('no user id!\n');
+}
+
 // construct a new Header
 $h = new Header("Datenstrukturen",
                 "",
@@ -21,17 +39,20 @@ $h = new Header("Datenstrukturen",
                 "211221492",
                 "75%");
 
-$h->setBackURL("Student.php")
+$h->setBackURL("Student.php?cid={$cid}&uid={$uid}")
 ->setBackTitle("zur Veranstaltung");
 
-$data = file_get_contents("http://localhost/Uebungsplattform/UI/Data/GroupData");
+$databaseURL = "http://141.48.9.92/uebungsplattform/DB/DBGroup/group/user/{$uid}/exercisesheet/{$sid}";
+
+
+$data = http_get($databaseURL);
 $data = json_decode($data, true);
 
-$group = $data['group'];
-$groupInfo = $data['groupInfo'];
-unset($data['group']);
-unset($data['groupInfo']);
-$invitation = $data;
+$group = $data[0];
+$groupInfo = array();
+//unset($data['group']);
+//unset($data['groupInfo']);
+$invitation = array();
 
 // construct a content element for managing groups
 $manageGroup = Template::WithTemplateFile('include/Group/ManageGroup.template.html');
