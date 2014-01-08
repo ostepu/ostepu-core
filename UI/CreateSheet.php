@@ -30,6 +30,9 @@ $h = new Header("Datenstrukturen",
 $h->setBackURL("Lecturer.php")
 ->setBackTitle("zur Veranstaltung");
 
+/**
+ * @todo combine the templates in a single file
+ */
 $sheetSettings = Template::WithTemplateFile('include/CreateSheet/SheetSettings.template.html');
 
 $createExercise = Template::WithTemplateFile('include/CreateSheet/CreateExercise.template.html');
