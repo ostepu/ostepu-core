@@ -10,6 +10,7 @@ if (isset($_GET['uid'])) {
     $uid = 0;
 }
 
+// load user data from the database
 $databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/user/user/{$uid}";
 $user = http_get($databaseURI);
 $user = json_decode($user, true);
@@ -23,6 +24,7 @@ $h = new Header("Übungsplattform",
 $h->setBackURL("index.php?uid={$uid}")
   ->setBackTitle("zur Veranstaltung");
 
+// load all courses for the current user from the database
 $databaseURI = 'http://141.48.9.92/uebungsplattform/DB/DBControl/course/user/';
 
 $courses = http_get($databaseURI . $uid);

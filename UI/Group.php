@@ -33,10 +33,12 @@ if (isset($_GET['uid'])) {
     die('no user id!\n');
 }
 
+// load user data from the database
 $databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/user/user/{$uid}";
 $user = http_get($databaseURI);
 $user = json_decode($user, true);
 
+// load course data from the database
 $databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/course/course/{$cid}";
 $course = http_get($databaseURI);
 $course = json_decode($course, true)[0];
@@ -48,10 +50,10 @@ $h = new Header($course['name'],
                 $user['userName']);
 
 $h->setBackURL("Student.php?cid={$cid}&uid={$uid}")
-->setBackTitle("zur Veranstaltung");
+  ->setBackTitle("zur Veranstaltung");
 
+// load exercise sheet data from the database
 $databaseURL = "http://141.48.9.92/uebungsplattform/DB/DBGroup/group/user/{$uid}/exercisesheet/{$sid}";
-
 
 $data = http_get($databaseURL);
 
