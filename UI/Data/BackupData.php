@@ -16,7 +16,7 @@ $backups = array(
 $backupCount = rand(1, 5);
 $backupElements = array();
 
-for ($i=0; $i < $backupCount; $i++) { 
+for ($i=0; $i < $backupCount; $i++) {
     $backupElements[] = $backups[rand(0, count($backups) - 1)];
 }
 

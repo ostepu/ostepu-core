@@ -13,127 +13,41 @@
                     <th>
                         Matrikel
                     </th>
-                    <th colspan="2">
-                        Praxispunkte
-                    </th>
-                    <th colspan="2">
-                        Theoriepunkte
-                    </th>
-                    <th colspan="2">
-                        Klausurpunkte
-                    </th>
-                    <th colspan="2">
-                        Irgendwas
-                    </th>
+                    <?php
+                        // prints all exercise types as header
+                        foreach ($users[0]['points'] as $points) {
+                            print "<th colspan=\"2\">";
+                            print $points['name'];
+                            print "</th>";
+                        }
+                    ?>
                     <th>
                         Zulassung
                     </th>
                 </tr>
-                <tr>
-                    <td>
-                        Felix Schmidt
-                    </td>
-                    <td>
-                        211200200
-                    </td>
-                    <td>
-                        0%
-                    </td>
-                    <td>
-                        (0/10)
-                    </td>
-                    <td>
-                        0%
-                    </td>
-                    <td>
-                        (0/10)
-                    </td>
-                    <td>
-                        0%
-                    </td>
-                    <td>
-                        (0/10)
-                    </td>
-                    <td>
-                        0%
-                    </td>
-                    <td>
-                        (0/10)
-                    </td>
-                    <td>
-                        Nein
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Felix Schmidt
-                    </td>
-                    <td>
-                        211200200
-                    </td>
-                    <td>
-                        0%
-                    </td>
-                    <td>
-                        (0/10)
-                    </td>
-                    <td>
-                        0%
-                    </td>
-                    <td>
-                        (0/10)
-                    </td>
-                    <td>
-                        0%
-                    </td>
-                    <td>
-                        (0/10)
-                    </td>
-                    <td>
-                        0%
-                    </td>
-                    <td>
-                        (0/10)
-                    </td>
-                    <td>
-                        Nein
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Felix Schmidt
-                    </td>
-                    <td>
-                        211200200
-                    </td>
-                    <td>
-                        50%
-                    </td>
-                    <td>
-                        (5/10)
-                    </td>
-                    <td>
-                        50%
-                    </td>
-                    <td>
-                        (5/10)
-                    </td>
-                    <td>
-                        50%
-                    </td>
-                    <td>
-                        (5/10)
-                    </td>
-                    <td>
-                        50%
-                    </td>
-                    <td>
-                        (5/10)
-                    </td>
-                    <td>
-                        Ja
-                    </td>
-                </tr>
+                <?php
+                    // creates a table row for each student
+                    foreach ($users as $user) {
+                        print "<tr>";
+                        print "<td>";
+                        print $user['user']['firstName'] . " " . $user['user']['lastName'];
+                        print "</td>";
+                        print "<td>";
+                        print $user['user']['id'];
+                        print "</td>";
+                        foreach ($user['points'] as $points) {
+                            print "<td>";
+                            print $points['percentage'] . "%";
+                            print "</td>";
+                            print "<td>";
+                            print "(" . $points['points'] . "/" . $points['maxpoints'] . ")";
+                        }
+                        print "<td>";
+                        print $user['approval'];
+                        print "</td>";
+                        print "</tr>";
+                    }
+                ?>
             </table>
         </div>
     </div> <!-- end: content-body -->

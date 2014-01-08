@@ -69,7 +69,7 @@ $tutorAssignment = array(
 
 $tutorAssignmentCount = rand(1, 5);
 
-for ($i=0; $i < $tutorAssignmentCount; $i++) { 
+for ($i=0; $i < $tutorAssignmentCount; $i++) {
     $tutorAssignmentElements[] = $tutorAssignment[rand(0, count($tutorAssignment) - 1)];
 }
 

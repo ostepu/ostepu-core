@@ -10,7 +10,7 @@ if (isset($_GET['id'])) {
     $sheets = array();
     $sheetCount = rand(1,10);
 
-    for ($i=0; $i < $sheetCount; $i++) { 
+    for ($i=0; $i < $sheetCount; $i++) {
         $sheet = array();
 
         $sheetName = $i + 1;
@@ -25,7 +25,7 @@ if (isset($_GET['id'])) {
         $sheetMaxPoints = 0;
         $sheetPoints = 0;
 
-        for ($j=0; $j < $exerciseCount; $j++) { 
+        for ($j=0; $j < $exerciseCount; $j++) {
             $exercise = array();
 
             // pick a random type
