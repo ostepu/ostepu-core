@@ -12,7 +12,7 @@ include_once '../Assistants/Logger.php';
 
 <?php
     if (isset($_POST['sheetID'])) {
-        //Logger::Log($_POST, LogLevel::INFO);
+        Logger::Log($_POST, LogLevel::INFO);
         header("Location: Upload.php");
     } else {
         Logger::Log("No Sheet Data", LogLevel::INFO);
