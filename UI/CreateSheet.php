@@ -8,6 +8,12 @@ include_once '../Assistants/Logger.php';
 <?php
     if (isset($_POST['sheet'])) {
         Logger::Log($_POST, LogLevel::INFO);
+        /**
+         * @todo rename to 'action' instead of sheet
+         * @todo create a new sheet or update the existing one
+         */
+
+        // redirect, so the user can reload the page without a warning
         header("Location: CreateSheet.php");
     } else {
         Logger::Log("No Sheet Data", LogLevel::INFO);

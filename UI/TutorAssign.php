@@ -7,6 +7,11 @@ include_once 'include/Template.php';
 <?php
 if (isset($_POST['action'])) {
     Logger::Log($_POST, LogLevel::INFO);
+    /**
+     * @todo assign tutors based on the selected method
+     */
+
+    // redirect, so the user can reload the page without a warning
     header("Location: TutorAssign.php");
 } else {
     Logger::Log("No Assignment Data", LogLevel::INFO);

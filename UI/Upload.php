@@ -13,6 +13,11 @@ include_once '../Assistants/Logger.php';
 <?php
     if (isset($_POST['sheetID'])) {
         Logger::Log($_POST, LogLevel::INFO);
+        /**
+         * @todo actually upload the data
+         */
+
+        // redirect, so the user can reload the page without a warning
         header("Location: Upload.php");
     } else {
         Logger::Log("No Sheet Data", LogLevel::INFO);

@@ -8,6 +8,7 @@ include_once 'include/Template.php';
     if (isset($_POST['action'])) {
         /**
          * @todo Set a cookie for the user, to mark him as logged in.
+         * @todo Add parameter to redirect URL, so the uer's data will be loaded
          */
         Logger::Log($_POST, LogLevel::INFO);
         header("Location: Index.php");
