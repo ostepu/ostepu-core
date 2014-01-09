@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require 'Slim/Slim.php';
 include 'include/Assistants/Request.php';   
@@ -112,7 +112,7 @@ class User
     public function getUser(){        
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
-        $URL = $this->lURL.'/DB/user/user'.$userid;
+        $URL = $this->lURL.'/DB/user/user/'.$userid;
         $answer = Request::custom('GET', $URL, $header, $body);            
         $this->app->response->setStatus($answer['status']);                
         $this->app->response->setBody($answer['content']);    

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require 'Slim/Slim.php';
 include 'include/Assistants/Request.php';
@@ -35,9 +35,9 @@ class Group
         $this->lURL = querry['address'];
         
         
-        //InvitateInGroup
+        //InviteInGroup
         $this->app->put('/user/:userid', 
-                            array($this, 'invitateInGroup'));
+                            array($this, 'inviteInGroup'));
         
         //JoinGroup
         $this->app->put('/accept', array($this, 'joinGroup'));
@@ -58,7 +58,7 @@ class Group
     }    
     
     
-    public function invitateInGroup($userid)
+    public function inviteInGroup($userid)
     {
         $req = \Slim\Slim::getInstance()->request()->getBody();
         $header = \Slim\Slim::getInstance()->request()->headers->all();
