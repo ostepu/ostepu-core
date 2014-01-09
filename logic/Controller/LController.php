@@ -1,4 +1,4 @@
-<?php 
+ï»¿<?php 
 
 require 'Slim/Slim.php';
 include 'include/Assistants/Request.php';
@@ -15,7 +15,7 @@ class LController
     
         $links = array();
         //setLinks('config.ini');
-        //$DBController = $links["DBControl"];	
+        //$DBController = $links["DBControl"];    
         //$FSController = $links["FSControl"];
     
         $this->app->map('/:string+', array($this, 'chooseDestination')) 
@@ -34,44 +34,43 @@ class LController
         $explodedRow = array();
 
         foreach ($datei AS $row) {
-            $explodedRow = explode(' = ' , $row);			// Trenner in Config.ini definieren
+            $explodedRow = explode(' = ' , $row);            // Trenner in Config.ini definieren
             $links["$explodedRow[0]"] = $explodedRow[1];
         }
     }
     
     
     public function chooseDestination($string){
-    	$method = $this->app->request->getMethod();
-    	$body = $this->app->request->getBody();
-    	$header = $this->app->request->headers->all();
-    	
-    	if ($string[0] == "DB") {
+        $method = $this->app->request->getMethod();
+        $body = $this->app->request->getBody();
+        $header = $this->app->request->headers->all();
+        
+        if ($string[0] == "DB") {
             unset($string[0]);
-            $URI = "";//DB-URL;															//URI ergänzen
+            $URI = "";//DB-URL;                                                            //URI ergänzen
             foreach ($string as $str) {
                 $URI = $URI.'/'.$str;
             }
-            $this->app->response
-                ->SetBody(Request::custom($method, $URI, $header, $body));	
+            $answer = Request::custom($method, $URI, $header, $body);
+            $this->app->response->setBody(answer['content']);    
         } elseif ($string[0] == "FS") {
             unset($string[0]);
-            $URI = "";//FS-URL;															//URI ergänzen
+            $URI = "";//FS-URL;                                                            //URI ergänzen
             foreach ($string as $str) {
                 $URI = $URI.'/'.$str;
             }
-            $this->app->response
-                ->SetBody(Request::custom($method, $URI, $header, $body));
+            $answer = Request::custom($method, $URI, $header, $body);
+            $this->app->response->setBody(answer['content']);
         } else {
             $URI = "";//L-URL
             foreach ($string as $str) {
                 $URI = $URI.'/'.$str;
             }
             $answer = Request::custom($method, $URI, $header, $body);
-            $this->app->response
-                ->SetBody($answer['content']);
+            $this->app->response->setBody($answer['content']);
             $this->app->response->setStatus($answer['status']);
         }
     }
 }
- new LController();   
+new LController();   
 ?>
