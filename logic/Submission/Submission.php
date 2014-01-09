@@ -1,4 +1,4 @@
-<?php 
+﻿<?php 
 
 require 'Slim/Slim.php';
 include 'include/Assistants/Request.php';
@@ -6,7 +6,7 @@ include 'include/Assistants/Request.php';
 //include 'include/Assistants/StructSubmission.php';
 
 \Slim\Slim::registerAutoloader();
-	
+    
 class Submission
 {    
     private $lURL = ""; //aus config lesen
@@ -60,7 +60,7 @@ class Submission
         }
     }
     
-    public function editSubmissionState($submissionid) {    	
+    public function editSubmissionState($submissionid) {        
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
         $URL = $this->lURL.'/DB/submission/'.$submissionid;        

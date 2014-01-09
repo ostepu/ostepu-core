@@ -1,4 +1,4 @@
-<?php 
+ï»¿<?php 
 
 require 'Slim/Slim.php';
 include 'include/Assistants/Request.php';
@@ -6,7 +6,7 @@ include 'include/Assistants/Request.php';
 //include 'include/Assistants/StructExerciseSheet.php';
 
 \Slim\Slim::registerAutoloader();
-	
+    
 class ExerciseSheet
 {    
     private $lURL = ""; //aus config lesen
@@ -50,8 +50,11 @@ class ExerciseSheet
         $sampleanswer = Request::custom('POST', $URL, $header, $samplesolutionfile);
         $sheetanswer = Request::custom('POST', $URL, $header, $sheetfile);
         
-        if($sampleanswer['status'] == 200 and $sheetanswer['status'] == 200){ //nur, wenn Files tatsächlich im FS gespeichert wurden
-            $body->{'_file'} = $answer['content'];      //hier zwei Files
+        /*
+         * Fehler unterscheiden was nicht geklappt hat ... musterloesung oder aufgabenblatt speichern...?
+         */
+        if($sampleanswer['status'] == 200 and $sheetanswer['status'] == 200){ //nur, wenn Files tatsaechlich im FS gespeichert wurden
+            $body->{'_file'} = $answer['content'];      //hier zwei Files //was ist answer?
             //Anfrage an DataBase
             $URL = $this->lURL.'/DB';
             $answer = Request::custom('POST', $URL, $header, json_encode($body));
@@ -67,13 +70,13 @@ class ExerciseSheet
     public function getExerciseSheetURL($sheetid){        
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
-        $URL = $this->lURL.'/DB/exercisesheet/'.$exercisesheetid.'/url';
+        $URL = $this->lURL.'/DB/exercisesheet/'.$sheetid.'/url';
         $answer = Request::custom('GET', $URL, $header, $body);
         $this->app->response->setBody($answer['content']);
         $this->app->response->setStatus($answer['status']);
     }
 
-    public function getExerciseSheet($sheetid, $userid){
+    public function getExerciseSheet($sheetid){
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
         $URL = $this->lURL.'/DB/exerciseSheet/'.$sheetid;
@@ -89,7 +92,7 @@ class ExerciseSheet
         $answer = Request::custum('DELETE', $URL, $header, $body);
         $this->app->response->setStatus($answer['status']);
         
-        if( $answer['status'] == 200){ //nur, wenn File tatsächlich aus DB gelöscht wurde
+        if( $answer['status'] == 200){ //nur, wenn File tatsaechlich aus DB geloescht wurde
             $URL = $this->lURL.'/FS/exercisesheet/'.$sheetid; 
             $answer = Request::custom('DELETE', $URL, $header, $body);
         }             

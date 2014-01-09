@@ -1,14 +1,14 @@
-<?php
+﻿<?php
 
 require 'Slim/Slim.php';
 include 'include/Assistants/Request.php';    
     
 \Slim\Slim::registerAutoloader();
-	
+    
 class Course
 {
     //URL of the logiccontroller    
-    private $lURL = "";				//Einlesen aus config.ini
+    private $lURL = "";                //Einlesen aus config.ini
         
     public function __construct()
     {

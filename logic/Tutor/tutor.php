@@ -1,11 +1,11 @@
-<?php 
+﻿<?php 
 
 require 'Slim/Slim.php';
 include 'include/Assistants/Request.php';
 //include 'include/Assistants/StructTutorAssignment.php';
 
 \Slim\Slim::registerAutoloader();
-	
+    
 class Tutor
 {    
     private $lURL = ""; //aus config lesen

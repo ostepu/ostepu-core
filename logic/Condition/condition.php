@@ -1,4 +1,4 @@
-<?php 
+﻿<?php 
 
 require 'Slim/Slim.php';
 include 'include/Assistants/Request.php';
@@ -6,7 +6,7 @@ include 'include/Assistants/Request.php';
 
 
 \Slim\Slim::registerAutoloader();
-	
+    
 class Condition
 {    
     private $lURL = ""; //aus config lesen

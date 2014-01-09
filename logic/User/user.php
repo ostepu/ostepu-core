@@ -1,14 +1,14 @@
-<?php
+﻿<?php
 
 require 'Slim/Slim.php';
 include 'include/Assistants/Request.php';    
-	
+    
 \Slim\Slim::registerAutoloader();
 
 class User
 {
     //the URL of the Logic-Controller
-    private $lURL = "";				//Einlesen aus config
+    private $lURL = "";                //Einlesen aus config
     
     public function __construct()
     {    

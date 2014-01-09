@@ -1,14 +1,14 @@
-<?php
+﻿<?php
 
 require 'Slim/Slim.php';
 include 'include/Assistants/Request.php';
-	
+    
 \Slim\Slim::registerAutoloader();
 
 
 class Group
-{	
-    private $LController = "";				//Einlesen aus config.ini
+{    
+    private $LController = "";                //Einlesen aus config.ini
 
     public function __construct()
     {    
