@@ -1,0 +1,2 @@
+﻿RewriteEngine On
+RewriteRule ^ Attachment.php [QSA,L]

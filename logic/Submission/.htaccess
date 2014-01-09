@@ -1,0 +1,2 @@
+﻿RewriteEngine On
+RewriteRule ^ Submission.php [QSA,L]
