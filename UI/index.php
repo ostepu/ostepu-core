@@ -10,6 +10,14 @@ if (isset($_GET['uid'])) {
     $uid = 0;
 }
 
+$sites = array('0' => 'Student.php',
+               '1' => 'Tutor.php',
+               '3' => 'Lecturer.php');
+
+$statusName = array('0' => 'Student',
+                    '1' => 'Tutor',
+                    '3' => 'Dozent');
+
 // load user data from the database
 $databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/user/user/{$uid}";
 $user = http_get($databaseURI);
@@ -24,16 +32,14 @@ $h = new Header("Übungsplattform",
 $h->setBackURL("index.php?uid={$uid}")
   ->setBackTitle("zur Veranstaltung");
 
-// load all courses for the current user from the database
-$databaseURI = 'http://141.48.9.92/uebungsplattform/DB/DBControl/course/user/';
-
-$courses = http_get($databaseURI . $uid);
-$courses = json_decode($courses, TRUE);
-$courses = array('courses' => $courses, 'uid' => $uid );
+$pageData = array('uid' => $user['id'],
+                  'courses' => $user['courses'],
+                  'sites' => $sites,
+                  'statusName' => $statusName);
 
 // construct a login element
 $courseSelect = Template::WithTemplateFile('include/CourseSelect/CourseSelect.template.html');
-$courseSelect->bind($courses);
+$courseSelect->bind($pageData);
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $courseSelect);

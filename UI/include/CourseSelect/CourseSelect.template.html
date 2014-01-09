@@ -8,11 +8,16 @@
             <ol class="full-width-list decimal">
                 <?php foreach ($courses as $course): ?>
                     <li>
-                    <?php print $course['name'];
-                    print '<a href="Student.php?cid=' . $course['id'] . '&uid=';
-                    print $uid . '" class="body-option-color deny-button right">';
-                    print 'zur Veranstaltung</a>';
-                    ?>
+                    <?php print $course['course']['name'];
+                        print '&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;(';
+                        print $statusName[$course['status']];
+                        print ')';
+                        print '<a href="';
+                        print $sites[$course['status']] . '?cid=';
+                        print $course['course']['id'] . '&uid=';
+                        print $uid;
+                        print '" class="body-option-color deny-button right">';
+                        print 'zur Veranstaltung</a>';?>
                     </li>
                 <?php endforeach; ?>
             </ol>
