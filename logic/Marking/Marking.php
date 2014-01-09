@@ -1,20 +1,36 @@
-﻿<?php 
+<?php 
 
 require 'Slim/Slim.php';
 include 'include/Assistants/Request.php';
-//include 'include/Assistants/StructFile.php';
-//include 'include/Assistants/StructSubmission.php';
+include_once( 'include/CConfig.php' ); 
 
 \Slim\Slim::registerAutoloader();
     
 class Marking
 {    
+    private $_conf=null;
+    
+    private static $_prefix = "marking";
+    
+    public static function getPrefix()
+    {
+        return Marking::$_prefix;
+    }
+    public static function setPrefix($value)
+    {
+        Marking::$_prefix = $value;
+    }
     private $lURL = ""; //aus config lesen
     
-    public function __construct()
+    public function __construct($conf)
     {    
         $this->app = new \Slim\Slim();
         $this->app->response->headers->set('Content-Type', 'application/json');
+        $this->_conf = $conf;
+        $this->query = array();
+        
+        $this->query = array(CConfig::getLink($conf->getLinks(),"controller"))
+        $this->lURL = querry['address'];
         
         //AddMarking
         $this->app->post('/exercise/:exerciseid/tutor/:tutorid', 
@@ -108,5 +124,6 @@ class Marking
     }   
 }
 
-new Marking();
+if (!$com->used())
+    new Marking($com->loadConfig());
 ?>

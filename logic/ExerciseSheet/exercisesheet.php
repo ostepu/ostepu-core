@@ -1,21 +1,36 @@
-ï»¿<?php 
+<?php 
 
 require 'Slim/Slim.php';
 include 'include/Assistants/Request.php';
-//include 'include/Assistants/StructFile.php';
-//include 'include/Assistants/StructExerciseSheet.php';
+include_once( 'include/CConfig.php' ); 
 
 \Slim\Slim::registerAutoloader();
-    
+
 class ExerciseSheet
-{    
+{       
+    private $_conf=null;
+    
+    private static $_prefix = "exercisesheet";
+    
+    public static function getPrefix()
+    {
+        return ExerciseSheet::$_prefix;
+    }
+    public static function setPrefix($value)
+    {
+        ExerciseSheet::$_prefix = $value;
+    }
     private $lURL = ""; //aus config lesen
     
-    public function __construct()
+    public function __construct($conf)
     {    
         $this->app = new \Slim\Slim();
         $this->app->response->headers->set('Content-Type', 'application/json');
+        $this->_conf = $conf;
+        $this->query = array();
         
+        $this->query = array(CConfig::getLink($conf->getLinks(),"controller"))
+        $this->lURL = querry['address'];
         
         //AddExerciseSheet
         $this->app->post('/course/:courseid', array($this, 'addExerciseSheet'));        //Adressen noch anpassen (Parameter mit Compo-Namen)
@@ -50,11 +65,8 @@ class ExerciseSheet
         $sampleanswer = Request::custom('POST', $URL, $header, $samplesolutionfile);
         $sheetanswer = Request::custom('POST', $URL, $header, $sheetfile);
         
-        /*
-         * Fehler unterscheiden was nicht geklappt hat ... musterloesung oder aufgabenblatt speichern...?
-         */
-        if($sampleanswer['status'] == 200 and $sheetanswer['status'] == 200){ //nur, wenn Files tatsaechlich im FS gespeichert wurden
-            $body->{'_file'} = $answer['content'];      //hier zwei Files //was ist answer?
+        if($sampleanswer['status'] == 200 and $sheetanswer['status'] == 200){ //nur, wenn Files tatsächlich im FS gespeichert wurden
+            $body->{'_file'} = $answer['content'];      //hier zwei Files
             //Anfrage an DataBase
             $URL = $this->lURL.'/DB';
             $answer = Request::custom('POST', $URL, $header, json_encode($body));
@@ -70,13 +82,13 @@ class ExerciseSheet
     public function getExerciseSheetURL($sheetid){        
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
-        $URL = $this->lURL.'/DB/exercisesheet/'.$sheetid.'/url';
+        $URL = $this->lURL.'/DB/exercisesheet/'.$exercisesheetid.'/url';
         $answer = Request::custom('GET', $URL, $header, $body);
         $this->app->response->setBody($answer['content']);
         $this->app->response->setStatus($answer['status']);
     }
 
-    public function getExerciseSheet($sheetid){
+    public function getExerciseSheet($sheetid, $userid){
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
         $URL = $this->lURL.'/DB/exerciseSheet/'.$sheetid;
@@ -92,12 +104,13 @@ class ExerciseSheet
         $answer = Request::custum('DELETE', $URL, $header, $body);
         $this->app->response->setStatus($answer['status']);
         
-        if( $answer['status'] == 200){ //nur, wenn File tatsaechlich aus DB geloescht wurde
+        if( $answer['status'] == 200){ //nur, wenn File tatsächlich aus DB gelöscht wurde
             $URL = $this->lURL.'/FS/exercisesheet/'.$sheetid; 
             $answer = Request::custom('DELETE', $URL, $header, $body);
         }             
     }
 }
 
-new ExerciseSheet();
+if (!$com->used())
+    new ExerciseSheet($com->loadConfig());
 ?>

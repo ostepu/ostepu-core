@@ -1,18 +1,40 @@
-﻿<?php
+<?php
 
 require 'Slim/Slim.php';
 include 'include/Assistants/Request.php';
-    
+include_once( 'include/CConfig.php' ); 
+
 \Slim\Slim::registerAutoloader();
 
 
 class Group
-{    
-    private $LController = "";                //Einlesen aus config.ini
+{
+    private $_conf=null;
+    
+    private static $_prefix = "group";
+    
+    public static function getPrefix()
+    {
+        return Group::$_prefix;
+    }
+    public static function setPrefix($value)
+    {
+        Group::$_prefix = $value;
+    }
+    
+    private $LController = "";              //Einlesen aus config.ini
 
-    public function __construct()
+    public function __construct($conf)
     {    
         $this->app = new \Slim\Slim();
+        $this->app->response->headers->set('Content-Type', 'application/json');
+        $this->_conf = $conf;
+        $this->query = array();
+        
+        $this->query = array(CConfig::getLink($conf->getLinks(),"controller"))
+        $this->lURL = querry['address'];
+        
+        
         //InvitateInGroup
         $this->app->put('/user/:userid', 
                             array($this, 'invitateInGroup'));
@@ -90,5 +112,6 @@ class Group
     }
 }
 
-new Group();
+if (!$com->used())
+    new Group($com->loadConfig());
 ?>

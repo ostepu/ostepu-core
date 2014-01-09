@@ -1,20 +1,37 @@
-﻿<?php 
+<?php 
 
 require 'Slim/Slim.php';
 include 'include/Assistants/Request.php';
-//include 'include/Assistants/StructFile.php';
-//include 'include/Assistants/StructSubmission.php';
+include_once( 'include/CConfig.php' );
 
 \Slim\Slim::registerAutoloader();
     
 class Attachment
-{    
+{   
+    private $_conf=null;
+    
+    private static $_prefix = "attachment";
+    
+    public static function getPrefix()
+    {
+        return Attachment::$_prefix;
+    }
+    public static function setPrefix($value)
+    {
+        Attachment::$_prefix = $value;
+    }
+
     private $lURL = ""; //aus config lesen
     
-    public function __construct()
+    public function __construct($conf)
     {    
         $this->app = new \Slim\Slim();
         $this->app->response->headers->set('Content-Type', 'application/json');
+        $this->_conf = $conf;
+        $this->query = array();
+        
+        $this->query = array(CConfig::getLink($conf->getLinks(),"controller"))
+        $this->lURL = querry['address'];
         
         //AddAttachment
         $this->app->post('/course/:courseid/exercisesheet/:exercisesheetid', 
@@ -97,5 +114,9 @@ class Attachment
     }   
 }
 
-new Attachment();
+$com = new CConfig(Attachment::getPrefix());
+
+if (!$com->used())
+    new Attachment($com->loadConfig());
+
 ?>

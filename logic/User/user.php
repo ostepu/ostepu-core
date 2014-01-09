@@ -1,19 +1,37 @@
-﻿<?php
+<?php
 
 require 'Slim/Slim.php';
-include 'include/Assistants/Request.php';    
+include 'include/Assistants/Request.php';   
+include_once( 'include/CConfig.php' ); 
     
 \Slim\Slim::registerAutoloader();
 
 class User
 {
-    //the URL of the Logic-Controller
-    private $lURL = "";                //Einlesen aus config
+    private $_conf=null;
     
-    public function __construct()
+    private static $_prefix = "user";
+    
+    public static function getPrefix()
+    {
+        return User::$_prefix;
+    }
+    public static function setPrefix($value)
+    {
+        User::$_prefix = $value;
+    }
+    //the URL of the Logic-Controller
+    private $lURL = "";             //Einlesen aus config
+    
+    public function __construct($conf)
     {    
         $this->app = new \Slim\Slim();
         $this->app->response->headers->set('Content-Type', 'application/json');
+        $this->_conf = $conf;
+        $this->query = array();
+        
+        $this->query = array(CConfig::getLink($conf->getLinks(),"controller"))
+        $this->lURL = querry['address'];
     
         //SetUserRights
         $this->app->put('/user/:userid/right', array($this, 'setUserRights'));          //Adressen noch anpassen(kein .php;+ Compo-Namen
@@ -101,5 +119,6 @@ class User
     }
 }
 
-new User();
+if (!$com->used())
+    new User($com->loadConfig());
 ?>

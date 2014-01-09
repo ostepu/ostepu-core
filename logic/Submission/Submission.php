@@ -1,20 +1,36 @@
-﻿<?php 
+<?php 
 
 require 'Slim/Slim.php';
 include 'include/Assistants/Request.php';
-//include 'include/Assistants/StructFile.php';
-//include 'include/Assistants/StructSubmission.php';
+include_once( 'include/CConfig.php' );
 
 \Slim\Slim::registerAutoloader();
-    
+
 class Submission
 {    
+    private $_conf=null;
+    
+    private static $_prefix = "submission";
+    
+    public static function getPrefix()
+    {
+        return Submission::$_prefix;
+    }
+    public static function setPrefix($value)
+    {
+        Submission::$_prefix = $value;
+    }
     private $lURL = ""; //aus config lesen
     
-    public function __construct()
+    public function __construct($conf)
     {    
         $this->app = new \Slim\Slim();
         $this->app->response->headers->set('Content-Type', 'application/json');
+        $this->_conf = $conf;
+        $this->query = array();
+        
+        $this->query = array(CConfig::getLink($conf->getLinks(),"controller"))
+        $this->lURL = querry['address'];
         
         //AddSubmission
         $this->app->post(':data+', array($this, 'addSubmission'));
@@ -60,7 +76,7 @@ class Submission
         }
     }
     
-    public function editSubmissionState($submissionid) {        
+    public function editSubmissionState($submissionid) {    
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
         $URL = $this->lURL.'/DB/submission/'.$submissionid;        
@@ -109,5 +125,6 @@ class Submission
     }
 }
 
-new Submission();
+if (!$com->used())
+    new Submission($com->loadConfig());
 ?>

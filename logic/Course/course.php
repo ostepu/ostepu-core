@@ -1,19 +1,39 @@
-﻿<?php
+<?php
 
 require 'Slim/Slim.php';
-include 'include/Assistants/Request.php';    
+include 'include/Assistants/Request.php';   
+include_once( 'include/CConfig.php' ); 
     
 \Slim\Slim::registerAutoloader();
-    
+
 class Course
 {
+    private $_conf=null;
+    
+    private static $_prefix = "course";
+    
+    public static function getPrefix()
+    {
+        return Course::$_prefix;
+    }
+    public static function setPrefix($value)
+    {
+        Course::$_prefix = $value;
+    }
+    
+    
     //URL of the logiccontroller    
-    private $lURL = "";                //Einlesen aus config.ini
+    private $lURL = "";             //Einlesen aus config.ini
         
-    public function __construct()
+    public function __construct($conf)
     {
         $this->app = new \Slim\Slim();
         $this->app->response->headers->set('Content-Type', 'application/json');
+        $this->_conf = $conf;
+        $this->query = array();
+        
+        $this->query = array(CConfig::getLink($conf->getLinks(),"controller"))
+        $this->lURL = querry['address'];
         
         //SetCourse
         $this->app->post(':data+', array($this, 'setCourse')); //keine URL: ''?
@@ -118,5 +138,6 @@ class Course
     }
 }
 
-new course();
+if (!$com->used())
+    new Course($com->loadConfig());
 ?>   

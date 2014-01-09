@@ -1,0 +1,2 @@
+﻿RewriteEngine On
+RewriteRule ^ ExerciseType.php [QSA,L]
