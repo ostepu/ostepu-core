@@ -31,6 +31,8 @@ class DBRequest
         $query_result['affectedRows'] = mysql_affected_rows();
         $query_result['insertId'] = mysql_insert_id();
         $query_result['errno'] = mysql_errno();
+        $query_result['error'] = mysql_error();
+         
         
         if (gettype($query_result['content'])!='boolean'){
             $query_result['numRows'] = mysql_num_rows($query_result['content']);
@@ -53,7 +55,6 @@ class DBRequest
         extract($vars, EXTR_OVERWRITE);
 
         $obj = new Query();
-       // eval("\$sql = \"" . implode('\n',file($sqlFile)) . "\";");
         eval("\$sql = \"" . file_get_contents($sqlFile) . "\";"); 
         $obj->setRequest($sql);
         
