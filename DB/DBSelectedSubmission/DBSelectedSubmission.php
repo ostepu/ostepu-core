@@ -114,6 +114,13 @@ class DBSelectedSubmission
      */
     public function editSelectedSubmission($userid, $eid)
     {
+        Logger::Log("starts PUT EditSelectedSubmission",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($userid),
+                            ctype_digit($eid));
+                            
         // decode the received submission data, as an object
         $insert = Submission::decodeSubmission($this->_app->request->getBody());
         
@@ -134,7 +141,7 @@ class DBSelectedSubmission
             if ($result['status']>=200 && $result['status']<=299){
                 $this->_app->response->setStatus(201);
                 if (isset($result['headers']['Content-Type']))
-                    header($result['headers']['Content-Type']);
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
                 Logger::Log("PUT EditSelectedSubmission failed",LogLevel::ERROR);
@@ -152,6 +159,13 @@ class DBSelectedSubmission
      */
     public function deleteSelectedSubmission($userid, $eid)
     {
+        Logger::Log("starts DELETE DeleteSelectedSubmission",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($userid),
+                            ctype_digit($eid));
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/DeleteSelectedSubmission.sql", 
@@ -162,7 +176,7 @@ class DBSelectedSubmission
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE DeleteSelectedSubmission failed",LogLevel::ERROR);
@@ -176,6 +190,8 @@ class DBSelectedSubmission
      */
     public function setSelectedSubmission()
     {
+        Logger::Log("starts POST SetSelectedSubmission",LogLevel::DEBUG);
+        
         // decode the received submission data, as an object
         $insert = Submission::decodeSubmission($this->_app->request->getBody());
         
@@ -197,7 +213,7 @@ class DBSelectedSubmission
 
                 $this->_app->response->setStatus(201);
                 if (isset($result['headers']['Content-Type']))
-                    header($result['headers']['Content-Type']);
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
                 Logger::Log("POST SetSelectedSubmission failed",LogLevel::ERROR);

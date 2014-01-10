@@ -12,6 +12,8 @@ include_once( 'Include/Logger.php' );
 
 /**
  * A class, to forwards requests into the heap of database components
+ *
+ * @author Till Uhlig
  */
 class DBControl extends Controller
 {

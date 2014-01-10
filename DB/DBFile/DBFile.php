@@ -14,6 +14,8 @@ include_once( 'Include/Logger.php' );
     
 /**
  * A class, to abstract the "File" table from database
+ *
+ * @author Till Uhlig
  */
 class DBFile
 {
@@ -107,6 +109,12 @@ class DBFile
      */
     public function editFile($fileid)
     {
+        Logger::Log("starts PUT EditFile",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($fileid));
+                            
         // decode the received file data, as an object
         $insert = File::decodeFile($this->_app->request->getBody());
         
@@ -128,7 +136,7 @@ class DBFile
             if ($result['status']>=200 && $result['status']<=299){
                 $this->_app->response->setStatus(201);
                 if (isset($result['headers']['Content-Type']))
-                    header($result['headers']['Content-Type']);
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
                 Logger::Log("PUT EditFile failed",LogLevel::ERROR);
@@ -145,6 +153,12 @@ class DBFile
      */
     public function removeFile($fileid)
     {
+        Logger::Log("starts DELETE RemoveFile",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($fileid));
+                            
          // starts a query, by using a given file
          $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/DeleteFile.sql", 
@@ -155,7 +169,7 @@ class DBFile
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE RemoveFile failed",LogLevel::ERROR);
@@ -169,6 +183,8 @@ class DBFile
      */
     public function addFile()
     {
+        Logger::Log("starts POST AddFile",LogLevel::DEBUG);
+        
         // decode the received file data, as an object
         $insert = File::decodeFile($this->_app->request->getBody());
         
@@ -196,7 +212,7 @@ class DBFile
                 $this->_app->response->setBody(File::encodeFile($obj)); 
                 $this->_app->response->setStatus(201);
                 if (isset($result['headers']['Content-Type']))
-                    header($result['headers']['Content-Type']);
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
                 Logger::Log("POST AddFile failed",LogLevel::ERROR);
@@ -213,6 +229,12 @@ class DBFile
      */
     public function getFile($fileid)
     {
+        Logger::Log("starts GET GetFile",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($fileid));
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetFile.sql", 
@@ -237,7 +259,7 @@ class DBFile
             $this->_app->response->setBody(File::encodeFile($file));
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetFile failed",LogLevel::ERROR);
@@ -252,6 +274,8 @@ class DBFile
      */
     public function getAllFiles()
     {
+        Logger::Log("starts GET GetAllFiles",LogLevel::DEBUG);
+        
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetAllFiles.sql", 
@@ -272,7 +296,7 @@ class DBFile
             $this->_app->response->setBody(File::encodeFile($file));
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetAllFiles failed",LogLevel::ERROR);

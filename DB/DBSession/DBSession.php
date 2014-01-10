@@ -21,6 +21,8 @@ if (!$com->used())
     
 /**
  * A class, to abstract the "Session" table from database
+ *
+ * @author Till Uhlig
  */
 class DBSession
 {
@@ -127,6 +129,8 @@ class DBSession
      */
     public function EditSession($seid)
     {
+        Logger::Log("starts PUT EditSession",LogLevel::DEBUG);
+                            
         $insert = Session::decodeSession($this->_app->request->getBody());
         if (!is_array($insert))
             $insert = array($insert);
@@ -145,7 +149,7 @@ class DBSession
             if ($result['status']>=200 && $result['status']<=299){
                 $this->_app->response->setStatus(201);
                 if (isset($result['headers']['Content-Type']))
-                    header($result['headers']['Content-Type']);
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
                 Logger::Log("PUT EditSession failed",LogLevel::ERROR);
@@ -162,6 +166,8 @@ class DBSession
      */
     public function removeSession($seid)
     {
+        Logger::Log("starts DELETE RemoveSession",LogLevel::DEBUG);
+        
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/DeleteSession.sql", 
@@ -170,7 +176,7 @@ class DBSession
         if ($result['status']>=200 && $result['status']<=299){
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE RemoveSession failed",LogLevel::ERROR);
@@ -186,6 +192,8 @@ class DBSession
      */
     public function editUserSession($userid)
     {
+        Logger::Log("starts PUT RemoveSession",LogLevel::DEBUG);
+        
         // decode the received session data, as an object
         $insert = Session::decodeSession($this->_app->request->getBody());
         
@@ -205,7 +213,7 @@ class DBSession
             if ($result['status']>=200 && $result['status']<=299){
                 $this->_app->response->setStatus(201);
                 if (isset($result['headers']['Content-Type']))
-                    header($result['headers']['Content-Type']);
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
                 Logger::Log("PUT RemoveSession failed",LogLevel::ERROR);
@@ -222,7 +230,8 @@ class DBSession
      */
     public function removeUserSession($userid)
     {
-    
+        Logger::Log("starts DELETE RemoveUserSession",LogLevel::DEBUG);
+        
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/DeleteUserSession.sql", 
@@ -231,7 +240,7 @@ class DBSession
         if ($result['status']>=200 && $result['status']<=299){
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE RemoveUserSession failed",LogLevel::ERROR);
@@ -245,6 +254,8 @@ class DBSession
      */
     public function addSession()
     {
+        Logger::Log("starts POST AddSession",LogLevel::DEBUG);
+        
         // decode the received session data, as an object
         $insert = Session::decodeSession($this->_app->request->getBody());
         
@@ -265,7 +276,7 @@ class DBSession
             if ($result['status']>=200 && $result['status']<=299){
                 $this->_app->response->setStatus(201);
                 if (isset($result['headers']['Content-Type']))
-                    header($result['headers']['Content-Type']);
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
                 Logger::Log("POST AddSession failed",LogLevel::ERROR);
@@ -282,7 +293,8 @@ class DBSession
      */
     public function getUserSession($userid)
     {
-    
+        Logger::Log("starts GET GetUserSession",LogLevel::DEBUG);
+        
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetUserSession.sql", 
@@ -307,7 +319,7 @@ class DBSession
             $this->_app->response->setBody(Session::encodeSession($session));
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetUserSession failed",LogLevel::ERROR);
@@ -324,6 +336,8 @@ class DBSession
      */
     public function getSessionUser($seid)
     {
+        Logger::Log("starts GET GetSessionUser",LogLevel::DEBUG);
+        
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetSessionUser.sql", 
@@ -344,7 +358,7 @@ class DBSession
             $this->_app->response->setBody(Session::encodeSession($session));
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetSessionUser failed",LogLevel::ERROR);
@@ -359,6 +373,8 @@ class DBSession
      */
     public function getAllSessions()
     {
+        Logger::Log("starts GET GetAllSessions",LogLevel::DEBUG);
+        
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetAllSessions.sql", 
@@ -379,7 +395,7 @@ class DBSession
             $this->_app->response->setBody(Session::encodeSession($session));
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetAllSessions failed",LogLevel::ERROR);

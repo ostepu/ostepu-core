@@ -22,6 +22,8 @@ if (!$com->used())
     
 /**
  * A class, to abstract the "ExerciseType" table from database
+ *
+ * @author Till Uhlig
  */
 class DBExerciseType
 {
@@ -116,6 +118,12 @@ class DBExerciseType
      */
     public function editPossibleType($etid)
     {
+        Logger::Log("starts PUT EditPossibleType",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($etid));
+                            
         // decode the received exercise type data, as an object
         $insert = ExerciseType::decodeExerciseType($this->_app->request->getBody());
         
@@ -136,7 +144,7 @@ class DBExerciseType
             if ($result['status']>=200 && $result['status']<=299){
                 $this->_app->response->setStatus(201);
                 if (isset($result['headers']['Content-Type']))
-                    header($result['headers']['Content-Type']);
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
                 Logger::Log("PUT EditPossibleType failed",LogLevel::ERROR);
@@ -153,6 +161,12 @@ class DBExerciseType
      */
     public function deletePossibleType($etid)
     {
+        Logger::Log("starts DELETE DeletePossibleType",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($etid));
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/DeletePossibleType.sql", 
@@ -163,7 +177,7 @@ class DBExerciseType
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE DeletePossibleType failed",LogLevel::ERROR);
@@ -177,6 +191,8 @@ class DBExerciseType
      */
     public function SetPossibleType()
     {
+        Logger::Log("starts POST SetPossibleType",LogLevel::DEBUG);
+        
         // decode the received exercise type data, as an object
         $insert = ExerciseType::decodeExerciseType($this->_app->request->getBody());
         
@@ -204,7 +220,7 @@ class DBExerciseType
                 $this->_app->response->setBody(ExerciseType::encodeExerciseType($obj)); 
                 $this->_app->response->setStatus(201);
                 if (isset($result['headers']['Content-Type']))
-                    header($result['headers']['Content-Type']);
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
                 Logger::Log("POST SetPossibleType failed",LogLevel::ERROR);
@@ -219,6 +235,8 @@ class DBExerciseType
      */
     public function getAllPossibleTypes()
     {      
+        Logger::Log("starts GET GetAllPossibleType",LogLevel::DEBUG);
+        
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetAllPossibleTypes.sql", 
@@ -240,7 +258,7 @@ class DBExerciseType
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetAllPossibleType failed",LogLevel::ERROR);
@@ -256,7 +274,13 @@ class DBExerciseType
      * @param $etid a database exercise type identifier
      */
     public function getPossibleType($etid)
-    {         
+    {        
+        Logger::Log("starts GET GetPossibleType",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($etid));
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetPossibleType.sql", 
@@ -285,7 +309,7 @@ class DBExerciseType
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetPossibleType failed",LogLevel::ERROR);

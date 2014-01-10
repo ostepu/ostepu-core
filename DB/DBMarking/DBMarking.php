@@ -16,12 +16,14 @@ include_once( 'Include/Logger.php' );
 // runs the CConfig
 $com = new CConfig(DBMarking::getPrefix());
 
-// runs the DBExerciseSheet
+// runs the DBMarking
 if (!$com->used())
     new DBMarking($com->loadConfig());  
     
 /**
  * A class, to abstract the "Marking" table from database
+ *
+ * @author Till Uhlig
  */
 class DBMarking
 {
@@ -136,6 +138,12 @@ class DBMarking
      */
     public function editMarking($mid)
     {
+        Logger::Log("starts PUT EditMarking",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($mid));
+                            
         // decode the received marking data, as an object
         $insert = Marking::decodeMarking($this->_app->request->getBody());
         
@@ -156,7 +164,7 @@ class DBMarking
             if ($result['status']>=200 && $result['status']<=299){
                 $this->_app->response->setStatus(201);
                 if (isset($result['headers']['Content-Type']))
-                    header($result['headers']['Content-Type']);
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
                 Logger::Log("PUT EditMarking failed",LogLevel::ERROR);
@@ -173,6 +181,12 @@ class DBMarking
      */
     public function deleteMarking($mid)
     {
+        Logger::Log("starts DELETE DeleteMarking",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($mid));
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/DeleteMarking.sql", 
@@ -183,7 +197,7 @@ class DBMarking
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE DeleteMarking failed",LogLevel::ERROR);
@@ -197,6 +211,8 @@ class DBMarking
      */
     public function SetMarking()
     {
+        Logger::Log("starts OST SetMarking",LogLevel::DEBUG);
+        
         // decode the received marking data, as an object
         $insert = Marking::decodeMarking($this->_app->request->getBody());
         
@@ -225,7 +241,7 @@ class DBMarking
                 
                 $this->_app->response->setStatus(201);
                 if (isset($result['headers']['Content-Type']))
-                    header($result['headers']['Content-Type']);
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
                 Logger::Log("POST SetMarking failed",LogLevel::ERROR);
@@ -240,6 +256,8 @@ class DBMarking
      */
     public function getAllMarkings()
     {      
+        Logger::Log("starts GET GetAllMarkings",LogLevel::DEBUG);
+        
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetAllMarkings.sql", 
@@ -278,7 +296,7 @@ class DBMarking
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetAllMarkings failed",LogLevel::ERROR);
@@ -294,7 +312,13 @@ class DBMarking
      * @param $mid a database marking identifier
      */
     public function getMarking($mid)
-    {         
+    {    
+        Logger::Log("starts GET GetMarking",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($mid));
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetMarking.sql", 
@@ -337,7 +361,7 @@ class DBMarking
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetMarking failed",LogLevel::ERROR);
@@ -353,7 +377,13 @@ class DBMarking
      * @param $suid a database submission identifier
      */
     public function getSubmissionMarking($suid)
-    {         
+    {    
+        Logger::Log("starts GET GetSubmissionMarking",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($suid));
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetSubmissionMarking.sql", 
@@ -396,7 +426,7 @@ class DBMarking
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetSubmissionMarking failed",LogLevel::ERROR);
@@ -412,7 +442,13 @@ class DBMarking
      * @param $eid a database exercise identifier
      */
     public function getExerciseMarkings($eid)
-    {         
+    {   
+        Logger::Log("starts GET GetExerciseMarkings",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($eid));
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetExerciseMarkings.sql", 
@@ -451,7 +487,7 @@ class DBMarking
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetExerciseMarkings failed",LogLevel::ERROR);
@@ -467,7 +503,13 @@ class DBMarking
      * @param $esid a database exercise sheet identifier
      */
     public function getSheetMarkings($esid)
-    {         
+    {     
+        Logger::Log("starts GET GetSheetMarkings",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($esid));
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetSheetMarkings.sql", 
@@ -506,7 +548,7 @@ class DBMarking
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetSheetMarkings failed",LogLevel::ERROR);
@@ -523,7 +565,14 @@ class DBMarking
      * @param $userid a database user identifier
      */
     public function getUserGroupMarkings($esid,$userid)
-    {         
+    {     
+        Logger::Log("starts GET GetUserGroupMarkings",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($esid),
+                            ctype_digit($userid));
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetUserGroupMarkings.sql", 
@@ -563,7 +612,7 @@ class DBMarking
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetUserGroupMarkings failed",LogLevel::ERROR);

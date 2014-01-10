@@ -21,6 +21,8 @@ if (!$com->used())
 
 /**
  * A class, to perform requests to the database
+ *
+ * @author Till Uhlig
  */
 class DBQuery
 {
@@ -32,7 +34,7 @@ class DBQuery
     /**
      * @var $app the slim object
      */ 
-    private $app=null;
+    private $_app=null;
     
     /**
      * @var $_prefix the prefix, the class works with
@@ -71,18 +73,19 @@ class DBQuery
         $this->_conf = $conf;
         
         // initialize slim
-        $this->app = new \Slim\Slim();
-
+        $this->_app = new \Slim\Slim();
+        $this->_app->response->headers->set('Content-Type', 'application/json');
+        
         // GET QueryResult
-        $this->app->get('/' . $this->getPrefix(),
+        $this->_app->get('/' . $this->getPrefix(),
                         array($this,'queryResult'));
                         
         // starts slim only if the right prefix was received
-        if (strpos ($this->app->request->getResourceUri(),'/' . 
+        if (strpos ($this->_app->request->getResourceUri(),'/' . 
                     $this->getPrefix()) === 0){
                     
             // run Slim
-            $this->app->run();
+            $this->_app->run();
         }
     }
     
@@ -90,21 +93,29 @@ class DBQuery
      * GET queryResult
      */
     public function queryResult()
-    {
-        $body = $this->app->request->getBody();
+    {        
+        Logger::Log("starts GET queryResult",LogLevel::DEBUG);
+        
+        $body = $this->_app->request->getBody();
         
         // decode the received query data, as an object
         $obj = Query::decodeQuery($body);
 
         $query_result = DBRequest::request($obj->getRequest()); 
+            
         if ($query_result['errno']!=0 || !$query_result['content']){
-            Logger::Log("GET queryResult failed",LogLevel::ERROR);
+            if ($query_result['errno']!=0)
+                Logger::Log("GET queryResult failed errno: ". $query_result['errno'] . " error: " . $query_result['error'],LogLevel::ERROR);
+            
+            if (!$query_result['content'])
+                Logger::Log("GET queryResult failed, no content",LogLevel::ERROR);
+                
             $obj = new Query();
-            $this->app->response->setBody(Query::encodeQuery($obj));
-            $this->app->response->setStatus(409);
+            $this->_app->response->setBody(Query::encodeQuery($obj));
+            $this->_app->response->setStatus(409);
         } elseif (gettype($query_result['content'])=='boolean'){
             $obj = new Query();
-            $obj->setResponse("");
+            $obj->setResponse(array());
             if (isset($query_result['affectedRows']))
                 $obj->setAffectedRows($query_result['affectedRows']);
             if (isset($query_result['insertId']))
@@ -113,10 +124,14 @@ class DBQuery
                 $obj->setErrno($query_result['errno']);
             if (isset($query_result['numRows']))
                 $obj->setNumRows($query_result['numRows']);
-            $this->app->response->setBody(Query::encodeQuery($obj));
-            $this->app->response->setStatus(200);
+            $this->_app->response->setBody(Query::encodeQuery($obj));
+            $this->_app->response->setStatus(200);
         } else{
-            $data = DBJson::getRows($query_result['content']);
+            $data = array();
+            if (isset($query_result['numRows']) && $query_result['numRows'] > 0){
+                $data = DBJson::getRows($query_result['content']);
+            }
+            
             $obj = new Query();
             $obj->setResponse($data);
             if (isset($query_result['affectedRows']))
@@ -127,8 +142,8 @@ class DBQuery
                 $obj->setErrno($query_result['errno']);
             if (isset($query_result['numRows']))
                 $obj->setNumRows($query_result['numRows']);
-            $this->app->response->setBody(Query::encodeQuery($obj));
-            $this->app->response->setStatus(200);
+            $this->_app->response->setBody(Query::encodeQuery($obj));
+            $this->_app->response->setStatus(200);
         }    
 
     }

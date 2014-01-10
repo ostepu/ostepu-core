@@ -129,6 +129,13 @@ class DBGroup
      */
     public function editGroup($userid, $esid)
     {
+        Logger::Log("starts PUT EditGroup",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($userid),
+                            ctype_digit($esid));
+                            
         // decode the received group data, as an object
         $insert = Group::decodeGroup($this->_app->request->getBody());
         
@@ -152,7 +159,7 @@ class DBGroup
             if ($result['status']>=200 && $result['status']<=299){
                 $this->_app->response->setStatus(201);
                 if (isset($result['headers']['Content-Type']))
-                    header($result['headers']['Content-Type']);
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
                 Logger::Log("PUT EditGroup failed",LogLevel::ERROR);
@@ -170,6 +177,13 @@ class DBGroup
      */
     public function deleteGroup($userid, $esid)
     {
+        Logger::Log("starts DELETE DeleteGroup",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($userid),
+                            ctype_digit($esid));
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/DeleteGroup.sql", 
@@ -181,7 +195,7 @@ class DBGroup
         if ($result['status']>=200 && $result['status']<=299){
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE DeleteGroup failed",LogLevel::ERROR);
@@ -195,6 +209,8 @@ class DBGroup
      */
     public function setGroup()
     {
+        Logger::Log("starts POST SetGroup",LogLevel::DEBUG);
+        
         // decode the received group data, as an object
         $insert = Group::decodeGroup($this->_app->request->getBody());
         
@@ -216,7 +232,7 @@ class DBGroup
 
                 $this->_app->response->setStatus(201);
                 if (isset($result['headers']['Content-Type']))
-                    header($result['headers']['Content-Type']);
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
                 Logger::Log("POST SetGroup failed",LogLevel::ERROR);
@@ -232,7 +248,13 @@ class DBGroup
      * @param $userid a database user identifier
      */
     public function getUserGroups($userid)
-    {       
+    {     
+        Logger::Log("starts GET GetUserGroups",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($userid));
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetUserGroups.sql", 
@@ -292,7 +314,7 @@ class DBGroup
             $this->_app->response->setBody(Group::encodeGroup($res));
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetUserGroups failed",LogLevel::ERROR);
@@ -306,7 +328,9 @@ class DBGroup
      * GET GetAllGroups
      */
     public function getAllGroups()
-    {        
+    {     
+        Logger::Log("starts GET GetAllGroups",LogLevel::DEBUG);
+        
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetAllGroups.sql", 
@@ -365,7 +389,7 @@ class DBGroup
             $this->_app->response->setBody(Group::encodeGroup($res));
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetAllGroups failed",LogLevel::ERROR);
@@ -382,7 +406,14 @@ class DBGroup
      * @param $esid a database exercise sheet identifier
      */
     public function getSheetUserGroups($userid, $esid)
-    {      
+    {    
+        Logger::Log("starts GET GetSheetUserGroups",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($userid),
+                            ctype_digit($esid));
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetSheetUserGroups.sql", 
@@ -442,7 +473,7 @@ class DBGroup
             $this->_app->response->setBody(Group::encodeGroup($res));
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetSheetUserGroups failed",LogLevel::ERROR);
@@ -458,7 +489,13 @@ class DBGroup
      * @param $esid a database exercise sheet identifier
      */
     public function getSheetGroups($esid)
-    {                 
+    {     
+        Logger::Log("starts GET GetSheetGroups",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($esid));
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetSheetGroups.sql", 
@@ -517,7 +554,7 @@ class DBGroup
             $this->_app->response->setBody(Group::encodeGroup($res));
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetSheetGroups failed",LogLevel::ERROR);

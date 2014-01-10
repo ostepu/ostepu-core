@@ -7,7 +7,6 @@ require_once( 'Include/Slim/Slim.php' );
 include_once( 'Include/Structures.php' );
 include_once( 'Include/Request.php' );
 include_once( 'Include/DBJson.php' );
-include_once( 'Include/DBRequest.php' );
 include_once( 'Include/CConfig.php' );
 include_once( 'Include/Logger.php' );
 
@@ -126,6 +125,8 @@ class DBUser
      */
     public function editUser($userid)
     {
+        Logger::Log("starts PUT EditUser",LogLevel::DEBUG);
+        
         // decode the received user data, as an object
         $insert = User::decodeUser($this->_app->request->getBody());
         
@@ -146,7 +147,7 @@ class DBUser
             if ($result['status']>=200 && $result['status']<=299){
                 $this->_app->response->setStatus(201);
                 if (isset($result['headers']['Content-Type']))
-                    header($result['headers']['Content-Type']);
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
                 Logger::Log("PUT EditUser failed",LogLevel::ERROR);
@@ -163,6 +164,8 @@ class DBUser
      */
     public function removeUser($userid)
     {
+        Logger::Log("starts DELETE RemoveUser",LogLevel::DEBUG);
+        
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/DeleteUser.sql", 
@@ -170,14 +173,13 @@ class DBUser
                                         
         // checks the correctness of the query                          
         if ($result['status']>=200 && $result['status']<=299){
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(204);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
-                
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+            Logger::Log("DELETE RemoveUser ok",LogLevel::DEBUG);   
         } else{
             Logger::Log("DELETE RemoveUser failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
-            $this->_app->stop();
+            $this->_app->response->setStatus(409);        
         }
     }
     
@@ -186,6 +188,8 @@ class DBUser
      */
     public function addUser()
     {
+        Logger::Log("starts POST AddUser",LogLevel::DEBUG);
+        
         // decode the received user data, as an object
         $insert = User::decodeUser($this->_app->request->getBody());
         
@@ -213,7 +217,7 @@ class DBUser
                 $this->_app->response->setBody(User::encodeUser($obj)); 
                 $this->_app->response->setStatus(201);
                 if (isset($result['headers']['Content-Type']))
-                    header($result['headers']['Content-Type']);
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
                 Logger::Log("POST AddUser failed",LogLevel::ERROR);
@@ -228,6 +232,8 @@ class DBUser
      */
     public function getUsers()
     {
+        Logger::Log("starts GET GetUsers",LogLevel::DEBUG);
+        
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetUsers.sql", 
@@ -277,7 +283,7 @@ class DBUser
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetUsers failed",LogLevel::ERROR);
@@ -286,7 +292,7 @@ class DBUser
             $this->_app->stop();
         }
     }
-    
+
     /**
      * GET GetUser
      *
@@ -294,8 +300,10 @@ class DBUser
      */
     public function getUser($userid)
     {
+        Logger::Log("starts GET GetUser",LogLevel::DEBUG);
+
         // starts a query, by using a given file
-         $result = DBRequest::getRoutedSqlFile($this->query, 
+        $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetUser.sql", 
                                         array("userid" => $userid));
         
@@ -346,13 +354,11 @@ class DBUser
 
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
-                
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);              
         } else{
             Logger::Log("GET GetUser failed",LogLevel::ERROR);
             $this->_app->response->setStatus(409);
             $this->_app->response->setBody(User::encodeUser(new User()));
-            $this->_app->stop();
         }
     }
     
@@ -363,6 +369,12 @@ class DBUser
      */
     public function getCourseMember($courseid)
     {     
+        Logger::Log("starts GET GetCourseMember",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($courseid));
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetCourseMember.sql", 
@@ -412,7 +424,7 @@ class DBUser
             
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetCourseMember failed",LogLevel::ERROR);
@@ -430,6 +442,8 @@ class DBUser
      */
     public function getGroupMember($userid, $esid)
     {   
+        Logger::Log("starts GET GetGroupMember",LogLevel::DEBUG);
+        
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetGroupMember.sql", 
@@ -479,7 +493,7 @@ class DBUser
             
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetGroupMember failed",LogLevel::ERROR);

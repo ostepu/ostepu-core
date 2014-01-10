@@ -20,6 +20,8 @@ if (!$com->used())
     
 /**
  * A class, to abstract the "Exercise" table from database
+ *
+ * @author Till Uhlig
  */
 class DBExercise
 {
@@ -117,6 +119,12 @@ class DBExercise
      */
     public function editExercise($eid)
     {
+        Logger::Log("starts PUT EditExercise",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($eid));
+                            
         // decode the received exercise data, as an object
         $insert = Exercise::decodeExercise($this->_app->request->getBody());
         
@@ -137,7 +145,7 @@ class DBExercise
             if ($result['status']>=200 && $result['status']<=299){
                 $this->_app->response->setStatus(201);
                 if (isset($result['headers']['Content-Type']))
-                    header($result['headers']['Content-Type']);
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
                 Logger::Log("PUT EditExercise failed",LogLevel::ERROR);
@@ -154,6 +162,12 @@ class DBExercise
      */
     public function deleteExercise($eid)
     {
+        Logger::Log("starts DELETE DeleteExercise",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($eid));
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/DeleteExercise.sql", 
@@ -163,7 +177,7 @@ class DBExercise
         if ($result['status']>=200 && $result['status']<=299){
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE DeleteExercise failed",LogLevel::ERROR);
@@ -177,6 +191,8 @@ class DBExercise
      */
     public function setExercise()
     {
+        Logger::Log("starts POST SetExercise",LogLevel::DEBUG);
+        
         // decode the received exercise data, as an object
         $insert = Exercise::decodeExercise($this->_app->request->getBody());
         
@@ -204,7 +220,7 @@ class DBExercise
                 $this->_app->response->setBody(Exercise::encodeExercise($obj)); 
                 $this->_app->response->setStatus(201);
                 if (isset($result['headers']['Content-Type']))
-                    header($result['headers']['Content-Type']);
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
                 Logger::Log("POST SetExercise failed",LogLevel::ERROR);
@@ -221,6 +237,12 @@ class DBExercise
      */
     public function getExercise($eid)
     {        
+        Logger::Log("starts GET GetExercise",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($eid));
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetExercise.sql", 
@@ -281,7 +303,7 @@ class DBExercise
             $this->_app->response->setBody(Exercise::encodeExercise($res));
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetExercise failed",LogLevel::ERROR);
@@ -296,6 +318,8 @@ class DBExercise
      */
     public function getAllExercises()
     {       
+        Logger::Log("starts GET GetAllExercises",LogLevel::DEBUG);
+        
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetAllExercises.sql", 
@@ -354,7 +378,7 @@ class DBExercise
             $this->_app->response->setBody(Exercise::encodeExercise($res));
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetAllExercises failed",LogLevel::ERROR);
@@ -371,6 +395,12 @@ class DBExercise
      */
     public function getSheetExercises($esid)
     {     
+        Logger::Log("starts GET GetSheetExercises",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($esid));
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetExercises.sql", 
@@ -417,7 +447,7 @@ class DBExercise
             $this->_app->response->setBody(Exercise::encodeExercise($res));
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetSheetExercises failed",LogLevel::ERROR);

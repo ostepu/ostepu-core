@@ -21,7 +21,9 @@ if (!$com->used())
     new DBExternalId($com->loadConfig());  
     
 /**
- * (description)
+ * A class, to abstract the "ExternalId" table from database
+ *
+ * @author Till Uhlig
  */
 class DBExternalId
 {
@@ -120,6 +122,8 @@ class DBExternalId
      */
     public function editExternalId($exid)
     {
+        Logger::Log("starts PUT EditExternalId",LogLevel::DEBUG);
+                            
         // decode the received external id data, as an object
         $insert = ExternalId::decodeExternalId($this->_app->request->getBody());
         
@@ -141,7 +145,7 @@ class DBExternalId
             if ($result['status']>=200 && $result['status']<=299){
                 $this->_app->response->setStatus(201);
                 if (isset($result['headers']['Content-Type']))
-                    header($result['headers']['Content-Type']);
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
                 Logger::Log("PUT EditExternalId failed",LogLevel::ERROR);
@@ -158,6 +162,8 @@ class DBExternalId
      */
     public function deleteExternalId($exid)
     {
+        Logger::Log("starts DELETE DeleteExternalId",LogLevel::DEBUG);
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/DeleteExternalId.sql", 
@@ -168,7 +174,7 @@ class DBExternalId
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE DeleteExternalId failed",LogLevel::ERROR);
@@ -182,6 +188,8 @@ class DBExternalId
      */ 
     public function setExternalId()
     {
+        Logger::Log("starts POST SetExternalId",LogLevel::DEBUG);
+        
         // decode the received external id data, as an object
         $insert = ExternalId::decodeExternalId($this->_app->request->getBody());
         
@@ -209,7 +217,7 @@ class DBExternalId
                 $this->_app->response->setBody(ExternalId::encodeExternalId($obj)); 
                 $this->_app->response->setStatus(201);
                 if (isset($result['headers']['Content-Type']))
-                    header($result['headers']['Content-Type']);
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
                 Logger::Log("POST SetExternalId failed",LogLevel::ERROR);
@@ -226,6 +234,8 @@ class DBExternalId
      */
     public function getExternalId($exid)
     {    
+        Logger::Log("starts GET GetExternalId",LogLevel::DEBUG);
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetExternalId.sql", 
@@ -266,7 +276,7 @@ class DBExternalId
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetExternalId failed",LogLevel::ERROR);
@@ -281,6 +291,8 @@ class DBExternalId
      */
     public function getAllExternalIds()
     {    
+        Logger::Log("starts GET GetAllExternalIds",LogLevel::DEBUG);
+        
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetAllExternalIds.sql", 
@@ -317,7 +329,7 @@ class DBExternalId
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetAllExternalIds failed",LogLevel::ERROR);
@@ -334,6 +346,12 @@ class DBExternalId
      */
     public function getCourseExternalIds($courseid)
     {    
+        Logger::Log("starts GET getCourseExternalIds",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($courseid));
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetCourseExternalIds.sql", 
@@ -370,7 +388,7 @@ class DBExternalId
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetExerciseSheet failed",LogLevel::ERROR);
