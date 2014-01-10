@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 require 'Slim/Slim.php';
 include 'include/Assistants/Request.php';   
