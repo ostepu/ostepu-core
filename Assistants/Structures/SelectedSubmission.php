@@ -61,9 +61,9 @@ class SelectedSubmission extends Object implements JsonSerializable
     public function getInsertData(){
         $values = "";
         
-        if ($this->leaderId != null) $this->addInsertData($values, 'U_id_leader', $this->leaderId );
-        if ($this->submissionId != null) $this->addInsertData($values, 'S_id_selected', $this->submissionId);
-        if ($this->exerciseId != null) $this->addInsertData($values, 'E_id', $this->exerciseId);
+        if ($this->leaderId != null) $this->addInsertData($values, 'U_id_leader', mysql_real_escape_string($this->leaderId));
+        if ($this->submissionId != null) $this->addInsertData($values, 'S_id_selected', mysql_real_escape_string($this->submissionId));
+        if ($this->exerciseId != null) $this->addInsertData($values, 'E_id', mysql_real_escape_string($this->exerciseId));
         
         if ($values != ""){
             $values=substr($values,1);

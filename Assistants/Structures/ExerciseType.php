@@ -81,8 +81,8 @@ class ExerciseType extends Object implements JsonSerializable
     public function getInsertData(){
         $values = "";
         
-        if ($this->id != null) $this->addInsertData($values, 'ET_id', $this->id );
-        if ($this->name != null) $this->addInsertData($values, 'ET_name', $this->name );
+        if ($this->id != null) $this->addInsertData($values, 'ET_id', mysql_real_escape_string($this->id));
+        if ($this->name != null) $this->addInsertData($values, 'ET_name', mysql_real_escape_string($this->name));
         
         if ($values != ""){
             $values=substr($values,1);

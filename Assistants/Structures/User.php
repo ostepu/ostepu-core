@@ -337,16 +337,16 @@ class User extends Object implements JsonSerializable
     public function getInsertData(){
         $values = "";
         
-        if ($this->id != null) $this->addInsertData($values, 'U_id', $this->id );
-        if ($this->userName != null) $this->addInsertData($values, 'U_username', $this->userName );
-        if ($this->email != null) $this->addInsertData($values, 'U_email', $this->email );
-        if ($this->firstName != null) $this->addInsertData($values, 'U_firstName', $this->firstName );
-        if ($this->lastName != null) $this->addInsertData($values, 'U_lastName', $this->lastName );
-        if ($this->title != null) $this->addInsertData($values, 'U_title', $this->title );
-        if ($this->flag != null) $this->addInsertData($values, 'U_flag', $this->flag );
-        if ($this->password != null) $this->addInsertData($values, 'U_password', $this->password );
-        if ($this->salt != null) $this->addInsertData($values, 'U_salt', $this->salt );
-        if ($this->failedLogins != null) $this->addInsertData($values, 'U_failed_logins', $this->failedLogins );
+        if ($this->id != null) $this->addInsertData($values, 'U_id', mysql_real_escape_string($this->id));
+        if ($this->userName != null) $this->addInsertData($values, 'U_username', mysql_real_escape_string($this->userName));
+        if ($this->email != null) $this->addInsertData($values, 'U_email', mysql_real_escape_string($this->email));
+        if ($this->firstName != null) $this->addInsertData($values, 'U_firstName', mysql_real_escape_string($this->firstName));
+        if ($this->lastName != null) $this->addInsertData($values, 'U_lastName', mysql_real_escape_string($this->lastName));
+        if ($this->title != null) $this->addInsertData($values, 'U_title', mysql_real_escape_string($this->title));
+        if ($this->flag != null) $this->addInsertData($values, 'U_flag', mysql_real_escape_string($this->flag));
+        if ($this->password != null) $this->addInsertData($values, 'U_password', mysql_real_escape_string($this->password));
+        if ($this->salt != null) $this->addInsertData($values, 'U_salt', mysql_real_escape_string($this->salt));
+        if ($this->failedLogins != null) $this->addInsertData($values, 'U_failed_logins', mysql_real_escape_string($this->failedLogins));
         
         
         if ($values != ""){

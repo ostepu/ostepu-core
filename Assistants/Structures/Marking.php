@@ -144,15 +144,15 @@ class Marking extends Object implements JsonSerializable
     public function getInsertData(){
         $values = "";
         
-        if ($this->id != null) $this->addInsertData($values, 'M_id', $this->id );
-        if ($this->tutorId != null) $this->addInsertData($values, 'U_id_tutor', $this->tutorId);
-        if ($this->file != array()) $this->addInsertData($values, 'F_id_file', $this->file->getFileId());
-        if ($this->submissionId != null) $this->addInsertData($values, 'S_id', $this->submissionId);
-        if ($this->tutorComment != null) $this->addInsertData($values, 'M_tutorComment', $this->tutorComment);
-        if ($this->outstanding != null) $this->addInsertData($values, 'M_outstanding', $this->outstanding);
-        if ($this->status != null) $this->addInsertData($values, 'M_status', $this->status);
-        if ($this->points != null) $this->addInsertData($values, 'M_points', $this->points);
-        if ($this->date != null) $this->addInsertData($values, 'M_date', $this->date);
+        if ($this->id != null) $this->addInsertData($values, 'M_id', mysql_real_escape_string($this->id));
+        if ($this->tutorId != null) $this->addInsertData($values, 'U_id_tutor', mysql_real_escape_string($this->tutorId));
+        if ($this->file != array()) $this->addInsertData($values, 'F_id_file', mysql_real_escape_string($this->file->getFileId()));
+        if ($this->submissionId != null) $this->addInsertData($values, 'S_id', mysql_real_escape_string($this->submissionId));
+        if ($this->tutorComment != null) $this->addInsertData($values, 'M_tutorComment', mysql_real_escape_string($this->tutorComment));
+        if ($this->outstanding != null) $this->addInsertData($values, 'M_outstanding', mysql_real_escape_string($this->outstanding));
+        if ($this->status != null) $this->addInsertData($values, 'M_status', mysql_real_escape_string($this->status));
+        if ($this->points != null) $this->addInsertData($values, 'M_points', mysql_real_escape_string($this->points));
+        if ($this->date != null) $this->addInsertData($values, 'M_date', mysql_real_escape_string($this->date));
         
         if ($values != ""){
             $values=substr($values,1);

@@ -126,14 +126,14 @@ class Submission extends Object implements JsonSerializable
     public function getInsertData(){
         $values = "";
         
-        if ($this->id != null) $this->addInsertData($values, 'S_id', $this->id );
-        if ($this->studentId != null) $this->addInsertData($values, 'U_id', $this->studentId);
-        if ($this->file != array()) $this->addInsertData($values, 'F_id_file', $this->file->getFileId());
-        if ($this->exerciseId != null) $this->addInsertData($values, 'E_id', $this->exerciseId);
-        if ($this->comment != null) $this->addInsertData($values, 'S_comment', $this->comment);
-        if ($this->accepted != null) $this->addInsertData($values, 'S_accepted', $this->accepted);
-        if ($this->date != null) $this->addInsertData($values, 'S_date', $this->date);
-        if ($this->selectedForGroup != null) $this->addInsertData($values, 'S_selected', $this->selectedForGroup);
+        if ($this->id != null) $this->addInsertData($values, 'S_id', mysql_real_escape_string($this->id));
+        if ($this->studentId != null) $this->addInsertData($values, 'U_id', mysql_real_escape_string($this->studentId));
+        if ($this->file != array()) $this->addInsertData($values, 'F_id_file', mysql_real_escape_string($this->file->getFileId()));
+        if ($this->exerciseId != null) $this->addInsertData($values, 'E_id', mysql_real_escape_string($this->exerciseId));
+        if ($this->comment != null) $this->addInsertData($values, 'S_comment', mysql_real_escape_string($this->comment));
+        if ($this->accepted != null) $this->addInsertData($values, 'S_accepted', mysql_real_escape_string($this->accepted));
+        if ($this->date != null) $this->addInsertData($values, 'S_date', mysql_real_escape_string($this->date));
+        if ($this->selectedForGroup != null) $this->addInsertData($values, 'S_selected', mysql_real_escape_string($this->selectedForGroup));
         
         if ($values != ""){
             $values=substr($values,1);
