@@ -77,8 +77,8 @@ class Session extends Object implements JsonSerializable
     public function getInsertData(){
         $values = "";
         
-        if ($this->user != null) $this->addInsertData($values, 'U_id', $this->user );
-        if ($this->session != null) $this->addInsertData($values, 'SE_id', $this->session );
+        if ($this->user != null) $this->addInsertData($values, 'U_id', mysql_real_escape_string($this->user));
+        if ($this->session != null) $this->addInsertData($values, 'SE_id', mysql_real_escape_string($this->session));
         
         if ($values != ""){
             $values=substr($values,1);

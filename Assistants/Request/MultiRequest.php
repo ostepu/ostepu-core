@@ -1,16 +1,17 @@
 <?php
 /**
- * @file (filename)
- * (description)
+ * @file MultiRequest.php contains the Request_MultiRequest class
  */ 
 
 /**
  * (description)
+ *
+ * @author Till Uhlig
  */
 class Request_MultiRequest
 {
     private $requests;
-	private $handles=array();
+    private $handles=array();
     
     public function __construct(){
         $this->requests = curl_multi_init();
@@ -18,7 +19,7 @@ class Request_MultiRequest
     
     public function addRequest($request){
         curl_multi_add_handle($this->requests,$request);   
-		array_push($this->handles,$request);
+        array_push($this->handles,$request);
     }
     
     public function run(){
@@ -34,7 +35,7 @@ class Request_MultiRequest
                     $status_cme = curl_multi_exec($this->requests, $running_handles);
                 } while ($status_cme == CURLM_CALL_MULTI_PERFORM);
             } else
-			$status_cme = curl_multi_exec($this->requests, $running_handles);
+            $status_cme = curl_multi_exec($this->requests, $running_handles);
         }
         
         $res = array();
@@ -56,7 +57,7 @@ class Request_MultiRequest
             // close current handler
             curl_multi_remove_handle($this->requests, $k );
         }
-		
+
         curl_multi_close($this->requests); 
         return $res;
     }    

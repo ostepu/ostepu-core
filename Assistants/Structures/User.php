@@ -258,6 +258,55 @@ class User extends Object implements JsonSerializable
         $this->password = $value;
     }
     
+    /**
+     * (description)
+     *
+     * type: string
+     */
+    private $salt = null;
+    
+    /**
+     * (description)
+     */
+    public function getSalt()
+    {
+        return $this->salt;
+    }
+    
+    /**
+     * (description)
+     *
+     * @param $param (description)
+     */
+    public function setSalt($value)
+    {
+        $this->salt = $value;
+    }
+    
+    /**
+     * (description)
+     *
+     * type: int
+     */
+    private $failedLogins = null;
+    
+    /**
+     * (description)
+     */
+    public function getFailedLogins()
+    {
+        return $this->failedLogins;
+    }
+    
+    /**
+     * (description)
+     *
+     * @param $param (description)
+     */
+    public function setFailedLogins($value)
+    {
+        $this->failedLogins = $value;
+    }
     
     
     
@@ -276,7 +325,9 @@ class User extends Object implements JsonSerializable
            'U_title' => 'title',
            'U_courses' => 'courses',
            'U_flag' => 'flag',
-           'U_password' => 'password'
+           'U_password' => 'password',
+           'U_salt' => 'salt',
+           'U_failed_logins' => 'failedLogins'
         );
     }
        
@@ -286,14 +337,17 @@ class User extends Object implements JsonSerializable
     public function getInsertData(){
         $values = "";
         
-        if ($this->id != null) $this->addInsertData($values, 'U_id', $this->id );
-        if ($this->userName != null) $this->addInsertData($values, 'U_username', $this->userName );
-        if ($this->email != null) $this->addInsertData($values, 'U_email', $this->email );
-        if ($this->firstName != null) $this->addInsertData($values, 'U_firstName', $this->firstName );
-        if ($this->lastName != null) $this->addInsertData($values, 'U_lastName', $this->lastName );
-        if ($this->title != null) $this->addInsertData($values, 'U_title', $this->title );
-        if ($this->flag != null) $this->addInsertData($values, 'U_flag', $this->flag );
-        if ($this->password != null) $this->addInsertData($values, 'U_password', $this->password );
+        if ($this->id != null) $this->addInsertData($values, 'U_id', mysql_real_escape_string($this->id));
+        if ($this->userName != null) $this->addInsertData($values, 'U_username', mysql_real_escape_string($this->userName));
+        if ($this->email != null) $this->addInsertData($values, 'U_email', mysql_real_escape_string($this->email));
+        if ($this->firstName != null) $this->addInsertData($values, 'U_firstName', mysql_real_escape_string($this->firstName));
+        if ($this->lastName != null) $this->addInsertData($values, 'U_lastName', mysql_real_escape_string($this->lastName));
+        if ($this->title != null) $this->addInsertData($values, 'U_title', mysql_real_escape_string($this->title));
+        if ($this->flag != null) $this->addInsertData($values, 'U_flag', mysql_real_escape_string($this->flag));
+        if ($this->password != null) $this->addInsertData($values, 'U_password', mysql_real_escape_string($this->password));
+        if ($this->salt != null) $this->addInsertData($values, 'U_salt', mysql_real_escape_string($this->salt));
+        if ($this->failedLogins != null) $this->addInsertData($values, 'U_failed_logins', mysql_real_escape_string($this->failedLogins));
+        
         
         if ($values != ""){
             $values=substr($values,1);
@@ -330,8 +384,9 @@ class User extends Object implements JsonSerializable
      */
     public static function getFlagDefinition(){
         return array(
-            '0' => 'inactive',
+            '0' => 'inactive', // <- removes all private user data
             '1' => 'active',
+            '2' => 'locked' // <- login locked
         );
     }
     
@@ -397,6 +452,8 @@ class User extends Object implements JsonSerializable
          if ($this->courses!==array()) $list['courses'] = $this->courses;
          if ($this->flag!==null) $list['flag'] = $this->flag;
          if ($this->password!==null) $list['password'] = $this->password; 
+         if ($this->salt!==null) $list['salt'] = $this->salt;
+         if ($this->failedLogins!==null) $list['failedLogins'] = $this->failedLogins;
        return $list;
     }
 }

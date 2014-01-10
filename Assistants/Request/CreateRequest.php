@@ -1,12 +1,13 @@
 <?php
 /**
- * @file (filename)
- * (description)
+ * @file CreateRequest.php contains the Request_CreateRequest class
  */ 
 
 
 /**
  * (description)
+ *
+ * @author Till Uhlig
  */
 class Request_CreateRequest
 {

@@ -1,7 +1,6 @@
 <?php
 /**
- * @file (filename)
- * (description)
+ * @file Controller.php contains the Controller class
  */ 
  
 require_once('Include/Slim/Slim.php');
@@ -12,6 +11,8 @@ include_once('Include/Request.php');
    
 /**
  * (description)
+ *
+ * @author Till Uhlig
  */
 class Controller
 {
@@ -64,6 +65,8 @@ class Controller
      */
     public function getl($data)
     {
+        Logger::Log("starts Controller routing",LogLevel::DEBUG);
+            
         if (count($data)==0){
            $this->_app->response->setStatus(404);
            $this->_app->stop();
@@ -93,7 +96,8 @@ class Controller
                     if (isset($ch['headers']['Content-Disposition']))
                         $this->_app->response->headers->set('Content-Disposition', 
                                             $ch['headers']['Content-Disposition']);
-
+                                            
+                    Logger::Log("such normal",LogLevel::DEBUG);
                     $this->_app->stop();
                     return;
                 }
@@ -120,7 +124,7 @@ class Controller
                 if (isset($ch['headers']['Content-Disposition']))
                     $this->_app->response->headers->set('Content-Disposition', 
                                         $ch['headers']['Content-Disposition']);
-
+                Logger::Log("such alle",LogLevel::DEBUG);
                 $this->_app->stop();
                 return;
             }
