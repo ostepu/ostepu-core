@@ -13,6 +13,22 @@
 class DBJson
 {
 
+    public static function checkInput(&$app){
+        $args = func_get_args();
+        $app = &$args[0];
+        $args = array_slice ( $args, 1, count($args) );
+
+        foreach ($args as &$a) {
+            if (!$a){
+                Logger::Log("access denied",LogLevel::ERROR);
+                $app->response->setBody("[]");
+                $app->response->setStatus(412);
+                $app->stop();
+                return;
+            }
+        }
+    }
+
     /**
      * the function reads the passed mysql object and converts direktly into json
      *

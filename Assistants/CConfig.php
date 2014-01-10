@@ -1,12 +1,14 @@
 <?php
 /**
-* @file (filename)
+* @file CConfig.php contains the CConfig class
 */ 
-
+include_once( 'DBRequest.php' );
 
 
 /**
 * (description)
+ *
+ * @author Till Uhlig
 */
 class CConfig
 {
@@ -26,8 +28,10 @@ class CConfig
     }
     
     /**
-     * (description)
-     */
+     * the CConfig constructor
+     *
+     * @param $prefix the prefix, the component works with
+     */ 
     public function __construct($prefix)
     {
         $this->setPrefix($prefix);
