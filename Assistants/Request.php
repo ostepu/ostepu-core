@@ -1,13 +1,14 @@
 <?php
 /**
- * @file (filename)
- * (description)
+ * @file Request.php contains the Request class
  */ 
 include_once( 'Request/CreateRequest.php' );   
 include_once( 'Request/MultiRequest.php' );   
 
 /**
  * (description)
+ *
+ * @author Till Uhlig
  */
 class Request
 {
@@ -16,6 +17,7 @@ class Request
      *
      * @param $target (description)
      * @param $method (description)
+     * @param $header (description)
      * @param $content (description)
      */
     public static function custom($method, $target, $header,  $content)
@@ -119,8 +121,11 @@ class Request
                                       
                 if ($ch['status']>=200 && $ch['status']<=299){
                     // finished
+                     Logger::Log("Request normale suche ok :".$links->getAddress(),LogLevel::DEBUG);
                     return $ch;
                 }
+                else
+                    Logger::Log("Request normale suche failed :".$links->getAddress(),LogLevel::DEBUG);
                                      
             } elseif(in_array("",$possible)){
                 array_push($else, $links);
@@ -136,8 +141,11 @@ class Request
                                   
             if ($ch['status']>=200 && $ch['status']<=299){
                 // finished
+                Logger::Log("Request suche alle ok :".$links->getAddress(),LogLevel::DEBUG);
                 return $ch;
             }
+            else
+                Logger::Log("Request suche alle failed :".$links->getAddress(),LogLevel::DEBUG);
         }
         
         // no positive response or no operative link
