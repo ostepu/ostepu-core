@@ -1,6 +1,7 @@
 <form action="Upload.php" method="POST" enctype="multipart/form-data">
     <?php print '<input type="hidden" name="sheetID" value="' . $sheetID . '">'; ?>
-
+    <input type="hidden" name="action" value="submit">
+    <?php print '<input type="hidden" name="userID" value="' . $uid . '">'; ?>
     <button class="submit" type="submit" name="submit" id="submitButton">
         <div class="content-element">
             <div class="content-header">

@@ -13,6 +13,7 @@ include_once '../Assistants/Logger.php';
 <?php
     if (isset($_POST['action'])) {
         Logger::Log($_POST, LogLevel::INFO);
+        Logger::Log($_FILES, LogLevel::INFO);
         /**
          * @todo actually upload the data
          */
@@ -56,9 +57,10 @@ $h->setPoints(75);
 $sheetData = array('sheetID' => 110,
                    'exercises' => array(array('exerciseID' => 1
                                               ),
-                                        array('exerciseID' => 1
+                                        array('exerciseID' => 2
                                               )
-                                        )
+                                        ),
+                   'uid' => 2
                    );
 
 /**
