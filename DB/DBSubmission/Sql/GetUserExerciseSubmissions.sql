@@ -20,4 +20,4 @@ from
         left join
     SelectedSubmission SS ON (S.S_id = SS.S_id_selected)
 where
-    S.U_id = $userid and S.E_id = $eid
+    S.U_id = '$userid' and S.E_id = '$eid'

@@ -11,4 +11,4 @@ select
 from
     ApprovalCondition
 where
-    AC_id = $apid
+    AC_id = '$apid'

@@ -9,4 +9,4 @@
  
 UPDATE Exercise
 SET $values
-WHERE E_id = $eid
+WHERE E_id = '$eid'

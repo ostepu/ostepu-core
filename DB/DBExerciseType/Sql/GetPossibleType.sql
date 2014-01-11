@@ -11,4 +11,4 @@ select
 from
     ExerciseType
 where
-    ET_id = $etid
+    ET_id = '$etid'

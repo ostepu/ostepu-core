@@ -1,3 +1,3 @@
 UPDATE Marking
 SET $values
-WHERE M_id = $mid
+WHERE M_id = '$mid'

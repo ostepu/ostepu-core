@@ -1,3 +1,3 @@
 UPDATE ExerciseSheet
 SET $values
-WHERE U_id = $userid
+WHERE U_id = '$userid'

@@ -9,4 +9,4 @@
 
 UPDATE Attachment
 SET $values
-WHERE A_id = $aid
+WHERE A_id = '$aid'

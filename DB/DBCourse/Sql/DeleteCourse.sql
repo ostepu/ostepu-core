@@ -8,4 +8,4 @@
  
 DELETE FROM Course 
 WHERE
-    C_id = $courseid
+    C_id = '$courseid'

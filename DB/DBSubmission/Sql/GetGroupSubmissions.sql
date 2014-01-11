@@ -16,13 +16,13 @@ select
 from
     `Group` G
         join
-    `Group` G2 ON (G.U_id_leader = $userid
+    `Group` G2 ON (G.U_id_leader = '$userid'
         and G.U_id_member = G2.U_id_member
-        and G.ES_id = $esid
+        and G.ES_id = '$esid'
         and G2.ES_id = G.ES_id)
         join
     (Submission S
-    join Exercise E ON (S.E_id = E.E_id and E.ES_id = $esid)) ON (G2.U_id_leader = S.U_id)
+    join Exercise E ON (S.E_id = E.E_id and E.ES_id = '$esid')) ON (G2.U_id_leader = S.U_id)
         join
     File F ON (S.F_id_file = F.F_id)
         left join

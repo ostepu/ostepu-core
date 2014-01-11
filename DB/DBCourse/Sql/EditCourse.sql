@@ -9,4 +9,4 @@
  
 UPDATE Course
 SET $values
-WHERE C_id = $courseid
+WHERE C_id = '$courseid'

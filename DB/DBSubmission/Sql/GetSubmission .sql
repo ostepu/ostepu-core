@@ -21,4 +21,4 @@ from
     SelectedSubmission SS ON (S.S_id = SS.S_id_selected
         and S.E_id = SS.E_id)
 where
-    S.S_id = $suid
+    S.S_id = '$suid'

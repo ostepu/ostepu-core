@@ -9,4 +9,4 @@
  
 UPDATE ExternalId
 SET $values
-WHERE EX_id = $exid
+WHERE EX_id = '$exid'

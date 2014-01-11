@@ -16,15 +16,14 @@ select
 from
    (Submission S
     join File F ON (S.F_id_file = F.F_id
-        and S.E_id = $eid)
+        and S.E_id = '$eid')
     join SelectedSubmission SS ON (S.S_id = SS.S_id_selected
         and S.E_id = SS.E_id))
         join
 
-
 (`Group` G
         join
-    `Group` G2 ON (G.U_id_leader = $userid
+    `Group` G2 ON (G.U_id_leader = '$userid'
         and G.U_id_member = G2.U_id_member
         and G2.ES_id = G.ES_id)
 )

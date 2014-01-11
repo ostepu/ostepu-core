@@ -8,5 +8,5 @@
  */
  
 UPDATE User
-SET $column
+SET $values
 WHERE U_id = '$userid'
