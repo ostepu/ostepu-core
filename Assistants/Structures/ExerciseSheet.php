@@ -158,14 +158,14 @@ class ExerciseSheet extends Object implements JsonSerializable
     public function getInsertData(){
         $values = "";
         
-        if ($this->id != null) $this->addInsertData($values, 'ES_id', mysql_real_escape_string($this->id));
-        if ($this->courseId != null) $this->addInsertData($values, 'C_id', mysql_real_escape_string($this->courseId));
-        if ($this->endDate != null) $this->addInsertData($values, 'ES_endDate', mysql_real_escape_string($this->endDate));
-        if ($this->startDate != null) $this->addInsertData($values, 'ES_startDate', mysql_real_escape_string($this->startDate));
-        if ($this->groupSize != null) $this->addInsertData($values, 'ES_groupSize', mysql_real_escape_string($this->groupSize));
-        if ($this->sheetName != null) $this->addInsertData($values, 'ES_name', mysql_real_escape_string($this->sheetName));
-        if ($this->sheetFile != null) $this->addInsertData($values, 'F_id_file', mysql_real_escape_string($this->sheetFile->getFileId()));
-        if ($this->sampleSolution != null) $this->addInsertData($values, 'F_id_sampleSolution', mysql_real_escape_string($this->sampleSolution->getFileId()));
+        if ($this->id != null) $this->addInsertData($values, 'ES_id', DBJson::mysql_real_escape_string($this->id));
+        if ($this->courseId != null) $this->addInsertData($values, 'C_id', DBJson::mysql_real_escape_string($this->courseId));
+        if ($this->endDate != null) $this->addInsertData($values, 'ES_endDate', DBJson::mysql_real_escape_string($this->endDate));
+        if ($this->startDate != null) $this->addInsertData($values, 'ES_startDate', DBJson::mysql_real_escape_string($this->startDate));
+        if ($this->groupSize != null) $this->addInsertData($values, 'ES_groupSize', DBJson::mysql_real_escape_string($this->groupSize));
+        if ($this->sheetName != null) $this->addInsertData($values, 'ES_name', DBJson::mysql_real_escape_string($this->sheetName));
+        if ($this->sheetFile != null) $this->addInsertData($values, 'F_id_file', DBJson::mysql_real_escape_string($this->sheetFile->getFileId()));
+        if ($this->sampleSolution != null) $this->addInsertData($values, 'F_id_sampleSolution', DBJson::mysql_real_escape_string($this->sampleSolution->getFileId()));
         
         if ($values != ""){
             $values=substr($values,1);

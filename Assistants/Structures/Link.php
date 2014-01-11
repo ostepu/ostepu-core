@@ -209,11 +209,11 @@ class Link extends Object implements JsonSerializable
     public function getInsertData(){
         $values = "";
         
-        if ($this->id != null) $this->addInsertData($values, 'ES_id', mysql_real_escape_string($this->id));
-        if ($this->name != null) $this->addInsertData($values, 'CL_name', mysql_real_escape_string($this->name));
-        if ($this->owner != null) $this->addInsertData($values, 'CO_id_owner', mysql_real_escape_string($this->owner));
-        if ($this->target != null) $this->addInsertData($values, 'CO_id_target', mysql_real_escape_string($this->target));
-        if ($this->relevanz != null) $this->addInsertData($values, 'CL_relevanz', mysql_real_escape_string($this->relevanz));
+        if ($this->id != null) $this->addInsertData($values, 'ES_id', DBJson::mysql_real_escape_string($this->id));
+        if ($this->name != null) $this->addInsertData($values, 'CL_name', DBJson::mysql_real_escape_string($this->name));
+        if ($this->owner != null) $this->addInsertData($values, 'CO_id_owner', DBJson::mysql_real_escape_string($this->owner));
+        if ($this->target != null) $this->addInsertData($values, 'CO_id_target', DBJson::mysql_real_escape_string($this->target));
+        if ($this->relevanz != null) $this->addInsertData($values, 'CL_relevanz', DBJson::mysql_real_escape_string($this->relevanz));
         
         if ($values != ""){
             $values=substr($values,1);
