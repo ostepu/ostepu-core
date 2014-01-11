@@ -83,23 +83,32 @@ class Controller
     {
         Logger::Log("starts Controller routing",LogLevel::DEBUG);
             
+        // if no URI is received, abort process    
         if (count($data)==0){
+           Logger::Log("Controller nothing to route",LogLevel::DEBUG);
            $this->_app->response->setStatus(404);
            $this->_app->stop();
            return;
         }
 
-        // suche passenden
+        // get possible links
         $else = array();
         $list = $this->_conf->getLinks();
+        
         foreach ($list as $links){
+        
+            // determines all supported prefixes  
             $possible = explode(',',$links->getPrefix());
+            
             if (in_array($data[0],$possible)){
+            
+                // create a custom request
                 $ch = Request::custom($this->_app->request->getMethod(),
                                       $links->getAddress().$this->_app->request->getResourceUri(),
                                       $this->_app->request->headers->all(),
                                       $this->_app->request->getBody());
-    
+                                      
+                // checks the answered status code  
                 if ($ch['status']>=200 && $ch['status']<=299){
                     // finished
                     $this->_app->response->setStatus($ch['status']);
@@ -119,15 +128,25 @@ class Controller
                 }
                                      
             } elseif(in_array("",$possible)){
+            
+                // if the prefix is not used, check if the link also 
+                // permits any questions and remember him in the $else list
                 array_push($else, $links);
             } 
         }
         
+        // if no possible link was found or every possible component 
+        // answered with a non "finished" status code, we will ask components
+        // who are able to work with every prefix
         foreach ($else as $links){
+        
+            // create a custom request
             $ch = Request::custom($this->_app->request->getMethod(),
                                   $links->getAddress().$this->_app->request->getResourceUri(),
                                   $this->_app->request->headers->all(),
                                   $this->_app->request->getBody());
+                                  
+            // checks the answered status code                     
             if ($ch['status']>=200 && $ch['status']<=299){
                 // finished
                 $this->_app->response->setStatus($ch['status']);
@@ -140,13 +159,14 @@ class Controller
                 if (isset($ch['headers']['Content-Disposition']))
                     $this->_app->response->headers->set('Content-Disposition', 
                                         $ch['headers']['Content-Disposition']);
+                                        
                 Logger::Log("Controller blank search failed",LogLevel::DEBUG);
                 $this->_app->stop();
                 return;
             }
         }
 
-        
+        // no positive response or no operative link
         $this->_app->response->setStatus(404);
     }
     

@@ -22,6 +22,9 @@ class Request
      * @param $content the request content/body
      *
      * @return an array with the request result (status, header, content)
+     * - ['headers'] = an array of header informations e.g. ['headers']['Content-Type']
+     * - ['content'] = the response content
+     * - ['status'] = the status code e.g. 200,201,404,409,...
      */
     public static function custom($method, $target, $header,  $content)
     {
@@ -177,6 +180,7 @@ class Request
                                   $header,
                                   $content);
                                   
+            // checks the answered status code                 
             if ($ch['status']>=200 && $ch['status']<=299){
                 // finished
                 Logger::Log("routeRequest blank search done:".$links->getAddress(),LogLevel::DEBUG);

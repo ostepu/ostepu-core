@@ -22,14 +22,22 @@ class Request_CreateRequest
      *
      * @return an curl request object 
      */
-    public static function createCustom($method, $target, $header,  $content){
+    public static function createCustom($method, $target, $header,  $content)
+    {
         $ch = curl_init($target);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
+        
+        /**
+         * @todo CURLOPT_FRESH_CONNECT and CURLOPT_FORBID_REUSE, we need that?
+         */
         curl_setopt($ch, CURLOPT_FRESH_CONNECT, 1);
         curl_setopt($ch, CURLOPT_FORBID_REUSE, 1); 
+        
+        
         curl_setopt($ch, CURLOPT_HEADER, 1);
         return $ch; 
     }
@@ -44,7 +52,8 @@ class Request_CreateRequest
      *
      * @return an curl request object 
      */
-    public static function createGet($target, $header,  $content){
+    public static function createGet($target, $header,  $content)
+    {
         return Request_CreateRequest::createCustom("GET", 
                                                     $target, 
                                                     $header,  
@@ -61,7 +70,8 @@ class Request_CreateRequest
      *
      * @return an curl request object 
      */
-    public static function createPost($target, $header,  $content){
+    public static function createPost($target, $header,  $content)
+    {
         return Request_CreateRequest::createCustom("POST", 
                                                     $target, 
                                                     $header,  
@@ -78,7 +88,8 @@ class Request_CreateRequest
      *
      * @return an curl request object 
      */
-    public static function createPut($target, $header,  $content){
+    public static function createPut($target, $header,  $content)
+    {
         return Request_CreateRequest::createCustom("PUT", 
                                                     $target, 
                                                     $header,  
@@ -95,7 +106,8 @@ class Request_CreateRequest
      *
      * @return an curl request object 
      */
-    public static function createDelete($target, $header,  $content){
+    public static function createDelete($target, $header,  $content)
+    {
         return Request_CreateRequest::createCustom("DELETE", 
                                                     $target, 
                                                     $header,  

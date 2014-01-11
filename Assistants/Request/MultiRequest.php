@@ -22,7 +22,7 @@ class Request_MultiRequest
     private $handles=array();
     
     /**
-     *
+     * the constructor
      */ 
     public function __construct(){
         $this->requests = curl_multi_init();
