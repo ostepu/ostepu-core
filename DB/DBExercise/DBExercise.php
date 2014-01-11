@@ -26,22 +26,22 @@ if (!$com->used())
 class DBExercise
 {
     /**
-     * @var $_app the slim object
+     * @var Slim $_app the slim object
      */ 
     private $_app=null;
     
     /**
-     * @var $_conf the component data object
+     * @var Component $_conf the component data object
      */ 
     private $_conf=null;
     
     /**
-     * @var $query a list of links to a query component
+     * @var Link[] $query a list of links to a query component
      */ 
     private $query=array();
     
     /**
-     * @var $_prefix the prefixes, the class works with (comma separated)
+     * @var string $_prefix the prefixes, the class works with (comma separated)
      */
     private static $_prefix = "exercise";
     
@@ -58,7 +58,7 @@ class DBExercise
     /**
      * the $_prefix setter
      *
-     * @param $value the new value for $_prefix
+     * @param string $value the new value for $_prefix
      */ 
     public static function setPrefix($value)
     {
@@ -68,7 +68,7 @@ class DBExercise
     /**
      * the component constructor
      *
-     * @param $conf component data
+     * @param Component $conf component data
      */ 
     public function __construct($conf)
     {
@@ -119,7 +119,7 @@ class DBExercise
     /**
      * PUT EditExercise
      *
-     * @param $eid a database exercise identifier
+     * @param int $eid a database exercise identifier
      */
     public function editExercise($eid)
     {
@@ -162,7 +162,7 @@ class DBExercise
     /**
      * DELETE DeleteExercise
      *
-     * @param $eid a database exercise identifier
+     * @param int $eid a database exercise identifier
      */
     public function deleteExercise($eid)
     {
@@ -237,7 +237,7 @@ class DBExercise
     /**
      * GET GetExercise
      *
-     * @param $eid a database exercise identifier
+     * @param int $eid a database exercise identifier
      */
     public function getExercise($eid)
     {        
@@ -395,7 +395,7 @@ class DBExercise
     /**
      * GET GetSheetExercises
      *
-     * @param $esid a database exercise sheet identifier
+     * @param int $esid a database exercise sheet identifier
      */
     public function getSheetExercises($esid)
     {     
@@ -464,7 +464,7 @@ class DBExercise
     /**
      * GET GetCourseExercises
      *
-     * @param $courseid a database Course identifier
+     * @param int $courseid a database Course identifier
      */
     public function getCourseExercises($courseid)
     {     

@@ -31,22 +31,22 @@ Logger::Log("end DBUser",LogLevel::DEBUG);
 class DBUser
 {
     /**
-     * @var $_app the slim object
+     * @var Slim $_app the slim object
      */ 
     private $_app=null;
     
     /**
-     * @var $_conf the component data object
+     * @var Component $_conf the component data object
      */ 
     private $_conf=null;
     
     /**
-     * @var $query a list of links to a query component
+     * @var Link[] $query a list of links to a query component
      */ 
     private $query=array();
     
     /**
-     * @var $_prefix the prefixes, the class works with (comma separated)
+     * @var string $_prefix the prefixes, the class works with (comma separated)
      */ 
     private static $_prefix = "user";
     
@@ -63,7 +63,7 @@ class DBUser
     /**
      * the $_prefix setter
      *
-     * @param $value the new value for $_prefix
+     * @param string $value the new value for $_prefix
      */ 
     public static function setPrefix($value)
     {
@@ -73,7 +73,7 @@ class DBUser
     /**
      * the component constructor
      *
-     * @param $conf component data
+     * @param Component $conf component data
      */ 
     public function __construct($conf)
     {
@@ -129,7 +129,7 @@ class DBUser
     /**
      * PUT EditUser
      *
-     * @param $userid a database user identifier
+     * @param string $userid a database user identifier
      */
     public function editUser($userid)
     {
@@ -170,7 +170,7 @@ class DBUser
     /**
      * DELETE RemoveUser
      *
-     * @param $userid a database user identifier
+     * @param string $userid a database user identifier
      */
     public function removeUser($userid)
     {
@@ -318,7 +318,7 @@ class DBUser
     /**
      * GET GetUser
      *
-     * @param $userid a database user identifier
+     * @param string $userid a database user identifier
      */
     public function getUser($userid)
     {
@@ -389,7 +389,7 @@ class DBUser
     /**
      * GET GetIncreaseUserFailedLogin
      *
-     * @param $userid a database user identifier
+     * @param string $userid a database user identifier
      */
     public function getIncreaseUserFailedLogin($userid)
     {
@@ -460,7 +460,7 @@ class DBUser
     /**
      * GET GetCourseMember
      *
-     * @param $courseid a database course identifier
+     * @param int $courseid a database course identifier
      */
     public function getCourseMember($courseid)
     {     
@@ -532,8 +532,8 @@ class DBUser
     /**
      * GET GetGroupMember
      *
-     * @param $userid a database user identifier
-     * @param $esid a database exercise sheet identifier
+     * @param string $userid a database user identifier
+     * @param int $esid a database exercise sheet identifier
      */
     public function getGroupMember($userid, $esid)
     {   

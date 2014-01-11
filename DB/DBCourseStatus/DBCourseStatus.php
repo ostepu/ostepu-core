@@ -27,22 +27,22 @@ if (!$com->used())
 class DBCourseStatus
 {
     /**
-     * @var $_app the slim object
+     * @var Slim $_app the slim object
      */
     private $_app=null;
     
     /**
-     * @var $_conf the component data object
+     * @var Component $_conf the component data object
      */ 
     private $_conf=null;
     
     /**
-     * @var $query a list of links to a query component
+     * @var Link[] $query a list of links to a query component
      */ 
     private $query=array();
     
     /**
-     * @var $_prefix the prefixes, the class works with (comma separated)
+     * @var string $_prefix the prefixes, the class works with (comma separated)
      */ 
     private static $_prefix = "coursestatus";
     
@@ -59,7 +59,7 @@ class DBCourseStatus
     /**
      * the $_prefix setter
      *
-     * @param $value the new value for $_prefix
+     * @param string $value the new value for $_prefix
      */ 
     public static function setPrefix($value)
     {
@@ -69,7 +69,7 @@ class DBCourseStatus
     /**
      * the component constructor
      *
-     * @param $conf component data
+     * @param Component $conf component data
      */ 
     public function __construct($conf)
     {
@@ -117,7 +117,7 @@ class DBCourseStatus
     /**
      * PUT EditMemberRight
      *
-     * @param $userid a database user identifier
+     * @param int $userid a database user identifier
      */
     public function editMemberRight($courseid,$userid)
     {
@@ -161,8 +161,8 @@ class DBCourseStatus
     /**
      * DELETE RemoveCourseMember
      *
-     * @param $courseid a database course identifier
-     * @param $userid a database user identifier
+     * @param int $courseid a database course identifier
+     * @param int $userid a database user identifier
      */
     public function removeCourseMember($courseid,$userid)
     {
@@ -194,8 +194,8 @@ class DBCourseStatus
     /**
      * POST AddCourseMember
      *
-     * @param $courseid a database course identifier
-     * @param $userid a database user identifier
+     * @param int $courseid a database course identifier
+     * @param int $userid a database user identifier
      */
     public function addCourseMember()
     {
@@ -234,8 +234,8 @@ class DBCourseStatus
     /**
      * GET GetMemberRight
      *
-     * @param $courseid a database course identifier
-     * @param $userid a database user identifier
+     * @param int $courseid a database course identifier
+     * @param int $userid a database user identifier
      */
     public function getMemberRight($courseid,$userid)
     {
@@ -311,7 +311,7 @@ class DBCourseStatus
     /**
      * GET GetMemberRights
      *
-     * @param $userid a database user identifier
+     * @param int $userid a database user identifier
      */
     public function getMemberRights($userid)
     {
@@ -386,7 +386,7 @@ class DBCourseStatus
     /**
      * GET GetCourseRights
      *
-     * @param $courseid a database course identifier
+     * @param int $courseid a database course identifier
      */
     public function getCourseRights($courseid)
     {

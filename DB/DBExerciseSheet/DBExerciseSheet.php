@@ -28,22 +28,22 @@ if (!$com->used())
 class DBExerciseSheet
 {
     /**
-     * @var $_app the slim object
+     * @var Slim $_app the slim object
      */ 
     private $_app=null;
     
     /**
-     * @var $_conf the component data object
+     * @var Component $_conf the component data object
      */ 
     private $_conf=null;
     
     /**
-     * @var $query a list of links to a query component
+     * @var Link[] $query a list of links to a query component
      */ 
     private $query=array();
     
     /**
-     * @var $_prefix the prefixes, the class works with (comma separated)
+     * @var string $_prefix the prefixes, the class works with (comma separated)
      */ 
     private static $_prefix = "exercisesheet";
     
@@ -60,7 +60,7 @@ class DBExerciseSheet
     /**
      * the $_prefix setter
      *
-     * @param $value the new value for $_prefix
+     * @param string $value the new value for $_prefix
      */ 
     public static function setPrefix($value)
     {
@@ -70,7 +70,7 @@ class DBExerciseSheet
     /**
      * the component constructor
      *
-     * @param $conf component data
+     * @param Component $conf component data
      */ 
     public function __construct($conf)
     {
@@ -122,7 +122,7 @@ class DBExerciseSheet
     /**
      * PUT EditExerciseSheet
      *
-     * @param $esid a database exercise sheet identifier
+     * @param int $esid a database exercise sheet identifier
      */ 
     public function editExerciseSheet($esid)
     {
@@ -165,7 +165,7 @@ class DBExerciseSheet
     /**
      * DELETE DeleteExerciseSheet
      *
-     * @param $esid a database exercise sheet identifier
+     * @param int $esid a database exercise sheet identifier
      */
     public function deleteExerciseSheet($esid)
     {
@@ -240,7 +240,7 @@ class DBExerciseSheet
     /**
      * GET GetExerciseSheetURL
      *
-     * @param $esid a database exercise sheet identifier
+     * @param int $esid a database exercise sheet identifier
      */
     public function getExerciseSheetURL($esid)
     {     
@@ -287,7 +287,7 @@ class DBExerciseSheet
     /**
      * GET GetCourseSheetURLs
      *
-     * @param $courseid a database course identifier
+     * @param int $courseid a database course identifier
      */
     public function getCourseSheetURLs($courseid)
     {     
@@ -327,7 +327,7 @@ class DBExerciseSheet
     /**
      * GET GetExerciseSheet
      *
-     * @param $esid the identifier of a exercise sheet
+     * @param int $esid the identifier of a exercise sheet
      */
     public function getExerciseSheet($esid)
     {     
@@ -441,7 +441,7 @@ class DBExerciseSheet
     /**
      * GET GetCourseSheets
      *
-     * @param $courseid a database course identifier
+     * @param int $courseid a database course identifier
      */
     public function getCourseSheets($courseid)
     {     

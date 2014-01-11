@@ -28,22 +28,22 @@ if (!$com->used())
 class DBExerciseType
 {
     /**
-     * @var $_app the slim object
+     * @var Slim $_app the slim object
      */ 
     private $_app=null;
     
     /**
-     * @var $_conf the component data object
+     * @var Component $_conf the component data object
      */ 
     private $_conf=null;
     
     /**
-     * @var $query a list of links to a query component
+     * @var Link[] $query a list of links to a query component
      */ 
     private $query=array();
     
     /**
-     * @var $_prefix the prefixes, the class works with (comma separated)
+     * @var string $_prefix the prefixes, the class works with (comma separated)
      */ 
     private static $_prefix = "exercisetype";
     
@@ -60,7 +60,7 @@ class DBExerciseType
     /**
      * the $_prefix setter
      *
-     * @param $value the new value for $_prefix
+     * @param string $value the new value for $_prefix
      */ 
     public static function setPrefix($value)
     {
@@ -70,7 +70,7 @@ class DBExerciseType
     /**
      * the component constructor
      *
-     * @param $conf component data
+     * @param Component $conf component data
      */ 
     public function __construct($conf)
     {
@@ -114,7 +114,7 @@ class DBExerciseType
     /**
      * PUT EditPossibleType
      *
-     * @param $etid a database exercise type identifier
+     * @param int $etid a database exercise type identifier
      */
     public function editPossibleType($etid)
     {
@@ -157,7 +157,7 @@ class DBExerciseType
     /**
      * DELETE DeletePossibleType
      *
-     * @param $etid a database exercise type identifier
+     * @param int $etid a database exercise type identifier
      */
     public function deletePossibleType($etid)
     {
@@ -271,7 +271,7 @@ class DBExerciseType
     /**
      * GET GetPossibleType
      *
-     * @param $etid a database exercise type identifier
+     * @param int $etid a database exercise type identifier
      */
     public function getPossibleType($etid)
     {        

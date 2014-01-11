@@ -27,22 +27,22 @@ if (!$com->used())
 class DBSession
 {
     /**
-     * @var $_app the slim object
+     * @var Slim $_app the slim object
      */ 
     private $_app=null;
     
     /**
-     * @var $_conf the component data object
+     * @var Component $_conf the component data object
      */ 
     private $_conf=null;
     
     /**
-     * @var $query a list of links to a query component
+     * @var Link[] $query a list of links to a query component
      */ 
     private $query=array();
     
     /**
-     * @var $_prefix the prefixes, the class works with (comma separated)
+     * @var string $_prefix the prefixes, the class works with (comma separated)
      */ 
     private static $_prefix = "session";
     
@@ -59,7 +59,7 @@ class DBSession
     /**
      * the $_prefix setter
      *
-     * @param $value the new value for $_prefix
+     * @param string $value the new value for $_prefix
      */
     public static function setPrefix($value)
     {
@@ -69,7 +69,7 @@ class DBSession
     /**
      * the component constructor
      *
-     * @param $conf component data
+     * @param Component $conf component data
      */ 
     public function __construct($conf)
     {
@@ -125,7 +125,7 @@ class DBSession
     /**
      * PUT EditSession
      *
-     * @param $seid a database session identifier
+     * @param string $seid a database session identifier
      */
     public function EditSession($seid)
     {
@@ -164,7 +164,7 @@ class DBSession
     /**
      * DELETE RemoveSession
      *
-     * @param $seid a database session identifier
+     * @param string $seid a database session identifier
      */
     public function removeSession($seid)
     {
@@ -192,7 +192,7 @@ class DBSession
     /**
      * PUT RemoveSession
      *
-     * @param $userid a database user identifier
+     * @param int $userid a database user identifier
      */
     public function editUserSession($userid)
     {
@@ -232,7 +232,7 @@ class DBSession
     /**
      * DELETE RemoveUserSession
      *
-     * @param $userid a database user identifier
+     * @param int $userid a database user identifier
      */
     public function removeUserSession($userid)
     {
@@ -297,7 +297,7 @@ class DBSession
     /**
      * GET GetUserSession
      *
-     * @param $userid a database user identifier
+     * @param int $userid a database user identifier
      */
     public function getUserSession($userid)
     {
@@ -342,7 +342,7 @@ class DBSession
     /**
      * GET GetSessionUser
      *
-     * @param $seid a database session identifier
+     * @param string $seid a database session identifier
      */
     public function getSessionUser($seid)
     {

@@ -28,22 +28,22 @@ if (!$com->used())
 class DBAttachment
 {
     /**
-     * @var $_app the slim object
+     * @var Slim $_app the slim object
      */ 
     private $_app=null;
     
     /**
-     * @var $_conf the component data object
+     * @var Component $_conf the component data object
      */ 
     private $_conf=null;
     
     /**
-     * @var $query a list of links to a query component
+     * @var Link[] $query a list of links to a query component
      */ 
     private $query=array();
     
     /**
-     * @var $_prefix the prefixes, the class works with (comma separated)
+     * @var string $_prefix the prefixes, the class works with (comma separated)
      */
     private static $_prefix = "attachment";
     
@@ -60,7 +60,7 @@ class DBAttachment
     /**
      * the $_prefix setter
      *
-     * @param $value the new value for $_prefix
+     * @param string $value the new value for $_prefix
      */ 
     public static function setPrefix($value)
     {
@@ -70,7 +70,7 @@ class DBAttachment
     /**
      * the component constructor
      *
-     * @param $conf component data
+     * @param Component $conf component data
      */ 
     public function __construct($conf)
     {
@@ -358,7 +358,7 @@ class DBAttachment
     /**
      * GET GetExerciseAttachments
      *
-     * @param $eid a database exercise identifier
+     * @param int $eid a database exercise identifier
      */
     public function getExerciseAttachments($eid)
     {     
@@ -417,7 +417,7 @@ class DBAttachment
     /**
      * GET GetSheetAttachments
      *
-     * @param $esid a database exercise sheet identifier
+     * @param int $esid a database exercise sheet identifier
      */
     public function getSheetAttachments($esid)
     {      

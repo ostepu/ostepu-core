@@ -23,7 +23,7 @@ new CControl();
 class CControl
 {
     /**
-     * @var $_app the slim object
+     * @var Slim $_app the slim object
      */ 
     private $_app=null;
     
