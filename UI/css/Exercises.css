@@ -1,3 +1,11 @@
+/**
+ * @file Exercise.css
+ * Layout styles for pages that contain exercises.
+ *
+ * @author Felix Schmidt
+ * @author Florian Lücke
+ */
+
 .exercise-sheet-images {
     padding-left: 50px;
     display: inline;

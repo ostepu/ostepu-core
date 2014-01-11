@@ -1,3 +1,9 @@
+/**
+ * @file createSheet.js
+ * Contains Javascript code that is needed on the CreateSheet page.
+ */
+
+
 $(document).ready( function() {
     // suppress Propagation
     $('.collapsible').children('.content-header').find('a').on("click",suppressPropagation);
@@ -14,8 +20,12 @@ $(document).ready( function() {
     $('.body-option-color.right.deny-button.skip-list-item').on("click",addSubtask);
 });
 
-// rename exercise headers with correct enumeration
-// rename inputs
+/**
+ * Renames page elements.
+ *
+ * Renames exercise headers with correct enumeration.
+ * Renames input elements.
+ */
 function renumberExercises() {
     var allCollapsible = $('.collapsible');
 
@@ -31,7 +41,9 @@ function renumberExercises() {
     }
 }
 
-// return a closure that can replace the numbers in names of form elements
+/**
+ * Return a closure that can replace numbers in names of form elements.
+ */
 function renameSubtask(i) {
     // return a closure to rename inputs in subtasks
     return function (index, listElement) {
@@ -54,8 +66,9 @@ function renameSubtask(i) {
     };
 }
 
-// if the content header contains an anchor tag prevent that clicking on it
-// will trigger the content element to collapse
+/**
+ * prevent that an event is propagated up the responder chain.
+ */
 function suppressPropagation(event) {
     event.stopPropagation();
 
@@ -63,8 +76,12 @@ function suppressPropagation(event) {
 }
 
 
-// deletes the exercise and its related content-element when clicking on
-// a link with the class 'delete-exercise'
+/**
+ * Delete an exercise from the page.
+ *
+ * Deletes the exercise and its related content-element when clicking on
+ * a link with the class 'delete-exercise'.
+ */
 function deleteExercise(event) {
 
     var trig = $(this);
@@ -77,8 +94,12 @@ function deleteExercise(event) {
 }
 
 
-// deletes the subtask and its related list-element when clicking on
-// a link with the class 'delete-subtask'
+/**
+ * Deletes a subtask from an exercise.
+ *
+ * Deletes the subtask and its related list-element when clicking on
+ * a link with the class 'delete-subtask'.
+ */
 function deleteSubtask(event) {
     var trig = $(this);
 
@@ -97,9 +118,12 @@ function deleteSubtask(event) {
     }
 }
 
-
-// adds a new exercise when clicking on a link with the class 'add-exercise'
-// at the end of the page
+/**
+ * Adds a new exercise to the page.
+ *
+ * adds a new exercise when clicking on a link with the class 'add-exercise'
+ * at the end of the page.
+ */
 function addExercise(event) {
 
     // append content to last exercise
@@ -130,7 +154,12 @@ function addExercise(event) {
 }
 
 
-// adds new subtask when clicking on a link with the class '.body-option-color.right.deny-button.skip-list-item'
+/**
+ * Adds a new subtask to an exercise
+ *
+ * Adds new subtask when clicking on a link with the class
+ * '.body-option-color.right.deny-button.skip-list-item'
+ */
 function addSubtask(event) {
     var trig = $(this);
 

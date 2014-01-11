@@ -1,4 +1,9 @@
 <?php
+/**
+ * @file Tutor.php
+ * Constructs the page that is displayed to a tutor.
+ */
+
 include_once 'include/Header/Header.php';
 include_once 'include/HTMLWrapper.php';
 include_once 'include/Template.php';

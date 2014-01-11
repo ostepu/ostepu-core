@@ -1,4 +1,9 @@
 <?php
+/**
+ * @file Group.php
+ * Constructs the page that is displayed to a student, when managing a group.
+ */
+
 include 'include/Header/Header.php';
 include 'include/HTMLWrapper.php';
 include_once 'include/Template.php';

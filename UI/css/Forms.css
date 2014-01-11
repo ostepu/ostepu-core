@@ -1,3 +1,11 @@
+/**
+ * @file Forms.css
+ * Layout styles for
+ *
+ * @author Felix Schmidt
+ * @author Florian Lücke
+ */
+
 .form-field {
     width: 250px;
     margin-bottom: 7px;
@@ -43,9 +51,7 @@ textarea.text-input {
     margin-right: 0;
 }
 
-/*
- * remove bottom margin from form elements that are in a list
- */
+/* remove bottom margin from form elements that are in a list */
 li .form-field {
     margin-bottom: 2px;
 }
@@ -84,7 +90,6 @@ button:hover {
 
 .text-button {
     font-family:'Lucida Sans Unicode', Helvetica, Arial, Verdana, sans-serif;
-    /*color: inherit;*/
     border: 0;
     margin: 0;
     padding: 0;

@@ -1,4 +1,8 @@
 <?php
+/**
+ * @file Condition.php
+ * Constructs the page that is displayed when managing exam conditions.
+ */
 include 'include/Header/Header.php';
 include 'include/HTMLWrapper.php';
 include_once 'include/Template.php';

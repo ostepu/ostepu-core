@@ -1,7 +1,12 @@
-/* http://meyerweb.com/eric/tools/css/reset/
-   v2.0 | 20110126
-   License: none (public domain)
-*/
+/**
+ * @file CSSReset.css
+ * Resets the default styles of elements in different browsers. This makes it
+ * easier to have the same layout in different browsers.
+ *
+ * @sa http://meyerweb.com/eric/tools/css/reset/
+ * @version v2.0 | 20110126
+ * @copyright none (public domain)
+ */
 
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,

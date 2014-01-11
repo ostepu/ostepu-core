@@ -1,4 +1,12 @@
 <?php
+/**
+ * @file Student.php
+ * Constructs the page that is displayed to a student.
+ *
+ * @author Felix Schmidt
+ * @author Florian Lücke
+ */
+
 include_once 'include/Header/Header.php';
 include_once 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
