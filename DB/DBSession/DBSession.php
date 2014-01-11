@@ -42,7 +42,7 @@ class DBSession
     private $query=array();
     
     /**
-     * @var $_prefix the prefix, the class works with
+     * @var $_prefix the prefixes, the class works with (comma separated)
      */ 
     private static $_prefix = "session";
     
@@ -130,6 +130,8 @@ class DBSession
     public function EditSession($seid)
     {
         Logger::Log("starts PUT EditSession",LogLevel::DEBUG);
+        
+        $seid = DBJson::mysql_real_escape_string($seid);
                             
         $insert = Session::decodeSession($this->_app->request->getBody());
         if (!is_array($insert))
@@ -168,6 +170,8 @@ class DBSession
     {
         Logger::Log("starts DELETE RemoveSession",LogLevel::DEBUG);
         
+        $seid = DBJson::mysql_real_escape_string($seid);
+                
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/DeleteSession.sql", 
@@ -193,6 +197,8 @@ class DBSession
     public function editUserSession($userid)
     {
         Logger::Log("starts PUT RemoveSession",LogLevel::DEBUG);
+        
+        $userid = DBJson::mysql_real_escape_string($userid);
         
         // decode the received session data, as an object
         $insert = Session::decodeSession($this->_app->request->getBody());
@@ -232,6 +238,8 @@ class DBSession
     {
         Logger::Log("starts DELETE RemoveUserSession",LogLevel::DEBUG);
         
+        $userid = DBJson::mysql_real_escape_string($userid);
+                
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/DeleteUserSession.sql", 
@@ -295,6 +303,8 @@ class DBSession
     {
         Logger::Log("starts GET GetUserSession",LogLevel::DEBUG);
         
+        $userid = DBJson::mysql_real_escape_string($userid);
+        
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetUserSession.sql", 
@@ -337,6 +347,8 @@ class DBSession
     public function getSessionUser($seid)
     {
         Logger::Log("starts GET GetSessionUser",LogLevel::DEBUG);
+        
+        $seid = DBJson::mysql_real_escape_string($seid);
         
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 

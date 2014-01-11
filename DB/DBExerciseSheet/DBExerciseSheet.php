@@ -43,7 +43,7 @@ class DBExerciseSheet
     private $query=array();
     
     /**
-     * @var $_prefix the prefix, the class works with
+     * @var $_prefix the prefixes, the class works with (comma separated)
      */ 
     private static $_prefix = "exercisesheet";
     

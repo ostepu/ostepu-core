@@ -18,7 +18,7 @@ include_once( 'Include/Logger.php' );
 class DBControl extends Controller
 {
     /**
-     * @var $_prefix the prefix, the class works with
+     * @var $_prefix the prefixes, the class works with (comma separated)
      */ 
     protected static $_prefix = "";
     

@@ -43,7 +43,7 @@ class DBExternalId
     private $query=array();
     
     /**
-     * @var $_prefix the prefix, the class works with
+     * @var $_prefix the prefixes, the class works with (comma separated)
      */ 
     private static $_prefix = "externalid";
     
@@ -163,7 +163,9 @@ class DBExternalId
     public function deleteExternalId($exid)
     {
         Logger::Log("starts DELETE DeleteExternalId",LogLevel::DEBUG);
-                            
+        
+        $exid = DBJson::mysql_real_escape_string($exid);
+        
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/DeleteExternalId.sql", 
@@ -235,6 +237,8 @@ class DBExternalId
     public function getExternalId($exid)
     {    
         Logger::Log("starts GET GetExternalId",LogLevel::DEBUG);
+        
+        $exid = DBJson::mysql_real_escape_string($exid);
                             
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
