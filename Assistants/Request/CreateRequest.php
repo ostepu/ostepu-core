@@ -5,18 +5,22 @@
 
 
 /**
- * (description)
+ * The Request_CreateRequest class is used to create and 
+ * initialize an request objects
  *
  * @author Till Uhlig
  */
 class Request_CreateRequest
 {
     /**
-     * (description)
+     * creates an custom curl request object 
      *
-     * @param $target (description)
-     * @param $method (description)
-     * @param $content (description)
+     * @param $method the request type (POST, DELETE, PUT, GET, ...) 
+     * @param $target the taget URL
+     * @param $header an array with header informations
+     * @param $content the request content/body
+     *
+     * @return an curl request object 
      */
     public static function createCustom($method, $target, $header,  $content){
         $ch = curl_init($target);
@@ -24,56 +28,78 @@ class Request_CreateRequest
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
+        curl_setopt($ch, CURLOPT_FRESH_CONNECT, 1);
+        curl_setopt($ch, CURLOPT_FORBID_REUSE, 1); 
         curl_setopt($ch, CURLOPT_HEADER, 1);
         return $ch; 
     }
     
 
     /**
-     * (description)
+     * creates an GET curl request object 
      *
-     * @param $target (description)
-     * @param $method (description)
-     * @param $content (description)
+     * @param $target the taget URL
+     * @param $header an array with header informations
+     * @param $content the request content/body
+     *
+     * @return an curl request object 
      */
     public static function createGet($target, $header,  $content){
-        return Request_CreateRequest::createCustom("GET", $target, $header,  $content); 
+        return Request_CreateRequest::createCustom("GET", 
+                                                    $target, 
+                                                    $header,  
+                                                    $content); 
     }
     
     
     /**
-     * (description)
+     * creates an POST curl request object 
      *
-     * @param $target (description)
-     * @param $method (description)
-     * @param $content (description)
+     * @param $target the taget URL
+     * @param $header an array with header informations
+     * @param $content the request content/body
+     *
+     * @return an curl request object 
      */
     public static function createPost($target, $header,  $content){
-        return Request_CreateRequest::createCustom("POST", $target, $header,  $content); 
+        return Request_CreateRequest::createCustom("POST", 
+                                                    $target, 
+                                                    $header,  
+                                                    $content); 
     }
     
     
     /**
-     * (description)
+     * creates an PUT curl request object 
      *
-     * @param $target (description)
-     * @param $method (description)
-     * @param $content (description)
+     * @param $target the taget URL
+     * @param $header an array with header informations
+     * @param $content the request content/body
+     *
+     * @return an curl request object 
      */
     public static function createPut($target, $header,  $content){
-        return Request_CreateRequest::createCustom("PUT", $target, $header,  $content); 
+        return Request_CreateRequest::createCustom("PUT", 
+                                                    $target, 
+                                                    $header,  
+                                                    $content); 
     }
     
     
     /**
-     * (description)
+     * creates an DELETE curl request object 
      *
-     * @param $target (description)
-     * @param $method (description)
-     * @param $content (description)
+     * @param $target the taget URL
+     * @param $header an array with header informations
+     * @param $content the request content/body
+     *
+     * @return an curl request object 
      */
     public static function createDelete($target, $header,  $content){
-        return Request_CreateRequest::createCustom("DELETE", $target, $header,  $content); 
+        return Request_CreateRequest::createCustom("DELETE", 
+                                                    $target, 
+                                                    $header,  
+                                                    $content); 
     }
 }
 ?>

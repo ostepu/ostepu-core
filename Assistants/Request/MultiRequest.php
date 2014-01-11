@@ -4,24 +4,45 @@
  */ 
 
 /**
- * (description)
+ * the Request_MultiRequest class is used to work with parallel curl
+ * requests.
  *
  * @author Till Uhlig
  */
 class Request_MultiRequest
 {
+    /**
+     * @var $requests
+     */ 
     private $requests;
+    
+    /**
+     * @var $handles
+     */ 
     private $handles=array();
     
+    /**
+     *
+     */ 
     public function __construct(){
         $this->requests = curl_multi_init();
     }
     
+    /**
+     * adds an curl request object to $requests list of this instance
+     *
+     * @param $request a curl request
+     */ 
     public function addRequest($request){
         curl_multi_add_handle($this->requests,$request);   
         array_push($this->handles,$request);
     }
     
+    /**
+     * This function starts the request process
+     *
+     * @ return a array of request results
+     */ 
     public function run(){
         $running_handles = null;
         do {
@@ -32,7 +53,9 @@ class Request_MultiRequest
 
             if (curl_multi_select($this->requests) != -1) {
                 do {
-                    $status_cme = curl_multi_exec($this->requests, $running_handles);
+                    $status_cme = curl_multi_exec($this->requests, 
+                                                $running_handles);
+                                                
                 } while ($status_cme == CURLM_CALL_MULTI_PERFORM);
             } else
             $status_cme = curl_multi_exec($this->requests, $running_handles);
@@ -48,7 +71,16 @@ class Request_MultiRequest
                 $content  = curl_multi_getcontent( $k );
                 $result = curl_getinfo($k);
                 $header_size = curl_getinfo($k, CURLINFO_HEADER_SIZE);
-                $result['headers'] = substr($content, 0, $header_size);
+                
+                $result['headers'] = array();
+                $head = explode("\r\n",substr($content, 0, $header_size));
+                foreach ($head as $k){
+                    $value = split(": ",$k);
+                    if (count($value)>=2){
+                        $result['headers'][$value[0]] = $value[1];
+                    }
+                }
+        
                 $result['content'] = substr($content, $header_size);
                 $result['status'] = curl_getinfo($k, CURLINFO_HTTP_CODE); 
                 array_push($res,$result);

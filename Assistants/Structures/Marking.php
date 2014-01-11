@@ -17,14 +17,14 @@ class Marking extends Object implements JsonSerializable
     /**
      * The identifier of the submission this marking belongs to.
      *
-     * type: string
+     * type: Submission
      */
-    private $submissionId;
-    public function getSubmissionId(){
-        return $submissionId;
+    private $submission;
+    public function getSubmission(){
+        return $submission;
     }
-    public function setSubmissionId($value){
-        $submissionId = $value;
+    public function setSubmission($value){
+        $submission = $value;
     }
     
     /**
@@ -129,7 +129,7 @@ class Marking extends Object implements JsonSerializable
            'M_id' => 'id',
            'U_id_tutor' => 'tutorId',
            'M_file' => 'file',
-           'S_id' => 'submissionId',
+           'M_submission' => 'submission',
            'M_tutorComment' => 'tutorComment',
            'M_outstanding' => 'outstanding',
            'M_status' => 'status',
@@ -144,15 +144,15 @@ class Marking extends Object implements JsonSerializable
     public function getInsertData(){
         $values = "";
         
-        if ($this->id != null) $this->addInsertData($values, 'M_id', mysql_real_escape_string($this->id));
-        if ($this->tutorId != null) $this->addInsertData($values, 'U_id_tutor', mysql_real_escape_string($this->tutorId));
-        if ($this->file != array()) $this->addInsertData($values, 'F_id_file', mysql_real_escape_string($this->file->getFileId()));
-        if ($this->submissionId != null) $this->addInsertData($values, 'S_id', mysql_real_escape_string($this->submissionId));
-        if ($this->tutorComment != null) $this->addInsertData($values, 'M_tutorComment', mysql_real_escape_string($this->tutorComment));
-        if ($this->outstanding != null) $this->addInsertData($values, 'M_outstanding', mysql_real_escape_string($this->outstanding));
-        if ($this->status != null) $this->addInsertData($values, 'M_status', mysql_real_escape_string($this->status));
-        if ($this->points != null) $this->addInsertData($values, 'M_points', mysql_real_escape_string($this->points));
-        if ($this->date != null) $this->addInsertData($values, 'M_date', mysql_real_escape_string($this->date));
+        if ($this->id != null) $this->addInsertData($values, 'M_id', DBJson::mysql_real_escape_string($this->id));
+        if ($this->tutorId != null) $this->addInsertData($values, 'U_id_tutor', DBJson::mysql_real_escape_string($this->tutorId));
+        if ($this->file != array()) $this->addInsertData($values, 'F_id_file', DBJson::mysql_real_escape_string($this->file->getFileId()));
+        if ($this->submission != null) $this->addInsertData($values, 'S_id', DBJson::mysql_real_escape_string($this->submission->getId()));
+        if ($this->tutorComment != null) $this->addInsertData($values, 'M_tutorComment', DBJson::mysql_real_escape_string($this->tutorComment));
+        if ($this->outstanding != null) $this->addInsertData($values, 'M_outstanding', DBJson::mysql_real_escape_string($this->outstanding));
+        if ($this->status != null) $this->addInsertData($values, 'M_status', DBJson::mysql_real_escape_string($this->status));
+        if ($this->points != null) $this->addInsertData($values, 'M_points', DBJson::mysql_real_escape_string($this->points));
+        if ($this->date != null) $this->addInsertData($values, 'M_date', DBJson::mysql_real_escape_string($this->date));
         
         if ($values != ""){
             $values=substr($values,1);
@@ -185,6 +185,10 @@ class Marking extends Object implements JsonSerializable
              if (isset($key)){
                 if ($key == 'file'){
                     $this->{$key} = File::decodeFile($value, false);
+                }
+                else
+                if ($key == 'submission'){
+                    $this->{$key} = Submission::decodeSubmission($value, false);
                 }
                 else
                     $this->{$key} = $value;
@@ -221,7 +225,7 @@ class Marking extends Object implements JsonSerializable
     public function jsonSerialize() {
         return array(
             'id' => $this->id,
-            'submissionId' => $submissionId,
+            'submission' => $this->submission,
             'tutorId' => $this->tutorId,
             'tutorComment' => $this->tutorComment,
             'file' => $this->file,

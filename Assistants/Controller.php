@@ -10,58 +10,74 @@ include_once('Include/Request.php');
 \Slim\Slim::registerAutoloader();
    
 /**
- * (description)
+ * the Controller class represents a component, which routes incoming "restful"
+ * requests to relevant components
  *
  * @author Till Uhlig
  */
 class Controller
 {
+    /**
+     * @var $_prefix the prefix, the class works with
+     */ 
     protected static $_prefix = "";
     
     /**
-     * (description)
-     */
+     * the $_prefix getter
+     *
+     * @return the value of $_prefix
+     */ 
     public static function getPrefix()
     {
         return Controller::$_prefix;
     }
     
     /**
-     * (description)
-     * 
-     * @param $param (description)
-     */
+     * the $_prefix setter
+     *
+     * @param $value the new value for $_prefix
+     */ 
     public static function setPrefix($value)
     {
         Controller::$_prefix = $value;
     }
     
+    /**
+     * @var $_app the slim object
+     */ 
     protected $_app;
-    protected $_fs = null;
+    
+    /**
+     * @var $_conf the component data object
+     */ 
     protected $_conf = null;
         
     /**
-     * (description)
+     * the component constructor
      *
-     * @param $_conf (description)
-     */
+     * @param $conf component data
+     */ 
     public function __construct($_conf)
     {
+        // initialize component
         $this->_conf = $_conf;
-        $this->_fs = $_conf->getLinks();
-    
+        
+        // initialize slim
         $this->_app = new \Slim\Slim();
         $this->_app->map('/:data+', array($this,'getl'))->via('GET', 'POST', 'DELETE', 'PUT', 'INFO');
         
+        // starts slim only if the right prefix was received
         if (strpos($this->_app->request->getResourceUri(), '/component') !== 0){
+            // run Slim
             $this->_app->run();
         }
     }
     
     /**
-     * (description)
+     * the getl function uses a list of links to find a 
+     * relevant component for the $data request
      * 
-     * @param $param (description)
+     * @param $data a slim generated array of URI segments (String[])
      */
     public function getl($data)
     {
@@ -97,7 +113,7 @@ class Controller
                         $this->_app->response->headers->set('Content-Disposition', 
                                             $ch['headers']['Content-Disposition']);
                                             
-                    Logger::Log("such normal",LogLevel::DEBUG);
+                    Logger::Log("Controller prefix search failed",LogLevel::DEBUG);
                     $this->_app->stop();
                     return;
                 }
@@ -124,7 +140,7 @@ class Controller
                 if (isset($ch['headers']['Content-Disposition']))
                     $this->_app->response->headers->set('Content-Disposition', 
                                         $ch['headers']['Content-Disposition']);
-                Logger::Log("such alle",LogLevel::DEBUG);
+                Logger::Log("Controller blank search failed",LogLevel::DEBUG);
                 $this->_app->stop();
                 return;
             }

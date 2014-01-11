@@ -5,26 +5,46 @@
 
 
 /**
- * the DBJson class is written for several tasks,
- * - 
+ * the DBJson class is written for several tasks
  *
  * @author Till Uhlig
  */
 class DBJson
 {
 
-    public static function checkInput(&$app){
+    function mysql_real_escape_string($inp) {
+        if(is_array($inp))
+            return array_map(__METHOD__, $inp);
+
+        if(!empty($inp) && is_string($inp)) {
+            return str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $inp);
+        }
+
+        return $inp;
+    } 
+
+    /**
+     * The function checks whether an input list of arguments, has the correct data type
+     * If not, the slim instance terminates with a 412 error code
+     *
+     * @param $app a running slim instance
+     */
+    public static function checkInput(){
         $args = func_get_args();
+        
+        // the first argument ist the slim instance, remove from the test list
         $app = &$args[0];
         $args = array_slice ( $args, 1, count($args) );
 
         foreach ($args as &$a) {
+            // search a argument, which is not true
             if (!$a){
+                // one of the arguments isn't true, abort progress
                 Logger::Log("access denied",LogLevel::ERROR);
                 $app->response->setBody("[]");
                 $app->response->setStatus(412);
                 $app->stop();
-                return;
+                break;
             }
         }
     }
@@ -50,7 +70,7 @@ class DBJson
     }
         
     /**
-     * the function reads the passed mysql object
+     * the function reads the passed mysql object content
      *
      * @param $data a mysql answer
      *
@@ -59,6 +79,7 @@ class DBJson
     public static function getRows($data)
     {
         $res = array();
+        
         while ($row = mysql_fetch_assoc($data)) {                   
             array_push($res,$row);
         }
@@ -78,6 +99,7 @@ class DBJson
     public static function getObjectsByAttributes($data, $id, $attributes, $extension = "")
     {
         $res = array();
+        
         foreach ($data as $row) { 
             $key = "";
             if (is_array($id)){

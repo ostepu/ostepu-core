@@ -181,10 +181,10 @@ class Component extends Object implements JsonSerializable
     public function getInsertData(){
         $values = "";
         
-        if ($this->id != null) $this->addInsertData($values, 'CO_id', mysql_real_escape_string($this->id));
-        if ($this->name != null) $this->addInsertData($values, 'CO_name', mysql_real_escape_string($this->name));
-        if ($this->address != null) $this->addInsertData($values, 'CO_address', mysql_real_escape_string($this->address));
-        if ($this->option != null) $this->addInsertData($values, 'CO_option', mysql_real_escape_string($this->option));
+        if ($this->id != null) $this->addInsertData($values, 'CO_id', DBJson::mysql_real_escape_string($this->id));
+        if ($this->name != null) $this->addInsertData($values, 'CO_name', DBJson::mysql_real_escape_string($this->name));
+        if ($this->address != null) $this->addInsertData($values, 'CO_address', DBJson::mysql_real_escape_string($this->address));
+        if ($this->option != null) $this->addInsertData($values, 'CO_option', DBJson::mysql_real_escape_string($this->option));
         
         if ($values != ""){
             $values=substr($values,1);

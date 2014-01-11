@@ -64,9 +64,9 @@ class Invitation extends Object implements JsonSerializable
     public function getInsertData(){
         $values = "";
         
-        if ($this->sheet != null) $this->addInsertData($values, 'ES_id', mysql_real_escape_string($this->sheet));
-        if ($this->member != null) $this->addInsertData($values, 'U_id_member', mysql_real_escape_string($this->member->getId()));
-        if ($this->leader != null) $this->addInsertData($values, 'U_id_leader', mysql_real_escape_string($this->leader->getId()));
+        if ($this->sheet != null) $this->addInsertData($values, 'ES_id', DBJson::mysql_real_escape_string($this->sheet));
+        if ($this->member != null) $this->addInsertData($values, 'U_id_member', DBJson::mysql_real_escape_string($this->member->getId()));
+        if ($this->leader != null) $this->addInsertData($values, 'U_id_leader', DBJson::mysql_real_escape_string($this->leader->getId()));
         
         if ($values != ""){
             $values=substr($values,1);
