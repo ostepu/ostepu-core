@@ -32,6 +32,13 @@ $h = new Header($course['name'],
                 $user['firstName'] . ' ' . $user['lastName'],
                 $user['userName']);
 
+// construct a new header
+$h = Template::WithTemplateFile('include/Header/Header.template.html');
+$h->bind($user);
+$h->bind($course);
+$h->bind(array("backTitle" => "Veranstaltung wechseln"));
+
+
 $databaseURL = "http://141.48.9.92/uebungsplattform/DB/DBExerciseSheet/exercisesheet/course/{$cid}/exercise";
 
 // construct some exercise sheets

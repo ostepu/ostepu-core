@@ -42,7 +42,7 @@ include_once '../Assistants/Logger.php';
          * @param mixed ... Page elements that should be displayed as
          * the page content
          */
-        public function __construct(Header $header)
+        public function __construct($header)
         {
             $this->header = $header;
             $arguments = func_get_args();
