@@ -43,7 +43,7 @@ class DBMarking
     private $query=array();
     
     /**
-     * @var $_prefix the prefix, the class works with
+     * @var $_prefix the prefixes, the class works with (comma separated)
      */ 
     private static $_prefix = "marking";
     
@@ -209,7 +209,7 @@ class DBMarking
     /**
      * POST SetMarking
      */
-    public function SetMarking()
+    public function setMarking()
     {
         Logger::Log("starts OST SetMarking",LogLevel::DEBUG);
         
@@ -275,6 +275,28 @@ class DBMarking
                                             File::getDBPrimaryKey(), 
                                             File::getDBConvert());
                                             
+            // generates an assoc array of a submission by using a defined 
+            // list of its attributes
+            $submissions = DBJson::getObjectsByAttributes($data,
+                                    Submission::getDBPrimaryKey(), 
+                                    Submission::getDBConvert(), 
+                                    '2');
+                                    
+
+            // sets the selectedForGroup attribute
+            foreach ($submissions as &$submission){
+                if (isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
+                    if (!isset($submission['id'])){
+                        $submission['selectedForGroup'] = (string) 0;
+                    } elseif ($submission['id'] == $submission['selectedForGroup']) {
+                        $submission['selectedForGroup'] = (string) 1;
+                    } else
+                        $submission['selectedForGroup'] = (string) 0;
+                }
+                else
+                    $submission['selectedForGroup'] = (string) 0;
+            } 
+                    
             // generates an assoc array of markings by using a defined list of 
             // its attributes
             $markings = DBJson::getObjectsByAttributes($data, 
@@ -288,6 +310,14 @@ class DBMarking
                             Marking::getDBConvert()['M_file'] ,
                             $files,
                             File::getDBPrimaryKey());
+                            
+            // concatenates the markings and the associated submissions
+            $res = DBJson::concatObjectListsSingleResult($data, 
+                            $res,
+                            Marking::getDBPrimaryKey(),
+                            Marking::getDBConvert()['M_submission'] ,
+                            $submissions,
+                            Submission::getDBPrimaryKey());   
                             
             // to reindex
             $res = array_values($res); 
@@ -336,6 +366,27 @@ class DBMarking
                                             File::getDBPrimaryKey(), 
                                             File::getDBConvert());
                                             
+            // generates an assoc array of a submission by using a defined 
+            // list of its attributes
+            $submissions = DBJson::getObjectsByAttributes($data,
+                                    Submission::getDBPrimaryKey(), 
+                                    Submission::getDBConvert(), 
+                                    '2');
+                                    
+            // sets the selectedForGroup attribute
+            foreach ($submissions as &$submission){
+                if (isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
+                    if (!isset($submission['id'])){
+                        $submission['selectedForGroup'] = (string) 0;
+                    } elseif ($submission['id'] == $submission['selectedForGroup']) {
+                        $submission['selectedForGroup'] = (string) 1;
+                    } else
+                        $submission['selectedForGroup'] = (string) 0;
+                }
+                else
+                    $submission['selectedForGroup'] = (string) 0;
+            }
+            
             // generates an assoc array of a marking by using a defined list of 
             // its attributes
             $marking = DBJson::getObjectsByAttributes($data, 
@@ -349,6 +400,14 @@ class DBMarking
                             Marking::getDBConvert()['M_file'] ,
                             $file,
                             File::getDBPrimaryKey());
+                            
+            // concatenates the markings and the associated submissions
+            $res = DBJson::concatObjectListsSingleResult($data, 
+                            $res,
+                            Marking::getDBPrimaryKey(),
+                            Marking::getDBConvert()['M_submission'] ,
+                            $submissions,
+                            Submission::getDBPrimaryKey());  
                             
             // to reindex
             $res = array_values($res);
@@ -401,6 +460,27 @@ class DBMarking
                                             File::getDBPrimaryKey(), 
                                             File::getDBConvert());
                                             
+            // generates an assoc array of a submission by using a defined 
+            // list of its attributes
+            $submissions = DBJson::getObjectsByAttributes($data,
+                                    Submission::getDBPrimaryKey(), 
+                                    Submission::getDBConvert(), 
+                                    '2');
+                                    
+            // sets the selectedForGroup attribute
+            foreach ($submissions as &$submission){
+                if (isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
+                    if (!isset($submission['id'])){
+                        $submission['selectedForGroup'] = (string) 0;
+                    } elseif ($submission['id'] == $submission['selectedForGroup']) {
+                        $submission['selectedForGroup'] = (string) 1;
+                    } else
+                        $submission['selectedForGroup'] = (string) 0;
+                }
+                else
+                    $submission['selectedForGroup'] = (string) 0;
+            }
+            
             // generates an assoc array of a marking by using a defined list of 
             // its attributes
             $marking = DBJson::getObjectsByAttributes($data, 
@@ -414,6 +494,14 @@ class DBMarking
                             Marking::getDBConvert()['M_file'] ,
                             $file,
                             File::getDBPrimaryKey());
+                            
+            // concatenates the markings and the associated submissions
+            $res = DBJson::concatObjectListsSingleResult($data, 
+                            $res,
+                            Marking::getDBPrimaryKey(),
+                            Marking::getDBConvert()['M_submission'] ,
+                            $submissions,
+                            Submission::getDBPrimaryKey());  
                             
             // to reindex
             $res = array_values($res);
@@ -466,6 +554,27 @@ class DBMarking
                                             File::getDBPrimaryKey(), 
                                             File::getDBConvert());
                                             
+            // generates an assoc array of a submission by using a defined 
+            // list of its attributes
+            $submissions = DBJson::getObjectsByAttributes($data,
+                                    Submission::getDBPrimaryKey(), 
+                                    Submission::getDBConvert(), 
+                                    '2');
+                                    
+            // sets the selectedForGroup attribute
+            foreach ($submissions as &$submission){
+                if (isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
+                    if (!isset($submission['id'])){
+                        $submission['selectedForGroup'] = (string) 0;
+                    } elseif ($submission['id'] == $submission['selectedForGroup']) {
+                        $submission['selectedForGroup'] = (string) 1;
+                    } else
+                        $submission['selectedForGroup'] = (string) 0;
+                }
+                else
+                    $submission['selectedForGroup'] = (string) 0;
+            }
+            
             // generates an assoc array of markings by using a defined list of 
             // its attributes
             $markings = DBJson::getObjectsByAttributes($data, 
@@ -479,6 +588,14 @@ class DBMarking
                             Marking::getDBConvert()['M_file'] ,
                             $files,
                             File::getDBPrimaryKey());
+                            
+            // concatenates the markings and the associated submissions
+            $res = DBJson::concatObjectListsSingleResult($data, 
+                            $res,
+                            Marking::getDBPrimaryKey(),
+                            Marking::getDBConvert()['M_submission'] ,
+                            $submissions,
+                            Submission::getDBPrimaryKey());  
                             
             // to reindex
             $res = array_values($res); 
@@ -527,6 +644,27 @@ class DBMarking
                                             File::getDBPrimaryKey(), 
                                             File::getDBConvert());
                                             
+            // generates an assoc array of a submission by using a defined 
+            // list of its attributes
+            $submissions = DBJson::getObjectsByAttributes($data,
+                                    Submission::getDBPrimaryKey(), 
+                                    Submission::getDBConvert(), 
+                                    '2');
+                                    
+            // sets the selectedForGroup attribute
+            foreach ($submissions as &$submission){
+                if (isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
+                    if (!isset($submission['id'])){
+                        $submission['selectedForGroup'] = (string) 0;
+                    } elseif ($submission['id'] == $submission['selectedForGroup']) {
+                        $submission['selectedForGroup'] = (string) 1;
+                    } else
+                        $submission['selectedForGroup'] = (string) 0;
+                }
+                else
+                    $submission['selectedForGroup'] = (string) 0;
+            }
+            
             // generates an assoc array of markings by using a defined list of 
             // its attributes
             $markings = DBJson::getObjectsByAttributes($data, 
@@ -540,6 +678,14 @@ class DBMarking
                             Marking::getDBConvert()['M_file'] ,
                             $files,
                             File::getDBPrimaryKey());
+                            
+            // concatenates the markings and the associated submissions
+            $res = DBJson::concatObjectListsSingleResult($data, 
+                            $res,
+                            Marking::getDBPrimaryKey(),
+                            Marking::getDBConvert()['M_submission'] ,
+                            $submissions,
+                            Submission::getDBPrimaryKey());  
                             
             // to reindex
             $res = array_values($res); 
@@ -590,7 +736,27 @@ class DBMarking
             $files = DBJson::getObjectsByAttributes($data, 
                                             File::getDBPrimaryKey(), 
                                             File::getDBConvert());
-                                            
+            // generates an assoc array of a submission by using a defined 
+            // list of its attributes
+            $submissions = DBJson::getObjectsByAttributes($data,
+                                    Submission::getDBPrimaryKey(), 
+                                    Submission::getDBConvert(), 
+                                    '2');
+                                    
+            // sets the selectedForGroup attribute
+            foreach ($submissions as &$submission){
+                if (isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
+                    if (!isset($submission['id'])){
+                        $submission['selectedForGroup'] = (string) 0;
+                    } elseif ($submission['id'] == $submission['selectedForGroup']) {
+                        $submission['selectedForGroup'] = (string) 1;
+                    } else
+                        $submission['selectedForGroup'] = (string) 0;
+                }
+                else
+                    $submission['selectedForGroup'] = (string) 0;
+            }
+            
             // generates an assoc array of markings by using a defined list of 
             // its attributes
             $markings = DBJson::getObjectsByAttributes($data, 
@@ -604,6 +770,14 @@ class DBMarking
                             Marking::getDBConvert()['M_file'] ,
                             $files,
                             File::getDBPrimaryKey());
+                            
+            // concatenates the markings and the associated submissions
+            $res = DBJson::concatObjectListsSingleResult($data, 
+                            $res,
+                            Marking::getDBPrimaryKey(),
+                            Marking::getDBConvert()['M_submission'] ,
+                            $submissions,
+                            Submission::getDBPrimaryKey());  
                             
             // to reindex
             $res = array_values($res); 
