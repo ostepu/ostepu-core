@@ -27,6 +27,7 @@ class Template
      */
     public function __construct($template)
     {
+        $this->content = array();
         $this->template = $template;
     }
 
@@ -55,7 +56,7 @@ class Template
      */
     public function bind(array $data)
     {
-        $this->content = $data;
+        $this->content = $this->content + $data;
     }
 
     /**
@@ -63,7 +64,7 @@ class Template
      */
     public function show()
     {
-        echo $this->__toString();
+        print $this->__toString();
     }
 
     /**
