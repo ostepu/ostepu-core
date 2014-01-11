@@ -1,3 +1,13 @@
+/**
+ * @file GetUserCourses.sql
+ * gets all courses of a user from %Course table
+ * @author Till Uhlig
+ * @param int $userid an %User identifier
+ * @result 
+ * - C, the course data
+ * - ES, the exercise sheet data
+ */
+ 
 select 
     C.C_id,
     C.C_name,

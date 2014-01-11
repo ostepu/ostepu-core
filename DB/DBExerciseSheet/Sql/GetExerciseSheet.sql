@@ -1,3 +1,14 @@
+/**
+ * @file GetExerciseSheet.sql
+ * gets an specified exercise sheet
+ * @author Till Uhlig
+ * @param int $esid an %ExerchiseSheet identifier
+ * @result 
+ * - ES, the exercise sheet data
+ * - F, the exercise sheet file
+ * - F2, the sample solution file
+ */
+ 
 select 
     ES.ES_id,
     ES.C_id,

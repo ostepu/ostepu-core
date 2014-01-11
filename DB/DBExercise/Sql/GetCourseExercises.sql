@@ -1,8 +1,8 @@
 /**
- * @file GetSheetExercises.sql
- * gets all exercise sheet exercises from %Exercise table
+ * @file GetCourseExercises.sql
+ * gets all course exercises from %Exercise table
  * @author Till Uhlig
- * @param int $esid an %ExerciseSheet identifier
+ * @param int $courseid an %Course identifier
  * @result 
  * - E, the exercise data
  * - F, the submission file
@@ -40,4 +40,4 @@ from
     (Submission S
     join SelectedSubmission SS ON S.S_id = SS.S_id_selected) ON S.E_id = E.E_id
 where
-    E.ES_id = '$esid'
+    E.C_id = '$courseid'
