@@ -27,12 +27,6 @@ $course = http_get($databaseURI);
 $course = json_decode($course, true)[0];
 
 // construct a new header
-$h = new Header($course['name'],
-                "",
-                $user['firstName'] . ' ' . $user['lastName'],
-                $user['userName']);
-
-// construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user);
 $h->bind($course);
