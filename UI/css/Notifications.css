@@ -8,14 +8,26 @@
 .error {
     border: 3px solid #DE3838;
     color: #DE3838;
+    background-image: url(../Images/Error.png);
+    background-repeat: no-repeat;
+    background-position: 8px 6px;
+    background-size: 18px 18px;
 }
 
 .warning {
     border: 3px solid #f4ad32;
     color: #f4ad32;
+    background-image: url(../Images/Warning.png);
+    background-repeat: no-repeat;
+    background-position: 8px 6px;
+    background-size: 18px 18px;
 }
 
 .success {
     border: 3px solid #2DB22D;
     color: #2DB22D;
+    background-image: url(../Images/Success.png);
+    background-repeat: no-repeat;
+    background-position: 8px 6px;
+    background-size: 18px 18px;
 }
