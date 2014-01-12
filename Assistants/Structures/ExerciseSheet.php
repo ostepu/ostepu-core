@@ -10,9 +10,21 @@ class ExerciseSheet extends Object implements JsonSerializable
      * type: string
      */
     private $id;
+    
+    /**
+     * the $id getter
+     *
+     * @return the value of $id
+     */ 
     public function getId(){
         return $this->id;
     }
+    
+    /**
+     * the $id setter
+     *
+     * @param string $value the new value for $id
+     */ 
     public function setId($value){
         $this->id = $value;
     }
@@ -23,9 +35,21 @@ class ExerciseSheet extends Object implements JsonSerializable
      * type: string
      */
     private $courseId;
+    
+    /**
+     * the $courseId getter
+     *
+     * @return the value of $courseId
+     */ 
     public function getCourseId(){
         return $this->courseId;
     }
+    
+    /**
+     * the $courseId setter
+     *
+     * @param string $value the new value for $courseId
+     */ 
     public function setCourseId($value){
         $this->courseId = $value;
     }
@@ -36,9 +60,21 @@ class ExerciseSheet extends Object implements JsonSerializable
      * type: date
      */
     private $endDate;
+    
+    /**
+     * the $endDate getter
+     *
+     * @return the value of $endDate
+     */ 
     public function getEndDate(){
         return $this->endDate;
     }
+    
+    /**
+     * the $endDate setter
+     *
+     * @param string $value the new value for $endDate
+     */ 
     public function setEndDate($value){
         $this->endDate = $value;
     }
@@ -49,9 +85,21 @@ class ExerciseSheet extends Object implements JsonSerializable
      * type: date
      */
     private $startDate;
+    
+    /**
+     * the $startDate getter
+     *
+     * @return the value of $startDate
+     */ 
     public function getStartDate(){
         return $this->startDate;
     }
+    
+    /**
+     * the $startDate setter
+     *
+     * @param string $value the new value for $startDate
+     */ 
     public function setStartDate($value){
         $this->startDate = $value;
     }
@@ -63,9 +111,21 @@ class ExerciseSheet extends Object implements JsonSerializable
      * type: File
      */
     private $zipFile;
+    
+    /**
+     * the $zipFile getter
+     *
+     * @return the value of $id
+     */ 
     public function getZipFile(){
         return $this->zipFile;
     }
+    
+    /**
+     * the $zipFile setter
+     *
+     * @param string $value the new value for $zipFile
+     */ 
     public function setZipFile($value){
         $this->zipFile = $value;
     }
@@ -76,9 +136,21 @@ class ExerciseSheet extends Object implements JsonSerializable
      * type: File
      */
     private $sampleSolution;
+    
+    /**
+     * the $sampleSolution getter
+     *
+     * @return the value of $sampleSolution
+     */ 
     public function getSampleSolution(){
         return $this->sampleSolution;
     }
+    
+    /**
+     * the $sampleSolution setter
+     *
+     * @param string $value the new value for $sampleSolution
+     */ 
     public function setSampleSolution($value){
         $this->sampleSolution = $value;
     }
@@ -89,9 +161,21 @@ class ExerciseSheet extends Object implements JsonSerializable
      * type: File
      */
     private $sheetFile;
+    
+    /**
+     * the $sheetFile getter
+     *
+     * @return the value of $sheetFile
+     */ 
     public function getSheetFile(){
         return $this->sheetFile;
     }
+    
+    /**
+     * the $sheetFile setter
+     *
+     * @param string $value the new value for $sheetFile
+     */ 
     public function setSheetFile($value){
         $this->sheetFile = $value;
     }
@@ -102,9 +186,21 @@ class ExerciseSheet extends Object implements JsonSerializable
      * type: Exercise[]
      */
     private $exercises = array();
+    
+    /**
+     * the $exercises getter
+     *
+     * @return the value of $exercises
+     */ 
     public function getExercises(){
         return $this->exercises;
     }
+    
+    /**
+     * the $exercises setter
+     *
+     * @param string $value the new value for $exercises
+     */ 
     public function setExercises($value){
         $this->exercises = $value;
     }
@@ -115,17 +211,41 @@ class ExerciseSheet extends Object implements JsonSerializable
      * type: integer
      */
     private $groupSize;
+    
+    /**
+     * the $groupSize getter
+     *
+     * @return the value of $groupSize
+     */ 
     public function getGroupSize(){
         return $this->groupSize;
     }
+    
+    /**
+     * the $groupSize setter
+     *
+     * @param string $value the new value for $groupSize
+     */ 
     public function setGroupSize($value){
         $this->groupSize = $value;
     }
     
     private $sheetName;
+    
+    /**
+     * the $sheetName getter
+     *
+     * @return the value of $sheetName
+     */ 
     public function getSheetName(){
         return $this->sheetName;
     }
+    
+    /**
+     * the $sheetName setter
+     *
+     * @param string $value the new value for $sheetName
+     */ 
     public function setSheetName($value){
         $this->sheetName = $value;
     }
@@ -231,7 +351,11 @@ class ExerciseSheet extends Object implements JsonSerializable
             return new ExerciseSheet($data);
     }
     
-    public function jsonSerialize() {
+    /**
+     * the json serialize function
+     */
+    public function jsonSerialize() 
+    {
         return array(
             'id'  => $this->id,
             'courseId' => $this->courseId,

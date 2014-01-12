@@ -10,9 +10,21 @@ class Exercise extends Object implements JsonSerializable
      * type: string
      */
     private $id;
+    
+    /**
+     * the $id getter
+     *
+     * @return the value of $id
+     */ 
     public function getId(){
         return $this->id;
     }
+    
+    /**
+     * the $id setter
+     *
+     * @param string $value the new value for $id
+     */
     public function setId($value){
         $this->id = $value;
     }
@@ -23,9 +35,21 @@ class Exercise extends Object implements JsonSerializable
      * type: string
      */
     private $courseId;
+    
+    /**
+     * the $courseId getter
+     *
+     * @return the value of $courseId
+     */ 
     public function getCourseId(){
         return $this->courseId;
     }
+    
+    /**
+     * the $courseId setter
+     *
+     * @param string $value the new value for $courseId
+     */
     public function setCourseId($value){
         $this->courseId = $value;
     }
@@ -36,9 +60,21 @@ class Exercise extends Object implements JsonSerializable
      * type: string
      */
     private $sheetId;
+    
+    /**
+     * the $sheetId getter
+     *
+     * @return the value of $sheetId
+     */ 
     public function getSheetId(){
         return $this->sheetId;
     }
+    
+    /**
+     * the $sheetId setter
+     *
+     * @param string $value the new value for $sheetId
+     */
     public function setSheetId($value){
         $this->sheetId = $value;
     }
@@ -49,9 +85,21 @@ class Exercise extends Object implements JsonSerializable
      * type: decimal
      */
     private $maxPoints;
+    
+    /**
+     * the $maxPoints getter
+     *
+     * @return the value of $maxPoints
+     */ 
     public function getMaxPoints(){
         return $this->maxPoints;
     }
+    
+    /**
+     * the $maxPoints setter
+     *
+     * @param string $value the new value for $maxPoints
+     */
     public function setMaxPoints($value){
         $this->maxPoints = $value;
     }
@@ -62,9 +110,21 @@ class Exercise extends Object implements JsonSerializable
      * type: string
      */
     private $type;
+    
+    /**
+     * the $type getter
+     *
+     * @return the value of $type
+     */ 
     public function getType(){
         return $this->type;
     }
+    
+    /**
+     * the $type setter
+     *
+     * @param string $value the new value for $type
+     */
     public function setType($value){
         $this->type = $value;
     }
@@ -75,9 +135,21 @@ class Exercise extends Object implements JsonSerializable
      * type: int
      */
     private $link;
+    
+    /**
+     * the $link getter
+     *
+     * @return the value of $link
+     */ 
     public function getLink(){
         return $this->link;
     }
+    
+    /**
+     * the $link setter
+     *
+     * @param string $value the new value for $link
+     */
     public function setLink($value){
         $this->link = $value;
     }
@@ -88,9 +160,21 @@ class Exercise extends Object implements JsonSerializable
      * type: Submission[]
      */
     private $submissions;
+    
+    /**
+     * the $submissions getter
+     *
+     * @return the value of $submissions
+     */ 
     public function getSubmissions(){
         return $submissions;
     }
+    
+    /**
+     * the $submissions setter
+     *
+     * @param string $value the new value for $submissions
+     */
     public function setSubmissions($value){
         $submissions = $value;
     }
@@ -101,9 +185,21 @@ class Exercise extends Object implements JsonSerializable
      * type: File[]
      */
     private $attachments = array();
+    
+    /**
+     * the $attachments getter
+     *
+     * @return the value of $attachments
+     */ 
     public function getAttachments(){
         return $this->attachments;
     }
+    
+    /**
+     * the $attachments setter
+     *
+     * @param string $value the new value for $attachments
+     */
     public function setAttachments($value){
         $this->attachments = $value;
     }
@@ -114,9 +210,21 @@ class Exercise extends Object implements JsonSerializable
      * type: Bool
      */
     private $bonus = null;
+    
+    /**
+     * the $bonus getter
+     *
+     * @return the value of $bonus
+     */ 
     public function getBonus(){
         return $this->bonus;
     }
+    
+    /**
+     * the $bonus setter
+     *
+     * @param string $value the new value for $bonus
+     */
     public function setBonus($value){
         $this->bonus = $value;
     }
@@ -214,7 +322,11 @@ class Exercise extends Object implements JsonSerializable
             return new Exercise($data);
     }
     
-    public function jsonSerialize() {
+    /**
+     * the json serialize function
+     */
+    public function jsonSerialize()
+    {
         return array(
             'id' => $this->id,
             'courseId' => $this->courseId,

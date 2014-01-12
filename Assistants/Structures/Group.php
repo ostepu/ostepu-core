@@ -10,9 +10,21 @@ class Group extends Object implements JsonSerializable
      * type: User[]
      */
     private $members = array();
+    
+    /**
+     * the $members getter
+     *
+     * @return the value of $members
+     */
     public function getMembers(){
         return $this->members;
     }
+    
+    /**
+     * the $members setter
+     *
+     * @param string $value the new value for $members
+     */ 
     public function setMembers($value){
         $this->members = $value;
     }
@@ -23,9 +35,21 @@ class Group extends Object implements JsonSerializable
      * type: User
      */
     private $leader = null;
+    
+    /**
+     * the $leader getter
+     *
+     * @return the value of $leader
+     */
     public function getLeader(){
         return $this->leader;
     }
+    
+    /**
+     * the $leader setter
+     *
+     * @param string $value the new value for $leader
+     */ 
     public function setLeader($value){
         $this->leader = $value;
     }
@@ -36,9 +60,21 @@ class Group extends Object implements JsonSerializable
      * type: string
      */
     private $sheetId = null;
+    
+    /**
+     * the $sheetId getter
+     *
+     * @return the value of $sheetId
+     */
     public function getSheetId(){
         return $this->sheetId;
     }
+    
+    /**
+     * the $sheetId setter
+     *
+     * @param string $value the new value for $sheetId
+     */ 
     public function setSheetId($value){
         $this->sheetId = $value;
     }
@@ -119,9 +155,10 @@ class Group extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the json serialize function
      */
-    public function jsonSerialize() {
+    public function jsonSerialize()
+    {
         return array(
             'members' => $this->members,
             'leader' => $this->leader,

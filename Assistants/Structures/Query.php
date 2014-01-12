@@ -13,18 +13,20 @@ class Query extends Object implements JsonSerializable
     private $request = null;
     
     /**
-     * (description)
-     */
+     * the $request getter
+     *
+     * @return the value of $request
+     */ 
     public function getRequest()
     {
         return $this->request;
     }
     
     /**
-     * (description)
+     * the $request setter
      *
-     * @param $param (description)
-     */
+     * @param string $value the new value for $idrequest
+     */ 
     public function setRequest($value)
     {
         $this->request = $value;
@@ -38,18 +40,20 @@ class Query extends Object implements JsonSerializable
     private $response = array();
     
     /**
-     * (description)
-     */
+     * the $response getter
+     *
+     * @return the value of $response
+     */ 
     public function getResponse()
     {
         return $this->response;
     }
     
     /**
-     * (description)
+     * the $response setter
      *
-     * @param $param (description)
-     */
+     * @param string $value the new value for $response
+     */ 
     public function setResponse($value)
     {
         $this->response = $value;
@@ -63,18 +67,20 @@ class Query extends Object implements JsonSerializable
     private $errno = null;
     
     /**
-     * (description)
-     */
+     * the $errno getter
+     *
+     * @return the value of $errno
+     */ 
     public function getErrno()
     {
         return $this->errno;
     }
     
     /**
-     * (description)
+     * the $errno setter
      *
-     * @param $param (description)
-     */
+     * @param string $value the new value for $errno
+     */ 
     public function setErrno($value)
     {
         $this->errno = $value;
@@ -87,19 +93,21 @@ class Query extends Object implements JsonSerializable
      */
     private $insertId = null;
     
-    /**
-     * (description)
-     */
+     /**
+     * the $insertId getter
+     *
+     * @return the value of $insertId
+     */ 
     public function getInsertId()
     {
         return $this->insertId;
     }
     
     /**
-     * (description)
+     * the $insertId setter
      *
-     * @param $param (description)
-     */
+     * @param string $value the new value for $insertId
+     */ 
     public function setInsertId($value)
     {
         $this->insertId = $value;
@@ -113,18 +121,20 @@ class Query extends Object implements JsonSerializable
     private $affectedRows = null;
     
     /**
-     * (description)
-     */
+     * the $affectedRows getter
+     *
+     * @return the value of $affectedRows
+     */ 
     public function getAffectedRows()
     {
         return $this->affectedRows;
     }
     
     /**
-     * (description)
+     * the $affectedRows setter
      *
-     * @param $param (description)
-     */
+     * @param string $value the new value for $affectedRows
+     */ 
     public function setAffectedRows($value)
     {
         $this->affectedRows = $value;
@@ -138,18 +148,20 @@ class Query extends Object implements JsonSerializable
     private $numRows = null;
     
     /**
-     * (description)
-     */
+     * the $numRows getter
+     *
+     * @return the value of $numRows
+     */ 
     public function getNumRows()
     {
         return $this->numRows;
     }
     
     /**
-     * (description)
+     * the $numRows setter
      *
-     * @param $param (description)
-     */
+     * @param string $value the new value for $numRows
+     */ 
     public function setNumRows($value)
     {
         $this->numRows = $value;
@@ -212,9 +224,9 @@ class Query extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the json serialize function
      */
-    public function jsonSerialize() 
+    public function jsonSerialize()  
     {       
         $list = array();
         if ($this->request!==null) $list['request'] = $this->request;

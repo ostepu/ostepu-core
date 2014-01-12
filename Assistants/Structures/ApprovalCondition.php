@@ -10,9 +10,21 @@ class ApprovalCondition extends Object implements JsonSerializable
      * type: string
      */
     private $id;
+    
+    /**
+     * the $id getter
+     *
+     * @return the value of $id
+     */ 
     public function getId(){
         return $this->id;
     }
+    
+    /**
+     * the $id setter
+     *
+     * @param string $value the new value for $id
+     */ 
     public function setId($value){
         $this->id = $value;
     }
@@ -24,9 +36,21 @@ class ApprovalCondition extends Object implements JsonSerializable
      * type: string
      */
     private $courseId;
+    
+    /**
+     * the $courseId getter
+     *
+     * @return the value of $courseId
+     */ 
     public function getCourseId(){
         return $this->courseId;
     }
+    
+    /**
+     * the $courseId setter
+     *
+     * @param string $value the new value for $courseId
+     */ 
     public function setCourseId($value){
         $this->courseId = $value;
     }
@@ -37,9 +61,21 @@ class ApprovalCondition extends Object implements JsonSerializable
      * type: string
      */
     private $exerciseTypeId;
+    
+    /**
+     * the $exerciseTypeId getter
+     *
+     * @return the value of $exerciseTypeid
+     */ 
     public function getExerciseTypeId(){
         return $this->exerciseTypeId;
     }
+    
+    /**
+     * the $exerciseTypeid setter
+     *
+     * @param string $value the new value for $exerciseTypeId
+     */ 
     public function setExerciseTypeId($value){
         $this->exerciseTypeId = $value;
     }    
@@ -50,9 +86,21 @@ class ApprovalCondition extends Object implements JsonSerializable
      * type: string
      */
     private $percentage;
+    
+    /**
+     * the $percentage getter
+     *
+     * @return the value of $percentage
+     */ 
     public function getPercentage(){
         return $this->percentage;
     }
+    
+    /**
+     * the $percentage setter
+     *
+     * @param string $value the new value for $percentage
+     */  
     public function setPercentage($value){
         $this->percentage = $value;
     }  
@@ -141,6 +189,9 @@ class ApprovalCondition extends Object implements JsonSerializable
             return new ApprovalCondition($data);
     }
     
+    /**
+     * the json serialize function
+     */
     public function jsonSerialize()
     {
         return array(

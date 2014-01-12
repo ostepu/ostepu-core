@@ -7,9 +7,21 @@ class Marking extends Object implements JsonSerializable
      * type: string
      */
     private $id;
+    
+    /**
+     * the $id getter
+     *
+     * @return the value of $id
+     */ 
     public function getId(){
         return $this->id;
     }
+    
+    /**
+     * the $id setter
+     *
+     * @param string $value the new value for $id
+     */ 
     public function setId($value){
         $this->id = $value;
     }
@@ -20,9 +32,21 @@ class Marking extends Object implements JsonSerializable
      * type: Submission
      */
     private $submission;
+    
+    /**
+     * the $submission getter
+     *
+     * @return the value of $submission
+     */ 
     public function getSubmission(){
         return $submission;
     }
+    
+    /**
+     * the $submission setter
+     *
+     * @param string $value the new value for $submission
+     */ 
     public function setSubmission($value){
         $submission = $value;
     }
@@ -33,9 +57,21 @@ class Marking extends Object implements JsonSerializable
      * type: string
      */
     private $tutorId;
+    
+    /**
+     * the $tutorId getter
+     *
+     * @return the value of $tutorId
+     */ 
     public function getTutorId(){
         return $this->tutorId;
     }
+    
+    /**
+     * the $tutorId setter
+     *
+     * @param string $value the new value for $tutorId
+     */ 
     public function setTutorId($value){
         $this->tutorId = $value;
     }
@@ -46,9 +82,21 @@ class Marking extends Object implements JsonSerializable
      * type: string
      */
     private $tutorComment;
+    
+    /**
+     * the $tutorComment getter
+     *
+     * @return the value of $tutorComment
+     */ 
     public function getTutorComment(){
         return $this->tutorComment;
     }
+    
+    /**
+     * the $tutorComment setter
+     *
+     * @param string $value the new value for $tutorComment
+     */ 
     public function setTutorComment($value){
         $this->tutorComment = $value;
     }
@@ -59,9 +107,21 @@ class Marking extends Object implements JsonSerializable
      * type: File
      */
     private $file;
+    
+    /**
+     * the $file getter
+     *
+     * @return the value of $file
+     */ 
     public function getFile(){
         return $this->file;
     }
+    
+    /**
+     * the $file setter
+     *
+     * @param string $value the new value for $file
+     */ 
     public function setFile($value){
         $this->file = $value;
     }
@@ -72,9 +132,21 @@ class Marking extends Object implements JsonSerializable
      * type: decimal
      */
     private $points;
+    
+    /**
+     * the $points getter
+     *
+     * @return the value of $points
+     */ 
     public function getPoints(){
         return $this->points;
     }
+    
+    /**
+     * the $points setter
+     *
+     * @param string $value the new value for $points
+     */ 
     public function setPoints($value){
         $this->points = $value;
     }
@@ -85,9 +157,21 @@ class Marking extends Object implements JsonSerializable
      * type: bool
      */
     private $outstanding;
+    
+    /**
+     * the $outstanding getter
+     *
+     * @return the value of $outstanding
+     */ 
     public function getOutstanding(){
         return $this->outstanding;
     }
+    
+    /**
+     * the $outstanding setter
+     *
+     * @param string $value the new value for $outstanding
+     */ 
     public function setOutstanding($value){
         $this->outstanding = $value;
     }
@@ -98,9 +182,21 @@ class Marking extends Object implements JsonSerializable
      * type: string
      */
     private $status;
+    
+    /**
+     * the $status getter
+     *
+     * @return the value of $status
+     */ 
     public function getStatus(){
         return $this->status;
     }
+    
+    /**
+     * the $status setter
+     *
+     * @param string $value the new value for $status
+     */ 
     public function setStatus($value){
         $this->status = $value;
     }
@@ -111,9 +207,21 @@ class Marking extends Object implements JsonSerializable
      * type: date
      */
     private $date;
+    
+    /**
+     * the $date getter
+     *
+     * @return the value of $date
+     */ 
     public function getDate(){
         return $this->date;
     }
+    
+    /**
+     * the $date setter
+     *
+     * @param string $value the new value for $date
+     */ 
     public function setDate($value){
         $this->date = $value;
     }
@@ -220,9 +328,10 @@ class Marking extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the json serialize function
      */
-    public function jsonSerialize() {
+    public function jsonSerialize()
+    {
         return array(
             'id' => $this->id,
             'submission' => $this->submission,

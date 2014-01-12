@@ -12,18 +12,20 @@ class Course extends Object implements JsonSerializable
     private $id;
     
     /**
-     * (description)
-     */
+     * the $id getter
+     *
+     * @return the value of $id
+     */ 
     public function getId()
     {
         return $this->id;
     }
     
     /**
-     * (description)
+     * the $id setter
      *
-     * @param $conf (description)
-     */
+     * @param string $value the new value for $id
+     */ 
     public function setId($value)
     {
         $this->id = $value;
@@ -40,8 +42,10 @@ class Course extends Object implements JsonSerializable
     private $name;
     
     /**
-     * (description)
-     */
+     * the $name setter
+     *
+     * @param string $value the new value for $name
+     */ 
     public function getName()
     {
         return $this->name;
@@ -68,18 +72,20 @@ class Course extends Object implements JsonSerializable
     private $semester;
     
     /**
-     * (description)
-     */
+     * the $semester getter
+     *
+     * @return the value of $semester
+     */ 
     public function getSemester()
     {
         return $this->semester;
     }
     
     /**
-     * (description)
+     * the $semester setter
      *
-     * @param $conf (description)
-     */
+     * @param string $value the new value for $semester
+     */ 
     public function setSemester($value)
     {
         $this->semester = $value;
@@ -95,19 +101,21 @@ class Course extends Object implements JsonSerializable
      */
     private $exerciseSheets = array();
     
-    /**
-     * (description)
-     */
+     /**
+     * the $exerciseSheets getter
+     *
+     * @return the value of $exerciseSheets
+     */ 
     public function getExerciseSheets()
     {
         return $this->exerciseSheets;
     }
     
     /**
-     * (description)
+     * the $exerciseSheets setter
      *
-     * @param $conf (description)
-     */
+     * @param string $value the new value for $exerciseSheets
+     */ 
     public function setExerciseSheets($value)
     {
         $this->exerciseSheets = $value;
@@ -124,18 +132,20 @@ class Course extends Object implements JsonSerializable
     private $defaultGroupSize;
     
     /**
-     * (description)
-     */
+     * the $defaultGroupSize getter
+     *
+     * @return the value of $defaultGroupSize
+     */ 
     public function getDefaultGroupSize()
     {
         return $this->defaultGroupSize;
     }
     
     /**
-     * (description)
+     * the $defaultGroupSize setter
      *
-     * @param $conf (description)
-     */
+     * @param string $value the new value for $defaultGroupSize
+     */ 
     public function setDefaultGroupSize($value)
     {
         $this->defaultGroupSize = $value;
@@ -230,9 +240,9 @@ class Course extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the json serialize function
      */
-    public function jsonSerialize()
+    public function jsonSerialize() 
     {
         return array(
             'id' => $this->id,

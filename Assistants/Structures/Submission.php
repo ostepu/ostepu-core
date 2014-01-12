@@ -5,9 +5,21 @@ class Submission extends Object implements JsonSerializable
      * The identifier of this submission.
      */
     private $id;
+    
+    /**
+     * the $id getter
+     *
+     * @return the value of $id
+     */ 
     public function getId(){
         return $this->id;
     }
+    
+    /**
+     * the $id setter
+     *
+     * @param string $value the new value for $id
+     */ 
     public function setId($value){
         $this->id = $value;
     }
@@ -18,9 +30,21 @@ class Submission extends Object implements JsonSerializable
      * type: string
      */
     private $studentId;
+    
+    /**
+     * the $studentId getter
+     *
+     * @return the value of $studentId
+     */ 
     public function getStudentId(){
         return $this->studentId;
     }
+    
+    /**
+     * the $studentId setter
+     *
+     * @param string $value the new value for $studentId
+     */ 
     public function setStudentId($value){
         $this->studentId = $value;
     }
@@ -31,9 +55,21 @@ class Submission extends Object implements JsonSerializable
      * type: string
      */
     private $exerciseId;
+    
+    /**
+     * the $exerciseId getter
+     *
+     * @return the value of $exerciseId
+     */ 
     public function getExerciseId(){
         return $this->exerciseId;
     }
+    
+    /**
+     * the $exerciseId setter
+     *
+     * @param string $value the new value for $exerciseId
+     */ 
     public function setExerciseId($value){
         $this->exerciseId = $value;
     }
@@ -44,9 +80,21 @@ class Submission extends Object implements JsonSerializable
      * type: string
      */
     private $comment;
+    
+    /**
+     * the $comment getter
+     *
+     * @return the value of $comment
+     */ 
     public function getComment(){
         return $this->comment;
     }
+    
+    /**
+     * the $comment setter
+     *
+     * @param string $value the new value for $comment
+     */ 
     public function setComment($value){
         $this->comment = $value;
     }
@@ -57,9 +105,21 @@ class Submission extends Object implements JsonSerializable
      * type: File
      */
     private $file;
+    
+    /**
+     * the $file getter
+     *
+     * @return the value of $file
+     */ 
     public function getFile(){
         return $this->file;
     }
+    
+    /**
+     * the $file setter
+     *
+     * @param string $value the new value for $file
+     */ 
     public function setFile($value){
         $this->file = $value;
     }
@@ -70,9 +130,21 @@ class Submission extends Object implements JsonSerializable
      * type: bool
      */
     private $accepted;
+    
+    /**
+     * the $accepted getter
+     *
+     * @return the value of $accepted
+     */ 
     public function getAccepted(){
         return $this->accepted;
     }
+    
+    /**
+     * the $accepted setter
+     *
+     * @param string $value the new value for $accepted
+     */ 
     public function setAccepted($value){
         $this->accepted = $value;
     }
@@ -83,9 +155,21 @@ class Submission extends Object implements JsonSerializable
      * type: bool
      */
     private $selectedForGroup;
+    
+    /**
+     * the $selectedForGroup getter
+     *
+     * @return the value of $selectedForGroup
+     */ 
     public function getSelectedForGroup(){
         return $this->selectedForGroup;
     }
+    
+    /**
+     * the $selectedForGroup setter
+     *
+     * @param string $value the new value for $selectedForGroup
+     */ 
     public function setSelectedForGroup($value){
         $this->selectedForGroup = $value;
     }
@@ -96,9 +180,21 @@ class Submission extends Object implements JsonSerializable
      * type: date
      */
     private $date;
+    
+    /**
+     * the $date getter
+     *
+     * @return the value of $date
+     */ 
     public function getDate(){
         return $this->date;
     }
+    
+    /**
+     * the $date setter
+     *
+     * @param string $value the new value for $date
+     */ 
     public function setDate($value){
         $this->date = $value;
     }
@@ -188,9 +284,10 @@ class Submission extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the json serialize function
      */
-    public function jsonSerialize() {
+    public function jsonSerialize()
+    {
         return array(
             'id' => $this->id,
             'studentId' => $this->studentId,

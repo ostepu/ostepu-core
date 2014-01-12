@@ -10,18 +10,20 @@ class ExerciseType extends Object implements JsonSerializable
     private $id = null;
     
     /**
-     * (description)
-     */
+     * the $id getter
+     *
+     * @return the value of $id
+     */ 
     public function getId()
     {
         return $this->id;
     }
     
     /**
-     * (description)
+     * the $id setter
      *
-     * @param $conf (description)
-     */
+     * @param string $value the new value for $id
+     */ 
     public function setId($value)
     {
         $this->id = $value;
@@ -33,18 +35,20 @@ class ExerciseType extends Object implements JsonSerializable
     private $name = null;
     
     /**
-     * (description)
-     */
+     * the $name getter
+     *
+     * @return the value of $name
+     */ 
     public function getName()
     {
         return $this->name;
     }
     
     /**
-     * (description)
+     * the $name setter
      *
-     * @param $conf (description)
-     */
+     * @param string $value the new value for $name
+     */ 
     public function setName($value)
     {
         $this->name = $value;
@@ -129,9 +133,9 @@ class ExerciseType extends Object implements JsonSerializable
     }
 
     /**
-     * (description)
+     * the json serialize function
      */
-    public function jsonSerialize() 
+    public function jsonSerialize()  
     {
         return array(
             'id' => $this->id,

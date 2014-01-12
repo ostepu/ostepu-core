@@ -7,9 +7,21 @@ class SelectedSubmission extends Object implements JsonSerializable
      * type: string
      */
     private $leaderId;
+    
+    /**
+     * the $leaderId getter
+     *
+     * @return the value of $leaderId
+     */ 
     public function getLeaderId(){
         return $this->leaderId;
     }
+    
+    /**
+     * the $leaderid setter
+     *
+     * @param string $value the new value for $leaderId
+     */ 
     public function setLeaderId($value){
         $this->leaderId = $value;
     }
@@ -20,9 +32,21 @@ class SelectedSubmission extends Object implements JsonSerializable
      * type: string
      */
     private $submissionId;
+    
+    /**
+     * the $submissionId getter
+     *
+     * @return the value of $submissionId
+     */ 
     public function getSubmissionId(){
         return $this->submissionId;
     }
+    
+    /**
+     * the $submissionId setter
+     *
+     * @param string $value the new value for $submissionId
+     */ 
     public function setSubmissionId($value){
         $this->submissionId = $value;
     }
@@ -33,9 +57,21 @@ class SelectedSubmission extends Object implements JsonSerializable
      * type: string
      */
     private $exerciseId;
+    
+    /**
+     * the $exerciseId getter
+     *
+     * @return the value of $exerciseId
+     */ 
     public function getExerciseId(){
         return $this->exerciseId;
     }
+    
+    /**
+     * the $exerciseId setter
+     *
+     * @param string $value the new value for $exerciseId
+     */ 
     public function setExerciseId($value){
         $this->exerciseId = $value;
     }
@@ -114,9 +150,10 @@ class SelectedSubmission extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the json serialize function
      */
-    public function jsonSerialize() {
+    public function jsonSerialize()
+    {
         return array(
             'leaderId' => $this->leaderId,
             'submissionId' => $this->submissionId,

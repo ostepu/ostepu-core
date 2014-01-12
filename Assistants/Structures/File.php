@@ -12,18 +12,20 @@ class File extends Object implements JsonSerializable
     private $fileId=null;
     
     /**
-     * (description)
-     */
+     * the $fileId getter
+     *
+     * @return the value of $fileId
+     */ 
     public function getFileId()
     {
         return $this->fileId;
     }
     
     /**
-     * (description)
-     * 
-     * @param $param (description)
-     */
+     * the $fileId setter
+     *
+     * @param string $value the new value for $fileId
+     */ 
     public function setFileId($value)
     {
         $this->fileId = $value;
@@ -40,18 +42,20 @@ class File extends Object implements JsonSerializable
     private $displayName=null;
     
     /**
-     * (description)
-     */
+     * the $displayName getter
+     *
+     * @return the value of $displayName
+     */ 
     public function getDisplayName()
     {
         return $this->displayName;
     }
     
     /**
-     * (description)
-     * 
-     * @param $param (description)
-     */
+     * the $displayName setter
+     *
+     * @param string $value the new value for $displayName
+     */ 
     public function setDisplayName($value)
     {
         $this->displayName = $value;
@@ -68,18 +72,20 @@ class File extends Object implements JsonSerializable
     private $address=null;
     
     /**
-     * (description)
-     */
+     * the $address getter
+     *
+     * @return the value of $address
+     */ 
     public function getAddress()
     {
         return $this->address;
     }
     
     /**
-     * (description)
-     * 
-     * @param $param (description)
-     */
+     * the $address setter
+     *
+     * @param string $value the new value for $address
+     */ 
     public function setAddress($value)
     {
         $this->address = $value;
@@ -97,18 +103,20 @@ class File extends Object implements JsonSerializable
     private $timeStamp=null;
     
     /**
-     * (description)
-     */
+     * the $timeStamp getter
+     *
+     * @return the value of $timeStamp
+     */ 
     public function getTimeStamp()
     {
         return $this->timeStamp;
     }
     
     /**
-     * (description)
-     * 
-     * @param $param (description)
-     */
+     * the $timeStamp setter
+     *
+     * @param string $value the new value for $timeStamp
+     */ 
     public function seTimeStamp($value)
     {
         $this->timeStamp = $value;
@@ -125,18 +133,20 @@ class File extends Object implements JsonSerializable
     private $fileSize=null;
     
     /**
-     * (description)
-     */
+     * the $fileSize getter
+     *
+     * @return the value of $fileSize
+     */ 
     public function getFileSize()
     {
         return $this->fileSize;
     }
     
     /**
-     * (description)
-     * 
-     * @param $param (description)
-     */
+     * the $fileSize setter
+     *
+     * @param string $value the new value for $fileSize
+     */ 
     public function setFileSize($value)
     {
         $this->fileSize = $value;
@@ -149,23 +159,25 @@ class File extends Object implements JsonSerializable
      * hash of the file, ensures that the user has up-/downloaded the right
      * file.
      *
-     * type: string/integer
+     * type: string
      */
     private $hash=null;
     
     /**
-     * (description)
-     */
+     * the $hash getter
+     *
+     * @return the value of $hash
+     */ 
     public function getHash()
     {
         return $this->hash;
     }
     
     /**
-     * (description)
-     * 
-     * @param $param (description)
-     */
+     * the $hash setter
+     *
+     * @param string $value the new value for $hash
+     */ 
     public function setHash($value)
     {
         $this->hash = $value;
@@ -182,18 +194,20 @@ class File extends Object implements JsonSerializable
     private $body=null;
     
     /**
-     * (description)
-     */
+     * the $body getter
+     *
+     * @return the value of $body
+     */ 
     public function getBody()
     {
         return $this->body;
     }
     
     /**
-     * (description)
-     * 
-     * @param $param (description)
-     */
+     * the $body setter
+     *
+     * @param string $value the new value for $body
+     */ 
     public function setBody($value)
     {
         $this->body = $value;
@@ -289,8 +303,8 @@ class File extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
-     */   
+     * the json serialize function
+     */  
     public function jsonSerialize()
     {
         return array(

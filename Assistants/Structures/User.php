@@ -13,8 +13,10 @@ class User extends Object implements JsonSerializable
     private $id;
     
     /**
-     * (description)
-     */
+     * the $id getter
+     *
+     * @return the value of $id
+     */ 
     public function getId()
     {
         return $this->id;
@@ -41,8 +43,10 @@ class User extends Object implements JsonSerializable
     private $userName; 
     
     /**
-     * (description)
-     */
+     * the $userName getter
+     *
+     * @return the value of $userName
+     */ 
     public function getUserName()
     {
         return $this->userName;
@@ -69,8 +73,10 @@ class User extends Object implements JsonSerializable
     private $email;
     
     /**
-     * (description)
-     */
+     * the $email getter
+     *
+     * @return the value of $email
+     */ 
     public function getEmail()
     {
         return $this->email;
@@ -97,8 +103,10 @@ class User extends Object implements JsonSerializable
     private $firstName;
     
     /**
-     * (description)
-     */
+     * the $firstName getter
+     *
+     * @return the value of $firstName
+     */ 
     public function getFirstName()
     {
         return $this->firstName;
@@ -126,8 +134,10 @@ class User extends Object implements JsonSerializable
     private $lastName;
     
     /**
-     * (description)
-     */
+     * the $lastName getter
+     *
+     * @return the value of $lastName
+     */ 
     public function getLastName()
     {
         return $this->lastName;
@@ -155,8 +165,10 @@ class User extends Object implements JsonSerializable
     private $title; 
     
     /**
-     * (description)
-     */
+     * the $title getter
+     *
+     * @return the value of $title
+     */ 
     public function getTitle()
     {
         return $this->title;
@@ -185,8 +197,10 @@ class User extends Object implements JsonSerializable
     private $courses = array();
     
     /**
-     * (description)
-     */
+     * the $courses getter
+     *
+     * @return the value of $courses
+     */ 
     public function getCourses()
     {
         return $this->courses;
@@ -213,8 +227,10 @@ class User extends Object implements JsonSerializable
     private $flag = null;
     
     /**
-     * (description)
-     */
+     * the $flag getter
+     *
+     * @return the value of $flag
+     */ 
     public function getFlag()
     {
         return $this->flag;
@@ -241,8 +257,10 @@ class User extends Object implements JsonSerializable
     private $password = null;
     
     /**
-     * (description)
-     */
+     * the $password getter
+     *
+     * @return the value of $password
+     */ 
     public function getPassword()
     {
         return $this->password;
@@ -266,8 +284,10 @@ class User extends Object implements JsonSerializable
     private $salt = null;
     
     /**
-     * (description)
-     */
+     * the $salt getter
+     *
+     * @return the value of $salt
+     */ 
     public function getSalt()
     {
         return $this->salt;
@@ -291,8 +311,10 @@ class User extends Object implements JsonSerializable
     private $failedLogins = null;
     
     /**
-     * (description)
-     */
+     * the $failedLogins getter
+     *
+     * @return the value of $failedLogins
+     */ 
     public function getFailedLogins()
     {
         return $this->failedLogins;
@@ -438,9 +460,9 @@ class User extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the json serialize function
      */
-    public function jsonSerialize() 
+    public function jsonSerialize()  
     {
          $list = array();
          if ($this->id!==null) $list['id'] = $this->id;

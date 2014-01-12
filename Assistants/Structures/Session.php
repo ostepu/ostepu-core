@@ -14,18 +14,20 @@ class Session extends Object implements JsonSerializable
     private $user;
     
     /**
-     * (description)
-     */
+     * the $user getter
+     *
+     * @return the value of $user
+     */ 
     public function getUser()
     {
         return $this->user;
     }
     
     /**
-     * (description)
+     * the $user setter
      *
-     * @param $param (description)
-     */
+     * @param string $value the new value for $user
+     */ 
     public function setUser($value)
     {
         $this->user = $value;
@@ -42,18 +44,20 @@ class Session extends Object implements JsonSerializable
     private $status;
     
     /**
-     * (description)
-     */
+     * the $status getter
+     *
+     * @return the value of $status
+     */ 
     public function getStatus()
     {
         return $this->status;
     }
     
     /**
-     * (description)
+     * the $status setter
      *
-     * @param $param (description)
-     */
+     * @param string $value the new value for $status
+     */ 
     public function setStatus($value)
     {
         $this->status = $value;
@@ -140,9 +144,9 @@ class Session extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the json serialize function
      */
-    public function jsonSerialize()
+    public function jsonSerialize() 
     {
         return array(
             'user' => $this->user,

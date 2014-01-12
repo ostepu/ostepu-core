@@ -10,9 +10,21 @@ class Attachment extends Object implements JsonSerializable
      * type: string
      */
     private $id = null;
+    
+    /**
+     * the $id getter
+     *
+     * @return the value of $id
+     */ 
     public function getId(){
         return $this->id;
     }
+    
+    /**
+     * the $id setter
+     *
+     * @param string $value the new value for $id
+     */ 
     public function setId($value){
         $this->id = $value;
     }
@@ -24,9 +36,21 @@ class Attachment extends Object implements JsonSerializable
      * type: string
      */
     private $exerciseId = null;
+    
+    /**
+     * the $exerciseId getter
+     *
+     * @return the value of $exerciseId
+     */ 
     public function getExerciseId(){
         return $this->exerciseId;
     }
+    
+    /**
+     * the $exerciseId setter
+     *
+     * @param string $value the new value for $exerciseId
+     */ 
     public function setExerciseId($value){
         $this->exerciseId = $value;
     }
@@ -37,9 +61,21 @@ class Attachment extends Object implements JsonSerializable
      * type: File
      */
     private $file = null;
+    
+    /**
+     * the $file getter
+     *
+     * @return the value of $file
+     */ 
     public function getFile(){
         return $this->file;
     }
+    
+    /**
+     * the $file setter
+     *
+     * @param string $value the new value for $file
+     */ 
     public function setFile($value){
         $this->file = $value;
     }    
@@ -128,6 +164,9 @@ class Attachment extends Object implements JsonSerializable
             return new Attachment($data);
     }
     
+    /**
+     * the json serialize function
+     */
     public function jsonSerialize()
     {
         return array(

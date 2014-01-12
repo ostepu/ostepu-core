@@ -10,9 +10,21 @@ class Backup extends Object implements JsonSerializable
      * type: string
      */
     private $id;
+    
+    /**
+     * the $id getter
+     *
+     * @return the value of $id
+     */ 
     public function getId(){
         return $this->id;
     }
+    
+    /**
+     * the $id setter
+     *
+     * @param string $value the new value for $id
+     */ 
     public function setId($value){
         $this->id = $value;
     }
@@ -23,9 +35,21 @@ class Backup extends Object implements JsonSerializable
      * type: date
      */
     private $date;
+    
+    /**
+     * the $date getter
+     *
+     * @return the value of $date
+     */ 
     public function getDate(){
         return $this->date;
     }
+    
+    /**
+     * the $date setter
+     *
+     * @param string $value the new value for $date
+     */ 
     public function setDate($value){
         $this->date = $value;
     }
@@ -36,9 +60,21 @@ class Backup extends Object implements JsonSerializable
      * type: File
      */
     private $file;
+    
+    /**
+     * the $file getter
+     *
+     * @return the value of $file
+     */ 
     public function getFile(){
         return $this->file;
     }
+    
+    /**
+     * the $file setter
+     *
+     * @param string $value the new value for $file
+     */ 
     public function setFile($value){
         $this->file = $value;
     }
@@ -80,8 +116,12 @@ class Backup extends Object implements JsonSerializable
         else
             return new Backup($data);
     }
-
-    public function jsonSerialize() {
+    
+    /**
+     * the json serialize function
+     */
+    public function jsonSerialize()
+    {
         return array(
             'id' => $this->id,
             'date' => $this->date,

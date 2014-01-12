@@ -12,18 +12,20 @@ class ExternalId extends Object implements JsonSerializable
     private $id = null;
     
     /**
-     * (description)
-     */
+     * the $id getter
+     *
+     * @return the value of $id
+     */ 
     public function getId()
     {
         return $this->id;
     }
     
     /**
-     * (description)
+     * the $id setter
      *
-     * @param $conf (description)
-     */
+     * @param string $value the new value for $id
+     */ 
     public function setId($value)
     {
         $this->id = $value;
@@ -38,18 +40,20 @@ class ExternalId extends Object implements JsonSerializable
     private $course = null;
     
     /**
-     * (description)
-     */
+     * the $course getter
+     *
+     * @return the value of $course
+     */ 
     public function getCourse()
     {
         return $this->course;
     }
     
     /**
-     * (description)
+     * the $course setter
      *
-     * @param $conf (description)
-     */
+     * @param string $value the new value for $course
+     */ 
     public function setCourse($value)
     {
         $this->course = $value;
@@ -138,9 +142,9 @@ class ExternalId extends Object implements JsonSerializable
     }
 
     /**
-     * (description)
+     * the json serialize function
      */
-    public function jsonSerialize() 
+    public function jsonSerialize()  
     {
         return array(
             'id' => $this->id,

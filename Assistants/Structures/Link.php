@@ -10,18 +10,20 @@ class Link extends Object implements JsonSerializable
     private $id = null;
     
     /**
-     * (description)
-     */
+     * the $id getter
+     *
+     * @return the value of $id
+     */ 
     public function getId()
     {
         return $this->id;
     }
     
     /**
-     * (description)
+     * the $id setter
      *
-     * @param $conf (description)
-     */
+     * @param string $value the new value for $id
+     */ 
     public function setId($value)
     {
         $this->id = $value;
@@ -33,18 +35,20 @@ class Link extends Object implements JsonSerializable
     private $target = null;
     
     /**
-     * (description)
-     */
+     * the $target getter
+     *
+     * @return the value of $target
+     */ 
     public function getTarget()
     {
         return $this->target;
     }
     
     /**
-     * (description)
+     * the $target setter
      *
-     * @param $conf (description)
-     */
+     * @param string $value the new value for $target
+     */ 
     public function setTarget($value)
     {
         $this->target = $value;
@@ -56,18 +60,20 @@ class Link extends Object implements JsonSerializable
     private $owner = null;
     
     /**
-     * (description)
-     */
+     * the $owner getter
+     *
+     * @return the value of $owner
+     */ 
     public function getOwner()
     {
         return $this->owner;
     }
     
     /**
-     * (description)
+     * the $owner setter
      *
-     * @param $conf (description)
-     */
+     * @param string $value the new value for $owner
+     */ 
     public function setOwner($value)
     {
         $this->owner = $value;
@@ -76,8 +82,10 @@ class Link extends Object implements JsonSerializable
     private $name = null;
     
     /**
-     * (description)
-     */
+     * the $name getter
+     *
+     * @return the value of $name
+     */ 
     public function getName()
     {
         return $this->name;
@@ -102,18 +110,20 @@ class Link extends Object implements JsonSerializable
     private $address = null;
     
     /**
-     * (description)
-     */
+     * the $address getter
+     *
+     * @return the value of $address
+     */ 
     public function getAddress()
     {
         return $this->address;
     }
     
     /**
-     * (description)
+     * the $address setter
      *
-     * @param $conf (description)
-     */
+     * @param string $value the new value for $address
+     */ 
     public function setAddress($value)
     {
         $this->address = $value;
@@ -128,18 +138,20 @@ class Link extends Object implements JsonSerializable
     private $relevanz = null;
     
     /**
-     * (description)
-     */
+     * the $relevanz getter
+     *
+     * @return the value of $relevanz
+     */ 
     public function getRelevanz()
     {
         return $this->relevanz;
     }
     
     /**
-     * (description)
+     * the $relevanz setter
      *
-     * @param $conf (description)
-     */
+     * @param string $value the new value for $relevanz
+     */ 
     public function setRelevanz($value)
     {
         $this->relevanz = $value;
@@ -154,18 +166,20 @@ class Link extends Object implements JsonSerializable
     private $prefix = null;
     
     /**
-     * (description)
-     */
+     * the $prefix getter
+     *
+     * @return the value of $prefix
+     */ 
     public function getPrefix()
     {
         return $this->prefix;
     }
     
     /**
-     * (description)
+     * the $prefix setter
      *
-     * @param $conf (description)
-     */
+     * @param string $value the new value for $prefix
+     */ 
     public function setPrefix($value)
     {
         $this->prefix = $value;
@@ -260,9 +274,9 @@ class Link extends Object implements JsonSerializable
     }
 
     /**
-     * (description)
+     * the json serialize function
      */
-    public function jsonSerialize() 
+    public function jsonSerialize()  
     {
         return array(
             'id' => $this->id,

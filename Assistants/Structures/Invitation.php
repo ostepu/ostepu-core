@@ -10,9 +10,21 @@ class Invitation extends Object implements JsonSerializable
      * type: User
      */
     private $user;
+    
+    /**
+     * the $user getter
+     *
+     * @return the value of $user
+     */ 
     public function getUser(){
         return $this->user;
     }
+    
+    /**
+     * the $user setter
+     *
+     * @param string $value the new value for $user
+     */ 
     public function setUser($value){
         $this->user = $value;
     }
@@ -23,9 +35,21 @@ class Invitation extends Object implements JsonSerializable
      * type: User 
      */
     private $leader;
+    
+    /**
+     * the $leader getter
+     *
+     * @return the value of $leader
+     */ 
     public function getLeader(){
         return $this->leader;
     }
+    
+    /**
+     * the $leader setter
+     *
+     * @param string $value the new value for $leader
+     */ 
     public function setLeader($value){
         $this->leader = $value;
     }
@@ -35,9 +59,21 @@ class Invitation extends Object implements JsonSerializable
      * type: string
      */
     private $sheet;
+    
+    /**
+     * the $sheet getter
+     *
+     * @return the value of $sheet
+     */ 
     public function getSheet(){
         return $this->sheet;
     }
+    
+    /**
+     * the $sheet setter
+     *
+     * @param string $value the new value for $sheet
+     */ 
     public function setSheet($value){
         $this->sheet = $value;
     }
@@ -131,9 +167,10 @@ class Invitation extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the json serialize function
      */
-    public function jsonSerialize() {
+    public function jsonSerialize()
+    {
         return array(
             'user' => $this->user,
             'leader' => $this->leader,
