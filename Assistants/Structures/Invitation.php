@@ -1,38 +1,40 @@
 <?php
 /**
-* 
-*/
+ * @file Invitation.php contains the Invitation class
+ */
+ 
+/**
+ * the invitation structure
+ *
+ * @author Till Uhlig, Florian Lücke
+ */
 class Invitation extends Object implements JsonSerializable
 {
     /**
-     * the user that was invited
-     * 
-     * type: User
+     * @var User $member the user that was invited
      */
-    private $user;
+    private $member;
     
     /**
-     * the $user getter
+     * the $member getter
      *
      * @return the value of $user
      */ 
-    public function getUser(){
-        return $this->user;
+    public function getMember(){
+        return $this->member;
     }
     
     /**
-     * the $user setter
+     * the $member setter
      *
-     * @param string $value the new value for $user
+     * @param string $value the new value for $member
      */ 
-    public function setUser($value){
-        $this->user = $value;
+    public function setMember($value){
+        $this->member = $value;
     }
 
     /**
-     * the user that created the group
-     * 
-     * type: User 
+     * @var User $leader the user that created the group
      */
     private $leader;
     
@@ -55,8 +57,7 @@ class Invitation extends Object implements JsonSerializable
     }
 
     /**
-     * 
-     * type: string
+     * @var string $sheet the exercise sheet id 
      */
     private $sheet;
     
@@ -83,7 +84,9 @@ class Invitation extends Object implements JsonSerializable
     
     
     /**
-     * (description)
+     * returns an mapping array to convert between database and structure
+     *
+     * @return the mapping array
      */
     public static function getDbConvert()
     {
@@ -95,14 +98,16 @@ class Invitation extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * converts an object to insert/update data
+     *
+     * @return a comma separated string e.g. "a=1,b=2"
      */
     public function getInsertData(){
         $values = "";
         
         if ($this->sheet != null) $this->addInsertData($values, 'ES_id', DBJson::mysql_real_escape_string($this->sheet));
-        if ($this->member != null) $this->addInsertData($values, 'U_id_member', DBJson::mysql_real_escape_string($this->member->getId()));
-        if ($this->leader != null) $this->addInsertData($values, 'U_id_leader', DBJson::mysql_real_escape_string($this->leader->getId()));
+        if ($this->leader != null) $this->addInsertData($values, 'U_id_member', DBJson::mysql_real_escape_string($this->leader->getId()));
+        if ($this->member != null) $this->addInsertData($values, 'U_id_leader', DBJson::mysql_real_escape_string($this->member->getId()));
         
         if ($values != ""){
             $values=substr($values,1);
@@ -111,7 +116,9 @@ class Invitation extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * returns a sting/string[] of the database primary key/keys
+     * 
+     * @return the primary key/keys
      */
     public static function getDbPrimaryKey()
     {
@@ -119,11 +126,11 @@ class Invitation extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the constructor
      * 
-     * @param $param (description)
+     * @param $data an assoc array with the object informations
      */
-    public function __construct($data=array()) 
+    public function __construct($data=array())
     {
         foreach ($data AS $key => $value) {
              if (isset($key)){
@@ -137,9 +144,11 @@ class Invitation extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * encodes an object to json
      * 
-     * @param $param (description)
+     * @param $data the object
+     *
+     * @return the json encoded object
      */
     public static function encodeInvitation($data)
     {
@@ -147,10 +156,13 @@ class Invitation extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * decodes $data to an object
      * 
-     * @param $param (description)
-     * @param $param (description)
+     * @param string $data json encoded data (decode=true) 
+     * or json decoded data (decode=false)
+     * @param bool $decode specifies whether the data must be decoded
+     *
+     * @return the object
      */
     public static function decodeInvitation($data, $decode=true)
     {

@@ -1,13 +1,17 @@
 <?php 
 /**
- * 
+ * @file Group.php contains the Group class
+ */
+ 
+/**
+ * the group structure
+ *
+ * @author Till Uhlig, Florian Lücke
  */
 class Group extends Object implements JsonSerializable
 {
     /**
-     * all members of the group of the current users
-     * 
-     * type: User[]
+     * @var User[] $members all members of the group of the current users
      */
     private $members = array();
     
@@ -30,9 +34,7 @@ class Group extends Object implements JsonSerializable
     }
 
     /**
-     * the id of the user that is the leader of the group
-     *
-     * type: User
+     * @var User $leader the id of the user that is the leader of the group
      */
     private $leader = null;
     
@@ -55,9 +57,7 @@ class Group extends Object implements JsonSerializable
     }
 
     /**
-     * the id of the sheet for which this group exists
-     *
-     * type: string
+     * @var string $sheetId the id of the sheet for which this group exists
      */
     private $sheetId = null;
     
@@ -81,11 +81,13 @@ class Group extends Object implements JsonSerializable
     
     
     
-    
+     
     /**
-     * (description)
-     */  
-    public static function getDBConvert(){
+     * returns an mapping array to convert between database and structure
+     *
+     * @return the mapping array
+     */
+    public static function getDbConvert(){
         return array(
            'U_member' => 'members',
            'U_leader' => 'leader',
@@ -94,7 +96,9 @@ class Group extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * converts an object to insert/update data
+     *
+     * @return a comma separated string e.g. "a=1,b=2"
      */
     public function getInsertData(){
         $values = "";
@@ -110,16 +114,20 @@ class Group extends Object implements JsonSerializable
     } 
     
     /**
-     * (description)
+     * returns a sting/string[] of the database primary key/keys
+     * 
+     * @return the primary key/keys
      */
-    public static function getDBPrimaryKey(){
+    public static function getDbPrimaryKey(){
         return array('U_id', 'ES_id');
     }
    
     /**
-     * (description)
+     * the constructor
+     * 
+     * @param $data an assoc array with the object informations
      */
-    public function __construct($data=array()) {
+    public function __construct($data=array()){
         foreach ($data AS $key => $value) {
              if (isset($key)){
                 if ($key == 'leader' || $key == 'members'){
@@ -132,14 +140,24 @@ class Group extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * encodes an object to json
+     * 
+     * @param $data the object
+     *
+     * @return the json encoded object
      */
     public static function encodeGroup($data){
         return json_encode($data);
     }
     
     /**
-     * (description)
+     * decodes $data to an object
+     * 
+     * @param string $data json encoded data (decode=true) 
+     * or json decoded data (decode=false)
+     * @param bool $decode specifies whether the data must be decoded
+     *
+     * @return the object
      */
     public static function decodeGroup($data){
         $data = json_decode($data);

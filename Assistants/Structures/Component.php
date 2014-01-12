@@ -1,11 +1,17 @@
 <?php
 /**
- * 
+ * @file Component.php contains the Component class
+ */
+ 
+/**
+ * the component structure
+ *
+ * @author Till Uhlig
  */
 class Component extends Object implements JsonSerializable
 {
     /**
-     * (description)
+     * @var string $id the db component identifier
      */
     private $id = null;
     
@@ -33,7 +39,7 @@ class Component extends Object implements JsonSerializable
     
     
     /**
-     * (description)
+     * @var string $name the component name 
      */
     private $name = null;
     
@@ -61,7 +67,7 @@ class Component extends Object implements JsonSerializable
     
     
     /**
-     * (description)
+     * @var string $address the component URL/address 
      */
     private $address = null;
     
@@ -89,7 +95,7 @@ class Component extends Object implements JsonSerializable
     
     
     /**
-     * (description)
+     * @var string $option component options 
      */ 
     private $option = null;
     
@@ -117,7 +123,7 @@ class Component extends Object implements JsonSerializable
     
     
     /**
-     * (description)
+     * @var string $prefix the prefix with which the component operates
      */
     private $prefix = null;
     
@@ -145,7 +151,7 @@ class Component extends Object implements JsonSerializable
     
     
     /**
-     * (description)
+     * @var Link[] $links the component connections to other components
      */
     private $links = array();
     
@@ -162,7 +168,7 @@ class Component extends Object implements JsonSerializable
     /**
      * the $links setter
      *
-     * @param string $value the new value for $links
+     * @param Link[] $value the new value for $links
      */ 
     public function setLinks($value)
     {
@@ -173,7 +179,9 @@ class Component extends Object implements JsonSerializable
     
     
     /**
-     * (description)
+     * returns an mapping array to convert between database and structure
+     *
+     * @return the mapping array
      */
     public static function getDbConvert()
     {
@@ -188,7 +196,9 @@ class Component extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * converts an object to insert/update data
+     *
+     * @return a comma separated string e.g. "a=1,b=2"
      */
     public function getInsertData(){
         $values = "";
@@ -203,9 +213,11 @@ class Component extends Object implements JsonSerializable
         }
         return $values;
     }
-    
+
     /**
-     * (description)
+     * returns a sting/string[] of the database primary key/keys
+     * 
+     * @return the primary key/keys
      */
     public static function getDbPrimaryKey()
     {
@@ -213,11 +225,11 @@ class Component extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the constructor
      * 
-     * @param $param (description)
+     * @param $data an assoc array with the object informations
      */
-    public function __construct($data=array()) 
+    public function __construct($data=array())
     {
         foreach ($data AS $key => $value) {
             if (isset($key)){
@@ -231,9 +243,11 @@ class Component extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * encodes an object to json
      * 
-     * @param $param (description)
+     * @param $data the object
+     *
+     * @return the json encoded object
      */
     public static function encodeComponent($data)
     {
@@ -241,12 +255,13 @@ class Component extends Object implements JsonSerializable
     }
 
     /**
-     * decodes the string
+     * decodes $data to an object
      * 
-     * @param string $data the jseon encoded object data
-     * @param bool $decode (description)
+     * @param string $data json encoded data (decode=true) 
+     * or json decoded data (decode=false)
+     * @param bool $decode specifies whether the data must be decoded
      *
-     * @return an object
+     * @return the object
      */
     public static function decodeComponent($data, $decode=true)
     {

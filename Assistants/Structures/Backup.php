@@ -1,13 +1,17 @@
 <?php
 /**
-* 
-*/
+ * @file Backup.php contains the Backup class
+ */
+ 
+/**
+ * the backup structure
+ *
+ * @author Till Uhlig, Florian Lücke
+ */
 class Backup extends Object implements JsonSerializable
 {   
     /**
-     * a unique identifier for a backup
-     *
-     * type: string
+     * @var string $id a unique identifier for a backup
      */
     private $id;
     
@@ -30,9 +34,7 @@ class Backup extends Object implements JsonSerializable
     }
 
     /**
-     * the date on which the backup was created
-     * 
-     * type: date
+     * @var date $date the date on which the backup was created
      */
     private $date;
     
@@ -48,16 +50,14 @@ class Backup extends Object implements JsonSerializable
     /**
      * the $date setter
      *
-     * @param string $value the new value for $date
+     * @param date $value the new value for $date
      */ 
     public function setDate($value){
         $this->date = $value;
     }
 
     /**
-     * a file where the backup is stored
-     *
-     * type: File
+     * @var file $file a file where the backup is stored
      */
     private $file;
     
@@ -73,26 +73,42 @@ class Backup extends Object implements JsonSerializable
     /**
      * the $file setter
      *
-     * @param string $value the new value for $file
+     * @param file $value the new value for $file
      */ 
     public function setFile($value){
         $this->file = $value;
     }
     
     
-    public static function getDBConvert(){
+    /**
+     * returns an mapping array to convert between database and structure
+     *
+     * @return the mapping array
+     */
+    public static function getDbConvert(){
         return array(
            'B_id' => 'id',
            'B_date' => 'date',
            'F_id_file' => 'file',
         );
     }
-    public static function getDBPrimaryKey(){
+    
+    /**
+     * returns a sting/string[] of the database primary key/keys
+     * 
+     * @return the primary key/keys
+     */
+    public static function getDbPrimaryKey(){
         return 'B_id';
     }
    
    
-    public function __construct($data=array()) {
+    /**
+     * the constructor
+     * 
+     * @param $data an assoc array with the object informations
+     */
+    public function __construct($data=array()){
         foreach ($data AS $key => $value) {
              if (isset($key)){
                 $this->{$key} = $value;
@@ -100,10 +116,26 @@ class Backup extends Object implements JsonSerializable
         }
     }
     
+    /**
+     * encodes an object to json
+     * 
+     * @param $data the object
+     *
+     * @return the json encoded object
+     */
     public static function encodeBackup($data){
         return json_encode($data);
     }
     
+    /**
+     * decodes $data to an object
+     * 
+     * @param string $data json encoded data (decode=true) 
+     * or json decoded data (decode=false)
+     * @param bool $decode specifies whether the data must be decoded
+     *
+     * @return the object
+     */
     public static function decodeBackup($data){
         $data = json_decode($data);
         if (is_array($data)){

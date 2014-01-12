@@ -1,13 +1,17 @@
 <?php 
 /**
- * Assigns certain exercises with to tutor.
+ * @file TutorAssignment.php contains the TutorAssignment class
+ */
+ 
+/**
+ * the tutor assignment structure
+ *
+ * @author Till Uhlig, Florian Lücke
  */
 class TutorAssignment extends Object implements JsonSerializable
 {
     /**
-     * tutor
-     *
-     * type: User
+     * @var User $turor the tutor
      */
     private $tutor;
     
@@ -23,16 +27,14 @@ class TutorAssignment extends Object implements JsonSerializable
     /**
      * the $tutor setter
      *
-     * @param string $value the new value for $tutor
+     * @param User $value the new value for $tutor
      */ 
     public function setTutor($value){
         $this->tutor = $value;
     }
 
     /**
-     * ids of the submissions the tutor was assigned to correct.
-     *
-     * type: string[]
+     * @var string[] $id ids of the submissions the tutor was assigned to correct.
      */
     private $submissionIds = array();
     
@@ -48,7 +50,7 @@ class TutorAssignment extends Object implements JsonSerializable
     /**
      * the $submissionIds setter
      *
-     * @param string $value the new value for $submissionIds
+     * @param string[] $value the new value for $submissionIds
      */ 
     public function setSubmissionIds($value){
         $submissionIds = $value;

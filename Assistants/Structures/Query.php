@@ -1,15 +1,19 @@
 <?php 
 /**
- * 
+ * @file Query.php contains the Query class
+ */
+ 
+/**
+ * this class is for querying SQL statemets
+ *
+ * @author Till Uhlig
  */
 class Query extends Object implements JsonSerializable
 {
 
     /**
-     * (description)
-     *
-     * type: String
-     */
+     * @var string $request the sql statement
+     */ 
     private $request = null;
     
     /**
@@ -31,11 +35,15 @@ class Query extends Object implements JsonSerializable
     {
         $this->request = $value;
     }
-    
+
     /**
-     * (description)
-     *
-     * type: String[]
+     * @var String[] $response a response
+     * - ['content'] = the content/table you received from database
+     * - ['affectedRows'] = the affected rows
+     * - ['insertId'] = on post/insert with auto-increment, the id of the inserted entry
+     * - ['errno'] = the error number
+     * - ['error'] = the error message
+     * - ['numRows'] = on get, the received number of rows
      */
     private $response = array();
     
@@ -52,7 +60,7 @@ class Query extends Object implements JsonSerializable
     /**
      * the $response setter
      *
-     * @param string $value the new value for $response
+     * @param string[] $value the new value for $response
      */ 
     public function setResponse($value)
     {
@@ -60,10 +68,8 @@ class Query extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
-     *
-     * type: int
-     */
+     * @var int $errno a error number
+     */ 
     private $errno = null;
     
     /**
@@ -79,7 +85,7 @@ class Query extends Object implements JsonSerializable
     /**
      * the $errno setter
      *
-     * @param string $value the new value for $errno
+     * @param int $value the new value for $errno
      */ 
     public function setErrno($value)
     {
@@ -87,10 +93,8 @@ class Query extends Object implements JsonSerializable
     }  
     
     /**
-     * (description)
-     *
-     * type: int
-     */
+     * @var int $insertId the insert id
+     */ 
     private $insertId = null;
     
      /**
@@ -106,7 +110,7 @@ class Query extends Object implements JsonSerializable
     /**
      * the $insertId setter
      *
-     * @param string $value the new value for $insertId
+     * @param int $value the new value for $insertId
      */ 
     public function setInsertId($value)
     {
@@ -114,10 +118,8 @@ class Query extends Object implements JsonSerializable
     } 
     
     /**
-     * (description)
-     *
-     * type: int
-     */
+     * @var int $affectedRows the affected rows
+     */ 
     private $affectedRows = null;
     
     /**
@@ -133,7 +135,7 @@ class Query extends Object implements JsonSerializable
     /**
      * the $affectedRows setter
      *
-     * @param string $value the new value for $affectedRows
+     * @param int $value the new value for $affectedRows
      */ 
     public function setAffectedRows($value)
     {
@@ -141,10 +143,8 @@ class Query extends Object implements JsonSerializable
     } 
     
     /**
-     * (description)
-     *
-     * type: int
-     */
+     * @var int $numRows the number of received rows
+     */ 
     private $numRows = null;
     
     /**
@@ -160,7 +160,7 @@ class Query extends Object implements JsonSerializable
     /**
      * the $numRows setter
      *
-     * @param string $value the new value for $numRows
+     * @param int $value the new value for $numRows
      */ 
     public function setNumRows($value)
     {
@@ -169,9 +169,9 @@ class Query extends Object implements JsonSerializable
     
     
     /**
-     * (description)
+     * the constructor
      * 
-     * @param $param (description)
+     * @param $data an assoc array with the object informations
      */
     public function __construct($data=array()) 
     {
@@ -183,19 +183,24 @@ class Query extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * encodes an object to json
      * 
-     * @param $param (description)
+     * @param $data the object
+     *
+     * @return the json encoded object
      */
     public static function encodeQuery($data){
         return json_encode($data);
     }
     
     /**
-     * (description)
+     * decodes $data to an object
      * 
-     * @param $param (description)
-     * @param $param (description)
+     * @param string $data json encoded data (decode=true) 
+     * or json decoded data (decode=false)
+     * @param bool $decode specifies whether the data must be decoded
+     *
+     * @return the object
      */
     public static function decodeQuery($data, $decode=true)
     {
@@ -225,6 +230,8 @@ class Query extends Object implements JsonSerializable
     
     /**
      * the json serialize function
+     *
+     * @return an array to serialize the object
      */
     public function jsonSerialize()  
     {       

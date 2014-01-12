@@ -1,13 +1,17 @@
 <?php 
 /**
-* 
-*/
+ * @file File.php contains the File class
+ */
+ 
+/**
+ * the file structure
+ *
+ * @author Till Uhlig, Florian Lücke
+ */
 class File extends Object implements JsonSerializable
 {
     /**
-     * An id that identifies the file.
-     *
-     * type: string
+     * @var string $fileId An id that identifies the file.
      */
     private $fileId=null;
     
@@ -35,9 +39,7 @@ class File extends Object implements JsonSerializable
     
     
     /**
-     * The name that should be displayed for the file.
-     *
-     * type: string
+     * @var string $displayName The name that should be displayed for the file.
      */
     private $displayName=null;
     
@@ -65,9 +67,7 @@ class File extends Object implements JsonSerializable
     
     
     /**
-     * The URL of the file
-     *
-     * type: string
+     * @var string $address The URL of the file
      */
     private $address=null;
     
@@ -95,10 +95,8 @@ class File extends Object implements JsonSerializable
     
     
     /**
-     * When the file was created, this is necessary since the file might
+     * @var date $timeStamp When the file was created, this is necessary since the file might
      * be on another server as the server logic and/or interface.
-     *
-     * type: date/integer
      */
     private $timeStamp=null;
     
@@ -115,7 +113,7 @@ class File extends Object implements JsonSerializable
     /**
      * the $timeStamp setter
      *
-     * @param string $value the new value for $timeStamp
+     * @param date $value the new value for $timeStamp
      */ 
     public function seTimeStamp($value)
     {
@@ -126,9 +124,7 @@ class File extends Object implements JsonSerializable
     
     
     /**
-     * the size of the file.
-     *
-     * type: decimal
+     * @var int $fileSize the size of the file.
      */
     private $fileSize=null;
     
@@ -145,7 +141,7 @@ class File extends Object implements JsonSerializable
     /**
      * the $fileSize setter
      *
-     * @param string $value the new value for $fileSize
+     * @param int $value the new value for $fileSize
      */ 
     public function setFileSize($value)
     {
@@ -156,10 +152,8 @@ class File extends Object implements JsonSerializable
     
     
     /**
-     * hash of the file, ensures that the user has up-/downloaded the right
+     * @var string $hash hash of the file, ensures that the user has up-/downloaded the right
      * file.
-     *
-     * type: string
      */
     private $hash=null;
     
@@ -187,9 +181,7 @@ class File extends Object implements JsonSerializable
     
     
      /**
-     * content
-     *
-     * type: string
+     * @var string $body content (base64 encoded)
      */
     private $body=null;
     
@@ -217,7 +209,9 @@ class File extends Object implements JsonSerializable
     
     
     /**
-     * (description)
+     * returns an mapping array to convert between database and structure
+     *
+     * @return the mapping array
      */
     public static function getDbConvert()
     {
@@ -233,7 +227,9 @@ class File extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * converts an object to insert/update data
+     *
+     * @return a comma separated string e.g. "a=1,b=2"
      */
     public function getInsertData(){
         $values = "";
@@ -252,7 +248,9 @@ class File extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * returns a sting/string[] of the database primary key/keys
+     * 
+     * @return the primary key/keys
      */
     public static function getDbPrimaryKey()
     {
@@ -260,9 +258,9 @@ class File extends Object implements JsonSerializable
     } 
            
     /**
-     * (description)
+     * the constructor
      * 
-     * @param $param (description)
+     * @param $data an assoc array with the object informations
      */
     public function __construct($data=array())
     {
@@ -274,19 +272,25 @@ class File extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * encodes an object to json
      * 
-     * @param $param (description)
+     * @param $data the object
+     *
+     * @return the json encoded object
      */
     public static function encodeFile($data)
     {
         return json_encode($data);
     }
-    
+
     /**
-     * (description)
+     * decodes $data to an object
      * 
-     * @param $param (description)
+     * @param string $data json encoded data (decode=true) 
+     * or json decoded data (decode=false)
+     * @param bool $decode specifies whether the data must be decoded
+     *
+     * @return the object
      */
     public static function decodeFile($data, $decode=true)
     {   

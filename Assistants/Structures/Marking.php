@@ -1,8 +1,17 @@
 <?php
+/**
+ * @file Marking.php contains the Marking class
+ */
+ 
+/**
+ * the marking structure
+ *
+ * @author Till Uhlig, Florian Lücke
+ */
 class Marking extends Object implements JsonSerializable
 {
     /**
-     * The identifier of this marking.
+     * @var string $id The identifier of this marking.
      *
      * type: string
      */
@@ -27,9 +36,7 @@ class Marking extends Object implements JsonSerializable
     }
     
     /**
-     * The identifier of the submission this marking belongs to.
-     *
-     * type: Submission
+     * @var Submission $submission The submission this marking belongs to.
      */
     private $submission;
     
@@ -45,16 +52,14 @@ class Marking extends Object implements JsonSerializable
     /**
      * the $submission setter
      *
-     * @param string $value the new value for $submission
+     * @param Submission $value the new value for $submission
      */ 
     public function setSubmission($value){
         $submission = $value;
     }
     
     /**
-     * The id of the tutor that corrected the submission.
-     * 
-     * type: string
+     * @var string $tutorId The id of the tutor that corrected the submission.
      */
     private $tutorId;
     
@@ -77,9 +82,7 @@ class Marking extends Object implements JsonSerializable
     }
     
     /**
-     * a comment a tutor has made concerning a students submission.
-     *
-     * type: string
+     * @var string $tutorComment a comment a tutor has made concerning a students submission.
      */
     private $tutorComment;
     
@@ -102,9 +105,7 @@ class Marking extends Object implements JsonSerializable
     }
     
     /**
-     * The file that contains the marked submission for the user.
-     *
-     * type: File
+     * @var file $file  The file that contains the marked submission for the user.
      */
     private $file;
     
@@ -120,16 +121,16 @@ class Marking extends Object implements JsonSerializable
     /**
      * the $file setter
      *
-     * @param string $value the new value for $file
+     * @param file $value the new value for $file
      */ 
     public function setFile($value){
         $this->file = $value;
     }
     
     /**
-     * The amount of points a student has reached with his submission.
+     * @var int $points The amount of points a student has reached with his submission.
      *
-     * type: decimal
+     * type: int
      */
     private $points;
     
@@ -145,16 +146,14 @@ class Marking extends Object implements JsonSerializable
     /**
      * the $points setter
      *
-     * @param string $value the new value for $points
+     * @param int $value the new value for $points
      */ 
     public function setPoints($value){
         $this->points = $value;
     }
 
     /**
-     * if the submission stands out from the other submissions.
-     *
-     * type: bool
+     * @var bool $outstanding if the submission stands out from the other submissions.
      */
     private $outstanding;
     
@@ -170,16 +169,14 @@ class Marking extends Object implements JsonSerializable
     /**
      * the $outstanding setter
      *
-     * @param string $value the new value for $outstanding
+     * @param bool $value the new value for $outstanding
      */ 
     public function setOutstanding($value){
         $this->outstanding = $value;
     }
     
     /**
-     * status
-     *
-     * type: string
+     * @var string $prefix the marking status
      */
     private $status;
     
@@ -202,9 +199,7 @@ class Marking extends Object implements JsonSerializable
     }
     
     /**
-     * 
-     *
-     * type: date
+     * @var date $date the date on which the marking was uploaded
      */
     private $date;
     
@@ -220,7 +215,7 @@ class Marking extends Object implements JsonSerializable
     /**
      * the $date setter
      *
-     * @param string $value the new value for $date
+     * @param date $value the new value for $date
      */ 
     public function setDate($value){
         $this->date = $value;
@@ -228,11 +223,13 @@ class Marking extends Object implements JsonSerializable
     
     
     
-    
+ 
     /**
-     * (description)
-     */  
-    public static function getDBConvert(){
+     * returns an mapping array to convert between database and structure
+     *
+     * @return the mapping array
+     */
+    public static function getDbConvert(){
         return array(
            'M_id' => 'id',
            'U_id_tutor' => 'tutorId',
@@ -245,9 +242,11 @@ class Marking extends Object implements JsonSerializable
            'M_date' => 'date'
         );
     }
-    
+
     /**
-     * (description)
+     * converts an object to insert/update data
+     *
+     * @return a comma separated string e.g. "a=1,b=2"
      */
     public function getInsertData(){
         $values = "";
@@ -269,14 +268,18 @@ class Marking extends Object implements JsonSerializable
     } 
     
     /**
-     * (description)
+     * returns a sting/string[] of the database primary key/keys
+     * 
+     * @return the primary key/keys
      */
-    public static function getDBPrimaryKey(){
+    public static function getDbPrimaryKey(){
         return 'M_id';
     }
     
     /**
-     * (description)
+     * defines the marking status
+     *
+     * @return returns an mapping array
      */
     public static function getStatusDefinition(){
         return array(
@@ -286,9 +289,11 @@ class Marking extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the constructor
+     * 
+     * @param $data an assoc array with the object informations
      */
-    public function __construct($data=array()) {
+    public function __construct($data=array()){
         foreach ($data AS $key => $value) {
              if (isset($key)){
                 if ($key == 'file'){
@@ -305,14 +310,24 @@ class Marking extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * encodes an object to json
+     * 
+     * @param $data the object
+     *
+     * @return the json encoded object
      */
     public static function encodeMarking($data){
         return json_encode($data);
     }
     
     /**
-     * (description)
+     * decodes $data to an object
+     * 
+     * @param string $data json encoded data (decode=true) 
+     * or json decoded data (decode=false)
+     * @param bool $decode specifies whether the data must be decoded
+     *
+     * @return the object
      */
     public static function decodeMarking($data){
         $data = json_decode($data);

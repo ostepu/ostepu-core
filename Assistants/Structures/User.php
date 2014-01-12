@@ -1,14 +1,18 @@
 <?php 
 /**
- * 
+ * @file User.php contains the User class
+ */
+ 
+/**
+ * the user structure
+ *
+ * @author Till Uhlig, Florian Lücke
  */
 class User extends Object implements JsonSerializable
 {
 
     /**
-     * a id that identifies the user
-     *
-     * type: int
+     * @var string $id a id that identifies the user
      */
     private $id;
     
@@ -23,10 +27,10 @@ class User extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the $id setter
      *
-     * @param $conf (description)
-     */
+     * @param string $value the new value for $id
+     */ 
     public function setId($value)
     {
         $this->id = $value;
@@ -36,9 +40,7 @@ class User extends Object implements JsonSerializable
     
     
     /**
-     * a string that identifies the user
-     *
-     * type: string
+     * @var string $userName a string that identifies the user
      */
     private $userName; 
     
@@ -53,10 +55,10 @@ class User extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the $userName setter
      *
-     * @param $conf (description)
-     */
+     * @param string $value the new value for $userName
+     */ 
     public function setUserName($value)
     {
         $this->userName = $value;
@@ -66,9 +68,7 @@ class User extends Object implements JsonSerializable
     
     
     /**
-     * The user's email address.
-     *
-     * type: string
+     * @var string $email The user's email address.
      */
     private $email;
     
@@ -83,10 +83,10 @@ class User extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the $email setter
      *
-     * @param $conf (description)
-     */
+     * @param string $value the new value for $email
+     */ 
     public function setEmail($value)
     {
         $this->email = $value;
@@ -96,9 +96,7 @@ class User extends Object implements JsonSerializable
     
     
     /**
-     * The user's first name(s)
-     *
-     * type: string
+     * @var string $firstName The user's first name(s)
      */
     private $firstName;
     
@@ -113,10 +111,10 @@ class User extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the $firstName setter
      *
-     * @param $conf (description)
-     */
+     * @param string $value the new value for $firstName
+     */ 
     public function setFirstName($value)
     {
         $this->firstName = $value;
@@ -127,9 +125,7 @@ class User extends Object implements JsonSerializable
     
     
     /**
-     * The user's last name(s)
-     *
-     * type: string
+     * @var string $lastName The user's last name(s)
      */
     private $lastName;
     
@@ -144,10 +140,10 @@ class User extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the $lastName setter
      *
-     * @param $conf (description)
-     */
+     * @param string $value the new value for $lastName
+     */ 
     public function setLastName($value)
     {
         $this->lastName = $value;
@@ -158,9 +154,7 @@ class User extends Object implements JsonSerializable
     
     
     /**
-     * possibly a title the user holds
-     *
-     * type: string
+     * @var string $title possibly a title the user holds
      */
     private $title; 
     
@@ -175,10 +169,10 @@ class User extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the $title setter
      *
-     * @param $conf (description)
-     */
+     * @param string $value the new value for $title
+     */ 
     public function setTitle($value)
     {
         $this->title = $value;
@@ -189,10 +183,8 @@ class User extends Object implements JsonSerializable
     
     
     /**
-     * an array of CourseStatus objects that represents the courses
+     * @var CourseStatus[] $courses an array of CourseStatus objects that represents the courses
      * the user is enlisted in and which role she/he has in that course
-     *
-     * type: CourseStatus[]
      */
     private $courses = array();
     
@@ -207,10 +199,10 @@ class User extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the $courses setter
      *
-     * @param $param (description)
-     */
+     * @param CourseStatus[] $value the new value for $courses
+     */ 
     public function setCourses($value)
     {
         $this->courses = $value;
@@ -220,7 +212,7 @@ class User extends Object implements JsonSerializable
     
     
     /**
-     * (description)
+     * @var short $flag the account status (removed, active, locked) 
      *
      * type: short
      */
@@ -237,10 +229,10 @@ class User extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the $flag setter
      *
-     * @param $param (description)
-     */
+     * @param short $value the new value for $flag
+     */ 
     public function setFlag($value)
     {
         $this->flag = $value;
@@ -250,9 +242,7 @@ class User extends Object implements JsonSerializable
     
     
     /**
-     * (description)
-     *
-     * type: string
+     * @var string $password the sha256 hashed password 
      */
     private $password = null;
     
@@ -267,19 +257,17 @@ class User extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the $password setter
      *
-     * @param $param (description)
-     */
+     * @param string $value the new value for $password
+     */ 
     public function setPassword($value)
     {
         $this->password = $value;
     }
     
     /**
-     * (description)
-     *
-     * type: string
+     * @var string $salt is used for logins/password hashing 
      */
     private $salt = null;
     
@@ -294,19 +282,17 @@ class User extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the $salt setter
      *
-     * @param $param (description)
-     */
+     * @param string $value the new value for $salt
+     */ 
     public function setSalt($value)
     {
         $this->salt = $value;
     }
     
     /**
-     * (description)
-     *
-     * type: int
+     * @var int $failedLogins a counter, to check how much failed logins detected
      */
     private $failedLogins = null;
     
@@ -321,10 +307,10 @@ class User extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the $failedLogins setter
      *
-     * @param $param (description)
-     */
+     * @param int $value the new value for $failedLogins
+     */ 
     public function setFailedLogins($value)
     {
         $this->failedLogins = $value;
@@ -332,9 +318,11 @@ class User extends Object implements JsonSerializable
     
     
     
-    
+
     /**
-     * (description)
+     * returns an mapping array to convert between database and structure
+     *
+     * @return the mapping array
      */
     public static function getDbConvert()
     {
@@ -354,7 +342,9 @@ class User extends Object implements JsonSerializable
     }
        
     /**
-     * (description)
+     * converts an object to insert/update data
+     *
+     * @return a comma separated string e.g. "a=1,b=2"
      */
     public function getInsertData(){
         $values = "";
@@ -378,7 +368,9 @@ class User extends Object implements JsonSerializable
     } 
     
     /**
-     * (description)
+     * converts a course status to insert/update data
+     *
+     * @return a comma separated string e.g. "a=1,b=2"
      */
     public function getCourseStatusInsertData(){
         $values = "";
@@ -394,7 +386,9 @@ class User extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * returns a sting/string[] of the database primary key/keys
+     * 
+     * @return the primary key/keys
      */
     public static function getDbPrimaryKey()
     {
@@ -402,22 +396,24 @@ class User extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * defines the flag attribut
+     *
+     * @return an mapping array
      */
     public static function getFlagDefinition(){
         return array(
-            '0' => 'inactive', // <- removes all private user data
-            '1' => 'active',
+            '0' => 'inactive', // <- removes all private user data, account removed
+            '1' => 'active', // <- the account is active
             '2' => 'locked' // <- login locked
         );
     }
     
     /**
-     * (description)
+     * the constructor
      * 
-     * @param $param (description)
+     * @param $data an assoc array with the object informations
      */
-    public function __construct($data=array()) 
+    public function __construct($data=array())
     {
         foreach ($data AS $key => $value) {
             if (isset($key)){
@@ -431,19 +427,24 @@ class User extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * encodes an object to json
      * 
-     * @param $param (description)
+     * @param $data the object
+     *
+     * @return the json encoded object
      */
     public static function encodeUser($data){
         return json_encode($data);
     }
     
     /**
-     * (description)
+     * decodes $data to an object
      * 
-     * @param $param (description)
-     * @param $param (description)
+     * @param string $data json encoded data (decode=true) 
+     * or json decoded data (decode=false)
+     * @param bool $decode specifies whether the data must be decoded
+     *
+     * @return the object
      */
     public static function decodeUser($data, $decode=true)
     {

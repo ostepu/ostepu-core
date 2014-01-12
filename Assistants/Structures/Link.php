@@ -1,11 +1,17 @@
 <?php 
 /**
- * 
+ * @file Link.php contains the Link class
+ */
+ 
+/**
+ * the link structure
+ *
+ * @author Till Uhlig
  */
 class Link extends Object implements JsonSerializable
 {
     /**
-     * (description)
+     * @var string $id the db id of the link
      */
     private $id = null;
     
@@ -30,7 +36,7 @@ class Link extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * @var string $target the target component id 
      */
     private $target = null;
     
@@ -55,7 +61,7 @@ class Link extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * @var string $id the link owner component id
      */
     private $owner = null;
     
@@ -79,6 +85,9 @@ class Link extends Object implements JsonSerializable
         $this->owner = $value;
     }
     
+    /**
+     * @var string $name the link name
+     */ 
     private $name = null;
     
     /**
@@ -105,7 +114,7 @@ class Link extends Object implements JsonSerializable
     
     
     /**
-     * (description)
+     * @var string $address the URL/address of the target component 
      */
     private $address = null;
     
@@ -133,7 +142,7 @@ class Link extends Object implements JsonSerializable
     
     
     /**
-     * (description)
+     * @var string $relevanz an optional attribute for components who want to differentiate their links
      */
     private $relevanz = null;
     
@@ -161,7 +170,7 @@ class Link extends Object implements JsonSerializable
     
     
     /**
-     * (description)
+     *  @var string $prefix the prefix with which the component operates
      */
     private $prefix = null;
     
@@ -189,10 +198,11 @@ class Link extends Object implements JsonSerializable
     
     
     /**
-     * (description)
-     * @param $param (description)
+     * the constructor
+     * 
+     * @param $data an assoc array with the object informations
      */
-    public function __construct($data=array()) 
+    public function __construct($data=array())
     {
         foreach ($data AS $key => $value) {
             if (isset($key)){
@@ -202,7 +212,9 @@ class Link extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * returns an mapping array to convert between database and structure
+     *
+     * @return the mapping array
      */
     public static function getDbConvert()
     {
@@ -218,7 +230,9 @@ class Link extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * converts an object to insert/update data
+     *
+     * @return a comma separated string e.g. "a=1,b=2"
      */
     public function getInsertData(){
         $values = "";
@@ -234,9 +248,11 @@ class Link extends Object implements JsonSerializable
         }
         return $values;
     }
-    
+
     /**
-     * (description)
+     * returns a sting/string[] of the database primary key/keys
+     * 
+     * @return the primary key/keys
      */
     public static function getDbPrimaryKey()
     {
@@ -244,9 +260,11 @@ class Link extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * encodes an object to json
      * 
-     * @param $param (description)
+     * @param $data the object
+     *
+     * @return the json encoded object
      */
     public static function encodeLink($data)
     {
@@ -254,10 +272,13 @@ class Link extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * decodes $data to an object
      * 
-     * @param $param (description)
-     * @param $param (description)
+     * @param string $data json encoded data (decode=true) 
+     * or json decoded data (decode=false)
+     * @param bool $decode specifies whether the data must be decoded
+     *
+     * @return the object
      */
     public static function decodeLink($data, $decode=true)
     {

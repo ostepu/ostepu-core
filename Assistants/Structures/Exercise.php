@@ -1,13 +1,17 @@
 <?php
 /**
- * Contains all relevant Data for an exercise.
+ * @file Exercise.php contains the Exercise class
+ */
+ 
+/**
+ * the exercise structure
+ *
+ * @author Till Uhlig, Florian Lücke
  */
 class Exercise extends Object implements JsonSerializable
 {
     /**
-     * a string that identifies the exercise.
-     *
-     * type: string
+     * @var string $id a string that identifies the exercise.
      */
     private $id;
     
@@ -30,9 +34,7 @@ class Exercise extends Object implements JsonSerializable
     }
 
     /**
-     * The id of the course this exercise belongs to.
-     *
-     * type: string
+     * @var string $courseId The id of the course this exercise belongs to.
      */
     private $courseId;
     
@@ -55,9 +57,7 @@ class Exercise extends Object implements JsonSerializable
     }
 
     /**
-     * The id of the sheet this exercise is on.
-     *
-     * type: string
+     * @var string $sheetId The id of the sheet this exercise is on.
      */
     private $sheetId;
     
@@ -80,9 +80,7 @@ class Exercise extends Object implements JsonSerializable
     }
 
     /**
-     * The maximum amount of points a student can reach in this exercise.
-     *
-     * type: decimal
+     * @var int $maxPoints The maximum amount of points a student can reach in this exercise.
      */
     private $maxPoints;
     
@@ -98,16 +96,14 @@ class Exercise extends Object implements JsonSerializable
     /**
      * the $maxPoints setter
      *
-     * @param string $value the new value for $maxPoints
+     * @param int $value the new value for $maxPoints
      */
     public function setMaxPoints($value){
         $this->maxPoints = $value;
     }
 
     /**
-     * The type of points this exercise yields.
-     *
-     * type: string
+     * @var string $type The type of points this exercise yields.
      */
     private $type;
     
@@ -130,9 +126,7 @@ class Exercise extends Object implements JsonSerializable
     }
     
     /**
-     * The type of points this exercise yields.
-     *
-     * type: int
+     * @var int $link The type of points this exercise yields.
      */
     private $link;
     
@@ -148,16 +142,14 @@ class Exercise extends Object implements JsonSerializable
     /**
      * the $link setter
      *
-     * @param string $value the new value for $link
+     * @param int $value the new value for $link
      */
     public function setLink($value){
         $this->link = $value;
     }
 
     /**
-     * the submissions (?) for this exercise
-     *
-     * type: Submission[]
+     * @var Submission[] $submissiona the submissions for this exercise
      */
     private $submissions;
     
@@ -173,16 +165,14 @@ class Exercise extends Object implements JsonSerializable
     /**
      * the $submissions setter
      *
-     * @param string $value the new value for $submissions
+     * @param Submission[] $value the new value for $submissions
      */
     public function setSubmissions($value){
         $submissions = $value;
     }
     
     /**
-     * a set of attachments that belong to this sheet
-     *
-     * type: File[]
+     * @var File[] $attachements a set of attachments that belong to this sheet
      */
     private $attachments = array();
     
@@ -198,16 +188,14 @@ class Exercise extends Object implements JsonSerializable
     /**
      * the $attachments setter
      *
-     * @param string $value the new value for $attachments
+     * @param File[] $value the new value for $attachments
      */
     public function setAttachments($value){
         $this->attachments = $value;
     }
     
     /**
-     * (description)
-     *
-     * type: Bool
+     * @var bool $bonus bonus=true means bonus points
      */
     private $bonus = null;
     
@@ -223,14 +211,16 @@ class Exercise extends Object implements JsonSerializable
     /**
      * the $bonus setter
      *
-     * @param string $value the new value for $bonus
+     * @param Bool $value the new value for $bonus
      */
     public function setBonus($value){
         $this->bonus = $value;
     }
     
     /**
-     * (description)
+     * returns an mapping array to convert between database and structure
+     *
+     * @return the mapping array
      */
     public static function getDbConvert()
     {
@@ -247,8 +237,10 @@ class Exercise extends Object implements JsonSerializable
         );
     }
     
-    /**
-     * (description)
+     /**
+     * converts an object to insert/update data
+     *
+     * @return a comma separated string e.g. "a=1,b=2"
      */
     public function getInsertData(){
         $values = "";
@@ -267,16 +259,19 @@ class Exercise extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * returns a sting/string[] of the database primary key/keys
+     * 
+     * @return the primary key/keys
      */
     public static function getDbPrimaryKey()
     {
         return 'E_id';
     }
-/**
-     * (description)
+    
+    /**
+     * the constructor
      * 
-     * @param $param (description)
+     * @param $data an assoc array with the object informations
      */
     public function __construct($data=array()) 
     {
@@ -293,9 +288,11 @@ class Exercise extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * encodes an object to json
      * 
-     * @param $param (description)
+     * @param $data the object
+     *
+     * @return the json encoded object
      */
     public static function encodeExercise($data)
     {
@@ -303,10 +300,13 @@ class Exercise extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * decodes $data to an object
      * 
-     * @param $param (description)
-     * @param $param (description)
+     * @param string $data json encoded data (decode=true) 
+     * or json decoded data (decode=false)
+     * @param bool $decode specifies whether the data must be decoded
+     *
+     * @return the object
      */
     public static function decodeExercise($data, $decode=true)
     {
@@ -324,6 +324,8 @@ class Exercise extends Object implements JsonSerializable
     
     /**
      * the json serialize function
+     *
+     * @return an array to serialize the object
      */
     public function jsonSerialize()
     {
