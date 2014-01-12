@@ -7,7 +7,6 @@
  * @author Florian Lücke
  */
 
-include_once 'include/Header/Header.php';
 include_once 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
 include_once 'include/Helpers.php';
@@ -35,13 +34,13 @@ $course = http_get($databaseURI);
 $course = json_decode($course, true)[0];
 
 // construct a new header
-$h = new Header($course['name'],
-                "",
-                $user['firstName'] . ' ' . $user['lastName'],
-                $user['userName']);
-
-$h->setBackURL("index.php?uid={$uid}");
-$h->setPoints(75);
+$h = Template::WithTemplateFile('include/Header/Header.template.html');
+$h->bind($user);
+$h->bind($course);
+$h->bind(array("backTitle" => "Veranstaltung wechseln",
+               "backURL" => "index.php?uid={$uid}",
+               "navigationElement" => $menu,
+               "notificationElements" => $notifications));
 
 // load all exercise sheets for the current course
 $databaseURL = "http://141.48.9.92/uebungsplattform/DB/DBExerciseSheet/exercisesheet/course/{$cid}/exercise";
