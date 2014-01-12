@@ -1,8 +1,9 @@
 <?php
-include 'include/Header/Header.php';
 include 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
 include_once 'include/Helpers.php';
+
+$notifications = array();
 
 if (isset($_GET['uid'])) {
     $uid = $_GET['uid'];
@@ -23,14 +24,16 @@ $databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/user/user/{$uid
 $user = http_get($databaseURI);
 $user = json_decode($user, true);
 
-// construct a new Header
-$h = new Header("Übungsplattform",
-                "",
-                $user['firstName'] . ' ' . $user['lastName'],
-                $user['userName']);
+if (is_null($user)) {
+    $user = array();
+}
 
-$h->setBackURL("index.php?uid={$uid}")
-  ->setBackTitle("zur Veranstaltung");
+// construct a new header
+$h = Template::WithTemplateFile('include/Header/Header.template.html');
+$h->bind($user);
+$h->bind(array("backTitle" => "Veranstaltung wechseln",
+               "backURL" => "index.php?uid={$uid}",
+               "notificationElements" => $notifications));
 
 $pageData = array('uid' => $user['id'],
                   'courses' => $user['courses'],
