@@ -1,18 +1,25 @@
 <?php
 /**
-* @file DBJson.php contains the DbJson class
+* @file DBJson.php contains the DBJson class
 */ 
 
 
 /**
- * the DBJson class is written for several tasks
+ * the DBJson class is written for several tasks, not only json tasks
  *
  * @author Till Uhlig
  */
 class DBJson
 {
-
-    function mysql_real_escape_string($inp) {
+    /**
+     * masks control characters (like the mysql mysql_real_escape_string())
+     *
+     * @param string $inp the text to be masked
+     *
+     * @return the masked text
+     */
+    function mysql_real_escape_string($inp)
+    {
         if(is_array($inp))
             return array_map(__METHOD__, $inp);
 
@@ -27,9 +34,10 @@ class DBJson
      * The function checks whether an input list of arguments, has the correct data type
      * If not, the slim instance terminates with a 412 error code
      *
-     * @param $app a running slim instance
+     * @param Slim $app a running slim instance
      */
-    public static function checkInput(){
+    public static function checkInput()
+    {
         $args = func_get_args();
         
         // the first argument ist the slim instance, remove from the test list
@@ -52,7 +60,7 @@ class DBJson
     /**
      * the function reads the passed mysql object and converts direktly into json
      *
-     * @param $object a mysql answer
+     * @param mysql $object a mysql answer
      *
      * @return an array of json (string[]) 
      */
@@ -72,7 +80,7 @@ class DBJson
     /**
      * the function reads the passed mysql object content
      *
-     * @param $data a mysql answer
+     * @param mysql $data a mysql answer
      *
      * @return an array, which represents the received columns (string[][])
      */
@@ -89,7 +97,7 @@ class DBJson
     /**
      * extract an array of attributes from a data array, using a list of object attributes
      *
-     * @param $data an array, which represents the data, received sql data
+     * @param string[][] $data an array, which represents the data, received sql data
      * @param $id the primary key/keys (string/string[])
      * @param $attributes the object attributes (string[])
      * @param $extension optional, a const postfix for the column names (string)
@@ -122,10 +130,10 @@ class DBJson
     /**
      * extract an array of attributes from a data array, using a list of object attributes
      *
-     * @param $data (description)
-     * @param $id (description)
-     * @param $attributes (description)
-     * @param $extension (description)
+     * @param string[][] $data an array, which represents the data, received sql data
+     * @param $id the primary key/keys (string/string[])
+     * @param $attributes the object attributes (string[])
+     * @param $extension optional, a const postfix for the column names (string)
      *
      * @return an array of arrays
      */
@@ -148,11 +156,12 @@ class DBJson
     /**
      * generates insert data from input
      *
-     * @param $data (description)
-     * @param $attributes (description)
-     * @param $seperator (description)
+     * @param string[][] $data an array, which represents the data, received sql data
+     * @param string[] $attributes the object attributes (string[])
+     * @param string $seperator the seperator, e.g. ','
      *
-     * @return
+     * @return an array, with two entrys (columns and values), the elements are comma separated strings 
+     * e.g. columns = a,b,c and values = '1','2','3'
      */
     public static function getInsertDataFromInput($data, $attributes, $seperator)
     {
@@ -178,11 +187,11 @@ class DBJson
     /**
      * generates update data from input
      *
-     * @param $data (description)
-     * @param $attributes (description)
-     * @param $seperator (description)
+     * @param string[][] $data an array, which represents the data, received sql data
+     * @param string[] $attributes the object attributes (string[])
+     * @param string $seperator the seperator, e.g. ','
      *
-     * @return
+     * @return a string e.g. ",a=1, b=2, c=3"
      */
     public static function getUpdateDataFromInput($data, $attributes, $seperator)
     {
@@ -202,17 +211,17 @@ class DBJson
     } 
     
     /**
-     * concatenates two arrays by using attribute lists, 
+     * concatenates two arrays by using attribute lists, removes assoc indizes
      *
-     * @param $data (description)
-     * @param $prim (description)
-     * @param $primKey (description)
-     * @param $primAttrib (description)
-     * @param $sec (description)
-     * @param $secKey (description)
-     * @param $extension (description)
+     * @param string[][] $data an array, which represents the data, received sql data
+     * @param string[][] $prim the structure of objects to which you want to append the new objects
+     * @param string[]/string $primKey an array or string, which represents the primary key of the objects
+     * @param string[] $primAttrib the defined attributes of the primary objects
+     * @param string[][] $sec the structure with objects, you want to attach
+     * @param string $secKey a primary key of the objects you want to attach
+     * @param string $extension optional, a const postfix for the column names of the objects you want to attach (string)
      *
-     * @return
+     * @return string[][], the concatenated lists
      */
     public static function concatResultObjectLists($data, $prim, $primKey, $primAttrib, $sec, $secKey, $extension = "")
     {
@@ -245,17 +254,17 @@ class DBJson
     }
     
     /**
-     * (description)
+     * concatenates two arrays by using attribute lists, assoc indizes remain
      *
-     * @param $data (description)
-     * @param $prim (description)
-     * @param $primKey (description)
-     * @param $primAttrib (description)
-     * @param $sec (description)
-     * @param $secKey (description)
-     * @param $extension (description)
+     * @param string[][] $data an array, which represents the data, received sql data
+     * @param string[][] $prim the structure of objects to which you want to append the new objects
+     * @param string[]/string $primKey an array or string, which represents the primary key of the objects
+     * @param string[] $primAttrib the defined attributes of the primary objects
+     * @param string[][] $sec the structure with objects, you want to attach
+     * @param string $secKey a primary key of the objects you want to attach
+     * @param string $extension optional, a const postfix for the column names of the objects you want to attach (string)
      *
-     * @return
+     * @return string[][], the concatenated lists
      */
     public static function concatObjectLists($data, $prim, $primKey, $primAttrib, $sec, $secKey, $extension = "")
     {
@@ -282,17 +291,18 @@ class DBJson
     }
     
     /**
-     * (description)
+     * concatenates two arrays by using attribute lists, assoc indizes remain,
+     * only one secondary object will attached to an primary object
      *
-     * @param $data (description)
-     * @param $prim (description)
-     * @param $primKey (description)
-     * @param $primAttrib (description)
-     * @param $sec (description)
-     * @param $secKey (description)
-     * @param $extension (description)
+     * @param string[][] $data an array, which represents the data, received sql data
+     * @param string[][] $prim the structure of objects to which you want to append the new objects
+     * @param string[]/string $primKey an array or string, which represents the primary key of the objects
+     * @param string[] $primAttrib the defined attributes of the primary objects
+     * @param string[][] $sec the structure with objects, you want to attach
+     * @param string $secKey a primary key of the objects you want to attach
+     * @param string $extension optional, a const postfix for the column names of the objects you want to attach (string)
      *
-     * @return
+     * @return string[][], the concatenated lists
      */
     public static function concatObjectListResult($data, $prim, $primKey, $primAttrib, $sec, $secKey, $extension = "")
     {
@@ -324,17 +334,18 @@ class DBJson
     }
     
     /**
-     * (description)
+     * concatenates two arrays by using attribute lists, removes assoc indizes,
+     * only one secondary object will attached to an primary object
      *
-     * @param $data (description)
-     * @param $prim (description)
-     * @param $primKey (description)
-     * @param $primAttrib (description)
-     * @param $sec (description)
-     * @param $secKey (description)
-     * @param $extension (description)
+     * @param string[][] $data an array, which represents the data, received sql data
+     * @param string[][] $prim the structure of objects to which you want to append the new objects
+     * @param string[]/string $primKey an array or string, which represents the primary key of the objects
+     * @param string[] $primAttrib the defined attributes of the primary objects
+     * @param string[][] $sec the structure with objects, you want to attach
+     * @param string $secKey a primary key of the objects you want to attach
+     * @param string $extension optional, a const postfix for the column names of the objects you want to attach (string)
      *
-     * @return
+     * @return string[][], the concatenated lists
      */
     public static function concatObjectListsSingleResult($data, $prim, $primKey, $primAttrib, $sec, $secKey, $extension = "")
     {
@@ -358,17 +369,19 @@ class DBJson
     }
     
     /**
-     * (description)
+     * concatenates two arrays by using attribute lists, removes assoc indizes,
+     * the secondary objects will be collected in one array, 
+     * which will be attached to the primary object
      *
-     * @param $data (description)
-     * @param $prim (description)
-     * @param $primKey (description)
-     * @param $primAttrib (description)
-     * @param $sec (description)
-     * @param $secKey (description)
-     * @param $extension (description)
+     * @param string[][] $data an array, which represents the data, received sql data
+     * @param string[][] $prim the structure of objects to which you want to append the new objects
+     * @param string[]/string $primKey an array or string, which represents the primary key of the objects
+     * @param string[] $primAttrib the defined attributes of the primary objects
+     * @param string[][] $sec the structure with objects, you want to attach
+     * @param string $secKey a primary key of the objects you want to attach
+     * @param string $extension optional, a const postfix for the column names of the objects you want to attach (string)
      *
-     * @return
+     * @return string[][], the concatenated lists
      */
     public static function concatResultObjectListAsArray($data, $prim, $primKey, $primAttrib, $sec, $secKey, $extension = "")
     {
