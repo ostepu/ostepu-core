@@ -4,7 +4,6 @@
  * Constructs the page that is displayed to a student, when managing a group.
  */
 
-include 'include/Header/Header.php';
 include 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
 include_once 'include/Helpers.php';
@@ -49,13 +48,13 @@ $course = http_get($databaseURI);
 $course = json_decode($course, true)[0];
 
 // construct a new header
-$h = new Header($course['name'],
-                "",
-                $user['firstName'] . ' ' . $user['lastName'],
-                $user['userName']);
-
-$h->setBackURL("Student.php?cid={$cid}&uid={$uid}")
-  ->setBackTitle("zur Veranstaltung");
+$h = Template::WithTemplateFile('include/Header/Header.template.html');
+$h->bind($user);
+$h->bind($course);
+$h->bind(array("backTitle" => "zur Veranstaltung",
+               "backURL" => "Student.php?cid={$cid}&uid={$uid}",
+               "navigationElement" => $menu,
+               "notificationElements" => $notifications));
 
 // load exercise sheet data from the database
 $databaseURL = "http://141.48.9.92/uebungsplattform/DB/DBGroup/group/user/{$uid}/exercisesheet/{$sid}";
