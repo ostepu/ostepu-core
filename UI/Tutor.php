@@ -32,10 +32,12 @@ $course = http_get($databaseURI);
 $course = json_decode($course, true)[0];
 
 // construct a new header
-$h = new Header($course['name'],
-                "",
-                $user['firstName'] . ' ' . $user['lastName'],
-                $user['userName']);
+$h = Template::WithTemplateFile('include/Header/Header.template.html');
+$h->bind($user);
+$h->bind($course);
+$h->bind(array("backTitle" => "Veranstaltung wechseln",
+               "backURL" => "index.php?uid={$uid}",
+               "notificationElements" => $notifications));
 
 $databaseURL = "http://141.48.9.92/uebungsplattform/DB/DBExerciseSheet/exercisesheet/course/{$cid}/exercise";
 
