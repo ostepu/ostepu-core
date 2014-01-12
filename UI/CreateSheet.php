@@ -1,5 +1,4 @@
 <?php
-include_once 'include/Header/Header.php';
 include_once 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
 include_once '../Assistants/Logger.php';
@@ -21,14 +20,40 @@ include_once '../Assistants/Logger.php';
 
 <?php
 
-// construct a new Headers
-$h = new Header("Datenstrukturen",
-                "",
-                "Admin",
-                "211221492");
+$notifications = array();
 
-$h->setBackURL("Lecturer.php")
-->setBackTitle("zur Veranstaltung");
+if (isset($_GET['cid'])) {
+    $cid = $_GET['cid'];
+} else {
+    die('no course id!\n');
+}
+
+if (isset($_GET['uid'])) {
+    $uid = $_GET['uid'];
+} else {
+    die('no user id!\n');
+}
+
+// load user data from the database
+$databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/user/user/{$uid}";
+$user = http_get($databaseURI);
+$user = json_decode($user, true);
+
+// load course data from the database
+$databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/course/course/{$cid}";
+$course = http_get($databaseURI);
+$course = json_decode($course, true)[0];
+
+$menu = Template::WithTemplateFile('include/Navigation/NavigationLecturer.template.html');
+
+// construct a new header
+$h = Template::WithTemplateFile('include/Header/Header.template.html');
+$h->bind($user);
+$h->bind($course);
+$h->bind(array("backTitle" => "zur Veranstaltung",
+               "backURL" => "Lecturer.php?cid={$cid}&uid={$uid}",
+               "navigationElement" => $menu,
+               "notificationElements" => $notifications));
 
 /**
  * @todo combine the templates in a single file
