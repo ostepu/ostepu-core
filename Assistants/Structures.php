@@ -21,7 +21,8 @@
     include_once( 'Structures/Invitation.php' );   
     include_once( 'Structures/Link.php' );   
     include_once( 'Structures/Marking.php' );   
-    include_once( 'Structures/Query.php' );   
+    include_once( 'Structures/Query.php' ); 
+    include_once( 'Structures/SelectedSubmission.php' );     
     include_once( 'Structures/Session.php' ); 
     include_once( 'Structures/Submission.php' );   
     include_once( 'Structures/TutorAssignment.php' );   
