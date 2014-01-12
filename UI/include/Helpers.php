@@ -135,6 +135,18 @@ function http_delete($url)
     return $retData;
 }
 
+/**
+ * Creates a new Notification bar item
+ *
+ * @param string $notificationType The type of the new notification. Should be
+ * one of the following:
+ *     - error
+ *     - warning
+ *     - success
+ * @param $notificationText The text that should be displayed in the
+ * notification.
+ * @sa Notifications.css
+ */
 function MakeNotification($notificationType, $notificationText)
 {
     return <<<EOF
