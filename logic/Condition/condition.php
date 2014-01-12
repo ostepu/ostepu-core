@@ -7,8 +7,17 @@ include_once( 'include/CConfig.php' );
 
 \Slim\Slim::registerAutoloader();
 
+/**
+ * The Condition class
+ *
+ * This class handles everything belongs to Conditions of a Course
+ */
+
 class Condition
 {
+    /**
+     *Values needed for conversation with other components
+     */
     private $_conf=null;
     
     private static $_prefix = "condition";
@@ -21,32 +30,46 @@ class Condition
     {
         Condition::$_prefix = $value;
     }
-    
-    private $lURL = ""; //aus config lesen
+    /**
+     *Address of the Logic-Controller
+     *dynamic set by CConf below
+     */
+    private $lURL = ""; 
     
     public function __construct($conf)
     {    
+        /**
+         *Initialise the Sli-Framework
+         */
         $this->app = new \Slim\Slim();
         $this->app->response->headers->set('Content-Type', 'application/json');
+        
+        /**
+         *Set the Logiccontroller-URL
+         */
         $this->_conf = $conf;
         $this->query = array();
         
-        $this->query = array(CConfig::getLink($conf->getLinks(),"controller"))
-        $this->lURL = querry['address'];
+        $this->query = array(CConfig::getLink($conf->getLinks(),"controller"));
+        $this->lURL = $querry['address'];
         
-        //SetConditions
+        //POST SetConditions
         $this->app->post('/course/:courseid', array($this, 'setConditions'));        //Adressen noch anpassen (Parameter mit Compo-Namen)
         
-        //EditConditions
+        //PUT EditConditions
         $this->app->put('/course/:courseid', array($this, 'editConditions'));
         
-        //CheckConditions
+        //GET CheckConditions
         $this->app->get('/course/:courseid/user/:userid',
                         array($this, 'checkConditions'));
-                        
+        //run Slim                
         $this->app->run();
     }
-    
+    /**
+     * Funktion to set Conditions of a course and save in DB 
+     * takes one argument and retunrs a Status-Code
+     * @param $courseid an integer identifies the Course
+     */
     public function setConditions($courseid){        
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
@@ -55,6 +78,11 @@ class Condition
         $this->app->response->setStatus($answer['status']);
     }
 
+    /**
+     * Funktion to edit the conditions of a course
+     * takes one arguments and retunrs a Status-Code
+     * @param $courseid an integer identifies the Course
+     */
     public function editConditions($courseid){
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
@@ -62,14 +90,24 @@ class Condition
         $answer = Request::custom('PUT', $URL, $header, $body);
         $this->app->response->setStatus($answer['status']);
     }
-
-    public function CheckConditions($courseid, $userid){        //Funktion unklar in Aufbau, benötigt Punkte von Marking
+    /**
+     * Funktion to check the conditions of a course for a user
+     * takes two arguments and retunrs true/false
+     * @param $courseid an integer identifies the Course
+     * @param $userid an integer identifies the user
+     */
+    public function CheckConditions($courseid, $userid){        //Funktion unklar in Aufbau, benoetigt Punkte von Marking
     
     }
 }
+/**
+ * get new Config-Datas from DB 
+ */
+$com = new CConfig(Condition::getPrefix());
 
-$com = new CConfig(Attachment::getPrefix());
-
+/**
+ * make a new instance of Condition-Class with the Config-Datas
+ */
 if (!$com->used())
     new Condition($com->loadConfig());
 ?>

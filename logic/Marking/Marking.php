@@ -35,8 +35,8 @@ class Marking
         $this->_conf = $conf;
         $this->query = array();
         
-        $this->query = array(CConfig::getLink($conf->getLinks(),"controller"))
-        $this->lURL = querry['address'];
+        $this->query = array(CConfig::getLink($conf->getLinks(),"controller"));
+        $this->lURL = $querry['address'];
         
         //AddMarking
         $this->app->post('/exercise/:exerciseid/tutor/:tutorid', 
@@ -165,6 +165,14 @@ class Marking
     }   
 }
 
+/**
+ * get new Config-Datas from DB 
+ */
+$com = new CConfig(Marking::getPrefix());
+
+/**
+ * make a new instance of Marking-Class with the Config-Datas
+ */
 if (!$com->used())
     new Marking($com->loadConfig());
 ?>

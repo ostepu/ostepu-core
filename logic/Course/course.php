@@ -5,9 +5,16 @@ include 'include/Assistants/Request.php';
 include_once( 'include/CConfig.php' ); 
     
 \Slim\Slim::registerAutoloader();
-
+/**
+ * The Course class
+ *
+ * This class handles everything belongs to a Course
+ */
 class Course
 {
+    /**
+     *Values needed for conversation with other components
+     */
     private $_conf=null;
     
     private static $_prefix = "course";
@@ -22,44 +29,54 @@ class Course
     }
     
     
-    //URL of the logiccontroller    
-    private $lURL = "";             //Einlesen aus config.ini
+    /**
+     *Address of the Logic-Controller
+     *dynamic set by CConf below
+     */ 
+    private $lURL = "";
         
     public function __construct($conf)
     {
+        /**
+         *Initialise the Sli-Framework
+         */
         $this->app = new \Slim\Slim();
         $this->app->response->headers->set('Content-Type', 'application/json');
+        /**
+         *Set the Logiccontroller-URL
+         */
         $this->_conf = $conf;
         $this->query = array();
         
-        $this->query = array(CConfig::getLink($conf->getLinks(),"controller"))
-        $this->lURL = querry['address'];
+        $this->query = array(CConfig::getLink($conf->getLinks(),"controller"));
+        $this->lURL = $querry['address'];
         
-        //SetCourse
+        //POST SetCourse
         $this->app->post(':data+', array($this, 'setCourse')); //keine URL: ''?
         
-        //EditCourse
+        //PUT EditCourse
         $this->app->put('/course/:courseid', array($this, 'editCourse'));    
         
-        //DeleteCourse
+        //DELETE DeleteCourse
         $this->app->delete('/course/:courseid', array($this, 'deleteCourse'));   
         
-        //AddCourseMember
+        //POST AddCourseMember
         $this->app->post('/course/:courseid/user/:userid', array($this, 'addCourseMember'));   
         
-        //GetCourseMember
+        //GET GetCourseMember
         $this->app->get('/course/:courseid/user', array($this, 'getCourseMember'));    
         
-        //GetCourses
+        //GET GetCourses
         $this->app->get('/user/:userid', array($this, 'getCourses'));    
        
+        //run Slim
         $this->app->run();
     }
     
     /**
-     * set a new course
-     * 
-     * @param (param)
+     * Funktion to set a new course and save in DB 
+     * takes one argument and retunrs a Status-Code
+     * @param $data an string-array containing the URI-arguments (shout be empty)
      */
     public function setCourse($data){
         $body = $this->app->request->getBody();
@@ -70,9 +87,9 @@ class Course
     }
     
     /**
-     * edit an existing course
-     * 
-     * @param (param)
+     * Funktion to edit an existing course
+     * takes one argument and retunrs a Status-Code
+     * @param $courseid an integer identifies the Course
      */    
     public function editCourse($courseid){
         $body = $this->app->request->getBody();
@@ -83,9 +100,9 @@ class Course
     }
 
     /**
-     * delete an existing course
-     * 
-     * @param (param)
+     * Funktion to delete an existing course
+     * takes one argument and retunrs a Status-Code
+     * @param $courseid an integer identifies the Course
      */
     public function deleteCourse($courseid){
         $body = $this->app->request->getBody();
@@ -96,9 +113,10 @@ class Course
     }        
 
     /**
-     * add a user to a course
-     * 
-     * @param (param)
+     * Funktion to add a User to a course
+     * takes two arguments and retunrs a Status-Code
+     * @param $courseid an integer identifies the Course
+     * @param $userid an integer identifies the user
      */
     public function addCourseMember($courseid, $userid){        
         $body = $this->app->request->getBody();
@@ -109,9 +127,9 @@ class Course
     }
 
     /**
-     * returns a list of users who are added to the course
-     * 
-     * @param (param)
+     * Funktion to get the Members of a course
+     * takes one argument and retunrs a Status-Code
+     * @param $courseid an integer identifies the Course
      */
     public function getCourseMember($courseid){
         $body = $this->app->request->getBody();
@@ -123,9 +141,9 @@ class Course
     }
     
     /**
-     * returns a list of all courses the user is added to.
-     * 
-     * @param (param)
+     * Funktion to get all courses of a user
+     * takes one argument and retunrs a Status-Code
+     * @param $userid an integer identifies the user
      */
     public function getCourses($userid){
 
@@ -137,7 +155,14 @@ class Course
         $this->app->response->setBody($answer['content']);
     }
 }
+/**
+ * get new Config-Datas from DB 
+ */
+$com = new CConfig(Course::getPrefix());
 
+/**
+ * make a new instance of Course-Class with the Config-Datas
+ */
 if (!$com->used())
     new Course($com->loadConfig());
 ?>   

@@ -29,8 +29,8 @@ class Tutor
         $this->_conf = $conf;
         $this->query = array();
         
-        $this->query = array(CConfig::getLink($conf->getLinks(),"controller"))
-        $this->lURL = querry['address'];
+        $this->query = array(CConfig::getLink($conf->getLinks(),"controller"));
+        $this->lURL = $querry['address'];
         
         //AllocateByExercise
         $this->app->get('', array($this, 'allocateByExercise'));        //Adressen/Parameter fehlen
@@ -74,6 +74,14 @@ class Tutor
     }
 }
 
+/**
+ * get new Config-Datas from DB 
+ */
+$com = new CConfig(Tutor::getPrefix());
+
+/**
+ * make a new instance of Tutor-Class with the Config-Datas
+ */
 if (!$com->used())
     new Tutor($com->loadConfig());
 ?>

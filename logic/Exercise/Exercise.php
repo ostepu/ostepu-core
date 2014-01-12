@@ -31,8 +31,8 @@ class Exercise
         $this->_conf = $conf;
         $this->query = array();
         
-        $this->query = array(CConfig::getLink($conf->getLinks(),"controller"))
-        $this->lURL = querry['address'];
+        $this->query = array(CConfig::getLink($conf->getLinks(),"controller"));
+        $this->lURL = $querry['address'];
         
         //AddExercise
         $this->app->post(':data+', array($this, 'addExercise'));
@@ -106,7 +106,14 @@ class Exercise
         $this->app->response->setStatus($answer['status']);
     }
 }
+/**
+ * get new Config-Datas from DB 
+ */
+$com = new CConfig(Exercise::getPrefix());
 
+/**
+ * make a new instance of Exercise-Class with the Config-Datas
+ */
 if (!$com->used())
     new Exercise($com->loadConfig());
 ?>

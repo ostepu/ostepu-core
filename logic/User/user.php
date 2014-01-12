@@ -36,8 +36,8 @@ class User
         $this->_conf = $conf;
         $this->query = array();
         
-        $this->query = array(CConfig::getLink($conf->getLinks(),"controller"))
-        $this->lURL = querry['address'];
+        $this->query = array(CConfig::getLink($conf->getLinks(),"controller"));
+        $this->lURL = $querry['address'];
     
         //SetUserRights
         $this->app->put('/user/:userid/right', array($this, 'setUserRights'));          //Adressen noch anpassen(kein .php;+ Compo-Namen
@@ -131,6 +131,14 @@ class User
     }
 }
 
+/**
+ * get new Config-Datas from DB 
+ */
+$com = new CConfig(User::getPrefix());
+
+/**
+ * make a new instance of User-Class with the Config-Datas
+ */
 if (!$com->used())
     new User($com->loadConfig());
 ?>

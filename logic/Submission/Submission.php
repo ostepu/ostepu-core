@@ -35,8 +35,8 @@ class Submission
         $this->_conf = $conf;
         $this->query = array();
         
-        $this->query = array(CConfig::getLink($conf->getLinks(),"controller"))
-        $this->lURL = querry['address'];
+        $this->query = array(CConfig::getLink($conf->getLinks(),"controller"));
+        $this->lURL = $querry['address'];
         
         //AddSubmission
         $this->app->post(':data+', array($this, 'addSubmission'));
@@ -172,6 +172,14 @@ class Submission
     }
 }
 
+/**
+ * get new Config-Datas from DB 
+ */
+$com = new CConfig(Submission::getPrefix());
+
+/**
+ * make a new instance of Submission-Class with the Config-Datas
+ */
 if (!$com->used())
     new Submission($com->loadConfig());
 ?>

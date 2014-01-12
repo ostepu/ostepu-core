@@ -29,8 +29,8 @@ class ExerciseSheet
         $this->_conf = $conf;
         $this->query = array();
         
-        $this->query = array(CConfig::getLink($conf->getLinks(),"controller"))
-        $this->lURL = querry['address'];
+        $this->query = array(CConfig::getLink($conf->getLinks(),"controller"));
+        $this->lURL = $querry['address'];
         
         //AddExerciseSheet
         $this->app->post('/course/:courseid', array($this, 'addExerciseSheet'));        //Adressen noch anpassen (Parameter mit Compo-Namen)
@@ -110,7 +110,14 @@ class ExerciseSheet
         }             
     }
 }
+/**
+ * get new Config-Datas from DB 
+ */
+$com = new CConfig(ExerciseSheet::getPrefix());
 
+/**
+ * make a new instance of ExerciseSheet-Class with the Config-Datas
+ */
 if (!$com->used())
     new ExerciseSheet($com->loadConfig());
 ?>

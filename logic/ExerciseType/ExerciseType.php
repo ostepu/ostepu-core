@@ -30,8 +30,8 @@ class ExerciseType
         $this->_conf = $conf;
         $this->query = array();
         
-        $this->query = array(CConfig::getLink($conf->getLinks(),"controller"))
-        $this->lURL = querry['address'];
+        $this->query = array(CConfig::getLink($conf->getLinks(),"controller"));
+        $this->lURL = $querry['address'];
         
         
         //setPossibleTypes
@@ -78,7 +78,14 @@ class ExerciseType
     }
 }
 
+/**
+ * get new Config-Datas from DB 
+ */
+$com = new CConfig(ExerciseType::getPrefix());
 
+/**
+ * make a new instance of ExerciseType-Class with the Config-Datas
+ */
 if (!$com->used())
     new ExerciseType($com->loadConfig());
 ?>

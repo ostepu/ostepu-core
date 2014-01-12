@@ -31,8 +31,8 @@ class Group
         $this->_conf = $conf;
         $this->query = array();
         
-        $this->query = array(CConfig::getLink($conf->getLinks(),"controller"))
-        $this->lURL = querry['address'];
+        $this->query = array(CConfig::getLink($conf->getLinks(),"controller"));
+        $this->lURL = $querry['address'];
         
         
         //InviteInGroup
@@ -112,6 +112,14 @@ class Group
     }
 }
 
+/**
+ * get new Config-Datas from DB 
+ */
+$com = new CConfig(Group::getPrefix());
+
+/**
+ * make a new instance of Group-Class with the Config-Datas
+ */
 if (!$com->used())
     new Group($com->loadConfig());
 ?>

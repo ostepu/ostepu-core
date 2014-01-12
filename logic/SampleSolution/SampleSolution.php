@@ -35,8 +35,8 @@ class SampleSolution
         $this->_conf = $conf;
         $this->query = array();
         
-        $this->query = array(CConfig::getLink($conf->getLinks(),"controller"))
-        $this->lURL = querry['address'];
+        $this->query = array(CConfig::getLink($conf->getLinks(),"controller"));
+        $this->lURL = $querry['address'];
         
         //AddSampleSolution
         $this->app->post('/course/:courseid/exercisesheet/:sheetid',
@@ -142,6 +142,14 @@ class SampleSolution
         }  
     }
 }
+/**
+ * get new Config-Datas from DB 
+ */
+$com = new CConfig(SampleSolution::getPrefix());
+
+/**
+ * make a new instance of SampleSolution-Class with the Config-Datas
+ */
 if (!$com->used())
     new SampleSolution($com->loadConfig());
 ?>
