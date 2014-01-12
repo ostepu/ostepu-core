@@ -135,4 +135,13 @@ function http_delete($url)
     return $retData;
 }
 
+function MakeNotification($notificationType, $notificationText)
+{
+    return <<<EOF
+<div class="notification-bar {$notificationType}">
+    $notificationText
+</div>
+EOF;
+}
+
 ?>
