@@ -1,12 +1,12 @@
 <?php 
 
 require 'Slim/Slim.php';
-include 'include/Assistants/Request.php';
-include_once( 'include/CConfig.php' ); 
+include 'include/Request.php';
+include_once( 'include/CConfig.php' );
 
 \Slim\Slim::registerAutoloader();
     
-class Marking
+class LMarking
 {    
     private $_conf=null;
     
@@ -14,11 +14,11 @@ class Marking
 
     public static function getPrefix()
     {
-        return Marking::$_prefix;
+        return LMarking::$_prefix;
     }
     public static function setPrefix($value)
     {
-        Marking::$_prefix = $value;
+        LMarking::$_prefix = $value;
     }
     private $lURL = ""; //aus config lesen
 
@@ -168,11 +168,11 @@ class Marking
 /**
  * get new Config-Datas from DB 
  */
-$com = new CConfig(Marking::getPrefix());
+$com = new CConfig(LMarking::getPrefix());
 
 /**
  * make a new instance of Marking-Class with the Config-Datas
  */
 if (!$com->used())
-    new Marking($com->loadConfig());
+    new LMarking($com->loadConfig());
 ?>

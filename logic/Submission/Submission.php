@@ -1,12 +1,12 @@
 <?php 
 
 require 'Slim/Slim.php';
-include 'include/Assistants/Request.php';
+include 'include/Request.php';
 include_once( 'include/CConfig.php' );
 
 \Slim\Slim::registerAutoloader();
 
-class Submission
+class LSubmission
 {    
     private $_conf=null;
     
@@ -14,11 +14,11 @@ class Submission
     
     public static function getPrefix()
     {
-        return Submission::$_prefix;
+        return LSubmission::$_prefix;
     }
     public static function setPrefix($value)
     {
-        Submission::$_prefix = $value;
+        LSubmission::$_prefix = $value;
     }
     private $lURL = ""; //aus config lesen
 
@@ -175,11 +175,11 @@ class Submission
 /**
  * get new Config-Datas from DB 
  */
-$com = new CConfig(Submission::getPrefix());
+$com = new CConfig(LSubmission::getPrefix());
 
 /**
  * make a new instance of Submission-Class with the Config-Datas
  */
 if (!$com->used())
-    new Submission($com->loadConfig());
+    new LSubmission($com->loadConfig());
 ?>

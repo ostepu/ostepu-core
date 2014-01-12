@@ -1,7 +1,7 @@
-﻿<?php 
+<?php 
 
 require 'Slim/Slim.php';
-include 'include/Assistants/Request.php';
+include 'include/Request.php';
 include_once( 'include/CConfig.php' );
 
 \Slim\Slim::registerAutoloader();
@@ -11,7 +11,7 @@ include_once( 'include/CConfig.php' );
  *
  * This class handles everything belongs to Attachments
  */
-class Attachment
+class LAttachment
 {   
     /**
      *Values needed for conversation with other components
@@ -23,11 +23,11 @@ class Attachment
     
     public static function getPrefix()
     {
-        return Attachment::$_prefix;
+        return LAttachment::$_prefix;
     }
     public static function setPrefix($value)
     {
-        Attachment::$_prefix = $value;
+        LAttachment::$_prefix = $value;
     }
 
     /**
@@ -50,8 +50,9 @@ class Attachment
         $this->_conf = $conf;
         $this->query = array();
         
-        $this->query = array(CConfig::getLink($conf->getLinks(),"controller"));
-        $this->lURL = $querry['address'];
+        $this->query = CConfig::getLink($conf->getLinks(),"controller");
+       // echo var_dump($conf);
+        $this->lURL = $this->query->getAddress();
         
         //POST AddAttachment
         $this->app->post('/course/:courseid/exercisesheet/:exercisesheetid', 
@@ -172,12 +173,12 @@ class Attachment
 /**
  * get new Config-Datas from DB 
  */
-$com = new CConfig(Attachment::getPrefix());
+$com = new CConfig(LAttachment::getPrefix());
 
 /**
  * make a new instance of Attachment-Class with the Config-Datas
  */
 if (!$com->used())
-    new Attachment($com->loadConfig());
+    new LAttachment($com->loadConfig());
 
 ?>

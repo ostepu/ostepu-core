@@ -1,12 +1,12 @@
 <?php 
 
 require 'Slim/Slim.php';
-include 'include/Assistants/Request.php';
-include_once( 'include/CConfig.php' ); 
+include 'include/Request.php';
+include_once( 'include/CConfig.php' );
 
 \Slim\Slim::registerAutoloader();
 
-class SampleSolution
+class LSampleSolution
 {    
     private $_conf=null;
     
@@ -14,11 +14,11 @@ class SampleSolution
     
     public static function getPrefix()
     {
-        return SampleSolution::$_prefix;
+        return LSampleSolution::$_prefix;
     }
     public static function setPrefix($value)
     {
-        SampleSolution::$_prefix = $value;
+        LSampleSolution::$_prefix = $value;
     }
     private $lURL = ""; //aus config lesen
 
@@ -145,11 +145,11 @@ class SampleSolution
 /**
  * get new Config-Datas from DB 
  */
-$com = new CConfig(SampleSolution::getPrefix());
+$com = new CConfig(LSampleSolution::getPrefix());
 
 /**
  * make a new instance of SampleSolution-Class with the Config-Datas
  */
 if (!$com->used())
-    new SampleSolution($com->loadConfig());
+    new LSampleSolution($com->loadConfig());
 ?>

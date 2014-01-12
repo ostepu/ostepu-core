@@ -1,13 +1,13 @@
-﻿<?php
+<?php
 
 require 'Slim/Slim.php';
-include 'include/Assistants/Request.php';
-include_once( 'include/CConfig.php' ); 
+include 'include/Request.php';
+include_once( 'include/CConfig.php' );
 
 \Slim\Slim::registerAutoloader();
 
 
-class Group
+class LGroup
 {
     private $_conf=null;
     
@@ -15,11 +15,11 @@ class Group
     
     public static function getPrefix()
     {
-        return Group::$_prefix;
+        return LGroup::$_prefix;
     }
     public static function setPrefix($value)
     {
-        Group::$_prefix = $value;
+        LGroup::$_prefix = $value;
     }
     
     private $LController = "";              //Einlesen aus config.ini
@@ -115,11 +115,11 @@ class Group
 /**
  * get new Config-Datas from DB 
  */
-$com = new CConfig(Group::getPrefix());
+$com = new CConfig(LGroup::getPrefix());
 
 /**
  * make a new instance of Group-Class with the Config-Datas
  */
 if (!$com->used())
-    new Group($com->loadConfig());
+    new LGroup($com->loadConfig());
 ?>

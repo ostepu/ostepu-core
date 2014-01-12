@@ -1,12 +1,12 @@
-﻿<?php 
+<?php 
 
 require 'Slim/Slim.php';
-include 'include/Assistants/Request.php';
-include_once( 'include/CConfig.php' ); 
+include 'include/Request.php';
+include_once( 'include/CConfig.php' );
 
 \Slim\Slim::registerAutoloader();
 
-class ExerciseType
+class LExerciseType
 {
     private $_conf=null;
     
@@ -14,11 +14,11 @@ class ExerciseType
     
     public static function getPrefix()
     {
-        return ExerciseType::$_prefix;
+        return LExerciseType::$_prefix;
     }
     public static function setPrefix($value)
     {
-        ExerciseType::$_prefix = $value;
+        LExerciseType::$_prefix = $value;
     }
     
     private $lURL = ""; //aus config lesen
@@ -81,11 +81,11 @@ class ExerciseType
 /**
  * get new Config-Datas from DB 
  */
-$com = new CConfig(ExerciseType::getPrefix());
+$com = new CConfig(LExerciseType::getPrefix());
 
 /**
  * make a new instance of ExerciseType-Class with the Config-Datas
  */
 if (!$com->used())
-    new ExerciseType($com->loadConfig());
+    new LExerciseType($com->loadConfig());
 ?>
