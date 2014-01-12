@@ -1,4 +1,4 @@
-ï»¿<?php 
+<?php 
 
 require 'Slim/Slim.php';
 include 'include/Assistants/Request.php';
@@ -21,7 +21,13 @@ class Submission
         Submission::$_prefix = $value;
     }
     private $lURL = ""; //aus config lesen
-    
+
+    /**
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to 
+     * the functions.
+     */
     public function __construct($conf)
     {    
         $this->app = new \Slim\Slim();
@@ -56,8 +62,18 @@ class Submission
                         array($this, 'getSubmissionURL'));
                         
         $this->app->run();
-    }    
-    
+    }
+
+    /**
+     * add a new submission
+     *
+     * This function adds a submission of an exercise.
+     * First,the submission will be written in the file system.
+     * If the status of this operation is right, then the informations
+     * of the submission will be added in the database.
+     *
+     * @return integer $status the status code
+     */
     public function addSubmission($data){
         //Parameter abfangen wenn $data "nicht leer"        
         $header = $this->app->request->headers->all();
@@ -67,7 +83,7 @@ class Submission
         $URL = $this->lURL.'/FS';
         $answer = Request::custom('POST', $URL, $header, $file);
         
-        if($answer['status'] == 200){ //nur, wenn file tatsächlich im FS gespeichert wurde
+        if($answer['status'] == 200){ //nur, wenn file tatsaechlich im FS gespeichert wurde
             $body->{'_file'} = $answer['content'];
             //Anfrage an DataBase
             $URL = $this->lURL.'/DB';
@@ -75,8 +91,16 @@ class Submission
             $this->app->response->setStatus($answer['status']);
         }
     }
-    
-    public function editSubmissionState($submissionid) {    
+
+    /**
+     * edit a submission of an exercise
+     *
+     * This function overwrites a submission of an exercise.
+     * First,the submission will be written in the file system.
+     * If the status of this operation is right, then the informations
+     * of the submission will be overwritten in the database.
+     */
+    public function editSubmissionState($submissionid){    
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
         $URL = $this->lURL.'/DB/submission/'.$submissionid;        
@@ -84,20 +108,33 @@ class Submission
         $this->app->response->setStatus($answer['status']);    
     }
 
+    /**
+     * delete a submission
+     * 
+     * First, this function deletes the informations of a submission
+     * in the database. If the status of this operation is right,
+     * then the submission will be deleted in the file system.
+     */
     public function deleteSubmission($submissionid){       
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
         $URL = $this->lURL.'/DB/submission/'.$submissionid;        
-        $answer = Request::custum('DELETE', $URL, $header, $body);
+        $answer = Request::custom('DELETE', $URL, $header, $body);
         $this->app->response->setStatus($answer['status']);
         
-        if( $answer['status'] == 200){ //nur, wenn file tatsächlich aus DB gelöscht wurde
+        if( $answer['status'] == 200){ //nur, wenn file tatsaechlich aus DB geloescht wurde
             $URL = $this->lURL.'/FS/submission/'.$submissionid; 
             $answer = Request::custom('DELETE', $URL, $header, $body);
         }             
     }
-    
-    public function loadSubmissionAsZip($sheetid, $userid){       //Annahme: ZipURL in DB abrufbar  
+
+    /**
+     * get the URL of a zip file with the submission
+     * 
+     * This function returns the URL of a zip file with the submission
+     * for download this.
+     */
+    public function loadSubmissionAsZip($sheetid, $userid){       //Annahme: ZipURL in DB abrufbar
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
         $URL = $this->lURL.'/DB/exerciseSheet/'.$sheetid.'/user/'.$userid;
@@ -105,7 +142,12 @@ class Submission
         $this->app->response->setBody($answer['content']);
         $this->app->response->setStatus($answer['status']);
     }
-    
+
+    /**
+     * get the history of submission uploads
+     * 
+     * This function returns the history of submission.
+     */
     public function showSubmissionsHistory($sheetid, $userid){      
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
@@ -114,7 +156,12 @@ class Submission
         $this->app->response->setBody($answer['content']);
         $this->app->response->setStatus($answer['status']);
     }
-    
+
+    /**
+     * get the URL of a submission
+     * 
+     * This function returns the URL of a submission for download this.
+     */
     public function getSubmissionURL($submissionid){        
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();

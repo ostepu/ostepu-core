@@ -1,4 +1,4 @@
-ï»¿<?php 
+<?php 
 
 require 'Slim/Slim.php';
 include 'include/Assistants/Request.php';
@@ -21,7 +21,13 @@ class SampleSolution
         SampleSolution::$_prefix = $value;
     }
     private $lURL = ""; //aus config lesen
-    
+
+    /**
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to 
+     * the functions.
+     */
     public function __construct($conf)
     {    
         $this->app = new \Slim\Slim();
@@ -48,9 +54,18 @@ class SampleSolution
         
         $this->app->run();
     }
-    
+
+    /**
+     * add a new sample solution
+     *
+     * This function adds a solution of an exercise.
+     * First,the marking will be written in the file system.
+     * If the status of this operation is right, then the informations
+     * of the solution will be added in the database.
+     *
+     * @return integer $status the status code
+     */
     public function addSampleSolution($courseid, $sheetid){
-        
         $header = $this->app->request->headers->all();
         $body = json_decode($this->app->request->getBody());
         $file = json_encode($body->{'_file'});      //mit oder ohne "_"?
@@ -58,7 +73,7 @@ class SampleSolution
         $URL = $this->lURL.'/FS/sampleSolution/course/'.$courseid.'/exercisesheet/'.$sheetid;
         $answer = Request::custom('POST', $URL, $header, $file);
         
-        if($answer['status'] == 200){ //nur, wenn file tatsächlich im FS gespeichert wurde
+        if($answer['status'] == 200){ //nur, wenn file tatsaechlich im FS gespeichert wurde
             $body->{'_file'} = $answer['content'];
             //Anfrage an DataBase
             $URL = $this->lURL.'/DB/sampleSolution/course/'.$courseid.'/exercisesheet/'.$sheetid;
@@ -66,9 +81,16 @@ class SampleSolution
             $this->app->response->setStatus($answer['status']);
         }
     }
-    
+
+    /**
+     * edit a solution of an exercise
+     *
+     * This function overwrites a solution of an exercise.
+     * First,the solution will be written in the file system.
+     * If the status of this operation is right, then the informations
+     * of the solution will be overwritten in the database.
+     */
     public function editSampleSolution($fileid){
-    
         $header = $this->app->request->headers->all();
         $body = json_decode($this->app->request->getBody());
         $file = json_encode($body->{'_file'});      //mit oder ohne "_"?
@@ -76,7 +98,7 @@ class SampleSolution
         $URL = $this->lURL.'/FS/sampleSolution/file'.$fileid;
         $answer = Request::custom('PUT', $URL, $header, $file);
         
-        if($answer['status'] == 200){ //nur, wenn file tatsächlich im FS gespeichert wurde
+        if($answer['status'] == 200){ //nur, wenn file tatsaechlich im FS gespeichert wurde
             $body->{'_file'} = $answer['content'];
             //Anfrage an DataBase
             $URL = $this->lURL.'/DB/samplesolution/file'.$fileid;
@@ -84,9 +106,13 @@ class SampleSolution
             $this->app->response->setStatus($answer['status']);
         }    
     }
-    
+
+    /**
+     * get the URL of a sample solution
+     * 
+     * This function returns the URL of a sample solution for download this.
+     */
     public function getSampleSolutionURL($fileid){
-    
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
         $URL = $this->lURL.'/DB/sampleSolution/file/'.$fileid;
@@ -94,16 +120,22 @@ class SampleSolution
         $this->app->response->setBody($answer['content']);
         $this->app->response->setStatus($answer['status']);
     }
-    
+
+    /**
+     * delete a sample solution
+     * 
+     * First, this function deletes the informations of a solution
+     * in the database. If the status of this operation is right,
+     * then the solution will be deleted in the file system.
+     */
     public function deleteSampleSolution($fileid){
-    
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
         $URL = $this->lURL.'/DB/sampleSolution/file/'.$fileid;        
-        $answer = Request::custum('DELETE', $URL, $header, $body);
+        $answer = Request::custom('DELETE', $URL, $header, $body);
         $this->app->response->setStatus($answer['status']);
         
-        if( $answer['status'] == 200){ //nur, wenn file tatsächlich aus DB gelöscht wurde
+        if( $answer['status'] == 200){ //nur, wenn file tatsaechlich aus DB geloescht wurde
             $URL = $this->lURL.'/FS/sampleSolution/file/'.$fileid;
             $answer = Request::custom('DELETE', $URL, $header, $body);
             $this->app->response->setStatus($answer['status']);

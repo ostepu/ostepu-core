@@ -1,4 +1,4 @@
-ï»¿<?php 
+<?php 
 
 require 'Slim/Slim.php';
 include 'include/Assistants/Request.php';
@@ -11,7 +11,7 @@ class Marking
     private $_conf=null;
     
     private static $_prefix = "marking";
-    
+
     public static function getPrefix()
     {
         return Marking::$_prefix;
@@ -21,7 +21,13 @@ class Marking
         Marking::$_prefix = $value;
     }
     private $lURL = ""; //aus config lesen
-    
+
+    /**
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to 
+     * the functions.
+     */
     public function __construct($conf)
     {    
         $this->app = new \Slim\Slim();
@@ -55,6 +61,16 @@ class Marking
         $this->app->run();
     }    
     
+    /**
+     * add a new marking
+     *
+     * This function is for tutors who once to add a marking of an exercise.
+     * First,the marking will be written in the file system.
+     * If the status of this operation is right, then the informations
+     * of the marking will be added in the database.
+     *
+     * @return integer $status the status code
+     */
     public function addMarking($exerciseid, $tutorid){     
         $header = $this->app->request->headers->all();
         $body = json_decode($this->app->request->getBody());
@@ -63,7 +79,7 @@ class Marking
         $URL = $this->lURL.'/FS/exercise/'.$exerciseid.'/tutor/'.$tutorid;
         $answer = Request::custom('POST', $URL, $header, $file);
         
-        if($answer['status'] == 200){ //nur, wenn file tatsächlich im FS gespeichert wurde .. welcher StatusCode-Bereich soll gelten?
+        if($answer['status'] == 200){ //nur, wenn file tatsaechlich im FS gespeichert wurde .. welcher StatusCode-Bereich soll gelten?
             $body->{'_file'} = json_decode($answer['content']);
             //Anfrage an DataBase
             $URL = $this->lURL.'/DB/exercise/'.$exerciseid.'/tutor/'.$tutorid;
@@ -71,7 +87,12 @@ class Marking
             $this->app->response->setStatus($answer['status']);
         }
     }
-    
+
+    /**
+     * get the URL of a marking
+     * 
+     * This function returns the URL of a marking for download this.
+     */
     public function getMarkingURL($markingid) {        
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
@@ -81,22 +102,37 @@ class Marking
         $this->app->response->setStatus($answer['status']);
     }
 
+    /**
+     * delete a sample solution
+     * 
+     * First, this function deletes the informations of a marking
+     * in the database. If the status of this operation is right,
+     * then the marking will be deleted in the file system.
+     */
     public function deleteMarking($markingid){       
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
         $URL = $this->lURL.'/DB/marking/'.$markingid;        
-        $answer = Request::custum('DELETE', $URL, $header, $body);
+        $answer = Request::custom('DELETE', $URL, $header, $body);
         $this->app->response->setStatus($answer['status']);
         
-        if( $answer['status'] == 200){ //nur, wenn file tatsächlich aus DB gelöscht wurde
+        if( $answer['status'] == 200){ //nur, wenn file tatsaechlich aus DB geloescht wurde
             $URL = $this->lURL.'/FS/marking/'.$markingid; 
             /*
-             * eigentlich url der zu löschenden datei schicken und nicht die id???????????????
+             * eigentlich url der zu loeschenden datei schicken und nicht die id???????????????
              */
             $answer = Request::custom('DELETE', $URL, $header, $body);
         }             
     }
-    
+
+    /**
+     * edit a marking
+     *
+     * This function overwrites a marking of an exercise.
+     * First,the marking will be written in the file system.
+     * If the status of this operation is right, then the informations of 
+     * the marking will be overwritten in the database.
+     */
     public function editMarking($markingid, $tutorid){  
         $header = $this->app->request->headers->all();
         $body = json_decode($this->app->request->getBody());
@@ -105,7 +141,7 @@ class Marking
         $URL = $this->lURL.'/FS/marking/'.$markingid.'/tutor/'.$tutorid;
         $answer = Request::custom('PUT', $URL, $header, $file);
         
-        if($answer['status'] == 200){ //nur, wenn file tatsächlich im FS gespeichert wurde .. welcher StatusCode-Bereich soll gelten?
+        if($answer['status'] == 200){ //nur, wenn file tatsaechlich im FS gespeichert wurde .. welcher StatusCode-Bereich soll gelten?
             $body->{'_file'} = json_decode($answer['content']);
             //Anfrage an DataBase
             $URL = $this->lURL.'/DB/marking/'.$markingid.'/tutor/'.$tutorid;
@@ -113,7 +149,12 @@ class Marking
             $this->app->response->setStatus($answer['status']);
         }
     }
-    
+
+    /**
+     * edit a marking state of an exercise
+     * 
+     * This function changes the state of a marking.
+     */
     public function editMarkingState($markingid){  
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();

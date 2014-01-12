@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 require 'Slim/Slim.php';
 include 'include/Assistants/Request.php';   
@@ -22,7 +22,13 @@ class User
     }
     //the URL of the Logic-Controller
     private $lURL = "";             //Einlesen aus config
-    
+
+    /**
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to 
+     * the functions.
+     */
     public function __construct($conf)
     {    
         $this->app = new \Slim\Slim();
@@ -51,9 +57,11 @@ class User
         $this->app->run();
     }        
     /**
-     *set the user rights
+     * set the user rights
      * 
-     * @param (param)
+     * This function changes the right of the user.
+     *
+     * @return integer $status the status code
      */
     public function setUserRights($userid){        
         $body = $this->app->request->getBody();
@@ -63,10 +71,13 @@ class User
         $this->app->response->setStatus($answer['status']);       
     }
     
-     /**
+    /**
      * add a new user
-     * 
-     * @param (param)
+     *
+     * This function adds a user.
+     * The new user will be written in the database.
+     *
+     * @return integer $status the status code
      */
     public function addUser($userid){
         //Parameter abfangen wenn $data "nicht leer"
@@ -76,11 +87,12 @@ class User
         $answer = Request::custom('POST', $URL, $header, $body);
         $this->app->response->setStatus($answer['status']);       
     }
-    
-     /**
+
+    /**
      * edit a user
-     * 
-     * @param (param)
+     *
+     * This function edit a user.
+     * The user will be overwritten in the database.
      */
     public function editUser($userid){        
         $body = $this->app->request->getBody();
@@ -93,7 +105,7 @@ class User
      /**
      * return a list of all users
      * 
-     * @param (param)
+     * This function returns a list of all users from the database.
      */
     public function getUsers(){        
         $body = $this->app->request->getBody();
@@ -107,9 +119,9 @@ class User
      /**
      * get a user
      * 
-     * @param (param)
+     * This function returns a user from the database.
      */
-    public function getUser(){        
+    public function getUser($userid){        
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
         $URL = $this->lURL.'/DB/user/user/'.$userid;
