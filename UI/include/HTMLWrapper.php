@@ -4,7 +4,6 @@
  * Contains the HTMLWrapper class
  */
 
-include_once 'include/Header/Header.php';
 include_once '../Assistants/Logger.php';
 
     /**
@@ -22,12 +21,6 @@ include_once '../Assistants/Logger.php';
          * @var array An array of elements that make up the pages contents
          */
         private $contentElements;
-
-        /**
-         * @var string A navigation bar that should be inserted between
-         * header and body
-         */
-        private $navigationElement;
 
         /**
          * @var array defines all links in the document head
@@ -90,10 +83,6 @@ include_once '../Assistants/Logger.php';
 
                     $this->header->show();
 
-                    if (!is_null($this->navigationElement)) {
-                        print $this->navigationElement;
-                    }
-
                     print '<div id="content-wrapper" class="content-wrapper">';
 
                     // try to print all the elements in contentElements
@@ -115,20 +104,6 @@ include_once '../Assistants/Logger.php';
         }
 
     /**
-     * Sets the value of navigationElement.
-     *
-     * @param $navigationElement the navigation element
-     *
-     * @return self
-     */
-    public function setNavigationElement($navigationElement)
-    {
-        $this->navigationElement = $navigationElement;
-
-        return $this;
-    }
-
-    /**
      * Sets a configfile for links etc. for the head area
      *
      * @param string $configdata is the configfile;
@@ -147,4 +122,4 @@ include_once '../Assistants/Logger.php';
         }
     }
 }
-    ?>
+?>

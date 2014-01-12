@@ -1,5 +1,4 @@
 <?php
-include_once 'include/Header/Header.php';
 include_once 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
 include_once 'include/Helpers.php';
@@ -26,12 +25,17 @@ $databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/course/course/{
 $course = http_get($databaseURI);
 $course = json_decode($course, true)[0];
 
+$menu = Template::WithTemplateFile('include/Navigation/NavigationLecturer.template.html');
+
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user);
 $h->bind($course);
-$h->bind(array("backTitle" => "Veranstaltung wechseln"));
-
+$h->bind(array("backTitle" => "Veranstaltung wechseln",
+               "navigationElement" => $menu,
+               "notificationElements" => array('<div class="notification-bar success">Mimimi</div>',
+                                               '<div class="notification-bar warning">Mimimi</div>',
+                                               '<div class="notification-bar error">Mimimi</div>')));
 
 $databaseURL = "http://141.48.9.92/uebungsplattform/DB/DBExerciseSheet/exercisesheet/course/{$cid}/exercise";
 
@@ -47,7 +51,6 @@ $t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetLecturer.tem
 $t->bind($sheets);
 
 $w = new HTMLWrapper($h, $createSheet, $t);
-$w->setNavigationElement($menu);
 $w->set_config_file('include/configs/config_admin_lecturer.json');
 $w->show();
 ?>
