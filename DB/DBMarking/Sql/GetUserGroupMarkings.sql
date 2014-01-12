@@ -1,3 +1,16 @@
+/**
+ * @file GetUserGroupMarkings.sql
+ * gets all specified markings from %Marking table
+ * @author Till Uhlig
+ * @param int $esid an %ExerciseSheet identifier
+ * @param int $userid a %User (tutor) identifier
+ * @result 
+ * - M, the marking data
+ * - F, the marking file
+ * - S, the submission data
+ * - SS, the selected data
+ */
+ 
 SELECT 
     M.M_id,
     M.U_id_tutor,
@@ -34,4 +47,4 @@ from
 where
     M.ES_id = '$esid'
         and G.U_id_leader = '$userid'
-        and G.U_id_member = 'S.U_id_leader'
+        and G.U_id_member = S.U_id_leader

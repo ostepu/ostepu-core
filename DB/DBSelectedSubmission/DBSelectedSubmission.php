@@ -95,7 +95,14 @@ class DBSelectedSubmission
         // POST SetSelectedSubmission
         $this->_app->post('/' . $this->getPrefix(),
                          array($this,'setSelectedSubmission'));  
-        
+                         
+        // GET GetExerciseSelected
+        $this->_app->get('/' . $this->getPrefix() . '/exercise/:eid',
+                        array($this,'getExerciseSelected'));
+                        
+        // GET GetSheetSelected
+        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid',
+                        array($this,'getSheetSelected'));
                         
         // starts slim only if the right prefix was received
         if (strpos ($this->_app->request->getResourceUri(),'/' . 
@@ -222,6 +229,89 @@ class DBSelectedSubmission
             }
         }
     }
-
+    
+    /**
+     * GET GetExerciseSelected
+     */
+    public function getExerciseSelected($eid)
+    {    
+        Logger::Log("starts GET GetExerciseSelected",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($eid));
+                            
+        // starts a query, by using a given file
+        $result = DBRequest::getRoutedSqlFile($this->query, 
+                                        "Sql/GetExerciseSelected.sql", 
+                                        array("eid" => $eid));
+        
+        // checks the correctness of the query                                     
+        if ($result['status']>=200 && $result['status']<=299){
+            $query = Query::decodeQuery($result['content']);
+            
+            $data = $query->getResponse();
+            
+            // generates an assoc array of selected entry's by using a defined list of 
+            // its attributes
+            $selected = DBJson::getResultObjectsByAttributes($data, 
+                                    SelectedSubmission::getDBPrimaryKey(), 
+                                    SelectedSubmission::getDBConvert());          
+                
+            $this->_app->response->setBody(SelectedSubmission::encodeSelectedSubmission($selected));
+        
+            $this->_app->response->setStatus($result['status']);
+            if (isset($result['headers']['Content-Type']))
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+                
+        } else{
+            Logger::Log("GET GetExerciseSelected failed",LogLevel::ERROR);
+            $this->_app->response->setStatus(409);
+            $this->_app->response->setBody(SelectedSubmission::encodeSelectedSubmission(new SelectedSubmission()));
+            $this->_app->stop();
+        }
+    } 
+    
+    /**
+     * GET GetSheetSelected
+     */
+    public function getSheetSelected($esid)
+    {  
+        Logger::Log("starts GET GetSheetSelected",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($esid));
+                            
+        // starts a query, by using a given file
+        $result = DBRequest::getRoutedSqlFile($this->query, 
+                                        "Sql/GetSheetSelected.sql", 
+                                        array("esid" => $esid));
+        
+        // checks the correctness of the query                                     
+        if ($result['status']>=200 && $result['status']<=299){
+            $query = Query::decodeQuery($result['content']);
+            
+            $data = $query->getResponse();
+            
+            // generates an assoc array of selected entry's by using a defined list of 
+            // its attributes
+            $selected = DBJson::getResultObjectsByAttributes($data, 
+                                    SelectedSubmission::getDBPrimaryKey(), 
+                                    SelectedSubmission::getDBConvert());          
+                
+            $this->_app->response->setBody(SelectedSubmission::encodeSelectedSubmission($selected));
+        
+            $this->_app->response->setStatus($result['status']);
+            if (isset($result['headers']['Content-Type']))
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+                
+        } else{
+            Logger::Log("GET GetSheetSelected failed",LogLevel::ERROR);
+            $this->_app->response->setStatus(409);
+            $this->_app->response->setBody(SelectedSubmission::encodeSelectedSubmission(new SelectedSubmission()));
+            $this->_app->stop();
+        }
+    }
 }
 ?>

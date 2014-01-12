@@ -1,3 +1,15 @@
+/**
+ * @file GetSheetMarkings.sql
+ * gets all specified markings from %Marking table
+ * @author Till Uhlig
+ * @param int $esid an %ExerciseSheet identifier
+ * @result 
+ * - M, the marking data
+ * - F, the marking file
+ * - S, the submission data
+ * - SS, the selected data
+ */
+ 
 SELECT 
     M.M_id,
     M.U_id_tutor,
