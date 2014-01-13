@@ -36,8 +36,8 @@ class LUser
         $this->_conf = $conf;
         $this->query = array();
         
-        $this->query = array(CConfig::getLink($conf->getLinks(),"controller"));
-        $this->lURL = $querry['address'];
+        $this->query = CConfig::getLink($conf->getLinks(),"controller");
+        $this->lURL = $this->query->getAddress();
     
         //SetUserRights
         $this->app->put('/user/:userid/right', array($this, 'setUserRights'));          //Adressen noch anpassen(kein .php;+ Compo-Namen

@@ -47,9 +47,8 @@ class LTutor
         $this->_conf = $conf;
         $this->query = array();
         
-        $this->query = array(CConfig::getLink($conf->getLinks(),"controller"));
-        var_dump($this->query[0]->{"address"});
-        $this->lURL = $this->query['address'];
+        $this->query = CConfig::getLink($conf->getLinks(),"controller");
+        $this->lURL = $this->query->getAddress();
         
         //PUT allocate manual by student
         $this->app->put('/exercisesheet/:exercisesheetid/manu/student', array($this, 'allocateManualByStudent'));
@@ -72,21 +71,17 @@ class LTutor
      * takes one argument and returns a Status-Code
      * @param $exercisesheetid an integer identifies the exercisesheet
      */
-    public function allocateManualByStudent($exercisesheetid){
-/*       
-       $header = $this->app->request->headers->all();
-        $body = json_decode($this->app->request->getBody());
-        $URL = $lURL.'/DB/exercisesheet/'.$exercisesheetid.'/manu/student';
+    public function allocateManualByStudent($exercisesheetid){   
+        $header = $this->app->request->headers->all();
+        $body = json_decode($this->app->request->getBody());        
+        $URL = $this->lURL.'/DB/exercisesheet/'.$exercisesheetid.'/manu/student';
         $status = 200;
-        foreach ($body->{'assignments'} AS $assignment){  
+        foreach ($body->{'assignments'} AS $assignment){ 
             $answer = Request::custom('PUT', $URL, $header, json_encode($assignment));
             if ($answer['status'] > 300){
                 $status = $answer['status'];
             }
-        }
-        $this->app->response->setStatus($status);  
-*/
-print "hallo";        
+        }        
     }
     
     /**
@@ -97,7 +92,7 @@ print "hallo";
     public function allocateManualByExercise($exercisesheetid){
         $header = $this->app->request->headers->all();
         $body = json_decode($this->app->request->getBody());
-        $URL = $lURL.'/DB/exercisesheet/'.$exercisesheetid.'/manu/exercise';
+        $URL = $this->lURL.'/DB/exercisesheet/'.$exercisesheetid.'/manu/exercise';
         $status = 200;
         foreach ($body->{'assignments'} AS $assignment){  
             $answer = Request::custom('PUT', $URL, $header, json_encode($assignment));
@@ -116,15 +111,15 @@ print "hallo";
     public function allocateAutoByStudent($exercisesheetid){
         $header = $this->app->request->headers->all();
         $body = json_decode($this->app->request->getBody());
-        $URL = $lURL.'/DB/exercisesheet/'.$exercisesheetid.'/auto/student';
+        $URL = $this->lURL.'/DB/exercisesheet/'.$exercisesheetid.'/auto/student';
         
         //randomized allocation
         shuffle($body->{'unassigned'}); //randomize the order of elements        
-        $numberOfTutors = count($body->{'tutor'});
+        $numberOfTutors = count($body->{'assignments'});
         $i = 0;
         $arrayOfTutors = $body->{'assignments'};
         foreach ($body->{'unassigned'} AS $student){
-            array_push($arrayOfTutors[$i]->$assigned, $student); //add a student to the assigned-list of a tutor           
+            array_push($arrayOfTutors[$i]->{'assigned'}, $student); //add a student to the assigned-list of a tutor
             if ($i < $numberOfTutors - 1){
                 $i++;
             } else {
@@ -151,15 +146,15 @@ print "hallo";
     public function allocateAutoByExercise($exercisesheetid){
         $header = $this->app->request->headers->all();
         $body = json_decode($this->app->request->getBody());
-        $URL = $lURL.'/DB/exercisesheet/'.$exercisesheetid.'/auto/exercise';
+        $URL = $this->lURL.'/DB/exercisesheet/'.$exercisesheetid.'/auto/exercise';
         
         //randomized allocation
         shuffle($body->{'unassigned'}); //randomize the order of elements        
-        $numberOfTutors = count($body->{'tutor'});
+        $numberOfTutors = count($body->{'assignments'});
         $i = 0;
         $arrayOfTutors = $body->{'assignments'};
         foreach ($body->{'unassigned'} AS $exercise){
-            array_push($arrayOfTutors[$i]->$assigned, $exercise); //add an exercise to the assigned-list of a tutor           
+            array_push($arrayOfTutors[$i]->{'assigned'}, $exercise); //add an exercise to the assigned-list of a tutor           
             if ($i < $numberOfTutors - 1){
                 $i++;
             } else {
@@ -175,7 +170,7 @@ print "hallo";
                 $status = $answer['status'];
             }
         }
-        $this->app->response->setStatus($status);   
+        $this->app->response->setStatus($status);       
     }
 }
 

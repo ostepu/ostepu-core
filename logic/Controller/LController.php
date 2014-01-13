@@ -64,13 +64,15 @@ class LController
         $header = $this->app->request->headers->all();
         
         if ($string[0] == "DB") {
-            unset($string[0]);
+          /*  unset($string[0]);
             $URI = "";//DB-URL;                                                            //URI ergänzen
             foreach ($string as $str) {
                 $URI = $URI.'/'.$str;
             }
+            
             $answer = Request::custom($method, $URI, $header, $body);
-            $this->app->response->setBody($answer['content']);    
+            $this->app->response->setBody($answer['content']); */
+            $this->app->response->setBody("im db pfad \n");
         } elseif ($string[0] == "FS") {
             unset($string[0]);
             $URI = "";//FS-URL;                                                            //URI ergänzen
