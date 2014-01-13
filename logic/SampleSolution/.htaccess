@@ -1,0 +1,2 @@
+﻿RewriteEngine On
+RewriteRule ^ SampleSolution.php [QSA,L]

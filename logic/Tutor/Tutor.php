@@ -86,7 +86,9 @@ class LTutor
     
     /**
      * Function to manual allocate exercises to tutors
+     *
      * takes one argument and returns a Status-Code
+     *
      * @param $exercisesheetid an integer identifies the exercisesheet
      */    
     public function allocateManualByExercise($exercisesheetid){
@@ -105,7 +107,9 @@ class LTutor
     
     /**
      * Function to auto allocate students to tutors
+     *
      * takes one argument and returns a Status-Code
+     *
      * @param $exercisesheetid an integer identifies the exercisesheet
      */   
     public function allocateAutoByStudent($exercisesheetid){
@@ -140,7 +144,9 @@ class LTutor
   
     /**
      * Function to auto allocate exercises to tutors
+     *
      * takes one argument and returns a Status-Code
+     *
      * @param $exercisesheetid an integer identifies the exercisesheet
      */    
     public function allocateAutoByExercise($exercisesheetid){

@@ -31,8 +31,8 @@ class LExercise
         $this->_conf = $conf;
         $this->query = array();
         
-        $this->query = array(CConfig::getLink($conf->getLinks(),"controller"));
-        $this->lURL = $querry['address'];
+        $this->query = CConfig::getLink($conf->getLinks(),"controller");
+        $this->lURL = $this->query->getAddress();
         
         //AddExercise
         $this->app->post(':data+', array($this, 'addExercise'));

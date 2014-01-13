@@ -50,8 +50,8 @@ class LCondition
         $this->_conf = $conf;
         $this->query = array();
         
-        $this->query = array(CConfig::getLink($conf->getLinks(),"controller"));
-        $this->lURL = $querry['address'];
+        $this->query = CConfig::getLink($conf->getLinks(),"controller");
+        $this->lURL = $this->query->getAddress();
         
         //POST SetConditions
         $this->app->post('/course/:courseid', array($this, 'setConditions'));        //Adressen noch anpassen (Parameter mit Compo-Namen)
