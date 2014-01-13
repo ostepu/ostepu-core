@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`File` (
   `F_id` INT NOT NULL AUTO_INCREMENT,
   `F_displayName` VARCHAR(255) NULL,
   `F_address` CHAR(55) NULL,
-  `F_timeStamp` TIMESTAMP NULL,
+  `F_timeStamp` BIGINT NULL DEFAULT 0,
   `F_fileSize` INT NULL,
   `F_hash` CHAR(40) NULL,
   PRIMARY KEY (`F_id`),
@@ -71,7 +71,8 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`User` (
   `U_salt` CHAR(40) NULL,
   `U_failed_logins` INT NULL DEFAULT 0,
   PRIMARY KEY (`U_id`),
-  UNIQUE INDEX `U_id_UNIQUE` (`U_id` ASC))
+  UNIQUE INDEX `U_id_UNIQUE` (`U_id` ASC),
+  UNIQUE INDEX `U_username_UNIQUE` (`U_username` ASC))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1;
 
@@ -84,9 +85,9 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`ExerciseSheet` (
   `ES_id` INT NOT NULL AUTO_INCREMENT,
   `F_id_sampleSolution` INT NULL,
   `F_id_file` INT NULL,
-  `ES_startDate` TIMESTAMP NULL,
-  `ES_endDate` TIMESTAMP NULL,
-  `ES_groupSize` INT NOT NULL DEFAULT 1,
+  `ES_startDate` BIGINT NULL DEFAULT 0,
+  `ES_endDate` BIGINT NULL DEFAULT 0,
+  `ES_groupSize` INT NULL DEFAULT 1,
   `ES_name` VARCHAR(120) NULL,
   PRIMARY KEY (`ES_id`),
   UNIQUE INDEX `ES_id_UNIQUE` (`ES_id` ASC),
@@ -249,7 +250,7 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`Submission` (
   `S_id` INT NOT NULL AUTO_INCREMENT,
   `F_id_file` INT NOT NULL,
   `S_comment` VARCHAR(120) NULL,
-  `S_date` TIMESTAMP NULL,
+  `S_date` BIGINT NULL DEFAULT 0,
   `S_accepted` TINYINT(1) NOT NULL DEFAULT false,
   `E_id` INT NOT NULL,
   `ES_id` INT NULL,
@@ -291,13 +292,13 @@ AUTO_INCREMENT = 1;
 CREATE TABLE IF NOT EXISTS `uebungsplattform`.`Marking` (
   `M_id` INT NOT NULL AUTO_INCREMENT,
   `U_id_tutor` INT NOT NULL,
-  `F_id_file` INT NOT NULL,
+  `F_id_file` INT NULL,
   `S_id` INT NOT NULL,
   `M_tutorComment` VARCHAR(120) NULL,
-  `M_outstanding` TINYINT(1) NOT NULL DEFAULT false,
-  `M_status` INT NOT NULL DEFAULT 0,
-  `M_points` INT NOT NULL,
-  `M_date` TIMESTAMP NOT NULL,
+  `M_outstanding` TINYINT(1) NULL DEFAULT false,
+  `M_status` INT NULL DEFAULT 0,
+  `M_points` INT NULL DEFAULT 0,
+  `M_date` BIGINT NULL DEFAULT 0,
   `E_id` INT NULL,
   `ES_id` INT NULL,
   PRIMARY KEY (`M_id`),
@@ -548,6 +549,12 @@ from User where U_id = userid;
 
 set count = count +1;
 
+if count>=10 then
+UPDATE User
+SET U_flag = 2
+where U_id = userid;
+end if;
+
 UPDATE User
 SET U_failed_logins = count
 where U_id = userid;
@@ -612,13 +619,11 @@ $$
 USE `uebungsplattform`$$
 CREATE TRIGGER `User_BUPD` BEFORE UPDATE ON `User` FOR EACH ROW
 begin
-if (not New.U_flag is null and New.U_flag = OLD.U_flag) then
+/*if (not New.U_flag is null and New.U_flag = OLD.U_flag) then
 SIGNAL sqlstate '45001' set message_text = "no flag change";
-end if;
+end if;*/
 
 IF NEW.U_flag = 0 and OLD.U_flag = 1 THEN
-SET NEW.U_oldUsername = OLD.U_username;
-SET NEW.U_username = '';
 SET NEW.U_email = '';
 SET NEW.U_lastName = '';
 SET NEW.U_firstName = '';
@@ -638,6 +643,25 @@ DELETE FROM `Exercise` WHERE ES_id = OLD.ES_id;
 END;$$
 
 USE `uebungsplattform`$$
+CREATE TRIGGER `ExerciseSheet_BINS` BEFORE INSERT ON `ExerciseSheet` FOR EACH ROW
+begin
+IF NEW.ES_groupSize is null 
+then Set NEW.ES_groupSize = (SELECT C_defaultGroupSize FROM Course WHERE C_id = NEW.C_id limit 1);
+end if;
+end;$$
+
+USE `uebungsplattform`$$
+CREATE TRIGGER `ExerciseSheet_AINS` AFTER INSERT ON `ExerciseSheet` FOR EACH ROW
+begin
+INSERT INTO `Group` 
+SELECT C.U_id , C.U_id , null , NEW.ES_id 
+FROM CourseStatus C
+WHERE C.C_id = NEW.C_id; 
+#AND C.CS_status = 1 
+end;
+$$
+
+USE `uebungsplattform`$$
 CREATE TRIGGER `Group_BINS` BEFORE INSERT ON `Group` FOR EACH ROW
 BEGIN
 SET NEW.C_id = (select ES.C_id from ExerciseSheet ES where ES.ES_id = NEW.ES_id limit 1);
@@ -654,6 +678,14 @@ if (NEW.C_id = NULL) then
 SIGNAL sqlstate '45001' set message_text = "no corresponding exercisesheet";
 END if;
 END;$$
+
+USE `uebungsplattform`$$
+CREATE TRIGGER `Invitation_BINS` BEFORE INSERT ON `Invitation` FOR EACH ROW
+begin
+if ((SELECT COUNT(G.U_id_leader) FROM `Group` G WHERE G.U_id_member = NEW.U_id_member AND G.ES_id = NEW.ES_id)+(SELECT COUNT(U_id_member) FROM Invitation WHERE U_id_member = NEW.U_id_member AND ES_id = NEW.ES_id))>=(SELECT E.ES_groupSize FROM ExerciseSheet E WHERE E.ES_id = NEW.ES_id) 
+then SIGNAL sqlstate '45001' set message_text = "maximal groupsize reached";
+end if;
+end;$$
 
 USE `uebungsplattform`$$
 CREATE TRIGGER `ExerciseType_BDEL` BEFORE DELETE ON `ExerciseType` FOR EACH ROW
