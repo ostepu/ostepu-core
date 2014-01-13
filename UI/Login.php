@@ -1,5 +1,4 @@
 <?php
-include 'include/Header/Header.php';
 include 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
 ?>
@@ -25,14 +24,14 @@ include_once 'include/Template.php';
 ?>
 
 <?php
-// construct a new Header
-$h = new Header("Übungsplattform",
-                "",
-                "",
-                "");
 
-$h->setBackURL("index.php")
-->setBackTitle("zur Veranstaltung");
+$notifications = array();
+
+// construct a new header
+$h = Template::WithTemplateFile('include/Header/Header.template.html');
+$h->bind(array("backTitle" => "Veranstaltung wechseln",
+               "name" => "Übungsplattform",
+               "notificationElements" => $notifications));
 
 // construct a login element
 $userLogin = Template::WithTemplateFile('include/Login/Login.template.html');
