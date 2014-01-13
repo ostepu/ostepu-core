@@ -33,6 +33,7 @@ $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user);
 $h->bind(array("backTitle" => "Veranstaltung wechseln",
                "backURL" => "index.php?uid={$uid}",
+               "name" => "Übungsplattform",
                "notificationElements" => $notifications));
 
 $pageData = array('uid' => $user['id'],

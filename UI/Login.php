@@ -31,6 +31,7 @@ $notifications = array();
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind(array("backTitle" => "Veranstaltung wechseln",
                "name" => "Übungsplattform",
+               "hideLogoutLink" => "true",
                "notificationElements" => $notifications));
 
 // construct a login element

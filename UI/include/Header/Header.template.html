@@ -3,9 +3,11 @@
         <div class="course-title uppercase">
             <?php print $name; ?>
         </div>
-        <a class="change-course" href="<?php print $backURL; ?>">
-            <?php print $backTitle; ?>
-        </a>
+        <?php if (!is_null($backURL)) { ?>
+            <a class="change-course" href="<?php print $backURL; ?>">
+                <?php print $backTitle; ?>
+            </a>
+        <?php } ?>
     </div>
     <div class="course-extra-info left">
         <?php print $extraInfo; ?>
@@ -17,7 +19,9 @@
         <div class="user-id">
             <?php print $userName; ?>
         </div>
-        <a class="log-out" href="#">Ausloggen</a>
+        <?php if (is_null($hideLogoutLink)) { ?>
+            <a class="log-out" href="#">Ausloggen</a>
+        <?php } ?>
     </div>
 </div>
 
