@@ -6,8 +6,16 @@ include_once( 'include/CConfig.php' );
 
 \Slim\Slim::registerAutoloader();
 
+/**
+ * The LTutor class
+ *
+ * This class handles everything belongs to TutorAssignments
+ */
 class LTutor
 {    
+    /**
+     *Values needed for conversation with other components
+     */
     private $_conf=null;
     
     private static $_prefix = "tutor";
@@ -20,57 +28,154 @@ class LTutor
     {
         LTutor::$_prefix = $value;
     }
+    /**
+     *Address of the Logic-Controller
+     *dynamic set by CConf below
+     */
     private $lURL = ""; //aus config lesen
     
     public function __construct($conf)
     {    
+        /**
+         *Initialise the Slim-Framework
+         */
         $this->app = new \Slim\Slim();
         $this->app->response->headers->set('Content-Type', 'application/json');
+        /**
+         *Set the Logiccontroller-URL
+         */
         $this->_conf = $conf;
         $this->query = array();
         
         $this->query = array(CConfig::getLink($conf->getLinks(),"controller"));
-        $this->lURL = $querry['address'];
+        var_dump($this->query[0]->{"address"});
+        $this->lURL = $this->query['address'];
         
-        //AllocateByExercise
-        $this->app->get('', array($this, 'allocateByExercise'));        //Adressen/Parameter fehlen
+        //PUT allocate manual by student
+        $this->app->put('/exercisesheet/:exercisesheetid/manu/student', array($this, 'allocateManualByStudent'));
         
-        //AllocateByStudent
-        $this->app->get('', array($this, 'allocateByStudent'));        //Adressen/Parameter fehlen
+        //PUT allocate manual by exercise
+        $this->app->put('/exercisesheet/:exercisesheetid/manu/exercise', array($this, 'allocateManualByExercise'));
         
-        //AutoAllocate
-        $this->app->put('/course/:courseid/exercise/:sheetid/auto/autoart',
-                        array($this, 'autoAllocate'));        //Adressen noch anpassen (Parameter mit Compo-Namen)
-
-        //GetTutorList
-        $this->app->get('/course/:courseid/exercise/:sheetid/manu/manuart',
-                        array($this, 'getTutorList'));
-                        
-        //SetTutorList
-        $this->app->post('/course/:courseid/exercise/:sheetid/manu/manuart',
-                        array($this, 'setTutorList'));
-                        
+        //PUT allocate auto by student
+        $this->app->put('/exercisesheet/:exercisesheetid/auto/student', array($this, 'allocateAutoByStudent'));
+        
+        //PUT allocate manual by exercise
+        $this->app->put('/exercisesheet/:exercisesheetid/auto/exercise', array($this, 'allocateAutoByExercise'));       
+        
+        //run slim
         $this->app->run();
     }
     
-    public function allocateByExercise(){
-    
+    /**
+     * Function to manual allocate students to tutors
+     * takes one argument and returns a Status-Code
+     * @param $exercisesheetid an integer identifies the exercisesheet
+     */
+    public function allocateManualByStudent($exercisesheetid){
+/*       
+       $header = $this->app->request->headers->all();
+        $body = json_decode($this->app->request->getBody());
+        $URL = $lURL.'/DB/exercisesheet/'.$exercisesheetid.'/manu/student';
+        $status = 200;
+        foreach ($body->{'assignments'} AS $assignment){  
+            $answer = Request::custom('PUT', $URL, $header, json_encode($assignment));
+            if ($answer['status'] > 300){
+                $status = $answer['status'];
+            }
+        }
+        $this->app->response->setStatus($status);  
+*/
+print "hallo";        
     }
     
-    public function allocateByStudent(){
-    
+    /**
+     * Function to manual allocate exercises to tutors
+     * takes one argument and returns a Status-Code
+     * @param $exercisesheetid an integer identifies the exercisesheet
+     */    
+    public function allocateManualByExercise($exercisesheetid){
+        $header = $this->app->request->headers->all();
+        $body = json_decode($this->app->request->getBody());
+        $URL = $lURL.'/DB/exercisesheet/'.$exercisesheetid.'/manu/exercise';
+        $status = 200;
+        foreach ($body->{'assignments'} AS $assignment){  
+            $answer = Request::custom('PUT', $URL, $header, json_encode($assignment));
+            if ($answer['status'] > 300){
+                $status = $answer['status'];
+            }
+        }
+        $this->app->response->setStatus($status); 
     }
     
-    public function autoAllocate($courseid, $sheetid, $autoart){
-    
+    /**
+     * Function to auto allocate students to tutors
+     * takes one argument and returns a Status-Code
+     * @param $exercisesheetid an integer identifies the exercisesheet
+     */   
+    public function allocateAutoByStudent($exercisesheetid){
+        $header = $this->app->request->headers->all();
+        $body = json_decode($this->app->request->getBody());
+        $URL = $lURL.'/DB/exercisesheet/'.$exercisesheetid.'/auto/student';
+        
+        //randomized allocation
+        shuffle($body->{'unassigned'}); //randomize the order of elements        
+        $numberOfTutors = count($body->{'tutor'});
+        $i = 0;
+        $arrayOfTutors = $body->{'assignments'};
+        foreach ($body->{'unassigned'} AS $student){
+            array_push($arrayOfTutors[$i]->$assigned, $student); //add a student to the assigned-list of a tutor           
+            if ($i < $numberOfTutors - 1){
+                $i++;
+            } else {
+                $i = 0;
+            }
+        }
+        
+        //requests to DataBase
+        $status = 200;        
+        foreach ($arrayOfTutors AS $assignment){  
+            $answer = Request::custom('PUT', $URL, $header, json_encode($assignment));
+            if ($answer['status'] > 300){
+                $status = $answer['status'];
+            }
+        }
+        $this->app->response->setStatus($status);
     }
-    
-    public function getTutorList($courseid, $sheetid, $manuart){
-    
-    }
-
-    public function setTutorList($courseid, $sheetid, $manuart){
-    
+  
+    /**
+     * Function to auto allocate exercises to tutors
+     * takes one argument and returns a Status-Code
+     * @param $exercisesheetid an integer identifies the exercisesheet
+     */    
+    public function allocateAutoByExercise($exercisesheetid){
+        $header = $this->app->request->headers->all();
+        $body = json_decode($this->app->request->getBody());
+        $URL = $lURL.'/DB/exercisesheet/'.$exercisesheetid.'/auto/exercise';
+        
+        //randomized allocation
+        shuffle($body->{'unassigned'}); //randomize the order of elements        
+        $numberOfTutors = count($body->{'tutor'});
+        $i = 0;
+        $arrayOfTutors = $body->{'assignments'};
+        foreach ($body->{'unassigned'} AS $exercise){
+            array_push($arrayOfTutors[$i]->$assigned, $exercise); //add an exercise to the assigned-list of a tutor           
+            if ($i < $numberOfTutors - 1){
+                $i++;
+            } else {
+                $i = 0;
+            }
+        }
+        
+        //requests to DataBase
+        $status = 200;        
+        foreach ($arrayOfTutors AS $assignment){  
+            $answer = Request::custom('PUT', $URL, $header, json_encode($assignment));
+            if ($answer['status'] > 300){
+                $status = $answer['status'];
+            }
+        }
+        $this->app->response->setStatus($status);   
     }
 }
 

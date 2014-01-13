@@ -39,7 +39,7 @@ class LAttachment
     public function __construct($conf)
     {    
         /**
-         *Initialise the Sli-Framework
+         *Initialise the Slim-Framework
          */
         $this->app = new \Slim\Slim();
         $this->app->response->headers->set('Content-Type', 'application/json');
@@ -51,7 +51,6 @@ class LAttachment
         $this->query = array();
         
         $this->query = CConfig::getLink($conf->getLinks(),"controller");
-       // echo var_dump($conf);
         $this->lURL = $this->query->getAddress();
         
         //POST AddAttachment
