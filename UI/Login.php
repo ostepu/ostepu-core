@@ -62,17 +62,19 @@ function loginUser($username, $password)
     return false;
 }
 
-function updateUser($username)
+function updateUser($username, $password)
 {
+    $_SESSION['session'] = hash('sha256', session_id().$username.$password);
     /**
-     * @todo create session on server
+     * @todo create session on server with $_SESSION['session']
      */
-    // set session variable
+
     /**
-     * @todo set it only if created session on server is successful
+     * @todo only if created session on server is successful
      */
     $_SESSION['signed'] = true;
     $_SESSION['lastactive'] = $_SERVER['REQUEST_TIME'];
+    
 
     return true;
 }
@@ -88,7 +90,7 @@ if (isset($_POST['action'])) {
 
     if ($signed) {
         // update user and return result
-        $update = updateUser($input['username']);
+        $update = updateUser($input['username'], $input['password']);
 
         if ($update) {
             header('location: index.php?uid='.$_SESSION['uid']);
