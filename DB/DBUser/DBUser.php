@@ -187,12 +187,9 @@ class DBUser
         if ($result['status']>=200 && $result['status']<=299){
             $this->_app->response->setBody(User::encodeUser(new User()));
             
-           // if (isset($result['headers']['Content-Type']))
-               // $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-          //  $this->_app->response->headers->set('Content-Type', "application/json");
-          
-            $this->_app->response->headers->set("Connection", "Close");
+            if (isset($result['headers']['Content-Type']))
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+
             Logger::Log("DELETE RemoveUser ok",LogLevel::DEBUG);   
             $this->_app->response->setStatus(200);
             $this->_app->stop();
@@ -222,14 +219,14 @@ class DBUser
         foreach ($insert as $in){
             // generates the insert data for the object
             $data = $in->getInsertData();
-            
+
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
-                                            "Sql/SetUser.sql", 
+                                            "Sql/AddUser.sql", 
                                             array("values" => $data));                   
-           
+                               
             // checks the correctness of the query    
-            if ($result['status']>=200 && $result['status']<=299){
+            if ($result['status']>=200 && $result['status']<=299 ){
                 $queryResult = Query::decodeQuery($result['content']);
                 
                 // sets the new auto-increment id
@@ -247,6 +244,7 @@ class DBUser
                 $this->_app->stop();
             }
         }
+
     }
     
     /**
