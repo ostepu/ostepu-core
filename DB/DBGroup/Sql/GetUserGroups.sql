@@ -1,6 +1,13 @@
--- create a table for output, where all members of the groups for a specific user are listed
--- U is the groupleader
--- U2 are the members of the grou without the leader
+/**
+ * @file GetSheetGroups.sql
+ * gets a table for output, where all members of the groups for a specific user are listed
+ * @author Till Uhlig
+ * @param int $userid a %Group identifier
+ * @result 
+ * - U is the groupleader
+ * - U2 are the members of the group without the leader
+ */
+
 SELECT 
     U2.U_id,
     U2.U_username,
