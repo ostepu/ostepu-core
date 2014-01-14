@@ -29,8 +29,6 @@ class LUser
      * Sets the Prefix of this component.
      *
      * @param mixed $_prefix the _prefix
-     *
-     * @return self
      */
     public static function setPrefix($value)
     {
