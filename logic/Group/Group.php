@@ -10,9 +10,9 @@ include_once( 'include/CConfig.php' );
 class LGroup
 {
     private $_conf=null;
-    
+
     private static $_prefix = "group";
-    
+
     public static function getPrefix()
     {
         return LGroup::$_prefix;
@@ -21,43 +21,43 @@ class LGroup
     {
         LGroup::$_prefix = $value;
     }
-    
+
     private $LController = "";              //Einlesen aus config.ini
 
     public function __construct($conf)
-    {    
+    {
         $this->app = new \Slim\Slim();
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->_conf = $conf;
         $this->query = array();
-        
+
         $this->query = CConfig::getLink($conf->getLinks(),"controller");
         $this->lURL = $this->query->getAddress();
-        
-        
+
+
         //InviteInGroup
-        $this->app->put('/user/:userid', 
+        $this->app->put('/user/:userid',
                             array($this, 'inviteInGroup'));
-        
+
         //JoinGroup
         $this->app->put('/accept', array($this, 'joinGroup'));
-        
-        //LeaveGroup    
-        $this->app->put('/user/:userid/exit', 
+
+        //LeaveGroup
+        $this->app->put('/user/:userid/leave',
                             array($this, 'leaveGroup'));
-        
-        //EjectFromGroup    
-        $this->app->put('/user/:userid/deleteMember', 
+
+        //EjectFromGroup
+        $this->app->put('/user/:userid/deleteMember',
                             array($this, 'ejectFromGroup'));
-        
-        //GetGroup    
-        $this->app->get('/user/:userid/exerciseSheet/:sheetid', 
+
+        //GetGroup
+        $this->app->get('/user/:userid/exerciseSheet/:sheetid',
                         array($this, 'getGroup'));
-                        
+
         $this->app->run();
-    }    
-    
-    
+    }
+
+
     public function inviteInGroup($userid)
     {
         $req = \Slim\Slim::getInstance()->request()->getBody();
@@ -82,7 +82,7 @@ class LGroup
     {
         $req = \Slim\Slim::getInstance()->request()->getBody();
         $header = \Slim\Slim::getInstance()->request()->headers->all();
-        $URL = $this->LController.'/DB/user/'.$userid.'/exit';
+        $URL = $this->LController.'/DB/user/'.$userid.'/leave';
         $answer = Request::custom('PUT', $URL, $header, $req);
         $this->app->response->setStatus($answer['status']);
 
@@ -99,7 +99,7 @@ class LGroup
     }
 
     public function getGroup($userid, $sheetid)
-    {  
+    {
         //$req = \Slim\Slim::getInstance()->request()->getBody();
         $req = "";
         $header = \Slim\Slim::getInstance()->request()->headers->all();
@@ -113,7 +113,7 @@ class LGroup
 }
 
 /**
- * get new Config-Datas from DB 
+ * get new Config-Datas from DB
  */
 $com = new CConfig(LGroup::getPrefix());
 
