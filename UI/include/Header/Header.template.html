@@ -25,8 +25,13 @@
     </div>
 </div>
 
-<?php print $navigationElement; ?>
+<?php if (isset($notificationElements)) {
+        print $navigationElement;
+    }?>
 
-<?php foreach ($notificationElements as $notificationElement) {
-    print $notificationElement;
-} ?>
+<?php 
+if (isset($notificationElements)) {
+    foreach ($notificationElements as $notificationElement) {
+        print $notificationElement;
+    }
+}?>
