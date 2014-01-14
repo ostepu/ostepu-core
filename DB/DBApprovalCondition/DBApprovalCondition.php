@@ -21,26 +21,28 @@ if (!$com->used())
     
 /**
  * A class, to abstract the "ApprovalCondition" table from database
+ *
+ * @author Till Uhlig
  */
 class DBApprovalCondition
 {
     /**
-     * @var $_app the slim object
+     * @var Slim $_app the slim object
      */ 
     private $_app=null;
     
     /**
-     * @var $_conf the component data object
+     * @var Component $_conf the component data object
      */ 
     private $_conf=null;
     
     /**
-     * @var $query a list of links to a query component
+     * @var Link[] $query a list of links to a query component
      */ 
     private $query=array();
     
     /**
-     * @var $_prefix the prefix, the class works with
+     * @var string $_prefix the prefixes, the class works with (comma separated)
      */ 
     private static $_prefix = "approvalcondition";
     
@@ -57,7 +59,7 @@ class DBApprovalCondition
     /**
      * the $_prefix setter
      *
-     * @param $value the new value for $_prefix
+     * @param string $value the new value for $_prefix
      */ 
     public static function setPrefix($value)
     {
@@ -67,7 +69,7 @@ class DBApprovalCondition
     /**
      * the component constructor
      *
-     * @param $conf component data
+     * @param Component $conf component data
      */ 
     public function __construct($conf)
     {
@@ -114,10 +116,16 @@ class DBApprovalCondition
     /**
      * PUT EditApprovalCondition
      *
-     * @param $apid a database approval condition identifier
+     * @param int $apid a database approval condition identifier
      */
     public function editApprovalCondition($apid)
     {
+        Logger::Log("starts PUT EditApprovalCondition",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($apid));
+                            
         // decode the received approval condition data, as an object
         $insert = ApprovalCondition::decodeApprovalCondition($this->_app->request->getBody());
         
@@ -138,7 +146,7 @@ class DBApprovalCondition
             if ($result['status']>=200 && $result['status']<=299){
                 $this->_app->response->setStatus(201);
                 if (isset($result['headers']['Content-Type']))
-                    header($result['headers']['Content-Type']);
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
                 Logger::Log("PUT EditApprovalCondition failed",LogLevel::ERROR);
@@ -151,13 +159,18 @@ class DBApprovalCondition
     /**
      * DELETE DeleteApprovalCondition
      *
-     * @param $apid a database approval condition identifier
+     * @param int $apid a database approval condition identifier
      */
     public function deleteApprovalCondition($apid)
     {
-    
-         // starts a query, by using a given file
-         $result = DBRequest::getRoutedSqlFile($this->query, 
+        Logger::Log("starts DELETE DeleteApprovalCondition",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($apid));
+                            
+        // starts a query, by using a given file
+        $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/DeletePossibleType.sql", 
                                         array("apid" => $apid));    
             
@@ -166,7 +179,7 @@ class DBApprovalCondition
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE DeleteApprovalCondition failed",LogLevel::ERROR);
@@ -180,6 +193,8 @@ class DBApprovalCondition
      */
     public function setApprovalCondition()
     {
+        Logger::Log("starts POST SetApprovalCondition",LogLevel::DEBUG);
+        
         // decode the received approval condition data, as an object
         $insert = ApprovalCondition::decodeApprovalCondition($this->_app->request->getBody());
         
@@ -207,7 +222,7 @@ class DBApprovalCondition
                 $this->_app->response->setBody(ApprovalCondition::encodeApprovalCondition($obj)); 
                 $this->_app->response->setStatus(201);
                 if (isset($result['headers']['Content-Type']))
-                    header($result['headers']['Content-Type']);
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
                 Logger::Log("POST SetApprovalCondition failed",LogLevel::ERROR);
@@ -221,7 +236,9 @@ class DBApprovalCondition
      * GET GetAllApprovalConditions
      */
     public function getAllApprovalConditions()
-    {    
+    {   
+        Logger::Log("starts GET GetAllApprovalConditions",LogLevel::DEBUG);
+        
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetAllApprovalConditions.sql", 
@@ -243,7 +260,7 @@ class DBApprovalCondition
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetAllApprovalConditions failed",LogLevel::ERROR);
@@ -256,10 +273,16 @@ class DBApprovalCondition
     /**
      * GET GetApprovalCondition
      *
-     * @param $apid a database approval condition identifier
+     * @param int $apid a database approval condition identifier
      */
     public function getApprovalCondition($apid)
-    {      
+    {     
+        Logger::Log("starts GET GetApprovalCondition",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($apid));
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetApprovalCondition.sql", 
@@ -288,7 +311,7 @@ class DBApprovalCondition
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetApprovalCondition failed",LogLevel::ERROR);
@@ -301,10 +324,16 @@ class DBApprovalCondition
     /**
      * GET GetCourseApprovalConditions
      *
-     * @param $courseid a database course identifier
+     * @param int $courseid a database course identifier
      */
     public function getCourseApprovalConditions($courseid)
-    {       
+    {      
+        Logger::Log("starts GET GetCourseApprovalConditions",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($courseid));
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetCourseApprovalCondition.sql", 
@@ -329,7 +358,7 @@ class DBApprovalCondition
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetCourseApprovalConditions failed",LogLevel::ERROR);

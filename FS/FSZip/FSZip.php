@@ -1,58 +1,91 @@
 <?php
 /**
- * @file (filename)
- * %(description)
+ * @file FSZip.php contains the FSZip class
  */ 
 
 require 'Include/Slim/Slim.php';
-include 'Include/CConfig.php';
-include 'Include/Structures.php';
-include 'Include/Request.php';
+include_once( 'Include/CConfig.php' );
+include_once( 'Include/Structures.php' );
+include_once( 'Include/Request.php' );
 
 \Slim\Slim::registerAutoloader();
 
+Logger::Log("begin FSZip",LogLevel::DEBUG);
+
+// runs the CConfig
 $com = new CConfig(FSZip::getBaseDir());
 
+// runs the FSZip
 if (!$com->used())
     new FSZip($com->loadConfig());
+    
+Logger::Log("end FSZip",LogLevel::DEBUG);
 
 /**
- * (description)
+ * A class, to create ZIP archives and get ZIP archives from file system
  */
 class FSZip
 {
+    /**
+     * @var string $_baseDir the name of the folder where the zip files would be
+     * stored in filesystem
+     */
     private static $_baseDir = "zip";
     
+    /**
+     * the string $_baseDir getter
+     *
+     * @return the value of $_baseDir
+     */ 
     public static function getBaseDir()
     {
         return FSZip::$_baseDir;
     }
     
+    /**
+     * the $_baseDir setter
+     *
+     * @param string $value the new value for $_baseDir
+     */  
     public static function setBaseDir($value)
     {
         FSZip::$_baseDir = $value;
     }
     
+    /**
+     * @var Slim $_app the slim object
+     */ 
     private $_app = null;
+    
+    /**
+     * @var Component $_conf the component data object
+     */ 
     private $_conf = null;
     
-    
+    /**
+     * @var Link $getFile a link to a component where we get our files from, e.g. FSControl
+     */ 
     private $getFile = array();
+    
+    /**
+     * @var Link $_fs a link to components which works with files, e.g. FSBinder
+     */ 
     private $_fs = array();
     
     /**
-     * (description)
+     * the component constructor
      *
-     * @param $conf (description)
-     */
+     * @param Component $conf component data
+     */ 
     public function __construct($conf)
     {
+        // initialize component
         $this->_conf = $conf;
         $this->_fs = CConfig::deleteFromArray($this->_conf->getLinks(), "getFile");
         $this->getFile = array(CConfig::getLink($conf->getLinks(),"getFile"));
-
+        
+        // initialize slim
         $this->_app = new \Slim\Slim();
-
         $this->_app->response->headers->set('Content-Type', '_application/json');
         
         // POST PostZip
@@ -67,6 +100,7 @@ class FSZip
         // DELETE DeleteZip
         $this->_app->delete('/'.FSZip::$_baseDir.'/:hash', array($this,'deleteZip'));
         
+        // starts slim only if the right prefix was received
         if (strpos($this->_app->request->getResourceUri(), '/'.FSZip::$_baseDir) === 0){
         // run Slim
         $this->_app->run();
@@ -84,7 +118,8 @@ class FSZip
         if (!is_array($fileObject))
             $fileObject = array($fileObject);
         
-        // generate hash
+        // generate sha1 hash for the zip, we have to create
+        // (the name and the hash are the same)
         $hashArray = array();
         foreach ($fileObject as $part){ 
             array_push($hashArray, $part->getAddress());
@@ -96,21 +131,34 @@ class FSZip
         $zip = new ZipArchive();
         $savepath = "temp/".$hash;
 
+        // if the directory doesn't exists, create it
         FSZip::generatepath(dirname($savepath));
         
         if ($zip->open($savepath, ZIPARCHIVE::CREATE)===TRUE) {
             foreach ($fileObject as $part){
-                $links = FSZip::filterRelevantLinks($this->getFile, $part->getHash());
-                $result = Request::routeRequest("GET",
-                                                '/'.$part->getAddress() . '/' . $part->getDisplayName(),
-                                                $this->_app->request->headers->all(),
-                                                "",
-                                                $links,
-                                                explode('/',$part->getAddress())[0],
-                                                "getFile");
+                if ($part->getBody() !== null){
+                    $zip->addFromString($part->getDisplayName(), base64_decode($part->getBody()));
+                } else {
+                    $links = FSZip::filterRelevantLinks($this->getFile, $part->getHash());
+                    $result = Request::routeRequest("GET",
+                                                    '/'.$part->getAddress() . '/' . $part->getDisplayName(),
+                                                    $this->_app->request->headers->all(),
+                                                    "",
+                                                    $links,
+                                                    explode('/',$part->getAddress())[0],
+                                                    "getFile");
                                                 
-                if (isset($result['content']))
-                    $zip->addFromString($part->getDisplayName(), $result['content']);
+                    if (isset($result['content'])){
+                        $zip->addFromString($part->getDisplayName(), $result['content']);
+                    } else {
+                        $this->_app->response->setStatus(451);
+                        $zipFile->setBody(null);
+                        $this->_app->response->setBody(File::encodeFile($zipFile));
+                        $zip->close(); 
+                        unlink($savepath);     
+                        $this->_app->stop();                        
+                    }
+                }
             }            
             $zip->close();          
         }
@@ -151,8 +199,8 @@ class FSZip
     /**
      * GET Zip
      *
-     * @param $hash (description)
-     * @param $filename (description)
+     * @param string $hash the sha1 file hash
+     * @param string $filename the display name of the file, e.g. abc.pdf
      */
     public function getZipDocument($hash, $filename)
     {
@@ -180,7 +228,7 @@ class FSZip
     /**
      * GET Zipdata
      *
-     * @param $hash (description)
+     * @param string $hash the sha1 file hash
      */
     public function getZipData($hash)
     {   
@@ -211,11 +259,10 @@ class FSZip
     }
     
     /**
-     * (description)
+     * DELETE Zip
      *
-     * @param $hash (description)
+     * @param string $hash the sha1 file hash
      */
-    // DELETE Zip
     public function deleteZip($hash)
     {
         $links = FSZip::filterRelevantLinks($this->_fs, $hash);
@@ -241,10 +288,11 @@ class FSZip
     }
     
     /**
-     * (description)
+     * generates the folder structure for a given type and the first three chars
+     * of a given file name
      *
-     * @param $type (description)
-     * @param $file (description)
+     * @param string $type a basedir, e.g. zip
+     * @param string $file a file name
      */
     public static function generateFilePath($type,$file)
     {
@@ -256,9 +304,9 @@ class FSZip
     }
     
     /**
-     * (description)
+     * Creates the specified directory
      *
-     * @param $path (description)
+     * @param string $path a path, e.g. /a/b/c
      */
     public static function generatepath($path){
         $parts = explode("/", $path);
@@ -274,10 +322,10 @@ class FSZip
     }
     
     /**
-     * (description)
+     * filters relevant links from a list of links
      *
-     * @param $linkedComponents (description)
-     * @param $hash (description)
+     * @param Link[] $linkedComponents a list of links
+     * @param string $hash a sha1 hash
      */
     public static function filterRelevantLinks($linkedComponents, $hash)
     {
@@ -294,17 +342,21 @@ class FSZip
     }
     
     /**
-     * (description)
+     * checks whether a hash is relevant
      *
-     * @param $hash (description)
-     * @param $relevant_begin (description)
-     * @param $relevant_end (description)
+     * @param string $hash the test hash
+     * @param string $relevant_begin a hash, which represents the relevanz beginning
+     * @param string $relevant_end a hash, which represents the relevanz ending
      */
     public static function isRelevant($hash,$relevant_begin,$relevant_end)
     {
+        // to compare the begin and the end, we need an other form
         $begin = hexdec(substr($relevant_begin,0,strlen($relevant_begin)));
         $end = hexdec(substr($relevant_end,0,strlen($relevant_end)));
+        
+        // the numeric form of the test hash
         $current = hexdec(substr($hash,0,strlen($relevant_end)));
+        
         if ($current>=$begin && $current<=$end){
             return true;
         }

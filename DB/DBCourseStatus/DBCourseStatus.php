@@ -21,26 +21,28 @@ if (!$com->used())
     
 /**
  * A class, to abstract the "CourseStatus" table from database
+ *
+ * @author Till Uhlig
  */
 class DBCourseStatus
 {
     /**
-     * @var $_app the slim object
+     * @var Slim $_app the slim object
      */
     private $_app=null;
     
     /**
-     * @var $_conf the component data object
+     * @var Component $_conf the component data object
      */ 
     private $_conf=null;
     
     /**
-     * @var $query a list of links to a query component
+     * @var Link[] $query a list of links to a query component
      */ 
     private $query=array();
     
     /**
-     * @var $_prefix the prefix, the class works with
+     * @var string $_prefix the prefixes, the class works with (comma separated)
      */ 
     private static $_prefix = "coursestatus";
     
@@ -57,7 +59,7 @@ class DBCourseStatus
     /**
      * the $_prefix setter
      *
-     * @param $value the new value for $_prefix
+     * @param string $value the new value for $_prefix
      */ 
     public static function setPrefix($value)
     {
@@ -67,7 +69,7 @@ class DBCourseStatus
     /**
      * the component constructor
      *
-     * @param $conf component data
+     * @param Component $conf component data
      */ 
     public function __construct($conf)
     {
@@ -115,10 +117,17 @@ class DBCourseStatus
     /**
      * PUT EditMemberRight
      *
-     * @param $userid a database user identifier
+     * @param int $userid a database user identifier
      */
     public function editMemberRight($courseid,$userid)
     {
+        Logger::Log("starts PUT EditMemberRight",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($courseid),
+                            ctype_digit($userid));
+                            
         // decode the received user data, as an object
         $insert = User::decodeUser($this->_app->request->getBody());
         
@@ -139,7 +148,7 @@ class DBCourseStatus
             if ($result['status']>=200 && $result['status']<=299){
                 $this->_app->response->setStatus(201);
                 if (isset($result['headers']['Content-Type']))
-                    header($result['headers']['Content-Type']);
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
                 Logger::Log("PUT EditMemberRight failed",LogLevel::ERROR);
@@ -152,11 +161,18 @@ class DBCourseStatus
     /**
      * DELETE RemoveCourseMember
      *
-     * @param $courseid a database course identifier
-     * @param $userid a database user identifier
+     * @param int $courseid a database course identifier
+     * @param int $userid a database user identifier
      */
     public function removeCourseMember($courseid,$userid)
     {
+        Logger::Log("starts DELETE RemoveCourseMember",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($courseid),
+                            ctype_digit($userid));
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/RemoveCourseMember.sql", 
@@ -166,7 +182,7 @@ class DBCourseStatus
         if ($result['status']>=200 && $result['status']<=299){
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE RemoveCourseMember failed",LogLevel::ERROR);
@@ -178,11 +194,13 @@ class DBCourseStatus
     /**
      * POST AddCourseMember
      *
-     * @param $courseid a database course identifier
-     * @param $userid a database user identifier
+     * @param int $courseid a database course identifier
+     * @param int $userid a database user identifier
      */
     public function addCourseMember()
     {
+        Logger::Log("starts POST AddCourseMember",LogLevel::DEBUG);
+        
         // decode the received user data, as an object
         $insert = User::decodeUser($this->_app->request->getBody());
         
@@ -203,7 +221,7 @@ class DBCourseStatus
             if ($result['status']>=200 && $result['status']<=299){
                 $this->_app->response->setStatus(201);
                 if (isset($result['headers']['Content-Type']))
-                    header($result['headers']['Content-Type']);
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
                 Logger::Log("POST AddCourseMember failed",LogLevel::ERROR);
@@ -216,11 +234,18 @@ class DBCourseStatus
     /**
      * GET GetMemberRight
      *
-     * @param $courseid a database course identifier
-     * @param $userid a database user identifier
+     * @param int $courseid a database course identifier
+     * @param int $userid a database user identifier
      */
     public function getMemberRight($courseid,$userid)
     {
+        Logger::Log("starts GET GetMemberRight",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($courseid),
+                            ctype_digit($userid));
+                            
         // starts a query, by using a given file
          $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetMemberRight.sql", 
@@ -273,7 +298,7 @@ class DBCourseStatus
 
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetMemberRight failed",LogLevel::ERROR);
@@ -286,10 +311,16 @@ class DBCourseStatus
     /**
      * GET GetMemberRights
      *
-     * @param $userid a database user identifier
+     * @param int $userid a database user identifier
      */
     public function getMemberRights($userid)
     {
+        Logger::Log("starts GET GetMemberRights",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($userid));
+                            
         // starts a query, by using a given file
          $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetMemberRights.sql", 
@@ -342,7 +373,7 @@ class DBCourseStatus
 
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetMemberRights failed",LogLevel::ERROR);
@@ -355,10 +386,16 @@ class DBCourseStatus
     /**
      * GET GetCourseRights
      *
-     * @param $courseid a database course identifier
+     * @param int $courseid a database course identifier
      */
     public function getCourseRights($courseid)
     {
+        Logger::Log("starts GET GetCourseRights",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($courseid));
+                            
         // starts a query, by using a given file
          $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetCourseRights.sql", 
@@ -407,7 +444,7 @@ class DBCourseStatus
 
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetCourseRights failed",LogLevel::ERROR);

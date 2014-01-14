@@ -16,32 +16,34 @@ include_once( 'Include/Logger.php' );
 // runs the CConfig
 $com = new CConfig(DBInvitation::getPrefix());
 
-// runs the DBExerciseSheet
+// runs the DBInvitation
 if (!$com->used())
     new DBInvitation($com->loadConfig());  
     
 /**
  * A class, to abstract the "ExerciseType" table from database
+ *
+ * @author Till Uhlig
  */
 class DBInvitation
 {
     /**
-     * @var $_app the slim object
+     * @var Slim $_app the slim object
      */ 
     private $_app=null;
     
     /**
-     * @var $_conf the component data object
+     * @var Component $_conf the component data object
      */ 
     private $_conf=null;
     
     /**
-     * @var $query a list of links to a query component
+     * @var Link[] $query a list of links to a query component
      */ 
     private $query=array();
     
     /**
-     * @var $_prefix the prefix, the class works with
+     * @var string $_prefix the prefixes, the class works with (comma separated)
      */ 
     private static $_prefix = "invitation";
     
@@ -58,7 +60,7 @@ class DBInvitation
     /**
      * the $_prefix setter
      *
-     * @param $value the new value for $_prefix
+     * @param string $value the new value for $_prefix
      */ 
     public static function setPrefix($value)
     {
@@ -68,7 +70,7 @@ class DBInvitation
     /**
      * the component constructor
      *
-     * @param $conf component data
+     * @param Component $conf component data
      */ 
     public function __construct($conf)
     {
@@ -132,12 +134,20 @@ class DBInvitation
     /**
      * PUT EditInvitation
      *
-     * @param $userid a database user identifier
-     * @param $esid a database exercise sheet identifier
+     * @param int $userid a database user identifier
+     * @param int $esid a database exercise sheet identifier
      * @param $memberid a database user identifier
      */
     public function editInvitation($userid,$esid,$memberid)
     {
+        Logger::Log("starts PUT EditInvitation",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($userid),
+                            ctype_digit($esid),
+                            ctype_digit($memberid));
+                            
         // decode the received invitation data, as an object
         $insert = Invitation::decodeInvitation($this->_app->request->getBody());
         
@@ -151,7 +161,7 @@ class DBInvitation
             
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
-                                    "Sql/EditPossibleType.sql", 
+                                    "Sql/EditInvitation.sql", 
                                     array("userid" => $userid,
                                         "esid" => $esid,
                                         "memberid" => $memberid, 
@@ -161,7 +171,7 @@ class DBInvitation
             if ($result['status']>=200 && $result['status']<=299){
                 $this->_app->response->setStatus(201);
                 if (isset($result['headers']['Content-Type']))
-                    header($result['headers']['Content-Type']);
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
                 Logger::Log("PUT EditInvitation failed",LogLevel::ERROR);
@@ -174,12 +184,20 @@ class DBInvitation
     /**
      * DELETE DeleteInvitation
      *
-     * @param $userid a database user identifier
-     * @param $esid a database exercise sheet identifier
+     * @param int $userid a database user identifier
+     * @param int $esid a database exercise sheet identifier
      * @param $memberid a database user identifier
      */
     public function deleteInvitation($userid,$esid,$memberid)
     {
+        Logger::Log("starts DELETE DeleteInvitation",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($userid),
+                            ctype_digit($esid),
+                            ctype_digit($memberid));
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/DeleteInvitation.sql", 
@@ -192,7 +210,7 @@ class DBInvitation
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE DeleteInvitation failed",LogLevel::ERROR);
@@ -206,6 +224,8 @@ class DBInvitation
      */
     public function SetInvitation()
     {
+        Logger::Log("starts POST SetInvitation",LogLevel::DEBUG);
+        
         // decode the received invitation data, as an object
         $insert = Invitation::decodeInvitation($this->_app->request->getBody());
         
@@ -227,7 +247,7 @@ class DBInvitation
  
                 $this->_app->response->setStatus(201);
                 if (isset($result['headers']['Content-Type']))
-                    header($result['headers']['Content-Type']);
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
                 Logger::Log("POST SetInvitation failed",LogLevel::ERROR);
@@ -241,7 +261,9 @@ class DBInvitation
      * GET GetAllInvitations
      */
     public function getAllInvitations()
-    {      
+    {    
+        Logger::Log("starts GET GetAllInvitations",LogLevel::DEBUG);
+        
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetAllInvitations.sql", 
@@ -296,7 +318,7 @@ class DBInvitation
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetAllInvitations failed",LogLevel::ERROR);
@@ -309,10 +331,16 @@ class DBInvitation
     /**
      * GET GetLeaderInvitations
      *
-     * @param $userid a database user identifier
+     * @param int $userid a database user identifier
      */
     public function getLeaderInvitations($userid)
-    {         
+    {    
+        Logger::Log("starts GET GetLeaderInvitations",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($userid));
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetLeaderInvitations.sql", 
@@ -321,7 +349,6 @@ class DBInvitation
         // checks the correctness of the query                                       
         if ($result['status']>=200 && $result['status']<=299){
             $query = Query::decodeQuery($result['content']);
-            
             $data = $query->getResponse();
             
             // generates an assoc array of users by using a defined list of 
@@ -367,7 +394,7 @@ class DBInvitation
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetLeaderInvitations failed",LogLevel::ERROR);
@@ -380,10 +407,16 @@ class DBInvitation
     /**
      * GET GetMemberInvitations
      *
-     * @param $userid a database user identifier
+     * @param int $userid a database user identifier
      */
     public function getMemberInvitations($userid)
-    {         
+    {    
+        Logger::Log("starts GET GetMemberInvitations",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($userid));
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetMemberInvitations.sql", 
@@ -438,7 +471,7 @@ class DBInvitation
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetMemberInvitations failed",LogLevel::ERROR);
@@ -451,11 +484,18 @@ class DBInvitation
    /**
      * GET GetSheetLeaderInvitations
      *
-     * @param $esid a database exercise sheet identifier
-     * @param $userid a database user identifier
+     * @param int $esid a database exercise sheet identifier
+     * @param int $userid a database user identifier
      */
     public function getSheetLeaderInvitations($esid,$userid)
-    {         
+    {     
+        Logger::Log("starts GET GetSheetLeaderInvitations",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($esid), 
+                            ctype_digit($userid));
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetSheetLeaderInvitations.sql", 
@@ -510,7 +550,7 @@ class DBInvitation
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetSheetLeaderInvitations failed",LogLevel::ERROR);
@@ -523,11 +563,18 @@ class DBInvitation
     /**
      * GET GetSheetMemberInvitations
      *
-     * @param $esid a database exercise sheet identifier
-     * @param $userid a database user identifier
+     * @param int $esid a database exercise sheet identifier
+     * @param int $userid a database user identifier
      */
     public function getSheetMemberInvitations($esid,$userid)
-    {         
+    {      
+        Logger::Log("starts GET GetSheetMemberInvitations",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($esid), 
+                            ctype_digit($userid));
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetSheetMemberInvitations.sql", 
@@ -582,7 +629,7 @@ class DBInvitation
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetSheetMemberInvitations failed",LogLevel::ERROR);
@@ -595,10 +642,18 @@ class DBInvitation
     /**
      * GET GetSheetInvitations
      *
-     * @param $esid a database exercise sheet identifier
+     * @param int $esid a database exercise sheet identifier
+     * @param $user a database user identifier
      */
     public function getSheetInvitations($esid,$userid)
-    {         
+    {     
+        Logger::Log("starts GET GetSheetInvitations",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($esid), 
+                            ctype_digit($userid));
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetSheetInvitations.sql", 
@@ -653,7 +708,7 @@ class DBInvitation
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetSheetInvitations failed",LogLevel::ERROR);

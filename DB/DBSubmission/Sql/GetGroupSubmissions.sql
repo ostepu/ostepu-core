@@ -1,0 +1,42 @@
+/**
+ * @file GetGroupSubmissions.sql
+ * gets the specified selected submissions from %Submission table
+ * @author Till Uhlig
+ * @param int $esid an %ExerciseSheet identifier
+ * @param int $userid a %User identifier
+ * @result 
+ * - F, the submission file
+ * - S, the submission data
+ * - SS, the selected data
+ */
+ 
+select 
+    F.F_id,
+    F.F_displayName,
+    F.F_address,
+    F.F_timeStamp,
+    F.F_fileSize,
+    F.F_hash,
+    S.U_id,
+    S.S_id,
+    S.F_id_file,
+    S.S_comment,
+    S.S_date,
+    SS.S_id_selected as S_selected,
+    S.S_accepted,
+    S.E_id
+from
+    `Group` G
+        join
+    `Group` G2 ON (G.U_id_leader = '$userid'
+        and G.U_id_member = G2.U_id_member
+        and G.ES_id = '$esid'
+        and G2.ES_id = G.ES_id)
+        join
+    (Submission S
+    join Exercise E ON (S.E_id = E.E_id and E.ES_id = '$esid')) ON (G2.U_id_leader = S.U_id)
+        join
+    File F ON (S.F_id_file = F.F_id)
+        left join
+    SelectedSubmission SS ON (S.S_id = SS.S_id_selected
+        and S.E_id = SS.E_id)

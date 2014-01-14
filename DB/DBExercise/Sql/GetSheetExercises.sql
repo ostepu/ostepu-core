@@ -1,3 +1,15 @@
+/**
+ * @file GetSheetExercises.sql
+ * gets all exercise sheet exercises from %Exercise table
+ * @author Till Uhlig
+ * @param int $esid an %ExerciseSheet identifier
+ * @result 
+ * - E, the exercise data
+ * - F, the submission file
+ * - S, the submission data
+ * - SS, the selected submission data
+ */
+ 
 select 
     E.E_id,
     E.ES_id,

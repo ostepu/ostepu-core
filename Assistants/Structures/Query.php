@@ -190,7 +190,7 @@ class Query extends Object implements JsonSerializable
         if ($decode)
             $data = json_decode($data,true);
             
-        $obj = null;
+        $obj = new Query();
         if (is_array($data) && !isset($data['response']) && !isset($data['request'])){
 
         } else {

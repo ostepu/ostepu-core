@@ -90,8 +90,8 @@ class ExternalId extends Object implements JsonSerializable
     public function getInsertData(){
         $values = "";
         
-        if ($this->id != null) $this->addInsertData($values, 'EX_id', $this->id );
-        if ($this->course != null) $this->addInsertData($values, 'EX_course', $this->course->getId() );
+        if ($this->id != null) $this->addInsertData($values, 'EX_id', DBJson::mysql_real_escape_string($this->id));
+        if ($this->course != null) $this->addInsertData($values, 'EX_course', DBJson::mysql_real_escape_string($this->course->getId()));
         
         if ($values != ""){
             $values=substr($values,1);

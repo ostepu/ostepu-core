@@ -1,203 +1,107 @@
-<?php 
+<?php
 
 require 'Slim/Slim.php';
-include 'include/Helpers.php';
+include 'include/Request.php';
+include_once( 'include/CConfig.php' );
 
 \Slim\Slim::registerAutoloader();
 
-$_app = new \Slim\Slim();
-
-$links = array();
-setLinks('config.ini');
-$DBController = $links["DBControl"];	
-$FSController = $links["FSControl"];
-
-$_app->get ('/:string+', function($string) use($_app) 
+class LController
 {
-	if ($string[0] == "DB") {
-		unset($string[0]);
-		$URI = "";
-		foreach ($string as $str) {
-			$URI = $URI.'/'.$str;
-		}
-		$_app->response->SetBody(LRequest($URI, GET, NULL));		//Rückgabe http_get??	
-	}
-	elseif ($string[0] == "FS") {
-		unset($string[0]);
-		$URI = "";
-		foreach ($string as $str) {
-			$URI = $URI.'/'.$str;
-		}
-		$_app->response->SetBody(FSRequest($URI, GET, $body));		//Rückgabe http_get??
-	}
-	else {
-		foreach ($string as $str) {
-			$URI = $URI.'/'.$str;
-		}
-		$_app->response->SetBody(UIRequest($URI, GET, NULL));		//Rückgabe http_get??	
-	}
-});
+    /**
+     *Values needed for conversation with other components
+     */
+    private $_conf=null;
 
-$_app->post ('/:string+', function($string) use($_app) 
-{
-	$body = \Slim\Slim::getInstance()->request()->getBody();
-	if ($string[0] == "DB") {
-		unset($string[0]);
-		$URI = "";
-		foreach ($string as $str) {
-			$URI = $URI.'/'.$str;
-		}
-		$_app->response->SetBody(LRequest($URI, POST, $body));			
-	}
-	elseif ($string[0] == "FS") {
-		unset($string[0]);
-		$URI = "";
-		foreach ($string as $str) {
-			$URI = $URI.'/'.$str;
-		}
-		$_app->response->SetBody(FSRequest($URI, POST, $body));		
-	}
-	else {
-		foreach ($string as $str) {
-			$URI = $URI.'/'.$str;
-		}
-		$_app->response->SetBody(UIRequest($URI, POST, $body));		
-	}
-});
+    private static $_prefix = "";
 
-$_app->put ('/:string+', function($string) use($_app) 
-{
-	$body = \Slim\Slim::getInstance()->request()->getBody();
-	if ($string[0] == "DB") {
-		unset($string[0]);
-		$URI = "";
-		foreach ($string as $str) {
-			$URI = $URI.'/'.$str;
-		}
-		$_app->response->SetBody(LRequest($URI, PUT, $body));		
-	}
-	elseif ($string[0] == "FS") {
-		unset($string[0]);
-		$URI = "";
-		foreach ($string as $str) {
-			$URI = $URI.'/'.$str;
-		}
-		$_app->response->SetBody(FSRequest($URI, PUT, $body));		
-	}
-	else {
-		foreach ($string as $str) {
-			$URI = $URI.'/'.$str;
-		}
-		$_app->response->SetBody(UIRequest($URI, PUT, $body));		
-	}
-});
+    public static function getPrefix()
+    {
+        return LController::$_prefix;
+    }
+    public static function setPrefix($value)
+    {
+        LController::$_prefix = $value;
+    }
 
-$_app->delete ('/:string+', function($string) use($_app) 
-{
-	if ($string[0] == "DB") {
-		unset($string[0]);
-		$URI = "";
-		foreach ($string as $str) {
-			$URI = $URI.'/'.$str;
-		}
-		$_app->response->SetBody(LRequest($URI, DELETE, NULL));		
-	}
-	elseif ($string[0] == "FS") {
-		unset($string[0]);
-		$URI = "";
-		foreach ($string as $str) {
-			$URI = $URI.'/'.$str;
-		}
-		$_app->response->SetBody(FSRequest($URI, DELETE, NULL));	
-	}
-	else {
-		foreach ($string as $str) {
-			$URI = $URI.'/'.$str;
-		}
-		$_app->response->SetBody(UIRequest($URI, DELETE, NULL));	
-	}
-});
+    public function __construct($conf)
+    {
+        $this->app = new \Slim\Slim();
+        $this->app->response->headers->set('Content-Type', 'application/json');
 
-/**
- * handle requests from userinterface to logic
- *
- * @param (param)
- */
-private function UIRequest($URI, $method, $data) 
-{
-	$component = explode( '/', $URI); 
-	$componentURL = $links[component[1]];				//oder 0?
-	$URL = $componentURL.$URI;
-	
-	return chooseCaseOfRequest($URL, $method, $data);
+        $this->_conf = $conf;
+        $this->query = array();
+
+        $this->query = $conf->getLinks();
+
+        $this->app->map('/:string+', array($this, 'chooseDestination'))
+                    ->via('POST', 'GET', 'PUT', 'DELETE');
+
+        $this->app->run();
+    }
+
+    /**
+     * pick out the config.ini file and store all addresses in $links
+     *
+     * @param (param)
+     */
+
+    public function chooseDestination($string){
+        $method = $this->app->request->getMethod();
+        $body = $this->app->request->getBody();
+        $header = $this->app->request->headers->all();
+
+        if ($string[0] == "DB") {
+            unset($string[0]);
+            $URI = CConfig::getLink($this->query, "database")->getAddress();//DB-URL;                                                            //URI ergÃ¤nzen
+            foreach ($string as $str) {
+                $URI = $URI.'/'.$str;
+            }
+
+            $answer = Request::custom($method, $URI, $header, $body);
+            $this->app->response->setBody($answer['content']);
+        } elseif ($string[0] == "FS") {
+            unset($string[0]);
+            $URI = CConfig::getLink($this->query, "filesystem")->getAddress();//FS-URL;                                                            //URI ergÃ¤nzen
+            foreach ($string as $str) {
+                $URI = $URI.'/'.$str;
+            }
+            $answer = Request::custom($method, $URI, $header, $body);
+            $this->app->response->setBody($answer['content']);
+        } else {
+            $URI = $this->getLink($this->query,$string[0]);//L-URL
+            foreach ($string as $str) {
+                $URI = $URI.'/'.$str;
+            }
+            $answer = Request::custom($method, $URI, $header, $body);
+            $this->app->response->setBody($answer['content']);
+            $this->app->response->setStatus($answer['status']);
+        }
+    }
+    /**
+     * Funktion to select the right Link from a Linkarray by the prefix
+     * Taking two arguments and returning a Link as string
+     * @param $arrayOfLinks an array of Link-Objects
+     * @param $prefix a string identifies the Component you wants to link to
+     */
+    public function getLink($arrayOfLinks, $prefix){
+
+        foreach ($arrayOfLinks as $linkObj){
+            if ($linkObj->getPrefix() == $prefix){
+                return $linkObj->getAddress();
+            }
+        }
+    }
 }
 
 /**
- * handle requests from logic to database
- *
- * @param (param)
+ * get new Config-Datas from DB
  */
-private function LRequest($URI, $method, $data) 
-{
-	$URL = $DBController.$URI;
-	return chooseCaseOfRequest($URL, $method, $data);
-}
+$com = new CConfig(LController::getPrefix());
 
 /**
- * handle requests from logic to filesystem
- *
- * @param (param)
+ * make a new instance of Course-Class with the Config-Datas
  */
-private function FSRequest($URI, $method, $data) 
-{
-	$URL = $FSController.$URI;
-	return chooseCaseOfRequest($URL, $method, $data);
-}
-
-/**
- * pick out the config.ini file and store all addresses in $links
- *
- * @param (param)
- */
-private function setLinks($dataName) 
-{
-	$datei = file($dataName);
-	$explodedRow = array();
-
-	foreach ($datei AS $row) {
-		$explodedRow = explode(' = ' , $row);			// Trenner in Config.ini definieren
-		$links["$explodedRow[0]"] = $explodedRow[1];
-	}
-}
-
-/**
- * select the case of the request based on the available method
- * and send the selected on
- * 
- * @param (param)
- */
-private function chooseCaseOfRequest($URL, $method, $data) 
-{
-	switch ($method) {
-		case 'POST' :
-			return http_post_data($URL, $data);
-			break;
-			
-		case 'PUT' :			
-			return http_put_data($URL, $data);
-			break;
-			
-		case 'GET' :
-			return http_get($URL);
-			break;
-			
-		case 'DELETE' :
-			return http_delete($URL);
-			break;
-			
-		default :
-			return "Fehler";			//Fehlermeldung
-	}
-}
-
+if (!$com->used())
+    new LController($com->loadConfig());
 ?>

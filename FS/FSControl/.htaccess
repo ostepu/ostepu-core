@@ -1,0 +1,2 @@
+RewriteEngine On
+RewriteRule ^ FSControl.php [QSA,L]

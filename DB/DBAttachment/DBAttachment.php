@@ -22,26 +22,28 @@ if (!$com->used())
     
 /**
  * A class, to abstract the "Attachment" table from database
+ *
+ * @author Till Uhlig
  */
 class DBAttachment
 {
     /**
-     * @var $_app the slim object
+     * @var Slim $_app the slim object
      */ 
     private $_app=null;
     
     /**
-     * @var $_conf the component data object
+     * @var Component $_conf the component data object
      */ 
     private $_conf=null;
     
     /**
-     * @var $query a list of links to a query component
+     * @var Link[] $query a list of links to a query component
      */ 
     private $query=array();
     
     /**
-     * @var $_prefix the prefix, the class works with
+     * @var string $_prefix the prefixes, the class works with (comma separated)
      */
     private static $_prefix = "attachment";
     
@@ -58,7 +60,7 @@ class DBAttachment
     /**
      * the $_prefix setter
      *
-     * @param $value the new value for $_prefix
+     * @param string $value the new value for $_prefix
      */ 
     public static function setPrefix($value)
     {
@@ -68,7 +70,7 @@ class DBAttachment
     /**
      * the component constructor
      *
-     * @param $conf component data
+     * @param Component $conf component data
      */ 
     public function __construct($conf)
     {
@@ -124,6 +126,12 @@ class DBAttachment
      */
     public function editAttachment($aid)
     {
+        Logger::Log("starts PUT EditAttachment",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($aid));
+                            
         // decode the received attachment data, as an object
         $insert = Attachment::decodeAttachment($this->_app->request->getBody());
         
@@ -144,7 +152,7 @@ class DBAttachment
             if ($result['status']>=200 && $result['status']<=299){
                 $this->_app->response->setStatus(201);
                 if (isset($result['headers']['Content-Type']))
-                    header($result['headers']['Content-Type']);
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
                 Logger::Log("PUT EditAttachment failed",LogLevel::ERROR);
@@ -161,6 +169,12 @@ class DBAttachment
      */
     public function deleteAttachment($aid)
     {
+        Logger::Log("starts DELETE DeleteAttachment",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($aid));
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/DeleteAttachment.sql", 
@@ -170,7 +184,7 @@ class DBAttachment
         if ($result['status']>=200 && $result['status']<=299){
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE DeleteAttachment failed",LogLevel::ERROR);
@@ -184,6 +198,8 @@ class DBAttachment
      */
     public function setAttachment()
     {
+        Logger::Log("starts POST SetAttachment",LogLevel::DEBUG);
+        
         // decode the received attachment data, as an object
         $insert = Attachment::decodeAttachment($this->_app->request->getBody());
         
@@ -211,7 +227,7 @@ class DBAttachment
                 $this->_app->response->setBody(Attachment::encodeAttachment($obj)); 
                 $this->_app->response->setStatus(201);
                 if (isset($result['headers']['Content-Type']))
-                    header($result['headers']['Content-Type']);
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
                 Logger::Log("POST SetAttachment failed",LogLevel::ERROR);
@@ -227,7 +243,13 @@ class DBAttachment
      * @param $aid a database attachment identifier
      */
     public function getAttachment($aid)
-    {        
+    {     
+        Logger::Log("starts GET GetAttachment",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($aid));
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetAttachment.sql", 
@@ -269,7 +291,7 @@ class DBAttachment
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetAttachment failed",LogLevel::ERROR);
@@ -284,6 +306,8 @@ class DBAttachment
      */
     public function getAllAttachments()
     {    
+        Logger::Log("starts GET GetAllAttachments",LogLevel::DEBUG);
+        
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetAllAttachments.sql", 
@@ -321,7 +345,7 @@ class DBAttachment
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetAllAttachments failed",LogLevel::ERROR);
@@ -334,10 +358,16 @@ class DBAttachment
     /**
      * GET GetExerciseAttachments
      *
-     * @param $eid a database exercise identifier
+     * @param int $eid a database exercise identifier
      */
     public function getExerciseAttachments($eid)
-    {         
+    {     
+        Logger::Log("starts GET GetExerciseAttachments",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($eid));
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetExerciseAttachments.sql", 
@@ -374,7 +404,7 @@ class DBAttachment
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetExerciseAttachments failed",LogLevel::ERROR);
@@ -387,10 +417,16 @@ class DBAttachment
     /**
      * GET GetSheetAttachments
      *
-     * @param $esid a database exercise sheet identifier
+     * @param int $esid a database exercise sheet identifier
      */
     public function getSheetAttachments($esid)
     {      
+        Logger::Log("starts GET GetSheetAttachments",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($esid));
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetSheetAttachments.sql", 
@@ -427,7 +463,7 @@ class DBAttachment
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
-                header($result['headers']['Content-Type']);
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetSheetAttachments failed",LogLevel::ERROR);

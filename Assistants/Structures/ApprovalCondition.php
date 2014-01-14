@@ -78,10 +78,10 @@ class ApprovalCondition extends Object implements JsonSerializable
     public function getInsertData(){
         $values = "";
         
-        if ($this->id != null) $this->addInsertData($values, 'AC_id', $this->id );
-        if ($this->courseId != null) $this->addInsertData($values, 'C_id', $this->courseId );
-        if ($this->exerciseTypeId != null) $this->addInsertData($values, 'ET_id', $this->exerciseTypeId );
-        if ($this->percentage != null) $this->addInsertData($values, 'AC_percentage', $this->percentage );
+        if ($this->id != null) $this->addInsertData($values, 'AC_id', DBJson::mysql_real_escape_string($this->id));
+        if ($this->courseId != null) $this->addInsertData($values, 'C_id', DBJson::mysql_real_escape_string($this->courseId));
+        if ($this->exerciseTypeId != null) $this->addInsertData($values, 'ET_id', DBJson::mysql_real_escape_string($this->exerciseTypeId));
+        if ($this->percentage != null) $this->addInsertData($values, 'AC_percentage', DBJson::mysql_real_escape_string($this->percentage));
         
         if ($values != ""){
             $values=substr($values,1);
