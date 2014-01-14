@@ -72,6 +72,7 @@ class DBFile
         
         // initialize slim
         $this->_app = new \Slim\Slim();
+        $this->_app->response->headers->set('Content-Type', 'application/json');
         
         // PUT EditFile
         $this->_app->put('/' . $this->getPrefix() . '/file/:fileid',
