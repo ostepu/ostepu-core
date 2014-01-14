@@ -643,16 +643,14 @@ class DBInvitation
      * GET GetSheetInvitations
      *
      * @param int $esid a database exercise sheet identifier
-     * @param $user a database user identifier
      */
-    public function getSheetInvitations($esid,$userid)
+    public function getSheetInvitations($esid)
     {     
         Logger::Log("starts GET GetSheetInvitations",LogLevel::DEBUG);
         
         // checks whether incoming data has the correct data type
         DBJson::checkInput($this->_app, 
-                            ctype_digit($esid), 
-                            ctype_digit($userid));
+                            ctype_digit($esid));
                             
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 

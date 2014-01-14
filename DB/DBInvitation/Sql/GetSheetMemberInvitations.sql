@@ -22,4 +22,4 @@ from
     User U2 ON (I.U_id_member = U2.U_id)
 where
     I.ES_id = $esid
-        and I.U_id_member = $userid
+        and I.U_id_leader = $userid
