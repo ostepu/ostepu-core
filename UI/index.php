@@ -1,4 +1,5 @@
 <?php
+include 'include/Authorization.php';
 include 'include/Header/Header.php';
 include 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
