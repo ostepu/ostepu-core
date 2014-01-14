@@ -1,3 +1,15 @@
+/**
+ * @file GetUserExerciseSubmissions.sql
+ * gets the specified submissions from %Submission table
+ * @author Till Uhlig
+ * @param int $eid an %Exercise identifier
+ * @param int $userid a %User identifier
+ * @result 
+ * - F, the submission file
+ * - S, the submission data
+ * - SS, the selected data
+ */
+ 
 select 
     F.F_id,
     F.F_displayName,
@@ -20,4 +32,4 @@ from
         left join
     SelectedSubmission SS ON (S.S_id = SS.S_id_selected)
 where
-    S.U_id = $userid and S.E_id = $eid
+    S.U_id = '$userid' and S.E_id = '$eid'

@@ -79,8 +79,8 @@ class CourseStatus extends Object implements JsonSerializable
     public function getInsertData(){
         $values = "";
         
-        if ($this->status != null) $this->addInsertData($values, 'CS_status', mysql_real_escape_string($this->status));
-        if ($this->course != null) $this->addInsertData($values, 'C_id', mysql_real_escape_string($this->course->getId()));
+        if ($this->status != null) $this->addInsertData($values, 'CS_status', DBJson::mysql_real_escape_string($this->status));
+        if ($this->course != null) $this->addInsertData($values, 'C_id', DBJson::mysql_real_escape_string($this->course->getId()));
         
         if ($values != ""){
             $values=substr($values,1);

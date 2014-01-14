@@ -28,22 +28,22 @@ if (!$com->used())
 class DBInvitation
 {
     /**
-     * @var $_app the slim object
+     * @var Slim $_app the slim object
      */ 
     private $_app=null;
     
     /**
-     * @var $_conf the component data object
+     * @var Component $_conf the component data object
      */ 
     private $_conf=null;
     
     /**
-     * @var $query a list of links to a query component
+     * @var Link[] $query a list of links to a query component
      */ 
     private $query=array();
     
     /**
-     * @var $_prefix the prefix, the class works with
+     * @var string $_prefix the prefixes, the class works with (comma separated)
      */ 
     private static $_prefix = "invitation";
     
@@ -60,7 +60,7 @@ class DBInvitation
     /**
      * the $_prefix setter
      *
-     * @param $value the new value for $_prefix
+     * @param string $value the new value for $_prefix
      */ 
     public static function setPrefix($value)
     {
@@ -70,7 +70,7 @@ class DBInvitation
     /**
      * the component constructor
      *
-     * @param $conf component data
+     * @param Component $conf component data
      */ 
     public function __construct($conf)
     {
@@ -134,8 +134,8 @@ class DBInvitation
     /**
      * PUT EditInvitation
      *
-     * @param $userid a database user identifier
-     * @param $esid a database exercise sheet identifier
+     * @param int $userid a database user identifier
+     * @param int $esid a database exercise sheet identifier
      * @param $memberid a database user identifier
      */
     public function editInvitation($userid,$esid,$memberid)
@@ -184,8 +184,8 @@ class DBInvitation
     /**
      * DELETE DeleteInvitation
      *
-     * @param $userid a database user identifier
-     * @param $esid a database exercise sheet identifier
+     * @param int $userid a database user identifier
+     * @param int $esid a database exercise sheet identifier
      * @param $memberid a database user identifier
      */
     public function deleteInvitation($userid,$esid,$memberid)
@@ -331,7 +331,7 @@ class DBInvitation
     /**
      * GET GetLeaderInvitations
      *
-     * @param $userid a database user identifier
+     * @param int $userid a database user identifier
      */
     public function getLeaderInvitations($userid)
     {    
@@ -407,7 +407,7 @@ class DBInvitation
     /**
      * GET GetMemberInvitations
      *
-     * @param $userid a database user identifier
+     * @param int $userid a database user identifier
      */
     public function getMemberInvitations($userid)
     {    
@@ -484,8 +484,8 @@ class DBInvitation
    /**
      * GET GetSheetLeaderInvitations
      *
-     * @param $esid a database exercise sheet identifier
-     * @param $userid a database user identifier
+     * @param int $esid a database exercise sheet identifier
+     * @param int $userid a database user identifier
      */
     public function getSheetLeaderInvitations($esid,$userid)
     {     
@@ -563,8 +563,8 @@ class DBInvitation
     /**
      * GET GetSheetMemberInvitations
      *
-     * @param $esid a database exercise sheet identifier
-     * @param $userid a database user identifier
+     * @param int $esid a database exercise sheet identifier
+     * @param int $userid a database user identifier
      */
     public function getSheetMemberInvitations($esid,$userid)
     {      
@@ -642,7 +642,7 @@ class DBInvitation
     /**
      * GET GetSheetInvitations
      *
-     * @param $esid a database exercise sheet identifier
+     * @param int $esid a database exercise sheet identifier
      * @param $user a database user identifier
      */
     public function getSheetInvitations($esid,$userid)

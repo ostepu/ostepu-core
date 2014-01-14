@@ -1,3 +1,7 @@
+SET UNIQUE_CHECKS=0;
+SET FOREIGN_KEY_CHECKS=0;
+SET SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+
 -- -----------------------------------------------------
 -- Data for table `uebungsplattform`.`Course`
 -- -----------------------------------------------------
@@ -18,15 +22,15 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `uebungsplattform`;
-INSERT INTO `uebungsplattform`.`File` (`F_id`, `F_displayName`, `F_address`, `F_timeStamp`, `F_fileSize`, `F_hash`) VALUES (1, 'a.pdf', 'file/abcdef', '2013-12-08 00:00:01', 100, 'abcdef');
-INSERT INTO `uebungsplattform`.`File` (`F_id`, `F_displayName`, `F_address`, `F_timeStamp`, `F_fileSize`, `F_hash`) VALUES (2, 'b.pdf', 'file/abcde', '2013-12-07 00:00:01', 200, 'abcde');
-INSERT INTO `uebungsplattform`.`File` (`F_id`, `F_displayName`, `F_address`, `F_timeStamp`, `F_fileSize`, `F_hash`) VALUES (3, 'c.pdf', 'file/abcd', '2013-12-06 00:00:01', 300, 'abcd');
-INSERT INTO `uebungsplattform`.`File` (`F_id`, `F_displayName`, `F_address`, `F_timeStamp`, `F_fileSize`, `F_hash`) VALUES (4, 'd.pdf', 'file/abc', '2013-12-05 00:00:01', 400, 'abc');
-INSERT INTO `uebungsplattform`.`File` (`F_id`, `F_displayName`, `F_address`, `F_timeStamp`, `F_fileSize`, `F_hash`) VALUES (5, 'e.pdf', 'file/ab', '2013-12-04 00:00:01', 500, 'ab');
-INSERT INTO `uebungsplattform`.`File` (`F_id`, `F_displayName`, `F_address`, `F_timeStamp`, `F_fileSize`, `F_hash`) VALUES (6, 'f.pdf', 'file/a', '2013-12-03 00:00:01', 600, 'a');
-INSERT INTO `uebungsplattform`.`File` (`F_id`, `F_displayName`, `F_address`, `F_timeStamp`, `F_fileSize`, `F_hash`) VALUES (7, 'g.pdf', 'file/abcdefg', '2013-12-02 00:00:01', 700, 'abcdefg');
-INSERT INTO `uebungsplattform`.`File` (`F_id`, `F_displayName`, `F_address`, `F_timeStamp`, `F_fileSize`, `F_hash`) VALUES (8, 'h.pdf', 'file/abcdefgh', '2013-12-01 00:00:01', 800, 'abcdefgh');
-INSERT INTO `uebungsplattform`.`File` (`F_id`, `F_displayName`, `F_address`, `F_timeStamp`, `F_fileSize`, `F_hash`) VALUES (9, 'i.pdf', 'file/delete', '2013-12-01 00:00:01', 900, 'delete');
+INSERT INTO `uebungsplattform`.`File` (`F_id`, `F_displayName`, `F_address`, `F_timeStamp`, `F_fileSize`, `F_hash`) VALUES (1, 'a.pdf', 'file/abcdef', 1389643115, 100, 'abcdef');
+INSERT INTO `uebungsplattform`.`File` (`F_id`, `F_displayName`, `F_address`, `F_timeStamp`, `F_fileSize`, `F_hash`) VALUES (2, 'b.pdf', 'file/abcde', 1389643115, 200, 'abcde');
+INSERT INTO `uebungsplattform`.`File` (`F_id`, `F_displayName`, `F_address`, `F_timeStamp`, `F_fileSize`, `F_hash`) VALUES (3, 'c.pdf', 'file/abcd', 1389643115, 300, 'abcd');
+INSERT INTO `uebungsplattform`.`File` (`F_id`, `F_displayName`, `F_address`, `F_timeStamp`, `F_fileSize`, `F_hash`) VALUES (4, 'd.pdf', 'file/abc', 1389643115, 400, 'abc');
+INSERT INTO `uebungsplattform`.`File` (`F_id`, `F_displayName`, `F_address`, `F_timeStamp`, `F_fileSize`, `F_hash`) VALUES (5, 'e.pdf', 'file/ab', 1389643115, 500, 'ab');
+INSERT INTO `uebungsplattform`.`File` (`F_id`, `F_displayName`, `F_address`, `F_timeStamp`, `F_fileSize`, `F_hash`) VALUES (6, 'f.pdf', 'file/a', 1389643115, 600, 'a');
+INSERT INTO `uebungsplattform`.`File` (`F_id`, `F_displayName`, `F_address`, `F_timeStamp`, `F_fileSize`, `F_hash`) VALUES (7, 'g.pdf', 'file/abcdefg', 1389643115, 700, 'abcdefg');
+INSERT INTO `uebungsplattform`.`File` (`F_id`, `F_displayName`, `F_address`, `F_timeStamp`, `F_fileSize`, `F_hash`) VALUES (8, 'h.pdf', 'file/abcdefgh', 1389643115, 800, 'abcdefgh');
+INSERT INTO `uebungsplattform`.`File` (`F_id`, `F_displayName`, `F_address`, `F_timeStamp`, `F_fileSize`, `F_hash`) VALUES (9, 'i.pdf', 'file/delete', 1389643115, 900, 'delete');
 
 COMMIT;
 
@@ -44,26 +48,11 @@ INSERT INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastN
 COMMIT;
 
 
--- -----------------------------------------------------
--- Data for table `uebungsplattform`.`ExerciseSheet`
--- -----------------------------------------------------
-START TRANSACTION;
-USE `uebungsplattform`;
-INSERT INTO `uebungsplattform`.`ExerciseSheet` (`C_id`, `ES_id`, `F_id_sampleSolution`, `F_id_file`, `ES_startDate`, `ES_endDate`, `ES_groupSize`, `ES_name`) VALUES (1, 1, 1, 8, '2013-12-02 00:00:01', '2013-12-31 23:59:59', 1, NULL);
-INSERT INTO `uebungsplattform`.`ExerciseSheet` (`C_id`, `ES_id`, `F_id_sampleSolution`, `F_id_file`, `ES_startDate`, `ES_endDate`, `ES_groupSize`, `ES_name`) VALUES (1, 2, 2, 1, '2013-12-02 00:00:01', '2013-12-31 23:59:59', 1, 'Bonus');
-INSERT INTO `uebungsplattform`.`ExerciseSheet` (`C_id`, `ES_id`, `F_id_sampleSolution`, `F_id_file`, `ES_startDate`, `ES_endDate`, `ES_groupSize`, `ES_name`) VALUES (2, 3, 3, 2, '2013-12-02 00:00:01', '2013-12-31 23:59:59', 1, NULL);
-INSERT INTO `uebungsplattform`.`ExerciseSheet` (`C_id`, `ES_id`, `F_id_sampleSolution`, `F_id_file`, `ES_startDate`, `ES_endDate`, `ES_groupSize`, `ES_name`) VALUES (2, 4, 4, 3, '2013-12-02 00:00:01', '2013-12-31 23:59:59', 1, 'Zusatz');
-INSERT INTO `uebungsplattform`.`ExerciseSheet` (`C_id`, `ES_id`, `F_id_sampleSolution`, `F_id_file`, `ES_startDate`, `ES_endDate`, `ES_groupSize`, `ES_name`) VALUES (4, 5, 5, 4, '2013-12-02 00:00:01', '2013-12-31 23:59:59', 1, NULL);
-INSERT INTO `uebungsplattform`.`ExerciseSheet` (`C_id`, `ES_id`, `F_id_sampleSolution`, `F_id_file`, `ES_startDate`, `ES_endDate`, `ES_groupSize`, `ES_name`) VALUES (5, 6, 6, 5, '2013-12-02 00:00:01', '2013-12-31 23:59:59', 1, 'Weihnachtsaufgabe');
-INSERT INTO `uebungsplattform`.`ExerciseSheet` (`C_id`, `ES_id`, `F_id_sampleSolution`, `F_id_file`, `ES_startDate`, `ES_endDate`, `ES_groupSize`, `ES_name`) VALUES (5, 7, 7, 6, '2013-12-02 00:00:01', '2013-12-31 23:59:59', 1, NULL);
-
-COMMIT;
-
 
 -- -----------------------------------------------------
 -- Data for table `uebungsplattform`.`Group`
 -- -----------------------------------------------------
-START TRANSACTION;
+/*START TRANSACTION;
 USE `uebungsplattform`;
 INSERT INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `C_id`, `ES_id`) VALUES (1, 1, NULL, 1);
 INSERT INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `C_id`, `ES_id`) VALUES (2, 1, NULL, 1);
@@ -72,21 +61,7 @@ INSERT INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `C_id`, `E
 INSERT INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `C_id`, `ES_id`) VALUES (2, 2, NULL, 2);
 INSERT INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `C_id`, `ES_id`) VALUES (3, 3, NULL, 2);
 
-COMMIT;
-
-
--- -----------------------------------------------------
--- Data for table `uebungsplattform`.`Invitation`
--- -----------------------------------------------------
-START TRANSACTION;
-USE `uebungsplattform`;
-INSERT INTO `uebungsplattform`.`Invitation` (`U_id_leader`, `U_id_member`, `ES_id`) VALUES (1, 2, 1);
-INSERT INTO `uebungsplattform`.`Invitation` (`U_id_leader`, `U_id_member`, `ES_id`) VALUES (1, 3, 1);
-INSERT INTO `uebungsplattform`.`Invitation` (`U_id_leader`, `U_id_member`, `ES_id`) VALUES (2, 1, 2);
-INSERT INTO `uebungsplattform`.`Invitation` (`U_id_leader`, `U_id_member`, `ES_id`) VALUES (3, 2, 2);
-INSERT INTO `uebungsplattform`.`Invitation` (`U_id_leader`, `U_id_member`, `ES_id`) VALUES (4, 2, 1);
-
-COMMIT;
+COMMIT;*/
 
 
 -- -----------------------------------------------------
@@ -108,6 +83,21 @@ INSERT INTO `uebungsplattform`.`CourseStatus` (`C_id`, `U_id`, `CS_status`) VALU
 
 COMMIT;
 
+
+-- -----------------------------------------------------
+-- Data for table `uebungsplattform`.`ExerciseSheet`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `uebungsplattform`;
+INSERT INTO `uebungsplattform`.`ExerciseSheet` (`C_id`, `ES_id`, `F_id_sampleSolution`, `F_id_file`, `ES_startDate`, `ES_endDate`, `ES_groupSize`, `ES_name`) VALUES (1, 1, 1, 8, 1389643115, 1394913515, 1, NULL);
+INSERT INTO `uebungsplattform`.`ExerciseSheet` (`C_id`, `ES_id`, `F_id_sampleSolution`, `F_id_file`, `ES_startDate`, `ES_endDate`, `ES_groupSize`, `ES_name`) VALUES (1, 2, 2, 1, 1389643115, 1394913515, 1, 'Bonus');
+INSERT INTO `uebungsplattform`.`ExerciseSheet` (`C_id`, `ES_id`, `F_id_sampleSolution`, `F_id_file`, `ES_startDate`, `ES_endDate`, `ES_groupSize`, `ES_name`) VALUES (2, 3, 3, 2, 1389643115, 1394913515, 1, NULL);
+INSERT INTO `uebungsplattform`.`ExerciseSheet` (`C_id`, `ES_id`, `F_id_sampleSolution`, `F_id_file`, `ES_startDate`, `ES_endDate`, `ES_groupSize`, `ES_name`) VALUES (2, 4, 4, 3, 1389643115, 1394913515, 1, 'Zusatz');
+INSERT INTO `uebungsplattform`.`ExerciseSheet` (`C_id`, `ES_id`, `F_id_sampleSolution`, `F_id_file`, `ES_startDate`, `ES_endDate`, `ES_groupSize`, `ES_name`) VALUES (4, 5, 5, 4, 1389643115, 1394913515, 1, NULL);
+INSERT INTO `uebungsplattform`.`ExerciseSheet` (`C_id`, `ES_id`, `F_id_sampleSolution`, `F_id_file`, `ES_startDate`, `ES_endDate`, `ES_groupSize`, `ES_name`) VALUES (5, 6, 6, 5, 1389643115, 1394913515, 1, 'Weihnachtsaufgabe');
+INSERT INTO `uebungsplattform`.`ExerciseSheet` (`C_id`, `ES_id`, `F_id_sampleSolution`, `F_id_file`, `ES_startDate`, `ES_endDate`, `ES_groupSize`, `ES_name`) VALUES (5, 7, 7, 6, 1389643115, 1394913515, 1, NULL);
+
+COMMIT;
 
 -- -----------------------------------------------------
 -- Data for table `uebungsplattform`.`ExerciseType`
@@ -141,13 +131,13 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `uebungsplattform`;
-INSERT INTO `uebungsplattform`.`Submission` (`U_id`, `S_id`, `F_id_file`, `S_comment`, `S_date`, `S_accepted`, `E_id`, `ES_id`) VALUES (1, 1, 1, 'eins', '2013-12-03 00:00:01', true, 1, NULL);
-INSERT INTO `uebungsplattform`.`Submission` (`U_id`, `S_id`, `F_id_file`, `S_comment`, `S_date`, `S_accepted`, `E_id`, `ES_id`) VALUES (1, 2, 2, 'zwei', '2013-12-04 00:00:01', true, 1, NULL);
-INSERT INTO `uebungsplattform`.`Submission` (`U_id`, `S_id`, `F_id_file`, `S_comment`, `S_date`, `S_accepted`, `E_id`, `ES_id`) VALUES (2, 3, 3, 'drei', '2013-12-01 00:00:01', true, 1, NULL);
-INSERT INTO `uebungsplattform`.`Submission` (`U_id`, `S_id`, `F_id_file`, `S_comment`, `S_date`, `S_accepted`, `E_id`, `ES_id`) VALUES (2, 4, 4, 'vier', '2013-11-02 00:00:01', true, 2, NULL);
-INSERT INTO `uebungsplattform`.`Submission` (`U_id`, `S_id`, `F_id_file`, `S_comment`, `S_date`, `S_accepted`, `E_id`, `ES_id`) VALUES (3, 5, 5, 'fuenf', '2013-12-02 00:00:01', true, 2, NULL);
-INSERT INTO `uebungsplattform`.`Submission` (`U_id`, `S_id`, `F_id_file`, `S_comment`, `S_date`, `S_accepted`, `E_id`, `ES_id`) VALUES (4, 6, 6, 'sechs', '2013-12-02 00:00:01', true, 2, NULL);
-INSERT INTO `uebungsplattform`.`Submission` (`U_id`, `S_id`, `F_id_file`, `S_comment`, `S_date`, `S_accepted`, `E_id`, `ES_id`) VALUES (4, 7, 9, 'sieben', '2013-12-02 00:00:01', true, 2, NULL);
+INSERT INTO `uebungsplattform`.`Submission` (`U_id`, `S_id`, `F_id_file`, `S_comment`, `S_date`, `S_accepted`, `E_id`, `ES_id`) VALUES (1, 1, 1, 'eins', 1389643115, true, 1, NULL);
+INSERT INTO `uebungsplattform`.`Submission` (`U_id`, `S_id`, `F_id_file`, `S_comment`, `S_date`, `S_accepted`, `E_id`, `ES_id`) VALUES (1, 2, 2, 'zwei', 1389643115, true, 1, NULL);
+INSERT INTO `uebungsplattform`.`Submission` (`U_id`, `S_id`, `F_id_file`, `S_comment`, `S_date`, `S_accepted`, `E_id`, `ES_id`) VALUES (2, 3, 3, 'drei', 1389643115, true, 1, NULL);
+INSERT INTO `uebungsplattform`.`Submission` (`U_id`, `S_id`, `F_id_file`, `S_comment`, `S_date`, `S_accepted`, `E_id`, `ES_id`) VALUES (2, 4, 4, 'vier', 1389643115, true, 2, NULL);
+INSERT INTO `uebungsplattform`.`Submission` (`U_id`, `S_id`, `F_id_file`, `S_comment`, `S_date`, `S_accepted`, `E_id`, `ES_id`) VALUES (3, 5, 5, 'fuenf', 1389643115, true, 2, NULL);
+INSERT INTO `uebungsplattform`.`Submission` (`U_id`, `S_id`, `F_id_file`, `S_comment`, `S_date`, `S_accepted`, `E_id`, `ES_id`) VALUES (4, 6, 6, 'sechs', 1389643115, true, 2, NULL);
+INSERT INTO `uebungsplattform`.`Submission` (`U_id`, `S_id`, `F_id_file`, `S_comment`, `S_date`, `S_accepted`, `E_id`, `ES_id`) VALUES (4, 7, 9, 'sieben', 1389643115, true, 2, NULL);
 
 COMMIT;
 
@@ -157,12 +147,12 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `uebungsplattform`;
-INSERT INTO `uebungsplattform`.`Marking` (`M_id`, `U_id_tutor`, `F_id_file`, `S_id`, `M_tutorComment`, `M_outstanding`, `M_status`, `M_points`, `M_date`, `E_id`, `ES_id`) VALUES (1, 2, 8, 1, 'nichts', false, 0, 10, '2013-12-08 00:00:01', NULL, NULL);
-INSERT INTO `uebungsplattform`.`Marking` (`M_id`, `U_id_tutor`, `F_id_file`, `S_id`, `M_tutorComment`, `M_outstanding`, `M_status`, `M_points`, `M_date`, `E_id`, `ES_id`) VALUES (2, 2, 7, 2, 'nichts', true, 0, 12, '2013-12-08 00:00:01', NULL, NULL);
-INSERT INTO `uebungsplattform`.`Marking` (`M_id`, `U_id_tutor`, `F_id_file`, `S_id`, `M_tutorComment`, `M_outstanding`, `M_status`, `M_points`, `M_date`, `E_id`, `ES_id`) VALUES (3, 1, 6, 3, 'nichts', false, 0, 13, '2013-12-08 00:00:01', NULL, NULL);
-INSERT INTO `uebungsplattform`.`Marking` (`M_id`, `U_id_tutor`, `F_id_file`, `S_id`, `M_tutorComment`, `M_outstanding`, `M_status`, `M_points`, `M_date`, `E_id`, `ES_id`) VALUES (4, 1, 5, 4, 'nichts', true, 0, 14, '2013-12-08 00:00:01', NULL, NULL);
-INSERT INTO `uebungsplattform`.`Marking` (`M_id`, `U_id_tutor`, `F_id_file`, `S_id`, `M_tutorComment`, `M_outstanding`, `M_status`, `M_points`, `M_date`, `E_id`, `ES_id`) VALUES (5, 4, 4, 5, 'nichts', false, 0, 15, '2013-12-08 00:00:01', NULL, NULL);
-INSERT INTO `uebungsplattform`.`Marking` (`M_id`, `U_id_tutor`, `F_id_file`, `S_id`, `M_tutorComment`, `M_outstanding`, `M_status`, `M_points`, `M_date`, `E_id`, `ES_id`) VALUES (6, 4, 3, 6, 'nichts', true, 0, 16, '2013-12-08 00:00:01', NULL, NULL);
+INSERT INTO `uebungsplattform`.`Marking` (`M_id`, `U_id_tutor`, `F_id_file`, `S_id`, `M_tutorComment`, `M_outstanding`, `M_status`, `M_points`, `M_date`, `E_id`, `ES_id`) VALUES (1, 2, 8, 1, 'nichts', false, 0, 10, 1389643115, NULL, NULL);
+INSERT INTO `uebungsplattform`.`Marking` (`M_id`, `U_id_tutor`, `F_id_file`, `S_id`, `M_tutorComment`, `M_outstanding`, `M_status`, `M_points`, `M_date`, `E_id`, `ES_id`) VALUES (2, 2, 7, 2, 'nichts', true, 0, 12, 1389643115, NULL, NULL);
+INSERT INTO `uebungsplattform`.`Marking` (`M_id`, `U_id_tutor`, `F_id_file`, `S_id`, `M_tutorComment`, `M_outstanding`, `M_status`, `M_points`, `M_date`, `E_id`, `ES_id`) VALUES (3, 1, 6, 3, 'nichts', false, 0, 13, 1389643115, NULL, NULL);
+INSERT INTO `uebungsplattform`.`Marking` (`M_id`, `U_id_tutor`, `F_id_file`, `S_id`, `M_tutorComment`, `M_outstanding`, `M_status`, `M_points`, `M_date`, `E_id`, `ES_id`) VALUES (4, 1, 5, 4, 'nichts', true, 0, 14, 1389643115, NULL, NULL);
+INSERT INTO `uebungsplattform`.`Marking` (`M_id`, `U_id_tutor`, `F_id_file`, `S_id`, `M_tutorComment`, `M_outstanding`, `M_status`, `M_points`, `M_date`, `E_id`, `ES_id`) VALUES (5, 4, 4, 5, 'nichts', false, 0, 15, 1389643115, NULL, NULL);
+INSERT INTO `uebungsplattform`.`Marking` (`M_id`, `U_id_tutor`, `F_id_file`, `S_id`, `M_tutorComment`, `M_outstanding`, `M_status`, `M_points`, `M_date`, `E_id`, `ES_id`) VALUES (6, 4, 3, 6, 'nichts', true, 0, 16, 1389643115, NULL, NULL);
 
 COMMIT;
 
@@ -245,6 +235,8 @@ INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `C
 INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (32, 'LExercise', 'localhost/uebungsplattform/logic/Exercise', '');
 INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (33, 'LCondition', 'localhost/uebungsplattform/logic/Condition', '');
 INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (34, 'LAttachment', 'localhost/uebungsplattform/logic/Attachment', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (35, 'LExerciseType', 'localhost/uebungsplattform/logic/ExerciseType', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (36, 'LSampleSolution', 'localhost/uebungsplattform/logic/SampleSolution', '');
 
 COMMIT;
 
@@ -273,7 +265,6 @@ INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_n
 INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (17, 4, 'out', '', 10);
 INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (18, 4, 'out', '', 11);
 INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (19, 4, 'out', '', 12);
-INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (20, 4, 'out', '', 13);
 INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (21, 14, 'out', '', 15);
 INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (22, 14, 'out', '', 16);
 INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (23, 14, 'out', '', 17);

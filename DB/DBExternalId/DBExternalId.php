@@ -28,22 +28,22 @@ if (!$com->used())
 class DBExternalId
 {
     /**
-     * @var $_app the slim object
+     * @var Slim $_app the slim object
      */ 
     private $_app=null;
     
     /**
-     * @var $_conf the component data object
+     * @var Component $_conf the component data object
      */ 
     private $_conf=null;
     
     /**
-     * @var $query a list of links to a query component
+     * @var Link[] $query a list of links to a query component
      */ 
     private $query=array();
     
     /**
-     * @var $_prefix the prefix, the class works with
+     * @var string $_prefix the prefixes, the class works with (comma separated)
      */ 
     private static $_prefix = "externalid";
     
@@ -60,7 +60,7 @@ class DBExternalId
     /**
      * the $_prefix setter
      *
-     * @param $value the new value for $_prefix
+     * @param string $value the new value for $_prefix
      */ 
     public static function setPrefix($value)
     {
@@ -70,7 +70,7 @@ class DBExternalId
     /**
      * the component constructor
      *
-     * @param $conf component data
+     * @param Component $conf component data
      */ 
     public function __construct($conf)
     {
@@ -118,7 +118,7 @@ class DBExternalId
     /**
      * PUT EditExternalId
      *
-     * @param $exid a database external id identifier
+     * @param string $exid a database external id identifier
      */
     public function editExternalId($exid)
     {
@@ -158,12 +158,14 @@ class DBExternalId
     /**
      * DELETE DeleteExternalId
      *
-     * @param $exid a database external id identifier
+     * @param string $exid a database external id identifier
      */
     public function deleteExternalId($exid)
     {
         Logger::Log("starts DELETE DeleteExternalId",LogLevel::DEBUG);
-                            
+        
+        $exid = DBJson::mysql_real_escape_string($exid);
+        
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/DeleteExternalId.sql", 
@@ -230,11 +232,13 @@ class DBExternalId
     /**
      * GET GetExternalId
      *
-     * @param $exid a database external id identifier
+     * @param string $exid a database external id identifier
      */
     public function getExternalId($exid)
     {    
         Logger::Log("starts GET GetExternalId",LogLevel::DEBUG);
+        
+        $exid = DBJson::mysql_real_escape_string($exid);
                             
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
@@ -342,7 +346,7 @@ class DBExternalId
     /**
      * GET getCourseExternalIds
      *
-     * @param $courseid a database course identifier
+     * @param int $courseid a database course identifier
      */
     public function getCourseExternalIds($courseid)
     {    

@@ -7,7 +7,7 @@ SELECT
     U.U_title,
     U.U_flag,
     U.U_password,
-        U.U_salt,
+    U.U_salt,
     U.U_failed_logins,
     CS.CS_status,
     C.C_id,

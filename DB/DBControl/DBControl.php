@@ -18,7 +18,7 @@ include_once( 'Include/Logger.php' );
 class DBControl extends Controller
 {
     /**
-     * @var $_prefix the prefix, the class works with
+     * @var string $_prefix the prefixes, the class works with (comma separated)
      */ 
     protected static $_prefix = "";
     
@@ -35,7 +35,7 @@ class DBControl extends Controller
     /**
      * the $_prefix setter
      *
-     * @param $value the new value for $_prefix
+     * @param string $value the new value for $_prefix
      */
     public static function setPrefix($value)
     {

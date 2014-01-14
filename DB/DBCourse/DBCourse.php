@@ -28,22 +28,22 @@ if (!$com->used())
 class DBCourse
 {
     /**
-     * @var $_app the slim object
+     * @var Slim $_app the slim object
      */ 
     private $_app=null;
     
     /**
-     * @var $_conf the component data object
+     * @var Component $_conf the component data object
      */ 
     private $_conf=null;
     
     /**
-     * @var $query a list of links to a query component
+     * @var Link[] $query a list of links to a query component
      */ 
     private $query=array();
     
     /**
-     * @var $_prefix the prefix, the class works with
+     * @var string $_prefix the prefixes, the class works with (comma separated)
      */ 
     private static $_prefix = "course";
     
@@ -70,7 +70,7 @@ class DBCourse
     /**
      * the component constructor
      *
-     * @param $conf component data
+     * @param Component $conf component data
      */ 
     public function __construct($conf)
     {
@@ -118,7 +118,7 @@ class DBCourse
     /**
      * PUT EditCourse
      *
-     * @param $courseid a database course identifier
+     * @param int $courseid a database course identifier
      */
     public function editCourse($courseid)
     {
@@ -162,7 +162,7 @@ class DBCourse
     /**
      * DELETE DeleteCourse
      *
-     * @param $courseid a database course identifier
+     * @param int $courseid a database course identifier
      */
     public function deleteCourse($courseid)
     {
@@ -238,7 +238,7 @@ class DBCourse
     /**
      * GET GetCourse
      *
-     * @param $courseid a database course identifier
+     * @param int $courseid a database course identifier
      */
     public function getCourse($courseid)
     {    
@@ -346,7 +346,7 @@ class DBCourse
     /**
      * GET GetUserCourses
      *
-     * @param $userid a database user identifier
+     * @param int $userid a database user identifier
      */
     public function getUserCourses($userid)
     {    

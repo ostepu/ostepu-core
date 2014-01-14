@@ -1,8 +1,10 @@
 <?php
-// TODO: Passwortverwaltung
-// TODO: Verschluesselung
-
-// Fragen
+/**
+ * @file Structures.php contains the Object class and includes a lot of existing api structures
+ *
+ * @todo Passwortverwaltung
+ * @todo Verschluesselung
+ */ 
 
     include_once( 'Structures/ApprovalCondition.php' );  
     include_once( 'Structures/Attachment.php' );  
@@ -19,32 +21,55 @@
     include_once( 'Structures/Invitation.php' );   
     include_once( 'Structures/Link.php' );   
     include_once( 'Structures/Marking.php' );   
-    include_once( 'Structures/Query.php' );   
+    include_once( 'Structures/Query.php' ); 
+    include_once( 'Structures/SelectedSubmission.php' );     
     include_once( 'Structures/Session.php' ); 
     include_once( 'Structures/Submission.php' );   
     include_once( 'Structures/TutorAssignment.php' );   
     include_once( 'Structures/User.php' );   
 
 /**
-* 
-*/
+ * the Object class is the parent class of all api structures 
+ *
+ * @author -
+ */
 abstract class Object
 {
     /**
      * Possibly unnecessary
-     * a string that identifies who sent the object
+     * @var string $sender a string that identifies who sent the object
+     * @todo what do we do with the "sender" attribute
      *
      * type: string
-     */
-   /* private $_sender;
-    public function getSender(){
-        return $this->_sender;
-    }
-    public function setSender($_value){
-        $this->_sender = $_value;
-    }*/
+     */ 
+    private $sender;
     
-        
+    /**
+     * the $sender getter
+     *
+     * @return the value of $sender
+     */
+    public function getSender(){
+        return $this->sender;
+    }
+    
+    /**
+     * the $sender setter
+     *
+     * @param string $value the new value for $sender
+     */
+    public function setSender($_value){
+        $this->sender = $_value;
+    }
+    
+    /**
+     * the function reads the passed mysql object and converts direktly into json
+     *
+     * @param string &$a the var, where we have to add the assignment,
+     * e.g. addInsertData($a,'a','1') -> $a = ',a=1'
+     * @param string $b left part of assignment 
+     * @param string $c right part of assignment 
+     */  
     protected function addInsertData(&$a, $b, $c){
         $a = $a . ',' . $b . '=\'' . $c . '\'';
     }

@@ -1,3 +1,12 @@
+/**
+ * @file GetAllCourses.sql
+ * gets all courses from %Course table
+ * @author  Till Uhlig
+ * @result 
+ * - C, the course data
+ * - ES, the exercise sheet data
+ */
+ 
 select 
     C.C_id,
     C.C_name,

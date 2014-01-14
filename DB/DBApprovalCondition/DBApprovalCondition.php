@@ -27,22 +27,22 @@ if (!$com->used())
 class DBApprovalCondition
 {
     /**
-     * @var $_app the slim object
+     * @var Slim $_app the slim object
      */ 
     private $_app=null;
     
     /**
-     * @var $_conf the component data object
+     * @var Component $_conf the component data object
      */ 
     private $_conf=null;
     
     /**
-     * @var $query a list of links to a query component
+     * @var Link[] $query a list of links to a query component
      */ 
     private $query=array();
     
     /**
-     * @var $_prefix the prefix, the class works with
+     * @var string $_prefix the prefixes, the class works with (comma separated)
      */ 
     private static $_prefix = "approvalcondition";
     
@@ -59,7 +59,7 @@ class DBApprovalCondition
     /**
      * the $_prefix setter
      *
-     * @param $value the new value for $_prefix
+     * @param string $value the new value for $_prefix
      */ 
     public static function setPrefix($value)
     {
@@ -69,7 +69,7 @@ class DBApprovalCondition
     /**
      * the component constructor
      *
-     * @param $conf component data
+     * @param Component $conf component data
      */ 
     public function __construct($conf)
     {
@@ -116,7 +116,7 @@ class DBApprovalCondition
     /**
      * PUT EditApprovalCondition
      *
-     * @param $apid a database approval condition identifier
+     * @param int $apid a database approval condition identifier
      */
     public function editApprovalCondition($apid)
     {
@@ -159,7 +159,7 @@ class DBApprovalCondition
     /**
      * DELETE DeleteApprovalCondition
      *
-     * @param $apid a database approval condition identifier
+     * @param int $apid a database approval condition identifier
      */
     public function deleteApprovalCondition($apid)
     {
@@ -273,7 +273,7 @@ class DBApprovalCondition
     /**
      * GET GetApprovalCondition
      *
-     * @param $apid a database approval condition identifier
+     * @param int $apid a database approval condition identifier
      */
     public function getApprovalCondition($apid)
     {     
@@ -324,7 +324,7 @@ class DBApprovalCondition
     /**
      * GET GetCourseApprovalConditions
      *
-     * @param $courseid a database course identifier
+     * @param int $courseid a database course identifier
      */
     public function getCourseApprovalConditions($courseid)
     {      

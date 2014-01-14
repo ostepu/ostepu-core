@@ -26,22 +26,22 @@ if (!$com->used())
 class DBExercise
 {
     /**
-     * @var $_app the slim object
+     * @var Slim $_app the slim object
      */ 
     private $_app=null;
     
     /**
-     * @var $_conf the component data object
+     * @var Component $_conf the component data object
      */ 
     private $_conf=null;
     
     /**
-     * @var $query a list of links to a query component
+     * @var Link[] $query a list of links to a query component
      */ 
     private $query=array();
     
     /**
-     * @var $_prefix the prefix, the class works with
+     * @var string $_prefix the prefixes, the class works with (comma separated)
      */
     private static $_prefix = "exercise";
     
@@ -58,7 +58,7 @@ class DBExercise
     /**
      * the $_prefix setter
      *
-     * @param $value the new value for $_prefix
+     * @param string $value the new value for $_prefix
      */ 
     public static function setPrefix($value)
     {
@@ -68,7 +68,7 @@ class DBExercise
     /**
      * the component constructor
      *
-     * @param $conf component data
+     * @param Component $conf component data
      */ 
     public function __construct($conf)
     {
@@ -104,6 +104,10 @@ class DBExercise
         $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid',
                         array($this,'getSheetExercises'));
                         
+        // GET GetCourseExercises
+        $this->_app->get('/' . $this->getPrefix() . '/course/:courseid',
+                        array($this,'getCourseExercises'));
+                        
         // starts slim only if the right prefix was received
         if (strpos ($this->_app->request->getResourceUri(),'/' . 
                     $this->getPrefix()) === 0){
@@ -115,7 +119,7 @@ class DBExercise
     /**
      * PUT EditExercise
      *
-     * @param $eid a database exercise identifier
+     * @param int $eid a database exercise identifier
      */
     public function editExercise($eid)
     {
@@ -158,7 +162,7 @@ class DBExercise
     /**
      * DELETE DeleteExercise
      *
-     * @param $eid a database exercise identifier
+     * @param int $eid a database exercise identifier
      */
     public function deleteExercise($eid)
     {
@@ -233,7 +237,7 @@ class DBExercise
     /**
      * GET GetExercise
      *
-     * @param $eid a database exercise identifier
+     * @param int $eid a database exercise identifier
      */
     public function getExercise($eid)
     {        
@@ -391,7 +395,7 @@ class DBExercise
     /**
      * GET GetSheetExercises
      *
-     * @param $esid a database exercise sheet identifier
+     * @param int $esid a database exercise sheet identifier
      */
     public function getSheetExercises($esid)
     {     
@@ -403,7 +407,7 @@ class DBExercise
                             
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetExercises.sql", 
+                                        "Sql/GetSheetExercises.sql", 
                                         array("esid" => $esid));        
 
         // checks the correctness of the query                              
@@ -451,6 +455,75 @@ class DBExercise
                 
         } else{
             Logger::Log("GET GetSheetExercises failed",LogLevel::ERROR);
+            $this->_app->response->setStatus(409);
+            $this->_app->response->setBody(Exercise::encodeExercise(new Exercise()));
+            $this->_app->stop();
+        }
+    }
+    
+    /**
+     * GET GetCourseExercises
+     *
+     * @param int $courseid a database Course identifier
+     */
+    public function getCourseExercises($courseid)
+    {     
+        Logger::Log("starts GET GetCourseExercises",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($courseid));
+                            
+        // starts a query, by using a given file
+        $result = DBRequest::getRoutedSqlFile($this->query, 
+                                        "Sql/GetCourseExercises.sql", 
+                                        array("courseid" => $courseid));        
+
+        // checks the correctness of the query                              
+        if ($result['status']>=200 && $result['status']<=299){
+            $query = Query::decodeQuery($result['content']);
+
+            $data = $query->getResponse();
+            
+            // generates an assoc array of exercises by using a defined 
+            // list of its attributes
+            $exercises = DBJson::getObjectsByAttributes($data, Exercise::getDBPrimaryKey(), Exercise::getDBConvert());           
+            
+            // generates an assoc array of files by using a defined 
+            // list of its attributes
+            $attachments = DBJson::getObjectsByAttributes($data, File::getDBPrimaryKey(), File::getDBConvert());
+            
+            // generates an assoc array of submissions by using a defined 
+            // list of its attributes
+            $submissions = DBJson::getObjectsByAttributes($data, Submission::getDBPrimaryKey(), Submission::getDBConvert(), '2');
+             
+            // sets the selectedForGroup attribute
+            foreach ($submissions as &$submission){
+                if (isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
+                    if (!isset($submission['id'])){
+                        $submission['selectedForGroup'] = (string) 0;
+                    } elseif ($submission['id'] == $submission['selectedForGroup']) {
+                        $submission['selectedForGroup'] = (string) 1;
+                    } else
+                        $submission['selectedForGroup'] = (string) 0;
+                }
+                else
+                    $submission['selectedForGroup'] = (string) 0;
+            }      
+            
+            // concatenates the exercise and the associated attachments
+            $res = DBJson::concatObjectListResult($data, $exercises,Exercise::getDBPrimaryKey(),Exercise::getDBConvert()['E_attachments'] ,$attachments,File::getDBPrimaryKey());  
+            
+            // concatenates the exercise and the associated submissions
+            $res = DBJson::concatResultObjectLists($data, $res,Exercise::getDBPrimaryKey(),Exercise::getDBConvert()['E_submissions'] ,$submissions,Submission::getDBPrimaryKey(), '2');
+                
+            $this->_app->response->setBody(Exercise::encodeExercise($res));
+            $this->_app->response->setStatus($result['status']);
+            if (isset($result['headers']['Content-Type']))
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+                
+        } else{
+            Logger::Log("GET GetCourseExercises failed",LogLevel::ERROR);
             $this->_app->response->setStatus(409);
             $this->_app->response->setBody(Exercise::encodeExercise(new Exercise()));
             $this->_app->stop();

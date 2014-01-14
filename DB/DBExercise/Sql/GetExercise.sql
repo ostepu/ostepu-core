@@ -1,3 +1,15 @@
+/**
+ * @file GetExercise.sql
+ * gets an specified exercise from %Exercise table
+ * @author Till Uhlig
+ * @param int $eid an %Exercise identifier
+ * @result 
+ * - E, the exercise data
+ * - F, the submission file
+ * - S, the submission data
+ * - SS, the selected submission data
+ */
+ 
 select 
     E.E_id,
     E.ES_id,

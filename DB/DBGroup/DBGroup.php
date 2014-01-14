@@ -27,22 +27,22 @@ if (!$com->used())
 class DBGroup
 {
     /**
-     * @var $_app the slim object
+     * @var Slim $_app the slim object
      */ 
     private $_app=null;
     
     /**
-     * @var $_conf the component data object
+     * @var Component $_conf the component data object
      */ 
     private $_conf=null;
     
     /**
-     * @var $query a list of links to a query component
+     * @var Link[] $query a list of links to a query component
      */ 
     private $query=array();
     
     /**
-     * @var $_prefix the prefix, the class works with
+     * @var string $_prefix the prefixes, the class works with (comma separated)
      */ 
     private static $_prefix = "group";
     
@@ -59,7 +59,7 @@ class DBGroup
     /**
      * the $_prefix setter
      *
-     * @param $value the new value for $_prefix
+     * @param string $value the new value for $_prefix
      */ 
     public static function setPrefix($value)
     {
@@ -69,7 +69,7 @@ class DBGroup
     /**
      * the component constructor
      *
-     * @param $conf component data
+     * @param Component $conf component data
      */ 
     public function __construct($conf)
     {
@@ -124,8 +124,8 @@ class DBGroup
     /**
      * PUT EditGroup
      *
-     * @param $userid a database user identifier
-     * @param $esid a database exercise sheet identifier
+     * @param int $userid a database user identifier
+     * @param int $esid a database exercise sheet identifier
      */
     public function editGroup($userid, $esid)
     {
@@ -172,8 +172,8 @@ class DBGroup
     /**
      * DELETE DeleteGroup
      *
-     * @param $userid a database user identifier
-     * @param $esid a database exercise sheet identifier
+     * @param int $userid a database user identifier
+     * @param int $esid a database exercise sheet identifier
      */
     public function deleteGroup($userid, $esid)
     {
@@ -245,7 +245,7 @@ class DBGroup
     /**
      * GET GetUserGroups
      *
-     * @param $userid a database user identifier
+     * @param int $userid a database user identifier
      */
     public function getUserGroups($userid)
     {     
@@ -402,8 +402,8 @@ class DBGroup
     /**
      * GET GetSheetUserGroups
      *
-     * @param $userid a database user identifier
-     * @param $esid a database exercise sheet identifier
+     * @param int $userid a database user identifier
+     * @param int $esid a database exercise sheet identifier
      */
     public function getSheetUserGroups($userid, $esid)
     {    
@@ -486,7 +486,7 @@ class DBGroup
     /**
      * GET GetSheetGroups
      *
-     * @param $esid a database exercise sheet identifier
+     * @param int $esid a database exercise sheet identifier
      */
     public function getSheetGroups($esid)
     {     

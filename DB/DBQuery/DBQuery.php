@@ -27,7 +27,7 @@ if (!$com->used())
 class DBQuery
 {
     /**
-     * @var $_app the slim object
+     * @var Slim $_app the slim object
      */ 
     private $_conf=null;
     
@@ -37,7 +37,7 @@ class DBQuery
     private $_app=null;
     
     /**
-     * @var $_prefix the prefix, the class works with
+     * @var string $_prefix the prefixes, the class works with (comma separated)
      */ 
     private static $_prefix = "query";
     
@@ -55,7 +55,7 @@ class DBQuery
     /**
      * the $_prefix setter
      *
-     * @param $value the new value for $_prefix
+     * @param string $value the new value for $_prefix
      */ 
     public static function setPrefix($value)
     {
@@ -65,7 +65,7 @@ class DBQuery
     /**
      * the component constructor
      *
-     * @param $conf component data
+     * @param Component $conf component data
      */ 
     public function __construct($conf)
     {

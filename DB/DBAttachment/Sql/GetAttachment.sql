@@ -1,3 +1,13 @@
+/**
+ * @file GetAttachment.sql
+ * gets an specified attachment from %Attachment table
+ * @author Till Uhlig
+ * @param int $aid a %Attachment identifier
+ * @result 
+ * - A, the attachment data
+ * - F, the attachment file
+ */
+ 
 select 
     A.A_id,
     A.E_id,

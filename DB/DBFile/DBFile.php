@@ -20,22 +20,22 @@ include_once( 'Include/Logger.php' );
 class DBFile
 {
     /**
-     * @var $_app the slim object
+     * @var Slim $_app the slim object
      */ 
     private $_app=null;
     
     /**
-     * @var $_conf the component data object
+     * @var Component $_conf the component data object
      */ 
     private $_conf=null;
     
     /**
-     * @var $query a list of links to a query component
+     * @var Link[] $query a list of links to a query component
      */
     private $query=array();
     
     /**
-     * @var $_prefix the prefix, the class works with
+     * @var string $_prefix the prefixes, the class works with (comma separated)
      */ 
     private static $_prefix = "file";
     
@@ -52,7 +52,7 @@ class DBFile
     /**
      * the $_prefix setter
      *
-     * @param $value the new value for $_prefix
+     * @param string $value the new value for $_prefix
      */ 
     public static function setPrefix($value)
     {
@@ -62,7 +62,7 @@ class DBFile
     /**
      * the component constructor
      *
-     * @param $conf component data
+     * @param Component $conf component data
      */ 
     public function __construct($conf)
     {
@@ -89,6 +89,10 @@ class DBFile
         $this->_app->get('/' . $this->getPrefix() . '/file/:fileid',
                         array($this, 'getFile'));
                         
+        // GET GetFileByHash
+        $this->_app->get('/' . $this->getPrefix() . '/hash/:hash',
+                        array($this, 'getFileByHash'));
+                        
         // GET GetAllFiles
         $this->_app->get('/' . $this->getPrefix() . '/file',
                         array($this, 'getAllFiles'));
@@ -105,7 +109,7 @@ class DBFile
     /**
      * PUT EditFile
      *
-     * @param $userid a database user identifier
+     * @param int $userid a database user identifier
      */
     public function editFile($fileid)
     {
@@ -149,7 +153,7 @@ class DBFile
     /**
      * DELETE RemoveFile
      *
-     * @param $userid a database user identifier
+     * @param int $userid a database user identifier
      */
     public function removeFile($fileid)
     {
@@ -225,7 +229,7 @@ class DBFile
     /**
      * GET GetFile
      *
-     * @param $fileid a database file identifier
+     * @param int $fileid a database file identifier
      */
     public function getFile($fileid)
     {
@@ -263,6 +267,51 @@ class DBFile
                 
         } else{
             Logger::Log("GET GetFile failed",LogLevel::ERROR);
+            $this->_app->response->setStatus(409);
+            $this->_app->response->setBody(File::encodeFile(new File()));
+            $this->_app->stop();
+        }
+    }
+    
+    /**
+     * GET GetFileByHash
+     *
+     * @param int $fileid a database file identifier
+     */
+    public function getFileByHash($hash)
+    {
+        Logger::Log("starts GET GetFileByHash",LogLevel::DEBUG);
+        
+        $hash = DBJson::mysql_real_escape_string($hash);
+                            
+        // starts a query, by using a given file
+        $result = DBRequest::getRoutedSqlFile($this->query, 
+                                        "Sql/GetFileByHash.sql", 
+                                        array("hash" => $hash));        
+        
+        // checks the correctness of the query
+        if ($result['status']>=200 && $result['status']<=299){
+            $query = Query::decodeQuery($result['content']);
+
+            $data = $query->getResponse();
+            
+            // generates an assoc array of an file by using a defined list of 
+            // its attributes
+            $file = DBJson::getResultObjectsByAttributes($data, 
+                                        File::getDBPrimaryKey(), 
+                                        File::getDBConvert());
+            
+            // only one object as result 
+            if (count($file)>0)
+                $file = $file[0];
+                
+            $this->_app->response->setBody(File::encodeFile($file));
+            $this->_app->response->setStatus($result['status']);
+            if (isset($result['headers']['Content-Type']))
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+                
+        } else{
+            Logger::Log("GET GetFileByHash failed",LogLevel::ERROR);
             $this->_app->response->setStatus(409);
             $this->_app->response->setBody(File::encodeFile(new File()));
             $this->_app->stop();

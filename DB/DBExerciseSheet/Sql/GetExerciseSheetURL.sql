@@ -1,3 +1,12 @@
+/**
+ * @file GetExerciseSheetURL.sql
+ * gets a exercise sheet file
+ * @author Till Uhlig
+ * @param int $esid a %ExerciseSheet identifier
+ * @result 
+ * - F, the exercise sheet file
+ */
+ 
 select 
     F.F_id,
     F.F_displayName,

@@ -145,12 +145,12 @@ class Exercise extends Object implements JsonSerializable
     public function getInsertData(){
         $values = "";
         
-        if ($this->id != null) $this->addInsertData($values, 'E_id', mysql_real_escape_string($this->id));
-        if ($this->sheetId != null) $this->addInsertData($values, 'ES_id', mysql_real_escape_string($this->sheetId));
-        if ($this->maxPoints != null) $this->addInsertData($values, 'E_maxPoints', mysql_real_escape_string($this->maxPoints));
-        if ($this->type != null) $this->addInsertData($values, 'ET_id', mysql_real_escape_string($this->type));
-        if ($this->link != null) $this->addInsertData($values, 'E_id_link', mysql_real_escape_string($this->link));
-        if ($this->bonus != null) $this->addInsertData($values, 'E_bonus', mysql_real_escape_string($this->bonus));
+        if ($this->id != null) $this->addInsertData($values, 'E_id', DBJson::mysql_real_escape_string($this->id));
+        if ($this->sheetId != null) $this->addInsertData($values, 'ES_id', DBJson::mysql_real_escape_string($this->sheetId));
+        if ($this->maxPoints != null) $this->addInsertData($values, 'E_maxPoints', DBJson::mysql_real_escape_string($this->maxPoints));
+        if ($this->type != null) $this->addInsertData($values, 'ET_id', DBJson::mysql_real_escape_string($this->type));
+        if ($this->link != null) $this->addInsertData($values, 'E_id_link', DBJson::mysql_real_escape_string($this->link));
+        if ($this->bonus != null) $this->addInsertData($values, 'E_bonus', DBJson::mysql_real_escape_string($this->bonus));
         
         if ($values != ""){
             $values=substr($values,1);
