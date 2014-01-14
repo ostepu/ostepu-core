@@ -95,10 +95,10 @@ if (isset($_POST['action'])) {
             header('location: index.php');
             exit();
         } else {
-            print "Bei der Anmeldung ist ein Problem aufgetreten!";
+            $notifications[] = MakeNotification("error", "Bei der Anmeldung ist ein Problem aufgetreten!");
         }
     } else {
-        print "Die Anmeldung war fehlerhaft!";
+        $notifications[] = MakeNotification("error", "Die Anmeldung war fehlerhaft!");
     }
 }
 
