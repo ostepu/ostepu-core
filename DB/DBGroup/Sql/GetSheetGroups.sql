@@ -1,3 +1,6 @@
+-- create a table for output, where all groups for a specific exercisesheet are listed
+-- U is the groupleader
+-- U2 are the members of the group without the leader
 SELECT 
     U2.U_id,
     U2.U_username,
