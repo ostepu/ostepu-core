@@ -53,7 +53,7 @@ class LController
 
         if ($string[0] == "DB") {
             unset($string[0]);
-            $URI = CConfig::getLink($this->query, "database");//DB-URL;                                                            //URI ergänzen
+            $URI = CConfig::getLink($this->query, "database")->getAddress();//DB-URL;                                                            //URI ergänzen
             foreach ($string as $str) {
                 $URI = $URI.'/'.$str;
             }
@@ -62,7 +62,7 @@ class LController
             $this->app->response->setBody($answer['content']);
         } elseif ($string[0] == "FS") {
             unset($string[0]);
-            $URI = CConfig::getLink($this->query, "filesystem");//FS-URL;                                                            //URI ergänzen
+            $URI = CConfig::getLink($this->query, "filesystem")->getAddress();//FS-URL;                                                            //URI ergänzen
             foreach ($string as $str) {
                 $URI = $URI.'/'.$str;
             }
