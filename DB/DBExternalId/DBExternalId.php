@@ -300,7 +300,7 @@ class DBExternalId
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetAllExternalIds.sql", 
-                                        array("exid" => $exid));
+                                        array());
         
         // checks the correctness of the query                                    
         if ($result['status']>=200 && $result['status']<=299){
