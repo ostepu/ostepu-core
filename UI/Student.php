@@ -7,6 +7,7 @@
  * @author Florian Lücke
  */
 
+include 'include/Authorization.php';
 include_once 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
 include_once 'include/Helpers.php';
@@ -17,8 +18,8 @@ if (isset($_GET['cid'])) {
     die('no course id!\n');
 }
 
-if (isset($_GET['uid'])) {
-    $uid = $_GET['uid'];
+if (isset($_SESSION['uid'])) {
+    $uid = $_SESSION['uid'];
 } else {
     die('no user id!\n');
 }
@@ -38,7 +39,7 @@ $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user);
 $h->bind($course);
 $h->bind(array("backTitle" => "Veranstaltung wechseln",
-               "backURL" => "index.php?uid={$uid}",
+               "backURL" => "index.php",
                "navigationElement" => $menu,
                "notificationElements" => $notifications));
 

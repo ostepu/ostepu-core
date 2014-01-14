@@ -29,7 +29,7 @@ if (!isset( $_SESSION['server_SID'] )) {
 
 // check if already logged in
 if(checkLogin()) {
-    header('location: index.php?uid='.$_SESSION['uid']);
+    header('location: index.php');
     exit();
 }
 
@@ -92,7 +92,7 @@ if (isset($_POST['action'])) {
         $update = updateUser($input['username'], $input['password']);
 
         if ($update) {
-            header('location: index.php?uid='.$_SESSION['uid']);
+            header('location: index.php');
             exit();
         } else {
             print "Bei der Anmeldung ist ein Problem aufgetreten!";

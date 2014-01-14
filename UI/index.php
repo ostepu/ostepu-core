@@ -4,10 +4,8 @@ include 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
 include_once 'include/Helpers.php';
 
-$notifications = array();
-
-if (isset($_GET['uid'])) {
-    $uid = $_GET['uid'];
+if (isset($_SESSION['uid'])) {
+    $uid = $_SESSION['uid'];
 } else {
     $uid = 0;
 }
@@ -32,9 +30,7 @@ if (is_null($user)) {
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user);
-$h->bind(array("backTitle" => "Veranstaltung wechseln",
-               "backURL" => "index.php?uid={$uid}",
-               "name" => "Übungsplattform",
+$h->bind(array("name" => "Übungsplattform",
                "notificationElements" => $notifications));
 
 $pageData = array('uid' => $user['id'],
