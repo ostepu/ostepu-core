@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 require 'Slim/Slim.php';
 include 'include/Request.php';
@@ -7,15 +7,29 @@ include_once( 'include/CConfig.php' );
 \Slim\Slim::registerAutoloader();
 
 class LSubmission
-{    
+{
     private $_conf=null;
-    
+
+    /**
+     * Prefix of this component
+     */
     private static $_prefix = "submission";
-    
+
+    /**
+     * Gets the Prefix of this component.
+     *
+     * @return mixed
+     */
     public static function getPrefix()
     {
         return LSubmission::$_prefix;
     }
+
+    /**
+     * Sets the Prefix of this component.
+     *
+     * @param mixed $_prefix the _prefix
+     */
     public static function setPrefix($value)
     {
         LSubmission::$_prefix = $value;
@@ -25,64 +39,61 @@ class LSubmission
     /**
      * REST actions
      *
-     * This function contains the REST actions with the assignments to 
+     * This function contains the REST actions with the assignments to
      * the functions.
      */
     public function __construct($conf)
-    {    
+    {
         $this->app = new \Slim\Slim();
         $this->app->response->headers->set('Content-Type', 'application/json');
         $this->_conf = $conf;
         $this->query = array();
-        
+
         $this->query = CConfig::getLink($conf->getLinks(),"controller");
         $this->lURL = $this->query->getAddress();
-        
+
         //AddSubmission
         $this->app->post(':data+', array($this, 'addSubmission'));
-        
+
         //EditSubmissionState
-        $this->app->put('/submission/:submissionid', 
+        $this->app->put('/submission/:submissionid',
                         array ($this, 'editSubmissionState'));
-        
+
         //deleteSubmission
-        $this->app->delete('/submission/:submissionid', 
+        $this->app->delete('/submission/:submissionid',
                         array($this, 'deleteSubmission'));
-                        
+
         //LoadSubmissionAsZip
-        $this->app->get('/exerciseSheet/:sheetid/user/:userid', 
+        $this->app->get('/exerciseSheet/:sheetid/user/:userid',
                         array($this, 'loadSubmissionAsZip'));
-        
+
         //ShowSubmissionsHistory
-        $this->app->get('/exerciseSheet/:sheetid/user/:userid/history', 
+        $this->app->get('/exerciseSheet/:sheetid/user/:userid/history',
                         array($this, 'showSubmissionsHistory'));
-                   
+
         //GetSubmissionURL
-        $this->app->get('/submission/:submissionid', 
+        $this->app->get('/submission/:submissionid',
                         array($this, 'getSubmissionURL'));
-                        
+
         $this->app->run();
     }
 
     /**
-     * add a new submission
+     * Adds a user's submission to the database and filesystem
      *
-     * This function adds a submission of an exercise.
-     * First,the submission will be written in the file system.
-     * If the status of this operation is right, then the informations
-     * of the submission will be added in the database.
-     *
-     * @return integer $status the status code
+     * Called then this component receives an HTTP POST request to
+     * /submissions(/)
+     * The request body should contain a JSON object representing a submission.
      */
     public function addSubmission($data){
-        //Parameter abfangen wenn $data "nicht leer"        
+        //Parameter abfangen wenn $data "nicht leer"
         $header = $this->app->request->headers->all();
         $body = json_decode($this->app->request->getBody());
         $file = json_encode($body->{'_file'});      //mit oder ohne "_"?
         //Anfrage an FileSystem
         $URL = $this->lURL.'/FS';
         $answer = Request::custom('POST', $URL, $header, $file);
-        
+
         if($answer['status'] == 200){ //nur, wenn file tatsaechlich im FS gespeichert wurde
             $body->{'_file'} = $answer['content'];
             //Anfrage an DataBase
@@ -93,46 +104,56 @@ class LSubmission
     }
 
     /**
-     * edit a submission of an exercise
+     * Edits a submission's state.
      *
-     * This function overwrites a submission of an exercise.
-     * First,the submission will be written in the file system.
-     * If the status of this operation is right, then the informations
-     * of the submission will be overwritten in the database.
+     * Called when this component receives an HTTP PUT request to
+     * /submissions/$submissionid(/).
+     * The request body should contain a JSON object representing a submission.
+     *
+     * @param int $submissionid The id of the submission that is beeing updated.
      */
-    public function editSubmissionState($submissionid){    
+    public function editSubmissionState($submissionid){
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
-        $URL = $this->lURL.'/DB/submission/'.$submissionid;        
+        $URL = $this->lURL.'/DB/submission/'.$submissionid;
         $answer = Request::custom('PUT', $URL, $header, $body);
-        $this->app->response->setStatus($answer['status']);    
+        $this->app->response->setStatus($answer['status']);
     }
 
     /**
-     * delete a submission
-     * 
-     * First, this function deletes the informations of a submission
-     * in the database. If the status of this operation is right,
-     * then the submission will be deleted in the file system.
+     * Deletes a submission.
+     *
+     * Called when this component revceives an HTTP DELETE request to
+     * /submissions/$submissionid(/).
+     *
+     * @param int $submissionid The submission that is beeing deleted.
+     *
+     * @note Files are completely removed from the system. This is not intended
+     * behaviour as this prevents lecturers and admins from seeing them in the
+     * user's submission history.
      */
-    public function deleteSubmission($submissionid){       
+    public function deleteSubmission($submissionid){
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
-        $URL = $this->lURL.'/DB/submission/'.$submissionid;        
+        $URL = $this->lURL.'/DB/submission/'.$submissionid;
         $answer = Request::custom('DELETE', $URL, $header, $body);
         $this->app->response->setStatus($answer['status']);
-        
+
         if( $answer['status'] == 200){ //nur, wenn file tatsaechlich aus DB geloescht wurde
-            $URL = $this->lURL.'/FS/submission/'.$submissionid; 
+            $URL = $this->lURL.'/FS/submission/'.$submissionid;
             $answer = Request::custom('DELETE', $URL, $header, $body);
-        }             
+        }
     }
 
     /**
-     * get the URL of a zip file with the submission
-     * 
-     * This function returns the URL of a zip file with the submission
-     * for download this.
+     * Loads all submissions as a zip file.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /submissions/exercisesheet/$sheetid/user/$userid.
+     *
+     * @param int $sheetid The id of the sheet of which the submissions should
+     * be zipped.
+     * @param int $userid The id of the user whose submissions should be zipped.
      */
     public function loadSubmissionAsZip($sheetid, $userid){       //Annahme: ZipURL in DB abrufbar
         $header = $this->app->request->headers->all();
@@ -144,11 +165,16 @@ class LSubmission
     }
 
     /**
-     * get the history of submission uploads
-     * 
-     * This function returns the history of submission.
+     * Loads the submission history of a user.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /submissions/exercisesheet/$sheetid/user/$userid/history.
+     *
+     * @param int $sheetid The id of the sheet of which the submissions should
+     * be loaded.
+     * @param int $userid The id of the user whose submissions should be loaded.
      */
-    public function showSubmissionsHistory($sheetid, $userid){      
+    public function showSubmissionsHistory($sheetid, $userid){
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
         $URL = $this->lURL.'/DB/exerciseSheet/'.$sheetid.'/user/'.$userid.'/history';
@@ -158,11 +184,14 @@ class LSubmission
     }
 
     /**
-     * get the URL of a submission
-     * 
-     * This function returns the URL of a submission for download this.
+     * Loads a specific submission.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /submissions/$submissionid(/).
+     *
+     * @param int $submissionid The id of the requested submission.
      */
-    public function getSubmissionURL($submissionid){        
+    public function getSubmissionURL($submissionid){
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
         $URL = $this->lURL.'/DB/submission/'.$submissionid;
@@ -173,7 +202,7 @@ class LSubmission
 }
 
 /**
- * get new Config-Datas from DB 
+ * get new Config-Datas from DB
  */
 $com = new CConfig(LSubmission::getPrefix());
 
