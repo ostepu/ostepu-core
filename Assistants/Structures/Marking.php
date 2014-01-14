@@ -1,130 +1,235 @@
 <?php
+/**
+ * @file Marking.php contains the Marking class
+ */
+ 
+/**
+ * the marking structure
+ *
+ * @author Till Uhlig, Florian Lücke
+ */
 class Marking extends Object implements JsonSerializable
 {
     /**
-     * The identifier of this marking.
+     * @var string $id The identifier of this marking.
      *
      * type: string
      */
     private $id;
+    
+    /**
+     * the $id getter
+     *
+     * @return the value of $id
+     */ 
     public function getId(){
         return $this->id;
     }
+    
+    /**
+     * the $id setter
+     *
+     * @param string $value the new value for $id
+     */ 
     public function setId($value){
         $this->id = $value;
     }
     
     /**
-     * The identifier of the submission this marking belongs to.
-     *
-     * type: Submission
+     * @var Submission $submission The submission this marking belongs to.
      */
     private $submission;
+    
+    /**
+     * the $submission getter
+     *
+     * @return the value of $submission
+     */ 
     public function getSubmission(){
         return $submission;
     }
+    
+    /**
+     * the $submission setter
+     *
+     * @param Submission $value the new value for $submission
+     */ 
     public function setSubmission($value){
         $submission = $value;
     }
     
     /**
-     * The id of the tutor that corrected the submission.
-     * 
-     * type: string
+     * @var string $tutorId The id of the tutor that corrected the submission.
      */
     private $tutorId;
+    
+    /**
+     * the $tutorId getter
+     *
+     * @return the value of $tutorId
+     */ 
     public function getTutorId(){
         return $this->tutorId;
     }
+    
+    /**
+     * the $tutorId setter
+     *
+     * @param string $value the new value for $tutorId
+     */ 
     public function setTutorId($value){
         $this->tutorId = $value;
     }
     
     /**
-     * a comment a tutor has made concerning a students submission.
-     *
-     * type: string
+     * @var string $tutorComment a comment a tutor has made concerning a students submission.
      */
     private $tutorComment;
+    
+    /**
+     * the $tutorComment getter
+     *
+     * @return the value of $tutorComment
+     */ 
     public function getTutorComment(){
         return $this->tutorComment;
     }
+    
+    /**
+     * the $tutorComment setter
+     *
+     * @param string $value the new value for $tutorComment
+     */ 
     public function setTutorComment($value){
         $this->tutorComment = $value;
     }
     
     /**
-     * The file that contains the marked submission for the user.
-     *
-     * type: File
+     * @var file $file  The file that contains the marked submission for the user.
      */
     private $file;
+    
+    /**
+     * the $file getter
+     *
+     * @return the value of $file
+     */ 
     public function getFile(){
         return $this->file;
     }
+    
+    /**
+     * the $file setter
+     *
+     * @param file $value the new value for $file
+     */ 
     public function setFile($value){
         $this->file = $value;
     }
     
     /**
-     * The amount of points a student has reached with his submission.
+     * @var int $points The amount of points a student has reached with his submission.
      *
-     * type: decimal
+     * type: int
      */
     private $points;
+    
+    /**
+     * the $points getter
+     *
+     * @return the value of $points
+     */ 
     public function getPoints(){
         return $this->points;
     }
+    
+    /**
+     * the $points setter
+     *
+     * @param int $value the new value for $points
+     */ 
     public function setPoints($value){
         $this->points = $value;
     }
 
     /**
-     * if the submission stands out from the other submissions.
-     *
-     * type: bool
+     * @var bool $outstanding if the submission stands out from the other submissions.
      */
     private $outstanding;
+    
+    /**
+     * the $outstanding getter
+     *
+     * @return the value of $outstanding
+     */ 
     public function getOutstanding(){
         return $this->outstanding;
     }
+    
+    /**
+     * the $outstanding setter
+     *
+     * @param bool $value the new value for $outstanding
+     */ 
     public function setOutstanding($value){
         $this->outstanding = $value;
     }
     
     /**
-     * status
-     *
-     * type: string
+     * @var string $prefix the marking status
      */
     private $status;
+    
+    /**
+     * the $status getter
+     *
+     * @return the value of $status
+     */ 
     public function getStatus(){
         return $this->status;
     }
+    
+    /**
+     * the $status setter
+     *
+     * @param string $value the new value for $status
+     */ 
     public function setStatus($value){
         $this->status = $value;
     }
     
     /**
-     * 
-     *
-     * type: date
+     * @var date $date the date on which the marking was uploaded
      */
     private $date;
+    
+    /**
+     * the $date getter
+     *
+     * @return the value of $date
+     */ 
     public function getDate(){
         return $this->date;
     }
+    
+    /**
+     * the $date setter
+     *
+     * @param date $value the new value for $date
+     */ 
     public function setDate($value){
         $this->date = $value;
     }
     
     
     
-    
+ 
     /**
-     * (description)
-     */  
-    public static function getDBConvert(){
+     * returns an mapping array to convert between database and structure
+     *
+     * @return the mapping array
+     */
+    public static function getDbConvert(){
         return array(
            'M_id' => 'id',
            'U_id_tutor' => 'tutorId',
@@ -137,9 +242,11 @@ class Marking extends Object implements JsonSerializable
            'M_date' => 'date'
         );
     }
-    
+
     /**
-     * (description)
+     * converts an object to insert/update data
+     *
+     * @return a comma separated string e.g. "a=1,b=2"
      */
     public function getInsertData(){
         $values = "";
@@ -161,14 +268,18 @@ class Marking extends Object implements JsonSerializable
     } 
     
     /**
-     * (description)
+     * returns a sting/string[] of the database primary key/keys
+     * 
+     * @return the primary key/keys
      */
-    public static function getDBPrimaryKey(){
+    public static function getDbPrimaryKey(){
         return 'M_id';
     }
     
     /**
-     * (description)
+     * defines the marking status
+     *
+     * @return returns an mapping array
      */
     public static function getStatusDefinition(){
         return array(
@@ -178,9 +289,11 @@ class Marking extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the constructor
+     * 
+     * @param $data an assoc array with the object informations
      */
-    public function __construct($data=array()) {
+    public function __construct($data=array()){
         foreach ($data AS $key => $value) {
              if (isset($key)){
                 if ($key == 'file'){
@@ -197,14 +310,24 @@ class Marking extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * encodes an object to json
+     * 
+     * @param $data the object
+     *
+     * @return the json encoded object
      */
     public static function encodeMarking($data){
         return json_encode($data);
     }
     
     /**
-     * (description)
+     * decodes $data to an object
+     * 
+     * @param string $data json encoded data (decode=true) 
+     * or json decoded data (decode=false)
+     * @param bool $decode specifies whether the data must be decoded
+     *
+     * @return the object
      */
     public static function decodeMarking($data){
         $data = json_decode($data);
@@ -220,9 +343,10 @@ class Marking extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the json serialize function
      */
-    public function jsonSerialize() {
+    public function jsonSerialize()
+    {
         return array(
             'id' => $this->id,
             'submission' => $this->submission,

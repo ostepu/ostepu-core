@@ -1,111 +1,204 @@
 <?php
+/**
+ * @file Submission.php contains the Submission class
+ */
+ 
+/**
+ * the submission structure
+ *
+ * @author Till Uhlig, Florian Lücke
+ */
 class Submission extends Object implements JsonSerializable
 {
     /**
-     * The identifier of this submission.
+     * @var string $id The identifier of this submission.
      */
     private $id;
+    
+    /**
+     * the $id getter
+     *
+     * @return the value of $id
+     */ 
     public function getId(){
         return $this->id;
     }
+    
+    /**
+     * the $id setter
+     *
+     * @param string $value the new value for $id
+     */ 
     public function setId($value){
         $this->id = $value;
     }
 
     /**
-     * The id of the student that submitted his solution.
-     *
-     * type: string
+     * @var string $studentId The id of the student that submitted his solution.
      */
     private $studentId;
+    
+    /**
+     * the $studentId getter
+     *
+     * @return the value of $studentId
+     */ 
     public function getStudentId(){
         return $this->studentId;
     }
+    
+    /**
+     * the $studentId setter
+     *
+     * @param string $value the new value for $studentId
+     */ 
     public function setStudentId($value){
         $this->studentId = $value;
     }
 
     /**
-     * a string that identifies the exercise this submission belongs to.
-     *
-     * type: string
+     * @var string $exerciseId a string that identifies the exercise this submission belongs to.
      */
     private $exerciseId;
+    
+    /**
+     * the $exerciseId getter
+     *
+     * @return the value of $exerciseId
+     */ 
     public function getExerciseId(){
         return $this->exerciseId;
     }
+    
+    /**
+     * the $exerciseId setter
+     *
+     * @param string $value the new value for $exerciseId
+     */ 
     public function setExerciseId($value){
         $this->exerciseId = $value;
     }
 
     /**
-     * A comment that a student made on his submission.
-     *
-     * type: string
+     * @var string $comment A comment that a student made on his submission.
      */
     private $comment;
+    
+    /**
+     * the $comment getter
+     *
+     * @return the value of $comment
+     */ 
     public function getComment(){
         return $this->comment;
     }
+    
+    /**
+     * the $comment setter
+     *
+     * @param string $value the new value for $comment
+     */ 
     public function setComment($value){
         $this->comment = $value;
     }
     
     /**
-     * A students submission.
-     *
-     * type: File
+     * @var File $file A students submission.
      */
     private $file;
+    
+    /**
+     * the $file getter
+     *
+     * @return the value of $file
+     */ 
     public function getFile(){
         return $this->file;
     }
+    
+    /**
+     * the $file setter
+     *
+     * @param file $value the new value for $file
+     */ 
     public function setFile($value){
         $this->file = $value;
     }
     
     /**
-     * If the submission has been accepted for marking.
-     *
-     * type: bool
+     * @var bool $accepted If the submission has been accepted for marking.
      */
     private $accepted;
+    
+    /**
+     * the $accepted getter
+     *
+     * @return the value of $accepted
+     */ 
     public function getAccepted(){
         return $this->accepted;
     }
+    
+    /**
+     * the $accepted setter
+     *
+     * @param bool $value the new value for $accepted
+     */ 
     public function setAccepted($value){
         $this->accepted = $value;
     }
     
     /**
-     * If the submission has been selected as submission for the user's group
-     *
-     * type: bool
+     * @var bool $selectedForGroup If the submission has been selected as submission for the user's group
      */
     private $selectedForGroup;
+    
+    /**
+     * the $selectedForGroup getter
+     *
+     * @return the value of $selectedForGroup
+     */ 
     public function getSelectedForGroup(){
         return $this->selectedForGroup;
     }
+    
+    /**
+     * the $selectedForGroup setter
+     *
+     * @param string $value the new value for $selectedForGroup
+     */ 
     public function setSelectedForGroup($value){
         $this->selectedForGroup = $value;
     }
     
     /**
-     * description
-     *
-     * type: date
+     * @var date $date the date on which the submission was uploaded
      */
     private $date;
+    
+    /**
+     * the $date getter
+     *
+     * @return the value of $date
+     */ 
     public function getDate(){
         return $this->date;
     }
+    
+    /**
+     * the $date setter
+     *
+     * @param date $value the new value for $date
+     */ 
     public function setDate($value){
         $this->date = $value;
     }
     
     /**
-     * (description)
-     */  
+     * returns an mapping array to convert between database and structure
+     *
+     * @return the mapping array
+     */
     public static function getDbConvert()
     {
         return array(
@@ -121,7 +214,9 @@ class Submission extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * converts an object to insert/update data
+     *
+     * @return a comma separated string e.g. "a=1,b=2"
      */
     public function getInsertData(){
         $values = "";
@@ -142,7 +237,9 @@ class Submission extends Object implements JsonSerializable
     } 
     
     /**
-     * (description)
+     * returns a sting/string[] of the database primary key/keys
+     * 
+     * @return the primary key/keys
      */
     public static function getDbPrimaryKey()
     {
@@ -150,9 +247,11 @@ class Submission extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the constructor
+     * 
+     * @param $data an assoc array with the object informations
      */
-    public function __construct($data=array()) {
+    public function __construct($data=array()){
         foreach ($data AS $key => $value) {
              if (isset($key)){
                 if ($key == 'file'){
@@ -165,14 +264,24 @@ class Submission extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * encodes an object to json
+     * 
+     * @param $data the object
+     *
+     * @return the json encoded object
      */
     public static function encodeSubmission($data){
         return json_encode($data);
     }
     
     /**
-     * (description)
+     * decodes $data to an object
+     * 
+     * @param string $data json encoded data (decode=true) 
+     * or json decoded data (decode=false)
+     * @param bool $decode specifies whether the data must be decoded
+     *
+     * @return the object
      */
     public static function decodeSubmission($data){
         $data = json_decode($data);
@@ -188,9 +297,10 @@ class Submission extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the json serialize function
      */
-    public function jsonSerialize() {
+    public function jsonSerialize()
+    {
         return array(
             'id' => $this->id,
             'studentId' => $this->studentId,

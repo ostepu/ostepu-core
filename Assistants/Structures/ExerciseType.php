@@ -1,27 +1,37 @@
 <?php 
 /**
- * 
+ * @file ExerciseType.php contains the ExerciseType class
+ */
+ 
+/**
+ * the exercise type structure
+ *
+ * @author Till Uhlig
  */
 class ExerciseType extends Object implements JsonSerializable
 {
     /**
-     * (description)
+     * db id of the exercise type 
+     *
+     * type: string
      */
     private $id = null;
     
     /**
-     * (description)
-     */
+     * the $id getter
+     *
+     * @return the value of $id
+     */ 
     public function getId()
     {
         return $this->id;
     }
     
     /**
-     * (description)
+     * the $id setter
      *
-     * @param $conf (description)
-     */
+     * @param string $value the new value for $id
+     */ 
     public function setId($value)
     {
         $this->id = $value;
@@ -29,22 +39,28 @@ class ExerciseType extends Object implements JsonSerializable
     
     
     
-    
+    /**
+     * the exercise type name
+     *
+     * type: string
+     */
     private $name = null;
     
     /**
-     * (description)
-     */
+     * the $name getter
+     *
+     * @return the value of $name
+     */ 
     public function getName()
     {
         return $this->name;
     }
     
     /**
-     * (description)
+     * the $name setter
      *
-     * @param $conf (description)
-     */
+     * @param string $value the new value for $name
+     */ 
     public function setName($value)
     {
         $this->name = $value;
@@ -52,8 +68,9 @@ class ExerciseType extends Object implements JsonSerializable
     
     
     /**
-     * (description)
-     * @param $param (description)
+     * the constructor
+     * 
+     * @param $data an assoc array with the object informations
      */
     public function __construct($data=array()) 
     {
@@ -65,7 +82,9 @@ class ExerciseType extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * returns an mapping array to convert between database and structure
+     *
+     * @return the mapping array
      */
     public static function getDbConvert()
     {
@@ -76,7 +95,9 @@ class ExerciseType extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * converts an object to insert/update data
+     *
+     * @return a comma separated string e.g. "a=1,b=2"
      */
     public function getInsertData(){
         $values = "";
@@ -91,7 +112,9 @@ class ExerciseType extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * returns a sting/string[] of the database primary key/keys
+     * 
+     * @return the primary key/keys
      */
     public static function getDbPrimaryKey()
     {
@@ -99,9 +122,11 @@ class ExerciseType extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * encodes an object to json
      * 
-     * @param $param (description)
+     * @param $data the object
+     *
+     * @return the json encoded object
      */
     public static function encodeExerciseType($data)
     {
@@ -109,10 +134,13 @@ class ExerciseType extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * decodes $data to an object
      * 
-     * @param $param (description)
-     * @param $param (description)
+     * @param string $data json encoded data (decode=true) 
+     * or json decoded data (decode=false)
+     * @param bool $decode specifies whether the data must be decoded
+     *
+     * @return the object
      */
     public static function decodeExerciseType($data, $decode=true)
     {
@@ -129,9 +157,11 @@ class ExerciseType extends Object implements JsonSerializable
     }
 
     /**
-     * (description)
+     * the json serialize function
+     *
+     * @return an array to serialize the object
      */
-    public function jsonSerialize() 
+    public function jsonSerialize()  
     {
         return array(
             'id' => $this->id,

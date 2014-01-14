@@ -1,31 +1,35 @@
 <?php 
 /**
-* A pair of a course and a status for some user.
-* The status reflects the rights the particular user has in that
-* course
-*/
+ * @file Session.php contains the Session class
+ */
+ 
+/**
+ * the session structure
+ *
+ * @author Till Uhlig
+ */
 class Session extends Object implements JsonSerializable
 {
     /**
-     * description)
-     *
-     * type: string
+     * @var string $user the db id of an user 
      */
     private $user;
     
     /**
-     * (description)
-     */
+     * the $user getter
+     *
+     * @return the value of $user
+     */ 
     public function getUser()
     {
         return $this->user;
     }
     
     /**
-     * (description)
+     * the $user setter
      *
-     * @param $param (description)
-     */
+     * @param string $value the new value for $user
+     */ 
     public function setUser($value)
     {
         $this->user = $value;
@@ -35,33 +39,35 @@ class Session extends Object implements JsonSerializable
     
     
     /**
-     * a string that defines which status the user has in that course.
-     *
-     * type: string
+     * @var string $status a string that defines which status the user has in that course.
      */
     private $status;
     
     /**
-     * (description)
-     */
+     * the $status getter
+     *
+     * @return the value of $status
+     */ 
     public function getStatus()
     {
         return $this->status;
     }
     
     /**
-     * (description)
+     * the $status setter
      *
-     * @param $param (description)
-     */
+     * @param string $value the new value for $status
+     */ 
     public function setStatus($value)
     {
         $this->status = $value;
     }
    
-    
+
     /**
-     * (description)
+     * returns an mapping array to convert between database and structure
+     *
+     * @return the mapping array
      */
     public static function getDbConvert()
     {
@@ -72,7 +78,9 @@ class Session extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * converts an object to insert/update data
+     *
+     * @return a comma separated string e.g. "a=1,b=2"
      */
     public function getInsertData(){
         $values = "";
@@ -86,21 +94,23 @@ class Session extends Object implements JsonSerializable
         return $values;
     }
     
+ 
     /**
-     * (description)
+     * returns a sting/string[] of the database primary key/keys
+     * @todo hier fehlt noch der primary key/keys
+     * @return the primary key/keys
      */
-    // TODO: hier fehlt noch der primary key/keys
     public static function getDbPrimaryKey()
     {
         return 'SE_id';
     }
 
     /**
-     * (description)
+     * the constructor
      * 
-     * @param $param (description)
+     * @param $data an assoc array with the object informations
      */
-    public function __construct($data=array()) 
+    public function __construct($data=array())
     {
         foreach ($data AS $key => $value) {
             if (isset($key)){
@@ -110,9 +120,11 @@ class Session extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * encodes an object to json
+     * 
+     * @param $data the object
      *
-     * @param $param (description)
+     * @return the json encoded object
      */
     public static function encodeCourseStatus($data)
     {
@@ -120,10 +132,13 @@ class Session extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * decodes $data to an object
      * 
-     * @param $param (description)
-     * @param $param (description)
+     * @param string $data json encoded data (decode=true) 
+     * or json decoded data (decode=false)
+     * @param bool $decode specifies whether the data must be decoded
+     *
+     * @return the object
      */
     public static function decodeCourseStatus($data, $decode=true)
     {
@@ -140,9 +155,9 @@ class Session extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the json serialize function
      */
-    public function jsonSerialize()
+    public function jsonSerialize() 
     {
         return array(
             'user' => $this->user,

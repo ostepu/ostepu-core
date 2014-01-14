@@ -1,27 +1,35 @@
 <?php
 /**
- * 
+ * @file Component.php contains the Component class
+ */
+ 
+/**
+ * the component structure
+ *
+ * @author Till Uhlig
  */
 class Component extends Object implements JsonSerializable
 {
     /**
-     * (description)
+     * @var string $id the db component identifier
      */
     private $id = null;
     
     /**
-     * (description)
-     */
+     * the $id getter
+     *
+     * @return the value of $id
+     */ 
     public function getId()
     {
         return $this->id;
     }
     
     /**
-     * (description)
+     * the $id setter
      *
-     * @param $conf (description)
-     */
+     * @param string $value the new value for $id
+     */ 
     public function setId($value)
     {
         $this->id = $value;
@@ -31,23 +39,25 @@ class Component extends Object implements JsonSerializable
     
     
     /**
-     * (description)
+     * @var string $name the component name 
      */
     private $name = null;
     
     /**
-     * (description)
-     */
+     * the $name getter
+     *
+     * @return the value of $name
+     */ 
     public function getName()
     {
         return $this->name;
     }
     
     /**
-     * (description)
+     * the $name setter
      *
-     * @param $conf (description)
-     */
+     * @param string $value the new value for $name
+     */ 
     public function setName($value)
     {
         $this->name = $value;
@@ -57,23 +67,25 @@ class Component extends Object implements JsonSerializable
     
     
     /**
-     * (description)
+     * @var string $address the component URL/address 
      */
     private $address = null;
     
     /**
-     * (description)
-     */
+     * the $address getter
+     *
+     * @return the value of $address
+     */ 
     public function getAddress()
     {
         return $this->address;
     }
     
     /**
-     * (description)
+     * the $address setter
      *
-     * @param $conf (description)
-     */
+     * @param string $value the new value for $address
+     */ 
     public function setAddress($value)
     {
         $this->address = $value;
@@ -83,23 +95,25 @@ class Component extends Object implements JsonSerializable
     
     
     /**
-     * (description)
+     * @var string $option component options 
      */ 
     private $option = null;
     
     /**
-     * (description)
-     */
+     * the $option getter
+     *
+     * @return the value of $option
+     */ 
     public function getOption()
     {  
         return $this->option;
     }
     
     /**
-     * (description)
+     * the $option setter
      *
-     * @param $conf (description)
-     */
+     * @param string $value the new value for $option
+     */ 
     public function setOption($value)
     {
         $this->option = $value;
@@ -109,23 +123,25 @@ class Component extends Object implements JsonSerializable
     
     
     /**
-     * (description)
+     * @var string $prefix the prefix with which the component operates
      */
     private $prefix = null;
     
     /**
-     * (description)
-     */
+     * the $prefix getter
+     *
+     * @return the value of $prefix
+     */ 
     public function getPrefix()
     {
         return $this->prefix;
     }
     
     /**
-     * (description)
+     * the $prefix setter
      *
-     * @param $conf (description)
-     */
+     * @param string $value the new value for $prefix
+     */ 
     public function setPrefix($value)
     {
         $this->prefix = $value;
@@ -135,23 +151,25 @@ class Component extends Object implements JsonSerializable
     
     
     /**
-     * (description)
+     * @var Link[] $links the component connections to other components
      */
     private $links = array();
     
     /**
-     * (description)
-     */
+     * the $links getter
+     *
+     * @return the value of $links
+     */ 
     public function getLinks()
     {
         return $this->links;
     }
     
     /**
-     * (description)
+     * the $links setter
      *
-     * @param $conf (description)
-     */
+     * @param Link[] $value the new value for $links
+     */ 
     public function setLinks($value)
     {
         $this->links = $value;
@@ -161,7 +179,9 @@ class Component extends Object implements JsonSerializable
     
     
     /**
-     * (description)
+     * returns an mapping array to convert between database and structure
+     *
+     * @return the mapping array
      */
     public static function getDbConvert()
     {
@@ -176,7 +196,9 @@ class Component extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * converts an object to insert/update data
+     *
+     * @return a comma separated string e.g. "a=1,b=2"
      */
     public function getInsertData(){
         $values = "";
@@ -191,9 +213,11 @@ class Component extends Object implements JsonSerializable
         }
         return $values;
     }
-    
+
     /**
-     * (description)
+     * returns a sting/string[] of the database primary key/keys
+     * 
+     * @return the primary key/keys
      */
     public static function getDbPrimaryKey()
     {
@@ -201,27 +225,29 @@ class Component extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the constructor
      * 
-     * @param $param (description)
+     * @param $data an assoc array with the object informations
      */
-    public function __construct($data=array()) 
+    public function __construct($data=array())
     {
         foreach ($data AS $key => $value) {
             if (isset($key)){
-                if (is_array($value)) {
-                    $sub =  Link::decodeLink($value,false);
-                    $value = $sub;
+                if ($key == 'links') {
+                    $this->{$key} = Link::decodeLink($value,false);
                 }
-            $this->{$key} = $value;
+                else
+                    $this->{$key} = $value;
             }
         }
     }
     
     /**
-     * (description)
+     * encodes an object to json
      * 
-     * @param $param (description)
+     * @param $data the object
+     *
+     * @return the json encoded object
      */
     public static function encodeComponent($data)
     {
@@ -229,15 +255,19 @@ class Component extends Object implements JsonSerializable
     }
 
     /**
-     * (description)
+     * decodes $data to an object
      * 
-     * @param $param (description)
-     * @param $param (description)
+     * @param string $data json encoded data (decode=true) 
+     * or json decoded data (decode=false)
+     * @param bool $decode specifies whether the data must be decoded
+     *
+     * @return the object
      */
     public static function decodeComponent($data, $decode=true)
     {
         if ($decode)
             $data = json_decode($data);
+            
         if (is_array($data)){
             $result = array();
             foreach ($data AS $key => $value) {
@@ -249,7 +279,7 @@ class Component extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the json serialize function
      */
     public function jsonSerialize() 
     {

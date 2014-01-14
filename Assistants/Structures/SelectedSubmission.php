@@ -1,51 +1,92 @@
 <?php
+/**
+ * @file SelectedSubmission.php contains the SelectedSubmission class
+ */
+ 
+/**
+ * the selected submission structure
+ *
+ * @author Till Uhlig
+ */
 class SelectedSubmission extends Object implements JsonSerializable
 {
     /**
-     * The identifier of the group leader.
-     *
-     * type: string
+     * @var string $leaderId The identifier of the group leader.
      */
     private $leaderId;
+    
+    /**
+     * the $leaderId getter
+     *
+     * @return the value of $leaderId
+     */ 
     public function getLeaderId(){
         return $this->leaderId;
     }
+    
+    /**
+     * the $leaderid setter
+     *
+     * @param string $value the new value for $leaderId
+     */ 
     public function setLeaderId($value){
         $this->leaderId = $value;
     }
 
     /**
-     * The id of the selected submission.
-     *
-     * type: string
+     * @var string $submissionId The id of the selected submission.
      */
     private $submissionId;
+    
+    /**
+     * the $submissionId getter
+     *
+     * @return the value of $submissionId
+     */ 
     public function getSubmissionId(){
         return $this->submissionId;
     }
+    
+    /**
+     * the $submissionId setter
+     *
+     * @param string $value the new value for $submissionId
+     */ 
     public function setSubmissionId($value){
         $this->submissionId = $value;
     }
 
     /**
-     * a string that identifies the exercise this submission belongs to.
-     *
-     * type: string
+     * @var string $exerciseId a string that identifies the exercise this submission belongs to.
      */
     private $exerciseId;
+    
+    /**
+     * the $exerciseId getter
+     *
+     * @return the value of $exerciseId
+     */ 
     public function getExerciseId(){
         return $this->exerciseId;
     }
+    
+    /**
+     * the $exerciseId setter
+     *
+     * @param string $value the new value for $exerciseId
+     */ 
     public function setExerciseId($value){
         $this->exerciseId = $value;
     }
 
     
     
-    
+
     /**
-     * (description)
-     */  
+     * returns an mapping array to convert between database and structure
+     *
+     * @return the mapping array
+     */
     public static function getDbConvert()
     {
         return array(
@@ -56,7 +97,9 @@ class SelectedSubmission extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * converts an object to insert/update data
+     *
+     * @return a comma separated string e.g. "a=1,b=2"
      */
     public function getInsertData(){
         $values = "";
@@ -72,7 +115,9 @@ class SelectedSubmission extends Object implements JsonSerializable
     } 
     
     /**
-     * (description)
+     * returns a sting/string[] of the database primary key/keys
+     * 
+     * @return the primary key/keys
      */
     public static function getDbPrimaryKey()
     {
@@ -80,9 +125,11 @@ class SelectedSubmission extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the constructor
+     * 
+     * @param $data an assoc array with the object informations
      */
-    public function __construct($data=array()) {
+    public function __construct($data=array()){
         foreach ($data AS $key => $value) {
              if (isset($key)){
                     $this->{$key} = $value;
@@ -91,14 +138,24 @@ class SelectedSubmission extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * encodes an object to json
+     * 
+     * @param $data the object
+     *
+     * @return the json encoded object
      */
     public static function encodeSelectedSubmission($data){
         return json_encode($data);
     }
     
     /**
-     * (description)
+     * decodes $data to an object
+     * 
+     * @param string $data json encoded data (decode=true) 
+     * or json decoded data (decode=false)
+     * @param bool $decode specifies whether the data must be decoded
+     *
+     * @return the object
      */
     public static function decodeSelectedSubmission($data){
         $data = json_decode($data);
@@ -114,9 +171,10 @@ class SelectedSubmission extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the json serialize function
      */
-    public function jsonSerialize() {
+    public function jsonSerialize()
+    {
         return array(
             'leaderId' => $this->leaderId,
             'submissionId' => $this->submissionId,
