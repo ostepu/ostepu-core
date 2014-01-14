@@ -53,8 +53,9 @@ function is_assoc($array)
  *
  * Uses HTTP GET request to get contents a $url
  * @param string $url The URL that should be opnened.
+ * @param string $message The Response Message e.g. 404. Argument ist optional.
  */
-function http_get($url)
+function http_get($url, &$message = 0)
 {
     $c = curl_init();
 
@@ -63,8 +64,8 @@ function http_get($url)
     curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
 
     $retData = curl_exec($c);
+    $message = curl_getinfo($c, CURLINFO_HTTP_CODE);
     curl_close($c);
-
 
     return $retData;
 }
@@ -154,6 +155,42 @@ function MakeNotification($notificationType, $notificationText)
     $notificationText
 </div>
 EOF;
+}
+
+/**
+ * Delete masked slashes from array and trim it.
+ *
+ * @param array $input An associative array that contains inputstrings
+ */
+function cleanInput($input)
+{
+    foreach ($input as $element) {
+        if (get_magic_quotes_gpc()) {
+            $element = trim(stripcslashes($element));
+        } else {
+            $element = trim($element);
+        } 
+    }
+
+    return $input;
+}
+/**
+ * check if user is logged in
+ */
+function checkLogin()
+{
+    session_regenerate_id(true);
+    if (!isset($_SESSION['signed']) || !$_SESSION['signed']) {return false;}
+    // check for timeout (after 10 minutes of inactivity)
+    if (!isset($_SESSION['lastactive']) || ($_SESSION['lastactive'] + 10*60) <= $_SERVER['REQUEST_TIME']) {return false;}
+    /**
+     * @todo check if sessionid is on the DBserver and userid on the DB ist equal to SessionUID, session from DB only if flag is 1
+     * @todo check rights
+     */
+
+    // update last activity 
+    $_SESSION['lastactive'] = $_SERVER['REQUEST_TIME'];
+    return true;
 }
 
 ?>
