@@ -10,6 +10,10 @@ if (isset($_SESSION['uid'])) {
     $uid = 0;
 }
 
+if (isset($_GET['error'])) {
+  $error = cleanInput($_GET['error']);
+}
+
 $sites = array('0' => 'Student.php',
                '1' => 'Tutor.php',
                '3' => 'Lecturer.php');
@@ -25,6 +29,10 @@ $user = json_decode($user, true);
 
 if (is_null($user)) {
     $user = array();
+}
+
+if (isset($error) && $error == "403") {
+  $notifications[] = MakeNotification("error", "403: Access Forbidden!!");
 }
 
 // construct a new header

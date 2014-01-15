@@ -7,10 +7,11 @@
  * @author Florian Lücke
  */
 
-include 'include/Authorization.php';
+include_once 'include/Authorization.php';
 include_once 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
 include_once 'include/Helpers.php';
+
 
 if (isset($_GET['cid'])) {
     $cid = $_GET['cid'];
@@ -23,6 +24,9 @@ if (isset($_SESSION['uid'])) {
 } else {
     die('no user id!\n');
 }
+
+// check userrights for course
+$auth->checkRights(0, $cid, $uid);
 
 // load user data from the database
 $databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/user/user/{$uid}";

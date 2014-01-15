@@ -154,7 +154,6 @@ class Authentication
         if (!isset($_SESSION['lastactive']) || ($_SESSION['lastactive'] + 10*60) <= $_SERVER['REQUEST_TIME']) {return false;}
         /**
          * @todo check if sessionid is on the DBserver and userid on the DB ist equal to SessionUID, session from DB only if flag is 1
-         * @todo check rights
          */
 
         // update last activity 
@@ -189,6 +188,24 @@ class Authentication
             // redirect to Loginpage and save current page in GET param
             header('location: Login.php?back='.$backurl.$urlparameters);
             exit;
+        }
+    }
+
+    /**
+     * check the Rights of an User and logout if it hasn't the correct one
+     */
+    public function checkRights($minimum, $cid, $uid)
+    {
+        $databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/coursestatus/course/{$cid}/user/{$uid}";
+        $user = http_get($databaseURI,$message);
+        $user = json_decode($user, true);
+
+        // check if user exists 
+        if ($message != "404") {
+            // check if minimum right is given
+            if ($user['courses'][0]['status'] < $minimum) {
+                header('location: index.php?error=403');
+            } 
         }
     }
 }

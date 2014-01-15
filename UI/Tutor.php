@@ -20,6 +20,9 @@ if (isset($_SESSION['uid'])) {
     die('no user id!\n');
 }
 
+// check userrights for course
+$auth->checkRights(1, $cid, $uid);
+
 // load user data from the database
 $databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/user/user/{$uid}";
 $user = http_get($databaseURI);

@@ -18,6 +18,9 @@ if (isset($_SESSION['uid'])) {
     $notifications[] = MakeNotification("error", "No user id!");
 }
 
+// check userrights for course
+$auth->checkRights(3, $cid, $uid);
+
 // load user data from the database
 $databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/user/user/{$uid}";
 $user = http_get($databaseURI);
