@@ -2,7 +2,7 @@
  * @file SetMarking.sql
  * inserts a marking into %Marking table
  * @author  Till Uhlig
- * @param string $values the input data, e.g. "a=1, b=2"
+ * @param string $values the input data, e.g. 'a=1, b=2'
  * @result -
  */
  
