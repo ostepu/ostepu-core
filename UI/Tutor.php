@@ -31,8 +31,9 @@ $auth->checkRights(1, $cid, $uid, $user_course_data);
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
-$h->bind(array("backTitle" => "Veranstaltung wechseln",
-               "backURL" => "index.php?uid={$uid}",
+$h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
+			   "backTitle" => "Veranstaltung wechseln",
+               "backURL" => "index.php",
                "notificationElements" => $notifications));
 
 $databaseURL = "http://141.48.9.92/uebungsplattform/DB/DBExerciseSheet/exercisesheet/course/{$cid}/exercise";
