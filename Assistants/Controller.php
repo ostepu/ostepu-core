@@ -86,7 +86,7 @@ class Controller
         // if no URI is received, abort process    
         if (count($data)==0){
            Logger::Log("Controller nothing to route",LogLevel::DEBUG);
-           $this->_app->response->setStatus(404);
+           $this->_app->response->setStatus(409);
            $this->_app->stop();
            return;
         }
@@ -167,7 +167,7 @@ class Controller
         }
 
         // no positive response or no operative link
-        $this->_app->response->setStatus(404);
+        $this->_app->response->setStatus(409);
     }
     
    

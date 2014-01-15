@@ -20,7 +20,8 @@ class Submission extends Object implements JsonSerializable
      *
      * @return the value of $id
      */ 
-    public function getId(){
+    public function getId()
+    {
         return $this->id;
     }
     
@@ -29,7 +30,8 @@ class Submission extends Object implements JsonSerializable
      *
      * @param string $value the new value for $id
      */ 
-    public function setId($value){
+    public function setId($value)
+    {
         $this->id = $value;
     }
 
@@ -43,7 +45,8 @@ class Submission extends Object implements JsonSerializable
      *
      * @return the value of $studentId
      */ 
-    public function getStudentId(){
+    public function getStudentId()
+    {
         return $this->studentId;
     }
     
@@ -52,7 +55,8 @@ class Submission extends Object implements JsonSerializable
      *
      * @param string $value the new value for $studentId
      */ 
-    public function setStudentId($value){
+    public function setStudentId($value)
+    {
         $this->studentId = $value;
     }
 
@@ -66,7 +70,8 @@ class Submission extends Object implements JsonSerializable
      *
      * @return the value of $exerciseId
      */ 
-    public function getExerciseId(){
+    public function getExerciseId()
+    {
         return $this->exerciseId;
     }
     
@@ -75,7 +80,8 @@ class Submission extends Object implements JsonSerializable
      *
      * @param string $value the new value for $exerciseId
      */ 
-    public function setExerciseId($value){
+    public function setExerciseId($value)
+    {
         $this->exerciseId = $value;
     }
 
@@ -89,7 +95,8 @@ class Submission extends Object implements JsonSerializable
      *
      * @return the value of $comment
      */ 
-    public function getComment(){
+    public function getComment()
+    {
         return $this->comment;
     }
     
@@ -98,7 +105,8 @@ class Submission extends Object implements JsonSerializable
      *
      * @param string $value the new value for $comment
      */ 
-    public function setComment($value){
+    public function setComment($value)
+    {
         $this->comment = $value;
     }
     
@@ -112,7 +120,8 @@ class Submission extends Object implements JsonSerializable
      *
      * @return the value of $file
      */ 
-    public function getFile(){
+    public function getFile()
+    {
         return $this->file;
     }
     
@@ -121,7 +130,8 @@ class Submission extends Object implements JsonSerializable
      *
      * @param file $value the new value for $file
      */ 
-    public function setFile($value){
+    public function setFile($value)
+    {
         $this->file = $value;
     }
     
@@ -135,7 +145,8 @@ class Submission extends Object implements JsonSerializable
      *
      * @return the value of $accepted
      */ 
-    public function getAccepted(){
+    public function getAccepted()
+    {
         return $this->accepted;
     }
     
@@ -144,7 +155,8 @@ class Submission extends Object implements JsonSerializable
      *
      * @param bool $value the new value for $accepted
      */ 
-    public function setAccepted($value){
+    public function setAccepted($value)
+    {
         $this->accepted = $value;
     }
     
@@ -158,7 +170,8 @@ class Submission extends Object implements JsonSerializable
      *
      * @return the value of $selectedForGroup
      */ 
-    public function getSelectedForGroup(){
+    public function getSelectedForGroup()
+    {
         return $this->selectedForGroup;
     }
     
@@ -167,7 +180,8 @@ class Submission extends Object implements JsonSerializable
      *
      * @param string $value the new value for $selectedForGroup
      */ 
-    public function setSelectedForGroup($value){
+    public function setSelectedForGroup($value)
+    {
         $this->selectedForGroup = $value;
     }
     
@@ -181,7 +195,8 @@ class Submission extends Object implements JsonSerializable
      *
      * @return the value of $date
      */ 
-    public function getDate(){
+    public function getDate()
+    {
         return $this->date;
     }
     
@@ -190,9 +205,35 @@ class Submission extends Object implements JsonSerializable
      *
      * @param date $value the new value for $date
      */ 
-    public function setDate($value){
+    public function setDate($value)
+    {
         $this->date = $value;
     }
+    
+    /**
+     * @var int $exerciseNumber a human readable exercise number
+     */
+    private $exerciseNumber;
+    
+    /**
+     * the $exerciseNumber getter
+     *
+     * @return the value of $exerciseNumber
+     */ 
+    public function getExerciseNumber()
+    {
+        return $this->exerciseNumber;
+    }
+    
+    /**
+     * the $exerciseNumber setter
+     *
+     * @param int $value the new value for $exerciseNumber
+     */ 
+    public function setExerciseNumber($value)
+    {
+        $this->exerciseNumber = $value;
+    }  
     
     /**
      * returns an mapping array to convert between database and structure
@@ -218,7 +259,8 @@ class Submission extends Object implements JsonSerializable
      *
      * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData(){
+    public function getInsertData()
+    {
         $values = "";
         
         if ($this->id != null) $this->addInsertData($values, 'S_id', DBJson::mysql_real_escape_string($this->id));
@@ -229,7 +271,7 @@ class Submission extends Object implements JsonSerializable
         if ($this->accepted != null) $this->addInsertData($values, 'S_accepted', DBJson::mysql_real_escape_string($this->accepted));
         if ($this->date != null) $this->addInsertData($values, 'S_date', DBJson::mysql_real_escape_string($this->date));
         if ($this->selectedForGroup != null) $this->addInsertData($values, 'S_selected', DBJson::mysql_real_escape_string($this->selectedForGroup));
-        
+
         if ($values != ""){
             $values=substr($values,1);
         }
@@ -251,7 +293,8 @@ class Submission extends Object implements JsonSerializable
      * 
      * @param $data an assoc array with the object informations
      */
-    public function __construct($data=array()){
+    public function __construct($data=array())
+    {
         foreach ($data AS $key => $value) {
              if (isset($key)){
                 if ($key == 'file'){
@@ -270,7 +313,8 @@ class Submission extends Object implements JsonSerializable
      *
      * @return the json encoded object
      */
-    public static function encodeSubmission($data){
+    public static function encodeSubmission($data)
+    {
         return json_encode($data);
     }
     
@@ -283,8 +327,10 @@ class Submission extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeSubmission($data){
-        $data = json_decode($data);
+    public static function decodeSubmission($data, $decode=true)
+    {
+        if ($decode)
+            $data = json_decode($data);
         if (is_array($data)){
             $result = array();
             foreach ($data AS $key => $value) {
@@ -309,7 +355,8 @@ class Submission extends Object implements JsonSerializable
             'file' => $this->file,
             'accepted' => $this->accepted,
             'selectedForGroup' => $this->selectedForGroup,
-            'date' => $this->date
+            'date' => $this->date,
+            'exerciseNumber' => $this->exerciseNumber
         );
     }
 }

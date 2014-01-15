@@ -73,7 +73,7 @@ class Session extends Object implements JsonSerializable
     {
         return array(
            'U_id' => 'user',
-           'SE_id' => 'session'
+           'SE_sessionID' => 'session'
         );
     }
     
@@ -86,7 +86,7 @@ class Session extends Object implements JsonSerializable
         $values = "";
         
         if ($this->user != null) $this->addInsertData($values, 'U_id', DBJson::mysql_real_escape_string($this->user));
-        if ($this->session != null) $this->addInsertData($values, 'SE_id', DBJson::mysql_real_escape_string($this->session));
+        if ($this->session != null) $this->addInsertData($values, 'SE_sessionID', DBJson::mysql_real_escape_string($this->session));
         
         if ($values != ""){
             $values=substr($values,1);
@@ -114,6 +114,10 @@ class Session extends Object implements JsonSerializable
     {
         foreach ($data AS $key => $value) {
             if (isset($key)){
+              /*  if ($key == "user"){
+                    $this->{$key} = new User($value,false);
+                }
+                else*/
                     $this->{$key} = $value;
             }
         }
@@ -126,7 +130,7 @@ class Session extends Object implements JsonSerializable
      *
      * @return the json encoded object
      */
-    public static function encodeCourseStatus($data)
+    public static function encodeSession($data)
     {
         return json_encode($data);
     }
@@ -140,10 +144,11 @@ class Session extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeCourseStatus($data, $decode=true)
+    public static function decodeSession($data, $decode=true)
     {
         if ($decode)
             $data = json_decode($data);
+            
         if (is_array($data)){
             $result = array();
             foreach ($data AS $key => $value) {

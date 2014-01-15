@@ -121,7 +121,7 @@ class Request
      * relevant component for the request
      *
      * @param $method the request type (POST, DELETE, PUT, GET, ...) 
-     * @param $resourceUri the taget URI
+     * @param $resourceUri the target URI
      * @param $header an array with header informations
      * @param $content the request content/body
      * @param $linkedComponents an array of Link objects
