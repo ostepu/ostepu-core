@@ -1,4 +1,5 @@
 <?php
+include 'include/Authorization.php';
 include_once 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
 include_once 'include/Helpers.php';
@@ -8,14 +9,12 @@ $notifications = array();
 if (isset($_GET['cid'])) {
     $cid = $_GET['cid'];
 } else {
-    $uid = -1;
     $notifications[] = MakeNotification("error", "No course id!");
 }
 
-if (isset($_GET['uid'])) {
-    $uid = $_GET['uid'];
+if (isset($_SESSION['uid'])) {
+    $uid = $_SESSION['uid'];
 } else {
-    $cid = -1;
     $notifications[] = MakeNotification("error", "No user id!");
 }
 
@@ -44,6 +43,7 @@ $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user);
 $h->bind($course);
 $h->bind(array("backTitle" => "Veranstaltung wechseln",
+               "backURL" => "index.php",
                "navigationElement" => $menu,
                "notificationElements" => $notifications));
 
