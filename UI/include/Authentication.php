@@ -170,8 +170,26 @@ class Authentication
         /**
          * @todo delete session from uid in DB
          */
-        session_destroy();
-        header('location: Login.php');
-        exit;
+        if($_GET['action'] == "logout") {
+            session_destroy();
+            header('location: Login.php');
+            exit;
+        } else {
+            session_destroy();
+            // get current relative url
+            $backurl = basename(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+            // if someone opens a page with /UI (without index.php) or a existing page withour .php suffix
+            if (!strpos($backurl,'.php')&&!file_exists($backurl.".php")) {
+                $backurl = "index.php";
+            } elseif (!strpos($backurl,'.php')&&file_exists($backurl.".php")) {
+                $backurl = $backurl.".php";
+            }
+            $urlparameters = parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY);
+            if ($urlparameters != "") {$urlparameters = "?".$urlparameters;}
+            // redirect to Loginpage and save current page in GET param
+            header('location: Login.php?back='.$backurl.$urlparameters);
+            exit;
+        }
     }
 }
+?>

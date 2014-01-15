@@ -1,4 +1,5 @@
 <form action="Login.php" method="POST">
+<?php if (isset($backURL)) echo "<input type='hidden' name='back' value='".$backURL."'>";?>
 <input type="hidden" name="action" value="login">
 <div class="content-element">
     <div class="content-header">

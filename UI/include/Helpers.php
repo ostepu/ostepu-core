@@ -160,18 +160,25 @@ EOF;
 /**
  * Delete masked slashes from array and trim it.
  *
- * @param array $input An associative array that contains inputstrings
+ * @param $input An associative array that contains inputstrings or a string
  */
 function cleanInput($input)
 {
-    foreach ($input as $element) {
+    if (is_array($input)) {
+        foreach ($input as $element) {
+            if (get_magic_quotes_gpc()) {
+                $element = htmlspecialchars(trim(stripcslashes($element)), ENT_QUOTES);
+            } else {
+                $element = htmlspecialchars(trim($element), ENT_QUOTES);
+            } 
+        }
+    } else {
         if (get_magic_quotes_gpc()) {
-            $element = trim(stripcslashes($element));
+            $input = htmlspecialchars(trim(stripcslashes($input)), ENT_QUOTES);
         } else {
-            $element = trim($element);
+            $input = htmlspecialchars(trim($input), ENT_QUOTES);
         } 
     }
-
     return $input;
 }
 ?>
