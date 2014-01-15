@@ -331,11 +331,7 @@ class DBExerciseSheet
      */
     public function getExerciseSheet($esid)
     {     
-        Logger::Log("starts GET GetExerciseSheet",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($esid));
+        Logger::Log("starts GET GetExerciseSheet",LogLevel::DEBUG);  
                             
         if (count($esid)<1){
             Logger::Log("PUT EditExerciseSheet wrong use",LogLevel::ERROR);
@@ -348,6 +344,10 @@ class DBExerciseSheet
         $options = array_splice($esid,1);
         $esid = $esid[0];
         
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($esid));
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetExerciseSheet.sql", 
@@ -446,10 +446,6 @@ class DBExerciseSheet
     public function getCourseSheets($courseid)
     {     
         Logger::Log("starts GET GetCourseSheets",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($courseid));
                             
         if (count($courseid)<1){
             $this->_app->response->setStatus(409);
@@ -460,6 +456,10 @@ class DBExerciseSheet
         
         $options = array_splice($courseid,1);
         $courseid = $courseid[0];
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($courseid));
         
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
