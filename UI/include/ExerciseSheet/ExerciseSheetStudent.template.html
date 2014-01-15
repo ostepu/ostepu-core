@@ -8,7 +8,7 @@ foreach ($sheets as $sheet):
             <?php print $sheet['sheetName']; ?>
         </div>
         <div class="critical-color bold right">
-            <?php print $sheet['endDate']; ?>
+            <?php print date('d.m.Y  -  H:i', $sheet['endDate']); ?>
         </div>
         <div class="exercise-sheet-info info-color bold right">
             <?php print $sheet['exerciseSheetInfo'] . '%'; ?>
