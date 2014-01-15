@@ -3,8 +3,7 @@
  * @file Tutor.php
  * Constructs the page that is displayed to a tutor.
  */
-
-include_once 'include/Header/Header.php';
+include 'include/Authorization.php';
 include_once 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
 include_once 'include/Helpers.php';
@@ -15,8 +14,8 @@ if (isset($_GET['cid'])) {
     die('no course id!\n');
 }
 
-if (isset($_GET['uid'])) {
-    $uid = $_GET['uid'];
+if (isset($_SESSION['uid'])) {
+    $uid = $_SESSION['uid'];
 } else {
     die('no user id!\n');
 }
