@@ -1,11 +1,12 @@
 <?php
+include 'include/Authorization.php';
 include 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
 
 $notifications = array();
 
-if (isset($_GET['uid'])) {
-    $uid = $_GET['uid'];
+if (isset($_SESSION['uid'])) {
+    $uid = $_SESSION['uid'];
 } else {
     $uid = 0;
 }
@@ -22,11 +23,6 @@ $h->bind(array("backTitle" => "Veranstaltungen",
                "name" => "Accounteinstellungen",
                "backURL" => "index.php?uid={$uid}",
                "notificationElements" => $notifications));
-
-
-$data = file_get_contents("http://localhost/Uebungsplattform/UI/Data/UserData");
-$data = json_decode($data, true);
-
 
 // construct a content element for account information
 $accountInfo = Template::WithTemplateFile('include/AccountSettings/AccountInfo.template.html');
