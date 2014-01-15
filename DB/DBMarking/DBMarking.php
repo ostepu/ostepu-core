@@ -84,50 +84,50 @@ class DBMarking
 
         // PUT EditMarking
         $this->_app->put('/' . $this->getPrefix() . 
-                        '/marking/:mid',
+                        '(/marking)/:mid(/)',
                         array($this,'editMarking'));
         
         // DELETE DeleteMarking
         $this->_app->delete('/' . $this->getPrefix() . 
-                            '/marking/:mid',
+                            '(/marking)/:mid(/)',
                             array($this,'deleteMarking'));
         
         // POST SetMarking
-        $this->_app->post('/' . $this->getPrefix(),
+        $this->_app->post('/' . $this->getPrefix() . '(/)',
                          array($this,'setMarking'));  
         
         // GET GetMarking
-        $this->_app->get('/' . $this->getPrefix() . '/marking/:mid',
+        $this->_app->get('/' . $this->getPrefix() . '(/marking)/:mid(/)',
                         array($this,'getMarking'));
         
         // GET GetSubmissionMarking
-        $this->_app->get('/' . $this->getPrefix() . '/submission/:suid',
+        $this->_app->get('/' . $this->getPrefix() . '/submission/:suid(/)',
                         array($this,'getSubmissionMarking'));
                         
         // GET GetAllMarkings
-        $this->_app->get('/' . $this->getPrefix() . '/marking',
+        $this->_app->get('/' . $this->getPrefix() . '(/marking)(/)',
                         array($this,'getAllMarkings')); 
                         
         // GET GetExerciseMarkings
         $this->_app->get('/' . $this->getPrefix() . 
-                        '/exercise/:eid',
+                        '/exercise/:eid(/)',
                         array($this,'getExerciseMarkings'));  
                         
         // GET GetSheetMarkings
         $this->_app->get('/' . $this->getPrefix() . 
-                        '/exercisesheet/:esid',
+                        '/exercisesheet/:esid(/)',
                         array($this,'getSheetMarkings'));
                         
         // GET GetUserGroupMarkings
-        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid/user/:userid',
+        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid/user/:userid(/)',
                         array($this,'getUserGroupMarkings'));  
                         
         // GET GetTutorSheetMarkings 
-        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid/tutor/:userid',
+        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid/tutor/:userid(/)',
                         array($this,'getTutorSheetMarkings'));
                         
         // GET GetTutorExerciseMarkings  
-        $this->_app->get('/' . $this->getPrefix() . 'exercise/:eid/tutor/:userid',
+        $this->_app->get('/' . $this->getPrefix() . 'exercise/:eid/tutor/:userid(/)',
                         array($this,'getTutorExerciseMarkings'));  
                         
         // starts slim only if the right prefix was received

@@ -9,4 +9,4 @@
  
 UPDATE `Session`
 SET $values
-WHERE SE_id = '$seid'
+WHERE SE_sessionID = '$seid'

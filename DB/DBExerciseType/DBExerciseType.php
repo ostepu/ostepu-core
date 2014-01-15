@@ -83,23 +83,23 @@ class DBExerciseType
         $this->_app->response->headers->set('Content-Type', 'application/json');
 
         // PUT EditPossibleType
-        $this->_app->put('/' . $this->getPrefix() . '/exercisetype/:etid',
+        $this->_app->put('/' . $this->getPrefix() . '(/exercisetype)/:etid(/)',
                         array($this,'editPossibleType'));
         
         // DELETE DeletePossibleType
-        $this->_app->delete('/' . $this->getPrefix() . '/exercisetype/:etid',
+        $this->_app->delete('/' . $this->getPrefix() . '(/exercisetype)/:etid(/)',
                            array($this,'deletePossibleType'));
         
         // POST SetPossibleType
-        $this->_app->post('/' . $this->getPrefix(),
+        $this->_app->post('/' . $this->getPrefix() . '(/)',
                          array($this,'setPossibleType'));  
         
         // GET GetPossibleType
-        $this->_app->get('/' . $this->getPrefix() . '/exercisetype/:etid',
+        $this->_app->get('/' . $this->getPrefix() . '(/exercisetype)/:etid(/)',
                         array($this,'getPossibleType'));
         
         // GET GetAllPossibleTypes
-        $this->_app->get('/' . $this->getPrefix() . '/exercisetype',
+        $this->_app->get('/' . $this->getPrefix() . '(/exercisetype)(/)',
                         array($this,'getAllPossibleTypes'));
                         
         // starts slim only if the right prefix was received

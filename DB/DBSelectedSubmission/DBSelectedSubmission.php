@@ -84,24 +84,24 @@ class DBSelectedSubmission
 
         // PUT EditSelectedSubmission
         $this->_app->put('/' . $this->getPrefix() . 
-                        '/leader/:userid/exercise/:eid',
+                        '/leader/:userid/exercise/:eid(/)',
                         array($this,'editSelectedSubmission'));
         
         // DELETE DeleteSelectedSubmission
         $this->_app->delete('/' . $this->getPrefix() . 
-                            '/leader/:userid/exercise/:eid',
+                            '/leader/:userid/exercise/:eid(/)',
                             array($this,'deleteSelectedSubmission'));
         
         // POST SetSelectedSubmission
-        $this->_app->post('/' . $this->getPrefix(),
+        $this->_app->post('/' . $this->getPrefix() . '(/)',
                          array($this,'setSelectedSubmission'));  
                          
         // GET GetExerciseSelected
-        $this->_app->get('/' . $this->getPrefix() . '/exercise/:eid',
+        $this->_app->get('/' . $this->getPrefix() . '/exercise/:eid(/)',
                         array($this,'getExerciseSelected'));
                         
         // GET GetSheetSelected
-        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid',
+        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid(/)',
                         array($this,'getSheetSelected'));
                         
         // starts slim only if the right prefix was received

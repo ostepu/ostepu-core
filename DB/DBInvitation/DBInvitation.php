@@ -84,42 +84,42 @@ class DBInvitation
 
         // PUT EditInvitation
         $this->_app->put('/' . $this->getPrefix() . 
-                        '/user/:userid/exercisesheet/:esid/user/:memberid',
+                        '/user/:userid/exercisesheet/:esid/user/:memberid(/)',
                         array($this,'editInvitation'));
         
         // DELETE DeleteInvitation
         $this->_app->delete('/' . $this->getPrefix() . 
-                            '/user/:userid/exercisesheet/:esid/user/:memberid',
+                            '/user/:userid/exercisesheet/:esid/user/:memberid(/)',
                             array($this,'deleteInvitation'));
         
         // POST SetInvitation
-        $this->_app->post('/' . $this->getPrefix(),
+        $this->_app->post('/' . $this->getPrefix() . '(/)',
                          array($this,'setInvitation'));  
         
         // GET GetLeaderInvitations
-        $this->_app->get('/' . $this->getPrefix() . '/leader/user/:userid',
+        $this->_app->get('/' . $this->getPrefix() . '/leader/user/:userid(/)',
                         array($this,'getLeaderInvitations'));
         
         // GET GetMemberInvitations
-        $this->_app->get('/' . $this->getPrefix() . '/member/user/:userid',
+        $this->_app->get('/' . $this->getPrefix() . '/member/user/:userid(/)',
                         array($this,'getMemberInvitations'));
                         
         // GET GetAllInvitations
-        $this->_app->get('/' . $this->getPrefix() . '/invitation',
+        $this->_app->get('/' . $this->getPrefix() . '(/invitation)(/)',
                         array($this,'getAllInvitations')); 
                         
         // GET GetSheetLeaderInvitations 
         $this->_app->get('/' . $this->getPrefix() . 
-                        '/leader/exercisesheet/:esid/user/:userid',
+                        '/leader/exercisesheet/:esid/user/:userid(/)',
                         array($this,'getSheetLeaderInvitations'));  
                         
         // GET GetSheetMemberInvitations 
         $this->_app->get('/' . $this->getPrefix() . 
-                        '/member/exercisesheet/:esid/user/:userid',
+                        '/member/exercisesheet/:esid/user/:userid(/)',
                         array($this,'getSheetMemberInvitations'));
                         
         // GET GetSheetInvitations 
-        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid',
+        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid(/)',
                         array($this,'getSheetInvitations'));  
                         
         // starts slim only if the right prefix was received

@@ -36,4 +36,4 @@ FROM
     User U2 ON U2.U_id = G2.U_id_leader
         and U2.U_id <> G.U_id_member
 WHERE
-    G.U_id_leader = $userid and G.ES_id = $esid
+    G.U_id_leader = '$userid' and G.ES_id = '$esid'

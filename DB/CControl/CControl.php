@@ -37,53 +37,53 @@ class CControl
         $this->_app->response->headers->set('Content-Type', 'application/json');
         
         // PUT EditLink
-        $this->_app->put('/link/:linkid',
+        $this->_app->put('/link/:linkid(/)',
                         array($this,'editLink'));
         
         // DELETE DeleteLink
-        $this->_app->delete('/link/:linkid',
+        $this->_app->delete('/link/:linkid(/)',
                            array($this,'deleteLink'));
         
         // POST SetLink
-        $this->_app->post('/link',
+        $this->_app->post('/link(/)',
                          array($this,'setLink'));
                          
         // GET GetLink
-        $this->_app->get('/link/:linkid',
+        $this->_app->get('/link/:linkid(/)',
                          array($this,'getLink'));
 
                          
                                                   
 
         // PUT EditComponent
-        $this->_app->put('/component/:componentid',
+        $this->_app->put('/component/:componentid(/)',
                         array($this,'editComponent'));
         
         // DELETE DeleteComponent
-        $this->_app->delete('/component/:componentid',
+        $this->_app->delete('/component/:componentid(/)',
                            array($this,'deleteComponent'));
         
         // POST SetComponent
-        $this->_app->post('/component',
+        $this->_app->post('/component(/)',
                          array($this,'setComponent'));
                          
         // GET GetComponent
-        $this->_app->get('/component/:componentid',
+        $this->_app->get('/component/:componentid(/)',
                          array($this,'getComponent'));                               
                          
   
   
                          
         // GET GetComponentDefinitions
-        $this->_app->get('/definition',
+        $this->_app->get('/definition(/)',
                          array($this,'getComponentDefinitions'));
                          
         // GET GetComponentDefinition
-        $this->_app->get('/definition/:componentid',
+        $this->_app->get('/definition/:componentid(/)',
                          array($this,'getComponentDefinition'));
                          
         // GET SendComponentDefinitions
-        $this->_app->get('/send',
+        $this->_app->get('/send(/)',
                          array($this,'sendComponentDefinitions'));
                 
         // run Slim
@@ -385,14 +385,14 @@ class CControl
             foreach ($result as $object){
                 $object = Component::decodeComponent(Component::encodeComponent($object));
                 $result = Request::post($object->getAddress()."/component",array(),Component::encodeComponent($object));
-                echo $object->getAddress() . '--' . $object->getName() . '--' . $result['status'] . "\n";
+                echo $result['status']. '--' . $object->getName() . '--' . $object->getAddress() . "\n";
             
                 if ($result['status'] != 201){
                     $add = "";
                     if (isset($result['content']))
                         $add = $result['content'];
                     
-                    Logger::Log($object->getAddress() . '--' . $object->getName() . '--' . $result['status'] . "\n" . $add . "\n",LogLevel::ERROR);
+                    Logger::Log($result['status'] . '--' . $object->getName() . '--' . $object->getAddress() . "\n" . $add . "\n",LogLevel::ERROR);
                 }
             }
             $this->_app->response->setStatus(200);

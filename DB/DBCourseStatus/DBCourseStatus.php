@@ -82,27 +82,27 @@ class DBCourseStatus
         $this->_app->response->headers->set('Content-Type', 'application/json');
 
         // PUT EditMemberRight
-        $this->_app->put('/' . $this->getPrefix() . '/course/:courseid/user/:userid',
+        $this->_app->put('/' . $this->getPrefix() . '/course/:courseid/user/:userid(/)',
                         array($this, 'editMemberRight'));
                         
         // DELETE RemoveCourseMember
-        $this->_app->delete('/' . $this->getPrefix() . '/course/:courseid/user/:userid', 
+        $this->_app->delete('/' . $this->getPrefix() . '/course/:courseid/user/:userid(/)', 
                             array($this,'removeCourseMember'));
                             
         // POST AddCourseMember
-        $this->_app->post('/' . $this->getPrefix() . '/course/:courseid/user/:userid',
+        $this->_app->post('/' . $this->getPrefix() . '/course/:courseid/user/:userid(/)',
                          array($this,'addCourseMember'));
         
         // GET GetMemberRight
-        $this->_app->get('/' . $this->getPrefix() . '/course/:courseid/user/:userid',
+        $this->_app->get('/' . $this->getPrefix() . '/course/:courseid/user/:userid(/)',
                         array($this,'getMemberRight'));
                         
         // GET GetMemberRights
-        $this->_app->get('/' . $this->getPrefix() . '/user/:userid',
+        $this->_app->get('/' . $this->getPrefix() . '/user/:userid(/)',
                         array($this,'getMemberRights'));  
                         
         // GET GetCourseRights
-        $this->_app->get('/' . $this->getPrefix() . '/course/:courseid',
+        $this->_app->get('/' . $this->getPrefix() . '/course/:courseid(/)',
                         array($this,'getCourseRights'));  
                         
         // starts slim only if the right prefix was received              

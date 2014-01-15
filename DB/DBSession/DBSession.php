@@ -82,35 +82,35 @@ class DBSession
         $this->_app->response->headers->set('Content-Type', 'application/json');
 
         // PUT EditSession
-        $this->_app->put('/' . $this->getPrefix() . '/session/:seid',
+        $this->_app->put('/' . $this->getPrefix() . '(/session)/:seid(/)',
                         array($this, 'editSession'));
                         
         // DELETE RemoveSession
-        $this->_app->delete('/' . $this->getPrefix() . '/session/:seid',
+        $this->_app->delete('/' . $this->getPrefix() . '(/session)/:seid(/)',
                         array($this, 'removeSession'));
                         
         // PUT EditUserSession
-        $this->_app->put('/' . $this->getPrefix() . '/user/:userid',
+        $this->_app->put('/' . $this->getPrefix() . '/user/:userid(/)',
                         array($this, 'editUserSession'));
                         
         // DELETE RemoveUserSession
-        $this->_app->delete('/' . $this->getPrefix() . '/user/:userid',
+        $this->_app->delete('/' . $this->getPrefix() . '/user/:userid(/)',
                         array($this, 'removeUserSession'));
                         
         // POST AddSession
-        $this->_app->post('/' . $this->getPrefix(),
+        $this->_app->post('/' . $this->getPrefix() . '(/)',
                         array($this, 'addSession'));
                         
         // GET GetUserSession
-        $this->_app->get('/' . $this->getPrefix() . '/user/:userid',
+        $this->_app->get('/' . $this->getPrefix() . '/user/:userid(/)',
                         array($this, 'getUserSession'));
                         
         // GET GetSessionUser
-        $this->_app->get('/' . $this->getPrefix() . '/session/:seid',
+        $this->_app->get('/' . $this->getPrefix() . '(/session)/:seid(/)',
                         array($this, 'getSessionUser'));
                         
         // GET GetAllSessions
-        $this->_app->get('/' . $this->getPrefix() . '/session',
+        $this->_app->get('/' . $this->getPrefix() . '(/session)(/)',
                         array($this, 'getAllSessions'));
                         
         // starts slim only if the right prefix was received 
@@ -391,7 +391,7 @@ class DBSession
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetAllSessions.sql", 
                                         array());        
-        
+  
         // checks the correctness of the query   
         if ($result['status']>=200 && $result['status']<=299){
             $query = Query::decodeQuery($result['content']);
@@ -403,7 +403,7 @@ class DBSession
             $session = DBJson::getResultObjectsByAttributes($data, 
                                         Session::getDBPrimaryKey(), 
                                         Session::getDBConvert());
-            
+          
             $this->_app->response->setBody(Session::encodeSession($session));
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))

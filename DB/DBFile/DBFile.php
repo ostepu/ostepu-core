@@ -75,27 +75,27 @@ class DBFile
         $this->_app->response->headers->set('Content-Type', 'application/json');
         
         // PUT EditFile
-        $this->_app->put('/' . $this->getPrefix() . '/file/:fileid',
+        $this->_app->put('/' . $this->getPrefix() . '(/file)/:fileid(/)',
                         array($this, 'editFile'));
                         
         // POST SetFile
-        $this->_app->post('/' . $this->getPrefix(),
+        $this->_app->post('/' . $this->getPrefix() . '(/)',
                         array($this, 'editFile'));
                         
         // DELETE RemoveFile
-        $this->_app->delete('/' . $this->getPrefix() . '/file/:fileid',
+        $this->_app->delete('/' . $this->getPrefix() . '(/file)/:fileid(/)',
                         array($this, 'removeFile'));
                                            
         // GET GetFile
-        $this->_app->get('/' . $this->getPrefix() . '/file/:fileid',
+        $this->_app->get('/' . $this->getPrefix() . '(/file)/:fileid(/)',
                         array($this, 'getFile'));
                         
         // GET GetFileByHash
-        $this->_app->get('/' . $this->getPrefix() . '/hash/:hash',
+        $this->_app->get('/' . $this->getPrefix() . '/hash/:hash(/)',
                         array($this, 'getFileByHash'));
                         
         // GET GetAllFiles
-        $this->_app->get('/' . $this->getPrefix() . '/file',
+        $this->_app->get('/' . $this->getPrefix() . '(/file)(/)',
                         array($this, 'getAllFiles'));
                         
         // starts slim only if the right prefix was received
@@ -110,7 +110,7 @@ class DBFile
     /**
      * PUT EditFile
      *
-     * @param int $userid a database user identifier
+     * @param int $fileid a database file identifier
      */
     public function editFile($fileid)
     {
@@ -154,7 +154,7 @@ class DBFile
     /**
      * DELETE RemoveFile
      *
-     * @param int $userid a database user identifier
+     * @param int $fileid a database file identifier
      */
     public function removeFile($fileid)
     {
@@ -171,13 +171,35 @@ class DBFile
         
         // checks the correctness of the query                        
         if ($result['status']>=200 && $result['status']<=299){
-        
-            $this->_app->response->setStatus($result['status']);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+            $query = Query::decodeQuery($result['content']);
+
+            $data = $query->getResponse();
+            
+            // generates an assoc array of an file by using a defined list of 
+            // its attributes
+            $file = DBJson::getResultObjectsByAttributes($data, 
+                                        File::getDBPrimaryKey(), 
+                                        File::getDBConvert());
+            
+            // only one object as result 
+            if (count($file)>0)
+                $file = $file[0];
+                
+            if ($file!==null){
+                $this->_app->response->setBody(File::encodeFile($file));
+                $this->_app->response->setStatus($result['status']);
+                if (isset($result['headers']['Content-Type']))
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+            } else{
+                Logger::Log("DELETE RemoveFile failed (no file in db)",LogLevel::ERROR);
+                $this->_app->response->setBody(File::encodeFile(new File()));
+                $this->_app->response->setStatus(409);
+                $this->_app->stop();
+            }
                 
         } else{
             Logger::Log("DELETE RemoveFile failed",LogLevel::ERROR);
+            $this->_app->response->setBody(File::encodeFile(new File()));
             $this->_app->response->setStatus(409);
             $this->_app->stop();
         }
@@ -221,6 +243,7 @@ class DBFile
                 
             } else{
                 Logger::Log("POST AddFile failed",LogLevel::ERROR);
+                $this->_app->response->setBody(File::encodeFile(new File()));
                 $this->_app->response->setStatus(451);
                 $this->_app->stop();
             }

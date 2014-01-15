@@ -1,9 +1,8 @@
 /**
- * @file GetUser.sql
+ * @file GetUserByStatus.sql
  * gets all specified user from %User table
  * @author Till Uhlig
- * @param int $userid a %User identifier (0-4)
- * @param int $esid a $ExerciseSheet identifier (0-4)
+ * @param int $statusid a course status identifier (0-4)
  * @result 
  * - U, the user data
  * - CS, the course status data
@@ -27,16 +26,9 @@ SELECT
     C.C_semester,
     C.C_defaultGroupSize
 FROM
-`Group` G
-join
-`Group` G2
-on (G.ES_id = G2.ES_id and G.U_id_member = G2.U_id_member)
-join
-(User U
+    User U
         left join
     CourseStatus CS ON (U.U_id = CS.U_id)
         left join
-    Course C ON (CS.C_id = C.C_id))
-on U.U_id = G2.U_id_leader
-WHERE
-    G.U_id_leader = '$userid' and G.ES_id = '$esid'
+    Course C ON (CS.C_id = C.C_id)
+where CS.CS_status = '$statusid'

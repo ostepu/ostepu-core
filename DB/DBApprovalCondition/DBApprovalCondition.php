@@ -82,27 +82,27 @@ class DBApprovalCondition
         $this->_app->response->headers->set('Content-Type', 'application/json');
 
         // PUT EditApprovalCondition
-        $this->_app->put('/' . $this->getPrefix() . '/approvalcondition/:apid',
+        $this->_app->put('/' . $this->getPrefix() . '(/approvalcondition)/:apid(/)',
                         array($this,'editApprovalCondition'));
         
         // DELETE DeleteApprovalCondition
-        $this->_app->delete('/' . $this->getPrefix() . '/approvalcondition/:apid',
+        $this->_app->delete('/' . $this->getPrefix() . '(/approvalcondition)/:apid(/)',
                            array($this,'deleteApprovalCondition'));
         
         // POST SetApprovalCondition
-        $this->_app->post('/' . $this->getPrefix(),
+        $this->_app->post('/' . $this->getPrefix() . '(/)',
                          array($this,'setApprovalCondition'));  
         
         // GET GetApprovalCondition
-        $this->_app->get('/' . $this->getPrefix() . '/approvalcondition/:apid',
+        $this->_app->get('/' . $this->getPrefix() . '(/approvalcondition)/:apid(/)',
                         array($this,'getApprovalCondition'));
         
-        // GET GetAllApprovalCondition
-        $this->_app->get('/' . $this->getPrefix() . '/approvalcondition',
-                        array($this,'getAllApprovalCondition'));
+        // GET GetAllApprovalConditions
+        $this->_app->get('/' . $this->getPrefix() . '(/approvalcondition)(/)',
+                        array($this,'getAllApprovalConditions'));
                         
         // GET GetCourseApprovalConditions
-        $this->_app->get('/' . $this->getPrefix() . '/course/:courseid',
+        $this->_app->get('/' . $this->getPrefix() . '/course/:courseid(/)',
                         array($this,'getCourseApprovalConditions'));
                         
         // starts slim only if the right prefix was received
@@ -243,7 +243,6 @@ class DBApprovalCondition
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetAllApprovalConditions.sql", 
                                         array());
-        
         // checks the correctness of the query                                    
         if ($result['status']>=200 && $result['status']<=299){
             $query = Query::decodeQuery($result['content']);

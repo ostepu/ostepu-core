@@ -83,11 +83,11 @@ class DBCourse
         $this->_app->response->headers->set('Content-Type', 'application/json');
 
         // PUT EditCourse
-        $this->_app->put('/' . $this->getPrefix() . '/course/:courseid',
+        $this->_app->put('/' . $this->getPrefix() . '(/course)/:courseid(/)',
                         array($this,'editCourse'));
         
         // DELETE DeleteCourse
-        $this->_app->delete('/' . $this->getPrefix() . '/course/:courseid',
+        $this->_app->delete('/' . $this->getPrefix() . '(/course)/:courseid(/)',
                            array($this,'deleteCourse'));
         
         // POST SetCourse
@@ -95,15 +95,15 @@ class DBCourse
                          array($this,'setCourse'));
                          
         // GET GetCourse
-        $this->_app->get('/' . $this->getPrefix() . '/course/:courseid',
+        $this->_app->get('/' . $this->getPrefix() . '(/course)/:courseid(/)',
                         array($this,'getCourse'));
                         
         // GET GetAllCourses
-        $this->_app->get('/' . $this->getPrefix() . '/course',
+        $this->_app->get('/' . $this->getPrefix() . '(/course)(/)',
                         array($this,'getAllCourses'));
                         
         // GET GetUserCourses
-        $this->_app->get('/' . $this->getPrefix() . '/user/:userid',
+        $this->_app->get('/' . $this->getPrefix() . '/user/:userid(/)',
                         array($this,'getUserCourses'));
                         
         // starts slim only if the right prefix was received

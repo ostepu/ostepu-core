@@ -36,4 +36,4 @@ FROM
         and U2.U_id <> G.U_id_member
 WHERE
     G.U_id_leader = G2.U_id_leader
-        and G.ES_id = $esid
+        and G.ES_id = '$esid'

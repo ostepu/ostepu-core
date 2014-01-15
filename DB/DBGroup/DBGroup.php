@@ -83,33 +83,33 @@ class DBGroup
 
         // PUT EditGroup
         $this->_app->put('/' . $this->getPrefix() . 
-                        '/user/:userid/exercisesheet/:esid',
+                        '/user/:userid/exercisesheet/:esid(/)',
                         array($this,'editGroup'));
         
         // DELETE DeleteGroup
         $this->_app->delete('/' . $this->getPrefix() . 
-                            '/user/:userid/exercisesheet/:esid',
+                            '/user/:userid/exercisesheet/:esid(/)',
                            array($this,'deleteGroup'));
                                                       
         // POST SetGroup
-        $this->_app->post('/' . $this->getPrefix(),
+        $this->_app->post('/' . $this->getPrefix() . '(/)',
                          array($this,'setGroup'));
                
         // GET GetUserGroups
-        $this->_app->get('/' . $this->getPrefix() . '/user/:userid',
+        $this->_app->get('/' . $this->getPrefix() . '/user/:userid(/)',
                         array($this,'getUserGroups'));
                         
         // GET GetAllGroups
-        $this->_app->get('/' . $this->getPrefix() . '/group',
+        $this->_app->get('/' . $this->getPrefix() . '(/group)(/)',
                         array($this,'getAllGroups'));
                         
         // GET GetSheetUserGroups
         $this->_app->get('/' . $this->getPrefix() . 
-                        '/user/:userid/exercisesheet/:esid',
+                        '/user/:userid/exercisesheet/:esid(/)',
                         array($this,'getSheetUserGroups'));
         
         // GET GetSheetGroups
-        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid',
+        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid(/)',
                         array($this,'getSheetGroups'));
         
         

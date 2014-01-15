@@ -83,31 +83,31 @@ class DBAttachment
         $this->_app->response->headers->set('Content-Type', 'application/json');
 
         // PUT EditAttachment
-        $this->_app->put('/' . $this->getPrefix() . '/attachment/:aid',
+        $this->_app->put('/' . $this->getPrefix() . '(/attachment)/:aid(/)',
                         array($this,'editAttachment'));
         
         // DELETE DeleteAttachment
-        $this->_app->delete('/' . $this->getPrefix() . '/attachment/:aid',
+        $this->_app->delete('/' . $this->getPrefix() . '(/attachment)/:aid(/)',
                            array($this,'deleteAttachment'));
         
         // POST SetAttachment
-        $this->_app->post('/' . $this->getPrefix(),
+        $this->_app->post('/' . $this->getPrefix() . '(/)',
                          array($this,'setAttachment'));    
         
         // GET GetAttachment
-        $this->_app->get('/' . $this->getPrefix() . '/attachment/:aid',
+        $this->_app->get('/' . $this->getPrefix() . '(/attachment)/:aid(/)',
                         array($this,'getAttachment'));
         
         // GET GetAllAttachments
-        $this->_app->get('/' . $this->getPrefix() . '/attachment',
+        $this->_app->get('/' . $this->getPrefix() . '(/attachment)(/)',
                         array($this,'getAllAttachments'));
                         
         // GET GetExerciseAttachments
-        $this->_app->get('/' . $this->getPrefix() . '/exercise/:eid',
+        $this->_app->get('/' . $this->getPrefix() . '/exercise/:eid(/)',
                         array($this,'getExerciseAttachments'));
                         
         // GET GetSheetAttachments
-        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid',
+        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid(/)',
                         array($this,'getSheetAttachments'));
                         
         // starts slim only if the right prefix was received

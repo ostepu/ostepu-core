@@ -81,31 +81,31 @@ class DBExercise
         $this->_app->response->headers->set('Content-Type', 'application/json');
 
         // PUT EditExercise
-        $this->_app->put('/' . $this->getPrefix() . '/exercise/:eid',
+        $this->_app->put('/' . $this->getPrefix() . '(/exercise)/:eid(/)',
                         array($this,'editExercise'));
         
         // DELETE DeleteExercise
-        $this->_app->delete('/' . $this->getPrefix() . '/exercise/:eid',
+        $this->_app->delete('/' . $this->getPrefix() . '(/exercise)/:eid(/)',
                            array($this,'deleteExercise'));
         
         // POST SetExercise
-        $this->_app->post('/' . $this->getPrefix(),
+        $this->_app->post('/' . $this->getPrefix() .'(/)',
                          array($this,'setExercise'));    
         
         // GET GetExercise
-        $this->_app->get('/' . $this->getPrefix() . '/exercise/:eid',
+        $this->_app->get('/' . $this->getPrefix() . '(/exercise)/:eid(/)',
                         array($this,'getExercise'));
                         
         // GET GetAllExercises
-        $this->_app->get('/' . $this->getPrefix() . '/exercise',
+        $this->_app->get('/' . $this->getPrefix() . '(/exercise)(/)',
                         array($this,'getAllExercises'));
         
         // GET GetSheetExercises
-        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid',
+        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid(/)',
                         array($this,'getSheetExercises'));
                         
         // GET GetCourseExercises
-        $this->_app->get('/' . $this->getPrefix() . '/course/:courseid',
+        $this->_app->get('/' . $this->getPrefix() . '/course/:courseid(/)',
                         array($this,'getCourseExercises'));
                         
         // starts slim only if the right prefix was received

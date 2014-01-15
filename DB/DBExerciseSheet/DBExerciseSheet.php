@@ -83,32 +83,32 @@ class DBExerciseSheet
         $this->_app->response->headers->set('Content-Type', 'application/json');
 
         // PUT EditExerciseSheet
-        $this->_app->put('/' . $this->getPrefix() . '/exercisesheet/:esid',
+        $this->_app->put('/' . $this->getPrefix() . '(/exercisesheet)/:esid(/)',
                         array($this,'editExerciseSheet'));
         
         // DELETE DeleteExerciseSheet
-        $this->_app->delete('/' . $this->getPrefix() . '/exercisesheet/:esid',
+        $this->_app->delete('/' . $this->getPrefix() . '(/exercisesheet)/:esid(/)',
                            array($this,'deleteExerciseSheet'));
         
         // POST SetExerciseSheet
-        $this->_app->post('/' . $this->getPrefix(),
+        $this->_app->post('/' . $this->getPrefix() . '(/)',
                          array($this,'setExerciseSheet'));
                
         // GET GetExerciseSheetURL
-        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid/url',
+        $this->_app->get('/' . $this->getPrefix() . '(/exercisesheet)/:esid/url(/)',
                         array($this,'getExerciseSheetURL'));
                         
         // GET GetCourseSheetURLs
-        $this->_app->get('/' . $this->getPrefix() . '/course/:courseid/url',
+        $this->_app->get('/' . $this->getPrefix() . '/course/:courseid/url(/)',
                         array($this,'getCourseSheetURLs'));
                         
-        // GET GetExerciseSheet
-        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid+',
-                        array($this,'getExerciseSheet'));
-        
         // GET GetCourseSheets
-        $this->_app->get('/' . $this->getPrefix() . '/course/:courseid+',
+        $this->_app->get('/' . $this->getPrefix() . '/course/:courseid+(/)',  
                         array($this,'getCourseSheets'));
+                        
+        // GET GetExerciseSheet
+        $this->_app->get('/' . $this->getPrefix() . '(/exercisesheet)/:esid+(/)',
+                        array($this,'getExerciseSheet'));
         
         // starts slim only if the right prefix was received
         if (strpos ($this->_app->request->getResourceUri(),'/' . 
@@ -521,6 +521,7 @@ class DBExerciseSheet
             if (in_array('exercise',$options)){
                 $query = Query::decodeQuery($result2['content']);
                             $data = $query->getResponse();
+                            
                 $exercises = DBJson::getObjectsByAttributes($data, 
                             Exercise::getDBPrimaryKey(), 
                             Exercise::getDBConvert());

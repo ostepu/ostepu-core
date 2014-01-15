@@ -83,27 +83,27 @@ class DBExternalId
         $this->_app->response->headers->set('Content-Type', 'application/json');
 
         // PUT EditExternalId
-        $this->_app->put('/' . $this->getPrefix() . '/externalid/:exid',
+        $this->_app->put('/' . $this->getPrefix() . '(/externalid)/:exid(/)',
                         array($this,'editExternalId'));
         
         // DELETE DeleteExternalId
-        $this->_app->delete('/' . $this->getPrefix() . '/externalid/:exid',
+        $this->_app->delete('/' . $this->getPrefix() . '(/externalid)/:exid(/)',
                            array($this,'deleteExternalId'));
         
         // POST SetExternalId
-        $this->_app->post('/' . $this->getPrefix(),
+        $this->_app->post('/' . $this->getPrefix() . '(/)',
                          array($this,'setExternalId'));
                          
         // GET GetExternalId
-        $this->_app->get('/' . $this->getPrefix() . '/externalid/:exid',
+        $this->_app->get('/' . $this->getPrefix() . '(/externalid)/:exid(/)',
                         array($this,'getExternalId'));
                         
         // GET GetAllExternalIds
-        $this->_app->get('/' . $this->getPrefix() . '/externalid',
+        $this->_app->get('/' . $this->getPrefix() . '(/externalid)(/)',
                         array($this,'getAllExternalIds'));
                         
         // GET GetCourseExternalIds
-        $this->_app->get('/' . $this->getPrefix() . '/course/:courseid',
+        $this->_app->get('/' . $this->getPrefix() . '/course/:courseid(/)',
                         array($this,'getCourseExternalIds'));
                     
         // starts slim only if the right prefix was received

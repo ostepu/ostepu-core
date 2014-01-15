@@ -5,7 +5,4 @@
  * @param int $fileid a %File identifier
  * @result -
  */
- 
-DELETE FROM File 
-WHERE
-    F_id = '$fileid'
+call deleteFile('$fileid'); 
