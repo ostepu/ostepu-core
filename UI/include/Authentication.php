@@ -56,11 +56,11 @@ class Authentication
     /**
      * hash string with given method
      *
-     * @param string $data is the string which has to be hashed
      * @param string $method defines hashmethod e.g. "sha256"
+     * @param string $data is the string which has to be hashed
      * @return string
      */
-    protected function hashData($data,$method)
+    protected function hashData($method, $data)
     {
         return hash_hmac($method, $data, $this->_siteKey);
     }
@@ -128,7 +128,7 @@ class Authentication
      */
     private function refreshSession($username, $password)
     {
-        $_SESSION['session'] = hash('sha256', session_id().$username.$password);
+        $_SESSION['session'] = $this->hashData("md5", session_id().$username.$password);
         /**
          * @todo create session on server with $_SESSION['session']
          */

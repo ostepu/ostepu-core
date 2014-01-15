@@ -6,7 +6,6 @@ include_once 'include/Authentication.php';
 
 // no error messages
 // error_reporting(0);
- 
 $auth = new Authentication();
 $auth->preventSessionFix();
 
