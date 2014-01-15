@@ -194,16 +194,12 @@ class Authentication
     /**
      * check the Rights of an User and logout if it hasn't the correct one
      */
-    public function checkRights($minimum, $cid, $uid)
+    public function checkRights($minimum, $cid, $uid, $data)
     {
-        $databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/coursestatus/course/{$cid}/user/{$uid}";
-        $user = http_get($databaseURI,$message);
-        $user = json_decode($user, true);
-
         // check if user exists 
-        if ($message != "404") {
+        if (!is_null($data)) {
             // check if minimum right is given
-            if ($user['courses'][0]['status'] < $minimum) {
+            if ($data['courses'][0]['status'] < $minimum) {
                 header('location: index.php?error=403');
             } 
         }

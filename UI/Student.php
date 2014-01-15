@@ -25,23 +25,17 @@ if (isset($_SESSION['uid'])) {
     die('no user id!\n');
 }
 
+// load user and course data from the database
+$databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/coursestatus/course/{$cid}/user/{$uid}";
+$user_course_data = http_get($databaseURI);
+$user_course_data = json_decode($user_course_data, true);
+
 // check userrights for course
-$auth->checkRights(0, $cid, $uid);
-
-// load user data from the database
-$databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/user/user/{$uid}";
-$user = http_get($databaseURI);
-$user = json_decode($user, true);
-
-// load course data from the database
-$databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/course/course/{$cid}";
-$course = http_get($databaseURI);
-$course = json_decode($course, true)[0];
+$auth->checkRights(0, $cid, $uid, $user_course_data);
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
-$h->bind($user);
-$h->bind($course);
+$h->bind($user_course_data);
 $h->bind(array("backTitle" => "Veranstaltung wechseln",
                "backURL" => "index.php",
                "navigationElement" => $menu,

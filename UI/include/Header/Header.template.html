@@ -1,7 +1,7 @@
 <div id="header" class="header">
     <div class="course-info left">
         <div class="course-title uppercase">
-            <?php print $name; ?>
+            <?php print $courses[0]['course']['name']; ?>
         </div>
         <?php if (!is_null($backURL)) { ?>
             <a class="change-course" href="<?php print $backURL; ?>">

@@ -18,33 +18,23 @@ if (isset($_SESSION['uid'])) {
     $notifications[] = MakeNotification("error", "No user id!");
 }
 
+// load user and course data from the database
+$databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/coursestatus/course/{$cid}/user/{$uid}";
+$user_course_data = http_get($databaseURI);
+$user_course_data = json_decode($user_course_data, true);
+
 // check userrights for course
-$auth->checkRights(3, $cid, $uid);
+$auth->checkRights(3, $cid, $uid, $user_course_data);
 
-// load user data from the database
-$databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/user/user/{$uid}";
-$user = http_get($databaseURI);
-$user = json_decode($user, true);
-
-if (is_null($user)) {
-    $user = array();
-}
-
-// load course data from the database
-$databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/course/course/{$cid}";
-$course = http_get($databaseURI);
-$course = json_decode($course, true)[0];
-
-if (is_null($course)) {
-    $course = array();
+if (is_null($user_course_data)) {
+    $user_course_data = array();
 }
 
 $menu = Template::WithTemplateFile('include/Navigation/NavigationLecturer.template.html');
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
-$h->bind($user);
-$h->bind($course);
+$h->bind($user_course_data);
 $h->bind(array("backTitle" => "Veranstaltung wechseln",
                "backURL" => "index.php",
                "navigationElement" => $menu,
