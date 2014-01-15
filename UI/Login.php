@@ -2,81 +2,20 @@
 include 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
 include_once 'include/Helpers.php';
+include_once 'include/Authentication.php';
 
 // no error messages
 // error_reporting(0);
  
-// force to use session-cookies and to transmit SID over URL
-ini_set('session.use_only_cookies', '1');
-ini_set('session.use_trans_sid', '0');
- 
-// start session
-session_start();
-
-// prevent possible session fixation attack
-if (!isset( $_SESSION['server_SID'] )) {
-    // delete session content
-    session_unset();
-    $_SESSION = array();
-    // restart session
-    session_destroy();
-    session_start();
-    // generate new session id
-    session_regenerate_id();
-    // save status that serverSID is given
-    $_SESSION['server_SID'] = true;
-}
+$auth = new Authentication();
+$auth->preventSessionFix();
 
 // check if already logged in
-if(checkLogin()) {
+if($auth->checkLogin()) {
     header('location: index.php');
     exit();
 }
 
-function loginUser($username, $password)
-{
-    $databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/user/user/{$username}";
-    $info =array();
-    $user = http_get($databaseURI,$message);
-    $user = json_decode($user, true);
-
-    // check if user exists 
-    if ($message != "404") {
-        /**
-         * @todo implement correct Hash password method
-         */
-        if ($password == $user['password'] && $user['flag'] == 1) {
-            /**
-             * @todo reset counter for failed logins
-             */
-            // save logged in uid
-            $_SESSION['uid'] = $user['id'];
-            return true;
-        } else {
-            /**
-             * @todo update counter for failed logins, increase it
-             */
-        }
-    }
-    return false;
-}
-
-function updateUser($username, $password)
-{
-    $_SESSION['session'] = hash('sha256', session_id().$username.$password);
-    /**
-     * @todo create session on server with $_SESSION['session']
-     */
-
-    /**
-     * @todo only if created session on server is successful
-     */
-    $_SESSION['signed'] = true;
-    $_SESSION['lastactive'] = $_SERVER['REQUEST_TIME'];
-    
-
-    return true;
-}
 
 if (isset($_POST['action'])) {
     // trim and stripslashes the input
@@ -85,18 +24,11 @@ if (isset($_POST['action'])) {
     $input = cleanInput($input);
 
     // log in user and return result
-    $signed = loginUser($input['username'], $input['password']);
+    $signed = $auth->loginUser($input['username'], $input['password']);
 
     if ($signed) {
-        // update user and return result
-        $update = updateUser($input['username'], $input['password']);
-
-        if ($update) {
-            header('location: index.php');
-            exit();
-        } else {
-            $notifications[] = MakeNotification("error", "Bei der Anmeldung ist ein Problem aufgetreten!");
-        }
+        header('location: index.php');
+        exit();
     } else {
         $notifications[] = MakeNotification("error", "Die Anmeldung war fehlerhaft!");
     }

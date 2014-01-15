@@ -1,23 +1,12 @@
 <?php
-include_once 'include/Helpers.php';
+include_once 'include/Authentication.php';
 
-// force to use session-cookies and to transmit SID over URL
-ini_set('session.use_only_cookies', '1');
-ini_set('session.use_trans_sid', '0');
- 
-// start session
-session_start();
+$auth = new Authentication();
 
-function resetUser()
-{
-    session_destroy();
-    header('location: Login.php');
-    exit;
-}
 
 // Benutzer prüfen
-if (!checkLogin()||$_GET['action'] == "logout")
+if (!$auth->checkLogin()||$_GET['action'] == "logout")
 {
-    resetUser();
+    $auth->logoutUser();
 }
 ?>

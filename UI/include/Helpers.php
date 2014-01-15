@@ -174,23 +174,4 @@ function cleanInput($input)
 
     return $input;
 }
-/**
- * check if user is logged in
- */
-function checkLogin()
-{
-    session_regenerate_id(true);
-    if (!isset($_SESSION['signed']) || !$_SESSION['signed']) {return false;}
-    // check for timeout (after 10 minutes of inactivity)
-    if (!isset($_SESSION['lastactive']) || ($_SESSION['lastactive'] + 10*60) <= $_SERVER['REQUEST_TIME']) {return false;}
-    /**
-     * @todo check if sessionid is on the DBserver and userid on the DB ist equal to SessionUID, session from DB only if flag is 1
-     * @todo check rights
-     */
-
-    // update last activity 
-    $_SESSION['lastactive'] = $_SERVER['REQUEST_TIME'];
-    return true;
-}
-
 ?>
