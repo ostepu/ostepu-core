@@ -6,6 +6,7 @@
 require_once( 'Include/Slim/Slim.php' );
 include_once( 'Include/Structures.php' );
 include_once( 'Include/Request.php' );
+include_once( 'Include/DBRequest.php' );
 include_once( 'Include/DBJson.php' );
 include_once( 'Include/CConfig.php' );
 include_once( 'Include/Logger.php' );
@@ -109,6 +110,10 @@ class DBUser
         $this->_app->get('/' . $this->getPrefix() . '(/user)/:userid(/)',
                         array($this, 'getUser'));
                         
+        // GET GetCourseUserByStatus
+        $this->_app->get('/' . $this->getPrefix() . '/course/:courseid/status/:statusid(/)',
+                        array($this, 'getCourseUserByStatus'));  
+                        
         // GET GetCourseMember
         $this->_app->get('/' . $this->getPrefix() . '/course/:courseid(/)',
                         array($this,'getCourseMember'));
@@ -121,9 +126,7 @@ class DBUser
         $this->_app->get('/' . $this->getPrefix() . '/status/:statusid(/)',
                         array($this, 'getUserByStatus'));
                         
-        // GET GetCourseUserByStatus
-        $this->_app->get('/' . $this->getPrefix() . 'course/:courseid/status/:statusid(/)',
-                        array($this, 'getCourseUserByStatus'));             
+           
                         
         // starts slim only if the right prefix was received
         if (strpos ($this->_app->request->getResourceUri(),'/' . $this->getPrefix()) === 0){
@@ -183,7 +186,7 @@ class DBUser
     public function removeUser($userid)
     {
         Logger::Log("starts DELETE RemoveUser",LogLevel::DEBUG);
-        
+
         $userid = DBJson::mysql_real_escape_string($userid);
         
         // starts a query, by using a given file
@@ -193,7 +196,7 @@ class DBUser
                                         
         // checks the correctness of the query                          
         if ($result['status']>=200 && $result['status']<=299){
-            $this->_app->response->setBody(User::encodeUser(new User()));
+           // $this->_app->response->setBody(User::encodeUser(new User()));
             
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
@@ -203,7 +206,7 @@ class DBUser
             $this->_app->stop();
         } else{
             Logger::Log("DELETE RemoveUser failed",LogLevel::ERROR);
-            $this->_app->response->headers->set("Connection", "Close");
+           // $this->_app->response->headers->set("Connection", "Close");
             $this->_app->response->setBody(User::encodeUser(new User()));
             $this->_app->response->setStatus(409);   
             $this->_app->stop();            
@@ -544,7 +547,7 @@ class DBUser
     public function getGroupMember($userid, $esid)
     {   
         Logger::Log("starts GET GetGroupMember",LogLevel::DEBUG);
-        
+   
         // checks whether incoming data has the correct data type
         DBJson::checkInput($this->_app, 
                             ctype_digit($esid));
@@ -554,8 +557,8 @@ class DBUser
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetGroupMember.sql", 
-                                        array("userid" => $userid,"esid" => $esid));        
-        
+                                        array("userid" => $userid,"esid" => $esid));
+
         // checks the correctness of the query 
         if ($result['status']>=200 && $result['status']<=299){
             $query = Query::decodeQuery($result['content']);
@@ -613,7 +616,7 @@ class DBUser
     /**
      * GET GetUserByStatus
      *
-     * @param string $userid a database user identifier
+     * @param string $statusid a database course status identifier (0-4)
      */
     public function getUserByStatus($statusid)
     {
@@ -682,7 +685,8 @@ class DBUser
     /**
      * GET GetCourseUserByStatus
      *
-     * @param string $userid a database user identifier
+     * @param string $courseid a database course identifier
+     * @param string $statusid a database course status identifier (0-4)
      */
     public function getCourseUserByStatus($courseid,$statusid)
     {
@@ -691,14 +695,12 @@ class DBUser
         // checks whether incoming data has the correct data type
         DBJson::checkInput($this->_app, 
                             ctype_digit($courseid), 
-                            ctype_digit($statusid));
-                            
-        $userid = DBJson::mysql_real_escape_string($userid);
+                            ctype_digit($statusid));                 
 
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetCourseUserByStatus.sql", 
-                                        array("statusid" => $statusid));
+                                        array("statusid" => $statusid,"courseid" => $courseid));
         
         // checks the correctness of the query                                 
         if ($result['status']>=200 && $result['status']<=299){

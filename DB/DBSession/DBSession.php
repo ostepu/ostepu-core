@@ -127,7 +127,7 @@ class DBSession
      *
      * @param string $seid a database session identifier
      */
-    public function EditSession($seid)
+    public function editSession($seid)
     {
         Logger::Log("starts PUT EditSession",LogLevel::DEBUG);
         
@@ -198,7 +198,9 @@ class DBSession
     {
         Logger::Log("starts PUT RemoveSession",LogLevel::DEBUG);
         
-        $userid = DBJson::mysql_real_escape_string($userid);
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($userid));
         
         // decode the received session data, as an object
         $insert = Session::decodeSession($this->_app->request->getBody());
@@ -238,7 +240,9 @@ class DBSession
     {
         Logger::Log("starts DELETE RemoveUserSession",LogLevel::DEBUG);
         
-        $userid = DBJson::mysql_real_escape_string($userid);
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($userid));
                 
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
@@ -303,7 +307,9 @@ class DBSession
     {
         Logger::Log("starts GET GetUserSession",LogLevel::DEBUG);
         
-        $userid = DBJson::mysql_real_escape_string($userid);
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($userid));
         
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
