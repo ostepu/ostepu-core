@@ -1,0 +1,1 @@
+{"id":"24","name":"DBMarking","address":"localhost\/uebungsplattform\/DB\/DBMarking","option":"","prefix":"marking","links":[{"id":"42","name":"out","address":"localhost\/uebungsplattform\/DB\/DBQuery","prefix":"query","target":"13","owner":"24","relevanz":""}]}

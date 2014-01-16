@@ -116,11 +116,18 @@ class LMarking
         $answer = Request::custom('DELETE', $URL, $header, $body);
         $this->app->response->setStatus($answer['status']);
         
-        if( $answer['status'] == 200){ //nur, wenn file tatsaechlich aus DB geloescht wurde
-            $URL = $this->lURL.'/FS/marking/'.$markingid; 
-            /*
-             * eigentlich url der zu loeschenden datei schicken und nicht die id???????????????
-             */
+        /**
+         * if DB-Request was succsessfull the file also gets removed from FS 
+         * otherwise returns the Status-Code from DB 
+         */
+        $fileObject = json_decode($answer['content']);
+        //if address-field exists, read it out
+        if (isset($fileObject->{'address'})){
+            $fileAddress = $fileObject->{'address'};
+        }
+        
+        if( $answer['status'] < 300){
+            $URL = $this->lURL.'/FS/'.$fileAddress; 
             $answer = Request::custom('DELETE', $URL, $header, $body);
         }             
     }

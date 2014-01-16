@@ -15,10 +15,8 @@ class LAttachment
 {   
     /**
      *Values needed for conversation with other components
-     */
-     
-    private $_conf=null;
-    
+     */     
+    private $_conf=null;    
     private static $_prefix = "attachment";
     
     public static function getPrefix()
@@ -133,11 +131,14 @@ class LAttachment
          * if DB-Request was succsessfull the file also gets removed from FS 
          * otherwise returns the Status-Code from DB 
          */
-        if( $answer['status'] == 200){ 
-            $URL = $this->lURL.'/FS/file/'.$fileid; 
-            /*
-             * eigentlich url der zu löschenden datei schicken und nicht die id???????????????
-             */
+        $fileObject = json_decode($answer['content']);
+        //if address-field exists, read it out
+        if (isset($fileObject->{'address'})){
+            $fileAddress = $fileObject->{'address'};
+        }
+
+        if( $answer['status'] < 300){ 
+            $URL = $this->lURL.'/FS/'.$fileAddress; 
             $answer = Request::custom('DELETE', $URL, $header, $body);
         }             
     }
