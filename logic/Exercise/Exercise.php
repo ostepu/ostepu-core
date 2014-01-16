@@ -152,15 +152,14 @@ class LExercise
          * if the file information has been deleted, the file
          * will be delet from filesystem
          */
+        $fileObject = json_decode($answer['content']);
+        //if address-field exists, read it out
+        if (isset($fileObject->{'address'})){
+            $fileAddress = $fileObject->{'address'};
+        }
+        //request to FS
         if( $answer['status'] < 300){
-            $URL = $this->lURL.'/FS/exercise/'.$exerciseid; 
-            /** ####################################################################################
-             * #####################################################################################
-             * #####################################################################################
-             * maybe there is an error if we send an id to delete a file. 
-             * Possibly the database needs the URL to delete the file, 
-             * then we have to get them from database, bevor deleting informations
-             */
+            $URL = $this->lURL.'/FS/'.$fileAddress; 
             $answer = Request::custom('DELETE', $URL, $header, $body);
         }
     }
