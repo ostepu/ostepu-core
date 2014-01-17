@@ -39,28 +39,28 @@ class Session extends Object implements JsonSerializable
     
     
     /**
-     * @var string $status a string that defines which status the user has in that course.
+     * @var string $session a string that defines which session the user has in that course.
      */
-    private $status;
+    private $session;
     
     /**
-     * the $status getter
+     * the $session getter
      *
-     * @return the value of $status
+     * @return the value of $session
      */ 
-    public function getStatus()
+    public function getSession()
     {
-        return $this->status;
+        return $this->session;
     }
     
     /**
-     * the $status setter
+     * the $session setter
      *
-     * @param string $value the new value for $status
+     * @param string $value the new value for $session
      */ 
-    public function setStatus($value)
+    public function setSession($value)
     {
-        $this->status = $value;
+        $this->session = $value;
     }
    
 
