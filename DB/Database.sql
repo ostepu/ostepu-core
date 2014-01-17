@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`User` (
   `U_firstName` VARCHAR(120) NULL,
   `U_title` CHAR(10) NULL,
   `U_password` CHAR(64) NOT NULL,
-  `U_flag` SMALLINT NOT NULL DEFAULT 1,
+  `U_flag` SMALLINT NULL DEFAULT 1,
   `U_oldUsername` VARCHAR(120) NULL,
   `U_salt` CHAR(40) NULL,
   `U_failed_logins` INT NULL DEFAULT 0,
@@ -254,6 +254,7 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`Submission` (
   `S_accepted` TINYINT(1) NOT NULL DEFAULT false,
   `E_id` INT NOT NULL,
   `ES_id` INT NULL,
+  `S_status` INT NULL DEFAULT 1,
   PRIMARY KEY (`S_id`),
   UNIQUE INDEX `S_id_UNIQUE` USING BTREE (`S_id` ASC),
   INDEX `redundanz5` USING BTREE (`ES_id` ASC, `E_id` ASC),
@@ -541,23 +542,23 @@ USE `uebungsplattform` ;
 
 DELIMITER $$
 USE `uebungsplattform`$$
-CREATE PROCEDURE `IncFailedLogins` (IN userid int(11))
+CREATE PROCEDURE `IncFailedLogins` (IN userid varchar(120))
 BEGIN
 DECLARE count int(11);
 select U_failed_logins into count
-from User where U_id = userid;
+from User where U_id = userid or U_username = userid;
 
 set count = count +1;
 
 if count>=10 then
 UPDATE User
 SET U_flag = 2
-where U_id = userid;
+where U_id = userid or U_username = userid;
 end if;
 
 UPDATE User
 SET U_failed_logins = count
-where U_id = userid;
+where U_id = userid or U_username = userid;
 
 SELECT 
     U.U_id,
@@ -582,7 +583,28 @@ FROM
         left join
     Course C ON (CS.C_id = C.C_id)
 WHERE
-    U.U_id = userid;
+    U.U_id = userid or U_username = userid;
+END;$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure deleteFile
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `uebungsplattform`$$
+CREATE PROCEDURE `deleteFile` (IN fileid int(11))
+BEGIN
+DECLARE count char(55);
+select F_address into count
+from File where F_id = fileid;
+
+Delete from File
+where F_id = fileid;
+
+SELECT 
+    count as F_address;
 END;$$
 
 DELIMITER ;
@@ -629,9 +651,18 @@ SET NEW.U_lastName = '';
 SET NEW.U_firstName = '';
 SET NEW.U_title = '';
 SET NEW.U_password = '';
+SET NEW.U_failed_logins = ' ';
 END IF;
 end;
 $$
+
+USE `uebungsplattform`$$
+CREATE TRIGGER `User_AUPD` AFTER UPDATE ON `User` FOR EACH ROW
+begin
+If NEW.U_flag != 1
+then delete from `session` where NEW.U_id = U_id;
+end if;
+end;$$
 
 USE `uebungsplattform`$$
 CREATE TRIGGER `ExerciseSheet_BDEL` BEFORE DELETE ON `ExerciseSheet` FOR EACH ROW
@@ -643,23 +674,23 @@ DELETE FROM `Exercise` WHERE ES_id = OLD.ES_id;
 END;$$
 
 USE `uebungsplattform`$$
-CREATE TRIGGER `ExerciseSheet_BINS` BEFORE INSERT ON `ExerciseSheet` FOR EACH ROW
-begin
-IF NEW.ES_groupSize is null 
-then Set NEW.ES_groupSize = (SELECT C_defaultGroupSize FROM Course WHERE C_id = NEW.C_id limit 1);
-end if;
-end;$$
-
-USE `uebungsplattform`$$
 CREATE TRIGGER `ExerciseSheet_AINS` AFTER INSERT ON `ExerciseSheet` FOR EACH ROW
 begin
 INSERT INTO `Group` 
 SELECT C.U_id , C.U_id , null , NEW.ES_id 
 FROM CourseStatus C
 WHERE C.C_id = NEW.C_id; 
-#AND C.CS_status = 1 
+#AND C.CS_status = 1 ;
 end;
 $$
+
+USE `uebungsplattform`$$
+CREATE TRIGGER `ExerciseSheet_BINS` BEFORE INSERT ON `ExerciseSheet` FOR EACH ROW
+begin
+IF NEW.ES_groupSize is null 
+then Set NEW.ES_groupSize = (SELECT C_defaultGroupSize FROM Course WHERE C_id = NEW.C_id limit 1);
+end if;
+end;$$
 
 USE `uebungsplattform`$$
 CREATE TRIGGER `Group_BINS` BEFORE INSERT ON `Group` FOR EACH ROW
