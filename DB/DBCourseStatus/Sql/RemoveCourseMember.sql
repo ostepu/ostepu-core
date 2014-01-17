@@ -2,8 +2,8 @@
  * @file RemoveCourseMember.sql
  * deletes an specified course status from %CourseStatus table
  * @author  Till Uhlig
- * @param int $courseid a %Course identifier
- * @param int $userid an %User identifier
+ * @param int \$courseid a %Course identifier
+ * @param int \$userid an %User identifier
  * @result -
  */
  

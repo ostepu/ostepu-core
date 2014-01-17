@@ -2,7 +2,7 @@
  * @file GetSelectedSheetSubmissions.sql
  * gets the specified selected submissions from %Submission table
  * @author Till Uhlig
- * @param int $eid an %Exercise identifier
+ * @param int \$eid an %Exercise identifier
  * @result 
  * - F, the submission file
  * - S, the submission data

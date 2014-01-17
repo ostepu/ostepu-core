@@ -2,7 +2,7 @@
  * @file GetSheetAttachments.sql
  * gets all exerchise sheet attachments from %Attachment table
  * @author Till Uhlig
- * @param int $esid an %ExerciseSheet identifier
+ * @param int \$esid an %ExerciseSheet identifier
  * @result 
  * - A, the attachment data
  * - F, the attachment file

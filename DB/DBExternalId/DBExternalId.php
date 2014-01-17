@@ -248,40 +248,40 @@ class DBExternalId
         // checks the correctness of the query                                     
         if ($result['status']>=200 && $result['status']<=299){
             $query = Query::decodeQuery($result['content']);
-            
             $data = $query->getResponse();
             
-            // generates an assoc array of a course by using a defined list of 
+            // generates an assoc array of courses by using a defined list of 
             // its attributes
             $course = DBJson::getObjectsByAttributes($data, 
                                     Course::getDBPrimaryKey(), 
                                     Course::getDBConvert());
             
-            // generates an assoc array of an external id by using a defined list of 
+            // generates an assoc array of external IDs by using a defined list of 
             // its attributes
-            $externalId = DBJson::getObjectsByAttributes($data, 
+            $externalIds = DBJson::getObjectsByAttributes($data, 
                                     ExternalId::getDBPrimaryKey(), 
                                     ExternalId::getDBConvert());
             
-            // concatenates the external id and the associated course
+            // concatenates the external IDs and the associated courses
             $res = DBJson::concatObjectListsSingleResult($data, 
-                        $externalId,ExternalId::getDBPrimaryKey(), 
-                        ExternalId::getDBConvert()['EX_course'] ,
+                        $externalIds,ExternalId::getDBPrimaryKey(), 
+                        ExternalId::getDBConvert()['EX_course'], 
                         $course,Course::getDBPrimaryKey());              
-            
+      
             // to reindex
             $res = array_merge($res);
-            
+               
             // only one object as result
-            if (count($res)>0)
-                $res = $res[0];
-                
+            // @todo only one object as result
+            /*if (count($res)>1)
+                $res = $res[0];*/
+             
             $this->_app->response->setBody(ExternalId::encodeExternalId($res));
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
+                 
         } else{
             Logger::Log("GET GetExternalId failed",LogLevel::ERROR);
             $this->_app->response->setStatus(409);

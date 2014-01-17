@@ -2,7 +2,7 @@
  * @file DeleteApprovalCondition.sql
  * deletes an specified approval condition from %ApprovalCondition table
  * @author  Till Uhlig
- * @param int $apid a %ApprovalCondition identifier
+ * @param int \$apid a %ApprovalCondition identifier
  * @result -
  */
 

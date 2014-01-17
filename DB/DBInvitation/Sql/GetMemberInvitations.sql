@@ -17,8 +17,8 @@ SELECT
 from
     Invitation I
         join
-    User U ON (I.U_id_leader = U.U_id)
+    User U ON (I.U_id_member = U.U_id)
         join
-    User U2 ON (I.U_id_member = U2.U_id)
+    User U2 ON (I.U_id_leader = U2.U_id)
 where
     I.U_id_leader = $userid

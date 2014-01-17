@@ -2,7 +2,7 @@
  * @file GetExerciseSheet.sql
  * gets an specified exercise sheet
  * @author Till Uhlig
- * @param int $esid an %ExerchiseSheet identifier
+ * @param int \$esid an %ExerchiseSheet identifier
  * @result 
  * - ES, the exercise sheet data
  * - F, the exercise sheet file

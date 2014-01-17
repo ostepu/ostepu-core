@@ -2,7 +2,7 @@
  * @file GetSheetMarkings.sql
  * gets all specified markings from %Marking table
  * @author Till Uhlig
- * @param int $esid an %ExerciseSheet identifier
+ * @param int \$esid an %ExerciseSheet identifier
  * @result 
  * - M, the marking data
  * - F, the marking file

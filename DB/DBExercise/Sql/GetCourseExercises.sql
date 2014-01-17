@@ -2,7 +2,7 @@
  * @file GetCourseExercises.sql
  * gets all course exercises from %Exercise table
  * @author Till Uhlig
- * @param int $courseid an %Course identifier
+ * @param int \$courseid an %Course identifier
  * @result 
  * - E, the exercise data
  * - F, the submission file

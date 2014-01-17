@@ -2,7 +2,7 @@
  * @file RemoveExternalId.sql
  * deletes an specified external id from %ExternalId table
  * @author  Till Uhlig
- * @param int $aid a %ExternalId identifier
+ * @param int \$aid a %ExternalId identifier
  * @result -
  */
  

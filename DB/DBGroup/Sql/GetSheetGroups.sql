@@ -2,7 +2,7 @@
  * @file GetSheetGroups.sql
  * gets a table for output, where all groups for a specific exercisesheet are listed
  * @author Till Uhlig
- * @param int $esid a %Group identifier
+ * @param int \$esid a %Group identifier
  * @result 
  * - U is the groupleader
  * - U2 are the members of the group without the leader

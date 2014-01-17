@@ -2,8 +2,8 @@
  * @file GetUserGroupMarkings.sql
  * gets all specified markings from %Marking table
  * @author Till Uhlig
- * @param int $esid an %ExerciseSheet identifier
- * @param int $userid a %User (tutor) identifier
+ * @param int \$esid an %ExerciseSheet identifier
+ * @param int \$userid a %User (tutor) identifier
  * @result 
  * - M, the marking data
  * - F, the marking file
@@ -37,14 +37,14 @@ SELECT
 from
     Marking M
         join
-    SelectedSubmission SS ON (M.S_id = SS.S_id_selected)
-        join
     Submission S ON (M.S_id = S.S_id)
+        left join
+    SelectedSubmission SS ON (S.S_id = SS.S_id_selected)
         join
-    `Group` G ON (G.ES_id = E.ES_id)
+    `Group` G ON (G.ES_id = S.ES_id)
         join
     File F ON (F.F_id = M.F_id_file)
 where
     M.ES_id = '$esid'
         and G.U_id_leader = '$userid'
-        and G.U_id_member = S.U_id_leader
+        and G.U_id_member = S.U_id

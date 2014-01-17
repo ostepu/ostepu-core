@@ -2,8 +2,8 @@
  * @file GetSheetUserGroups.sql
  * gets a table for output, where all members of a group are listed
  * @author Till Uhlig
- * @param int $userid a %Group identifier
- * @param int $esid a %Group identifier
+ * @param int \$userid a %Group identifier
+ * @param int \$esid a %Group identifier
  * @result 
  * - U is the groupleader
  * - U2 are the members of the group without the leader

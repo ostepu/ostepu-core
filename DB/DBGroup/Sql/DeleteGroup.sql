@@ -2,8 +2,8 @@
  * @file DeleteGroup.sql
  * deletes a specified group entry from %Group table
  * @author  Till Uhlig
- * @param int $esid a %ExerciseSheet identifier
- * @param int $userid a %User identifier
+ * @param int \$esid a %ExerciseSheet identifier
+ * @param int \$userid a %User identifier
  * @result -
  */
  

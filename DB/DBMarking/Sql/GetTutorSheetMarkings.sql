@@ -2,8 +2,8 @@
  * @file GetTutorSheetMarkings.sql
  * gets all specified markings from %Marking table
  * @author Till Uhlig
- * @param int $esid an %ExerciseSheet identifier
- * @param int $userid a %User (tutor) identifier
+ * @param int \$esid an %ExerciseSheet identifier
+ * @param int \$userid a %User (tutor) identifier
  * @result 
  * - M, the marking data
  * - F, the marking file
@@ -38,6 +38,8 @@ from
     Marking M
         join
     Submission S ON (M.S_id = S.S_id)
+        left join
+    SelectedSubmission SS ON (S.S_id = SS.S_id_selected)
         join
     File F ON (F.F_id = M.F_id_file)
 where

@@ -437,7 +437,8 @@ class DBGroup
             // its attributes
             $member = DBJson::getObjectsByAttributes($data, 
                                             User::getDBPrimaryKey(), 
-                                            User::getDBConvert()
+                                            User::getDBConvert(),
+                                            '2'
                                             );
                                             
             // generates an assoc array of groups by using a defined list of 
@@ -511,14 +512,14 @@ class DBGroup
             // its attributes
             $leader = DBJson::getResultObjectsByAttributes($data, 
                                             User::getDBPrimaryKey(), 
-                                            User::getDBConvert(),
-                                            '2');
+                                            User::getDBConvert());
             
             // generates an assoc array of usersby using a defined list of 
             // its attributes
             $member = DBJson::getObjectsByAttributes($data, 
                                             User::getDBPrimaryKey(), 
-                                            User::getDBConvert()
+                                            User::getDBConvert(),
+                                            '2'
                                             );
                                             
             // generates an assoc array of groups by using a defined list of 
@@ -534,7 +535,8 @@ class DBGroup
                             Group::getDBPrimaryKey(),
                             Group::getDBConvert()['U_leader'] ,
                             $leader,
-                            User::getDBPrimaryKey()
+                            User::getDBPrimaryKey(),
+                            '2'
                             );
        
             // concatenates the groups and the associated group member

@@ -2,7 +2,7 @@
  * @file GetExerciseMarkings.sql
  * gets all specified markings from %Marking table
  * @author Till Uhlig
- * @param int $eid an %Exercise identifier
+ * @param int \$eid an %Exercise identifier
  * @result 
  * - M, the marking data
  * - F, the marking file

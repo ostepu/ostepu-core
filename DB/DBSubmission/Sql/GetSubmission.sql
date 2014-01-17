@@ -2,7 +2,7 @@
  * @file GetSubmission.sql
  * gets the specified submission from %Submission table
  * @author Till Uhlig
- * @param int $suid an %Submission identifier
+ * @param int \$suid an %Submission identifier
  * @result 
  * - F, the submission file
  * - S, the submission data

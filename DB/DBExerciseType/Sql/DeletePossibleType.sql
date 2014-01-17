@@ -2,7 +2,7 @@
  * @file DeletePossibleType.sql
  * deletes a specified possible type from %PossibleType table
  * @author  Till Uhlig
- * @param int $etid a %PossibleType identifier
+ * @param int \$etid a %PossibleType identifier
  * @result -
  */
  
