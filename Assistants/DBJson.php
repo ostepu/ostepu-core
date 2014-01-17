@@ -107,7 +107,7 @@ class DBJson
     public static function getObjectsByAttributes($data, $id, $attributes, $extension = "")
     {
         $res = array();
-        
+
         foreach ($data as $row) { 
             $key = "";
             if (is_array($id)){
@@ -343,25 +343,26 @@ class DBJson
      * @param string[] $primAttrib the defined attributes of the primary objects
      * @param string[][] $sec the structure with objects, you want to attach
      * @param string $secKey a primary key of the objects you want to attach
-     * @param string $extension optional, a const postfix for the column names of the objects you want to attach (string)
+     * @param string $secextension optional, a const postfix for the column names of the objects you want to attach (string)
+     * @param string $primextension optional, a const postfix for the column names of the objects where you want to attach (string) 
      *
      * @return string[][], the concatenated lists
      */
-    public static function concatObjectListsSingleResult($data, $prim, $primKey, $primAttrib, $sec, $secKey, $extension = "")
+    public static function concatObjectListsSingleResult($data, $prim, $primKey, $primAttrib, $sec, $secKey, $secextension = "", $primextension = "")
     {
         foreach ($data as $rw){
             $key = "";
             if (is_array($primKey)){
                 foreach ($primKey as $di){
-                    $key = $key . $rw[$di] . ',';
+                    $key = $key . $rw[$di . $primextension] . ',';
                 }
             } else{
-                $key = $rw[$primKey];
+                $key = $rw[$primKey . $primextension];
             }
 
-            if (isset($sec[$rw[$secKey.$extension]])){
+            if (isset($sec[$rw[$secKey.$secextension]])){
                 if (!isset($prim[$key][$primAttrib]))
-                    $prim[$key][$primAttrib] = $sec[$rw[$secKey.$extension]];
+                    $prim[$key][$primAttrib] = $sec[$rw[$secKey.$secextension]];
             }
         }
    
