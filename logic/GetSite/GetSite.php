@@ -33,7 +33,7 @@ class LgetSite
      *Address of the Logic-Controller
      *dynamic set by CConf below
      */ 
-    private $lURL = "";
+    private $lURL = "http://localhost/uebungsplattform/SiteTest.php";
         
     public function __construct($conf)
     {
@@ -45,11 +45,11 @@ class LgetSite
         /**
          *Set the Logiccontroller-URL
          */
-        $this->_conf = $conf;
-        $this->query = array();
-        
-        $this->query = CConfig::getLink($conf->getLinks(),"controller");
-        $this->lURL = $this->query->getAddress();
+        //$this->_conf = $conf;
+        //$this->query = array();
+        //
+        //$this->query = CConfig::getLink($conf->getLinks(),"controller");
+        //$this->lURL = $this->query->getAddress();
         
         //GET TutorAssignmentSiteInfo
         $this->app->get('/tutorassignment/course/:courseid/exercisesheet/:sheetid', array($this, 'tutorAssignmentSiteInfo'));
@@ -69,7 +69,11 @@ class LgetSite
         $header = $this->app->request->headers->all();
         $URL = $this->lURL.'/DB/coursestatus/course/'.$courseid.'/status/1'; //status = 1 => Tutor
         $answer = Request::custom('GET', $URL, $header, $body);
+        //$answer['content'] = utf8_decode($answer['content']);
+        //$answer['content'] = substr($answer['content'], 1, strlen($answer['content']) -1);
+        print_r($answer['content']);
         $tutors = json_decode($answer['content']);
+        print_r($tutors);
         foreach ($tutors AS $tutor){
             //benoetigte Attribute waehlen
             $newTutor = array();
