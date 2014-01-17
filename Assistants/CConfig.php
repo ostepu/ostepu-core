@@ -2,7 +2,7 @@
 /**
 * @file CConfig.php contains the CConfig class
 */ 
-include_once( 'DBRequest.php' );
+include_once( 'Structures.php' );
 
 
 /**
@@ -87,6 +87,10 @@ class CConfig
             $conf = $this->loadConfig();
             $links = $conf->getLinks();
             
+            // always been an array
+            if (!is_array($links))
+                $links = array($links);
+                
             $changed = false;
             foreach ($links as &$link){
                 // if a link has no prefix, we have to ask the link target

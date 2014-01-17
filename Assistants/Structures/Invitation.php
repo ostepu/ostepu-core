@@ -1,43 +1,80 @@
 <?php
 /**
-* 
-*/
+ * @file Invitation.php contains the Invitation class
+ */
+ 
+/**
+ * the invitation structure
+ *
+ * @author Till Uhlig, Florian Lücke
+ */
 class Invitation extends Object implements JsonSerializable
 {
     /**
-     * the user that was invited
-     * 
-     * type: User
+     * @var User $member the user that was invited
      */
-    private $user;
-    public function getUser(){
-        return $this->user;
+    private $member;
+    
+    /**
+     * the $member getter
+     *
+     * @return the value of $user
+     */ 
+    public function getMember(){
+        return $this->member;
     }
-    public function setUser($value){
-        $this->user = $value;
+    
+    /**
+     * the $member setter
+     *
+     * @param string $value the new value for $member
+     */ 
+    public function setMember($value){
+        $this->member = $value;
     }
 
     /**
-     * the user that created the group
-     * 
-     * type: User 
+     * @var User $leader the user that created the group
      */
     private $leader;
+    
+    /**
+     * the $leader getter
+     *
+     * @return the value of $leader
+     */ 
     public function getLeader(){
         return $this->leader;
     }
+    
+    /**
+     * the $leader setter
+     *
+     * @param string $value the new value for $leader
+     */ 
     public function setLeader($value){
         $this->leader = $value;
     }
 
     /**
-     * 
-     * type: string
+     * @var string $sheet the exercise sheet id 
      */
     private $sheet;
+    
+    /**
+     * the $sheet getter
+     *
+     * @return the value of $sheet
+     */ 
     public function getSheet(){
         return $this->sheet;
     }
+    
+    /**
+     * the $sheet setter
+     *
+     * @param string $value the new value for $sheet
+     */ 
     public function setSheet($value){
         $this->sheet = $value;
     }
@@ -47,7 +84,9 @@ class Invitation extends Object implements JsonSerializable
     
     
     /**
-     * (description)
+     * returns an mapping array to convert between database and structure
+     *
+     * @return the mapping array
      */
     public static function getDbConvert()
     {
@@ -59,14 +98,16 @@ class Invitation extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * converts an object to insert/update data
+     *
+     * @return a comma separated string e.g. "a=1,b=2"
      */
     public function getInsertData(){
         $values = "";
         
         if ($this->sheet != null) $this->addInsertData($values, 'ES_id', DBJson::mysql_real_escape_string($this->sheet));
-        if ($this->member != null) $this->addInsertData($values, 'U_id_member', DBJson::mysql_real_escape_string($this->member->getId()));
-        if ($this->leader != null) $this->addInsertData($values, 'U_id_leader', DBJson::mysql_real_escape_string($this->leader->getId()));
+        if ($this->leader != null) $this->addInsertData($values, 'U_id_member', DBJson::mysql_real_escape_string($this->leader->getId()));
+        if ($this->member != null) $this->addInsertData($values, 'U_id_leader', DBJson::mysql_real_escape_string($this->member->getId()));
         
         if ($values != ""){
             $values=substr($values,1);
@@ -75,7 +116,9 @@ class Invitation extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * returns a sting/string[] of the database primary key/keys
+     * 
+     * @return the primary key/keys
      */
     public static function getDbPrimaryKey()
     {
@@ -83,11 +126,11 @@ class Invitation extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the constructor
      * 
-     * @param $param (description)
+     * @param $data an assoc array with the object informations
      */
-    public function __construct($data=array()) 
+    public function __construct($data=array())
     {
         foreach ($data AS $key => $value) {
              if (isset($key)){
@@ -101,9 +144,11 @@ class Invitation extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * encodes an object to json
      * 
-     * @param $param (description)
+     * @param $data the object
+     *
+     * @return the json encoded object
      */
     public static function encodeInvitation($data)
     {
@@ -111,10 +156,13 @@ class Invitation extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * decodes $data to an object
      * 
-     * @param $param (description)
-     * @param $param (description)
+     * @param string $data json encoded data (decode=true) 
+     * or json decoded data (decode=false)
+     * @param bool $decode specifies whether the data must be decoded
+     *
+     * @return the object
      */
     public static function decodeInvitation($data, $decode=true)
     {
@@ -131,9 +179,10 @@ class Invitation extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the json serialize function
      */
-    public function jsonSerialize() {
+    public function jsonSerialize()
+    {
         return array(
             'user' => $this->user,
             'leader' => $this->leader,

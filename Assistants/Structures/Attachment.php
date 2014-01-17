@@ -1,52 +1,90 @@
 <?php 
 /**
-* 
-*/
+ * @file Attachment.php contains the Attachment class
+ */
+ 
+/**
+ * the attachment structure
+ *
+ * @author Till Uhlig
+ */
 class Attachment extends Object implements JsonSerializable
 {
     /**
-     * db id of the attachment 
-     *
-     * type: string
+     * @var string $id db id of the attachment 
      */
     private $id = null;
+    
+    /**
+     * the $id getter
+     *
+     * @return the value of $id
+     */ 
     public function getId(){
         return $this->id;
     }
+    
+    /**
+     * the $id setter
+     *
+     * @param string $value the new value for $id
+     */ 
     public function setId($value){
         $this->id = $value;
     }
     
      /**
      
-     * The id of the exercise this attachment belongs to.
-     *
-     * type: string
+     * @var string $exerciseId The id of the exercise this attachment belongs to.
      */
     private $exerciseId = null;
+    
+    /**
+     * the $exerciseId getter
+     *
+     * @return the value of $exerciseId
+     */ 
     public function getExerciseId(){
         return $this->exerciseId;
     }
+    
+    /**
+     * the $exerciseId setter
+     *
+     * @param string $value the new value for $exerciseId
+     */ 
     public function setExerciseId($value){
         $this->exerciseId = $value;
     }
     
     /**
-     * The file of the attachment.
-     *
-     * type: File
+     * @var File $file The file of the attachment.
      */
     private $file = null;
+    
+    /**
+     * the $file getter
+     *
+     * @return the value of $file
+     */ 
     public function getFile(){
         return $this->file;
     }
+    
+    /**
+     * the $file setter
+     *
+     * @param file $value the new value for $file
+     */ 
     public function setFile($value){
         $this->file = $value;
     }    
 
     
     /**
-     * (description)
+     * returns an mapping array to convert between database and structure
+     *
+     * @return the mapping array
      */
     public static function getDbConvert()
     {
@@ -58,9 +96,12 @@ class Attachment extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * converts an object to insert/update data
+     *
+     * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData(){
+    public function getInsertData()
+    {
         $values = "";
         
         if ($this->id != null) $this->addInsertData($values, 'A_id', DBJson::mysql_real_escape_string($this->id));
@@ -74,7 +115,9 @@ class Attachment extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * returns a sting/string[] of the database primary key/keys
+     * 
+     * @return the primary key/keys
      */
     public static function getDbPrimaryKey()
     {
@@ -82,9 +125,9 @@ class Attachment extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the constructor
      * 
-     * @param $param (description)
+     * @param $data an assoc array with the object informations
      */
     public function __construct($data=array()) 
     {
@@ -99,9 +142,11 @@ class Attachment extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * encodes an object to json
      * 
-     * @param $param (description)
+     * @param $data the object
+     *
+     * @return the json encoded object
      */
     public static function encodeAttachment($data)
     {
@@ -109,10 +154,13 @@ class Attachment extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * decodes $data to an object
      * 
-     * @param $param (description)
-     * @param $param (description)
+     * @param string $data json encoded data (decode=true) 
+     * or json decoded data (decode=false)
+     * @param bool $decode specifies whether the data must be decoded
+     *
+     * @return the object
      */
     public static function decodeAttachment($data, $decode=true)
     {
@@ -128,6 +176,11 @@ class Attachment extends Object implements JsonSerializable
             return new Attachment($data);
     }
     
+    /**
+     * the json serialize function
+     *
+     * @return an array to serialize the object
+     */
     public function jsonSerialize()
     {
         return array(
