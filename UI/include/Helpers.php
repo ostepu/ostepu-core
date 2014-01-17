@@ -166,14 +166,14 @@ function cleanInput($input)
 {
     if (is_array($input)) {
         foreach ($input as $element) {
-            if (get_magic_quotes_gpc()) {
+            if (!get_magic_quotes_gpc()) {
                 $element = htmlspecialchars(trim(stripcslashes($element)), ENT_QUOTES);
             } else {
                 $element = htmlspecialchars(trim($element), ENT_QUOTES);
             } 
         }
     } else {
-        if (get_magic_quotes_gpc()) {
+        if (!get_magic_quotes_gpc()) {
             $input = htmlspecialchars(trim(stripcslashes($input)), ENT_QUOTES);
         } else {
             $input = htmlspecialchars(trim($input), ENT_QUOTES);
