@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 require 'Slim/Slim.php';
 include 'include/Assistants/request/createRequest.php';
@@ -8,22 +8,22 @@ include 'include/Assistants/request/createRequest.php';
 
 
 class SiteTest
-{    
-    
+{
+
     public function __construct(){
         $this->app = new \Slim\Slim();
         $this->app->response->headers->set('Content-Type', 'application/json');
-        
+
         $this->app->get('/DB/coursestatus/course/:courseid/status/1', array($this, 'getTutors'));
-        
+
         $this->app->get('/DB/exercisesheet/:sheetid', array($this, 'getMarkings'));
-        
+
         $this->app->get('/DB/selectedsubmission/exercisesheet/:sheetid', array($this, 'getSubmissions'));
-        
+
         $this->app->run();
-        
+
     }
-    
+
     public function getTutors($courseid){
         $response = array();
         for ($i = 0 ; $i < 10; $i++){
@@ -37,9 +37,9 @@ class SiteTest
         }
         //print_r(utf8_decode(json_encode($response)));
         $this->app->response->setBody(json_encode($response));
-        
+
     }
-    
+
     public function getMarkings($sheetid){
         $response = array();
         for ($i = 0 ; $i < 10; $i++){
@@ -50,10 +50,10 @@ class SiteTest
                 );
             array_push($response, $marking);
         }
-        print_r($response);
+        //print_r($response);
         $this->app->response->setBody(json_encode($response));
     }
-    
+
     public function getSubmissions($sheetid){
         $response = array();
         for ($i = 0 ; $i < 10; $i++){
@@ -69,7 +69,7 @@ class SiteTest
                 );
             array_push($response, $submission);
         }
-        
+
         $this->app->response->setBody(json_encode($response));
     }
 }

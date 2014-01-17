@@ -1,9 +1,9 @@
-﻿<?php
+<?php
 
 require 'Slim/Slim.php';
 include 'include/Request.php';
 include_once( 'include/CConfig.php' );
-    
+
 \Slim\Slim::registerAutoloader();
 /**
  * The GetSite class
@@ -16,9 +16,9 @@ class LgetSite
      *Values needed for conversation with other components
      */
     private $_conf=null;
-    
+
     private static $_prefix = "course";
-    
+
     public static function getPrefix()
     {
         return LgetSite::$_prefix;
@@ -27,14 +27,14 @@ class LgetSite
     {
         LgetSite::$_prefix = $value;
     }
-    
-    
+
+
     /**
      *Address of the Logic-Controller
      *dynamic set by CConf below
-     */ 
+     */
     private $lURL = "http://localhost/uebungsplattform/SiteTest.php";
-        
+
     public function __construct($conf)
     {
         /**
@@ -50,16 +50,16 @@ class LgetSite
         //
         //$this->query = CConfig::getLink($conf->getLinks(),"controller");
         //$this->lURL = $this->query->getAddress();
-        
+
         //GET TutorAssignmentSiteInfo
         $this->app->get('/tutorassignment/course/:courseid/exercisesheet/:sheetid', array($this, 'tutorAssignmentSiteInfo'));
-        
-        
+
+
         $this->app->run();
     }
-    
+
     public function tutorAssignmentSiteInfo($courseid, $sheetid){
-        
+
         $response = array();
         $assignedSubmissionIDs = array();
         /**
@@ -71,16 +71,16 @@ class LgetSite
         $answer = Request::custom('GET', $URL, $header, $body);
         //$answer['content'] = utf8_decode($answer['content']);
         //$answer['content'] = substr($answer['content'], 1, strlen($answer['content']) -1);
-        print_r($answer['content']);
-        $tutors = json_decode($answer['content']);
-        print_r($tutors);
+        //print_r($answer['content']);
+        $tutors = json_decode($answer['content'], true);
+        //print_r($tutors);
         foreach ($tutors AS $tutor){
             //benoetigte Attribute waehlen
             $newTutor = array();
-            $newTutor['id'] = $tutor->{'id'};
-            $newTutor['userName'] = $tutor->{'userName'};
-            $newTutor['firstName'] = $tutor->{'firstName'};
-            $newTutor['lastName'] = $tutor->{'lastName'};
+            $newTutor['id'] = $tutor['id'];
+            $newTutor['userName'] = $tutor['userName'];
+            $newTutor['firstName'] = $tutor['firstName'];
+            $newTutor['lastName'] = $tutor['lastName'];
             //im Rueckgabe-Array für jeden Tutor ein Marking (ohne Submissions) anlegen
             $tutorAssignment = array(
                     'tutor' => $newTutor,
@@ -94,51 +94,51 @@ class LgetSite
         $URL = $this->lURL.'/DB/exercisesheet/'.$sheetid;
         $answer = Request::custom('GET', $URL, $header, $body);
         //fuer jedes Marking die zugeordnete Submision im Rueckgabearray dem passenden Tutor zuweisen
-        foreach (json_decode($answer['content']) as $marking){
+        foreach (json_decode($answer['content'], true) as $marking){
             foreach ($response as &$tutorAssignment){
-                if ($marking->{'tutorId'} == $tutorAssignment['tutor']['id']){
-                    array_push($tutorAssignment['submissions'], $marking->{'submission'});
+                if ($marking['tutorId'] == $tutorAssignment['tutor']['id']){
+                    array_push($tutorAssignment['submissions'], $marking['submission']);
                     //ID's aller bereits zugeordneten Submissions speicher
-                    array_push($assignedSubmissionIDs, $marking->{'submission'}->{'id'});
+                    array_push($assignedSubmissionIDs, $marking['submission']['id']);
                     break;
                 }
             }
         }
-        
+
         /**
          * Get SelectedSubmissions
          */
         $URL = $this->lURL.'/DB/selectedsubmission/exercisesheet/'.$sheetid;
         $answer = Request::custom('GET', $URL, $header, $body);
-        
+
         $virtualTutor = array(
                     'id' => null,
                     'userName' => "unassigned",
                     'firstName' => null,
                     'lastName' => null
                     );
-        
+
         $unassignedSubmissions = array();
-        
-        
-        $submissions = $answer['content'];
+
+
+        $submissions = json_decode($answer['content'], true);
         foreach ($submissions as $submission){
-            if (!in_array($submission->{'id'}, $assignedSubmissionIDs)){
+            if (!in_array($submission['id'], $assignedSubmissionIDs)){
                 array_push($unassignedSubmissions, $submission);
             }
         }
         $newTutorAssignment = array(
             'tutor' => $virtualTutor,
             'submissions' => $unassignedSubmissions
-                    );           
+                    );
         array_push($response, $newTutorAssignment);
-        
+
         $this->app->response->setBody(json_encode($response));
     }
 }
 
 /**
- * get new Config-Datas from DB 
+ * get new Config-Datas from DB
  */
 $com = new CConfig(LgetSite::getPrefix());
 
@@ -147,4 +147,4 @@ $com = new CConfig(LgetSite::getPrefix());
  */
 if (!$com->used())
     new LgetSite($com->loadConfig());
-?>   
+?>
