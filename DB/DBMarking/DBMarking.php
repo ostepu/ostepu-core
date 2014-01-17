@@ -127,7 +127,7 @@ class DBMarking
                         array($this,'getTutorSheetMarkings'));
                         
         // GET GetTutorExerciseMarkings  
-        $this->_app->get('/' . $this->getPrefix() . 'exercise/:eid/tutor/:userid(/)',
+        $this->_app->get('/' . $this->getPrefix() . '/exercise/:eid/tutor/:userid(/)',
                         array($this,'getTutorExerciseMarkings'));  
                         
         // starts slim only if the right prefix was received
@@ -290,11 +290,10 @@ class DBMarking
                                     Submission::getDBConvert(), 
                                     '2');
                                     
-
             // sets the selectedForGroup attribute
             foreach ($submissions as &$submission){
-                if (isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
-                    if (!isset($submission['id'])){
+                if (!isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
+                    if (!isset($submission['id']) || !isset($submission['selectedForGroup'])){
                         $submission['selectedForGroup'] = (string) 0;
                     } elseif ($submission['id'] == $submission['selectedForGroup']) {
                         $submission['selectedForGroup'] = (string) 1;
@@ -325,7 +324,8 @@ class DBMarking
                             Marking::getDBPrimaryKey(),
                             Marking::getDBConvert()['M_submission'] ,
                             $submissions,
-                            Submission::getDBPrimaryKey());   
+                            Submission::getDBPrimaryKey(),
+                            '2');   
                             
             // to reindex
             $res = array_values($res); 
@@ -361,7 +361,7 @@ class DBMarking
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetMarking.sql", 
                                         array("mid" => $mid));
-        
+ 
         // checks the correctness of the query                                        
         if ($result['status']>=200 && $result['status']<=299){
             $query = Query::decodeQuery($result['content']);
@@ -379,12 +379,12 @@ class DBMarking
             $submissions = DBJson::getObjectsByAttributes($data,
                                     Submission::getDBPrimaryKey(), 
                                     Submission::getDBConvert(), 
-                                    '2');
-                                    
+                                    '2');                           
+               
             // sets the selectedForGroup attribute
             foreach ($submissions as &$submission){
-                if (isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
-                    if (!isset($submission['id'])){
+                if (!isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
+                    if (!isset($submission['id']) || !isset($submission['selectedForGroup'])){
                         $submission['selectedForGroup'] = (string) 0;
                     } elseif ($submission['id'] == $submission['selectedForGroup']) {
                         $submission['selectedForGroup'] = (string) 1;
@@ -394,13 +394,13 @@ class DBMarking
                 else
                     $submission['selectedForGroup'] = (string) 0;
             }
-            
+
             // generates an assoc array of a marking by using a defined list of 
             // its attributes
             $marking = DBJson::getObjectsByAttributes($data, 
                                     Marking::getDBPrimaryKey(), 
                                     Marking::getDBConvert());  
-                                    
+                 
             // concatenates the markings and the associated files
             $res = DBJson::concatObjectListsSingleResult($data, 
                             $marking,
@@ -408,15 +408,16 @@ class DBMarking
                             Marking::getDBConvert()['M_file'] ,
                             $file,
                             File::getDBPrimaryKey());
-                            
+            
             // concatenates the markings and the associated submissions
             $res = DBJson::concatObjectListsSingleResult($data, 
                             $res,
                             Marking::getDBPrimaryKey(),
                             Marking::getDBConvert()['M_submission'] ,
                             $submissions,
-                            Submission::getDBPrimaryKey());  
-                            
+                            Submission::getDBPrimaryKey(),
+                            '2');  
+                   
             // to reindex
             $res = array_values($res);
             
@@ -477,8 +478,8 @@ class DBMarking
                                     
             // sets the selectedForGroup attribute
             foreach ($submissions as &$submission){
-                if (isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
-                    if (!isset($submission['id'])){
+                if (!isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
+                    if (!isset($submission['id']) || !isset($submission['selectedForGroup'])){
                         $submission['selectedForGroup'] = (string) 0;
                     } elseif ($submission['id'] == $submission['selectedForGroup']) {
                         $submission['selectedForGroup'] = (string) 1;
@@ -571,8 +572,8 @@ class DBMarking
                                     
             // sets the selectedForGroup attribute
             foreach ($submissions as &$submission){
-                if (isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
-                    if (!isset($submission['id'])){
+                if (!isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
+                    if (!isset($submission['id']) || !isset($submission['selectedForGroup'])){
                         $submission['selectedForGroup'] = (string) 0;
                     } elseif ($submission['id'] == $submission['selectedForGroup']) {
                         $submission['selectedForGroup'] = (string) 1;
@@ -661,8 +662,8 @@ class DBMarking
                                     
             // sets the selectedForGroup attribute
             foreach ($submissions as &$submission){
-                if (isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
-                    if (!isset($submission['id'])){
+                if (!isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
+                    if (!isset($submission['id']) || !isset($submission['selectedForGroup'])){
                         $submission['selectedForGroup'] = (string) 0;
                     } elseif ($submission['id'] == $submission['selectedForGroup']) {
                         $submission['selectedForGroup'] = (string) 1;
@@ -753,8 +754,8 @@ class DBMarking
                                     
             // sets the selectedForGroup attribute
             foreach ($submissions as &$submission){
-                if (isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
-                    if (!isset($submission['id'])){
+                if (!isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
+                    if (!isset($submission['id']) || !isset($submission['selectedForGroup'])){
                         $submission['selectedForGroup'] = (string) 0;
                     } elseif ($submission['id'] == $submission['selectedForGroup']) {
                         $submission['selectedForGroup'] = (string) 1;
@@ -845,8 +846,8 @@ class DBMarking
                                     
             // sets the selectedForGroup attribute
             foreach ($submissions as &$submission){
-                if (isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
-                    if (!isset($submission['id'])){
+                if (!isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
+                    if (!isset($submission['id']) || !isset($submission['selectedForGroup'])){
                         $submission['selectedForGroup'] = (string) 0;
                     } elseif ($submission['id'] == $submission['selectedForGroup']) {
                         $submission['selectedForGroup'] = (string) 1;
@@ -937,8 +938,8 @@ class DBMarking
                                     
             // sets the selectedForGroup attribute
             foreach ($submissions as &$submission){
-                if (isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
-                    if (!isset($submission['id'])){
+                if (!isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
+                    if (!isset($submission['id']) || !isset($submission['selectedForGroup'])){
                         $submission['selectedForGroup'] = (string) 0;
                     } elseif ($submission['id'] == $submission['selectedForGroup']) {
                         $submission['selectedForGroup'] = (string) 1;

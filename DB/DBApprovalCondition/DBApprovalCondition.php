@@ -306,7 +306,7 @@ class DBApprovalCondition
             if (count($approvalCondition)>0)
                 $approvalCondition = $approvalCondition[0];
                 
-            $this->_app->response->setBody(ApprovalCondition::encodeExerciseType($approvalCondition));
+            $this->_app->response->setBody(ApprovalCondition::encodeApprovalCondition($approvalCondition));
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
@@ -315,7 +315,7 @@ class DBApprovalCondition
         } else{
             Logger::Log("GET GetApprovalCondition failed",LogLevel::ERROR);
             $this->_app->response->setStatus(409);
-            $this->_app->response->setBody(ApprovalCondition::encodeExerciseType(new ApprovalCondition()));
+            $this->_app->response->setBody(ApprovalCondition::encodeApprovalCondition(new ApprovalCondition()));
             $this->_app->stop();
         }
     }
@@ -335,7 +335,7 @@ class DBApprovalCondition
                             
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetCourseApprovalCondition.sql", 
+                                        "Sql/GetCourseApprovalConditions.sql", 
                                         array("courseid" => $courseid));
         
         // checks the correctness of the query                                  
@@ -353,7 +353,7 @@ class DBApprovalCondition
             // to reindex
             $approvalCondition = array_merge($approvalConditions);
                 
-            $this->_app->response->setBody(ApprovalCondition::encodeExerciseType($approvalConditions));
+            $this->_app->response->setBody(ApprovalCondition::encodeApprovalCondition($approvalConditions));
         
             $this->_app->response->setStatus($result['status']);
             if (isset($result['headers']['Content-Type']))
@@ -362,7 +362,7 @@ class DBApprovalCondition
         } else{
             Logger::Log("GET GetCourseApprovalConditions failed",LogLevel::ERROR);
             $this->_app->response->setStatus(409);
-            $this->_app->response->setBody(ApprovalCondition::encodeExerciseType(new ApprovalCondition()));
+            $this->_app->response->setBody(ApprovalCondition::encodeApprovalCondition(new ApprovalCondition()));
             $this->_app->stop();
         }
     }

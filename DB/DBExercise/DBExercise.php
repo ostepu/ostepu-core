@@ -96,10 +96,6 @@ class DBExercise
         $this->_app->get('/' . $this->getPrefix() . '(/exercise)/:eid(/)',
                         array($this,'getExercise'));
                         
-        // GET GetAllExercises
-        $this->_app->get('/' . $this->getPrefix() . '(/exercise)(/)',
-                        array($this,'getAllExercises'));
-        
         // GET GetSheetExercises
         $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid(/)',
                         array($this,'getSheetExercises'));
@@ -107,6 +103,12 @@ class DBExercise
         // GET GetCourseExercises
         $this->_app->get('/' . $this->getPrefix() . '/course/:courseid(/)',
                         array($this,'getCourseExercises'));
+                        
+        // GET GetAllExercises
+        $this->_app->get('/' . $this->getPrefix() . '(/exercise)(/)',
+                        array($this,'getAllExercises'));
+        
+
                         
         // starts slim only if the right prefix was received
         if (strpos ($this->_app->request->getResourceUri(),'/' . 
@@ -469,7 +471,7 @@ class DBExercise
     public function getCourseExercises($courseid)
     {     
         Logger::Log("starts GET GetCourseExercises",LogLevel::DEBUG);
-        
+
         // checks whether incoming data has the correct data type
         DBJson::checkInput($this->_app, 
                             ctype_digit($courseid));
