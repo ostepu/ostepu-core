@@ -4,140 +4,166 @@ include_once( 'Include/Structures.php' );
 
 class DBSubmissionTest extends PHPUnit_Framework_TestCase
 {   
-
-    public function testGetSelectedSheetSubmissions()
+    private $url = "";
+    
+    public function testDBSubmission()
     {
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBSubmission/submission/exercisesheet/1/selected',array(),"");
+        // loads the component url from phpunit.ini file
+        if (file_exists("phpunit.ini")){
+            $this->url = parse_ini_file("phpunit.ini", TRUE)['PHPUNIT']['url'];
+        }
+        else
+            $this->url = parse_ini_file("../phpunit.ini", TRUE)['PHPUNIT']['url'];
+            
+        $this->SetSubmission();
+        $this->EditSubmission();
+        $this->DeleteSubmission();
+        $this->GetSelectedSheetSubmissions();
+        $this->GetSheetSubmissions();
+        $this->GetSelectedExerciseSubmissions();
+        $this->GetAllSubmissions();
+        $this->GetExerciseSubmissions();
+        $this->GetSubmission();
+        $this->GetGroupSelectedExerciseSubmissions();
+        $this->GetGroupExerciseSubmissions();
+        $this->GetGroupSelectedSubmissions();
+        $this->GetGroupSubmissions();
+        $this->GetUserExerciseSubmissions();
+    }
+    
+    public function GetSelectedSheetSubmissions()
+    {
+        $result = Request::get($this->url . 'DBSubmission/submission/exercisesheet/1/selected',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for GetSelectedSheetSubmissions call");
         $this->assertContains('{"id":"2","studentId":"1","exerciseId":"1","comment":"zwei","accepted":"1","date":"1389643115","selectedForGroup":"2","file":',$result['content']);
    
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBSubmission/submission/exercisesheet/AAA/selected',array(),"");
+        $result = Request::get($this->url . 'DBSubmission/submission/exercisesheet/AAA/selected',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetSelectedSheetSubmissions call");   
     }
     
-    public function testGetSheetSubmissions()
+    public function GetSheetSubmissions()
     {
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBSubmission/submission/exercisesheet/1',array(),"");
+        $result = Request::get($this->url . 'DBSubmission/submission/exercisesheet/1',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for GetSheetSubmissions call");
         $this->assertContains('{"id":"2","studentId":"1","exerciseId":"1","comment":"zwei","accepted":"1","date":"1389643115","selectedForGroup":"2","file":',$result['content']);
    
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBSubmission/submission/exercisesheet/AAA',array(),"");
+        $result = Request::get($this->url . 'DBSubmission/submission/exercisesheet/AAA',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetSheetSubmissions call");
     }
     
-    public function testGetSelectedExerciseSubmissions()
+    public function GetSelectedExerciseSubmissions()
     {
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBSubmission/submission/exercise/1/selected',array(),"");
+        $result = Request::get($this->url . 'DBSubmission/submission/exercise/1/selected',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for GetSelectedExerciseSubmissions call");
         $this->assertContains('{"id":"2","studentId":"1","exerciseId":"1","comment":"zwei","accepted":"1","date":"1389643115","selectedForGroup":"2","file":',$result['content']);
    
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBSubmission/submission/exercise/AAA/selected',array(),"");
+        $result = Request::get($this->url . 'DBSubmission/submission/exercise/AAA/selected',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetSelectedExerciseSubmissions call");
     }
     
-    public function testGetAllSubmissions()
+    public function GetAllSubmissions()
     {
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBSubmission/submission',array(),"");
+        $result = Request::get($this->url . 'DBSubmission/submission',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for GetAllSubmissions call");
         $this->assertContains('{"id":"1","studentId":"1","exerciseId":"1","comment":"eins","accepted":"1","date":"1389643115","file":',$result['content']);   
     }
     
-    public function testGetExerciseSubmissions()
+    public function GetExerciseSubmissions()
     {
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBSubmission/submission/exercise/1',array(),"");
+        $result = Request::get($this->url . 'DBSubmission/submission/exercise/1',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for GetExerciseSubmissions call");
         $this->assertContains('{"id":"1","studentId":"1","exerciseId":"1","comment":"eins","accepted":"1","date":"1389643115","file":',$result['content']);
    
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBSubmission/submission/exercise/AAA',array(),"");
+        $result = Request::get($this->url . 'DBSubmission/submission/exercise/AAA',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetExerciseSubmissions call");
    }
     
-    public function testGetSubmission()
+    public function GetSubmission()
     {
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBSubmission/submission/1',array(),"");
+        $result = Request::get($this->url . 'DBSubmission/submission/1',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for GetSubmission call");
         $this->assertContains('{"id":"1","studentId":"1","exerciseId":"1","comment":"eins","accepted":"1","date":"1389643115","file":',$result['content']);
    
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBSubmission/submission/AAA',array(),"");
+        $result = Request::get($this->url . 'DBSubmission/submission/AAA',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetSubmission call");
     }
     
-    public function testGetGroupSelectedExerciseSubmissions()
+    public function GetGroupSelectedExerciseSubmissions()
     {
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBSubmission/submission/group/user/4/exercise/2/selected',array(),"");
+        $result = Request::get($this->url . 'DBSubmission/submission/group/user/4/exercise/2/selected',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for GetGroupSelectedExerciseSubmissions call");
         $this->assertContains('{"id":"6","studentId":"4","exerciseId":"2","comment":"sechs","accepted":"1","date":"1389643115","selectedForGroup":"6","file":',$result['content']);
    
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBSubmission/submission/group/user/4/exercise/AAA/selected',array(),"");
+        $result = Request::get($this->url . 'DBSubmission/submission/group/user/4/exercise/AAA/selected',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetGroupSelectedExerciseSubmissions call");
    
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBSubmission/submission/group/user/AAA/exercise/2/selected',array(),"");
+        $result = Request::get($this->url . 'DBSubmission/submission/group/user/AAA/exercise/2/selected',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetGroupSelectedExerciseSubmissions call");
    }
     
-    public function testGetGroupExerciseSubmissions()
+    public function GetGroupExerciseSubmissions()
     {
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBSubmission/submission/group/user/4/exercise/2',array(),"");
+        $result = Request::get($this->url . 'DBSubmission/submission/group/user/4/exercise/2',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for GetGroupExerciseSubmissions call");
         $this->assertContains('{"id":"6","studentId":"4","exerciseId":"2","comment":"sechs","accepted":"1","date":"1389643115","selectedForGroup":"6","file":',$result['content']);
    
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBSubmission/submission/group/user/2/exercise/AAA',array(),"");
+        $result = Request::get($this->url . 'DBSubmission/submission/group/user/2/exercise/AAA',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetGroupExerciseSubmissions call");
    
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBSubmission/submission/group/user/AAA/exercise/1',array(),"");
+        $result = Request::get($this->url . 'DBSubmission/submission/group/user/AAA/exercise/1',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetGroupExerciseSubmissions call");
     }
     
-    public function testGetGroupSelectedSubmissions()
+    public function GetGroupSelectedSubmissions()
     {
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBSubmission/submission/group/user/4/exercisesheet/1/selected',array(),"");
+        $result = Request::get($this->url . 'DBSubmission/submission/group/user/4/exercisesheet/1/selected',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for GetGroupSelectedSubmissions call");
         $this->assertContains('{"id":"6","studentId":"4","exerciseId":"2","comment":"sechs","accepted":"1","date":"1389643115","selectedForGroup":"6","file":',$result['content']);
    
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBSubmission/submission/group/user/4/exercisesheet/AAA/selected',array(),"");
+        $result = Request::get($this->url . 'DBSubmission/submission/group/user/4/exercisesheet/AAA/selected',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetGroupSelectedSubmissions call");
    
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBSubmission/submission/group/user/AAA/exercisesheet/1/selected',array(),"");
+        $result = Request::get($this->url . 'DBSubmission/submission/group/user/AAA/exercisesheet/1/selected',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetGroupSelectedSubmissions call");
     }
     
-    public function testGetGroupSubmissions()
+    public function GetGroupSubmissions()
     {
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBSubmission/submission/group/user/2/exercisesheet/1',array(),"");
+        $result = Request::get($this->url . 'DBSubmission/submission/group/user/2/exercisesheet/1',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for GetGroupSubmissions call");
         $this->assertContains('{"id":"3","studentId":"2","exerciseId":"1","comment":"drei","accepted":"1","date":"1389643115","file":',$result['content']);
    
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBSubmission/submission/group/user/2/exercisesheet/AAA',array(),"");
+        $result = Request::get($this->url . 'DBSubmission/submission/group/user/2/exercisesheet/AAA',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetGroupSubmissions call");
    
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBSubmission/submission/group/user/AAA/exercisesheet/1',array(),"");
+        $result = Request::get($this->url . 'DBSubmission/submission/group/user/AAA/exercisesheet/1',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetGroupSubmissions call");
     }
     
-    public function testGetUserExerciseSubmissions()
+    public function GetUserExerciseSubmissions()
     {
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBSubmission/submission/user/1/exercise/1',array(),"");
+        $result = Request::get($this->url . 'DBSubmission/submission/user/1/exercise/1',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for GetUserExerciseSubmissions call");
         $this->assertContains('{"id":"1","studentId":"1","exerciseId":"1","comment":"eins","accepted":"1","date":"1389643115","file":',$result['content']);
    
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBSubmission/submission/user/1/exercise/AAA',array(),"");
+        $result = Request::get($this->url . 'DBSubmission/submission/user/1/exercise/AAA',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetUserExerciseSubmissions call");
    
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBSubmission/submission/user/AAA/exercise/1',array(),"");
+        $result = Request::get($this->url . 'DBSubmission/submission/user/AAA/exercise/1',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetUserExerciseSubmissions call");
     }
     
-    public function testSetSubmission()
+    public function SetSubmission()
     {
 
     }
     
-    public function testDeleteSubmission()
+    public function DeleteSubmission()
     {
 
     }
     
-    public function testEditSubmission()
+    public function EditSubmission()
     {
 
     }

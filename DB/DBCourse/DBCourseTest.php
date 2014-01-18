@@ -4,45 +4,63 @@ include_once( 'Include/Structures.php' );
 
 class DBCourseTest extends PHPUnit_Framework_TestCase
 {
-
-    public function testGetCourse()
+    private $url = "";
+    
+    public function testDBCourse()
     {
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBCourse/course/2',array(),"");
+        // loads the component url from phpunit.ini file
+        if (file_exists("phpunit.ini")){
+            $this->url = parse_ini_file("phpunit.ini", TRUE)['PHPUNIT']['url'];
+        }
+        else
+            $this->url = parse_ini_file("../phpunit.ini", TRUE)['PHPUNIT']['url'];
+            
+        $this->SetCourse();
+        $this->EditCourse();
+        $this->DeleteCourse();
+        $this->GetUserCourses();
+        $this->GetAllCourses();
+        $this->GetCourse();
+    }
+    
+    public function GetCourse()
+    {
+        $result = Request::get($this->url . 'DBCourse/course/2',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for GetCourse call");
         $this->assertContains('"name":"Fachschaftsseminar fuer Mathematik',$result['content']);
         
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBCourse/course/AAA',array(),"");
+        $result = Request::get($this->url . 'DBCourse/course/AAA',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetCourse call");  
     }
     
-    public function testGetAllCourses()
+    public function GetAllCourses()
     {
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBCourse/course',array(),"");
+        $result = Request::get($this->url . 'DBCourse/course',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for Courses call");
         $this->assertContains('"name":"Fachschaftsseminar fuer Mathematik',$result['content']);  
     }
     
-    public function testGetUserCourses()
+    public function GetUserCourses()
     {
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBCourse/course/user/2',array(),"");
+        $result = Request::get($this->url . 'DBCourse/course/user/2',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for UserCourses call");
         $this->assertContains('"name":"Fachschaftsseminar fuer Mathematik',$result['content']);
         
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBCourse/course/user/AAA',array(),"");
+        $result = Request::get($this->url . 'DBCourse/course/user/AAA',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for UserCourses call");  
     }
     
-    public function testSetCourse()
+    public function SetCourse()
     {
 
     }
     
-    public function testDeleteCourse()
+    public function DeleteCourse()
     {
 
     }
     
-    public function testEditCourse()
+    public function EditCourse()
     {
 
     }

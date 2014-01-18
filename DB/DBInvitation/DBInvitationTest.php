@@ -4,80 +4,102 @@ include_once( 'Include/Structures.php' );
 
 class DBInvitationTest extends PHPUnit_Framework_TestCase
 {    
-    public function testGetSheetInvitations()
+    private $url = "";
+    
+    public function testDBInvitation()
     {
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBInvitation/invitation/exercisesheet/1',array(),"");
+        // loads the component url from phpunit.ini file
+        if (file_exists("phpunit.ini")){
+            $this->url = parse_ini_file("phpunit.ini", TRUE)['PHPUNIT']['url'];
+        }
+        else
+            $this->url = parse_ini_file("../phpunit.ini", TRUE)['PHPUNIT']['url'];
+            
+        $this->SetInvitation();
+        $this->EditInvitation();
+        $this->DeleteInvitation();
+        $this->GetLeaderInvitations();
+        $this->GetMemberInvitations();
+        $this->GetAllInvitations();
+        $this->GetSheetLeaderInvitations();
+        $this->GetSheetMemberInvitations();
+        $this->GetSheetInvitations();
+    }
+    
+    public function GetSheetInvitations()
+    {
+        $result = Request::get($this->url . 'DBInvitation/invitation/exercisesheet/1',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for GetSheetInvitations call");
         $this->assertContains('????',$result['content']);     
     
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBInvitation/invitation/exercisesheet/AAA',array(),"");
+        $result = Request::get($this->url . 'DBInvitation/invitation/exercisesheet/AAA',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetSheetInvitations call");
     }
     
-    public function testGetSheetMemberInvitations()
+    public function GetSheetMemberInvitations()
     {
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBInvitation/invitation/member/exercisesheet/1/user/2',array(),"");
+        $result = Request::get($this->url . 'DBInvitation/invitation/member/exercisesheet/1/user/2',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for GetSheetMemberInvitations call");
         $this->assertContains('????',$result['content']);
         
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBInvitation/invitation/member/exercisesheet/1/user/AAA',array(),"");
+        $result = Request::get($this->url . 'DBInvitation/invitation/member/exercisesheet/1/user/AAA',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetSheetMemberInvitations call");
     
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBInvitation/invitation/member/exercisesheet/AAA/user/2',array(),"");
+        $result = Request::get($this->url . 'DBInvitation/invitation/member/exercisesheet/AAA/user/2',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetSheetMemberInvitations call");
     }
     
-    public function testGetSheetLeaderInvitations()
+    public function GetSheetLeaderInvitations()
     {
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBInvitation/invitation/leader/exercisesheet/1/user/2',array(),"");
+        $result = Request::get($this->url . 'DBInvitation/invitation/leader/exercisesheet/1/user/2',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for GetSheetLeaderInvitations call");
         $this->assertContains('????',$result['content']);
         
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBInvitation/invitation/leader/exercisesheet/1/user/AAA',array(),"");
+        $result = Request::get($this->url . 'DBInvitation/invitation/leader/exercisesheet/1/user/AAA',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetSheetLeaderInvitations call");
     
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBInvitation/invitation/leader/exercisesheet/AAA/user/2',array(),"");
+        $result = Request::get($this->url . 'DBInvitation/invitation/leader/exercisesheet/AAA/user/2',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetSheetLeaderInvitations call");
     }
 
-    public function testGetAllInvitations()
+    public function GetAllInvitations()
     {
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBInvitation/invitation',array(),"");
+        $result = Request::get($this->url . 'DBInvitation/invitation',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for GetAllInvitation call");
         $this->assertContains('????',$result['content']); 
     }
     
-    public function testGetMemberInvitations()
+    public function GetMemberInvitations()
     {
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBInvitation/invitation/member/user/2',array(),"");
+        $result = Request::get($this->url . 'DBInvitation/invitation/member/user/2',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for GetMemberInvitations call");
         $this->assertContains('????',$result['content']);
         
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBInvitation/invitation/member/user/AAA',array(),"");
+        $result = Request::get($this->url . 'DBInvitation/invitation/member/user/AAA',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetMemberInvitations call");
     }
     
-    public function testGetLeaderInvitations()
+    public function GetLeaderInvitations()
     {
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBInvitation/invitation/leader/user/2',array(),"");
+        $result = Request::get($this->url . 'DBInvitation/invitation/leader/user/2',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for GetLeaderInvitations call");
         $this->assertContains('????',$result['content']);
         
-        $result = Request::get('http://localhost/uebungsplattform/DB/DBInvitation/invitation/leader/user/AAA',array(),"");
+        $result = Request::get($this->url . 'DBInvitation/invitation/leader/user/AAA',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetLeaderInvitations call");
     }
     
-    public function testSetInvitation()
+    public function SetInvitation()
     {
 
     }
     
-    public function testDeleteInvitation()
+    public function DeleteInvitation()
     {
 
     }
     
-    public function testEditInvitation()
+    public function EditInvitation()
     {
 
     }
