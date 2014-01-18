@@ -14,12 +14,40 @@ include_once( 'Request/MultiRequest.php' );
 class Request
 {
     /**
+     * parse a header string
+     * @see http://us3.php.net/manual/de/function.http-parse-headers.php
+     *
+     * @param string $header a string  
+     *
+     * @return an assoc array, with header entrys
+     */
+    public static function http_parse_headers( $header )
+    {
+        $retVal = array();
+        $fields = explode("\r\n", preg_replace('/\x0D\x0A[\x09\x20]+/', ' ', $header));
+        foreach( $fields as $field ) {
+            if( preg_match('/([^:]+): (.+)/m', $field, $match) ) {
+                $match[1] = preg_replace('/(?<=^|[\x09\x20\x2D])./e', 'strtoupper("\0")', strtolower(trim($match[1])));
+                if( isset($retVal[$match[1]]) ) {
+                    if (!is_array($retVal[$match[1]])) {
+                        $retVal[$match[1]] = array($retVal[$match[1]]);
+                    }
+                    $retVal[$match[1]][] = $match[2];
+                } else {
+                    $retVal[$match[1]] = trim($match[2]);
+                }
+            }
+        }
+        return $retVal;
+    }
+
+    /**
      * performs a custom request
      *
-     * @param $method the request type (POST, DELETE, PUT, GET, ...) 
-     * @param $target the taget URL
-     * @param $header an array with header informations
-     * @param $content the request content/body
+     * @param string $method the request type (POST, DELETE, PUT, GET, ...) 
+     * @param string $target the taget URL
+     * @param string $header an array with header informations
+     * @param string $content the request content/body
      *
      * @return an array with the request result (status, header, content)
      * - ['headers'] = an array of header informations e.g. ['headers']['Content-Type']
@@ -38,14 +66,15 @@ class Request
         
         // splits the received header info, to create an entry 
         // in the $result['headers'] for each part of the header
-        $result['headers'] = array();
+        /*$result['headers'] = array();
         $head = explode("\r\n",substr($content, 0, $header_size));
         foreach ($head as $k){
             $value = split(": ",$k);
             if (count($value)>=2){
                 $result['headers'][$value[0]] = $value[1];
             }
-        }
+        }*/
+       $result['headers'] = Request::http_parse_headers(substr($content, 0, $header_size));
 
         // seperates the content part
         $result['content'] = substr($content, $header_size);
@@ -157,8 +186,10 @@ class Request
                     // finished
                      Logger::Log("routeRequest prefix search done:".$links->getAddress(),LogLevel::DEBUG);
                     return $ch;
-                }
-                else
+                } elseif ($ch['status'] == 401){
+                    Logger::Log("routeRequest prefix search access denied:".$links->getAddress(),LogLevel::DEBUG);
+                    return $ch;
+                } else
                     Logger::Log("routeRequest prefix search failed:".$links->getAddress(),LogLevel::DEBUG);
                                      
             } elseif(in_array("",$possible)){
@@ -185,8 +216,10 @@ class Request
                 // finished
                 Logger::Log("routeRequest blank search done:".$links->getAddress(),LogLevel::DEBUG);
                 return $ch;
-            }
-            else
+            } elseif ($ch['status'] == 401) {
+                Logger::Log("routeRequest blank search access denied:".$links->getAddress(),LogLevel::DEBUG);
+                return $ch;
+            } else
                 Logger::Log("routeRequest blank search failed:".$links->getAddress(),LogLevel::DEBUG);
         }
         
