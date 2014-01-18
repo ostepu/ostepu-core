@@ -1,3 +1,13 @@
+/**
+ * @file GetLeaderInvitations.sql
+ * gets a table for output, where all invitations are listed where the user is Groupleader
+ * @author Till Uhlig
+ * @param int \%userid a User identifier
+ * @result 
+ * - U is the groupleader who invites
+ * - U2 are the members of the Invitation without the leader
+ */
+
 SELECT 
     U.U_id,
     U.U_username,

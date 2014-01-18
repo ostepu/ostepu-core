@@ -1,5 +1,5 @@
 /**
- * @file GetSheetUserGroups.sql
+ * @file GetSheetAllGroups.sql
  * gets a table for output, where all groups are listed
  * @author Till Uhlig
  * @param 

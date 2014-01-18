@@ -1,3 +1,13 @@
+/**
+ * @file GetSheetInvitations.sql
+ * gets a table for output, where all invitations for an specivic Exercisesheet are listed
+ * @author Till Uhlig
+ * @param int \%esid a ExerciseSheet identifier
+ * @result 
+ * - U is the groupleader who invites
+ * - U2 are the members of the Invitation without the leader
+ */
+
 SELECT 
     U.U_id,
     U.U_username,
