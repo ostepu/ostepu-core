@@ -250,7 +250,7 @@ class Query extends Object implements JsonSerializable
             if (isset($data['numRows']))
                 $obj->setNumRows($data['numRows']); 
             if (isset($data['checkSession']))
-                $obj->setNumRows($data['checkSession']); 
+                $obj->setCheckSession($data['checkSession']); 
         }
         return $obj;
     }

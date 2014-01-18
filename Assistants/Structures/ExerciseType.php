@@ -67,6 +67,12 @@ class ExerciseType extends Object implements JsonSerializable
     }
     
     
+    public function createExerciseType($typeid,$name)
+    {
+        return new ExerciseType(array('id' => $typeid,
+        'name' => $name));
+    }
+    
     /**
      * the constructor
      * 
@@ -163,10 +169,10 @@ class ExerciseType extends Object implements JsonSerializable
      */
     public function jsonSerialize()  
     {
-        return array(
-            'id' => $this->id,
-            'name' => $this->name
-        );
+        $list = array();
+        if ($this->id!==null) $list['id'] = $this->id;
+        if ($this->name!==null) $list['name'] = $this->name;
+        return $list;
     }
 }
 ?>

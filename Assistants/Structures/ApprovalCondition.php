@@ -9,7 +9,7 @@ class ApprovalCondition extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $id;
+    private $id = null;
     
     /**
      * the $id getter
@@ -35,7 +35,7 @@ class ApprovalCondition extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $courseId;
+    private $courseId = null;
     
     /**
      * the $courseId getter
@@ -60,7 +60,7 @@ class ApprovalCondition extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $exerciseTypeId;
+    private $exerciseTypeId = null;
     
     /**
      * the $exerciseTypeId getter
@@ -85,7 +85,7 @@ class ApprovalCondition extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $percentage;
+    private $percentage = null;
     
     /**
      * the $percentage getter
@@ -106,6 +106,13 @@ class ApprovalCondition extends Object implements JsonSerializable
     }  
 
     
+    public function createApprovalCondition($approvalConditionId,$courseId,$exerciseTypeId,$percentage)
+    {
+        return new ApprovalCondition(array('id' => $approvalConditionId,
+        'courseId' => $courseId,
+        'exerciseTypeId' => $exerciseTypeId, 
+        'percentage' => $percentage));
+    }
     
     /**
      * (description)
@@ -194,12 +201,12 @@ class ApprovalCondition extends Object implements JsonSerializable
      */
     public function jsonSerialize()
     {
-        return array(
-            'id' => $this->id,
-            'courseId' => $this->courseId,
-            'exerciseSheetId' => $this->exerciseSheetId,
-            'percentage' => $this->percentage
-        );
+        $list = array();
+        if ($this->id!==null) $list['id'] = $this->id;
+        if ($this->courseId!==null) $list['courseId'] = $this->courseId;
+        if ($this->exerciseTypeId!==null) $list['exerciseTypeId'] = $this->exerciseTypeId;
+        if ($this->percentage!==null) $list['percentage'] = $this->percentage;
+        return $list; 
     }
 }
 ?>

@@ -66,6 +66,12 @@ class ExternalId extends Object implements JsonSerializable
     }
     
     
+    public function createExternalId($externalId,$courseId)
+    {
+        return new User(array('id' => $externalId,
+        'course' => array('id' => $courseId)));
+    }
+    
     /**
      * the constructor
      * 
@@ -166,10 +172,10 @@ class ExternalId extends Object implements JsonSerializable
      */
     public function jsonSerialize()  
     {
-        return array(
-            'id' => $this->id,
-            'course' => $this->course
-        );
+        $list = array();
+        if ($this->id!==null) $list['id'] = $this->id;
+        if ($this->course!==null) $list['course'] = $this->course;
+        return $list;
     }
 }
 ?>

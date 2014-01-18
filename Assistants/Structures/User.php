@@ -14,7 +14,7 @@ class User extends Object implements JsonSerializable
     /**
      * @var string $id a id that identifies the user
      */
-    private $id;
+    private $id = null;
     
     /**
      * the $id getter
@@ -42,7 +42,7 @@ class User extends Object implements JsonSerializable
     /**
      * @var string $userName a string that identifies the user
      */
-    private $userName; 
+    private $userName = null; 
     
     /**
      * the $userName getter
@@ -70,7 +70,7 @@ class User extends Object implements JsonSerializable
     /**
      * @var string $email The user's email address.
      */
-    private $email;
+    private $email = null;
     
     /**
      * the $email getter
@@ -98,7 +98,7 @@ class User extends Object implements JsonSerializable
     /**
      * @var string $firstName The user's first name(s)
      */
-    private $firstName;
+    private $firstName = null;
     
     /**
      * the $firstName getter
@@ -127,7 +127,7 @@ class User extends Object implements JsonSerializable
     /**
      * @var string $lastName The user's last name(s)
      */
-    private $lastName;
+    private $lastName = null;
     
     /**
      * the $lastName getter
@@ -156,7 +156,7 @@ class User extends Object implements JsonSerializable
     /**
      * @var string $title possibly a title the user holds
      */
-    private $title; 
+    private $title = null; 
     
     /**
      * the $title getter
@@ -318,7 +318,28 @@ class User extends Object implements JsonSerializable
     
     
     
-
+    
+    public function createUser($userId,$userName,$email,$firstName,$lastName,
+                                $title,$flag,$password,$salt,$failedLogins)
+    {
+        return new User(array('id' => $userId,
+        'userName' => $userName,
+        'email' => $email, 
+        'firstName' => $firstName, 
+        'lastName' => $lastName, 
+        'title' => $title, 
+        'flag' => $flag, 
+        'password' => $password, 
+        'salt' => $salt, 
+        'failedLogins' => $failedLogins));
+    }
+    
+    public function createCourseStatus($userId,$courseId,$status)
+    {
+        return new User(array('id' => $userId,
+        'courses' => array(array('status' => $status, 'course' => array('id' => $courseId)))));
+    }
+    
     /**
      * returns an mapping array to convert between database and structure
      *
@@ -417,11 +438,10 @@ class User extends Object implements JsonSerializable
     {
         foreach ($data AS $key => $value) {
             if (isset($key)){
-                if (is_array($value)) {
+                if ($key == 'courses'){
                     $this->{$key} = CourseStatus::decodeCourseStatus($value, false);
-
-                }
-                $this->{$key} = $value;
+                } else
+                    $this->{$key} = $value;
             }
         }
     }
@@ -465,19 +485,19 @@ class User extends Object implements JsonSerializable
      */
     public function jsonSerialize()  
     {
-         $list = array();
-         if ($this->id!==null) $list['id'] = $this->id;
-         if ($this->userName!==null) $list['userName'] = $this->userName;
-         if ($this->email!==null) $list['email'] = $this->email;
-         if ($this->firstName!==null) $list['firstName'] = $this->firstName;
-         if ($this->lastName!==null) $list['lastName'] = $this->lastName;
-         if ($this->title!==null) $list['title'] = $this->title;
-         if ($this->courses!==array()) $list['courses'] = $this->courses;
-         if ($this->flag!==null) $list['flag'] = $this->flag;
-         if ($this->password!==null) $list['password'] = $this->password; 
-         if ($this->salt!==null) $list['salt'] = $this->salt;
-         if ($this->failedLogins!==null) $list['failedLogins'] = $this->failedLogins;
-       return $list;
+        $list = array();
+        if ($this->id!==null) $list['id'] = $this->id;
+        if ($this->userName!==null) $list['userName'] = $this->userName;
+        if ($this->email!==null) $list['email'] = $this->email;
+        if ($this->firstName!==null) $list['firstName'] = $this->firstName;
+        if ($this->lastName!==null) $list['lastName'] = $this->lastName;
+        if ($this->title!==null) $list['title'] = $this->title;
+        if ($this->courses!==array()) $list['courses'] = $this->courses;
+        if ($this->flag!==null) $list['flag'] = $this->flag;
+        if ($this->password!==null) $list['password'] = $this->password; 
+        if ($this->salt!==null) $list['salt'] = $this->salt;
+        if ($this->failedLogins!==null) $list['failedLogins'] = $this->failedLogins;
+        return $list;
     }
 }
 ?>

@@ -15,7 +15,7 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $id;
+    private $id = null;
     
     /**
      * the $id getter
@@ -40,7 +40,7 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $courseId;
+    private $courseId = null;
     
     /**
      * the $courseId getter
@@ -65,7 +65,7 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * type: date
      */
-    private $endDate;
+    private $endDate = null;
     
     /**
      * the $endDate getter
@@ -90,7 +90,7 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * type: date
      */
-    private $startDate;
+    private $startDate = null;
     
     /**
      * the $startDate getter
@@ -116,7 +116,7 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * type: File
      */
-    private $zipFile;
+    private $zipFile = null;
     
     /**
      * the $zipFile getter
@@ -141,7 +141,7 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * type: File
      */
-    private $sampleSolution;
+    private $sampleSolution = null;
     
     /**
      * the $sampleSolution getter
@@ -166,7 +166,7 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * type: File
      */
-    private $sheetFile;
+    private $sheetFile = null;
     
     /**
      * the $sheetFile getter
@@ -216,7 +216,7 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * type: int
      */
-    private $groupSize;
+    private $groupSize = null;
     
     /**
      * the $groupSize getter
@@ -236,7 +236,7 @@ class ExerciseSheet extends Object implements JsonSerializable
         $this->groupSize = $value;
     }
     
-    private $sheetName;
+    private $sheetName = null;
     
     /**
      * the $sheetName getter
@@ -257,7 +257,17 @@ class ExerciseSheet extends Object implements JsonSerializable
     }
     
     
-    
+    public function createExerciseSheet($sheetId,$courseId,$endDate,$startDate,$groupSize,$sampleSolutionId,$sheetFileId,$sheetName)
+    {
+        return new ExerciseSheet(array('id' => $sheetName,
+        'courseId' => $courseId,
+        'endDate' => $endDate, 
+        'startDate' => $startDate,
+        'groupSize' => $groupSize, 
+        'sheetName' => $sheetName, 
+        'sampleSolution' => array('fileId' => $sampleSolutionId),
+        'sheetFile' => array('fileId' => $sheetFileId)));
+    }
     
     /**
      * returns an mapping array to convert between database and structure
@@ -375,18 +385,18 @@ class ExerciseSheet extends Object implements JsonSerializable
      */
     public function jsonSerialize() 
     {
-        return array(
-            'id'  => $this->id,
-            'courseId' => $this->courseId,
-            'endDate' => $this->endDate,
-            'startDate' => $this->startDate,
-            'zipFile' => $this->zipFile,
-            'sampleSolution' => $this->sampleSolution,
-            'sheetFile' => $this->sheetFile,
-            'exercises' => $this->exercises,
-            'groupSize' => $this->groupSize,
-            'sheetName' => $this->sheetName
-        );
+        $list = array();
+        if ($this->id!==null) $list['id'] = $this->id;
+        if ($this->courseId!==null) $list['courseId'] = $this->courseId;
+        if ($this->endDate!==null) $list['endDate'] = $this->endDate;
+        if ($this->startDate!==null) $list['startDate'] = $this->startDate;
+        if ($this->zipFile!==null) $list['zipFile'] = $this->zipFile;
+        if ($this->sampleSolution!==null) $list['sampleSolution'] = $this->sampleSolution;
+        if ($this->sheetFile!==null) $list['sheetFile'] = $this->sheetFile;
+        if ($this->exercises!==array()) $list['exercises'] = $this->exercises;
+        if ($this->groupSize!==null) $list['groupSize'] = $this->groupSize;
+        if ($this->sheetName!==null) $list['sheetName'] = $this->sheetName;
+        return $list;
     }
 }
 ?>

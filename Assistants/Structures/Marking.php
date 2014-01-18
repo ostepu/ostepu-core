@@ -15,7 +15,7 @@ class Marking extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $id;
+    private $id = null;
     
     /**
      * the $id getter
@@ -40,7 +40,7 @@ class Marking extends Object implements JsonSerializable
     /**
      * @var Submission $submission The submission this marking belongs to.
      */
-    private $submission;
+    private $submission = null;
     
     /**
      * the $submission getter
@@ -65,7 +65,7 @@ class Marking extends Object implements JsonSerializable
     /**
      * @var string $tutorId The id of the tutor that corrected the submission.
      */
-    private $tutorId;
+    private $tutorId = null;
     
     /**
      * the $tutorId getter
@@ -90,7 +90,7 @@ class Marking extends Object implements JsonSerializable
     /**
      * @var string $tutorComment a comment a tutor has made concerning a students submission.
      */
-    private $tutorComment;
+    private $tutorComment = null;
     
     /**
      * the $tutorComment getter
@@ -115,7 +115,7 @@ class Marking extends Object implements JsonSerializable
     /**
      * @var file $file  The file that contains the marked submission for the user.
      */
-    private $file;
+    private $file = null;
     
     /**
      * the $file getter
@@ -142,7 +142,7 @@ class Marking extends Object implements JsonSerializable
      *
      * type: int
      */
-    private $points;
+    private $points = null;
     
     /**
      * the $points getter
@@ -167,7 +167,7 @@ class Marking extends Object implements JsonSerializable
     /**
      * @var bool $outstanding if the submission stands out from the other submissions.
      */
-    private $outstanding;
+    private $outstanding = null;
     
     /**
      * the $outstanding getter
@@ -192,7 +192,7 @@ class Marking extends Object implements JsonSerializable
     /**
      * @var string $prefix the marking status
      */
-    private $status;
+    private $status = null;
     
     /**
      * the $status getter
@@ -217,7 +217,7 @@ class Marking extends Object implements JsonSerializable
     /**
      * @var date $date the date on which the marking was uploaded
      */
-    private $date;
+    private $date = null;
     
     /**
      * the $date getter
@@ -241,7 +241,20 @@ class Marking extends Object implements JsonSerializable
     
     
     
- 
+    public function createMarking($markingId,$tutorId,$fileId,$submissionId,$tutorComment,
+                                $outstanding,$status,$points,$date)
+    {
+        return new Marking(array('id' => $markingId,
+        'tutorId' => $tutorId,
+        'file' => array('fileId' => $fileId), 
+        'submission' => array('id' => $submissionId), 
+        'tutorComment' => $tutorComment, 
+        'outstanding' => $outstanding, 
+        'status' => $status, 
+        'points' => $points, 
+        'date' => $date));
+    }
+    
     /**
      * returns an mapping array to convert between database and structure
      *
@@ -373,17 +386,17 @@ class Marking extends Object implements JsonSerializable
      */
     public function jsonSerialize()
     {
-        return array(
-            'id' => $this->id,
-            'submission' => $this->submission,
-            'tutorId' => $this->tutorId,
-            'tutorComment' => $this->tutorComment,
-            'file' => $this->file,
-            'points' => $this->points,
-            'outstanding' => $this->outstanding,
-            'status' => $this->status,
-            'date' => $this->date
-        );
+        $list = array();
+        if ($this->id!==null) $list['id'] = $this->id;
+        if ($this->submission!==null) $list['submission'] = $this->submission;
+        if ($this->tutorId!==null) $list['tutorId'] = $this->tutorId;
+        if ($this->tutorComment!==null) $list['tutorComment'] = $this->tutorComment;
+        if ($this->file!==null) $list['file'] = $file->file;
+        if ($this->points!==null) $list['points'] = $this->points;
+        if ($this->outstanding!==array()) $list['outstanding'] = $this->outstanding;
+        if ($this->status!==null) $list['status'] = $this->status;
+        if ($this->date!==null) $list['date'] = $this->date; 
+        return $list;
     }
 }
 ?>

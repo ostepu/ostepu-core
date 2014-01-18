@@ -13,7 +13,7 @@ class Session extends Object implements JsonSerializable
     /**
      * @var string $user the db id of an user 
      */
-    private $user;
+    private $user = null;
     
     /**
      * the $user getter
@@ -41,7 +41,7 @@ class Session extends Object implements JsonSerializable
     /**
      * @var string $session a string that defines which session the user has in that course.
      */
-    private $session;
+    private $session = null;
     
     /**
      * the $session getter
@@ -63,7 +63,13 @@ class Session extends Object implements JsonSerializable
         $this->session = $value;
     }
    
-
+   
+    public function createSession($userId,$sessionId)
+    {
+        return new Session(array('user' => $userId,
+        'session' => $sessionId));
+    }
+    
     /**
      * returns an mapping array to convert between database and structure
      *
@@ -164,10 +170,10 @@ class Session extends Object implements JsonSerializable
      */
     public function jsonSerialize() 
     {
-        return array(
-            'user' => $this->user,
-            'session' => $this->session
-        );
+        $list = array();
+        if ($this->user!==null) $list['user'] = $this->user;
+        if ($this->session!==null) $list['session'] = $this->session;
+        return $list;  
     }
 }
 ?>

@@ -13,7 +13,7 @@ class SelectedSubmission extends Object implements JsonSerializable
     /**
      * @var string $leaderId The identifier of the group leader.
      */
-    private $leaderId;
+    private $leaderId = null;
     
     /**
      * the $leaderId getter
@@ -36,7 +36,7 @@ class SelectedSubmission extends Object implements JsonSerializable
     /**
      * @var string $submissionId The id of the selected submission.
      */
-    private $submissionId;
+    private $submissionId = null;
     
     /**
      * the $submissionId getter
@@ -59,7 +59,7 @@ class SelectedSubmission extends Object implements JsonSerializable
     /**
      * @var string $exerciseId a string that identifies the exercise this submission belongs to.
      */
-    private $exerciseId;
+    private $exerciseId = null;
     
     /**
      * the $exerciseId getter
@@ -80,7 +80,12 @@ class SelectedSubmission extends Object implements JsonSerializable
     }
 
     
-    
+    public function createSelectedSubmission($leaderId,$submissionId,$exerciseId)
+    {
+        return new SelectedSubmission(array('leaderId' => $leaderId,
+        'submissionId' => $submissionId, 
+        'exerciseId' => $exerciseId));
+    }
 
     /**
      * returns an mapping array to convert between database and structure
@@ -175,11 +180,11 @@ class SelectedSubmission extends Object implements JsonSerializable
      */
     public function jsonSerialize()
     {
-        return array(
-            'leaderId' => $this->leaderId,
-            'submissionId' => $this->submissionId,
-            'exerciseId' => $this->exerciseId,
-        );
+        $list = array();
+        if ($this->leaderId!==null) $list['leaderId'] = $this->leaderId;
+        if ($this->submissionId!==null) $list['submissionId'] = $this->submissionId;
+        if ($this->exerciseId!==null) $list['exerciseId'] = $this->exerciseId;
+        return $list;  
     }
 }
 ?>

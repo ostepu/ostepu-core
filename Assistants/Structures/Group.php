@@ -27,7 +27,7 @@ class Group extends Object implements JsonSerializable
     /**
      * the $members setter
      *
-     * @param string $value the new value for $members
+     * @param User[] $value the new value for $members
      */ 
     public function setMembers($value){
         $this->members = $value;
@@ -50,7 +50,7 @@ class Group extends Object implements JsonSerializable
     /**
      * the $leader setter
      *
-     * @param string $value the new value for $leader
+     * @param User $value the new value for $leader
      */ 
     public function setLeader($value){
         $this->leader = $value;
@@ -80,7 +80,12 @@ class Group extends Object implements JsonSerializable
     }
     
     
-    
+    public function createGroup($leaderId,$memberId,$sheetId)
+    {
+        return new Group(array('sheetId' => $sheetId,
+        'leader' => array('id' => $leaderId), 
+        'members' => array(array('id' => $memberId))));
+    } 
      
     /**
      * returns an mapping array to convert between database and structure
@@ -177,11 +182,11 @@ class Group extends Object implements JsonSerializable
      */
     public function jsonSerialize()
     {
-        return array(
-            'members' => $this->members,
-            'leader' => $this->leader,
-            'sheetId' => $this->sheetId
-        );
+        $list = array();
+        if ($this->members!==array()) $list['members'] = $this->members;
+        if ($this->leader!==null) $list['leader'] = $this->leader;
+        if ($this->sheetId!==null) $list['sheetId'] = $this->sheetId;
+        return $list;  
     }
 }
 ?>

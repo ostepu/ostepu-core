@@ -81,6 +81,14 @@ class Attachment extends Object implements JsonSerializable
     }    
 
     
+    public function createAttachment($attachmentId,$exerciseId,$fileId)
+    {
+        return new Attachment(array('id' => $attachmentId,
+        'exerciseId' => $exerciseId,
+        'exerciseTypeId' => $exerciseTypeId, 
+        'file' => array('fileId' => $fileId)));
+    }
+    
     /**
      * returns an mapping array to convert between database and structure
      *
@@ -183,11 +191,11 @@ class Attachment extends Object implements JsonSerializable
      */
     public function jsonSerialize()
     {
-        return array(
-            'id' => $this->id,
-            'exerciseId' => $this->exerciseId,
-            'file' => $this->file
-        );
+        $list = array();
+        if ($this->id!==null) $list['id'] = $this->id;
+        if ($this->exerciseId!==null) $list['exerciseId'] = $this->exerciseId;
+        if ($this->file!==null) $list['file'] = $this->file;
+        return $list;  
     }
 }
 ?>
