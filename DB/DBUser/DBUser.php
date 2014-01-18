@@ -172,7 +172,7 @@ class DBUser
                     
             } else{
                 Logger::Log("PUT EditUser failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
@@ -202,13 +202,13 @@ class DBUser
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
 
             Logger::Log("DELETE RemoveUser ok",LogLevel::DEBUG);   
-            $this->_app->response->setStatus(200);
+            $this->_app->response->setStatus(252);
             $this->_app->stop();
         } else{
             Logger::Log("DELETE RemoveUser failed",LogLevel::ERROR);
            // $this->_app->response->headers->set("Connection", "Close");
             $this->_app->response->setBody(User::encodeUser(new User()));
-            $this->_app->response->setStatus(409);   
+            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);   
             $this->_app->stop();            
         }
     }
@@ -251,7 +251,7 @@ class DBUser
                 
             } else{
                 Logger::Log("POST AddUser failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
@@ -312,13 +312,13 @@ class DBUser
             
             $this->_app->response->setBody(User::encodeUser($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetUsers failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(User::encodeUser(new User()));
             $this->_app->stop();
         }
@@ -338,7 +338,8 @@ class DBUser
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetUser.sql", 
-                                        array("userid" => $userid));
+                                        array("userid" => $userid),
+                                        false);
         
         // checks the correctness of the query                                 
         if ($result['status']>=200 && $result['status']<=299){
@@ -385,12 +386,12 @@ class DBUser
                 
             $this->_app->response->setBody(User::encodeUser($res));
 
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);              
         } else{
             Logger::Log("GET GetUser failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(User::encodeUser(new User()));
         }
     }
@@ -456,12 +457,12 @@ class DBUser
                 
             $this->_app->response->setBody(User::encodeUser($res));
 
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);              
         } else{
             Logger::Log("GET GetIncreaseUserFailedLogin failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(User::encodeUser(new User()));
         }
     }
@@ -526,13 +527,13 @@ class DBUser
             
             $this->_app->response->setBody(User::encodeUser($res));
             
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetCourseMember failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(User::encodeUser(new User()));
             $this->_app->stop();
         }
@@ -601,13 +602,13 @@ class DBUser
             
             $this->_app->response->setBody(User::encodeUser($res));
             
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetGroupMember failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(User::encodeUser(new User()));
             $this->_app->stop();
         }
@@ -672,12 +673,12 @@ class DBUser
                 
             $this->_app->response->setBody(User::encodeUser($res));
 
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);              
         } else{
             Logger::Log("GET GetUserByStatus failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(User::encodeUser(new User()));
         }
     }
@@ -743,12 +744,12 @@ class DBUser
                 
             $this->_app->response->setBody(User::encodeUser($res));
 
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);              
         } else{
             Logger::Log("GET GetUserByStatus failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(User::encodeUser(new User()));
         }
     }

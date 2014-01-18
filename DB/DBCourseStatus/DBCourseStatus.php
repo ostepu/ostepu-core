@@ -152,7 +152,7 @@ class DBCourseStatus
                 
             } else{
                 Logger::Log("PUT EditMemberRight failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
@@ -180,13 +180,13 @@ class DBCourseStatus
                                         
         // checks the correctness of the query                          
         if ($result['status']>=200 && $result['status']<=299){
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(252);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE RemoveCourseMember failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
             $this->_app->stop();
         }
     }
@@ -225,7 +225,7 @@ class DBCourseStatus
                 
             } else{
                 Logger::Log("POST AddCourseMember failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
@@ -296,13 +296,13 @@ class DBCourseStatus
                 
             $this->_app->response->setBody(User::encodeUser($res));
 
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetMemberRight failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(User::encodeUser(new User()));
             $this->_app->stop();
         }
@@ -371,13 +371,13 @@ class DBCourseStatus
                 
             $this->_app->response->setBody(User::encodeUser($res));
 
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetMemberRights failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(User::encodeUser(new User()));
             $this->_app->stop();
         }
@@ -442,13 +442,13 @@ class DBCourseStatus
                 
             $this->_app->response->setBody(User::encodeUser($res));
 
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetCourseRights failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(User::encodeUser(new User()));
             $this->_app->stop();
         }

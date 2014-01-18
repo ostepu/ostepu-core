@@ -156,7 +156,7 @@ class DBExerciseSheet
                 
             } else{
                 Logger::Log("PUT EditExerciseSheet failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
@@ -182,13 +182,13 @@ class DBExerciseSheet
                                         
         // checks the correctness of the query                          
         if ($result['status']>=200 && $result['status']<=299){
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(252);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE DeleteExerciseSheet failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
             $this->_app->stop();
         }
     }
@@ -231,7 +231,7 @@ class DBExerciseSheet
                 
             } else{
                 Logger::Log("POST SetExerciseSheet failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
@@ -272,13 +272,13 @@ class DBExerciseSheet
                 $exerciseSheetFile = $exerciseSheetFile[0];
             
             $this->_app->response->setBody(File::encodeFile($exerciseSheetFile));
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetExerciseSheetURL failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(File::encodeExerciseSheet(new File()));
             $this->_app->stop();
         }
@@ -312,13 +312,13 @@ class DBExerciseSheet
             $exerciseSheetFiles = DBJson::getResultObjectsByAttributes($data, File::getDBPrimaryKey(), File::getDBConvert());
             
             $this->_app->response->setBody(File::encodeFile($exerciseSheetFiles));
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetCourseSheetURLs failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(File::encodeFile(new File()));
             $this->_app->stop();
         }
@@ -335,7 +335,7 @@ class DBExerciseSheet
                             
         if (count($esid)<1){
             Logger::Log("PUT EditExerciseSheet wrong use",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(ExerciseSheet::encodeExerciseSheet(new ExerciseSheet()));
             $this->_app->stop();
             return;
@@ -426,13 +426,13 @@ class DBExerciseSheet
                 $res = $res[0];
                 
             $this->_app->response->setBody(ExerciseSheet::encodeExerciseSheet($res));
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetExerciseSheet failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(ExerciseSheet::encodeExerciseSheet(new ExerciseSheet()));
             $this->_app->stop();
         }
@@ -448,7 +448,7 @@ class DBExerciseSheet
         Logger::Log("starts GET GetCourseSheets",LogLevel::DEBUG);
                             
         if (count($courseid)<1){
-            $this->_app->response->setStatus(409);
+            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(ExerciseSheet::encodeExerciseSheet(new ExerciseSheet()));
             $this->_app->stop();
             return;
@@ -539,13 +539,13 @@ class DBExerciseSheet
             $res = array_merge($res);        
             
             $this->_app->response->setBody(ExerciseSheet::encodeExerciseSheet($res));
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetCourseSheets failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(ExerciseSheet::encodeExerciseSheet(new ExerciseSheet()));
             $this->_app->stop();
         }    

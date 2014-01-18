@@ -153,7 +153,7 @@ class DBCourse
                 
             } else{
                 Logger::Log("PUT EditCourse failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
@@ -180,13 +180,13 @@ class DBCourse
         // checks the correctness of the query                              
         if ($result['status']>=200 && $result['status']<=299){
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(252);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE DeleteCourse failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
             $this->_app->stop();
         }
     }
@@ -229,7 +229,7 @@ class DBCourse
                 
             } else{
                 Logger::Log("POST SetCourse failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
@@ -280,13 +280,13 @@ class DBCourse
             
             $this->_app->response->setBody(Course::encodeCourse($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetCourse failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Course::encodeCourse(new Course()));
             $this->_app->stop();
         }
@@ -331,13 +331,13 @@ class DBCourse
             
             $this->_app->response->setBody(Course::encodeCourse($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetAllCourses failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Course::encodeCourse(new Course()));
             $this->_app->stop();
         }
@@ -387,13 +387,13 @@ class DBCourse
             
             $this->_app->response->setBody(Course::encodeCourse($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetUserCourses failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Course::encodeCourse(new Course()));
             $this->_app->stop();
         }

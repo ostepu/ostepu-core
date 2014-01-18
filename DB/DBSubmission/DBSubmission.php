@@ -200,13 +200,13 @@ class DBSubmission
             
             $this->_app->response->setBody(Submission::encodeSubmission($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetExerciseSubmissions failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Submission::encodeSubmission(new Submission()));
             $this->_app->stop();
         } 
@@ -249,7 +249,7 @@ class DBSubmission
                 
             } else{
                 Logger::Log("PUT EditSubmission failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
@@ -276,13 +276,13 @@ class DBSubmission
         // checks the correctness of the query                          
         if ($result['status']>=200 && $result['status']<=299){
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(252);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE DeleteSubmission failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
             $this->_app->stop();
         }
     }
@@ -326,7 +326,7 @@ class DBSubmission
                 
             } else{
                 Logger::Log("POST SetSubmission failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
@@ -378,13 +378,13 @@ class DBSubmission
     
             $this->_app->response->setBody(Submission::encodeSubmission($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetAllSubmissions failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Submission::encodeSubmission(new Submission()));
             $this->_app->stop();
         }
@@ -441,13 +441,13 @@ class DBSubmission
             
             $this->_app->response->setBody(Submission::encodeSubmission($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetGroupSubmissions failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Submission::encodeSubmission(new Submission()));
             $this->_app->stop();
         }
@@ -504,13 +504,13 @@ class DBSubmission
             
             $this->_app->response->setBody(Submission::encodeSubmission($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetGroupSelectedSubmissions failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Submission::encodeSubmission(new Submission()));
             $this->_app->stop();
         }
@@ -567,13 +567,13 @@ class DBSubmission
             
             $this->_app->response->setBody(Submission::encodeSubmission($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetGroupExerciseSubmissions failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Submission::encodeSubmission(new Submission()));
             $this->_app->stop();
         }
@@ -630,13 +630,13 @@ class DBSubmission
             
             $this->_app->response->setBody(Submission::encodeSubmission($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetGroupSelectedExerciseSubmissions failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Submission::encodeSubmission(new Submission()));
             $this->_app->stop();
         }
@@ -691,13 +691,13 @@ class DBSubmission
             
             $this->_app->response->setBody(Submission::encodeSubmission($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetSubmission failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Submission::encodeSubmission(new Submission()));
             $this->_app->stop();
         }
@@ -752,13 +752,13 @@ class DBSubmission
             
             $this->_app->response->setBody(Submission::encodeSubmission($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetSheetSubmissions failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Submission::encodeSubmission(new Submission()));
             $this->_app->stop();
         }
@@ -813,13 +813,13 @@ class DBSubmission
             
             $this->_app->response->setBody(Submission::encodeSubmission($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetSelectedSheetSubmissions failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Submission::encodeSubmission(new Submission()));
             $this->_app->stop();
         }
@@ -874,13 +874,13 @@ class DBSubmission
             
             $this->_app->response->setBody(Submission::encodeSubmission($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetSelectedExerciseSubmissions failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Submission::encodeSubmission(new Submission()));
             $this->_app->stop();
         }
@@ -937,13 +937,13 @@ class DBSubmission
             
             $this->_app->response->setBody(Submission::encodeSubmission($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetUserExerciseSubmissions failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Submission::encodeSubmission(new Submission()));
             $this->_app->stop();
         }

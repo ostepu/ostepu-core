@@ -175,7 +175,7 @@ class DBInvitation
                 
             } else{
                 Logger::Log("PUT EditInvitation failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
@@ -208,13 +208,13 @@ class DBInvitation
         // checks the correctness of the query                          
         if ($result['status']>=200 && $result['status']<=299){
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(252);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE DeleteInvitation failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
             $this->_app->stop();
         }
     }
@@ -222,7 +222,7 @@ class DBInvitation
     /**
      * POST SetInvitation
      */
-    public function SetInvitation()
+    public function setInvitation()
     {
         Logger::Log("starts POST SetInvitation",LogLevel::DEBUG);
         
@@ -251,7 +251,7 @@ class DBInvitation
                 
             } else{
                 Logger::Log("POST SetInvitation failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
@@ -316,13 +316,13 @@ class DBInvitation
             
             $this->_app->response->setBody(Invitation::encodeInvitation($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetAllInvitations failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Invitation::encodeInvitation(new Invitation()));
             $this->_app->stop();
         }
@@ -392,13 +392,13 @@ class DBInvitation
                 
             $this->_app->response->setBody(Invitation::encodeInvitation($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetLeaderInvitations failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Invitation::encodeInvitation(new Invitation()));
             $this->_app->stop();
         }
@@ -469,13 +469,13 @@ class DBInvitation
                 
             $this->_app->response->setBody(Invitation::encodeInvitation($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetMemberInvitations failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Invitation::encodeInvitation(new Invitation()));
             $this->_app->stop();
         }
@@ -548,13 +548,13 @@ class DBInvitation
                 
             $this->_app->response->setBody(Invitation::encodeInvitation($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetSheetLeaderInvitations failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Invitation::encodeInvitation(new Invitation()));
             $this->_app->stop();
         }
@@ -627,13 +627,13 @@ class DBInvitation
                 
             $this->_app->response->setBody(Invitation::encodeInvitation($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetSheetMemberInvitations failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Invitation::encodeInvitation(new Invitation()));
             $this->_app->stop();
         }
@@ -704,13 +704,13 @@ class DBInvitation
                 
             $this->_app->response->setBody(Invitation::encodeInvitation($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetSheetInvitations failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Invitation::encodeInvitation(new Invitation()));
             $this->_app->stop();
         }

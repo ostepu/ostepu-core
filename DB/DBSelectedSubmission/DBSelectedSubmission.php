@@ -152,7 +152,7 @@ class DBSelectedSubmission
                 
             } else{
                 Logger::Log("PUT EditSelectedSubmission failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
@@ -181,13 +181,13 @@ class DBSelectedSubmission
         // checks the correctness of the query                          
         if ($result['status']>=200 && $result['status']<=299){
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(252);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE DeleteSelectedSubmission failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
             $this->_app->stop();
         }
     }
@@ -224,7 +224,7 @@ class DBSelectedSubmission
                 
             } else{
                 Logger::Log("POST SetSelectedSubmission failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
@@ -260,13 +260,13 @@ class DBSelectedSubmission
                 
             $this->_app->response->setBody(SelectedSubmission::encodeSelectedSubmission($selected));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetExerciseSelected failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(SelectedSubmission::encodeSelectedSubmission(new SelectedSubmission()));
             $this->_app->stop();
         }
@@ -302,13 +302,13 @@ class DBSelectedSubmission
                 
             $this->_app->response->setBody(SelectedSubmission::encodeSelectedSubmission($selected));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetSheetSelected failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(SelectedSubmission::encodeSelectedSubmission(new SelectedSubmission()));
             $this->_app->stop();
         }

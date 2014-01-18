@@ -148,7 +148,7 @@ class DBExerciseType
                 
             } else{
                 Logger::Log("PUT EditPossibleType failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
@@ -175,13 +175,13 @@ class DBExerciseType
         // checks the correctness of the query                          
         if ($result['status']>=200 && $result['status']<=299){
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(252);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE DeletePossibleType failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
             $this->_app->stop();
         }
     }
@@ -189,7 +189,7 @@ class DBExerciseType
     /**
      * POST SetPossibleType
      */
-    public function SetPossibleType()
+    public function setPossibleType()
     {
         Logger::Log("starts POST SetPossibleType",LogLevel::DEBUG);
         
@@ -224,7 +224,7 @@ class DBExerciseType
                 
             } else{
                 Logger::Log("POST SetPossibleType failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
@@ -256,13 +256,13 @@ class DBExerciseType
  
             $this->_app->response->setBody(ExerciseType::encodeExerciseType($exerciseTypes));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetAllPossibleType failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(ExerciseTypes::encodeExerciseType(new ExerciseType()));
             $this->_app->stop();
         }
@@ -307,13 +307,13 @@ class DBExerciseType
                 
             $this->_app->response->setBody(ExerciseType::encodeExerciseType($exerciseType));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetPossibleType failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(ExerciseType::encodeExerciseType(new ExerciseType()));
             $this->_app->stop();
         }

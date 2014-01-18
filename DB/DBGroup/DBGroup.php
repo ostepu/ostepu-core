@@ -163,7 +163,7 @@ class DBGroup
                 
             } else{
                 Logger::Log("PUT EditGroup failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
@@ -193,13 +193,13 @@ class DBGroup
                                         
         // checks the correctness of the query                          
         if ($result['status']>=200 && $result['status']<=299){
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(252);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE DeleteGroup failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
             $this->_app->stop();
         }
     }
@@ -236,7 +236,7 @@ class DBGroup
                 
             } else{
                 Logger::Log("POST SetGroup failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
@@ -312,13 +312,13 @@ class DBGroup
             $res = array_merge($res);
         
             $this->_app->response->setBody(Group::encodeGroup($res));
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetUserGroups failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Group::encodeGroup(new Group()));
             $this->_app->stop();
         }
@@ -387,13 +387,13 @@ class DBGroup
             $res = array_merge($res);
         
             $this->_app->response->setBody(Group::encodeGroup($res));
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetAllGroups failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Group::encodeGroup(new Group()));
             $this->_app->stop();
         }
@@ -472,13 +472,13 @@ class DBGroup
             $res = array_merge($res);
         
             $this->_app->response->setBody(Group::encodeGroup($res));
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetSheetUserGroups failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Group::encodeGroup(new Group()));
             $this->_app->stop();
         }
@@ -554,13 +554,13 @@ class DBGroup
             $res = array_merge($res);
         
             $this->_app->response->setBody(Group::encodeGroup($res));
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetSheetGroups failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Group::encodeGroup(new Group()));
             $this->_app->stop();
         }

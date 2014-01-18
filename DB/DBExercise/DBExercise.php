@@ -155,7 +155,7 @@ class DBExercise
                 
             } else{
                 Logger::Log("PUT EditExercise failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
@@ -181,13 +181,13 @@ class DBExercise
                                         
         // checks the correctness of the query                          
         if ($result['status']>=200 && $result['status']<=299){
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(252);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE DeleteExercise failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
             $this->_app->stop();
         }
     }
@@ -230,7 +230,7 @@ class DBExercise
                 
             } else{
                 Logger::Log("POST SetExercise failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
@@ -307,14 +307,14 @@ class DBExercise
                 $res = $res[0];
                 
             $this->_app->response->setBody(Exercise::encodeExercise($res));
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetExercise failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
-            $this->_app->response->setBody(Exercise::encodeExerciseSheet(new Exercise()));
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
+            $this->_app->response->setBody(Exercise::encodeExercise(new Exercise()));
             $this->_app->stop();
         }
     }
@@ -382,14 +382,14 @@ class DBExercise
             $res = DBJson::concatResultObjectLists($data, $res,Exercise::getDBPrimaryKey(),Exercise::getDBConvert()['E_submissions'] ,$submissions,Submission::getDBPrimaryKey(), '2');
                 
             $this->_app->response->setBody(Exercise::encodeExercise($res));
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetAllExercises failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
-            $this->_app->response->setBody(Exercise::encodeExerciseSheet(new Exercise()));
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
+            $this->_app->response->setBody(Exercise::encodeExercise(new Exercise()));
             $this->_app->stop();
         }
     }
@@ -451,13 +451,13 @@ class DBExercise
             $res = DBJson::concatResultObjectLists($data, $res,Exercise::getDBPrimaryKey(),Exercise::getDBConvert()['E_submissions'] ,$submissions,Submission::getDBPrimaryKey(), '2');
                 
             $this->_app->response->setBody(Exercise::encodeExercise($res));
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetSheetExercises failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Exercise::encodeExercise(new Exercise()));
             $this->_app->stop();
         }
@@ -520,13 +520,13 @@ class DBExercise
             $res = DBJson::concatResultObjectLists($data, $res,Exercise::getDBPrimaryKey(),Exercise::getDBConvert()['E_submissions'] ,$submissions,Submission::getDBPrimaryKey(), '2');
                 
             $this->_app->response->setBody(Exercise::encodeExercise($res));
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetCourseExercises failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Exercise::encodeExercise(new Exercise()));
             $this->_app->stop();
         }

@@ -149,7 +149,7 @@ class DBExternalId
                 
             } else{
                 Logger::Log("PUT EditExternalId failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
@@ -174,13 +174,13 @@ class DBExternalId
         // checks the correctness of the query                             
         if ($result['status']>=200 && $result['status']<=299){
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(252);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE DeleteExternalId failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
             $this->_app->stop();
         }
     }
@@ -223,7 +223,7 @@ class DBExternalId
                 
             } else{
                 Logger::Log("POST SetExternalId failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
@@ -278,13 +278,13 @@ class DBExternalId
              
             $this->_app->response->setBody(ExternalId::encodeExternalId($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                  
         } else{
             Logger::Log("GET GetExternalId failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(ExternalId::encodeExternalId(new ExternalId()));
             $this->_app->stop();
         }
@@ -331,13 +331,13 @@ class DBExternalId
             
             $this->_app->response->setBody(ExternalId::encodeExternalId($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetAllExternalIds failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(ExternalId::encodeExternalId(new ExternalId()));
             $this->_app->stop();
         }
@@ -390,13 +390,13 @@ class DBExternalId
             
             $this->_app->response->setBody(ExternalId::encodeExternalId($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetExerciseSheet failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(ExternalId::encodeExternalId(new ExternalId()));
             $this->_app->stop();
         }

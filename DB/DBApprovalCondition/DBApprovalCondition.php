@@ -150,7 +150,7 @@ class DBApprovalCondition
                 
             } else{
                 Logger::Log("PUT EditApprovalCondition failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 251);
                 $this->_app->stop();
             }
         }
@@ -177,13 +177,13 @@ class DBApprovalCondition
         // checks the correctness of the query  
         if ($result['status']>=200 && $result['status']<=299){
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(252);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE DeleteApprovalCondition failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 252);
             $this->_app->stop();
         }
     }
@@ -226,7 +226,7 @@ class DBApprovalCondition
                 
             } else{
                 Logger::Log("POST SetApprovalCondition failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 251);
                 $this->_app->stop();
             }
         }
@@ -257,13 +257,13 @@ class DBApprovalCondition
  
             $this->_app->response->setBody(ApprovalCondition::encodeApprovalCondition($approvalConditions));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetAllApprovalConditions failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(ApprovalCondition::encodeApprovalCondition(new ApprovalCondition()));
             $this->_app->stop();
         }
@@ -308,13 +308,13 @@ class DBApprovalCondition
                 
             $this->_app->response->setBody(ApprovalCondition::encodeApprovalCondition($approvalCondition));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetApprovalCondition failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(ApprovalCondition::encodeApprovalCondition(new ApprovalCondition()));
             $this->_app->stop();
         }
@@ -355,13 +355,13 @@ class DBApprovalCondition
                 
             $this->_app->response->setBody(ApprovalCondition::encodeApprovalCondition($approvalConditions));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetCourseApprovalConditions failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(ApprovalCondition::encodeApprovalCondition(new ApprovalCondition()));
             $this->_app->stop();
         }

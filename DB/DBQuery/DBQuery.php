@@ -80,6 +80,14 @@ class DBQuery
         $this->_app->get('/' . $this->getPrefix(),
                         array($this,'queryResult'));
                         
+        // PUT QueryResult
+        $this->_app->put('/' . $this->getPrefix(),
+                        array($this,'queryResult'));
+
+        // POST QueryResult
+        $this->_app->post('/' . $this->getPrefix(),
+                        array($this,'queryResult'));       
+                        
         // starts slim only if the right prefix was received
         if (strpos ($this->_app->request->getResourceUri(),'/' . 
                     $this->getPrefix()) === 0){
@@ -101,7 +109,7 @@ class DBQuery
         // decode the received query data, as an object
         $obj = Query::decodeQuery($body);
 
-        $query_result = DBRequest::request($obj->getRequest()); 
+        $query_result = DBRequest::request($obj->getRequest(), $obj->getCheckSession()); 
             
         if ($query_result['errno']!=0 || !$query_result['content']){
             if ($query_result['errno']!=0)
@@ -112,7 +120,12 @@ class DBQuery
                 
             $obj = new Query();
             $this->_app->response->setBody(Query::encodeQuery($obj));
-            $this->_app->response->setStatus(409);
+            
+            if($query_result['errno']==401){
+                $this->_app->response->setStatus(401);
+            } else
+                $this->_app->response->setStatus(409);
+            
         } elseif (gettype($query_result['content'])=='boolean'){
             $obj = new Query();
             $obj->setResponse(array());
@@ -124,8 +137,10 @@ class DBQuery
                 $obj->setErrno($query_result['errno']);
             if (isset($query_result['numRows']))
                 $obj->setNumRows($query_result['numRows']);
+                
             $this->_app->response->setBody(Query::encodeQuery($obj));
             $this->_app->response->setStatus(200);
+            
         } else{
             $data = array();
             if (isset($query_result['numRows']) && $query_result['numRows'] > 0){
@@ -142,8 +157,10 @@ class DBQuery
                 $obj->setErrno($query_result['errno']);
             if (isset($query_result['numRows']))
                 $obj->setNumRows($query_result['numRows']);
+                
             $this->_app->response->setBody(Query::encodeQuery($obj));
             $this->_app->response->setStatus(200);
+            
         }    
 
     }

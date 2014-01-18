@@ -145,7 +145,7 @@ class DBFile
                 
             } else{
                 Logger::Log("PUT EditFile failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
@@ -187,20 +187,20 @@ class DBFile
                 
             if ($file!==null){
                 $this->_app->response->setBody(File::encodeFile($file));
-                $this->_app->response->setStatus($result['status']);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
                 if (isset($result['headers']['Content-Type']))
                     $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
             } else{
                 Logger::Log("DELETE RemoveFile failed (no file in db)",LogLevel::ERROR);
                 $this->_app->response->setBody(File::encodeFile(new File()));
-                $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(252);
                 $this->_app->stop();
             }
                 
         } else{
             Logger::Log("DELETE RemoveFile failed",LogLevel::ERROR);
             $this->_app->response->setBody(File::encodeFile(new File()));
-            $this->_app->response->setStatus(409);
+            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
             $this->_app->stop();
         }
     }
@@ -244,7 +244,7 @@ class DBFile
             } else{
                 Logger::Log("POST AddFile failed",LogLevel::ERROR);
                 $this->_app->response->setBody(File::encodeFile(new File()));
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
@@ -285,13 +285,13 @@ class DBFile
                 $file = $file[0];
                 
             $this->_app->response->setBody(File::encodeFile($file));
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetFile failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(File::encodeFile(new File()));
             $this->_app->stop();
         }
@@ -330,13 +330,13 @@ class DBFile
                 $file = $file[0];
                 
             $this->_app->response->setBody(File::encodeFile($file));
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetFileByHash failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(File::encodeFile(new File()));
             $this->_app->stop();
         }
@@ -367,13 +367,13 @@ class DBFile
                                         File::getDBConvert());
                 
             $this->_app->response->setBody(File::encodeFile($file));
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetAllFiles failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(File::encodeFile(new File()));
             $this->_app->stop();
         }

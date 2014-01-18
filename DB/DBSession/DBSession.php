@@ -155,7 +155,7 @@ class DBSession
                 
             } else{
                 Logger::Log("PUT EditSession failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
@@ -178,13 +178,13 @@ class DBSession
                                         array("seid" => $seid));    
                                         
         if ($result['status']>=200 && $result['status']<=299){
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(252);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE RemoveSession failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
             $this->_app->stop();
         }
     }
@@ -225,7 +225,7 @@ class DBSession
                 
             } else{
                 Logger::Log("PUT RemoveSession failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
@@ -250,13 +250,13 @@ class DBSession
                                         array("userid" => $userid));    
                                         
         if ($result['status']>=200 && $result['status']<=299){
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(252);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE RemoveUserSession failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
             $this->_app->stop();
         }
     }
@@ -282,7 +282,8 @@ class DBSession
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
                                             "Sql/SetSession.sql", 
-                                            array("values" => $data));                   
+                                            array("values" => $data),
+                                            false);                   
             
             // checks the correctness of the query   
             if ($result['status']>=200 && $result['status']<=299){
@@ -292,7 +293,7 @@ class DBSession
                 
             } else{
                 Logger::Log("POST AddSession failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
@@ -333,13 +334,13 @@ class DBSession
                 $session = $session[0];
             
             $this->_app->response->setBody(Session::encodeSession($session));
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetUserSession failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Session::encodeSession(new Session()));
             $this->_app->stop();
         }
@@ -374,13 +375,13 @@ class DBSession
                                             Session::getDBConvert());
             
             $this->_app->response->setBody(Session::encodeSession($session));
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetSessionUser failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Session::encodeSession(new Session()));
             $this->_app->stop();
         }
@@ -411,13 +412,13 @@ class DBSession
                                         Session::getDBConvert());
           
             $this->_app->response->setBody(Session::encodeSession($session));
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetAllSessions failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Session::encodeSession(new Session()));
             $this->_app->stop();
         }

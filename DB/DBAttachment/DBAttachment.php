@@ -156,7 +156,7 @@ class DBAttachment
                 
             } else{
                 Logger::Log("PUT EditAttachment failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 251);
                 $this->_app->stop();
             }
         }
@@ -182,13 +182,13 @@ class DBAttachment
             
         // checks the correctness of the query  
         if ($result['status']>=200 && $result['status']<=299){
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(252);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE DeleteAttachment failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 252);
             $this->_app->stop();
         }
     }
@@ -231,7 +231,7 @@ class DBAttachment
                 
             } else{
                 Logger::Log("POST SetAttachment failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 251);
                 $this->_app->stop();
             }
         }
@@ -289,13 +289,13 @@ class DBAttachment
                 
             $this->_app->response->setBody(Attachment::encodeAttachment($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetAttachment failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Attachment::encodeAttachment(new Attachment()));
             $this->_app->stop();
         }
@@ -343,13 +343,13 @@ class DBAttachment
                 
             $this->_app->response->setBody(Attachment::encodeAttachment($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetAllAttachments failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Attachment::encodeAttachment(new Attachment()));
             $this->_app->stop();
         }
@@ -402,13 +402,13 @@ class DBAttachment
                 
             $this->_app->response->setBody(Attachment::encodeAttachment($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetExerciseAttachments failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Attachment::encodeAttachment(new Attachment()));
             $this->_app->stop();
         }
@@ -461,13 +461,13 @@ class DBAttachment
                 
             $this->_app->response->setBody(Attachment::encodeAttachment($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetSheetAttachments failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Attachment::encodeAttachment(new Attachment()));
             $this->_app->stop();
         }
