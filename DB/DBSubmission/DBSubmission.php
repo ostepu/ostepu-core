@@ -1,6 +1,9 @@
 <?php
 /**
  * @file DBSubmission.php contains the DBSubmission class
+ * 
+ * @author Till Uhlig
+ * @author Felix Schmidt 
  */ 
 
 require_once( 'Include/Slim/Slim.php' );
@@ -22,8 +25,6 @@ if (!$com->used())
     
 /**
  * A class, to abstract the "Submission" table from database
- *
- * @author Till Uhlig
  */
 class DBSubmission
 {
@@ -68,10 +69,13 @@ class DBSubmission
     }
     
     /**
-     * the component constructor
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to
+     * the functions.
      *
      * @param Component $conf component data
-     */ 
+     */
     public function __construct($conf)
     {
         // initialize component
@@ -150,11 +154,15 @@ class DBSubmission
             $this->_app->run();
         }
     }
-    
+
+
     /**
-     * GET GetExerciseSubmissions
+     * Returns all submissions (including overwritten ones) of a given exercise.
      *
-     * @param int $eid a database exercise identifier
+     * Called when this component receives an HTTP GET request to
+     * /submission/exercise/$eid(/).
+     *
+     * @param string $eid The id of the exercise.
      */
     public function getExerciseSubmissions($eid)
     { 
@@ -213,9 +221,12 @@ class DBSubmission
     }
 
     /**
-     * PUT EditSubmission
+     * Edits a submission.
      *
-     * @param int $suid a database Submission identifier
+     * Called when this component receives an HTTP PUT request to
+     * /submission/submission/$suid(/) or /submission/$suid(/).
+     *
+     * @param string $suid The id of the submission which is being updated.
      */
     public function editSubmission($suid)
     {
@@ -256,9 +267,12 @@ class DBSubmission
     }
     
     /**
-     * DELETE DeleteSubmission
+     * Deletes a submission.
      *
-     * @param int $suid a database submission identifier
+     * Called when this component receives an HTTP DELETE request to
+     * /submission/submission/$suid(/) or /submission/$suid(/).
+     *
+     * @param string $suid The id of the submission which is being deleted.
      */
     public function deleteSubmission($suid)
     {
@@ -288,7 +302,11 @@ class DBSubmission
     }
     
     /**
-     * POST SetSubmission
+     * Creates a submission and then returns it.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /submission(/).
+     * The request body should contain a JSON object representing the new submission.
      */
     public function setSubmission()
     {
@@ -331,9 +349,12 @@ class DBSubmission
             }
         }
     }
-    
+
     /**
-     * GET GetAllSubmissions
+     * Returns all submissions.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /submission/submission(/) or /submission(/).
      */
     public function getAllSubmissions()
     {    
@@ -389,12 +410,17 @@ class DBSubmission
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetGroupSubmissions
+     * Returns all submissions (including overwritten ones) of a given group
+     * of a certain exercise sheet.
      *
-     * @param int $userid a database user identifier
-     * @param int $esid a database exericse sheet identifier
+     * Called when this component receives an HTTP GET request to
+     * /submission/group/user/$userid/exercisesheet/$esid(/).
+     *
+     * @param int $userid The id or the username of the user.
+     * @param int $esid The id of the exercise sheet.
      */
     public function getGroupSubmissions($userid, $esid)
     {         
@@ -452,12 +478,17 @@ class DBSubmission
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetGroupSelectedSubmissions
+     * Returns the submissions of a given group of a certain exercise sheet
+     * which should be marked.
      *
-     * @param int $esid a database exericse sheet identifier
-     * @param int $userid a database user identifier
+     * Called when this component receives an HTTP GET request to
+     * /submission/group/user/$userid/exercisesheet/$esid/selected(/).
+     *
+     * @param int $userid The id or the username of the user.
+     * @param int $esid The id of the exercise sheet.
      */
     public function getGroupSelectedSubmissions($userid, $esid)
     {         
@@ -515,12 +546,17 @@ class DBSubmission
             $this->_app->stop();
         }
     }
-    
-   /**
-     * GET GetGroupExerciseSubmissions
+
+
+    /**
+     * Returns all submissions (including overwritten ones) of a given group
+     * of a certain exercise.
      *
-     * @param int $userid a database user identifier
-     * @param int $eid a database exercise identifier
+     * Called when this component receives an HTTP GET request to
+     * /submission/group/user/$userid/exercise/$eid(/).
+     *
+     * @param int $userid The id or the username of the user.
+     * @param int $eid The id of the exercise.
      */
     public function getGroupExerciseSubmissions($userid, $eid)
     {         
@@ -578,12 +614,17 @@ class DBSubmission
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetGroupSelectedExerciseSubmissions
+     * Returns the submissions of a given group of a certain exercise
+     * which should be marked.
      *
-     * @param int $userid a database user identifier
-     * @param int $eid a database exercise identifier
+     * Called when this component receives an HTTP GET request to
+     * /submission/group/user/$userid/exercise/$eid/selected(/).
+     *
+     * @param int $userid The id or the username of the user.
+     * @param int $eid The id of the exercise.
      */
     public function getGroupSelectedExerciseSubmissions($userid, $eid)
     {         
@@ -641,11 +682,15 @@ class DBSubmission
             $this->_app->stop();
         }
     } 
-    
+
+
     /**
-     * GET GetSubmission
+     * Returns a submission.
      *
-     * @param int $suid a database submission identifier
+     * Called when this component receives an HTTP GET request to
+     * /submission/submission/$suid(/) or /submission/$suid(/).
+     *
+     * @param int $suid The id of the submission.
      */
     public function getSubmission($suid)
     { 
@@ -702,11 +747,16 @@ class DBSubmission
             $this->_app->stop();
         }
     } 
-    
+
+
     /**
-     * GET GetSheetSubmissions
+     * Returns all submissions (including overwritten ones) of a given
+     * exercise sheet.
      *
-     * @param int $esid a database exercise sheet identifier
+     * Called when this component receives an HTTP GET request to
+     * /submission/exercisesheet/$esid(/).
+     *
+     * @param int $esid The id of the exercise sheet.
      */
     public function getSheetSubmissions($esid)
     { 
@@ -763,11 +813,16 @@ class DBSubmission
             $this->_app->stop();
         }
     } 
-    
+
+
     /**
-     * GET GetSelectedSheetSubmissions
+     * Returns all submissions of a given exercise sheet which
+     * should be marked.
      *
-     * @param int $esid a database exercise sheet identifier
+     * Called when this component receives an HTTP GET request to
+     * /submission/exercisesheet/$esid/selected(/).
+     *
+     * @param int $esid The id of the exercise sheet.
      */
     public function getSelectedSheetSubmissions($esid)
     { 
@@ -824,11 +879,16 @@ class DBSubmission
             $this->_app->stop();
         }
     } 
-    
+
+
     /**
-     * GET GetSelectedExerciseSubmissions
+     * Returns all submissions of a given exercise which
+     * should be marked.
      *
-     * @param int $eid a database exercise identifier
+     * Called when this component receives an HTTP GET request to
+     * /submission/exercise/$eid/selected(/).
+     *
+     * @param string $eid The id of the exercise.
      */
     public function getSelectedExerciseSubmissions($eid)
     { 
@@ -887,10 +947,14 @@ class DBSubmission
     } 
 
     /**
-     * GET GetUserExerciseSubmissions
+     * Returns all submissions (including overwritten ones) of a given user 
+     * of a certain exercise.
      *
-     * @param int $userid a database user identifier
-     * @param int $eid a database exercise identifier
+     * Called when this component receives an HTTP GET request to
+     * /submission/exercise/$eid/selected(/).
+     *
+     * @param string $userid The id or the username of the user.
+     * @param string $eid The id of the exercise.
      */
     public function getUserExerciseSubmissions($userid,$eid)
     { 
