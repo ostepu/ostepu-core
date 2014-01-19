@@ -26,7 +26,7 @@ AUTO_INCREMENT = 1;
 CREATE TABLE IF NOT EXISTS `uebungsplattform`.`File` (
   `F_id` INT NOT NULL AUTO_INCREMENT,
   `F_displayName` VARCHAR(255) NULL,
-  `F_address` CHAR(55) NULL,
+  `F_address` CHAR(55) NOT NULL,
   `F_timeStamp` BIGINT NULL DEFAULT 0,
   `F_fileSize` INT NULL,
   `F_hash` CHAR(40) NULL,
@@ -254,7 +254,7 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`Submission` (
   `S_accepted` TINYINT(1) NOT NULL DEFAULT false,
   `E_id` INT NOT NULL,
   `ES_id` INT NULL,
-  `S_status` INT NULL DEFAULT 1,
+  `S_flag` INT NULL DEFAULT 1,
   PRIMARY KEY (`S_id`),
   UNIQUE INDEX `S_id_UNIQUE` USING BTREE (`S_id` ASC),
   INDEX `redundanz5` USING BTREE (`ES_id` ASC, `E_id` ASC),
@@ -722,7 +722,7 @@ USE `uebungsplattform`$$
 CREATE TRIGGER `ExerciseType_BDEL` BEFORE DELETE ON `ExerciseType` FOR EACH ROW
 BEGIN
 DELETE FROM `Exercise` WHERE ET_id = OLD.ET_id;
-DELETE FROM `ApprovalConditions` WHERE ET_id = OLD.ET_id;
+DELETE FROM `ApprovalCondition` WHERE ET_id = OLD.ET_id;
 END;
 $$
 
