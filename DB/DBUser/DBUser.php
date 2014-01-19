@@ -229,7 +229,7 @@ class DBUser
     }
     
     /**
-     * Adds a user.
+     * Adds a user and then returns the created user.
      *
      * Called when this component receives an HTTP POST request to
      * /user(/).
@@ -350,7 +350,7 @@ class DBUser
      * Returns a user.
      *
      * Called when this component receives an HTTP GET request to
-     * user/$userid(/) or user/user/$userid(/).
+     * /user/$userid(/) or user/user/$userid(/).
      *
      * @param string $userid The id or the username of the user that should be returned.
      */
