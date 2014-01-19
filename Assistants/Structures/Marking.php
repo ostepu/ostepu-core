@@ -393,7 +393,7 @@ class Marking extends Object implements JsonSerializable
         if ($this->tutorComment!==null) $list['tutorComment'] = $this->tutorComment;
         if ($this->file!==null) $list['file'] = $file->file;
         if ($this->points!==null) $list['points'] = $this->points;
-        if ($this->outstanding!==array()) $list['outstanding'] = $this->outstanding;
+        if ($this->outstanding!==null) $list['outstanding'] = $this->outstanding;
         if ($this->status!==null) $list['status'] = $this->status;
         if ($this->date!==null) $list['date'] = $this->date; 
         return $list;

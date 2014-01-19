@@ -235,7 +235,31 @@ class Submission extends Object implements JsonSerializable
         $this->exerciseNumber = $value;
     }  
    
-   
+    /**
+     * @var int $flag a status flag for submissions, like deleted
+     */
+    private $flag = null;
+    
+    /**
+     * the $flag getter
+     *
+     * @return the value of $flag
+     */ 
+    public function getFlag()
+    {
+        return $this->flag;
+    }
+    
+    /**
+     * the $flag setter
+     *
+     * @param int $value the new value for $flag
+     */ 
+    public function setFlag($value)
+    {
+        $this->flag = $value;
+    }  
+    
     public function createSubmission($submissionId,$studentId,$fileId,$exerciseId,$comment,$accepted,$date)
     {
         return new Submission(array('id' => $submissionId,
@@ -244,6 +268,7 @@ class Submission extends Object implements JsonSerializable
         'comment' => $comment, 
         'accepted' => $accepted, 
         'date' => $date, 
+        'flag' => $flag, 
         'file' => array('fileId' => $fileId)));
     }
     
@@ -262,6 +287,7 @@ class Submission extends Object implements JsonSerializable
            'S_comment' => 'comment',
            'S_accepted' => 'accepted',
            'S_date' => 'date',
+           'S_flag' => 'flag',
            'S_selected' => 'selectedForGroup'
         );
     }
@@ -283,6 +309,7 @@ class Submission extends Object implements JsonSerializable
         if ($this->accepted != null) $this->addInsertData($values, 'S_accepted', DBJson::mysql_real_escape_string($this->accepted));
         if ($this->date != null) $this->addInsertData($values, 'S_date', DBJson::mysql_real_escape_string($this->date));
         if ($this->selectedForGroup != null) $this->addInsertData($values, 'S_selected', DBJson::mysql_real_escape_string($this->selectedForGroup));
+        if ($this->flag != null) $this->addInsertData($values, 'S_flag', DBJson::mysql_real_escape_string($this->flag));
 
         if ($values != ""){
             $values=substr($values,1);
@@ -369,6 +396,7 @@ class Submission extends Object implements JsonSerializable
         if ($this->selectedForGroup!==null) $list['selectedForGroup'] = $this->selectedForGroup;
         if ($this->date!==null) $list['date'] = $this->date;
         if ($this->exerciseNumber!==null) $list['exerciseNumber'] = $this->exerciseNumber;
+        if ($this->flag!==null) $list['flag'] = $this->flag;
         return $list;  
     }
 }
