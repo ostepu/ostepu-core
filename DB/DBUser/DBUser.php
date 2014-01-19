@@ -1,6 +1,9 @@
 <?php
 /**
- * @file DBUser.php contains the DBUser class
+ * @file DBUser.php Contains the DBUser class
+ * 
+ * @author Till Uhlig
+ * @author Felix Schmidt
  */ 
 
 require_once( 'Include/Slim/Slim.php' );
@@ -26,8 +29,6 @@ Logger::Log("end DBUser",LogLevel::DEBUG);
     
 /**
  * A class, to abstract the "User" table from database
- *
- * @author Till Uhlig
  */
 class DBUser
 {
@@ -71,11 +72,15 @@ class DBUser
         DBUser::$_prefix = $value;
     } 
     
+
     /**
-     * the component constructor
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to
+     * the functions.
      *
      * @param Component $conf component data
-     */ 
+     */
     public function __construct($conf)
     {
         // initialize component
@@ -102,7 +107,7 @@ class DBUser
         $this->_app->get('/' . $this->getPrefix() . '(/user)(/)',
                         array($this, 'getUsers'));
                         
-      // GET GetIncreaseUserFailedLogin
+        // GET GetIncreaseUserFailedLogin
         $this->_app->get('/' . $this->getPrefix() . '(/user)/:userid/IncFailedLogin(/)',
                         array($this,'getIncreaseUserFailedLogin'));  
                         
@@ -136,11 +141,15 @@ class DBUser
     }
     
 
-    
     /**
-     * PUT EditUser
+     * Edits a user.
      *
-     * @param string $userid a database user identifier
+     * Called when this component receives an HTTP PUT request to
+     * /user/$userid(/) or /user/user/$userid(/).
+     * The request body should contain a JSON object representing the user's new
+     * attributes
+     *
+     * @param string $userid The id or the username of the user that is beeing updated.
      */
     public function editUser($userid)
     {
@@ -177,11 +186,17 @@ class DBUser
             }
         }
     }
-    
+
+
     /**
-     * DELETE RemoveUser
+     * Deletes a user.
      *
-     * @param string $userid a database user identifier
+     * Called when this component receives an HTTP DELETE request to
+     * /user/$userid(/) or /user/user/$userid(/).
+     * The request body should contain a JSON object representing the user's new
+     * attributes
+     *
+     * @param string $userid The id or the username of the user that is beeing deleted.
      */
     public function removeUser($userid)
     {
@@ -214,7 +229,11 @@ class DBUser
     }
     
     /**
-     * POST AddUser
+     * Adds a user.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /user(/).
+     * The request body should contain a JSON object representing the new user.
      */
     public function addUser()
     {
@@ -257,9 +276,12 @@ class DBUser
         }
 
     }
-    
+
     /**
-     * GET GetUsers
+     * Returns all users.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /user(/) or /user/user(/).
      */
     public function getUsers()
     {
@@ -325,9 +347,12 @@ class DBUser
     }
 
     /**
-     * GET GetUser
+     * Returns a user.
      *
-     * @param string $userid a database user identifier
+     * Called when this component receives an HTTP GET request to
+     * user/$userid(/) or user/user/$userid(/).
+     *
+     * @param string $userid The id or the username of the user that should be returned.
      */
     public function getUser($userid)
     {
@@ -395,11 +420,14 @@ class DBUser
             $this->_app->response->setBody(User::encodeUser(new User()));
         }
     }
-    
+
     /**
-     * GET GetIncreaseUserFailedLogin
+     * Increases the number of failed login attempts of a user and then returns the user.
      *
-     * @param string $userid a database user identifier
+     * Called when this component receives an HTTP GET request to
+     * /user/$userid/IncFailedLogin(/) or /user/user/$userid/IncFailedLogin(/).
+     *
+     * @param string $userid The id or the username of the user.
      */
     public function getIncreaseUserFailedLogin($userid)
     {
@@ -466,11 +494,14 @@ class DBUser
             $this->_app->response->setBody(User::encodeUser(new User()));
         }
     }
-    
+
     /**
-     * GET GetCourseMember
+     * Returns all users of a course.
      *
-     * @param int $courseid a database course identifier
+     * Called when this component receives an HTTP GET request to
+     * /user/course/$courseid(/).
+     *
+     * @param int $courseid The id or the course.
      */
     public function getCourseMember($courseid)
     {     
@@ -538,12 +569,16 @@ class DBUser
             $this->_app->stop();
         }
     }
-    
+
     /**
-     * GET GetGroupMember
+     * Returns all members of the group the user is part of
+     * regarding a certain exercise sheet.
      *
-     * @param string $userid a database user identifier
-     * @param int $esid a database exercise sheet identifier
+     * Called when this component receives an HTTP GET request to
+     * /user/group/user/$userid/exercisesheet/$esid(/).
+     *
+     * @param string $userid The id or the username of the user.
+     * @param int $esid The id of the exercise sheet.
      */
     public function getGroupMember($userid, $esid)
     {   
@@ -613,11 +648,15 @@ class DBUser
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetUserByStatus
+     * Returns all users with a given status.
      *
-     * @param string $statusid a database course status identifier (0-4)
+     * Called when this component receives an HTTP GET request to
+     * /user/status/$statusid(/).
+     *
+     * @param string $statusid The status the users should have.
      */
     public function getUserByStatus($statusid)
     {
@@ -682,12 +721,17 @@ class DBUser
             $this->_app->response->setBody(User::encodeUser(new User()));
         }
     }
-    
+
+
     /**
-     * GET GetCourseUserByStatus
+     * Returns all users with a given status which are members of a 
+     * certain course.
      *
-     * @param string $courseid a database course identifier
-     * @param string $statusid a database course status identifier (0-4)
+     * Called when this component receives an HTTP GET request to
+     * /course/$courseid/status/$statusid(/).
+     *
+     * @param string $courseid The courseid of the course.
+     * @param string $statusid The status the users should have.
      */
     public function getCourseUserByStatus($courseid,$statusid)
     {
