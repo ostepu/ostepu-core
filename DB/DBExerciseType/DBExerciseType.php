@@ -1,7 +1,10 @@
 <?php
 /**
  * @file DBExerciseType.php contains the DBExerciseType class
- */ 
+ * 
+ * @author Till Uhlig
+ * @author Felix Schmidt
+ */  
 
 require_once( 'Include/Slim/Slim.php' );
 include_once( 'Include/Structures.php' );
@@ -22,8 +25,6 @@ if (!$com->used())
     
 /**
  * A class, to abstract the "ExerciseType" table from database
- *
- * @author Till Uhlig
  */
 class DBExerciseType
 {
@@ -66,12 +67,16 @@ class DBExerciseType
     {
         DBExerciseType::$_prefix = $value;
     }
-    
+
+
     /**
-     * the component constructor
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to
+     * the functions.
      *
      * @param Component $conf component data
-     */ 
+     */
     public function __construct($conf)
     {
         // initialize component
@@ -110,11 +115,17 @@ class DBExerciseType
             $this->_app->run();
         }
     }
-    
+
+
     /**
-     * PUT EditPossibleType
+     * Edits an exercise type.
      *
-     * @param int $etid a database exercise type identifier
+     * Called when this component receives an HTTP PUT request to
+     * /exercisetype/exercisetype/$etid(/) or /exercisetype/$etid(/).
+     * The request body should contain a JSON object representing the 
+     * exercise type's new attributes.
+     *
+     * @param int $etid The id or the exercise type.
      */
     public function editPossibleType($etid)
     {
@@ -153,11 +164,15 @@ class DBExerciseType
             }
         }
     }
-    
+
+
     /**
-     * DELETE DeletePossibleType
+     * Deletes an exercise type.
      *
-     * @param int $etid a database exercise type identifier
+     * Called when this component receives an HTTP DELETE request to
+     * /exercisetype/exercisetype/$etid(/) or /exercisetype/$etid(/).
+     *
+     * @param int $etid The id or the exercise type that is being deleted.
      */
     public function deletePossibleType($etid)
     {
@@ -185,9 +200,15 @@ class DBExerciseType
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * POST SetPossibleType
+     * Adds a new exercise type.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /exercisetype(/).
+     * The request body should contain a JSON object representing the 
+     * new exercise type's attributes.
      */
     public function setPossibleType()
     {
@@ -229,9 +250,13 @@ class DBExerciseType
             }
         }
     }
-    
+
+
     /**
-     * GET GetAllPossibleType
+     * Returns all exercise types.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /exercisetype(/) or /exercisetype/exercisetype(/).
      */
     public function getAllPossibleTypes()
     {      
@@ -267,11 +292,15 @@ class DBExerciseType
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetPossibleType
+     * Returns an exercise type.
      *
-     * @param int $etid a database exercise type identifier
+     * Called when this component receives an HTTP GET request to
+     * /exercisetype/$etid(/) or /exercisetype/exercisetype/$etid(/).
+     *
+     * @param string $etid The id of the exercise type that should be returned.
      */
     public function getPossibleType($etid)
     {        
