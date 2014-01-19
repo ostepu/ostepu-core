@@ -9,4 +9,4 @@
  
 UPDATE User
 SET $values
-WHERE U_id = '$userid'
+WHERE U_id = '$userid' or U_username = '$userid'

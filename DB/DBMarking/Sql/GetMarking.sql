@@ -32,6 +32,7 @@ SELECT
     S.S_date as S_date2,
     SS.S_id_selected as S_selected2,
     S.S_accepted as S_accepted2,
+    S.S_flag as S_flag2,   
     S.E_id as E_id2
 from
     Marking M
