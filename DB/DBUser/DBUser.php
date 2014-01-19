@@ -193,10 +193,8 @@ class DBUser
      *
      * Called when this component receives an HTTP DELETE request to
      * /user/$userid(/) or /user/user/$userid(/).
-     * The request body should contain a JSON object representing the user's new
-     * attributes
      *
-     * @param string $userid The id or the username of the user that is beeing deleted.
+     * @param string $userid The id or the username of the user that is being deleted.
      */
     public function removeUser($userid)
     {
@@ -227,7 +225,8 @@ class DBUser
             $this->_app->stop();            
         }
     }
-    
+
+
     /**
      * Adds a user and then returns the created user.
      *
@@ -276,6 +275,7 @@ class DBUser
         }
 
     }
+
 
     /**
      * Returns all users.
@@ -345,6 +345,7 @@ class DBUser
             $this->_app->stop();
         }
     }
+
 
     /**
      * Returns a user.
@@ -421,6 +422,7 @@ class DBUser
         }
     }
 
+
     /**
      * Increases the number of failed login attempts of a user and then returns the user.
      *
@@ -494,6 +496,7 @@ class DBUser
             $this->_app->response->setBody(User::encodeUser(new User()));
         }
     }
+
 
     /**
      * Returns all users of a course.
@@ -569,6 +572,7 @@ class DBUser
             $this->_app->stop();
         }
     }
+
 
     /**
      * Returns all members of the group the user is part of

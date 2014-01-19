@@ -1,6 +1,9 @@
 <?php
 /**
  * @file DBSession.php contains the DBSession class
+ * 
+ * @author Till Uhlig
+ * @author Felix Schmidt 
  */ 
 
 require_once( 'Include/Slim/Slim.php' );
@@ -18,11 +21,9 @@ $com = new CConfig(DBSession::getPrefix());
 // runs the DBSession
 if (!$com->used())
     new DBSession($com->loadConfig());  
-    
+
 /**
  * A class, to abstract the "Session" table from database
- *
- * @author Till Uhlig
  */
 class DBSession
 {
@@ -30,22 +31,22 @@ class DBSession
      * @var Slim $_app the slim object
      */ 
     private $_app=null;
-    
+
     /**
      * @var Component $_conf the component data object
      */ 
     private $_conf=null;
-    
+
     /**
      * @var Link[] $query a list of links to a query component
      */ 
     private $query=array();
-    
+
     /**
      * @var string $_prefix the prefixes, the class works with (comma separated)
      */ 
     private static $_prefix = "session";
-    
+
     /**
      * the $_prefix getter
      *
@@ -55,7 +56,7 @@ class DBSession
     {
         return DBSession::$_prefix;
     }
-    
+
     /**
      * the $_prefix setter
      *
@@ -65,12 +66,15 @@ class DBSession
     {
         DBSession::$_prefix = $value;
     }
-    
+
     /**
-     * the component constructor
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to
+     * the functions.
      *
      * @param Component $conf component data
-     */ 
+     */
     public function __construct($conf)
     {
         // initialize component
@@ -121,11 +125,17 @@ class DBSession
             $this->_app->run();
         }
     }
-    
+
+
     /**
-     * PUT EditSession
+     * Edits a session identified by a sessionId.
      *
-     * @param string $seid a database session identifier
+     * Called when this component receives an HTTP PUT request to
+     * /session/session/$seid(/) or /session/$seid(/).
+     * The request body should contain a JSON object representing the 
+     * sessions's new attributes.
+     *
+     * @param string $seid The id of the session which is being updated.
      */
     public function editSession($seid)
     {
@@ -160,11 +170,15 @@ class DBSession
             }
         }
     }
-    
+
+
     /**
-     * DELETE RemoveSession
+     * Deletes a session identified by a sessionId.
      *
-     * @param string $seid a database session identifier
+     * Called when this component receives an HTTP DELETE request to
+     * /session/session/$seid(/) or /session/$seid(/).
+     *
+     * @param string $seid The id of the session which is being deleted.
      */
     public function removeSession($seid)
     {
@@ -188,11 +202,17 @@ class DBSession
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * PUT RemoveSession
+     * Edits a session identified by an userId.
      *
-     * @param int $userid a database user identifier
+     * Called when this component receives an HTTP PUT request to
+     * /session/user/$userid(/).
+     * The request body should contain a JSON object representing the 
+     * sessions's new attributes.
+     *
+     * @param string $userid The id or the username of the user that is being updated.
      */
     public function editUserSession($userid)
     {
@@ -230,11 +250,15 @@ class DBSession
             }
         }
     }
-    
+
+
     /**
-     * DELETE RemoveUserSession
+     * Deletes a session identified by an userId.
      *
-     * @param int $userid a database user identifier
+     * Called when this component receives an HTTP DELETE request to
+     * /session/user/$userid(/).
+     *
+     * @param string $userid The id or the username of the user that is being deleted.
      */
     public function removeUserSession($userid)
     {
@@ -260,9 +284,14 @@ class DBSession
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * POST AddSession
+     * Adds a session.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /session(/).
+     * The request body should contain a JSON object representing the new session.
      */
     public function addSession()
     {
@@ -298,11 +327,15 @@ class DBSession
             }
         }
     }
-    
+
+
     /**
-     * GET GetUserSession
+     * Returns a session identified by an userId.
      *
-     * @param int $userid a database user identifier
+     * Called when this component receives an HTTP GET request to
+     * /session/user/$userid(/).
+     *
+     * @param string $userid The id or the username of the user.
      */
     public function getUserSession($userid)
     {
@@ -345,11 +378,15 @@ class DBSession
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetSessionUser
+     * Returns a session identified by a sessionId.
      *
-     * @param string $seid a database session identifier
+     * Called when this component receives an HTTP GET request to
+     * /session/session/$seid(/) or /session/$seid(/).
+     *
+     * @param string $seid The id or the session.
      */
     public function getSessionUser($seid)
     {
@@ -386,9 +423,13 @@ class DBSession
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetAllSessions
+     * Returns all sessions.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /session/session(/) or /session(/).
      */
     public function getAllSessions()
     {
