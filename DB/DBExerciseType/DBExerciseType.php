@@ -87,25 +87,25 @@ class DBExerciseType
         $this->_app = new \Slim\Slim();
         $this->_app->response->headers->set('Content-Type', 'application/json');
 
-        // PUT EditPossibleType
+        // PUT EditExerciseType
         $this->_app->put('/' . $this->getPrefix() . '(/exercisetype)/:etid(/)',
-                        array($this,'editPossibleType'));
+                        array($this,'editExerciseType'));
         
-        // DELETE DeletePossibleType
+        // DELETE DeleteExerciseType
         $this->_app->delete('/' . $this->getPrefix() . '(/exercisetype)/:etid(/)',
-                           array($this,'deletePossibleType'));
+                           array($this,'deleteExerciseType'));
         
-        // POST SetPossibleType
+        // POST SetExerciseType
         $this->_app->post('/' . $this->getPrefix() . '(/)',
-                         array($this,'setPossibleType'));  
+                         array($this,'setExerciseType'));  
         
-        // GET GetPossibleType
+        // GET GetExerciseType
         $this->_app->get('/' . $this->getPrefix() . '(/exercisetype)/:etid(/)',
-                        array($this,'getPossibleType'));
+                        array($this,'getExerciseType'));
         
-        // GET GetAllPossibleTypes
+        // GET GetAllExerciseTypes
         $this->_app->get('/' . $this->getPrefix() . '(/exercisetype)(/)',
-                        array($this,'getAllPossibleTypes'));
+                        array($this,'getAllExerciseTypes'));
                         
         // starts slim only if the right prefix was received
         if (strpos ($this->_app->request->getResourceUri(),'/' . 
@@ -127,9 +127,9 @@ class DBExerciseType
      *
      * @param int $etid The id or the exercise type.
      */
-    public function editPossibleType($etid)
+    public function editExerciseType($etid)
     {
-        Logger::Log("starts PUT EditPossibleType",LogLevel::DEBUG);
+        Logger::Log("starts PUT EditExerciseType",LogLevel::DEBUG);
         
         // checks whether incoming data has the correct data type
         DBJson::checkInput($this->_app, 
@@ -158,7 +158,7 @@ class DBExerciseType
                     $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
-                Logger::Log("PUT EditPossibleType failed",LogLevel::ERROR);
+                Logger::Log("PUT EditExerciseType failed",LogLevel::ERROR);
                 $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
@@ -174,9 +174,9 @@ class DBExerciseType
      *
      * @param int $etid The id or the exercise type that is being deleted.
      */
-    public function deletePossibleType($etid)
+    public function deleteExerciseType($etid)
     {
-        Logger::Log("starts DELETE DeletePossibleType",LogLevel::DEBUG);
+        Logger::Log("starts DELETE DeleteExerciseType",LogLevel::DEBUG);
         
         // checks whether incoming data has the correct data type
         DBJson::checkInput($this->_app, 
@@ -195,7 +195,7 @@ class DBExerciseType
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
-            Logger::Log("DELETE DeletePossibleType failed",LogLevel::ERROR);
+            Logger::Log("DELETE DeleteExerciseType failed",LogLevel::ERROR);
                 $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
             $this->_app->stop();
         }
@@ -210,9 +210,9 @@ class DBExerciseType
      * The request body should contain a JSON object representing the 
      * new exercise type's attributes.
      */
-    public function setPossibleType()
+    public function setExerciseType()
     {
-        Logger::Log("starts POST SetPossibleType",LogLevel::DEBUG);
+        Logger::Log("starts POST SetExerciseType",LogLevel::DEBUG);
         
         // decode the received exercise type data, as an object
         $insert = ExerciseType::decodeExerciseType($this->_app->request->getBody());
@@ -244,7 +244,7 @@ class DBExerciseType
                     $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
-                Logger::Log("POST SetPossibleType failed",LogLevel::ERROR);
+                Logger::Log("POST SetExerciseType failed",LogLevel::ERROR);
                 $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
@@ -258,9 +258,9 @@ class DBExerciseType
      * Called when this component receives an HTTP GET request to
      * /exercisetype(/) or /exercisetype/exercisetype(/).
      */
-    public function getAllPossibleTypes()
+    public function getAllExerciseTypes()
     {      
-        Logger::Log("starts GET GetAllPossibleType",LogLevel::DEBUG);
+        Logger::Log("starts GET GetAllExerciseType",LogLevel::DEBUG);
         
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
@@ -286,7 +286,7 @@ class DBExerciseType
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
-            Logger::Log("GET GetAllPossibleType failed",LogLevel::ERROR);
+            Logger::Log("GET GetAllExerciseType failed",LogLevel::ERROR);
                 $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(ExerciseTypes::encodeExerciseType(new ExerciseType()));
             $this->_app->stop();
@@ -302,9 +302,9 @@ class DBExerciseType
      *
      * @param string $etid The id of the exercise type that should be returned.
      */
-    public function getPossibleType($etid)
+    public function getExerciseType($etid)
     {        
-        Logger::Log("starts GET GetPossibleType",LogLevel::DEBUG);
+        Logger::Log("starts GET GetExerciseType",LogLevel::DEBUG);
         
         // checks whether incoming data has the correct data type
         DBJson::checkInput($this->_app, 
@@ -341,7 +341,7 @@ class DBExerciseType
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
-            Logger::Log("GET GetPossibleType failed",LogLevel::ERROR);
+            Logger::Log("GET GetExerciseType failed",LogLevel::ERROR);
                 $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(ExerciseType::encodeExerciseType(new ExerciseType()));
             $this->_app->stop();
