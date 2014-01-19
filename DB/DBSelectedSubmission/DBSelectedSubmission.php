@@ -1,7 +1,10 @@
 <?php
 /**
  * @file DBSelectedSubmission.php contains the DBSelectedSubmission class
- */ 
+ *
+ * @author Till Uhlig
+ * @author Felix Schmidt
+ */
 
 require_once( 'Include/Slim/Slim.php' );
 include_once( 'Include/Structures.php' );
@@ -22,8 +25,6 @@ if (!$com->used())
     
 /**
  * A class, to abstract the "SelectedSubmission" table from database
- *
- * @author Till Uhlig
  */
 class DBSelectedSubmission
 {
@@ -66,12 +67,16 @@ class DBSelectedSubmission
     {
         DBSelectedSubmission::$_prefix = $value;
     }
-    
+
+
     /**
-     * the component constructor
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to
+     * the functions.
      *
      * @param Component $conf component data
-     */ 
+     */
     public function __construct($conf)
     {
         // initialize component
@@ -112,12 +117,17 @@ class DBSelectedSubmission
             $this->_app->run();
         }
     }
-    
+
+
     /**
-     * PUT EditSelectedSubmission
+     * Sets the submission that should be marked.
      *
-     * @param int $userid a database user identifier
-     * @param int $eid a database exercise identifier
+     * Called when this component receives an HTTP PUT request to
+     * /selectedsubmission/leader/$userid/exercise/$eid(/).
+     * The request body should contain a JSON object representing the new selectedSubmission.
+     *
+     * @param string $userid The id or the user which leads the group.
+     * @param int $eid The id of the exercise.
      */
     public function editSelectedSubmission($userid, $eid)
     {
@@ -157,12 +167,16 @@ class DBSelectedSubmission
             }
         }
     }
-    
+
+
     /**
-     * DELETE DeleteSelectedSubmission
+     * Unsets the submission that should be marked.
      *
-     * @param int $userid a database user identifier
-     * @param int $eid a database exercise identifier
+     * Called when this component receives an HTTP DELETE request to
+     * /selectedsubmission/leader/$userid/exercise/$eid(/).
+     *
+     * @param string $userid The id or the user which leads the group.
+     * @param int $eid The id of the exercise.
      */
     public function deleteSelectedSubmission($userid, $eid)
     {
@@ -191,9 +205,14 @@ class DBSelectedSubmission
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * POST SetSelectedSubmission
+     * Sets the submission that should be marked.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /selectedsubmission/leader/$userid/exercise/$eid(/).
+     * The request body should contain a JSON object representing the new selectedSubmission.
      */
     public function setSelectedSubmission()
     {
@@ -229,9 +248,15 @@ class DBSelectedSubmission
             }
         }
     }
-    
+
+
     /**
-     * GET GetExerciseSelected
+     * Returns the submission that should be marked.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /selectedsubmission/exercise/$eid(/).
+     *
+     * @param int $eid The id of the exercise.
      */
     public function getExerciseSelected($eid)
     {    
@@ -271,9 +296,15 @@ class DBSelectedSubmission
             $this->_app->stop();
         }
     } 
-    
+
+
     /**
-     * GET GetSheetSelected
+     * Returns all exercises that should be marked to a given exercise sheet.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /selectedsubmission/exercisesheet/$esid(/).
+     *
+     * @param int $eid The id of the exercise sheet.
      */
     public function getSheetSelected($esid)
     {  
