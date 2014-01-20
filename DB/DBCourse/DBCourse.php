@@ -95,9 +95,9 @@ class DBCourse
         $this->_app->delete('/' . $this->getPrefix() . '(/course)/:courseid(/)',
                            array($this,'deleteCourse'));
         
-        // POST SetCourse
+        // POST AddCourse
         $this->_app->post('/' . $this->getPrefix(),
-                         array($this,'setCourse'));
+                         array($this,'addCourse'));
                          
         // GET GetCourse
         $this->_app->get('/' . $this->getPrefix() . '(/course)/:courseid(/)',
@@ -215,9 +215,9 @@ class DBCourse
      * The request body should contain a JSON object representing the course's 
      * attributes.
      */
-    public function setCourse()
+    public function addCourse()
     {
-        Logger::Log("starts POST SetCourse",LogLevel::DEBUG);
+        Logger::Log("starts POST AddCourse",LogLevel::DEBUG);
         
         // decode the received course data, as an object
         $insert = Course::decodeCourse($this->_app->request->getBody());
@@ -232,7 +232,7 @@ class DBCourse
             
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
-                                            "Sql/SetCourse.sql", 
+                                            "Sql/AddCourse.sql", 
                                             array("values" => $data));                   
             
             // checks the correctness of the query
@@ -249,7 +249,7 @@ class DBCourse
                     $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
-                Logger::Log("POST SetCourse failed",LogLevel::ERROR);
+                Logger::Log("POST AddCourse failed",LogLevel::ERROR);
                 $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
