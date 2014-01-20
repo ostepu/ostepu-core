@@ -95,9 +95,9 @@ class DBAttachment
         $this->_app->delete('/' . $this->getPrefix() . '(/attachment)/:aid(/)',
                            array($this,'deleteAttachment'));
         
-        // POST SetAttachment
+        // POST AddAttachment
         $this->_app->post('/' . $this->getPrefix() . '(/)',
-                         array($this,'setAttachment'));    
+                         array($this,'addAttachment'));    
         
         // GET GetAttachment
         $this->_app->get('/' . $this->getPrefix() . '(/attachment)/:aid(/)',
@@ -217,9 +217,9 @@ class DBAttachment
      * The request body should contain a JSON object representing the 
      * attachment's attributes.
      */
-    public function setAttachment()
+    public function addAttachment()
     {
-        Logger::Log("starts POST SetAttachment",LogLevel::DEBUG);
+        Logger::Log("starts POST AddAttachment",LogLevel::DEBUG);
         
         // decode the received attachment data, as an object
         $insert = Attachment::decodeAttachment($this->_app->request->getBody());
@@ -234,7 +234,7 @@ class DBAttachment
             
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
-                                            "Sql/SetAttachment.sql", 
+                                            "Sql/AddAttachment.sql", 
                                             array("values" => $data));                   
             
             // checks the correctness of the query
@@ -251,7 +251,7 @@ class DBAttachment
                     $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
-                Logger::Log("POST SetAttachment failed",LogLevel::ERROR);
+                Logger::Log("POST AddAttachment failed",LogLevel::ERROR);
                 $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 251);
                 $this->_app->stop();
             }
