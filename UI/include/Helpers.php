@@ -53,6 +53,7 @@ function is_assoc($array)
  *
  * Uses HTTP GET request to get contents a $url
  * @param string $url The URL that should be opnened.
+ * @param bool $auth If true then send sessioninformation in header.
  * @param string $message The Response Message e.g. 404. Argument is optional.
  */
 function http_get($url, $auth, &$message = 0)
@@ -81,7 +82,7 @@ function http_get($url, $auth, &$message = 0)
  * @param string $url The URL that should be opnened.
  * @param arrray $data An associative array that contains the fields that should
  * be postet to $url
- * @param bool $auth A Boolean 
+ * @param bool $auth If true then send sessioninformation in header.
  * @param string $message The Response Message e.g. 404. Argument is optional.
  */
 function http_post_data($url, $data, $auth, &$message = 0)
@@ -111,17 +112,24 @@ function http_post_data($url, $data, $auth, &$message = 0)
  * @param string $url The URL that should be opnened.
  * @param arrray $data An associative array that contains the fields that should
  * be postet to $url
+ * @param bool $auth If true then send sessioninformation in header.
+ * @param string $message The Response Message e.g. 404. Argument is optional.
  */
-function http_put_data($url, $data)
+function http_put_data($url, $data, $auth, &$message = 0)
 {
     $c = curl_init();
 
     curl_setopt($c, CURLOPT_URL, $url);
     curl_setopt($c, CURLOPT_POSTFIELDS, $data);
     curl_setopt($c, CURLOPT_CUSTOMREQUEST, 'PUT');
+    if ($auth) {
+        $date = $_SERVER['REQUEST_TIME'];
+        curl_setopt($c, CURLOPT_HTTPHEADER, array("User: 3","Session: abc","Date : {$date}"));
+    }
     curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
 
     $retData = curl_exec($c);
+    $message = curl_getinfo($c, CURLINFO_HTTP_CODE);
     curl_close($c);
 
     return $retData;
@@ -133,15 +141,20 @@ function http_put_data($url, $data)
  * Uses HTTP DELETE request to get contents a $url
  * @param string $url The URL that should be opnened.
  */
-function http_delete($url)
+function http_delete($url, $auth, &$message = 0)
 {
     $c = curl_init();
 
     curl_setopt($c, CURLOPT_URL, $url);
     curl_setopt($c, CURLOPT_CUSTOMREQUEST, 'DELETE');
+    if ($auth) {
+        $date = $_SERVER['REQUEST_TIME'];
+        curl_setopt($c, CURLOPT_HTTPHEADER, array("User: 3","Session: abc","Date : {$date}"));
+    }
     curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
 
     $retData = curl_exec($c);
+    $message = curl_getinfo($c, CURLINFO_HTTP_CODE);
     curl_close($c);
 
     return $retData;
