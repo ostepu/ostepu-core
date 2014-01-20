@@ -440,7 +440,8 @@ class DBUser
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetIncreaseUserFailedLogin.sql", 
-                                        array("userid" => $userid));
+                                        array("userid" => $userid),
+                                        false);
         
         // checks the correctness of the query                                 
         if ($result['status']>=200 && $result['status']<=299){
