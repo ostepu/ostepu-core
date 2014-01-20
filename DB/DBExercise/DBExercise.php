@@ -93,9 +93,9 @@ class DBExercise
         $this->_app->delete('/' . $this->getPrefix() . '(/exercise)/:eid(/)',
                            array($this,'deleteExercise'));
         
-        // POST SetExercise
+        // POST AddExercise
         $this->_app->post('/' . $this->getPrefix() .'(/)',
-                         array($this,'setExercise'));    
+                         array($this,'addExercise'));    
         
         // GET GetExercise
         $this->_app->get('/' . $this->getPrefix() . '(/exercise)/:eid(/)',
@@ -216,7 +216,7 @@ class DBExercise
      * The request body should contain a JSON object representing the exercise's 
      * attributes.
      */
-    public function setExercise()
+    public function addExercise()
     {
         Logger::Log("starts POST SetExercise",LogLevel::DEBUG);
         
@@ -233,7 +233,7 @@ class DBExercise
             
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
-                                            "Sql/SetExercise.sql", 
+                                            "Sql/AddExercise.sql", 
                                             array("values" => $data));                   
            
             // checks the correctness of the query    
