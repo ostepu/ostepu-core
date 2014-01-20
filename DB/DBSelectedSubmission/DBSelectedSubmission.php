@@ -137,10 +137,10 @@ class DBSelectedSubmission
         DBJson::checkInput($this->_app, 
                             ctype_digit($userid),
                             ctype_digit($eid));
-                            
+
         // decode the received selected submission data, as an object
-        $insert = SelectedSubmission::SelectedSubmission($this->_app->request->getBody());
-        
+        $insert = SelectedSubmission::decodeSelectedSubmission($this->_app->request->getBody());
+
         // always been an array
         if (!is_array($insert))
             $insert = array($insert);
@@ -148,12 +148,12 @@ class DBSelectedSubmission
         foreach ($insert as $in){
             // generates the update data for the object
             $data = $in->getInsertData();
-            
+ 
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
                                     "Sql/EditSelectedSubmission.sql", 
-                                    array("userid" => $userid,"eid" => $eid));                   
-            
+                                    array("userid" => $userid,"eid" => $eid, "values" => $data));                   
+ 
             // checks the correctness of the query
             if ($result['status']>=200 && $result['status']<=299){
                 $this->_app->response->setStatus(201);
