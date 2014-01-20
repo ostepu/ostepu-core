@@ -97,9 +97,9 @@ class DBMarking
                             '(/marking)/:mid(/)',
                             array($this,'deleteMarking'));
         
-        // POST SetMarking
+        // POST AddMarking
         $this->_app->post('/' . $this->getPrefix() . '(/)',
-                         array($this,'setMarking'));  
+                         array($this,'addMarking'));  
         
         // GET GetMarking
         $this->_app->get('/' . $this->getPrefix() . '(/marking)/:mid(/)',
@@ -238,9 +238,9 @@ class DBMarking
      * The request body should contain a JSON object representing the 
      * marking's attributes.
      */
-    public function setMarking()
+    public function addMarking()
     {
-        Logger::Log("starts OST SetMarking",LogLevel::DEBUG);
+        Logger::Log("starts OST AddMarking",LogLevel::DEBUG);
         
         // decode the received marking data, as an object
         $insert = Marking::decodeMarking($this->_app->request->getBody());
@@ -255,7 +255,7 @@ class DBMarking
             
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
-                                            "Sql/SetMarking.sql", 
+                                            "Sql/AddMarking.sql", 
                                             array("values" => $data));                   
             
             // checks the correctness of the query 
@@ -273,7 +273,7 @@ class DBMarking
                     $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
-                Logger::Log("POST SetMarking failed",LogLevel::ERROR);
+                Logger::Log("POST AddMarking failed",LogLevel::ERROR);
                 $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
