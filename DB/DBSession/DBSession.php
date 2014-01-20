@@ -212,7 +212,7 @@ class DBSession
      * The request body should contain a JSON object representing the 
      * sessions's new attributes.
      *
-     * @param string $userid The id or the username of the user that is being updated.
+     * @param int $userid The id of the user that is being updated.
      */
     public function editUserSession($userid)
     {
@@ -258,7 +258,7 @@ class DBSession
      * Called when this component receives an HTTP DELETE request to
      * /session/user/$userid(/).
      *
-     * @param string $userid The id or the username of the user that is being deleted.
+     * @param int $userid The id of the user that is being deleted.
      */
     public function removeUserSession($userid)
     {
@@ -335,7 +335,7 @@ class DBSession
      * Called when this component receives an HTTP GET request to
      * /session/user/$userid(/).
      *
-     * @param string $userid The id or the username of the user.
+     * @param int $userid The id of the user.
      */
     public function getUserSession($userid)
     {

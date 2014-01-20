@@ -424,7 +424,7 @@ class DBSubmission
      * Called when this component receives an HTTP GET request to
      * /submission/group/user/$userid/exercisesheet/$esid(/).
      *
-     * @param string $userid The id or the username of the user.
+     * @param int $userid The id of the user.
      * @param int $esid The id of the exercise sheet.
      */
     public function getGroupSubmissions($userid, $esid)
@@ -492,7 +492,7 @@ class DBSubmission
      * Called when this component receives an HTTP GET request to
      * /submission/group/user/$userid/exercisesheet/$esid/selected(/).
      *
-     * @param string $userid The id or the username of the user.
+     * @param int $userid The id of the user.
      * @param int $esid The id of the exercise sheet.
      */
     public function getGroupSelectedSubmissions($userid, $esid)
@@ -560,7 +560,7 @@ class DBSubmission
      * Called when this component receives an HTTP GET request to
      * /submission/group/user/$userid/exercise/$eid(/).
      *
-     * @param string $userid The id or the username of the user.
+     * @param int $userid The id of the user.
      * @param int $eid The id of the exercise.
      */
     public function getGroupExerciseSubmissions($userid, $eid)
@@ -628,7 +628,7 @@ class DBSubmission
      * Called when this component receives an HTTP GET request to
      * /submission/group/user/$userid/exercise/$eid/selected(/).
      *
-     * @param string $userid The id or the username of the user.
+     * @param int $userid The id of the user.
      * @param int $eid The id of the exercise.
      */
     public function getGroupSelectedExerciseSubmissions($userid, $eid)
@@ -958,8 +958,8 @@ class DBSubmission
      * Called when this component receives an HTTP GET request to
      * /submission/exercise/$eid/selected(/).
      *
-     * @param string $userid The id or the username of the user.
-     * @param string $eid The id of the exercise.
+     * @param int $userid The id of the user.
+     * @param int $eid The id of the exercise.
      */
     public function getUserExerciseSubmissions($userid,$eid)
     { 

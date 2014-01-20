@@ -379,7 +379,7 @@ class DBCourse
      * Called when this component receives an HTTP GET request to
      * /course/user/$userid(/).
      *
-     * @param string $userid The id or the username of the user.
+     * @param int $userid The id of the user.
      */
     public function getUserCourses($userid)
     {    

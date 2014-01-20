@@ -130,7 +130,7 @@ class DBCourseStatus
      * course status.
      *
      * @param int $courseid The id of the course.
-     * @param string $userid The id or the username of the user whose status is being updated.
+     * @param int $userid The id of the user whose status is being updated.
      */
     public function editMemberRight($courseid,$userid)
     {
@@ -179,7 +179,7 @@ class DBCourseStatus
      * /coursestatus/course/$courseid/user/$userid(/).
      *
      * @param int $courseid The id of the course.
-     * @param string $userid The id or the username of the user whose status is being deleted.
+     * @param int $userid The id of the user whose status is being deleted.
      */
     public function removeCourseMember($courseid,$userid)
     {
@@ -259,7 +259,7 @@ class DBCourseStatus
      * /coursestatus/course/$courseid/user/$userid(/).
      *
      * @param int $courseid The id of the course.
-     * @param string $userid The id or the username of the user whose status is being returned.
+     * @param int $userid The id of the user whose status is being returned.
      */
     public function getMemberRight($courseid,$userid)
     {
@@ -339,7 +339,7 @@ class DBCourseStatus
      * Called when this component receives an HTTP GET request to
      * /coursestatus/user/$userid(/).
      *
-     * @param string $userid The id or the username of the user.
+     * @param int $userid The id of the user.
      */
     public function getMemberRights($userid)
     {
