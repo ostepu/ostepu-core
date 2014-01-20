@@ -67,7 +67,8 @@ class DBSubmission
     {
         DBSubmission::$_prefix = $value;
     }
-    
+
+
     /**
      * REST actions
      *
@@ -220,6 +221,7 @@ class DBSubmission
         } 
     }
 
+
     /**
      * Edits a submission.
      *
@@ -265,7 +267,8 @@ class DBSubmission
             }
         }
     }
-    
+
+
     /**
      * Deletes a submission.
      *
@@ -300,7 +303,8 @@ class DBSubmission
             $this->_app->stop();
         }
     }
-    
+
+
     /**
      * Creates a submission and then returns it.
      *
@@ -349,6 +353,7 @@ class DBSubmission
             }
         }
     }
+
 
     /**
      * Returns all submissions.
@@ -414,7 +419,7 @@ class DBSubmission
 
     /**
      * Returns all submissions (including overwritten ones) of a given group
-     * of a certain exercise sheet.
+     * of a specific exercise sheet.
      *
      * Called when this component receives an HTTP GET request to
      * /submission/group/user/$userid/exercisesheet/$esid(/).
@@ -481,7 +486,7 @@ class DBSubmission
 
 
     /**
-     * Returns the submissions of a given group of a certain exercise sheet
+     * Returns the submissions of a given group of a specific exercise sheet
      * which should be marked.
      *
      * Called when this component receives an HTTP GET request to
@@ -550,7 +555,7 @@ class DBSubmission
 
     /**
      * Returns all submissions (including overwritten ones) of a given group
-     * of a certain exercise.
+     * of a specific exercise.
      *
      * Called when this component receives an HTTP GET request to
      * /submission/group/user/$userid/exercise/$eid(/).
@@ -617,7 +622,7 @@ class DBSubmission
 
 
     /**
-     * Returns the submissions of a given group of a certain exercise
+     * Returns the submissions of a given group of a specific exercise
      * which should be marked.
      *
      * Called when this component receives an HTTP GET request to
@@ -948,7 +953,7 @@ class DBSubmission
 
     /**
      * Returns all submissions (including overwritten ones) of a given user 
-     * of a certain exercise.
+     * of a specific exercise.
      *
      * Called when this component receives an HTTP GET request to
      * /submission/exercise/$eid/selected(/).

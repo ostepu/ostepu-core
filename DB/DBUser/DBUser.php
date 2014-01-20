@@ -147,9 +147,9 @@ class DBUser
      * Called when this component receives an HTTP PUT request to
      * /user/$userid(/) or /user/user/$userid(/).
      * The request body should contain a JSON object representing the user's new
-     * attributes
+     * attributes.
      *
-     * @param string $userid The id or the username of the user that is beeing updated.
+     * @param string $userid The id or the username of the user that is being updated.
      */
     public function editUser($userid)
     {
@@ -576,7 +576,7 @@ class DBUser
 
     /**
      * Returns all members of the group the user is part of
-     * regarding a certain exercise sheet.
+     * regarding a specific exercise sheet.
      *
      * Called when this component receives an HTTP GET request to
      * /user/group/user/$userid/exercisesheet/$esid(/).
@@ -729,7 +729,7 @@ class DBUser
 
     /**
      * Returns all users with a given status which are members of a 
-     * certain course.
+     * specific course.
      *
      * Called when this component receives an HTTP GET request to
      * /course/$courseid/status/$statusid(/).
