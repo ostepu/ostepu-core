@@ -97,9 +97,9 @@ class DBSelectedSubmission
                             '/leader/:userid/exercise/:eid(/)',
                             array($this,'deleteSelectedSubmission'));
         
-        // POST SetSelectedSubmission
+        // POST AddSelectedSubmission
         $this->_app->post('/' . $this->getPrefix() . '(/)',
-                         array($this,'setSelectedSubmission'));  
+                         array($this,'addSelectedSubmission'));  
                          
         // GET GetExerciseSelected
         $this->_app->get('/' . $this->getPrefix() . '/exercise/:eid(/)',
@@ -138,8 +138,8 @@ class DBSelectedSubmission
                             ctype_digit($userid),
                             ctype_digit($eid));
                             
-        // decode the received submission data, as an object
-        $insert = Submission::decodeSubmission($this->_app->request->getBody());
+        // decode the received selected submission data, as an object
+        $insert = SelectedSubmission::SelectedSubmission($this->_app->request->getBody());
         
         // always been an array
         if (!is_array($insert))
@@ -195,7 +195,7 @@ class DBSelectedSubmission
         // checks the correctness of the query                          
         if ($result['status']>=200 && $result['status']<=299){
         
-            $this->_app->response->setStatus(252);
+            $this->_app->response->setStatus(201);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
@@ -214,12 +214,12 @@ class DBSelectedSubmission
      * /selectedsubmission/leader/$userid/exercise/$eid(/).
      * The request body should contain a JSON object representing the new selectedSubmission.
      */
-    public function setSelectedSubmission()
+    public function addSelectedSubmission()
     {
-        Logger::Log("starts POST SetSelectedSubmission",LogLevel::DEBUG);
+        Logger::Log("starts POST ADDSelectedSubmission",LogLevel::DEBUG);
         
-        // decode the received submission data, as an object
-        $insert = Submission::decodeSubmission($this->_app->request->getBody());
+        // decode the received selected submission data, as an object
+        $insert = SelectedSubmission::decodeSelectedSubmission($this->_app->request->getBody());
         
         // always been an array
         if (!is_array($insert))
@@ -231,7 +231,7 @@ class DBSelectedSubmission
             
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
-                                            "Sql/SetSelectedSubmission.sql", 
+                                            "Sql/AddSelectedSubmission.sql", 
                                             array("values" => $data));                   
             
             // checks the correctness of the query 
@@ -242,7 +242,7 @@ class DBSelectedSubmission
                     $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
-                Logger::Log("POST SetSelectedSubmission failed",LogLevel::ERROR);
+                Logger::Log("POST AddSelectedSubmission failed",LogLevel::ERROR);
                 $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
