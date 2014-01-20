@@ -99,6 +99,18 @@ class DBQuery
     
     /**
      * GET queryResult
+     * jede Komponente, welche eine SQL Anfrage an den MySQL Server stellen möchte,
+     * muss über diese Komponente, hier findet auch die Prüfung statt, ob die Session im
+     * Header korrekt ist. 
+     * Dabei wird an diese Komponente eine Query Datenstruktur übergeben, mit:
+     * - ['Request'] = die SQL Anfrage, bereits maskiert (hier findet keine weitere Sicherheitsprüfung statt)
+     * - ['Response'] = die Antwort die du von DBQuery darauf erhälst bzw. die Zeilen aus deiner Anfrage
+     * - ['affectedRows'] = the affected rows
+     * - ['insertId'] = on post/insert with auto-increment, the id of the inserted entry
+     * - ['errno'] = the error number (sql Fehlernummer oder bei fehlerhaften Sessiondaten die 401)
+     * - ['error'] = the error message
+     * - ['numRows'] = on get, the received number of rows
+     * Als Antwort erhält man natürlich auch ein Query Objekt.
      */
     public function queryResult()
     {        
