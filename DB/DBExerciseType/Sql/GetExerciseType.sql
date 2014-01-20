@@ -1,5 +1,5 @@
 /**
- * @file GetPossibleType.sql
+ * @file GetExerciseType.sql
  * gets an specified possible type from %PossibleType table
  * @author Till Uhlig
  * @param int \$etid a %PossibleType identifier

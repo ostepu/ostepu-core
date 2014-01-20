@@ -1,5 +1,5 @@
 /**
- * @file GetAllPossibleTypes.sql
+ * @file GetAllExerciseTypes.sql
  * gets all possible types from %PossibleType table
  * @author Till Uhlig
  * @result ET_id, ET_name

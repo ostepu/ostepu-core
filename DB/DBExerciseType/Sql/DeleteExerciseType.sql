@@ -1,5 +1,5 @@
 /** 
- * @file DeletePossibleType.sql
+ * @file DeleteExerciseType.sql
  * deletes a specified possible type from %PossibleType table
  * @author  Till Uhlig
  * @param int \$etid a %PossibleType identifier
