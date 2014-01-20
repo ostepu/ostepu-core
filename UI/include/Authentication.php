@@ -89,25 +89,23 @@ class Authentication
     public function loginUser($username, $password)
     {
         $databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/user/user/{$username}";
-        $user = http_get($databaseURI,$message);
+        $user = http_get($databaseURI, false, $message);
         $user = json_decode($user, true);
 
         // check if user exists 
         if ($message != "404") {
-            /**
-             * @todo implement correct Hash password method
-             */
+            // create passwordhash with salt as suffix
+            $password = $this->hashData('sha256',$password.$user['salt']);
+
             if ($password == $user['password']) {
-                /**
-                 * @todo reset counter for failed logins
-                 */
+
                 // save logged in uid
                 $_SESSION['uid'] = $user['id'];
                 $refresh = $this->refreshSession($username, $password);
                 return $refresh;
             } else {
                 /**
-                 * @todo update counter for failed logins, increase it
+                 * @todo increase FailedLogin field 
                  */
             }
         }
@@ -147,9 +145,6 @@ class Authentication
         if (!isset($_SESSION['signed']) || !$_SESSION['signed']) {return false;}
         // check for timeout (after 10 minutes of inactivity)
         if (!isset($_SESSION['lastactive']) || ($_SESSION['lastactive'] + 10*60) <= $_SERVER['REQUEST_TIME']) {return false;}
-        /**
-         * @todo check if sessionid is on the DBserver and userid on the DB ist equal to SessionUID, session from DB only if flag is 1
-         */
 
         // update last activity 
         $_SESSION['lastactive'] = $_SERVER['REQUEST_TIME'];
