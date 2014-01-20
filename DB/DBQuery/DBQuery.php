@@ -1,6 +1,9 @@
 <?php
 /**
  * @file DBQuery.php contains the DBQuery class
+ * 
+ * @author Till Uhlig
+ * @author Felix Schmidt
  */ 
 
 require_once( 'Include/Slim/Slim.php' );
@@ -21,8 +24,6 @@ if (!$com->used())
 
 /**
  * A class, to perform requests to the database
- *
- * @author Till Uhlig
  */
 class DBQuery
 {
@@ -61,33 +62,37 @@ class DBQuery
     {
         DBQuery::$_prefix = $value;
     }
-    
+
+
     /**
-     * the component constructor
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to
+     * the functions.
      *
      * @param Component $conf component data
-     */ 
+     */
     public function __construct($conf)
     {
         // initialize component
         $this->_conf = $conf;
-        
+
         // initialize slim
         $this->_app = new \Slim\Slim();
         $this->_app->response->headers->set('Content-Type', 'application/json');
-        
+
         // GET QueryResult
         $this->_app->get('/' . $this->getPrefix(),
-                        array($this,'queryResult'));
-                        
+                        array($this,'queryResult(/)'));
+
         // PUT QueryResult
         $this->_app->put('/' . $this->getPrefix(),
-                        array($this,'queryResult'));
+                        array($this,'queryResult(/)'));
 
         // POST QueryResult
         $this->_app->post('/' . $this->getPrefix(),
-                        array($this,'queryResult'));       
-                        
+                        array($this,'queryResult(/)'));
+
         // starts slim only if the right prefix was received
         if (strpos ($this->_app->request->getResourceUri(),'/' . 
                     $this->getPrefix()) === 0){
@@ -96,24 +101,20 @@ class DBQuery
             $this->_app->run();
         }
     }
-    
+
+
     /**
-     * GET queryResult
-     * jede Komponente, welche eine SQL Anfrage an den MySQL Server stellen möchte,
-     * muss über diese Komponente, hier findet auch die Prüfung statt, ob die Session im
-     * Header korrekt ist. 
-     * Dabei wird an diese Komponente eine Query Datenstruktur übergeben, mit:
-     * - ['Request'] = die SQL Anfrage, bereits maskiert (hier findet keine weitere Sicherheitsprüfung statt)
-     * - ['Response'] = die Antwort die du von DBQuery darauf erhälst bzw. die Zeilen aus deiner Anfrage
-     * - ['affectedRows'] = the affected rows
-     * - ['insertId'] = on post/insert with auto-increment, the id of the inserted entry
-     * - ['errno'] = the error number (sql Fehlernummer oder bei fehlerhaften Sessiondaten die 401)
-     * - ['error'] = the error message
-     * - ['numRows'] = on get, the received number of rows
-     * Als Antwort erhält man natürlich auch ein Query Objekt.
+     * Needed to send a SQL query to the database.
+     *
+     * Each component which wants to send a SQL query to the database needs to send 
+     * the SQL query as a query object to this component. This component then returns
+     * another query object including the response and possible errors. 
+     *
+     * Called when this component receives an HTTP GET, an HTTP PUT or an HTTP POST
+     * request to /query/.
      */
     public function queryResult()
-    {        
+    {
         Logger::Log("starts GET queryResult",LogLevel::DEBUG);
         
         $body = $this->_app->request->getBody();
@@ -172,9 +173,7 @@ class DBQuery
                 
             $this->_app->response->setBody(Query::encodeQuery($obj));
             $this->_app->response->setStatus(200);
-            
-        }    
-
+        }
     }
 }
 ?>
