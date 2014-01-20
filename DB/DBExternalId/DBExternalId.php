@@ -1,6 +1,9 @@
 <?php
 /**
  * @file DBExternalId.php contains the DBExternalId class
+ * 
+ * @author Till Uhlig
+ * @author Felix Schmidt
  */ 
 
 require_once( 'Include/Slim/Slim.php' );
@@ -22,17 +25,6 @@ if (!$com->used())
     
 /**
  * A class, to abstract the "ExternalId" table from database
- * 
- * Die ExternalID Komponenente bzw die entsprechende ExternalID Tabelle in der Datenbank enthalten
- * zwei Attribute "courseid" und "exid"
- * int courseid, ist die id einer Veranstaltung, der ein Alias zugeordnet werden soll bzw. die einen anderen/externen 
- * Namen bekommen soll.
- *
- * string exid, ist ein beispielsweise ein Hash oder ein anderer Identifizierer. Da der Zugang über Studip 
- * möglich sein soll und die Veranstaltungen dort eigene Bezeichnungen haben, müssen wir eine umrechnung
- * auf unsere internen IDs ermöglichen, dazu wird die externalId benutzt. Unsere Veranstaltung hat
- * also einen externen Namen (externalId) und bekommt dazu unseren internen Namen (courseid).
- * @author Till Uhlig
  */
 class DBExternalId
 {
@@ -75,12 +67,16 @@ class DBExternalId
     {
         DBExternalId::$_prefix = $value;
     }
-    
+
+
     /**
-     * the component constructor
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to
+     * the functions.
      *
      * @param Component $conf component data
-     */ 
+     */
     public function __construct($conf)
     {
         // initialize component
@@ -99,9 +95,9 @@ class DBExternalId
         $this->_app->delete('/' . $this->getPrefix() . '(/externalid)/:exid(/)',
                            array($this,'deleteExternalId'));
         
-        // POST SetExternalId
+        // POST AddExternalId
         $this->_app->post('/' . $this->getPrefix() . '(/)',
-                         array($this,'setExternalId'));
+                         array($this,'addExternalId'));
                          
         // GET GetExternalId
         $this->_app->get('/' . $this->getPrefix() . '(/externalid)/:exid(/)',
@@ -123,11 +119,17 @@ class DBExternalId
             $this->_app->run();
         }
     }
-    
+
+
     /**
-     * PUT EditExternalId
+     * Edits an alias for an already existing course.
      *
-     * @param string $exid a database external id identifier
+     * Called when this component receives an HTTP PUT request to
+     * /externalid/$exid(/) or /externalid/externalid/$exid(/).
+     * The request body should contain a JSON object representing the 
+     * externalId's new attributes.
+     *
+     * @param string $exid The alias of the course that is being updated.
      */
     public function editExternalId($exid)
     {
@@ -163,11 +165,15 @@ class DBExternalId
             }
         }
     }
-    
+
+
     /**
-     * DELETE DeleteExternalId
+     * Deletes an alias for an already existing course.
      *
-     * @param string $exid a database external id identifier
+     * Called when this component receives an HTTP DELETE request to
+     * /externalid/$exid(/) or /externalid/externalid/$exid(/).
+     *
+     * @param string $exid The alias of the course that is being deleted.
      */
     public function deleteExternalId($exid)
     {
@@ -193,13 +199,21 @@ class DBExternalId
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * POST SetExternalId
-     */ 
-    public function setExternalId()
+     * Adds an alias for an already existing course.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /externalid/$exid(/) or /externalid/externalid/$exid(/).
+     * The request body should contain a JSON object representing the 
+     * externalId's attributes.
+     *
+     * @param string $exid The alias of the course that is being created.
+     */
+    public function addExternalId()
     {
-        Logger::Log("starts POST SetExternalId",LogLevel::DEBUG);
+        Logger::Log("starts POST AddExternalId",LogLevel::DEBUG);
         
         // decode the received external id data, as an object
         $insert = ExternalId::decodeExternalId($this->_app->request->getBody());
@@ -214,7 +228,7 @@ class DBExternalId
    
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
-                                            "Sql/SetExternalId.sql", 
+                                            "Sql/AddExternalId.sql", 
                                             array("values" => $data));                   
            
            // checks the correctness of the query
@@ -226,17 +240,21 @@ class DBExternalId
                     $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
-                Logger::Log("POST SetExternalId failed",LogLevel::ERROR);
+                Logger::Log("POST AddExternalId failed",LogLevel::ERROR);
                 $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
     }
-    
+
+
     /**
-     * GET GetExternalId
+     * Returns the alias for an already existing course.
      *
-     * @param string $exid a database external id identifier
+     * Called when this component receives an HTTP GET request to
+     * /externalid/$exid(/) or /externalid/externalid/$exid(/).
+     *
+     * @param string $exid The alias of the course that should be returned.
      */
     public function getExternalId($exid)
     {    
@@ -293,9 +311,13 @@ class DBExternalId
             $this->_app->stop();
         }
     }   
-    
+
+
     /**
-     * GET GetAllExternalIds
+     * Returns all aliases for the courses.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /externalid(/) or /externalid/externalid(/).
      */
     public function getAllExternalIds()
     {    
@@ -346,11 +368,15 @@ class DBExternalId
             $this->_app->stop();
         }
     }    
-    
+
+
     /**
-     * GET getCourseExternalIds
+     * Returns the aliases for an already existing course.
      *
-     * @param int $courseid a database course identifier
+     * Called when this component receives an HTTP GET request to
+     * /externalid/$exid(/) or /externalid/externalid/$exid(/).
+     *
+     * @param int $courseid The id of the course whose aliases should be returned.
      */
     public function getCourseExternalIds($courseid)
     {    
