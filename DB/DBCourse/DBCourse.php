@@ -1,6 +1,9 @@
 <?php
 /**
  * @file DBCourse.php contains the DBCourse class
+ * 
+ * @author Till Uhlig
+ * @author Felix Schmidt
  */ 
 
 require_once( 'Include/Slim/Slim.php' );
@@ -22,8 +25,6 @@ if (!$com->used())
     
 /**
  * A class, to abstract the "DBCourse" table from database
- *
- * @author Till Uhlig
  */
 class DBCourse
 {
@@ -66,12 +67,16 @@ class DBCourse
     {
         DBCourse::$_prefix = $value;
     }
-    
+
+
     /**
-     * the component constructor
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to
+     * the functions.
      *
      * @param Component $conf component data
-     */ 
+     */
     public function __construct($conf)
     {
         // initialize component
@@ -114,11 +119,17 @@ class DBCourse
             $this->_app->run();
         }
     }
-    
+
+
     /**
-     * PUT EditCourse
+     * Edits a course.
      *
-     * @param int $courseid a database course identifier
+     * Called when this component receives an HTTP PUT request to
+     * /course/course/$courseid(/) or /course/$courseid(/).
+     * The request body should contain a JSON object representing the course's new
+     * attributes.
+     *
+     * @param int $courseid The id of the course that is being updated.
      */
     public function editCourse($courseid)
     {
@@ -158,11 +169,15 @@ class DBCourse
             }
         }
     }
-    
+
+
     /**
-     * DELETE DeleteCourse
+     * Deletes a course.
      *
-     * @param int $courseid a database course identifier
+     * Called when this component receives an HTTP DELETE request to
+     * /course/course/$courseid(/) or /course/$courseid(/).
+     *
+     * @param int $courseid The id of the course that is being deleted.
      */
     public function deleteCourse($courseid)
     {
@@ -190,10 +205,16 @@ class DBCourse
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * POST SetCourse
-     */ 
+     * Adds a course.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /course(/).
+     * The request body should contain a JSON object representing the course's 
+     * attributes.
+     */
     public function setCourse()
     {
         Logger::Log("starts POST SetCourse",LogLevel::DEBUG);
@@ -234,11 +255,15 @@ class DBCourse
             }
         }
     }
-    
+
+
     /**
-     * GET GetCourse
+     * Returns a course.
      *
-     * @param int $courseid a database course identifier
+     * Called when this component receives an HTTP GET request to
+     * /course/course/$courseid(/) or /course/$courseid(/).
+     *
+     * @param int $courseid The id of the course that should be returned.
      */
     public function getCourse($courseid)
     {    
@@ -291,9 +316,13 @@ class DBCourse
             $this->_app->stop();
         }
     }   
-    
+
+
     /**
-     * GET GetAllCourses
+     * Returns all courses.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /course/course(/) or /course(/).
      */
     public function getAllCourses()
     {    
@@ -341,12 +370,16 @@ class DBCourse
             $this->_app->response->setBody(Course::encodeCourse(new Course()));
             $this->_app->stop();
         }
-    }    
-    
+    }
+
+
     /**
-     * GET GetUserCourses
+     * Returns all courses a given user belongs to.
      *
-     * @param int $userid a database user identifier
+     * Called when this component receives an HTTP GET request to
+     * /course/user/$userid(/).
+     *
+     * @param string $userid The id or the username of the user.
      */
     public function getUserCourses($userid)
     {    
