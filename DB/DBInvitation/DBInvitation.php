@@ -97,9 +97,9 @@ class DBInvitation
                             '/user/:userid/exercisesheet/:esid/user/:memberid(/)',
                             array($this,'deleteInvitation'));
         
-        // POST SetInvitation
+        // POST AddInvitation
         $this->_app->post('/' . $this->getPrefix() . '(/)',
-                         array($this,'setInvitation'));  
+                         array($this,'addInvitation'));  
         
         // GET GetLeaderInvitations
         $this->_app->get('/' . $this->getPrefix() . '/leader/user/:userid(/)',
@@ -243,9 +243,9 @@ class DBInvitation
      * The request body should contain a JSON object representing the 
      * invitations's attributes.
      */
-    public function setInvitation()
+    public function addInvitation()
     {
-        Logger::Log("starts POST SetInvitation",LogLevel::DEBUG);
+        Logger::Log("starts POST AddInvitation",LogLevel::DEBUG);
         
         // decode the received invitation data, as an object
         $insert = Invitation::decodeInvitation($this->_app->request->getBody());
@@ -260,7 +260,7 @@ class DBInvitation
             
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
-                                            "Sql/SetInvitation.sql", 
+                                            "Sql/AddInvitation.sql", 
                                             array("values" => $data));                   
             
             // checks the correctness of the query 
@@ -271,7 +271,7 @@ class DBInvitation
                     $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
-                Logger::Log("POST SetInvitation failed",LogLevel::ERROR);
+                Logger::Log("POST AddInvitation failed",LogLevel::ERROR);
                 $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
