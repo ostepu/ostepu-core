@@ -1,6 +1,9 @@
 <?php
 /**
  * @file DBAttachment.php contains the DBAttachment class
+ * 
+ * @author Till Uhlig
+ * @author Felix Schmidt
  */ 
 
 require_once( 'Include/Slim/Slim.php' );
@@ -22,8 +25,6 @@ if (!$com->used())
     
 /**
  * A class, to abstract the "Attachment" table from database
- *
- * @author Till Uhlig
  */
 class DBAttachment
 {
@@ -66,12 +67,16 @@ class DBAttachment
     {
         DBAttachment::$_prefix = $value;
     }
-    
+
+
     /**
-     * the component constructor
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to
+     * the functions.
      *
      * @param Component $conf component data
-     */ 
+     */
     public function __construct($conf)
     {
         // initialize component
@@ -118,11 +123,17 @@ class DBAttachment
             $this->_app->run();
         }
     }
-    
+
+
     /**
-     * PUT EditAttachment
+     * Edits an attachment.
      *
-     * @param $aid a database attachment identifier
+     * Called when this component receives an HTTP PUT request to
+     * /attachment/$aid(/) or /attachment/attachment/$aid(/).
+     * The request body should contain a JSON object representing the 
+     * attachment's new attributes.
+     *
+     * @param string $aid The id of the attachment that is being updated.
      */
     public function editAttachment($aid)
     {
@@ -161,11 +172,15 @@ class DBAttachment
             }
         }
     }
-    
+
+
     /**
-     * DELETE DeleteAttachment
+     * Deletes an attachment.
      *
-     * @param $aid a database attachment identifier
+     * Called when this component receives an HTTP DELETE request to
+     * /attachment/$aid(/) or /attachment/attachment/$aid(/).
+     *
+     * @param string $aid The id of the attachment that is being deleted.
      */
     public function deleteAttachment($aid)
     {
@@ -192,9 +207,15 @@ class DBAttachment
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * POST SetAttachment
+     * Adds an attachment.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /attachment(/).
+     * The request body should contain a JSON object representing the 
+     * attachment's attributes.
      */
     public function setAttachment()
     {
@@ -236,11 +257,15 @@ class DBAttachment
             }
         }
     }
-    
+
+
     /**
-     * GET GetAttachment
+     * Returns an attachment.
      *
-     * @param $aid a database attachment identifier
+     * Called when this component receives an HTTP GET request to
+     * /attachment/$aid(/) or /attachment/attachment/$aid(/).
+     *
+     * @param string $aid The id of the attachment that should be returned.
      */
     public function getAttachment($aid)
     {     
@@ -300,9 +325,13 @@ class DBAttachment
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetAllAttachments
+     * Returns all attachments.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /attachment(/) or /attachment/attachment(/).
      */
     public function getAllAttachments()
     {    
@@ -354,11 +383,15 @@ class DBAttachment
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetExerciseAttachments
+     * Returns the attachments to a given exercise.
      *
-     * @param int $eid a database exercise identifier
+     * Called when this component receives an HTTP GET request to
+     * /attachment/exercise/$eid(/).
+     *
+     * @param string $eid The id of the exercise.
      */
     public function getExerciseAttachments($eid)
     {     
@@ -413,11 +446,15 @@ class DBAttachment
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetSheetAttachments
+     * Returns the attachments to a given exercise sheet.
      *
-     * @param int $esid a database exercise sheet identifier
+     * Called when this component receives an HTTP GET request to
+     * /attachment/exercisesheet/$esid(/).
+     *
+     * @param string $esid The id of the exercise sheet.
      */
     public function getSheetAttachments($esid)
     {      
