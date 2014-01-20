@@ -166,7 +166,7 @@ class DBMarking
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
                                     "Sql/EditMarking.sql", 
-                                    array("mid" => $mid));                   
+                                    array("mid" => $mid, "values" => $data));                   
             
             // checks the correctness of the query
             if ($result['status']>=200 && $result['status']<=299){
