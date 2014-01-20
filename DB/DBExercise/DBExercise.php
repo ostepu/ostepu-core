@@ -1,6 +1,9 @@
 <?php
 /**
  * @file DBExercise.php contains the DBExercise class
+ * 
+ * @author Till Uhlig
+ * @author Felix Schmidt
  */ 
 
 require_once( 'Include/Slim/Slim.php' );
@@ -20,8 +23,6 @@ if (!$com->used())
     
 /**
  * A class, to abstract the "Exercise" table from database
- *
- * @author Till Uhlig
  */
 class DBExercise
 {
@@ -64,12 +65,16 @@ class DBExercise
     {
         DBExercise::$_prefix = $value;
     }
-    
+
+
     /**
-     * the component constructor
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to
+     * the functions.
      *
      * @param Component $conf component data
-     */ 
+     */
     public function __construct($conf)
     {
         // initialize component
@@ -117,11 +122,17 @@ class DBExercise
             $this->_app->run();
         }
     }
-    
+
+
     /**
-     * PUT EditExercise
+     * Edits an exercise.
      *
-     * @param int $eid a database exercise identifier
+     * Called when this component receives an HTTP PUT request to
+     * /exercise/$eid(/) or /exercise/exercise/$eid(/).
+     * The request body should contain a JSON object representing the exercise's new
+     * attributes.
+     *
+     * @param int $eid The id of the exercise that is beeing updated.
      */
     public function editExercise($eid)
     {
@@ -160,11 +171,15 @@ class DBExercise
             }
         }
     }
-    
+
+
     /**
-     * DELETE DeleteExercise
+     * Deletes an exercise.
      *
-     * @param int $eid a database exercise identifier
+     * Called when this component receives an HTTP DELETE request to
+     * /exercise/$eid(/) or /exercise/exercise/$eid(/).
+     *
+     * @param int $eid The id of the exercise that is beeing deleted.
      */
     public function deleteExercise($eid)
     {
@@ -191,9 +206,15 @@ class DBExercise
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * POST SetExercise
+     * Adds an exercise.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /exercise(/).
+     * The request body should contain a JSON object representing the exercise's 
+     * attributes.
      */
     public function setExercise()
     {
@@ -235,11 +256,15 @@ class DBExercise
             }
         }
     }
-    
+
+
     /**
-     * GET GetExercise
+     * Returns a single exercise.
      *
-     * @param int $eid a database exercise identifier
+     * Called when this component receives an HTTP GET request to
+     * /exercise/$eid(/) or /exercise/exercise/$eid(/).
+     *
+     * @param int $eid The id of the exercise that should be returned.
      */
     public function getExercise($eid)
     {        
@@ -319,8 +344,12 @@ class DBExercise
         }
     }
 
+
     /**
-     * GET GetAllExercises
+     * Returns all exercises.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /exercise(/) or /exercise/exercise(/).
      */
     public function getAllExercises()
     {       
@@ -393,11 +422,15 @@ class DBExercise
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetSheetExercises
+     * Returns all exercises which are part of a given exercise sheet.
      *
-     * @param int $esid a database exercise sheet identifier
+     * Called when this component receives an HTTP GET request to
+     * /exercise/exercisesheet/$esid(/).
+     *
+     * @param int $esid The id of the exercise sheet.
      */
     public function getSheetExercises($esid)
     {     
@@ -462,11 +495,15 @@ class DBExercise
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetCourseExercises
+     * Returns all exercises which belong to a given course.
      *
-     * @param int $courseid a database Course identifier
+     * Called when this component receives an HTTP GET request to
+     * /exercise/course/$courseid(/).
+     *
+     * @param int $courseid The id of the course.
      */
     public function getCourseExercises($courseid)
     {     
