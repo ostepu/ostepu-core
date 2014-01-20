@@ -1,6 +1,9 @@
 <?php
 /**
  * @file DBCourseStatus.php contains the DBCourseStatus class
+ * 
+ * @author Till Uhlig
+ * @author Felix Schmidt
  */ 
 
 require_once( 'Include/Slim/Slim.php' );
@@ -18,11 +21,10 @@ $com = new CConfig(DBCourseStatus::getPrefix());
 // runs the DBUser
 if (!$com->used())
     new DBCourseStatus($com->loadConfig());  
-    
+
+
 /**
  * A class, to abstract the "CourseStatus" table from database
- *
- * @author Till Uhlig
  */
 class DBCourseStatus
 {
@@ -65,12 +67,16 @@ class DBCourseStatus
     {
         DBCourseStatus::$_prefix = $value;
     }
-    
+
+
     /**
-     * the component constructor
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to
+     * the functions.
      *
      * @param Component $conf component data
-     */ 
+     */
     public function __construct($conf)
     {
         // initialize component
@@ -113,11 +119,18 @@ class DBCourseStatus
             $this->_app->run();
         }
     }
-    
+
+
     /**
-     * PUT EditMemberRight
+     * Edits the course status of a user in a specific course.
      *
-     * @param int $userid a database user identifier
+     * Called when this component receives an HTTP PUT request to
+     * /coursestatus/course/$courseid/user/$userid(/).
+     * The request body should contain a JSON object representing the user's new
+     * course status.
+     *
+     * @param int $courseid The id of the course.
+     * @param string $userid The id or the username of the user whose status is being updated.
      */
     public function editMemberRight($courseid,$userid)
     {
@@ -157,12 +170,16 @@ class DBCourseStatus
             }
         }
     }
-    
+
+
     /**
-     * DELETE RemoveCourseMember
+     * Deletes the course status of a user in a specific course.
      *
-     * @param int $courseid a database course identifier
-     * @param int $userid a database user identifier
+     * Called when this component receives an HTTP DELETE request to
+     * /coursestatus/course/$courseid/user/$userid(/).
+     *
+     * @param int $courseid The id of the course.
+     * @param string $userid The id or the username of the user whose status is being deleted.
      */
     public function removeCourseMember($courseid,$userid)
     {
@@ -190,12 +207,15 @@ class DBCourseStatus
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * POST AddCourseMember
+     * Adds a course status to a user in a specific course.
      *
-     * @param int $courseid a database course identifier
-     * @param int $userid a database user identifier
+     * Called when this component receives an HTTP POST request to
+     * /coursestatus/course/$courseid/user/$userid(/).
+     * The request body should contain a JSON object representing the user's 
+     * course status.
      */
     public function addCourseMember()
     {
@@ -230,12 +250,16 @@ class DBCourseStatus
             }
         }
     }
-    
+
+
     /**
-     * GET GetMemberRight
+     * Returns the course status of a user in a specific course.
      *
-     * @param int $courseid a database course identifier
-     * @param int $userid a database user identifier
+     * Called when this component receives an HTTP GET request to
+     * /coursestatus/course/$courseid/user/$userid(/).
+     *
+     * @param int $courseid The id of the course.
+     * @param string $userid The id or the username of the user whose status is being returned.
      */
     public function getMemberRight($courseid,$userid)
     {
@@ -307,11 +331,15 @@ class DBCourseStatus
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetMemberRights
+     * Returns all course status objects of a user.
      *
-     * @param int $userid a database user identifier
+     * Called when this component receives an HTTP GET request to
+     * /coursestatus/user/$userid(/).
+     *
+     * @param string $userid The id or the username of the user.
      */
     public function getMemberRights($userid)
     {
@@ -382,11 +410,15 @@ class DBCourseStatus
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetCourseRights
+     * Returns all course status objects of a course.
      *
-     * @param int $courseid a database course identifier
+     * Called when this component receives an HTTP GET request to
+     * /coursestatus/course/$courseid(/).
+     *
+     * @param int $courseid The id of the course.
      */
     public function getCourseRights($courseid)
     {
