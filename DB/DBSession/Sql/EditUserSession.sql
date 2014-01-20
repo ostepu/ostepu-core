@@ -7,6 +7,6 @@
  * @result -
  */
  
-UPDATE ExerciseSheet
+UPDATE `Session`
 SET $values
 WHERE U_id = '$userid'

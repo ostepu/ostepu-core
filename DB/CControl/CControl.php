@@ -113,7 +113,7 @@ class CControl
             
             // starts a query
             eval("\$sql = \"".file_get_contents("Sql/PutLink.sql")."\";");
-            $query_result = DBRequest::request($sql);                
+            $query_result = DBRequest::request($sql, false);                
            
             // checks the correctness of the query
             if (!$query_result['errno'] && $query_result['content']){
@@ -134,14 +134,14 @@ class CControl
     {
         // starts a query
         eval("\$sql = \"".file_get_contents("Sql/DeleteLink.sql")."\";");
-        $result = DBRequest::request($sql);
+        $result = DBRequest::request($sql, false);
         
         // checks the correctness of the query
         if (!$query_result['errno'] && $query_result['content']){
-            $this->_app->response->setStatus(200);                
+            $this->_app->response->setStatus(201);                
         } else{
             Logger::Log("DELETE DeleteLink failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+            $this->_app->response->setStatus(452);
         }
     }
     
@@ -162,7 +162,7 @@ class CControl
             
             // starts a query
             eval("\$sql = \"".file_get_contents("Sql/PostLink.sql")."\";");
-            $result = DBRequest::request($sql);                
+            $result = DBRequest::request($sql, false);                
            
             // checks the correctness of the query
             if (!$query_result['errno'] && $query_result['content']){
@@ -191,7 +191,7 @@ class CControl
     {
         // starts a query
         eval("\$sql = \"".file_get_contents("Sql/GetLink.sql")."\";");
-        $query_result = DBRequest::request($sql);
+        $query_result = DBRequest::request($sql, false);
         
         // checks the correctness of the query
         if (!$query_result['errno'] && $query_result['content']){
@@ -214,7 +214,7 @@ class CControl
     {
         $insert = Component::decodeComponent($this->_app->request->getBody());
         if (!is_array($insert))
-            $insert = array($insert);
+            $insert = array($insert, false);
 
         foreach ($insert as $in){
             $data = $in->getInsertData();
@@ -242,7 +242,7 @@ class CControl
     {
         // starts a query
         eval("\$sql = \"".file_get_contents("Sql/DeleteComponent.sql")."\";");
-        $query_result = DBRequest::request($sql);
+        $query_result = DBRequest::request($sql, false);
         
         // checks the correctness of the query
         if (!$query_result['errno'] && $query_result['content']){
@@ -267,7 +267,7 @@ class CControl
             
             // starts a query
             eval("\$sql = \"".file_get_contents("Sql/PostComponent.sql")."\";");
-            $query_result = DBRequest::request($sql);                
+            $query_result = DBRequest::request($sql, false);                
            
             if (!$query_result['errno'] && $query_result['content']){
                 $data = DBJson::getRows($query_result['content']);
@@ -295,7 +295,7 @@ class CControl
     {
         // starts a query
         eval("\$sql = \"".file_get_contents("Sql/GetComponent.sql")."\";");
-        $query_result = DBRequest::request($sql);
+        $query_result = DBRequest::request($sql, false);
         
         // checks the correctness of the query
         if (!$query_result['errno'] && $query_result['content']){
@@ -319,7 +319,7 @@ class CControl
     {
         // starts a query
         eval("\$sql = \"".file_get_contents("Sql/GetComponentDefinitions.sql")."\";");
-        $query_result = DBRequest::request($sql);
+        $query_result = DBRequest::request($sql, false);
 
         // checks the correctness of the query
         if (!$query_result['errno'] && $query_result['content']){
@@ -347,7 +347,7 @@ class CControl
     {
         // starts a query
         eval("\$sql = \"".file_get_contents("Sql/GetComponentDefinition.sql")."\";");
-        $query_result = DBRequest::request($sql);
+        $query_result = DBRequest::request($sql, false);
         
         // checks the correctness of the query
         if (!$query_result['errno'] && $query_result['content']){
@@ -372,7 +372,7 @@ class CControl
     {
         // starts a query
         eval("\$sql = \"".file_get_contents("Sql/GetComponentDefinitions.sql")."\";");
-        $query_result = DBRequest::request($sql);
+        $query_result = DBRequest::request($sql, false);
 
         // checks the correctness of the query
         if (!$query_result['errno'] && $query_result['content']){
@@ -384,6 +384,7 @@ class CControl
         
             foreach ($result as $object){
                 $object = Component::decodeComponent(Component::encodeComponent($object));
+                
                 $result = Request::post($object->getAddress()."/component",array(),Component::encodeComponent($object));
                 echo $result['status']. '--' . $object->getName() . '--' . $object->getAddress() . "\n";
             
@@ -391,14 +392,14 @@ class CControl
                     $add = "";
                     if (isset($result['content']))
                         $add = $result['content'];
-                    
+         
                     Logger::Log($result['status'] . '--' . $object->getName() . '--' . $object->getAddress() . "\n" . $add . "\n",LogLevel::ERROR);
                 }
             }
             $this->_app->response->setStatus(200);
         } else{
             Logger::Log("GET SendComponentDefinitions failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($query_result['status']) ? $query_result['status'] : 409);
         }
     }
 

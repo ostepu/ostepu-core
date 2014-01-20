@@ -80,7 +80,7 @@ class DBFile
                         
         // POST SetFile
         $this->_app->post('/' . $this->getPrefix() . '(/)',
-                        array($this, 'editFile'));
+                        array($this, 'addFile'));
                         
         // DELETE RemoveFile
         $this->_app->delete('/' . $this->getPrefix() . '(/file)/:fileid(/)',
@@ -187,13 +187,13 @@ class DBFile
                 
             if ($file!==null){
                 $this->_app->response->setBody(File::encodeFile($file));
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
+                $this->_app->response->setStatus(201);
                 if (isset($result['headers']['Content-Type']))
                     $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
             } else{
                 Logger::Log("DELETE RemoveFile failed (no file in db)",LogLevel::ERROR);
                 $this->_app->response->setBody(File::encodeFile(new File()));
-                $this->_app->response->setStatus(252);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
                 $this->_app->stop();
             }
                 

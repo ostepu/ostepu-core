@@ -97,7 +97,7 @@ class DBExerciseType
         
         // POST SetExerciseType
         $this->_app->post('/' . $this->getPrefix() . '(/)',
-                         array($this,'setExerciseType'));  
+                         array($this,'addExerciseType'));  
         
         // GET GetExerciseType
         $this->_app->get('/' . $this->getPrefix() . '(/exercisetype)/:etid(/)',
@@ -148,7 +148,7 @@ class DBExerciseType
             
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
-                                    "Sql/EditPossibleType.sql", 
+                                    "Sql/EditExerciseType.sql", 
                                     array("etid" => $etid, "values" => $data));                   
             
             // checks the correctness of the query
@@ -184,13 +184,13 @@ class DBExerciseType
                             
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/DeletePossibleType.sql", 
+                                        "Sql/DeleteExerciseType.sql", 
                                         array("etid" => $etid));    
         
         // checks the correctness of the query                          
         if ($result['status']>=200 && $result['status']<=299){
         
-            $this->_app->response->setStatus(252);
+            $this->_app->response->setStatus(201);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
@@ -210,7 +210,7 @@ class DBExerciseType
      * The request body should contain a JSON object representing the 
      * new exercise type's attributes.
      */
-    public function setExerciseType()
+    public function addExerciseType()
     {
         Logger::Log("starts POST SetExerciseType",LogLevel::DEBUG);
         
@@ -227,7 +227,7 @@ class DBExerciseType
             
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
-                                            "Sql/SetPossibleType.sql", 
+                                            "Sql/AddExerciseType.sql", 
                                             array("values" => $data));                   
             
             // checks the correctness of the query 
@@ -264,7 +264,7 @@ class DBExerciseType
         
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetAllPossibleTypes.sql", 
+                                        "Sql/GetAllExerciseTypes.sql", 
                                         array());
         
         // checks the correctness of the query                                        
@@ -312,7 +312,7 @@ class DBExerciseType
                             
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetPossibleType.sql", 
+                                        "Sql/GetExerciseType.sql", 
                                         array("etid" => $etid));
         
         // checks the correctness of the query                                       

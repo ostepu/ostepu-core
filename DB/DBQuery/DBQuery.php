@@ -132,7 +132,7 @@ class DBQuery
             if (isset($query_result['affectedRows']))
                 $obj->setAffectedRows($query_result['affectedRows']);
             if (isset($query_result['insertId']))
-                $obj->setInsertId($query_result['insertId']);
+                $obj->setInsertId($query_result['insertId']);     
             if (isset($query_result['errno']))
                 $obj->setErrno($query_result['errno']);
             if (isset($query_result['numRows']))

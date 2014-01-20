@@ -192,7 +192,7 @@ class DBSession
                                         array("seid" => $seid));    
                                         
         if ($result['status']>=200 && $result['status']<=299){
-            $this->_app->response->setStatus(252);
+            $this->_app->response->setStatus(201);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
@@ -274,7 +274,7 @@ class DBSession
                                         array("userid" => $userid));    
                                         
         if ($result['status']>=200 && $result['status']<=299){
-            $this->_app->response->setStatus(252);
+            $this->_app->response->setStatus(201);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
@@ -296,7 +296,7 @@ class DBSession
     public function addSession()
     {
         Logger::Log("starts POST AddSession",LogLevel::DEBUG);
-        
+
         // decode the received session data, as an object
         $insert = Session::decodeSession($this->_app->request->getBody());
         
@@ -310,7 +310,7 @@ class DBSession
             
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
-                                            "Sql/SetSession.sql", 
+                                            "Sql/AddSession.sql", 
                                             array("values" => $data),
                                             false);                   
             

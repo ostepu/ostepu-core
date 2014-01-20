@@ -174,7 +174,7 @@ class DBExternalId
         // checks the correctness of the query                             
         if ($result['status']>=200 && $result['status']<=299){
         
-            $this->_app->response->setStatus(252);
+            $this->_app->response->setStatus(201);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
@@ -202,7 +202,7 @@ class DBExternalId
         foreach ($insert as $in){
             // generates the insert data for the object
             $data = $in->getInsertData();
-            
+   
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
                                             "Sql/SetExternalId.sql", 
@@ -212,11 +212,6 @@ class DBExternalId
             if ($result['status']>=200 && $result['status']<=299){
                 $queryResult = Query::decodeQuery($result['content']);
                 
-                // sets the new auto-increment id
-                $obj = new ExternalId();
-                $obj->setId($queryResult->getInsertId());
-            
-                $this->_app->response->setBody(ExternalId::encodeExternalId($obj)); 
                 $this->_app->response->setStatus(201);
                 if (isset($result['headers']['Content-Type']))
                     $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
