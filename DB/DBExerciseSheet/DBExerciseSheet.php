@@ -1,6 +1,9 @@
 <?php
 /**
  * @file DBExerciseSheet.php contains the DBExerciseSheet class
+ * 
+ * @author Till Uhlig
+ * @author Felix Schmidt
  */ 
 
 require_once( 'Include/Slim/Slim.php' );
@@ -22,8 +25,6 @@ if (!$com->used())
     
 /**
  * A class, to abstract the "ExerciseSheet" table from database
- *
- * @author Till Uhlig
  */
 class DBExerciseSheet
 {
@@ -66,12 +67,16 @@ class DBExerciseSheet
     {
         DBExerciseSheet::$_prefix = $value;
     }
-    
+
+
     /**
-     * the component constructor
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to
+     * the functions.
      *
      * @param Component $conf component data
-     */ 
+     */
     public function __construct($conf)
     {
         // initialize component
@@ -118,12 +123,18 @@ class DBExerciseSheet
             $this->_app->run();
         }
     }
-    
+
+
     /**
-     * PUT EditExerciseSheet
+     * Edits an exercise sheet.
      *
-     * @param int $esid a database exercise sheet identifier
-     */ 
+     * Called when this component receives an HTTP PUT request to
+     * /exercisesheet/$esid(/) or /exercisesheet/exercisesheet/$esid(/).
+     * The request body should contain a JSON object representing the exercise
+     * sheet's new attributes.
+     *
+     * @param int $esid The id of the exercise sheet that is being updated.
+     */
     public function editExerciseSheet($esid)
     {
         Logger::Log("starts PUT EditExerciseSheet",LogLevel::DEBUG);
@@ -161,11 +172,15 @@ class DBExerciseSheet
             }
         }
     }
-    
+
+
     /**
-     * DELETE DeleteExerciseSheet
+     * Deletes an exercise sheet.
      *
-     * @param int $esid a database exercise sheet identifier
+     * Called when this component receives an HTTP DELETE request to
+     * /exercisesheet/$esid(/) or /exercisesheet/exercisesheet/$esid(/).
+     *
+     * @param int $esid The id of the exercise sheet that is being deleted.
      */
     public function deleteExerciseSheet($esid)
     {
@@ -192,9 +207,15 @@ class DBExerciseSheet
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * POST SetExerciseSheet
+     * Adds an exercise sheet.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /exercisesheet(/).
+     * The request body should contain a JSON object representing the exercise
+     * sheet's attributes.
      */
     public function setExerciseSheet()
     {
@@ -236,11 +257,15 @@ class DBExerciseSheet
             }
         }
     }
-    
+
+
     /**
-     * GET GetExerciseSheetURL
+     * Returns the URL to a given exercise sheet.
      *
-     * @param int $esid a database exercise sheet identifier
+     * Called when this component receives an HTTP GET request to
+     * /exercisesheet/$esid/url(/) or /exercisesheet/exercisesheet/$esid/url(/).
+     *
+     * @param int $esid The id of the exercise sheet the returned URL belongs to.
      */
     public function getExerciseSheetURL($esid)
     {     
@@ -282,12 +307,16 @@ class DBExerciseSheet
             $this->_app->response->setBody(File::encodeExerciseSheet(new File()));
             $this->_app->stop();
         }
-    }   
-    
+    }
+
+
     /**
-     * GET GetCourseSheetURLs
+     * Returns the URLs to all exercise sheets of a given course.
      *
-     * @param int $courseid a database course identifier
+     * Called when this component receives an HTTP GET request to
+     * /exercisesheet/course/$courseid/url(/).
+     *
+     * @param int $courseid The id of the course.
      */
     public function getCourseSheetURLs($courseid)
     {     
@@ -322,12 +351,16 @@ class DBExerciseSheet
             $this->_app->response->setBody(File::encodeFile(new File()));
             $this->_app->stop();
         }
-    } 
-    
+    }
+
+
     /**
-     * GET GetExerciseSheet
+     * Returns an exercise sheet.
      *
-     * @param int $esid the identifier of a exercise sheet
+     * Called when this component receives an HTTP GET request to
+     * /exercisesheet/$esid(/) or /exercisesheet/exercisesheet/$esid(/).
+     *
+     * @param int $esid The id of the exercise sheet that should be returned.
      */
     public function getExerciseSheet($esid)
     {     
@@ -437,11 +470,15 @@ class DBExerciseSheet
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetCourseSheets
+     * Returns all exercise sheets of a given course.
      *
-     * @param int $courseid a database course identifier
+     * Called when this component receives an HTTP GET request to
+     * /exercisesheet/course/$courseid(/).
+     *
+     * @param int $courseid The id of the course the exercise sheets belong to.
      */
     public function getCourseSheets($courseid)
     {     
