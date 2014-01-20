@@ -53,14 +53,18 @@ function is_assoc($array)
  *
  * Uses HTTP GET request to get contents a $url
  * @param string $url The URL that should be opnened.
- * @param string $message The Response Message e.g. 404. Argument ist optional.
+ * @param string $message The Response Message e.g. 404. Argument is optional.
  */
-function http_get($url, &$message = 0)
+function http_get($url, $auth, &$message = 0)
 {
     $c = curl_init();
 
     curl_setopt($c, CURLOPT_URL, $url);
     curl_setopt($c, CURLOPT_HTTPGET, 1);
+    if ($auth) {
+        $date = $_SERVER['REQUEST_TIME'];
+        curl_setopt($c, CURLOPT_HTTPHEADER, array("User: 3","Session: abc","Date : {$date}"));
+    }
     curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
 
     $retData = curl_exec($c);
@@ -77,17 +81,24 @@ function http_get($url, &$message = 0)
  * @param string $url The URL that should be opnened.
  * @param arrray $data An associative array that contains the fields that should
  * be postet to $url
+ * @param bool $auth A Boolean 
+ * @param string $message The Response Message e.g. 404. Argument is optional.
  */
-function http_post_data($url, $data)
+function http_post_data($url, $data, $auth, &$message = 0)
 {
     $c = curl_init();
 
     curl_setopt($c, CURLOPT_URL, $url);
     curl_setopt($c, CURLOPT_POST, 1);
     curl_setopt($c, CURLOPT_POSTFIELDS, $data);
+    if ($auth) {
+        $date = $_SERVER['REQUEST_TIME'];
+        curl_setopt($c, CURLOPT_HTTPHEADER, array("User: 3","Session: abc","Date : {$date}"));
+    }
     curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
 
     $retData = curl_exec($c);
+    $message = curl_getinfo($c, CURLINFO_HTTP_CODE);
     curl_close($c);
 
     return $retData;

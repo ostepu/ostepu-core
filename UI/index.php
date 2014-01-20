@@ -24,7 +24,7 @@ $statusName = array('0' => 'Student',
 
 // load user data from the database
 $databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/user/user/{$uid}";
-$user = http_get($databaseURI);
+$user = http_get($databaseURI, false);
 $user = json_decode($user, true);
 
 if (is_null($user)) {
