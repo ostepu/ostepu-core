@@ -83,7 +83,7 @@ class DBFile
         $this->_app->put('/' . $this->getPrefix() . '(/file)/:fileid(/)',
                         array($this, 'editFile'));
                         
-        // POST SetFile
+        // POST AddFile
         $this->_app->post('/' . $this->getPrefix() . '(/)',
                         array($this, 'addFile'));
                         
@@ -246,7 +246,7 @@ class DBFile
             
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
-                                            "Sql/SetFile.sql", 
+                                            "Sql/AddFile.sql", 
                                             array("values" => $data));                   
             
             // checks the correctness of the query
