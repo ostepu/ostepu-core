@@ -67,7 +67,6 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`User` (
   `U_title` CHAR(10) NULL,
   `U_password` CHAR(64) NOT NULL,
   `U_flag` SMALLINT NULL DEFAULT 1,
-  `U_oldUsername` VARCHAR(120) NULL,
   `U_salt` CHAR(40) NULL,
   `U_failed_logins` INT NULL DEFAULT 0,
   PRIMARY KEY (`U_id`),
@@ -903,6 +902,14 @@ USE `uebungsplattform`$$
 CREATE TRIGGER `deleteComponentLinks` BEFORE DELETE ON `Component` FOR EACH ROW
 DELETE FROM ComponentLinkage WHERE CO_id_owner = OLD.CO_id or CO_id_target = OLD.CO_id;
 $$
+
+USE `uebungsplattform`$$
+CREATE TRIGGER `Session_BINS` BEFORE INSERT ON `Session` FOR EACH ROW
+begin
+If (select U_flag from user where U_id = NEW.U_id limit 1) != 1
+then SIGNAL sqlstate '45001' set message_text = "user is inactive or deleted";
+end if;
+end;$$
 
 
 DELIMITER ;
