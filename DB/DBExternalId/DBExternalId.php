@@ -22,7 +22,16 @@ if (!$com->used())
     
 /**
  * A class, to abstract the "ExternalId" table from database
+ * 
+ * Die ExternalID Komponenente bzw die entsprechende ExternalID Tabelle in der Datenbank enthalten
+ * zwei Attribute "courseid" und "exid"
+ * int courseid, ist die id einer Veranstaltung, der ein Alias zugeordnet werden soll bzw. die einen anderen/externen 
+ * Namen bekommen soll.
  *
+ * string exid, ist ein beispielsweise ein Hash oder ein anderer Identifizierer. Da der Zugang über Studip 
+ * möglich sein soll und die Veranstaltungen dort eigene Bezeichnungen haben, müssen wir eine umrechnung
+ * auf unsere internen IDs ermöglichen, dazu wird die externalId benutzt. Unsere Veranstaltung hat
+ * also einen externen Namen (externalId) und bekommt dazu unseren internen Namen (courseid).
  * @author Till Uhlig
  */
 class DBExternalId
