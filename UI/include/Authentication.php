@@ -30,7 +30,7 @@ class Authentication
         // force to use session-cookies and to transmit SID over URL
         ini_set('session.use_only_cookies', '1');
         ini_set('session.use_trans_sid', '0');
- 
+        
         // start session
         session_start();
     }
@@ -41,16 +41,11 @@ class Authentication
      * @param int $length is the length of the random string, default is 50
      * @return string
      */
-    private function randomString($length = 50)
+    private function randomBytes($length = 8)
     {
-        $characters = "0123456789abcdefghijklmnopqrstuvwxyz";
-        $string = "";    
-            
-        for ($p = 0; $p < $length; $p++) {
-            $string .= $characters[mt_rand(0, strlen($characters))];
-        }
-            
-        return $string;
+        $result = openssl_random_pseudo_bytes($length);
+
+        return $result;
     }
 
     /**
@@ -102,7 +97,7 @@ class Authentication
             /**
              * @todo implement correct Hash password method
              */
-            if ($password == $user['password'] && $user['flag'] == 1) {
+            if ($password == $user['password']) {
                 /**
                  * @todo reset counter for failed logins
                  */
