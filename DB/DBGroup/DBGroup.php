@@ -95,9 +95,9 @@ class DBGroup
                             '/user/:userid/exercisesheet/:esid(/)',
                            array($this,'deleteGroup'));
                                                       
-        // POST SetGroup
+        // POST AddGroup
         $this->_app->post('/' . $this->getPrefix() . '(/)',
-                         array($this,'setGroup'));
+                         array($this,'addGroup'));
                
         // GET GetUserGroups
         $this->_app->get('/' . $this->getPrefix() . '/user/:userid(/)',
@@ -229,9 +229,9 @@ class DBGroup
      * The request body should contain a JSON object representing 
      * the group's attributes.
      */
-    public function setGroup()
+    public function addGroup()
     {
-        Logger::Log("starts POST SetGroup",LogLevel::DEBUG);
+        Logger::Log("starts POST AddGroup",LogLevel::DEBUG);
         
         // decode the received group data, as an object
         $insert = Group::decodeGroup($this->_app->request->getBody());
@@ -246,7 +246,7 @@ class DBGroup
             
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
-                                            "Sql/SetGroup.sql", 
+                                            "Sql/AddGroup.sql", 
                                             array("values" => $data));
 
             // checks the correctness of the query    
@@ -257,7 +257,7 @@ class DBGroup
                     $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
 
             } else{
-                Logger::Log("POST SetGroup failed",LogLevel::ERROR);
+                Logger::Log("POST AddGroup failed",LogLevel::ERROR);
                 $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
