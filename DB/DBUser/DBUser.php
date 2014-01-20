@@ -215,7 +215,7 @@ class DBUser
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
 
             Logger::Log("DELETE RemoveUser ok",LogLevel::DEBUG);   
-            $this->_app->response->setStatus(252);
+            $this->_app->response->setStatus(201);
             $this->_app->stop();
         } else{
             Logger::Log("DELETE RemoveUser failed",LogLevel::ERROR);
