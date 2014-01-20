@@ -1,6 +1,9 @@
 <?php
 /**
  * @file DBInvitation.php contains the DBInvitation class
+ * 
+ * @author Till Uhlig
+ * @author Felix Schmidt
  */ 
 
 require_once( 'Include/Slim/Slim.php' );
@@ -22,8 +25,6 @@ if (!$com->used())
     
 /**
  * A class, to abstract the "ExerciseType" table from database
- *
- * @author Till Uhlig
  */
 class DBInvitation
 {
@@ -66,12 +67,16 @@ class DBInvitation
     {
         DBInvitation::$_prefix = $value;
     }
-    
+
+
     /**
-     * the component constructor
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to
+     * the functions.
      *
      * @param Component $conf component data
-     */ 
+     */
     public function __construct($conf)
     {
         // initialize component
@@ -130,13 +135,19 @@ class DBInvitation
             $this->_app->run();
         }
     }
-    
+
+
     /**
-     * PUT EditInvitation
+     * Edits an invitation.
      *
-     * @param int $userid a database user identifier
-     * @param int $esid a database exercise sheet identifier
-     * @param $memberid a database user identifier
+     * Called when this component receives an HTTP PUT request to
+     * /invitation/user/$userid/exercisesheet/$esid/user/$memberid(/)
+     * The request body should contain a JSON object representing the 
+     * invitations's new attributes.
+     *
+     * @param int $userid The id of the user that invites a new user.
+     * @param int $esid The id of the exercise sheet the group belongs to.
+     * @param int $memberid The id of the user that is invited.
      */
     public function editInvitation($userid,$esid,$memberid)
     {
@@ -180,13 +191,17 @@ class DBInvitation
             }
         }
     }
-    
+
+
     /**
-     * DELETE DeleteInvitation
+     * Deletes an invitation.
      *
-     * @param int $userid a database user identifier
-     * @param int $esid a database exercise sheet identifier
-     * @param $memberid a database user identifier
+     * Called when this component receives an HTTP DELETE request to
+     * /invitation/user/$userid/exercisesheet/$esid/user/$memberid(/)
+     *
+     * @param int $userid The id of the user that invites a new user.
+     * @param int $esid The id of the exercise sheet the group belongs to.
+     * @param int $memberid The id of the user that is invited.
      */
     public function deleteInvitation($userid,$esid,$memberid)
     {
@@ -218,9 +233,15 @@ class DBInvitation
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * POST SetInvitation
+     * Adds an invitation.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /invitation(/).
+     * The request body should contain a JSON object representing the 
+     * invitations's attributes.
      */
     public function setInvitation()
     {
@@ -256,9 +277,13 @@ class DBInvitation
             }
         }
     }
-    
+
+
     /**
-     * GET GetAllInvitations
+     * Returns all invitations.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /invitation(/) or /invitation/invitation(/).
      */
     public function getAllInvitations()
     {    
@@ -327,11 +352,15 @@ class DBInvitation
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetLeaderInvitations
+     * Returns all invitations the user created.
      *
-     * @param int $userid a database user identifier
+     * Called when this component receives an HTTP GET request to
+     * /invitation/leader/user/$userid(/).
+     *
+     * @param int $userid The id of the user that created the returned invitations.
      */
     public function getLeaderInvitations($userid)
     {    
@@ -403,11 +432,15 @@ class DBInvitation
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetMemberInvitations
+     * Returns all invitations to which the user is invited to.
      *
-     * @param int $userid a database user identifier
+     * Called when this component receives an HTTP GET request to
+     * /invitation/member/user/$userid(/).
+     *
+     * @param int $userid The id of the user.
      */
     public function getMemberInvitations($userid)
     {    
@@ -480,12 +513,17 @@ class DBInvitation
             $this->_app->stop();
         }
     }
-    
-   /**
-     * GET GetSheetLeaderInvitations
+
+
+    /**
+     * Returns all invitations the user created regarding a 
+     * specific exercise sheet.
      *
-     * @param int $esid a database exercise sheet identifier
-     * @param int $userid a database user identifier
+     * Called when this component receives an HTTP GET request to
+     * /invitation/leader/exercisesheet/$esid/user/$userid(/).
+     *
+     * @param int $esid The id of the exercise sheet.
+     * @param int $userid The id of the user that created the returned invitations.
      */
     public function getSheetLeaderInvitations($esid,$userid)
     {     
@@ -559,12 +597,17 @@ class DBInvitation
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetSheetMemberInvitations
+     * Returns all invitations to which the user is invited to regarding a 
+     * specific exercise sheet.
      *
-     * @param int $esid a database exercise sheet identifier
-     * @param int $userid a database user identifier
+     * Called when this component receives an HTTP GET request to
+     * /invitation/member/exercisesheet/$esid/user/$userid(/).
+     *
+     * @param int $esid The id of the exercise sheet.
+     * @param int $userid The id of the user.
      */
     public function getSheetMemberInvitations($esid,$userid)
     {      
@@ -638,11 +681,15 @@ class DBInvitation
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetSheetInvitations
+     * Returns all invitations to a given exercise sheet.
      *
-     * @param int $esid a database exercise sheet identifier
+     * Called when this component receives an HTTP GET request to
+     * /invitation/member/exercisesheet/$esid/user/$userid(/).
+     *
+     * @param int $esid The id of the exercise sheet the invitations belong to.
      */
     public function getSheetInvitations($esid)
     {     
