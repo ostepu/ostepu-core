@@ -15,7 +15,7 @@ class DBMarkingTest extends PHPUnit_Framework_TestCase
         else
             $this->url = parse_ini_file("../phpunit.ini", TRUE)['PHPUNIT']['url'];
             
-        $this->SetMarking();
+        $this->AddMarking();
         $this->EditMarking();
         $this->DeleteMarking();
         $this->GetMarking();
@@ -114,7 +114,7 @@ class DBMarkingTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetMarking call");
     }
     
-    public function SetMarking()
+    public function AddMarking()
     {
 
     }

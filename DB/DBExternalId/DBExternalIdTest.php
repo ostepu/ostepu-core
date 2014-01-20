@@ -15,7 +15,7 @@ class DBExternalIdTest extends PHPUnit_Framework_TestCase
         else
             $this->url = parse_ini_file("../phpunit.ini", TRUE)['PHPUNIT']['url'];
             
-        $this->SetExternalId();
+        $this->AddExternalId();
         $this->EditExternalId();
         $this->DeleteExternalId();
         $this->GetExternalId();
@@ -49,18 +49,43 @@ class DBExternalIdTest extends PHPUnit_Framework_TestCase
         $this->assertContains('"name":"Fachschaftsseminar fuer Mathematik"',$result['content']);
     }
     
-    public function SetExternalId()
+    public function AddExternalId()
     {
+        $result = Request::delete($this->url . 'DBExternalId/externalid/hlskdaghlkj',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for AddExternalId call");  
+        
+        $result = Request::delete($this->url . 'DBExternalId/externalid/Neuhlskdaghlkj',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for AddExternalId call");  
+        
+        //createExternalId($externalId,$courseId)
+        $obj = ExternalId::createExternalId("hlskdaghlkj","1");
 
+        $result = Request::post($this->url . 'DBExternalId/externalid',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),ExternalId::encodeExternalId($obj));
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for SetExternalId call");      
     }
     
     public function DeleteExternalId()
     {
-
+        $result = Request::delete($this->url . 'DBExternalId/externalid/hlskdaghlkj',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),""); 
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for DeleteExternalId call");
+        
+        $result = Request::delete($this->url . 'DBExternalId/externalid/hlskdaghlkj',array(),"");
+        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for DeleteExternalId call");
     }
     
     public function EditExternalId()
     {
+        //createExternalId($externalId,$courseId)
+        $obj = ExternalId::createExternalId("Neuhlskdaghlkj","1");
+        
+        $result = Request::put($this->url . 'DBExternalId/externalid/hlskdaghlkj',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),ExternalId::encodeExternalId($obj));
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for EditExternalId call");      
 
+        $result = Request::put($this->url . 'DBExternalId/externalid/hlskdaghlkj',array(),"");
+        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for EditExternalId call");
+        
+        $result = Request::get($this->url . 'DBExternalId/externalid/course/1',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
+        $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for EditExternalId call");
+        $this->assertContains('"id":"Neuhlskdaghlkj"',$result['content']);
     }
 }

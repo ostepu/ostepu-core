@@ -15,7 +15,7 @@ class DBSelectedSubmissionTest extends PHPUnit_Framework_TestCase
         else
             $this->url = parse_ini_file("../phpunit.ini", TRUE)['PHPUNIT']['url'];
             
-        $this->SetSelectedSubmission();
+        $this->AddSelectedSubmission();
         $this->EditSelectedSubmission();
         $this->DeleteSelectedSubmission();
         $this->GetExerciseSelected();
@@ -42,9 +42,17 @@ class DBSelectedSubmissionTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetExerciseSelected call"); 
     }
     
-    public function SetSelectedSubmission()
+    public function AddSelectedSubmission()
     {
+      //  $result = Request::delete($this->url . 'DBSelectedSubmission/selectedsubmission/leader/1/exercise/1',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
+        //$this->assertEquals(201, $result['status'], "Unexpected HTTP status code for AddSelectedSubmission call");
 
+        //createSelectedSubmission($leaderId,$submissionId,$exerciseId)
+        $obj = SelectedSubmission::createSelectedSubmission("4","1","1");
+
+        $result = Request::post($this->url . 'DBSelectedSubmission/selectedsubmission',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),SelectedSubmission::encodeSelectedSubmission($obj));
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for AddSelectedSubmission call");      
+        $this->assertContains('{"leaderId":4}',$result['content']);
     }
     
     public function DeleteSelectedSubmission()

@@ -15,7 +15,7 @@ class DBApprovalConditionTest extends PHPUnit_Framework_TestCase
         else
             $this->url = parse_ini_file("../phpunit.ini", TRUE)['PHPUNIT']['url'];
             
-        $this->SetApprovalCondition();
+        $this->AddApprovalCondition();
         $this->EditApprovalCondition();
         $this->DeleteApprovalCondition();
         $this->GetCourseApprovalConditions();
@@ -50,7 +50,7 @@ class DBApprovalConditionTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetApprovalCondition call"); 
     }
     
-    public function SetApprovalCondition()
+    public function AddApprovalCondition()
     {
 
     }

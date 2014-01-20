@@ -15,7 +15,7 @@ class DBExerciseTest extends PHPUnit_Framework_TestCase
         else
             $this->url = parse_ini_file("../phpunit.ini", TRUE)['PHPUNIT']['url'];
             
-        $this->SetExercise();
+        $this->AddExercise();
         $this->EditExercise();
         $this->DeleteExercise();
         $this->GetSheetExercises();
@@ -63,7 +63,7 @@ class DBExerciseTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetExercise call");
     }
     
-    public function SetExercise()
+    public function AddExercise()
     {
 
     }

@@ -15,7 +15,7 @@ class DBAttachmentTest extends PHPUnit_Framework_TestCase
         else
             $this->url = parse_ini_file("../phpunit.ini", TRUE)['PHPUNIT']['url'];
             
-        $this->SetAttachment();
+        $this->AddAttachment();
         $this->EditAttachment();
         $this->DeleteAttachment();
         $this->GetAttachment();
@@ -61,18 +61,47 @@ class DBAttachmentTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetAttachment call");
    }
     
-    public function SetAttachment()
+    public function AddAttachment()
     {
+        $result = Request::delete($this->url . 'DBAttachment/attachment/100',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for AddAttachment call");
+        
+        //createAttachment($attachmentId,$exerciseId,$fileId)
+        $obj = Attachment::createAttachment("100","1","1");
 
+        $result = Request::post($this->url . 'DBAttachment/attachment',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),Attachment::encodeAttachment($obj));
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for AddAttachment call");      
+        $this->assertContains('{"id":100}',$result['content']);
     }
     
     public function DeleteAttachment()
     {
+        $result = Request::delete($this->url . 'DBAttachment/attachment/100',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),""); 
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for DeleteAttachment call");
 
+        $result = Request::delete($this->url . 'DBAttachment/attachment/AAA',array(),"");
+        $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for DeleteAttachment call");
+        
+        $result = Request::delete($this->url . 'DBAttachment/attachment/100',array(),"");
+        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for DeleteAttachment call");
     }
     
     public function EditAttachment()
     {
+        //createAttachment($attachmentId,$exerciseId,$fileId)
+        $obj = Attachment::createAttachment("100","1","2");
+        
+        $result = Request::put($this->url . 'DBAttachment/attachment/100',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),Attachment::encodeAttachment($obj));
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for EditAttachment call");      
+        
+        $result = Request::put($this->url . 'DBAttachment/attachment/AAA',array(),"");
+        $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for EditAttachment call");  
 
+        $result = Request::put($this->url . 'DBAttachment/attachment/100',array(),"");
+        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for EditAttachment call");
+        
+        $result = Request::get($this->url . 'DBAttachment/attachment/100',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
+        $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for EditAttachment call");
+        $this->assertContains('"fileId":"2"',$result['content']);
     }
 }

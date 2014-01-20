@@ -43,6 +43,10 @@ class DBUserTest extends PHPUnit_Framework_TestCase
         $result = Request::get($this->url . 'DBUser/user',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for GetUsers call");
         $this->assertContains('"userName":"till"',$result['content']);
+        
+        $result = Request::get($this->url . 'DBUser/user',array(),"");
+        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for GetUsers call");
+        $this->assertContains('[]',$result['content']);
     }
     
     public function GetCourseMember()
@@ -53,6 +57,10 @@ class DBUserTest extends PHPUnit_Framework_TestCase
         
         $result = Request::get($this->url . 'DBUser/user/course/AAA',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetCourseMember call"); 
+        
+        $result = Request::get($this->url . 'DBUser/user/course/1',array(),"");
+        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for GetUsers call");
+        $this->assertContains('[]',$result['content']);
     }
     
     public function GetGroupMember()
@@ -67,6 +75,10 @@ class DBUserTest extends PHPUnit_Framework_TestCase
 
         $result = Request::get($this->url . 'DBUser/user/group/user/1/exercisesheet/AAA',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetGroupMember call");       
+    
+        $result = Request::get($this->url . 'DBUser/user/group/user/2/exercisesheet/1',array(),"");
+        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for GetUsers call");
+        $this->assertContains('[]',$result['content']);
     }
     
     public function GetIncreaseUserFailedLogin()
@@ -78,6 +90,10 @@ class DBUserTest extends PHPUnit_Framework_TestCase
         $result = Request::get($this->url . 'DBUser/user/lisa/IncFailedLogin',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for GetIncreaseUserFailedLogin call");      
         $this->assertContains('"userName":"lisa"',$result['content']);
+        
+        $result = Request::get($this->url . 'DBUser/user/2/IncFailedLogin',array(),"");
+        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for GetUsers call");
+        $this->assertContains('[]',$result['content']);
     }
     
     public function GetUserByStatus()
@@ -88,6 +104,10 @@ class DBUserTest extends PHPUnit_Framework_TestCase
         
         $result = Request::get($this->url . 'DBUser/user/status/AAA',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetUserByStatus call");    
+   
+        $result = Request::get($this->url . 'DBUser/user/status/0',array(),"");
+        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for GetUsers call");
+        $this->assertContains('[]',$result['content']);
     }
     
     public function GetCourseUserByStatus()
@@ -101,20 +121,50 @@ class DBUserTest extends PHPUnit_Framework_TestCase
         
         $result = Request::get($this->url . 'DBUser/user/course/1/status/AAA',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetCourseUserByStatus call"); 
+   
+        $result = Request::get($this->url . 'DBUser/user/course/1/status/0',array(),"");
+        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for GetUsers call");
+        $this->assertContains('[]',$result['content']);
     }
     
     public function AddUser()
-    {
-
+    {      
+        $result = Request::delete($this->url . 'DBUser/user/NeuTill/permanent',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for AddUser call"); 
+        
+        $result = Request::delete($this->url . 'DBUser/user/tilltill/permanent',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for AddUser call"); 
+        
+        // createUser($userId,$userName,$email,$firstName,$lastName,$title,$flag,$password,$salt,$failedLogins)
+        $obj = User::createUser(null,"tilltill","till2@email.de","Till","Uhlig","-","1","test","abc",null);
+        
+        $result = Request::post($this->url . 'DBUser/user',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),User::encodeUser($obj));
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for AddUser call");      
+        $this->assertContains('{"id":',$result['content']);
     }
     
     public function RemoveUser()
     {
-
+        $result = Request::delete($this->url . 'DBUser/user/NeuTill',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for RemoveUser call"); 
+        
+        $result = Request::delete($this->url . 'DBUser/user/NeuTill',array(),"");
+        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for RemoveUser call");
     }
     
     public function EditUser()
     {
+        // createUser($userId,$userName,$email,$firstName,$lastName,$title,$flag,$password,$salt,$failedLogins)
+        $obj = User::createUser(null,"NeuTill",null,null,null,null,null,null,null,null);
+        
+        $result = Request::put($this->url . 'DBUser/user/tilltill',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),User::encodeUser($obj));
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for EditUser call");  
 
+        $result = Request::put($this->url . 'DBUser/user/tilltill',array(),"");
+        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for EditUser call");
+        
+        $result = Request::get($this->url . 'DBUser/user/NeuTill',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
+        $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for EditUser call");
+        $this->assertContains('"userName":"NeuTill"',$result['content']);
     }
 }

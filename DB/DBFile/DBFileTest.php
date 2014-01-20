@@ -15,7 +15,7 @@ class DBFileTest extends PHPUnit_Framework_TestCase
         else
             $this->url = parse_ini_file("../phpunit.ini", TRUE)['PHPUNIT']['url'];
 
-        $this->SetFile();
+        $this->AddFile();
         $this->EditFile();
         $this->RemoveFile();
         $this->GetFile();
@@ -47,18 +47,46 @@ class DBFileTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetFile call");
     }
     
-    public function SetFile()
+    public function AddFile()
     {
-
+        $result = Request::delete($this->url . 'DBFile/file/100',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
+        
+        //createFile($fileId,$displayName,$address,$timeStamp,$fileSize,$hash)
+        $obj = File::createFile("100","datei.pdf","file/abcdefghij",null,"123","abcdefghij");
+        
+        $result = Request::post($this->url . 'DBFile/file',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),File::encodeFile($obj));
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for AddFile call");      
+        $this->assertContains('{"fileId":100}',$result['content']);
     }
     
     public function RemoveFile()
     {
-
+        $result = Request::delete($this->url . 'DBFile/file/100',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for RemoveFile call");
+        
+        $result = Request::delete($this->url . 'DBFile/file/AAA',array(),"");
+        $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for RemoveFile call");
+        
+        $result = Request::delete($this->url . 'DBFile/file/100',array(),"");
+        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for RemoveFile call");
     }
     
     public function EditFile()
     {
+        //createFile($fileId,$displayName,$address,$timeStamp,$fileSize,$hash)
+        $obj = File::createFile("100","datei2.pdf","file/abcdefghij",null,"123","abcdefghij");
+        
+        $result = Request::put($this->url . 'DBFile/file/100',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),Course::encodeCourse($obj));
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for EditFile call");      
 
+        $result = Request::put($this->url . 'DBFile/file/AAA',array(),"");
+        $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for EditFile call");
+        
+        $result = Request::put($this->url . 'DBFile/file/100',array(),"");
+        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for EditFile call");
+        
+        $result = Request::get($this->url . 'DBFile/file/100',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
+        $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for EditFile call");
+        $this->assertContains('"displayName":"datei2.pdf"',$result['content']);
     }
 }

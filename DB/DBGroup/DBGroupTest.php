@@ -15,7 +15,7 @@ class DBGroupTest extends PHPUnit_Framework_TestCase
         else
             $this->url = parse_ini_file("../phpunit.ini", TRUE)['PHPUNIT']['url'];
             
-        $this->SetGroup();
+        $this->AddGroup();
         $this->EditGroup();
         $this->DeleteGroup();
         $this->GetUserGroups();
@@ -61,7 +61,7 @@ class DBGroupTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetUserGroups call");
     }
     
-    public function SetGroup()
+    public function AddGroup()
     {
 
     }

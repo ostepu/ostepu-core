@@ -16,7 +16,7 @@ class DBExerciseSheetTest extends PHPUnit_Framework_TestCase
             $this->url = parse_ini_file("../phpunit.ini", TRUE)['PHPUNIT']['url'];
             
             
-        $this->SetExerciseSheet();
+        $this->AddExerciseSheet();
         $this->EditExerciseSheet();
         $this->DeleteExerciseSheet();
         $this->GetExerciseSheet();
@@ -29,7 +29,7 @@ class DBExerciseSheetTest extends PHPUnit_Framework_TestCase
     {
         $result = Request::get($this->url . 'DBExerciseSheet/exercisesheet/1',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for GetExerciseSheet call");
-        $this->assertContains('"id":"1","courseId":"1","endDate":"1389643115","startDate":"1394913515","groupSize":"1","sampleSolution"',$result['content']);
+        $this->assertContains('"id":"1","courseId":"1","endDate":"1389643115","startDate":"1394913515","groupSize":"3","sampleSolution"',$result['content']);
         
         $result = Request::get($this->url . 'DBExerciseSheet/exercisesheet/AAA',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetExerciseSheet call");
@@ -39,7 +39,7 @@ class DBExerciseSheetTest extends PHPUnit_Framework_TestCase
     {
         $result = Request::get($this->url . 'DBExerciseSheet/exercisesheet/course/1',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for GetCourseSheets call");
-        $this->assertContains('"id":"1","courseId":"1","endDate":"1389643115","startDate":"1394913515","groupSize":"1","sheetName":"Serie 1","sampleSolution"',$result['content']);
+        $this->assertContains('"id":"1","courseId":"1","endDate":"1389643115","startDate":"1394913515","groupSize":"3","sheetName":"Serie 1","sampleSolution"',$result['content']);
         
         $result = Request::get($this->url . 'DBExerciseSheet/exercisesheet/course/AAA',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetCourseSheets call");
@@ -65,7 +65,7 @@ class DBExerciseSheetTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetExerciseSheetURL call");
     }
     
-    public function SetExerciseSheet()
+    public function AddExerciseSheet()
     {
 
     }
