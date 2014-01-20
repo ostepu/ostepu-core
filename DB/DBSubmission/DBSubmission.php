@@ -227,6 +227,8 @@ class DBSubmission
      *
      * Called when this component receives an HTTP PUT request to
      * /submission/submission/$suid(/) or /submission/$suid(/).
+     * The request body should contain a JSON object representing 
+     * submission's new attributes.
      *
      * @param int $suid The id of the submission which is being updated.
      */
