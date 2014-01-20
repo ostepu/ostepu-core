@@ -95,9 +95,9 @@ class DBExternalId
         $this->_app->delete('/' . $this->getPrefix() . '(/externalid)/:exid(/)',
                            array($this,'deleteExternalId'));
         
-        // POST SetExternalId
+        // POST AddExternalId
         $this->_app->post('/' . $this->getPrefix() . '(/)',
-                         array($this,'setExternalId'));
+                         array($this,'addExternalId'));
                          
         // GET GetExternalId
         $this->_app->get('/' . $this->getPrefix() . '(/externalid)/:exid(/)',
@@ -211,9 +211,9 @@ class DBExternalId
      *
      * @param string $exid The alias of the course that is being created.
      */
-    public function setExternalId()
+    public function addExternalId()
     {
-        Logger::Log("starts POST SetExternalId",LogLevel::DEBUG);
+        Logger::Log("starts POST AddExternalId",LogLevel::DEBUG);
         
         // decode the received external id data, as an object
         $insert = ExternalId::decodeExternalId($this->_app->request->getBody());
@@ -228,7 +228,7 @@ class DBExternalId
    
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
-                                            "Sql/SetExternalId.sql", 
+                                            "Sql/AddExternalId.sql", 
                                             array("values" => $data));                   
            
            // checks the correctness of the query
@@ -240,7 +240,7 @@ class DBExternalId
                     $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
-                Logger::Log("POST SetExternalId failed",LogLevel::ERROR);
+                Logger::Log("POST AddExternalId failed",LogLevel::ERROR);
                 $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
