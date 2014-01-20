@@ -33,7 +33,7 @@ class LgetSite
      *Address of the Logic-Controller
      *dynamic set by CConf below
      */
-    private $lURL = "http://localhost/uebungsplattform/SiteTest.php";
+    private $lURL = "http://localhost/uebungsplattform/Controller";
 
     public function __construct($conf)
     {
@@ -45,16 +45,18 @@ class LgetSite
         /**
          *Set the Logiccontroller-URL
          */
-        //$this->_conf = $conf;
-        //$this->query = array();
-        //
-        //$this->query = CConfig::getLink($conf->getLinks(),"controller");
-        //$this->lURL = $this->query->getAddress();
+        $this->_conf = $conf;
+        $this->query = array();
+        
+        $this->query = CConfig::getLink($conf->getLinks(),"controller");
+        $this->lURL = $this->query->getAddress();
 
         //GET TutorAssignmentSiteInfo
-        $this->app->get('/tutorassignment/course/:courseid/exercisesheet/:sheetid', array($this, 'tutorAssignmentSiteInfo'));
+        $this->app->get('/tutorassignment/course/:courseid/exercisesheet/:sheetid(/)', array($this, 'tutorAssignmentSiteInfo'));
 
-
+        $this-app-get('/student/user/:userid/course/:courseid(/)', array($this, 'studentSiteInfo'));
+        
+        //run Slim
         $this->app->run();
     }
 
@@ -69,11 +71,7 @@ class LgetSite
         $header = $this->app->request->headers->all();
         $URL = $this->lURL.'/DB/coursestatus/course/'.$courseid.'/status/1'; //status = 1 => Tutor
         $answer = Request::custom('GET', $URL, $header, $body);
-        //$answer['content'] = utf8_decode($answer['content']);
-        //$answer['content'] = substr($answer['content'], 1, strlen($answer['content']) -1);
-        //print_r($answer['content']);
         $tutors = json_decode($answer['content'], true);
-        //print_r($tutors);
         foreach ($tutors AS $tutor){
             //benoetigte Attribute waehlen
             $newTutor = array();
@@ -134,6 +132,50 @@ class LgetSite
         array_push($response, $newTutorAssignment);
 
         $this->app->response->setBody(json_encode($response));
+    }
+    
+    public function studentSideInfo($userid, $courseid){
+        
+        $response = array();
+        $body = $this->app->request->getBody();
+        $header = $this->app->request->headers->all();
+        
+        //get Exercisesheets
+
+        $URL = $this->lURL.'/DB/exercisesheet/course/'.$courseid;
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $sheets = json_decode($answer['content'], true);
+        foreach ($sheets as $sheet){
+            $newSheet = array(
+                        'id' => $sheet['id'],
+                        'courseId'=> $sheet['courseId'],
+                        'endDate'=> $sheet['endDate'],
+                        'startDate'=> $sheet['startDate'],
+                        'zipFile'=> $sheet['zipFile'],
+                        'sampleSolution'=> $sheet['sampleSolution'],
+                        'sheetFile'=> $sheet['sheetFile'],
+                        'exercises'=> $sheet['exercises'],
+                        'groupSize'=> $sheet['groupSize'],
+                        'sheetName'=> $sheet['sheetName'],
+                        'group'=> array();
+                        )
+            $response[] = $newShet;
+        }
+        //get UserGroups
+        $URL = $this->lURL.'/DB/group/user/'.$usserid;
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $groups = json_decode($answer['content'], true);
+        
+        foreach ($groups as $group){
+            foreach ($response as $sheet){
+                if ($sheet['id'] == $group['shootId']){
+                    $sheet['group'] = $group;
+                    break;
+                }
+            }
+        }
+        $this->app->response->setBody(json_encode($response));
+        
     }
 }
 
