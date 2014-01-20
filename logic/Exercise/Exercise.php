@@ -54,14 +54,14 @@ class LExercise
          * When getting a POST and there are no other parameters at the URL,
          * the addExercise function is called
          */
-        $this->app->post(':data+', array($this, 'addExercise'));
+        $this->app->post('/'.$this->_prefix.'/:data+', array($this, 'addExercise'));
 
         /**
          * When getting a GET 
          * and there are the parameters "/exercise/1" for example,
          * the getExercise function is called
          */
-        $this->app->get('/exercise/:exerciseid',
+        $this->app->get('/'.$this->_prefix.'/exercise/:exerciseid(/)',
                         array ($this, 'getExercise'));
 
         /**
@@ -69,7 +69,7 @@ class LExercise
          * and there are the parameters "/exercise/1" for example,
          * the deleteExercise function is called
          */
-        $this->app->delete('/exercise/:exerciseid',
+        $this->app->delete('/'.$this->_prefix.'/exercise/:exerciseid(/)',
                         array($this, 'deleteExercise'));
 
         /**
@@ -77,7 +77,7 @@ class LExercise
          * and there are the parameters "/exercise/1" for example,
          * the editExercise function is called
          */
-        $this->app->put('/exercise/:exerciseid',
+        $this->app->put('/'.$this->_prefix.'/exercise/:exerciseid(/)',
                         array($this, 'editExercise'));
 
         /**

@@ -55,7 +55,7 @@ class LExerciseType
          * and there are the parameters "/course/1" for example,
          * the setPossibleTypes function is called
          */
-        $this->app->post('/course/:courseid' ,
+        $this->app->post('/'.$this->_prefix.'/course/:courseid(/)' ,
                             array($this, 'setPossibleTypes'));
 
         /**
@@ -63,7 +63,7 @@ class LExerciseType
          * and there are the parameters "/course/1" for example,
          * the deletePossibleTypes function is called
          */
-        $this->app->delete('/course/:courseid' ,
+        $this->app->delete('/'.$this->_prefix.'/course/:courseid(/)' ,
                             array($this, 'deletePossibleTypes'));
 
         /**
@@ -71,7 +71,7 @@ class LExerciseType
          * and there are the parameters "/course/1" for example,
          * the editExerciseType function is called
          */
-        $this->app->put('/course/:courseid' ,
+        $this->app->put('/'.$this->_prefix.'/course/:courseid(/)' ,
                             array($this, 'editPossibleTypes'));
 
         /**

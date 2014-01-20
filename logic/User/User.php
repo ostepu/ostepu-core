@@ -55,19 +55,19 @@ class LUser
         $this->lURL = $this->query->getAddress();
 
         //SetUserRights
-        $this->app->put('/user/:userid/right', array($this, 'setUserRights'));          //Adressen noch anpassen(kein .php;+ Compo-Namen
+        $this->app->put('/'.$this->_prefix.'/user/:userid/right', array($this, 'setUserRights'));          //Adressen noch anpassen(kein .php;+ Compo-Namen
 
         //AddUser
-        $this->app->post(':date+', array($this, 'addUser'));        //data+ soll leerer Parameter sein
+        $this->app->post('/'.$this->_prefix.'(/):date+', array($this, 'addUser'));        //data+ soll leerer Parameter sein
 
         //EditUser
-        $this->app->put('/user/:userid', array($this, 'editUser'));
+        $this->app->put('/'.$this->_prefix.'/user/:userid(/)', array($this, 'editUser'));
 
         //GetUsers
-        $this->app->get('/user', array($this, 'getUsers'));
+        $this->app->get('/'.$this->_prefix.'/user(/)', array($this, 'getUsers'));
 
         //GetUser
-        $this->app->get('/user/:userid', array($this, 'getUser'));
+        $this->app->get('/'.$this->_prefix.'/user/:userid(/)', array($this, 'getUser'));
 
         $this->app->run();
     }

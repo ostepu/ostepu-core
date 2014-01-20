@@ -39,23 +39,23 @@ class LMarking
         $this->lURL = $this->query->getAddress();
         
         //AddMarking
-        $this->app->post('/exercise/:exerciseid/tutor/:tutorid', 
+        $this->app->post('/'.$this->_prefix.'/exercise/:exerciseid/tutor/:tutorid(/)', 
                         array($this, 'addMarking'));
         
         //GetMarkingURL
-        $this->app->get('/marking/:markingid', 
+        $this->app->get('/'.$this->_prefix.'/marking/:markingid(/)', 
                         array ($this, 'getMarkingURL'));
         
         //DeleteMarking
-        $this->app->delete('/marking/:markingid', 
+        $this->app->delete('/'.$this->_prefix.'/marking/:markingid(/)', 
                         array($this, 'deleteMarking'));
                         
         //EditMarking
-        $this->app->put('/marking/:markingid/tutor/:tutorid', 
+        $this->app->put('/'.$this->_prefix.'/marking/:markingid/tutor/:tutorid(/)', 
                         array($this, 'editMarking'));
                         
         //EditMarkingState
-        $this->app->put('/marking/:markingid', 
+        $this->app->put('/'.$this->_prefix.'/marking/:markingid(/)', 
                         array($this, 'editMarkingState'));
         
         $this->app->run();
