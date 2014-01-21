@@ -1,0 +1,20 @@
+/**
+ * @file SessionSample.json This file represents a valid JSON object of type Session for DBSession.
+ * 
+ * @author Till Uhlig
+ */ 
+
+    [
+       {
+           "user": "1",
+           "session": "abcd"
+       },
+       {
+           "user": "3",
+           "session": "abc"
+       },
+       {
+           "user": "4",
+           "session": "ab"
+       }
+    ]

@@ -1,0 +1,92 @@
+/**
+ * @file MarkingSample.json This file represents a valid JSON object of type Marking for DBMarking.
+ * 
+ * @author Till Uhlig
+ */
+ 
+    [
+       {
+           "id": "2",
+           "tutorId": "2",
+           "tutorComment": "nichts",
+           "outstanding": "1",
+           "status": "0",
+           "points": "12",
+           "date": "1389643115",
+           "file":
+           {
+               "fileId": "7",
+               "displayName": "g.pdf",
+               "address": "file/abcdefg",
+               "timeStamp": "1389643115",
+               "fileSize": "700",
+               "hash": "abcdefg"
+           },
+           "submission":
+           {
+               "id": "2",
+               "studentId": "1",
+               "exerciseId": "1",
+               "comment": "zwei",
+               "accepted": "1",
+               "date": "1389643115",
+               "selectedForGroup": "1"
+           }
+       },
+       {
+           "id": "3",
+           "tutorId": "1",
+           "tutorComment": "nichts",
+           "outstanding": "0",
+           "status": "0",
+           "points": "13",
+           "date": "1389643115",
+           "file":
+           {
+               "fileId": "6",
+               "displayName": "f.pdf",
+               "address": "file/a",
+               "timeStamp": "1389643115",
+               "fileSize": "600",
+               "hash": "a"
+           },
+           "submission":
+           {
+               "id": "3",
+               "studentId": "2",
+               "exerciseId": "1",
+               "comment": "drei",
+               "accepted": "1",
+               "date": "1389643115",
+               "selectedForGroup": "1"
+           }
+       },
+       {
+           "id": "6",
+           "tutorId": "4",
+           "tutorComment": "nichts",
+           "outstanding": "1",
+           "status": "0",
+           "points": "16",
+           "date": "1389643115",
+           "file":
+           {
+               "fileId": "3",
+               "displayName": "c.pdf",
+               "address": "file/abcd",
+               "timeStamp": "1389643115",
+               "fileSize": "300",
+               "hash": "abcd"
+           },
+           "submission":
+           {
+               "id": "6",
+               "studentId": "4",
+               "exerciseId": "2",
+               "comment": "sechs",
+               "accepted": "1",
+               "date": "1389643115",
+               "selectedForGroup": "1"
+           }
+       }
+    ]

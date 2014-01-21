@@ -1,0 +1,104 @@
+/**
+ * @file InvitationSample.json This file represents a valid JSON object of type Invitation for DBInvitation.
+ * 
+ * @author Till Uhlig
+ */
+
+    [
+       {
+           "sheet": "1",
+           "leader":
+           {
+               "id": "2",
+               "userName": "lisa",
+               "email": "lisa@email.de",
+               "firstName": "Lisa",
+               "lastName": "Dietrich",
+               "flag": "1"
+           },
+           "member":
+           {
+               "id": "1",
+               "userName": "super-admin",
+               "flag": "1"
+           }
+       },
+       {
+           "sheet": "1",
+           "leader":
+           {
+               "id": "3",
+               "userName": "joerg",
+               "email": "joerg@email.de",
+               "firstName": "Joerg",
+               "lastName": "Baumgarten",
+               "flag": "1"
+           },
+           "member":
+           {
+               "id": "1",
+               "userName": "super-admin",
+               "flag": "1"
+           }
+       },
+       {
+           "sheet": "2",
+           "leader":
+           {
+               "id": "1",
+               "userName": "super-admin",
+               "flag": "1"
+           },
+           "member":
+           {
+               "id": "2",
+               "userName": "lisa",
+               "email": "lisa@email.de",
+               "firstName": "Lisa",
+               "lastName": "Dietrich",
+               "flag": "1"
+           }
+       },
+       {
+           "sheet": "2",
+           "leader":
+           {
+               "id": "2",
+               "userName": "lisa",
+               "email": "lisa@email.de",
+               "firstName": "Lisa",
+               "lastName": "Dietrich",
+               "flag": "1"
+           },
+           "member":
+           {
+               "id": "3",
+               "userName": "joerg",
+               "email": "joerg@email.de",
+               "firstName": "Joerg",
+               "lastName": "Baumgarten",
+               "flag": "1"
+           }
+       },
+       {
+           "sheet": "1",
+           "leader":
+           {
+               "id": "2",
+               "userName": "lisa",
+               "email": "lisa@email.de",
+               "firstName": "Lisa",
+               "lastName": "Dietrich",
+               "flag": "1"
+           },
+           "member":
+           {
+               "id": "4",
+               "userName": "till",
+               "email": "till@email.de",
+               "firstName": "Till",
+               "lastName": "Uhlig",
+               "flag": "1"
+           }
+       }
+    ]

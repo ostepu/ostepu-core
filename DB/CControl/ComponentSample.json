@@ -1,0 +1,15 @@
+/**
+ * @file ComponentSample.json This file represents a valid JSON object of type Component for CControl.
+ * 
+ * @author Till Uhlig
+ */ 
+
+    [
+       {
+           "id": "1",
+           "name": "FSControl",
+           "address": "localhost/uebungsplattform/FS/FSControl",
+           "option": ""
+       }
+    ]
+

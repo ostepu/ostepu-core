@@ -4,6 +4,7 @@
  * 
  * @author Till Uhlig
  * @author Felix Schmidt
+ * @include DB/DBCourseStatus/CourseStatusSample.json
  */ 
 
 require_once( 'Include/Slim/Slim.php' );
@@ -317,7 +318,7 @@ class DBCourseStatus
             // only one object as result
             if (count($res)>0)
                 $res = $res[0];    
-                
+ 
             $this->_app->response->setBody(User::encodeUser($res));
 
             $this->_app->response->setStatus(200);

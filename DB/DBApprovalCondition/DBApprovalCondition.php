@@ -1,6 +1,7 @@
 <?php
 /**
  * @file DBApprovalCondition.php contains the DBApprovalCondition class
+ * @include DB/DBApprovalCondition/ApprovalConditionSample.json
  */ 
 
 require_once( 'Include/Slim/Slim.php' );

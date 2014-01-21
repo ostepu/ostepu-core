@@ -4,6 +4,7 @@
  * 
  * @author Till Uhlig
  * @author Felix Schmidt
+ * @include DB/DBExternalId/ExternalIdSample.json
  */ 
 
 require_once( 'Include/Slim/Slim.php' );

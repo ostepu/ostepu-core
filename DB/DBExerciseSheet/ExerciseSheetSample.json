@@ -1,0 +1,60 @@
+/**
+ * @file ExerciseSheetSample.json This file represents a valid JSON object of type ExerciseSheet for DBExerciseSheet.
+ * 
+ * @author Till Uhlig
+ */ 
+ 
+    [
+       {
+           "id": "1",
+           "courseId": "1",
+           "endDate": "1389643115",
+           "startDate": "1394913515",
+           "groupSize": "1",
+           "sheetName": "Serie 1",
+           "sampleSolution":
+           {
+               "fileId": "8",
+               "displayName": "h.pdf",
+               "address": "file/abcdefgh",
+               "timeStamp": "1389643115",
+               "fileSize": "800",
+               "hash": "abcdefgh"
+           },
+           "sheetFile":
+           {
+               "fileId": "1",
+               "displayName": "a.pdf",
+               "address": "file/abcdef",
+               "timeStamp": "1389643115",
+               "fileSize": "100",
+               "hash": "abcdef"
+           }
+       },
+       {
+           "id": "2",
+           "courseId": "1",
+           "endDate": "1389643115",
+           "startDate": "1394913515",
+           "groupSize": "1",
+           "sheetName": "Bonus",
+           "sampleSolution":
+           {
+               "fileId": "1",
+               "displayName": "a.pdf",
+               "address": "file/abcdef",
+               "timeStamp": "1389643115",
+               "fileSize": "100",
+               "hash": "abcdef"
+           },
+           "sheetFile":
+           {
+               "fileId": "2",
+               "displayName": "b.pdf",
+               "address": "file/abcde",
+               "timeStamp": "1389643115",
+               "fileSize": "200",
+               "hash": "abcde"
+           }
+       }
+    ]
