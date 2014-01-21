@@ -1,3 +1,3 @@
 UPDATE Component
-SET $value
+SET $values
 WHERE CO_id = '$componentid' or CO_name = '$componentid'

@@ -1,1 +1,1 @@
-INSERT INTO Component SET $value
+INSERT INTO Component SET $values
