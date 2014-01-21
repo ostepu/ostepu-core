@@ -49,16 +49,16 @@ class FSBinder
         $this->_app->response->headers->set('Content-Type', 'application/json');
         
         // POST file
-        $this->_app->post('/:data+', array($this,'postFile'));
+        $this->_app->post('/:path+', array($this,'postFile'));
         
         // GET file as document
-        $this->_app->get('/:data+', array($this,'getFile'));
+        $this->_app->get('/:path+', array($this,'getFile'));
         
         // DELETE file
-        $this->_app->delete('/:data+', array($this,'deleteFile'));
+        $this->_app->delete('/:path+', array($this,'deleteFile'));
         
         // INFO file
-        $this->_app->map('/:data+', array($this,'infoFile'))->via('INFO');
+        $this->_app->map('/:path+', array($this,'infoFile'))->via('INFO');
         
         // run Slim
         $this->_app->run();
@@ -69,18 +69,18 @@ class FSBinder
      * Adds a file.
      *
      * Called when this component receives an HTTP POST request to
-     * /$data.
+     * /$path.
      * The request body should contain a JSON object representing the file's
      * attributes.
      *
-     * @param string[] $data The path where the file should be stored.
+     * @param string[] $path The path where the file should be stored.
      */
-    public function postFile($data)
+    public function postFile($path)
     { 
         $body = $this->_app->request->getBody();
         $fileobject = File::decodeFile($body);
             
-        $filePath = FSBinder::$_baseDir."/".implode("/",array_slice ($data,0));
+        $filePath = FSBinder::$_baseDir."/".implode("/",array_slice ($path,0));
         FSBinder::generatepath(dirname($filePath));
             
         $file = fopen($filePath,"w");
@@ -100,13 +100,13 @@ class FSBinder
      * Returns a file.
      *
      * Called when this component receives an HTTP GET request to
-     * /$data.
+     * /$path.
      *
-     * @param string[] $data The path where the requested file is stored.
+     * @param string[] $path The path where the requested file is stored.
      */
-    public function getFile($data)
+    public function getFile($path)
     {      
-        if (count($data)==0){
+        if (count($path)==0){
             $this->_app->response->setStatus(409);
             $this->_app->stop();
             return;
@@ -130,13 +130,13 @@ class FSBinder
      * Returns the file infos as a JSON file object.
      *
      * Called when this component receives an HTTP INFO request to
-     * /$data.
+     * /$path.
      *
-     * @param string[] $data The path where the requested file is stored.
+     * @param string[] $path The path where the requested file is stored.
      */
-    public function infoFile($data)
+    public function infoFile($path)
     { 
-        if (count($data)==0){
+        if (count($path)==0){
             $this->_app->response->setBody(File::encodeFile(new File()));
             $this->_app->response->setStatus(409);
             $this->_app->stop();
@@ -165,19 +165,19 @@ class FSBinder
      * Deletes a file.
      *
      * Called when this component receives an HTTP DELETE request to
-     * /$data.
+     * /$path.
      *
-     * @param string[] $data The path where the file which should be deleted is stored.
+     * @param string[] $path The path where the file which should be deleted is stored.
      */
-    public function deleteFile($data)
+    public function deleteFile($path)
     {
-        if (count($data)==0){
+        if (count($path)==0){
             $this->_app->response->setStatus(409);
             $this->_app->stop();
             return;
         }
         
-        $filePath = FSBinder::$_baseDir."/".implode("/",array_slice ($data,0));
+        $filePath = FSBinder::$_baseDir."/".implode("/",array_slice ($path,0));
                     
         if (strlen($filePath)>0 && file_exists($filePath)){ 
             $file = new File();
