@@ -54,13 +54,13 @@ class LCondition
         $this->lURL = $this->query->getAddress();
         
         //POST SetConditions
-        $this->app->post('/'.$this->_prefix.'/course/:courseid(/)', array($this, 'setConditions'));        //Adressen noch anpassen (Parameter mit Compo-Namen)
+        $this->app->post('/'.$this->getPrefix().'/course/:courseid(/)', array($this, 'setConditions'));        //Adressen noch anpassen (Parameter mit Compo-Namen)
         
         //PUT EditConditions
-        $this->app->put('/'.$this->_prefix.'/course/:courseid(/)', array($this, 'editConditions'));
+        $this->app->put('/'.$this->getPrefix().'/course/:courseid(/)', array($this, 'editConditions'));
         
         //GET CheckConditions
-        $this->app->get('/'.$this->_prefix.'/course/:courseid/user/:userid(/)',
+        $this->app->get('/'.$this->getPrefix().'/course/:courseid/user/:userid(/)',
                         array($this, 'checkConditions'));
         //run Slim                
         $this->app->run();

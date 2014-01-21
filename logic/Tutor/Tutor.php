@@ -51,16 +51,16 @@ class LTutor
         $this->lURL = $this->query->getAddress();
         
         //PUT allocate manual by student
-        $this->app->put('/'.$this->_prefix.'/exercisesheet/:exercisesheetid/manu/student(/)', array($this, 'allocateManualByStudent'));
+        $this->app->put('/'.$this->getPrefix().'/exercisesheet/:exercisesheetid/manu/student(/)', array($this, 'allocateManualByStudent'));
         
         //PUT allocate manual by exercise
-        $this->app->put('/'.$this->_prefix.'/exercisesheet/:exercisesheetid/manu/exercise(/)', array($this, 'allocateManualByExercise'));
+        $this->app->put('/'.$this->getPrefix().'/exercisesheet/:exercisesheetid/manu/exercise(/)', array($this, 'allocateManualByExercise'));
         
         //PUT allocate auto by student
-        $this->app->put('/'.$this->_prefix.'/exercisesheet/:exercisesheetid/auto/student(/)', array($this, 'allocateAutoByStudent'));
+        $this->app->put('/'.$this->getPrefix().'/exercisesheet/:exercisesheetid/auto/student(/)', array($this, 'allocateAutoByStudent'));
         
         //PUT allocate manual by exercise
-        $this->app->put('/'.$this->_prefix.'/exercisesheet/:exercisesheetid/auto/exercise(/)', array($this, 'allocateAutoByExercise'));       
+        $this->app->put('/'.$this->getPrefix().'/exercisesheet/:exercisesheetid/auto/exercise(/)', array($this, 'allocateAutoByExercise'));       
         
         //run slim
         $this->app->run();

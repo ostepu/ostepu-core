@@ -62,7 +62,7 @@ class LExerciseSheet
          * and there are the parameters "/exercisesheet/1" for example,
          * the aditExerciseSheet function is called
          */
-        $this->app->put('/'.$this->_prefix.'/exercisesheet/:sheetid(/)',
+        $this->app->put('/'.$this->getPrefix().'/exercisesheet/:sheetid(/)',
                         array ($this, 'editExerciseSheet'));
 
         /**
@@ -70,7 +70,7 @@ class LExerciseSheet
          * and there are the parameters "/exercisesheet/1/url" for example,
          * the getExerciseSheetURL function is called
          */
-        $this->app->get('/'.$this->_prefix.'/exercisesheet/:sheetid/url(/)',
+        $this->app->get('/'.$this->getPrefix().'/exercisesheet/:sheetid/url(/)',
                         array($this, 'getExerciseSheetURL'));
 
         /**
@@ -78,7 +78,7 @@ class LExerciseSheet
          * and there are the parameters "/exercisesheet/1" for example,
          * the getExerciseSheet function is called
          */
-        $this->app->get('/'.$this->_prefix.'/exercisesheet/:sheetid(/)',
+        $this->app->get('/'.$this->getPrefix().'/exercisesheet/:sheetid(/)',
                         array($this, 'getExerciseSheet'));
 
         /**
@@ -86,7 +86,7 @@ class LExerciseSheet
          * and there are the parameters "/exercisesheet/1" for example,
          * the deleteExerciseSheet function is called
          */
-        $this->app->delete('/'.$this->_prefix.'/exercisesheet/:sheetid(/)',
+        $this->app->delete('/'.$this->getPrefix().'/exercisesheet/:sheetid(/)',
                         array($this, 'deleteExerciseSheet'));
 
         /**

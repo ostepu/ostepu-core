@@ -52,22 +52,22 @@ class LCourse
         $this->lURL = $this->query->getAddress();
         
         //POST SetCourse
-        $this->app->post('/'.$this->_prefix.'/:data+', array($this, 'setCourse')); //keine URL: ''?
+        $this->app->post('/'.$this->getPrefix().'/:data+', array($this, 'setCourse')); //keine URL: ''?
         
         //PUT EditCourse
-        $this->app->put('/'.$this->_prefix.'/course/:courseid(/)', array($this, 'editCourse'));    
+        $this->app->put('/'.$this->getPrefix().'/course/:courseid(/)', array($this, 'editCourse'));    
         
         //DELETE DeleteCourse
-        $this->app->delete('/'.$this->_prefix.'/course/:courseid(/)', array($this, 'deleteCourse'));   
+        $this->app->delete('/'.$this->getPrefix().'/course/:courseid(/)', array($this, 'deleteCourse'));   
         
         //POST AddCourseMember
-        $this->app->post('/'.$this->_prefix.'/course/:courseid/user/:userid(/)', array($this, 'addCourseMember'));   
+        $this->app->post('/'.$this->getPrefix().'/course/:courseid/user/:userid(/)', array($this, 'addCourseMember'));   
         
         //GET GetCourseMember
-        $this->app->get('/'.$this->_prefix.'/course/:courseid/user(/)', array($this, 'getCourseMember'));    
+        $this->app->get('/'.$this->getPrefix().'/course/:courseid/user(/)', array($this, 'getCourseMember'));    
         
         //GET GetCourses
-        $this->app->get('/'.$this->_prefix.'/user/:userid(/)', array($this, 'getCourses'));    
+        $this->app->get('/'.$this->getPrefix().'/user/:userid(/)', array($this, 'getCourses'));    
        
         //run Slim
         $this->app->run();

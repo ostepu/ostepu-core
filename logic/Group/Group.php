@@ -55,7 +55,7 @@ class LGroup
          * and there are the parameters "/user/1" for example,
          * the inviteInGroup function is called
          */
-        $this->app->put('/'.$this->_prefix.'/user/:userid(/)',
+        $this->app->put('/'.$this->getPrefix().'/user/:userid(/)',
                             array($this, 'inviteInGroup'));
 
         /**
@@ -63,14 +63,14 @@ class LGroup
          * and there are the parameter "/accept",
          * the joinGroup function is called
          */
-        $this->app->put('/'.$this->_prefix.'/accept(/)', array($this, 'joinGroup'));
+        $this->app->put('/'.$this->getPrefix().'/accept(/)', array($this, 'joinGroup'));
 
         /**
          * When getting a PUT 
          * and there are the parameters "/user/1/leave" for example,
          * the leaveGroup function is called
          */
-        $this->app->put('/'.$this->_prefix.'/user/:userid/leave(/)',
+        $this->app->put('/'.$this->getPrefix().'/user/:userid/leave(/)',
                             array($this, 'leaveGroup'));
 
         /**
@@ -78,7 +78,7 @@ class LGroup
          * and there are the parameters "/user/1/deleteMember" for example,
          * the ejectFromGroup function is called
          */
-        $this->app->put('/'.$this->_prefix.'/user/:userid/deleteMember(/)',
+        $this->app->put('/'.$this->getPrefix().'/user/:userid/deleteMember(/)',
                             array($this, 'ejectFromGroup'));
 
         /**
@@ -86,7 +86,7 @@ class LGroup
          * and there are the parameters "/user/1/exercisesheet/2" for example,
          * the getGroup function is called
          */
-        $this->app->get('/'.$this->_prefix.'/user/:userid/exercisesheet/:sheetid(/)',
+        $this->app->get('/'.$this->getPrefix().'/user/:userid/exercisesheet/:sheetid(/)',
                         array($this, 'getGroup'));
 
         /**

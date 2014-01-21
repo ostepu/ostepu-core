@@ -53,26 +53,26 @@ class LSubmission
         $this->lURL = $this->query->getAddress();
 
         //AddSubmission
-        $this->app->post('/'.$this->_prefix.'(/):data+', array($this, 'addSubmission'));
+        $this->app->post('/'.$this->getPrefix().'(/):data+', array($this, 'addSubmission'));
 
         //EditSubmissionState
-        $this->app->put('/'.$this->_prefix.'/submission/:submissionid(/)',
+        $this->app->put('/'.$this->getPrefix().'/submission/:submissionid(/)',
                         array ($this, 'editSubmissionState'));
 
         //deleteSubmission
-        $this->app->delete('/'.$this->_prefix.'/submission/:submissionid(/)',
+        $this->app->delete('/'.$this->getPrefix().'/submission/:submissionid(/)',
                         array($this, 'deleteSubmission'));
 
         //LoadSubmissionAsZip
-        $this->app->get('/'.$this->_prefix.'/exerciseSheet/:sheetid/user/:userid(/)',
+        $this->app->get('/'.$this->getPrefix().'/exerciseSheet/:sheetid/user/:userid(/)',
                         array($this, 'loadSubmissionAsZip'));
 
         //ShowSubmissionsHistory
-        $this->app->get('/'.$this->_prefix.'/exerciseSheet/:sheetid/user/:userid/history(/)',
+        $this->app->get('/'.$this->getPrefix().'/exerciseSheet/:sheetid/user/:userid/history(/)',
                         array($this, 'showSubmissionsHistory'));
 
         //GetSubmissionURL
-        $this->app->get('/'.$this->_prefix.'/submission/:submissionid(/)',
+        $this->app->get('/'.$this->getPrefix().'/submission/:submissionid(/)',
                         array($this, 'getSubmissionURL'));
 
         $this->app->run();

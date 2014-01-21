@@ -52,19 +52,19 @@ class LAttachment
         $this->lURL = $this->query->getAddress();
         
         //POST AddAttachment
-        $this->app->post('/'.$this->_prefix.'/course/:courseid/exercisesheet/:exercisesheetid(/)', 
+        $this->app->post('/'.$this->getPrefix().'/course/:courseid/exercisesheet/:exercisesheetid(/)', 
                         array($this, 'addAttachment'));
         
         //GET GetAttachmentURL
-        $this->app->get('/'.$this->_prefix.'/file/:fileid(/)', 
+        $this->app->get('/'.$this->getPrefix().'/file/:fileid(/)', 
                         array ($this, 'getAttachmentURL'));
         
         //DELETE DeleteAttachment
-        $this->app->delete('/'.$this->_prefix.'/file/:fileid(/)', 
+        $this->app->delete('/'.$this->getPrefix().'/file/:fileid(/)', 
                         array($this, 'deleteAttachment'));
                         
         //PUT EditAttachment
-        $this->app->put('/'.$this->_prefix.'/file/:fileid(/)', 
+        $this->app->put('/'.$this->getPrefix().'/file/:fileid(/)', 
                         array($this, 'editAttachment'));
         //run Slim
         $this->app->run();

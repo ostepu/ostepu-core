@@ -39,17 +39,17 @@ class LSampleSolution
         $this->lURL = $this->query->getAddress();
         
         //AddSampleSolution
-        $this->app->post('/'.$this->_prefix.'/course/:courseid/exercisesheet/:sheetid(/)',
+        $this->app->post('/'.$this->getPrefix().'/course/:courseid/exercisesheet/:sheetid(/)',
                             array($this, 'addSampleSolution');
         
         //EditSampleSolustion
-        $this->app->put('/'.$this->_prefix.'/file/:fileid(/)', array($this, 'editSampleSolution');
+        $this->app->put('/'.$this->getPrefix().'/file/:fileid(/)', array($this, 'editSampleSolution');
         
         //GetSampleSolutionURL
-        $this->app->get('/'.$this->_prefix.'/file/:fileid(/)', array($this, 'getSampleSolutionURL');
+        $this->app->get('/'.$this->getPrefix().'/file/:fileid(/)', array($this, 'getSampleSolutionURL');
         
         //DeleteSampleSolution
-        $this->app->delete('/'.$this->_prefix.'file/:fileid(/)', 
+        $this->app->delete('/'.$this->getPrefix().'file/:fileid(/)', 
                             array($this, 'DeleteSampleSolution');
         
         $this->app->run();
