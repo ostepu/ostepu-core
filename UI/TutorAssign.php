@@ -2,6 +2,7 @@
 include 'include/Header/Header.php';
 include 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
+include_once '../Assistants/Logger.php';
 ?>
 
 <?php
@@ -31,15 +32,28 @@ if (isset($_GET['uid'])) {
     die('no user id!\n');
 }
 
+if (isset($_GET['sid'])) {
+    $sid = $_GET['sid'];
+} else {
+    die('no sheet id!\n');
+}
+
+/**
+ * @todo Combine user and course request into a single request
+ */
 // load user data from the database
 $databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/user/user/{$uid}";
 $user = http_get($databaseURI);
 $user = json_decode($user, true);
 
+Logger::Log("User request done");
+
 // load course data from the database
 $databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/course/course/{$cid}";
 $course = http_get($databaseURI);
 $course = json_decode($course, true)[0];
+
+Logger::Log("Course request done");
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
@@ -49,10 +63,10 @@ $h->bind(array("backTitle" => "zur Veranstaltung",
                "backURL" => "Tutor.php?cid={$cid}&uid={$uid}",
                "notificationElements" => $notifications));
 
-$data = file_get_contents("http://localhost/Uebungsplattform/UI/Data/TutorAssignData");
+$data = http_get("http://localhost/uebungsplattform/logic/GetSite/tutorassignment/course/{$cid}/exercisesheet/{$sid}");
 $data = json_decode($data, true);
 
-$tutorAssignment = $data;
+$tutorAssignment = array("tutorAssignments" => $data);
 
 // construct a content element for managing groups
 $assignAutomatically = Template::WithTemplateFile('include/TutorAssign/AssignAutomatically.template.html');

@@ -45,11 +45,15 @@ $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
 $databaseURL = "http://141.48.9.92/uebungsplattform/DB/DBExerciseSheet/exercisesheet/course/{$cid}/exercise";
 
 // construct some exercise sheets
-$sheetString = http_get($databaseURL, true, $message);
-if ($message == "401") {$auth->logoutUser();}
+$sheetData = http_get($databaseURL, true, $message);
+$sheetData = json_decode($sheetData, true);
+
+if ($message == "401") {
+    $auth->logoutUser();
+}
 
 // convert the json string into an associative array
-$sheets = array("sheets" =>json_decode($sheetString, true),
+$sheets = array("sheets" => $sheetData,
                 "uid" => $uid,
                 "cid" => $cid);
 

@@ -44,7 +44,13 @@ foreach ($sheets as $sheet):
                 <li><a href="CreateSheet.php">Serie bearbeiten</a></li>
                 <li><a href="#">Einsendungen herunterladen</a></li>
                 <li><a href="#">Einsendungen hochladen</a></li>
-                <li><a href="TutorAssign.php">Kontrolleurzuweisung</a></li>
+                <li>
+                <?php
+                    print '<a href="TutorAssign.php?cid=';
+                    print $cid . '&uid=' . $uid . '&sid=';
+                    print $sheet['id'];
+                    print '">Kontrolleurzuweisung</a></li>';
+                ?>
                 <li><a href="#">Korrekturassistent</a></li>
             </ol>
         </div>

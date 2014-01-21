@@ -12,16 +12,22 @@
                     <div class="tutor-assign-element left">
                         <div class="tutor-assign-element-title bold">
                             <?php print '<input type="radio" name="tutorID" value="';
-                            print $tutorAssignment['tutor']['userID'] . '"/>';
-                            print $tutorAssignment['tutor']['firstName'];
-                            print " ";
-                            print $tutorAssignment['tutor']['lastName'];
-                            print " ";
-                            print "(" . count($tutorAssignment['submissionIDs']) . ")";
+                            print $tutorAssignment['tutor']['id'] . '"/>';
+                            if ($tutorAssignment['tutor']['userName'] != "unassigned") {
+                                print $tutorAssignment['tutor']['firstName'];
+                                print " ";
+                                print $tutorAssignment['tutor']['lastName'];
+                                print " ";
+                                print "(" . count($tutorAssignment['submissions']) . ")";
+                                print '<br />';
+                            } else {
+                                print "Unzugeordnet ";
+                                print "(" . count($tutorAssignment['submissions']) . ")";
+                            }
                             ?>
                         </div>
                         <div class="checkbox-container">
-                            <?php foreach ($tutorAssignment['submissionIDs'] as $submissionID):
+                            <?php foreach ($tutorAssignment['submissions'] as $submissionID):
                             print '<input type="checkbox" name="submissionIDs[]" value="';
                             print $submissionID . '"/>';
                             print $submissionID;
