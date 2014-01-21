@@ -265,13 +265,15 @@ class FSFile
             }
         }
     }
-    
+
+
     /**
      * Selects the components which are responsible for handling the file with
      * the given hash.
      *
-     * @param $linkedComponents An array of components which could possibly handle the file.
-     * @param $hash The hash of the file.
+     * @param link[] $linkedComponents An array of links to components which could 
+     * possibly handle the file.
+     * @param string $hash The hash of the file.
      */
     public static function filterRelevantLinks($linkedComponents, $hash)
     {
