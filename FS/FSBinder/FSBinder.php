@@ -1,8 +1,10 @@
 <?php
 /**
-* @file (filename)
-* %(description)
-*/ 
+ * @file FSBinder.php contains the FSBinder class
+ * 
+ * @author Till Uhlig
+ * @author Felix Schmidt
+ */ 
 
 require_once( 'Include/Slim/Slim.php' );
 include_once( 'Include/CConfig.php' );
@@ -16,7 +18,7 @@ if (!$com->used())
     new FSBinder();
 
 /**
- * (description)
+ * The class for storing files.
  */
 class FSBinder
 {
@@ -33,12 +35,15 @@ class FSBinder
     private $_app;
     private $_conf;
 
+
     /**
-     * (description)
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to
+     * the functions.
      */
     public function __construct()
     {
-    
         $this->_app = new \Slim\Slim();
 
         $this->_app->response->headers->set('Content-Type', 'application/json');
@@ -58,12 +63,17 @@ class FSBinder
         // run Slim
         $this->_app->run();
     }
-        
-    
+
+
     /**
-     * POST File
-     * 
-     * @param $data (description)
+     * Adds a file.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /$data.
+     * The request body should contain a JSON object representing the file's
+     * attributes.
+     *
+     * @param string[] $data The path where the file should be stored.
      */
     public function postFile($data)
     { 
@@ -84,11 +94,15 @@ class FSBinder
         $this->_app->response->setBody(File::encodeFile($fileobject));
         $this->_app->response->setStatus(201);
     }
-    
+
+
     /**
-     * GET File
+     * Returns a file.
      *
-     * @param $data (description)
+     * Called when this component receives an HTTP GET request to
+     * /$data.
+     *
+     * @param string[] $data The path where the requested file is stored.
      */
     public function getFile($data)
     {      
@@ -110,11 +124,15 @@ class FSBinder
            $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * INFO File
+     * Returns the file infos as a JSON file object.
      *
-     * @param $data (description)
+     * Called when this component receives an HTTP INFO request to
+     * /$data.
+     *
+     * @param string[] $data The path where the requested file is stored.
      */
     public function infoFile($data)
     { 
@@ -141,11 +159,15 @@ class FSBinder
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * DELETE File
+     * Deletes a file.
      *
-     * @param $hash (description)
+     * Called when this component receives an HTTP DELETE request to
+     * /$data.
+     *
+     * @param string[] $data The path where the file which should be deleted is stored.
      */
     public function deleteFile($data)
     {
@@ -173,17 +195,18 @@ class FSBinder
             $this->_app->response->setStatus(252);
             $this->_app->stop();
         } else{
-            // file not exists
+            // file does not exist
             $this->_app->response->setStatus(409);
             $this->_app->response->setBody(File::encodeFile(new File()));
             $this->_app->stop();
         }      
     }
-    
+
+
     /**
-     * (description)
+     * Creates the path in the filesystem, if necessary.
      *
-     * @param $path (description)
+     * @param string[] $path The path which should be created.
      */
     public static function generatepath($path)
     {
