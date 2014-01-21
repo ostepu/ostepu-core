@@ -1,6 +1,8 @@
 <?php
 /**
  * @file CControl.php contains the CControl class
+ * @include DB/CControl/LinkSample.json
+ * @include DB/CControl/ComponentSample.json
  */ 
 
 require 'Include/Slim/Slim.php';
@@ -100,6 +102,10 @@ class CControl
      */
     public function editLink($linkid)
     {        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($linkid));
+                            
         // decode the received link data, as an object
         $insert = Link::decodeLink($this->_app->request->getBody());
         
@@ -132,6 +138,10 @@ class CControl
      */
     public function deleteLink($linkid)
     {
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($linkid));
+                            
         // starts a query
         eval("\$sql = \"".file_get_contents("Sql/DeleteLink.sql")."\";");
         $result = DBRequest::request($sql, false);
@@ -189,6 +199,10 @@ class CControl
      */
     public function getLink($linkid)
     {
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($linkid));
+                            
         // starts a query
         eval("\$sql = \"".file_get_contents("Sql/GetLink.sql")."\";");
         $query_result = DBRequest::request($sql, false);
@@ -212,6 +226,10 @@ class CControl
      */
     public function editComponent($componentid)
     {
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($componentid));
+                            
         $insert = Component::decodeComponent($this->_app->request->getBody());
         if (!is_array($insert))
             $insert = array($insert, false);
@@ -240,6 +258,10 @@ class CControl
      */
     public function deleteComponent($componentid)
     {
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($componentid));
+                            
         // starts a query
         eval("\$sql = \"".file_get_contents("Sql/DeleteComponent.sql")."\";");
         $query_result = DBRequest::request($sql, false);
@@ -293,6 +315,10 @@ class CControl
      */
     public function getComponent($componentid)
     {
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($componentid));
+                            
         // starts a query
         eval("\$sql = \"".file_get_contents("Sql/GetComponent.sql")."\";");
         $query_result = DBRequest::request($sql, false);
@@ -345,6 +371,10 @@ class CControl
      */
     public function getComponentDefinition($componentid)
     {
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($componentid));
+                            
         // starts a query
         eval("\$sql = \"".file_get_contents("Sql/GetComponentDefinition.sql")."\";");
         $query_result = DBRequest::request($sql, false);
