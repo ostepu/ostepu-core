@@ -1,6 +1,9 @@
 <?php
 /**
  * @file DBMarking.php contains the DBMarking class
+ * 
+ * @author Till Uhlig
+ * @author Felix Schmidt 
  */ 
 
 require_once( 'Include/Slim/Slim.php' );
@@ -22,8 +25,6 @@ if (!$com->used())
     
 /**
  * A class, to abstract the "Marking" table from database
- *
- * @author Till Uhlig
  */
 class DBMarking
 {
@@ -66,12 +67,16 @@ class DBMarking
     {
         DBMarking::$_prefix = $value;
     }
-    
+
+
     /**
-     * the component constructor
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to
+     * the functions.
      *
      * @param Component $conf component data
-     */ 
+     */
     public function __construct($conf)
     {
         // initialize component
@@ -92,9 +97,9 @@ class DBMarking
                             '(/marking)/:mid(/)',
                             array($this,'deleteMarking'));
         
-        // POST SetMarking
+        // POST AddMarking
         $this->_app->post('/' . $this->getPrefix() . '(/)',
-                         array($this,'setMarking'));  
+                         array($this,'addMarking'));  
         
         // GET GetMarking
         $this->_app->get('/' . $this->getPrefix() . '(/marking)/:mid(/)',
@@ -138,11 +143,17 @@ class DBMarking
             $this->_app->run();
         }
     }
-    
+
+
     /**
-     * PUT EditMarking
+     * Edits a marking.
      *
-     * @param int $mid a database marking identifier
+     * Called when this component receives an HTTP PUT request to
+     * /marking/$mid(/) or /marking/marking/$mid(/).
+     * The request body should contain a JSON object representing the marking's new
+     * attributes.
+     *
+     * @param int $mid The id of the marking that is being updated.
      */
     public function editMarking($mid)
     {
@@ -181,11 +192,15 @@ class DBMarking
             }
         }
     }
-    
+
+
     /**
-     * DELETE DeleteMarking
+     * Deletes a marking.
      *
-     * @param int $mid a database marking identifier
+     * Called when this component receives an HTTP DELETE request to
+     * /marking/$mid(/) or /marking/marking/$mid(/).
+     *
+     * @param int $mid The id of the marking that is being deleted.
      */
     public function deleteMarking($mid)
     {
@@ -213,13 +228,19 @@ class DBMarking
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * POST SetMarking
+     * Adds a marking.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /marking(/).
+     * The request body should contain a JSON object representing the 
+     * marking's attributes.
      */
-    public function setMarking()
+    public function addMarking()
     {
-        Logger::Log("starts OST SetMarking",LogLevel::DEBUG);
+        Logger::Log("starts OST AddMarking",LogLevel::DEBUG);
         
         // decode the received marking data, as an object
         $insert = Marking::decodeMarking($this->_app->request->getBody());
@@ -234,7 +255,7 @@ class DBMarking
             
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
-                                            "Sql/SetMarking.sql", 
+                                            "Sql/AddMarking.sql", 
                                             array("values" => $data));                   
             
             // checks the correctness of the query 
@@ -252,15 +273,19 @@ class DBMarking
                     $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
-                Logger::Log("POST SetMarking failed",LogLevel::ERROR);
+                Logger::Log("POST AddMarking failed",LogLevel::ERROR);
                 $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
     }
-    
+
+
     /**
-     * GET GetAllMarkings
+     * Returns all markings.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /marking(/) or /marking/marking(/).
      */
     public function getAllMarkings()
     {      
@@ -343,11 +368,15 @@ class DBMarking
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetMarking
+     * Returns a marking.
      *
-     * @param int $mid a database marking identifier
+     * Called when this component receives an HTTP GET request to
+     * /marking/$mid(/) or /marking/marking/$mid(/).
+     *
+     * @param int $mid The id of the marking that should be returned.
      */
     public function getMarking($mid)
     {    
@@ -438,11 +467,15 @@ class DBMarking
             $this->_app->stop();
         }  
     }
-    
+
+
     /**
-     * GET GetSubmissionMarking
+     * Returns a marking to a given submission.
      *
-     * @param int $suid a database submission identifier
+     * Called when this component receives an HTTP GET request to
+     * /marking/submission/$suid(/).
+     *
+     * @param int $suid The id of the submission.
      */
     public function getSubmissionMarking($suid)
     {    
@@ -532,11 +565,15 @@ class DBMarking
             $this->_app->stop();
         }   
     }
-    
-   /**
-     * GET GetExerciseMarkings
+
+
+    /**
+     * Returns all markings which belong to a given exercise.
      *
-     * @param int $eid a database exercise identifier
+     * Called when this component receives an HTTP GET request to
+     * /marking/exercise/$eid(/).
+     *
+     * @param int $eid The id of the exercise.
      */
     public function getExerciseMarkings($eid)
     {   
@@ -622,11 +659,15 @@ class DBMarking
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetSheetMarkings
+     * Returns all markings which belong to a given exercise sheet.
      *
-     * @param int $esid a database exercise sheet identifier
+     * Called when this component receives an HTTP GET request to
+     * /marking/exercisesheet/$esid(/).
+     *
+     * @param int $esid The id of the exercise sheet.
      */
     public function getSheetMarkings($esid)
     {     
@@ -712,12 +753,16 @@ class DBMarking
             $this->_app->stop();
         }  
     }
-    
+
+
     /**
-     * GET GetUserGroupMarkings
+     * Returns all markings of a group regarding a specific exercise sheet.
      *
-     * @param int $esid a database exercise sheet identifier
-     * @param int $userid a database user identifier
+     * Called when this component receives an HTTP GET request to
+     * /marking/exercisesheet/$esid/user/$userid(/).
+     *
+     * @param int $esid The id of the exercise sheet.
+     * @param int $userid The id of the user whose group the marking belongs to.
      */
     public function getUserGroupMarkings($esid,$userid)
     {     
@@ -804,12 +849,18 @@ class DBMarking
             $this->_app->stop();
         }    
     }
-    
+
+
     /**
-     * GET GetTutorSheetMarkings
+     * Returns all markings created by a given tutor regarding 
+     * a specific exercise sheet.
      *
-     * @param int $esid a database exercise sheet identifier
-     * @param int $userid a database tutor (user) identifier
+     * Called when this component receives an HTTP GET request to
+     * /marking/exercisesheet/$esid/tutor/$userid(/).
+     *
+     * @param int $esid The id of the exercise sheet.
+     * @param int $userid The userid of the tutor that created the markings 
+     * which should be returned.
      */
     public function getTutorSheetMarkings($esid,$userid)
     {     
@@ -896,12 +947,18 @@ class DBMarking
             $this->_app->stop();
         }    
     }
-    
+
+
     /**
-     * GET GetTutorExerciseMarkings
+     * Returns all markings created by a given tutor regarding 
+     * a specific exercise.
      *
-     * @param int $eid a database exercise sheet identifier
-     * @param int $userid a database tutor (user) identifier
+     * Called when this component receives an HTTP GET request to
+     * /marking/exercise/$eid/tutor/$userid(/).
+     *
+     * @param int $eid The id of the exercise.
+     * @param int $userid The userid of the tutor that created the markings 
+     * which should be returned.
      */
     public function getTutorExerciseMarkings($eid,$userid)
     {     

@@ -163,7 +163,7 @@ class DBSubmission
      * Called when this component receives an HTTP GET request to
      * /submission/exercise/$eid(/).
      *
-     * @param string $eid The id of the exercise.
+     * @param int $eid The id of the exercise.
      */
     public function getExerciseSubmissions($eid)
     { 
@@ -227,8 +227,10 @@ class DBSubmission
      *
      * Called when this component receives an HTTP PUT request to
      * /submission/submission/$suid(/) or /submission/$suid(/).
+     * The request body should contain a JSON object representing 
+     * submission's new attributes.
      *
-     * @param string $suid The id of the submission which is being updated.
+     * @param int $suid The id of the submission which is being updated.
      */
     public function editSubmission($suid)
     {
@@ -275,7 +277,7 @@ class DBSubmission
      * Called when this component receives an HTTP DELETE request to
      * /submission/submission/$suid(/) or /submission/$suid(/).
      *
-     * @param string $suid The id of the submission which is being deleted.
+     * @param int $suid The id of the submission which is being deleted.
      */
     public function deleteSubmission($suid)
     {
@@ -893,7 +895,7 @@ class DBSubmission
      * Called when this component receives an HTTP GET request to
      * /submission/exercise/$eid/selected(/).
      *
-     * @param string $eid The id of the exercise.
+     * @param int $eid The id of the exercise.
      */
     public function getSelectedExerciseSubmissions($eid)
     { 

@@ -1,6 +1,9 @@
 <?php
 /**
  * @file DBFile.php contains the DBFile class
+ * 
+ * @author Till Uhlig
+ * @author Felix Schmidt
  */ 
 
 require_once( 'Include/Slim/Slim.php' );
@@ -14,8 +17,6 @@ include_once( 'Include/Logger.php' );
     
 /**
  * A class, to abstract the "File" table from database
- *
- * @author Till Uhlig
  */
 class DBFile
 {
@@ -58,12 +59,16 @@ class DBFile
     {
         DBFile::$_prefix = $value;
     }
-    
+
+
     /**
-     * the component constructor
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to
+     * the functions.
      *
      * @param Component $conf component data
-     */ 
+     */
     public function __construct($conf)
     {
         // initialize component
@@ -78,7 +83,7 @@ class DBFile
         $this->_app->put('/' . $this->getPrefix() . '(/file)/:fileid(/)',
                         array($this, 'editFile'));
                         
-        // POST SetFile
+        // POST AddFile
         $this->_app->post('/' . $this->getPrefix() . '(/)',
                         array($this, 'addFile'));
                         
@@ -106,11 +111,17 @@ class DBFile
             $this->_app->run();
         }
     }
-    
+
+
     /**
-     * PUT EditFile
+     * Edits a file.
      *
-     * @param int $fileid a database file identifier
+     * Called when this component receives an HTTP PUT request to
+     * /file/$fileid(/) or /file/file/$fileid(/).
+     * The request body should contain a JSON object representing the file's new
+     * attributes.
+     *
+     * @param string $fileid The id of the file that is being updated.
      */
     public function editFile($fileid)
     {
@@ -150,11 +161,15 @@ class DBFile
             }
         }
     }
-    
+
+
     /**
-     * DELETE RemoveFile
+     * Deletes a file.
      *
-     * @param int $fileid a database file identifier
+     * Called when this component receives an HTTP DELETE request to
+     * /file/$fileid(/) or /file/file/$fileid(/).
+     *
+     * @param string $fileid The id of the file that is being deleted.
      */
     public function removeFile($fileid)
     {
@@ -204,9 +219,15 @@ class DBFile
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * POST AddFile
+     * Adds a file.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /file(/).
+     * The request body should contain a JSON object representing the file's
+     * attributes.
      */
     public function addFile()
     {
@@ -225,7 +246,7 @@ class DBFile
             
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
-                                            "Sql/SetFile.sql", 
+                                            "Sql/AddFile.sql", 
                                             array("values" => $data));                   
             
             // checks the correctness of the query
@@ -249,11 +270,15 @@ class DBFile
             }
         }
     }
-    
+
+
     /**
-     * GET GetFile
+     * Returns a file.
      *
-     * @param int $fileid a database file identifier
+     * Called when this component receives an HTTP GET request to
+     * /file/$fileid(/) or /file/file/$fileid(/).
+     *
+     * @param string $file The id of the file that should be returned.
      */
     public function getFile($fileid)
     {
@@ -296,11 +321,15 @@ class DBFile
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetFileByHash
+     * Returns a file identified by a given hash.
      *
-     * @param int $fileid a database file identifier
+     * Called when this component receives an HTTP GET request to
+     * /file/hash/$hash(/).
+     *
+     * @param string $hash The hash of the file that should be returned.
      */
     public function getFileByHash($hash)
     {
@@ -341,9 +370,13 @@ class DBFile
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetAllFiles
+     * Returns all files.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /file(/) or /file/file(/).
      */
     public function getAllFiles()
     {
