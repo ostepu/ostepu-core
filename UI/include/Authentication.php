@@ -167,12 +167,13 @@ class Authentication
             session_destroy();
             // get current relative url
             $backurl = basename(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
-            // if someone opens a page with /UI (without index.php) or a existing page withour .php suffix
+            // if someone opens a page with /UI (without index.php) or a existing page without .php suffix
             if (!strpos($backurl,'.php')&&!file_exists($backurl.".php")) {
                 $backurl = "index.php";
             } elseif (!strpos($backurl,'.php')&&file_exists($backurl.".php")) {
                 $backurl = $backurl.".php";
             }
+            // Url GET parameters
             $urlparameters = parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY);
             if ($urlparameters != "") {$urlparameters = "?".$urlparameters;}
             // redirect to Loginpage and save current page in GET param
@@ -182,16 +183,22 @@ class Authentication
     }
 
     /**
-     * check the Rights of an User and logout if it hasn't the correct one
+     * Check the Rights of an User and redirect to index.php with error message 403.
+     * @param int $minimum Is the minimum right for visiting the given php site.
+     * @param int $cid Is the courseid.
+     * @param int $uid Is the userid.
+     * @param array $data An associative array that contains the coursestatus.
      */
     public function checkRights($minimum, $cid, $uid, $data)
     {
-        // check if user exists 
-        if (!is_null($data)) {
+        // check if user exists in course
+        if ($data !== array()) {
             // check if minimum right is given
             if ($data['courses'][0]['status'] < $minimum) {
                 header('location: index.php?error=403');
             } 
+        } else {
+            header('location: index.php?error=403');
         }
     }
 }
