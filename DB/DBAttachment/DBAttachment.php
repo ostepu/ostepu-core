@@ -197,7 +197,7 @@ class DBAttachment
             
         // checks the correctness of the query  
         if ($result['status']>=200 && $result['status']<=299){
-            $this->_app->response->setStatus(252);
+            $this->_app->response->setStatus(201);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 

@@ -97,7 +97,7 @@ class DBExerciseSheet
         
         // POST SetExerciseSheet
         $this->_app->post('/' . $this->getPrefix() . '(/)',
-                         array($this,'setExerciseSheet'));
+                         array($this,'addExerciseSheet'));
                
         // GET GetExerciseSheetURL
         $this->_app->get('/' . $this->getPrefix() . '(/exercisesheet)/:esid/url(/)',
@@ -217,9 +217,9 @@ class DBExerciseSheet
      * The request body should contain a JSON object representing the exercise
      * sheet's attributes.
      */
-    public function setExerciseSheet()
+    public function addExerciseSheet()
     {
-        Logger::Log("starts POST SetExerciseSheet",LogLevel::DEBUG);
+        Logger::Log("starts POST AddExerciseSheet",LogLevel::DEBUG);
         
         // decode the received exercise sheet data, as an object
         $insert = ExerciseSheet::decodeExerciseSheet($this->_app->request->getBody());
@@ -234,7 +234,7 @@ class DBExerciseSheet
             
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
-                                            "Sql/SetExerciseSheet.sql", 
+                                            "Sql/AddExerciseSheet.sql", 
                                             array("values" => $data));                   
            
             // checks the correctness of the query    
@@ -251,7 +251,7 @@ class DBExerciseSheet
                     $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
-                Logger::Log("POST SetExerciseSheet failed",LogLevel::ERROR);
+                Logger::Log("POST AddExerciseSheet failed",LogLevel::ERROR);
                 $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }

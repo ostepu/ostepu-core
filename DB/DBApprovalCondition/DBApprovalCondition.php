@@ -89,9 +89,9 @@ class DBApprovalCondition
         $this->_app->delete('/' . $this->getPrefix() . '(/approvalcondition)/:apid(/)',
                            array($this,'deleteApprovalCondition'));
         
-        // POST SetApprovalCondition
+        // POST AddApprovalCondition
         $this->_app->post('/' . $this->getPrefix() . '(/)',
-                         array($this,'setApprovalCondition'));  
+                         array($this,'addApprovalCondition'));  
         
         // GET GetApprovalCondition
         $this->_app->get('/' . $this->getPrefix() . '(/approvalcondition)/:apid(/)',
@@ -191,9 +191,9 @@ class DBApprovalCondition
     /**
      * POST SetApprovalCondition
      */
-    public function setApprovalCondition()
+    public function addApprovalCondition()
     {
-        Logger::Log("starts POST SetApprovalCondition",LogLevel::DEBUG);
+        Logger::Log("starts POST AddApprovalCondition",LogLevel::DEBUG);
         
         // decode the received approval condition data, as an object
         $insert = ApprovalCondition::decodeApprovalCondition($this->_app->request->getBody());
@@ -208,7 +208,7 @@ class DBApprovalCondition
             
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
-                                            "Sql/SetApprovalCondition.sql", 
+                                            "Sql/AddApprovalCondition.sql", 
                                             array("values" => $data));                   
             
             // checks the correctness of the query
@@ -225,7 +225,7 @@ class DBApprovalCondition
                     $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
-                Logger::Log("POST SetApprovalCondition failed",LogLevel::ERROR);
+                Logger::Log("POST AddApprovalCondition failed",LogLevel::ERROR);
                 $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 251);
                 $this->_app->stop();
             }

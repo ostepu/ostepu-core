@@ -97,9 +97,9 @@ class DBSubmission
                             '(/submission)/:suid(/)',
                             array($this,'deleteSubmission'));
         
-        // POST SetSubmission
+        // POST AddSubmission
         $this->_app->post('/' . $this->getPrefix() . '(/)',
-                         array($this,'setSubmission'));  
+                         array($this,'addSubmission'));  
         
         // GET GetExerciseSubmissions  
         $this->_app->get('/' . $this->getPrefix() . '/exercise/:eid(/)',
@@ -295,7 +295,7 @@ class DBSubmission
         // checks the correctness of the query                          
         if ($result['status']>=200 && $result['status']<=299){
         
-            $this->_app->response->setStatus(252);
+            $this->_app->response->setStatus(201);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
@@ -314,9 +314,9 @@ class DBSubmission
      * /submission(/).
      * The request body should contain a JSON object representing the new submission.
      */
-    public function setSubmission()
+    public function addSubmission()
     {
-        Logger::Log("starts POST SetSubmission",LogLevel::DEBUG);
+        Logger::Log("starts POST AddSubmission",LogLevel::DEBUG);
         
         // decode the received submission data, as an object
         $insert = Submission::decodeSubmission($this->_app->request->getBody());
@@ -331,7 +331,7 @@ class DBSubmission
             
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
-                                            "Sql/SetSubmission.sql", 
+                                            "Sql/AddSubmission.sql", 
                                             array("values" => $data));                   
             
             // checks the correctness of the query 
@@ -349,7 +349,7 @@ class DBSubmission
                     $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
-                Logger::Log("POST SetSubmission failed",LogLevel::ERROR);
+                Logger::Log("POST AddSubmission failed",LogLevel::ERROR);
                 $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }

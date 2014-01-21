@@ -82,16 +82,16 @@ class DBQuery
         $this->_app->response->headers->set('Content-Type', 'application/json');
 
         // GET QueryResult
-        $this->_app->get('/' . $this->getPrefix(),
-                        array($this,'queryResult(/)'));
+        $this->_app->get('/' . $this->getPrefix() . '(/)',
+                        array($this,'queryResult'));
 
         // PUT QueryResult
-        $this->_app->put('/' . $this->getPrefix(),
-                        array($this,'queryResult(/)'));
+        $this->_app->put('/' . $this->getPrefix() . '(/)',
+                        array($this,'queryResult'));
 
         // POST QueryResult
-        $this->_app->post('/' . $this->getPrefix(),
-                        array($this,'queryResult(/)'));
+        $this->_app->post('/' . $this->getPrefix() . '(/)',
+                        array($this,'queryResult'));
 
         // starts slim only if the right prefix was received
         if (strpos ($this->_app->request->getResourceUri(),'/' . 

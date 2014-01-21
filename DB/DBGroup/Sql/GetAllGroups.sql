@@ -2,7 +2,6 @@
  * @file GetSheetAllGroups.sql
  * gets a table for output, where all groups are listed
  * @author Till Uhlig
- * @param 
  * @result 
  * - U is the groupleader
  * - U2 are the members of the group without the leader

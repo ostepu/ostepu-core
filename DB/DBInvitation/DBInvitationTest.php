@@ -92,16 +92,16 @@ class DBInvitationTest extends PHPUnit_Framework_TestCase
     public function AddInvitation()
     {
         $result = Request::delete($this->url . 'DBInvitation/invitation/user/1/exercisesheet/1/user/1',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
-        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for AddAttachment call");
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for AddInvitation call");
         
         //createInvitation($leaderId,$memberId,$sheetId)
         $obj = Invitation::createInvitation("1","1","1");
 
         $result = Request::post($this->url . 'DBInvitation/invitation',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),Invitation::encodeInvitation($obj));
-        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for AddAttachment call");     
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for AddInvitation call");     
 
-        $result = Request::post($this->url . 'DBInvitation/invitation',array(),Invitation::encodeInvitation($obj));
-        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for AddAttachment call");  
+        $result = Request::post($this->url . 'DBInvitation/invitation',array(),"");
+        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for AddInvitation call");  
     }
     
     public function DeleteInvitation()

@@ -216,7 +216,7 @@ class DBSelectedSubmission
      */
     public function addSelectedSubmission()
     {
-        Logger::Log("starts POST ADDSelectedSubmission",LogLevel::DEBUG);
+        Logger::Log("starts POST AddSelectedSubmission",LogLevel::DEBUG);
         
         // decode the received selected submission data, as an object
         $insert = SelectedSubmission::decodeSelectedSubmission($this->_app->request->getBody());
