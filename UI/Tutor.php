@@ -27,7 +27,7 @@ if ($message == "401") {$auth->logoutUser();}
 $user_course_data = json_decode($user_course_data, true);
 
 // check userrights for course
-$auth->checkRights(1, $cid, $uid, $user_course_data);
+Authentication::checkRights(1, $cid, $uid, $user_course_data);
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');

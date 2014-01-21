@@ -7,10 +7,10 @@ include_once 'include/Authentication.php';
 // no error messages
 // error_reporting(0);
 $auth = new Authentication();
-$auth->preventSessionFix();
+Authentication::preventSessionFix();
 
 // check if already logged in
-if($auth->checkLogin()) {
+if(Authentication::checkLogin()) {
     header('location: index.php');
     exit();
 }

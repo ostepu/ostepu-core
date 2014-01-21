@@ -5,8 +5,8 @@ $auth = new Authentication();
 
 
 // Benutzer prüfen
-if (!$auth->checkLogin()||$_GET['action'] == "logout")
+if (!Authentication::checkLogin()||$_GET['action'] == "logout")
 {
-    $auth->logoutUser();
+    Authentication::logoutUser();
 }
 ?>

@@ -53,16 +53,16 @@ function is_assoc($array)
  *
  * Uses HTTP GET request to get contents a $url
  * @param string $url The URL that should be opnened.
- * @param bool $auth If true then send sessioninformation in header.
+ * @param bool $authbool If true then send sessioninformation in header.
  * @param string $message The Response Message e.g. 404. Argument is optional.
  */
-function http_get($url, $auth, &$message = 0)
+function http_get($url, $authbool, &$message = 0)
 {
     $c = curl_init();
 
     curl_setopt($c, CURLOPT_URL, $url);
     curl_setopt($c, CURLOPT_HTTPGET, 1);
-    if ($auth) {
+    if ($authbool) {
         $date = $_SERVER['REQUEST_TIME'];
         curl_setopt($c, CURLOPT_HTTPHEADER, array("User: 3","Session: abc","Date : {$date}"));
     }
@@ -70,6 +70,7 @@ function http_get($url, $auth, &$message = 0)
 
     $retData = curl_exec($c);
     $message = curl_getinfo($c, CURLINFO_HTTP_CODE);
+    if ($message == "401" && $authbool) {Authentication::logoutUser();}
     curl_close($c);
 
     return $retData;
@@ -100,6 +101,7 @@ function http_post_data($url, $data, $auth, &$message = 0)
 
     $retData = curl_exec($c);
     $message = curl_getinfo($c, CURLINFO_HTTP_CODE);
+    if ($message == "401" && $authbool) {Authentication::logoutUser();}
     curl_close($c);
 
     return $retData;
@@ -112,17 +114,17 @@ function http_post_data($url, $data, $auth, &$message = 0)
  * @param string $url The URL that should be opnened.
  * @param arrray $data An associative array that contains the fields that should
  * be postet to $url
- * @param bool $auth If true then send sessioninformation in header.
+ * @param bool $authbool If true then send sessioninformation in header.
  * @param string $message The Response Message e.g. 404. Argument is optional.
  */
-function http_put_data($url, $data, $auth, &$message = 0)
+function http_put_data($url, $data, $authbool, &$message = 0)
 {
     $c = curl_init();
 
     curl_setopt($c, CURLOPT_URL, $url);
     curl_setopt($c, CURLOPT_POSTFIELDS, $data);
     curl_setopt($c, CURLOPT_CUSTOMREQUEST, 'PUT');
-    if ($auth) {
+    if ($authbool) {
         $date = $_SERVER['REQUEST_TIME'];
         curl_setopt($c, CURLOPT_HTTPHEADER, array("User: 3","Session: abc","Date : {$date}"));
     }
@@ -130,6 +132,7 @@ function http_put_data($url, $data, $auth, &$message = 0)
 
     $retData = curl_exec($c);
     $message = curl_getinfo($c, CURLINFO_HTTP_CODE);
+    if ($message == "401" && $authbool) {Authentication::logoutUser();}
     curl_close($c);
 
     return $retData;
@@ -155,6 +158,7 @@ function http_delete($url, $auth, &$message = 0)
 
     $retData = curl_exec($c);
     $message = curl_getinfo($c, CURLINFO_HTTP_CODE);
+    if ($message == "401" && $authbool) {Authentication::logoutUser();}
     curl_close($c);
 
     return $retData;

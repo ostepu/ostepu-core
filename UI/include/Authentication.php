@@ -17,16 +17,13 @@ class Authentication
     /**
      * @var SiteKey as Password for all Hashfunctions
      */
-    private $siteKey;
-    public $error;
+    private static $siteKey = "b67dc54e7d03a9afcd16915a55edbad2d20a954562c482de3863456f01a0dee4";
 
     /**
      * The default contructor which sets our sitekey. Sitekey have to be the same all the time!!
      */
     public function __construct()
     {
-        $this->siteKey = "b67dc54e7d03a9afcd16915a55edbad2d20a954562c482de3863456f01a0dee4";
-
         // force to use session-cookies and to transmit SID over URL
         ini_set('session.use_only_cookies', '1');
         ini_set('session.use_trans_sid', '0');
@@ -63,7 +60,7 @@ class Authentication
     /**
      * Prevent possible session fixation attack
      */
-    public function preventSessionFix()
+    public static function preventSessionFix()
     {
         if (!isset( $_SESSION['server_SID'] )) {
             // delete session content
@@ -139,7 +136,7 @@ class Authentication
     /**
      * check if user is logged in
      */
-    public function checkLogin()
+    public static function checkLogin()
     {
         session_regenerate_id(true);
         if (!isset($_SESSION['signed']) || !$_SESSION['signed']) {return false;}
@@ -154,7 +151,7 @@ class Authentication
     /**
      * Log out a user
      */
-    public function logoutUser()
+    public static function logoutUser()
     {
         /**
          * @todo delete session from uid in DB
@@ -189,7 +186,7 @@ class Authentication
      * @param int $uid Is the userid.
      * @param array $data An associative array that contains the coursestatus.
      */
-    public function checkRights($minimum, $cid, $uid, $data)
+    public static function checkRights($minimum, $cid, $uid, $data)
     {
         // check if user exists in course
         if ($data !== array()) {

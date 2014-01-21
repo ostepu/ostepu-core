@@ -25,7 +25,7 @@ if ($message == "401") {$auth->logoutUser();}
 $user_course_data = json_decode($user_course_data, true);
 
 // check userrights for course
-$auth->checkRights(3, $cid, $uid, $user_course_data);
+Authentication::checkRights(3, $cid, $uid, $user_course_data);
 
 if (is_null($user_course_data)) {
     $user_course_data = array();
