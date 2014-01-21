@@ -33,7 +33,7 @@ class LgetSite
      *Address of the Logic-Controller
      *dynamic set by CConf below
      */
-    private $lURL = "http://localhost/uebungsplattform/Controller";
+    private $lURL = "http://localhost/uebungsplattform/SiteTest.php";
 
     public function __construct($conf)
     {
@@ -71,7 +71,7 @@ class LgetSite
          */
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
-        $URL = $this->lURL.'/DB/coursestatus/course/'.$courseid.'/status/1'; //status = 1 => Tutor
+        $URL = $this->lURL.'/DB/user/course/'.$courseid.'/status/1'; //status = 1 => Tutor
         $answer = Request::custom('GET', $URL, $header, $body);
         $tutors = json_decode($answer['content'], true);
         foreach ($tutors AS $tutor){
@@ -91,7 +91,7 @@ class LgetSite
         /**
          * Get Markings
          */
-        $URL = $this->lURL.'/DB/exercisesheet/'.$sheetid;
+        $URL = $this->lURL.'/DB/marking/exercisesheet/'.$sheetid;
         $answer = Request::custom('GET', $URL, $header, $body);
         //fuer jedes Marking die zugeordnete Submision im Rueckgabearray dem passenden Tutor zuweisen
         foreach (json_decode($answer['content'], true) as $marking){
@@ -123,7 +123,7 @@ class LgetSite
 
         $submissions = json_decode($answer['content'], true);
         foreach ($submissions as $submission){
-            if (!in_array($submission['id'], $assignedSubmissionIDs)){
+            if (!in_array($submission['submissionId'], $assignedSubmissionIDs)){
                 array_push($unassignedSubmissions, $submission);
             }
         }
@@ -136,7 +136,7 @@ class LgetSite
         $this->app->response->setBody(json_encode($response));
     }
     
-    public function studentSideInfo($userid, $courseid){
+    public function studentSiteInfo($userid, $courseid){
         
         $response = array();
         $body = $this->app->request->getBody();
@@ -153,24 +153,19 @@ class LgetSite
                         'courseId'=> $sheet['courseId'],
                         'endDate'=> $sheet['endDate'],
                         'startDate'=> $sheet['startDate'],
-                        'zipFile'=> $sheet['zipFile'],
                         'sampleSolution'=> $sheet['sampleSolution'],
                         'sheetFile'=> $sheet['sheetFile'],
-                        'exercises'=> $sheet['exercises'],
-                        'groupSize'=> $sheet['groupSize'],
-                        'sheetName'=> $sheet['sheetName'],
                         'group'=> array()
                         );
-            $response[] = $newShet;
+            $response[] = $newSheet;
         }
         //get UserGroups
-        $URL = $this->lURL.'/DB/group/user/'.$usserid;
+        $URL = $this->lURL.'/DB/group/user/'.$userid;
         $answer = Request::custom('GET', $URL, $header, $body);
         $groups = json_decode($answer['content'], true);
-        
         foreach ($groups as $group){
-            foreach ($response as $sheet){
-                if ($sheet['id'] == $group['shootId']){
+            foreach ($response as &$sheet){
+                if ($sheet['id'] == $group['sheetId']){
                     $sheet['group'] = $group;
                     break;
                 }
