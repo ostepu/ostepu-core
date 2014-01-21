@@ -100,6 +100,10 @@ class DBUser
         $this->_app->delete('/' . $this->getPrefix() . '(/user)/:userid(/)',
                         array($this, 'removeUser'));
                         
+        // DELETE RemoveUserPermanent
+        $this->_app->delete('/' . $this->getPrefix() . '(/user)/:userid/permanent(/)',
+                        array($this, 'removeUserPermanent'));
+                        
         // POST AddUser
         $this->_app->post('/' . $this->getPrefix() . '(/)',
                         array($this, 'addUser'));
@@ -190,7 +194,7 @@ class DBUser
 
 
     /**
-     * Deletes a user.
+     * Deletes a user (updates the user flag = 0).
      *
      * Called when this component receives an HTTP DELETE request to
      * /user/$userid(/) or /user/user/$userid(/).
@@ -227,7 +231,44 @@ class DBUser
         }
     }
 
+    /**
+     * Deletes a user permanent.
+     *
+     * Called when this component receives an HTTP DELETE request to
+     * /user/$userid/permanent(/) or /user/user/$userid/permanent(/).
+     *
+     * @param string $userid The id or the username of the user that is being deleted.
+     */
+    public function removeUserPermanent($userid)
+    {
+        Logger::Log("starts DELETE RemoveUserPermanent",LogLevel::DEBUG);
 
+        $userid = DBJson::mysql_real_escape_string($userid);
+        
+        // starts a query, by using a given file
+        $result = DBRequest::getRoutedSqlFile($this->query, 
+                                        "Sql/DeleteUserPermanent.sql", 
+                                        array("userid" => $userid));    
+                                        
+        // checks the correctness of the query                          
+        if ($result['status']>=200 && $result['status']<=299){
+           // $this->_app->response->setBody(User::encodeUser(new User()));
+            
+            if (isset($result['headers']['Content-Type']))
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+
+            Logger::Log("DELETE RemoveUserPermanent ok",LogLevel::DEBUG);   
+            $this->_app->response->setStatus(201);
+            $this->_app->stop();
+        } else{
+            Logger::Log("DELETE RemoveUserPermanent failed",LogLevel::ERROR);
+           // $this->_app->response->headers->set("Connection", "Close");
+            $this->_app->response->setBody(User::encodeUser(new User()));
+            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);   
+            $this->_app->stop();            
+        }
+    }
+    
     /**
      * Adds a user and then returns the created user.
      *

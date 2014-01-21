@@ -1,1 +1,1 @@
-INSERT INTO ComponentLinkage SET $value
+INSERT INTO ComponentLinkage SET $values
