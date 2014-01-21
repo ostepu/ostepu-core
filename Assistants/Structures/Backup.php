@@ -13,7 +13,7 @@ class Backup extends Object implements JsonSerializable
     /**
      * @var string $id a unique identifier for a backup
      */
-    private $id;
+    private $id = null;
     
     /**
      * the $id getter
@@ -36,7 +36,7 @@ class Backup extends Object implements JsonSerializable
     /**
      * @var date $date the date on which the backup was created
      */
-    private $date;
+    private $date = null;
     
     /**
      * the $date getter
@@ -59,7 +59,7 @@ class Backup extends Object implements JsonSerializable
     /**
      * @var file $file a file where the backup is stored
      */
-    private $file;
+    private $file = null;
     
     /**
      * the $file getter
@@ -79,6 +79,13 @@ class Backup extends Object implements JsonSerializable
         $this->file = $value;
     }
     
+    
+    public function createBackup($backupId,$date,$fileId)
+    {
+        return new Backup(array('id' => $backupId,
+        'date' => $date, 
+        'file' => array('fileId' => $fileId)));
+    }
     
     /**
      * returns an mapping array to convert between database and structure
@@ -154,11 +161,11 @@ class Backup extends Object implements JsonSerializable
      */
     public function jsonSerialize()
     {
-        return array(
-            'id' => $this->id,
-            'date' => $this->date,
-            'file' => $this->file
-        );
+        $list = array();
+        if ($this->id!==null) $list['id'] = $this->id;
+        if ($this->date!==null) $list['date'] = $this->date;
+        if ($this->file!==null) $list['file'] = $this->file;
+        return $list; 
     }
     
 }

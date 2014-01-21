@@ -283,14 +283,14 @@ class Component extends Object implements JsonSerializable
      */
     public function jsonSerialize() 
     {
-        return array(
-            'id' => $this->id,
-            'name' => $this->name,
-            'address' => $this->address,
-            'option' => $this->option,
-            'prefix' => $this->prefix,
-            'links' => $this->links
-        );
+        $list = array();
+        if ($this->id!==null) $list['id'] = $this->id;
+        if ($this->name!==null) $list['name'] = $this->name;
+        if ($this->address!==null) $list['address'] = $this->address;
+        if ($this->option!==null) $list['option'] = $this->option;
+        if ($this->prefix!==null) $list['prefix'] = $this->prefix;
+        if ($this->links!==array()) $list['links'] = $this->links;
+        return $list; 
     }
 
 }

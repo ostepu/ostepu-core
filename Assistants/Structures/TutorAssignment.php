@@ -13,7 +13,7 @@ class TutorAssignment extends Object implements JsonSerializable
     /**
      * @var User $turor the tutor
      */
-    private $tutor;
+    private $tutor = null;
     
     /**
      * the $tutor getter

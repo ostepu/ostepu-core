@@ -13,7 +13,7 @@ class CourseStatus extends Object implements JsonSerializable
     /**
      * @var Course $course A course.
      */
-    private $course;
+    private $course = null;
     
     /**
      * the $course getter
@@ -34,14 +34,12 @@ class CourseStatus extends Object implements JsonSerializable
     {
         $this->course = $value;
     }
-
-    
-    
+   
     
     /**
      * @var string $status  a string that defines which status the user has in that course.
      */
-    private $status;
+    private $status = null;
     
     /**
      * the $status getter
@@ -64,7 +62,6 @@ class CourseStatus extends Object implements JsonSerializable
     }
 
     
-
     /**
      * returns an mapping array to convert between database and structure
      *
@@ -179,10 +176,10 @@ class CourseStatus extends Object implements JsonSerializable
      */
     public function jsonSerialize() 
     {
-        return array(
-            'course' => $this->course,
-            'status' => $this->status
-        );
+        $list = array();
+        if ($this->course!==null) $list['course'] = $this->course;
+        if ($this->status!==null) $list['status'] = $this->status;
+        return $list;
     }
 }
 ?>

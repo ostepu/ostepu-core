@@ -13,7 +13,7 @@ class Invitation extends Object implements JsonSerializable
     /**
      * @var User $member the user that was invited
      */
-    private $member;
+    private $member = null;
     
     /**
      * the $member getter
@@ -36,7 +36,7 @@ class Invitation extends Object implements JsonSerializable
     /**
      * @var User $leader the user that created the group
      */
-    private $leader;
+    private $leader = null;
     
     /**
      * the $leader getter
@@ -59,7 +59,7 @@ class Invitation extends Object implements JsonSerializable
     /**
      * @var string $sheet the exercise sheet id 
      */
-    private $sheet;
+    private $sheet = null;
     
     /**
      * the $sheet getter
@@ -80,8 +80,12 @@ class Invitation extends Object implements JsonSerializable
     }
     
     
-    
-    
+    public function createInvitation($leaderId,$memberId,$sheetId)
+    {
+        return new Invitation(array('sheet' => $sheetId,
+        'leader' => array('id' => $leaderId), 
+        'member' => array('id' => $memberId)));
+    }    
     
     /**
      * returns an mapping array to convert between database and structure
@@ -183,11 +187,11 @@ class Invitation extends Object implements JsonSerializable
      */
     public function jsonSerialize()
     {
-        return array(
-            'user' => $this->user,
-            'leader' => $this->leader,
-            'sheet' => $this->sheet
-        );
+        $list = array();
+        if ($this->member!==null) $list['member'] = $this->member;
+        if ($this->leader!==null) $list['leader'] = $this->leader;
+        if ($this->sheet!==null) $list['sheet'] = $this->sheet;
+        return $list;  
     }
 }
 ?>

@@ -299,15 +299,15 @@ class Link extends Object implements JsonSerializable
      */
     public function jsonSerialize()  
     {
-        return array(
-            'id' => $this->id,
-            'name' => $this->name,
-            'address' => $this->address,
-            'prefix' => $this->prefix,
-            'target' => $this->target,
-            'owner' => $this->owner,
-            'relevanz' => $this->relevanz
-        );
+        $list = array();
+        if ($this->id!==null) $list['id'] = $this->id;
+        if ($this->name!==null) $list['name'] = $this->name;
+        if ($this->address!==null) $list['address'] = $this->address;
+        if ($this->target!==null) $list['target'] = $this->target;
+        if ($this->prefix!==null) $list['prefix'] = $this->prefix;
+        if ($this->owner!==null) $list['owner'] = $this->owner;
+        if ($this->relevanz!==null) $list['relevanz'] = $this->relevanz;
+        return $list;  
     }
 }
 ?>

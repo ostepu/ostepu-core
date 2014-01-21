@@ -26,9 +26,21 @@ class Request_CreateRequest
     {
         $ch = curl_init($target);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+
+        // take the SESSION, DATE and USER fields from received header and 
+        // add them to the header of our curl object
+        $resultHeader = array();
+        if (isset($_SERVER['HTTP_SESSION']))
+            array_push($resultHeader,'SESSION: ' . $_SERVER['HTTP_SESSION']);
+        if (isset($_SERVER['HTTP_DATE']))
+            array_push($resultHeader,'DATE: ' . $_SERVER['HTTP_DATE']);
+        if (isset($_SERVER['HTTP_USER']))
+            array_push($resultHeader,'USER: ' . $_SERVER['HTTP_USER']);
+            
+        $resultHeader = array_merge($resultHeader,$header);
+
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $resultHeader);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
         
         /**

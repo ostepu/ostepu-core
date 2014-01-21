@@ -13,7 +13,7 @@ class Course extends Object implements JsonSerializable
     /**
      * @var string $id  a string that identifies the course
      */
-    private $id;
+    private $id = null;
     
     /**
      * the $id getter
@@ -41,7 +41,7 @@ class Course extends Object implements JsonSerializable
     /**
      * @var string $name the name of the course
      */
-    private $name;
+    private $name = null;
     
     /**
      * the $name setter
@@ -69,7 +69,7 @@ class Course extends Object implements JsonSerializable
     /**
      * @var string $semester the semester in which the course is offered
      */
-    private $semester;
+    private $semester = null;
     
     /**
      * the $semester getter
@@ -125,7 +125,7 @@ class Course extends Object implements JsonSerializable
     /**
      * @var int $defaultGroupSize the default size of groups in the course
      */
-    private $defaultGroupSize;
+    private $defaultGroupSize = null;
     
     /**
      * the $defaultGroupSize getter
@@ -147,6 +147,15 @@ class Course extends Object implements JsonSerializable
         $this->defaultGroupSize = $value;
     }
     
+    
+    
+    public function createCourse($courseId,$name,$semester,$defaultGroupSize)
+    {
+        return new Course(array('id' => $courseId,
+        'name' => $name,
+        'semester' => $semester, 
+        'defaultGroupSize' => $defaultGroupSize));
+    }
      
     /**
      * returns an mapping array to convert between database and structure
@@ -252,13 +261,13 @@ class Course extends Object implements JsonSerializable
      */
     public function jsonSerialize() 
     {
-        return array(
-            'id' => $this->id,
-            'name' => $this->name,
-            'semester' => $this->semester,
-            'exerciseSheets' => $this->exerciseSheets,
-            'defaultGroupSize' => $this->defaultGroupSize
-        );
+        $list = array();
+        if ($this->id!==null) $list['id'] = $this->id;
+        if ($this->name!==null) $list['name'] = $this->name;
+        if ($this->semester!==null) $list['semester'] = $this->semester;
+        if ($this->exerciseSheets!==array()) $list['exerciseSheets'] = $this->exerciseSheets;
+        if ($this->defaultGroupSize!==null) $list['defaultGroupSize'] = $this->defaultGroupSize;
+        return $list;
     }
 }
 ?>
