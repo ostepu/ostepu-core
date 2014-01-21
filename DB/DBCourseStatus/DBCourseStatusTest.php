@@ -45,6 +45,7 @@ class DBCourseStatusTest extends PHPUnit_Framework_TestCase
     
     public function GetMemberRight()
     {
+    
         $result = Request::get($this->url . 'DBCourseStatus/coursestatus/course/1/user/2',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for GetMemberRight call");
         $this->assertContains('{"id":"2","userName":"lisa","email":"lisa@email.de","firstName":"Lisa","lastName":"Dietrich","flag":"1","courses":',$result['content']);

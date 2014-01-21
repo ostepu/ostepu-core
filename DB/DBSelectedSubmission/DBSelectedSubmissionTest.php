@@ -44,24 +44,53 @@ class DBSelectedSubmissionTest extends PHPUnit_Framework_TestCase
     
     public function AddSelectedSubmission()
     {
-      //  $result = Request::delete($this->url . 'DBSelectedSubmission/selectedsubmission/leader/1/exercise/1',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
-        //$this->assertEquals(201, $result['status'], "Unexpected HTTP status code for AddSelectedSubmission call");
+        $result = Request::delete($this->url . 'DBSelectedSubmission/selectedsubmission/leader/4/exercise/1',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for AddSelectedSubmission call");
 
         //createSelectedSubmission($leaderId,$submissionId,$exerciseId)
         $obj = SelectedSubmission::createSelectedSubmission("4","1","1");
 
         $result = Request::post($this->url . 'DBSelectedSubmission/selectedsubmission',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),SelectedSubmission::encodeSelectedSubmission($obj));
         $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for AddSelectedSubmission call");      
-        $this->assertContains('{"leaderId":4}',$result['content']);
+   
+        $result = Request::post($this->url . 'DBSelectedSubmission/selectedsubmission',array(),SelectedSubmission::encodeSelectedSubmission($obj));
+        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for AddSelectedSubmission call");     
     }
     
     public function DeleteSelectedSubmission()
     {
+        $result = Request::delete($this->url . 'DBSelectedSubmission/selectedsubmission/leader/4/exercise/1',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),""); 
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for DeleteSelectedSubmission call");
 
+        $result = Request::delete($this->url . 'DBSelectedSubmission/selectedsubmission/leader/AAA/exercise/1',array(),"");
+        $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for DeleteSelectedSubmission call");
+        
+        $result = Request::delete($this->url . 'DBSelectedSubmission/selectedsubmission/leader/4/exercise/AAA',array(),"");
+        $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for DeleteSelectedSubmission call");
+        
+        $result = Request::delete($this->url . 'DBSelectedSubmission/selectedsubmission/leader/4/exercise/1',array(),"");
+        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for DeleteSelectedSubmission call");
     }
     
     public function EditSelectedSubmission()
     {
-
+        //createSelectedSubmission($leaderId,$submissionId,$exerciseId)
+        $obj = SelectedSubmission::createSelectedSubmission("4","2","1");
+        
+        $result = Request::put($this->url . 'DBSelectedSubmission/selectedsubmission/leader/4/exercise/1',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),SelectedSubmission::encodeSelectedSubmission($obj));
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for EditSelectedSubmission call");      
+        
+        $result = Request::put($this->url . 'DBSelectedSubmission/selectedsubmission/leader/AAA/exercise/1',array(),"");
+        $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for EditSelectedSubmission call"); 
+        
+        $result = Request::put($this->url . 'DBSelectedSubmission/selectedsubmission/leader/4/exercise/AAA',array(),"");
+        $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for EditSelectedSubmission call");  
+        
+        $result = Request::put($this->url . 'DBSelectedSubmission/selectedsubmission/leader/4/exercise/1',array(),"");
+        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for EditSelectedSubmission call");
+        
+        $result = Request::get($this->url . 'DBSelectedSubmission/selectedsubmission/exercise/1',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
+        $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for EditSelectedSubmission call");
+        $this->assertContains('"submissionId":"2"',$result['content']);
     }
 }

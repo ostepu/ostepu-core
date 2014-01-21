@@ -72,6 +72,9 @@ class DBAttachmentTest extends PHPUnit_Framework_TestCase
         $result = Request::post($this->url . 'DBAttachment/attachment',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),Attachment::encodeAttachment($obj));
         $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for AddAttachment call");      
         $this->assertContains('{"id":100}',$result['content']);
+        
+        $result = Request::post($this->url . 'DBAttachment/attachment',array(),Attachment::encodeAttachment($obj));
+        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for AddAttachment call"); 
     }
     
     public function DeleteAttachment()
