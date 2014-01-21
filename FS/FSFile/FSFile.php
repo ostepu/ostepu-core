@@ -1,8 +1,10 @@
 <?php
 /**
-* @file (filename)
-* %(description)
-*/ 
+ * @file FSFile.php contains the FSFile class
+ * 
+ * @author Till Uhlig
+ * @author Felix Schmidt
+ */ 
 
 require_once( 'Include/Slim/Slim.php' );
 include_once( 'Include/CConfig.php' );
@@ -17,17 +19,31 @@ if (!$com->used())
     new FSFile($com->loadConfig());
 
 /**
- * (description)
+ * The class for storing and hashing files.
  */
 class FSFile
 {
+    /**
+     * @var string $_baseDir the root directory of this component.
+     */
     private static $_baseDir = "file";
     
+
+    /**
+     * the $_baseDir getter
+     *
+     * @return the value of $_baseDir
+     */ 
     public static function getBaseDir()
     {
         return FSFile::$_baseDir;
     }
-    
+
+    /**
+     * the $_baseDir setter
+     *
+     * @param string $value the new value for $_baseDir
+     */ 
     public static function setBaseDir($value)
     {
         FSFile::$_baseDir = $value;
@@ -37,10 +53,14 @@ class FSFile
     private $_conf;
     private $_fs = array();
 
+
     /**
-     * (description)
+     * REST actions
      *
-     * @param $_conf (description)
+     * This function contains the REST actions with the assignments to
+     * the functions.
+     *
+     * @param Component $conf component data
      */
     public function __construct($_conf)
     {
@@ -67,11 +87,16 @@ class FSFile
          // run Slim
          $this->_app->run();
         }
-
     } 
-    
+
+
     /**
-     * POST File
+     * Prepares the saving process by generating the hash and the place where the file is stored.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /file.
+     * The request body should contain a JSON object representing the file's 
+     * attributes.
      */
     public function postFile()
     {       
@@ -103,12 +128,16 @@ class FSFile
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     *  GET File
+     * Returns a file.
      *
-     * @param $hash (description)
-     * @param $filename (description)
+     * Called when this component receives an HTTP GET request to
+     * /file/$hash/$filename.
+     *
+     * @param string $hash The hash of the file which should be returned.
+     * @param string $filename A freely chosen filename of the returned file.
      */
     public function getFileDocument($hash, $filename)
     {      
@@ -133,10 +162,14 @@ class FSFile
         $this->_app->stop();
     }
 
+
     /**
-     * GET Filedata
+     * Returns the file infos as a JSON file object.
      *
-     * @param $hash (description)
+     * Called when this component receives an HTTP GET request to
+     * /file/$hash.
+     *
+     * @param string $hash The hash of the requested file.
      */
     public function getFileData($hash)
     {  
@@ -161,15 +194,18 @@ class FSFile
             $this->_app->response->setStatus(409);
             $this->_app->response->setBody(File::encodeFile(new File()));
             $this->_app->stop();
-        }                              
-
+        }
         $this->_app->stop();
     }
-    
+
+
     /**
-     * DELETE File
+     * Deletes a file.
      *
-     * @param $hash (description)
+     * Called when this component receives an HTTP DELETE request to
+     * /file/$hash.
+     *
+     * @param string $hash The hash of the file which should be deleted.
      */
     public function deleteFile($hash)
     {
@@ -194,25 +230,27 @@ class FSFile
         }
         $this->_app->stop();  
     }
-    
+
+
     /**
-     * (description)
+     * Creates a file path by splitting the hash.
      *
-     * @param $type (description)
-     * @param $file (description)
+     * @param string $type The prefix of the file path.
+     * @param string $hash The hash of the file.
      */
-    public static function generateFilePath($type,$file)
+    public static function generateFilePath($type,$hash)
     {
-       if (strlen($file)>=4){
-           return $type . "/" . $file[0] . "/" . $file[1] . "/" . $file[2] . "/" . substr($file,3);
+       if (strlen($hash)>=4){
+           return $type . "/" . $hash[0] . "/" . $hash[1] . "/" . $hash[2] . "/" . substr($hash,3);
        } else
            return "";
     }
-    
+
+
     /**
-     * (description)
+     * Creates the path in the filesystem, if necessary.
      *
-     * @param $path (description)
+     * @param string[] $path The path which should be created.
      */
     public static function generatepath($path)
     {
@@ -229,10 +267,11 @@ class FSFile
     }
     
     /**
-     * (description)
+     * Selects the components which are responsible for handling the file with
+     * the given hash.
      *
-     * @param $linkedComponents (description)
-     * @param $hash (description)
+     * @param $linkedComponents An array of components which could possibly handle the file.
+     * @param $hash The hash of the file.
      */
     public static function filterRelevantLinks($linkedComponents, $hash)
     {
@@ -247,13 +286,14 @@ class FSFile
         }
         return $result;
     }
-    
+
+
     /**
-     * (description)
+     * Decides if the given component is responsible for the specific hash.
      *
-     * @param $hash (description)
-     * @param $_relevantBegin (description)
-     * @param $_relevantEnd (description)
+     * @param string $hash The hash of the file.
+     * @param string $_relevantBegin The minimum hash the component is responsible for.
+     * @param string $_relevantEnd The maximum hash the component is responsible for.
      */
     public static function isRelevant($hash,$_relevantBegin,$_relevantEnd){
         $begin = hexdec(substr($_relevantBegin,0,strlen($_relevantBegin)));
