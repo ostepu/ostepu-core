@@ -172,7 +172,7 @@ class DBApprovalCondition
                             
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/DeletePossibleType.sql", 
+                                        "Sql/DeleteApprovalCondition.sql", 
                                         array("apid" => $apid));    
             
         // checks the correctness of the query  
