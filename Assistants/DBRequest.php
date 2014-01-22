@@ -39,11 +39,7 @@ class DBRequest
 
         $currentTime = $_SERVER['REQUEST_TIME'];
         
-<<<<<<< HEAD
         //$checkSession = false;
-=======
-       // $checkSession = false;
->>>>>>> structures
         // check session
         $sessionFail = false;
         if ($checkSession === true){
