@@ -1,5 +1,5 @@
 <?php
-include 'include/Header/Header.php';
+include 'include/Authorization.php';
 include 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
 include_once '../Assistants/Logger.php';
@@ -26,8 +26,8 @@ if (isset($_GET['cid'])) {
     die('no course id!\n');
 }
 
-if (isset($_GET['uid'])) {
-    $uid = $_GET['uid'];
+if (isset($_SESSION['uid'])) {
+    $uid = $_SESSION['uid'];
 } else {
     die('no user id!\n');
 }
@@ -39,31 +39,28 @@ if (isset($_GET['sid'])) {
 }
 
 /**
- * @todo Combine user and course request into a single request
+ * @todo Combine user course and status request into GetSite request
  */
-// load user data from the database
-$databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/user/user/{$uid}";
-$user = http_get($databaseURI);
-$user = json_decode($user, true);
+// load user and course data from the database
+$databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/coursestatus/course/{$cid}/user/{$uid}";
+$user_course_data = http_get($databaseURI, true, $message);
 
-Logger::Log("User request done");
-
-// load course data from the database
-$databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/course/course/{$cid}";
-$course = http_get($databaseURI);
-$course = json_decode($course, true)[0];
+$user_course_data = json_decode($user_course_data, true);
 
 Logger::Log("Course request done");
 
+// check userrights for course
+Authentication::checkRights(1, $cid, $uid, $user_course_data);
+
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
-$h->bind($user);
-$h->bind($course);
-$h->bind(array("backTitle" => "zur Veranstaltung",
-               "backURL" => "Tutor.php?cid={$cid}&uid={$uid}",
+$h->bind($user_course_data);
+$h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
+               "backTitle" => "zur Veranstaltung",
+               "backURL" => "Tutor.php?cid={$cid}",
                "notificationElements" => $notifications));
 
-$data = http_get("http://localhost/uebungsplattform/logic/GetSite/tutorassignment/course/{$cid}/exercisesheet/{$sid}");
+$data = http_get("http://localhost/uebungsplattform/logic/GetSite/tutorassignment/course/{$cid}/exercisesheet/{$sid}", true);
 $data = json_decode($data, true);
 
 $tutorAssignment = array("tutorAssignments" => $data);
