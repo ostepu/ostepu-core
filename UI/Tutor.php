@@ -24,10 +24,6 @@ if (isset($_SESSION['uid'])) {
 $databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/coursestatus/course/{$cid}/user/{$uid}";
 $user_course_data = http_get($databaseURI, true, $message);
 
-if ($message == "401") {
-    $auth->logoutUser();
-}
-
 $user_course_data = json_decode($user_course_data, true);
 
 // check userrights for course
@@ -46,10 +42,6 @@ $databaseURL = "http://141.48.9.92/uebungsplattform/DB/DBExerciseSheet/exercises
 // construct some exercise sheets
 $sheetData = http_get($databaseURL, true, $message);
 $sheetData = json_decode($sheetData, true);
-
-if ($message == "401") {
-    $auth->logoutUser();
-}
 
 // convert the json string into an associative array
 $sheets = array("sheets" => $sheetData,
