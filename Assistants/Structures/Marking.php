@@ -246,8 +246,8 @@ class Marking extends Object implements JsonSerializable
     {
         return new Marking(array('id' => $markingId,
         'tutorId' => $tutorId,
-        'file' => array('fileId' => $fileId), 
-        'submission' => array('id' => $submissionId), 
+        'file' => new File(array('fileId' => $fileId)), 
+        'submission' => new Submission(array('id' => $submissionId)), 
         'tutorComment' => $tutorComment, 
         'outstanding' => $outstanding, 
         'status' => $status, 
@@ -286,7 +286,7 @@ class Marking extends Object implements JsonSerializable
         
         if ($this->id != null) $this->addInsertData($values, 'M_id', DBJson::mysql_real_escape_string($this->id));
         if ($this->tutorId != null) $this->addInsertData($values, 'U_id_tutor', DBJson::mysql_real_escape_string($this->tutorId));
-        if ($this->file != array()) $this->addInsertData($values, 'F_id_file', DBJson::mysql_real_escape_string($this->file->getFileId()));
+        if ($this->file != null) $this->addInsertData($values, 'F_id_file', DBJson::mysql_real_escape_string($this->file->getFileId()));
         if ($this->submission != null) $this->addInsertData($values, 'S_id', DBJson::mysql_real_escape_string($this->submission->getId()));
         if ($this->tutorComment != null) $this->addInsertData($values, 'M_tutorComment', DBJson::mysql_real_escape_string($this->tutorComment));
         if ($this->outstanding != null) $this->addInsertData($values, 'M_outstanding', DBJson::mysql_real_escape_string($this->outstanding));
@@ -330,6 +330,9 @@ class Marking extends Object implements JsonSerializable
      */
     public function __construct($data=array())
     {
+        if ($data==null)
+            $data = array();
+        
         foreach ($data AS $key => $value) {
              if (isset($key)){
                 if ($key == 'file'){
@@ -368,8 +371,12 @@ class Marking extends Object implements JsonSerializable
      */
     public static function decodeMarking($data, $decode=true)
     {
+        if ($decode && $data==null) 
+            $data = "{}";
+    
         if ($decode)
-            $data = json_decode($data);
+            $data = json_decode($data); 
+            
         if (is_array($data)){
             $result = array();
             foreach ($data AS $key => $value) {
@@ -391,7 +398,7 @@ class Marking extends Object implements JsonSerializable
         if ($this->submission!==null) $list['submission'] = $this->submission;
         if ($this->tutorId!==null) $list['tutorId'] = $this->tutorId;
         if ($this->tutorComment!==null) $list['tutorComment'] = $this->tutorComment;
-        if ($this->file!==null) $list['file'] = $file->file;
+        if ($this->file!==null) $list['file'] = $this->file;
         if ($this->points!==null) $list['points'] = $this->points;
         if ($this->outstanding!==null) $list['outstanding'] = $this->outstanding;
         if ($this->status!==null) $list['status'] = $this->status;

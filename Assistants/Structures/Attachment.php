@@ -20,7 +20,8 @@ class Attachment extends Object implements JsonSerializable
      *
      * @return the value of $id
      */ 
-    public function getId(){
+    public function getId()
+    {
         return $this->id;
     }
     
@@ -44,7 +45,8 @@ class Attachment extends Object implements JsonSerializable
      *
      * @return the value of $exerciseId
      */ 
-    public function getExerciseId(){
+    public function getExerciseId()
+    {
         return $this->exerciseId;
     }
     
@@ -67,7 +69,8 @@ class Attachment extends Object implements JsonSerializable
      *
      * @return the value of $file
      */ 
-    public function getFile(){
+    public function getFile()
+    {
         return $this->file;
     }
     
@@ -85,10 +88,9 @@ class Attachment extends Object implements JsonSerializable
     {
         return new Attachment(array('id' => $attachmentId,
         'exerciseId' => $exerciseId,
-        'exerciseTypeId' => $exerciseTypeId, 
-        'file' => array('fileId' => $fileId)));
+        'file' => File::createFile($fileId,null,null,null,null,null)));
     }
-    
+   // ('fileId' => $fileId)
     /**
      * returns an mapping array to convert between database and structure
      *
@@ -172,6 +174,9 @@ class Attachment extends Object implements JsonSerializable
      */
     public static function decodeAttachment($data, $decode=true)
     {
+        if ($decode && $data==null) 
+            $data = "{}";
+    
         if ($decode)
             $data = json_decode($data);
         if (is_array($data)){

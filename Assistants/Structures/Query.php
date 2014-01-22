@@ -229,11 +229,14 @@ class Query extends Object implements JsonSerializable
      */
     public static function decodeQuery($data, $decode=true)
     {
+        if ($decode && $data==null) 
+            $data = "{}";
+            
         if ($decode)
             $data = json_decode($data,true);
             
         $obj = new Query();
-        if (is_array($data) && !isset($data['response']) && !isset($data['request'])){
+        if (is_array($data) && !isset($data['response']) && !isset($data['request']) && !isset($data['insertId'])){
 
         } else {
             $obj = new Query();

@@ -60,7 +60,6 @@ class CourseStatus extends Object implements JsonSerializable
     {
         $this->status = $value;
     }
-
     
     /**
      * returns an mapping array to convert between database and structure
@@ -106,7 +105,8 @@ class CourseStatus extends Object implements JsonSerializable
     /**
      * (description)
      */
-    public static function getStatusDefinition(){
+    public static function getStatusDefinition()
+    {
         return array(
             '0' => 'student',
             '1' => 'tutor',
@@ -123,6 +123,9 @@ class CourseStatus extends Object implements JsonSerializable
      */
     public function __construct($data=array())
     {
+        if ($data==null)
+            $data = array();
+        
         foreach ($data AS $key => $value) {
             if (isset($key)){
                 if ($key == 'course'){
@@ -158,6 +161,9 @@ class CourseStatus extends Object implements JsonSerializable
      */
     public static function decodeCourseStatus($data, $decode=true)
     {
+        if ($decode && $data==null) 
+            $data = "{}";
+    
         if ($decode)
             $data = json_decode($data);
             

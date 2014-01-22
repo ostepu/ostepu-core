@@ -20,7 +20,8 @@ class Invitation extends Object implements JsonSerializable
      *
      * @return the value of $user
      */ 
-    public function getMember(){
+    public function getMember()
+    {
         return $this->member;
     }
     
@@ -43,7 +44,8 @@ class Invitation extends Object implements JsonSerializable
      *
      * @return the value of $leader
      */ 
-    public function getLeader(){
+    public function getLeader()
+    {
         return $this->leader;
     }
     
@@ -66,7 +68,8 @@ class Invitation extends Object implements JsonSerializable
      *
      * @return the value of $sheet
      */ 
-    public function getSheet(){
+    public function getSheet()
+    {
         return $this->sheet;
     }
     
@@ -83,8 +86,10 @@ class Invitation extends Object implements JsonSerializable
     public function createInvitation($leaderId,$memberId,$sheetId)
     {
         return new Invitation(array('sheet' => $sheetId,
-        'leader' => array('id' => $leaderId), 
-        'member' => array('id' => $memberId)));
+        'leader' => User::createUser($leaderId,null,null,null,null,
+                               null,null,null,null,null), 
+        'member' => User::createUser($memberId,null,null,null,null,
+                               null,null,null,null,null)));
     }    
     
     /**
@@ -106,7 +111,8 @@ class Invitation extends Object implements JsonSerializable
      *
      * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData(){
+    public function getInsertData()
+    {
         $values = "";
         
         if ($this->sheet != null) $this->addInsertData($values, 'ES_id', DBJson::mysql_real_escape_string($this->sheet));
@@ -136,6 +142,9 @@ class Invitation extends Object implements JsonSerializable
      */
     public function __construct($data=array())
     {
+        if ($data==null)
+            $data = array();
+        
         foreach ($data AS $key => $value) {
              if (isset($key)){
                 if ($key == 'member' || $key == 'leader') {
@@ -170,6 +179,9 @@ class Invitation extends Object implements JsonSerializable
      */
     public static function decodeInvitation($data, $decode=true)
     {
+        if ($decode && $data==null) 
+            $data = "{}";
+    
         if ($decode)
             $data = json_decode($data);
         if (is_array($data)){

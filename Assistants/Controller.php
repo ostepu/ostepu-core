@@ -136,6 +136,8 @@ class Controller
                     if (isset($ch['headers']['Content-Disposition']))
                         $this->_app->response->headers->set('Content-Disposition', 
                                             $ch['headers']['Content-Disposition']);
+                    $this->_app->stop();
+                    return;                       
                 }
                                      
             } elseif(in_array("",$possible)){
@@ -185,6 +187,8 @@ class Controller
                 if (isset($ch['headers']['Content-Disposition']))
                     $this->_app->response->headers->set('Content-Disposition', 
                                         $ch['headers']['Content-Disposition']);
+                $this->_app->stop();
+                return;                   
                 }
         }
 

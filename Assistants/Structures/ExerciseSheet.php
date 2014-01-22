@@ -22,7 +22,8 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * @return the value of $id
      */ 
-    public function getId(){
+    public function getId()
+    {
         return $this->id;
     }
     
@@ -47,7 +48,8 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * @return the value of $courseId
      */ 
-    public function getCourseId(){
+    public function getCourseId()
+    {
         return $this->courseId;
     }
     
@@ -72,7 +74,8 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * @return the value of $endDate
      */ 
-    public function getEndDate(){
+    public function getEndDate()
+    {
         return $this->endDate;
     }
     
@@ -97,7 +100,8 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * @return the value of $startDate
      */ 
-    public function getStartDate(){
+    public function getStartDate()
+    {
         return $this->startDate;
     }
     
@@ -123,7 +127,8 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * @return the value of $id
      */ 
-    public function getZipFile(){
+    public function getZipFile()
+    {
         return $this->zipFile;
     }
     
@@ -148,7 +153,8 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * @return the value of $sampleSolution
      */ 
-    public function getSampleSolution(){
+    public function getSampleSolution()
+    {
         return $this->sampleSolution;
     }
     
@@ -173,7 +179,8 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * @return the value of $sheetFile
      */ 
-    public function getSheetFile(){
+    public function getSheetFile()
+    {
         return $this->sheetFile;
     }
     
@@ -198,7 +205,8 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * @return the value of $exercises
      */ 
-    public function getExercises(){
+    public function getExercises()
+    {
         return $this->exercises;
     }
     
@@ -223,7 +231,8 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * @return the value of $groupSize
      */ 
-    public function getGroupSize(){
+    public function getGroupSize()
+    {
         return $this->groupSize;
     }
     
@@ -243,7 +252,8 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * @return the value of $sheetName
      */ 
-    public function getSheetName(){
+    public function getSheetName()
+    {
         return $this->sheetName;
     }
     
@@ -259,14 +269,14 @@ class ExerciseSheet extends Object implements JsonSerializable
     
     public function createExerciseSheet($sheetId,$courseId,$endDate,$startDate,$groupSize,$sampleSolutionId,$sheetFileId,$sheetName)
     {
-        return new ExerciseSheet(array('id' => $sheetName,
+        return new ExerciseSheet(array('id' => $sheetId,
         'courseId' => $courseId,
         'endDate' => $endDate, 
         'startDate' => $startDate,
         'groupSize' => $groupSize, 
         'sheetName' => $sheetName, 
-        'sampleSolution' => array('fileId' => $sampleSolutionId),
-        'sheetFile' => array('fileId' => $sheetFileId)));
+        'sampleSolution' => new File(array('fileId' => $sampleSolutionId)),
+        'sheetFile' => new File(array('fileId' => $sheetFileId))));
     }
     
     /**
@@ -295,7 +305,8 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData(){
+    public function getInsertData()
+    {
         $values = "";
         
         if ($this->id != null) $this->addInsertData($values, 'ES_id', DBJson::mysql_real_escape_string($this->id));
@@ -366,6 +377,9 @@ class ExerciseSheet extends Object implements JsonSerializable
      */
     public static function decodeExerciseSheet($data, $decode=true)
     {
+        if ($decode && $data==null) 
+            $data = "{}";
+    
         if ($decode)
             $data = json_decode($data);
         if (is_array($data)){

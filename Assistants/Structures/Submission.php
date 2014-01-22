@@ -260,7 +260,7 @@ class Submission extends Object implements JsonSerializable
         $this->flag = $value;
     }  
     
-    public function createSubmission($submissionId,$studentId,$fileId,$exerciseId,$comment,$accepted,$date)
+    public function createSubmission($submissionId,$studentId,$fileId,$exerciseId,$comment,$accepted,$date,$flag)
     {
         return new Submission(array('id' => $submissionId,
         'studentId' => $studentId, 
@@ -269,7 +269,7 @@ class Submission extends Object implements JsonSerializable
         'accepted' => $accepted, 
         'date' => $date, 
         'flag' => $flag, 
-        'file' => array('fileId' => $fileId)));
+        'file' => new File(array('fileId' => $fileId))));
     }
     
     /**
@@ -303,7 +303,7 @@ class Submission extends Object implements JsonSerializable
         
         if ($this->id != null) $this->addInsertData($values, 'S_id', DBJson::mysql_real_escape_string($this->id));
         if ($this->studentId != null) $this->addInsertData($values, 'U_id', DBJson::mysql_real_escape_string($this->studentId));
-        if ($this->file != array()) $this->addInsertData($values, 'F_id_file', DBJson::mysql_real_escape_string($this->file->getFileId()));
+        if ($this->file != null) $this->addInsertData($values, 'F_id_file', DBJson::mysql_real_escape_string($this->file->getFileId()));
         if ($this->exerciseId != null) $this->addInsertData($values, 'E_id', DBJson::mysql_real_escape_string($this->exerciseId));
         if ($this->comment != null) $this->addInsertData($values, 'S_comment', DBJson::mysql_real_escape_string($this->comment));
         if ($this->accepted != null) $this->addInsertData($values, 'S_accepted', DBJson::mysql_real_escape_string($this->accepted));
@@ -334,8 +334,11 @@ class Submission extends Object implements JsonSerializable
      */
     public function __construct($data=array())
     {
+        if ($data==null)
+            $data = array();
+        
         foreach ($data AS $key => $value) {
-             if (isset($key)){
+            if (isset($key)){
                 if ($key == 'file'){
                     $this->{$key} = File::decodeFile($value, false);
                 }
@@ -368,6 +371,9 @@ class Submission extends Object implements JsonSerializable
      */
     public static function decodeSubmission($data, $decode=true)
     {
+        if ($decode && $data==null) 
+            $data = "{}";
+    
         if ($decode)
             $data = json_decode($data);
         if (is_array($data)){

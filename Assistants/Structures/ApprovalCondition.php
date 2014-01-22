@@ -16,7 +16,8 @@ class ApprovalCondition extends Object implements JsonSerializable
      *
      * @return the value of $id
      */ 
-    public function getId(){
+    public function getId()
+    {
         return $this->id;
     }
     
@@ -42,7 +43,8 @@ class ApprovalCondition extends Object implements JsonSerializable
      *
      * @return the value of $courseId
      */ 
-    public function getCourseId(){
+    public function getCourseId()
+    {
         return $this->courseId;
     }
     
@@ -67,7 +69,8 @@ class ApprovalCondition extends Object implements JsonSerializable
      *
      * @return the value of $exerciseTypeid
      */ 
-    public function getExerciseTypeId(){
+    public function getExerciseTypeId()
+    {
         return $this->exerciseTypeId;
     }
     
@@ -92,7 +95,8 @@ class ApprovalCondition extends Object implements JsonSerializable
      *
      * @return the value of $percentage
      */ 
-    public function getPercentage(){
+    public function getPercentage()
+    {
         return $this->percentage;
     }
     
@@ -130,7 +134,8 @@ class ApprovalCondition extends Object implements JsonSerializable
     /**
      * (description)
      */
-    public function getInsertData(){
+    public function getInsertData()
+    {
         $values = "";
         
         if ($this->id != null) $this->addInsertData($values, 'AC_id', DBJson::mysql_real_escape_string($this->id));
@@ -184,6 +189,9 @@ class ApprovalCondition extends Object implements JsonSerializable
      */
     public static function decodeApprovalCondition($data, $decode=true)
     {
+        if ($decode && $data==null) 
+            $data = "{}";
+    
         if ($decode)
             $data = json_decode($data);
         if (is_array($data)){

@@ -210,12 +210,15 @@ class Course extends Object implements JsonSerializable
      */
     public function __construct($data=array())
     {
+        if ($data==null)
+            $data = array();
+        
         foreach ($data AS $key => $value) {
              if (isset($key)){
-                if (is_array($value)) {
-                    $sub = ExerciseSheet::decodeExerciseSheet($value, false);
-                    $value = $sub;
+                if ($key == 'exerciseSheets') {
+                    $this->{$key} = ExerciseSheet::decodeExerciseSheet($value, false);
                 }
+                else
                 $this->{$key} = $value;
             }
         }
@@ -244,6 +247,9 @@ class Course extends Object implements JsonSerializable
      */
     public static function decodeCourse($data, $decode=true)
     {
+        if ($decode && $data==null) 
+            $data = "{}";
+    
         if ($decode)
             $data = json_decode($data);
         if (is_array($data)){

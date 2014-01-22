@@ -20,7 +20,8 @@ class SelectedSubmission extends Object implements JsonSerializable
      *
      * @return the value of $leaderId
      */ 
-    public function getLeaderId(){
+    public function getLeaderId()
+    {
         return $this->leaderId;
     }
     
@@ -43,7 +44,8 @@ class SelectedSubmission extends Object implements JsonSerializable
      *
      * @return the value of $submissionId
      */ 
-    public function getSubmissionId(){
+    public function getSubmissionId()
+    {
         return $this->submissionId;
     }
     
@@ -66,7 +68,8 @@ class SelectedSubmission extends Object implements JsonSerializable
      *
      * @return the value of $exerciseId
      */ 
-    public function getExerciseId(){
+    public function getExerciseId()
+    {
         return $this->exerciseId;
     }
     
@@ -106,7 +109,8 @@ class SelectedSubmission extends Object implements JsonSerializable
      *
      * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData(){
+    public function getInsertData()
+    {
         $values = "";
         
         if ($this->leaderId != null) $this->addInsertData($values, 'U_id_leader', DBJson::mysql_real_escape_string($this->leaderId));
@@ -162,8 +166,13 @@ class SelectedSubmission extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeSelectedSubmission($data){
+    public static function decodeSelectedSubmission($data, $decode=true){
+        if ($decode && $data==null) 
+            $data = "{}";
+            
+        if ($decode)
         $data = json_decode($data);
+        
         if (is_array($data)){
             $result = array();
             foreach ($data AS $key => $value) {

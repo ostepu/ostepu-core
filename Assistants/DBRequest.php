@@ -39,6 +39,7 @@ class DBRequest
 
         $currentTime = $_SERVER['REQUEST_TIME'];
         
+       // $checkSession = false;
         // check session
         $sessionFail = false;
         if ($checkSession === true){
@@ -47,8 +48,7 @@ class DBRequest
                 isset($_SERVER['HTTP_USER']) && 
                 isset($_SERVER['HTTP_DATE']) && 
                 ctype_digit($_SERVER['HTTP_USER']) && 
-                time() >= (int)$_SERVER['HTTP_DATE'] && 
-                time() <= (int)$_SERVER['HTTP_DATE'] + 10*60 ){
+                (int)$_SERVER['REQUEST_TIME'] <= (int)$_SERVER['HTTP_DATE'] + 10*60 ){
                 $content = mysql_query('select SE_sessionID from Session where U_id = ' . $_SERVER['HTTP_USER'], $dbconn);
                 
                 // evaluates the session 

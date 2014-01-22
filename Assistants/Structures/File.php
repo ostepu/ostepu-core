@@ -239,7 +239,8 @@ class File extends Object implements JsonSerializable
      *
      * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData(){
+    public function getInsertData()
+    {
         $values = "";
         
         if ($this->fileId != null) $this->addInsertData($values, 'F_id', DBJson::mysql_real_escape_string($this->fileId));
@@ -272,6 +273,9 @@ class File extends Object implements JsonSerializable
      */
     public function __construct($data=array())
     {
+        if ($data==null)
+            $data = array();
+        
         foreach ($data AS $key => $value) {
             if (isset($key)){
                 $this->{$key} = $value;
@@ -302,8 +306,12 @@ class File extends Object implements JsonSerializable
      */
     public static function decodeFile($data, $decode=true)
     {   
-        if ($decode == true)
+        if ($decode && $data==null) 
+            $data = "{}";
+            
+        if ($decode)
             $data = json_decode($data);
+            
         if (is_array($data)){
             $result = array();
             foreach ($data AS $key => $value) {

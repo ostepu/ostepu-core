@@ -20,7 +20,8 @@ class Backup extends Object implements JsonSerializable
      *
      * @return the value of $id
      */ 
-    public function getId(){
+    public function getId()
+    {
         return $this->id;
     }
     
@@ -43,7 +44,8 @@ class Backup extends Object implements JsonSerializable
      *
      * @return the value of $date
      */ 
-    public function getDate(){
+    public function getDate()
+    {
         return $this->date;
     }
     
@@ -66,7 +68,8 @@ class Backup extends Object implements JsonSerializable
      *
      * @return the value of $file
      */ 
-    public function getFile(){
+    public function getFile()
+    {
         return $this->file;
     }
     
@@ -92,7 +95,8 @@ class Backup extends Object implements JsonSerializable
      *
      * @return the mapping array
      */
-    public static function getDbConvert(){
+    public static function getDbConvert()
+    {
         return array(
            'B_id' => 'id',
            'B_date' => 'date',
@@ -105,7 +109,8 @@ class Backup extends Object implements JsonSerializable
      * 
      * @return the primary key/keys
      */
-    public static function getDbPrimaryKey(){
+    public static function getDbPrimaryKey()
+    {
         return 'B_id';
     }
    
@@ -143,7 +148,11 @@ class Backup extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeBackup($data){
+    public static function decodeBackup($data, $decode=true){
+        if ($decode && $data==null) 
+            $data = "{}";
+            
+        if ($decode)
         $data = json_decode($data);
         if (is_array($data)){
             $result = array();
