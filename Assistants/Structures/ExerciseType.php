@@ -105,7 +105,8 @@ class ExerciseType extends Object implements JsonSerializable
      *
      * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData(){
+    public function getInsertData()
+    {
         $values = "";
         
         if ($this->id != null) $this->addInsertData($values, 'ET_id', DBJson::mysql_real_escape_string($this->id));
@@ -150,6 +151,9 @@ class ExerciseType extends Object implements JsonSerializable
      */
     public static function decodeExerciseType($data, $decode=true)
     {
+        if ($decode && $data==null) 
+            $data = "{}";
+    
         if ($decode)
             $data = json_decode($data);
         if (is_array($data)){

@@ -176,7 +176,13 @@ class Component extends Object implements JsonSerializable
     }
 
 
-    
+    public function createComponent($id,$name,$address,$option)
+    {
+        return new Component(array('id' => $id,
+        'name' => $name,
+        'address' => $address,
+        'option' => $option));
+    }
     
     /**
      * returns an mapping array to convert between database and structure
@@ -200,7 +206,8 @@ class Component extends Object implements JsonSerializable
      *
      * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData(){
+    public function getInsertData()
+    {
         $values = "";
         
         if ($this->id != null) $this->addInsertData($values, 'CO_id', DBJson::mysql_real_escape_string($this->id));
@@ -231,6 +238,9 @@ class Component extends Object implements JsonSerializable
      */
     public function __construct($data=array())
     {
+        if ($data==null)
+            $data = array();
+        
         foreach ($data AS $key => $value) {
             if (isset($key)){
                 if ($key == 'links') {
@@ -265,6 +275,9 @@ class Component extends Object implements JsonSerializable
      */
     public static function decodeComponent($data, $decode=true)
     {
+        if ($decode && $data==null) 
+            $data = "{}";
+    
         if ($decode)
             $data = json_decode($data);
             

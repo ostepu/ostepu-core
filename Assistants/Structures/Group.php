@@ -20,7 +20,8 @@ class Group extends Object implements JsonSerializable
      *
      * @return the value of $members
      */
-    public function getMembers(){
+    public function getMembers()
+    {
         return $this->members;
     }
     
@@ -29,7 +30,8 @@ class Group extends Object implements JsonSerializable
      *
      * @param User[] $value the new value for $members
      */ 
-    public function setMembers($value){
+    public function setMembers($value)
+    {
         $this->members = $value;
     }
 
@@ -43,7 +45,8 @@ class Group extends Object implements JsonSerializable
      *
      * @return the value of $leader
      */
-    public function getLeader(){
+    public function getLeader()
+    {
         return $this->leader;
     }
     
@@ -52,7 +55,8 @@ class Group extends Object implements JsonSerializable
      *
      * @param User $value the new value for $leader
      */ 
-    public function setLeader($value){
+    public function setLeader($value)
+    {
         $this->leader = $value;
     }
 
@@ -66,7 +70,8 @@ class Group extends Object implements JsonSerializable
      *
      * @return the value of $sheetId
      */
-    public function getSheetId(){
+    public function getSheetId()
+    {
         return $this->sheetId;
     }
     
@@ -75,7 +80,8 @@ class Group extends Object implements JsonSerializable
      *
      * @param string $value the new value for $sheetId
      */ 
-    public function setSheetId($value){
+    public function setSheetId($value)
+    {
         $this->sheetId = $value;
     }
     
@@ -83,8 +89,8 @@ class Group extends Object implements JsonSerializable
     public function createGroup($leaderId,$memberId,$sheetId)
     {
         return new Group(array('sheetId' => $sheetId,
-        'leader' => array('id' => $leaderId), 
-        'members' => array(array('id' => $memberId))));
+        'leader' => new User(array('id' => $leaderId)), 
+        'members' => array(new User(array('id' => $memberId)))));
     } 
      
     /**
@@ -92,7 +98,8 @@ class Group extends Object implements JsonSerializable
      *
      * @return the mapping array
      */
-    public static function getDbConvert(){
+    public static function getDbConvert()
+    {
         return array(
            'U_member' => 'members',
            'U_leader' => 'leader',
@@ -105,11 +112,12 @@ class Group extends Object implements JsonSerializable
      *
      * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData(){
+    public function getInsertData()
+    {
         $values = "";
         
         if ($this->sheetId != null) $this->addInsertData($values, 'ES_id', DBJson::mysql_real_escape_string($this->sheetId));
-        if ($this->members != array()) $this->addInsertData($values, 'U_id_leader', DBJson::mysql_real_escape_string($this->member[0]->getId()));
+        if ($this->members != null && $this->members != array() && $this->members[0] != null) $this->addInsertData($values, 'U_id_leader', DBJson::mysql_real_escape_string($this->members[0]->getId()));
         if ($this->leader != null) $this->addInsertData($values, 'U_id_member', DBJson::mysql_real_escape_string($this->leader->getId()));
         
         if ($values != ""){
@@ -123,7 +131,8 @@ class Group extends Object implements JsonSerializable
      * 
      * @return the primary key/keys
      */
-    public static function getDbPrimaryKey(){
+    public static function getDbPrimaryKey()
+    {
         return array('U_id', 'ES_id');
     }
    
@@ -132,7 +141,11 @@ class Group extends Object implements JsonSerializable
      * 
      * @param $data an assoc array with the object informations
      */
-    public function __construct($data=array()){
+    public function __construct($data=array())
+    {
+        if ($data==null)
+            $data = array();
+        
         foreach ($data AS $key => $value) {
              if (isset($key)){
                 if ($key == 'leader' || $key == 'members'){
@@ -151,7 +164,8 @@ class Group extends Object implements JsonSerializable
      *
      * @return the json encoded object
      */
-    public static function encodeGroup($data){
+    public static function encodeGroup($data)
+    {
         return json_encode($data);
     }
     
@@ -164,7 +178,12 @@ class Group extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeGroup($data){
+    public static function decodeGroup($data, $decode=true)
+    {
+        if ($decode && $data==null) 
+            $data = "{}";
+            
+        if ($decode)
         $data = json_decode($data);
         if (is_array($data)){
             $result = array();

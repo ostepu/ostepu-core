@@ -195,7 +195,14 @@ class Link extends Object implements JsonSerializable
     }
    
     
-    
+    public function createLink($id,$owner,$target,$name,$relevanz)
+    {
+        return new Link(array('id' => $id,
+        'owner' => $owner,
+        'target' => $target,
+        'name' => $name,
+        'relevanz' => $relevanz));
+    }
     
     /**
      * the constructor
@@ -204,6 +211,9 @@ class Link extends Object implements JsonSerializable
      */
     public function __construct($data=array())
     {
+        if ($data==null)
+            $data = array();
+        
         foreach ($data AS $key => $value) {
             if (isset($key)){
                 $this->{$key} = $value;
@@ -234,10 +244,11 @@ class Link extends Object implements JsonSerializable
      *
      * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData(){
+    public function getInsertData()
+    {
         $values = "";
         
-        if ($this->id != null) $this->addInsertData($values, 'ES_id', DBJson::mysql_real_escape_string($this->id));
+        if ($this->id != null) $this->addInsertData($values, 'CL_id', DBJson::mysql_real_escape_string($this->id));
         if ($this->name != null) $this->addInsertData($values, 'CL_name', DBJson::mysql_real_escape_string($this->name));
         if ($this->owner != null) $this->addInsertData($values, 'CO_id_owner', DBJson::mysql_real_escape_string($this->owner));
         if ($this->target != null) $this->addInsertData($values, 'CO_id_target', DBJson::mysql_real_escape_string($this->target));
@@ -282,8 +293,12 @@ class Link extends Object implements JsonSerializable
      */
     public static function decodeLink($data, $decode=true)
     {
+        if ($decode && $data==null) 
+            $data = "{}";
+            
         if ($decode)
             $data = json_decode($data);
+            
         if (is_array($data)){
             $result = array();
             foreach ($data AS $key => $value) {

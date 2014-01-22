@@ -20,7 +20,8 @@ class Exercise extends Object implements JsonSerializable
      *
      * @return the value of $id
      */ 
-    public function getId(){
+    public function getId()
+    {
         return $this->id;
     }
     
@@ -43,7 +44,8 @@ class Exercise extends Object implements JsonSerializable
      *
      * @return the value of $courseId
      */ 
-    public function getCourseId(){
+    public function getCourseId()
+    {
         return $this->courseId;
     }
     
@@ -66,7 +68,8 @@ class Exercise extends Object implements JsonSerializable
      *
      * @return the value of $sheetId
      */ 
-    public function getSheetId(){
+    public function getSheetId()
+    {
         return $this->sheetId;
     }
     
@@ -89,7 +92,8 @@ class Exercise extends Object implements JsonSerializable
      *
      * @return the value of $maxPoints
      */ 
-    public function getMaxPoints(){
+    public function getMaxPoints()
+    {
         return $this->maxPoints;
     }
     
@@ -112,7 +116,8 @@ class Exercise extends Object implements JsonSerializable
      *
      * @return the value of $type
      */ 
-    public function getType(){
+    public function getType()
+    {
         return $this->type;
     }
     
@@ -135,7 +140,8 @@ class Exercise extends Object implements JsonSerializable
      *
      * @return the value of $link
      */ 
-    public function getLink(){
+    public function getLink()
+    {
         return $this->link;
     }
     
@@ -158,7 +164,8 @@ class Exercise extends Object implements JsonSerializable
      *
      * @return the value of $submissions
      */ 
-    public function getSubmissions(){
+    public function getSubmissions()
+    {
         return $submissions;
     }
     
@@ -181,7 +188,8 @@ class Exercise extends Object implements JsonSerializable
      *
      * @return the value of $attachments
      */ 
-    public function getAttachments(){
+    public function getAttachments()
+    {
         return $this->attachments;
     }
     
@@ -204,7 +212,8 @@ class Exercise extends Object implements JsonSerializable
      *
      * @return the value of $bonus
      */ 
-    public function getBonus(){
+    public function getBonus()
+    {
         return $this->bonus;
     }
     
@@ -255,7 +264,8 @@ class Exercise extends Object implements JsonSerializable
      *
      * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData(){
+    public function getInsertData()
+    {
         $values = "";
         
         if ($this->id != null) $this->addInsertData($values, 'E_id', DBJson::mysql_real_escape_string($this->id));
@@ -323,6 +333,9 @@ class Exercise extends Object implements JsonSerializable
      */
     public static function decodeExercise($data, $decode=true)
     {
+        if ($decode && $data==null) 
+            $data = "{}";
+    
         if ($decode)
             $data = json_decode($data);
         if (is_array($data)){

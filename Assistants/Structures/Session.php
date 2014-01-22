@@ -88,7 +88,8 @@ class Session extends Object implements JsonSerializable
      *
      * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData(){
+    public function getInsertData()
+    {
         $values = "";
         
         if ($this->user != null) $this->addInsertData($values, 'U_id', DBJson::mysql_real_escape_string($this->user));
@@ -118,6 +119,9 @@ class Session extends Object implements JsonSerializable
      */
     public function __construct($data=array())
     {
+        if ($data==null)
+            $data = array();
+        
         foreach ($data AS $key => $value) {
             if (isset($key)){
               /*  if ($key == "user"){
@@ -152,6 +156,9 @@ class Session extends Object implements JsonSerializable
      */
     public static function decodeSession($data, $decode=true)
     {
+        if ($decode && $data==null) 
+            $data = "{}";
+    
         if ($decode)
             $data = json_decode($data);
             

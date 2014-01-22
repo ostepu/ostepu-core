@@ -3,6 +3,8 @@
  * @file User.php contains the User class
  */
  
+include_once( 'Include/DBJson.php' );
+
 /**
  * the user structure
  *
@@ -337,7 +339,7 @@ class User extends Object implements JsonSerializable
     public function createCourseStatus($userId,$courseId,$status)
     {
         return new User(array('id' => $userId,
-        'courses' => array(array('status' => $status, 'course' => array('id' => $courseId)))));
+        'courses' => array(array('status' => $status, 'course' => new Course(array('id' => $courseId))))));
     }
     
     /**
@@ -367,7 +369,8 @@ class User extends Object implements JsonSerializable
      *
      * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData(){
+    public function getInsertData()
+    {
         $values = "";
         
         if ($this->id != null) $this->addInsertData($values, 'U_id', DBJson::mysql_real_escape_string($this->id));
@@ -393,12 +396,13 @@ class User extends Object implements JsonSerializable
      *
      * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getCourseStatusInsertData(){
+    public function getCourseStatusInsertData()
+    {
         $values = "";
                 
         if ($this->id != null) $this->addInsertData($values, 'U_id', $this->id );
         if ($this->courses != array()) $this->addInsertData($values, 'CS_status', $this->courses[0]->getStatus() );
-        if ($this->courses != array() && $this->courses->getCourse() != null) $this->addInsertData($values, 'C_id', $this->courses[0]->getCourse()->getId() );
+        if ($this->courses != null && $this->courses != array() && $this->courses[0]->getCourse() != null) $this->addInsertData($values, 'C_id', $this->courses[0]->getCourse()->getId() );
         
         if ($values != ""){
             $values=substr($values,1);
@@ -421,7 +425,8 @@ class User extends Object implements JsonSerializable
      *
      * @return an mapping array
      */
-    public static function getFlagDefinition(){
+    public static function getFlagDefinition()
+    {
         return array(
             '0' => 'inactive', // <- removes all private user data, account removed
             '1' => 'active', // <- the account is active
@@ -436,6 +441,9 @@ class User extends Object implements JsonSerializable
      */
     public function __construct($data=array())
     {
+        if ($data==null)
+            $data = array();
+        
         foreach ($data AS $key => $value) {
             if (isset($key)){
                 if ($key == 'courses'){
@@ -453,7 +461,8 @@ class User extends Object implements JsonSerializable
      *
      * @return the json encoded object
      */
-    public static function encodeUser($data){
+    public static function encodeUser($data)
+    {
         return json_encode($data);
     }
     
@@ -468,8 +477,12 @@ class User extends Object implements JsonSerializable
      */
     public static function decodeUser($data, $decode=true)
     {
+        if ($decode && $data==null) 
+            $data = "{}";
+    
         if ($decode)
             $data = json_decode($data);
+ 
         if (is_array($data)){
             $result = array();
             foreach ($data AS $key => $value) {
