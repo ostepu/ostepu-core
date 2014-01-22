@@ -4,7 +4,7 @@
  * 
  * @author Till Uhlig
  * @author Felix Schmidt
- * @include DB/DBAttachment/AttachmentSample.json
+ * @example DB/DBAttachment/AttachmentSample.json
  */ 
 
 require_once( 'Include/Slim/Slim.php' );

@@ -4,7 +4,7 @@
  * 
  * @author Till Uhlig
  * @author Felix Schmidt
- * @include DB/DBExerciseType/ExerciseTypeSample.json
+ * @example DB/DBExerciseType/ExerciseTypeSample.json
  */  
 
 require_once( 'Include/Slim/Slim.php' );

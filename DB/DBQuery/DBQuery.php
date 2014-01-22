@@ -4,7 +4,7 @@
  * 
  * @author Till Uhlig
  * @author Felix Schmidt
- * @include DB/DBQuery/QuerySample.json
+ * @example DB/DBQuery/QuerySample.json
  */ 
 
 require_once( 'Include/Slim/Slim.php' );

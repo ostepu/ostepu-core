@@ -4,7 +4,7 @@
  * 
  * @author Till Uhlig
  * @author Felix Schmidt 
- * @include DB/DBSubmission/SubmissionSample.json
+ * @example DB/DBSubmission/SubmissionSample.json
  */ 
 
 require_once( 'Include/Slim/Slim.php' );

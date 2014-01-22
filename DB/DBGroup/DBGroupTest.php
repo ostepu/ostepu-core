@@ -63,7 +63,17 @@ class DBGroupTest extends PHPUnit_Framework_TestCase
     
     public function AddGroup()
     {
+        $result = Request::delete($this->url . 'DBGroup/group/user/1/exercisesheet/1',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for AddGroup call");
+        
+        //createGroup($leaderId,$memberId,$sheetId)
+        $obj = Group::createGroup("1","1","1");
 
+        $result = Request::post($this->url . 'DBGroup/group',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),Group::encodeGroup($obj));
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for AddGroup call");   
+        
+        $result = Request::post($this->url . 'DBGroup/group',array(),"");
+        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for AddGroup call"); 
     }
     
     public function DeleteGroup()

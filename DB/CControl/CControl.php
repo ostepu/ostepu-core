@@ -1,8 +1,8 @@
 <?php
 /**
  * @file CControl.php contains the CControl class
- * @include DB/CControl/LinkSample.json
- * @include DB/CControl/ComponentSample.json
+ * @example DB/CControl/LinkSample.json
+ * @example DB/CControl/ComponentSample.json
  */ 
 
 require 'Include/Slim/Slim.php';

@@ -4,7 +4,7 @@
  * 
  * @author Till Uhlig
  * @author Felix Schmidt
- * @include DB/DBCourseStatus/CourseStatusSample.json
+ * @example DB/DBCourseStatus/CourseStatusSample.json
  */ 
 
 require_once( 'Include/Slim/Slim.php' );
@@ -97,7 +97,7 @@ class DBCourseStatus
                             array($this,'removeCourseMember'));
                             
         // POST AddCourseMember
-        $this->_app->post('/' . $this->getPrefix() . '/course/:courseid/user/:userid(/)',
+        $this->_app->post('/' . $this->getPrefix() . '(/)', ///course/:courseid/user/:userid
                          array($this,'addCourseMember'));
         
         // GET GetMemberRight
@@ -214,7 +214,7 @@ class DBCourseStatus
      * Adds a course status to a user in a specific course.
      *
      * Called when this component receives an HTTP POST request to
-     * /coursestatus/course/$courseid/user/$userid(/).
+     * /coursestatus(/).
      * The request body should contain a JSON object representing the user's 
      * course status.
      */

@@ -4,7 +4,7 @@
  * 
  * @author Till Uhlig
  * @author Felix Schmidt
- * @include DB/DBInvitation/InvitationSample.json
+ * @example DB/DBInvitation/InvitationSample.json
  */ 
 
 require_once( 'Include/Slim/Slim.php' );

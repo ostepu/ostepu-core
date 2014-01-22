@@ -4,7 +4,7 @@
  * 
  * @author Till Uhlig
  * @author Felix Schmidt 
- * @include DB/DBMarking/MarkingSample.json
+ * @example DB/DBMarking/MarkingSample.json
  */ 
 
 require_once( 'Include/Slim/Slim.php' );

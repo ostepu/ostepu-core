@@ -18,6 +18,7 @@ class DBUserTest extends PHPUnit_Framework_TestCase
         $this->AddUser();
         $this->EditUser();
         $this->RemoveUser();
+        $this->RemoveUserPermanent();
         $this->GetUser();
         $this->GetUsers();
         $this->GetCourseMember();
@@ -83,6 +84,12 @@ class DBUserTest extends PHPUnit_Framework_TestCase
     
     public function GetIncreaseUserFailedLogin()
     {
+        // createUser($userId,$userName,$email,$firstName,$lastName,$title,$flag,$password,$salt,$failedLogins)
+        $obj = User::createUser('2',null,null,null,null,null,null,null,null,'0');
+        
+        $result = Request::put($this->url . 'DBUser/user/2',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),User::encodeUser($obj));
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for EditUser call");  
+        
         $result = Request::get($this->url . 'DBUser/user/2/IncFailedLogin',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for GetIncreaseUserFailedLogin call");      
         $this->assertContains('"userName":"lisa"',$result['content']);
@@ -92,8 +99,8 @@ class DBUserTest extends PHPUnit_Framework_TestCase
         $this->assertContains('"userName":"lisa"',$result['content']);
         
         $result = Request::get($this->url . 'DBUser/user/2/IncFailedLogin',array(),"");
-        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for GetUsers call");
-        $this->assertContains('[]',$result['content']);
+        $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for GetUsers call");
+        $this->assertContains('"userName":"lisa"',$result['content']);
     }
     
     public function GetUserByStatus()
@@ -150,6 +157,15 @@ class DBUserTest extends PHPUnit_Framework_TestCase
         
         $result = Request::delete($this->url . 'DBUser/user/NeuTill',array(),"");
         $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for RemoveUser call");
+    }
+    
+    public function RemoveUserPermanent()
+    {
+        $result = Request::delete($this->url . 'DBUser/user/NeuTill/permanent',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for RemoveUserPermanent call"); 
+        
+        $result = Request::delete($this->url . 'DBUser/user/NeuTill/permanent',array(),"");
+        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for RemoveUserPermanent call");
     }
     
     public function EditUser()

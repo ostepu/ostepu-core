@@ -4,7 +4,7 @@
  * 
  * @author Till Uhlig
  * @author Felix Schmidt 
- * @include DB/DBGroup/GroupSample.json
+ * @example DB/DBGroup/GroupSample.json
  */ 
 
 require_once( 'Include/Slim/Slim.php' );

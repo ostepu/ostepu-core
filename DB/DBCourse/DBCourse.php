@@ -4,7 +4,7 @@
  * 
  * @author Till Uhlig
  * @author Felix Schmidt
- * @include DB/DBCourse/CourseSample.json
+ * @example DB/DBCourse/CourseSample.json
  */ 
 
 require_once( 'Include/Slim/Slim.php' );
