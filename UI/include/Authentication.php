@@ -128,7 +128,8 @@ class Authentication
          */
         $_SESSION['signed'] = true;
         $_SESSION['lastactive'] = $_SERVER['REQUEST_TIME'];
-    
+        $_SESSION['Browser_Agent'] = $_SERVER['HTTP_USER_AGENT'];
+        $_SESSION['IP'] = $_SERVER['REMOTE_ADDR'];
 
         return true;
     }
@@ -142,6 +143,10 @@ class Authentication
         if (!isset($_SESSION['signed']) || !$_SESSION['signed']) {return false;}
         // check for timeout (after 10 minutes of inactivity)
         if (!isset($_SESSION['lastactive']) || ($_SESSION['lastactive'] + 10*60) <= $_SERVER['REQUEST_TIME']) {return false;}
+        // check if browser agent changed
+        if (!isset($_SESSION['Browser_Agent']) || $_SESSION['Browser_Agent'] != $_SERVER['HTTP_USER_AGENT']) {return false;}
+        // check if ip changed
+        if (!isset($_SESSION['IP']) || $_SESSION['IP'] != $_SERVER['REMOTE_ADDR']) {return false;}
 
         // update last activity 
         $_SESSION['lastactive'] = $_SERVER['REQUEST_TIME'];
