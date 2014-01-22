@@ -28,7 +28,7 @@ class Request_CreateRequest
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array("User: 3","Session: abc","Date : {$_SERVER['REQUEST_TIME']}"));
         curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
         
         /**
