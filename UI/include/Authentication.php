@@ -177,7 +177,7 @@ class Authentication
             }
             // Url GET parameters
             $urlparameters = parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY);
-            if ($urlparameters != "") {$urlparameters = "?".$urlparameters;}
+            if ($urlparameters != "") {$urlparameters = "?".rawurlencode($urlparameters);}
             // redirect to Loginpage and save current page in GET param
             header('location: Login.php?back='.$backurl.$urlparameters);
             exit;
