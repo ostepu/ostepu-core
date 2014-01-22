@@ -251,11 +251,11 @@ class DBSubmission
         foreach ($insert as $in){
             // generates the update data for the object
             $data = $in->getInsertData();
-            
+
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
                                     "Sql/EditSubmission.sql", 
-                                    array("suid" => $suid));                   
+                                    array("suid" => $suid, "values" => $data));                   
             
             // checks the correctness of the query
             if ($result['status']>=200 && $result['status']<=299){

@@ -292,7 +292,7 @@ class DBExternalId
                         $course,Course::getDBPrimaryKey());              
       
             // to reindex
-            $res = array_merge($res);
+            $res = array_values($res);
                
             // only one object as result
             // @todo only one object as result
@@ -354,7 +354,7 @@ class DBExternalId
                         $course,Course::getDBPrimaryKey());              
             
             // to reindex
-            $res = array_merge($res);
+            $res = array_values($res);
             
             $this->_app->response->setBody(ExternalId::encodeExternalId($res));
         
@@ -417,7 +417,7 @@ class DBExternalId
                             $course,Course::getDBPrimaryKey());              
             
             // to reindex
-            $res = array_merge($res);
+            $res = array_values($res);
             
             $this->_app->response->setBody(ExternalId::encodeExternalId($res));
         

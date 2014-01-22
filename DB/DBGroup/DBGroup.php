@@ -158,14 +158,13 @@ class DBGroup
         foreach ($insert as $in){
             // generates the update data for the object
             $data = $in->getInsertData();
-            
+        
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
                                             "Sql/EditGroup.sql", 
                                             array("esid" => $esid,
                                                 "userid" => $userid, 
-                                                "values" => $data)
-                                            );                   
+                                                "values" => $data));                   
            
             // checks the correctness of the query
             if ($result['status']>=200 && $result['status']<=299){
@@ -233,10 +232,10 @@ class DBGroup
     public function addGroup()
     {
         Logger::Log("starts POST AddGroup",LogLevel::DEBUG);
-        
+      
         // decode the received group data, as an object
         $insert = Group::decodeGroup($this->_app->request->getBody());
-        
+     
         // always been an array
         if (!is_array($insert))
             $insert = array($insert);
@@ -244,7 +243,7 @@ class DBGroup
         foreach ($insert as $in){
             // generates the insert data for the object
             $data = $in->getInsertData();
-            
+
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
                                             "Sql/AddGroup.sql", 

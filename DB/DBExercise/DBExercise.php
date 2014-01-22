@@ -157,7 +157,7 @@ class DBExercise
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
                                             "Sql/EditExercise.sql", 
-                                            array("eid" => $esid, "values" => $data));                   
+                                            array("eid" => $eid, "values" => $data));                   
            
             // checks the correctness of the query
             if ($result['status']>=200 && $result['status']<=299){
@@ -194,7 +194,7 @@ class DBExercise
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/DeleteExercise.sql", 
                                         array("eid" => $eid));    
-                                        
+                           
         // checks the correctness of the query                          
         if ($result['status']>=200 && $result['status']<=299){
             $this->_app->response->setStatus(201);
@@ -231,12 +231,11 @@ class DBExercise
         foreach ($insert as $in){
             // generates the insert data for the object
             $data = $in->getInsertData();
-            
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
                                             "Sql/AddExercise.sql", 
                                             array("values" => $data));                   
-           
+
             // checks the correctness of the query    
             if ($result['status']>=200 && $result['status']<=299){
                 $queryResult = Query::decodeQuery($result['content']);
