@@ -116,16 +116,47 @@ class DBMarkingTest extends PHPUnit_Framework_TestCase
     
     public function AddMarking()
     {
+        $result = Request::delete($this->url . 'DBMarking/marking/100',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for AddMarking call");
+        
+        //createMarking($markingId,$tutorId,$fileId,$submissionId,$tutorComment,$outstanding,$status,$points,$date)
+        $obj = Marking::createMarking("100","1","1","1","test","1","1","15","123123");
 
+        $result = Request::post($this->url . 'DBMarking/marking',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),Marking::encodeMarking($obj));
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for AddMarking call");   
+        
+        $result = Request::post($this->url . 'DBMarking/marking',array(),"");
+        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for AddMarking call");  
     }
     
     public function DeleteMarking()
     {
-
+        $result = Request::delete($this->url . 'DBMarking/marking/100',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for DeleteMarking call");
+        
+        $result = Request::delete($this->url . 'DBMarking/marking/AAA',array(),"");
+        $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for DeleteMarking call");
+        
+        $result = Request::delete($this->url . 'DBMarking/marking/100',array(),"");
+        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for DeleteMarking call");
     }
     
     public function EditMarking()
     {
+        //createMarking($markingId,$tutorId,$fileId,$submissionId,$tutorComment,$outstanding,$status,$points,$date)
+        $obj = Marking::createMarking("100","1","1","1","Neutest","1","1","15","123123");
 
+        $result = Request::put($this->url . 'DBMarking/marking/100',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),Marking::encodeMarking($obj));
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for EditMarking call");  
+        
+        $result = Request::put($this->url . 'DBMarking/marking/AAA',array(),"");
+        $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for EditMarking call"); 
+        
+        $result = Request::put($this->url . 'DBMarking/marking/100',array(),"");
+        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for EditMarking call"); 
+        
+        $result = Request::get($this->url . 'DBMarking/marking/100',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
+        $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for EditMarking call");
+        $this->assertContains('"tutorComment":"Neutest"',$result['content']); 
     }
 }
