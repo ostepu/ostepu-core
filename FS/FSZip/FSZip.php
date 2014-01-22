@@ -1,6 +1,9 @@
 <?php
 /**
  * @file FSZip.php contains the FSZip class
+ * 
+ * @author Till Uhlig
+ * @author Felix Schmidt
  */ 
 
 require 'Include/Slim/Slim.php';
@@ -22,13 +25,13 @@ if (!$com->used())
 Logger::Log("end FSZip",LogLevel::DEBUG);
 
 /**
- * A class, to create ZIP archives and get ZIP archives from file system
+ * A class for creating and loading ZIP archives from the file system
  */
 class FSZip
 {
     /**
-     * @var string $_baseDir the name of the folder where the zip files would be
-     * stored in filesystem
+     * @var string $_baseDir the name of the folder where the zip files should be
+     * stored in the file system
      */
     private static $_baseDir = "zip";
     
@@ -68,15 +71,19 @@ class FSZip
     private $getFile = array();
     
     /**
-     * @var Link $_fs a link to components which works with files, e.g. FSBinder
+     * @var Link $_fs a link to components which work with files, e.g. FSBinder
      */ 
     private $_fs = array();
-    
+
+
     /**
-     * the component constructor
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to
+     * the functions.
      *
      * @param Component $conf component data
-     */ 
+     */
     public function __construct($conf)
     {
         // initialize component
@@ -106,10 +113,15 @@ class FSZip
         $this->_app->run();
         }
     }
-    
-    
+
+
     /**
-     * POST Zip
+     * Creates a ZIP file consisting of the request body and permanently
+     * stores it in the file system.
+     *
+     * Called when this component receives an HTTP POST request to /zip.
+     * The request body should contain an array of JSON objects representing the files
+     * which should be zipped and stored.
      */
     public function postZip()
     {
@@ -131,7 +143,7 @@ class FSZip
         $zip = new ZipArchive();
         $savepath = "temp/".$hash;
 
-        // if the directory doesn't exists, create it
+        // if the directory doesn't exist, create it
         FSZip::generatepath(dirname($savepath));
         
         if ($zip->open($savepath, ZIPARCHIVE::CREATE)===TRUE) {
@@ -194,13 +206,16 @@ class FSZip
             $this->_app->stop();
         }
     }
-    
-    
+
+
     /**
-     * GET Zip
+     * Returns a ZIP file.
      *
-     * @param string $hash the sha1 file hash
-     * @param string $filename the display name of the file, e.g. abc.pdf
+     * Called when this component receives an HTTP GET request to
+     * /file/$hash/$filename.
+     *
+     * @param string $hash The hash of the ZIP file which should be returned.
+     * @param string $filename A freely chosen filename of the returned ZIP file.
      */
     public function getZipDocument($hash, $filename)
     {
@@ -225,10 +240,14 @@ class FSZip
         $this->_app->stop();
     }
 
+
     /**
-     * GET Zipdata
+     * Returns the ZIP file infos as a JSON file object.
      *
-     * @param string $hash the sha1 file hash
+     * Called when this component receives an HTTP GET request to
+     * /file/$hash.
+     *
+     * @param string $hash The hash of the requested file.
      */
     public function getZipData($hash)
     {   
@@ -257,11 +276,15 @@ class FSZip
 
         $this->_app->stop();
     }
-    
+
+
     /**
-     * DELETE Zip
+     * Deletes a ZIP file.
      *
-     * @param string $hash the sha1 file hash
+     * Called when this component receives an HTTP DELETE request to
+     * /zip/$hash.
+     *
+     * @param string $hash The hash of the ZIP file which should be deleted.
      */
     public function deleteZip($hash)
     {
@@ -286,13 +309,13 @@ class FSZip
         }
         $this->_app->stop();  
     }
-    
+
+
     /**
-     * generates the folder structure for a given type and the first three chars
-     * of a given file name
+     * Creates a file path by splitting the hash.
      *
-     * @param string $type a basedir, e.g. zip
-     * @param string $file a file name
+     * @param string $type The prefix of the file path.
+     * @param string $hash The hash of the file.
      */
     public static function generateFilePath($type,$file)
     {
@@ -302,11 +325,12 @@ class FSZip
        else
            return "";
     }
-    
+
+
     /**
-     * Creates the specified directory
+     * Creates the path in the filesystem, if necessary.
      *
-     * @param string $path a path, e.g. /a/b/c
+     * @param string[] $path The path which should be created.
      */
     public static function generatepath($path){
         $parts = explode("/", $path);
@@ -320,12 +344,15 @@ class FSZip
             }
         }
     }
-    
+
+
     /**
-     * filters relevant links from a list of links
+     * Selects the components which are responsible for handling the file with
+     * the given hash.
      *
-     * @param Link[] $linkedComponents a list of links
-     * @param string $hash a sha1 hash
+     * @param link[] $linkedComponents An array of links to components which could 
+     * possibly handle the file.
+     * @param string $hash The hash of the file.
      */
     public static function filterRelevantLinks($linkedComponents, $hash)
     {
@@ -340,13 +367,14 @@ class FSZip
         }
         return $result;
     }
-    
+
+
     /**
-     * checks whether a hash is relevant
+     * Decides if the given component is responsible for the specific hash.
      *
-     * @param string $hash the test hash
-     * @param string $relevant_begin a hash, which represents the relevanz beginning
-     * @param string $relevant_end a hash, which represents the relevanz ending
+     * @param string $hash The hash of the file.
+     * @param string $_relevantBegin The minimum hash the component is responsible for.
+     * @param string $_relevantEnd The maximum hash the component is responsible for.
      */
     public static function isRelevant($hash,$relevant_begin,$relevant_end)
     {
