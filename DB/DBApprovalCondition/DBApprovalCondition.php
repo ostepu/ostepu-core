@@ -1,6 +1,9 @@
 <?php
 /**
  * @file DBApprovalCondition.php contains the DBApprovalCondition class
+ * 
+ * @author Till Uhlig
+ * @author Felix Schmidt
  * @example DB/DBApprovalCondition/ApprovalConditionSample.json
  */ 
 
@@ -22,8 +25,6 @@ if (!$com->used())
     
 /**
  * A class, to abstract the "ApprovalCondition" table from database
- *
- * @author Till Uhlig
  */
 class DBApprovalCondition
 {
@@ -66,12 +67,16 @@ class DBApprovalCondition
     {
         DBApprovalCondition::$_prefix = $value;
     }
-    
+
+
     /**
-     * the component constructor
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to
+     * the functions.
      *
      * @param Component $conf component data
-     */ 
+     */
     public function __construct($conf)
     {
         // initialize component
@@ -113,11 +118,17 @@ class DBApprovalCondition
             $this->_app->run();
         }
     }
-    
+
+
     /**
-     * PUT EditApprovalCondition
+     * Edits the minimum requirements for being able to take part in an exam.
      *
-     * @param int $apid a database approval condition identifier
+     * Called when this component receives an HTTP PUT request to
+     * /approvalcondition/$apid(/) or /approvalcondition/approvalcondition/$apid(/).
+     * The request body should contain a JSON object representing the 
+     * approvalCondition's new attributes.
+     *
+     * @param int $apid The id of the approvalCondition that is beeing updated.
      */
     public function editApprovalCondition($apid)
     {
@@ -156,11 +167,15 @@ class DBApprovalCondition
             }
         }
     }
-    
+
+
     /**
-     * DELETE DeleteApprovalCondition
+     * Deletes the minimum requirements for being able to take part in an exam.
      *
-     * @param int $apid a database approval condition identifier
+     * Called when this component receives an HTTP DELETE request to
+     * /approvalcondition/$apid(/) or /approvalcondition/approvalcondition/$apid(/).
+     *
+     * @param int $apid The id of the approvalCondition that is beeing deleted.
      */
     public function deleteApprovalCondition($apid)
     {
@@ -188,9 +203,15 @@ class DBApprovalCondition
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * POST SetApprovalCondition
+     * Adds the minimum requirements for being able to take part in an exam.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /approvalcondition(/).
+     * The request body should contain a JSON object representing the 
+     * approvalCondition's attributes.
      */
     public function addApprovalCondition()
     {
@@ -232,9 +253,13 @@ class DBApprovalCondition
             }
         }
     }
-    
+
+
     /**
-     * GET GetAllApprovalConditions
+     * Returns all minimum requirements for being able to take part in an exam.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /approvalcondition(/) or /approvalcondition/approvalcondition(/).
      */
     public function getAllApprovalConditions()
     {   
@@ -269,11 +294,15 @@ class DBApprovalCondition
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetApprovalCondition
+     * Returns a minimum requirement for being able to take part in an exam.
      *
-     * @param int $apid a database approval condition identifier
+     * Called when this component receives an HTTP GET request to
+     * /approvalcondition/$apid(/) or /approvalcondition/approvalcondition/$apid(/).
+     *
+     * @param int $apid The id of the approvalCondition that should be returned.
      */
     public function getApprovalCondition($apid)
     {     
@@ -320,11 +349,16 @@ class DBApprovalCondition
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetCourseApprovalConditions
+     * Returns the minimum requirements for being able to take part in an exam
+     * regarding a specific course.
      *
-     * @param int $courseid a database course identifier
+     * Called when this component receives an HTTP GET request to
+     * /approvalcondition/course/$courseid(/).
+     *
+     * @param int $course The id of the course.
      */
     public function getCourseApprovalConditions($courseid)
     {      
