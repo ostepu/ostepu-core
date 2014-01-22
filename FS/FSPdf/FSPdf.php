@@ -1,8 +1,10 @@
 <?php
 /**
-* @file (filename)
-* %(description)
-*/ 
+ * @file FSPdf.php contains the FSPdf class
+ * 
+ * @author Till Uhlig
+ * @author Felix Schmidt
+ */ 
 
 require_once( 'Include/Slim/Slim.php' );
 include_once( 'Include/CConfig.php' );
@@ -12,36 +14,67 @@ include_once( 'Include/Pdf/PdfTable.php' );
 
 \Slim\Slim::registerAutoloader();
 
+// runs the CConfig
 $com = new CConfig(FSPdf::getBaseDir());
 
+// runs the FSPdf
 if (!$com->used())
     new FSPdf($com->loadConfig());
 
 /**
- * (description)
+ * A class for creating, storing and loading PDF files from the file system
  */
 class FSPdf
 {
+    /**
+     * @var string $_baseDir the name of the folder where the pdf files should be
+     * stored in the file system
+     */
     private static $_baseDir = "pdf";
     
+    /**
+     * the string $_baseDir getter
+     *
+     * @return the value of $_baseDir
+     */ 
     public static function getBaseDir()
     {
         return FSPdf::$_baseDir;
     }
     
+    /**
+     * the $_baseDir setter
+     *
+     * @param string $value the new value for $_baseDir
+     */  
     public static function setBaseDir($value)
     {
         FSPdf::$_baseDir = $value;
     }
-    
-    private $_app;
-    private $_conf;
-    private $_fs = array();
 
     /**
-     * (description)
+     * @var Slim $_app the slim object
+     */ 
+    private $_app;
+    
+    /**
+     * @var Component $_conf the component data object
+     */ 
+    private $_conf;
+    
+    /**
+     * @var Link $_fs a link to components which work with files, e.g. FSBinder
+     */ 
+    private $_fs = array();
+
+
+    /**
+     * REST actions
      *
-     * @param $_conf (description)
+     * This function contains the REST actions with the assignments to
+     * the functions.
+     *
+     * @param Component $conf component data
      */
     public function __construct($_conf)
     {
@@ -69,11 +102,18 @@ class FSPdf
 
          // run Slim
          $this->_app->run();
-
     } 
-    
+
+
     /**
-     * POST PostPdfPermanent
+     * Creates a PDF file consisting of the request body and permanently
+     * stores it in the file system.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /pdf/$orientation/permanent.
+     * The request body should contain a JSON object representing the PDF file.
+     *
+     * @param string $orientation The orientation of the PDF, e.g. portrait or landscape.
      */
     public function postPdfPermanent($orientation)
     {       
@@ -121,8 +161,16 @@ class FSPdf
         }
     }
 
+
     /**
-     * POST PostPdfTemporary
+     * Creates a PDF file consisting of the request body and then returns it.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /pdf/$orientation/temporary/$filename.
+     * The request body should contain a JSON object representing the PDF file.
+     *
+     * @param string $orientation The orientation of the PDF file, e.g. portrait or landscape.
+     * @param string $filename A freely chosen filename of the PDF file which should be stored.
      */
     public function postPdfTemporary($orientation, $filename = "")
     {       
@@ -147,12 +195,16 @@ class FSPdf
         $this->_app->response->headers->set('Content-Disposition', "attachment; filename=\"$filename\"");
         $this->_app->response->setBody($result);
     }
-    
+
+
     /**
-     *  GET GetPdfDocument
+     * Returns a PDF file.
      *
-     * @param $hash (description)
-     * @param $filename (description)
+     * Called when this component receives an HTTP GET request to
+     * /file/$hash/$filename.
+     *
+     * @param string $hash The hash of the file which should be returned.
+     * @param string $filename A freely chosen filename of the returned file.
      */
     public function getPdfDocument($hash, $filename)
     {      
@@ -178,10 +230,14 @@ class FSPdf
         $this->_app->stop();
     }
 
+
     /**
-     * GET GetPdfData
+     * Returns the PDF file infos as a JSON file object.
      *
-     * @param $hash (description)
+     * Called when this component receives an HTTP GET request to
+     * /file/$hash.
+     *
+     * @param string $hash The hash of the requested file.
      */
     public function getPdfData($hash)
     {  
@@ -210,11 +266,15 @@ class FSPdf
 
         $this->_app->stop();
     }
-    
+
+
     /**
-     * DELETE DeletePdf
+     * Deletes a PDF file.
      *
-     * @param $hash (description)
+     * Called when this component receives an HTTP DELETE request to
+     * /file/$hash.
+     *
+     * @param string $hash The hash of the file which should be deleted.
      */
     public function deletePdf($hash)
     {
@@ -239,12 +299,13 @@ class FSPdf
         }
         $this->_app->stop();  
     }
-    
+
+
     /**
-     * (description)
+     * Creates a file path by splitting the hash.
      *
-     * @param $type (description)
-     * @param $file (description)
+     * @param string $type The prefix of the file path.
+     * @param string $hash The hash of the file.
      */
     public static function generateFilePath($type,$file)
     {
@@ -253,11 +314,12 @@ class FSPdf
        } else
            return "";
     }
-    
+
+
     /**
-     * (description)
+     * Creates the path in the filesystem, if necessary.
      *
-     * @param $path (description)
+     * @param string[] $path The path which should be created.
      */
     public static function generatepath($path)
     {
