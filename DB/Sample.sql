@@ -40,11 +40,10 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `uebungsplattform`;
-INSERT INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`, `U_oldUsername`, `U_salt`, `U_failed_logins`) VALUES (4, 'till', 'till@email.de', 'Uhlig', 'Till', NULL, 'test', 1, NULL, NULL, 0);
-INSERT INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`, `U_oldUsername`, `U_salt`, `U_failed_logins`) VALUES (2, 'lisa', 'lisa@email.de', 'Dietrich', 'Lisa', NULL, 'test', 1, NULL, NULL, 0);
-INSERT INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`, `U_oldUsername`, `U_salt`, `U_failed_logins`) VALUES (3, 'joerg', 'joerg@email.de', 'Baumgarten', 'Joerg', NULL, 'test', 1, NULL, NULL, 0);
-INSERT INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`, `U_oldUsername`, `U_salt`, `U_failed_logins`) VALUES (1, 'super-admin', NULL, NULL, NULL, NULL, 'test', 1, NULL, NULL, 0);
-
+INSERT INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`,  `U_salt`, `U_failed_logins`) VALUES (4, 'till', 'till@email.de', 'Uhlig', 'Till', NULL, '8a781bfbb17a5e4b03b812c33317931308a2996a69eb4f3e6e857e030f0687e8', 1,  'd2cfb5d8f16b22708fa145871a74bf1e0aaa96ef', 0);
+INSERT INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`,  `U_salt`, `U_failed_logins`) VALUES (2, 'lisa', 'lisa@email.de', 'Dietrich', 'Lisa', NULL, '8a781bfbb17a5e4b03b812c33317931308a2996a69eb4f3e6e857e030f0687e8', 1,  'd2cfb5d8f16b22708fa145871a74bf1e0aaa96ef', 0);
+INSERT INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`,  `U_salt`, `U_failed_logins`) VALUES (3, 'joerg', 'joerg@email.de', 'Baumgarten', 'Joerg', NULL, 'test', 1,  NULL, 0);
+INSERT INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`, `U_salt`, `U_failed_logins`) VALUES (1, 'super-admin', NULL, NULL, NULL, NULL, 'test', 1, null, 0);
 COMMIT;
 
 
