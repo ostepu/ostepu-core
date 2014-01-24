@@ -13,8 +13,10 @@ include_once( 'Include/Structures.php' );
 
 \Slim\Slim::registerAutoloader();
 
+// runs the CConfig
 $com = new CConfig(FSFile::getBaseDir());
 
+// runs the FSFile
 if (!$com->used())
     new FSFile($com->loadConfig());
 
@@ -49,8 +51,19 @@ class FSFile
         FSFile::$_baseDir = $value;
     }
     
+    /**
+     * @var Slim $_app the slim object
+     */
     private $_app;
+    
+    /**
+     * @var Component $_conf the component data object
+     */ 
     private $_conf;
+    
+    /**
+     * @var Link[] $_fs links to components which work with files, e.g. FSBinder
+     */ 
     private $_fs = array();
 
 
@@ -250,7 +263,7 @@ class FSFile
     /**
      * Creates the path in the filesystem, if necessary.
      *
-     * @param string[] $path The path which should be created.
+     * @param string $path The path which should be created.
      */
     public static function generatepath($path)
     {
@@ -297,15 +310,21 @@ class FSFile
      * @param string $_relevantBegin The minimum hash the component is responsible for.
      * @param string $_relevantEnd The maximum hash the component is responsible for.
      */
-    public static function isRelevant($hash,$_relevantBegin,$_relevantEnd){
-        $begin = hexdec(substr($_relevantBegin,0,strlen($_relevantBegin)));
-        $end = hexdec(substr($_relevantEnd,0,strlen($_relevantEnd)));
-        $current = hexdec(substr($hash,0,strlen($_relevantEnd)));
+    public static function isRelevant($hash,$relevant_begin,$relevant_end)
+    {
+        // to compare the begin and the end, we need an other form
+        $begin = hexdec(substr($relevant_begin,0,strlen($relevant_begin)));
+        $end = hexdec(substr($relevant_end,0,strlen($relevant_end)));
+        
+        // the numeric form of the test hash
+        $current = hexdec(substr($hash,0,strlen($relevant_end)));
+        
         if ($current>=$begin && $current<=$end){
             return true;
-        } else
-            return false;  
-    }
+        }
+        else
+            return false;
+    }  
   
 }
 

@@ -1,6 +1,8 @@
 <?php
 /**
  * @file CControl.php contains the CControl class
+ *
+ * @author Till Uhlig
  * @example DB/CControl/LinkSample.json
  * @example DB/CControl/ComponentSample.json
  */ 
@@ -20,7 +22,7 @@ new CControl();
 /**
  * A class, to abstract the "Component" and "ComponentLinkage" table from database
  *
- * @author Till Uhlig
+
  */
 class CControl
 {

@@ -45,8 +45,10 @@ class FSControl extends Controller
 
 \Slim\Slim::registerAutoloader();
 
+// runs the CConfig
 $com = new CConfig(FSControl::getPrefix()); 
 
+// runs the FSControl
 if (!$com->used())
     new FSControl($com->loadConfig());
 ?>

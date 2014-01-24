@@ -71,7 +71,7 @@ class FSZip
     private $getFile = array();
     
     /**
-     * @var Link $_fs a link to components which work with files, e.g. FSBinder
+     * @var Link[] $_fs links to components which work with files, e.g. FSBinder
      */ 
     private $_fs = array();
 
@@ -330,7 +330,7 @@ class FSZip
     /**
      * Creates the path in the filesystem, if necessary.
      *
-     * @param string[] $path The path which should be created.
+     * @param string $path The path which should be created.
      */
     public static function generatepath($path){
         $parts = explode("/", $path);

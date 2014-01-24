@@ -12,8 +12,10 @@ include_once( 'Include/Structures.php' );
 
 \Slim\Slim::registerAutoloader();
 
+// runs the CConfig
 $com = new CConfig("");
 
+// runs the FSBinder
 if (!$com->used())
     new FSBinder();
 
@@ -22,18 +24,36 @@ if (!$com->used())
  */
 class FSBinder
 {
+    /**
+     * @var string $_baseDir the name of the folder where the files would be
+     * stored in filesystem
+     */
     private static $_baseDir = "files";
+    
+    /**
+     * the $_baseDir getter
+     *
+     * @return the value of $_baseDir
+     */
     public static function getBaseDir()
     {
         return FSBinder::$_baseDir;
     }
+    
+    /**
+     * the $_baseDir setter
+     *
+     * @param string $value the new value for $_baseDir
+     */ 
     public static function setBaseDir($value)
     {
         FSBinder::$_baseDir = $value;
     }
     
+    /**
+     * @var Slim $_app the slim object
+     */
     private $_app;
-    private $_conf;
 
 
     /**
@@ -44,8 +64,8 @@ class FSBinder
      */
     public function __construct()
     {
+        // initialize slim
         $this->_app = new \Slim\Slim();
-
         $this->_app->response->headers->set('Content-Type', 'application/json');
         
         // POST file
@@ -77,20 +97,32 @@ class FSBinder
      */
     public function postFile($path)
     { 
+        // if no path is passed, the request is invalid
+        if (count($path)==0){
+            $this->_app->response->setStatus(409);
+            $this->_app->stop();
+            return;
+        }
+        
         $body = $this->_app->request->getBody();
         $fileobject = File::decodeFile($body);
             
         $filePath = FSBinder::$_baseDir."/".implode("/",array_slice ($path,0));
         FSBinder::generatepath(dirname($filePath));
             
+        // writes the file to filesystem
         $file = fopen($filePath,"w");
         fwrite($file, base64_decode($fileobject->getBody()));
         fclose($file);
 
+        // resets the file content
         $fileobject->setBody(null);
+        
+        // generate new file address, file size and file hash
         $fileobject->setAddress(FSBinder::$_baseDir."/".$filePath);
         $fileobject->setFileSize(filesize($filePath));
         $fileobject->setHash(sha1_file($filePath));
+        
         $this->_app->response->setBody(File::encodeFile($fileobject));
         $this->_app->response->setStatus(201);
     }
@@ -106,6 +138,7 @@ class FSBinder
      */
     public function getFile($path)
     {      
+        // if no path is passed, the request is invalid
         if (count($path)==0){
             $this->_app->response->setStatus(409);
             $this->_app->stop();
@@ -115,6 +148,7 @@ class FSBinder
         $filePath = FSBinder::$_baseDir . $this->_app->request->getResourceUri();
         
         if (strlen($filePath)>0 && file_exists($filePath)){
+           // the file was found
            $this->_app->response->headers->set('Content-Type', 'application/octet-stream');
            $this->_app->response->setStatus(200);
            readfile($filePath);
@@ -136,6 +170,7 @@ class FSBinder
      */
     public function infoFile($path)
     { 
+        // if no path is passed, the request is invalid
         if (count($path)==0){
             $this->_app->response->setBody(File::encodeFile(new File()));
             $this->_app->response->setStatus(409);
@@ -146,6 +181,7 @@ class FSBinder
         $filePath = FSBinder::$_baseDir . $this->_app->request->getResourceUri();
         
         if (strlen($filePath)>0 && file_exists($filePath)){  
+            // the file was found
             $file = new File();
             $file->setAddress($filePath);
             $file->setFileSize(filesize($filePath));
@@ -171,26 +207,35 @@ class FSBinder
      */
     public function deleteFile($path)
     {
+        // if no path is passed, the request is invalid
         if (count($path)==0){
             $this->_app->response->setStatus(409);
             $this->_app->stop();
             return;
         }
         
+        // creates the path of the file in the file system
         $filePath = FSBinder::$_baseDir."/".implode("/",array_slice ($path,0));
                     
         if (strlen($filePath)>0 && file_exists($filePath)){ 
+        
+            // after the successful deletion, we want to return the file data
             $file = new File();
             $file->setAddress(FSBinder::$_baseDir."/".$filePath);
             $file->setFileSize(filesize($filePath));
             $file->setHash(sha1_file($filePath));
+            
+            // removes the file
             unlink($filePath);
+            
+            // the removing/unlink process failed, if the file still exists.
             if (file_exists($filePath)){
                 $this->_app->response->setStatus(452);
                 $this->_app->response->setBody(File::encodeFile(new File()));
                 $this->_app->stop();
             }
-                
+             
+            // the file is removed
             $this->_app->response->setBody(File::encodeFile($file));
             $this->_app->response->setStatus(252);
             $this->_app->stop();
@@ -206,7 +251,7 @@ class FSBinder
     /**
      * Creates the path in the filesystem, if necessary.
      *
-     * @param string[] $path The path which should be created.
+     * @param string $path The path which should be created.
      */
     public static function generatepath($path)
     {

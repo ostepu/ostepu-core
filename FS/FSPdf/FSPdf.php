@@ -63,7 +63,7 @@ class FSPdf
     private $_conf;
     
     /**
-     * @var Link $_fs a link to components which work with files, e.g. FSBinder
+     * @var Link[] $_fs links to components which work with files, e.g. FSBinder
      */ 
     private $_fs = array();
 
@@ -132,7 +132,8 @@ class FSPdf
         $pdf->AddPage();
         $pdf->Table($data, $orientation);
         
-        $result = $pdf->Output("test.pdf", "S");
+        // stores the pdf binary data to $result
+        $result = $pdf->Output("", "S");
         $fileObject = new File();
         $fileObject->setHash(sha1($body));
         $filePath = FSPdf::generateFilePath(FSPdf::getBaseDir(), $fileObject->getHash());
@@ -181,15 +182,15 @@ class FSPdf
             return;
         }
 
-        
         $pdf=new PDF($orientation, "mm", "A4");
         $pdf->SetAutoPageBreak(true);
  
         $pdf->SetFont('Courier', '', 10);
         $pdf->AddPage();
         $pdf->Table($data, $orientation);
-
-        $result = $pdf->Output("test.pdf", "S");
+        
+        // stores the pdf binary data to $result
+        $result = $pdf->Output("", "S");
         $this->_app->response->setStatus(200);
         $this->_app->response->headers->set('Content-Type', 'application/octet-stream');
         $this->_app->response->headers->set('Content-Disposition', "attachment; filename=\"$filename\"");
@@ -319,7 +320,7 @@ class FSPdf
     /**
      * Creates the path in the filesystem, if necessary.
      *
-     * @param string[] $path The path which should be created.
+     * @param string $path The path which should be created.
      */
     public static function generatepath($path)
     {
@@ -336,10 +337,12 @@ class FSPdf
     }  
     
     /**
-     * (description)
+     * Selects the components which are responsible for handling the file with
+     * the given hash.
      *
-     * @param $linkedComponents (description)
-     * @param $hash (description)
+     * @param link[] $linkedComponents An array of links to components which could 
+     * possibly handle the file.
+     * @param string $hash The hash of the file.
      */
     public static function filterRelevantLinks($linkedComponents, $hash)
     {
@@ -356,21 +359,27 @@ class FSPdf
     }
     
     /**
-     * (description)
+     * Decides if the given component is responsible for the specific hash.
      *
-     * @param $hash (description)
-     * @param $_relevantBegin (description)
-     * @param $_relevantEnd (description)
+     * @param string $hash The hash of the file.
+     * @param string $_relevantBegin The minimum hash the component is responsible for.
+     * @param string $_relevantEnd The maximum hash the component is responsible for.
      */
-    public static function isRelevant($hash,$_relevantBegin,$_relevantEnd){
-        $begin = hexdec(substr($_relevantBegin,0,strlen($_relevantBegin)));
-        $end = hexdec(substr($_relevantEnd,0,strlen($_relevantEnd)));
-        $current = hexdec(substr($hash,0,strlen($_relevantEnd)));
+    public static function isRelevant($hash,$relevant_begin,$relevant_end)
+    {
+        // to compare the begin and the end, we need an other form
+        $begin = hexdec(substr($relevant_begin,0,strlen($relevant_begin)));
+        $end = hexdec(substr($relevant_end,0,strlen($relevant_end)));
+        
+        // the numeric form of the test hash
+        $current = hexdec(substr($hash,0,strlen($relevant_end)));
+        
         if ($current>=$begin && $current<=$end){
             return true;
-        } else
-            return false;  
-    }
+        }
+        else
+            return false;
+    }  
 }
 
 ?>
