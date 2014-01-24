@@ -82,7 +82,16 @@ class Invitation extends Object implements JsonSerializable
         $this->sheet = $value;
     }
     
-    
+    /**
+     * Creates an Invitation object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $leaderId The id of the leader.
+     * @param string $memberId The id of a member.
+     * @param string $sheetId The id of the exercise sheet.
+     *
+     * @return an invitation object
+     */
     public function createInvitation($leaderId,$memberId,$sheetId)
     {
         return new Invitation(array('sheet' => $sheetId,

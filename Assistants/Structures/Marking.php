@@ -240,7 +240,22 @@ class Marking extends Object implements JsonSerializable
     }
     
     
-    
+    /**
+     * Creates an Marking object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $markingId The id of the marking.
+     * @param string $tutorId The id of the tutor(User).
+     * @param string $fileId The id of the file.
+     * @param string $submissionId The id of the submission.
+     * @param string $tutorComment The tutor comment.
+     * @param string $outstanding The outstanding flag.
+     * @param string $status The status flag.
+     * @param string $points The points.
+     * @param string $date The date.
+     *
+     * @return an marking object
+     */
     public function createMarking($markingId,$tutorId,$fileId,$submissionId,$tutorComment,
                                 $outstanding,$status,$points,$date)
     {

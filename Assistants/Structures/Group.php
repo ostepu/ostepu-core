@@ -85,7 +85,16 @@ class Group extends Object implements JsonSerializable
         $this->sheetId = $value;
     }
     
-    
+    /**
+     * Creates an Group object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $leaderId The id of the leader.
+     * @param string $memberId The id of a member.
+     * @param string $sheetId The id of the exercise sheet.
+     *
+     * @return an group object
+     */
     public function createGroup($leaderId,$memberId,$sheetId)
     {
         return new Group(array('sheetId' => $sheetId,

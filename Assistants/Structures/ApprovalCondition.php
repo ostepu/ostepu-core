@@ -109,7 +109,17 @@ class ApprovalCondition extends Object implements JsonSerializable
         $this->percentage = $value;
     }  
 
-    
+    /**
+     * Creates an ApprovalCondition object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $approvalConditionId The id of the approval condition.
+     * @param string $courseId The id of the course.
+     * @param string $exerciseTypeId The id of the exercise type.
+     * @param string $percentage the percentage
+     *
+     * @return an approval condition object.
+     */
     public function createApprovalCondition($approvalConditionId,$courseId,$exerciseTypeId,$percentage)
     {
         return new ApprovalCondition(array('id' => $approvalConditionId,
@@ -119,7 +129,9 @@ class ApprovalCondition extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * returns an mapping array to convert between database and structure
+     *
+     * @return the mapping array
      */
     public static function getDbConvert()
     {
@@ -132,7 +144,9 @@ class ApprovalCondition extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * converts an object to insert/update data
+     *
+     * @return a comma separated string e.g. "a=1,b=2"
      */
     public function getInsertData()
     {
@@ -150,7 +164,9 @@ class ApprovalCondition extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * returns a sting/string[] of the database primary key/keys
+     * 
+     * @return the primary key/keys
      */
     public static function getDbPrimaryKey()
     {
@@ -158,9 +174,9 @@ class ApprovalCondition extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the constructor
      * 
-     * @param $param (description)
+     * @param $data an assoc array with the object informations
      */
     public function __construct($data=array()) 
     {
@@ -172,9 +188,11 @@ class ApprovalCondition extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * encodes an object to json
      * 
-     * @param $param (description)
+     * @param $data the object
+     *
+     * @return the json encoded object
      */
     public static function encodeApprovalCondition($data)
     {
@@ -182,10 +200,13 @@ class ApprovalCondition extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * decodes $data to an object
      * 
-     * @param $param (description)
-     * @param $param (description)
+     * @param string $data json encoded data (decode=true) 
+     * or json decoded data (decode=false)
+     * @param bool $decode specifies whether the data must be decoded
+     *
+     * @return the object
      */
     public static function decodeApprovalCondition($data, $decode=true)
     {
@@ -206,6 +227,8 @@ class ApprovalCondition extends Object implements JsonSerializable
     
     /**
      * the json serialize function
+     *
+     * @return an array to serialize the object
      */
     public function jsonSerialize()
     {

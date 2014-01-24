@@ -226,7 +226,20 @@ class Exercise extends Object implements JsonSerializable
         $this->bonus = $value;
     }
     
-    
+    /**
+     * Creates an Exercise object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $exerciseId The id of the exercise.
+     * @param string $courseId The id of the course. (do not use!)
+     * @param string $sheetId The id of the exercise sheet.
+     * @param string $maxPoints the max points
+     * @param string $type the id of the exercise type
+     * @param string $link the id of the exercise, this exercise belongs to
+     * @param string $bonus the bonus flag
+     *
+     * @return an exercise object
+     */
     public function createExercise($exerciseId,$courseId,$sheetId,
                                     $maxPoints,$type,$link,$bonus)
     {

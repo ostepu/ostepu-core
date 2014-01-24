@@ -63,7 +63,15 @@ class Session extends Object implements JsonSerializable
         $this->session = $value;
     }
    
-   
+    /**
+     * Creates an Session object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $userId The id of the user.
+     * @param string $sessionId The id of the session.
+     *
+     * @return an session object
+     */
     public function createSession($userId,$sessionId)
     {
         return new Session(array('user' => $userId,

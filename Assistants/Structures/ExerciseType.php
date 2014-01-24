@@ -66,7 +66,15 @@ class ExerciseType extends Object implements JsonSerializable
         $this->name = $value;
     }
     
-    
+    /**
+     * Creates an ExerciseType object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $typeid The id of the exercise type.
+     * @param string $name The name of the exercise type.
+     *
+     * @return an exercise type object
+     */
     public function createExerciseType($typeid,$name)
     {
         return new ExerciseType(array('id' => $typeid,

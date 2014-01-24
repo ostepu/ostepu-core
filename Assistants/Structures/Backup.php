@@ -82,7 +82,16 @@ class Backup extends Object implements JsonSerializable
         $this->file = $value;
     }
     
-    
+    /**
+     * Creates an Backup object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $backupId The id of the backup.
+     * @param string $date The date.
+     * @param string $fileId The id of the backup file.
+     *
+     * @return an backup object
+     */
     public function createBackup($backupId,$date,$fileId)
     {
         return new Backup(array('id' => $backupId,

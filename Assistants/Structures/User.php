@@ -320,7 +320,23 @@ class User extends Object implements JsonSerializable
     
     
     
-    
+    /**
+     * Creates an User object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $userId The id of the user.
+     * @param string $userName The user name.
+     * @param string $email The email address.
+     * @param string $firstName The first name.
+     * @param string $lastName The last name.
+     * @param string $title The title.
+     * @param string $flag The user flag.
+     * @param string $password The password hash.
+     * @param string $salt The password salt.
+     * @param string $failedLogins The failed logins counter.
+     *
+     * @return an user object
+     */
     public function createUser($userId,$userName,$email,$firstName,$lastName,
                                 $title,$flag,$password,$salt,$failedLogins)
     {
@@ -336,6 +352,16 @@ class User extends Object implements JsonSerializable
         'failedLogins' => $failedLogins));
     }
     
+    /**
+     * Creates an CourseStatus object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $userId The id of the user.
+     * @param string $courseId The id of the course.
+     * @param string $status The status.
+     *
+     * @return an course status object
+     */
     public function createCourseStatus($userId,$courseId,$status)
     {
         return new User(array('id' => $userId,

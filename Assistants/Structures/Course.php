@@ -148,7 +148,17 @@ class Course extends Object implements JsonSerializable
     }
     
     
-    
+    /**
+     * Creates an Course object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $courseId The id of the course.
+     * @param string $name The course name.
+     * @param string $semester The semester.
+     * @param string $defaultGroupSize The default group size.
+     *
+     * @return an course object
+     */
     public function createCourse($courseId,$name,$semester,$defaultGroupSize)
     {
         return new Course(array('id' => $courseId,

@@ -65,7 +65,15 @@ class ExternalId extends Object implements JsonSerializable
         $this->course = $value;
     }
     
-    
+    /**
+     * Creates an ExternalId object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $externalId The id of the external id .
+     * @param string $courseId The id of the course.
+     *
+     * @return an external id object
+     */
     public function createExternalId($externalId,$courseId)
     {
         return new ExternalId(array('id' => $externalId,
