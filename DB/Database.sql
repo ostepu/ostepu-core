@@ -1032,7 +1032,7 @@ CREATE TRIGGER `Session_AINS` AFTER INSERT ON `Session` FOR EACH ROW
 @author Lisa*/
 begin
 update user
-set U_failedLogins = 0
+set U_failed_logins = 0
 where U_id = NEW.U_id;
 end;$$
 
