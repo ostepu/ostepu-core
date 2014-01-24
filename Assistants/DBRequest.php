@@ -1,13 +1,13 @@
 <?php
 /**
  * @file DBRequest.php contains the DBRequest class
+ *
+ * @author Till Uhlig
  */ 
 include_once( 'Structures.php' );
 
 /**
  * the class provides functions for database queries
- *
- * @author Till Uhlig
  */
 class DBRequest
 {
@@ -39,8 +39,10 @@ class DBRequest
 
         $currentTime = $_SERVER['REQUEST_TIME'];
         
-        //$checkSession = false;
         // check session
+        // $checkSession = false; // remove the comment this line to disable the session examination
+
+        // Storing whether or not a session condition is not satisfied
         $sessionFail = false;
         if ($checkSession === true){
             Logger::Log("starts session validation",LogLevel::DEBUG);
@@ -65,6 +67,7 @@ class DBRequest
                 $sessionFail = true;
         }
         
+        // if a condition is not met, the request is invalid
         if ($sessionFail == true){
             $query_result['content'] = "";
             $query_result['errno'] = 401;
