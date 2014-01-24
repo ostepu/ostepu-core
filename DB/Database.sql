@@ -611,11 +611,23 @@ DELIMITER ;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+-- -----------------------------------------------------
+-- Data for table `uebungsplattform`.`User`
+-- -----------------------------------------------------
+START TRANSACTION;
+USE `uebungsplattform`;
+INSERT INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`, `U_salt`, `U_failed_logins`) VALUES (1, 'super-admin', NULL, NULL, NULL, NULL, '8a781bfbb17a5e4b03b812c33317931308a2996a69eb4f3e6e857e030f0687e8', 1, 'd2cfb5d8f16b22708fa145871a74bf1e0aaa96ef', 0);
+
+COMMIT;
+
 USE `uebungsplattform`;
 
 DELIMITER $$
 USE `uebungsplattform`$$
 CREATE TRIGGER `Course_BDEL` BEFORE DELETE ON `Course` FOR EACH ROW
+/*delete corresponding data
+author Lisa Dietrich*/
 BEGIN
 DELETE FROM `CourseStatus` WHERE C_id = OLD.C_id;
 DELETE FROM `ExternalId` WHERE C_id = OLD.C_id;
@@ -626,6 +638,8 @@ $$
 
 USE `uebungsplattform`$$
 CREATE TRIGGER `File_ADEL` AFTER DELETE ON `File` FOR EACH ROW
+/* insert fileaddress into removableFiles
+@author Lisa*/
 begin
 insert IGNORE into RemovableFiles 
 set F_address = OLD.F_address;
@@ -634,11 +648,16 @@ $$
 
 USE `uebungsplattform`$$
 CREATE TRIGGER `File_AINS` AFTER INSERT ON `File` FOR EACH ROW
+/*delete from removableFiles if address exists
+@author Lisa*/
 Delete From RemovableFiles where F_address = NEW.F_address
 $$
 
 USE `uebungsplattform`$$
 CREATE TRIGGER `User_BUPD` BEFORE UPDATE ON `User` FOR EACH ROW
+/*delete from user
+@just keep id, username and flag
+@author Till*/
 begin
 /*if (not New.U_flag is null and New.U_flag = OLD.U_flag) then
 SIGNAL sqlstate '45001' set message_text = "no flag change";
@@ -657,6 +676,8 @@ $$
 
 USE `uebungsplattform`$$
 CREATE TRIGGER `User_AUPD` AFTER UPDATE ON `User` FOR EACH ROW
+/*if user is inactiv or deleted delete session
+@author Lisa Dietrich */
 begin
 If NEW.U_flag != 1
 then delete from `session` where NEW.U_id = U_id;
@@ -664,7 +685,19 @@ end if;
 end;$$
 
 USE `uebungsplattform`$$
+CREATE TRIGGER `User_ADEL` AFTER DELETE ON `User` FOR EACH ROW
+/* delete corresponding groups
+*maybe replace it in After Update if U_flag = 0
+@author Lisa Dietrich*/
+begin
+delete from `group` 
+where U_id_member = (Select U_id_member from `group` where U_id_leader = OLD.U_id);
+end;$$
+
+USE `uebungsplattform`$$
 CREATE TRIGGER `ExerciseSheet_BDEL` BEFORE DELETE ON `ExerciseSheet` FOR EACH ROW
+/*delete corresponding data
+@author Lisa*/
 BEGIN
 DELETE IGNORE FROM `File` WHERE F_id = OLD.F_id_file or F_id = OLD.F_id_sampleSolution;
 DELETE FROM `Invitation` WHERE ES_id = OLD.ES_id;
@@ -674,17 +707,21 @@ END;$$
 
 USE `uebungsplattform`$$
 CREATE TRIGGER `ExerciseSheet_AINS` AFTER INSERT ON `ExerciseSheet` FOR EACH ROW
+/*insert new group for every exerciseSheet
+@author Lisa*/
 begin
 INSERT INTO `Group` 
 SELECT C.U_id , C.U_id , null , NEW.ES_id 
 FROM CourseStatus C
-WHERE C.C_id = NEW.C_id; 
-#AND C.CS_status = 1 ;
+WHERE C.C_id = NEW.C_id and C.CS_status = 0 ;
 end;
 $$
 
 USE `uebungsplattform`$$
 CREATE TRIGGER `ExerciseSheet_BINS` BEFORE INSERT ON `ExerciseSheet` FOR EACH ROW
+/*check if groupsize exists
+@if not take default groupsize from course
+@author Lisa*/
 begin
 IF NEW.ES_groupSize is null 
 then Set NEW.ES_groupSize = (SELECT C_defaultGroupSize FROM Course WHERE C_id = NEW.C_id limit 1);
@@ -693,6 +730,9 @@ end;$$
 
 USE `uebungsplattform`$$
 CREATE TRIGGER `Group_BINS` BEFORE INSERT ON `Group` FOR EACH ROW
+/*check if corresponding exerciseSheet exists
+@if not send error message
+@author Lisa*/
 BEGIN
 SET NEW.C_id = (select ES.C_id from ExerciseSheet ES where ES.ES_id = NEW.ES_id limit 1);
 if (NEW.C_id = NULL) then
@@ -702,15 +742,37 @@ END;$$
 
 USE `uebungsplattform`$$
 CREATE TRIGGER `Group_BUPD` BEFORE UPDATE ON `Group` FOR EACH ROW
+/*check if corresponding exerciseSheet exists
+*and if invitation exists
+*if not send error message
+@author Lisa Dietrich*/
 BEGIN
 SET NEW.C_id = (select ES.C_id from ExerciseSheet ES where ES.ES_id = NEW.ES_id limit 1);
 if (NEW.C_id = NULL) then
 SIGNAL sqlstate '45001' set message_text = "no corresponding exercisesheet";
 END if;
+if not exists (Select * from Invitation where U_id_member = NEW.U_id_member and U_id_leader = NEW.U_id_leader and ES_id = NEW.ES_id limit 1)
+then SIGNAL sqlstate '45001' set message_text = "corresponding ivitation does not exist";
+end if;
 END;$$
 
 USE `uebungsplattform`$$
+CREATE TRIGGER `Group_BDEL` BEFORE DELETE ON `Group` FOR EACH ROW
+/* check if all users in this group are deleted
+@author Lisa Dietrich*/
+begin
+if exists (Select U_id from user where U_id = OLD.U_id_leader AND U_flag = 1 limit 1)
+then signal  sqlstate '45001' set message_text = "active users in group";
+else delete from Submission
+where U_id = OLD.U_id_leader;
+end if;
+end;$$
+
+USE `uebungsplattform`$$
 CREATE TRIGGER `Invitation_BINS` BEFORE INSERT ON `Invitation` FOR EACH ROW
+/*check if maximal groupsize is reached
+@if not insert into invitation
+@author Lisa*/
 begin
 if ((SELECT COUNT(G.U_id_leader) FROM `Group` G WHERE G.U_id_member = NEW.U_id_member AND G.ES_id = NEW.ES_id)+(SELECT COUNT(U_id_member) FROM Invitation WHERE U_id_member = NEW.U_id_member AND ES_id = NEW.ES_id))>=(SELECT E.ES_groupSize FROM ExerciseSheet E WHERE E.ES_id = NEW.ES_id) 
 then SIGNAL sqlstate '45001' set message_text = "maximal groupsize reached";
@@ -719,6 +781,8 @@ end;$$
 
 USE `uebungsplattform`$$
 CREATE TRIGGER `ExerciseType_BDEL` BEFORE DELETE ON `ExerciseType` FOR EACH ROW
+/* delete corresponding data
+@author Till*/
 BEGIN
 DELETE FROM `Exercise` WHERE ET_id = OLD.ET_id;
 DELETE FROM `ApprovalCondition` WHERE ET_id = OLD.ET_id;
@@ -727,6 +791,8 @@ $$
 
 USE `uebungsplattform`$$
 CREATE TRIGGER `Exercise_BDEL` BEFORE DELETE ON `Exercise` FOR EACH ROW
+/*delete corresponding data
+author Till*/
 BEGIN
 DELETE FROM `Attachment` WHERE E_id = OLD.E_id;
 DELETE FROM `SelectedSubmission` WHERE E_id = OLD.E_id;
@@ -737,6 +803,9 @@ $$
 
 USE `uebungsplattform`$$
 CREATE TRIGGER `Exercise_BINS` BEFORE INSERT ON `Exercise` FOR EACH ROW
+/*check if corresponding exerciseSheet exists
+@if not send error message_text
+@author Lisa*/
 BEGIN
 SET NEW.C_id = (select ES.C_id from ExerciseSheet ES where ES.ES_id = NEW.ES_id limit 1);
 if (NEW.C_id = NULL) then
@@ -746,6 +815,9 @@ END;$$
 
 USE `uebungsplattform`$$
 CREATE TRIGGER `Exercise_BUPD` BEFORE UPDATE ON `Exercise` FOR EACH ROW
+/* check if corresponding exerciseSheet exists
+@if not send error message
+@author Lisa*/
 BEGIN
 SET NEW.C_id = (select ES.C_id from ExerciseSheet ES where ES.ES_id = NEW.ES_id limit 1);
 if (NEW.C_id = NULL) then
@@ -755,12 +827,13 @@ END;$$
 
 USE `uebungsplattform`$$
 CREATE TRIGGER `Submission_BDEL` BEFORE DELETE ON `Submission` FOR EACH ROW
+/*check if this submission is selected and replace 
+@author Till, edited by Lisa Dietrich*/
 begin
 Delete From `Marking` where S_id = OLD.S_id;
 Delete ignore from `File` where OLD.F_id_file = F_id;
-/*
-if exists(select * from SelectedSubmission where S_id_selected = OLD.S_id) 
-and 
+if not exists(select * from SelectedSubmission where S_id_selected = OLD.S_id) 
+/*and 
 exists(
 select 
     S2.S_id
@@ -778,7 +851,10 @@ group by S2.S_id
 order by S2.S_date desc
 limit 1
 )
-then 
+*/
+then
+
+/* 
 
 update SelectedSubmission
 set S_id_selected = 
@@ -806,13 +882,16 @@ else*/
 delete from `SelectedSubmission` where S_id_selected = OLD.S_id;
 
 
-#end if;
+end if;
 
 end;
 $$
 
 USE `uebungsplattform`$$
 CREATE TRIGGER `Submission_BINS` BEFORE INSERT ON `Submission` FOR EACH ROW
+/*check if corresponding exerciseSheet exists
+@if not send error message
+@author Lisa*/
 BEGIN
 SET NEW.ES_id = (select E.ES_id from Exercise E where E.E_id = NEW.E_id limit 1);
 if (NEW.ES_id = NULL) then
@@ -822,6 +901,9 @@ END;$$
 
 USE `uebungsplattform`$$
 CREATE TRIGGER `Submission_BUPD` BEFORE UPDATE ON `Submission` FOR EACH ROW
+/*check if corresponding exerciseSheet exists
+@if not send error message
+@author Lisa*/
 BEGIN
 SET NEW.ES_id = (select E.ES_id from Exercise E where E.E_id = NEW.E_id limit 1);
 if (NEW.ES_id = NULL) then
@@ -831,6 +913,9 @@ END;$$
 
 USE `uebungsplattform`$$
 CREATE TRIGGER `Marking_BINS` BEFORE INSERT ON `Marking` FOR EACH ROW
+/*check if corresponding submission exists
+@if not send error message
+@author Lisa*/
 BEGIN
 SET NEW.E_id = (select S.E_id from Submission S where S.S_id = NEW.S_id limit 1);
 if (NEW.E_id = NULL) then
@@ -845,6 +930,9 @@ END;$$
 
 USE `uebungsplattform`$$
 CREATE TRIGGER `Marking_BUPD` BEFORE UPDATE ON `Marking` FOR EACH ROW
+/*check if corresponding submission exists
+@if not send error message
+@author Lisa*/
 BEGIN
 SET NEW.E_id = (select S.E_id from Submission S where S.S_id = NEW.S_id limit 1);
 if (NEW.E_id = NULL) then
@@ -858,12 +946,26 @@ END if;
 END;$$
 
 USE `uebungsplattform`$$
+CREATE TRIGGER `Marking_BDEL` BEFORE DELETE ON `Marking` FOR EACH ROW
+/* delete corresponding file
+@author Lisa*/
+begin
+delete from `file`where F_id = OLD.F_id_file;
+end; $$
+
+USE `uebungsplattform`$$
 CREATE TRIGGER `Attachment_ADEL` AFTER DELETE ON `Attachment` FOR EACH ROW
-Delete IGNORE From File where F_id = OLD.F_id;
-$$
+/*delete corresponding data
+author Till*/
+begin
+Delete IGNORE From `File` where F_id = OLD.F_id;
+end;$$
 
 USE `uebungsplattform`$$
 CREATE TRIGGER `Attachment_BINS` BEFORE INSERT ON `Attachment` FOR EACH ROW
+/*check if corresponding exercise exists
+if not send error message
+author Lisa*/
 BEGIN
 SET NEW.ES_id = (select E.ES_id from Exercise E where E.E_id = NEW.E_id limit 1);
 if (NEW.ES_id = NULL) then
@@ -873,6 +975,9 @@ END;$$
 
 USE `uebungsplattform`$$
 CREATE TRIGGER `Attachment_BUPD` BEFORE UPDATE ON `Attachment` FOR EACH ROW
+/*check if corresponding exercise exists
+if not send error message
+author Lisa*/
 BEGIN
 SET NEW.ES_id = (select E.ES_id from Exercise E where E.E_id = NEW.E_id limit 1);
 if (NEW.ES_id = NULL) then
@@ -882,6 +987,9 @@ END;$$
 
 USE `uebungsplattform`$$
 CREATE TRIGGER `SelectedSubmission_BINS` BEFORE INSERT ON `SelectedSubmission` FOR EACH ROW
+/*check if corresponding exercise exists
+@if not send error message
+@author Lisa*/
 BEGIN
 SET NEW.ES_id = (select E.ES_id from Exercise E where E.E_id = NEW.E_id limit 1);
 if (NEW.ES_id = NULL) then
@@ -891,6 +999,9 @@ END;$$
 
 USE `uebungsplattform`$$
 CREATE TRIGGER `SelectedSubmission_BUPD` BEFORE UPDATE ON `SelectedSubmission` FOR EACH ROW
+/*check if corresponding exercise exists
+@if not send error message
+@author Lisa*/
 BEGIN
 SET NEW.ES_id = (select E.ES_id from Exercise E where E.E_id = NEW.E_id limit 1);
 if (NEW.ES_id = NULL) then
@@ -900,15 +1011,29 @@ END;$$
 
 USE `uebungsplattform`$$
 CREATE TRIGGER `deleteComponentLinks` BEFORE DELETE ON `Component` FOR EACH ROW
+/*delete corresponding componentlinkage
+author Till*/
 DELETE FROM ComponentLinkage WHERE CO_id_owner = OLD.CO_id or CO_id_target = OLD.CO_id;
 $$
 
 USE `uebungsplattform`$$
 CREATE TRIGGER `Session_BINS` BEFORE INSERT ON `Session` FOR EACH ROW
+/*check if user is inactive or deleted
+@author Lisa*/
 begin
 If (select U_flag from user where U_id = NEW.U_id limit 1) != 1
 then SIGNAL sqlstate '45001' set message_text = "user is inactive or deleted";
 end if;
+end;$$
+
+USE `uebungsplattform`$$
+CREATE TRIGGER `Session_AINS` AFTER INSERT ON `Session` FOR EACH ROW
+/* set U_failedLogins = 0
+@author Lisa*/
+begin
+update user
+set U_failedLogins = 0
+where U_id = NEW.U_id;
 end;$$
 
 
