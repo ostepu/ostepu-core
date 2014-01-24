@@ -1,7 +1,16 @@
 <?php
+/**
+ * @file DBMarkingTest.php contains the DBMarkingTest class
+ *
+ * @author Till Uhlig
+ */ 
+ 
 include_once( 'Include/Request.php' );
 include_once( 'Include/Structures.php' );
 
+/**
+ * A class, to test the DBMarking component
+ */
 class DBMarkingTest extends PHPUnit_Framework_TestCase
 {    
     private $url = "";

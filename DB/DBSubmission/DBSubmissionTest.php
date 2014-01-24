@@ -1,7 +1,16 @@
 <?php
+/**
+ * @file DBSubmissionTest.php contains the DBSubmissionTest class
+ *
+ * @author Till Uhlig
+ */
+ 
 include_once( 'Include/Request.php' );
 include_once( 'Include/Structures.php' );
 
+/**
+ * A class, to test the DBSubmission component
+ */
 class DBSubmissionTest extends PHPUnit_Framework_TestCase
 {   
     private $url = "";

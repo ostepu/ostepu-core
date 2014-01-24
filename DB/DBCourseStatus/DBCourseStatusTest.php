@@ -1,7 +1,16 @@
 <?php
+/**
+ * @file DBCourseStatusTest.php contains the DBCourseStatusTest class
+ *
+ * @author Till Uhlig
+ */ 
+ 
 include_once( 'Include/Request.php' );
 include_once( 'Include/Structures.php' );
 
+/**
+ * A class, to test the DBCourseStatus component
+ */
 class DBCourseStatusTest extends PHPUnit_Framework_TestCase
 {    
     private $url = "";

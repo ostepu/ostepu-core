@@ -1,7 +1,16 @@
 <?php
+/**
+ * @file DBSelectedSubmissionTest.php contains the DBSelectedSubmissionTest class
+ *
+ * @author Till Uhlig
+ */ 
+ 
 include_once( 'Include/Request.php' );
 include_once( 'Include/Structures.php' );
 
+/**
+ * A class, to test the DBSelectedSubmission component
+ */
 class DBSelectedSubmissionTest extends PHPUnit_Framework_TestCase
 {    
     private $url = "";

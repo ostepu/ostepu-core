@@ -1,7 +1,16 @@
 <?php
+/**
+ * @file DBExerciseTest.php contains the DBExerciseTest class
+ *
+ * @author Till Uhlig
+ */ 
+ 
 include_once( 'Include/Request.php' );
 include_once( 'Include/Structures.php' );
 
+/**
+ * A class, to test the DBExercise component
+ */
 class DBExerciseTest extends PHPUnit_Framework_TestCase
 {
     private $url = "";

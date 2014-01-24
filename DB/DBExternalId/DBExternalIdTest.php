@@ -1,7 +1,16 @@
 <?php
+/**
+ * @file DBExternalIdTest.php contains the DBExternalIdTest class
+ *
+ * @author Till Uhlig
+ */ 
+ 
 include_once( 'Include/Request.php' );
 include_once( 'Include/Structures.php' );
 
+/**
+ * A class, to test the DBExternalId component
+ */
 class DBExternalIdTest extends PHPUnit_Framework_TestCase
 {    
     private $url = "";

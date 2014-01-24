@@ -1,7 +1,16 @@
 <?php
+/**
+ * @file DBSessionTest.php contains the DBSessionTest class
+ *
+ * @author Till Uhlig
+ */
+ 
 include_once( 'Include/Request.php' );
 include_once( 'Include/Structures.php' );
 
+/**
+ * A class, to test the DBSession component
+ */
 class DBSessionTest extends PHPUnit_Framework_TestCase
 {    
     private $url = "";

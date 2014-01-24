@@ -1,7 +1,16 @@
 <?php
+/**
+ * @file DBApprovalConditionTest.php contains the DBApprovalConditionTest class
+ *
+ * @author Till Uhlig
+ */ 
+ 
 include_once( 'Include/Request.php' );
 include_once( 'Include/Structures.php' );
 
+/**
+ * A class, to test the DBApprovalCondition component
+ */
 class DBApprovalConditionTest extends PHPUnit_Framework_TestCase
 {   
     private $url = "";

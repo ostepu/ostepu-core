@@ -1,7 +1,16 @@
 <?php
+/**
+ * @file DBInvitationTest.php contains the DBInvitationTest class
+ *
+ * @author Till Uhlig
+ */ 
+ 
 include_once( 'Include/Request.php' );
 include_once( 'Include/Structures.php' );
 
+/**
+ * A class, to test the DBInvitation component
+ */
 class DBInvitationTest extends PHPUnit_Framework_TestCase
 {    
     private $url = "";

@@ -1,7 +1,16 @@
 <?php
+/**
+ * @file DBAttachmentTest.php contains the DBAttachmentTest class
+ *
+ * @author Till Uhlig
+ */ 
+ 
 include_once( 'Include/Request.php' );
 include_once( 'Include/Structures.php' );
 
+/**
+ * A class, to test the DBAttachment component
+ */
 class DBAttachmentTest extends PHPUnit_Framework_TestCase
 {    
     private $url = "";
