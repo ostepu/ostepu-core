@@ -1,6 +1,8 @@
 <?php
 /**
  * @file Controller.php contains the Controller class
+ *
+ * @author Till Uhlig
  */ 
  
 require_once('Include/Slim/Slim.php');
@@ -10,10 +12,8 @@ include_once('Include/Request.php');
 \Slim\Slim::registerAutoloader();
    
 /**
- * the Controller class represents a component, which routes incoming "restful"
+ * the Controller class represents a component, which routes incoming rest
  * requests to relevant components
- *
- * @author Till Uhlig
  */
 class Controller
 {

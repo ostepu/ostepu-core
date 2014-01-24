@@ -205,7 +205,19 @@ class File extends Object implements JsonSerializable
         $this->body = $value;
     }
     
-    
+    /**
+     * Creates an File object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $fileId The id of the file.
+     * @param string $displayName The display name.
+     * @param string $address The address.
+     * @param string $timeStamp The time stamp.
+     * @param string $fileSize The file size.
+     * @param string $hash The hash.
+     *
+     * @return an file object
+     */
     public function createFile($fileId,$displayName,$address,$timeStamp,$fileSize,$hash)
     {
         return new File(array('fileId' => $fileId,

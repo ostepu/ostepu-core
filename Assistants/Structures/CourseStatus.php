@@ -103,7 +103,7 @@ class CourseStatus extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * returns an array to get the course status defintions
      */
     public static function getStatusDefinition()
     {

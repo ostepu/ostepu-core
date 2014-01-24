@@ -82,7 +82,16 @@ class SelectedSubmission extends Object implements JsonSerializable
         $this->exerciseId = $value;
     }
 
-    
+    /**
+     * Creates an SelectedSubmission object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $leaderId The id of the leader(User).
+     * @param string $submissionId The id of the submission.
+     * @param string $exerciseId The id of the exercise.
+     *
+     * @return an selected submission object
+     */
     public function createSelectedSubmission($leaderId,$submissionId,$exerciseId)
     {
         return new SelectedSubmission(array('leaderId' => $leaderId,

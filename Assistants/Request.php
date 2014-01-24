@@ -1,6 +1,8 @@
 <?php
 /**
  * @file Request.php contains the Request class
+ *
+ * @author Till Uhlig
  */ 
 include_once( 'Request/CreateRequest.php' );   
 include_once( 'Request/MultiRequest.php' );   
@@ -8,8 +10,6 @@ include_once( 'Request/MultiRequest.php' );
 /**
  * the Request class offers functions to get results of POST,GET,PUT.DELETE and 
  * custom requests. Additional requests can be routed by using routeRequest().
- *
- * @author Till Uhlig
  */
 class Request
 {
@@ -66,15 +66,7 @@ class Request
         
         // splits the received header info, to create an entry 
         // in the $result['headers'] for each part of the header
-        /*$result['headers'] = array();
-        $head = explode("\r\n",substr($content, 0, $header_size));
-        foreach ($head as $k){
-            $value = split(": ",$k);
-            if (count($value)>=2){
-                $result['headers'][$value[0]] = $value[1];
-            }
-        }*/
-       $result['headers'] = Request::http_parse_headers(substr($content, 0, $header_size));
+        $result['headers'] = Request::http_parse_headers(substr($content, 0, $header_size));
 
         // seperates the content part
         $result['content'] = substr($content, $header_size);

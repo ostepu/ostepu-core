@@ -1,15 +1,15 @@
 <?php
-/**
-* @file CConfig.php contains the CConfig class
-*/ 
+ /**
+ * @file CConfig.php contains the CConfig class
+ *
+ * @author Till Uhlig
+ */ 
 include_once( 'Structures.php' );
 
 
 /**
  * this class is used to link components, to save new linkage data and to
  * retrieve linkage data
- *
- * @author Till Uhlig
  */
 class CConfig
 {

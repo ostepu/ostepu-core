@@ -194,7 +194,18 @@ class Link extends Object implements JsonSerializable
         $this->prefix = $value;
     }
    
-    
+    /**
+     * Creates an Link object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $id The id of the link.
+     * @param string $owner The id of the owner.
+     * @param string $target The id of the target.
+     * @param string $name The link name.
+     * @param string $relevanz The relevanz.
+     *
+     * @return an link object
+     */
     public function createLink($id,$owner,$target,$name,$relevanz)
     {
         return new Link(array('id' => $id,

@@ -83,14 +83,23 @@ class Attachment extends Object implements JsonSerializable
         $this->file = $value;
     }    
 
-    
+    /**
+     * Creates an Attachment object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $attachmentId The id of the attachment.
+     * @param string $exerciseId The id of the exercise.
+     * @param string $fileId The id of the fileId.
+     *
+     * @return an attachment object.
+     */
     public function createAttachment($attachmentId,$exerciseId,$fileId)
     {
         return new Attachment(array('id' => $attachmentId,
         'exerciseId' => $exerciseId,
         'file' => File::createFile($fileId,null,null,null,null,null)));
     }
-   // ('fileId' => $fileId)
+
     /**
      * returns an mapping array to convert between database and structure
      *

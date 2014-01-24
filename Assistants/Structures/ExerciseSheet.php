@@ -266,7 +266,21 @@ class ExerciseSheet extends Object implements JsonSerializable
         $this->sheetName = $value;
     }
     
-    
+    /**
+     * Creates an ExerciseSheet object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $sheetId The id of the exercise sheet.
+     * @param string $courseId The id of the course.
+     * @param string $endDate The end date.
+     * @param string $startDate the start date.
+     * @param string $groupSize the max group size.
+     * @param string $sampleSolutionId the file id of the sample solution.
+     * @param string $sheetFileId the file id of the sheet.
+     * @param string $sheetName a optional sheet name.
+     *
+     * @return an exercise sheet object
+     */
     public function createExerciseSheet($sheetId,$courseId,$endDate,$startDate,$groupSize,$sampleSolutionId,$sheetFileId,$sheetName)
     {
         return new ExerciseSheet(array('id' => $sheetId,

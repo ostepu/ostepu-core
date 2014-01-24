@@ -175,7 +175,17 @@ class Component extends Object implements JsonSerializable
         $this->links = $value;
     }
 
-
+    /**
+     * Creates an Component object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $id The id of the component.
+     * @param string $name The component name.
+     * @param string $address The address.
+     * @param string $option The options.
+     *
+     * @return an component object
+     */
     public function createComponent($id,$name,$address,$option)
     {
         return new Component(array('id' => $id,

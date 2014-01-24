@@ -260,6 +260,21 @@ class Submission extends Object implements JsonSerializable
         $this->flag = $value;
     }  
     
+    /**
+     * Creates an Submission object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $submissionId The id of the submission.
+     * @param string $studentId The id of the student(User).
+     * @param string $fileId The id of the file.
+     * @param string $exerciseId The id of the exercise.
+     * @param string $comment The student comment.
+     * @param string $accepted The accepted flag.
+     * @param string $date The storing date.
+     * @param string $flag The submission flag.
+     *
+     * @return an submission object
+     */
     public function createSubmission($submissionId,$studentId,$fileId,$exerciseId,$comment,$accepted,$date,$flag)
     {
         return new Submission(array('id' => $submissionId,

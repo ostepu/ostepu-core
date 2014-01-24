@@ -1,13 +1,13 @@
 <?php
-/**
-* @file DBJson.php contains the DBJson class
-*/ 
+ /**
+ * @file DBJson.php contains the DBJson class
+ *
+ * @author Till Uhlig
+ */ 
 
 
 /**
  * the DBJson class is written for several tasks, not only json tasks
- *
- * @author Till Uhlig
  */
 class DBJson
 {
