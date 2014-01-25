@@ -1,6 +1,10 @@
 <?php
 /**
  * @file DBInvitation.php contains the DBInvitation class
+ * 
+ * @author Till Uhlig
+ * @author Felix Schmidt
+ * @example DB/DBInvitation/InvitationSample.json
  */ 
 
 require_once( 'Include/Slim/Slim.php' );
@@ -22,8 +26,6 @@ if (!$com->used())
     
 /**
  * A class, to abstract the "ExerciseType" table from database
- *
- * @author Till Uhlig
  */
 class DBInvitation
 {
@@ -66,12 +68,16 @@ class DBInvitation
     {
         DBInvitation::$_prefix = $value;
     }
-    
+
+
     /**
-     * the component constructor
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to
+     * the functions.
      *
      * @param Component $conf component data
-     */ 
+     */
     public function __construct($conf)
     {
         // initialize component
@@ -84,42 +90,42 @@ class DBInvitation
 
         // PUT EditInvitation
         $this->_app->put('/' . $this->getPrefix() . 
-                        '/user/:userid/exercisesheet/:esid/user/:memberid',
+                        '/user/:userid/exercisesheet/:esid/user/:memberid(/)',
                         array($this,'editInvitation'));
         
         // DELETE DeleteInvitation
         $this->_app->delete('/' . $this->getPrefix() . 
-                            '/user/:userid/exercisesheet/:esid/user/:memberid',
+                            '/user/:userid/exercisesheet/:esid/user/:memberid(/)',
                             array($this,'deleteInvitation'));
         
-        // POST SetInvitation
-        $this->_app->post('/' . $this->getPrefix(),
-                         array($this,'setInvitation'));  
+        // POST AddInvitation
+        $this->_app->post('/' . $this->getPrefix() . '(/)',
+                         array($this,'addInvitation'));  
         
         // GET GetLeaderInvitations
-        $this->_app->get('/' . $this->getPrefix() . '/leader/user/:userid',
+        $this->_app->get('/' . $this->getPrefix() . '/leader/user/:userid(/)',
                         array($this,'getLeaderInvitations'));
         
         // GET GetMemberInvitations
-        $this->_app->get('/' . $this->getPrefix() . '/member/user/:userid',
+        $this->_app->get('/' . $this->getPrefix() . '/member/user/:userid(/)',
                         array($this,'getMemberInvitations'));
                         
         // GET GetAllInvitations
-        $this->_app->get('/' . $this->getPrefix() . '/invitation',
+        $this->_app->get('/' . $this->getPrefix() . '(/invitation)(/)',
                         array($this,'getAllInvitations')); 
                         
         // GET GetSheetLeaderInvitations 
         $this->_app->get('/' . $this->getPrefix() . 
-                        '/leader/exercisesheet/:esid/user/:userid',
+                        '/leader/exercisesheet/:esid/user/:userid(/)',
                         array($this,'getSheetLeaderInvitations'));  
                         
         // GET GetSheetMemberInvitations 
         $this->_app->get('/' . $this->getPrefix() . 
-                        '/member/exercisesheet/:esid/user/:userid',
+                        '/member/exercisesheet/:esid/user/:userid(/)',
                         array($this,'getSheetMemberInvitations'));
                         
         // GET GetSheetInvitations 
-        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid',
+        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid(/)',
                         array($this,'getSheetInvitations'));  
                         
         // starts slim only if the right prefix was received
@@ -130,13 +136,19 @@ class DBInvitation
             $this->_app->run();
         }
     }
-    
+
+
     /**
-     * PUT EditInvitation
+     * Edits an invitation.
      *
-     * @param int $userid a database user identifier
-     * @param int $esid a database exercise sheet identifier
-     * @param $memberid a database user identifier
+     * Called when this component receives an HTTP PUT request to
+     * /invitation/user/$userid/exercisesheet/$esid/user/$memberid(/)
+     * The request body should contain a JSON object representing the 
+     * invitations's new attributes.
+     *
+     * @param int $userid The id of the user that invites a new user.
+     * @param int $esid The id of the exercise sheet the group belongs to.
+     * @param int $memberid The id of the user that is invited.
      */
     public function editInvitation($userid,$esid,$memberid)
     {
@@ -175,18 +187,22 @@ class DBInvitation
                 
             } else{
                 Logger::Log("PUT EditInvitation failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
     }
-    
+
+
     /**
-     * DELETE DeleteInvitation
+     * Deletes an invitation.
      *
-     * @param int $userid a database user identifier
-     * @param int $esid a database exercise sheet identifier
-     * @param $memberid a database user identifier
+     * Called when this component receives an HTTP DELETE request to
+     * /invitation/user/$userid/exercisesheet/$esid/user/$memberid(/)
+     *
+     * @param int $userid The id of the user that invites a new user.
+     * @param int $esid The id of the exercise sheet the group belongs to.
+     * @param int $memberid The id of the user that is invited.
      */
     public function deleteInvitation($userid,$esid,$memberid)
     {
@@ -208,23 +224,29 @@ class DBInvitation
         // checks the correctness of the query                          
         if ($result['status']>=200 && $result['status']<=299){
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(201);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE DeleteInvitation failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * POST SetInvitation
+     * Adds an invitation.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /invitation(/).
+     * The request body should contain a JSON object representing the 
+     * invitations's attributes.
      */
-    public function SetInvitation()
+    public function addInvitation()
     {
-        Logger::Log("starts POST SetInvitation",LogLevel::DEBUG);
+        Logger::Log("starts POST AddInvitation",LogLevel::DEBUG);
         
         // decode the received invitation data, as an object
         $insert = Invitation::decodeInvitation($this->_app->request->getBody());
@@ -239,7 +261,7 @@ class DBInvitation
             
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
-                                            "Sql/SetInvitation.sql", 
+                                            "Sql/AddInvitation.sql", 
                                             array("values" => $data));                   
             
             // checks the correctness of the query 
@@ -250,15 +272,19 @@ class DBInvitation
                     $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
-                Logger::Log("POST SetInvitation failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                Logger::Log("POST AddInvitation failed",LogLevel::ERROR);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
     }
-    
+
+
     /**
-     * GET GetAllInvitations
+     * Returns all invitations.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /invitation(/) or /invitation/invitation(/).
      */
     public function getAllInvitations()
     {    
@@ -316,22 +342,26 @@ class DBInvitation
             
             $this->_app->response->setBody(Invitation::encodeInvitation($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetAllInvitations failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Invitation::encodeInvitation(new Invitation()));
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetLeaderInvitations
+     * Returns all invitations the user created.
      *
-     * @param int $userid a database user identifier
+     * Called when this component receives an HTTP GET request to
+     * /invitation/leader/user/$userid(/).
+     *
+     * @param int $userid The id of the user that created the returned invitations.
      */
     public function getLeaderInvitations($userid)
     {    
@@ -392,22 +422,26 @@ class DBInvitation
                 
             $this->_app->response->setBody(Invitation::encodeInvitation($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetLeaderInvitations failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Invitation::encodeInvitation(new Invitation()));
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetMemberInvitations
+     * Returns all invitations to which the user is invited to.
      *
-     * @param int $userid a database user identifier
+     * Called when this component receives an HTTP GET request to
+     * /invitation/member/user/$userid(/).
+     *
+     * @param int $userid The id of the user.
      */
     public function getMemberInvitations($userid)
     {    
@@ -469,23 +503,28 @@ class DBInvitation
                 
             $this->_app->response->setBody(Invitation::encodeInvitation($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetMemberInvitations failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Invitation::encodeInvitation(new Invitation()));
             $this->_app->stop();
         }
     }
-    
-   /**
-     * GET GetSheetLeaderInvitations
+
+
+    /**
+     * Returns all invitations the user created regarding a 
+     * specific exercise sheet.
      *
-     * @param int $esid a database exercise sheet identifier
-     * @param int $userid a database user identifier
+     * Called when this component receives an HTTP GET request to
+     * /invitation/leader/exercisesheet/$esid/user/$userid(/).
+     *
+     * @param int $esid The id of the exercise sheet.
+     * @param int $userid The id of the user that created the returned invitations.
      */
     public function getSheetLeaderInvitations($esid,$userid)
     {     
@@ -548,23 +587,28 @@ class DBInvitation
                 
             $this->_app->response->setBody(Invitation::encodeInvitation($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetSheetLeaderInvitations failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Invitation::encodeInvitation(new Invitation()));
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetSheetMemberInvitations
+     * Returns all invitations to which the user is invited to regarding a 
+     * specific exercise sheet.
      *
-     * @param int $esid a database exercise sheet identifier
-     * @param int $userid a database user identifier
+     * Called when this component receives an HTTP GET request to
+     * /invitation/member/exercisesheet/$esid/user/$userid(/).
+     *
+     * @param int $esid The id of the exercise sheet.
+     * @param int $userid The id of the user.
      */
     public function getSheetMemberInvitations($esid,$userid)
     {      
@@ -627,32 +671,34 @@ class DBInvitation
                 
             $this->_app->response->setBody(Invitation::encodeInvitation($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetSheetMemberInvitations failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Invitation::encodeInvitation(new Invitation()));
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetSheetInvitations
+     * Returns all invitations to a given exercise sheet.
      *
-     * @param int $esid a database exercise sheet identifier
-     * @param $user a database user identifier
+     * Called when this component receives an HTTP GET request to
+     * /invitation/member/exercisesheet/$esid/user/$userid(/).
+     *
+     * @param int $esid The id of the exercise sheet the invitations belong to.
      */
-    public function getSheetInvitations($esid,$userid)
+    public function getSheetInvitations($esid)
     {     
         Logger::Log("starts GET GetSheetInvitations",LogLevel::DEBUG);
         
         // checks whether incoming data has the correct data type
         DBJson::checkInput($this->_app, 
-                            ctype_digit($esid), 
-                            ctype_digit($userid));
+                            ctype_digit($esid));
                             
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
@@ -706,13 +752,13 @@ class DBInvitation
                 
             $this->_app->response->setBody(Invitation::encodeInvitation($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetSheetInvitations failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Invitation::encodeInvitation(new Invitation()));
             $this->_app->stop();
         }

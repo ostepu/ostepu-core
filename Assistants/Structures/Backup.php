@@ -13,14 +13,15 @@ class Backup extends Object implements JsonSerializable
     /**
      * @var string $id a unique identifier for a backup
      */
-    private $id;
+    private $id = null;
     
     /**
      * the $id getter
      *
      * @return the value of $id
      */ 
-    public function getId(){
+    public function getId()
+    {
         return $this->id;
     }
     
@@ -36,14 +37,15 @@ class Backup extends Object implements JsonSerializable
     /**
      * @var date $date the date on which the backup was created
      */
-    private $date;
+    private $date = null;
     
     /**
      * the $date getter
      *
      * @return the value of $date
      */ 
-    public function getDate(){
+    public function getDate()
+    {
         return $this->date;
     }
     
@@ -59,14 +61,15 @@ class Backup extends Object implements JsonSerializable
     /**
      * @var file $file a file where the backup is stored
      */
-    private $file;
+    private $file = null;
     
     /**
      * the $file getter
      *
      * @return the value of $file
      */ 
-    public function getFile(){
+    public function getFile()
+    {
         return $this->file;
     }
     
@@ -79,13 +82,30 @@ class Backup extends Object implements JsonSerializable
         $this->file = $value;
     }
     
+    /**
+     * Creates an Backup object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $backupId The id of the backup.
+     * @param string $date The date.
+     * @param string $fileId The id of the backup file.
+     *
+     * @return an backup object
+     */
+    public function createBackup($backupId,$date,$fileId)
+    {
+        return new Backup(array('id' => $backupId,
+        'date' => $date, 
+        'file' => array('fileId' => $fileId)));
+    }
     
     /**
      * returns an mapping array to convert between database and structure
      *
      * @return the mapping array
      */
-    public static function getDbConvert(){
+    public static function getDbConvert()
+    {
         return array(
            'B_id' => 'id',
            'B_date' => 'date',
@@ -98,7 +118,8 @@ class Backup extends Object implements JsonSerializable
      * 
      * @return the primary key/keys
      */
-    public static function getDbPrimaryKey(){
+    public static function getDbPrimaryKey()
+    {
         return 'B_id';
     }
    
@@ -136,7 +157,11 @@ class Backup extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeBackup($data){
+    public static function decodeBackup($data, $decode=true){
+        if ($decode && $data==null) 
+            $data = "{}";
+            
+        if ($decode)
         $data = json_decode($data);
         if (is_array($data)){
             $result = array();
@@ -154,11 +179,11 @@ class Backup extends Object implements JsonSerializable
      */
     public function jsonSerialize()
     {
-        return array(
-            'id' => $this->id,
-            'date' => $this->date,
-            'file' => $this->file
-        );
+        $list = array();
+        if ($this->id!==null) $list['id'] = $this->id;
+        if ($this->date!==null) $list['date'] = $this->date;
+        if ($this->file!==null) $list['file'] = $this->file;
+        return $list; 
     }
     
 }

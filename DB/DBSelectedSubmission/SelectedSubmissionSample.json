@@ -1,0 +1,18 @@
+/**
+ * @file SelectedSubmissionSample.json This file represents a valid JSON object of type SelectedSubmission for DBSelectedSubmission.
+ * 
+ * @author Till Uhlig
+ */ 
+ 
+    [
+       {
+           "leaderId": "1",
+           "submissionId": "2",
+           "exerciseId": "1"
+       },
+       {
+           "leaderId": "3",
+           "submissionId": "6",
+           "exerciseId": "2"
+       }
+    ]

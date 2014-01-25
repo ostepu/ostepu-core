@@ -2,7 +2,7 @@
  * @file DeleteMarking.sql
  * deletes a specified marking from %Marking table
  * @author  Till Uhlig
- * @param int $mid a %Marking identifier
+ * @param int \$mid a %Marking identifier
  * @result -
  */
  

@@ -2,8 +2,8 @@
  * @file GetGroupSubmissions.sql
  * gets the specified selected submissions from %Submission table
  * @author Till Uhlig
- * @param int $esid an %ExerciseSheet identifier
- * @param int $userid a %User identifier
+ * @param int \$esid an %ExerciseSheet identifier
+ * @param int \$userid a %User identifier
  * @result 
  * - F, the submission file
  * - S, the submission data
@@ -24,6 +24,7 @@ select
     S.S_date,
     SS.S_id_selected as S_selected,
     S.S_accepted,
+    S.S_flag,
     S.E_id
 from
     `Group` G

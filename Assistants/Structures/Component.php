@@ -175,8 +175,24 @@ class Component extends Object implements JsonSerializable
         $this->links = $value;
     }
 
-
-    
+    /**
+     * Creates an Component object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $id The id of the component.
+     * @param string $name The component name.
+     * @param string $address The address.
+     * @param string $option The options.
+     *
+     * @return an component object
+     */
+    public function createComponent($id,$name,$address,$option)
+    {
+        return new Component(array('id' => $id,
+        'name' => $name,
+        'address' => $address,
+        'option' => $option));
+    }
     
     /**
      * returns an mapping array to convert between database and structure
@@ -200,7 +216,8 @@ class Component extends Object implements JsonSerializable
      *
      * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData(){
+    public function getInsertData()
+    {
         $values = "";
         
         if ($this->id != null) $this->addInsertData($values, 'CO_id', DBJson::mysql_real_escape_string($this->id));
@@ -231,6 +248,9 @@ class Component extends Object implements JsonSerializable
      */
     public function __construct($data=array())
     {
+        if ($data==null)
+            $data = array();
+        
         foreach ($data AS $key => $value) {
             if (isset($key)){
                 if ($key == 'links') {
@@ -265,6 +285,9 @@ class Component extends Object implements JsonSerializable
      */
     public static function decodeComponent($data, $decode=true)
     {
+        if ($decode && $data==null) 
+            $data = "{}";
+    
         if ($decode)
             $data = json_decode($data);
             
@@ -283,14 +306,14 @@ class Component extends Object implements JsonSerializable
      */
     public function jsonSerialize() 
     {
-        return array(
-            'id' => $this->id,
-            'name' => $this->name,
-            'address' => $this->address,
-            'option' => $this->option,
-            'prefix' => $this->prefix,
-            'links' => $this->links
-        );
+        $list = array();
+        if ($this->id!==null) $list['id'] = $this->id;
+        if ($this->name!==null) $list['name'] = $this->name;
+        if ($this->address!==null) $list['address'] = $this->address;
+        if ($this->option!==null) $list['option'] = $this->option;
+        if ($this->prefix!==null) $list['prefix'] = $this->prefix;
+        if ($this->links!==array()) $list['links'] = $this->links;
+        return $list; 
     }
 
 }

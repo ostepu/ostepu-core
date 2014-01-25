@@ -15,14 +15,15 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $id;
+    private $id = null;
     
     /**
      * the $id getter
      *
      * @return the value of $id
      */ 
-    public function getId(){
+    public function getId()
+    {
         return $this->id;
     }
     
@@ -40,14 +41,15 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $courseId;
+    private $courseId = null;
     
     /**
      * the $courseId getter
      *
      * @return the value of $courseId
      */ 
-    public function getCourseId(){
+    public function getCourseId()
+    {
         return $this->courseId;
     }
     
@@ -65,14 +67,15 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * type: date
      */
-    private $endDate;
+    private $endDate = null;
     
     /**
      * the $endDate getter
      *
      * @return the value of $endDate
      */ 
-    public function getEndDate(){
+    public function getEndDate()
+    {
         return $this->endDate;
     }
     
@@ -90,14 +93,15 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * type: date
      */
-    private $startDate;
+    private $startDate = null;
     
     /**
      * the $startDate getter
      *
      * @return the value of $startDate
      */ 
-    public function getStartDate(){
+    public function getStartDate()
+    {
         return $this->startDate;
     }
     
@@ -116,14 +120,15 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * type: File
      */
-    private $zipFile;
+    private $zipFile = null;
     
     /**
      * the $zipFile getter
      *
      * @return the value of $id
      */ 
-    public function getZipFile(){
+    public function getZipFile()
+    {
         return $this->zipFile;
     }
     
@@ -141,14 +146,15 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * type: File
      */
-    private $sampleSolution;
+    private $sampleSolution = null;
     
     /**
      * the $sampleSolution getter
      *
      * @return the value of $sampleSolution
      */ 
-    public function getSampleSolution(){
+    public function getSampleSolution()
+    {
         return $this->sampleSolution;
     }
     
@@ -166,14 +172,15 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * type: File
      */
-    private $sheetFile;
+    private $sheetFile = null;
     
     /**
      * the $sheetFile getter
      *
      * @return the value of $sheetFile
      */ 
-    public function getSheetFile(){
+    public function getSheetFile()
+    {
         return $this->sheetFile;
     }
     
@@ -198,7 +205,8 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * @return the value of $exercises
      */ 
-    public function getExercises(){
+    public function getExercises()
+    {
         return $this->exercises;
     }
     
@@ -216,14 +224,15 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * type: int
      */
-    private $groupSize;
+    private $groupSize = null;
     
     /**
      * the $groupSize getter
      *
      * @return the value of $groupSize
      */ 
-    public function getGroupSize(){
+    public function getGroupSize()
+    {
         return $this->groupSize;
     }
     
@@ -236,14 +245,15 @@ class ExerciseSheet extends Object implements JsonSerializable
         $this->groupSize = $value;
     }
     
-    private $sheetName;
+    private $sheetName = null;
     
     /**
      * the $sheetName getter
      *
      * @return the value of $sheetName
      */ 
-    public function getSheetName(){
+    public function getSheetName()
+    {
         return $this->sheetName;
     }
     
@@ -256,8 +266,32 @@ class ExerciseSheet extends Object implements JsonSerializable
         $this->sheetName = $value;
     }
     
-    
-    
+    /**
+     * Creates an ExerciseSheet object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $sheetId The id of the exercise sheet.
+     * @param string $courseId The id of the course.
+     * @param string $endDate The end date.
+     * @param string $startDate the start date.
+     * @param string $groupSize the max group size.
+     * @param string $sampleSolutionId the file id of the sample solution.
+     * @param string $sheetFileId the file id of the sheet.
+     * @param string $sheetName a optional sheet name.
+     *
+     * @return an exercise sheet object
+     */
+    public function createExerciseSheet($sheetId,$courseId,$endDate,$startDate,$groupSize,$sampleSolutionId,$sheetFileId,$sheetName)
+    {
+        return new ExerciseSheet(array('id' => $sheetId,
+        'courseId' => $courseId,
+        'endDate' => $endDate, 
+        'startDate' => $startDate,
+        'groupSize' => $groupSize, 
+        'sheetName' => $sheetName, 
+        'sampleSolution' => new File(array('fileId' => $sampleSolutionId)),
+        'sheetFile' => new File(array('fileId' => $sheetFileId))));
+    }
     
     /**
      * returns an mapping array to convert between database and structure
@@ -285,7 +319,8 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData(){
+    public function getInsertData()
+    {
         $values = "";
         
         if ($this->id != null) $this->addInsertData($values, 'ES_id', DBJson::mysql_real_escape_string($this->id));
@@ -356,6 +391,9 @@ class ExerciseSheet extends Object implements JsonSerializable
      */
     public static function decodeExerciseSheet($data, $decode=true)
     {
+        if ($decode && $data==null) 
+            $data = "{}";
+    
         if ($decode)
             $data = json_decode($data);
         if (is_array($data)){
@@ -375,18 +413,18 @@ class ExerciseSheet extends Object implements JsonSerializable
      */
     public function jsonSerialize() 
     {
-        return array(
-            'id'  => $this->id,
-            'courseId' => $this->courseId,
-            'endDate' => $this->endDate,
-            'startDate' => $this->startDate,
-            'zipFile' => $this->zipFile,
-            'sampleSolution' => $this->sampleSolution,
-            'sheetFile' => $this->sheetFile,
-            'exercises' => $this->exercises,
-            'groupSize' => $this->groupSize,
-            'sheetName' => $this->sheetName
-        );
+        $list = array();
+        if ($this->id!==null) $list['id'] = $this->id;
+        if ($this->courseId!==null) $list['courseId'] = $this->courseId;
+        if ($this->endDate!==null) $list['endDate'] = $this->endDate;
+        if ($this->startDate!==null) $list['startDate'] = $this->startDate;
+        if ($this->zipFile!==null) $list['zipFile'] = $this->zipFile;
+        if ($this->sampleSolution!==null) $list['sampleSolution'] = $this->sampleSolution;
+        if ($this->sheetFile!==null) $list['sheetFile'] = $this->sheetFile;
+        if ($this->exercises!==array()) $list['exercises'] = $this->exercises;
+        if ($this->groupSize!==null) $list['groupSize'] = $this->groupSize;
+        if ($this->sheetName!==null) $list['sheetName'] = $this->sheetName;
+        return $list;
     }
 }
 ?>

@@ -2,7 +2,7 @@
  * @file GetExerciseSheetURL.sql
  * gets a exercise sheet file
  * @author Till Uhlig
- * @param int $esid a %ExerciseSheet identifier
+ * @param int \$esid a %ExerciseSheet identifier
  * @result 
  * - F, the exercise sheet file
  */

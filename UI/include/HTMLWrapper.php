@@ -5,7 +5,7 @@
  */
 
 include_once 'include/Header/Header.php';
-include_once '../../Assistants/Logger.php';
+include_once '../Assistants/Logger.php';
 
     /**
     * Wraps the header and the contents in a default HTML

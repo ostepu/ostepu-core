@@ -2,7 +2,7 @@
  * @file DeleteUserSession.sql
  * deletes a specified session from %Session table
  * @author  Till Uhlig
- * @param int $userid a %User identifier
+ * @param int \$userid a %User identifier
  * @result -
  */
  

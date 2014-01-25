@@ -1,6 +1,10 @@
 <?php
 /**
  * @file DBExerciseSheet.php contains the DBExerciseSheet class
+ * 
+ * @author Till Uhlig
+ * @author Felix Schmidt
+ * @example DB/DBExerciseSheet/ExerciseSheetSample.json
  */ 
 
 require_once( 'Include/Slim/Slim.php' );
@@ -22,8 +26,6 @@ if (!$com->used())
     
 /**
  * A class, to abstract the "ExerciseSheet" table from database
- *
- * @author Till Uhlig
  */
 class DBExerciseSheet
 {
@@ -66,12 +68,16 @@ class DBExerciseSheet
     {
         DBExerciseSheet::$_prefix = $value;
     }
-    
+
+
     /**
-     * the component constructor
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to
+     * the functions.
      *
      * @param Component $conf component data
-     */ 
+     */
     public function __construct($conf)
     {
         // initialize component
@@ -83,32 +89,32 @@ class DBExerciseSheet
         $this->_app->response->headers->set('Content-Type', 'application/json');
 
         // PUT EditExerciseSheet
-        $this->_app->put('/' . $this->getPrefix() . '/exercisesheet/:esid',
+        $this->_app->put('/' . $this->getPrefix() . '(/exercisesheet)/:esid(/)',
                         array($this,'editExerciseSheet'));
         
         // DELETE DeleteExerciseSheet
-        $this->_app->delete('/' . $this->getPrefix() . '/exercisesheet/:esid',
+        $this->_app->delete('/' . $this->getPrefix() . '(/exercisesheet)/:esid(/)',
                            array($this,'deleteExerciseSheet'));
         
         // POST SetExerciseSheet
-        $this->_app->post('/' . $this->getPrefix(),
-                         array($this,'setExerciseSheet'));
+        $this->_app->post('/' . $this->getPrefix() . '(/)',
+                         array($this,'addExerciseSheet'));
                
         // GET GetExerciseSheetURL
-        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid/url',
+        $this->_app->get('/' . $this->getPrefix() . '(/exercisesheet)/:esid/url(/)',
                         array($this,'getExerciseSheetURL'));
                         
         // GET GetCourseSheetURLs
-        $this->_app->get('/' . $this->getPrefix() . '/course/:courseid/url',
+        $this->_app->get('/' . $this->getPrefix() . '/course/:courseid/url(/)',
                         array($this,'getCourseSheetURLs'));
                         
-        // GET GetExerciseSheet
-        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid+',
-                        array($this,'getExerciseSheet'));
-        
         // GET GetCourseSheets
-        $this->_app->get('/' . $this->getPrefix() . '/course/:courseid+',
+        $this->_app->get('/' . $this->getPrefix() . '/course/:courseid+(/)',  
                         array($this,'getCourseSheets'));
+                        
+        // GET GetExerciseSheet
+        $this->_app->get('/' . $this->getPrefix() . '(/exercisesheet)/:esid+(/)',
+                        array($this,'getExerciseSheet'));
         
         // starts slim only if the right prefix was received
         if (strpos ($this->_app->request->getResourceUri(),'/' . 
@@ -118,12 +124,18 @@ class DBExerciseSheet
             $this->_app->run();
         }
     }
-    
+
+
     /**
-     * PUT EditExerciseSheet
+     * Edits an exercise sheet.
      *
-     * @param int $esid a database exercise sheet identifier
-     */ 
+     * Called when this component receives an HTTP PUT request to
+     * /exercisesheet/$esid(/) or /exercisesheet/exercisesheet/$esid(/).
+     * The request body should contain a JSON object representing the exercise
+     * sheet's new attributes.
+     *
+     * @param int $esid The id of the exercise sheet that is being updated.
+     */
     public function editExerciseSheet($esid)
     {
         Logger::Log("starts PUT EditExerciseSheet",LogLevel::DEBUG);
@@ -156,16 +168,20 @@ class DBExerciseSheet
                 
             } else{
                 Logger::Log("PUT EditExerciseSheet failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
     }
-    
+
+
     /**
-     * DELETE DeleteExerciseSheet
+     * Deletes an exercise sheet.
      *
-     * @param int $esid a database exercise sheet identifier
+     * Called when this component receives an HTTP DELETE request to
+     * /exercisesheet/$esid(/) or /exercisesheet/exercisesheet/$esid(/).
+     *
+     * @param int $esid The id of the exercise sheet that is being deleted.
      */
     public function deleteExerciseSheet($esid)
     {
@@ -182,23 +198,29 @@ class DBExerciseSheet
                                         
         // checks the correctness of the query                          
         if ($result['status']>=200 && $result['status']<=299){
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(201);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE DeleteExerciseSheet failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * POST SetExerciseSheet
+     * Adds an exercise sheet.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /exercisesheet(/).
+     * The request body should contain a JSON object representing the exercise
+     * sheet's attributes.
      */
-    public function setExerciseSheet()
+    public function addExerciseSheet()
     {
-        Logger::Log("starts POST SetExerciseSheet",LogLevel::DEBUG);
+        Logger::Log("starts POST AddExerciseSheet",LogLevel::DEBUG);
         
         // decode the received exercise sheet data, as an object
         $insert = ExerciseSheet::decodeExerciseSheet($this->_app->request->getBody());
@@ -213,7 +235,7 @@ class DBExerciseSheet
             
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
-                                            "Sql/SetExerciseSheet.sql", 
+                                            "Sql/AddExerciseSheet.sql", 
                                             array("values" => $data));                   
            
             // checks the correctness of the query    
@@ -230,17 +252,21 @@ class DBExerciseSheet
                     $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
-                Logger::Log("POST SetExerciseSheet failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                Logger::Log("POST AddExerciseSheet failed",LogLevel::ERROR);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
     }
-    
+
+
     /**
-     * GET GetExerciseSheetURL
+     * Returns the URL to a given exercise sheet.
      *
-     * @param int $esid a database exercise sheet identifier
+     * Called when this component receives an HTTP GET request to
+     * /exercisesheet/$esid/url(/) or /exercisesheet/exercisesheet/$esid/url(/).
+     *
+     * @param int $esid The id of the exercise sheet the returned URL belongs to.
      */
     public function getExerciseSheetURL($esid)
     {     
@@ -272,22 +298,26 @@ class DBExerciseSheet
                 $exerciseSheetFile = $exerciseSheetFile[0];
             
             $this->_app->response->setBody(File::encodeFile($exerciseSheetFile));
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetExerciseSheetURL failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(File::encodeExerciseSheet(new File()));
             $this->_app->stop();
         }
-    }   
-    
+    }
+
+
     /**
-     * GET GetCourseSheetURLs
+     * Returns the URLs to all exercise sheets of a given course.
      *
-     * @param int $courseid a database course identifier
+     * Called when this component receives an HTTP GET request to
+     * /exercisesheet/course/$courseid/url(/).
+     *
+     * @param int $courseid The id of the course.
      */
     public function getCourseSheetURLs($courseid)
     {     
@@ -312,34 +342,34 @@ class DBExerciseSheet
             $exerciseSheetFiles = DBJson::getResultObjectsByAttributes($data, File::getDBPrimaryKey(), File::getDBConvert());
             
             $this->_app->response->setBody(File::encodeFile($exerciseSheetFiles));
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetCourseSheetURLs failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(File::encodeFile(new File()));
             $this->_app->stop();
         }
-    } 
-    
+    }
+
+
     /**
-     * GET GetExerciseSheet
+     * Returns an exercise sheet.
      *
-     * @param int $esid the identifier of a exercise sheet
+     * Called when this component receives an HTTP GET request to
+     * /exercisesheet/$esid(/) or /exercisesheet/exercisesheet/$esid(/).
+     *
+     * @param int $esid The id of the exercise sheet that should be returned.
      */
     public function getExerciseSheet($esid)
     {     
-        Logger::Log("starts GET GetExerciseSheet",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($esid));
+        Logger::Log("starts GET GetExerciseSheet",LogLevel::DEBUG);  
                             
         if (count($esid)<1){
             Logger::Log("PUT EditExerciseSheet wrong use",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(ExerciseSheet::encodeExerciseSheet(new ExerciseSheet()));
             $this->_app->stop();
             return;
@@ -348,6 +378,10 @@ class DBExerciseSheet
         $options = array_splice($esid,1);
         $esid = $esid[0];
         
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($esid));
+                            
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetExerciseSheet.sql", 
@@ -426,33 +460,33 @@ class DBExerciseSheet
                 $res = $res[0];
                 
             $this->_app->response->setBody(ExerciseSheet::encodeExerciseSheet($res));
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetExerciseSheet failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(ExerciseSheet::encodeExerciseSheet(new ExerciseSheet()));
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetCourseSheets
+     * Returns all exercise sheets of a given course.
      *
-     * @param int $courseid a database course identifier
+     * Called when this component receives an HTTP GET request to
+     * /exercisesheet/course/$courseid(/).
+     *
+     * @param int $courseid The id of the course the exercise sheets belong to.
      */
     public function getCourseSheets($courseid)
     {     
         Logger::Log("starts GET GetCourseSheets",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($courseid));
                             
         if (count($courseid)<1){
-            $this->_app->response->setStatus(409);
+            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(ExerciseSheet::encodeExerciseSheet(new ExerciseSheet()));
             $this->_app->stop();
             return;
@@ -460,6 +494,10 @@ class DBExerciseSheet
         
         $options = array_splice($courseid,1);
         $courseid = $courseid[0];
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($courseid));
         
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
@@ -521,6 +559,7 @@ class DBExerciseSheet
             if (in_array('exercise',$options)){
                 $query = Query::decodeQuery($result2['content']);
                             $data = $query->getResponse();
+                            
                 $exercises = DBJson::getObjectsByAttributes($data, 
                             Exercise::getDBPrimaryKey(), 
                             Exercise::getDBConvert());
@@ -538,13 +577,13 @@ class DBExerciseSheet
             $res = array_merge($res);        
             
             $this->_app->response->setBody(ExerciseSheet::encodeExerciseSheet($res));
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetCourseSheets failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(ExerciseSheet::encodeExerciseSheet(new ExerciseSheet()));
             $this->_app->stop();
         }    

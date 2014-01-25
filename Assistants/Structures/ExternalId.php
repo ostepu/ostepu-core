@@ -65,6 +65,20 @@ class ExternalId extends Object implements JsonSerializable
         $this->course = $value;
     }
     
+    /**
+     * Creates an ExternalId object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $externalId The id of the external id .
+     * @param string $courseId The id of the course.
+     *
+     * @return an external id object
+     */
+    public function createExternalId($externalId,$courseId)
+    {
+        return new ExternalId(array('id' => $externalId,
+        'course' => array('id' => $courseId)));
+    }
     
     /**
      * the constructor
@@ -102,11 +116,12 @@ class ExternalId extends Object implements JsonSerializable
      *
      * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData(){
+    public function getInsertData()
+    {
         $values = "";
         
         if ($this->id != null) $this->addInsertData($values, 'EX_id', DBJson::mysql_real_escape_string($this->id));
-        if ($this->course != null) $this->addInsertData($values, 'EX_course', DBJson::mysql_real_escape_string($this->course->getId()));
+        if ($this->course != null) $this->addInsertData($values, 'C_id', DBJson::mysql_real_escape_string($this->course->getId()));
         
         if ($values != ""){
             $values=substr($values,1);
@@ -147,8 +162,12 @@ class ExternalId extends Object implements JsonSerializable
      */
     public static function decodeExternalId($data, $decode=true)
     {
+        if ($decode && $data==null) 
+            $data = "{}";
+    
         if ($decode)
             $data = json_decode($data);
+            
         if (is_array($data)){
             $result = array();
             foreach ($data AS $key => $value) {
@@ -166,10 +185,10 @@ class ExternalId extends Object implements JsonSerializable
      */
     public function jsonSerialize()  
     {
-        return array(
-            'id' => $this->id,
-            'course' => $this->course
-        );
+        $list = array();
+        if ($this->id!==null) $list['id'] = $this->id;
+        if ($this->course!==null) $list['course'] = $this->course;
+        return $list;
     }
 }
 ?>

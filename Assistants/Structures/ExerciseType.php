@@ -66,6 +66,20 @@ class ExerciseType extends Object implements JsonSerializable
         $this->name = $value;
     }
     
+    /**
+     * Creates an ExerciseType object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $typeid The id of the exercise type.
+     * @param string $name The name of the exercise type.
+     *
+     * @return an exercise type object
+     */
+    public function createExerciseType($typeid,$name)
+    {
+        return new ExerciseType(array('id' => $typeid,
+        'name' => $name));
+    }
     
     /**
      * the constructor
@@ -99,7 +113,8 @@ class ExerciseType extends Object implements JsonSerializable
      *
      * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData(){
+    public function getInsertData()
+    {
         $values = "";
         
         if ($this->id != null) $this->addInsertData($values, 'ET_id', DBJson::mysql_real_escape_string($this->id));
@@ -144,6 +159,9 @@ class ExerciseType extends Object implements JsonSerializable
      */
     public static function decodeExerciseType($data, $decode=true)
     {
+        if ($decode && $data==null) 
+            $data = "{}";
+    
         if ($decode)
             $data = json_decode($data);
         if (is_array($data)){
@@ -163,10 +181,10 @@ class ExerciseType extends Object implements JsonSerializable
      */
     public function jsonSerialize()  
     {
-        return array(
-            'id' => $this->id,
-            'name' => $this->name
-        );
+        $list = array();
+        if ($this->id!==null) $list['id'] = $this->id;
+        if ($this->name!==null) $list['name'] = $this->name;
+        return $list;
     }
 }
 ?>

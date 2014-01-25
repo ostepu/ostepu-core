@@ -2,7 +2,7 @@
  * @file GetCourseSheetsURLs.sql
  * gets all course exercise sheets files
  * @author Till Uhlig
- * @param int $courseid a %Course identifier
+ * @param int \$courseid a %Course identifier
  * @result 
  * - F, the exercise sheet file
  */

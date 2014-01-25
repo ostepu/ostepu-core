@@ -2,7 +2,7 @@
  * @file DeleteAttachment.sql
  * deletes an specified attachment from %Attachment table
  * @author  Till Uhlig
- * @param int $aid a %Attachment identifier
+ * @param int \$aid a %Attachment identifier
  * @result -
  */
  

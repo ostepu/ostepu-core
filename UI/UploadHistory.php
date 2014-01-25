@@ -2,7 +2,20 @@
 include 'include/Header/Header.php';
 include 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
+?>
 
+<?php
+    if (isset($_POST['sheetID'])) {
+        /**
+         * @todo load data for the slected user
+         */
+        Logger::Log($_POST, LogLevel::INFO);
+    } else {
+        Logger::Log("No Data", LogLevel::INFO);
+    }
+?>
+
+<?php
 // construct a new Header
 $h = new Header("Datenstrukturen",
                 "",
@@ -15,11 +28,8 @@ $h->setBackURL("index.php")
 // construct a content element for the ability to look at the upload history of a student
 $uploadHistory = Template::WithTemplateFile('include/UploadHistory/UploadHistory.template.html');
 
-// construct a content element for sample results
-$uploadHistoryResults = Template::WithTemplateFile('include/UploadHistory/Results.template.html');
-
 // wrap all the elements in some HTML and show them on the page
-$w = new HTMLWrapper($h, $uploadHistory, $uploadHistoryResults);
+$w = new HTMLWrapper($h, $uploadHistory);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
 ?>

@@ -1,6 +1,10 @@
 <?php
 /**
  * @file DBMarking.php contains the DBMarking class
+ * 
+ * @author Till Uhlig
+ * @author Felix Schmidt 
+ * @example DB/DBMarking/MarkingSample.json
  */ 
 
 require_once( 'Include/Slim/Slim.php' );
@@ -22,8 +26,6 @@ if (!$com->used())
     
 /**
  * A class, to abstract the "Marking" table from database
- *
- * @author Till Uhlig
  */
 class DBMarking
 {
@@ -66,12 +68,16 @@ class DBMarking
     {
         DBMarking::$_prefix = $value;
     }
-    
+
+
     /**
-     * the component constructor
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to
+     * the functions.
      *
      * @param Component $conf component data
-     */ 
+     */
     public function __construct($conf)
     {
         // initialize component
@@ -84,50 +90,50 @@ class DBMarking
 
         // PUT EditMarking
         $this->_app->put('/' . $this->getPrefix() . 
-                        '/marking/:mid',
+                        '(/marking)/:mid(/)',
                         array($this,'editMarking'));
         
         // DELETE DeleteMarking
         $this->_app->delete('/' . $this->getPrefix() . 
-                            '/marking/:mid',
+                            '(/marking)/:mid(/)',
                             array($this,'deleteMarking'));
         
-        // POST SetMarking
-        $this->_app->post('/' . $this->getPrefix(),
-                         array($this,'setMarking'));  
+        // POST AddMarking
+        $this->_app->post('/' . $this->getPrefix() . '(/)',
+                         array($this,'addMarking'));  
         
         // GET GetMarking
-        $this->_app->get('/' . $this->getPrefix() . '/marking/:mid',
+        $this->_app->get('/' . $this->getPrefix() . '(/marking)/:mid(/)',
                         array($this,'getMarking'));
         
         // GET GetSubmissionMarking
-        $this->_app->get('/' . $this->getPrefix() . '/submission/:suid',
+        $this->_app->get('/' . $this->getPrefix() . '/submission/:suid(/)',
                         array($this,'getSubmissionMarking'));
                         
         // GET GetAllMarkings
-        $this->_app->get('/' . $this->getPrefix() . '/marking',
+        $this->_app->get('/' . $this->getPrefix() . '(/marking)(/)',
                         array($this,'getAllMarkings')); 
                         
         // GET GetExerciseMarkings
         $this->_app->get('/' . $this->getPrefix() . 
-                        '/exercise/:eid',
+                        '/exercise/:eid(/)',
                         array($this,'getExerciseMarkings'));  
                         
         // GET GetSheetMarkings
         $this->_app->get('/' . $this->getPrefix() . 
-                        '/exercisesheet/:esid',
+                        '/exercisesheet/:esid(/)',
                         array($this,'getSheetMarkings'));
                         
         // GET GetUserGroupMarkings
-        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid/user/:userid',
+        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid/user/:userid(/)',
                         array($this,'getUserGroupMarkings'));  
                         
         // GET GetTutorSheetMarkings 
-        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid/tutor/:userid',
+        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid/tutor/:userid(/)',
                         array($this,'getTutorSheetMarkings'));
                         
         // GET GetTutorExerciseMarkings  
-        $this->_app->get('/' . $this->getPrefix() . 'exercise/:eid/tutor/:userid',
+        $this->_app->get('/' . $this->getPrefix() . '/exercise/:eid/tutor/:userid(/)',
                         array($this,'getTutorExerciseMarkings'));  
                         
         // starts slim only if the right prefix was received
@@ -138,11 +144,17 @@ class DBMarking
             $this->_app->run();
         }
     }
-    
+
+
     /**
-     * PUT EditMarking
+     * Edits a marking.
      *
-     * @param int $mid a database marking identifier
+     * Called when this component receives an HTTP PUT request to
+     * /marking/$mid(/) or /marking/marking/$mid(/).
+     * The request body should contain a JSON object representing the marking's new
+     * attributes.
+     *
+     * @param int $mid The id of the marking that is being updated.
      */
     public function editMarking($mid)
     {
@@ -166,7 +178,7 @@ class DBMarking
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
                                     "Sql/EditMarking.sql", 
-                                    array("mid" => $mid));                   
+                                    array("mid" => $mid, "values" => $data));                   
             
             // checks the correctness of the query
             if ($result['status']>=200 && $result['status']<=299){
@@ -176,16 +188,20 @@ class DBMarking
                 
             } else{
                 Logger::Log("PUT EditMarking failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
     }
-    
+
+
     /**
-     * DELETE DeleteMarking
+     * Deletes a marking.
      *
-     * @param int $mid a database marking identifier
+     * Called when this component receives an HTTP DELETE request to
+     * /marking/$mid(/) or /marking/marking/$mid(/).
+     *
+     * @param int $mid The id of the marking that is being deleted.
      */
     public function deleteMarking($mid)
     {
@@ -203,23 +219,29 @@ class DBMarking
         // checks the correctness of the query                          
         if ($result['status']>=200 && $result['status']<=299){
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(201);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE DeleteMarking failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * POST SetMarking
+     * Adds a marking.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /marking(/).
+     * The request body should contain a JSON object representing the 
+     * marking's attributes.
      */
-    public function setMarking()
+    public function addMarking()
     {
-        Logger::Log("starts OST SetMarking",LogLevel::DEBUG);
+        Logger::Log("starts OST AddMarking",LogLevel::DEBUG);
         
         // decode the received marking data, as an object
         $insert = Marking::decodeMarking($this->_app->request->getBody());
@@ -234,7 +256,7 @@ class DBMarking
             
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
-                                            "Sql/SetMarking.sql", 
+                                            "Sql/AddMarking.sql", 
                                             array("values" => $data));                   
             
             // checks the correctness of the query 
@@ -252,15 +274,19 @@ class DBMarking
                     $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
-                Logger::Log("POST SetMarking failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                Logger::Log("POST AddMarking failed",LogLevel::ERROR);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
     }
-    
+
+
     /**
-     * GET GetAllMarkings
+     * Returns all markings.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /marking(/) or /marking/marking(/).
      */
     public function getAllMarkings()
     {      
@@ -290,11 +316,10 @@ class DBMarking
                                     Submission::getDBConvert(), 
                                     '2');
                                     
-
             // sets the selectedForGroup attribute
             foreach ($submissions as &$submission){
-                if (isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
-                    if (!isset($submission['id'])){
+                if (!isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
+                    if (!isset($submission['id']) || !isset($submission['selectedForGroup'])){
                         $submission['selectedForGroup'] = (string) 0;
                     } elseif ($submission['id'] == $submission['selectedForGroup']) {
                         $submission['selectedForGroup'] = (string) 1;
@@ -325,29 +350,34 @@ class DBMarking
                             Marking::getDBPrimaryKey(),
                             Marking::getDBConvert()['M_submission'] ,
                             $submissions,
-                            Submission::getDBPrimaryKey());   
+                            Submission::getDBPrimaryKey(),
+                            '2');   
                             
             // to reindex
             $res = array_values($res); 
             
             $this->_app->response->setBody(Marking::encodeMarking($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetAllMarkings failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Marking::encodeMarking(new Marking()));
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetMarking
+     * Returns a marking.
      *
-     * @param int $mid a database marking identifier
+     * Called when this component receives an HTTP GET request to
+     * /marking/$mid(/) or /marking/marking/$mid(/).
+     *
+     * @param int $mid The id of the marking that should be returned.
      */
     public function getMarking($mid)
     {    
@@ -361,7 +391,7 @@ class DBMarking
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetMarking.sql", 
                                         array("mid" => $mid));
-        
+ 
         // checks the correctness of the query                                        
         if ($result['status']>=200 && $result['status']<=299){
             $query = Query::decodeQuery($result['content']);
@@ -379,12 +409,12 @@ class DBMarking
             $submissions = DBJson::getObjectsByAttributes($data,
                                     Submission::getDBPrimaryKey(), 
                                     Submission::getDBConvert(), 
-                                    '2');
-                                    
+                                    '2');                           
+               
             // sets the selectedForGroup attribute
             foreach ($submissions as &$submission){
-                if (isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
-                    if (!isset($submission['id'])){
+                if (!isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
+                    if (!isset($submission['id']) || !isset($submission['selectedForGroup'])){
                         $submission['selectedForGroup'] = (string) 0;
                     } elseif ($submission['id'] == $submission['selectedForGroup']) {
                         $submission['selectedForGroup'] = (string) 1;
@@ -394,13 +424,13 @@ class DBMarking
                 else
                     $submission['selectedForGroup'] = (string) 0;
             }
-            
+
             // generates an assoc array of a marking by using a defined list of 
             // its attributes
             $marking = DBJson::getObjectsByAttributes($data, 
                                     Marking::getDBPrimaryKey(), 
                                     Marking::getDBConvert());  
-                                    
+                 
             // concatenates the markings and the associated files
             $res = DBJson::concatObjectListsSingleResult($data, 
                             $marking,
@@ -408,15 +438,16 @@ class DBMarking
                             Marking::getDBConvert()['M_file'] ,
                             $file,
                             File::getDBPrimaryKey());
-                            
+            
             // concatenates the markings and the associated submissions
             $res = DBJson::concatObjectListsSingleResult($data, 
                             $res,
                             Marking::getDBPrimaryKey(),
                             Marking::getDBConvert()['M_submission'] ,
                             $submissions,
-                            Submission::getDBPrimaryKey());  
-                            
+                            Submission::getDBPrimaryKey(),
+                            '2');  
+                   
             // to reindex
             $res = array_values($res);
             
@@ -426,22 +457,26 @@ class DBMarking
                 
             $this->_app->response->setBody(Marking::encodeMarking($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetMarking failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Marking::encodeMarking(new Marking()));
             $this->_app->stop();
         }  
     }
-    
+
+
     /**
-     * GET GetSubmissionMarking
+     * Returns a marking to a given submission.
      *
-     * @param int $suid a database submission identifier
+     * Called when this component receives an HTTP GET request to
+     * /marking/submission/$suid(/).
+     *
+     * @param int $suid The id of the submission.
      */
     public function getSubmissionMarking($suid)
     {    
@@ -477,8 +512,8 @@ class DBMarking
                                     
             // sets the selectedForGroup attribute
             foreach ($submissions as &$submission){
-                if (isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
-                    if (!isset($submission['id'])){
+                if (!isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
+                    if (!isset($submission['id']) || !isset($submission['selectedForGroup'])){
                         $submission['selectedForGroup'] = (string) 0;
                     } elseif ($submission['id'] == $submission['selectedForGroup']) {
                         $submission['selectedForGroup'] = (string) 1;
@@ -520,22 +555,26 @@ class DBMarking
                 
             $this->_app->response->setBody(Marking::encodeMarking($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetSubmissionMarking failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Marking::encodeMarking(new Marking()));
             $this->_app->stop();
         }   
     }
-    
-   /**
-     * GET GetExerciseMarkings
+
+
+    /**
+     * Returns all markings which belong to a given exercise.
      *
-     * @param int $eid a database exercise identifier
+     * Called when this component receives an HTTP GET request to
+     * /marking/exercise/$eid(/).
+     *
+     * @param int $eid The id of the exercise.
      */
     public function getExerciseMarkings($eid)
     {   
@@ -571,8 +610,8 @@ class DBMarking
                                     
             // sets the selectedForGroup attribute
             foreach ($submissions as &$submission){
-                if (isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
-                    if (!isset($submission['id'])){
+                if (!isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
+                    if (!isset($submission['id']) || !isset($submission['selectedForGroup'])){
                         $submission['selectedForGroup'] = (string) 0;
                     } elseif ($submission['id'] == $submission['selectedForGroup']) {
                         $submission['selectedForGroup'] = (string) 1;
@@ -610,22 +649,26 @@ class DBMarking
             
             $this->_app->response->setBody(Marking::encodeMarking($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetExerciseMarkings failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Marking::encodeMarking(new Marking()));
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetSheetMarkings
+     * Returns all markings which belong to a given exercise sheet.
      *
-     * @param int $esid a database exercise sheet identifier
+     * Called when this component receives an HTTP GET request to
+     * /marking/exercisesheet/$esid(/).
+     *
+     * @param int $esid The id of the exercise sheet.
      */
     public function getSheetMarkings($esid)
     {     
@@ -661,8 +704,8 @@ class DBMarking
                                     
             // sets the selectedForGroup attribute
             foreach ($submissions as &$submission){
-                if (isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
-                    if (!isset($submission['id'])){
+                if (!isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
+                    if (!isset($submission['id']) || !isset($submission['selectedForGroup'])){
                         $submission['selectedForGroup'] = (string) 0;
                     } elseif ($submission['id'] == $submission['selectedForGroup']) {
                         $submission['selectedForGroup'] = (string) 1;
@@ -700,23 +743,27 @@ class DBMarking
             
             $this->_app->response->setBody(Marking::encodeMarking($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetSheetMarkings failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Marking::encodeMarking(new Marking()));
             $this->_app->stop();
         }  
     }
-    
+
+
     /**
-     * GET GetUserGroupMarkings
+     * Returns all markings of a group regarding a specific exercise sheet.
      *
-     * @param int $esid a database exercise sheet identifier
-     * @param int $userid a database user identifier
+     * Called when this component receives an HTTP GET request to
+     * /marking/exercisesheet/$esid/user/$userid(/).
+     *
+     * @param int $esid The id of the exercise sheet.
+     * @param int $userid The id of the user whose group the marking belongs to.
      */
     public function getUserGroupMarkings($esid,$userid)
     {     
@@ -753,8 +800,8 @@ class DBMarking
                                     
             // sets the selectedForGroup attribute
             foreach ($submissions as &$submission){
-                if (isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
-                    if (!isset($submission['id'])){
+                if (!isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
+                    if (!isset($submission['id']) || !isset($submission['selectedForGroup'])){
                         $submission['selectedForGroup'] = (string) 0;
                     } elseif ($submission['id'] == $submission['selectedForGroup']) {
                         $submission['selectedForGroup'] = (string) 1;
@@ -792,23 +839,29 @@ class DBMarking
             
             $this->_app->response->setBody(Marking::encodeMarking($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetUserGroupMarkings failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Marking::encodeMarking(new Marking()));
             $this->_app->stop();
         }    
     }
-    
+
+
     /**
-     * GET GetTutorSheetMarkings
+     * Returns all markings created by a given tutor regarding 
+     * a specific exercise sheet.
      *
-     * @param int $esid a database exercise sheet identifier
-     * @param int $userid a database tutor (user) identifier
+     * Called when this component receives an HTTP GET request to
+     * /marking/exercisesheet/$esid/tutor/$userid(/).
+     *
+     * @param int $esid The id of the exercise sheet.
+     * @param int $userid The userid of the tutor that created the markings 
+     * which should be returned.
      */
     public function getTutorSheetMarkings($esid,$userid)
     {     
@@ -845,8 +898,8 @@ class DBMarking
                                     
             // sets the selectedForGroup attribute
             foreach ($submissions as &$submission){
-                if (isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
-                    if (!isset($submission['id'])){
+                if (!isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
+                    if (!isset($submission['id']) || !isset($submission['selectedForGroup'])){
                         $submission['selectedForGroup'] = (string) 0;
                     } elseif ($submission['id'] == $submission['selectedForGroup']) {
                         $submission['selectedForGroup'] = (string) 1;
@@ -884,23 +937,29 @@ class DBMarking
             
             $this->_app->response->setBody(Marking::encodeMarking($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetTutorSheetMarkings failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Marking::encodeMarking(new Marking()));
             $this->_app->stop();
         }    
     }
-    
+
+
     /**
-     * GET GetTutorExerciseMarkings
+     * Returns all markings created by a given tutor regarding 
+     * a specific exercise.
      *
-     * @param int $eid a database exercise sheet identifier
-     * @param int $userid a database tutor (user) identifier
+     * Called when this component receives an HTTP GET request to
+     * /marking/exercise/$eid/tutor/$userid(/).
+     *
+     * @param int $eid The id of the exercise.
+     * @param int $userid The userid of the tutor that created the markings 
+     * which should be returned.
      */
     public function getTutorExerciseMarkings($eid,$userid)
     {     
@@ -937,8 +996,8 @@ class DBMarking
                                     
             // sets the selectedForGroup attribute
             foreach ($submissions as &$submission){
-                if (isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
-                    if (!isset($submission['id'])){
+                if (!isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
+                    if (!isset($submission['id']) || !isset($submission['selectedForGroup'])){
                         $submission['selectedForGroup'] = (string) 0;
                     } elseif ($submission['id'] == $submission['selectedForGroup']) {
                         $submission['selectedForGroup'] = (string) 1;
@@ -976,13 +1035,13 @@ class DBMarking
             
             $this->_app->response->setBody(Marking::encodeMarking($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetTutorExerciseMarkings failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Marking::encodeMarking(new Marking()));
             $this->_app->stop();
         }    

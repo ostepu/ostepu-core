@@ -1,19 +1,20 @@
-<div class="content-element">
-    <div class="content-header">
-        <div class="content-title left">Gruppe Erstellen</div>
-        <div class="info-color bold right">
-            <a href="#">einladen</a>
-        </div>     
-    </div>
-
-    <div class="content-body-wrapper">
-        <div class="content-body left">
-            <?php for ($i = 0; $i < $maxGroupSize; $i++): ?>
-                <label class="short left label bold new-line">
-                    Matrikel:
-                </label>
-                <input class="form-field left text-input" type="text" name="ids[]">
-            <?php endfor; ?>
+<form action="Group.php" method="POST">
+    <input type="hidden" name="action" value="invite">
+    <div class="content-element">
+        <div class="content-header">
+            <div class="content-title left">Gruppe Erstellen</div>
+            <button class="right text-button info-color bold">einladen</button>
         </div>
-    </div> <!-- end: content-body-wrapper -->
-</div> <!-- end: content-element -->
+
+        <div class="content-body-wrapper">
+            <div class="content-body left">
+                <?php for ($i = 0; $i < $maxGroupSize; $i++): ?>
+                    <label class="short left label bold new-line">
+                        Matrikel:
+                    </label>
+                    <input class="form-field left text-input" type="text" name="ids[]">
+                <?php endfor; ?>
+            </div>
+        </div> <!-- end: content-body-wrapper -->
+    </div> <!-- end: content-element -->
+</form>

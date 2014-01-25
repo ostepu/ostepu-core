@@ -1,3 +1,14 @@
+/**
+ * @file GetSheetLeaderInvitations.sql
+ * gets a table for output, where all invitations are listed where the user is Groupleader for an specific Exercisesheet
+ * @author Till Uhlig
+ * @param int \%userid a User identifier
+ * @param int \%esid a ExerciseSheet identifier
+ * @result 
+ * - U is the groupleader who invites
+ * - U2 are the members of the Invitation without the leader
+ */
+
 SELECT 
     U.U_id,
     U.U_username,
@@ -17,9 +28,9 @@ SELECT
 from
     Invitation I
         join
-    User U ON (I.U_id_leader = U.U_id)
+    User U ON (I.U_id_member = U.U_id)
         join
-    User U2 ON (I.U_id_member = U2.U_id)
+    User U2 ON (I.U_id_leader = U2.U_id)
 where
     I.ES_id = $esid
-        and I.U_id_leader = $userid
+        and I.U_id_member = $userid

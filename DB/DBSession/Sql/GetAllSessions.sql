@@ -7,6 +7,6 @@
  
 select 
     U_id,
-    SE_id
+    SE_sessionID
 from
     `Session`

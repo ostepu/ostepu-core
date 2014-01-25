@@ -194,8 +194,26 @@ class Link extends Object implements JsonSerializable
         $this->prefix = $value;
     }
    
-    
-    
+    /**
+     * Creates an Link object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $id The id of the link.
+     * @param string $owner The id of the owner.
+     * @param string $target The id of the target.
+     * @param string $name The link name.
+     * @param string $relevanz The relevanz.
+     *
+     * @return an link object
+     */
+    public function createLink($id,$owner,$target,$name,$relevanz)
+    {
+        return new Link(array('id' => $id,
+        'owner' => $owner,
+        'target' => $target,
+        'name' => $name,
+        'relevanz' => $relevanz));
+    }
     
     /**
      * the constructor
@@ -204,6 +222,9 @@ class Link extends Object implements JsonSerializable
      */
     public function __construct($data=array())
     {
+        if ($data==null)
+            $data = array();
+        
         foreach ($data AS $key => $value) {
             if (isset($key)){
                 $this->{$key} = $value;
@@ -234,10 +255,11 @@ class Link extends Object implements JsonSerializable
      *
      * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData(){
+    public function getInsertData()
+    {
         $values = "";
         
-        if ($this->id != null) $this->addInsertData($values, 'ES_id', DBJson::mysql_real_escape_string($this->id));
+        if ($this->id != null) $this->addInsertData($values, 'CL_id', DBJson::mysql_real_escape_string($this->id));
         if ($this->name != null) $this->addInsertData($values, 'CL_name', DBJson::mysql_real_escape_string($this->name));
         if ($this->owner != null) $this->addInsertData($values, 'CO_id_owner', DBJson::mysql_real_escape_string($this->owner));
         if ($this->target != null) $this->addInsertData($values, 'CO_id_target', DBJson::mysql_real_escape_string($this->target));
@@ -282,8 +304,12 @@ class Link extends Object implements JsonSerializable
      */
     public static function decodeLink($data, $decode=true)
     {
+        if ($decode && $data==null) 
+            $data = "{}";
+            
         if ($decode)
             $data = json_decode($data);
+            
         if (is_array($data)){
             $result = array();
             foreach ($data AS $key => $value) {
@@ -299,15 +325,15 @@ class Link extends Object implements JsonSerializable
      */
     public function jsonSerialize()  
     {
-        return array(
-            'id' => $this->id,
-            'name' => $this->name,
-            'address' => $this->address,
-            'prefix' => $this->prefix,
-            'target' => $this->target,
-            'owner' => $this->owner,
-            'relevanz' => $this->relevanz
-        );
+        $list = array();
+        if ($this->id!==null) $list['id'] = $this->id;
+        if ($this->name!==null) $list['name'] = $this->name;
+        if ($this->address!==null) $list['address'] = $this->address;
+        if ($this->target!==null) $list['target'] = $this->target;
+        if ($this->prefix!==null) $list['prefix'] = $this->prefix;
+        if ($this->owner!==null) $list['owner'] = $this->owner;
+        if ($this->relevanz!==null) $list['relevanz'] = $this->relevanz;
+        return $list;  
     }
 }
 ?>

@@ -1,8 +1,10 @@
 <?php
 /**
-* @file (filename)
-* %(description)
-*/ 
+ * @file FSPdf.php contains the FSPdf class
+ * 
+ * @author Till Uhlig
+ * @author Felix Schmidt
+ */ 
 
 require_once( 'Include/Slim/Slim.php' );
 include_once( 'Include/CConfig.php' );
@@ -12,36 +14,67 @@ include_once( 'Include/Pdf/PdfTable.php' );
 
 \Slim\Slim::registerAutoloader();
 
+// runs the CConfig
 $com = new CConfig(FSPdf::getBaseDir());
 
+// runs the FSPdf
 if (!$com->used())
     new FSPdf($com->loadConfig());
 
 /**
- * (description)
+ * A class for creating, storing and loading PDF files from the file system
  */
 class FSPdf
 {
+    /**
+     * @var string $_baseDir the name of the folder where the pdf files should be
+     * stored in the file system
+     */
     private static $_baseDir = "pdf";
     
+    /**
+     * the string $_baseDir getter
+     *
+     * @return the value of $_baseDir
+     */ 
     public static function getBaseDir()
     {
         return FSPdf::$_baseDir;
     }
     
+    /**
+     * the $_baseDir setter
+     *
+     * @param string $value the new value for $_baseDir
+     */  
     public static function setBaseDir($value)
     {
         FSPdf::$_baseDir = $value;
     }
-    
-    private $_app;
-    private $_conf;
-    private $_fs = array();
 
     /**
-     * (description)
+     * @var Slim $_app the slim object
+     */ 
+    private $_app;
+    
+    /**
+     * @var Component $_conf the component data object
+     */ 
+    private $_conf;
+    
+    /**
+     * @var Link[] $_fs links to components which work with files, e.g. FSBinder
+     */ 
+    private $_fs = array();
+
+
+    /**
+     * REST actions
      *
-     * @param $_conf (description)
+     * This function contains the REST actions with the assignments to
+     * the functions.
+     *
+     * @param Component $conf component data
      */
     public function __construct($_conf)
     {
@@ -69,11 +102,18 @@ class FSPdf
 
          // run Slim
          $this->_app->run();
-
     } 
-    
+
+
     /**
-     * POST PostPdfPermanent
+     * Creates a PDF file consisting of the request body and permanently
+     * stores it in the file system.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /pdf/$orientation/permanent.
+     * The request body should contain a JSON object representing the PDF file.
+     *
+     * @param string $orientation The orientation of the PDF, e.g. portrait or landscape.
      */
     public function postPdfPermanent($orientation)
     {       
@@ -92,7 +132,8 @@ class FSPdf
         $pdf->AddPage();
         $pdf->Table($data, $orientation);
         
-        $result = $pdf->Output("test.pdf", "S");
+        // stores the pdf binary data to $result
+        $result = $pdf->Output("", "S");
         $fileObject = new File();
         $fileObject->setHash(sha1($body));
         $filePath = FSPdf::generateFilePath(FSPdf::getBaseDir(), $fileObject->getHash());
@@ -121,8 +162,16 @@ class FSPdf
         }
     }
 
+
     /**
-     * POST PostPdfTemporary
+     * Creates a PDF file consisting of the request body and then returns it.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /pdf/$orientation/temporary/$filename.
+     * The request body should contain a JSON object representing the PDF file.
+     *
+     * @param string $orientation The orientation of the PDF file, e.g. portrait or landscape.
+     * @param string $filename A freely chosen filename of the PDF file which should be stored.
      */
     public function postPdfTemporary($orientation, $filename = "")
     {       
@@ -133,26 +182,30 @@ class FSPdf
             return;
         }
 
-        
         $pdf=new PDF($orientation, "mm", "A4");
         $pdf->SetAutoPageBreak(true);
  
         $pdf->SetFont('Courier', '', 10);
         $pdf->AddPage();
         $pdf->Table($data, $orientation);
-
-        $result = $pdf->Output("test.pdf", "S");
+        
+        // stores the pdf binary data to $result
+        $result = $pdf->Output("", "S");
         $this->_app->response->setStatus(200);
         $this->_app->response->headers->set('Content-Type', 'application/octet-stream');
         $this->_app->response->headers->set('Content-Disposition', "attachment; filename=\"$filename\"");
         $this->_app->response->setBody($result);
     }
-    
+
+
     /**
-     *  GET GetPdfDocument
+     * Returns a PDF file.
      *
-     * @param $hash (description)
-     * @param $filename (description)
+     * Called when this component receives an HTTP GET request to
+     * /file/$hash/$filename.
+     *
+     * @param string $hash The hash of the file which should be returned.
+     * @param string $filename A freely chosen filename of the returned file.
      */
     public function getPdfDocument($hash, $filename)
     {      
@@ -178,10 +231,14 @@ class FSPdf
         $this->_app->stop();
     }
 
+
     /**
-     * GET GetPdfData
+     * Returns the PDF file infos as a JSON file object.
      *
-     * @param $hash (description)
+     * Called when this component receives an HTTP GET request to
+     * /file/$hash.
+     *
+     * @param string $hash The hash of the requested file.
      */
     public function getPdfData($hash)
     {  
@@ -210,11 +267,15 @@ class FSPdf
 
         $this->_app->stop();
     }
-    
+
+
     /**
-     * DELETE DeletePdf
+     * Deletes a PDF file.
      *
-     * @param $hash (description)
+     * Called when this component receives an HTTP DELETE request to
+     * /file/$hash.
+     *
+     * @param string $hash The hash of the file which should be deleted.
      */
     public function deletePdf($hash)
     {
@@ -239,12 +300,13 @@ class FSPdf
         }
         $this->_app->stop();  
     }
-    
+
+
     /**
-     * (description)
+     * Creates a file path by splitting the hash.
      *
-     * @param $type (description)
-     * @param $file (description)
+     * @param string $type The prefix of the file path.
+     * @param string $hash The hash of the file.
      */
     public static function generateFilePath($type,$file)
     {
@@ -253,11 +315,12 @@ class FSPdf
        } else
            return "";
     }
-    
+
+
     /**
-     * (description)
+     * Creates the path in the filesystem, if necessary.
      *
-     * @param $path (description)
+     * @param string $path The path which should be created.
      */
     public static function generatepath($path)
     {
@@ -274,10 +337,12 @@ class FSPdf
     }  
     
     /**
-     * (description)
+     * Selects the components which are responsible for handling the file with
+     * the given hash.
      *
-     * @param $linkedComponents (description)
-     * @param $hash (description)
+     * @param link[] $linkedComponents An array of links to components which could 
+     * possibly handle the file.
+     * @param string $hash The hash of the file.
      */
     public static function filterRelevantLinks($linkedComponents, $hash)
     {
@@ -294,21 +359,27 @@ class FSPdf
     }
     
     /**
-     * (description)
+     * Decides if the given component is responsible for the specific hash.
      *
-     * @param $hash (description)
-     * @param $_relevantBegin (description)
-     * @param $_relevantEnd (description)
+     * @param string $hash The hash of the file.
+     * @param string $_relevantBegin The minimum hash the component is responsible for.
+     * @param string $_relevantEnd The maximum hash the component is responsible for.
      */
-    public static function isRelevant($hash,$_relevantBegin,$_relevantEnd){
-        $begin = hexdec(substr($_relevantBegin,0,strlen($_relevantBegin)));
-        $end = hexdec(substr($_relevantEnd,0,strlen($_relevantEnd)));
-        $current = hexdec(substr($hash,0,strlen($_relevantEnd)));
+    public static function isRelevant($hash,$relevant_begin,$relevant_end)
+    {
+        // to compare the begin and the end, we need an other form
+        $begin = hexdec(substr($relevant_begin,0,strlen($relevant_begin)));
+        $end = hexdec(substr($relevant_end,0,strlen($relevant_end)));
+        
+        // the numeric form of the test hash
+        $current = hexdec(substr($hash,0,strlen($relevant_end)));
+        
         if ($current>=$begin && $current<=$end){
             return true;
-        } else
-            return false;  
-    }
+        }
+        else
+            return false;
+    }  
 }
 
 ?>

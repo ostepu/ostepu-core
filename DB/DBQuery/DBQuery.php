@@ -1,6 +1,10 @@
 <?php
 /**
  * @file DBQuery.php contains the DBQuery class
+ * 
+ * @author Till Uhlig
+ * @author Felix Schmidt
+ * @example DB/DBQuery/QuerySample.json
  */ 
 
 require_once( 'Include/Slim/Slim.php' );
@@ -21,8 +25,6 @@ if (!$com->used())
 
 /**
  * A class, to perform requests to the database
- *
- * @author Till Uhlig
  */
 class DBQuery
 {
@@ -61,25 +63,37 @@ class DBQuery
     {
         DBQuery::$_prefix = $value;
     }
-    
+
+
     /**
-     * the component constructor
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to
+     * the functions.
      *
      * @param Component $conf component data
-     */ 
+     */
     public function __construct($conf)
     {
         // initialize component
         $this->_conf = $conf;
-        
+
         // initialize slim
         $this->_app = new \Slim\Slim();
         $this->_app->response->headers->set('Content-Type', 'application/json');
-        
+
         // GET QueryResult
-        $this->_app->get('/' . $this->getPrefix(),
+        $this->_app->get('/' . $this->getPrefix() . '(/)',
                         array($this,'queryResult'));
-                        
+
+        // PUT QueryResult
+        $this->_app->put('/' . $this->getPrefix() . '(/)',
+                        array($this,'queryResult'));
+
+        // POST QueryResult
+        $this->_app->post('/' . $this->getPrefix() . '(/)',
+                        array($this,'queryResult'));
+
         // starts slim only if the right prefix was received
         if (strpos ($this->_app->request->getResourceUri(),'/' . 
                     $this->getPrefix()) === 0){
@@ -88,12 +102,20 @@ class DBQuery
             $this->_app->run();
         }
     }
-    
+
+
     /**
-     * GET queryResult
+     * Needed to send a SQL query to the database.
+     *
+     * Each component which wants to send a SQL query to the database needs to send 
+     * the SQL query as a query object to this component. This component then returns
+     * another query object including the response and possible errors. 
+     *
+     * Called when this component receives an HTTP GET, an HTTP PUT or an HTTP POST
+     * request to /query/.
      */
     public function queryResult()
-    {        
+    {
         Logger::Log("starts GET queryResult",LogLevel::DEBUG);
         
         $body = $this->_app->request->getBody();
@@ -101,7 +123,7 @@ class DBQuery
         // decode the received query data, as an object
         $obj = Query::decodeQuery($body);
 
-        $query_result = DBRequest::request($obj->getRequest()); 
+        $query_result = DBRequest::request($obj->getRequest(), $obj->getCheckSession()); 
             
         if ($query_result['errno']!=0 || !$query_result['content']){
             if ($query_result['errno']!=0)
@@ -112,20 +134,27 @@ class DBQuery
                 
             $obj = new Query();
             $this->_app->response->setBody(Query::encodeQuery($obj));
-            $this->_app->response->setStatus(409);
+            
+            if($query_result['errno']==401){
+                $this->_app->response->setStatus(401);
+            } else
+                $this->_app->response->setStatus(409);
+            
         } elseif (gettype($query_result['content'])=='boolean'){
             $obj = new Query();
             $obj->setResponse(array());
             if (isset($query_result['affectedRows']))
                 $obj->setAffectedRows($query_result['affectedRows']);
             if (isset($query_result['insertId']))
-                $obj->setInsertId($query_result['insertId']);
+                $obj->setInsertId($query_result['insertId']);     
             if (isset($query_result['errno']))
                 $obj->setErrno($query_result['errno']);
             if (isset($query_result['numRows']))
                 $obj->setNumRows($query_result['numRows']);
+                
             $this->_app->response->setBody(Query::encodeQuery($obj));
             $this->_app->response->setStatus(200);
+            
         } else{
             $data = array();
             if (isset($query_result['numRows']) && $query_result['numRows'] > 0){
@@ -142,10 +171,10 @@ class DBQuery
                 $obj->setErrno($query_result['errno']);
             if (isset($query_result['numRows']))
                 $obj->setNumRows($query_result['numRows']);
+                
             $this->_app->response->setBody(Query::encodeQuery($obj));
             $this->_app->response->setStatus(200);
-        }    
-
+        }
     }
 }
 ?>

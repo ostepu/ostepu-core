@@ -53,26 +53,26 @@ class LSubmission
         $this->lURL = $this->query->getAddress();
 
         //AddSubmission
-        $this->app->post(':data+', array($this, 'addSubmission'));
+        $this->app->post('/'.$this->getPrefix().'(/):data+', array($this, 'addSubmission'));
 
         //EditSubmissionState
-        $this->app->put('/submission/:submissionid',
+        $this->app->put('/'.$this->getPrefix().'/submission/:submissionid(/)',
                         array ($this, 'editSubmissionState'));
 
         //deleteSubmission
-        $this->app->delete('/submission/:submissionid',
+        $this->app->delete('/'.$this->getPrefix().'/submission/:submissionid(/)',
                         array($this, 'deleteSubmission'));
 
         //LoadSubmissionAsZip
-        $this->app->get('/exerciseSheet/:sheetid/user/:userid',
+        $this->app->get('/'.$this->getPrefix().'/exerciseSheet/:sheetid/user/:userid(/)',
                         array($this, 'loadSubmissionAsZip'));
 
         //ShowSubmissionsHistory
-        $this->app->get('/exerciseSheet/:sheetid/user/:userid/history',
+        $this->app->get('/'.$this->getPrefix().'/exerciseSheet/:sheetid/user/:userid/history(/)',
                         array($this, 'showSubmissionsHistory'));
 
         //GetSubmissionURL
-        $this->app->get('/submission/:submissionid',
+        $this->app->get('/'.$this->getPrefix().'/submission/:submissionid(/)',
                         array($this, 'getSubmissionURL'));
 
         $this->app->run();
@@ -139,8 +139,18 @@ class LSubmission
         $answer = Request::custom('DELETE', $URL, $header, $body);
         $this->app->response->setStatus($answer['status']);
 
-        if( $answer['status'] == 200){ //nur, wenn file tatsaechlich aus DB geloescht wurde
-            $URL = $this->lURL.'/FS/submission/'.$submissionid;
+        /**
+         * if DB-Request was succsessfull the file also gets removed from FS 
+         * otherwise returns the Status-Code from DB 
+         */
+        $fileObject = json_decode($answer['content']);
+        //if address-field exists, read it out
+        if (isset($fileObject->{'address'})){
+            $fileAddress = $fileObject->{'address'};
+        }
+        
+        if( $answer['status'] < 300){
+            $URL = $this->lURL.'/FS/'.$fileAddress;
             $answer = Request::custom('DELETE', $URL, $header, $body);
         }
     }

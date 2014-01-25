@@ -54,20 +54,20 @@ class LCondition
         $this->lURL = $this->query->getAddress();
         
         //POST SetConditions
-        $this->app->post('/course/:courseid', array($this, 'setConditions'));        //Adressen noch anpassen (Parameter mit Compo-Namen)
+        $this->app->post('/'.$this->_prefix.'/course/:courseid(/)', array($this, 'setConditions'));
         
         //PUT EditConditions
-        $this->app->put('/course/:courseid', array($this, 'editConditions'));
+        $this->app->put('/'.$this->_prefix.'/course/:courseid(/)', array($this, 'editConditions'));
         
         //GET CheckConditions
-        $this->app->get('/course/:courseid/user/:userid',
+        $this->app->get('/'.$this->_prefix.'/course/:courseid/user/:userid(/)',
                         array($this, 'checkConditions'));
         //run Slim                
         $this->app->run();
     }
     /**
-     * Funktion to set Conditions of a course and save in DB 
-     * takes one argument and retunrs a Status-Code
+     * Function to set conditions of a course and saves in database
+     * takes one argument and returns a status code.
      * @param $courseid an integer identifies the Course
      */
     public function setConditions($courseid){        
@@ -79,8 +79,8 @@ class LCondition
     }
 
     /**
-     * Funktion to edit the conditions of a course
-     * takes one arguments and retunrs a Status-Code
+     * Function to edit the conditions of a course
+     * takes one arguments and returns a Status-Code
      * @param $courseid an integer identifies the Course
      */
     public function editConditions($courseid){
@@ -91,8 +91,8 @@ class LCondition
         $this->app->response->setStatus($answer['status']);
     }
     /**
-     * Funktion to check the conditions of a course for a user
-     * takes two arguments and retunrs true/false
+     * Function to check the conditions of a course for a user
+     * takes two arguments and returns true/false
      * @param $courseid an integer identifies the Course
      * @param $userid an integer identifies the user
      */

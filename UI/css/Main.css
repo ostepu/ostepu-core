@@ -8,8 +8,16 @@ a {
     color: #FFFFFF;
 }
 
+a.plain:after {
+    content: none;
+}
+
 a:after {
     content: ' >';
+}
+
+.inline:after {
+    content: ' ';
 }
 
 .body-wrapper {
@@ -40,7 +48,6 @@ a:after {
     height: auto;
     line-height: 19px;
     background-color: #b9b8b8;
-    background-size: 16px 98px;
 }
 
 .content-body-wrapper {
@@ -67,14 +74,22 @@ a:after {
 }
 
 .collapsible .content-header {
-    background-image: url(../Images/arrow.png);
+    background-image: url(../Images/Arrow.png);
     background-repeat: no-repeat;
     background-position: 14px 0;
-
+    background-size: 16px 98px;
 }
 
 .collapsible .inactive {
     background-position: 14px -49px;
+    background-size: 16px 98px;
+}
+
+.interactive.add .content-header {
+    background-image: url(../Images/plus.png);
+    background-repeat: no-repeat;
+    background-position: 14px 0;
+    background-size: 16px 49px;
 }
 
 .footer-text {
@@ -121,10 +136,12 @@ table td {
 
 .lower-alpha li:before {
     content: counter(item, lower-alpha);
+    counter-increment: item;
 }
 
 .decimal li:before {
     content: counter(item, decimal);
+    counter-increment: item;
 }
 
 .full-width-list {
@@ -133,11 +150,40 @@ table td {
 }
 
 .full-width-list li:not(.skip-item):before {
-    padding-right: 20px;
+    display: inline-block;
+    width: 24px;
     counter-increment: item;
 }
 
 .full-width-list .skip-item:before {
+    content:"\a0\a0\a0";
+}
+
+ol.full-width-exercise-list {
+    counter-reset: firstLevel;
+    width: 880px;
+}
+
+ol.full-width-exercise-list li:before {
+    content: counter(firstLevel);
+    counter-increment: firstLevel;
+    display: inline-block;
+    width: 42px;
+}
+
+ol.full-width-exercise-list .secondLevel {
+    counter-reset: secondLevel;
+    width: 880px;
+    margin-bottom: -7px;
+    margin-top: -13px;
+}
+
+ol.full-width-exercise-list .secondLevel li:before {
+    content: counter(firstLevel) " " counter(secondLevel,lower-alpha);
+    counter-increment: secondLevel;
+}
+
+.full-width-exercise-list .skip-item:before {
     content:"\a0\a0\a0";
 }
 

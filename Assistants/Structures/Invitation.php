@@ -13,14 +13,15 @@ class Invitation extends Object implements JsonSerializable
     /**
      * @var User $member the user that was invited
      */
-    private $member;
+    private $member = null;
     
     /**
      * the $member getter
      *
      * @return the value of $user
      */ 
-    public function getMember(){
+    public function getMember()
+    {
         return $this->member;
     }
     
@@ -36,14 +37,15 @@ class Invitation extends Object implements JsonSerializable
     /**
      * @var User $leader the user that created the group
      */
-    private $leader;
+    private $leader = null;
     
     /**
      * the $leader getter
      *
      * @return the value of $leader
      */ 
-    public function getLeader(){
+    public function getLeader()
+    {
         return $this->leader;
     }
     
@@ -59,14 +61,15 @@ class Invitation extends Object implements JsonSerializable
     /**
      * @var string $sheet the exercise sheet id 
      */
-    private $sheet;
+    private $sheet = null;
     
     /**
      * the $sheet getter
      *
      * @return the value of $sheet
      */ 
-    public function getSheet(){
+    public function getSheet()
+    {
         return $this->sheet;
     }
     
@@ -79,9 +82,24 @@ class Invitation extends Object implements JsonSerializable
         $this->sheet = $value;
     }
     
-    
-    
-    
+    /**
+     * Creates an Invitation object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $leaderId The id of the leader.
+     * @param string $memberId The id of a member.
+     * @param string $sheetId The id of the exercise sheet.
+     *
+     * @return an invitation object
+     */
+    public function createInvitation($leaderId,$memberId,$sheetId)
+    {
+        return new Invitation(array('sheet' => $sheetId,
+        'leader' => User::createUser($leaderId,null,null,null,null,
+                               null,null,null,null,null), 
+        'member' => User::createUser($memberId,null,null,null,null,
+                               null,null,null,null,null)));
+    }    
     
     /**
      * returns an mapping array to convert between database and structure
@@ -102,7 +120,8 @@ class Invitation extends Object implements JsonSerializable
      *
      * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData(){
+    public function getInsertData()
+    {
         $values = "";
         
         if ($this->sheet != null) $this->addInsertData($values, 'ES_id', DBJson::mysql_real_escape_string($this->sheet));
@@ -132,6 +151,9 @@ class Invitation extends Object implements JsonSerializable
      */
     public function __construct($data=array())
     {
+        if ($data==null)
+            $data = array();
+        
         foreach ($data AS $key => $value) {
              if (isset($key)){
                 if ($key == 'member' || $key == 'leader') {
@@ -166,6 +188,9 @@ class Invitation extends Object implements JsonSerializable
      */
     public static function decodeInvitation($data, $decode=true)
     {
+        if ($decode && $data==null) 
+            $data = "{}";
+    
         if ($decode)
             $data = json_decode($data);
         if (is_array($data)){
@@ -183,11 +208,11 @@ class Invitation extends Object implements JsonSerializable
      */
     public function jsonSerialize()
     {
-        return array(
-            'user' => $this->user,
-            'leader' => $this->leader,
-            'sheet' => $this->sheet
-        );
+        $list = array();
+        if ($this->member!==null) $list['member'] = $this->member;
+        if ($this->leader!==null) $list['leader'] = $this->leader;
+        if ($this->sheet!==null) $list['sheet'] = $this->sheet;
+        return $list;  
     }
 }
 ?>

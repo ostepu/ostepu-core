@@ -1,12 +1,18 @@
 <?php
+/**
+ * @file Template.php
+ * Contains the Template class.
+ */
+
 include_once 'Helpers.php';
-include_once '../../Assistants/Logger.php';
+include_once '../Assistants/Logger.php';
 
 /**
-* Template class.
-*
-* Applies templates to format data.
-*/
+ * Template class.
+ *
+ * Applies templates to format data.
+ * @author Florian Lücke
+ */
 class Template
 {
     protected $template;
@@ -15,8 +21,9 @@ class Template
 
     /**
      * Construct a new template.
-     *--.
+     *
      * @param string $template A template string.
+     * @sa Template::WithTemplateFile($fileName)
      */
     public function __construct($template)
     {
@@ -33,7 +40,7 @@ class Template
         $templateString = file_get_contents($fileName);
 
         if ($templateString === FALSE) {
-            Logger::Log("Could not open file: {$fileName}", LogLevel::WARNING);
+            Logger::Log("Could not open file: " .  $fileName, LogLevel::WARNING);
         }
 
         $t = new Template($templateString);
@@ -78,6 +85,8 @@ class Template
         ob_start();
 
         // evaluate the template as a php script
+        // a closing php tag is needed before the template, so HTML can be
+        // used in the template.
         $success = eval("?>" . $this->template);
 
         // stop buffering and return the buffer's content

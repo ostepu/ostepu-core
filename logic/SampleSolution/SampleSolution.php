@@ -39,17 +39,17 @@ class LSampleSolution
         $this->lURL = $this->query->getAddress();
         
         //AddSampleSolution
-        $this->app->post('/course/:courseid/exercisesheet/:sheetid',
+        $this->app->post('/'.$this->getPrefix().'/course/:courseid/exercisesheet/:sheetid(/)',
                             array($this, 'addSampleSolution');
         
         //EditSampleSolustion
-        $this->app->put('/file/:fileid', array($this, 'editSampleSolution');
+        $this->app->put('/'.$this->getPrefix().'/file/:fileid(/)', array($this, 'editSampleSolution');
         
         //GetSampleSolutionURL
-        $this->app->get('/file/:fileid', array($this, 'getSampleSolutionURL');
+        $this->app->get('/'.$this->getPrefix().'/file/:fileid(/)', array($this, 'getSampleSolutionURL');
         
         //DeleteSampleSolution
-        $this->app->delete('file/:fileid', 
+        $this->app->delete('/'.$this->getPrefix().'file/:fileid(/)', 
                             array($this, 'DeleteSampleSolution');
         
         $this->app->run();
@@ -135,10 +135,19 @@ class LSampleSolution
         $answer = Request::custom('DELETE', $URL, $header, $body);
         $this->app->response->setStatus($answer['status']);
         
-        if( $answer['status'] == 200){ //nur, wenn file tatsaechlich aus DB geloescht wurde
-            $URL = $this->lURL.'/FS/sampleSolution/file/'.$fileid;
+        /**
+         * if DB-Request was succsessfull the file also gets removed from FS 
+         * otherwise returns the Status-Code from DB 
+         */        
+        $fileObject = json_decode($answer['content']);
+        //if address-field exists, read it out
+        if (isset($fileObject->{'address'})){
+            $fileAddress = $fileObject->{'address'};
+        }
+        
+        if( $answer['status'] < 300){
+            $URL = $this->lURL.'/FS/'.$fileAddress;
             $answer = Request::custom('DELETE', $URL, $header, $body);
-            $this->app->response->setStatus($answer['status']);
         }  
     }
 }

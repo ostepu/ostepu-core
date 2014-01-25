@@ -55,19 +55,19 @@ class LUser
         $this->lURL = $this->query->getAddress();
 
         //SetUserRights
-        $this->app->put('/user/:userid/right', array($this, 'setUserRights'));          //Adressen noch anpassen(kein .php;+ Compo-Namen
+        $this->app->put('/'.$this->getPrefix().'/user/:userid/right', array($this, 'setUserRights'));          //Adressen noch anpassen(kein .php;+ Compo-Namen
 
         //AddUser
-        $this->app->post(':date+', array($this, 'addUser'));        //data+ soll leerer Parameter sein
+        $this->app->post('/'.$this->getPrefix().'(/):date+', array($this, 'addUser'));        //data+ soll leerer Parameter sein
 
         //EditUser
-        $this->app->put('/user/:userid', array($this, 'editUser'));
+        $this->app->put('/'.$this->getPrefix().'/user/:userid(/)', array($this, 'editUser'));
 
         //GetUsers
-        $this->app->get('/user', array($this, 'getUsers'));
+        $this->app->get('/'.$this->getPrefix().'(/)', array($this, 'getUsers'));
 
         //GetUser
-        $this->app->get('/user/:userid', array($this, 'getUser'));
+        $this->app->get('/'.$this->getPrefix().'/user/:userid(/)', array($this, 'getUser'));
 
         $this->app->run();
     }
@@ -150,6 +150,7 @@ class LUser
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
         $URL = $this->lURL.'/DB/user/user/'.$userid;
+        print_r($URL);
         $answer = Request::custom('GET', $URL, $header, $body);
         $this->app->response->setStatus($answer['status']);
         $this->app->response->setBody($answer['content']);

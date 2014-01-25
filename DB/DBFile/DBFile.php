@@ -1,6 +1,10 @@
 <?php
 /**
  * @file DBFile.php contains the DBFile class
+ * 
+ * @author Till Uhlig
+ * @author Felix Schmidt
+ * @example DB/DBFile/FileSample.json
  */ 
 
 require_once( 'Include/Slim/Slim.php' );
@@ -14,8 +18,6 @@ include_once( 'Include/Logger.php' );
     
 /**
  * A class, to abstract the "File" table from database
- *
- * @author Till Uhlig
  */
 class DBFile
 {
@@ -58,12 +60,16 @@ class DBFile
     {
         DBFile::$_prefix = $value;
     }
-    
+
+
     /**
-     * the component constructor
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to
+     * the functions.
      *
      * @param Component $conf component data
-     */ 
+     */
     public function __construct($conf)
     {
         // initialize component
@@ -72,29 +78,30 @@ class DBFile
         
         // initialize slim
         $this->_app = new \Slim\Slim();
+        $this->_app->response->headers->set('Content-Type', 'application/json');
         
         // PUT EditFile
-        $this->_app->put('/' . $this->getPrefix() . '/file/:fileid',
+        $this->_app->put('/' . $this->getPrefix() . '(/file)/:fileid(/)',
                         array($this, 'editFile'));
                         
-        // POST SetFile
-        $this->_app->post('/' . $this->getPrefix(),
-                        array($this, 'editFile'));
+        // POST AddFile
+        $this->_app->post('/' . $this->getPrefix() . '(/)',
+                        array($this, 'addFile'));
                         
         // DELETE RemoveFile
-        $this->_app->delete('/' . $this->getPrefix() . '/file/:fileid',
+        $this->_app->delete('/' . $this->getPrefix() . '(/file)/:fileid(/)',
                         array($this, 'removeFile'));
                                            
         // GET GetFile
-        $this->_app->get('/' . $this->getPrefix() . '/file/:fileid',
+        $this->_app->get('/' . $this->getPrefix() . '(/file)/:fileid(/)',
                         array($this, 'getFile'));
                         
         // GET GetFileByHash
-        $this->_app->get('/' . $this->getPrefix() . '/hash/:hash',
+        $this->_app->get('/' . $this->getPrefix() . '/hash/:hash(/)',
                         array($this, 'getFileByHash'));
                         
         // GET GetAllFiles
-        $this->_app->get('/' . $this->getPrefix() . '/file',
+        $this->_app->get('/' . $this->getPrefix() . '(/file)(/)',
                         array($this, 'getAllFiles'));
                         
         // starts slim only if the right prefix was received
@@ -105,11 +112,17 @@ class DBFile
             $this->_app->run();
         }
     }
-    
+
+
     /**
-     * PUT EditFile
+     * Edits a file.
      *
-     * @param int $userid a database user identifier
+     * Called when this component receives an HTTP PUT request to
+     * /file/$fileid(/) or /file/file/$fileid(/).
+     * The request body should contain a JSON object representing the file's new
+     * attributes.
+     *
+     * @param string $fileid The id of the file that is being updated.
      */
     public function editFile($fileid)
     {
@@ -144,16 +157,20 @@ class DBFile
                 
             } else{
                 Logger::Log("PUT EditFile failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
     }
-    
+
+
     /**
-     * DELETE RemoveFile
+     * Deletes a file.
      *
-     * @param int $userid a database user identifier
+     * Called when this component receives an HTTP DELETE request to
+     * /file/$fileid(/) or /file/file/$fileid(/).
+     *
+     * @param string $fileid The id of the file that is being deleted.
      */
     public function removeFile($fileid)
     {
@@ -170,20 +187,48 @@ class DBFile
         
         // checks the correctness of the query                        
         if ($result['status']>=200 && $result['status']<=299){
-        
-            $this->_app->response->setStatus($result['status']);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+            $query = Query::decodeQuery($result['content']);
+
+            $data = $query->getResponse();
+            
+            // generates an assoc array of an file by using a defined list of 
+            // its attributes
+            $file = DBJson::getResultObjectsByAttributes($data, 
+                                        File::getDBPrimaryKey(), 
+                                        File::getDBConvert());
+            
+            // only one object as result 
+            if (count($file)>0)
+                $file = $file[0];
+                
+            if ($file!==null){
+                $this->_app->response->setBody(File::encodeFile($file));
+                $this->_app->response->setStatus(201);
+                if (isset($result['headers']['Content-Type']))
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+            } else{
+                Logger::Log("DELETE RemoveFile failed (no file in db)",LogLevel::ERROR);
+                $this->_app->response->setBody(File::encodeFile(new File()));
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
+                $this->_app->stop();
+            }
                 
         } else{
             Logger::Log("DELETE RemoveFile failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+            $this->_app->response->setBody(File::encodeFile(new File()));
+            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * POST AddFile
+     * Adds a file.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /file(/).
+     * The request body should contain a JSON object representing the file's
+     * attributes.
      */
     public function addFile()
     {
@@ -202,7 +247,7 @@ class DBFile
             
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
-                                            "Sql/SetFile.sql", 
+                                            "Sql/AddFile.sql", 
                                             array("values" => $data));                   
             
             // checks the correctness of the query
@@ -220,16 +265,21 @@ class DBFile
                 
             } else{
                 Logger::Log("POST AddFile failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setBody(File::encodeFile(new File()));
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
     }
-    
+
+
     /**
-     * GET GetFile
+     * Returns a file.
      *
-     * @param int $fileid a database file identifier
+     * Called when this component receives an HTTP GET request to
+     * /file/$fileid(/) or /file/file/$fileid(/).
+     *
+     * @param string $file The id of the file that should be returned.
      */
     public function getFile($fileid)
     {
@@ -261,22 +311,26 @@ class DBFile
                 $file = $file[0];
                 
             $this->_app->response->setBody(File::encodeFile($file));
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetFile failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(File::encodeFile(new File()));
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetFileByHash
+     * Returns a file identified by a given hash.
      *
-     * @param int $fileid a database file identifier
+     * Called when this component receives an HTTP GET request to
+     * /file/hash/$hash(/).
+     *
+     * @param string $hash The hash of the file that should be returned.
      */
     public function getFileByHash($hash)
     {
@@ -306,20 +360,24 @@ class DBFile
                 $file = $file[0];
                 
             $this->_app->response->setBody(File::encodeFile($file));
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetFileByHash failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(File::encodeFile(new File()));
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetAllFiles
+     * Returns all files.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /file(/) or /file/file(/).
      */
     public function getAllFiles()
     {
@@ -343,13 +401,13 @@ class DBFile
                                         File::getDBConvert());
                 
             $this->_app->response->setBody(File::encodeFile($file));
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetAllFiles failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(File::encodeFile(new File()));
             $this->_app->stop();
         }

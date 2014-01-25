@@ -160,13 +160,37 @@ class Query extends Object implements JsonSerializable
     /**
      * the $numRows setter
      *
-     * @param int $value the new value for $numRows
-     */ 
+     * @param int $numRows the new value for $numRows
+     */
     public function setNumRows($value)
     {
         $this->numRows = $value;
     } 
     
+    /**
+     * @var bool $checkSession specifies whether the session needs to be checked/tested
+     */ 
+    private $checkSession = null;
+    
+    /**
+     * the $checkSession getter
+     *
+     * @return the value of $checkSession
+     */ 
+    public function getCheckSession()
+    {
+        return $this->checkSession;
+    }
+    
+    /**
+     * the $checkSession setter
+     *
+     * @param bool $value the new value for $checkSession
+     */ 
+    public function setCheckSession($value)
+    {
+        $this->checkSession = $value;
+    } 
     
     /**
      * the constructor
@@ -199,21 +223,25 @@ class Query extends Object implements JsonSerializable
      * @param string $data json encoded data (decode=true) 
      * or json decoded data (decode=false)
      * @param bool $decode specifies whether the data must be decoded
+     * @todo support query arrays
      *
      * @return the object
      */
     public static function decodeQuery($data, $decode=true)
     {
+        if ($decode && $data==null) 
+            $data = "{}";
+            
         if ($decode)
             $data = json_decode($data,true);
             
         $obj = new Query();
-        if (is_array($data) && !isset($data['response']) && !isset($data['request'])){
+        if (is_array($data) && !isset($data['response']) && !isset($data['request']) && !isset($data['insertId'])){
 
         } else {
             $obj = new Query();
             if (isset($data['request']))
-                $obj->setRequest(json_decode(json_encode($data['request'])));
+                $obj->setRequest($data['request']);
             if (isset($data['response']))
                 $obj->setResponse($data['response']);                
             if (isset($data['affectedRows']))
@@ -224,6 +252,8 @@ class Query extends Object implements JsonSerializable
                 $obj->setErrno($data['errno']); 
             if (isset($data['numRows']))
                 $obj->setNumRows($data['numRows']); 
+            if (isset($data['checkSession']))
+                $obj->setCheckSession($data['checkSession']); 
         }
         return $obj;
     }
@@ -242,6 +272,7 @@ class Query extends Object implements JsonSerializable
         if ($this->insertId!==null) $list['insertId'] = $this->insertId;
         if ($this->errno!==null) $list['errno'] = $this->errno;
         if ($this->numRows!==null) $list['numRows'] = $this->numRows;
+        if ($this->checkSession!==null) $list['checkSession'] = $this->checkSession;
         return $list;
     }
 }

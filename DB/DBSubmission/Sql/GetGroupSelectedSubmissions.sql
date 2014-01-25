@@ -2,8 +2,8 @@
  * @file GetGroupSelectedeSubmissions.sql
  * gets the specified selected submissions from %Submission table
  * @author Till Uhlig
- * @param int $esid an %ExerciseSheet identifier
- * @param int $userid a %User identifier
+ * @param int \$esid an %ExerciseSheet identifier
+ * @param int \$userid a %User identifier
  * @result 
  * - F, the submission file
  * - S, the submission data
@@ -24,6 +24,7 @@ select
     S.S_date,
     SS.S_id_selected as S_selected,
     S.S_accepted,
+    S.S_flag,
     S.E_id
 from
     `Group` G
@@ -37,6 +38,7 @@ from
     join Exercise E ON (S.E_id = E.E_id and E.ES_id = '$esid')) ON (G2.U_id_leader = S.U_id)
         join
     File F ON (S.F_id_file = F.F_id)
-        join
+        left join
     SelectedSubmission SS ON (S.S_id = SS.S_id_selected
         and S.E_id = SS.E_id)
+

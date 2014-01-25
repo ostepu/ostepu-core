@@ -1,9 +1,27 @@
 <?php
-include 'include/Header/Header.php';
-include 'include/HTMLWrapper.php';
+include_once 'include/Header/Header.php';
+include_once 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
+include_once '../Assistants/Logger.php';
+?>
 
-// construct a new Header
+<?php
+    if (isset($_POST['action'])) {
+        Logger::Log($_POST, LogLevel::INFO);
+        /**
+         * @todo create a new sheet or update the existing one
+         */
+
+        // redirect, so the user can reload the page without a warning
+        header("Location: CreateSheet.php");
+    } else {
+        Logger::Log("No Sheet Data", LogLevel::INFO);
+    }
+?>
+
+<?php
+
+// construct a new Headers
 $h = new Header("Datenstrukturen",
                 "",
                 "Admin",
@@ -12,6 +30,9 @@ $h = new Header("Datenstrukturen",
 $h->setBackURL("Lecturer.php")
 ->setBackTitle("zur Veranstaltung");
 
+/**
+ * @todo combine the templates in a single file
+ */
 $sheetSettings = Template::WithTemplateFile('include/CreateSheet/SheetSettings.template.html');
 
 $createExercise = Template::WithTemplateFile('include/CreateSheet/CreateExercise.template.html');
@@ -19,7 +40,7 @@ $createExercise = Template::WithTemplateFile('include/CreateSheet/CreateExercise
 $exerciseSettings = Template::WithTemplateFile('include/CreateSheet/ExerciseSettings.template.html');
 
 // wrap all the elements in some HTML and show them on the page
-$w = new HTMLWrapper($h, $sheetSettings, $createExercise, $exerciseSettings);
+$w = new HTMLWrapper($h, "<form action=\"CreateSheet.php\" method=\"POST\">", $sheetSettings, $createExercise, "</form>");
 $w->set_config_file('include/configs/config_createSheet.json');
 $w->show();
 ?>

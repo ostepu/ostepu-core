@@ -1,6 +1,10 @@
 <?php
 /**
  * @file DBExternalId.php contains the DBExternalId class
+ * 
+ * @author Till Uhlig
+ * @author Felix Schmidt
+ * @example DB/DBExternalId/ExternalIdSample.json
  */ 
 
 require_once( 'Include/Slim/Slim.php' );
@@ -22,8 +26,6 @@ if (!$com->used())
     
 /**
  * A class, to abstract the "ExternalId" table from database
- *
- * @author Till Uhlig
  */
 class DBExternalId
 {
@@ -66,12 +68,16 @@ class DBExternalId
     {
         DBExternalId::$_prefix = $value;
     }
-    
+
+
     /**
-     * the component constructor
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to
+     * the functions.
      *
      * @param Component $conf component data
-     */ 
+     */
     public function __construct($conf)
     {
         // initialize component
@@ -83,27 +89,27 @@ class DBExternalId
         $this->_app->response->headers->set('Content-Type', 'application/json');
 
         // PUT EditExternalId
-        $this->_app->put('/' . $this->getPrefix() . '/externalid/:exid',
+        $this->_app->put('/' . $this->getPrefix() . '(/externalid)/:exid(/)',
                         array($this,'editExternalId'));
         
         // DELETE DeleteExternalId
-        $this->_app->delete('/' . $this->getPrefix() . '/externalid/:exid',
+        $this->_app->delete('/' . $this->getPrefix() . '(/externalid)/:exid(/)',
                            array($this,'deleteExternalId'));
         
-        // POST SetExternalId
-        $this->_app->post('/' . $this->getPrefix(),
-                         array($this,'setExternalId'));
+        // POST AddExternalId
+        $this->_app->post('/' . $this->getPrefix() . '(/)',
+                         array($this,'addExternalId'));
                          
         // GET GetExternalId
-        $this->_app->get('/' . $this->getPrefix() . '/externalid/:exid',
+        $this->_app->get('/' . $this->getPrefix() . '(/externalid)/:exid(/)',
                         array($this,'getExternalId'));
                         
         // GET GetAllExternalIds
-        $this->_app->get('/' . $this->getPrefix() . '/externalid',
+        $this->_app->get('/' . $this->getPrefix() . '(/externalid)(/)',
                         array($this,'getAllExternalIds'));
                         
         // GET GetCourseExternalIds
-        $this->_app->get('/' . $this->getPrefix() . '/course/:courseid',
+        $this->_app->get('/' . $this->getPrefix() . '/course/:courseid(/)',
                         array($this,'getCourseExternalIds'));
                     
         // starts slim only if the right prefix was received
@@ -114,11 +120,17 @@ class DBExternalId
             $this->_app->run();
         }
     }
-    
+
+
     /**
-     * PUT EditExternalId
+     * Edits an alias for an already existing course.
      *
-     * @param string $exid a database external id identifier
+     * Called when this component receives an HTTP PUT request to
+     * /externalid/$exid(/) or /externalid/externalid/$exid(/).
+     * The request body should contain a JSON object representing the 
+     * externalId's new attributes.
+     *
+     * @param string $exid The alias of the course that is being updated.
      */
     public function editExternalId($exid)
     {
@@ -149,16 +161,20 @@ class DBExternalId
                 
             } else{
                 Logger::Log("PUT EditExternalId failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
     }
-    
+
+
     /**
-     * DELETE DeleteExternalId
+     * Deletes an alias for an already existing course.
      *
-     * @param string $exid a database external id identifier
+     * Called when this component receives an HTTP DELETE request to
+     * /externalid/$exid(/) or /externalid/externalid/$exid(/).
+     *
+     * @param string $exid The alias of the course that is being deleted.
      */
     public function deleteExternalId($exid)
     {
@@ -174,23 +190,31 @@ class DBExternalId
         // checks the correctness of the query                             
         if ($result['status']>=200 && $result['status']<=299){
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(201);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE DeleteExternalId failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * POST SetExternalId
-     */ 
-    public function setExternalId()
+     * Adds an alias for an already existing course.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /externalid/$exid(/) or /externalid/externalid/$exid(/).
+     * The request body should contain a JSON object representing the 
+     * externalId's attributes.
+     *
+     * @param string $exid The alias of the course that is being created.
+     */
+    public function addExternalId()
     {
-        Logger::Log("starts POST SetExternalId",LogLevel::DEBUG);
+        Logger::Log("starts POST AddExternalId",LogLevel::DEBUG);
         
         // decode the received external id data, as an object
         $insert = ExternalId::decodeExternalId($this->_app->request->getBody());
@@ -202,37 +226,36 @@ class DBExternalId
         foreach ($insert as $in){
             // generates the insert data for the object
             $data = $in->getInsertData();
-            
+   
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
-                                            "Sql/SetExternalId.sql", 
+                                            "Sql/AddExternalId.sql", 
                                             array("values" => $data));                   
            
            // checks the correctness of the query
             if ($result['status']>=200 && $result['status']<=299){
                 $queryResult = Query::decodeQuery($result['content']);
                 
-                // sets the new auto-increment id
-                $obj = new ExternalId();
-                $obj->setId($queryResult->getInsertId());
-            
-                $this->_app->response->setBody(ExternalId::encodeExternalId($obj)); 
                 $this->_app->response->setStatus(201);
                 if (isset($result['headers']['Content-Type']))
                     $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
-                Logger::Log("POST SetExternalId failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                Logger::Log("POST AddExternalId failed",LogLevel::ERROR);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
     }
-    
+
+
     /**
-     * GET GetExternalId
+     * Returns the alias for an already existing course.
      *
-     * @param string $exid a database external id identifier
+     * Called when this component receives an HTTP GET request to
+     * /externalid/$exid(/) or /externalid/externalid/$exid(/).
+     *
+     * @param string $exid The alias of the course that should be returned.
      */
     public function getExternalId($exid)
     {    
@@ -248,50 +271,54 @@ class DBExternalId
         // checks the correctness of the query                                     
         if ($result['status']>=200 && $result['status']<=299){
             $query = Query::decodeQuery($result['content']);
-            
             $data = $query->getResponse();
             
-            // generates an assoc array of a course by using a defined list of 
+            // generates an assoc array of courses by using a defined list of 
             // its attributes
             $course = DBJson::getObjectsByAttributes($data, 
                                     Course::getDBPrimaryKey(), 
                                     Course::getDBConvert());
             
-            // generates an assoc array of an external id by using a defined list of 
+            // generates an assoc array of external IDs by using a defined list of 
             // its attributes
-            $externalId = DBJson::getObjectsByAttributes($data, 
+            $externalIds = DBJson::getObjectsByAttributes($data, 
                                     ExternalId::getDBPrimaryKey(), 
                                     ExternalId::getDBConvert());
             
-            // concatenates the external id and the associated course
+            // concatenates the external IDs and the associated courses
             $res = DBJson::concatObjectListsSingleResult($data, 
-                        $externalId,ExternalId::getDBPrimaryKey(), 
-                        ExternalId::getDBConvert()['EX_course'] ,
+                        $externalIds,ExternalId::getDBPrimaryKey(), 
+                        ExternalId::getDBConvert()['EX_course'], 
                         $course,Course::getDBPrimaryKey());              
-            
+      
             // to reindex
-            $res = array_merge($res);
-            
+            $res = array_values($res);
+               
             // only one object as result
-            if (count($res)>0)
-                $res = $res[0];
-                
+            // @todo only one object as result
+            /*if (count($res)>1)
+                $res = $res[0];*/
+             
             $this->_app->response->setBody(ExternalId::encodeExternalId($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
+                 
         } else{
             Logger::Log("GET GetExternalId failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(ExternalId::encodeExternalId(new ExternalId()));
             $this->_app->stop();
         }
     }   
-    
+
+
     /**
-     * GET GetAllExternalIds
+     * Returns all aliases for the courses.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /externalid(/) or /externalid/externalid(/).
      */
     public function getAllExternalIds()
     {    
@@ -300,7 +327,7 @@ class DBExternalId
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetAllExternalIds.sql", 
-                                        array("exid" => $exid));
+                                        array());
         
         // checks the correctness of the query                                    
         if ($result['status']>=200 && $result['status']<=299){
@@ -327,26 +354,30 @@ class DBExternalId
                         $course,Course::getDBPrimaryKey());              
             
             // to reindex
-            $res = array_merge($res);
+            $res = array_values($res);
             
             $this->_app->response->setBody(ExternalId::encodeExternalId($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetAllExternalIds failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(ExternalId::encodeExternalId(new ExternalId()));
             $this->_app->stop();
         }
     }    
-    
+
+
     /**
-     * GET getCourseExternalIds
+     * Returns the aliases for an already existing course.
      *
-     * @param int $courseid a database course identifier
+     * Called when this component receives an HTTP GET request to
+     * /externalid/$exid(/) or /externalid/externalid/$exid(/).
+     *
+     * @param int $courseid The id of the course whose aliases should be returned.
      */
     public function getCourseExternalIds($courseid)
     {    
@@ -386,17 +417,17 @@ class DBExternalId
                             $course,Course::getDBPrimaryKey());              
             
             // to reindex
-            $res = array_merge($res);
+            $res = array_values($res);
             
             $this->_app->response->setBody(ExternalId::encodeExternalId($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetExerciseSheet failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(ExternalId::encodeExternalId(new ExternalId()));
             $this->_app->stop();
         }

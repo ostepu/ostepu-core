@@ -1,32 +1,37 @@
-<div class="content-element">
-    <div class="content-header">
-        <div class="content-title left uppercase">Manuelle Zuweisung</div>
-        <div class="info-color bold right">
-            <a href="#">zu ausgewählter Gruppe hinzufügen</a>
-        </div>   
-    </div>
-
-    <div class="content-body-wrapper">
-        <div class="content-body left">
-            <?php foreach ($tutorAssignments as $tutorAssignment): ?>
-                <div class="tutor-assign-element left">
-                    <div class="tutor-assign-element-title bold">
-                        <input type="radio" name="tutor-assign-radio" value="Unzugeordnet" checked="true" /> 
-                        <?php print $tutorAssignment['tutor']['firstName']; ?>
-                        <?php print " "; ?>
-                        <?php print $tutorAssignment['tutor']['lastName']; ?>
-                        <?php print " "; ?>
-                        <?php print "(" . count($tutorAssignment['submissionIDs']) . ")"; ?>
-                    </div>
-                    <div class="checkbox-container">
-                        <?php foreach ($tutorAssignment['submissionIDs'] as $submissionID): ?>
-                            <input type="checkbox" />
-                            <?php print $submissionID; ?>
-                            <br />
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-            <?php endforeach; ?> 
+<form action="TutorAssign.php" method="POST">
+    <input type="hidden" name="action" value="assignManually">
+    <div class="content-element">
+        <div class="content-header">
+            <div class="content-title left uppercase">Manuelle Zuweisung</div>
+            <button class="right info-color text-button bold">zu ausgewählter Gruppe hinzufügen</button>
         </div>
-    </div> <!-- end: content-body-wrapper -->
-</div> <!-- end: content-element -->
+
+        <div class="content-body-wrapper">
+            <div class="content-body left">
+                <?php foreach ($tutorAssignments as $tutorAssignment): ?>
+                    <div class="tutor-assign-element left">
+                        <div class="tutor-assign-element-title bold">
+                            <?php print '<input type="radio" name="tutorID" value="';
+                            print $tutorAssignment['tutor']['userID'] . '"/>';
+                            print $tutorAssignment['tutor']['firstName'];
+                            print " ";
+                            print $tutorAssignment['tutor']['lastName'];
+                            print " ";
+                            print "(" . count($tutorAssignment['submissionIDs']) . ")";
+                            ?>
+                        </div>
+                        <div class="checkbox-container">
+                            <?php foreach ($tutorAssignment['submissionIDs'] as $submissionID):
+                            print '<input type="checkbox" name="submissionIDs[]" value="';
+                            print $submissionID . '"/>';
+                            print $submissionID;
+                            print '<br />';
+                            endforeach;
+                            ?>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div> <!-- end: content-body-wrapper -->
+    </div> <!-- end: content-element -->
+</form>

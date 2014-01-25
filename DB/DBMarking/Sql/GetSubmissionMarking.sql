@@ -2,7 +2,7 @@
  * @file GetSubmissionMarking.sql
  * gets the specified marking from %Marking table
  * @author Till Uhlig
- * @param int $suid a %Submission identifier
+ * @param int \$suid a %Submission identifier
  * @result 
  * - M, the marking data
  * - F, the marking file
@@ -32,11 +32,14 @@ SELECT
     S.S_date as S_date2,
     SS.S_id_selected as S_selected2,
     S.S_accepted as S_accepted2,
+    S.S_flag as S_flag2,   
     S.E_id as E_id2
 from
     Marking M
         join
     Submission S ON (M.S_id = S.S_id)
+        left join
+    SelectedSubmission SS ON (S.S_id = SS.S_id_selected)
         join
     File F ON (F.F_id = M.F_id_file)
 where

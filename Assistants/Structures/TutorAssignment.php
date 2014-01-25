@@ -13,14 +13,15 @@ class TutorAssignment extends Object implements JsonSerializable
     /**
      * @var User $turor the tutor
      */
-    private $tutor;
+    private $tutor = null;
     
     /**
      * the $tutor getter
      *
      * @return the value of $tutor
      */ 
-    public function getTutor(){
+    public function getTutor()
+    {
         return $this->tutor;
     }
     
@@ -43,7 +44,8 @@ class TutorAssignment extends Object implements JsonSerializable
      *
      * @return the value of $submissionIds
      */ 
-    public function getSubmissionIds(){
+    public function getSubmissionIds()
+    {
         return $submissionIds;
     }
     

@@ -1,7 +1,11 @@
 <?php
 /**
  * @file DBSelectedSubmission.php contains the DBSelectedSubmission class
- */ 
+ *
+ * @author Till Uhlig
+ * @author Felix Schmidt
+ * @example DB/DBSelectedSubmission/SelectedSubmissionSample.json
+ */
 
 require_once( 'Include/Slim/Slim.php' );
 include_once( 'Include/Structures.php' );
@@ -22,8 +26,6 @@ if (!$com->used())
     
 /**
  * A class, to abstract the "SelectedSubmission" table from database
- *
- * @author Till Uhlig
  */
 class DBSelectedSubmission
 {
@@ -66,12 +68,16 @@ class DBSelectedSubmission
     {
         DBSelectedSubmission::$_prefix = $value;
     }
-    
+
+
     /**
-     * the component constructor
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to
+     * the functions.
      *
      * @param Component $conf component data
-     */ 
+     */
     public function __construct($conf)
     {
         // initialize component
@@ -84,24 +90,24 @@ class DBSelectedSubmission
 
         // PUT EditSelectedSubmission
         $this->_app->put('/' . $this->getPrefix() . 
-                        '/leader/:userid/exercise/:eid',
+                        '/leader/:userid/exercise/:eid(/)',
                         array($this,'editSelectedSubmission'));
         
         // DELETE DeleteSelectedSubmission
         $this->_app->delete('/' . $this->getPrefix() . 
-                            '/leader/:userid/exercise/:eid',
+                            '/leader/:userid/exercise/:eid(/)',
                             array($this,'deleteSelectedSubmission'));
         
-        // POST SetSelectedSubmission
-        $this->_app->post('/' . $this->getPrefix(),
-                         array($this,'setSelectedSubmission'));  
+        // POST AddSelectedSubmission
+        $this->_app->post('/' . $this->getPrefix() . '(/)',
+                         array($this,'addSelectedSubmission'));  
                          
         // GET GetExerciseSelected
-        $this->_app->get('/' . $this->getPrefix() . '/exercise/:eid',
+        $this->_app->get('/' . $this->getPrefix() . '/exercise/:eid(/)',
                         array($this,'getExerciseSelected'));
                         
         // GET GetSheetSelected
-        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid',
+        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid(/)',
                         array($this,'getSheetSelected'));
                         
         // starts slim only if the right prefix was received
@@ -112,12 +118,17 @@ class DBSelectedSubmission
             $this->_app->run();
         }
     }
-    
+
+
     /**
-     * PUT EditSelectedSubmission
+     * Sets the submission that should be marked.
      *
-     * @param int $userid a database user identifier
-     * @param int $eid a database exercise identifier
+     * Called when this component receives an HTTP PUT request to
+     * /selectedsubmission/leader/$userid/exercise/$eid(/).
+     * The request body should contain a JSON object representing the new selectedSubmission.
+     *
+     * @param string $userid The id or the user which leads the group.
+     * @param int $eid The id of the exercise.
      */
     public function editSelectedSubmission($userid, $eid)
     {
@@ -127,10 +138,10 @@ class DBSelectedSubmission
         DBJson::checkInput($this->_app, 
                             ctype_digit($userid),
                             ctype_digit($eid));
-                            
-        // decode the received submission data, as an object
-        $insert = Submission::decodeSubmission($this->_app->request->getBody());
-        
+
+        // decode the received selected submission data, as an object
+        $insert = SelectedSubmission::decodeSelectedSubmission($this->_app->request->getBody());
+
         // always been an array
         if (!is_array($insert))
             $insert = array($insert);
@@ -138,12 +149,12 @@ class DBSelectedSubmission
         foreach ($insert as $in){
             // generates the update data for the object
             $data = $in->getInsertData();
-            
+ 
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
                                     "Sql/EditSelectedSubmission.sql", 
-                                    array("userid" => $userid,"eid" => $eid));                   
-            
+                                    array("userid" => $userid,"eid" => $eid, "values" => $data));                   
+ 
             // checks the correctness of the query
             if ($result['status']>=200 && $result['status']<=299){
                 $this->_app->response->setStatus(201);
@@ -152,17 +163,21 @@ class DBSelectedSubmission
                 
             } else{
                 Logger::Log("PUT EditSelectedSubmission failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
     }
-    
+
+
     /**
-     * DELETE DeleteSelectedSubmission
+     * Unsets the submission that should be marked.
      *
-     * @param int $userid a database user identifier
-     * @param int $eid a database exercise identifier
+     * Called when this component receives an HTTP DELETE request to
+     * /selectedsubmission/leader/$userid/exercise/$eid(/).
+     *
+     * @param string $userid The id or the user which leads the group.
+     * @param int $eid The id of the exercise.
      */
     public function deleteSelectedSubmission($userid, $eid)
     {
@@ -181,26 +196,31 @@ class DBSelectedSubmission
         // checks the correctness of the query                          
         if ($result['status']>=200 && $result['status']<=299){
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(201);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE DeleteSelectedSubmission failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * POST SetSelectedSubmission
+     * Sets the submission that should be marked.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /selectedsubmission/leader/$userid/exercise/$eid(/).
+     * The request body should contain a JSON object representing the new selectedSubmission.
      */
-    public function setSelectedSubmission()
+    public function addSelectedSubmission()
     {
-        Logger::Log("starts POST SetSelectedSubmission",LogLevel::DEBUG);
+        Logger::Log("starts POST AddSelectedSubmission",LogLevel::DEBUG);
         
-        // decode the received submission data, as an object
-        $insert = Submission::decodeSubmission($this->_app->request->getBody());
+        // decode the received selected submission data, as an object
+        $insert = SelectedSubmission::decodeSelectedSubmission($this->_app->request->getBody());
         
         // always been an array
         if (!is_array($insert))
@@ -212,7 +232,7 @@ class DBSelectedSubmission
             
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
-                                            "Sql/SetSelectedSubmission.sql", 
+                                            "Sql/AddSelectedSubmission.sql", 
                                             array("values" => $data));                   
             
             // checks the correctness of the query 
@@ -223,15 +243,21 @@ class DBSelectedSubmission
                     $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
-                Logger::Log("POST SetSelectedSubmission failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                Logger::Log("POST AddSelectedSubmission failed",LogLevel::ERROR);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
     }
-    
+
+
     /**
-     * GET GetExerciseSelected
+     * Returns the submission that should be marked.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /selectedsubmission/exercise/$eid(/).
+     *
+     * @param int $eid The id of the exercise.
      */
     public function getExerciseSelected($eid)
     {    
@@ -260,20 +286,26 @@ class DBSelectedSubmission
                 
             $this->_app->response->setBody(SelectedSubmission::encodeSelectedSubmission($selected));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetExerciseSelected failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(SelectedSubmission::encodeSelectedSubmission(new SelectedSubmission()));
             $this->_app->stop();
         }
     } 
-    
+
+
     /**
-     * GET GetSheetSelected
+     * Returns all exercises that should be marked to a given exercise sheet.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /selectedsubmission/exercisesheet/$esid(/).
+     *
+     * @param int $eid The id of the exercise sheet.
      */
     public function getSheetSelected($esid)
     {  
@@ -302,13 +334,13 @@ class DBSelectedSubmission
                 
             $this->_app->response->setBody(SelectedSubmission::encodeSelectedSubmission($selected));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetSheetSelected failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(SelectedSubmission::encodeSelectedSubmission(new SelectedSubmission()));
             $this->_app->stop();
         }

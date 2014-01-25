@@ -39,23 +39,23 @@ class LMarking
         $this->lURL = $this->query->getAddress();
         
         //AddMarking
-        $this->app->post('/exercise/:exerciseid/tutor/:tutorid', 
+        $this->app->post('/'.$this->getPrefix().'/exercise/:exerciseid/tutor/:tutorid(/)', 
                         array($this, 'addMarking'));
         
         //GetMarkingURL
-        $this->app->get('/marking/:markingid', 
+        $this->app->get('/'.$this->getPrefix().'/marking/:markingid(/)', 
                         array ($this, 'getMarkingURL'));
         
         //DeleteMarking
-        $this->app->delete('/marking/:markingid', 
+        $this->app->delete('/'.$this->getPrefix().'/marking/:markingid(/)', 
                         array($this, 'deleteMarking'));
                         
         //EditMarking
-        $this->app->put('/marking/:markingid/tutor/:tutorid', 
+        $this->app->put('/'.$this->getPrefix().'/marking/:markingid/tutor/:tutorid(/)', 
                         array($this, 'editMarking'));
                         
         //EditMarkingState
-        $this->app->put('/marking/:markingid', 
+        $this->app->put('/'.$this->getPrefix().'/marking/:markingid(/)', 
                         array($this, 'editMarkingState'));
         
         $this->app->run();
@@ -116,11 +116,18 @@ class LMarking
         $answer = Request::custom('DELETE', $URL, $header, $body);
         $this->app->response->setStatus($answer['status']);
         
-        if( $answer['status'] == 200){ //nur, wenn file tatsaechlich aus DB geloescht wurde
-            $URL = $this->lURL.'/FS/marking/'.$markingid; 
-            /*
-             * eigentlich url der zu loeschenden datei schicken und nicht die id???????????????
-             */
+        /**
+         * if DB-Request was succsessfull the file also gets removed from FS 
+         * otherwise returns the Status-Code from DB 
+         */
+        $fileObject = json_decode($answer['content']);
+        //if address-field exists, read it out
+        if (isset($fileObject->{'address'})){
+            $fileAddress = $fileObject->{'address'};
+        }
+        
+        if( $answer['status'] < 300){
+            $URL = $this->lURL.'/FS/'.$fileAddress; 
             $answer = Request::custom('DELETE', $URL, $header, $body);
         }             
     }

@@ -1,4 +1,9 @@
 <?php
+/**
+ * @file Admin.php
+ * Constructs the page that is displayed to an admin.
+ */
+
 include_once 'include/Header/Header.php';
 include_once 'include/HTMLWrapper.php';
 include_once 'include/Template.php';

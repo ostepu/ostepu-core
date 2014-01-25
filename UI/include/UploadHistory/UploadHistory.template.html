@@ -1,26 +1,77 @@
-<div class="content-element">
-    <div class="content-header">
-        <div class="content-title left uppercase">Einsendungsverlauf ansehen</div>
-        <div class="info-color bold right">
-            <a href="#">Einsendungen anzeigen</a>
-        </div>   
-    </div>
-
-    <div class="content-body-wrapper">
-        <div class="content-body left">
-            <label class="form-field left label bold" for="Student">Studenten auswählen:</label> 
-            <select class="form-field left text-input" name="Student" id="Student"> 
-                <option value="1" >Ralf Busch</option>
-                <option value="2" >Felix Schmidt</option>
-                <option value="3" >Florian Lücke</option>
-            </select>
-
-            <label class="form-field left label bold new-line" for="ExerciseSheet">Serie auswählen:</label> 
-            <select class="form-field left text-input" name="ExerciseSheet" id="ExerciseSheet"> 
-                <option value="1" >1</option>
-                <option value="2" >2</option>
-                <option value="3" >3</option>
-            </select>
+<form action="UploadHistory.php" method="GET">
+    <div class="content-element">
+        <div class="content-header">
+            <div class="content-title left uppercase">Einsendungsverlauf ansehen</div>
+            <button class="text-button right bold info-color">
+                Einsendungen anzeigen
+            </button>
         </div>
-    </div> <!-- end: content-body -->
-</div> <!-- end: content-wrapper -->
+
+        <div class="content-body-wrapper">
+            <div class="content-body left">
+                <label class="form-field left label bold" for="Student">Studenten auswählen:</label>
+                <select class="form-field left text-input" name="userID" id="Student">
+                    <option value="">Bitte wählen</option>
+                    <option value="1" >Ralf Busch</option>
+                    <option value="2" >Felix Schmidt</option>
+                    <option value="3" >Florian Lücke</option>
+                </select>
+
+                <label class="form-field left label bold new-line" for="ExerciseSheet">Serie auswählen:</label>
+                <select class="form-field left text-input" name="sheetID" id="ExerciseSheet">
+                    <option value="">Bitte wählen</option>
+                    <option value="1" >1</option>
+                    <option value="2" >2</option>
+                    <option value="3" >3</option>
+                </select>
+            </div>
+        </div> <!-- end: content-body -->
+    </div> <!-- end: content-wrapper -->
+
+    <div class="content-element">
+        <div class="content-header">
+            <div class="content-title left uppercase">Aufgabe 1</div>
+        </div>
+
+        <div class="content-body-wrapper">
+            <div class="content-body left">
+                <div class="form-field left bold">21.10.2013, 13:00:</div>
+                <div class="form-field left" href="#">herunterladen</div>
+
+                <div class="form-field left bold new-line">21.10.2013, 13:04:</div>
+                <div class="form-field left" href="#">herunterladen</div>
+
+                <div class="form-field left bold new-line">22.10.2013, 20:00:</div>
+                <div class="form-field left" href="a">herunterladen</div>
+            </div>
+        </div> <!-- end: content-body -->
+    </div> <!-- end: content-wrapper -->
+
+    <div class="content-element">
+        <div class="content-header">
+            <div class="content-title uppercase">Aufgabe 2</div>
+        </div>
+
+        <div class="content-body-wrapper">
+            <div class="content-body left">
+                <div class="form-field left bold">18.11.2013, 13:00:</div>
+                <div class="form-field left" href="#">herunterladen</div>
+
+                <div class="form-field left bold new-line">19.11.2013, 13:04:</div>
+                <div class="form-field left" href="#">herunterladen</div>
+            </div>
+        </div> <!-- end: content-body -->
+    </div> <!-- end: content-wrapper -->
+
+    <div class="content-element">
+        <div class="content-header">
+            <div class="content-title uppercase">Aufgabe 3</div>
+        </div>
+
+        <div class="content-body-wrapper">
+            <div class="content-body left">
+                <div class="form-field left bold">Keine Einsendungen</div>
+            </div>
+        </div> <!-- end: content-body -->
+    </div> <!-- end: content-wrapper -->
+</form>

@@ -13,7 +13,7 @@ class CourseStatus extends Object implements JsonSerializable
     /**
      * @var Course $course A course.
      */
-    private $course;
+    private $course = null;
     
     /**
      * the $course getter
@@ -34,14 +34,12 @@ class CourseStatus extends Object implements JsonSerializable
     {
         $this->course = $value;
     }
-
-    
-    
+   
     
     /**
      * @var string $status  a string that defines which status the user has in that course.
      */
-    private $status;
+    private $status = null;
     
     /**
      * the $status getter
@@ -62,9 +60,7 @@ class CourseStatus extends Object implements JsonSerializable
     {
         $this->status = $value;
     }
-
     
-
     /**
      * returns an mapping array to convert between database and structure
      *
@@ -107,9 +103,10 @@ class CourseStatus extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * returns an array to get the course status defintions
      */
-    public static function getStatusDefinition(){
+    public static function getStatusDefinition()
+    {
         return array(
             '0' => 'student',
             '1' => 'tutor',
@@ -126,6 +123,9 @@ class CourseStatus extends Object implements JsonSerializable
      */
     public function __construct($data=array())
     {
+        if ($data==null)
+            $data = array();
+        
         foreach ($data AS $key => $value) {
             if (isset($key)){
                 if ($key == 'course'){
@@ -161,6 +161,9 @@ class CourseStatus extends Object implements JsonSerializable
      */
     public static function decodeCourseStatus($data, $decode=true)
     {
+        if ($decode && $data==null) 
+            $data = "{}";
+    
         if ($decode)
             $data = json_decode($data);
             
@@ -179,10 +182,10 @@ class CourseStatus extends Object implements JsonSerializable
      */
     public function jsonSerialize() 
     {
-        return array(
-            'course' => $this->course,
-            'status' => $this->status
-        );
+        $list = array();
+        if ($this->course!==null) $list['course'] = $this->course;
+        if ($this->status!==null) $list['status'] = $this->status;
+        return $list;
     }
 }
 ?>

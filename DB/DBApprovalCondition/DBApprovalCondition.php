@@ -1,6 +1,10 @@
 <?php
 /**
  * @file DBApprovalCondition.php contains the DBApprovalCondition class
+ * 
+ * @author Till Uhlig
+ * @author Felix Schmidt
+ * @example DB/DBApprovalCondition/ApprovalConditionSample.json
  */ 
 
 require_once( 'Include/Slim/Slim.php' );
@@ -21,8 +25,6 @@ if (!$com->used())
     
 /**
  * A class, to abstract the "ApprovalCondition" table from database
- *
- * @author Till Uhlig
  */
 class DBApprovalCondition
 {
@@ -65,12 +67,16 @@ class DBApprovalCondition
     {
         DBApprovalCondition::$_prefix = $value;
     }
-    
+
+
     /**
-     * the component constructor
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to
+     * the functions.
      *
      * @param Component $conf component data
-     */ 
+     */
     public function __construct($conf)
     {
         // initialize component
@@ -82,27 +88,27 @@ class DBApprovalCondition
         $this->_app->response->headers->set('Content-Type', 'application/json');
 
         // PUT EditApprovalCondition
-        $this->_app->put('/' . $this->getPrefix() . '/approvalcondition/:apid',
+        $this->_app->put('/' . $this->getPrefix() . '(/approvalcondition)/:apid(/)',
                         array($this,'editApprovalCondition'));
         
         // DELETE DeleteApprovalCondition
-        $this->_app->delete('/' . $this->getPrefix() . '/approvalcondition/:apid',
+        $this->_app->delete('/' . $this->getPrefix() . '(/approvalcondition)/:apid(/)',
                            array($this,'deleteApprovalCondition'));
         
-        // POST SetApprovalCondition
-        $this->_app->post('/' . $this->getPrefix(),
-                         array($this,'setApprovalCondition'));  
+        // POST AddApprovalCondition
+        $this->_app->post('/' . $this->getPrefix() . '(/)',
+                         array($this,'addApprovalCondition'));  
         
         // GET GetApprovalCondition
-        $this->_app->get('/' . $this->getPrefix() . '/approvalcondition/:apid',
+        $this->_app->get('/' . $this->getPrefix() . '(/approvalcondition)/:apid(/)',
                         array($this,'getApprovalCondition'));
         
-        // GET GetAllApprovalCondition
-        $this->_app->get('/' . $this->getPrefix() . '/approvalcondition',
-                        array($this,'getAllApprovalCondition'));
+        // GET GetAllApprovalConditions
+        $this->_app->get('/' . $this->getPrefix() . '(/approvalcondition)(/)',
+                        array($this,'getAllApprovalConditions'));
                         
         // GET GetCourseApprovalConditions
-        $this->_app->get('/' . $this->getPrefix() . '/course/:courseid',
+        $this->_app->get('/' . $this->getPrefix() . '/course/:courseid(/)',
                         array($this,'getCourseApprovalConditions'));
                         
         // starts slim only if the right prefix was received
@@ -112,11 +118,17 @@ class DBApprovalCondition
             $this->_app->run();
         }
     }
-    
+
+
     /**
-     * PUT EditApprovalCondition
+     * Edits the minimum requirements for being able to take part in an exam.
      *
-     * @param int $apid a database approval condition identifier
+     * Called when this component receives an HTTP PUT request to
+     * /approvalcondition/$apid(/) or /approvalcondition/approvalcondition/$apid(/).
+     * The request body should contain a JSON object representing the 
+     * approvalCondition's new attributes.
+     *
+     * @param int $apid The id of the approvalCondition that is beeing updated.
      */
     public function editApprovalCondition($apid)
     {
@@ -150,16 +162,20 @@ class DBApprovalCondition
                 
             } else{
                 Logger::Log("PUT EditApprovalCondition failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 251);
                 $this->_app->stop();
             }
         }
     }
-    
+
+
     /**
-     * DELETE DeleteApprovalCondition
+     * Deletes the minimum requirements for being able to take part in an exam.
      *
-     * @param int $apid a database approval condition identifier
+     * Called when this component receives an HTTP DELETE request to
+     * /approvalcondition/$apid(/) or /approvalcondition/approvalcondition/$apid(/).
+     *
+     * @param int $apid The id of the approvalCondition that is beeing deleted.
      */
     public function deleteApprovalCondition($apid)
     {
@@ -171,29 +187,35 @@ class DBApprovalCondition
                             
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/DeletePossibleType.sql", 
+                                        "Sql/DeleteApprovalCondition.sql", 
                                         array("apid" => $apid));    
             
         // checks the correctness of the query  
         if ($result['status']>=200 && $result['status']<=299){
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(201);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE DeleteApprovalCondition failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 252);
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * POST SetApprovalCondition
+     * Adds the minimum requirements for being able to take part in an exam.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /approvalcondition(/).
+     * The request body should contain a JSON object representing the 
+     * approvalCondition's attributes.
      */
-    public function setApprovalCondition()
+    public function addApprovalCondition()
     {
-        Logger::Log("starts POST SetApprovalCondition",LogLevel::DEBUG);
+        Logger::Log("starts POST AddApprovalCondition",LogLevel::DEBUG);
         
         // decode the received approval condition data, as an object
         $insert = ApprovalCondition::decodeApprovalCondition($this->_app->request->getBody());
@@ -208,7 +230,7 @@ class DBApprovalCondition
             
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
-                                            "Sql/SetApprovalCondition.sql", 
+                                            "Sql/AddApprovalCondition.sql", 
                                             array("values" => $data));                   
             
             // checks the correctness of the query
@@ -225,15 +247,19 @@ class DBApprovalCondition
                     $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
-                Logger::Log("POST SetApprovalCondition failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                Logger::Log("POST AddApprovalCondition failed",LogLevel::ERROR);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 251);
                 $this->_app->stop();
             }
         }
     }
-    
+
+
     /**
-     * GET GetAllApprovalConditions
+     * Returns all minimum requirements for being able to take part in an exam.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /approvalcondition(/) or /approvalcondition/approvalcondition(/).
      */
     public function getAllApprovalConditions()
     {   
@@ -243,7 +269,6 @@ class DBApprovalCondition
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetAllApprovalConditions.sql", 
                                         array());
-        
         // checks the correctness of the query                                    
         if ($result['status']>=200 && $result['status']<=299){
             $query = Query::decodeQuery($result['content']);
@@ -258,22 +283,26 @@ class DBApprovalCondition
  
             $this->_app->response->setBody(ApprovalCondition::encodeApprovalCondition($approvalConditions));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetAllApprovalConditions failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(ApprovalCondition::encodeApprovalCondition(new ApprovalCondition()));
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetApprovalCondition
+     * Returns a minimum requirement for being able to take part in an exam.
      *
-     * @param int $apid a database approval condition identifier
+     * Called when this component receives an HTTP GET request to
+     * /approvalcondition/$apid(/) or /approvalcondition/approvalcondition/$apid(/).
+     *
+     * @param int $apid The id of the approvalCondition that should be returned.
      */
     public function getApprovalCondition($apid)
     {     
@@ -307,24 +336,29 @@ class DBApprovalCondition
             if (count($approvalCondition)>0)
                 $approvalCondition = $approvalCondition[0];
                 
-            $this->_app->response->setBody(ApprovalCondition::encodeExerciseType($approvalCondition));
+            $this->_app->response->setBody(ApprovalCondition::encodeApprovalCondition($approvalCondition));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetApprovalCondition failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
-            $this->_app->response->setBody(ApprovalCondition::encodeExerciseType(new ApprovalCondition()));
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
+            $this->_app->response->setBody(ApprovalCondition::encodeApprovalCondition(new ApprovalCondition()));
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetCourseApprovalConditions
+     * Returns the minimum requirements for being able to take part in an exam
+     * regarding a specific course.
      *
-     * @param int $courseid a database course identifier
+     * Called when this component receives an HTTP GET request to
+     * /approvalcondition/course/$courseid(/).
+     *
+     * @param int $course The id of the course.
      */
     public function getCourseApprovalConditions($courseid)
     {      
@@ -336,7 +370,7 @@ class DBApprovalCondition
                             
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetCourseApprovalCondition.sql", 
+                                        "Sql/GetCourseApprovalConditions.sql", 
                                         array("courseid" => $courseid));
         
         // checks the correctness of the query                                  
@@ -354,16 +388,16 @@ class DBApprovalCondition
             // to reindex
             $approvalCondition = array_merge($approvalConditions);
                 
-            $this->_app->response->setBody(ApprovalCondition::encodeExerciseType($approvalConditions));
+            $this->_app->response->setBody(ApprovalCondition::encodeApprovalCondition($approvalConditions));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetCourseApprovalConditions failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
-            $this->_app->response->setBody(ApprovalCondition::encodeExerciseType(new ApprovalCondition()));
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
+            $this->_app->response->setBody(ApprovalCondition::encodeApprovalCondition(new ApprovalCondition()));
             $this->_app->stop();
         }
     }

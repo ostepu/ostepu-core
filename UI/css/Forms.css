@@ -1,3 +1,11 @@
+/**
+ * @file Forms.css
+ * Layout styles for
+ *
+ * @author Felix Schmidt
+ * @author Florian Lücke
+ */
+
 .form-field {
     width: 250px;
     margin-bottom: 7px;
@@ -21,6 +29,7 @@
 }
 
 .label {
+    margin: 0 20px 7px 0;
     line-height: 20px;
 }
 
@@ -31,14 +40,18 @@
 .checkbox-container {
     border: 2px solid #ccc;
     padding: 10px;
-    width: 100px; 
-    height: 100px; 
+    width: 100px;
+    height: 100px;
     overflow-y: scroll;
 }
 
-/*
- * remove bottom margin from form elements that are in a list
- */
+textarea.text-input {
+    width: 748px;
+    max-width: 748px;
+    margin-right: 0;
+}
+
+/* remove bottom margin from form elements that are in a list */
 li .form-field {
     margin-bottom: 2px;
 }
@@ -49,4 +62,42 @@ li .text-input {
 
 li .button {
     margin-bottom: 2px;
+}
+
+.submit {
+    font-size: 100%;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    background-color: white;
+    text-align: left;
+    width: 960px;
+    color: #6f6f6f;
+    margin-bottom: 30px;
+}
+
+.submit > .content-element {
+    margin-bottom: 0;
+}
+
+button:focus {
+    outline: none;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+.text-button {
+    font-family:'Lucida Sans Unicode', Helvetica, Arial, Verdana, sans-serif;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    background: none;
+    font-size: 100%;
+    padding-left: 40px;
+}
+
+.text-button::after {
+    content: ' >';
 }

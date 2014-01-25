@@ -205,8 +205,28 @@ class File extends Object implements JsonSerializable
         $this->body = $value;
     }
     
-    
-    
+    /**
+     * Creates an File object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $fileId The id of the file.
+     * @param string $displayName The display name.
+     * @param string $address The address.
+     * @param string $timeStamp The time stamp.
+     * @param string $fileSize The file size.
+     * @param string $hash The hash.
+     *
+     * @return an file object
+     */
+    public function createFile($fileId,$displayName,$address,$timeStamp,$fileSize,$hash)
+    {
+        return new File(array('fileId' => $fileId,
+        'displayName' => $displayName,
+        'address' => $address, 
+        'timeStamp' => $timeStamp,
+        'fileSize' => $fileSize, 
+        'hash' => $hash));
+    }
     
     /**
      * returns an mapping array to convert between database and structure
@@ -231,7 +251,8 @@ class File extends Object implements JsonSerializable
      *
      * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData(){
+    public function getInsertData()
+    {
         $values = "";
         
         if ($this->fileId != null) $this->addInsertData($values, 'F_id', DBJson::mysql_real_escape_string($this->fileId));
@@ -264,6 +285,9 @@ class File extends Object implements JsonSerializable
      */
     public function __construct($data=array())
     {
+        if ($data==null)
+            $data = array();
+        
         foreach ($data AS $key => $value) {
             if (isset($key)){
                 $this->{$key} = $value;
@@ -294,8 +318,12 @@ class File extends Object implements JsonSerializable
      */
     public static function decodeFile($data, $decode=true)
     {   
-        if ($decode == true)
+        if ($decode && $data==null) 
+            $data = "{}";
+            
+        if ($decode)
             $data = json_decode($data);
+            
         if (is_array($data)){
             $result = array();
             foreach ($data AS $key => $value) {
@@ -311,15 +339,15 @@ class File extends Object implements JsonSerializable
      */  
     public function jsonSerialize()
     {
-        return array(
-            'fileId' => $this->fileId,
-            'displayName' => $this->displayName,
-            'address' => $this->address,
-            'timeStamp' => $this->timeStamp,
-            'fileSize' => $this->fileSize,
-            'hash' => $this->hash,
-            'body' => $this->body
-        );
+        $list = array();
+        if ($this->fileId!==null) $list['fileId'] = $this->fileId;
+        if ($this->displayName!==null) $list['displayName'] = $this->displayName;
+        if ($this->address!==null) $list['address'] = $this->address;
+        if ($this->timeStamp!==null) $list['timeStamp'] = $this->timeStamp;
+        if ($this->fileSize!==null) $list['fileSize'] = $this->fileSize;
+        if ($this->hash!==null) $list['hash'] = $this->hash;
+        if ($this->body!==null) $list['body'] = $this->body;
+        return $list; 
     }
 }
 ?>

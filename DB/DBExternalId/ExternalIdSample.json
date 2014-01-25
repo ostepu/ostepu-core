@@ -1,0 +1,68 @@
+/**
+ * @file ExternalIdSample.json This file represents a valid JSON object of type ExternalId for DBExternalId.
+ * 
+ * @author Till Uhlig
+ */ 
+ 
+    [
+       {
+           "id": "Ver1",
+           "course":
+           {
+               "id": "1",
+               "name": "﻿Bengalisch II",
+               "semester": "SS 11",
+               "defaultGroupSize": "1"
+           }
+       },
+       {
+           "id": "Ver12",
+           "course":
+           {
+               "id": "1",
+               "name": "﻿Bengalisch II",
+               "semester": "SS 11",
+               "defaultGroupSize": "1"
+           }
+       },
+       {
+           "id": "Ver2",
+           "course":
+           {
+               "id": "2",
+               "name": "Fachschaftsseminar fuer Mathematik",
+               "semester": "WS 11/12",
+               "defaultGroupSize": "2"
+           }
+       },
+       {
+           "id": "Ver3",
+           "course":
+           {
+               "id": "3",
+               "name": "Kulturgeschichte durch den Magen: Essen in Italien",
+               "semester": "SS 12",
+               "defaultGroupSize": "3"
+           }
+       },
+       {
+           "id": "Ver4",
+           "course":
+           {
+               "id": "4",
+               "name": "Maerkte im vor- und nachgelagerten Bereich der Landwirtschaft",
+               "semester": "WS 12/13",
+               "defaultGroupSize": "4"
+           }
+       },
+       {
+           "id": "Ver5",
+           "course":
+           {
+               "id": "5",
+               "name": "Portugiesische Literatur nach 2000",
+               "semester": "SS 13",
+               "defaultGroupSize": "5"
+           }
+       }
+    ]

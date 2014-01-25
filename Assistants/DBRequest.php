@@ -1,13 +1,13 @@
 <?php
 /**
  * @file DBRequest.php contains the DBRequest class
+ *
+ * @author Till Uhlig
  */ 
 include_once( 'Structures.php' );
 
 /**
  * the class provides functions for database queries
- *
- * @author Till Uhlig
  */
 class DBRequest
 {
@@ -26,7 +26,7 @@ class DBRequest
      * - ['numRows'] = on get, the received number of rows
      * - you have to check for yourself, that the records exist, with isset()
      */
-    public static function request($sqlStatement)
+    public static function request($sqlStatement, $checkSession)
     {
         // loads the mysql server config from file
         $config = parse_ini_file("config.ini", TRUE);
@@ -37,6 +37,47 @@ class DBRequest
         // selects the database
         mysql_select_db($config['DB']['db_name']);
 
+        $currentTime = $_SERVER['REQUEST_TIME'];
+        
+        // check session
+        // $checkSession = false; // remove the comment this line to disable the session examination
+
+        // Storing whether or not a session condition is not satisfied
+        $sessionFail = false;
+        if ($checkSession === true){
+            Logger::Log("starts session validation",LogLevel::DEBUG);
+            if (isset($_SERVER['HTTP_SESSION']) && 
+                isset($_SERVER['HTTP_USER']) && 
+                isset($_SERVER['HTTP_DATE']) && 
+                ctype_digit($_SERVER['HTTP_USER']) && 
+                (int)$_SERVER['REQUEST_TIME'] <= (int)$_SERVER['HTTP_DATE'] + 10*60 ){
+                $content = mysql_query('select SE_sessionID from Session where U_id = ' . $_SERVER['HTTP_USER'], $dbconn);
+                
+                // evaluates the session 
+                $errno = mysql_errno();
+                if ($errno==0 && gettype($content)!='boolean'){
+                    $data = DBJson::getRows($content);
+                    if ($data != null && $data[0]['SE_sessionID'] == $_SERVER['HTTP_SESSION']){
+                        $sessionFail = false; 
+                    } else
+                        $sessionFail = true;  
+                } else
+                    $sessionFail = true;                      
+            } else
+                $sessionFail = true;
+        }
+        
+        // if a condition is not met, the request is invalid
+        if ($sessionFail == true){
+            $query_result['content'] = "";
+            $query_result['errno'] = 401;
+            $query_result['error'] = 'access denied';
+            $query_result['numRows'] = 0;
+            mysql_close($dbconn);
+            $dbconn=null;
+            return $query_result;
+        }
+        
         // performs the request
         $query_result['content'] = mysql_query($sqlStatement, $dbconn);
         
@@ -73,16 +114,17 @@ class DBRequest
      * - ['numRows'] = on get, the received number of rows
      * - you have to check for yourself, that the records exist, with isset()
      */
-    public static function getRoutedSqlFile($querys, $sqlFile, $vars)
+    public static function getRoutedSqlFile($querys, $sqlFile, $vars, $checkSession=true)
     {
         // generates the variable content
         extract($vars, EXTR_OVERWRITE);
 
         // loads the given sql file and creates the Query object
         $obj = new Query();
-        eval("\$sql = \"" . file_get_contents($sqlFile) . "\";"); 
+        eval("\$sql = \"" . file_get_contents($sqlFile) . "\";");
         $obj->setRequest($sql);
-        
+        $obj->setCheckSession($checkSession);
+
         // perform the route process
         return Request::routeRequest("GET",
                                     '/query',

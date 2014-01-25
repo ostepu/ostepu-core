@@ -1,6 +1,10 @@
 <?php
 /**
  * @file DBSession.php contains the DBSession class
+ * 
+ * @author Till Uhlig
+ * @author Felix Schmidt 
+ * @example DB/DBSession/SessionSample.json
  */ 
 
 require_once( 'Include/Slim/Slim.php' );
@@ -18,11 +22,9 @@ $com = new CConfig(DBSession::getPrefix());
 // runs the DBSession
 if (!$com->used())
     new DBSession($com->loadConfig());  
-    
+
 /**
  * A class, to abstract the "Session" table from database
- *
- * @author Till Uhlig
  */
 class DBSession
 {
@@ -30,22 +32,22 @@ class DBSession
      * @var Slim $_app the slim object
      */ 
     private $_app=null;
-    
+
     /**
      * @var Component $_conf the component data object
      */ 
     private $_conf=null;
-    
+
     /**
      * @var Link[] $query a list of links to a query component
      */ 
     private $query=array();
-    
+
     /**
      * @var string $_prefix the prefixes, the class works with (comma separated)
      */ 
     private static $_prefix = "session";
-    
+
     /**
      * the $_prefix getter
      *
@@ -55,7 +57,7 @@ class DBSession
     {
         return DBSession::$_prefix;
     }
-    
+
     /**
      * the $_prefix setter
      *
@@ -65,12 +67,15 @@ class DBSession
     {
         DBSession::$_prefix = $value;
     }
-    
+
     /**
-     * the component constructor
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to
+     * the functions.
      *
      * @param Component $conf component data
-     */ 
+     */
     public function __construct($conf)
     {
         // initialize component
@@ -82,35 +87,35 @@ class DBSession
         $this->_app->response->headers->set('Content-Type', 'application/json');
 
         // PUT EditSession
-        $this->_app->put('/' . $this->getPrefix() . '/session/:seid',
+        $this->_app->put('/' . $this->getPrefix() . '(/session)/:seid(/)',
                         array($this, 'editSession'));
                         
         // DELETE RemoveSession
-        $this->_app->delete('/' . $this->getPrefix() . '/session/:seid',
+        $this->_app->delete('/' . $this->getPrefix() . '(/session)/:seid(/)',
                         array($this, 'removeSession'));
                         
         // PUT EditUserSession
-        $this->_app->put('/' . $this->getPrefix() . '/user/:userid',
+        $this->_app->put('/' . $this->getPrefix() . '/user/:userid(/)',
                         array($this, 'editUserSession'));
                         
         // DELETE RemoveUserSession
-        $this->_app->delete('/' . $this->getPrefix() . '/user/:userid',
+        $this->_app->delete('/' . $this->getPrefix() . '/user/:userid(/)',
                         array($this, 'removeUserSession'));
                         
         // POST AddSession
-        $this->_app->post('/' . $this->getPrefix(),
+        $this->_app->post('/' . $this->getPrefix() . '(/)',
                         array($this, 'addSession'));
                         
         // GET GetUserSession
-        $this->_app->get('/' . $this->getPrefix() . '/user/:userid',
+        $this->_app->get('/' . $this->getPrefix() . '/user/:userid(/)',
                         array($this, 'getUserSession'));
                         
         // GET GetSessionUser
-        $this->_app->get('/' . $this->getPrefix() . '/session/:seid',
+        $this->_app->get('/' . $this->getPrefix() . '(/session)/:seid(/)',
                         array($this, 'getSessionUser'));
                         
         // GET GetAllSessions
-        $this->_app->get('/' . $this->getPrefix() . '/session',
+        $this->_app->get('/' . $this->getPrefix() . '(/session)(/)',
                         array($this, 'getAllSessions'));
                         
         // starts slim only if the right prefix was received 
@@ -121,13 +126,19 @@ class DBSession
             $this->_app->run();
         }
     }
-    
+
+
     /**
-     * PUT EditSession
+     * Edits a session identified by a sessionId.
      *
-     * @param string $seid a database session identifier
+     * Called when this component receives an HTTP PUT request to
+     * /session/session/$seid(/) or /session/$seid(/).
+     * The request body should contain a JSON object representing the 
+     * sessions's new attributes.
+     *
+     * @param string $seid The id of the session which is being updated.
      */
-    public function EditSession($seid)
+    public function editSession($seid)
     {
         Logger::Log("starts PUT EditSession",LogLevel::DEBUG);
         
@@ -155,16 +166,20 @@ class DBSession
                 
             } else{
                 Logger::Log("PUT EditSession failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
     }
-    
+
+
     /**
-     * DELETE RemoveSession
+     * Deletes a session identified by a sessionId.
      *
-     * @param string $seid a database session identifier
+     * Called when this component receives an HTTP DELETE request to
+     * /session/session/$seid(/) or /session/$seid(/).
+     *
+     * @param string $seid The id of the session which is being deleted.
      */
     public function removeSession($seid)
     {
@@ -178,27 +193,35 @@ class DBSession
                                         array("seid" => $seid));    
                                         
         if ($result['status']>=200 && $result['status']<=299){
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(201);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE RemoveSession failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * PUT RemoveSession
+     * Edits a session identified by an userId.
      *
-     * @param int $userid a database user identifier
+     * Called when this component receives an HTTP PUT request to
+     * /session/user/$userid(/).
+     * The request body should contain a JSON object representing the 
+     * sessions's new attributes.
+     *
+     * @param int $userid The id of the user that is being updated.
      */
     public function editUserSession($userid)
     {
         Logger::Log("starts PUT RemoveSession",LogLevel::DEBUG);
         
-        $userid = DBJson::mysql_real_escape_string($userid);
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($userid));
         
         // decode the received session data, as an object
         $insert = Session::decodeSession($this->_app->request->getBody());
@@ -223,22 +246,28 @@ class DBSession
                 
             } else{
                 Logger::Log("PUT RemoveSession failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
     }
-    
+
+
     /**
-     * DELETE RemoveUserSession
+     * Deletes a session identified by an userId.
      *
-     * @param int $userid a database user identifier
+     * Called when this component receives an HTTP DELETE request to
+     * /session/user/$userid(/).
+     *
+     * @param int $userid The id of the user that is being deleted.
      */
     public function removeUserSession($userid)
     {
         Logger::Log("starts DELETE RemoveUserSession",LogLevel::DEBUG);
         
-        $userid = DBJson::mysql_real_escape_string($userid);
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($userid));
                 
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
@@ -246,24 +275,29 @@ class DBSession
                                         array("userid" => $userid));    
                                         
         if ($result['status']>=200 && $result['status']<=299){
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(201);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE RemoveUserSession failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * POST AddSession
+     * Adds a session.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /session(/).
+     * The request body should contain a JSON object representing the new session.
      */
     public function addSession()
     {
         Logger::Log("starts POST AddSession",LogLevel::DEBUG);
-        
+
         // decode the received session data, as an object
         $insert = Session::decodeSession($this->_app->request->getBody());
         
@@ -277,8 +311,9 @@ class DBSession
             
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
-                                            "Sql/SetSession.sql", 
-                                            array("values" => $data));                   
+                                            "Sql/AddSession.sql", 
+                                            array("values" => $data),
+                                            false);                   
             
             // checks the correctness of the query   
             if ($result['status']>=200 && $result['status']<=299){
@@ -288,22 +323,28 @@ class DBSession
                 
             } else{
                 Logger::Log("POST AddSession failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
     }
-    
+
+
     /**
-     * GET GetUserSession
+     * Returns a session identified by an userId.
      *
-     * @param int $userid a database user identifier
+     * Called when this component receives an HTTP GET request to
+     * /session/user/$userid(/).
+     *
+     * @param int $userid The id of the user.
      */
     public function getUserSession($userid)
     {
         Logger::Log("starts GET GetUserSession",LogLevel::DEBUG);
         
-        $userid = DBJson::mysql_real_escape_string($userid);
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($userid));
         
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
@@ -327,22 +368,26 @@ class DBSession
                 $session = $session[0];
             
             $this->_app->response->setBody(Session::encodeSession($session));
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetUserSession failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Session::encodeSession(new Session()));
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetSessionUser
+     * Returns a session identified by a sessionId.
      *
-     * @param string $seid a database session identifier
+     * Called when this component receives an HTTP GET request to
+     * /session/session/$seid(/) or /session/$seid(/).
+     *
+     * @param string $seid The id or the session.
      */
     public function getSessionUser($seid)
     {
@@ -368,20 +413,24 @@ class DBSession
                                             Session::getDBConvert());
             
             $this->_app->response->setBody(Session::encodeSession($session));
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetSessionUser failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Session::encodeSession(new Session()));
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetAllSessions
+     * Returns all sessions.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /session/session(/) or /session(/).
      */
     public function getAllSessions()
     {
@@ -391,7 +440,7 @@ class DBSession
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetAllSessions.sql", 
                                         array());        
-        
+  
         // checks the correctness of the query   
         if ($result['status']>=200 && $result['status']<=299){
             $query = Query::decodeQuery($result['content']);
@@ -403,15 +452,15 @@ class DBSession
             $session = DBJson::getResultObjectsByAttributes($data, 
                                         Session::getDBPrimaryKey(), 
                                         Session::getDBConvert());
-            
+          
             $this->_app->response->setBody(Session::encodeSession($session));
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetAllSessions failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Session::encodeSession(new Session()));
             $this->_app->stop();
         }

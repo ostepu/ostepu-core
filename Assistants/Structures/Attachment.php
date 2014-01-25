@@ -20,7 +20,8 @@ class Attachment extends Object implements JsonSerializable
      *
      * @return the value of $id
      */ 
-    public function getId(){
+    public function getId()
+    {
         return $this->id;
     }
     
@@ -44,7 +45,8 @@ class Attachment extends Object implements JsonSerializable
      *
      * @return the value of $exerciseId
      */ 
-    public function getExerciseId(){
+    public function getExerciseId()
+    {
         return $this->exerciseId;
     }
     
@@ -67,7 +69,8 @@ class Attachment extends Object implements JsonSerializable
      *
      * @return the value of $file
      */ 
-    public function getFile(){
+    public function getFile()
+    {
         return $this->file;
     }
     
@@ -80,7 +83,23 @@ class Attachment extends Object implements JsonSerializable
         $this->file = $value;
     }    
 
-    
+    /**
+     * Creates an Attachment object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $attachmentId The id of the attachment.
+     * @param string $exerciseId The id of the exercise.
+     * @param string $fileId The id of the fileId.
+     *
+     * @return an attachment object.
+     */
+    public function createAttachment($attachmentId,$exerciseId,$fileId)
+    {
+        return new Attachment(array('id' => $attachmentId,
+        'exerciseId' => $exerciseId,
+        'file' => File::createFile($fileId,null,null,null,null,null)));
+    }
+
     /**
      * returns an mapping array to convert between database and structure
      *
@@ -164,6 +183,9 @@ class Attachment extends Object implements JsonSerializable
      */
     public static function decodeAttachment($data, $decode=true)
     {
+        if ($decode && $data==null) 
+            $data = "{}";
+    
         if ($decode)
             $data = json_decode($data);
         if (is_array($data)){
@@ -183,11 +205,11 @@ class Attachment extends Object implements JsonSerializable
      */
     public function jsonSerialize()
     {
-        return array(
-            'id' => $this->id,
-            'exerciseId' => $this->exerciseId,
-            'file' => $this->file
-        );
+        $list = array();
+        if ($this->id!==null) $list['id'] = $this->id;
+        if ($this->exerciseId!==null) $list['exerciseId'] = $this->exerciseId;
+        if ($this->file!==null) $list['file'] = $this->file;
+        return $list;  
     }
 }
 ?>

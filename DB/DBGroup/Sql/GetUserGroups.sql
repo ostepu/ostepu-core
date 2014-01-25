@@ -2,7 +2,7 @@
  * @file GetSheetGroups.sql
  * gets a table for output, where all members of the groups for a specific user are listed
  * @author Till Uhlig
- * @param int $userid a %Group identifier
+ * @param int \$userid a %Group identifier
  * @result 
  * - U is the groupleader
  * - U2 are the members of the group without the leader
@@ -35,4 +35,4 @@ FROM
     User U2 ON U2.U_id = G2.U_id_leader
         and U2.U_id <> G.U_id_member
 WHERE
-    G.U_id_leader = $userid
+    G.U_id_leader = '$userid'

@@ -28,8 +28,10 @@ class Request_CreateRequest
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array("User: 3","Session: abc","Date : {$_SERVER['REQUEST_TIME']}"));
+        if ($method == 'POST' || $method == 'UPDATE') {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
+        }
         
         /**
          * @todo CURLOPT_FRESH_CONNECT and CURLOPT_FORBID_REUSE, we need that?

@@ -2,7 +2,7 @@
  * @file GetExerciseSubmissions.sql
  * gets the specified submissions from %Submission table
  * @author Till Uhlig
- * @param int $eid an %Exercise identifier
+ * @param int \$eid an %Exercise identifier
  * @result 
  * - F, the submission file
  * - S, the submission data
@@ -23,6 +23,7 @@ select
     S.S_date,
     SS.S_id_selected as S_selected,
     S.S_accepted,
+    S.S_flag,
     S.E_id
 from
     Submission S

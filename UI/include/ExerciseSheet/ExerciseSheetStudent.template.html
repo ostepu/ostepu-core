@@ -8,11 +8,11 @@ foreach ($sheets as $sheet):
             <?php print $sheet['sheetName']; ?>
         </div>
         <div class="critical-color bold right">
-            <?php print $sheet['endTime']; ?>
+            <?php print $sheet['endDate']; ?>
         </div>
         <div class="exercise-sheet-info info-color bold right">
             <?php print $sheet['exerciseSheetInfo'] . '%'; ?>
-        </div>          
+        </div>
     </div>
 
     <div class="content-body-wrapper">
@@ -20,7 +20,7 @@ foreach ($sheets as $sheet):
             <ol class="exercise-list">
                 <?php
                 foreach ($sheet['exercises'] as $exercise):
-                ?>
+                    ?>
                 <li>
 
                     <div class="exercise-type">
@@ -34,16 +34,18 @@ foreach ($sheets as $sheet):
                     </div>
 
                     <div class="exercise-sheet-images">
-                        <img src="Images/Upload.png" /> 
-                        <img src="Images/Download.png" /> 
-                        <img src="Images/DownloadCorrection.png" />
-                        <img src="Images/attachment.png" />
-                        <img src="Images/Delete.png" />
+                        <a href="Upload.php" class="inline">
+                            <img src="Images/Upload.png" />
+                        </a>
+                        <a href="#" class="plain"><img src="Images/Download.png" /></a>
+                        <a href="#" class="plain"><img src="Images/DownloadCorrection.png" /></a>
+                        <a href="#" class="plain"><img src="Images/Attachment.png" /></a>
+                        <a href="#" class="plain"><img src="Images/Delete.png" /></a>
                     </div>
                 </li>
                 <?php
                 endforeach;
-                ?>          
+                ?>
             </ol>
         </div>
 
@@ -51,7 +53,10 @@ foreach ($sheets as $sheet):
             <ol class="body-options body-option-color">
                 <li><a href="#">Aufgabenblatt</a></li>
                 <li><a href="#">Musterlösung</a></li>
-                <li><a href="Group.php">Gruppe verwalten</a></li>
+                <?php print '<li><a href="Group.php?uid=';
+                print $uid . '&sid=';
+                print $sheet['id'] . '&cid=';
+                print $cid . '">Gruppe verwalten</a></li>'; ?>
                 <li><a href="#">Alle Anhänge herunterladen</a></li>
                 <li><a href="#">Alle Einsendungen herunterladen</a></li>
             </ol>
@@ -64,7 +69,7 @@ foreach ($sheets as $sheet):
             <li class="footer-text">Ralf Busch</li>
             <li class="footer-text">Florian Lücke</li>
             <li class="footer-text">Felix Schmidt</li>
-        </ol>   
+        </ol>
     </div>
 </div> <!-- end: content-element -->
 <?php

@@ -1,6 +1,8 @@
 <?php
 /**
  * @file Controller.php contains the Controller class
+ *
+ * @author Till Uhlig
  */ 
  
 require_once('Include/Slim/Slim.php');
@@ -10,10 +12,8 @@ include_once('Include/Request.php');
 \Slim\Slim::registerAutoloader();
    
 /**
- * the Controller class represents a component, which routes incoming "restful"
+ * the Controller class represents a component, which routes incoming rest
  * requests to relevant components
- *
- * @author Till Uhlig
  */
 class Controller
 {
@@ -86,7 +86,7 @@ class Controller
         // if no URI is received, abort process    
         if (count($data)==0){
            Logger::Log("Controller nothing to route",LogLevel::DEBUG);
-           $this->_app->response->setStatus(404);
+           $this->_app->response->setStatus(409);
            $this->_app->stop();
            return;
         }
@@ -126,6 +126,19 @@ class Controller
                     $this->_app->stop();
                     return;
                 }
+                elseif ($ch['status'] == 401){
+                    $this->_app->response->setStatus($ch['status']);
+                    $this->_app->response->setBody("");
+                    if (isset($ch['headers']['Content-Type']))
+                        $this->_app->response->headers->set('Content-Type', 
+                                            $ch['headers']['Content-Type']);
+                                            
+                    if (isset($ch['headers']['Content-Disposition']))
+                        $this->_app->response->headers->set('Content-Disposition', 
+                                            $ch['headers']['Content-Disposition']);
+                    $this->_app->stop();
+                    return;                       
+                }
                                      
             } elseif(in_array("",$possible)){
             
@@ -164,10 +177,23 @@ class Controller
                 $this->_app->stop();
                 return;
             }
+            elseif ($ch['status'] == 401){
+                $this->_app->response->setStatus($ch['status']);
+                $this->_app->response->setBody("");
+                if (isset($ch['headers']['Content-Type']))
+                    $this->_app->response->headers->set('Content-Type', 
+                                        $ch['headers']['Content-Type']);
+                                            
+                if (isset($ch['headers']['Content-Disposition']))
+                    $this->_app->response->headers->set('Content-Disposition', 
+                                        $ch['headers']['Content-Disposition']);
+                $this->_app->stop();
+                return;                   
+                }
         }
 
         // no positive response or no operative link
-        $this->_app->response->setStatus(404);
+        $this->_app->response->setStatus(409);
     }
     
    

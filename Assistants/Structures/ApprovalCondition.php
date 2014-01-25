@@ -9,14 +9,15 @@ class ApprovalCondition extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $id;
+    private $id = null;
     
     /**
      * the $id getter
      *
      * @return the value of $id
      */ 
-    public function getId(){
+    public function getId()
+    {
         return $this->id;
     }
     
@@ -35,14 +36,15 @@ class ApprovalCondition extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $courseId;
+    private $courseId = null;
     
     /**
      * the $courseId getter
      *
      * @return the value of $courseId
      */ 
-    public function getCourseId(){
+    public function getCourseId()
+    {
         return $this->courseId;
     }
     
@@ -60,14 +62,15 @@ class ApprovalCondition extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $exerciseTypeId;
+    private $exerciseTypeId = null;
     
     /**
      * the $exerciseTypeId getter
      *
      * @return the value of $exerciseTypeid
      */ 
-    public function getExerciseTypeId(){
+    public function getExerciseTypeId()
+    {
         return $this->exerciseTypeId;
     }
     
@@ -85,14 +88,15 @@ class ApprovalCondition extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $percentage;
+    private $percentage = null;
     
     /**
      * the $percentage getter
      *
      * @return the value of $percentage
      */ 
-    public function getPercentage(){
+    public function getPercentage()
+    {
         return $this->percentage;
     }
     
@@ -105,10 +109,29 @@ class ApprovalCondition extends Object implements JsonSerializable
         $this->percentage = $value;
     }  
 
-    
+    /**
+     * Creates an ApprovalCondition object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $approvalConditionId The id of the approval condition.
+     * @param string $courseId The id of the course.
+     * @param string $exerciseTypeId The id of the exercise type.
+     * @param string $percentage the percentage
+     *
+     * @return an approval condition object.
+     */
+    public function createApprovalCondition($approvalConditionId,$courseId,$exerciseTypeId,$percentage)
+    {
+        return new ApprovalCondition(array('id' => $approvalConditionId,
+        'courseId' => $courseId,
+        'exerciseTypeId' => $exerciseTypeId, 
+        'percentage' => $percentage));
+    }
     
     /**
-     * (description)
+     * returns an mapping array to convert between database and structure
+     *
+     * @return the mapping array
      */
     public static function getDbConvert()
     {
@@ -121,9 +144,12 @@ class ApprovalCondition extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * converts an object to insert/update data
+     *
+     * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData(){
+    public function getInsertData()
+    {
         $values = "";
         
         if ($this->id != null) $this->addInsertData($values, 'AC_id', DBJson::mysql_real_escape_string($this->id));
@@ -138,7 +164,9 @@ class ApprovalCondition extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * returns a sting/string[] of the database primary key/keys
+     * 
+     * @return the primary key/keys
      */
     public static function getDbPrimaryKey()
     {
@@ -146,9 +174,9 @@ class ApprovalCondition extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * the constructor
      * 
-     * @param $param (description)
+     * @param $data an assoc array with the object informations
      */
     public function __construct($data=array()) 
     {
@@ -160,9 +188,11 @@ class ApprovalCondition extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * encodes an object to json
      * 
-     * @param $param (description)
+     * @param $data the object
+     *
+     * @return the json encoded object
      */
     public static function encodeApprovalCondition($data)
     {
@@ -170,13 +200,19 @@ class ApprovalCondition extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * decodes $data to an object
      * 
-     * @param $param (description)
-     * @param $param (description)
+     * @param string $data json encoded data (decode=true) 
+     * or json decoded data (decode=false)
+     * @param bool $decode specifies whether the data must be decoded
+     *
+     * @return the object
      */
     public static function decodeApprovalCondition($data, $decode=true)
     {
+        if ($decode && $data==null) 
+            $data = "{}";
+    
         if ($decode)
             $data = json_decode($data);
         if (is_array($data)){
@@ -191,15 +227,17 @@ class ApprovalCondition extends Object implements JsonSerializable
     
     /**
      * the json serialize function
+     *
+     * @return an array to serialize the object
      */
     public function jsonSerialize()
     {
-        return array(
-            'id' => $this->id,
-            'courseId' => $this->courseId,
-            'exerciseSheetId' => $this->exerciseSheetId,
-            'percentage' => $this->percentage
-        );
+        $list = array();
+        if ($this->id!==null) $list['id'] = $this->id;
+        if ($this->courseId!==null) $list['courseId'] = $this->courseId;
+        if ($this->exerciseTypeId!==null) $list['exerciseTypeId'] = $this->exerciseTypeId;
+        if ($this->percentage!==null) $list['percentage'] = $this->percentage;
+        return $list; 
     }
 }
 ?>

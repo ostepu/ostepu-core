@@ -57,7 +57,6 @@ class LController
             foreach ($string as $str) {
                 $URI = $URI.'/'.$str;
             }
-
             $answer = Request::custom($method, $URI, $header, $body);
             $this->app->response->setBody($answer['content']);
         } elseif ($string[0] == "FS") {

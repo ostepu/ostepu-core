@@ -1,6 +1,10 @@
 <?php
 /**
  * @file DBCourseStatus.php contains the DBCourseStatus class
+ * 
+ * @author Till Uhlig
+ * @author Felix Schmidt
+ * @example DB/DBCourseStatus/CourseStatusSample.json
  */ 
 
 require_once( 'Include/Slim/Slim.php' );
@@ -18,11 +22,10 @@ $com = new CConfig(DBCourseStatus::getPrefix());
 // runs the DBUser
 if (!$com->used())
     new DBCourseStatus($com->loadConfig());  
-    
+
+
 /**
  * A class, to abstract the "CourseStatus" table from database
- *
- * @author Till Uhlig
  */
 class DBCourseStatus
 {
@@ -65,12 +68,16 @@ class DBCourseStatus
     {
         DBCourseStatus::$_prefix = $value;
     }
-    
+
+
     /**
-     * the component constructor
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to
+     * the functions.
      *
      * @param Component $conf component data
-     */ 
+     */
     public function __construct($conf)
     {
         // initialize component
@@ -82,27 +89,27 @@ class DBCourseStatus
         $this->_app->response->headers->set('Content-Type', 'application/json');
 
         // PUT EditMemberRight
-        $this->_app->put('/' . $this->getPrefix() . '/course/:courseid/user/:userid',
+        $this->_app->put('/' . $this->getPrefix() . '/course/:courseid/user/:userid(/)',
                         array($this, 'editMemberRight'));
                         
         // DELETE RemoveCourseMember
-        $this->_app->delete('/' . $this->getPrefix() . '/course/:courseid/user/:userid', 
+        $this->_app->delete('/' . $this->getPrefix() . '/course/:courseid/user/:userid(/)', 
                             array($this,'removeCourseMember'));
                             
         // POST AddCourseMember
-        $this->_app->post('/' . $this->getPrefix() . '/course/:courseid/user/:userid',
+        $this->_app->post('/' . $this->getPrefix() . '(/)', ///course/:courseid/user/:userid
                          array($this,'addCourseMember'));
         
         // GET GetMemberRight
-        $this->_app->get('/' . $this->getPrefix() . '/course/:courseid/user/:userid',
+        $this->_app->get('/' . $this->getPrefix() . '/course/:courseid/user/:userid(/)',
                         array($this,'getMemberRight'));
                         
         // GET GetMemberRights
-        $this->_app->get('/' . $this->getPrefix() . '/user/:userid',
+        $this->_app->get('/' . $this->getPrefix() . '/user/:userid(/)',
                         array($this,'getMemberRights'));  
                         
         // GET GetCourseRights
-        $this->_app->get('/' . $this->getPrefix() . '/course/:courseid',
+        $this->_app->get('/' . $this->getPrefix() . '/course/:courseid(/)',
                         array($this,'getCourseRights'));  
                         
         // starts slim only if the right prefix was received              
@@ -113,11 +120,18 @@ class DBCourseStatus
             $this->_app->run();
         }
     }
-    
+
+
     /**
-     * PUT EditMemberRight
+     * Edits the course status of a user in a specific course.
      *
-     * @param int $userid a database user identifier
+     * Called when this component receives an HTTP PUT request to
+     * /coursestatus/course/$courseid/user/$userid(/).
+     * The request body should contain a JSON object representing the user's new
+     * course status.
+     *
+     * @param int $courseid The id of the course.
+     * @param int $userid The id of the user whose status is being updated.
      */
     public function editMemberRight($courseid,$userid)
     {
@@ -152,17 +166,21 @@ class DBCourseStatus
                 
             } else{
                 Logger::Log("PUT EditMemberRight failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
     }
-    
+
+
     /**
-     * DELETE RemoveCourseMember
+     * Deletes the course status of a user in a specific course.
      *
-     * @param int $courseid a database course identifier
-     * @param int $userid a database user identifier
+     * Called when this component receives an HTTP DELETE request to
+     * /coursestatus/course/$courseid/user/$userid(/).
+     *
+     * @param int $courseid The id of the course.
+     * @param int $userid The id of the user whose status is being deleted.
      */
     public function removeCourseMember($courseid,$userid)
     {
@@ -180,22 +198,25 @@ class DBCourseStatus
                                         
         // checks the correctness of the query                          
         if ($result['status']>=200 && $result['status']<=299){
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(201);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE RemoveCourseMember failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * POST AddCourseMember
+     * Adds a course status to a user in a specific course.
      *
-     * @param int $courseid a database course identifier
-     * @param int $userid a database user identifier
+     * Called when this component receives an HTTP POST request to
+     * /coursestatus(/).
+     * The request body should contain a JSON object representing the user's 
+     * course status.
      */
     public function addCourseMember()
     {
@@ -225,17 +246,21 @@ class DBCourseStatus
                 
             } else{
                 Logger::Log("POST AddCourseMember failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
                 $this->_app->stop();
             }
         }
     }
-    
+
+
     /**
-     * GET GetMemberRight
+     * Returns the course status of a user in a specific course.
      *
-     * @param int $courseid a database course identifier
-     * @param int $userid a database user identifier
+     * Called when this component receives an HTTP GET request to
+     * /coursestatus/course/$courseid/user/$userid(/).
+     *
+     * @param int $courseid The id of the course.
+     * @param int $userid The id of the user whose status is being returned.
      */
     public function getMemberRight($courseid,$userid)
     {
@@ -293,25 +318,29 @@ class DBCourseStatus
             // only one object as result
             if (count($res)>0)
                 $res = $res[0];    
-                
+ 
             $this->_app->response->setBody(User::encodeUser($res));
 
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetMemberRight failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(User::encodeUser(new User()));
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetMemberRights
+     * Returns all course status objects of a user.
      *
-     * @param int $userid a database user identifier
+     * Called when this component receives an HTTP GET request to
+     * /coursestatus/user/$userid(/).
+     *
+     * @param int $userid The id of the user.
      */
     public function getMemberRights($userid)
     {
@@ -371,22 +400,26 @@ class DBCourseStatus
                 
             $this->_app->response->setBody(User::encodeUser($res));
 
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetMemberRights failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(User::encodeUser(new User()));
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetCourseRights
+     * Returns all course status objects of a course.
      *
-     * @param int $courseid a database course identifier
+     * Called when this component receives an HTTP GET request to
+     * /coursestatus/course/$courseid(/).
+     *
+     * @param int $courseid The id of the course.
      */
     public function getCourseRights($courseid)
     {
@@ -442,13 +475,13 @@ class DBCourseStatus
                 
             $this->_app->response->setBody(User::encodeUser($res));
 
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetCourseRights failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(User::encodeUser(new User()));
             $this->_app->stop();
         }

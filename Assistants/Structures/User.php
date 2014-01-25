@@ -3,6 +3,8 @@
  * @file User.php contains the User class
  */
  
+include_once( 'Include/DBJson.php' );
+
 /**
  * the user structure
  *
@@ -14,7 +16,7 @@ class User extends Object implements JsonSerializable
     /**
      * @var string $id a id that identifies the user
      */
-    private $id;
+    private $id = null;
     
     /**
      * the $id getter
@@ -42,7 +44,7 @@ class User extends Object implements JsonSerializable
     /**
      * @var string $userName a string that identifies the user
      */
-    private $userName; 
+    private $userName = null; 
     
     /**
      * the $userName getter
@@ -70,7 +72,7 @@ class User extends Object implements JsonSerializable
     /**
      * @var string $email The user's email address.
      */
-    private $email;
+    private $email = null;
     
     /**
      * the $email getter
@@ -98,7 +100,7 @@ class User extends Object implements JsonSerializable
     /**
      * @var string $firstName The user's first name(s)
      */
-    private $firstName;
+    private $firstName = null;
     
     /**
      * the $firstName getter
@@ -127,7 +129,7 @@ class User extends Object implements JsonSerializable
     /**
      * @var string $lastName The user's last name(s)
      */
-    private $lastName;
+    private $lastName = null;
     
     /**
      * the $lastName getter
@@ -156,7 +158,7 @@ class User extends Object implements JsonSerializable
     /**
      * @var string $title possibly a title the user holds
      */
-    private $title; 
+    private $title = null; 
     
     /**
      * the $title getter
@@ -318,7 +320,54 @@ class User extends Object implements JsonSerializable
     
     
     
-
+    /**
+     * Creates an User object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $userId The id of the user.
+     * @param string $userName The user name.
+     * @param string $email The email address.
+     * @param string $firstName The first name.
+     * @param string $lastName The last name.
+     * @param string $title The title.
+     * @param string $flag The user flag.
+     * @param string $password The password hash.
+     * @param string $salt The password salt.
+     * @param string $failedLogins The failed logins counter.
+     *
+     * @return an user object
+     */
+    public function createUser($userId,$userName,$email,$firstName,$lastName,
+                                $title,$flag,$password,$salt,$failedLogins)
+    {
+        return new User(array('id' => $userId,
+        'userName' => $userName,
+        'email' => $email, 
+        'firstName' => $firstName, 
+        'lastName' => $lastName, 
+        'title' => $title, 
+        'flag' => $flag, 
+        'password' => $password, 
+        'salt' => $salt, 
+        'failedLogins' => $failedLogins));
+    }
+    
+    /**
+     * Creates an CourseStatus object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $userId The id of the user.
+     * @param string $courseId The id of the course.
+     * @param string $status The status.
+     *
+     * @return an course status object
+     */
+    public function createCourseStatus($userId,$courseId,$status)
+    {
+        return new User(array('id' => $userId,
+        'courses' => array(array('status' => $status, 'course' => new Course(array('id' => $courseId))))));
+    }
+    
     /**
      * returns an mapping array to convert between database and structure
      *
@@ -346,7 +395,8 @@ class User extends Object implements JsonSerializable
      *
      * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData(){
+    public function getInsertData()
+    {
         $values = "";
         
         if ($this->id != null) $this->addInsertData($values, 'U_id', DBJson::mysql_real_escape_string($this->id));
@@ -372,12 +422,13 @@ class User extends Object implements JsonSerializable
      *
      * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getCourseStatusInsertData(){
+    public function getCourseStatusInsertData()
+    {
         $values = "";
                 
         if ($this->id != null) $this->addInsertData($values, 'U_id', $this->id );
         if ($this->courses != array()) $this->addInsertData($values, 'CS_status', $this->courses[0]->getStatus() );
-        if ($this->courses != array() && $this->courses->getCourse() != null) $this->addInsertData($values, 'C_id', $this->courses[0]->getCourse()->getId() );
+        if ($this->courses != null && $this->courses != array() && $this->courses[0]->getCourse() != null) $this->addInsertData($values, 'C_id', $this->courses[0]->getCourse()->getId() );
         
         if ($values != ""){
             $values=substr($values,1);
@@ -400,7 +451,8 @@ class User extends Object implements JsonSerializable
      *
      * @return an mapping array
      */
-    public static function getFlagDefinition(){
+    public static function getFlagDefinition()
+    {
         return array(
             '0' => 'inactive', // <- removes all private user data, account removed
             '1' => 'active', // <- the account is active
@@ -415,13 +467,15 @@ class User extends Object implements JsonSerializable
      */
     public function __construct($data=array())
     {
+        if ($data==null)
+            $data = array();
+        
         foreach ($data AS $key => $value) {
             if (isset($key)){
-                if (is_array($value)) {
+                if ($key == 'courses'){
                     $this->{$key} = CourseStatus::decodeCourseStatus($value, false);
-
-                }
-                $this->{$key} = $value;
+                } else
+                    $this->{$key} = $value;
             }
         }
     }
@@ -433,7 +487,8 @@ class User extends Object implements JsonSerializable
      *
      * @return the json encoded object
      */
-    public static function encodeUser($data){
+    public static function encodeUser($data)
+    {
         return json_encode($data);
     }
     
@@ -448,8 +503,12 @@ class User extends Object implements JsonSerializable
      */
     public static function decodeUser($data, $decode=true)
     {
+        if ($decode && $data==null) 
+            $data = "{}";
+    
         if ($decode)
             $data = json_decode($data);
+ 
         if (is_array($data)){
             $result = array();
             foreach ($data AS $key => $value) {
@@ -465,19 +524,19 @@ class User extends Object implements JsonSerializable
      */
     public function jsonSerialize()  
     {
-         $list = array();
-         if ($this->id!==null) $list['id'] = $this->id;
-         if ($this->userName!==null) $list['userName'] = $this->userName;
-         if ($this->email!==null) $list['email'] = $this->email;
-         if ($this->firstName!==null) $list['firstName'] = $this->firstName;
-         if ($this->lastName!==null) $list['lastName'] = $this->lastName;
-         if ($this->title!==null) $list['title'] = $this->title;
-         if ($this->courses!==array()) $list['courses'] = $this->courses;
-         if ($this->flag!==null) $list['flag'] = $this->flag;
-         if ($this->password!==null) $list['password'] = $this->password; 
-         if ($this->salt!==null) $list['salt'] = $this->salt;
-         if ($this->failedLogins!==null) $list['failedLogins'] = $this->failedLogins;
-       return $list;
+        $list = array();
+        if ($this->id!==null) $list['id'] = $this->id;
+        if ($this->userName!==null) $list['userName'] = $this->userName;
+        if ($this->email!==null) $list['email'] = $this->email;
+        if ($this->firstName!==null) $list['firstName'] = $this->firstName;
+        if ($this->lastName!==null) $list['lastName'] = $this->lastName;
+        if ($this->title!==null) $list['title'] = $this->title;
+        if ($this->courses!==array()) $list['courses'] = $this->courses;
+        if ($this->flag!==null) $list['flag'] = $this->flag;
+        if ($this->password!==null) $list['password'] = $this->password; 
+        if ($this->salt!==null) $list['salt'] = $this->salt;
+        if ($this->failedLogins!==null) $list['failedLogins'] = $this->failedLogins;
+        return $list;
     }
 }
 ?>

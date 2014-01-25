@@ -13,14 +13,15 @@ class Exercise extends Object implements JsonSerializable
     /**
      * @var string $id a string that identifies the exercise.
      */
-    private $id;
+    private $id = null;
     
     /**
      * the $id getter
      *
      * @return the value of $id
      */ 
-    public function getId(){
+    public function getId()
+    {
         return $this->id;
     }
     
@@ -36,14 +37,15 @@ class Exercise extends Object implements JsonSerializable
     /**
      * @var string $courseId The id of the course this exercise belongs to.
      */
-    private $courseId;
+    private $courseId = null;
     
     /**
      * the $courseId getter
      *
      * @return the value of $courseId
      */ 
-    public function getCourseId(){
+    public function getCourseId()
+    {
         return $this->courseId;
     }
     
@@ -59,14 +61,15 @@ class Exercise extends Object implements JsonSerializable
     /**
      * @var string $sheetId The id of the sheet this exercise is on.
      */
-    private $sheetId;
+    private $sheetId = null;
     
     /**
      * the $sheetId getter
      *
      * @return the value of $sheetId
      */ 
-    public function getSheetId(){
+    public function getSheetId()
+    {
         return $this->sheetId;
     }
     
@@ -82,14 +85,15 @@ class Exercise extends Object implements JsonSerializable
     /**
      * @var int $maxPoints The maximum amount of points a student can reach in this exercise.
      */
-    private $maxPoints;
+    private $maxPoints = null;
     
     /**
      * the $maxPoints getter
      *
      * @return the value of $maxPoints
      */ 
-    public function getMaxPoints(){
+    public function getMaxPoints()
+    {
         return $this->maxPoints;
     }
     
@@ -103,21 +107,22 @@ class Exercise extends Object implements JsonSerializable
     }
 
     /**
-     * @var string $type The type of points this exercise yields.
+     * @var int $type The type of points this exercise yields.
      */
-    private $type;
+    private $type = null;
     
     /**
      * the $type getter
      *
      * @return the value of $type
      */ 
-    public function getType(){
+    public function getType()
+    {
         return $this->type;
     }
     
     /**
-     * the $type setter
+     * the $int setter
      *
      * @param string $value the new value for $type
      */
@@ -128,14 +133,15 @@ class Exercise extends Object implements JsonSerializable
     /**
      * @var int $link The type of points this exercise yields.
      */
-    private $link;
+    private $link = null;
     
     /**
      * the $link getter
      *
      * @return the value of $link
      */ 
-    public function getLink(){
+    public function getLink()
+    {
         return $this->link;
     }
     
@@ -151,14 +157,15 @@ class Exercise extends Object implements JsonSerializable
     /**
      * @var Submission[] $submissiona the submissions for this exercise
      */
-    private $submissions;
+    private $submissions = array();
     
     /**
      * the $submissions getter
      *
      * @return the value of $submissions
      */ 
-    public function getSubmissions(){
+    public function getSubmissions()
+    {
         return $submissions;
     }
     
@@ -181,7 +188,8 @@ class Exercise extends Object implements JsonSerializable
      *
      * @return the value of $attachments
      */ 
-    public function getAttachments(){
+    public function getAttachments()
+    {
         return $this->attachments;
     }
     
@@ -204,7 +212,8 @@ class Exercise extends Object implements JsonSerializable
      *
      * @return the value of $bonus
      */ 
-    public function getBonus(){
+    public function getBonus()
+    {
         return $this->bonus;
     }
     
@@ -215,6 +224,32 @@ class Exercise extends Object implements JsonSerializable
      */
     public function setBonus($value){
         $this->bonus = $value;
+    }
+    
+    /**
+     * Creates an Exercise object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $exerciseId The id of the exercise.
+     * @param string $courseId The id of the course. (do not use!)
+     * @param string $sheetId The id of the exercise sheet.
+     * @param string $maxPoints the max points
+     * @param string $type the id of the exercise type
+     * @param string $link the id of the exercise, this exercise belongs to
+     * @param string $bonus the bonus flag
+     *
+     * @return an exercise object
+     */
+    public function createExercise($exerciseId,$courseId,$sheetId,
+                                    $maxPoints,$type,$link,$bonus)
+    {
+        return new Exercise(array('id' => $exerciseId,
+        'courseId' => $courseId,
+        'sheetId' => $sheetId, 
+        'maxPoints' => $maxPoints, 
+        'type' => $type, 
+        'link' => $link, 
+        'bonus' => $bonus));
     }
     
     /**
@@ -242,7 +277,8 @@ class Exercise extends Object implements JsonSerializable
      *
      * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData(){
+    public function getInsertData()
+    {
         $values = "";
         
         if ($this->id != null) $this->addInsertData($values, 'E_id', DBJson::mysql_real_escape_string($this->id));
@@ -310,6 +346,9 @@ class Exercise extends Object implements JsonSerializable
      */
     public static function decodeExercise($data, $decode=true)
     {
+        if ($decode && $data==null) 
+            $data = "{}";
+    
         if ($decode)
             $data = json_decode($data);
         if (is_array($data)){
@@ -329,17 +368,17 @@ class Exercise extends Object implements JsonSerializable
      */
     public function jsonSerialize()
     {
-        return array(
-            'id' => $this->id,
-            'courseId' => $this->courseId,
-            'sheetId' => $this->sheetId,
-            'maxPoints' => $this->maxPoints,
-            'type' => $this->type,
-            'link' => $this->link,
-            'submissions' => $this->submissions,
-            'bonus' => $this->bonus,
-            'attachments' => $this->attachments
-        );
+        $list = array();
+        if ($this->id!==null) $list['id'] = $this->id;
+        if ($this->courseId!==null) $list['courseId'] = $this->courseId;
+        if ($this->sheetId!==null) $list['sheetId'] = $this->sheetId;
+        if ($this->maxPoints!==array()) $list['maxPoints'] = $this->maxPoints;
+        if ($this->type!==null) $list['type'] = $this->type;
+        if ($this->link!==null) $list['link'] = $this->link;
+        if ($this->submissions!==array()) $list['submissions'] = $this->submissions;
+        if ($this->bonus!==null) $list['bonus'] = $this->bonus;
+        if ($this->attachments!==array()) $list['attachments'] = $this->attachments;
+        return $list;
     }
 }
 ?>

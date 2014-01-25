@@ -13,14 +13,15 @@ class SelectedSubmission extends Object implements JsonSerializable
     /**
      * @var string $leaderId The identifier of the group leader.
      */
-    private $leaderId;
+    private $leaderId = null;
     
     /**
      * the $leaderId getter
      *
      * @return the value of $leaderId
      */ 
-    public function getLeaderId(){
+    public function getLeaderId()
+    {
         return $this->leaderId;
     }
     
@@ -36,14 +37,15 @@ class SelectedSubmission extends Object implements JsonSerializable
     /**
      * @var string $submissionId The id of the selected submission.
      */
-    private $submissionId;
+    private $submissionId = null;
     
     /**
      * the $submissionId getter
      *
      * @return the value of $submissionId
      */ 
-    public function getSubmissionId(){
+    public function getSubmissionId()
+    {
         return $this->submissionId;
     }
     
@@ -59,14 +61,15 @@ class SelectedSubmission extends Object implements JsonSerializable
     /**
      * @var string $exerciseId a string that identifies the exercise this submission belongs to.
      */
-    private $exerciseId;
+    private $exerciseId = null;
     
     /**
      * the $exerciseId getter
      *
      * @return the value of $exerciseId
      */ 
-    public function getExerciseId(){
+    public function getExerciseId()
+    {
         return $this->exerciseId;
     }
     
@@ -79,8 +82,22 @@ class SelectedSubmission extends Object implements JsonSerializable
         $this->exerciseId = $value;
     }
 
-    
-    
+    /**
+     * Creates an SelectedSubmission object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $leaderId The id of the leader(User).
+     * @param string $submissionId The id of the submission.
+     * @param string $exerciseId The id of the exercise.
+     *
+     * @return an selected submission object
+     */
+    public function createSelectedSubmission($leaderId,$submissionId,$exerciseId)
+    {
+        return new SelectedSubmission(array('leaderId' => $leaderId,
+        'submissionId' => $submissionId, 
+        'exerciseId' => $exerciseId));
+    }
 
     /**
      * returns an mapping array to convert between database and structure
@@ -101,7 +118,8 @@ class SelectedSubmission extends Object implements JsonSerializable
      *
      * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData(){
+    public function getInsertData()
+    {
         $values = "";
         
         if ($this->leaderId != null) $this->addInsertData($values, 'U_id_leader', DBJson::mysql_real_escape_string($this->leaderId));
@@ -157,8 +175,13 @@ class SelectedSubmission extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeSelectedSubmission($data){
+    public static function decodeSelectedSubmission($data, $decode=true){
+        if ($decode && $data==null) 
+            $data = "{}";
+            
+        if ($decode)
         $data = json_decode($data);
+        
         if (is_array($data)){
             $result = array();
             foreach ($data AS $key => $value) {
@@ -175,11 +198,11 @@ class SelectedSubmission extends Object implements JsonSerializable
      */
     public function jsonSerialize()
     {
-        return array(
-            'leaderId' => $this->leaderId,
-            'submissionId' => $this->submissionId,
-            'exerciseId' => $this->exerciseId,
-        );
+        $list = array();
+        if ($this->leaderId!==null) $list['leaderId'] = $this->leaderId;
+        if ($this->submissionId!==null) $list['submissionId'] = $this->submissionId;
+        if ($this->exerciseId!==null) $list['exerciseId'] = $this->exerciseId;
+        return $list;  
     }
 }
 ?>

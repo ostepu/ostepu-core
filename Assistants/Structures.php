@@ -2,8 +2,7 @@
 /**
  * @file Structures.php contains the Object class and includes a lot of existing api structures
  *
- * @todo Passwortverwaltung
- * @todo Verschluesselung
+ * @author Till Uhlig
  */ 
 
     include_once( 'Structures/ApprovalCondition.php' );  
@@ -30,8 +29,6 @@
 
 /**
  * the Object class is the parent class of all api structures 
- *
- * @author -
  */
 abstract class Object
 {
@@ -63,9 +60,9 @@ abstract class Object
     }
     
     /**
-     * the function reads the passed mysql object and converts direktly into json
+     * adds a string comma seperated to another
      *
-     * @param string &$a the var, where we have to add the assignment,
+     * @param string &$a the referenced var, where we have to add the assignment,
      * e.g. addInsertData($a,'a','1') -> $a = ',a=1'
      * @param string $b left part of assignment 
      * @param string $c right part of assignment 

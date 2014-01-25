@@ -1,0 +1,44 @@
+<form action="Upload.php" method="POST" enctype="multipart/form-data">
+    <?php print '<input type="hidden" name="sheetID" value="' . $sheetID . '">'; ?>
+    <input type="hidden" name="action" value="submit">
+    <?php print '<input type="hidden" name="userID" value="' . $uid . '">'; ?>
+    <button class="submit" type="submit" name="submit" id="submitButton">
+        <div class="content-element">
+            <div class="content-header">
+                <div class="content-title left uppercase">Absenden</div>
+                <div class="info-color bold right">
+                    <a href="javascript:void(0);" class="add-exercise" id="function">absenden</a>
+                </div>
+            </div>
+        </div> <!-- end: content-wrapper -->
+    </button>
+
+    <?php foreach($exercises as $key => $exercise): ?>
+        <div class="content-element">
+            <div class="content-header">
+                <div class="content-title left uppercase">
+                    <?php print "Aufgabe " . ($key + 1); ?>
+                </div>
+            </div>
+            <div class="content-body-wrapper">
+                <div class="content-body left">
+                    <label class="short left label bold" for="studentComment">Kommentar:</label>
+                    <?php $name = "exercises[{$key}]";
+                    print '<textarea name="' . $name;
+                    print '[\'comment\']" class="form-field text-input" rows="5">';
+                    ?>
+                </textarea>
+                <label class="short left label bold new-line" for="studentComment">Datei:</label>
+                <?php
+                print '<input type="file" class="button left" name="';
+                print $name . '[\'file\']">';
+                print '<input type="hidden" name="' . $name;
+                $exerciseID = $exercise['exerciseID'];
+                print '[\'exerciseID\']" value="' . $exerciseID . '">';
+                ?>
+                </div>
+            </div>
+        </div>
+    <?php endforeach; ?>
+
+</form>

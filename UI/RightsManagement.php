@@ -2,7 +2,17 @@
 include 'include/Header/Header.php';
 include 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
+?>
 
+<?php
+    if (isset($_GET['action'])) {
+        Logger::Log($_GET, LogLevel::INFO);
+    } else {
+        Logger::Log("No Rights Data", LogLevel::INFO);
+    }
+?>
+
+<?php
 // construct a new Header
 $h = new Header("Datenstrukturen",
                 "",
@@ -24,8 +34,15 @@ $lecturerRights->bind(array());
 $createUser = Template::WithTemplateFile('include/RightsManagement/CreateUser.template.html');
 $createUser->bind(array());
 
+/**
+ * @todo combine the templates into a single file
+ */
+
 // wrap all the elements in some HTML and show them on the page
-$w = new HTMLWrapper($h, $tutorRights, $lecturerRights, $createUser);
+$w = new HTMLWrapper($h,
+                     $tutorRights,
+                     $lecturerRights,
+                     $createUser);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
 ?>

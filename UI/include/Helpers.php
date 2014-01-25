@@ -1,8 +1,10 @@
 <?php
-/** 
+/**
  * @file Helpers.php
- * %A collection of helper methods that can be used by classes
- */ 
+ * A collection of helper methods that can be used by classes
+ *
+ * @author Florian Lücke
+ */
 
 /**
  * Remove a value fom an array
@@ -46,6 +48,12 @@ function is_assoc($array)
   return (bool)count(array_filter(array_keys($array), 'is_string'));
 }
 
+/**
+ * Sends an HTTP GET request.
+ *
+ * Uses HTTP GET request to get contents a $url
+ * @param string $url The URL that should be opnened.
+ */
 function http_get($url)
 {
     $c = curl_init();
@@ -61,6 +69,14 @@ function http_get($url)
     return $retData;
 }
 
+/**
+ * Sends an HTTP POST request.
+ *
+ * Uses HTTP POST request to post $data to a $url
+ * @param string $url The URL that should be opnened.
+ * @param arrray $data An associative array that contains the fields that should
+ * be postet to $url
+ */
 function http_post_data($url, $data)
 {
     $c = curl_init();
@@ -70,12 +86,20 @@ function http_post_data($url, $data)
     curl_setopt($c, CURLOPT_POSTFIELDS, $data);
     curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
 
-    $retData = curl_exec($c); 
+    $retData = curl_exec($c);
     curl_close($c);
 
     return $retData;
 }
 
+/**
+ * Sends an HTTP PUT request.
+ *
+ * Uses HTTP PUT request to post $data to a $url
+ * @param string $url The URL that should be opnened.
+ * @param arrray $data An associative array that contains the fields that should
+ * be postet to $url
+ */
 function http_put_data($url, $data)
 {
     $c = curl_init();
@@ -85,12 +109,18 @@ function http_put_data($url, $data)
     curl_setopt($c, CURLOPT_CUSTOMREQUEST, 'PUT');
     curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
 
-    $retData = curl_exec($c); 
+    $retData = curl_exec($c);
     curl_close($c);
 
     return $retData;
 }
 
+/**
+ * Sends an HTTP DELETE request.
+ *
+ * Uses HTTP DELETE request to get contents a $url
+ * @param string $url The URL that should be opnened.
+ */
 function http_delete($url)
 {
     $c = curl_init();
@@ -99,7 +129,7 @@ function http_delete($url)
     curl_setopt($c, CURLOPT_CUSTOMREQUEST, 'DELETE');
     curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
 
-    $retData = curl_exec($c); 
+    $retData = curl_exec($c);
     curl_close($c);
 
     return $retData;

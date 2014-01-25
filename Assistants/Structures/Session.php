@@ -13,7 +13,7 @@ class Session extends Object implements JsonSerializable
     /**
      * @var string $user the db id of an user 
      */
-    private $user;
+    private $user = null;
     
     /**
      * the $user getter
@@ -39,31 +39,45 @@ class Session extends Object implements JsonSerializable
     
     
     /**
-     * @var string $status a string that defines which status the user has in that course.
+     * @var string $session a string that defines which session the user has in that course.
      */
-    private $status;
+    private $session = null;
     
     /**
-     * the $status getter
+     * the $session getter
      *
-     * @return the value of $status
+     * @return the value of $session
      */ 
-    public function getStatus()
+    public function getSession()
     {
-        return $this->status;
+        return $this->session;
     }
     
     /**
-     * the $status setter
+     * the $session setter
      *
-     * @param string $value the new value for $status
+     * @param string $value the new value for $session
      */ 
-    public function setStatus($value)
+    public function setSession($value)
     {
-        $this->status = $value;
+        $this->session = $value;
     }
    
-
+    /**
+     * Creates an Session object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $userId The id of the user.
+     * @param string $sessionId The id of the session.
+     *
+     * @return an session object
+     */
+    public function createSession($userId,$sessionId)
+    {
+        return new Session(array('user' => $userId,
+        'session' => $sessionId));
+    }
+    
     /**
      * returns an mapping array to convert between database and structure
      *
@@ -73,7 +87,7 @@ class Session extends Object implements JsonSerializable
     {
         return array(
            'U_id' => 'user',
-           'SE_id' => 'session'
+           'SE_sessionID' => 'session'
         );
     }
     
@@ -82,11 +96,12 @@ class Session extends Object implements JsonSerializable
      *
      * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData(){
+    public function getInsertData()
+    {
         $values = "";
         
         if ($this->user != null) $this->addInsertData($values, 'U_id', DBJson::mysql_real_escape_string($this->user));
-        if ($this->session != null) $this->addInsertData($values, 'SE_id', DBJson::mysql_real_escape_string($this->session));
+        if ($this->session != null) $this->addInsertData($values, 'SE_sessionID', DBJson::mysql_real_escape_string($this->session));
         
         if ($values != ""){
             $values=substr($values,1);
@@ -112,8 +127,15 @@ class Session extends Object implements JsonSerializable
      */
     public function __construct($data=array())
     {
+        if ($data==null)
+            $data = array();
+        
         foreach ($data AS $key => $value) {
             if (isset($key)){
+              /*  if ($key == "user"){
+                    $this->{$key} = new User($value,false);
+                }
+                else*/
                     $this->{$key} = $value;
             }
         }
@@ -126,7 +148,7 @@ class Session extends Object implements JsonSerializable
      *
      * @return the json encoded object
      */
-    public static function encodeCourseStatus($data)
+    public static function encodeSession($data)
     {
         return json_encode($data);
     }
@@ -140,10 +162,14 @@ class Session extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeCourseStatus($data, $decode=true)
+    public static function decodeSession($data, $decode=true)
     {
+        if ($decode && $data==null) 
+            $data = "{}";
+    
         if ($decode)
             $data = json_decode($data);
+            
         if (is_array($data)){
             $result = array();
             foreach ($data AS $key => $value) {
@@ -159,10 +185,10 @@ class Session extends Object implements JsonSerializable
      */
     public function jsonSerialize() 
     {
-        return array(
-            'user' => $this->user,
-            'session' => $this->session
-        );
+        $list = array();
+        if ($this->user!==null) $list['user'] = $this->user;
+        if ($this->session!==null) $list['session'] = $this->session;
+        return $list;  
     }
 }
 ?>

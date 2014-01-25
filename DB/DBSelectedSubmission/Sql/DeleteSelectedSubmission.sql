@@ -2,8 +2,8 @@
  * @file DeleteAttachment.sql
  * deletes a specified selected submission row from %SelectedSubmission table
  * @author  Till Uhlig
- * @param int $userid a %User identifier
- * @param int $eid a %Exercise identifier
+ * @param int \$userid a %User identifier
+ * @param int \$eid a %Exercise identifier
  * @result -
  */
  

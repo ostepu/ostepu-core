@@ -1,1 +1,0 @@
-INSERT INTO Invitation SET $values

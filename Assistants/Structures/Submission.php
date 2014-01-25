@@ -13,14 +13,15 @@ class Submission extends Object implements JsonSerializable
     /**
      * @var string $id The identifier of this submission.
      */
-    private $id;
+    private $id = null;
     
     /**
      * the $id getter
      *
      * @return the value of $id
      */ 
-    public function getId(){
+    public function getId()
+    {
         return $this->id;
     }
     
@@ -29,21 +30,23 @@ class Submission extends Object implements JsonSerializable
      *
      * @param string $value the new value for $id
      */ 
-    public function setId($value){
+    public function setId($value)
+    {
         $this->id = $value;
     }
 
     /**
      * @var string $studentId The id of the student that submitted his solution.
      */
-    private $studentId;
+    private $studentId = null;
     
     /**
      * the $studentId getter
      *
      * @return the value of $studentId
      */ 
-    public function getStudentId(){
+    public function getStudentId()
+    {
         return $this->studentId;
     }
     
@@ -52,21 +55,23 @@ class Submission extends Object implements JsonSerializable
      *
      * @param string $value the new value for $studentId
      */ 
-    public function setStudentId($value){
+    public function setStudentId($value)
+    {
         $this->studentId = $value;
     }
 
     /**
      * @var string $exerciseId a string that identifies the exercise this submission belongs to.
      */
-    private $exerciseId;
+    private $exerciseId = null;
     
     /**
      * the $exerciseId getter
      *
      * @return the value of $exerciseId
      */ 
-    public function getExerciseId(){
+    public function getExerciseId()
+    {
         return $this->exerciseId;
     }
     
@@ -75,21 +80,23 @@ class Submission extends Object implements JsonSerializable
      *
      * @param string $value the new value for $exerciseId
      */ 
-    public function setExerciseId($value){
+    public function setExerciseId($value)
+    {
         $this->exerciseId = $value;
     }
 
     /**
      * @var string $comment A comment that a student made on his submission.
      */
-    private $comment;
+    private $comment = null;
     
     /**
      * the $comment getter
      *
      * @return the value of $comment
      */ 
-    public function getComment(){
+    public function getComment()
+    {
         return $this->comment;
     }
     
@@ -98,21 +105,23 @@ class Submission extends Object implements JsonSerializable
      *
      * @param string $value the new value for $comment
      */ 
-    public function setComment($value){
+    public function setComment($value)
+    {
         $this->comment = $value;
     }
     
     /**
      * @var File $file A students submission.
      */
-    private $file;
+    private $file = null;
     
     /**
      * the $file getter
      *
      * @return the value of $file
      */ 
-    public function getFile(){
+    public function getFile()
+    {
         return $this->file;
     }
     
@@ -121,21 +130,23 @@ class Submission extends Object implements JsonSerializable
      *
      * @param file $value the new value for $file
      */ 
-    public function setFile($value){
+    public function setFile($value)
+    {
         $this->file = $value;
     }
     
     /**
      * @var bool $accepted If the submission has been accepted for marking.
      */
-    private $accepted;
+    private $accepted = null;
     
     /**
      * the $accepted getter
      *
      * @return the value of $accepted
      */ 
-    public function getAccepted(){
+    public function getAccepted()
+    {
         return $this->accepted;
     }
     
@@ -144,21 +155,23 @@ class Submission extends Object implements JsonSerializable
      *
      * @param bool $value the new value for $accepted
      */ 
-    public function setAccepted($value){
+    public function setAccepted($value)
+    {
         $this->accepted = $value;
     }
     
     /**
      * @var bool $selectedForGroup If the submission has been selected as submission for the user's group
      */
-    private $selectedForGroup;
+    private $selectedForGroup = null;
     
     /**
      * the $selectedForGroup getter
      *
      * @return the value of $selectedForGroup
      */ 
-    public function getSelectedForGroup(){
+    public function getSelectedForGroup()
+    {
         return $this->selectedForGroup;
     }
     
@@ -167,21 +180,23 @@ class Submission extends Object implements JsonSerializable
      *
      * @param string $value the new value for $selectedForGroup
      */ 
-    public function setSelectedForGroup($value){
+    public function setSelectedForGroup($value)
+    {
         $this->selectedForGroup = $value;
     }
     
     /**
      * @var date $date the date on which the submission was uploaded
      */
-    private $date;
+    private $date = null;
     
     /**
      * the $date getter
      *
      * @return the value of $date
      */ 
-    public function getDate(){
+    public function getDate()
+    {
         return $this->date;
     }
     
@@ -190,8 +205,86 @@ class Submission extends Object implements JsonSerializable
      *
      * @param date $value the new value for $date
      */ 
-    public function setDate($value){
+    public function setDate($value)
+    {
         $this->date = $value;
+    }
+    
+    /**
+     * @var int $exerciseNumber a human readable exercise number
+     */
+    private $exerciseNumber = null;
+    
+    /**
+     * the $exerciseNumber getter
+     *
+     * @return the value of $exerciseNumber
+     */ 
+    public function getExerciseNumber()
+    {
+        return $this->exerciseNumber;
+    }
+    
+    /**
+     * the $exerciseNumber setter
+     *
+     * @param int $value the new value for $exerciseNumber
+     */ 
+    public function setExerciseNumber($value)
+    {
+        $this->exerciseNumber = $value;
+    }  
+   
+    /**
+     * @var int $flag a status flag for submissions, like deleted
+     */
+    private $flag = null;
+    
+    /**
+     * the $flag getter
+     *
+     * @return the value of $flag
+     */ 
+    public function getFlag()
+    {
+        return $this->flag;
+    }
+    
+    /**
+     * the $flag setter
+     *
+     * @param int $value the new value for $flag
+     */ 
+    public function setFlag($value)
+    {
+        $this->flag = $value;
+    }  
+    
+    /**
+     * Creates an Submission object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $submissionId The id of the submission.
+     * @param string $studentId The id of the student(User).
+     * @param string $fileId The id of the file.
+     * @param string $exerciseId The id of the exercise.
+     * @param string $comment The student comment.
+     * @param string $accepted The accepted flag.
+     * @param string $date The storing date.
+     * @param string $flag The submission flag.
+     *
+     * @return an submission object
+     */
+    public function createSubmission($submissionId,$studentId,$fileId,$exerciseId,$comment,$accepted,$date,$flag)
+    {
+        return new Submission(array('id' => $submissionId,
+        'studentId' => $studentId, 
+        'exerciseId' => $exerciseId, 
+        'comment' => $comment, 
+        'accepted' => $accepted, 
+        'date' => $date, 
+        'flag' => $flag, 
+        'file' => new File(array('fileId' => $fileId))));
     }
     
     /**
@@ -209,6 +302,7 @@ class Submission extends Object implements JsonSerializable
            'S_comment' => 'comment',
            'S_accepted' => 'accepted',
            'S_date' => 'date',
+           'S_flag' => 'flag',
            'S_selected' => 'selectedForGroup'
         );
     }
@@ -218,18 +312,20 @@ class Submission extends Object implements JsonSerializable
      *
      * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData(){
+    public function getInsertData()
+    {
         $values = "";
         
         if ($this->id != null) $this->addInsertData($values, 'S_id', DBJson::mysql_real_escape_string($this->id));
         if ($this->studentId != null) $this->addInsertData($values, 'U_id', DBJson::mysql_real_escape_string($this->studentId));
-        if ($this->file != array()) $this->addInsertData($values, 'F_id_file', DBJson::mysql_real_escape_string($this->file->getFileId()));
+        if ($this->file != null) $this->addInsertData($values, 'F_id_file', DBJson::mysql_real_escape_string($this->file->getFileId()));
         if ($this->exerciseId != null) $this->addInsertData($values, 'E_id', DBJson::mysql_real_escape_string($this->exerciseId));
         if ($this->comment != null) $this->addInsertData($values, 'S_comment', DBJson::mysql_real_escape_string($this->comment));
         if ($this->accepted != null) $this->addInsertData($values, 'S_accepted', DBJson::mysql_real_escape_string($this->accepted));
         if ($this->date != null) $this->addInsertData($values, 'S_date', DBJson::mysql_real_escape_string($this->date));
         if ($this->selectedForGroup != null) $this->addInsertData($values, 'S_selected', DBJson::mysql_real_escape_string($this->selectedForGroup));
-        
+        if ($this->flag != null) $this->addInsertData($values, 'S_flag', DBJson::mysql_real_escape_string($this->flag));
+
         if ($values != ""){
             $values=substr($values,1);
         }
@@ -251,9 +347,13 @@ class Submission extends Object implements JsonSerializable
      * 
      * @param $data an assoc array with the object informations
      */
-    public function __construct($data=array()){
+    public function __construct($data=array())
+    {
+        if ($data==null)
+            $data = array();
+        
         foreach ($data AS $key => $value) {
-             if (isset($key)){
+            if (isset($key)){
                 if ($key == 'file'){
                     $this->{$key} = File::decodeFile($value, false);
                 }
@@ -270,7 +370,8 @@ class Submission extends Object implements JsonSerializable
      *
      * @return the json encoded object
      */
-    public static function encodeSubmission($data){
+    public static function encodeSubmission($data)
+    {
         return json_encode($data);
     }
     
@@ -283,8 +384,13 @@ class Submission extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeSubmission($data){
-        $data = json_decode($data);
+    public static function decodeSubmission($data, $decode=true)
+    {
+        if ($decode && $data==null) 
+            $data = "{}";
+    
+        if ($decode)
+            $data = json_decode($data);
         if (is_array($data)){
             $result = array();
             foreach ($data AS $key => $value) {
@@ -300,17 +406,19 @@ class Submission extends Object implements JsonSerializable
      * the json serialize function
      */
     public function jsonSerialize()
-    {
-        return array(
-            'id' => $this->id,
-            'studentId' => $this->studentId,
-            'exerciseId' => $this->exerciseId,
-            'comment' => $this->comment,
-            'file' => $this->file,
-            'accepted' => $this->accepted,
-            'selectedForGroup' => $this->selectedForGroup,
-            'date' => $this->date
-        );
+    {       
+        $list = array();
+        if ($this->id!==null) $list['id'] = $this->id;
+        if ($this->studentId!==null) $list['studentId'] = $this->studentId;
+        if ($this->exerciseId!==null) $list['exerciseId'] = $this->exerciseId;
+        if ($this->comment!==null) $list['comment'] = $this->comment;
+        if ($this->file!==null) $list['file'] = $this->file;
+        if ($this->accepted!==null) $list['accepted'] = $this->accepted;
+        if ($this->selectedForGroup!==null) $list['selectedForGroup'] = $this->selectedForGroup;
+        if ($this->date!==null) $list['date'] = $this->date;
+        if ($this->exerciseNumber!==null) $list['exerciseNumber'] = $this->exerciseNumber;
+        if ($this->flag!==null) $list['flag'] = $this->flag;
+        return $list;  
     }
 }
 ?>

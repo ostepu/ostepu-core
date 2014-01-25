@@ -1,6 +1,10 @@
 <?php
 /**
  * @file DBAttachment.php contains the DBAttachment class
+ * 
+ * @author Till Uhlig
+ * @author Felix Schmidt
+ * @example DB/DBAttachment/AttachmentSample.json
  */ 
 
 require_once( 'Include/Slim/Slim.php' );
@@ -22,8 +26,6 @@ if (!$com->used())
     
 /**
  * A class, to abstract the "Attachment" table from database
- *
- * @author Till Uhlig
  */
 class DBAttachment
 {
@@ -66,12 +68,16 @@ class DBAttachment
     {
         DBAttachment::$_prefix = $value;
     }
-    
+
+
     /**
-     * the component constructor
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to
+     * the functions.
      *
      * @param Component $conf component data
-     */ 
+     */
     public function __construct($conf)
     {
         // initialize component
@@ -83,46 +89,52 @@ class DBAttachment
         $this->_app->response->headers->set('Content-Type', 'application/json');
 
         // PUT EditAttachment
-        $this->_app->put('/' . $this->getPrefix() . '/attachment/:aid',
+        $this->_app->put('/' . $this->getPrefix() . '(/attachment)/:aid(/)',
                         array($this,'editAttachment'));
         
         // DELETE DeleteAttachment
-        $this->_app->delete('/' . $this->getPrefix() . '/attachment/:aid',
+        $this->_app->delete('/' . $this->getPrefix() . '(/attachment)/:aid(/)',
                            array($this,'deleteAttachment'));
         
-        // POST SetAttachment
-        $this->_app->post('/' . $this->getPrefix(),
-                         array($this,'setAttachment'));    
+        // POST AddAttachment
+        $this->_app->post('/' . $this->getPrefix() . '(/)',
+                         array($this,'addAttachment'));    
         
         // GET GetAttachment
-        $this->_app->get('/' . $this->getPrefix() . '/attachment/:aid',
+        $this->_app->get('/' . $this->getPrefix() . '(/attachment)/:aid(/)',
                         array($this,'getAttachment'));
         
         // GET GetAllAttachments
-        $this->_app->get('/' . $this->getPrefix() . '/attachment',
+        $this->_app->get('/' . $this->getPrefix() . '(/attachment)(/)',
                         array($this,'getAllAttachments'));
                         
         // GET GetExerciseAttachments
-        $this->_app->get('/' . $this->getPrefix() . '/exercise/:eid',
+        $this->_app->get('/' . $this->getPrefix() . '/exercise/:eid(/)',
                         array($this,'getExerciseAttachments'));
                         
         // GET GetSheetAttachments
-        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid',
+        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid(/)',
                         array($this,'getSheetAttachments'));
                         
         // starts slim only if the right prefix was received
         if (strpos ($this->_app->request->getResourceUri(),'/' . 
-                    $this->getPrefx()) === 0){
+                    $this->getPrefix()) === 0){
                     
             // run Slim
             $this->_app->run();
         }
     }
-    
+
+
     /**
-     * PUT EditAttachment
+     * Edits an attachment.
      *
-     * @param $aid a database attachment identifier
+     * Called when this component receives an HTTP PUT request to
+     * /attachment/$aid(/) or /attachment/attachment/$aid(/).
+     * The request body should contain a JSON object representing the 
+     * attachment's new attributes.
+     *
+     * @param string $aid The id of the attachment that is being updated.
      */
     public function editAttachment($aid)
     {
@@ -156,16 +168,20 @@ class DBAttachment
                 
             } else{
                 Logger::Log("PUT EditAttachment failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 251);
                 $this->_app->stop();
             }
         }
     }
-    
+
+
     /**
-     * DELETE DeleteAttachment
+     * Deletes an attachment.
      *
-     * @param $aid a database attachment identifier
+     * Called when this component receives an HTTP DELETE request to
+     * /attachment/$aid(/) or /attachment/attachment/$aid(/).
+     *
+     * @param string $aid The id of the attachment that is being deleted.
      */
     public function deleteAttachment($aid)
     {
@@ -182,23 +198,29 @@ class DBAttachment
             
         // checks the correctness of the query  
         if ($result['status']>=200 && $result['status']<=299){
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(201);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("DELETE DeleteAttachment failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 252);
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * POST SetAttachment
+     * Adds an attachment.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /attachment(/).
+     * The request body should contain a JSON object representing the 
+     * attachment's attributes.
      */
-    public function setAttachment()
+    public function addAttachment()
     {
-        Logger::Log("starts POST SetAttachment",LogLevel::DEBUG);
+        Logger::Log("starts POST AddAttachment",LogLevel::DEBUG);
         
         // decode the received attachment data, as an object
         $insert = Attachment::decodeAttachment($this->_app->request->getBody());
@@ -213,7 +235,7 @@ class DBAttachment
             
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
-                                            "Sql/SetAttachment.sql", 
+                                            "Sql/AddAttachment.sql", 
                                             array("values" => $data));                   
             
             // checks the correctness of the query
@@ -230,17 +252,21 @@ class DBAttachment
                     $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
             } else{
-                Logger::Log("POST SetAttachment failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                Logger::Log("POST AddAttachment failed",LogLevel::ERROR);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 251);
                 $this->_app->stop();
             }
         }
     }
-    
+
+
     /**
-     * GET GetAttachment
+     * Returns an attachment.
      *
-     * @param $aid a database attachment identifier
+     * Called when this component receives an HTTP GET request to
+     * /attachment/$aid(/) or /attachment/attachment/$aid(/).
+     *
+     * @param string $aid The id of the attachment that should be returned.
      */
     public function getAttachment($aid)
     {     
@@ -289,20 +315,24 @@ class DBAttachment
                 
             $this->_app->response->setBody(Attachment::encodeAttachment($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetAttachment failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Attachment::encodeAttachment(new Attachment()));
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetAllAttachments
+     * Returns all attachments.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /attachment(/) or /attachment/attachment(/).
      */
     public function getAllAttachments()
     {    
@@ -343,22 +373,26 @@ class DBAttachment
                 
             $this->_app->response->setBody(Attachment::encodeAttachment($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetAllAttachments failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Attachment::encodeAttachment(new Attachment()));
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetExerciseAttachments
+     * Returns the attachments to a given exercise.
      *
-     * @param int $eid a database exercise identifier
+     * Called when this component receives an HTTP GET request to
+     * /attachment/exercise/$eid(/).
+     *
+     * @param string $eid The id of the exercise.
      */
     public function getExerciseAttachments($eid)
     {     
@@ -402,22 +436,26 @@ class DBAttachment
                 
             $this->_app->response->setBody(Attachment::encodeAttachment($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetExerciseAttachments failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Attachment::encodeAttachment(new Attachment()));
             $this->_app->stop();
         }
     }
-    
+
+
     /**
-     * GET GetSheetAttachments
+     * Returns the attachments to a given exercise sheet.
      *
-     * @param int $esid a database exercise sheet identifier
+     * Called when this component receives an HTTP GET request to
+     * /attachment/exercisesheet/$esid(/).
+     *
+     * @param string $esid The id of the exercise sheet.
      */
     public function getSheetAttachments($esid)
     {      
@@ -461,13 +499,13 @@ class DBAttachment
                 
             $this->_app->response->setBody(Attachment::encodeAttachment($res));
         
-            $this->_app->response->setStatus($result['status']);
+            $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
             Logger::Log("GET GetSheetAttachments failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(409);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Attachment::encodeAttachment(new Attachment()));
             $this->_app->stop();
         }
