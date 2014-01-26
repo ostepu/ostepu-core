@@ -42,7 +42,7 @@ class Request_CreateRequest
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, $resultHeader);
         
-        if ($method == 'POST' || $method == 'UPDATE') {
+        if ($method == 'POST' || $method == 'PUT'){
             curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
         }
         
