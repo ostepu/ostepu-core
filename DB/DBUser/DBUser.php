@@ -249,7 +249,7 @@ class DBUser
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/DeleteUserPermanent.sql", 
                                         array("userid" => $userid));    
-                                        
+                              
         // checks the correctness of the query                          
         if ($result['status']>=200 && $result['status']<=299){
            // $this->_app->response->setBody(User::encodeUser(new User()));

@@ -126,7 +126,7 @@ class DBRequest
         $obj->setCheckSession($checkSession);
 
         // perform the route process
-        return Request::routeRequest("GET",
+        return Request::routeRequest("POST",
                                     '/query',
                                     array(),
                                     Query::encodeQuery($obj),

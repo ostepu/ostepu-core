@@ -21,6 +21,7 @@ SELECT
     U.U_password,
     U.U_salt,
     U.U_failed_logins,
+    U.U_externalId,
     CS.CS_status,
     C.C_id,
     C.C_name,
@@ -39,5 +40,5 @@ FROM
     left join Course C ON (CS.C_id = C.C_id)) ON U.U_id = G2.U_id_leader
 WHERE
     (U2.U_id = '$userid'
-        or U2.U_username = '$userid')
+        or U2.U_username = '$userid' or U2.U_externalId = '$userid')
         and G.ES_id = '$esid'
