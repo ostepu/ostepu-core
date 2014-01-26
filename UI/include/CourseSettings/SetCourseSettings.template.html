@@ -1,0 +1,36 @@
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left uppercase">Veranstaltungseinstellungen</div>
+        <div class="info-color bold right">
+            <a href="#">speichern</a>
+        </div>
+    </div>
+
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            <label class="form-field left label bold" for="courseName">Veranstaltungsname:</label>
+            <input class="form-field left text-input" name="courseName" value="Datenstrukturen II" id="courseName" />
+
+            <label class="form-field left label bold new-line" for="semester">Semester:</label>
+            <select class="form-field left text-input short" name="semester" id="semester">
+                <option value="1" >WS 2013/14</option>
+                <option value="2" >SS 2013</option>
+                <option value="3" >WS 2012/13</option>
+                <option value="4" >SS 2012</option>
+                <option value="5" >WS 2011/12</option>
+                <option value="6" >SS 2011</option>
+            </select>
+
+            <label class="form-field left label bold new-line" for="defaultGroupSize">Max. Gruppengröße (Standardwert):</label>
+            <input class="form-field left text-input short" name="defaultGroupSize" value="5" id="defaultGroupSize" />
+
+            <label class="form-field left label bold new-line" for="semester">Punktearten:</label>
+            <div class="left">
+                <input type="checkbox" name="exerciseType1" value="BLA"/>Praxis<br />
+                <input type="checkbox" name="exerciseType2" value="BLA"/>Praxis Bonus<br />
+                <input type="checkbox" name="exerciseType3" value="BLA"/>Theorie<br />
+                <input type="checkbox" name="exerciseType3" value="BLA"/>Theorie Bonus<br />
+            </div>
+        </div>
+    </div> <!-- end: content-body -->
+</div> <!-- end: content-wrapper -->
