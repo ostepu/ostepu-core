@@ -25,8 +25,8 @@ if (isset($_GET['cid'])) {
     Logger::Log('no course id!\n');
 }
 
-if (isset($_GET['uid'])) {
-    $uid = $_GET['uid'];
+if (isset($_SESSION['uid'])) {
+    $uid = $_SESSION['uid'];
 } else {
     Logger::Log('no user id!\n');
 }
@@ -48,7 +48,7 @@ $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user);
 $h->bind($course);
 $h->bind(array("backTitle" => "zur Veranstaltung",
-               "backURL" => "Admin.php?cid={$cid}&uid={$uid}",
+               "backURL" => "Admin.php?cid={$cid}",
                "navigationElement" => $menu,
                "notificationElements" => $notifications));
 

@@ -7,7 +7,7 @@
  * @author Ralf Busch
  */
 
-include_once 'include/Authorization.php';
+include_once 'include/Authentication.php';
 include_once 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
 include_once '../Assistants/Logger.php';

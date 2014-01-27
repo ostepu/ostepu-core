@@ -15,8 +15,8 @@ include_once 'include/Helpers.php';
 
 $notifications = array();
 
-if (isset($_GET['uid'])) {
-    $uid = $_GET['uid'];
+if (isset($_SESSION['uid'])) {
+    $uid = $_SESSION['uid'];
 } else {
     Logger::Log('no user id!\n');
 }
@@ -43,7 +43,7 @@ $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user);
 $h->bind($course);
 $h->bind(array("backTitle" => "zur Veranstaltung",
-               "backURL" => "Tutor.php?cid={$cid}&uid={$uid}",
+               "backURL" => "Tutor.php?cid={$cid}",
                "notificationElements" => $notifications));
 
 

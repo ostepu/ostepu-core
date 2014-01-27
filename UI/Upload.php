@@ -37,8 +37,8 @@ if (isset($_GET['cid'])) {
     Logger::Log('no course id!\n');
 }
 
-if (isset($_GET['uid'])) {
-    $uid = $_GET['uid'];
+if (isset($_SESSION['uid'])) {
+    $uid = $_SESSION['uid'];
 } else {
     Logger::Log('no user id!\n');
 }
@@ -57,8 +57,8 @@ $course = json_decode($course, true)[0];
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user);
 $h->bind($course);
-$h->bind(array("backTitle" => "Veranstaltung wechseln",
-               "backURL" => "Student.php?cid={$cid}&uid={$uid}",
+$h->bind(array("backTitle" => "Zur Veranstaltung",
+               "backURL" => "Student.php?cid={$cid}",
                "notificationElements" => $notifications));
 
 
