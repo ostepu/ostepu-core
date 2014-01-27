@@ -36,7 +36,7 @@ $menu = Template::WithTemplateFile('include/Navigation/NavigationAdmin.template.
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
 $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
-			   "backTitle" => "Veranstaltung wechseln",
+               "backTitle" => "Veranstaltung wechseln",
                "backURL" => "index.php",
                "navigationElement" => $menu,
                "notificationElements" => $notifications));
