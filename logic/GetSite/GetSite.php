@@ -69,7 +69,7 @@ class LgetSite
         $this->app->get('/index/user/:userid(/)', array($this, 'userWithCourses'));
         
         //GET RightsManagment
-        $this->app->get('/rightsmanagment/user/:userid(/)', array($this, 'userWithCourses'));
+        $this->app->get('/rightsmanagement/user/:userid(/)', array($this, 'userWithCourses'));
         
         //GET Upload
         $this->app->get('/upload/user/:userid(/)', array($this, 'userWithCourses'));
@@ -81,13 +81,13 @@ class LgetSite
         $this->app->get('/uploadhistory/user/:userid/exercise/:exerciseid(/)', array($this, 'uploadHistory'));
         
         //GET TutorSite
-        $this->app->get('/tutorsite/course/:courseid/user/:userid(/)', array($this, 'tutorDozentAdmin'));
+        $this->app->get('/tutor/course/:courseid/user/:userid(/)', array($this, 'tutorDozentAdmin'));
         
         //GET AdminSite
-        $this->app->get('/adminsite/course/:courseid/user/:userid(/)', array($this, 'tutorDozentAdmin'));
+        $this->app->get('/admin/course/:courseid/user/:userid(/)', array($this, 'tutorDozentAdmin'));
         
         //GET DozentSite
-        $this->app->get('/dozentsite/course/:courseid/user/:userid(/)', array($this, 'tutorDozentAdmin'));
+        $this->app->get('/lecturer/course/:courseid/user/:userid(/)', array($this, 'tutorDozentAdmin'));
         
         //GET GroupSite
         $this->app->get('/group/course/:courseid/exercisesheet/:sheetid/user/:userid(/)', array($this, 'groupSite'));
