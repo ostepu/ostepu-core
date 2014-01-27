@@ -38,9 +38,9 @@ class Authentication
     }
 
     /**
-     * Generate random String
+     * Generates a random string.
      *
-     * @param int $length is the length of the random string, default is 50
+     * @param int $length The length of the random string, 8 by default.
      * @return string
      */
     private function randomBytes($length = 8)
@@ -51,10 +51,10 @@ class Authentication
     }
 
     /**
-     * hash string with given method
+     * Hash string with given method.
      *
-     * @param string $method defines hashmethod e.g. "sha256"
-     * @param string $data is the string which has to be hashed
+     * @param string $method Defines hashmethod e.g. "sha256".
+     * @param string $data The string which should be hashed.
      * @return string
      */
     protected function hashData($method, $data)
@@ -63,7 +63,7 @@ class Authentication
     }
 
     /**
-     * Prevent possible session fixation attack
+     * Prevent possible session fixation attack.
      */
     public static function preventSessionFix()
     {
@@ -82,7 +82,7 @@ class Authentication
     }
 
     /**
-     * Log in a user
+     * Logs in a user.
      *
      * @param string $username
      * @param string $password
@@ -115,7 +115,7 @@ class Authentication
     }
 
     /**
-     * Log in a user
+     * Refreshes a user's session.
      *
      * @param string $username
      * @param string $password
@@ -175,7 +175,7 @@ class Authentication
     }
 
     /**
-     * Log out a user
+     * Logs out a user.
      */
     public static function logoutUser()
     {
@@ -206,7 +206,10 @@ class Authentication
     }
 
     /**
-     * Check the Rights of an User and redirect to index.php with error message 403.
+     * Check the Rights of a User.
+     * If the user does not have the rights required to view the page redirect
+     * to index.php with error message 403.
+     *
      * @param int $minimum Is the minimum right for visiting the given php site.
      * @param int $cid Is the courseid.
      * @param int $uid Is the userid.

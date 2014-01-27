@@ -2,6 +2,10 @@
 /**
  * @file Upload.php
  * Shows a form to upload solutions.
+ *
+ * @author Felix Schmidt
+ * @author Florian Lücke
+ * @author Ralf Busch
  */
 
 include_once 'include/Authorization.php';

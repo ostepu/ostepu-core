@@ -2,7 +2,12 @@
 /**
  * @file Tutor.php
  * Constructs the page that is displayed to a tutor.
+ *
+ * @author Felix Schmidt
+ * @author Florian Lücke
+ * @author Ralf Busch
  */
+
 include_once 'include/Authorization.php';
 include_once 'include/HTMLWrapper.php';
 include_once 'include/Template.php';

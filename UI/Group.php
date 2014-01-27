@@ -2,6 +2,10 @@
 /**
  * @file Group.php
  * Constructs the page that is displayed to a student, when managing a group.
+ *
+ * @author Felix Schmidt
+ * @author Florian Lücke
+ * @author Ralf Busch
  */
 
 include_once 'include/Authorization.php';

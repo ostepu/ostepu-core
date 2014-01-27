@@ -2,6 +2,8 @@
 /**
  * @file Template.php
  * Contains the Template class.
+ *
+ * @author Florian Lücke
  */
 
 include_once 'Helpers.php';
@@ -11,7 +13,6 @@ include_once '../Assistants/Logger.php';
  * Template class.
  *
  * Applies templates to format data.
- * @author Florian Lücke
  */
 class Template
 {

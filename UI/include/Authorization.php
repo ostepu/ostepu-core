@@ -3,9 +3,8 @@ include_once 'include/Authentication.php';
 
 $auth = new Authentication();
 
-// Benutzer prüfen
-if (!Authentication::checkLogin()||$_GET['action'] == "logout")
-{
+if (Authentication::checkLogin() == false || ($_GET['action'] == "logout")) {
+    // the user's login is no longer valid or he requested to be logged out
     Authentication::logoutUser();
 }
 
