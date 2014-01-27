@@ -7,23 +7,29 @@
 include_once 'include/Authorization.php';
 include_once 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
+include_once '../Assistants/Logger.php';
+include_once 'include/Helpers.php';
 
 if (isset($_GET['cid'])) {
     $cid = $_GET['cid'];
 } else {
-    die('no course id!\n');
+    Logger::Log('no course id!\n');
 }
 
 if (isset($_SESSION['uid'])) {
     $uid = $_SESSION['uid'];
 } else {
-    die('no user id!\n');
+    Logger::Log('no user id!\n');
 }
 
 // load user and course data from the database
 $databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/coursestatus/course/{$cid}/user/{$uid}";
 $user_course_data = http_get($databaseURI, true, $message);
-if ($message == "401") {$auth->logoutUser();}
+
+if ($message == "401") {
+    $auth->logoutUser();
+}
+
 $user_course_data = json_decode($user_course_data, true);
 
 /**
@@ -39,19 +45,24 @@ $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
                "backTitle" => "Veranstaltung wechseln",
                "backURL" => "index.php",
                "navigationElement" => $menu,
-               "notificationElements" => $notifications));
+               "notificationElements" => $notifications)
+        );
 
 
 $databaseURL = "http://141.48.9.92/uebungsplattform/DB/DBExerciseSheet/exercisesheet/course/{$cid}/exercise";
 
 // construct some exercise sheets
 $sheetString = http_get($databaseURL, true, $message);
-if ($message == "401") {$auth->logoutUser();}
+
+if ($message == "401") {
+    $auth->logoutUser();
+}
 
 // convert the json string into an associative array
-$sheets = array("sheets" =>json_decode($sheetString, true),
+$sheets = array("sheets" => json_decode($sheetString, true),
                 "uid" => $uid,
-                "cid" => $cid);
+                "cid" => $cid
+                );
 
 $t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetLecturer.template.html');
 $t->bind($sheets);

@@ -1,19 +1,22 @@
 <?php
-include 'include/HTMLWrapper.php';
+include_once 'include/Authorization.php';
+include_once 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
+include_once '../Assistants/Logger.php';
+include_once 'include/Helpers.php';
 
 $notifications = array();
 
 if (isset($_GET['uid'])) {
     $uid = $_GET['uid'];
 } else {
-    $uid = 0;
+    Logger::Log('no user id!\n');
 }
 
 if (isset($_GET['cid'])) {
     $cid = $_GET['cid'];
 } else {
-    die('no course id!\n');
+    Logger::Log('no course id!\n');
 }
 
 // load user data from the database

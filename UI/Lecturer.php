@@ -1,7 +1,8 @@
 <?php
-include 'include/Authorization.php';
+include_once 'include/Authorization.php';
 include_once 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
+include_once '../Assistants/Logger.php';
 include_once 'include/Helpers.php';
 
 $notifications = array();

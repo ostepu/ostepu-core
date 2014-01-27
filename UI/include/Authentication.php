@@ -2,6 +2,11 @@
 /**
  * @file Authentication.php
  * Contains the Authentication class.
+ *
+ * @todo (Some) HTTP header fields should start with a capital letter for
+ * example "location". As header fields are case-sensitive this needs to be
+ * fixed.
+ * @sa http://www.ietf.org/rfc/rfc2616.txt
  */
 
 include_once 'include/Helpers.php';
@@ -27,7 +32,7 @@ class Authentication
         // force to use session-cookies and to transmit SID over URL
         ini_set('session.use_only_cookies', '1');
         ini_set('session.use_trans_sid', '0');
-        
+
         // start session
         session_start();
     }
@@ -73,7 +78,7 @@ class Authentication
             session_regenerate_id();
             // save status that serverSID is given
             $_SESSION['server_SID'] = true;
-        }   
+        }
     }
 
     /**
@@ -81,7 +86,7 @@ class Authentication
      *
      * @param string $username
      * @param string $password
-     * @return true if login is successful 
+     * @return true if login is successful
      */
     public function loginUser($username, $password)
     {
@@ -89,7 +94,7 @@ class Authentication
         $user = http_get($databaseURI, false, $message);
         $user = json_decode($user, true);
 
-        // check if user exists 
+        // check if user exists
         if ($message != "404") {
             // create passwordhash with salt as suffix
             $password = $this->hashData('sha256',$password.$user['salt']);
@@ -102,7 +107,7 @@ class Authentication
                 return $refresh;
             } else {
                 /**
-                 * @todo increase FailedLogin field 
+                 * @todo increase FailedLogin field
                  */
             }
         }
@@ -114,7 +119,7 @@ class Authentication
      *
      * @param string $username
      * @param string $password
-     * @return true if refreshSession is successful 
+     * @return true if refreshSession is successful
      */
     private function refreshSession($username, $password)
     {
@@ -135,20 +140,36 @@ class Authentication
     }
 
     /**
-     * check if user is logged in
+     * Checks if user is logged in.
+     *
+     * @return BOOL A boolean value that indicates if the is logged in.
      */
     public static function checkLogin()
     {
         session_regenerate_id(true);
-        if (!isset($_SESSION['signed']) || !$_SESSION['signed']) {return false;}
-        // check for timeout (after 10 minutes of inactivity)
-        if (!isset($_SESSION['lastactive']) || ($_SESSION['lastactive'] + 10*60) <= $_SERVER['REQUEST_TIME']) {return false;}
-        // check if browser agent changed
-        if (!isset($_SESSION['Browser_Agent']) || $_SESSION['Browser_Agent'] != $_SERVER['HTTP_USER_AGENT']) {return false;}
-        // check if ip changed
-        if (!isset($_SESSION['IP']) || $_SESSION['IP'] != $_SERVER['REMOTE_ADDR']) {return false;}
+        if (!isset($_SESSION['signed']) || !$_SESSION['signed']) {
+            return false;
+        }
 
-        // update last activity 
+        // check for timeout (after 10 minutes of inactivity)
+        if (!isset($_SESSION['lastactive'])
+            || (($_SESSION['lastactive'] + 10*60) <= $_SERVER['REQUEST_TIME'])) {
+            return false;
+        }
+
+        // check if browser agent changed
+        if (!isset($_SESSION['Browser_Agent'])
+            || ($_SESSION['Browser_Agent'] != $_SERVER['HTTP_USER_AGENT'])) {
+            return false;
+        }
+
+        // check if ip changed
+        if (!isset($_SESSION['IP'])
+            || ($_SESSION['IP'] != $_SERVER['REMOTE_ADDR'])) {
+            return false;
+        }
+
+        // update last activity
         $_SESSION['lastactive'] = $_SERVER['REQUEST_TIME'];
         return true;
     }
@@ -179,7 +200,7 @@ class Authentication
             $urlparameters = parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY);
             if ($urlparameters != "") {$urlparameters = "?".rawurlencode($urlparameters);}
             // redirect to Loginpage and save current page in GET param
-            header('location: Login.php?back='.$backurl.$urlparameters);
+            header('location: Login.php?back=' . $backurl . $urlparameters);
             exit;
         }
     }
@@ -198,7 +219,7 @@ class Authentication
             // check if minimum right is given
             if ($data['courses'][0]['status'] < $minimum) {
                 header('location: index.php?error=403');
-            } 
+            }
         } else {
             header('location: index.php?error=403');
         }

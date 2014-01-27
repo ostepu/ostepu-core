@@ -1,7 +1,9 @@
 <?php
+include_once 'include/Authorization.php';
 include_once 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
 include_once '../Assistants/Logger.php';
+include_once 'include/Helpers.php';
 
 if (isset($_POST['action'])) {
     Logger::Log($_POST, LogLevel::INFO);
@@ -20,13 +22,13 @@ $notifications = array();
 if (isset($_GET['cid'])) {
     $cid = $_GET['cid'];
 } else {
-    die('no course id!\n');
+    Logger::Log('no course id!\n');
 }
 
 if (isset($_GET['uid'])) {
     $uid = $_GET['uid'];
 } else {
-    die('no user id!\n');
+    Logger::Log('no user id!\n');
 }
 
 // load user data from the database

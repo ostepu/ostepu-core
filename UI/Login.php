@@ -1,8 +1,9 @@
 <?php
-include 'include/HTMLWrapper.php';
+include_once 'include/Authorization.php';
+include_once 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
+include_once '../Assistants/Logger.php';
 include_once 'include/Helpers.php';
-include_once 'include/Authentication.php';
 
 // no error messages
 // error_reporting(0);
@@ -28,17 +29,17 @@ if (isset($_POST['action'])) {
     } else {
         $input['back'] = "index.php";
     }
-    
+
     $input = cleanInput($input);
 
     // log in user and return result
     $signed = $auth->loginUser($input['username'], $input['password']);
 
     if ($signed) {
-        header('location: '.$input['back']);
+        header('location: ' . $input['back']);
         exit();
     } else {
-        $notifications[] = MakeNotification("error", "Die Anmeldung war fehlerhaft!");
+        $notifications[] = MakeNotification("error", "Logger::Log Anmeldung war fehlerhaft!");
     }
 }
 
