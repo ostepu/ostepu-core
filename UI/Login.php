@@ -46,7 +46,7 @@ if (isset($_POST['action'])) {
         header('location: ' . $input['back']);
         exit();
     } else {
-        $notifications[] = MakeNotification("error", "Logger::Log Anmeldung war fehlerhaft!");
+        $notifications[] = MakeNotification("error", "Die Anmeldung war fehlerhaft!");
     }
 }
 
