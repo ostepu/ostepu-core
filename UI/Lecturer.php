@@ -59,5 +59,5 @@ $t->bind($sheets);
 $w = new HTMLWrapper($h, $createSheet, $t);
 $w->set_config_file('include/configs/config_admin_lecturer.json');
 $w->show();
-?>
 
+?>

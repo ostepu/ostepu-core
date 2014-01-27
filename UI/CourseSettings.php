@@ -47,5 +47,5 @@ $t = Template::WithTemplateFile('include/CourseSettings/SetCourseSettings.templa
 $w = new HTMLWrapper($h, $t);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
-?>
 
+?>

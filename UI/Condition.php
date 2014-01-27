@@ -57,5 +57,5 @@ $userList->bind($listOfUsers);
 $w = new HTMLWrapper($h, $setCondition, $userList);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
-?>
 
+?>

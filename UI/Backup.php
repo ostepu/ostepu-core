@@ -27,5 +27,5 @@ $loadBackup->bind($backups);
 $w = new HTMLWrapper($h, $createBackup, $loadBackup);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
-?>
 
+?>

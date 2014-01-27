@@ -1,17 +1,13 @@
 <?php
 include 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
-?>
 
-<?php
-    if (isset($_GET['action'])) {
-        Logger::Log($_GET, LogLevel::INFO);
-    } else {
-        Logger::Log("No Rights Data", LogLevel::INFO);
-    }
-?>
+if (isset($_GET['action'])) {
+    Logger::Log($_GET, LogLevel::INFO);
+} else {
+    Logger::Log("No Rights Data", LogLevel::INFO);
+}
 
-<?php
 if (isset($_GET['cid'])) {
     $cid = $_GET['cid'];
 } else {
@@ -68,5 +64,5 @@ $w = new HTMLWrapper($h,
                      $createUser);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
-?>
 
+?>

@@ -1,20 +1,16 @@
 <?php
 include 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
-?>
 
-<?php
-    if (isset($_POST['sheetID'])) {
-        /**
-         * @todo load data for the slected user
-         */
-        Logger::Log($_POST, LogLevel::INFO);
-    } else {
-        Logger::Log("No Data", LogLevel::INFO);
-    }
-?>
+if (isset($_POST['sheetID'])) {
+    /**
+     * @todo load data for the slected user
+     */
+    Logger::Log($_POST, LogLevel::INFO);
+} else {
+    Logger::Log("No Data", LogLevel::INFO);
+}
 
-<?php
 if (isset($_GET['cid'])) {
     $cid = $_GET['cid'];
 } else {
@@ -55,5 +51,5 @@ $uploadHistory = Template::WithTemplateFile('include/UploadHistory/UploadHistory
 $w = new HTMLWrapper($h, $uploadHistory);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
-?>
 
+?>

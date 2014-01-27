@@ -7,24 +7,20 @@
 include_once 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
 include_once '../Assistants/Logger.php';
-?>
 
-<?php
-    if (isset($_POST['action'])) {
-        Logger::Log($_POST, LogLevel::INFO);
-        Logger::Log($_FILES, LogLevel::INFO);
-        /**
-         * @todo actually upload the data
-         */
+if (isset($_POST['action'])) {
+    Logger::Log($_POST, LogLevel::INFO);
+    Logger::Log($_FILES, LogLevel::INFO);
+    /**
+     * @todo actually upload the data
+     */
 
-        // redirect, so the user can reload the page without a warning
-        header("Location: Upload.php");
-    } else {
-        Logger::Log("No Sheet Data", LogLevel::INFO);
-    }
-?>
+    // redirect, so the user can reload the page without a warning
+    header("Location: Upload.php");
+} else {
+    Logger::Log("No Sheet Data", LogLevel::INFO);
+}
 
-<?php
 /**
  * @todo Read parameters from the GET Request and request data from the database
  */

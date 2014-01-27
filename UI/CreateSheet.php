@@ -2,23 +2,18 @@
 include_once 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
 include_once '../Assistants/Logger.php';
-?>
 
-<?php
-    if (isset($_POST['action'])) {
-        Logger::Log($_POST, LogLevel::INFO);
-        /**
-         * @todo create a new sheet or update the existing one
-         */
+if (isset($_POST['action'])) {
+    Logger::Log($_POST, LogLevel::INFO);
+    /**
+     * @todo create a new sheet or update the existing one
+     */
 
-        // redirect, so the user can reload the page without a warning
-        header("Location: CreateSheet.php");
-    } else {
-        Logger::Log("No Sheet Data", LogLevel::INFO);
-    }
-?>
-
-<?php
+    // redirect, so the user can reload the page without a warning
+    header("Location: CreateSheet.php");
+} else {
+    Logger::Log("No Sheet Data", LogLevel::INFO);
+}
 
 $notifications = array();
 
@@ -68,5 +63,5 @@ $exerciseSettings = Template::WithTemplateFile('include/CreateSheet/ExerciseSett
 $w = new HTMLWrapper($h, "<form action=\"CreateSheet.php\" method=\"POST\">", $sheetSettings, $createExercise, "</form>");
 $w->set_config_file('include/configs/config_createSheet.json');
 $w->show();
-?>
 
+?>

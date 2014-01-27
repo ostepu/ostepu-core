@@ -35,5 +35,5 @@ $changePassword = Template::WithTemplateFile('include/AccountSettings/ChangePass
 $w = new HTMLWrapper($h, $accountInfo, $changePassword);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
-?>
 
+?>

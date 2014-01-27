@@ -12,7 +12,6 @@ include_once 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
 include_once 'include/Helpers.php';
 
-
 if (isset($_GET['cid'])) {
     $cid = $_GET['cid'];
 } else {
@@ -37,7 +36,7 @@ Authentication::checkRights(0, $cid, $uid, $user_course_data);
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
 $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
-			   "backTitle" => "Veranstaltung wechseln",
+               "backTitle" => "Veranstaltung wechseln",
                "backURL" => "index.php",
                "navigationElement" => $menu,
                "notificationElements" => $notifications));
@@ -60,4 +59,5 @@ $t->bind($sheets);
 $w = new HTMLWrapper($h, $t);
 $w->set_config_file('include/configs/config_student_tutor.json');
 $w->show();
+
 ?>

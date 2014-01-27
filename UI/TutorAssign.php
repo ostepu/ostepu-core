@@ -3,9 +3,7 @@ include 'include/Authorization.php';
 include 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
 include_once '../Assistants/Logger.php';
-?>
 
-<?php
 if (isset($_POST['action'])) {
     Logger::Log($_POST, LogLevel::INFO);
     /**
@@ -17,9 +15,7 @@ if (isset($_POST['action'])) {
 } else {
     Logger::Log("No Assignment Data", LogLevel::INFO);
 }
-?>
 
-<?php
 if (isset($_GET['cid'])) {
     $cid = $_GET['cid'];
 } else {
@@ -80,5 +76,5 @@ $assignCancel = Template::WithTemplateFile('include/TutorAssign/AssignRemove.tem
 $w = new HTMLWrapper($h, $assignAutomatically, $assignManually, $assignCancel);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
-?>
 
+?>

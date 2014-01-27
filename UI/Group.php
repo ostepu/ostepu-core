@@ -7,18 +7,14 @@
 include 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
 include_once 'include/Helpers.php';
-?>
 
-<?php
 if (isset($_POST['action'])) {
     Logger::Log($_POST, LogLevel::INFO);
     header("Location: Group.php");
 } else {
     Logger::Log("No Group Data", LogLevel::INFO);
 }
-?>
 
-<?php
 if (isset($_GET['sid'])) {
     $sid = $_GET['sid'];
 } else {
@@ -87,5 +83,5 @@ $invitations->bind($invitation);
 $w = new HTMLWrapper($h, $manageGroup, $createGroup, $invitations);
 $w->set_config_file('include/configs/config_group.json');
 $w->show();
-?>
 
+?>

@@ -43,5 +43,5 @@ $markingElement = Template::WithTemplateFile('include/MarkingTool/MarkingElement
 $w = new HTMLWrapper($h, $searchSettings, $markingElement);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
-?>
 
+?>
