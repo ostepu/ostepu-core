@@ -6,6 +6,8 @@
  * @author Felix Schmidt
  * @author Florian Lücke
  * @author Ralf Busch
+ *
+ * @todo load data from the database and fill the page
  */
 
 include_once 'include/Authorization.php';
@@ -39,51 +41,24 @@ if (isset($_SESSION['uid'])) {
     Logger::Log('no user id!\n');
 }
 
-// load user data from the database
-$databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/user/user/{$uid}";
-$user = http_get($databaseURI);
-$user = json_decode($user, true);
-
-// load course data from the database
-$databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/course/course/{$cid}";
-$course = http_get($databaseURI);
-$course = json_decode($course, true)[0];
-
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
-$h->bind($user);
-$h->bind($course);
 $h->bind(array("backTitle" => "zur Veranstaltung",
                "backURL" => "Student.php?cid={$cid}",
                "navigationElement" => $menu,
                "notificationElements" => $notifications));
 
-// load exercise sheet data from the database
-$databaseURL = "http://141.48.9.92/uebungsplattform/DB/DBGroup/group/user/{$uid}/exercisesheet/{$sid}";
-
-$data = http_get($databaseURL);
-
-if ($data) {
-    $data = json_decode($data, true);
-    $group = $data[0];
-} else {
-    $group = array("leader" => $user);
-}
-
-$groupInfo = array();
-$invitation = array();
-
 // construct a content element for managing groups
 $manageGroup = Template::WithTemplateFile('include/Group/ManageGroup.template.html');
-$manageGroup->bind($group);
+$manageGroup->bind(array());
 
 // construct a content element for creating groups
 $createGroup = Template::WithTemplateFile('include/Group/InviteGroup.template.html');
-$createGroup->bind($groupInfo);
+$createGroup->bind(array());
 
 // construct a content element for joining groups
 $invitations = Template::WithTemplateFile('include/Group/Invitations.template.html');
-$invitations->bind($invitation);
+$invitations->bind(array());
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $manageGroup, $createGroup, $invitations);
