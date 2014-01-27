@@ -1,6 +1,7 @@
 <?php
 /**
  * @file index.php
+ * Generates a page that shows an overview of a user's courses.
  *
  * @author Felix Schmidt
  * @author Florian Lücke

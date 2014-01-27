@@ -1,3 +1,11 @@
+/**
+ * @file Navigation.css
+ * Layout styles for navigationbars.
+ *
+ * @author Felix Schmidt
+ * @author Florian Lücke
+ */
+
 ul.navigation {
     margin-top: 5px;
     height: 28px;

@@ -5,6 +5,8 @@
  *
  * @author Florian Lücke
  * @author Ralf Busch
+ *
+ * @todo Replace the class by a template based solution, maybe MakeHTLMWrapper?
  */
 
 include_once '../Assistants/Logger.php';
@@ -120,7 +122,7 @@ include_once '../Assistants/Logger.php';
         }
         $this->config = json_decode($fileContents, true);
         // check if file is valid JSON
-        if ($this->config== false || !is_array($this->config)) {
+        if ($this->config == false || is_array($this->config) == false) {
             Logger::Log("Invalid JSON in file: {$configdata}", LogLevel::WARNING);
         }
     }

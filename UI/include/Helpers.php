@@ -198,14 +198,14 @@ function cleanInput($input)
                 $element = htmlspecialchars(trim(stripcslashes($element)), ENT_QUOTES);
             } else {
                 $element = htmlspecialchars(trim($element), ENT_QUOTES);
-            } 
+            }
         }
     } else {
         if (!get_magic_quotes_gpc()) {
             $input = htmlspecialchars(trim(stripcslashes($input)), ENT_QUOTES);
         } else {
             $input = htmlspecialchars(trim($input), ENT_QUOTES);
-        } 
+        }
     }
     return $input;
 }

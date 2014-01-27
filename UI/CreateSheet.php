@@ -1,6 +1,7 @@
 <?php
 /**
  * @file CreateSheet.php
+ * Constructs a page where a user can create an exercise sheet.
  *
  * @author Felix Schmidt
  * @author Florian Lücke

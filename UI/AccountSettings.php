@@ -1,11 +1,13 @@
 <?php
 /**
  * @file AccountSettings.php
+ * Constructs a page where a user can manage his account.
  *
  * @author Felix Schmidt
  * @author Florian Lücke
  * @author Ralf Busch
  */
+
 include_once 'include/Authorization.php';
 include_once 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
