@@ -7,6 +7,7 @@
  * @author Ralf Busch
  */
 
+include_once 'include/Authorization.php';
 include_once 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
 include_once '../Assistants/Logger.php';
@@ -22,7 +23,6 @@ if(Authentication::checkLogin()) {
     header('Location: index.php');
     exit();
 }
-
 
 if (isset($_POST['action'])) {
     // trim and stripslashes the input
