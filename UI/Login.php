@@ -7,7 +7,6 @@
  * @author Ralf Busch
  */
 
-include_once 'include/Authorization.php';
 include_once 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
 include_once '../Assistants/Logger.php';
@@ -20,7 +19,7 @@ Authentication::preventSessionFix();
 
 // check if already logged in
 if(Authentication::checkLogin()) {
-    header('location: index.php');
+    header('Location: index.php');
     exit();
 }
 
@@ -67,6 +66,7 @@ if (isset($_GET['back'])) {
 } else {
     $backdata = array();
 }
+
 $userLogin->bind($backdata);
 
 // wrap all the elements in some HTML and show them on the page
