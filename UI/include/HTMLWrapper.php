@@ -2,6 +2,9 @@
 /**
  * @file HTMLWrapper.php
  * Contains the HTMLWrapper class
+ *
+ * @author Florian Lücke
+ * @author Ralf Busch
  */
 
 include_once '../Assistants/Logger.php';

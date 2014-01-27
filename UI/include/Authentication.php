@@ -71,11 +71,14 @@ class Authentication
             // delete session content
             session_unset();
             $_SESSION = array();
+
             // restart session
             session_destroy();
             session_start();
+
             // generate new session id
             session_regenerate_id();
+
             // save status that serverSID is given
             $_SESSION['server_SID'] = true;
         }
@@ -188,17 +191,23 @@ class Authentication
             exit;
         } else {
             session_destroy();
+
             // get current relative url
             $backurl = basename(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
+
             // if someone opens a page with /UI (without index.php) or a existing page without .php suffix
             if (!strpos($backurl,'.php')&&!file_exists($backurl.".php")) {
                 $backurl = "index.php";
             } elseif (!strpos($backurl,'.php')&&file_exists($backurl.".php")) {
                 $backurl = $backurl.".php";
             }
+
             // Url GET parameters
             $urlparameters = parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY);
-            if ($urlparameters != "") {$urlparameters = "?".rawurlencode($urlparameters);}
+            if ($urlparameters != "") {
+                $urlparameters = "?" . rawurlencode($urlparameters);
+            }
+
             // redirect to Loginpage and save current page in GET param
             header('location: Login.php?back=' . $backurl . $urlparameters);
             exit;
@@ -223,6 +232,7 @@ class Authentication
             if ($data['courses'][0]['status'] < $minimum) {
                 header('location: index.php?error=403');
             }
+
         } else {
             header('location: index.php?error=403');
         }
