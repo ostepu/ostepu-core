@@ -69,6 +69,7 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`User` (
   `U_flag` SMALLINT NULL DEFAULT 1,
   `U_salt` CHAR(40) NULL,
   `U_failed_logins` INT NULL DEFAULT 0,
+  `U_externalId` VARCHAR(255) NULL,
   PRIMARY KEY (`U_id`),
   UNIQUE INDEX `U_id_UNIQUE` (`U_id` ASC),
   UNIQUE INDEX `U_username_UNIQUE` (`U_username` ASC))
@@ -552,12 +553,12 @@ set count = count +1;
 if count>=10 then
 UPDATE User
 SET U_flag = 2
-where U_id = userid or U_username = userid;
+where U_id = userid or U_username = userid or U_externalId = userid;
 end if;
 
 UPDATE User
 SET U_failed_logins = count
-where U_id = userid or U_username = userid;
+where U_id = userid or U_username = userid or U_externalId = userid;
 
 SELECT 
     U.U_id,
@@ -568,8 +569,9 @@ SELECT
     U.U_title,
     U.U_flag,
     U.U_password,
-        U.U_salt,
+    U.U_salt,
     U.U_failed_logins,
+	U.U_externalId,
     CS.CS_status,
     C.C_id,
     C.C_name,
@@ -582,7 +584,7 @@ FROM
         left join
     Course C ON (CS.C_id = C.C_id)
 WHERE
-    U.U_id = userid or U_username = userid;
+    U.U_id = userid or U_username = userid or U_externalId = userid;
 END;$$
 
 DELIMITER ;
@@ -617,7 +619,7 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `uebungsplattform`;
-INSERT INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`, `U_salt`, `U_failed_logins`) VALUES (1, 'super-admin', NULL, NULL, NULL, NULL, '8a781bfbb17a5e4b03b812c33317931308a2996a69eb4f3e6e857e030f0687e8', 1, 'd2cfb5d8f16b22708fa145871a74bf1e0aaa96ef', 0);
+INSERT INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`, `U_salt`, `U_failed_logins`, `U_externalId`) VALUES (1, 'super-admin', NULL, NULL, NULL, NULL, '8a781bfbb17a5e4b03b812c33317931308a2996a69eb4f3e6e857e030f0687e8', 1, 'd2cfb5d8f16b22708fa145871a74bf1e0aaa96ef', 0, NULL);
 
 COMMIT;
 
@@ -680,7 +682,7 @@ CREATE TRIGGER `User_AUPD` AFTER UPDATE ON `User` FOR EACH ROW
 @author Lisa Dietrich */
 begin
 If NEW.U_flag != 1
-then delete from `session` where NEW.U_id = U_id;
+then delete from `Session` where NEW.U_id = U_id;
 end if;
 end;$$
 
@@ -690,8 +692,8 @@ CREATE TRIGGER `User_ADEL` AFTER DELETE ON `User` FOR EACH ROW
 *maybe replace it in After Update if U_flag = 0
 @author Lisa Dietrich*/
 begin
-delete from `group` 
-where U_id_member = (Select U_id_member from `group` where U_id_leader = OLD.U_id);
+#delete from `Group` 
+#where U_id_member = (Select U_id_member from `Group` where U_id_leader = OLD.U_id);
 end;$$
 
 USE `uebungsplattform`$$
@@ -950,7 +952,7 @@ CREATE TRIGGER `Marking_BDEL` BEFORE DELETE ON `Marking` FOR EACH ROW
 /* delete corresponding file
 @author Lisa*/
 begin
-delete from `file`where F_id = OLD.F_id_file;
+delete from `File`where F_id = OLD.F_id_file;
 end; $$
 
 USE `uebungsplattform`$$
@@ -1021,7 +1023,7 @@ CREATE TRIGGER `Session_BINS` BEFORE INSERT ON `Session` FOR EACH ROW
 /*check if user is inactive or deleted
 @author Lisa*/
 begin
-If (select U_flag from user where U_id = NEW.U_id limit 1) != 1
+If (select U_flag from User where U_id = NEW.U_id limit 1) != 1
 then SIGNAL sqlstate '45001' set message_text = "user is inactive or deleted";
 end if;
 end;$$
@@ -1031,7 +1033,7 @@ CREATE TRIGGER `Session_AINS` AFTER INSERT ON `Session` FOR EACH ROW
 /* set U_failedLogins = 0
 @author Lisa*/
 begin
-update user
+update User
 set U_failed_logins = 0
 where U_id = NEW.U_id;
 end;$$
