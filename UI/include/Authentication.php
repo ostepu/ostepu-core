@@ -230,11 +230,11 @@ class Authentication
         if ($data !== array()) {
             // check if minimum right is given
             if ($data['courses'][0]['status'] < $minimum) {
-                header('location: index.php?error=403');
+                set_error("403");
             }
 
         } else {
-            header('location: index.php?error=403');
+            set_error("403");
         }
     }
 }

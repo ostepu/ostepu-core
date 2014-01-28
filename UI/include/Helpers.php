@@ -49,6 +49,15 @@ function is_assoc($array)
 }
 
 /**
+ * Redirect to errorpage with given errormessage
+ *
+ * @param int $errormsg Errormessage e.g. 404.
+ */
+function set_error($errormsg)
+{
+    header('location: Error.php?msg='.$errormsg);
+}
+/**
  * Sends an HTTP GET request.
  *
  * Uses HTTP GET request to get contents a $url
@@ -70,7 +79,12 @@ function http_get($url, $authbool, &$message = 0)
 
     $retData = curl_exec($c);
     $message = curl_getinfo($c, CURLINFO_HTTP_CODE);
-    if ($message == "401" && $authbool) {Authentication::logoutUser();}
+    if ($message == "401" && $authbool) {
+        Authentication::logoutUser();
+    }
+    if ($message == "409") {
+        set_error("409");
+    }
     curl_close($c);
 
     return $retData;
@@ -101,7 +115,12 @@ function http_post_data($url, $data, $auth, &$message = 0)
 
     $retData = curl_exec($c);
     $message = curl_getinfo($c, CURLINFO_HTTP_CODE);
-    if ($message == "401" && $authbool) {Authentication::logoutUser();}
+    if ($message == "401" && $authbool) {
+        Authentication::logoutUser();
+    }
+    if ($message == "409") {
+        set_error("409");
+    }
     curl_close($c);
 
     return $retData;
@@ -132,7 +151,12 @@ function http_put_data($url, $data, $authbool, &$message = 0)
 
     $retData = curl_exec($c);
     $message = curl_getinfo($c, CURLINFO_HTTP_CODE);
-    if ($message == "401" && $authbool) {Authentication::logoutUser();}
+    if ($message == "401" && $authbool) {
+        Authentication::logoutUser();
+    }
+    if ($message == "409") {
+        set_error("409");
+    }
     curl_close($c);
 
     return $retData;
@@ -158,7 +182,12 @@ function http_delete($url, $auth, &$message = 0)
 
     $retData = curl_exec($c);
     $message = curl_getinfo($c, CURLINFO_HTTP_CODE);
-    if ($message == "401" && $authbool) {Authentication::logoutUser();}
+    if ($message == "401" && $authbool) {
+        Authentication::logoutUser();
+    }
+    if ($message == "409") {
+        set_error("409");
+    }
     curl_close($c);
 
     return $retData;
