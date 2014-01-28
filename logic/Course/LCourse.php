@@ -51,8 +51,16 @@ class LCourse
     /**
      * @var string $lURL the URL of the logic-controller
      */
-    private $lURL = ""; //readed out from config below
+    private $lURL = ""; // readed out from config below
 
+    /**
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to
+     * the functions.
+     *
+     * @param Component $conf component data
+     */
     public function __construct($conf)
     {
         // initialize slim
@@ -61,7 +69,6 @@ class LCourse
 
         // initialize component
         $this->_conf = $conf;
-        $this->query = array();
         $this->query = CConfig::getLink($conf->getLinks(),"controller");
 
         // initialize lURL

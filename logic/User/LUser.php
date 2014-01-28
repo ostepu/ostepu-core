@@ -51,7 +51,7 @@ class LUser
     /**
      * @var string $lURL the URL of the logic-controller
      */ 
-    private $lURL = ""; //readed out from config below
+    private $lURL = ""; // readed out from config below
 
     /**
      * REST actions
@@ -69,7 +69,6 @@ class LUser
 
         // initialize component
         $this->_conf = $conf;
-        $this->query = array();
         $this->query = CConfig::getLink($conf->getLinks(),"controller");
 
         // initialize lURL
@@ -178,14 +177,11 @@ class LUser
     }
 }
 
-/**
- * get new config data from DB
- */
+
+// get new config data from DB
 $com = new CConfig(LUser::getPrefix());
 
-/**
- * create a new instance of LUser class with the config data
- */
+// create a new instance of LUser class with the config data
 if (!$com->used())
     new LUser($com->loadConfig());
 ?>
