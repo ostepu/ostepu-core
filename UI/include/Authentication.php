@@ -128,18 +128,28 @@ class Authentication
     {
         $_SESSION['session'] = $this->hashData("md5", session_id().$username.$password);
         /**
-         * @todo create session on server with $_SESSION['session']
+         * @todo Workaround for the not implemented session redirection in logic
          */
+        if ($_SESSION['uid'] == 3) {
+            $_SESSION['session'] = "abc";
+        }
+        // create Session in DB
+        $sessionbody = array('user' => $_SESSION['uid'],
+                             'session' => $_SESSION['session']);
+        $sessionbody = json_encode($sessionbody);
+        $url = "http://141.48.9.92/uebungsplattform/DB/DBControl/session";
+        http_post_data($url, $sessionbody, false, $message);
 
-        /**
-         * @todo only if created session on server is successful
-         */
-        $_SESSION['signed'] = true;
-        $_SESSION['lastactive'] = $_SERVER['REQUEST_TIME'];
-        $_SESSION['Browser_Agent'] = $_SERVER['HTTP_USER_AGENT'];
-        $_SESSION['IP'] = $_SERVER['REMOTE_ADDR'];
+        if ($message == "201") {
+            $_SESSION['signed'] = true;
+            $_SESSION['lastactive'] = $_SERVER['REQUEST_TIME'];
+            $_SESSION['Browser_Agent'] = $_SERVER['HTTP_USER_AGENT'];
+            $_SESSION['IP'] = $_SERVER['REMOTE_ADDR'];
+            return true;
+        } else {
+            return false;
+        }
 
-        return true;
     }
 
     /**
@@ -182,14 +192,22 @@ class Authentication
      */
     public static function logoutUser()
     {
-        /**
-         * @todo delete session from uid in DB
-         */
         if($_GET['action'] == "logout") {
+            // delete session in DB
+            $session = $_SESSION['session'];
+            http_delete("http://141.48.9.92/uebungsplattform/DB/DBControl/session/{$session}",true,$message);
+
+            // delete session in UI
             session_destroy();
+            // redirect to Loginpage
             header('location: Login.php');
             exit;
         } else {
+            // delete session in DB
+            $session = $_SESSION['session'];
+            http_delete("http://141.48.9.92/uebungsplattform/DB/DBControl/session/{$session}",true,$message);
+            
+            // delete session in UI
             session_destroy();
 
             // get current relative url
