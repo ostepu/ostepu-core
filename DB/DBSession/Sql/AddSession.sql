@@ -6,6 +6,6 @@
  * @result -
  */
  
-INSERT INTO session (U_id, SE_sessionID) 
+INSERT INTO Session (U_id, SE_sessionID) 
 VALUES ($userid, '$sessionid')
 ON DUPLICATE KEY UPDATE SE_sessionID = '$sessionid'
