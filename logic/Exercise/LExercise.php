@@ -155,7 +155,7 @@ class LExercise
      *
      * Called when this component receives an HTTP DELETE request to
      * /exercise/exercise/$exerciseid(/).
-     * Delets the exercise information from the database first. At success
+     * Deletes the exercise information from the database first. At success
      * the file belongs to this exercise will be deleted from the filesystem.
      *
      * @param int $exerciseid The id of the exercise that is beeing deleted.
@@ -170,15 +170,13 @@ class LExercise
 
         /*
          * if the file information has been deleted, the file
-         * will be delet from filesystem
+         * will being deleted from filesystem
          */
         $fileObject = json_decode($answer['content'], true);
         // if address-field exists, read it out
-        if (isset($fileObject['address'])){
+        if (isset($fileObject['address']) and $answer['status'] >= 200 && $answer['status'] < 300){
             $fileAddress = $fileObject['address'];
-        }
-        // request to filesystem
-        if( $answer['status'] >= 200 && $answer['status'] < 300 ){
+            // request to filesystem
             $URL = $this->lURL.'/FS/'.$fileAddress;
             $answer = Request::custom('DELETE', $URL, $header, $body);
         }

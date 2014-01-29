@@ -1,4 +1,11 @@
 <?php
+/**
+ * @file LUser.php Contains the LUser class
+ * 
+ * @author Peter Koenig
+ * @author Martin Daute
+ * @author Christian Elze
+ */
 
 require 'Slim/Slim.php';
 include 'include/Request.php';
@@ -7,85 +14,91 @@ include_once( 'include/CConfig.php' );
 \Slim\Slim::registerAutoloader();
 
 /**
- * The ExerciseType class
- *
- * This class handles everything belongs to an ExerciseType
+ * A class, to handle requests to the LExerciseType-Component
  */
 class LExerciseType
 {
     /**
-     * Values that are required for communication with other components
+     * @var Component $_conf the component data object
      */
     private $_conf=null;
+
+    /**
+     * @var string $_prefix the prefix, the class works with
+     */
     private static $_prefix = "exercisetype";
 
+    /**
+     * the $_prefix getter
+     *
+     * @return the value of $_prefix
+     */
     public static function getPrefix()
     {
         return LExerciseType::$_prefix;
     }
+
+    /**
+     * the $_prefix setter
+     *
+     * @param string $value the new value for $_prefix
+     */
     public static function setPrefix($value)
     {
         LExerciseType::$_prefix = $value;
     }
 
     /**
-     * Address of the Logic-Controller
-     * dynamic set by CConf below
+     * @var string $lURL the URL of the logic-controller
      */
-    private $lURL = "";
+    private $lURL = ""; // readed out from config below
 
+    /**
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to
+     * the functions.
+     *
+     * @param Component $conf component data
+     */
     public function __construct($conf)
     {
-        /**
-         * Initialise the Slim-Framework
-         */
+        // initialize slim
         $this->app = new \Slim\Slim();
         $this->app->response->headers->set('Content-Type', 'application/json');
-        /**
-         * Get the URL of the Logic-Controller of the CConf.json file and set
-         * the $lURL variable
-         */
+
+        // initialize component
         $this->_conf = $conf;
-        $this->query = array();
         $this->query = CConfig::getLink($conf->getLinks(),"controller");
+
+        // initialize lURL        
         $this->lURL = $this->query->getAddress();
 
-        /**
-         * When getting a POST
-         * and there are the parameters "/course/1" for example,
-         * the setPossibleTypes function is called
-         */
+        // POST setPossibleTypes
         $this->app->post('/'.$this->getPrefix().'/course/:courseid(/)' ,
                             array($this, 'setPossibleTypes'));
 
-        /**
-         * When getting a DELETE
-         * and there are the parameters "/course/1" for example,
-         * the deletePossibleTypes function is called
-         */
+        // DELETE deletePossibleTypes
         $this->app->delete('/'.$this->getPrefix().'/course/:courseid(/)' ,
                             array($this, 'deletePossibleTypes'));
 
-        /**
-         * When getting a PUT
-         * and there are the parameters "/course/1" for example,
-         * the editExerciseType function is called
-         */
+        // PUT editPossibleType
         $this->app->put('/'.$this->getPrefix().'/course/:courseid(/)' ,
                             array($this, 'editPossibleTypes'));
 
-        /**
-         * runs the application
-         */
+        // run Slim
         $this->app->run();
     }
 
     /**
-     * Function to set the possible types of points to a course
+     * Sets a possible exercise type of a course
      *
-     * takes one argument and returns a Status-Code
-     * @param $courseid an identifier of the course
-     *        for which the types should be set
+     * Called when this component receives an HTTP POST request to
+     * /exercisetype/course/$courseid(/).
+     * The request body should contain a JSON object representing the 
+     * new exercise type's attributes.
+     *
+     * @param int $courseid The id of the course the type should being added.
      */
     public function setPossibleTypes($courseid)
     {
@@ -97,11 +110,12 @@ class LExerciseType
     }
 
     /**
-     * Function to delete the possible types of points to a course
+     * Deletes a possible exercise type of a course
      *
-     * takes one argument and returns a Status-Code
-     * @param $courseid an identifier of the course
-     *        for which the types should be set
+     * Called when this component receives an HTTP DELETE request to
+     * /exercisetype/course/$courseid(/).
+     *
+     * @param int $courseid The id of the course the type should being deleted.
      */
     public function deletePossibleTypes($courseid)
     {
@@ -113,11 +127,14 @@ class LExerciseType
     }
 
     /**
-     * Function to edit the possible types of points to a course
+     * Edits possible exercise types of a course
      *
-     * takes one argument and returns a Status-Code
-     * @param $courseid an identifier of the course
-     *        for which the types should be set
+     * Called when this component receives an HTTP POST request to
+     * /exercisetype/course/$courseid(/).
+     * The request body should contain a JSON object representing the 
+     * new exercise type's attributes.
+     *
+     * @param int $courseid The id of the course the type should being updated.
      */
     public function editPossibleTypes($courseid)
     {
@@ -130,14 +147,10 @@ class LExerciseType
     }
 }
 
-/**
- * get new Config-Datas from DB
- */
+// get new config data from DB
 $com = new CConfig(LExerciseType::getPrefix());
 
-/**
- * make a new instance of ExerciseType-Class with the Config-Datas
- */
+// create a new instance of LUser class with the config data
 if (!$com->used())
     new LExerciseType($com->loadConfig());
 ?>
