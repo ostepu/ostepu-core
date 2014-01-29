@@ -18,6 +18,7 @@
         </div>
         <div class="user-id">
             <?php print $userName; ?>
+            <?php print $courses[0]['status']; ?>
         </div>
         <?php if (is_null($hideLogoutLink)) { ?>
             <a class="log-out" href="?action=logout">Ausloggen</a>
@@ -25,9 +26,27 @@
     </div>
 </div>
 
-<?php if (isset($navigationElement)) {
+<?php
+    $courseStatus = $courses[0]['status'];
+
+    // chooses the menu depending on the user's status in the course
+    switch ($courseStatus) {
+    case 3:
+        // status = Lecturer
+        $navigationElement = Template::WithTemplateFile('include/Navigation/NavigationLecturer.template.html');
+        break;
+    case 4:
+        // status = Admin
+        $navigationElement = Template::WithTemplateFile('include/Navigation/NavigationAdmin.template.html');
+        break;
+}
+?>
+
+<?php 
+    if (isset($navigationElement)) {
         print $navigationElement;
-    }?>
+    }
+?>
 
 <?php 
 if (isset($notificationElements)) {
