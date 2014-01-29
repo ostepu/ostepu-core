@@ -20,8 +20,8 @@ if (isset($_GET['cid'])) {
     Logger::Log('no course id!\n');
 }
 
-if (isset($_SESSION['uid'])) {
-    $uid = $_SESSION['uid'];
+if (isset($_SESSION['UID'])) {
+    $uid = $_SESSION['UID'];
 } else {
     Logger::Log('no user id!\n');
 }
@@ -40,7 +40,6 @@ $h->bind($user_course_data);
 $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
                "backTitle" => "Veranstaltung wechseln",
                "backURL" => "index.php",
-               "navigationElement" => $menu,
                "notificationElements" => $notifications));
 
 // load all exercise sheets for the current course

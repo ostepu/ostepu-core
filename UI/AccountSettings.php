@@ -16,31 +16,28 @@ include_once 'include/Helpers.php';
 
 $notifications = array();
 
-if (isset($_SESSION['uid'])) {
-    $uid = $_SESSION['uid'];
+if (isset($_SESSION['UID'])) {
+    $uid = $_SESSION['UID'];
 } else {
     Logger::Log('no user id!\n');
 }
 
 // load user data from the database
-$databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/user/user/{$uid}";
-$user = http_get($databaseURI);
-$user = json_decode($user, true);
-
-$pagedata = array("backTitle" => "Veranstaltungen",
-                  "name" => "Accounteinstellungen",
-                  "backURL" => "index.php?uid={$uid}",
-                  "notificationElements" => $notifications
-                  );
+$databaseURI = "http://141.48.9.92/uebungsplattform/logic/GetSite/accountsettings/user/{$uid}";
+$user_course_data = http_get($databaseURI);
+$user_course_data = json_decode($user_course_data, true);
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
-$h->bind($user);
-$h->bind($pagedata);
+$h->bind($user_course_data);
+$h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
+               "backTitle" => "Veranstaltungen",
+               "backURL" => "index.php?uid={$uid}",
+               "notificationElements" => $notifications));
 
 // construct a content element for account information
 $accountInfo = Template::WithTemplateFile('include/AccountSettings/AccountInfo.template.html');
-$accountInfo->bind($user);
+$accountInfo->bind($user_course_data);
 
 // construct a content element for changing password
 $changePassword = Template::WithTemplateFile('include/AccountSettings/ChangePassword.template.html');

@@ -14,14 +14,10 @@ include_once 'include/Template.php';
 include_once '../Assistants/Logger.php';
 include_once 'include/Helpers.php';
 
-if (isset($_SESSION['uid'])) {
-    $uid = $_SESSION['uid'];
+if (isset($_SESSION['UID'])) {
+    $uid = $_SESSION['UID'];
 } else {
     $uid = 0;
-}
-
-if (isset($_GET['error'])) {
-  $error = cleanInput($_GET['error']);
 }
 
 $sites = array('0' => 'Student.php',
@@ -39,10 +35,6 @@ $user = json_decode($user, true);
 
 if (is_null($user)) {
     $user = array();
-}
-
-if (isset($error) && $error == "403") {
-  $notifications[] = MakeNotification("error", "403: Access Forbidden!!");
 }
 
 // construct a new header

@@ -25,9 +25,27 @@
     </div>
 </div>
 
-<?php if (isset($navigationElement)) {
+<?php
+    $courseStatus = $courses[0]['status'];
+
+    // chooses the menu depending on the user's status in the course
+    switch ($courseStatus) {
+    case 3:
+        // status = Lecturer
+        $navigationElement = Template::WithTemplateFile('include/Navigation/NavigationLecturer.template.html');
+        break;
+    case 4:
+        // status = Admin
+        $navigationElement = Template::WithTemplateFile('include/Navigation/NavigationAdmin.template.html');
+        break;
+}
+?>
+
+<?php 
+    if (isset($navigationElement)) {
         print $navigationElement;
-    }?>
+    }
+?>
 
 <?php 
 if (isset($notificationElements)) {
