@@ -55,7 +55,6 @@ $h->bind($user);
 $h->bind($course);
 $h->bind(array("backTitle" => "zur Veranstaltung",
                "backURL" => "Student.php?cid={$cid}&uid={$uid}",
-               "navigationElement" => $menu,
                "notificationElements" => $notifications));
 
 // load exercise sheet data from the database

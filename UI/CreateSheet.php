@@ -50,15 +50,12 @@ $databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/course/course/{
 $course = http_get($databaseURI);
 $course = json_decode($course, true)[0];
 
-$menu = Template::WithTemplateFile('include/Navigation/NavigationLecturer.template.html');
-
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user);
 $h->bind($course);
 $h->bind(array("backTitle" => "zur Veranstaltung",
                "backURL" => "Lecturer.php?cid={$cid}&uid={$uid}",
-               "navigationElement" => $menu,
                "notificationElements" => $notifications));
 
 /**

@@ -40,15 +40,12 @@ if (is_null($user_course_data)) {
     $user_course_data = array();
 }
 
-$menu = Template::WithTemplateFile('include/Navigation/NavigationLecturer.template.html');
-
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
 $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
                "backTitle" => "Veranstaltung wechseln",
                "backURL" => "index.php",
-               "navigationElement" => $menu,
                "notificationElements" => $notifications));
 
 $databaseURL = "http://141.48.9.92/uebungsplattform/DB/DBExerciseSheet/exercisesheet/course/{$cid}/exercise";
