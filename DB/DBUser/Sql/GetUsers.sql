@@ -18,6 +18,7 @@
     U.U_password,
     U.U_salt,
     U.U_failed_logins,
+    U.U_externalId,
     CS.CS_status,
     C.C_id,
     C.C_name,

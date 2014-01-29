@@ -307,12 +307,17 @@ class DBSession
 
         foreach ($insert as $in){
             // generates the insert data for the object
-            $data = $in->getInsertData();
+            $userid = $in->getUser();
+            $sessionid = $in->getSession();
+            DBJson::checkInput($this->_app, 
+                    ctype_digit($userid));
+                    
+            $sessionid = DBJson::mysql_real_escape_string($sessionid);
             
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
                                             "Sql/AddSession.sql", 
-                                            array("values" => $data),
+                                            array("userid" => $userid, "sessionid" => $sessionid),
                                             false);                   
             
             // checks the correctness of the query   

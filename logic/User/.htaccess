@@ -1,2 +1,2 @@
 RewriteEngine On
-RewriteRule ^ User.php [QSA,L]
+RewriteRule ^ LUser.php [QSA,L]

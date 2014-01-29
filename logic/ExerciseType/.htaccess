@@ -1,2 +1,2 @@
 RewriteEngine On
-RewriteRule ^ ExerciseType.php [QSA,L]
+RewriteRule ^ LExerciseType.php [QSA,L]

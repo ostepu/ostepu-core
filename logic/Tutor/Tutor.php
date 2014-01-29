@@ -1,4 +1,4 @@
-<?php 
+﻿<?php 
 
 require 'Slim/Slim.php';
 include 'include/Request.php';
@@ -50,136 +50,204 @@ class LTutor
         $this->query = CConfig::getLink($conf->getLinks(),"controller");
         $this->lURL = $this->query->getAddress();
         
-        //PUT allocate manual by student
-        $this->app->put('/'.$this->getPrefix().'/exercisesheet/:exercisesheetid/manu/student(/)', array($this, 'allocateManualByStudent'));
+        //Set auto allocation by exercise
+        $this->app->post('/'.$this->getPrefix().
+            '/auto/exercise/course/:courseid/exercisesheet/:sheetid(/)', 
+                array($this, 'autoAllocateByExercise'));
         
-        //PUT allocate manual by exercise
-        $this->app->put('/'.$this->getPrefix().'/exercisesheet/:exercisesheetid/manu/exercise(/)', array($this, 'allocateManualByExercise'));
+        //Set auto allocation by group
+        $this->app->post('/'.$this->getPrefix().
+            '/auto/group/course/:courseid/exercisesheet/:sheetid(/)', 
+                array($this, 'autoAllocateByGroup'));
         
-        //PUT allocate auto by student
-        $this->app->put('/'.$this->getPrefix().'/exercisesheet/:exercisesheetid/auto/student(/)', array($this, 'allocateAutoByStudent'));
+        //Get zip
+        $this->app->get('/'.$this->getPrefix().'/user/:userid/exercisesheet/:sheetid(/)',
+                array($this, 'getZip'));
         
-        //PUT allocate manual by exercise
-        $this->app->put('/'.$this->getPrefix().'/exercisesheet/:exercisesheetid/auto/exercise(/)', array($this, 'allocateAutoByExercise'));       
-        
-        //run slim
+        //run Slim
         $this->app->run();
     }
     
-    /**
-     * Function to manual allocate students to tutors
-     * takes one argument and returns a Status-Code
-     * @param $exercisesheetid an integer identifies the exercisesheet
-     */
-    public function allocateManualByStudent($exercisesheetid){   
+    public function autoAllocateByExercise($courseid, $sheetid){
+        
         $header = $this->app->request->headers->all();
         $body = json_decode($this->app->request->getBody());        
-        $URL = $this->lURL.'/DB/exercisesheet/'.$exercisesheetid.'/manu/student';
-        $status = 200;
-        foreach ($body->{'assignments'} AS $assignment){ 
-            $answer = Request::custom('PUT', $URL, $header, json_encode($assignment));
-            if ($answer['status'] > 300){
-                $status = $answer['status'];
-            }
-        }        
-    }
-    
-    /**
-     * Function to manual allocate exercises to tutors
-     *
-     * takes one argument and returns a Status-Code
-     *
-     * @param $exercisesheetid an integer identifies the exercisesheet
-     */    
-    public function allocateManualByExercise($exercisesheetid){
-        $header = $this->app->request->headers->all();
-        $body = json_decode($this->app->request->getBody());
-        $URL = $this->lURL.'/DB/exercisesheet/'.$exercisesheetid.'/manu/exercise';
-        $status = 200;
-        foreach ($body->{'assignments'} AS $assignment){  
-            $answer = Request::custom('PUT', $URL, $header, json_encode($assignment));
-            if ($answer['status'] > 300){
-                $status = $answer['status'];
-            }
-        }
-        $this->app->response->setStatus($status); 
-    }
-    
-    /**
-     * Function to auto allocate students to tutors
-     *
-     * takes one argument and returns a Status-Code
-     *
-     * @param $exercisesheetid an integer identifies the exercisesheet
-     */   
-    public function allocateAutoByStudent($exercisesheetid){
-        $header = $this->app->request->headers->all();
-        $body = json_decode($this->app->request->getBody());
-        $URL = $this->lURL.'/DB/exercisesheet/'.$exercisesheetid.'/auto/student';
+        $URL = $this->lURL.'/DB/marking';
         
-        //randomized allocation
-        shuffle($body->{'unassigned'}); //randomize the order of elements        
-        $numberOfTutors = count($body->{'assignments'});
+        $tutors = $body['tutors'];
+        $submissions = array();
+        foreach($body['unassigned'] as $submission){
+            $exerciseId = $submission['exerciseId'];
+            $submissions[$exerciseId][] = $submission;
+        }
+        
+        shuffle($tutors);
+        shuffle($submissions);
         $i = 0;
-        $arrayOfTutors = $body->{'assignments'};
-        foreach ($body->{'unassigned'} AS $student){
-            array_push($arrayOfTutors[$i]->{'assigned'}, $student); //add a student to the assigned-list of a tutor
+        $numberOfTutors = count($tutors);
+        $markings = array();
+        foreach ($submissions as $submissionsByExercise){
+            foreach($submissionsByExercise as $submission){
+                $newMarking = array(
+                    'submission' => $submission,
+                    'status' => 0,
+                    'tutorId' => $tutors[$i]['tutorId'],
+                );
+                $markings[] = $newMarking;
+            }
             if ($i < $numberOfTutors - 1){
                 $i++;
             } else {
                 $i = 0;
             }
+
         }
         
-        //requests to DataBase
-        $status = 200;        
-        foreach ($arrayOfTutors AS $assignment){  
-            $answer = Request::custom('PUT', $URL, $header, json_encode($assignment));
-            if ($answer['status'] > 300){
-                $status = $answer['status'];
-            }
+        foreach($markings as $marking){
+            $answer = Request::custom('POST', $URL, $header,
+                    json_encode($marking));
         }
-        $this->app->response->setStatus($status);
+        
+        $URL = $this->lURL.'/getsite/tutorassignment/course/'
+                        .$courseid.'/exercisesheet/'.$sheetid;
+        $answer = Request::custom('GET', $URL, $header, "");
+        
+        $this->app->response->setBody($answer['content']);
     }
-  
-    /**
-     * Function to auto allocate exercises to tutors
-     *
-     * takes one argument and returns a Status-Code
-     *
-     * @param $exercisesheetid an integer identifies the exercisesheet
-     */    
-    public function allocateAutoByExercise($exercisesheetid){
-        $header = $this->app->request->headers->all();
-        $body = json_decode($this->app->request->getBody());
-        $URL = $this->lURL.'/DB/exercisesheet/'.$exercisesheetid.'/auto/exercise';
+    
+    public function autoAllocateByGroup($courseid, $sheetid){
         
-        //randomized allocation
-        shuffle($body->{'unassigned'}); //randomize the order of elements        
-        $numberOfTutors = count($body->{'assignments'});
+        $header = $this->app->request->headers->all();
+        $body = json_decode($this->app->request->getBody());        
+        $URL = $this->lURL.'/DB/marking';
+        
+        $tutors = $body['tutors'];
+        $submissions = array();
+        foreach($body['unassigned'] as $submission){
+            $leaderId = $submission['leaderId'];
+            $submissions[$leaderId][] = $submission;
+        }
+        
+        shuffle($tutors);
         $i = 0;
-        $arrayOfTutors = $body->{'assignments'};
-        foreach ($body->{'unassigned'} AS $exercise){
-            array_push($arrayOfTutors[$i]->{'assigned'}, $exercise); //add an exercise to the assigned-list of a tutor           
+        $numberOfTutors = count($tutors);
+        $markings = array();
+        foreach ($submissions as $submissionsByGroup){
+            foreach($submissionsByGroup as $submission){
+                $newMarking = array(
+                    'submission' => $submission,
+                    'status' => 0,
+                    'tutorId' => $tutors[$i]['tutorId']
+                );
+                $markings[] = $newMarking;
+            }
             if ($i < $numberOfTutors - 1){
                 $i++;
             } else {
                 $i = 0;
             }
+            
         }
         
-        //requests to DataBase
-        $status = 200;        
-        foreach ($arrayOfTutors AS $assignment){  
-            $answer = Request::custom('PUT', $URL, $header, json_encode($assignment));
-            if ($answer['status'] > 300){
-                $status = $answer['status'];
+        foreach($markings as $marking){
+            $answer = Request::custom('POST', $URL, $header, 
+                    json_encode($marking));
+        }
+        
+        $URL = $this->lURL.'/getsite/tutorassignment/course/'
+                    .$courseid.'/exercisesheet/'.$sheetid;
+        $answer = Request::custom('GET', $URL, $header, "");
+        
+        $this->app->response->setBody($answer['content']);
+    }
+    
+    public function getZip($userid, $sheetid){
+        $header = $this->app->request->headers->all();
+        $body = json_decode($this->app->request->getBody());        
+        $URL = $this->lURL.'/DB/marking/exercisesheet/'.$sheetid.'/tutor/'.$userid;
+        
+        $answer = Request::custom('GET', $URL, $header,"");
+        $markings = json_decode($answer['content'], true);
+        
+        
+        $URL = $this->lURL.'/DB/exercise/exercisesheet/'.$sheetid;
+        
+        $answer = Request::custom('GET', $URL, $header,"");
+        $exercises = json_decode($answer['content'], true);
+        $count = 0;
+        $alphabet = range('a', 'z');
+        $secondRow = array();
+        $sortedMarkings = array();
+        $rows = array();
+        $exerciseIdWithExistingMarkings = array();
+        
+        foreach( $markings as $marking){
+            $submission = $marking['submission'];
+            $id = $submission['exerciseId'];
+            $sortedMarkings[$id][] = $marking;
+            if(!in_array($id, $exerciseIdWithExistingMarkings)){
+                $exerciseIdWithExistingMarkings[] = $id;
             }
         }
-        $this->app->response->setStatus($status);       
+        
+        foreach ($exercises as $exercise){
+            $firstRow = array();
+            $secondRow = array();
+            $row = array();
+            
+            if ($exercise != $exercise['link']){
+                $count++;
+                $firstRow[] = 'Aufgabe '.$count;
+                $subtask = 0;
+            }else{
+                $firstRow[] = 'Aufgabe '.$count.$alphabet[$subtask];
+                $subtask++;
+            }
+            $firstRow[] = $exercise['id'];
+            for ($i = 0; $i<5; $i++){
+                $firstRow[] = "";
+            }
+            $secondRow[] = 'ID';
+            $secondRow[] = 'Points';
+            $secondRow[] = 'MaxPoints';
+            $secondRow[] = 'Outstanding?';
+            $secondRow[] = 'Status';
+            $secondRow[] = 'TutorComment';
+            $secondRow[] = 'StudentComment';
+        
+        
+            $rows[] = $firstRow;
+            $rows[] = $secondRow;
+            
+            if(in_array($exercise['id'], $exerciseIdWithExistingMarkings)){
+                foreach($sortedMarkings[$exercise['id']] as $marking){
+                    $row[] = $marking['id'];
+                    $row[] = "";
+                    $row[] = $exercise['maxPoints'];
+                    $row[] = "";
+                    $row[] = 0;
+                    $row[] = "";
+                    $submission = $marking['submission'];
+                    $row[] = $submission['comment'];
+                    $rows[] = $row;
+                }
+            }
+            $rows[] = array();
+        }
+        $URL = $this->lURL.'/DB/user/user/'.$userid;
+        $answer = Request::custom('GET', $URL, $header, "");
+        $user = json_decode($answer['content'], true);
+        
+        $CSV = fopen($user['lastName'].'_'.$sheetid.'.csv', 'w');
+        
+        foreach($rows as $row){
+            fputcsv($CSV, $row, ';');
+        }
+        
+        fclose($CSV);
+        
     }
 }
-
 /**
  * get new Config-Datas from DB 
  */

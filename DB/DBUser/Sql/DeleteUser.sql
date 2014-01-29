@@ -10,4 +10,4 @@ update User
 set 
     U_flag = 0
 where
-    U_id = '$userid' or U_username = '$userid'
+    U_id = '$userid' or U_username = '$userid' or U_externalId = '$userid'
