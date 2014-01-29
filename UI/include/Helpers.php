@@ -246,23 +246,20 @@ EOF;
 /**
  * Delete masked slashes from array and trim it.
  *
- * @param $input An associative array that contains inputstrings or a string
+ * @param mixed $input Some input that needs to be
  */
 function cleanInput($input)
 {
     if (is_array($input)) {
 
-        foreach ($input as $element) {
-
-            if (get_magic_quotes_gpc() == 0) {
-                $element = htmlspecialchars(trim(stripcslashes($element)), ENT_QUOTES);
-            } else {
-                $element = htmlspecialchars(trim($element), ENT_QUOTES);
-            }
+        foreach ($input as &$element) {
+            // pass $element as reference so $input will be modified
+            $element = cleanInput($element);
         }
     } else {
 
         if (get_magic_quotes_gpc() == 0) {
+            // magic quotes is turned off
             $input = htmlspecialchars(trim(stripcslashes($input)), ENT_QUOTES);
         } else {
             $input = htmlspecialchars(trim($input), ENT_QUOTES);
