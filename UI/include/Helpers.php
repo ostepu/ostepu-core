@@ -81,7 +81,7 @@ function http_get($url, $authbool, &$message = 0)
 
     $retData = curl_exec($c);
     $message = curl_getinfo($c, CURLINFO_HTTP_CODE);
-    if ($message == "401" && $authbool) {
+    if ($message == "401") {
         Authentication::logoutUser();
     }
     if ($message == "409") {
@@ -119,7 +119,7 @@ function http_post_data($url, $data, $auth, &$message = 0)
 
     $retData = curl_exec($c);
     $message = curl_getinfo($c, CURLINFO_HTTP_CODE);
-    if ($message == "401" && $authbool) {
+    if ($message == "401") {
         Authentication::logoutUser();
     }
     if ($message == "409") {
@@ -157,7 +157,7 @@ function http_put_data($url, $data, $authbool, &$message = 0)
 
     $retData = curl_exec($c);
     $message = curl_getinfo($c, CURLINFO_HTTP_CODE);
-    if ($message == "401" && $authbool) {
+    if ($message == "401") {
         Authentication::logoutUser();
     }
     if ($message == "409") {
@@ -190,7 +190,7 @@ function http_delete($url, $auth, &$message = 0)
 
     $retData = curl_exec($c);
     $message = curl_getinfo($c, CURLINFO_HTTP_CODE);
-    if ($message == "401" && $authbool) {
+    if ($message == "401") {
         Authentication::logoutUser();
     }
     if ($message == "409") {
