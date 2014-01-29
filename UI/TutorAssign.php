@@ -31,8 +31,8 @@ if (isset($_GET['cid'])) {
     Logger::Log('no course id!\n');
 }
 
-if (isset($_SESSION['uid'])) {
-    $uid = $_SESSION['uid'];
+if (isset($_SESSION['UID'])) {
+    $uid = $_SESSION['UID'];
 } else {
     Logger::Log('no user id!\n');
 }

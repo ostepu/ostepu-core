@@ -21,8 +21,8 @@ if (isset($_GET['cid'])) {
     $notifications[] = MakeNotification("error", "No course id!");
 }
 
-if (isset($_SESSION['uid'])) {
-    $uid = $_SESSION['uid'];
+if (isset($_SESSION['UID'])) {
+    $uid = $_SESSION['UID'];
 } else {
     $notifications[] = MakeNotification("error", "No user id!");
 }

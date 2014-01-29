@@ -3,10 +3,7 @@
  * @file Authentication.php
  * Contains the Authentication class.
  *
- * @todo (Some) HTTP header fields should start with a capital letter for
- * example "location". As header fields are case-sensitive this needs to be
- * fixed.
- * @sa http://www.ietf.org/rfc/rfc2616.txt
+ * @author Ralf Busch
  */
 
 include_once 'include/Helpers.php';
@@ -67,7 +64,7 @@ class Authentication
      */
     public static function preventSessionFix()
     {
-        if (!isset( $_SESSION['server_SID'] )) {
+        if (!isset( $_SESSION['SERVER_SID'] )) {
             // delete session content
             session_unset();
             $_SESSION = array();
@@ -80,7 +77,7 @@ class Authentication
             session_regenerate_id();
 
             // save status that serverSID is given
-            $_SESSION['server_SID'] = true;
+            $_SESSION['SERVER_SID'] = true;
         }
     }
 
@@ -105,7 +102,7 @@ class Authentication
             if ($password == $user['password']) {
 
                 // save logged in uid
-                $_SESSION['uid'] = $user['id'];
+                $_SESSION['UID'] = $user['id'];
                 $refresh = $this->refreshSession($username, $password);
                 return $refresh;
             } else {
@@ -126,24 +123,24 @@ class Authentication
      */
     private function refreshSession($username, $password)
     {
-        $_SESSION['session'] = $this->hashData("md5", session_id().$username.$password);
+        $_SESSION['SESSION'] = $this->hashData("md5", session_id().$username.$password);
         /**
          * @todo Workaround for the not implemented session redirection in logic
          */
-        if ($_SESSION['uid'] == 3) {
-            $_SESSION['session'] = "abc";
+        if ($_SESSION['UID'] == 3) {
+            $_SESSION['SESSION'] = "abc";
         }
         // create Session in DB
-        $sessionbody = array('user' => $_SESSION['uid'],
-                             'session' => $_SESSION['session']);
+        $sessionbody = array('user' => $_SESSION['UID'],
+                             'session' => $_SESSION['SESSION']);
         $sessionbody = json_encode($sessionbody);
         $url = "http://141.48.9.92/uebungsplattform/DB/DBControl/session";
         http_post_data($url, $sessionbody, false, $message);
 
         if ($message == "201") {
-            $_SESSION['signed'] = true;
-            $_SESSION['lastactive'] = $_SERVER['REQUEST_TIME'];
-            $_SESSION['Browser_Agent'] = $_SERVER['HTTP_USER_AGENT'];
+            $_SESSION['SIGNED'] = true;
+            $_SESSION['LASTACTIVE'] = $_SERVER['REQUEST_TIME'];
+            $_SESSION['HTTP_USER_AGENT'] = $_SERVER['HTTP_USER_AGENT'];
             $_SESSION['IP'] = $_SERVER['REMOTE_ADDR'];
             return true;
         } else {
@@ -160,19 +157,19 @@ class Authentication
     public static function checkLogin()
     {
         session_regenerate_id(true);
-        if (!isset($_SESSION['signed']) || !$_SESSION['signed']) {
+        if (!isset($_SESSION['SIGNED']) || !$_SESSION['SIGNED']) {
             return false;
         }
 
         // check for timeout (after 10 minutes of inactivity)
-        if (!isset($_SESSION['lastactive'])
-            || (($_SESSION['lastactive'] + 10*60) <= $_SERVER['REQUEST_TIME'])) {
+        if (!isset($_SESSION['LASTACTIVE'])
+            || (($_SESSION['LASTACTIVE'] + 10*60) <= $_SERVER['REQUEST_TIME'])) {
             return false;
         }
 
         // check if browser agent changed
-        if (!isset($_SESSION['Browser_Agent'])
-            || ($_SESSION['Browser_Agent'] != $_SERVER['HTTP_USER_AGENT'])) {
+        if (!isset($_SESSION['HTTP_USER_AGENT'])
+            || ($_SESSION['HTTP_USER_AGENT'] != $_SERVER['HTTP_USER_AGENT'])) {
             return false;
         }
 
@@ -183,7 +180,7 @@ class Authentication
         }
 
         // update last activity
-        $_SESSION['lastactive'] = $_SERVER['REQUEST_TIME'];
+        $_SESSION['LASTACTIVE'] = $_SERVER['REQUEST_TIME'];
         return true;
     }
 
@@ -194,17 +191,17 @@ class Authentication
     {
         if($_GET['action'] == "logout") {
             // delete session in DB
-            $session = $_SESSION['session'];
+            $session = $_SESSION['SESSION'];
             http_delete("http://141.48.9.92/uebungsplattform/DB/DBControl/session/{$session}",true,$message);
 
             // delete session in UI
             session_destroy();
             // redirect to Loginpage
-            header('location: Login.php');
+            header('Location: Login.php');
             exit;
         } else {
             // delete session in DB
-            $session = $_SESSION['session'];
+            $session = $_SESSION['SESSION'];
             http_delete("http://141.48.9.92/uebungsplattform/DB/DBControl/session/{$session}",true,$message);
             
             // delete session in UI
@@ -227,7 +224,7 @@ class Authentication
             }
 
             // redirect to Loginpage and save current page in GET param
-            header('location: Login.php?back=' . $backurl . $urlparameters);
+            header('Location: Login.php?back=' . $backurl . $urlparameters);
             exit;
         }
     }

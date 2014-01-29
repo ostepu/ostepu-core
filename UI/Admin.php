@@ -20,8 +20,8 @@ if (isset($_GET['cid'])) {
     Logger::Log('no course id!\n');
 }
 
-if (isset($_SESSION['uid'])) {
-    $uid = $_SESSION['uid'];
+if (isset($_SESSION['UID'])) {
+    $uid = $_SESSION['UID'];
 } else {
     Logger::Log('no user id!\n');
 }
@@ -29,10 +29,6 @@ if (isset($_SESSION['uid'])) {
 // load user and course data from the database
 $databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/coursestatus/course/{$cid}/user/{$uid}";
 $user_course_data = http_get($databaseURI, true, $message);
-
-if ($message == "401") {
-    $auth->logoutUser();
-}
 
 $user_course_data = json_decode($user_course_data, true);
 
@@ -54,10 +50,6 @@ $databaseURL = "http://141.48.9.92/uebungsplattform/DB/DBExerciseSheet/exercises
 
 // construct some exercise sheets
 $sheetString = http_get($databaseURL, true, $message);
-
-if ($message == "401") {
-    $auth->logoutUser();
-}
 
 // convert the json string into an associative array
 $sheets = array("sheets" => json_decode($sheetString, true),

@@ -73,8 +73,8 @@ function http_get($url, $authbool, &$message = 0)
     curl_setopt($c, CURLOPT_HTTPGET, 1);
     if ($authbool) {
         $date = $_SERVER['REQUEST_TIME'];
-        $session = $_SESSION['session'];
-        $user = $_SESSION['uid'];
+        $session = $_SESSION['SESSION'];
+        $user = $_SESSION['UID'];
         curl_setopt($c, CURLOPT_HTTPHEADER, array("User: {$user}","Session: {$session}","Date : {$date}"));
     }
     curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
@@ -111,8 +111,8 @@ function http_post_data($url, $data, $auth, &$message = 0)
     curl_setopt($c, CURLOPT_POSTFIELDS, $data);
     if ($authbool) {
         $date = $_SERVER['REQUEST_TIME'];
-        $session = $_SESSION['session'];
-        $user = $_SESSION['uid'];
+        $session = $_SESSION['SESSION'];
+        $user = $_SESSION['UID'];
         curl_setopt($c, CURLOPT_HTTPHEADER, array("User: {$user}","Session: {$session}","Date : {$date}"));
     }
     curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
@@ -149,8 +149,8 @@ function http_put_data($url, $data, $authbool, &$message = 0)
     curl_setopt($c, CURLOPT_CUSTOMREQUEST, 'PUT');
     if ($authbool) {
         $date = $_SERVER['REQUEST_TIME'];
-        $session = $_SESSION['session'];
-        $user = $_SESSION['uid'];
+        $session = $_SESSION['SESSION'];
+        $user = $_SESSION['UID'];
         curl_setopt($c, CURLOPT_HTTPHEADER, array("User: {$user}","Session: {$session}","Date : {$date}"));
     }
     curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
@@ -182,8 +182,8 @@ function http_delete($url, $auth, &$message = 0)
     curl_setopt($c, CURLOPT_CUSTOMREQUEST, 'DELETE');
     if ($authbool) {
         $date = $_SERVER['REQUEST_TIME'];
-        $session = $_SESSION['session'];
-        $user = $_SESSION['uid'];
+        $session = $_SESSION['SESSION'];
+        $user = $_SESSION['UID'];
         curl_setopt($c, CURLOPT_HTTPHEADER, array("User: {$user}","Session: {$session}","Date : {$date}"));
     }
     curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
