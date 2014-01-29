@@ -4,6 +4,7 @@
  * A collection of helper methods that can be used by classes
  *
  * @author Florian Lücke
+ * @author Ralf Busch
  */
 
 /**
@@ -55,8 +56,9 @@ function is_assoc($array)
  */
 function set_error($errormsg)
 {
-    header('location: Error.php?msg='.$errormsg);
+    header('Location: Error.php?msg='.$errormsg);
 }
+
 /**
  * Sends an HTTP GET request.
  *
@@ -77,16 +79,20 @@ function http_get($url, $authbool, &$message = 0)
         $user = $_SESSION['UID'];
         curl_setopt($c, CURLOPT_HTTPHEADER, array("User: {$user}","Session: {$session}","Date : {$date}"));
     }
+
     curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
 
     $retData = curl_exec($c);
     $message = curl_getinfo($c, CURLINFO_HTTP_CODE);
+
     if ($message == "401") {
         Authentication::logoutUser();
     }
+
     if ($message == "409") {
         set_error("409");
     }
+
     curl_close($c);
 
     return $retData;
@@ -109,22 +115,27 @@ function http_post_data($url, $data, $auth, &$message = 0)
     curl_setopt($c, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
     curl_setopt($c, CURLOPT_POSTFIELDS, $data);
+
     if ($authbool) {
         $date = $_SERVER['REQUEST_TIME'];
         $session = $_SESSION['SESSION'];
         $user = $_SESSION['UID'];
         curl_setopt($c, CURLOPT_HTTPHEADER, array("User: {$user}","Session: {$session}","Date : {$date}"));
     }
+
     curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
 
     $retData = curl_exec($c);
     $message = curl_getinfo($c, CURLINFO_HTTP_CODE);
+
     if ($message == "401") {
         Authentication::logoutUser();
     }
+
     if ($message == "409") {
         set_error("409");
     }
+
     curl_close($c);
 
     return $retData;
@@ -147,22 +158,27 @@ function http_put_data($url, $data, $authbool, &$message = 0)
     curl_setopt($c, CURLOPT_URL, $url);
     curl_setopt($c, CURLOPT_POSTFIELDS, $data);
     curl_setopt($c, CURLOPT_CUSTOMREQUEST, 'PUT');
+
     if ($authbool) {
         $date = $_SERVER['REQUEST_TIME'];
         $session = $_SESSION['SESSION'];
         $user = $_SESSION['UID'];
         curl_setopt($c, CURLOPT_HTTPHEADER, array("User: {$user}","Session: {$session}","Date : {$date}"));
     }
+
     curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
 
     $retData = curl_exec($c);
     $message = curl_getinfo($c, CURLINFO_HTTP_CODE);
+
     if ($message == "401") {
         Authentication::logoutUser();
     }
+
     if ($message == "409") {
         set_error("409");
     }
+
     curl_close($c);
 
     return $retData;
@@ -180,22 +196,27 @@ function http_delete($url, $auth, &$message = 0)
 
     curl_setopt($c, CURLOPT_URL, $url);
     curl_setopt($c, CURLOPT_CUSTOMREQUEST, 'DELETE');
+
     if ($authbool) {
         $date = $_SERVER['REQUEST_TIME'];
         $session = $_SESSION['SESSION'];
         $user = $_SESSION['UID'];
         curl_setopt($c, CURLOPT_HTTPHEADER, array("User: {$user}","Session: {$session}","Date : {$date}"));
     }
+
     curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
 
     $retData = curl_exec($c);
     $message = curl_getinfo($c, CURLINFO_HTTP_CODE);
+
     if ($message == "401") {
         Authentication::logoutUser();
     }
+
     if ($message == "409") {
         set_error("409");
     }
+
     curl_close($c);
 
     return $retData;
@@ -225,25 +246,26 @@ EOF;
 /**
  * Delete masked slashes from array and trim it.
  *
- * @param $input An associative array that contains inputstrings or a string
+ * @param mixed $input Some input that needs to be
  */
 function cleanInput($input)
 {
     if (is_array($input)) {
-        foreach ($input as $element) {
-            if (!get_magic_quotes_gpc()) {
-                $element = htmlspecialchars(trim(stripcslashes($element)), ENT_QUOTES);
-            } else {
-                $element = htmlspecialchars(trim($element), ENT_QUOTES);
-            }
+
+        foreach ($input as &$element) {
+            // pass $element as reference so $input will be modified
+            $element = cleanInput($element);
         }
     } else {
-        if (!get_magic_quotes_gpc()) {
+
+        if (get_magic_quotes_gpc() == 0) {
+            // magic quotes is turned off
             $input = htmlspecialchars(trim(stripcslashes($input)), ENT_QUOTES);
         } else {
             $input = htmlspecialchars(trim($input), ENT_QUOTES);
         }
     }
+
     return $input;
 }
 ?>

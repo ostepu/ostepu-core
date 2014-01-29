@@ -16,18 +16,18 @@ if (isset($_GET['msg'])) {
 }
 
 if (isset($msg) && $msg == "403") {
-	header("HTTP/1.0 403 Access Forbidden");
-	$notifications[] = MakeNotification("error", "403: Access Forbidden!!");
+    header("HTTP/1.0 403 Access Forbidden");
+    $notifications[] = MakeNotification("error", "403: Access Forbidden!!");
 }
 
 if (isset($msg) && $msg == "404") {
-	header("HTTP/1.0 404 Not Found");
-	$notifications[] = MakeNotification("error", "404: Not Found!!");
+    header("HTTP/1.0 404 Not Found");
+    $notifications[] = MakeNotification("error", "404: Not Found!!");
 }
 
 if (isset($msg) && $msg == "409") {
-	header("HTTP/1.0 404 Not Found");
-	$notifications[] = MakeNotification("error", "409: Conflict!!");
+    header("HTTP/1.0 404 Not Found");
+    $notifications[] = MakeNotification("error", "409: Conflict!!");
 }
 
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
