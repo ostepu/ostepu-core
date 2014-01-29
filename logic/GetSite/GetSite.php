@@ -54,52 +54,52 @@ class LgetSite
 
 
         //GET TutorAssignmentSiteInfo
-        $this->app->get('/tutorassignment/course/:courseid/exercisesheet/:sheetid(/)', array($this, 'tutorAssignmentSiteInfo'));
+        $this->app->get('/tutorassignment/user/:userid/course/:courseid/exercisesheet/:sheetid(/)', array($this, 'tutorAssignmentSiteInfo'));
 
         //GET StudentSiteInfo
         $this->app->get('/student/user/:userid/course/:courseid(/)', array($this, 'studentSiteInfo'));
         
         //GET AccountSettings
-        $this->app->get('/accountsettings/user/:userid(/)', array($this, 'userWithCourses'));
+        $this->app->get('/accountsettings/user/:userid/course/:courseid(/)', array($this, 'userWithCourse'));
         
         //GET CreateSheet
-        $this->app->get('/createsheet/user/:userid(/)', array($this, 'userWithCourses'));
+        $this->app->get('/createsheet/user/:userid/course/:courseid(/)', array($this, 'userWithCourse'));
         
         //GET Index
-        $this->app->get('/index/user/:userid(/)', array($this, 'userWithCourses'));
+        $this->app->get('/index/user/:userid(/)', array($this, 'userWithAllCourses'));
         
         //GET RightsManagment
-        $this->app->get('/rightsmanagement/user/:userid(/)', array($this, 'userWithCourses'));
+        $this->app->get('/rightsmanagement/user/:userid/course/:courseid(/)', array($this, 'userWithCourse'));
         
         //GET Upload
-        $this->app->get('/upload/user/:userid(/)', array($this, 'userWithCourses'));
+        $this->app->get('/upload/user/:userid/course/:courseid(/)', array($this, 'userWithCourse'));
         
         //GET MarkingTool
-        $this->app->get('/markingtool/course/:courseid/exercisesheet/:sheetid/user/:userid', array($this, 'markingTool'));
+        $this->app->get('/markingtool/user/:userid/course/:courseid/exercisesheet/:sheetid(/)', array($this, 'markingTool'));
         
         //GET UploadHistory
-        $this->app->get('/uploadhistory/user/:userid/exercise/:exerciseid(/)', array($this, 'uploadHistory'));
+        $this->app->get('/uploadhistory/user/:userid/course/:courseid/exercise/:exerciseid(/)', array($this, 'uploadHistory'));
         
         //GET TutorSite
-        $this->app->get('/tutor/course/:courseid/user/:userid(/)', array($this, 'tutorDozentAdmin'));
+        $this->app->get('/tutor/user/:userid/course/:courseid(/)', array($this, 'tutorDozentAdmin'));
         
         //GET AdminSite
-        $this->app->get('/admin/course/:courseid/user/:userid(/)', array($this, 'tutorDozentAdmin'));
+        $this->app->get('/admin/user/:userid/course/:courseid(/)', array($this, 'tutorDozentAdmin'));
         
         //GET DozentSite
-        $this->app->get('/lecturer/course/:courseid/user/:userid(/)', array($this, 'tutorDozentAdmin'));
+        $this->app->get('/lecturer/user/:userid/course/:courseid(/)', array($this, 'tutorDozentAdmin'));
         
         //GET GroupSite
-        $this->app->get('/group/course/:courseid/exercisesheet/:sheetid/user/:userid(/)', array($this, 'groupSite'));
+        $this->app->get('/group/user/:userid/course/:courseid/exercisesheet/:sheetid(/)', array($this, 'groupSite'));
         
         //GET Condition
-        $this->app->get('/condition/course/:courseid/user/:userid(/)', array($this, 'checkCondition'));
+        $this->app->get('/condition/user/:userid/course/:courseid(/)', array($this, 'checkCondition'));
         
         //run Slim
         $this->app->run();
     }
 
-    public function tutorAssignmentSiteInfo($courseid, $sheetid){
+    public function tutorAssignmentSiteInfo($userid, $courseid, $sheetid){
 
         $response = array();
         $assignedSubmissionIDs = array();
@@ -170,6 +170,10 @@ class LgetSite
                     );
         array_push($response, $newTutorAssignment);
 
+        /**
+        * @todo userWithCourse needs to be attached to the tutorAssignment data
+        */
+
         $this->app->response->setBody(json_encode($response));
     }
     
@@ -212,18 +216,46 @@ class LgetSite
             }
         }
         
-        //get User with Courses
-        
         $this->flag = 1;
-        $response['user'] = $this->userWithCourses($userid);
+        $response['user'] = $this->userWithCourse($userid, $courseid);
         
         $this->app->response->setBody(json_encode($response));
         
     }
 
-    public function userWithCourses($userid){
+    public function userWithCourse($userid, $courseid){
         $body = $this->app->request->getBody();
-        $header = $this->app->request->headers->all();
+            $header = $this->app->request->headers->all();
+        $URL = $this->lURL.'/DB/coursestatus/course/'.$courseid.'/user/'.$userid;
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $user = json_decode($answer['content'], true);
+        $response = array(
+                'id' =>  $user['id'],
+                'userName'=>  $user['userName'],
+                'firstName'=>  $user['firstName'],
+                'lastName'=>  $user['lastName'],
+                'flag'=>  $user['flag'],
+                'email'=>  $user['email'],
+                'courses'=>  array()
+                );
+        foreach ($user['courses'] as $course){
+            $newCourse = array(
+                'status' => $course['status'],
+                'statusName' => $this->getStatusName($course['status']),
+                'course' => $course['course']
+                );
+           $response['courses'][] = $newCourse;
+        }
+        if ($this->flag == 0){
+        $this->app->response->setBody(json_encode($response));}
+        else{
+        $this->flag = 0;
+        return $response;}
+    }
+
+    public function userWithAllCourses($userid){
+        $body = $this->app->request->getBody();
+            $header = $this->app->request->headers->all();
         $URL = $this->lURL.'/DB/user/user/'.$userid;
         $answer = Request::custom('GET', $URL, $header, $body);
         $user = json_decode($answer['content'], true);
@@ -264,7 +296,7 @@ class LgetSite
             return "super-administrator";}
     }
     
-    public function markingTool($courseid, $sheetid, $userid){
+    public function markingTool($userid, $courseid, $sheetid){
 
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
@@ -306,13 +338,13 @@ class LgetSite
         $response['tutors'][] = $tutors;
         
         $this->flag = 1;
-        $response['user'] = $this->userWithCourses($userid);
+        $response['user'] = $this->userWithCourse($userid, $courseid);
         
         $this->app->response->setBody(json_encode($response));
         
     }
 
-    public function uploadHistory($userid, $exerciseid){
+    public function uploadHistory($userid, $courseid, $exerciseid){
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
         $URL = $this->lURL.'/DB/submission/user/'.$userid.'/exercise/'.$exerciseid;
@@ -323,12 +355,12 @@ class LgetSite
         }
         
         $this->flag = 1;
-        $response['user'] = $this->userWithCourses($userid);
+        $response['user'] = $this->userWithCourse($userid, $courseid);
         
         $this->app->response->setBody(json_encode($response));
     }
     
-    public function tutorDozentAdmin($courseid, $userid){
+    public function tutorDozentAdmin($userid, $courseid){
         
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
@@ -341,12 +373,12 @@ class LgetSite
         }
         
         $this->flag = 1;
-        $response['user'] = $this->userWithCourses($userid);
+        $response['user'] = $this->userWithCourse($userid, $courseid);
         
         $this->app->response->setBody(json_encode($response));
     }
     
-    public function groupSite($courseid, $sheetid, $userid){
+    public function groupSite($userid, $courseid, $sheetid){
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
         
@@ -390,12 +422,12 @@ class LgetSite
         
         
         $this->flag = 1;
-        $response['user'] = $this->userWithCourses($userid);
+        $response['user'] = $this->userWithCourse($userid, $courseid);
         
         $this->app->response->setBody(json_encode($response));
     }
 
-    public function checkCondition($courseid, $userid){
+    public function checkCondition($userid, $courseid){
         
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
@@ -498,7 +530,7 @@ class LgetSite
         }
         
         $this->flag = 1;
-        $response['user'] = $this->userWithCourses($userid);
+        $response['user'] = $this->userWithCourse($userid, $courseid);
         
         $this->app->response->setBody(json_encode($response));
     }
