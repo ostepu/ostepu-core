@@ -16,8 +16,8 @@ include_once 'include/Helpers.php';
 
 $notifications = array();
 
-if (isset($_SESSION['uid'])) {
-    $uid = $_SESSION['uid'];
+if (isset($_SESSION['UID'])) {
+    $uid = $_SESSION['UID'];
 } else {
     $uid = 0;
 }
@@ -30,12 +30,12 @@ if (isset($_GET['cid'])) {
 
 // load user data from the database
 $databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/user/user/{$uid}";
-$user = http_get($databaseURI);
+$user = http_get($databaseURI, false);
 $user = json_decode($user, true);
 
 // load course data from the database
 $databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/course/course/{$cid}";
-$course = http_get($databaseURI);
+$course = http_get($databaseURI, true);
 $course = json_decode($course, true)[0];
 
 // construct a new header
