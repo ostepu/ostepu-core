@@ -55,7 +55,7 @@ function is_assoc($array)
  */
 function set_error($errormsg)
 {
-    header('location: Error.php?msg='.$errormsg);
+    header('Location: Error.php?msg='.$errormsg);
 }
 /**
  * Sends an HTTP GET request.
