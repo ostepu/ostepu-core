@@ -14,8 +14,8 @@ include_once 'include/Template.php';
 include_once '../Assistants/Logger.php';
 include_once 'include/Helpers.php';
 
-if (isset($_SESSION['uid'])) {
-    $uid = $_SESSION['uid'];
+if (isset($_SESSION['UID'])) {
+    $uid = $_SESSION['UID'];
 } else {
     $uid = 0;
 }

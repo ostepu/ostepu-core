@@ -16,8 +16,8 @@ include_once 'include/Helpers.php';
 
 $notifications = array();
 
-if (isset($_SESSION['uid'])) {
-    $uid = $_SESSION['uid'];
+if (isset($_SESSION['UID'])) {
+    $uid = $_SESSION['UID'];
 } else {
     Logger::Log('no user id!\n');
 }
