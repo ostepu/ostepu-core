@@ -22,8 +22,14 @@ if (isset($_SESSION['UID'])) {
     Logger::Log('no user id!\n');
 }
 
+if (isset($_GET['cid'])) {
+    $cid = $_GET['cid'];
+} else {
+    Logger::Log('no course id!\n');
+}
+
 // load user data from the database
-$databaseURI = "http://141.48.9.92/uebungsplattform/logic/GetSite/accountsettings/user/{$uid}";
+$databaseURI = "http://141.48.9.92/uebungsplattform/logic/GetSite/accountsettings/user/{$uid}/course/{$cid}";
 $user_course_data = http_get($databaseURI);
 $user_course_data = json_decode($user_course_data, true);
 
