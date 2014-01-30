@@ -55,6 +55,11 @@ class StudIPAuthentication extends AbstractAuthentication
         }
         if (isset($_GET['cid'])) {
             $this->cid = cleanInput($_GET['cid']);
+            // if cid is not numeric
+            if (!is_numeric($this->cid)) {
+                set_error("409");
+                exit();
+            }
         }
         if (isset($_GET['uid']) && isset($_GET['sid']) && isset($_GET['cid'])) {
             // log in user and return result
@@ -72,6 +77,7 @@ class StudIPAuthentication extends AbstractAuthentication
                     header('location: ' . $sites[$this->courseStatus] . '?cid=' . $this->cid);
                 } else {
                     set_error("403");
+                    exit();
                 }
             } else {
                 $this->logoutUser(true);
