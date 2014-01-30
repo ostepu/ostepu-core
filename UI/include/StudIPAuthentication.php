@@ -64,7 +64,7 @@ class StudIPAuthentication extends AbstractAuthentication
         if (isset($_GET['uid']) && isset($_GET['sid']) && isset($_GET['cid'])) {
             // log in user and return result
             $signed = $this->loginUser($this->uid, "");
-
+            
             if ($signed == true) {
 
                 // multiplexer which site the user wants to see
@@ -127,11 +127,14 @@ class StudIPAuthentication extends AbstractAuthentication
     {
         $query = "https://studip.uni-halle.de/upgateway/intern/request.php?cmd=get_user&uid={$uid}";
         $getUserData = http_get($query, false);
+        if ($getUserData != "not found") {
+            // convert output to our user structure
+            $getUserData = explode(":", $getUserData);
 
-        // convert output to our user structure
-        $getUserData = explode(":", $getUserData);
-
-        $user = User::createUser(NULL,$getUserData[4],$getUserData[2],$getUserData[0],$getUserData[1],NULL,"1","noPassword","noSalt","0",$uid);
+            $user = User::createUser(NULL,$getUserData[4],$getUserData[2],$getUserData[0],$getUserData[1],NULL,"1","noPassword","noSalt","0",$uid);
+        } else {
+            $user = $getUserData;
+        }
         return $user;
     }
 
@@ -177,17 +180,17 @@ class StudIPAuthentication extends AbstractAuthentication
      */
     public function loginUser($username, $password)
     {
-        $databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/user/user/{$username}";
-        $this->userData = http_get($databaseURI, false, $message);
-        $this->userData = json_decode($this->userData, true);
+        // check if logged in in studip
+        $studip = $this->checkUserInStudip($this->uid,$this->sid);
 
-        // check if user exists in our system
-        if ($message != "404" && empty($this->userData) == false) {
-            // check if logged in in studip
-            $studip = $this->checkUserInStudip($this->uid,$this->sid);
+        if ($studip == true) {
 
-            if ($studip == true) {
+            $databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/user/user/{$username}";
+            $this->userData = http_get($databaseURI, false, $message);
+            $this->userData = json_decode($this->userData, true);
 
+            // check if user exists in our system
+            if ($message != "404" && empty($this->userData) == false) {
                 // save logged in uid
                 $_SESSION['UID'] = $this->userData['id'];
 
@@ -208,15 +211,19 @@ class StudIPAuthentication extends AbstractAuthentication
                 }
 
                 return $refresh;
-            }
-        } else {
-            // create new user from studIP
-            $newUser = $this->getUserInStudip($username);
-            $response = $this->createUser($newUser);
-            
-            // if successful try to login new user
-            if ($response == true) {
-                return $this->loginUser($username, "");
+            } else {
+                // get new user from studIP
+                $newUser = $this->getUserInStudip($username);
+
+                // if user is a valid user
+                if ($newUser != "not found") {
+                    $response = $this->createUser($newUser);
+                
+                    // if successful try to login new user
+                    if ($response == true) {
+                        return $this->loginUser($username, "");
+                    }
+                }
             }
         }
         return false;
