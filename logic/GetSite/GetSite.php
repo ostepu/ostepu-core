@@ -1,4 +1,9 @@
 <?php
+/**
+ * @todo make it cheaper to combine course status names with status ids
+ * @todo make it cheaper to combine marking status names with status ids
+ * @todo make it cheaper to combine exercise type names with type ids
+ */ // could use a map indexed by status/type id taht is built on construction
 
 require 'Slim/Slim.php';
 include 'include/Request.php';
