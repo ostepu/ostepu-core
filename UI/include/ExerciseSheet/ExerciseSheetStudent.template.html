@@ -20,7 +20,7 @@ foreach ($sheets as $sheet):
             <ol class="exercise-list">
                 <?php
                 foreach ($sheet['exercises'] as $exercise):
-                    ?>
+                ?>
                 <li>
 
                     <div class="exercise-type">
@@ -29,7 +29,8 @@ foreach ($sheets as $sheet):
 
                     <div class="exercise-points">
                         <?php
-                        print $exercise['points'] . ' / '. $exercise['maxPoints'] . ' P';
+                        print $exercise['points'] . ' / ';
+                        print $exercise['maxPoints'] . ' P';
                         ?>
                     </div>
 
@@ -53,9 +54,11 @@ foreach ($sheets as $sheet):
             <ol class="body-options body-option-color">
                 <li><a href="#">Aufgabenblatt</a></li>
                 <li><a href="#">Musterlösung</a></li>
-                <?php print '<li><a href="Group.php?sid=';
+                <?php
+                print '<li><a href="Group.php?sid=';
                 print $sheet['id'] . '&cid=';
-                print $cid . '">Gruppe verwalten</a></li>'; ?>
+                print $cid . '">Gruppe verwalten</a></li>';
+                ?>
                 <li><a href="#">Alle Anhänge herunterladen</a></li>
                 <li><a href="#">Alle Einsendungen herunterladen</a></li>
             </ol>
