@@ -190,7 +190,7 @@ function http_put_data($url, $data, $authbool, &$message = 0)
  * Uses HTTP DELETE request to get contents a $url
  * @param string $url The URL that should be opnened.
  */
-function http_delete($url, $auth, &$message = 0)
+function http_delete($url, $authbool, &$message = 0)
 {
     $c = curl_init();
 
@@ -268,4 +268,27 @@ function cleanInput($input)
 
     return $input;
 }
+
+function MakeNavigationElementForCourseStatus($courses) {
+    if (count($courses) > 1) {
+        return "";
+    }
+
+    $courseStatus = $courses[0]['status'];
+
+    // chooses the menu depending on the user's status in the course
+    switch ($courseStatus) {
+        case 3:
+            // status = Lecturer
+            $navigationElement = Template::WithTemplateFile('include/Navigation/NavigationLecturer.template.html');
+            break;
+        case 4:
+            // status = Admin
+            $navigationElement = Template::WithTemplateFile('include/Navigation/NavigationAdmin.template.html');
+            break;
+    }
+
+    return $navigationElement;
+}
+
 ?>
