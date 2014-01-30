@@ -219,7 +219,7 @@ class LgetSite
             $maxPoints = 0;
             $points = 0;
             foreach($newSheet['exercises'] as $exercise){
-                $maxPoints = $maxPoints + $exercise['maxPoints']
+                $maxPoints = $maxPoints + $exercise['maxPoints'];
                 foreach($exercise['submisions'] as $submission){
                     $points = $points + $submission['marking']['points'];
                 }
@@ -516,7 +516,7 @@ class LgetSite
                 if($ac['exerciseTypeId'] == $eT['id']){
                     $newMinPercentage['exerciseTypeID'] = $ac['exerciseTypeId'];
                     $newMinPercentage['exerciseType'] = $eT['name'];
-                    $newMinPercentage['minimumPercentage'] = $ac['percentage'];
+                    $newMinPercentage['minimumPercentage'] = $ac['percentage'] * 100;
                     
                     $response['minimumPercentages'][] = $newMinPercentage;
                     break;
@@ -563,6 +563,7 @@ class LgetSite
         $students = json_decode($answer['content'], true);
         
         foreach ($students as $student){
+            $isApprovedForAllExerciseTypes = true;
             $points = array();
             foreach($percentages as $percentage){
                 $int = $percentage['exerciseTypeID'];
@@ -585,16 +586,18 @@ class LgetSite
             foreach($percentages as &$percentage){
                 $int = $percentage['exerciseTypeID'];
                 $percentage['points'] = $points[$int];
+                $percentage['percentage'] = round($percentage['points'] / $percentage['maxPoints'], 3) * 100;
                 
                 if (($percentage['points'] / $percentage['maxPoints']) >= $percentage['minimumPercentage']){
                     $percentage['isApproved'] = true;
                 }
                 else{
                     $percentage['isApproved'] = false;
+                    $isApprovedForAllExerciseTypes = false;
                 }
             }
             $student['percentages'] = $percentages;
-            
+            $student['isApproved'] = $isApprovedForAllExerciseTypes;
             $response['users'][] = $student;
         }
         
