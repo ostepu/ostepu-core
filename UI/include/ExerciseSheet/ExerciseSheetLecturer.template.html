@@ -47,11 +47,19 @@ foreach ($sheets as $sheet):
                 <li>
                 <?php
                     print '<a href="TutorAssign.php?cid=';
-                    print $cid . '&sid=';
+                    print $user['courses'][0]['course']['id'] . '&sid=';
                     print $sheet['id'];
-                    print '">Kontrolleurzuweisung</a></li>';
+                    print '">Kontrolleurzuweisung</a>';
                 ?>
-                <li><a href="#">Korrekturassistent</a></li>
+                </li>
+                <li>
+                <?php
+                    print '<a href="MarkingTool.php?cid=';
+                    print $user['courses'][0]['course']['id'] . '&sid=';
+                    print $sheet['id'];
+                    print '">Korrekturassistent</a>';
+                ?>
+                </li>
             </ol>
         </div>
     </div>

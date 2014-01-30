@@ -10,10 +10,12 @@
 
 include_once 'include/Boilerplate.php';
 
-// load user and course data from the database
-$databaseURL = $databaseURI . "/coursestatus/course/{$cid}/user/{$uid}";
-$user_course_data = http_get($databaseURL, true, $message);
-$user_course_data = json_decode($user_course_data, true);
+// load GetSite data for Admin.php
+$databaseURI = $getSiteURI . "/admin/user/{$uid}/course/{$cid}";
+$admin_data = http_get($databaseURI);
+$admin_data = json_decode($admin_data, true);
+
+$user_course_data = $admin_data['user'];
 
 /**
  * @todo check rights
@@ -25,18 +27,11 @@ $h->bind($user_course_data);
 $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
                "backTitle" => "Veranstaltung wechseln",
                "backURL" => "index.php",
-               "notificationElements" => $notifications)
-        );
+               "notificationElements" => $notifications));
 
-$databaseURL = $databaseURI . "/exercisesheet/course/{$cid}/exercise";
-$sheetData = http_get($databaseURL, true, $message);
-$sheetData = array("sheets" => json_decode($sheetData, true),
-                "uid" => $uid,
-                "cid" => $cid
-                );
 
 $t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetLecturer.template.html');
-$t->bind($sheetData);
+$t->bind($admin_data);
 
 $w = new HTMLWrapper($h, $t);
 $w->set_config_file('include/configs/config_admin_lecturer.json');
