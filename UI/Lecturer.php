@@ -1,6 +1,7 @@
 <?php
 /**
  * @file Lecturer.php
+ * Constructs the page that is displayed to a lecturer.
  *
  * @author Felix Schmidt
  * @author Florian Lücke
@@ -9,11 +10,12 @@
 
 include_once 'include/Boilerplate.php';
 
-// load user and course data from the database
-$databaseURL = $databaseURI . "/coursestatus/course/{$cid}/user/{$uid}";
-$user_course_data = http_get($databaseURL, true, $message);
+// load GetSite data for Lecturer.php
+$databaseURI = $getSiteURI . "/admin/user/{$uid}/course/{$cid}";
+$admin_data = http_get($databaseURI);
+$admin_data = json_decode($admin_data, true);
 
-$user_course_data = json_decode($user_course_data, true);
+$user_course_data = $admin_data['user'];
 
 // check userrights for course
 Authentication::checkRights(3, $cid, $uid, $user_course_data);
@@ -30,19 +32,9 @@ $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
                "backURL" => "index.php",
                "notificationElements" => $notifications));
 
-$databaseURL = $databaseURI . "/exercisesheet/course/{$cid}/exercise";
-
-// construct some exercise sheets
-$sheetData = http_get($databaseURL, true, $message);
-$sheetData = json_decode($sheetData, true);
-
-// convert the json string into an associative array
-$sheets = array("sheets" => $sheetData,
-                "uid" => $uid,
-                "cid" => $cid);
 
 $t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetLecturer.template.html');
-$t->bind($sheets);
+$t->bind($admin_data);
 
 $w = new HTMLWrapper($h, $createSheet, $t);
 $w->set_config_file('include/configs/config_admin_lecturer.json');
