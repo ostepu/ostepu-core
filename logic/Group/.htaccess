@@ -1,2 +1,2 @@
 RewriteEngine On
-RewriteRule ^ Group.php [QSA,L]
+RewriteRule ^ LGroup.php [QSA,L]

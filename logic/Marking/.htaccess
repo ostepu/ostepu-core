@@ -1,2 +1,2 @@
 RewriteEngine On
-RewriteRule ^ Marking.php [QSA,L]
+RewriteRule ^ LMarking.php [QSA,L]

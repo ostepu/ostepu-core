@@ -75,23 +75,23 @@ class LExerciseSheet
         $this->lURL = $this->query->getAddress();
 
         // POST AddExerciseSheet
-        $this->app->post('/'.$this->_prefix.'/course/:courseid(/)',
+        $this->app->post('/'.$this->getPrefix().'/course/:courseid(/)',
                         array($this, 'addExerciseSheet'));
 
         // PUT EditExerciseSheet
-        $this->app->put('/'.$this->_prefix.'/exercisesheet/:sheetid(/)',
+        $this->app->put('/'.$this->getPrefix().'/exercisesheet/:sheetid(/)',
                         array ($this, 'editExerciseSheet'));
 
         // GET GetExerciseSheetURL
-        $this->app->get('/'.$this->_prefix.'/exercisesheet/:sheetid/url(/)',
+        $this->app->get('/'.$this->getPrefix().'/exercisesheet/:sheetid/url(/)',
                         array($this, 'getExerciseSheetURL'));
 
         // GET GetExerciseSheet
-        $this->app->get('/'.$this->_prefix.'/exercisesheet/:sheetid(/)',
+        $this->app->get('/'.$this->getPrefix().'/exercisesheet/:sheetid(/)',
                         array($this, 'getExerciseSheet'));
 
         // DELETE DeleteExerciseSheet
-        $this->app->delete('/'.$this->_prefix.'/exercisesheet/:sheetid(/)',
+        $this->app->delete('/'.$this->getPrefix().'/exercisesheet/:sheetid(/)',
                         array($this, 'deleteExerciseSheet'));
 
         // run Slim
@@ -262,7 +262,7 @@ class LExerciseSheet
         if (isset($fileObject['address']) and $answer['status'] >= 200 and $answer['status'] < 300){
             $fileAddress = $fileObject['address'];
             // request to filesystem
-            $URL = $this->lURL.'/FS/'.$fileAddress;
+            $URL = $this->lURL.'/FS/file/'.$fileAddress;
             $answer = Request::custom('DELETE', $URL, $header, $body);
         }
     }
