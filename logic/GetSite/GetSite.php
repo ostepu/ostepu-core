@@ -588,7 +588,7 @@ class LgetSite
                 $percentage['points'] = $points[$int];
                 $percentage['percentage'] = round($percentage['points'] / $percentage['maxPoints'], 3) * 100;
                 
-                if (($percentage['points'] / $percentage['maxPoints']) >= $percentage['minimumPercentage']){
+                if (($percentage['points'] / $percentage['maxPoints']) >= $percentage['minimumPercentage'] / 100){
                     $percentage['isApproved'] = true;
                 }
                 else{
