@@ -418,22 +418,27 @@ class LgetSite
 
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
-        
-        $URL = $this->lURL.'/DB/exercisesheet/course/'.$courseid;
+
+        $URL = $this->lURL . '/DB/exercisetype';
+        $exerciseTypes = Request::custom('GET', $URL, $header, $body);
+        $exerciseTypes = json_decode($exerciseTypes['content'], true);
+
+        $URL = $this->lURL . '/DB/exercisesheet/course/'.$courseid.'/exercise';
         $answer = Request::custom('GET', $URL, $header, $body);
         $sheets = json_decode($answer['content'], true);
-        
-        foreach ($sheets as $sheet){
-            $URL = $this->lURL.'/DB/exercise/exercisesheet/'.$sheet['id'];
-            $answer = Request::custom('GET', $URL, $header, $body);
-            $exercises = json_decode($answer['content'], true);
-            
-            $sheet['exercises'] = $exercises;
-            
-            $response['sheets'][] = $sheet;
-            
+
+        foreach ($sheets as &$sheet) {
+            foreach ($sheet['exercises'] as &$exercise) {
+                foreach ($exerciseTypes as $exerciseType) {
+                    if ($exerciseType['id'] == $exercise['type']) {
+                        $exercise['typeName'] = $exerciseType['name'];
+                    }
+                }
+            }
         }
-        
+
+        $response['sheets'] = $sheets;
+
         $this->flag = 1;
         $response['user'] = $this->userWithCourse($userid, $courseid);
 
