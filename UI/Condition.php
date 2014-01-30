@@ -11,35 +11,27 @@
 include_once 'include/Boilerplate.php';
 
 // load user data from the database
-$databaseURL = $databaseURI . "/user/user/{$uid}";
-$user = http_get($databaseURL, false);
-$user = json_decode($user, true);
+$databaseURI = $getSiteURI . "/condition/user/{$uid}/course/{$cid}";
+$condition_data = http_get($databaseURI);
+$condition_data = json_decode($condition_data, true);
 
-Logger::Log($user);
-
-// load course data from the database
-$databaseURL = $databaseURI . "/course/course/{$cid}";
-$course = http_get($databaseURL, true);
-$course = json_decode($course, true)[0];
+$user_course_data = $condition_data['user'];
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
-$h->bind($user);
-$h->bind(array("backTitle" => "zur Veranstaltung",
+$h->bind($user_course_data);
+$h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
+               "backTitle" => "zur Veranstaltung",
                "backURL" => "Admin.php?cid={$cid}",
-               "navigationElement" => $menu,
                "notificationElements" => $notifications));
 
-$data = file_get_contents("http://localhost/Uebungsplattform/UI/Data/ConditionData");
-$data = json_decode($data, true);
-
-$listOfUsers = $data;
 
 // construct a content element for setting exam paper conditions
 $setCondition = Template::WithTemplateFile('include/Condition/SetCondition.template.html');
+$setCondition->bind($condition_data);
 
 $userList = Template::WithTemplateFile('include/Condition/UserList.template.html');
-$userList->bind($listOfUsers);
+$userList->bind($condition_data);
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $setCondition, $userList);

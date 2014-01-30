@@ -15,9 +15,9 @@
                     </th>
                     <?php
                         // prints all exercise types as header
-                        foreach ($users[0]['points'] as $points) {
+                        foreach ($minimumPercentages as $percentage) {
                             print "<th colspan=\"2\">";
-                            print $points['name'];
+                            print $percentage['exerciseType'];
                             print "</th>";
                         }
                     ?>
@@ -30,17 +30,17 @@
                     foreach ($users as $user) {
                         print "<tr>";
                         print "<td>";
-                        print $user['user']['firstName'] . " " . $user['user']['lastName'];
+                        print $user['firstName'] . " " . $user['lastName'];
                         print "</td>";
                         print "<td>";
-                        print $user['user']['id'];
+                        print $user['id'];
                         print "</td>";
-                        foreach ($user['points'] as $points) {
+                        foreach ($user['percentages'] as $percentage) {
                             print "<td>";
-                            print $points['percentage'] . "%";
+                            print $percentage['percentage'] . "%";
                             print "</td>";
                             print "<td>";
-                            print "(" . $points['points'] . "/" . $points['maxpoints'] . ")";
+                            print "(" . $percentage['points'] . "/" . $percentage['maxPoints'] . ")";
                         }
                         print "<td>";
                         print $user['approval'];

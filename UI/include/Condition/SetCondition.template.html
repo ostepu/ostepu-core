@@ -8,24 +8,19 @@
 
     <div class="content-body-wrapper">
         <div class="content-body left">
-            <label class="form-field left label bold" for="Point1">Praxispunkte:</label>
-            <input class="form-field left text-input short" name="Point1" value="50" id="Point1" />
+            <?php
+                // prints all exercise types as header
+                foreach ($minimumPercentages as $percentage) {
+                    print "<label class=\"form-field left label bold\" for=\"".$percentage['exerciseTypeID']."\">";
+                    print $percentage['exerciseType'];
+                    print "</label>";
 
-            <label class="form-field left label bold new-line" for="Point2">Theoriepunkte:</label>
-            <input class="form-field left text-input short" name="Point2" value="30" id="Point2" />
-
-            <label class="form-field left label bold new-line" for="Point3">Irgendwas:</label>
-            <input class="form-field left text-input short" name="Point3" value="100" id="Point3" />
-
-            <label class="form-field left label bold new-line" for="UntilExercise">Berücksichtigen bis Serie:</label>
-            <select class="form-field left text-input short" name="UntilExercise" id="UntilExercise">
-                <option value="1" >1</option>
-                <option value="2" >2</option>
-                <option value="3" >3</option>
-                <option value="4" >4</option>
-                <option value="5" >5</option>
-                <option value="6" >6</option>
-            </select>
+                    print "<input class=\"form-field left text-input short\" ";
+                    print "name=\"".$percentage['exerciseTypeID']."\" ";
+                    print "value=\"".($percentage['minimumPercentage']*100)."\" ";
+                    print "id=\"".$percentage['exerciseTypeID']."\" />";
+                }
+            ?>
         </div>
     </div> <!-- end: content-body -->
 </div> <!-- end: content-wrapper -->
