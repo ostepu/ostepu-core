@@ -27,10 +27,7 @@ if (isset($_POST['action'])) {
 // load user and course data from the database
 $databaseURL = $databaseURI . "/coursestatus/course/{$cid}/user/{$uid}";
 $user_course_data = http_get($databaseURL, true, $message);
-
 $user_course_data = json_decode($user_course_data, true);
-
-Logger::Log("Course request done");
 
 // check userrights for course
 Authentication::checkRights(1, $cid, $uid, $user_course_data);
