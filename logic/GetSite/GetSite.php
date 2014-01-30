@@ -201,20 +201,48 @@ class LgetSite
                         'sheetFile'=> $sheet['sheetFile'],
                         'group'=> array()
                         );
-            $response['sheets'][] = $newSheet;
-        }
-        //get UserGroups
-        $URL = $this->lURL.'/DB/group/user/'.$userid;
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $groups = json_decode($answer['content'], true);
-        foreach ($groups as $group){
-            foreach ($response['sheets'] as &$sheet){
-                if ($sheet['id'] == $group['sheetId']){
-                    $sheet['group'] = $group;
-                    break;
+                        
+            $URL = $this->lURL.'/DB/exercise/exercisesheet/'.$sheet['id'];
+            $answer = Request::custom('GET', $URL, $header, $body);
+            $exercises = json_decode($answer['content'], true);
+            
+            foreach($exercises as &$exercise){
+                foreach($exercise['submissions'] as &$submission){
+                    $URL = $this->lURL.'/DB/marking/submission/'.$submission['id'];
+                    $answer = Request::custom('GET', $URL, $header, $body);
+                    $submission['marking'] = json_decode($answer['content'], true);
                 }
             }
+            
+            $newSheet['exercises'] = $exercises;
+            
+            $maxPoints = 0;
+            $points = 0;
+            foreach($newSheet['exercises'] as $exercise){
+                $maxPoints = $maxPoints + $exercise['maxPoints']
+                foreach($exercise['submisions'] as $submission){
+                    $points = $points + $submission['marking']['points'];
+                }
+            }
+            $newSheet['percentage'] = $points / $maxPoints;
+            
+            $response['sheets'][] = $newSheet;
+        
+            //get UserGroups
+            $URL = $this->lURL.'/DB/group/user/'.$userid;
+            $answer = Request::custom('GET', $URL, $header, $body);
+            $groups = json_decode($answer['content'], true);
+            foreach ($groups as $group){
+                foreach ($response['sheets'] as &$sheet){
+                    if ($sheet['id'] == $group['sheetId']){
+                        $sheet['group'] = $group;
+                        break;
+                    }
+                }
+            }
+            
         }
+        
         
         $this->flag = 1;
         $response['user'] = $this->userWithCourse($userid, $courseid);
@@ -225,7 +253,7 @@ class LgetSite
 
     public function userWithCourse($userid, $courseid){
         $body = $this->app->request->getBody();
-            $header = $this->app->request->headers->all();
+        $header = $this->app->request->headers->all();
         $URL = $this->lURL.'/DB/coursestatus/course/'.$courseid.'/user/'.$userid;
         $answer = Request::custom('GET', $URL, $header, $body);
         $user = json_decode($answer['content'], true);
@@ -255,7 +283,7 @@ class LgetSite
 
     public function userWithAllCourses($userid){
         $body = $this->app->request->getBody();
-            $header = $this->app->request->headers->all();
+        $header = $this->app->request->headers->all();
         $URL = $this->lURL.'/DB/user/user/'.$userid;
         $answer = Request::custom('GET', $URL, $header, $body);
         $user = json_decode($answer['content'], true);
@@ -300,21 +328,27 @@ class LgetSite
 
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
+        
         $URL = $this->lURL.'/DB/exercisesheet/course/'.$courseid;
         $answer = Request::custom('GET', $URL, $header, $body);
         $sheets = json_decode($answer['content'], true);
         
         foreach ($sheets as $sheet){
             $response['exerciseSheets'][] = $sheet['id'];
+            $URL = $this->lURL.'/DB/group/exercisesheet/'.$sheet['id'];
+            $answer = Request::custom('GET', $URL, $header, $body);
+            $groups = json_decode($answer['content'], true);
+            $response['groups'] = $groups;
         }
         
-        $URL = $this->lURL.'/DB/user/course/'.$courseid.'/status/0';
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $students = json_decode($answer['content'], true);
         
-        foreach ($students as $student){
-            $response['students'][] = $student;
-        }
+        //$URL = $this->lURL.'/DB/user/course/'.$courseid.'/status/0';
+        //$answer = Request::custom('GET', $URL, $header, $body);
+        //$students = json_decode($answer['content'], true);
+        //
+        //foreach ($students as $student){
+        //    $response['students'][] = $student;
+        //}
         
         $URL = $this->lURL.'/DB/exercise/exercisesheet/'.$sheetid;
         $answer = Request::custom('GET', $URL, $header, $body);
@@ -322,14 +356,31 @@ class LgetSite
         
         foreach ($exercises as $exercise){
             foreach ($exercise['submissions'] as $submission){
-                foreach ($response['students'] as &$student){
-                    $student['exercises'][] = $exercise;
-                    if ($student['id'] == $submission['studentId']){
-                        $student['exercises']['submissions'][] = $submission;
+                foreach ($response['groups'] as &$group){
+                    $group['exercises'][] = $exercise;
+                    if ($group['leader']['id'] == $submission['studentId']){
+                        $group['exercises']['submissions'][] = $submission;
                     }
                 }
             } 
         }
+        
+        $response['markingStatus'] = array();
+        foreach($response['groups'] as &$group){
+            foreach($group['exercises'] as &$exercise){
+                foreach($exercis['submissions'] as &$submission){
+                    $URL = $this->lURL.'/DB/marking/submission/'.$submission['id'];
+                    $answer = Request::custom('GET', $URL, $header, $body);
+                    $marking = json_decode($answer['content'], true);
+                    
+                    $submission['marking'] = $marking;
+                    if(!in_array($marking['status'], $response['markingStatus'])){
+                        $response['markingStatus'][] = $marking['status'];
+                    }
+                }
+            }
+        }
+        
         
         $URL = $this->lURL.'/DB/user/course/'.$courseid.'/status/1';
         $answer = Request::custom('GET', $URL, $header, $body);
@@ -350,8 +401,10 @@ class LgetSite
         $URL = $this->lURL.'/DB/submission/user/'.$userid.'/exercise/'.$exerciseid;
         $answer = Request::custom('GET', $URL, $header, $body);
         $submissions = json_decode($answer['content'], true);
-        foreach ($submissions as $submission){
-            $response['submissionHistory'][] = $submission;
+        if(!empty($submissions)){
+            foreach ($submissions as $submission){
+                $response['submissionHistory'][] = $submission;
+            }
         }
         
         $this->flag = 1;
@@ -364,12 +417,20 @@ class LgetSite
         
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
+        
         $URL = $this->lURL.'/DB/exercisesheet/course/'.$courseid;
         $answer = Request::custom('GET', $URL, $header, $body);
         $sheets = json_decode($answer['content'], true);
         
         foreach ($sheets as $sheet){
+            $URL = $this->lURL.'/DB/exercise/exercisesheet/'.$sheet['id'];
+            $answer = Request::custom('GET', $URL, $header, $body);
+            $exercises = json_decode($answer['content'], true);
+            
+            $sheet['exercises'] = $exercises;
+            
             $response['sheets'][] = $sheet;
+            
         }
         
         $this->flag = 1;
@@ -382,23 +443,25 @@ class LgetSite
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
         
-        
-        $URL = $this->lURL.'/DB/group/user/'.$userid;
+        //Get the Group of the User for the given sheet
+        $URL = $this->lURL.'/DB/group/exercisesheet/'.$sheetid.'/user/'.$userid;
         $answer = Request::custom('GET', $URL, $header, $body);
-        $groups = json_decode($answer['content'], true);
-        foreach ($groups as $group){
-            if ($group['sheetId'] == $sheetid){
-                unset($group['sheetId']);
-                $response['group'] = $group;
-            }
-        }
+        $response['group'] = json_decode($answer['content'], true);
         
+        //Get the maximum Groupsize of the sheet
+        $URL = $this->lURL.'/DB/exercisesheet/exercisesheet/'.$sheetid;
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $sheet = json_decode($answer['content'], true);
+        $response['groupSize'] = $sheet['groupSize'];
+        
+        //get the exercises of the sheet
         $URL = $this->lURL.'/DB/exercise/exercisesheet/'.$sheetid;
         $answer = Request::custom('GET', $URL, $header, $body);
         $exercises = json_decode($answer['content'], true);
         
         $response['groupSubmissions'] = array();
         
+        //Get all Submissions of the group for the sheet (sorted by exercise)
         foreach ( $exercises as $exercise){
             $newGroupExercise = array();
             foreach ($response['group']['members'] as $user){
@@ -419,7 +482,13 @@ class LgetSite
         $answer = Request::custom('GET', $URL, $header, $body);
         $response['invitations'] = json_decode($answer['content'], true);
         
+        $URL = $this->lURL.'/DB/invitation/member/user/'.$userid;
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $invitations = json_decode($answer['content'], true);
         
+        foreach($invitations as $invitation){
+            $response['invitations'][] = $invitation;
+        }
         
         $this->flag = 1;
         $response['user'] = $this->userWithCourse($userid, $courseid);
