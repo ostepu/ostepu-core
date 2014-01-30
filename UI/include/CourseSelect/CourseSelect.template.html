@@ -5,21 +5,22 @@
 
     <div class="content-body-wrapper">
         <div class="content-body left">
-            <ol class="full-width-list decimal">
-                <?php foreach ($courses as $course): ?>
-                    <li>
-                    <?php print $course['course']['name'];
-                        print '&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;(';
-                        print $statusName[$course['status']];
-                        print ')';
-                        print '<a href="';
-                        print $sites[$course['status']] . '?cid=';
-                        print $course['course']['id'];
-                        print '" class="body-option-color deny-button right">';
-                        print 'zur Veranstaltung</a>';?>
-                    </li>
-                <?php endforeach; ?>
-            </ol>
+            <?php foreach ($courses as $course): ?>
+                <span class="left medium bold label new-line" for="Point1">
+                <?php print $statusName[$course['status']]; ?>
+                </span>
+
+                <span class="left form-text" style="display: inline;">
+                <?php print $course['course']['name']; ?>
+                </span>
+                <?php
+                    print '<a href="';
+                    print $sites[$course['status']] . '?cid=';
+                    print $course['course']['id'];
+                    print '" class="body-option-color deny-button right">';
+                    print 'zur Veranstaltung</a>';
+                ?>
+            <?php endforeach; ?>
         </div>
     </div> <!-- end: content-body -->
 </div> <!-- end: content-wrapper -->
