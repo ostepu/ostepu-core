@@ -41,7 +41,10 @@ class Request_CreateRequest
         $resultHeader = array_merge($resultHeader,$header);
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, $resultHeader);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
+        
+        if ($method == 'POST' || $method == 'PUT'){
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
+        }
         
         /**
          * @todo CURLOPT_FRESH_CONNECT and CURLOPT_FORBID_REUSE, we need that?
