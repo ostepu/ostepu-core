@@ -8,28 +8,10 @@
  * @author Ralf Busch
  */
 
-include_once 'include/Authorization.php';
-include_once 'include/HTMLWrapper.php';
-include_once 'include/Template.php';
-include_once '../Assistants/Logger.php';
-include_once 'include/Helpers.php';
-
-$notifications = array();
-
-if (isset($_SESSION['UID'])) {
-    $uid = $_SESSION['UID'];
-} else {
-    Logger::Log('no user id!\n');
-}
-
-if (isset($_GET['cid'])) {
-    $cid = $_GET['cid'];
-} else {
-    Logger::Log('no course id!\n');
-}
+include_once 'include/Boilerplate.php';
 
 // load user data from the database
-$databaseURI = "http://141.48.9.92/uebungsplattform/logic/GetSite/accountsettings/user/{$uid}/course/{$cid}";
+$databaseURI = $getSiteURI . "/accountsettings/user/{$uid}/course/{$cid}";
 $user_course_data = http_get($databaseURI);
 $user_course_data = json_decode($user_course_data, true);
 

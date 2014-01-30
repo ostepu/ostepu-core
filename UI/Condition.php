@@ -8,40 +8,23 @@
  * @author Ralf Busch
  */
 
-include_once 'include/Authorization.php';
-include_once 'include/HTMLWrapper.php';
-include_once 'include/Template.php';
-include_once '../Assistants/Logger.php';
-include_once 'include/Helpers.php';
-
-$notifications = array();
-
-if (isset($_SESSION['UID'])) {
-    $uid = $_SESSION['UID'];
-} else {
-    $uid = 0;
-}
-
-if (isset($_GET['cid'])) {
-    $cid = $_GET['cid'];
-} else {
-    Logger::Log('no course id!\n');
-}
+include_once 'include/Boilerplate.php';
 
 // load user data from the database
-$databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/user/user/{$uid}";
-$user = http_get($databaseURI, false);
+$databaseURL = $databaseURI . "/user/user/{$uid}";
+$user = http_get($databaseURL, false);
 $user = json_decode($user, true);
 
+Logger::Log($user);
+
 // load course data from the database
-$databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/course/course/{$cid}";
-$course = http_get($databaseURI, true);
+$databaseURL = $databaseURI . "/course/course/{$cid}";
+$course = http_get($databaseURL, true);
 $course = json_decode($course, true)[0];
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user);
-$h->bind($course);
 $h->bind(array("backTitle" => "zur Veranstaltung",
                "backURL" => "Admin.php?cid={$cid}",
                "navigationElement" => $menu,

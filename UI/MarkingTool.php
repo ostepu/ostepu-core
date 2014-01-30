@@ -7,34 +7,16 @@
  * @author Ralf Busch
  */
 
-include_once 'include/Authorization.php';
-include_once 'include/HTMLWrapper.php';
-include_once 'include/Template.php';
-include_once '../Assistants/Logger.php';
-include_once 'include/Helpers.php';
-
-$notifications = array();
-
-if (isset($_SESSION['uid'])) {
-    $uid = $_SESSION['uid'];
-} else {
-    Logger::Log('no user id!\n');
-}
-
-if (isset($_GET['cid'])) {
-    $cid = $_GET['cid'];
-} else {
-    Logger::Log('no course id!\n');
-}
+include_once 'include/Boilerplate.php';
 
 // load user data from the database
-$databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/user/user/{$uid}";
-$user = http_get($databaseURI);
+$databaseURL = $databaseURI . "/user/user/{$uid}";
+$user = http_get($databaseURL);
 $user = json_decode($user, true);
 
 // load course data from the database
-$databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/course/course/{$cid}";
-$course = http_get($databaseURI);
+$databaseURL = $databaseURI . "/course/course/{$cid}";
+$course = http_get($databaseURL);
 $course = json_decode($course, true)[0];
 
 

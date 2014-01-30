@@ -7,11 +7,7 @@
  * @author Ralf Busch
  */
 
-include_once 'include/Authorization.php';
-include_once 'include/HTMLWrapper.php';
-include_once 'include/Template.php';
-include_once '../Assistants/Logger.php';
-include_once 'include/Helpers.php';
+include_once 'include/Boilerplate.php';
 
 if (isset($_POST['action'])) {
     Logger::Log($_POST, LogLevel::INFO);
@@ -25,30 +21,12 @@ if (isset($_POST['action'])) {
     Logger::Log("No Assignment Data", LogLevel::INFO);
 }
 
-if (isset($_GET['cid'])) {
-    $cid = $_GET['cid'];
-} else {
-    Logger::Log('no course id!\n');
-}
-
-if (isset($_SESSION['UID'])) {
-    $uid = $_SESSION['UID'];
-} else {
-    Logger::Log('no user id!\n');
-}
-
-if (isset($_GET['sid'])) {
-    $sid = $_GET['sid'];
-} else {
-    Logger::Log('no sheet id!\n');
-}
-
 /**
  * @todo Combine user course and status request into GetSite request
  */
 // load user and course data from the database
-$databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/coursestatus/course/{$cid}/user/{$uid}";
-$user_course_data = http_get($databaseURI, true, $message);
+$databaseURL = $databaseURI . "/coursestatus/course/{$cid}/user/{$uid}";
+$user_course_data = http_get($databaseURL, true, $message);
 
 $user_course_data = json_decode($user_course_data, true);
 
@@ -65,7 +43,8 @@ $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
                "backURL" => "Tutor.php?cid={$cid}",
                "notificationElements" => $notifications));
 
-$data = http_get("http://localhost/uebungsplattform/logic/GetSite/tutorassignment/course/{$cid}/exercisesheet/{$sid}", true);
+$databaseURL = $databaseURI . "/tutorassignment/course/{$cid}/exercisesheet/{$sid}";
+$data = http_get($databaseURL, true);
 $data = json_decode($data, true);
 
 $tutorAssignment = array("tutorAssignments" => $data);

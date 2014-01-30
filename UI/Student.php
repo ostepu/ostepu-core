@@ -8,27 +8,11 @@
  * @author Ralf Busch
  */
 
-include_once 'include/Authorization.php';
-include_once 'include/HTMLWrapper.php';
-include_once 'include/Template.php';
-include_once '../Assistants/Logger.php';
-include_once 'include/Helpers.php';
-
-if (isset($_GET['cid'])) {
-    $cid = $_GET['cid'];
-} else {
-    Logger::Log('no course id!\n');
-}
-
-if (isset($_SESSION['UID'])) {
-    $uid = $_SESSION['UID'];
-} else {
-    Logger::Log('no user id!\n');
-}
+include_once 'include/Boilerplate.php';
 
 // load user and course data from the database
-$databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/coursestatus/course/{$cid}/user/{$uid}";
-$user_course_data = http_get($databaseURI, true, $message);
+$databaseURL = $databaseURI . "/coursestatus/course/{$cid}/user/{$uid}";
+$user_course_data = http_get($databaseURL, true, $message);
 $user_course_data = json_decode($user_course_data, true);
 
 // check userrights for course
@@ -43,7 +27,7 @@ $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
                "notificationElements" => $notifications));
 
 // load all exercise sheets for the current course
-$databaseURL = "http://141.48.9.92/uebungsplattform/DB/DBExerciseSheet/exercisesheet/course/{$cid}/exercise";
+$databaseURL = $databaseURI . "/exercisesheet/course/{$cid}/exercise";
 
 // construct some exercise sheets
 $sheetString = http_get($databaseURL, true, $message);

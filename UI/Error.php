@@ -5,11 +5,7 @@
  * @author Ralf Busch
  */
 
-include_once 'include/Authentication.php';
-include_once 'include/HTMLWrapper.php';
-include_once 'include/Template.php';
-include_once '../Assistants/Logger.php';
-include_once 'include/Helpers.php';
+include_once 'include/Boilerplate.php';
 
 if (isset($_GET['msg'])) {
   $msg = cleanInput($_GET['msg']);

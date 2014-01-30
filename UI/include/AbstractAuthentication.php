@@ -135,7 +135,7 @@ abstract class AbstractAuthentication
             // delete session in DB
             $session = $_SESSION['SESSION'];
             // http_delete("http://141.48.9.92/uebungsplattform/DB/DBControl/session/{$session}",true,$message);
-            
+
             // delete session in UI
             session_destroy();
 

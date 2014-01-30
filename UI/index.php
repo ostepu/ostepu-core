@@ -8,17 +8,7 @@
  * @author Ralf Busch
  */
 
-include_once 'include/Authorization.php';
-include_once 'include/HTMLWrapper.php';
-include_once 'include/Template.php';
-include_once '../Assistants/Logger.php';
-include_once 'include/Helpers.php';
-
-if (isset($_SESSION['UID'])) {
-    $uid = $_SESSION['UID'];
-} else {
-    $uid = 0;
-}
+include_once 'include/Boilerplate.php';
 
 $sites = array('0' => 'Student.php',
                '1' => 'Tutor.php',
@@ -29,7 +19,7 @@ $statusName = array('0' => 'Student',
                     '3' => 'Dozent');
 
 // load user data from the database
-$databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/user/user/{$uid}";
+$databaseURI = $databaseURI . "/user/user/{$uid}";
 $user = http_get($databaseURI, false);
 $user = json_decode($user, true);
 
