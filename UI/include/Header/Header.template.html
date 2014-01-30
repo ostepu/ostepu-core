@@ -3,32 +3,49 @@
         <div class="course-title uppercase">
             <?php print $name; ?>
         </div>
-        <?php if (!is_null($backURL)) { ?>
-            <a class="change-course" href="<?php print $backURL; ?>">
-                <?php print $backTitle; ?>
-            </a>
-        <?php } ?>
+        <?php
+        if (!is_null($backURL) && !is_null($backTitle)) {
+            print '<a class="change-course" href="';
+            print $backURL . '">';
+            print $backTitle;
+            print '</a>';
+        }
+        ?>
     </div>
     <div class="course-extra-info left">
-        <?php print $extraInfo; ?>
+        <?php
+        if (isset($extraInfo)) {
+            print $extraInfo;
+        }
+        ?>
     </div>
     <div class="user-info right">
         <div class="user-name">
-            <?php print $firstName . ' ' . $lastName; ?>
+            <?php
+            if (isset($firstName) && isset($lastName)) {
+                print $firstName . ' ' . $lastName;
+            }
+            ?>
         </div>
         <div class="user-id">
-            <?php print $userName; ?>
+            <?php
+            if (isset($userName)) {
+                print $userName;
+            }
+            ?>
         </div>
-        <?php if (is_null($hideLogoutLink)) { ?>
-            <a class="log-out" href="?action=logout">Ausloggen</a>
-        <?php } ?>
+        <?php
+        if (!isset($hideLogoutLink)) {
+            print '<a class="log-out" href="?action=logout">Ausloggen</a>';
+        }
+        ?>
     </div>
 </div>
 
 <?php
-    if (isset($navigationElement)) {
-        print $navigationElement;
-    }
+if (isset($navigationElement)) {
+    print $navigationElement;
+}
 ?>
 
 <?php
@@ -36,4 +53,5 @@ if (isset($notificationElements)) {
     foreach ($notificationElements as $notificationElement) {
         print $notificationElement;
     }
-}?>
+}
+?>

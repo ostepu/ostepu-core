@@ -8,7 +8,10 @@ session_start();
 $auth = new Authentication();
 $StudIPauth = new StudIPAuthentication();
 
-if (Authentication::checkLogin() == false || ($_GET['action'] == "logout")) {
+$invalidLogin = Authentication::checkLogin() == false;
+$shouldLogOut = isset($_GET['action']) && $_GET['action'] == "logout";
+
+if ($invalidLogin == true || $shouldLogOut == true) {
     // the user's login is no longer valid or he requested to be logged out
     Authentication::logoutUser();
 }
