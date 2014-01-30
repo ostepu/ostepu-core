@@ -1,17 +1,47 @@
 <?php 
 /**
- * @file CourseStatus.php contains the CourseStatus class
+ * @file ExternalId.php contains the ExternalId class
  */
  
 /**
- * the course status structure
+ * the external id structure
  *
- * @author Till Uhlig, Florian Lücke
+ * @author Till Uhlig
  */
-class CourseStatus extends Object implements JsonSerializable
+class ExternalId extends Object implements JsonSerializable
 {
     /**
-     * @var Course $course A course.
+     * the db id of the external id
+     *
+     * type: string
+     */
+    private $id = null;
+    
+    /**
+     * the $id getter
+     *
+     * @return the value of $id
+     */ 
+    public function getId()
+    {
+        return $this->id;
+    }
+    
+    /**
+     * the $id setter
+     *
+     * @param string $value the new value for $id
+     */ 
+    public function setId($value)
+    {
+        $this->id = $value;
+    }
+    
+      
+    /**
+     * the corresponding course
+     *
+     * type: Course
      */
     private $course = null;
     
@@ -28,37 +58,44 @@ class CourseStatus extends Object implements JsonSerializable
     /**
      * the $course setter
      *
-     * @param string $value the new value for $course
+     * @param Course $value the new value for $course
      */ 
     public function setCourse($value)
     {
         $this->course = $value;
     }
-   
     
     /**
-     * @var string $status  a string that defines which status the user has in that course.
-     */
-    private $status = null;
-    
-    /**
-     * the $status getter
+     * Creates an ExternalId object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
      *
-     * @return the value of $status
-     */ 
-    public function getStatus()
+     * @param string $externalId The id of the external id .
+     * @param string $courseId The id of the course.
+     *
+     * @return an external id object
+     */
+    public function createExternalId($externalId,$courseId)
     {
-        return $this->status;
+        return new ExternalId(array('id' => $externalId,
+        'course' => array('id' => $courseId)));
     }
     
     /**
-     * the $status setter
-     *
-     * @param string $value the new value for $status
-     */ 
-    public function setStatus($value)
+     * the constructor
+     * 
+     * @param $data an assoc array with the object informations
+     */
+    public function __construct($data=array()) 
     {
-        $this->status = $value;
+        foreach ($data AS $key => $value) {
+            if (isset($key)){
+                if ($key == 'course'){
+                    $this->{$key} = new Course($value,false);
+                }
+                else
+                    $this->{$key} = $value;
+            }
+        }
     }
     
     /**
@@ -69,8 +106,8 @@ class CourseStatus extends Object implements JsonSerializable
     public static function getDbConvert()
     {
         return array(
-           'CS_course' => 'course',
-           'CS_status' => 'status'
+           'EX_id' => 'id',
+           'EX_course' => 'course'
         );
     }
     
@@ -83,14 +120,14 @@ class CourseStatus extends Object implements JsonSerializable
     {
         $values = "";
         
-        if ($this->status != null) $this->addInsertData($values, 'CS_status', DBJson::mysql_real_escape_string($this->status));
+        if ($this->id != null) $this->addInsertData($values, 'EX_id', DBJson::mysql_real_escape_string($this->id));
         if ($this->course != null) $this->addInsertData($values, 'C_id', DBJson::mysql_real_escape_string($this->course->getId()));
         
         if ($values != ""){
             $values=substr($values,1);
         }
         return $values;
-    }  
+    }
     
     /**
      * returns a sting/string[] of the database primary key/keys
@@ -99,43 +136,7 @@ class CourseStatus extends Object implements JsonSerializable
      */
     public static function getDbPrimaryKey()
     {
-        return array('C_id', 'U_id');
-    }
-    
-    /**
-     * returns an array to get the course status defintions
-     */
-    public static function getStatusDefinition()
-    {
-        return array(
-            '0' => 'student',
-            '1' => 'tutor',
-            '2' => 'lecturer',
-            '3' => 'administrator',
-            '4' => 'super-administrator'
-        );
-    }
-   
-    /**
-     * the constructor
-     * 
-     * @param $data an assoc array with the object informations
-     */
-    public function __construct($data=array())
-    {
-        if ($data==null)
-            $data = array();
-        
-        foreach ($data AS $key => $value) {
-            if (isset($key)){
-                if ($key == 'course'){
-                    $this->{$key} = Course::decodeCourse($value, false);
-                }
-                else{
-                    $this->{$key} = $value;
-                }
-            }
-        }
+        return 'EX_id';
     }
     
     /**
@@ -145,7 +146,7 @@ class CourseStatus extends Object implements JsonSerializable
      *
      * @return the json encoded object
      */
-    public static function encodeCourseStatus($data)
+    public static function encodeExternalId($data)
     {
         return json_encode($data);
     }
@@ -159,7 +160,7 @@ class CourseStatus extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeCourseStatus($data, $decode=true)
+    public static function decodeExternalId($data, $decode=true)
     {
         if ($decode && $data==null) 
             $data = "{}";
@@ -170,21 +171,23 @@ class CourseStatus extends Object implements JsonSerializable
         if (is_array($data)){
             $result = array();
             foreach ($data AS $key => $value) {
-                array_push($result, new CourseStatus($value));
+                array_push($result, new ExternalId($value));
             }
             return $result;   
         } else
-            return new CourseStatus($data);
+            return new ExternalId($data);
     }
-    
+
     /**
      * the json serialize function
+     *
+     * @return an array to serialize the object
      */
-    public function jsonSerialize() 
+    public function jsonSerialize()  
     {
         $list = array();
+        if ($this->id!==null) $list['id'] = $this->id;
         if ($this->course!==null) $list['course'] = $this->course;
-        if ($this->status!==null) $list['status'] = $this->status;
         return $list;
     }
 }

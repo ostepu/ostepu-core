@@ -1,64 +1,81 @@
 <?php 
 /**
- * @file CourseStatus.php contains the CourseStatus class
+ * @file Session.php contains the Session class
  */
  
 /**
- * the course status structure
+ * the session structure
  *
- * @author Till Uhlig, Florian Lücke
+ * @author Till Uhlig
  */
-class CourseStatus extends Object implements JsonSerializable
+class Session extends Object implements JsonSerializable
 {
     /**
-     * @var Course $course A course.
+     * @var string $user the db id of an user 
      */
-    private $course = null;
+    private $user = null;
     
     /**
-     * the $course getter
+     * the $user getter
      *
-     * @return the value of $course
+     * @return the value of $user
      */ 
-    public function getCourse()
+    public function getUser()
     {
-        return $this->course;
+        return $this->user;
     }
     
     /**
-     * the $course setter
+     * the $user setter
      *
-     * @param string $value the new value for $course
+     * @param string $value the new value for $user
      */ 
-    public function setCourse($value)
+    public function setUser($value)
     {
-        $this->course = $value;
+        $this->user = $value;
+    }
+
+    
+    
+    
+    /**
+     * @var string $session a string that defines which session the user has in that course.
+     */
+    private $session = null;
+    
+    /**
+     * the $session getter
+     *
+     * @return the value of $session
+     */ 
+    public function getSession()
+    {
+        return $this->session;
+    }
+    
+    /**
+     * the $session setter
+     *
+     * @param string $value the new value for $session
+     */ 
+    public function setSession($value)
+    {
+        $this->session = $value;
     }
    
-    
     /**
-     * @var string $status  a string that defines which status the user has in that course.
+     * Creates an Session object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $userId The id of the user.
+     * @param string $sessionId The id of the session.
+     *
+     * @return an session object
      */
-    private $status = null;
-    
-    /**
-     * the $status getter
-     *
-     * @return the value of $status
-     */ 
-    public function getStatus()
+    public function createSession($userId,$sessionId)
     {
-        return $this->status;
-    }
-    
-    /**
-     * the $status setter
-     *
-     * @param string $value the new value for $status
-     */ 
-    public function setStatus($value)
-    {
-        $this->status = $value;
+        return new Session(array('user' => $userId,
+        'session' => $sessionId));
     }
     
     /**
@@ -69,8 +86,8 @@ class CourseStatus extends Object implements JsonSerializable
     public static function getDbConvert()
     {
         return array(
-           'CS_course' => 'course',
-           'CS_status' => 'status'
+           'U_id' => 'user',
+           'SE_sessionID' => 'session'
         );
     }
     
@@ -83,39 +100,26 @@ class CourseStatus extends Object implements JsonSerializable
     {
         $values = "";
         
-        if ($this->status != null) $this->addInsertData($values, 'CS_status', DBJson::mysql_real_escape_string($this->status));
-        if ($this->course != null) $this->addInsertData($values, 'C_id', DBJson::mysql_real_escape_string($this->course->getId()));
+        if ($this->user != null) $this->addInsertData($values, 'U_id', DBJson::mysql_real_escape_string($this->user));
+        if ($this->session != null) $this->addInsertData($values, 'SE_sessionID', DBJson::mysql_real_escape_string($this->session));
         
         if ($values != ""){
             $values=substr($values,1);
         }
         return $values;
-    }  
+    }
     
+ 
     /**
      * returns a sting/string[] of the database primary key/keys
-     * 
+     * @todo hier fehlt noch der primary key/keys
      * @return the primary key/keys
      */
     public static function getDbPrimaryKey()
     {
-        return array('C_id', 'U_id');
+        return 'SE_id';
     }
-    
-    /**
-     * returns an array to get the course status defintions
-     */
-    public static function getStatusDefinition()
-    {
-        return array(
-            '0' => 'student',
-            '1' => 'tutor',
-            '2' => 'lecturer',
-            '3' => 'administrator',
-            '4' => 'super-administrator'
-        );
-    }
-   
+
     /**
      * the constructor
      * 
@@ -128,12 +132,11 @@ class CourseStatus extends Object implements JsonSerializable
         
         foreach ($data AS $key => $value) {
             if (isset($key)){
-                if ($key == 'course'){
-                    $this->{$key} = Course::decodeCourse($value, false);
+              /*  if ($key == "user"){
+                    $this->{$key} = new User($value,false);
                 }
-                else{
+                else*/
                     $this->{$key} = $value;
-                }
             }
         }
     }
@@ -145,7 +148,7 @@ class CourseStatus extends Object implements JsonSerializable
      *
      * @return the json encoded object
      */
-    public static function encodeCourseStatus($data)
+    public static function encodeSession($data)
     {
         return json_encode($data);
     }
@@ -159,7 +162,7 @@ class CourseStatus extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeCourseStatus($data, $decode=true)
+    public static function decodeSession($data, $decode=true)
     {
         if ($decode && $data==null) 
             $data = "{}";
@@ -170,11 +173,11 @@ class CourseStatus extends Object implements JsonSerializable
         if (is_array($data)){
             $result = array();
             foreach ($data AS $key => $value) {
-                array_push($result, new CourseStatus($value));
+                array_push($result, new Session($value));
             }
             return $result;   
         } else
-            return new CourseStatus($data);
+            return new Session($data);
     }
     
     /**
@@ -183,9 +186,9 @@ class CourseStatus extends Object implements JsonSerializable
     public function jsonSerialize() 
     {
         $list = array();
-        if ($this->course!==null) $list['course'] = $this->course;
-        if ($this->status!==null) $list['status'] = $this->status;
-        return $list;
+        if ($this->user!==null) $list['user'] = $this->user;
+        if ($this->session!==null) $list['session'] = $this->session;
+        return $list;  
     }
 }
 ?>
