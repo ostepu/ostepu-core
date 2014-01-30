@@ -402,6 +402,9 @@ class LgetSite
         $URL = $this->lURL.'/DB/submission/user/'.$userid.'/exercise/'.$exerciseid;
         $answer = Request::custom('GET', $URL, $header, $body);
         $submissions = json_decode($answer['content'], true);
+
+        $response['submissionHistory'] = array();
+
         if(!empty($submissions)){
             foreach ($submissions as $submission){
                 $response['submissionHistory'][] = $submission;
