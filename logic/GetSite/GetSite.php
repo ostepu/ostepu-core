@@ -3,6 +3,7 @@
 require 'Slim/Slim.php';
 include 'include/Request.php';
 include_once( 'include/CConfig.php' );
+include_once 'include/Logger.php';
 
 \Slim\Slim::registerAutoloader();
 /**
@@ -329,64 +330,106 @@ class LgetSite
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
 
+        // load all sheets for the course with id $courseid
         $URL = $this->lURL.'/DB/exercisesheet/course/'.$courseid;
         $answer = Request::custom('GET', $URL, $header, $body);
         $sheets = json_decode($answer['content'], true);
 
-        foreach ($sheets as $sheet){
+        foreach ($sheets as $sheet) {
             $response['exerciseSheets'][] = $sheet['id'];
+
             $URL = $this->lURL.'/DB/group/exercisesheet/'.$sheet['id'];
             $answer = Request::custom('GET', $URL, $header, $body);
             $groups = json_decode($answer['content'], true);
+
             $response['groups'] = $groups;
         }
 
+        foreach ($response['groups'] as &$group) {
+            $group['exercises'] = array();
+        }
 
-        //$URL = $this->lURL.'/DB/user/course/'.$courseid.'/status/0';
-        //$answer = Request::custom('GET', $URL, $header, $body);
-        //$students = json_decode($answer['content'], true);
-        //
-        //foreach ($students as $student){
-        //    $response['students'][] = $student;
-        //}
+        // load all exercise types
+        $URL = $this->lURL . '/DB/exercisetype';
+        $exerciseTypes = Request::custom('GET', $URL, $header, $body);
+        $exerciseTypes = json_decode($exerciseTypes['content'], true);
 
+        // load all exercises for the exercisesheet with id $sheetid
         $URL = $this->lURL.'/DB/exercise/exercisesheet/'.$sheetid;
         $answer = Request::custom('GET', $URL, $header, $body);
         $exercises = json_decode($answer['content'], true);
 
-        foreach ($exercises as $exercise){
-            foreach ($exercise['submissions'] as $submission){
-                foreach ($response['groups'] as &$group){
-                    $group['exercises'][] = $exercise;
-                    if ($group['leader']['id'] == $submission['studentId']){
-                        $group['exercises']['submissions'][] = $submission;
+        /**
+         * @todo maybe this should be available as a function?
+         */
+        // add the name of the exercise type to the exercise
+        foreach ($exercises as &$exercise) {
+            foreach ($exerciseTypes as $exerciseType) {
+                if ($exerciseType['id'] == $exercise['type']) {
+                    $exercise['typeName'] = $exerciseType['name'];
+                }
+            }
+        }
+
+        foreach ($response['groups'] as &$group) {
+            // for all groups for the sheet with id $sheetid
+
+            foreach ($exercises as $idx => $exercise) {
+                // for all exercises of the sheet with id $seetid
+
+                $group['exercises'][$idx] = $exercise;
+                unset($group['exercises'][$idx]['submissions']);
+                $group['exercises'][$idx]['submission'] = array();
+
+                foreach ($exercise['submissions'] as $submission) {
+                    // for all submissions belonging to $exercise
+
+                    foreach ($$group['members'] as $member) {
+
+                        // for each member of $group test if the member has
+                        // submitted $submissin
+
+                        if ($member['id'] == $submission['userID']) {
+                            // a member of the
+                            $group['exercises'][$idx]['submission'] = $submission;
+                        }
                     }
                 }
             }
         }
 
+        /**
+         * @todo actually fill in all marking status names and ids
+         */
         $response['markingStatus'] = array();
-        foreach($response['groups'] as &$group){
-            foreach($group['exercises'] as &$exercise){
-                foreach($exercis['submissions'] as &$submission){
+
+        /**
+         * @todo there should be an easier way
+         */
+        // add a marking to each submission
+        foreach ($response['groups'] as &$group) {
+            foreach($group['exercises'] as &$exercise) {
+                $submission = $exercise['submission'];
+
+                if (isset($submission['id'])) {
+                    // load a marking belonging to $submission
                     $URL = $this->lURL.'/DB/marking/submission/'.$submission['id'];
                     $answer = Request::custom('GET', $URL, $header, $body);
                     $marking = json_decode($answer['content'], true);
 
-                    $submission['marking'] = $marking;
-                    if(!in_array($marking['status'], $response['markingStatus'])){
-                        $response['markingStatus'][] = $marking['status'];
-                    }
+                    // add the marking to the response
+                    $exercise['submission']['marking'] = $marking;
                 }
             }
         }
 
-
+        // load all tutors in the course with id $courseid
         $URL = $this->lURL.'/DB/user/course/'.$courseid.'/status/1';
         $answer = Request::custom('GET', $URL, $header, $body);
         $tutors = json_decode($answer['content'], true);
 
-        $response['tutors'][] = $tutors;
+        // add all tutors to the response
+        $response['tutors'] = $tutors;
 
         $this->flag = 1;
         $response['user'] = $this->userWithCourse($userid, $courseid);
