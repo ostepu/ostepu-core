@@ -4,12 +4,11 @@
  * Contains the StudIPAuthentication class.
  *
  * @author Ralf Busch
- * @todo create User in DB if non existing
- * @todo add course to user if the user isn't in the course yet
  */
 
 include_once 'include/Helpers.php';
 include_once 'include/AbstractAuthentication.php';
+include_once '../Assistants/Structures.php';
 
 /**
  * StudIPAuthentication class.
@@ -39,6 +38,11 @@ class StudIPAuthentication extends AbstractAuthentication
     private $userData;
 
     /**
+     * @var CourseStatus of the user
+     */
+    private $courseStatus;
+
+    /**
      * The default contructor which logs the user in, if uid, cid and sid is given in GET Parameters.
      */
     public function __construct()
@@ -56,12 +60,19 @@ class StudIPAuthentication extends AbstractAuthentication
             // log in user and return result
             $signed = $this->loginUser($this->uid, "");
 
-            if ($signed) {
-                $courseStatus = $this->findCourseStatus();
+            if ($signed == true) {
+
+                // multiplexer which site the user wants to see
                 $sites = array('0' => 'Student.php',
                                '1' => 'Tutor.php',
                                '3' => 'Lecturer.php');
-                header('location: ' . $sites[$courseStatus] . '?cid=' . $this->cid);
+
+                // if you are not in the course or the course doesn't exist set error 403
+                if (isset($this->courseStatus) && (empty($sites[$this->courseStatus]) == false)) {
+                    header('location: ' . $sites[$this->courseStatus] . '?cid=' . $this->cid);
+                } else {
+                    set_error("403");
+                }
             } else {
                 $this->logoutUser(true);
             }
@@ -75,12 +86,14 @@ class StudIPAuthentication extends AbstractAuthentication
      */
     private function findCourseStatus()
     {
-        $this->userData['courses'];
-        foreach ($this->userData['courses'] as $course) {
-            if ($course['course']['id'] == $this->cid) {
-                return $course['status'];
+        if (isset($this->userData['courses'])) {
+            foreach ($this->userData['courses'] as $course) {
+                if ($course['course']['id'] == $this->cid) {
+                    return $course['status'];
+                }
             }
         }
+
     }
 
     /**
@@ -99,6 +112,57 @@ class StudIPAuthentication extends AbstractAuthentication
     }
 
     /**
+     * Give user Data from Studip
+     *
+     * @param string $uid Is the userid from StudIP
+     * @return User $user which ist our Structure User with the given information from StudIP
+     */
+    public function getUserInStudip($uid)
+    {
+        $query = "https://studip.uni-halle.de/upgateway/intern/request.php?cmd=get_user&uid={$uid}";
+        $getUserData = http_get($query, false);
+
+        // convert output to our user structure
+        $getUserData = explode(":", $getUserData);
+
+        $user = User::createUser(NULL,$getUserData[4],$getUserData[2],$getUserData[0],$getUserData[1],NULL,"1","noPassword","noSalt","0",$uid);
+        return $user;
+    }
+
+    /**
+     * Create User in DB
+     *
+     * @param User $data UserData which contains the created User
+     * @return true if user is created
+     */
+    public function createUser($data)
+    {
+        $data = User::encodeUser($data);
+        $url = "http://141.48.9.92/uebungsplattform/DB/DBControl/user";
+        http_post_data($url, $data, true, $message);
+
+        return $message == "201";
+    }
+
+    /**
+     * Add Course to an user
+     *
+     * @param string $userId UserID in our System (Attention: NOT the externalID)
+     * @param string $courseID CourseID
+     * @param string $status The Status the user wants to have in given course.
+     * @return true if user is logged in
+     */
+    public function createCourseStatus($userId,$courseId,$status)
+    {
+        $data = User::encodeUser(User::createCourseStatus($userId,$courseId,$status));
+
+        $url = "http://141.48.9.92/uebungsplattform/DB/DBControl/coursestatus";
+        http_post_data($url, $data, true, $message);
+
+        return $message == "201";
+    }
+
+    /**
      * Logs in a user.
      *
      * @param string $username
@@ -112,16 +176,41 @@ class StudIPAuthentication extends AbstractAuthentication
         $this->userData = json_decode($this->userData, true);
 
         // check if user exists in our system
-        if ($message != "404") {
+        if ($message != "404" && empty($this->userData) == false) {
             // check if logged in in studip
             $studip = $this->checkUserInStudip($this->uid,$this->sid);
 
-            if ($studip) {
+            if ($studip == true) {
 
                 // save logged in uid
                 $_SESSION['UID'] = $this->userData['id'];
+
+                // refresh Session in UI and DB
                 $refresh = $this->refreshSession();
+
+                // get the courseStatus for given course
+                $this->courseStatus = $this->findCourseStatus();
+
+                // if user hase no status in course create it
+                if (!isset($this->courseStatus)) {
+                    $CourseStatusResponse = $this->createCourseStatus($this->userData['id'],$this->cid,"0");
+
+                    // set courseStatus to 0 only if status is created in DB successfully
+                    if ($CourseStatusResponse == true) {
+                        $this->courseStatus = "0";
+                    } 
+                }
+
                 return $refresh;
+            }
+        } else {
+            // create new user from studIP
+            $newUser = $this->getUserInStudip($username);
+            $response = $this->createUser($newUser);
+            
+            // if successful try to login new user
+            if ($response == true) {
+                return $this->loginUser($username, "");
             }
         }
         return false;

@@ -108,7 +108,7 @@ function http_get($url, $authbool, &$message = 0)
  * @param bool $auth If true then send sessioninformation in header.
  * @param string $message The Response Message e.g. 404. Argument is optional.
  */
-function http_post_data($url, $data, $auth, &$message = 0)
+function http_post_data($url, $data, $authbool, &$message = 0)
 {
     $c = curl_init();
 

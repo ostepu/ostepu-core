@@ -4,7 +4,6 @@
  * Contains the AbstractAuthentication class.
  *
  * @author Ralf Busch
- * @todo delete Session on logout in DB
  */
 
 include_once 'include/Helpers.php';
@@ -47,8 +46,6 @@ abstract class AbstractAuthentication
     /**
      * Refreshes a user's session.
      *
-     * @param string $username
-     * @param string $password
      * @return true if refreshSession is successful
      */
     protected function refreshSession()
@@ -67,6 +64,7 @@ abstract class AbstractAuthentication
         $url = "http://141.48.9.92/uebungsplattform/DB/DBControl/session";
         http_post_data($url, $sessionbody, false, $message);
 
+        // only true if session is created in DB
         if ($message == "201") {
             $_SESSION['SIGNED'] = true;
             $_SESSION['LASTACTIVE'] = $_SERVER['REQUEST_TIME'];
@@ -124,7 +122,7 @@ abstract class AbstractAuthentication
         if($_GET['action'] == "logout" || $noback == true) {
             // delete session in DB
             $session = $_SESSION['SESSION'];
-            // http_delete("http://141.48.9.92/uebungsplattform/DB/DBControl/session/{$session}",true,$message);
+            http_delete("http://141.48.9.92/uebungsplattform/DB/DBControl/session/{$session}",true,$message);
 
             // delete session in UI
             session_destroy();
@@ -134,7 +132,7 @@ abstract class AbstractAuthentication
         } else {
             // delete session in DB
             $session = $_SESSION['SESSION'];
-            // http_delete("http://141.48.9.92/uebungsplattform/DB/DBControl/session/{$session}",true,$message);
+            http_delete("http://141.48.9.92/uebungsplattform/DB/DBControl/session/{$session}",true,$message);
 
             // delete session in UI
             session_destroy();
