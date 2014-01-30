@@ -43,7 +43,7 @@
                             print "(" . $percentage['points'] . "/" . $percentage['maxPoints'] . ")";
                         }
                         print "<td>";
-                        print $user['approval'];
+                        print $user['isApproved']?"Ja":"Nein";
                         print "</td>";
                         print "</tr>";
                     }
