@@ -9,15 +9,16 @@
     <div class="content-body-wrapper">
         <div class="content-body left">
             <?php
-                // prints all exercise types as header
+                // creates an input field for each ExerciseType
                 foreach ($minimumPercentages as $percentage) {
-                    print "<label class=\"form-field left label bold\" for=\"".$percentage['exerciseTypeID']."\">";
+                    print "<label class=\"form-field left label bold\" ";
+                    print "for=\"".$percentage['exerciseTypeID']."\">";
                     print $percentage['exerciseType'];
                     print "</label>";
 
                     print "<input class=\"form-field left text-input short\" ";
                     print "name=\"".$percentage['exerciseTypeID']."\" ";
-                    print "value=\"".($percentage['minimumPercentage']*100)."\" ";
+                    print "value=\"".$percentage['minimumPercentage']."\" ";
                     print "id=\"".$percentage['exerciseTypeID']."\" />";
                 }
             ?>
