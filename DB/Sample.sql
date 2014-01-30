@@ -43,7 +43,7 @@ USE `uebungsplattform`;
 INSERT INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`,  `U_salt`, `U_failed_logins`) VALUES (4, 'till', 'till@email.de', 'Uhlig', 'Till', NULL, '8a781bfbb17a5e4b03b812c33317931308a2996a69eb4f3e6e857e030f0687e8', 1,  'd2cfb5d8f16b22708fa145871a74bf1e0aaa96ef', 0);
 INSERT INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`,  `U_salt`, `U_failed_logins`) VALUES (2, 'lisa', 'lisa@email.de', 'Dietrich', 'Lisa', NULL, '8a781bfbb17a5e4b03b812c33317931308a2996a69eb4f3e6e857e030f0687e8', 1,  'd2cfb5d8f16b22708fa145871a74bf1e0aaa96ef', 0);
 INSERT INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`,  `U_salt`, `U_failed_logins`) VALUES (3, 'joerg', 'joerg@email.de', 'Baumgarten', 'Joerg', NULL, 'test', 1,  NULL, 0);
-INSERT INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`, `U_salt`, `U_failed_logins`) VALUES (1, 'super-admin', NULL, NULL, NULL, NULL, 'test', 1, null, 0);
+INSERT IGNORE INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`, `U_salt`, `U_failed_logins`) VALUES (1, 'super-admin', NULL, NULL, NULL, NULL, 'test', 1, null, 0);
 COMMIT;
 
 
@@ -248,7 +248,7 @@ INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `C
 INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (34, 'LAttachment', 'localhost/uebungsplattform/logic/Attachment', '');
 INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (35, 'LExerciseType', 'localhost/uebungsplattform/logic/ExerciseType', '');
 INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (36, 'LSampleSolution', 'localhost/uebungsplattform/logic/SampleSolution', '');
-
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (37, 'LGetSite', 'localhost/uebungsplattform/logic/GetSite', '');
 COMMIT;
 
 
@@ -321,6 +321,10 @@ INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_n
 INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (63, 30, 'controller', '', 14);
 INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (64, 29, 'controller', '', 14);
 INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (65, 28, 'controller', '', 14);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (66, 36, 'controller', '', 14);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (67, 37, 'controller', '', 14);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (68, 14, 'out', '', 36);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (69, 14, 'out', '', 37);
 
 COMMIT;
 
