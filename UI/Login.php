@@ -47,7 +47,7 @@ if (isset($_POST['action'])) {
     $signed = $auth->loginUser($input['username'], $input['password']);
 
     if ($signed) {
-        header('location: ' . $input['back']);
+        header('Location: ' . $input['back']);
         exit();
     } else {
         $notifications[] = MakeNotification("error", "Die Anmeldung war fehlerhaft!");
