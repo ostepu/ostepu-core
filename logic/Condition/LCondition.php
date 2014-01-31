@@ -8,8 +8,8 @@
  */
 
 require 'Slim/Slim.php';
-include 'include/Request.php';
-include_once( 'include/CConfig.php' );
+include './Include/Request.php';
+include_once( './Include/CConfig.php' );
 
 \Slim\Slim::registerAutoloader();
 
@@ -75,7 +75,7 @@ class LCondition
         $this->lURL = $this->query->getAddress();
 
         // POST SetConditions
-        $this->app->post('/'.$this->getPrefix().'/course/:courseid(/)', array($this, 'setConditions'));
+        $this->app->post('/'.$this->getPrefix().'(/)', array($this, 'setConditions'));
 
         // PUT EditConditions
         $this->app->put('/'.$this->getPrefix().'/course/:courseid(/)', array($this, 'editConditions'));
@@ -91,12 +91,12 @@ class LCondition
      * Adds a condition to a course.
      *
      * Called when this component receives an HTTP POST request to
-     * /condition/course/$courseid(/).
+     * /condition(/).
      * The request body should contain a JSON object representing the condition.
      *
      * @param int $courseid The id of the course to which the condition will being added.
      */
-    public function setConditions($courseid){
+    public function setConditions(){
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
         $URL = $this->lURL.'/DB/approvalcondition';

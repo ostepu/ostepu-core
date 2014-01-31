@@ -6,9 +6,9 @@
  */ // could use a map indexed by status/type id taht is built on construction
 
 require 'Slim/Slim.php';
-include 'include/Request.php';
-include_once( 'include/CConfig.php' );
-include_once 'include/Logger.php';
+include './Include/Request.php';
+include_once( './Include/CConfig.php' );
+include_once './Include/Logger.php';
 
 \Slim\Slim::registerAutoloader();
 /**
