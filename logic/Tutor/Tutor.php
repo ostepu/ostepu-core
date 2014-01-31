@@ -1,4 +1,4 @@
-﻿<?php 
+<?php
 
 require 'Slim/Slim.php';
 include 'include/Request.php';
@@ -68,8 +68,15 @@ class LTutor
         $this->app->run();
     }
     
+    /**
+     * Function to auto allocate exercises to tutors
+     *
+     * This function takes two arguments and returns a status code.
+     *
+     * @param $courseid an integer identifies the course
+     * @param $sheetid an integer identifies the exercisesheet
+     */
     public function autoAllocateByExercise($courseid, $sheetid){
-        
         $header = $this->app->request->headers->all();
         $body = json_decode($this->app->request->getBody());        
         $URL = $this->lURL.'/DB/marking';
@@ -80,9 +87,11 @@ class LTutor
             $exerciseId = $submission['exerciseId'];
             $submissions[$exerciseId][] = $submission;
         }
-        
+
+        //randomized allocation
         shuffle($tutors);
         shuffle($submissions);
+
         $i = 0;
         $numberOfTutors = count($tutors);
         $markings = array();
@@ -93,6 +102,7 @@ class LTutor
                     'status' => 0,
                     'tutorId' => $tutors[$i]['tutorId'],
                 );
+                //adds a submission to a tutor
                 $markings[] = $newMarking;
             }
             if ($i < $numberOfTutors - 1){
@@ -103,6 +113,7 @@ class LTutor
 
         }
         
+        //requests to database
         foreach($markings as $marking){
             $answer = Request::custom('POST', $URL, $header,
                     json_encode($marking));
@@ -114,7 +125,15 @@ class LTutor
         
         $this->app->response->setBody($answer['content']);
     }
-    
+
+    /**
+     * Function to auto allocate groups to tutors
+     *
+     * It takes two argument and returns a Status-Code.
+     *
+     * @param $courseid an integer identifies the course
+     * @param $sheetid an integer identifies the exercisesheet
+     */
     public function autoAllocateByGroup($courseid, $sheetid){
         
         $header = $this->app->request->headers->all();
@@ -127,8 +146,10 @@ class LTutor
             $leaderId = $submission['leaderId'];
             $submissions[$leaderId][] = $submission;
         }
-        
+
+        //randomized allocation
         shuffle($tutors);
+
         $i = 0;
         $numberOfTutors = count($tutors);
         $markings = array();
@@ -139,6 +160,7 @@ class LTutor
                     'status' => 0,
                     'tutorId' => $tutors[$i]['tutorId']
                 );
+                //adds a submission to a tutor
                 $markings[] = $newMarking;
             }
             if ($i < $numberOfTutors - 1){
@@ -149,6 +171,7 @@ class LTutor
             
         }
         
+        //requests to database
         foreach($markings as $marking){
             $answer = Request::custom('POST', $URL, $header, 
                     json_encode($marking));
@@ -161,26 +184,40 @@ class LTutor
         $this->app->response->setBody($answer['content']);
     }
     
+    /**
+     * Function to get a zip with csv
+     *
+     * It takes two arguments and returns a zip with folders named a
+     * exercise-ID and contains PDF's named the marking-ID. Informations
+     * for each marking is written in a CSV-file in the root of the zip.
+     *
+     * @param $userid an integer identifies the user (tutor)
+     * @param $sheetid an integer identifies the exercisesheet
+     */
     public function getZip($userid, $sheetid){
         $header = $this->app->request->headers->all();
-        $body = json_decode($this->app->request->getBody());        
+        $body = json_decode($this->app->request->getBody());
+       
         $URL = $this->lURL.'/DB/marking/exercisesheet/'.$sheetid.'/tutor/'.$userid;
-        
+        //request to database to get the markings
         $answer = Request::custom('GET', $URL, $header,"");
         $markings = json_decode($answer['content'], true);
-        
-        
+
         $URL = $this->lURL.'/DB/exercise/exercisesheet/'.$sheetid;
-        
+        //request to database to get the exercise sheets
         $answer = Request::custom('GET', $URL, $header,"");
         $exercises = json_decode($answer['content'], true);
+
         $count = 0;
+        //an array to descripe the subtasks
         $alphabet = range('a', 'z');
         $secondRow = array();
         $sortedMarkings = array();
         $rows = array();
         $exerciseIdWithExistingMarkings = array();
         
+        //exercises with informations of marking and submissions
+        //sorted by exercise ID and checked of existence
         foreach( $markings as $marking){
             $submission = $marking['submission'];
             $id = $submission['exerciseId'];
@@ -190,6 +227,8 @@ class LTutor
             }
         }
         
+        //formating, create the layout of the CSV-file for the tutor
+        //first two rows of an exercise are the heads of the table
         foreach ($exercises as $exercise){
             $firstRow = array();
             $secondRow = array();
@@ -204,9 +243,6 @@ class LTutor
                 $subtask++;
             }
             $firstRow[] = $exercise['id'];
-            for ($i = 0; $i<5; $i++){
-                $firstRow[] = "";
-            }
             $secondRow[] = 'ID';
             $secondRow[] = 'Points';
             $secondRow[] = 'MaxPoints';
@@ -214,11 +250,12 @@ class LTutor
             $secondRow[] = 'Status';
             $secondRow[] = 'TutorComment';
             $secondRow[] = 'StudentComment';
-        
-        
+
             $rows[] = $firstRow;
             $rows[] = $secondRow;
             
+            //formating, write known informations of the markings in the CSV-file
+            //after the second row to each exercise
             if(in_array($exercise['id'], $exerciseIdWithExistingMarkings)){
                 foreach($sortedMarkings[$exercise['id']] as $marking){
                     $row[] = $marking['id'];
@@ -232,12 +269,17 @@ class LTutor
                     $rows[] = $row;
                 }
             }
+            //an empty row after an exercise
             $rows[] = array();
         }
+
+        //request to database to get the user name of the tutor for the
+        //name of the CSV-file
         $URL = $this->lURL.'/DB/user/user/'.$userid;
         $answer = Request::custom('GET', $URL, $header, "");
         $user = json_decode($answer['content'], true);
         
+        //this is the true writing of the CSV-file named [tutorname]_[sheetid].csv
         $CSV = fopen($user['lastName'].'_'.$sheetid.'.csv', 'w');
         
         foreach($rows as $row){
