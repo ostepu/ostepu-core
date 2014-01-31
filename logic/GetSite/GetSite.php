@@ -6,9 +6,9 @@
  */ // could use a map indexed by status/type id taht is built on construction
 
 require 'Slim/Slim.php';
-include 'include/Request.php';
-include_once( 'include/CConfig.php' );
-include_once 'include/Logger.php';
+include './Include/Request.php';
+include_once( './Include/CConfig.php' );
+include_once './Include/Logger.php';
 
 \Slim\Slim::registerAutoloader();
 /**
@@ -104,44 +104,27 @@ class LgetSite
         //run Slim
         $this->app->run();
     }
-    
-    /**
-     * Returns the needed informations for the TutorAssignmentSite
-     *
-     * Called when this component receives an HTTP GET request to
-     * /tutorassignment/user/:userid/course/:courseid/exercisesheet/:sheetid(/).
-     *
-     * @param $userid the ID identifies the user
-     * @param $courseid the ID identifies the course
-     * @param $sheetid the ID identifies the exercisesheet
-     */
+
     public function tutorAssignmentSiteInfo($userid, $courseid, $sheetid){
 
         $response = array();
         $assignedSubmissionIDs = array();
-        
-        $body = $this->app->request->getBody();
-        $header = $this->app->request->headers->all();
-        
         /**
          * Get Tutors
          */
+        $body = $this->app->request->getBody();
+        $header = $this->app->request->headers->all();
         $URL = $this->lURL.'/DB/user/course/'.$courseid.'/status/1'; //status = 1 => Tutor
         $answer = Request::custom('GET', $URL, $header, $body);
         $tutors = json_decode($answer['content'], true);
-        
         foreach ($tutors AS $tutor){
-            /**
-             * select needed Attributes of tutors
-             */
+            //benoetigte Attribute waehlen
             $newTutor = array();
             $newTutor['id'] = $tutor['id'];
             $newTutor['userName'] = $tutor['userName'];
             $newTutor['firstName'] = $tutor['firstName'];
             $newTutor['lastName'] = $tutor['lastName'];
-            /**
-             * construct a assignment for each tutor
-             */
+            //im Rueckgabe-Array für jeden Tutor ein Marking (ohne Submissions) anlegen
             $tutorAssignment = array(
                     'tutor' => $newTutor,
                     'submissions' => array()
@@ -153,16 +136,12 @@ class LgetSite
          */
         $URL = $this->lURL.'/DB/marking/exercisesheet/'.$sheetid;
         $answer = Request::custom('GET', $URL, $header, $body);
-        /**
-         * assign the submission belongs to a marking to the tutor
-         */
+        //fuer jedes Marking die zugeordnete Submision im Rueckgabearray dem passenden Tutor zuweisen
         foreach (json_decode($answer['content'], true) as $marking){
             foreach ($response as &$tutorAssignment){
                 if ($marking['tutorId'] == $tutorAssignment['tutor']['id']){
                     array_push($tutorAssignment['submissions'], $marking['submission']);
-                    /**
-                     * save the submission-id's of the assigned submissions
-                     */
+                    //ID's aller bereits zugeordneten Submissions speicher
                     array_push($assignedSubmissionIDs, $marking['submission']['id']);
                     break;
                 }
@@ -184,9 +163,7 @@ class LgetSite
 
         $unassignedSubmissions = array();
 
-        /**
-         * assign the other submissions to the virtual tutor "unassigned"
-         */
+
         $submissions = json_decode($answer['content'], true);
         foreach ($submissions as $submission){
             if (!in_array($submission['submissionId'], $assignedSubmissionIDs)){
@@ -205,15 +182,7 @@ class LgetSite
 
         $this->app->response->setBody(json_encode($response));
     }
-    /**
-     * Returns the needed informations for the StudentSite
-     *
-     * Called when this component receives an HTTP GET request to
-     * /student/user/:userid/course/:courseid(/).
-     *
-     * @param $userid the ID identifies the user
-     * @param $courseid the ID identifies the course
-     */
+
     public function studentSiteInfo($userid, $courseid){
 
         $response = array(
@@ -223,19 +192,12 @@ class LgetSite
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
 
-        /**
-         * get Exercisesheets of the course
-         */
+        //get Exercisesheets
 
         $URL = $this->lURL.'/DB/exercisesheet/course/'.$courseid;
         $answer = Request::custom('GET', $URL, $header, $body);
         $sheets = json_decode($answer['content'], true);
-        
-        
         foreach ($sheets as $sheet){
-            /**
-             * select needed Attributes of the sheet
-             */
             $newSheet = array(
                         'id' => $sheet['id'],
                         'courseId'=> $sheet['courseId'],
@@ -246,17 +208,11 @@ class LgetSite
                         'group'=> array()
                         );
 
-            /**
-             * Get the Exercises of each sheet
-             */
             $URL = $this->lURL.'/DB/exercise/exercisesheet/'.$sheet['id'];
             $answer = Request::custom('GET', $URL, $header, $body);
             $exercises = json_decode($answer['content'], true);
 
             foreach($exercises as &$exercise){
-                /**
-                 * add the markings to the submissions (if exists)
-                 */
                 foreach($exercise['submissions'] as &$submission){
                     $URL = $this->lURL.'/DB/marking/submission/'.$submission['id'];
                     $answer = Request::custom('GET', $URL, $header, $body);
@@ -266,9 +222,6 @@ class LgetSite
 
             $newSheet['exercises'] = $exercises;
 
-            /**
-             * calculate the percentages the student has reached per sheet
-             */
             $maxPoints = 0;
             $points = 0;
             foreach($newSheet['exercises'] as $exercise){
@@ -281,9 +234,7 @@ class LgetSite
 
             $response['sheets'][] = $newSheet;
 
-            /**
-             * get the Groups of the Student
-             */
+            //get UserGroups
             $URL = $this->lURL.'/DB/group/user/'.$userid;
             $answer = Request::custom('GET', $URL, $header, $body);
             $groups = json_decode($answer['content'], true);
@@ -299,9 +250,6 @@ class LgetSite
         }
 
 
-        /**
-         * get Header Informations
-         */
         $this->flag = 1;
         $response['user'] = $this->userWithCourse($userid, $courseid);
 
@@ -309,25 +257,9 @@ class LgetSite
 
     }
 
-    /**
-     * Returns a User-Object with the current Course
-     *
-     * Called when this component receives an HTTP GET request to
-     * /accountsettings/user/:userid/course/:courseid(/) or
-     * /createsheet/user/:userid/course/:courseid(/) or
-     * /rightsmanagement/user/:userid/course/:courseid(/) or
-     * /upload/user/:userid/course/:courseid(/)
-     *
-     * @param $userid the ID identifies the user
-     * @param $courseid the ID identifies the course
-     *
-     * if flag = 0 function must be called by HTTP-Request and returning as HTTP-Response
-     * otherwise the function must be called as an internal function and returning by a return-statement
-     */
     public function userWithCourse($userid, $courseid){
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
-        
         $URL = $this->lURL.'/DB/coursestatus/course/'.$courseid.'/user/'.$userid;
         $answer = Request::custom('GET', $URL, $header, $body);
         $user = json_decode($answer['content'], true);
@@ -354,18 +286,7 @@ class LgetSite
         $this->flag = 0;
         return $response;}
     }
-    /**
-     * Returns a User-Object with all Courses
-     *
-     * Called when this component receives an HTTP GET request to
-     * /index/user/:userid(/)
-     *
-     * @param $userid the ID identifies the user
-     * @param $courseid the ID identifies the course
-     *
-     * if flag = 0 function must be called by HTTP-Request and returning as HTTP-Response
-     * otherwise the function must be called as an internal function and returning by a return-statement
-     */
+
     public function userWithAllCourses($userid){
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
@@ -395,13 +316,7 @@ class LgetSite
         $this->flag = 0;
         return $response;}
     }
-    /**
-     * Returns a string depending on the inputed integer (decodes the courseStatus)
-     *
-     * Called as internal function
-     *
-     * @param $courseStatus the integer you wants to decode
-     */
+
     public function getStatusName($courseStatus){
         if ($courseStatus == 0){
             return "student";}
@@ -414,34 +329,20 @@ class LgetSite
         elseif ($courseStatus == 4){
             return "super-administrator";}
     }
-    /**
-     * Returns the needed informations for the markingTool
-     *
-     * Called when this component receives an HTTP GET request to
-     * /markingtool/user/:userid/course/:courseid/exercisesheet/:sheetid(/).
-     *
-     * @param $userid the ID identifies the user
-     * @param $courseid the ID identifies the course
-     * @param $sheetid the ID identifies the sheet
-     */
+
     public function markingTool($userid, $courseid, $sheetid){
 
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
 
-        /**
-         * loads all sheets for the course with id $courseid
-         */
+        // load all sheets for the course with id $courseid
         $URL = $this->lURL.'/DB/exercisesheet/course/'.$courseid;
         $answer = Request::custom('GET', $URL, $header, $body);
         $sheets = json_decode($answer['content'], true);
 
         foreach ($sheets as $sheet) {
             $response['exerciseSheets'][] = $sheet['id'];
-            
-            /**
-             * adds groups to the sheets
-             */
+
             $URL = $this->lURL.'/DB/group/exercisesheet/'.$sheet['id'];
             $answer = Request::custom('GET', $URL, $header, $body);
             $groups = json_decode($answer['content'], true);
@@ -453,16 +354,12 @@ class LgetSite
             $group['exercises'] = array();
         }
 
-        /**
-         * load all exercise types
-         */
+        // load all exercise types
         $URL = $this->lURL . '/DB/exercisetype';
         $exerciseTypes = Request::custom('GET', $URL, $header, $body);
         $exerciseTypes = json_decode($exerciseTypes['content'], true);
 
-        /** 
-         * load all exercises for the exercisesheet with id $sheetid
-         */
+        // load all exercises for the exercisesheet with id $sheetid
         $URL = $this->lURL.'/DB/exercise/exercisesheet/'.$sheetid;
         $answer = Request::custom('GET', $URL, $header, $body);
         $exercises = json_decode($answer['content'], true);
@@ -545,23 +442,11 @@ class LgetSite
         $this->app->response->setBody(json_encode($response));
 
     }
-    /**
-     * Returns the needed informations for the uploadHistory
-     *
-     * Called when this component receives an HTTP GET request to
-     * /uploadhistory/user/:userid/course/:courseid/exercise/:exerciseid(/).
-     *
-     * @param $userid the ID identifies the user
-     * @param $courseid the ID identifies the course
-     * @param $sheetid the ID identifies the sheet
-     */
+
     public function uploadHistory($userid, $courseid, $exerciseid){
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
-        
-        /**
-         * get all submissions of the user for a exercise
-         */
+
         $URL = $this->lURL.'/DB/submission/user/'.$userid.'/exercise/'.$exerciseid;
         $answer = Request::custom('GET', $URL, $header, $body);
         $submissions = json_decode($answer['content'], true);
@@ -579,23 +464,12 @@ class LgetSite
 
         $this->app->response->setBody(json_encode($response));
     }
-    /**
-     * Returns the needed informations for the Tutor, Dozent and Admin Site
-     *
-     * Called when this component receives an HTTP GET request to
-     * /uploadhistory/user/:userid/course/:courseid/exercise/:exerciseid(/).
-     *
-     * @param $userid the ID identifies the user
-     * @param $courseid the ID identifies the course
-     */
+
     public function tutorDozentAdmin($userid, $courseid){
 
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
 
-        /**
-         * get possible ExerciseTypes
-         */
         $URL = $this->lURL . '/DB/exercisetype';
         $exerciseTypes = Request::custom('GET', $URL, $header, $body);
         $exerciseTypes = json_decode($exerciseTypes['content'], true);
@@ -604,9 +478,6 @@ class LgetSite
         $answer = Request::custom('GET', $URL, $header, $body);
         $sheets = json_decode($answer['content'], true);
 
-        /**
-         * decodes the exerciseType
-         */
         foreach ($sheets as &$sheet) {
             foreach ($sheet['exercises'] as &$exercise) {
                 foreach ($exerciseTypes as $exerciseType) {
@@ -624,16 +495,7 @@ class LgetSite
 
         $this->app->response->setBody(json_encode($response));
     }
-    /**
-     * Returns the needed informations for the Group-Site
-     *
-     * Called when this component receives an HTTP GET request to
-     * /group/user/:userid/course/:courseid/exercisesheet/:sheetid(/).
-     *
-     * @param $userid the ID identifies the user
-     * @param $courseid the ID identifies the course
-     * @param $sheetid the ID identifies the sheet
-     */
+
     public function groupSite($userid, $courseid, $sheetid){
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
@@ -690,15 +552,7 @@ class LgetSite
 
         $this->app->response->setBody(json_encode($response));
     }
-    /**
-     * Returns the needed informations for the Condition
-     *
-     * Called when this component receives an HTTP GET request to
-     * /condition/user/:userid/course/:courseid(/).
-     *
-     * @param $userid the ID identifies the user
-     * @param $courseid the ID identifies the course
-     */
+
     public function checkCondition($userid, $courseid){
 
         $body = $this->app->request->getBody();
