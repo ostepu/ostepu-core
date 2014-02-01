@@ -24,6 +24,7 @@ select
     SS.S_id_selected as S_selected,
     S.S_accepted,
     S.S_flag,
+    S.S_leaderId,
     S.E_id
 from
     Submission S

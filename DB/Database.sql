@@ -70,6 +70,7 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`User` (
   `U_salt` CHAR(40) NULL,
   `U_failed_logins` INT NULL DEFAULT 0,
   `U_externalId` VARCHAR(255) NULL,
+  `U_studentNumber` VARCHAR(120) NULL,
   PRIMARY KEY (`U_id`),
   UNIQUE INDEX `U_id_UNIQUE` (`U_id` ASC),
   UNIQUE INDEX `U_username_UNIQUE` (`U_username` ASC))
@@ -255,6 +256,7 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`Submission` (
   `E_id` INT NOT NULL,
   `ES_id` INT NULL,
   `S_flag` INT NULL DEFAULT 1,
+  `S_leaderId` INT NULL,
   PRIMARY KEY (`S_id`),
   UNIQUE INDEX `S_id_UNIQUE` USING BTREE (`S_id` ASC),
   INDEX `redundanz5` USING BTREE (`ES_id` ASC, `E_id` ASC),
@@ -572,6 +574,7 @@ SELECT
     U.U_salt,
     U.U_failed_logins,
 	U.U_externalId,
+	U.U_studentNumber,
     CS.CS_status,
     C.C_id,
     C.C_name,
@@ -584,7 +587,7 @@ FROM
         left join
     Course C ON (CS.C_id = C.C_id)
 WHERE
-    U.U_id = userid or U_username = userid or U_externalId = userid;
+    U.U_id like userid or U_username = userid or U_externalId = userid;
 END;$$
 
 DELIMITER ;
@@ -619,7 +622,7 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `uebungsplattform`;
-INSERT INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`, `U_salt`, `U_failed_logins`, `U_externalId`) VALUES (1, 'super-admin', NULL, NULL, NULL, NULL, '8a781bfbb17a5e4b03b812c33317931308a2996a69eb4f3e6e857e030f0687e8', 1, 'd2cfb5d8f16b22708fa145871a74bf1e0aaa96ef', 0, NULL);
+INSERT INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`, `U_salt`, `U_failed_logins`, `U_externalId`, `U_studentNumber`) VALUES (1, 'super-admin', NULL, NULL, NULL, NULL, '8a781bfbb17a5e4b03b812c33317931308a2996a69eb4f3e6e857e030f0687e8', 1, 'd2cfb5d8f16b22708fa145871a74bf1e0aaa96ef', 0, NULL, NULL);
 
 COMMIT;
 
@@ -1032,6 +1035,16 @@ USE `uebungsplattform`$$
 CREATE TRIGGER `Session_AINS` AFTER INSERT ON `Session` FOR EACH ROW
 /* set U_failedLogins = 0
 @author Lisa*/
+begin
+update User
+set U_failed_logins = 0
+where U_id = NEW.U_id;
+end;$$
+
+USE `uebungsplattform`$$
+CREATE TRIGGER `Session_AUPD` AFTER UPDATE ON `Session` FOR EACH ROW
+/* set U_failedLogins = 0
+@author Till*/
 begin
 update User
 set U_failed_logins = 0

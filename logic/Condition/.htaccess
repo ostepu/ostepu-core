@@ -1,2 +1,2 @@
 RewriteEngine On
-RewriteRule ^ Condition.php [QSA,L]
+RewriteRule ^ LCondition.php [QSA,L]

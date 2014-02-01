@@ -1,2 +1,2 @@
 RewriteEngine On
-RewriteRule ^ Attachment.php [QSA,L]
+RewriteRule ^ LAttachment.php [QSA,L]

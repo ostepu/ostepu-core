@@ -22,6 +22,7 @@ SELECT
     U.U_salt,
     U.U_failed_logins,
     U.U_externalId,
+    U.U_studentNumber,
     CS.CS_status,
     C.C_id,
     C.C_name,
