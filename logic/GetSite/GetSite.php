@@ -677,11 +677,6 @@ class LgetSite
         $answer = Request::custom('GET', $URL, $header, $body);
         $response['course'] = json_decode($answer['content'], true);
 
-        // returns all exercise types
-        $URL = $this->lURL.'/DB/exercisetype/';
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $response['exerciseTypes'] = json_decode($answer['content'], true);
-
         // returns all users of the given course
         $URL = $this->lURL.'/DB/user/course/'.$courseid;
         $answer = Request::custom('GET', $URL, $header, $body);
