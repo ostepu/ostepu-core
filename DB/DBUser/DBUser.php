@@ -286,7 +286,9 @@ class DBUser
         // always been an array
         if (!is_array($insert))
             $insert = array($insert);
-
+        
+        // this array contains the indices of the inserted objects
+        $res = array();
         foreach ($insert as $in){
             // generates the insert data for the object
             $data = $in->getInsertData();
@@ -303,8 +305,8 @@ class DBUser
                 // sets the new auto-increment id
                 $obj = new User();
                 $obj->setId($queryResult->getInsertId());
-            
-                $this->_app->response->setBody(User::encodeUser($obj)); 
+
+                array_push($res, $obj);
                 $this->_app->response->setStatus(201);
                 if (isset($result['headers']['Content-Type']))
                     $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
@@ -312,9 +314,16 @@ class DBUser
             } else{
                 Logger::Log("POST AddUser failed",LogLevel::ERROR);
                 $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
+                $this->_app->response->setBody(User::encodeUser($res)); 
                 $this->_app->stop();
             }
         }
+        
+        if (count($res)==1){
+            $this->_app->response->setBody(User::encodeUser($res[0])); 
+        }
+        else
+            $this->_app->response->setBody(User::encodeUser($res)); 
 
     }
 
