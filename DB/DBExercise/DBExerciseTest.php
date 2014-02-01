@@ -24,9 +24,9 @@ class DBExerciseTest extends PHPUnit_Framework_TestCase
         else
             $this->url = parse_ini_file("../phpunit.ini", TRUE)['PHPUNIT']['url'];
             
-       /* $this->AddExercise();
+        $this->AddExercise();
         $this->EditExercise();
-        $this->DeleteExercise();*/
+        $this->DeleteExercise();
         $this->GetSheetExercises();
         $this->GetCourseExercises();
         $this->GetAllExercises();
@@ -105,7 +105,7 @@ class DBExerciseTest extends PHPUnit_Framework_TestCase
         $obj = Exercise::createExercise("100",null,"1","10","1","100","1");
 
         $result = Request::put($this->url . 'DBExercise/exercise/100',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),Exercise::encodeExercise($obj));
-       // $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for EditExercise call"); 
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for EditExercise call"); 
         
         $result = Request::put($this->url . 'DBExercise/exercise/AAA',array(),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for EditExercise call");  
