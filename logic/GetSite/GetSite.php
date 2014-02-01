@@ -6,9 +6,9 @@
  */ // could use a map indexed by status/type id taht is built on construction
 
 require 'Slim/Slim.php';
-include './Include/Request.php';
-include_once( './Include/CConfig.php' );
-include_once './Include/Logger.php';
+include '../Include/Request.php';
+include_once( '../Include/CConfig.php' );
+include_once '../Include/Logger.php';
 
 \Slim\Slim::registerAutoloader();
 /**
@@ -197,6 +197,7 @@ class LgetSite
         $URL = $this->lURL.'/DB/exercisesheet/course/'.$courseid;
         $answer = Request::custom('GET', $URL, $header, $body);
         $sheets = json_decode($answer['content'], true);
+
         foreach ($sheets as $sheet){
             $newSheet = array(
                         'id' => $sheet['id'],

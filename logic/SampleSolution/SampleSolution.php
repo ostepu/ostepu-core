@@ -1,8 +1,8 @@
 <?php 
 
 require 'Slim/Slim.php';
-include './Include/Request.php';
-include_once( './Include/CConfig.php' );
+include '../Include/Request.php';
+include_once( '../Include/CConfig.php' );
 
 \Slim\Slim::registerAutoloader();
 
