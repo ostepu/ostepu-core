@@ -11,12 +11,12 @@
 
 include_once 'include/Boilerplate.php';
 
-// load RightsManagement data from GetSite
+// load CourseManagement data from GetSite
 $databaseURI = $getSiteURI . "/rightsmanagement/user/{$uid}/course/{$cid}";
-$rightsManagement_data = http_get($databaseURI);
-$rightsManagement_data = json_decode($rightsManagement_data, true);
+$courseManagement_data = http_get($databaseURI);
+$courseManagement_data = json_decode($courseManagement_data, true);
 
-$user_course_data = $rightsManagement_data;
+$user_course_data = $courseManagement_data;
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
@@ -35,15 +35,13 @@ $revokeRights = Template::WithTemplateFile('include/CourseManagement/RevokeRight
 // construct a content element for granting user-rights
 $grantRights = Template::WithTemplateFile('include/CourseManagement/GrantRights.template.html');
 
-// construct a content element for creating an user
-$createUser = Template::WithTemplateFile('include/CourseManagement/CreateUser.template.html');
 
 /**
  * @todo combine the templates into a single file
  */
 
 // wrap all the elements in some HTML and show them on the page
-$w = new HTMLWrapper($h, $courseSettings, $revokeRights, $grantRights, $createUser);
+$w = new HTMLWrapper($h, $courseSettings, $revokeRights, $grantRights);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
 
