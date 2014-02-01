@@ -344,6 +344,31 @@ class User extends Object implements JsonSerializable
         $this->externalId = $value;
     }
     
+    
+    /**
+     * @var string $studentNumber represents a matriculation/student number
+     */
+    private $studentNumber = null;
+    
+    /**
+     * the $studentNumber getter
+     *
+     * @return the value of $studentNumber
+     */ 
+    public function getStudentNumber()
+    {
+        return $this->studentNumber;
+    }
+    
+    /**
+     * the $studentNumber setter
+     *
+     * @param string $value the new value for $studentNumber
+     */ 
+    public function setStudentNumber($value)
+    {
+        $this->studentNumber = $value;
+    }
     /**
      * Creates an User object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -359,11 +384,12 @@ class User extends Object implements JsonSerializable
      * @param string $salt The password salt.
      * @param string $failedLogins The failed logins counter.
      * @param string $externalId The external ID.
+     * @param string $studentNumber The student number.
      *
      * @return an user object
      */
     public function createUser($userId,$userName,$email,$firstName,$lastName,
-                                $title,$flag,$password,$salt,$failedLogins,$externalId="")
+                                $title,$flag,$password,$salt,$failedLogins,$externalId=null,$studentNumber=null)
     {
         return new User(array('id' => $userId,
         'userName' => $userName,
@@ -375,7 +401,8 @@ class User extends Object implements JsonSerializable
         'password' => $password, 
         'salt' => $salt, 
         'failedLogins' => $failedLogins,
-        'externalId' => $externalId));
+        'externalId' => $externalId
+        ,'studentNumber' => $studentNumber));
     }
     
     /**
@@ -413,6 +440,7 @@ class User extends Object implements JsonSerializable
            'U_password' => 'password',
            'U_salt' => 'salt',
            'U_failed_logins' => 'failedLogins',
+           'U_studentNumber' => 'studentNumber',
            'U_externalId' => 'externalId'
         );
     }
@@ -437,7 +465,7 @@ class User extends Object implements JsonSerializable
         if ($this->salt != null) $this->addInsertData($values, 'U_salt', DBJson::mysql_real_escape_string($this->salt));
         if ($this->failedLogins != null) $this->addInsertData($values, 'U_failed_logins', DBJson::mysql_real_escape_string($this->failedLogins));
         if ($this->externalId != null) $this->addInsertData($values, 'U_externalId', DBJson::mysql_real_escape_string($this->externalId));
-        
+        if ($this->studentNumber != null) $this->addInsertData($values, 'U_studentNumber', DBJson::mysql_real_escape_string($this->studentNumber));
         
         if ($values != ""){
             $values=substr($values,1);
@@ -559,12 +587,13 @@ class User extends Object implements JsonSerializable
         if ($this->firstName!==null) $list['firstName'] = $this->firstName;
         if ($this->lastName!==null) $list['lastName'] = $this->lastName;
         if ($this->title!==null) $list['title'] = $this->title;
-        if ($this->courses!==array()) $list['courses'] = $this->courses;
+        if ($this->courses!==array() && $this->courses!==null) $list['courses'] = $this->courses;
         if ($this->flag!==null) $list['flag'] = $this->flag;
         if ($this->password!==null) $list['password'] = $this->password; 
         if ($this->salt!==null) $list['salt'] = $this->salt;
         if ($this->failedLogins!==null) $list['failedLogins'] = $this->failedLogins;
         if ($this->externalId!==null) $list['externalId'] = $this->externalId;
+        if ($this->studentNumber!==null) $list['studentNumber'] = $this->studentNumber;
         return $list;
     }
 }
