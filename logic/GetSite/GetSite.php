@@ -74,8 +74,8 @@ class LgetSite
         //GET Index
         $this->app->get('/index/user/:userid(/)', array($this, 'userWithAllCourses'));
 
-        //GET RightsManagment
-        $this->app->get('/rightsmanagement/user/:userid/course/:courseid(/)', array($this, 'userWithCourse'));
+        //GET CourseManagement
+        $this->app->get('/coursemanagement/user/:userid/course/:courseid(/)', array($this, 'courseManagement'));
 
         //GET Upload
         $this->app->get('/upload/user/:userid/course/:courseid(/)', array($this, 'userWithCourse'));
@@ -318,6 +318,9 @@ class LgetSite
         return $response;}
     }
 
+    /**
+    * @todo Receive the names from the database instead of defining it here.
+    */
     public function getStatusName($courseStatus){
         if ($courseStatus == 0){
             return "student";}
@@ -665,6 +668,52 @@ class LgetSite
         $this->app->response->setBody(json_encode($response));
     }
 
+    public function courseManagement($userid, $courseid) {
+        $body = $this->app->request->getBody();
+        $header = $this->app->request->headers->all();
+
+        // returns basic course information
+        $URL = $this->lURL.'/DB/course/'.$courseid;
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $response['course'] = json_decode($answer['content'], true);
+
+        // returns all exercise types
+        $URL = $this->lURL.'/DB/exercisetype/';
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $response['exerciseTypes'] = json_decode($answer['content'], true);
+
+        // returns all users of the given course
+        $URL = $this->lURL.'/DB/user/course/'.$courseid;
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $allUsers = json_decode($answer['content'], true);
+
+        // only selects the users whose course-status is tutor or lecturer 
+        if(!empty($allUsers)) {
+            foreach($allUsers as $user) {
+                if ($user['courses'][0]['status'] > 0 && $user['courses'][0]['status'] < 4) {
+
+                    // adds the course-status to the user objects in the response
+                    $user['statusName'] = $this->getStatusName($user['courses'][0]['status']);
+
+                    // removes unnecessary data from the user object
+                    unset($user['password']);
+                    unset($user['salt']);
+                    unset($user['failedLogins']);
+                    unset($user['courses']);
+
+                    // adds the user to the response
+                    $response['users'][] = $user;
+                }
+            }
+        }
+
+        $this->flag = 1;
+
+        // adds the user_course_data to the response
+        $response['user'] = $this->userWithCourse($userid, $courseid);
+
+        $this->app->response->setBody(json_encode($response));
+    }
 }
 
 /**
