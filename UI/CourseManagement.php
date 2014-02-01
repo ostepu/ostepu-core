@@ -1,7 +1,8 @@
 <?php
 /**
- * @file RightsManagement.php
- * Constructs the page that is used to grant and revoke a user's user-rights.
+ * @file CourseManagement.php
+ * Constructs the page that is used to grant and revoke a user's user-rights
+ * and to change basic course settings.
  *
  * @author Felix Schmidt
  * @author Florian Lücke
@@ -27,13 +28,13 @@ $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
 
 
 // construct a content element for taking away a user's user-rights
-$revokeRights = Template::WithTemplateFile('include/RightsManagement/RevokeRights.template.html');
+$revokeRights = Template::WithTemplateFile('include/CourseManagement/RevokeRights.template.html');
 
 // construct a content element for granting user-rights
-$grantRights = Template::WithTemplateFile('include/RightsManagement/GrantRights.template.html');
+$grantRights = Template::WithTemplateFile('include/CourseManagement/GrantRights.template.html');
 
 // construct a content element for creating an user
-$createUser = Template::WithTemplateFile('include/RightsManagement/CreateUser.template.html');
+$createUser = Template::WithTemplateFile('include/CourseManagement/CreateUser.template.html');
 
 /**
  * @todo combine the templates into a single file
