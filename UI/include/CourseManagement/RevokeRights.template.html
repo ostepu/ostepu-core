@@ -12,9 +12,17 @@
                 <label class="form-field left label bold" for="lecturerRightsPerson">Person auswählen:</label>
                 <select class="form-field left text-input" name="userID" id="lecturerRightsPerson">
                     <option value="">Bitte wählen</option>
-                    <option value="1" >Felix Schmidt (Dozent)</option>
-                    <option value="2" >Ralf Busch</option>
-                    <option value="3" >Florian Lücke</option>
+                    <?php
+                        if(!empty($users)) {
+                            foreach ($users as $user) {
+                                print "<option value=\"";
+                                print $user['id'];
+                                print "\">";
+                                print $user['firstName'] . " " . $user['lastName'] . " (" . $user['statusName'] . ")";
+                                print "</option>";
+                            }
+                        }
+                    ?>
                 </select>
             </div>
         </div> <!-- end: content-body -->

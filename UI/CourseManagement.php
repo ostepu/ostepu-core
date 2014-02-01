@@ -12,11 +12,11 @@
 include_once 'include/Boilerplate.php';
 
 // load CourseManagement data from GetSite
-$databaseURI = $getSiteURI . "/rightsmanagement/user/{$uid}/course/{$cid}";
+$databaseURI = $getSiteURI . "/coursemanagement/user/{$uid}/course/{$cid}";
 $courseManagement_data = http_get($databaseURI);
 $courseManagement_data = json_decode($courseManagement_data, true);
 
-$user_course_data = $courseManagement_data;
+$user_course_data = $courseManagement_data['user'];
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
@@ -28,9 +28,11 @@ $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
 
 // construct a content element for changing course settings
 $courseSettings = Template::WithTemplateFile('include/CourseManagement/CourseSettings.template.html');
+$courseSettings->bind($courseManagement_data['course'][0]);
 
 // construct a content element for taking away a user's user-rights
 $revokeRights = Template::WithTemplateFile('include/CourseManagement/RevokeRights.template.html');
+$revokeRights->bind($courseManagement_data);
 
 // construct a content element for granting user-rights
 $grantRights = Template::WithTemplateFile('include/CourseManagement/GrantRights.template.html');
