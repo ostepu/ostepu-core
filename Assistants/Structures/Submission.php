@@ -259,7 +259,33 @@ class Submission extends Object implements JsonSerializable
     {
         $this->flag = $value;
     }  
+
     
+    /**
+     * @var int $leaderId the id of the group leader 
+     */
+    private $leaderId = null;
+    
+    /**
+     * the $leaderId getter
+     *
+     * @return the value of $flag
+     */ 
+    public function getLeaderId()
+    {
+        return $this->leaderId;
+    }
+    
+    /**
+     * the $leaderId setter
+     *
+     * @param int $value the new value for $leaderId
+     */ 
+    public function setLeaderId($value)
+    {
+        $this->leaderId = $value;
+    }  
+
     /**
      * Creates an Submission object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -272,10 +298,11 @@ class Submission extends Object implements JsonSerializable
      * @param string $accepted The accepted flag.
      * @param string $date The storing date.
      * @param string $flag The submission flag.
+     * @param string $leaderId The group leader.
      *
      * @return an submission object
      */
-    public function createSubmission($submissionId,$studentId,$fileId,$exerciseId,$comment,$accepted,$date,$flag)
+    public function createSubmission($submissionId,$studentId,$fileId,$exerciseId,$comment,$accepted,$date,$flag,$leaderId=null)
     {
         return new Submission(array('id' => $submissionId,
         'studentId' => $studentId, 
@@ -284,6 +311,7 @@ class Submission extends Object implements JsonSerializable
         'accepted' => $accepted, 
         'date' => $date, 
         'flag' => $flag, 
+        'leaderId' => $leaderId, 
         'file' => new File(array('fileId' => $fileId))));
     }
     
@@ -303,6 +331,7 @@ class Submission extends Object implements JsonSerializable
            'S_accepted' => 'accepted',
            'S_date' => 'date',
            'S_flag' => 'flag',
+           'S_leaderId' => 'leaderId',
            'S_selected' => 'selectedForGroup'
         );
     }
@@ -325,6 +354,7 @@ class Submission extends Object implements JsonSerializable
         if ($this->date != null) $this->addInsertData($values, 'S_date', DBJson::mysql_real_escape_string($this->date));
         if ($this->selectedForGroup != null) $this->addInsertData($values, 'S_selected', DBJson::mysql_real_escape_string($this->selectedForGroup));
         if ($this->flag != null) $this->addInsertData($values, 'S_flag', DBJson::mysql_real_escape_string($this->flag));
+        if ($this->leaderId != null) $this->addInsertData($values, 'S_leaderId', DBJson::mysql_real_escape_string($this->leaderId));
 
         if ($values != ""){
             $values=substr($values,1);
@@ -418,6 +448,7 @@ class Submission extends Object implements JsonSerializable
         if ($this->date!==null) $list['date'] = $this->date;
         if ($this->exerciseNumber!==null) $list['exerciseNumber'] = $this->exerciseNumber;
         if ($this->flag!==null) $list['flag'] = $this->flag;
+        if ($this->leaderId!==null) $list['leaderId'] = $this->leaderId;
         return $list;  
     }
 }
