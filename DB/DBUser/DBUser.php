@@ -400,7 +400,7 @@ class DBUser
     public function getUser($userid)
     {
         Logger::Log("starts GET GetUser",LogLevel::DEBUG);
-        
+
         $userid = DBJson::mysql_real_escape_string($userid);
 
         // starts a query, by using a given file

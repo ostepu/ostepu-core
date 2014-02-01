@@ -165,28 +165,28 @@ class DBSubmissionTest extends PHPUnit_Framework_TestCase
     public function AddSubmission()
     {
         $result = Request::delete($this->url . 'DBSubmission/submission/100',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
-        //$this->assertEquals(201, $result['status'], "Unexpected HTTP status code for AddInvitation call");
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for AddSubmission call");
         
         //createSubmission($submissionId,$studentId,$fileId,$exerciseId,$comment,$accepted,$date)
         $obj = Submission::createSubmission("100","1","1","1",null,null,null,null);
 
         $result = Request::post($this->url . 'DBSubmission/submission',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),Submission::encodeSubmission($obj));
-        //$this->assertEquals(201, $result['status'], "Unexpected HTTP status code for AddInvitation call");   
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for AddSubmission call");   
         
         $result = Request::post($this->url . 'DBSubmission/submission',array(),"");
-        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for AddInvitation call");  
+        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for AddSubmission call");  
     }
     
     public function DeleteSubmission()
     {
         $result = Request::delete($this->url . 'DBSubmission/submission/100',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
-        //$this->assertEquals(201, $result['status'], "Unexpected HTTP status code for AddInvitation call");
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for DeleteSubmission call");
         
         $result = Request::delete($this->url . 'DBSubmission/submission/AAA',array(),"");
-        $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for AddInvitation call");
+        $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for DeleteSubmission call");
         
         $result = Request::delete($this->url . 'DBSubmission/submission/100',array(),"");
-        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for AddInvitation call");
+        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for DeleteSubmission call");
     }
     
     public function EditSubmission()
@@ -195,16 +195,16 @@ class DBSubmissionTest extends PHPUnit_Framework_TestCase
         $obj = Submission::createSubmission("100","1","1","1","Neu",null,null,null);
 
         $result = Request::put($this->url . 'DBSubmission/submission/100',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),Submission::encodeSubmission($obj));      
-       // $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for AddInvitation call");   
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for EditSubmission call");   
        
         $result = Request::put($this->url . 'DBSubmission/submission/AAA',array(),"");
-        $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for AddInvitation call");  
+        $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for EditSubmission call");  
         
         $result = Request::put($this->url . 'DBSubmission/submission/100',array(),"");
-        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for AddInvitation call");  
+        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for EditSubmission call");  
         
         $result = Request::get($this->url . 'DBSubmission/submission/100',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
-        $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for GetSubmission call");
+        $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for EditSubmission call");
         $this->assertContains('"comment":"Neu"',$result['content']);
     }
 }

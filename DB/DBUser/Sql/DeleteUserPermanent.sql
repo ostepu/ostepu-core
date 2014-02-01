@@ -8,4 +8,4 @@
  
 DELETE FROM User 
 WHERE
-    U_id = '$userid' or U_username = '$userid' or U_externalId = '$userid'
+    U_id like '$userid' or U_username = '$userid' or U_externalId = '$userid'
