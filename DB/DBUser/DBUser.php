@@ -296,7 +296,8 @@ class DBUser
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile($this->query, 
                                             "Sql/AddUser.sql", 
-                                            array("values" => $data));                   
+                                            array("values" => $data),
+                                            false);                   
                                
             // checks the correctness of the query    
             if ($result['status']>=200 && $result['status']<=299 ){
