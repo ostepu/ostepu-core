@@ -26,6 +26,8 @@ $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
                "backURL" => "Admin.php?cid={$cid}",
                "notificationElements" => $notifications));
 
+// construct a content element for changing course settings
+$courseSettings = Template::WithTemplateFile('include/CourseManagement/CourseSettings.template.html');
 
 // construct a content element for taking away a user's user-rights
 $revokeRights = Template::WithTemplateFile('include/CourseManagement/RevokeRights.template.html');
@@ -41,7 +43,7 @@ $createUser = Template::WithTemplateFile('include/CourseManagement/CreateUser.te
  */
 
 // wrap all the elements in some HTML and show them on the page
-$w = new HTMLWrapper($h, $revokeRights, $grantRights, $createUser);
+$w = new HTMLWrapper($h, $courseSettings, $revokeRights, $grantRights, $createUser);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
 
