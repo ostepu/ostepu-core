@@ -148,7 +148,7 @@ class StudIPAuthentication extends AbstractAuthentication
     {
         $data = User::encodeUser($data);
         $url = "http://141.48.9.92/uebungsplattform/DB/DBControl/user";
-        http_post_data($url, $data, true, $message);
+        http_post_data($url, $data, false, $message);
 
         return $message == "201";
     }
