@@ -9,4 +9,4 @@
  
 UPDATE User
 SET $values
-WHERE U_id = '$userid' or U_username = '$userid' or U_externalId = '$userid'
+WHERE U_id like '$userid' or U_username = '$userid' or U_externalId = '$userid'
