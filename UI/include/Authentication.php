@@ -81,9 +81,9 @@ class Authentication extends AbstractAuthentication
                 $refresh = $this->refreshSession();
                 return $refresh;
             } else {
-                /**
-                 * @todo increase FailedLogin field
-                 */
+                $userid = $user['id'];
+                $databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/user/user/{$userid}/IncFailedLogin";
+                $user = http_get($databaseURI, false, $message);
             }
         }
         return false;
