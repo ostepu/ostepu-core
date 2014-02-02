@@ -18,7 +18,7 @@ $databaseURI = $getSiteURI . "/mainsettings/user/{$uid}/course/{$cid}";
 $mainSettings_data = http_get($databaseURI);
 $mainSettings_data = json_decode($mainSettings_data, true);
 
-$user_course_data = $mainSettings_data['user'];
+$user_course_data = $mainSettings_data;
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
