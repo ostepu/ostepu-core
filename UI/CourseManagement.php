@@ -30,12 +30,12 @@ $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
 $courseSettings = Template::WithTemplateFile('include/CourseManagement/CourseSettings.template.html');
 $courseSettings->bind($courseManagement_data['course'][0]);
 
+// construct a content element for granting user-rights
+$grantRights = Template::WithTemplateFile('include/CourseManagement/GrantRights.template.html');
+
 // construct a content element for taking away a user's user-rights
 $revokeRights = Template::WithTemplateFile('include/CourseManagement/RevokeRights.template.html');
 $revokeRights->bind($courseManagement_data);
-
-// construct a content element for granting user-rights
-$grantRights = Template::WithTemplateFile('include/CourseManagement/GrantRights.template.html');
 
 
 /**
@@ -43,7 +43,7 @@ $grantRights = Template::WithTemplateFile('include/CourseManagement/GrantRights.
  */
 
 // wrap all the elements in some HTML and show them on the page
-$w = new HTMLWrapper($h, $courseSettings, $revokeRights, $grantRights);
+$w = new HTMLWrapper($h, $courseSettings, $grantRights, $revokeRights);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
 
