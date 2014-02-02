@@ -7,13 +7,13 @@
  * @example DB/DBExternalId/ExternalIdSample.json
  */ 
 
-require_once( 'Include/Slim/Slim.php' );
-include_once( 'Include/Structures.php' );
-include_once( 'Include/Request.php' );
-include_once( 'Include/DBJson.php' );
-include_once( 'Include/DBRequest.php' );
-include_once( 'Include/CConfig.php' );
-include_once( 'Include/Logger.php' );
+require_once( '../../Assistants/Slim/Slim.php' );
+include_once( '../../Assistants/Structures.php' );
+include_once( '../../Assistants/Request.php' );
+include_once( '../../Assistants/DBJson.php' );
+include_once( '../../Assistants/DBRequest.php' );
+include_once( '../../Assistants/CConfig.php' );
+include_once( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader();
 
@@ -222,7 +222,7 @@ class DBExternalId
         // always been an array
         if (!is_array($insert))
             $insert = array($insert);
-
+        
         foreach ($insert as $in){
             // generates the insert data for the object
             $data = $in->getInsertData();

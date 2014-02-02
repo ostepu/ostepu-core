@@ -6,11 +6,11 @@
  * @author Felix Schmidt
  */ 
  
-require_once('Include/Slim/Slim.php');
-include_once('Include/Structures.php');
-include_once('Include/CConfig.php');
-include_once('Include/Request.php');
-include_once('Include/Controller.php');
+require_once('../../Assistants/Slim/Slim.php');
+include_once('../../Assistants/Structures.php');
+include_once('../../Assistants/CConfig.php');
+include_once('../../Assistants/Request.php');
+include_once('../../Assistants/Controller.php');
 
 /**
  * The controller of the filesystem.
