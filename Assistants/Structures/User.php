@@ -2,8 +2,6 @@
 /**
  * @file User.php contains the User class
  */
- 
-include_once( 'Include/DBJson.php' );
 
 /**
  * the user structure
