@@ -705,6 +705,11 @@ class LgetSite
             }
         }
 
+        // returns all courses
+        $URL = $this->lURL.'/DB/course/';
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $response['courses'] = json_decode($answer['content'], true);
+
         $this->flag = 1;
 
         // adds the user_course_data to the response
