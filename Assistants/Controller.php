@@ -5,9 +5,9 @@
  * @author Till Uhlig
  */ 
  
-require_once('../../Assistants/Slim/Slim.php');
-include_once('../../Assistants/Structures.php');
-include_once('../../Assistants/Request.php');
+require_once('Slim/Slim.php');
+include_once('Structures.php');
+include_once('Request.php');
 
 \Slim\Slim::registerAutoloader();
    
