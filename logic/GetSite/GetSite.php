@@ -77,6 +77,9 @@ class LgetSite
         //GET CourseManagement
         $this->app->get('/coursemanagement/user/:userid/course/:courseid(/)', array($this, 'courseManagement'));
 
+        //GET MainSettings
+        $this->app->get('/mainsettings/user/:userid/course/:courseid(/)', array($this, 'userWithCourse'));
+
         //GET Upload
         $this->app->get('/upload/user/:userid/course/:courseid(/)', array($this, 'userWithCourse'));
 
