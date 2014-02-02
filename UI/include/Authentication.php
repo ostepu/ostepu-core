@@ -29,6 +29,9 @@ class Authentication extends AbstractAuthentication
         // force to use session-cookies and to transmit SID over URL
         ini_set('session.use_only_cookies', '1');
         ini_set('session.use_trans_sid', '0');
+
+        // start session
+        session_start();
     }
 
     /**
