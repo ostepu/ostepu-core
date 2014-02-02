@@ -3,7 +3,7 @@
  * @file User.php contains the User class
  */
  
-include_once( 'Include/DBJson.php' );
+include_once( '../../Assistants/DBJson.php' );
 
 /**
  * the user structure
