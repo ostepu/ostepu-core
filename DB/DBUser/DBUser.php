@@ -358,7 +358,7 @@ class DBUser
             // generates an assoc array of course stats by using a defined list of 
             // its attributes
             $courseStatus = DBJson::getObjectsByAttributes($data, 
-                                'C_id', 
+                                CourseStatus::getDBPrimaryKey(), 
                                 CourseStatus::getDBConvert());
             
             // generates an assoc array of courses by using a defined list of 
@@ -370,19 +370,19 @@ class DBUser
             // concatenates the course stats and the associated courses
             $res = DBJson::concatObjectListsSingleResult($data, 
                                     $courseStatus,
-                                    'C_id',
+                                    CourseStatus::getDBPrimaryKey(),
                                     CourseStatus::getDBConvert()['CS_course'], 
-                                    $courses,Course::getDBPrimaryKey()); 
-                                    
+                                    $courses,Course::getDBPrimaryKey());              
+
             // concatenates the users and the associated course stats
             $res = DBJson::concatResultObjectLists($data, 
                                 $users,
                                 User::getDBPrimaryKey(),
                                 User::getDBConvert()['U_courses'],
-                                $res,'C_id'); 
+                                $res,CourseStatus::getDBPrimaryKey()); 
                                 
             //  to reindex
-            $res = array_merge($res);    
+            // $res = array_values($res);    
             
             $this->_app->response->setBody(User::encodeUser($res));
         
@@ -433,30 +433,30 @@ class DBUser
             // generates an assoc array of course stats by using a defined list of 
             // its attributes
             $courseStatus = DBJson::getObjectsByAttributes($data, 
-                                        'C_id', 
-                                        CourseStatus::getDBConvert());
+                                CourseStatus::getDBPrimaryKey(), 
+                                CourseStatus::getDBConvert());
             
             // generates an assoc array of courses by using a defined list of 
             // its attributes
             $courses = DBJson::getObjectsByAttributes($query->getResponse(), 
                                                     Course::getDBPrimaryKey(), 
                                                     Course::getDBConvert());
-         
+                                
             // concatenates the course stats and the associated courses
             $res = DBJson::concatObjectListsSingleResult($data, 
                                     $courseStatus,
-                                    'C_id',
+                                    CourseStatus::getDBPrimaryKey(),
                                     CourseStatus::getDBConvert()['CS_course'], 
-                                    $courses,Course::getDBPrimaryKey()); 
+                                    $courses,Course::getDBPrimaryKey());              
 
             // concatenates the users and the associated course stats
-            $res = DBJson::concatResultObjectLists($data,
+            $res = DBJson::concatResultObjectLists($data, 
                                 $user,
                                 User::getDBPrimaryKey(),
                                 User::getDBConvert()['U_courses'],
-                                $res,'C_id');    
+                                $res,CourseStatus::getDBPrimaryKey());     
             //  to reindex
-            $res = array_merge($res);
+            //$res = array_merge($res);
             
             // only one object as result
             if (count($res)>0)
@@ -509,30 +509,31 @@ class DBUser
             // generates an assoc array of course stats by using a defined list of 
             // its attributes
             $courseStatus = DBJson::getObjectsByAttributes($data, 
-                                        'C_id', 
-                                        CourseStatus::getDBConvert());
+                                CourseStatus::getDBPrimaryKey(), 
+                                CourseStatus::getDBConvert());
             
             // generates an assoc array of courses by using a defined list of 
             // its attributes
             $courses = DBJson::getObjectsByAttributes($query->getResponse(), 
                                                     Course::getDBPrimaryKey(), 
                                                     Course::getDBConvert());
-         
+                                
             // concatenates the course stats and the associated courses
             $res = DBJson::concatObjectListsSingleResult($data, 
                                     $courseStatus,
-                                    'C_id',
+                                    CourseStatus::getDBPrimaryKey(),
                                     CourseStatus::getDBConvert()['CS_course'], 
-                                    $courses,Course::getDBPrimaryKey()); 
+                                    $courses,Course::getDBPrimaryKey());              
 
             // concatenates the users and the associated course stats
-            $res = DBJson::concatResultObjectLists($data,
+            $res = DBJson::concatResultObjectLists($data, 
                                 $user,
                                 User::getDBPrimaryKey(),
                                 User::getDBConvert()['U_courses'],
-                                $res,'C_id');    
+                                $res,CourseStatus::getDBPrimaryKey());   
+                                
             //  to reindex
-            $res = array_merge($res);
+            //$res = array_merge($res);
             
             // only one object as result
             if (count($res)>0)
@@ -586,8 +587,8 @@ class DBUser
             // generates an assoc array of course stats by using a defined list of 
             // its attributes
             $courseStatus = DBJson::getObjectsByAttributes($data, 
-                                    'C_id', 
-                                    CourseStatus::getDBConvert());
+                                CourseStatus::getDBPrimaryKey(), 
+                                CourseStatus::getDBConvert());
             
             // generates an assoc array of courses by using a defined list of 
             // its attributes
@@ -598,19 +599,19 @@ class DBUser
             // concatenates the course stats and the associated courses
             $res = DBJson::concatObjectListsSingleResult($data, 
                                     $courseStatus,
-                                    'C_id',
+                                    CourseStatus::getDBPrimaryKey(),
                                     CourseStatus::getDBConvert()['CS_course'], 
-                                    $courses,Course::getDBPrimaryKey()); 
-                                    
+                                    $courses,Course::getDBPrimaryKey());              
+
             // concatenates the users and the associated course stats
             $res = DBJson::concatResultObjectLists($data, 
                                 $users,
                                 User::getDBPrimaryKey(),
                                 User::getDBConvert()['U_courses'],
-                                $res,'C_id'); 
+                                $res,CourseStatus::getDBPrimaryKey());  
                                 
             //  to reindex
-            $res = array_merge($res);   
+            //$res = array_merge($res);   
             
             $this->_app->response->setBody(User::encodeUser($res));
             
@@ -666,8 +667,8 @@ class DBUser
             // generates an assoc array of course stats by using a defined list of 
             // its attributes
             $courseStatus = DBJson::getObjectsByAttributes($data, 
-                                    'C_id', 
-                                    CourseStatus::getDBConvert());
+                                CourseStatus::getDBPrimaryKey(), 
+                                CourseStatus::getDBConvert());
             
             // generates an assoc array of courses by using a defined list of 
             // its attributes
@@ -678,19 +679,18 @@ class DBUser
             // concatenates the course stats and the associated courses
             $res = DBJson::concatObjectListsSingleResult($data, 
                                     $courseStatus,
-                                    'C_id',
+                                    CourseStatus::getDBPrimaryKey(),
                                     CourseStatus::getDBConvert()['CS_course'], 
-                                    $courses,Course::getDBPrimaryKey()); 
-                                    
+                                    $courses,Course::getDBPrimaryKey());              
+
             // concatenates the users and the associated course stats
             $res = DBJson::concatResultObjectLists($data, 
                                 $users,
                                 User::getDBPrimaryKey(),
                                 User::getDBConvert()['U_courses'],
-                                $res,'C_id'); 
-                                
+                                $res,CourseStatus::getDBPrimaryKey());                                 
             //  to reindex
-            $res = array_merge($res);   
+            //$res = array_merge($res);   
             
             $this->_app->response->setBody(User::encodeUser($res));
             
@@ -742,30 +742,30 @@ class DBUser
             // generates an assoc array of course stats by using a defined list of 
             // its attributes
             $courseStatus = DBJson::getObjectsByAttributes($data, 
-                                        'C_id', 
-                                        CourseStatus::getDBConvert());
+                                CourseStatus::getDBPrimaryKey(), 
+                                CourseStatus::getDBConvert());
             
             // generates an assoc array of courses by using a defined list of 
             // its attributes
             $courses = DBJson::getObjectsByAttributes($query->getResponse(), 
                                                     Course::getDBPrimaryKey(), 
                                                     Course::getDBConvert());
-         
+                                
             // concatenates the course stats and the associated courses
             $res = DBJson::concatObjectListsSingleResult($data, 
                                     $courseStatus,
-                                    'C_id',
+                                    CourseStatus::getDBPrimaryKey(),
                                     CourseStatus::getDBConvert()['CS_course'], 
-                                    $courses,Course::getDBPrimaryKey()); 
+                                    $courses,Course::getDBPrimaryKey());              
 
             // concatenates the users and the associated course stats
-            $res = DBJson::concatResultObjectLists($data,
+            $res = DBJson::concatResultObjectLists($data, 
                                 $users,
                                 User::getDBPrimaryKey(),
                                 User::getDBConvert()['U_courses'],
-                                $res,'C_id');    
+                                $res,CourseStatus::getDBPrimaryKey());    
             //  to reindex
-            $res = array_merge($res); 
+            //$res = array_merge($res); 
                 
             $this->_app->response->setBody(User::encodeUser($res));
 
@@ -818,30 +818,30 @@ class DBUser
             // generates an assoc array of course stats by using a defined list of 
             // its attributes
             $courseStatus = DBJson::getObjectsByAttributes($data, 
-                                        'C_id', 
-                                        CourseStatus::getDBConvert());
+                                CourseStatus::getDBPrimaryKey(), 
+                                CourseStatus::getDBConvert());
             
             // generates an assoc array of courses by using a defined list of 
             // its attributes
             $courses = DBJson::getObjectsByAttributes($query->getResponse(), 
                                                     Course::getDBPrimaryKey(), 
                                                     Course::getDBConvert());
-         
+                                
             // concatenates the course stats and the associated courses
             $res = DBJson::concatObjectListsSingleResult($data, 
                                     $courseStatus,
-                                    'C_id',
+                                    CourseStatus::getDBPrimaryKey(),
                                     CourseStatus::getDBConvert()['CS_course'], 
-                                    $courses,Course::getDBPrimaryKey()); 
+                                    $courses,Course::getDBPrimaryKey());              
 
             // concatenates the users and the associated course stats
-            $res = DBJson::concatResultObjectLists($data,
+            $res = DBJson::concatResultObjectLists($data, 
                                 $users,
                                 User::getDBPrimaryKey(),
                                 User::getDBConvert()['U_courses'],
-                                $res,'C_id');    
+                                $res,CourseStatus::getDBPrimaryKey());    
             //  to reindex
-            $res = array_merge($res); 
+            //$res = array_merge($res); 
                 
             $this->_app->response->setBody(User::encodeUser($res));
 
