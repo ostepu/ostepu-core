@@ -1,8 +1,9 @@
+<input type="hidden" name="action" value="CourseSettings">
 <div class="content-element">
     <div class="content-header">
         <div class="content-title left uppercase">Veranstaltungseinstellungen</div>
         <div class="info-color bold right">
-            <a href="#">Änderungen speichern</a>
+            <button class="text-button info-color bold right">Änderung speichern</button>
         </div>
     </div>
 
@@ -30,12 +31,12 @@
 
                     for ($i = 0; $i < 8; $i++) {
                         // prints a list item for the summer term
-                        print "<option value=\"SS" . $currentYear . "\">";
+                        print "<option value=\"SS " . $currentYear . "\">";
                         print ("SS " . $currentYear);
                         print "</option>";
 
                         // prints a list item for the winter term
-                        print "<option value=\"WS" . $currentYear . "\">";
+                        print "<option value=\"WS " . $currentYear . "\">";
                         print ("WS " . (string)($currentYear - 1) . "/" . $currentYear);
                         print "</option>";
 
