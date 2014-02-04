@@ -74,7 +74,7 @@ function http_get($url, $authbool, &$message = 0)
     curl_setopt($c, CURLOPT_URL, $url);
     curl_setopt($c, CURLOPT_HTTPGET, 1);
     if ($authbool) {
-        $date = $_SERVER['REQUEST_TIME'];
+        $date = $_SESSION['LASTACTIVE'];
         $session = $_SESSION['SESSION'];
         $user = $_SESSION['UID'];
         curl_setopt($c, CURLOPT_HTTPHEADER, array("User: {$user}","Session: {$session}","Date : {$date}"));
@@ -117,7 +117,7 @@ function http_post_data($url, $data, $authbool, &$message = 0)
     curl_setopt($c, CURLOPT_POSTFIELDS, $data);
 
     if ($authbool) {
-        $date = $_SERVER['REQUEST_TIME'];
+        $date = $_SESSION['LASTACTIVE'];
         $session = $_SESSION['SESSION'];
         $user = $_SESSION['UID'];
         curl_setopt($c, CURLOPT_HTTPHEADER, array("User: {$user}","Session: {$session}","Date : {$date}"));
@@ -160,7 +160,7 @@ function http_put_data($url, $data, $authbool, &$message = 0)
     curl_setopt($c, CURLOPT_CUSTOMREQUEST, 'PUT');
 
     if ($authbool) {
-        $date = $_SERVER['REQUEST_TIME'];
+        $date = $_SESSION['LASTACTIVE'];
         $session = $_SESSION['SESSION'];
         $user = $_SESSION['UID'];
         curl_setopt($c, CURLOPT_HTTPHEADER, array("User: {$user}","Session: {$session}","Date : {$date}"));
@@ -189,8 +189,11 @@ function http_put_data($url, $data, $authbool, &$message = 0)
  *
  * Uses HTTP DELETE request to get contents a $url
  * @param string $url The URL that should be opnened.
+ * @param bool $authbool If true then send sessioninformation in header.
+ * @param string $message The Response Message e.g. 404. Argument is optional.
+ * @param bool $sessiondelete If true then send a new timestamp. Only necessary if $authbool true.
  */
-function http_delete($url, $authbool, &$message = 0)
+function http_delete($url, $authbool, &$message = 0, $sessiondelete = false)
 {
     $c = curl_init();
 
@@ -198,7 +201,12 @@ function http_delete($url, $authbool, &$message = 0)
     curl_setopt($c, CURLOPT_CUSTOMREQUEST, 'DELETE');
 
     if ($authbool) {
-        $date = $_SERVER['REQUEST_TIME'];
+        if ($sessiondelete) {
+            $date = $_SERVER['REQUEST_TIME'];
+        } else {
+            $date = $_SESSION['LASTACTIVE'];
+        }
+        
         $session = $_SESSION['SESSION'];
         $user = $_SESSION['UID'];
         curl_setopt($c, CURLOPT_HTTPHEADER, array("User: {$user}","Session: {$session}","Date : {$date}"));
@@ -209,7 +217,7 @@ function http_delete($url, $authbool, &$message = 0)
     $retData = curl_exec($c);
     $message = curl_getinfo($c, CURLINFO_HTTP_CODE);
 
-    if ($message == "401") {
+    if ($message == "401" && $sessiondelete == false) {
         Authentication::logoutUser();
     }
 
