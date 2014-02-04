@@ -14,33 +14,39 @@
 
             <label class="form-field left label bold new-line" for="semester">Semester:</label>
             <select class="form-field left text-input short" name="semester" id="semester">
-                <?php
-                    /*
-                     * @todo choose the correct semester in the <option> field
-                     * depending on the JSON data instead of adding it to the front.
-                     */
-                ?>
-
-                <option value="0"><?php print $semester;?></option>
-
                 <?php 
                     // Dynamically creates a list of possible semesters beginning
-                    // with the current year + 1 and ending with the current year - 7
-
+                    // with the current year + 1 and ending with the current year - 7 or the $semester if it is older
+                    $savedYear = substr($semester, -4);
                     $currentYear = date('Y') + 1;
+                    if ($savedYear < $currentYear-7) {
+                        $endyear = $savedYear;
+                    } else {
+                        $endyear = $currentYear -7;
+                    }
 
-                    for ($i = 0; $i < 8; $i++) {
+
+                    for ($i = $currentYear; $i >= $endyear; $i--) {
                         // prints a list item for the summer term
-                        print "<option value=\"SS " . $currentYear . "\">";
-                        print ("SS " . $currentYear);
+                        print "<option";
+                        // select it if it is current semester
+                        if ("SS ".$i == $semester){ 
+                            print " selected=\"selected\"";
+                        }
+                        print " value=\"SS " . $i . "\">";
+                        print ("SS " . $i);
                         print "</option>";
 
                         // prints a list item for the winter term
-                        print "<option value=\"WS " . $currentYear . "\">";
-                        print ("WS " . (string)($currentYear - 1) . "/" . $currentYear);
+                        print "<option";
+                        // select it if it is current semester
+                        if (("WS " . (string)($i - 1) . "/" . $i) == $semester) {
+                            print " selected=\"selected\"";
+                        }
+                        print " value=\"WS " . $i . "\">";
+                        print ("WS " . (string)($i - 1) . "/" . $i);
                         print "</option>";
 
-                        $currentYear = $currentYear - 1;
                     }
                 ?>
             </select>
