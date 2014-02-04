@@ -53,7 +53,7 @@ class LSubmission
         $this->lURL = $this->query->getAddress();
 
         //AddSubmission
-        $this->app->post('/'.$this->getPrefix().'(/):data+', array($this, 'addSubmission'));
+        $this->app->post('/'.$this->getPrefix().'(/)', array($this, 'addSubmission'));
 
         //EditSubmissionState
         $this->app->put('/'.$this->getPrefix().'/submission/:submissionid(/)',
@@ -85,22 +85,47 @@ class LSubmission
      * /submissions(/)
      * The request body should contain a JSON object representing a submission.
      */
-    public function addSubmission($data){
-        //Parameter abfangen wenn $data "nicht leer"
+    public function addSubmission(){
+        
         $header = $this->app->request->headers->all();
-        $body = json_decode($this->app->request->getBody());
-        $file = json_encode($body->{'_file'});      //mit oder ohne "_"?
-        //Anfrage an FileSystem
-        $URL = $this->lURL.'/FS';
+        $body = json_decode($this->app->request->getBody(), true);
+        $file = json_encode($body['file']);
+        
+        //Request to FileSystem
+        $URL = $this->lURL.'/FS/file';
         $answer = Request::custom('POST', $URL, $header, $file);
 
-        if($answer['status'] == 200){ //nur, wenn file tatsaechlich im FS gespeichert wurde
-            $body->{'_file'} = $answer['content'];
-            //Anfrage an DataBase
-            $URL = $this->lURL.'/DB';
-            $answer = Request::custom('POST', $URL, $header, json_encode($body));
+        if(($answer['status'] >= 200) and ($answer['status'] <= 300)){ //if file was succsessfully saved to FS
+            $newbody->{'file'} = $answer['content'];
+            //Request to DB to save the file
+            $URL = $this->lURL.'/DB/file';
+            $answer = Request::custom('POST', $URL, $header, json_encode($newbody));
+            $DBanswer = json_decode($answer['content'], true);
+        } else{
             $this->app->response->setStatus($answer['status']);
         }
+        
+        $submission = $body;
+        $submission['file'] = array(
+                    'id' => $DBanswer['id']
+                    );
+        //Get the LeaderId of the Group the submission belongs to        
+        $URL = $this->lURL.'/DB/exercise/exercise/'.$DBanswer['exerciseId'];
+        $answer = Request::custom('GET', $URL, $header, "");
+        $exercise = json_decode($answer['content'], true);        
+        
+        $URL = $this->lURL.'/DB/group/exercisesheet/'.$exercise['sheetId'].'/user/'.$submission['studentId'];
+        $answer = Request::custom('GET', $URL, $header, "");
+        $group = json_decode($answer['content'], true);
+        
+        $submission['leaderId'] = $group['leader']['id'];
+        
+        //Request to DB to add the submission
+        $URL = $this->lURL.'/DB/submission';
+        $answer = Request::custom('POST', $URL, $header, json_encode($submission));
+        $answer = json_decode($answer['content'], true);
+        
+        $this->app->response->setStatus($answer['status']);
     }
 
     /**
