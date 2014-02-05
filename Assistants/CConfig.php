@@ -4,7 +4,7 @@
  *
  * @author Till Uhlig
  */ 
-include_once( 'Structures.php' );
+include_once( '/Structures.php' );
 
 
 /**
