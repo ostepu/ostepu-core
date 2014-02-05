@@ -18,7 +18,7 @@ class Logger
     /**
      * @var int $logLevel The levels that should be logged. Can also be multiple
      * LogLevels connected with bitwise or. (e.g. LogLevel:ERROR | LogLevel::DEBUG)
-     * @sa LogLevel
+     * @see LogLevel
      */
     static $logLevel = LogLevel::ALL;
 

@@ -54,8 +54,8 @@ $h->bind(array("backTitle" => "Zur Veranstaltung",
  * - when the form is posted recalculate the hash and compare to the previous one
  * - log the user id?
  *
- * @sa http://www.php.net/manual/de/function.hash-hmac.php
- * @sa http://php.net/manual/de/function.hash.php
+ * @see http://www.php.net/manual/de/function.hash-hmac.php
+ * @see http://php.net/manual/de/function.hash.php
  */
 
 $sheetData = array('sheetID' => 110,

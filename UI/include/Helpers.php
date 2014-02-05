@@ -232,7 +232,7 @@ function http_delete($url, $authbool, &$message = 0)
  *     - success
  * @param $notificationText The text that should be displayed in the
  * notification.
- * @sa Notifications.css
+ * @see Notifications.css
  */
 function MakeNotification($notificationType, $notificationText)
 {

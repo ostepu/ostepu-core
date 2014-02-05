@@ -24,7 +24,7 @@ class Template
      * Construct a new template.
      *
      * @param string $template A template string.
-     * @sa Template::WithTemplateFile($fileName)
+     * @see Template::WithTemplateFile($fileName)
      */
     public function __construct($template)
     {
