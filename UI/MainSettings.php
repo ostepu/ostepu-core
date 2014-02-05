@@ -20,6 +20,7 @@ include_once '../Assistants/Structures.php';
 $notifications = array();
 
 if (isset($_POST['action'])) {
+    // creates a new course
     if ($_POST['action'] == "CreateCourse") {
         if(isset($_POST['courseName']) && isset($_POST['semester']) && isset($_POST['defaultGroupSize'])) {
             $courseName = cleanInput($_POST['courseName']);
@@ -35,6 +36,44 @@ if (isset($_POST['action'])) {
                 $notifications[] = MakeNotification("success", "Die Veranstaltung wurde erstellt!");
             }
         }
+    }
+
+    // creates a new user
+    if ($_POST['action'] == "CreateUser") {
+         if(isset($_POST['lastName']) && isset($_POST['firstName']) && isset($_POST['email']) &&
+             isset($_POST['userName']) && isset($_POST['password']) && isset($_POST['passwordRepeat'])) {
+            $lastName = cleanInput($_POST['lastName']);
+            $firstName = cleanInput($_POST['firstName']);
+            $email = cleanInput($_POST['email']);
+            $userName = cleanInput($_POST['userName']);
+
+            /**
+            * @todo Hash passwords.
+            */
+            $password = cleanInput($_POST['password']);
+            $passwordRepeat = cleanInput($_POST['passwordRepeat']);
+
+            // both passwords are equal
+            if($password == $passwordRepeat) {
+                $newUser = new User();
+
+                /**
+                * @todo What's needed? Flag, salt, failedLogins?
+                * @todo Add the user's title.
+                */
+                $newUserSettings = User::encodeUser($newUser->createUser(null, $userName, $email, $firstName, $lastName,
+                     null, null, $password));
+                $URI = $databaseURI . "/user";
+                http_post_data($URI, $newUserSettings, true, $message);
+
+                if ($message == "201") {
+                     $notifications[] = MakeNotification("success", "Der User wurde erstellt!");
+                }
+            }
+            else {
+                $notifications[] = MakeNotification("error", "Die Passwörter stimmen nicht überein!");
+            }
+         }
     }
 }
 
