@@ -97,7 +97,7 @@ class DBCourse
                            array($this,'deleteCourse'));
         
         // POST AddCourse
-        $this->_app->post('/' . $this->getPrefix(),
+        $this->_app->post('/' . $this->getPrefix() . '(/)',
                          array($this,'addCourse'));
                          
         // GET GetCourse
