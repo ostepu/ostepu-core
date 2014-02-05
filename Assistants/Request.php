@@ -4,8 +4,8 @@
  *
  * @author Till Uhlig
  */ 
-include_once( 'Request/CreateRequest.php' );   
-include_once( 'Request/MultiRequest.php' );   
+include_once( '/Request/CreateRequest.php' );   
+include_once( '/Request/MultiRequest.php' );   
 
 /**
  * the Request class offers functions to get results of POST,GET,PUT.DELETE and 
