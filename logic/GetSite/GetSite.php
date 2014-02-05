@@ -77,6 +77,9 @@ class LgetSite
         //GET CourseManagement
         $this->app->get('/coursemanagement/user/:userid/course/:courseid(/)', array($this, 'courseManagement'));
 
+        //GET MainSettings
+        $this->app->get('/mainsettings/user/:userid/course/:courseid(/)', array($this, 'userWithCourse'));
+
         //GET Upload
         $this->app->get('/upload/user/:userid/course/:courseid(/)', array($this, 'userWithCourse'));
 
@@ -575,7 +578,7 @@ class LgetSite
             $newMinPercentage = array();
             foreach ($possibleExerciseTypes as $eT){
                 if($ac['exerciseTypeId'] == $eT['id']){
-                    $newMinPercentage['exerciseTypeID'] = $ac['exerciseTypeId'];
+                    $newMinPercentage['approvalConditionId'] = $ac['id'];
                     $newMinPercentage['exerciseType'] = $eT['name'];
                     $newMinPercentage['minimumPercentage'] = $ac['percentage'] * 100;
 
@@ -685,7 +688,7 @@ class LgetSite
         // only selects the users whose course-status is tutor or lecturer 
         if(!empty($allUsers)) {
             foreach($allUsers as $user) {
-                if ($user['courses'][0]['status'] > 0 && $user['courses'][0]['status'] < 4) {
+                if ($user['courses'][0]['status'] >= 0 && $user['courses'][0]['status'] < 4) {
 
                     // adds the course-status to the user objects in the response
                     $user['statusName'] = $this->getStatusName($user['courses'][0]['status']);
