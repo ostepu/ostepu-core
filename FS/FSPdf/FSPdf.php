@@ -6,11 +6,11 @@
  * @author Felix Schmidt
  */ 
 
-require_once( 'Include/Slim/Slim.php' );
-include_once( 'Include/CConfig.php' );
-include_once( 'Include/CConfig.php' );
-include_once( 'Include/Structures.php' );
-include_once( 'Include/Pdf/PdfTable.php' );
+require_once( '../../Assistants/Slim/Slim.php' );
+include_once( '../../Assistants/CConfig.php' );
+include_once( '../../Assistants/CConfig.php' );
+include_once( '../../Assistants/Structures.php' );
+include_once( '../../Assistants/Pdf/PdfTable.php' );
 
 \Slim\Slim::registerAutoloader();
 

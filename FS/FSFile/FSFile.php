@@ -6,10 +6,10 @@
  * @author Felix Schmidt
  */ 
 
-require_once( 'Include/Slim/Slim.php' );
-include_once( 'Include/CConfig.php' );
-include_once( 'Include/Request.php' );
-include_once( 'Include/Structures.php' );
+require_once( '../../Assistants/Slim/Slim.php' );
+include_once( '../../Assistants/CConfig.php' );
+include_once( '../../Assistants/Request.php' );
+include_once( '../../Assistants/Structures.php' );
 
 \Slim\Slim::registerAutoloader();
 
