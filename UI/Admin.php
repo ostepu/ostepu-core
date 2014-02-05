@@ -17,9 +17,7 @@ $admin_data = json_decode($admin_data, true);
 
 $user_course_data = $admin_data['user'];
 
-/**
- * @todo check rights
- */
+Authentication::checkRights(2, $cid, $uid, $user_course_data);
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
