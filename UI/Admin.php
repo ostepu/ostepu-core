@@ -12,12 +12,14 @@ include_once 'include/Boilerplate.php';
 
 // load GetSite data for Admin.php
 $databaseURI = $getSiteURI . "/admin/user/{$uid}/course/{$cid}";
-$admin_data = http_get($databaseURI);
+$admin_data = http_get($databaseURI, false);
 $admin_data = json_decode($admin_data, true);
 
 $user_course_data = $admin_data['user'];
 
 Authentication::checkRights(2, $cid, $uid, $user_course_data);
+
+$menu = MakeNavigationElementForCourseStatus($user_course_data['courses']);
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
@@ -25,7 +27,8 @@ $h->bind($user_course_data);
 $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
                "backTitle" => "Veranstaltung wechseln",
                "backURL" => "index.php",
-               "notificationElements" => $notifications));
+               "notificationElements" => $notifications,
+               "navigationElement" => $menu));
 
 
 $t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetLecturer.template.html');

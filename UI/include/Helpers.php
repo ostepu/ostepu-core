@@ -206,7 +206,7 @@ function http_delete($url, $authbool, &$message = 0, $sessiondelete = false)
         } else {
             $date = $_SESSION['LASTACTIVE'];
         }
-        
+
         $session = $_SESSION['SESSION'];
         $user = $_SESSION['UID'];
         curl_setopt($c, CURLOPT_HTTPHEADER, array("User: {$user}","Session: {$session}","Date : {$date}"));
@@ -284,13 +284,15 @@ function MakeNavigationElementForCourseStatus($courses) {
 
     $courseStatus = $courses[0]['status'];
 
+    $navigationElement = NULL;
+
     // chooses the menu depending on the user's status in the course
     switch ($courseStatus) {
-        case 3:
+        case 2:
             // status = Lecturer
             $navigationElement = Template::WithTemplateFile('include/Navigation/NavigationLecturer.template.html');
             break;
-        case 4:
+        case 3:
             // status = Admin
             $navigationElement = Template::WithTemplateFile('include/Navigation/NavigationAdmin.template.html');
             break;
