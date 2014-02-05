@@ -12,12 +12,14 @@ include_once 'include/Boilerplate.php';
 
 $sites = array('0' => 'Student.php',
                '1' => 'Tutor.php',
-               '3' => 'Lecturer.php');
+               '2' => 'Lecturer.php',
+               '3' => 'Admin.php');
 
 $statusName = array('0' => 'Student',
                     '1' => 'Tutor',
                     '2' => 'Dozent',
                     '3' => 'Admin');
+
 // load user data from the database
 $databaseURI = $databaseURI . "/user/user/{$uid}";
 $user = http_get($databaseURI, false);
