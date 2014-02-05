@@ -18,13 +18,16 @@ $user_course_data = json_decode($user_course_data, true);
 // check userrights for course
 Authentication::checkRights(0, $cid, $uid, $user_course_data);
 
+$menu = MakeNavigationElementForCourseStatus($user_course_data['courses']);
+
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
 $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
                "backTitle" => "Veranstaltung wechseln",
                "backURL" => "index.php",
-               "notificationElements" => $notifications));
+               "notificationElements" => $notifications,
+               "navigationElement" => $menu));
 
 // load all exercise sheets for the current course
 $databaseURL = $databaseURI . "/exercisesheet/course/{$cid}/exercise";

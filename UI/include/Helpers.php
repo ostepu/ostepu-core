@@ -283,6 +283,7 @@ function MakeNavigationElementForCourseStatus($courses) {
     }
 
     $courseStatus = $courses[0]['status'];
+    $course = $courses[0]['course'];
 
     $navigationElement = NULL;
 
@@ -291,6 +292,7 @@ function MakeNavigationElementForCourseStatus($courses) {
         case 2:
             // status = Lecturer
             $navigationElement = Template::WithTemplateFile('include/Navigation/NavigationLecturer.template.html');
+            $navigationElement->bind(array('cid' => $course['id']));
             break;
         case 3:
             // status = Admin
