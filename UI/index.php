@@ -16,8 +16,8 @@ $sites = array('0' => 'Student.php',
 
 $statusName = array('0' => 'Student',
                     '1' => 'Tutor',
-                    '3' => 'Dozent');
-
+                    '2' => 'Dozent',
+                    '3' => 'Admin');
 // load user data from the database
 $databaseURI = $databaseURI . "/user/user/{$uid}";
 $user = http_get($databaseURI, false);
