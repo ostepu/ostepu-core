@@ -1,1 +1,0 @@
-INSERT INTO CourseStatus SET $values

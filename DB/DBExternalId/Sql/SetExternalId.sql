@@ -1,1 +1,0 @@
-INSERT INTO ExternalId SET $values

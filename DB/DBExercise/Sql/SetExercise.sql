@@ -1,1 +1,0 @@
-INSERT INTO Exercise SET $values

@@ -63,6 +63,9 @@ class LTutor
         //Get zip
         $this->app->get('/'.$this->getPrefix().'/user/:userid/exercisesheet/:sheetid(/)',
                 array($this, 'getZip'));
+                
+        //uploadZip
+        $this->app->post('/'.$this->getPrefix().'/user/:userid/exercisesheet/:sheetid(/)', array($this, 'uploadZip'));
         
         //run Slim
         $this->app->run();
@@ -215,6 +218,7 @@ class LTutor
         $sortedMarkings = array();
         $rows = array();
         $exerciseIdWithExistingMarkings = array();
+        $namesOfExercises = array();
         
         //exercises with informations of marking and submissions
         //sorted by exercise ID and checked of existence
@@ -228,7 +232,7 @@ class LTutor
         }
         
         //formating, create the layout of the CSV-file for the tutor
-        //first two rows of an exercise are the heads of the table
+        //first two rows of an exercise are the heads of the table           
         foreach ($exercises as $exercise){
             $firstRow = array();
             $secondRow = array();
@@ -237,9 +241,13 @@ class LTutor
             if ($exercise != $exercise['link']){
                 $count++;
                 $firstRow[] = 'Aufgabe '.$count;
+                $int = $exercise['id'];
+                $namesOfExercises[$int] = 'Aufgabe '.$count;
                 $subtask = 0;
             }else{
                 $firstRow[] = 'Aufgabe '.$count.$alphabet[$subtask];
+                $int = $exercise['id'];
+                $namesOfExercises[$int] = 'Aufgabe '.$count.$alphabet[$subtask];
                 $subtask++;
             }
             $firstRow[] = $exercise['id'];
@@ -258,14 +266,39 @@ class LTutor
             //after the second row to each exercise
             if(in_array($exercise['id'], $exerciseIdWithExistingMarkings)){
                 foreach($sortedMarkings[$exercise['id']] as $marking){
+                    $row = array();
+                    //MarkingId
                     $row[] = $marking['id'];
-                    $row[] = "";
+                    //Points
+                    if(array_key_exists('points', $marking)) { 
+                        $row[] = $marking['points'];
+                    }else {
+                        $row[] = "";
+                    }
+                    //MaxPoints
                     $row[] = $exercise['maxPoints'];
-                    $row[] = "";
-                    $row[] = 0;
-                    $row[] = "";
+                    //Outstanding
+                    if(array_key_exists('outstanding', $marking)) { 
+                        $row[] = $marking['outstanding'];
+                    }else {
+                        $row[] = "";
+                    }
+                    //Status
+                    if(array_key_exists('status', $marking)) { 
+                        $row[] = $marking['status'];
+                    }else {
+                        $row[] = 0;
+                    }
+                    //TutorComment
+                    if(array_key_exists('tutorComment', $marking)) { 
+                        $row[] = $marking['tutorComment'];
+                    }else {
+                        $row[] = "";
+                    }
+                    //StudentComment
                     $submission = $marking['submission'];
                     $row[] = $submission['comment'];
+                    
                     $rows[] = $row;
                 }
             }
@@ -279,8 +312,19 @@ class LTutor
         $answer = Request::custom('GET', $URL, $header, "");
         $user = json_decode($answer['content'], true);
         
+        if(file_exists("./csv")){
+            $dir = "./csv";
+            $files = glob($dir.'/*.*');
+            if ( !empty($files) ) {
+                foreach ($files as $file) {
+                    unlink($file);
+                }
+            }
+            rmdir($dir);  
+        }
+        mkdir("./csv");
         //this is the true writing of the CSV-file named [tutorname]_[sheetid].csv
-        $CSV = fopen($user['lastName'].'_'.$sheetid.'.csv', 'w');
+        $CSV = fopen('csv/'.$user['lastName'].'_'.$sheetid.'.csv', 'w');
         
         foreach($rows as $row){
             fputcsv($CSV, $row, ';');
@@ -288,7 +332,113 @@ class LTutor
         
         fclose($CSV);
         
+        //Create Zip
+        $filesToZip = array();
+        //Push all SubmissionFiles to an array in order of exercises
+        foreach( $exercises as $exercise){
+            $exerciseId = $exercise['id'];
+            if(in_array($exercise['id'], $exerciseIdWithExistingMarkings)){
+                foreach($sortedMarkings[$exerciseId] as $marking){
+                    $URL = $this->lURL.'/DB/submission/submission/'.
+                                            $marking['submission']['id'];
+                    //request to database to get the submission file
+                    $answer = Request::custom('GET', $URL, $header,"");
+                    $submisson = json_decode($answer['content'], true);                
+                    
+                    //$submission['file'] = array(
+                    //            'fileId' => 8,
+                    //            'displayName' => "test.pdf",
+                    //            'address' => "test/abc",
+                    //            'timeStamp' => 123456789,
+                    //            'fileSize' => 158,
+                    //            'hash' => 'AFD1S65G4F1A34FWEA',
+                    //            );
+                    
+                    $file = $submission['file'];
+    
+                    $file['displayName'] = 
+                        $namesOfExercises[$exerciseId].'/'.$marking['id'];
+                    $filesToZip[] = $file;
+                }
+            }
+        }
+        
+        //push the .csv-file to the array
+        $path = './csv/'.$user['lastName'].'_'.$sheetid.'.csv';
+        $csvFile = array(
+                    'displayName' => $user['lastName'].'_'.$sheetid.'.csv',
+                    'body' => base64_encode(file_get_contents($path))
+                );
+        $filesToZip[] = $csvFile;
+        
+        $URL = $this->lURL.'/FS/zip';
+        //request to filesystem to create the Zip-File
+        $answer = Request::custom('POST', $URL, $header,json_encode($filesToZip));
+        $zipFile = json_decode($answer['content'], true);  
+        
+        $URL = $this->lURL.'/FS/zip';
+        //request to filesystem to get the created Zip-File
+        $answer = Request::custom('POST', $URL, $header,json_encode($filesToZip));
+        $zipFile = json_decode($answer['content'], true); 
+        
+        //ToDo: get Zip-File
+        
+        $this->app->response->setBody($zipFile);
     }
+
+    public function uploadZip($userid, $sheetid){
+        $header = $this->app->request->headers->all();
+        $body = json_decode($this->app->request->getBody(), true); //1 file-Object
+        
+        $URL = 'http://141.48.9.92/uebungsplattform/DB/DBUser/user/'.$userid;
+        //request to database to get the tutor
+        $answer = Request::custom('GET', $URL, $header,"");
+        $user = json_decode($answer['content'], true); 
+        
+        $filename = $user['userName'].'.zip';
+        file_put_contents($filename, base64_decode($body['body']));
+        
+        $zip = new ZipArchive();
+        $zip->open($filename);
+        $zip->extractTo('./'.$userid.'/');
+        $zip->close();
+        $csv = fopen('./'.$userid.'/'.$user['lastName'].'_'.$sheetid.'.csv', "r");
+        while (($row = fgetcsv($csv)) !== false){
+            $row = explode(";", $row[0]);
+            if($row[0][0] == "A"){
+                $exerciseName = $row[0];
+            }elseif(!($row[0] == "ID" or Count($row) == 1)){
+                $fileBody = file_get_contents('./'.$userid.'/'.$exerciseName.'/'.$row[0].'.pdf');
+                $file = array(
+                        'displayName' => $exerciseName.'_'.$row[0],
+                        'body' => base64_encode($fileBody),
+                        );
+                
+                $URL = $this->lURL.'/FS/file';
+                //request to filesystem to save the marking file
+                $answer = Request::custom('POST', $URL, $header,json_encode($file));
+                $markingFile = json_decode($answer['content'], true);
+                
+                
+                $marking = array(
+                        'id' => $row[0],
+                        'points' => $row[1],
+                        'outstanding' => $row[3],
+                        'tutorId' => $userid,
+                        'tutorComment' => $row[5],
+                        'file' => $markingFile['address'],
+                        'status' => $row[4],
+                        );
+                        
+                 $URL = $this->lURL.'/DB/marking/'.$marking['id'];
+                //request to database to edit the marking
+                $answer = Request::custom('PUT', $URL, $header,json_encode($marking));
+            }
+        }
+        fclose($csv);
+        
+    }
+    
 }
 /**
  * get new Config-Datas from DB 

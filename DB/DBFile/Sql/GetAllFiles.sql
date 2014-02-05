@@ -1,9 +1,0 @@
-select 
-    F_id,
-    F_displayName,
-    F_address,
-    F_timeStamp,
-    F_fileSize,
-    F_hash
-from
-    File
