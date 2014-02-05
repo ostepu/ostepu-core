@@ -1,25 +1,28 @@
-<form action="RightsManagement.php" method="GET">
-    <input type="hidden" value="modifyTutor" name="action">
-    <div class="content-element">
-        <div class="content-header">
-            <div class="content-title left uppercase">Rechte vergeben</div>
-            <button class="text-button info-color bold right">Rechte vergeben</button>
-        </div>
+<input type="hidden" name="action" value="GrantRights">
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left uppercase">Rechte vergeben</div>
+        <button class="text-button info-color bold right">Rechte vergeben</button>
+    </div>
 
-        <div class="content-body-wrapper">
-            <div class="content-body left">
-                <label class="form-field left label bold" for="grantRightsPerson">Kürzel der Person:</label>
-                <input class="form-field text-input" name="grantRightsPerson" 
-                value="abcde" id="grantRightsPerson" />
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            Um einem beliebigen Nutzer die Teilnahme am Kurs zu ermöglichen oder um dessen Status zu erhöhen, 
+            muss hier das Kürzel bzw. das Login des Nutzers eingetragen und ein entsprechender Status
+            ausgewählt werden. <br /><br />
+            <label class="form-field left label bold" for="grantRightsPerson">Kürzel der Person:</label>
+            <input class="form-field text-input" name="grantRightsPerson" 
+            value="abcde" id="grantRightsPerson" />
 
-                <div class="form-field left label bold new-line" for="tutorRightsRight">Rechte:</div>
-                <div class="form-field left">
-                    <input type="radio" name="grantTutorRights" value="true" id="grantTutorRights" checked="true" />
-                    <label for="grantTutorRights"> Tutor</label>
-                    <input type="radio" name="grantLecturerRights" value="false" id="grantLecturerRights" />
-                    <label for="grantLecturerRights"> Dozent</label>
-                </div>
+            <div class="form-field left label bold new-line" for="tutorRightsRight">Rechte:</div>
+            <div class="form-field left">
+                <input type="radio" name="grantStudentRights" id="grantStudentRights" checked="true" />
+                <label for="grantStudentRights"> Student</label>
+                <input type="radio" name="grantTutorRights" id="grantTutorRights" />
+                <label for="grantTutorRights"> Tutor</label>
+                <input type="radio" name="grantLecturerRights" id="grantLecturerRights" />
+                <label for="grantLecturerRights"> Dozent</label>
             </div>
-        </div> <!-- end: content-body -->
-    </div> <!-- end: content-wrapper -->
-</form>
+        </div>
+    </div> <!-- end: content-body -->
+</div> <!-- end: content-wrapper -->

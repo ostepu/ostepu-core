@@ -1,30 +1,28 @@
-<form action="RightsManagement.php" method="GET">
-    <input type="hidden" value="modifyLecturer" name="action">
-    <div class="content-element">
-        <div class="content-header">
-            <div class="content-title left uppercase">Rechte entziehen</div>
-            <button class="text-button info-color bold right">Rechte entziehen</button>
-        </div>
+<input type="hidden" name="action" value="RevokeRights">
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left uppercase">Rechte entziehen</div>
+        <button class="text-button info-color bold right">Rechte entziehen</button>
+    </div>
 
-        <div class="content-body-wrapper">
-            <div class="content-body left">
-                Hiermit wird der ausgewählten Person der niedrigste Status (Student) zugewiesen. <br /><br />
-                <label class="form-field left label bold" for="lecturerRightsPerson">Person auswählen:</label>
-                <select class="form-field left text-input" name="userID" id="lecturerRightsPerson">
-                    <option value="">Bitte wählen</option>
-                    <?php
-                        if(!empty($users)) {
-                            foreach ($users as $user) {
-                                print "<option value=\"";
-                                print $user['id'];
-                                print "\">";
-                                print $user['firstName'] . " " . $user['lastName'] . " (" . $user['statusName'] . ")";
-                                print "</option>";
-                            }
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            Hiermit wird dem ausgewählten Nutzer der niedrigste Status (Student) zugewiesen. <br /><br />
+            <label class="form-field left label bold" for="lecturerRightsPerson">Person auswählen:</label>
+            <select class="form-field left text-input" name="userID" id="lecturerRightsPerson">
+                <option value="">Bitte wählen</option>
+                <?php
+                    if(!empty($users)) {
+                        foreach ($users as $user) {
+                            print "<option value=\"";
+                            print $user['id'];
+                            print "\">";
+                            print $user['firstName'] . " " . $user['lastName'] . " (" . $user['statusName'] . ")";
+                            print "</option>";
                         }
-                    ?>
-                </select>
-            </div>
-        </div> <!-- end: content-body -->
-    </div> <!-- end: content-wrapper -->
-</form>
+                    }
+                ?>
+            </select>
+        </div>
+    </div> <!-- end: content-body -->
+</div> <!-- end: content-wrapper -->

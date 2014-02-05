@@ -29,6 +29,9 @@ class Authentication extends AbstractAuthentication
         // force to use session-cookies and to transmit SID over URL
         ini_set('session.use_only_cookies', '1');
         ini_set('session.use_trans_sid', '0');
+
+        // start session
+        session_start();
     }
 
     /**
@@ -78,9 +81,9 @@ class Authentication extends AbstractAuthentication
                 $refresh = $this->refreshSession();
                 return $refresh;
             } else {
-                /**
-                 * @todo increase FailedLogin field
-                 */
+                $userid = $user['id'];
+                $databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/user/user/{$userid}/IncFailedLogin";
+                $user = http_get($databaseURI, false, $message);
             }
         }
         return false;

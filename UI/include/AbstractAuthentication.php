@@ -122,7 +122,7 @@ abstract class AbstractAuthentication
         if($_GET['action'] == "logout" || $noback == true) {
             // delete session in DB
             $session = $_SESSION['SESSION'];
-            http_delete("http://141.48.9.92/uebungsplattform/DB/DBControl/session/{$session}",true,$message);
+            http_delete("http://141.48.9.92/uebungsplattform/DB/DBControl/session/{$session}",true,$message,true);
 
             // delete session in UI
             session_destroy();
@@ -132,7 +132,7 @@ abstract class AbstractAuthentication
         } else {
             // delete session in DB
             $session = $_SESSION['SESSION'];
-            http_delete("http://141.48.9.92/uebungsplattform/DB/DBControl/session/{$session}",true,$message);
+            http_delete("http://141.48.9.92/uebungsplattform/DB/DBControl/session/{$session}",true,$message,true);
 
             // delete session in UI
             session_destroy();

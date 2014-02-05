@@ -1,52 +1,42 @@
-<input type="hidden" name="action" value="CourseSettings">
+<input type="hidden" name="action" value="CreateCourse">
 <div class="content-element">
     <div class="content-header">
-        <div class="content-title left uppercase">Veranstaltungseinstellungen</div>
+        <div class="content-title left uppercase">Neue Veranstaltung anlegen</div>
         <div class="info-color bold right">
-            <button class="text-button info-color bold right">Änderung speichern</button>
+            <button class="text-button info-color bold right">anlegen</button>
         </div>
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body left">
             <label class="form-field left label bold" for="courseName">Veranstaltungsname:</label>
-            <input class="form-field left text-input" name="courseName" value="<?php print $name; ?>" id="courseName" />
+            <input class="form-field left text-input" name="courseName" value="Veranstaltungsname" id="courseName" />
 
             <label class="form-field left label bold new-line" for="semester">Semester:</label>
             <select class="form-field left text-input short" name="semester" id="semester">
                 <?php 
-                    // Dynamically creates a list of possible semesters beginning
-                    // with the current year + 1 and ending with the current year - 7 or the $semester if it is older
-                    $savedYear = substr($semester, -4);
-                    $currentYear = date('Y') + 1;
-                    if ($savedYear < $currentYear-7) {
-                        $endyear = $savedYear;
-                    } else {
-                        $endyear = $currentYear -7;
-                    }
+                    /**
+                     * @todo Automatically select the current year.
+                     */
 
+                    // Dynamically creates a list of possible semesters beginning
+                    // with the current year + 1 and ending with the current year - 7
+                    
+                    $currentYear = date('Y') + 1;
+                    $endyear = $currentYear-7;
 
                     for ($i = $currentYear; $i >= $endyear; $i--) {
                         // prints a list item for the summer term
                         print "<option";
-                        // select it if it is current semester
-                        if ("SS ".$i == $semester){ 
-                            print " selected=\"selected\"";
-                        }
                         print " value=\"SS " . $i . "\">";
                         print ("SS " . $i);
                         print "</option>";
 
                         // prints a list item for the winter term
                         print "<option";
-                        // select it if it is current semester
-                        if (("WS " . (string)($i - 1) . "/" . $i) == $semester) {
-                            print " selected=\"selected\"";
-                        }
-                        print " value=\"WS " . (string)($i - 1) . "/" . $i . "\">";
+                        print " value=\"WS " . $i . "\">";
                         print ("WS " . (string)($i - 1) . "/" . $i);
                         print "</option>";
-
                     }
                 ?>
             </select>
@@ -55,7 +45,7 @@
                 Max. Gruppengröße (Standardwert):
             </label>
             <input class="form-field left text-input short" name="defaultGroupSize" 
-            value="<?php print $defaultGroupSize; ?>" id="defaultGroupSize" />
+            value="5" id="defaultGroupSize" />
         </div>
     </div> <!-- end: content-body -->
 </div> <!-- end: content-wrapper -->

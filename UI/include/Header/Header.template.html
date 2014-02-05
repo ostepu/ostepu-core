@@ -4,7 +4,7 @@
             <?php print $name; ?>
         </div>
         <?php
-        if (!is_null($backURL) && !is_null($backTitle)) {
+        if (isset($backURL) && isset($backTitle) && !is_null($backURL) && !is_null($backTitle)) {
             print '<a class="change-course" href="';
             print $backURL . '">';
             print $backTitle;

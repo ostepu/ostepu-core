@@ -13,12 +13,6 @@ include_once 'include/Template.php';
 include_once '../Assistants/Logger.php';
 include_once 'include/Helpers.php';
 
-// no error messages
-// error_reporting(0);
-
-// start session
-session_start();
-
 $auth = new Authentication();
 Authentication::preventSessionFix();
 
@@ -52,6 +46,8 @@ if (isset($_POST['action'])) {
     } else {
         $notifications[] = MakeNotification("error", "Die Anmeldung war fehlerhaft!");
     }
+} else {
+    $notifications = array();
 }
 
 // construct a new header

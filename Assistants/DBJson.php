@@ -239,13 +239,23 @@ class DBJson
                 $key = $rw[$primKey];
             }
             
-            if (isset($sec[$rw[$secKey.$extension]])){
-                $prim[$key][$primAttrib][$rw[$secKey.$extension]] = $sec[$rw[$secKey.$extension]];
+            $key2 = "";
+            if (is_array($secKey)){
+                foreach ($secKey as $di){
+                    $key2 = $key2 . $rw[$di.$extension] . ',';
+                }
+            } else{
+                $key2 = $rw[$secKey.$extension];
             }
+            
+            if (isset($sec[$key2])){
+                $prim[$key][$primAttrib][$key2] = $sec[$key2];
+            }
+
         }
         
         foreach ($prim as &$row){
-            $row[$primAttrib] = array_merge($row[$primAttrib]);
+            $row[$primAttrib] = array_values($row[$primAttrib]);
         }
         
         $prim = array_values($prim);
@@ -327,7 +337,7 @@ class DBJson
     
     
         foreach ($prim as &$row){
-            $row[$primAttrib] = array_merge($row[$primAttrib]);
+            $row[$primAttrib] = array_values($row[$primAttrib]);
         }
         
         return $prim;
@@ -391,8 +401,17 @@ class DBJson
         }
     
         foreach ($data as $rw){
+            $key = "";
+            if (is_array($primKey)){
+                foreach ($primKey as $di){
+                    $key = $key . $rw[$di] . ',';
+                }
+            } else{
+                $key = $rw[$primKey];
+            }
+            
             if (isset($sec[$rw[$secKey]])){
-                array_push($prim[$rw[$primKey]][$primAttrib], $rw[$secKey]);
+                array_push($prim[$key][$primAttrib], $rw[$secKey]);
             }
         }
         

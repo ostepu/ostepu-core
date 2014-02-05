@@ -62,6 +62,35 @@ include_once '../Assistants/Logger.php';
         }
 
         /**
+         * defines a form starting from the first element and ending with the last element in arguments.
+         *
+         * @param string $target The target for the form;
+         * @param Template $arguments Some Templates which have to be in a form tag;
+         * @return self
+         */
+        public function defineForm($target)
+        {
+            $arguments = func_get_args();
+            array_shift($arguments);
+
+            // get position of the Templates in contentElements
+            $first = array_values($arguments)[0];
+            $firstkey = array_search($first, $this->contentElements, true);
+            $end = end($arguments);
+            $endkey = array_search($end, $this->contentElements, true);
+
+            // define form
+            $formstart = "<form action=\"{$target}\" method=\"POST\">";
+            $formend = "</form>";
+
+            // insert formtags before and after the given range
+            $this->contentElements = array_merge(array_slice($this->contentElements, 0, $firstkey),
+                                                 array(0 => $formstart),
+                                                 array_slice($this->contentElements, $firstkey, $endkey-$firstkey+1),
+                                                 array(0 => $formend),array_slice($this->contentElements, $endkey+1));
+        }
+
+        /**
          * A function that displays the wrapper
          */
         public function show()

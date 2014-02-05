@@ -37,7 +37,7 @@ class Template
      *
      * @param string $fileName The name of a file in which a template is stored
      */
-    public function WithTemplateFile($fileName)
+    public static function WithTemplateFile($fileName)
     {
         $templateString = file_get_contents($fileName);
 
