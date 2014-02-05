@@ -28,6 +28,6 @@ ul.navigation a {
     color: #335570;
 }
 
-ul.navigation a#selected {
+.navigation a:hover {
     color: #ffffff;
 }
