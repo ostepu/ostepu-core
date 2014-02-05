@@ -70,7 +70,8 @@ class StudIPAuthentication extends AbstractAuthentication
                 // multiplexer which site the user wants to see
                 $sites = array('0' => 'Student.php',
                                '1' => 'Tutor.php',
-                               '3' => 'Lecturer.php');
+                               '2' => 'Lecturer.php',
+                               '3' => 'Admin.php');
 
                 // if you are not in the course or the course doesn't exist set error 403
                 if (isset($this->courseStatus) && (empty($sites[$this->courseStatus]) == false)) {
