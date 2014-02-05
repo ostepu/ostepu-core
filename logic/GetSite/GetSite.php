@@ -688,7 +688,7 @@ class LgetSite
         // only selects the users whose course-status is tutor or lecturer 
         if(!empty($allUsers)) {
             foreach($allUsers as $user) {
-                if ($user['courses'][0]['status'] > 0 && $user['courses'][0]['status'] < 4) {
+                if ($user['courses'][0]['status'] >= 0 && $user['courses'][0]['status'] < 4) {
 
                     // adds the course-status to the user objects in the response
                     $user['statusName'] = $this->getStatusName($user['courses'][0]['status']);
