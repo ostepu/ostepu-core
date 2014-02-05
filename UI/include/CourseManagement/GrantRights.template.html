@@ -10,17 +10,70 @@
             Um einem beliebigen Nutzer die Teilnahme am Kurs zu ermöglichen oder um dessen Status zu erhöhen, 
             muss hier das Kürzel bzw. das Login des Nutzers eingetragen und ein entsprechender Status
             ausgewählt werden. <br /><br />
-            <label class="form-field left label bold" for="grantRightsPerson">Kürzel der Person:</label>
-            <input class="form-field text-input" name="grantRightsPerson" 
-            value="abcde" id="grantRightsPerson" />
+            <label class="form-field left label bold" for="lecturerRightsPerson">Person auswählen:</label>
+            <select class="form-field left text-input" name="userID" id="lecturerRightsPerson" size="10">
+                <?php
+                    $studentsArea = "<optgroup label=\"Studenten\">";
+                    $tutorsArea = "<optgroup label=\"Tutoren\">";
+                    $lecturersArea = "<optgroup label=\"Dozenten\">";
+                    $adminsArea = "<optgroup label=\"Administratoren\">";
+
+                    $emptyStudents = true;
+                    $emptyTutors = true;
+                    $emptyLecturers = true;
+                    $emptyAdmins = true;
+
+                    if(!empty($users)) {
+                        foreach ($users as $user) {
+                            if ($user['statusName'] == "student") {
+                                $studentsArea .= "<option value=\"" . $user['id'] . "\">" . $user['firstName'] . " ";
+                                $studentsArea .= $user['lastName'] . ", " . $user['userName'] . "</option>";
+                                $emptyStudents = false;
+                            } elseif ($user['statusName'] == "tutor") {
+                                $tutorsArea .= "<option value=\"" . $user['id'] . "\">" . $user['firstName'] . " ";
+                                $tutorsArea .= $user['lastName'] . ", " . $user['userName'] . "</option>";
+                                $emptyTutors = false;
+                            } elseif ($user['statusName'] == "lecturer") {
+                                $lecturersArea .= "<option value=\"" . $user['id'] . "\">" . $user['firstName'] . " ";
+                                $lecturersArea .= $user['lastName'] . ", " . $user['userName'] . "</option>";
+                                $emptyLecturers = false;
+                            } elseif ($user['statusName'] == "administrator") {
+                                $adminsArea .= "<option value=\"" . $user['id'] . "\">" . $user['firstName'] . " ";
+                                $adminsArea .= $user['lastName'] . ", " . $user['userName'] . "</option>";
+                                $emptyAdmins = false;
+                            }
+                        }
+                        if ($emptyStudents == false) {
+                            print $studentsArea . "</optgroup>";
+                        } else {
+                            print "<optgroup label=\"Keine Studenten\"></optgroup>";
+                        }
+                        if ($emptyTutors == false) {
+                            print $tutorsArea . "</optgroup>";
+                        } else {
+                            print "<optgroup label=\"Keine Tutoren\"></optgroup>";
+                        }
+                        if ($emptyLecturers == false) {
+                            print $lecturersArea . "</optgroup>";
+                        } else {
+                            print "<optgroup label=\"Keine Dozenten\"></optgroup>";
+                        }
+                        if ($emptyAdmins == false) {
+                            print $adminsArea . "</optgroup>";
+                        } else {
+                            print "<optgroup label=\"Keine Administratoren\"></optgroup>";
+                        }
+                    }
+                ?>
+            </select>
 
             <div class="form-field left label bold new-line" for="tutorRightsRight">Rechte:</div>
             <div class="form-field left">
-                <input type="radio" name="grantStudentRights" id="grantStudentRights" checked="true" />
+                <input type="radio" name="Rights" id="grantStudentRights" checked="true" value="0"/>
                 <label for="grantStudentRights"> Student</label>
-                <input type="radio" name="grantTutorRights" id="grantTutorRights" />
+                <input type="radio" name="Rights" id="grantTutorRights" value="1"/>
                 <label for="grantTutorRights"> Tutor</label>
-                <input type="radio" name="grantLecturerRights" id="grantLecturerRights" />
+                <input type="radio" name="Rights" id="grantLecturerRights" value="2"/>
                 <label for="grantLecturerRights"> Dozent</label>
             </div>
         </div>
