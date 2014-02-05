@@ -579,6 +579,7 @@ class LgetSite
             foreach ($possibleExerciseTypes as $eT){
                 if($ac['exerciseTypeId'] == $eT['id']){
                     $newMinPercentage['approvalConditionId'] = $ac['id'];
+                    $newMinPercentage['exerciseTypeID'] = $ac['exerciseTypeID'];
                     $newMinPercentage['exerciseType'] = $eT['name'];
                     $newMinPercentage['minimumPercentage'] = $ac['percentage'] * 100;
 
