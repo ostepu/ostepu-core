@@ -1,6 +1,30 @@
 <ul id="navigation" class="navigation">
-    <li><a href="#">Studentenrolle einnehmen</a></li>
-    <li><a id="selected" href="RightsManagement.php">Personen verwalten</a></li>
-    <li><a href="Condition.php">Zulassungsbedingungen</a></li>
-    <li><a href="Backup.php">Backups</a></li>
+        <li>
+        <?php
+        print '<a href="Student.php?cid=';
+        print $cid;
+        print '">Studentenrolle einnehmen</a>';
+        ?>
+    </li>
+    <li>
+        <?php
+        print '<a href="Lecturer.php?cid=';
+        print $cid;
+        print '">Studentenrolle verlassen</a>';
+        ?>
+    </li>
+    <li>
+        <?php
+        print '<a href="CourseManagement.php?cid=';
+        print $cid;
+        print '">Kurs verwalten</a>';
+        ?>
+    </li>
+    <li>
+        <?php
+        print '<a href="Condition.php?cid=';
+        print $cid;
+        print '">Zulassungsbedingungen</a>';
+        ?>
+    </li>
 </ul>

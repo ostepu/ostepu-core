@@ -12,7 +12,7 @@ include_once 'include/Boilerplate.php';
 
 // load user data from the database
 $databaseURI = $getSiteURI . "/condition/user/{$uid}/course/{$cid}";
-$condition_data = http_get($databaseURI);
+$condition_data = http_get($databaseURI, false);
 $condition_data = json_decode($condition_data, true);
 
 $user_course_data = $condition_data['user'];
