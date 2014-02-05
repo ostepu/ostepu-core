@@ -17,7 +17,7 @@ $admin_data = json_decode($admin_data, true);
 
 $user_course_data = $admin_data['user'];
 
-Authentication::checkRights(2, $cid, $uid, $user_course_data);
+Authentication::checkRights(3, $cid, $uid, $user_course_data);
 
 $menu = MakeNavigationElementForCourseStatus($user_course_data['courses']);
 
