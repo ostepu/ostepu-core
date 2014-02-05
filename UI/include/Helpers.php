@@ -299,7 +299,9 @@ function MakeNavigationElementForCourseStatus($courses) {
             break;
     }
 
-    $navigationElement->bind(array('cid' => $course['id']));
+    if (isset($navigationElement)) {
+        $navigationElement->bind(array('cid' => $course['id']));
+    }
 
     return $navigationElement;
 }
