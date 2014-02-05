@@ -16,6 +16,14 @@ a {
     color: #FFFFFF;
 }
 
+.course-list {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 620px;
+    display: inline;
+}
+
 a.plain:after {
     content: none;
 }
