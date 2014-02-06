@@ -268,9 +268,9 @@ function cleanInput($input)
 
         if (get_magic_quotes_gpc() == 0) {
             // magic quotes is turned off
-            $input = htmlspecialchars(trim(stripcslashes($input)), ENT_QUOTES);
+            $input = htmlspecialchars(trim(stripcslashes($input)), ENT_QUOTES, 'UTF-8');
         } else {
-            $input = htmlspecialchars(trim($input), ENT_QUOTES);
+            $input = htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
         }
     }
 

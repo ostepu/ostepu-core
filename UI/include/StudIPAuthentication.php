@@ -131,6 +131,7 @@ class StudIPAuthentication extends AbstractAuthentication
         if ($getUserData != "not found") {
             // convert output to our user structure
             $getUserData = explode(":", $getUserData);
+            $getUserData = cleanInput($getUserData);
 
             $newUser = new User();
             $user = $newUser->createUser(NULL,$getUserData[4],$getUserData[2],$getUserData[0],$getUserData[1],NULL,"1","noPassword","noSalt","0",$uid);
