@@ -10,12 +10,12 @@
 
 include_once 'include/Boilerplate.php';
 
-// load user and course data from the database
-$databaseURL = $databaseURI . "/coursestatus/course/{$cid}/user/{$uid}";
-$user_course_data = http_get($databaseURL, true, $message);
-$user_course_data = json_decode($user_course_data, true);
+// load tutor data from GetSite
+$URI = $getSiteURI . "/tutor/user/{$uid}/course/{$cid}";
+$tutor_data = http_get($URI, true);
+$tutor_data = json_decode($tutor_data, true);
 
-Logger::Log($user_course_data);
+$user_course_data = $tutor_data['user'];
 
 // check userrights for course
 Authentication::checkRights(1, $cid, $uid, $user_course_data);
@@ -28,17 +28,8 @@ $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
                "backURL" => "index.php",
                "notificationElements" => $notifications));
 
-$databaseURL = $databaseURI . "/exercisesheet/course/{$cid}/exercise";
-$sheetData = http_get($databaseURL, true, $message);
-$sheetData = json_decode($sheetData, true);
-
-// convert the json string into an associative array
-$sheetData = array("sheets" => $sheetData,
-                   "uid" => $uid,
-                   "cid" => $cid);
-
 $t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetTutor.template.html');
-$t->bind($sheetData);
+$t->bind($tutor_data);
 
 $w = new HTMLWrapper($h, $t);
 $w->set_config_file('include/configs/config_student_tutor.json');
