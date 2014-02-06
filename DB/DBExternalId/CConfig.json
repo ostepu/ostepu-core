@@ -1,1 +1,1 @@
-{"id":"20","name":"DBExternalId","address":"localhost\/uebungsplattform\/DB\/DBExternalId","option":"","prefix":"externalid","links":[{"id":"40","name":"out","address":"localhost\/uebungsplattform\/DB\/DBQuery","prefix":null,"target":"13","owner":"20","relevanz":""}]}
+{"id":"20","name":"DBExternalId","address":"localhost\/uebungsplattform\/DB\/DBExternalId","option":"","prefix":"externalid","links":[{"id":"40","name":"out","address":"localhost\/uebungsplattform\/DB\/DBQuery","target":"13","owner":"20","relevanz":""}]}
