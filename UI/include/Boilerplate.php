@@ -32,7 +32,9 @@ if (isset($_GET['sid'])) {
     Logger::Log('no sheet id!\n');
 }
 
-$databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl";
-$getSiteURI = "http://141.48.9.92/uebungsplattform/logic/GetSite";
+$serverURI = "http://141.48.9.92/uebungsplattform/";
+$databaseURI = $serverURI . "DB/DBControl";
+$filesystemURI = $serverURI . "fs/fscontrol/";
+$getSiteURI = $serverURI . "logic/GetSite";
 
 ?>

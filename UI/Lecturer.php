@@ -16,6 +16,7 @@ $lecturer_data = http_get($databaseURI, false);
 $lecturer_data = json_decode($lecturer_data, true);
 
 $user_course_data = $lecturer_data['user'];
+$lecturer_data['filesystemURI'] = $filesystemURI;
 
 // check userrights for course
 Authentication::checkRights(2, $cid, $uid, $user_course_data);
