@@ -14,37 +14,28 @@
 
             <label class="form-field left label bold new-line" for="semester">Semester:</label>
             <select class="form-field left text-input short" name="semester" id="semester">
-                <?php 
+                <?php
                     /**
                      * @todo Automatically select the current year.
                      */
-
-                    // Dynamically creates a list of possible semesters beginning
-                    // with the current year + 1 and ending with the current year - 7
-                    
-                    $currentYear = date('Y') + 1;
-                    $endyear = $currentYear-7;
-
-                    for ($i = $currentYear; $i >= $endyear; $i--) {
-                        // prints a list item for the summer term
-                        print "<option";
-                        print " value=\"SS " . $i . "\">";
-                        print ("SS " . $i);
-                        print "</option>";
-
-                        // prints a list item for the winter term
-                        print "<option";
-                        print " value=\"WS " . $i . "\">";
-                        print ("WS " . (string)($i - 1) . "/" . $i);
-                        print "</option>";
-                    }
                 ?>
+                <?php $currentYear = date('Y') + 1; ?>
+                <?php $endyear = $currentYear-7; ?>
+                <?php for ($i = $currentYear; $i >= $endyear; $i--): ?>
+                        <option  value="SS <?= $i ?> ">
+                            SS <?= $i ?>
+                        </option>
+
+                        <option value="WS <?= $i ?>">
+                            WS <?= ($i - 1), "/", $i ?>
+                        </option>
+                <?php endfor; ?>
             </select>
 
             <label class="form-field left label bold new-line" for="defaultGroupSize">
                 Max. Gruppengröße (Standardwert):
             </label>
-            <input class="form-field left text-input short" name="defaultGroupSize" 
+            <input class="form-field left text-input short" name="defaultGroupSize"
             value="5" id="defaultGroupSize" />
         </div>
     </div> <!-- end: content-body -->

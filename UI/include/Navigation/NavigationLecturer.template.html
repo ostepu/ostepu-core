@@ -1,16 +1,8 @@
 <ul id="navigation" class="navigation">
     <li>
-        <?php
-        print '<a href="Student.php?cid=';
-        print $cid;
-        print '">Studentenrolle einnehmen</a>';
-        ?>
+        <a href="Student.php?cid=<?= $cid ?>">Studentenrolle einnehmen</a>
     </li>
     <li>
-        <?php
-        print '<a href="Lecturer.php?cid=';
-        print $cid;
-        print '">Studentenrolle verlassen</a>';
-        ?>
+        <a href="Lecturer.php?cid=<?= $cid ?>">Studentenrolle verlassen</a>
     </li>
 </ul>

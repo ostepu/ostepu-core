@@ -9,20 +9,19 @@
 
     <div class="content-body-wrapper">
         <div class="content-body left">
-            <?php
-                // creates an input field for each ExerciseType
-                foreach ($minimumPercentages as $percentage) {
-                    print "<label class=\"form-field left label bold new-line\" ";
-                    print "for=\"".$percentage['approvalConditionId']."\">";
-                    print $percentage['exerciseType']." (Angabe in %)";
-                    print "</label>";
+            <?php foreach ($minimumPercentages as $percentage): ?>
+                <label class="form-field left label bold new-line"
+                    for="<?= $percentage['approvalConditionId'] ?>"
+                >
+                    <?php print $percentage['exerciseType'] . " (Angabe in %)"; ?>
+                </label>
 
-                    print "<input class=\"form-field left text-input short\" ";
-                    print "name=\"".$percentage['approvalConditionId']."\" ";
-                    print "value=\"".$percentage['minimumPercentage']."\" ";
-                    print "id=\"".$percentage['approvalConditionId']."\" />";
-                }
-            ?>
+                <input class="form-field left text-input short"
+                       name="<?= $percentage['approvalConditionId'] ?>"
+                       value="<?= $percentage['minimumPercentage'] ?>"
+                       id="<?= $percentage['approvalConditionId'] ?>"
+                >
+            <?php endforeach; ?>
         </div>
     </div> <!-- end: content-body -->
 </div> <!-- end: content-wrapper -->

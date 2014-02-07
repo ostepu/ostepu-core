@@ -1,30 +1,14 @@
 <ul id="navigation" class="navigation">
-        <li>
-        <?php
-        print '<a href="Student.php?cid=';
-        print $cid;
-        print '">Studentenrolle einnehmen</a>';
-        ?>
+    <li>
+        <a href="Student.php?cid=<?= $cid ?>">Studentenrolle einnehmen</a>
     </li>
     <li>
-        <?php
-        print '<a href="Lecturer.php?cid=';
-        print $cid;
-        print '">Studentenrolle verlassen</a>';
-        ?>
+        <a href="Lecturer.php?cid=<?= $cid ?>">Studentenrolle verlassen</a>
     </li>
     <li>
-        <?php
-        print '<a href="CourseManagement.php?cid=';
-        print $cid;
-        print '">Kurs verwalten</a>';
-        ?>
+        <a href="CourseManagement.php?cid=<?= $cid ?>">Kurs verwalten</a>
     </li>
     <li>
-        <?php
-        print '<a href="Condition.php?cid=';
-        print $cid;
-        print '">Zulassungsbedingungen</a>';
-        ?>
+        <a href="Condition.php?cid=<?= $cid ?>">Zulassungsbedingungen</a>
     </li>
 </ul>
