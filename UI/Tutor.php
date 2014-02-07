@@ -14,6 +14,7 @@ include_once 'include/Boilerplate.php';
 $URI = $getSiteURI . "/tutor/user/{$uid}/course/{$cid}";
 $tutor_data = http_get($URI, true);
 $tutor_data = json_decode($tutor_data, true);
+$tutor_data['filesystemURI'] = $filesystemURI;
 
 $user_course_data = $tutor_data['user'];
 

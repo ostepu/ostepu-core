@@ -37,7 +37,6 @@ foreach ($sheets as $sheet):
                 <?php endforeach; ?>
             </ol>
         </div>
-
         <div class="content-body right">
             <ol class="body-options body-option-color">
                 <li>
@@ -50,7 +49,7 @@ foreach ($sheets as $sheet):
                 <li>
                 <?php
                     print '<a href="';
-                    print $filesystemURI . $sheet['sampleSolution']['address'] . "/Aufgabenblatt.pdf";
+                    print $filesystemURI . $sheet['sampleSolution']['address'] . "/Musterloesung.pdf";
                     print '">Musterlösung</a>';
                 ?>
                 </li>
