@@ -120,7 +120,7 @@ class ApprovalCondition extends Object implements JsonSerializable
      *
      * @return an approval condition object.
      */
-    public function createApprovalCondition($approvalConditionId,$courseId,$exerciseTypeId,$percentage)
+    public static function createApprovalCondition($approvalConditionId,$courseId,$exerciseTypeId,$percentage)
     {
         return new ApprovalCondition(array('id' => $approvalConditionId,
         'courseId' => $courseId,

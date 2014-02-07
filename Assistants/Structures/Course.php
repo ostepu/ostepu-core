@@ -159,7 +159,7 @@ class Course extends Object implements JsonSerializable
      *
      * @return an course object
      */
-    public function createCourse($courseId,$name,$semester,$defaultGroupSize)
+    public static function createCourse($courseId,$name,$semester,$defaultGroupSize)
     {
         return new Course(array('id' => $courseId,
         'name' => $name,

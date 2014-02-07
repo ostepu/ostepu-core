@@ -93,7 +93,7 @@ class Attachment extends Object implements JsonSerializable
      *
      * @return an attachment object.
      */
-    public function createAttachment($attachmentId,$exerciseId,$fileId)
+    public static function createAttachment($attachmentId,$exerciseId,$fileId)
     {
         return new Attachment(array('id' => $attachmentId,
         'exerciseId' => $exerciseId,

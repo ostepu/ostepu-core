@@ -95,7 +95,7 @@ class Group extends Object implements JsonSerializable
      *
      * @return an group object
      */
-    public function createGroup($leaderId,$memberId,$sheetId)
+    public static function createGroup($leaderId,$memberId,$sheetId)
     {
         return new Group(array('sheetId' => $sheetId,
         'leader' => new User(array('id' => $leaderId)), 

@@ -302,7 +302,7 @@ class Submission extends Object implements JsonSerializable
      *
      * @return an submission object
      */
-    public function createSubmission($submissionId,$studentId,$fileId,$exerciseId,$comment,$accepted,$date,$flag,$leaderId=null)
+    public static function createSubmission($submissionId,$studentId,$fileId,$exerciseId,$comment,$accepted,$date,$flag,$leaderId=null)
     {
         return new Submission(array('id' => $submissionId,
         'studentId' => $studentId, 

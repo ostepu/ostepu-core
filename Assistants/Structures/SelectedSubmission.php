@@ -92,7 +92,7 @@ class SelectedSubmission extends Object implements JsonSerializable
      *
      * @return an selected submission object
      */
-    public function createSelectedSubmission($leaderId,$submissionId,$exerciseId)
+    public static function createSelectedSubmission($leaderId,$submissionId,$exerciseId)
     {
         return new SelectedSubmission(array('leaderId' => $leaderId,
         'submissionId' => $submissionId, 
