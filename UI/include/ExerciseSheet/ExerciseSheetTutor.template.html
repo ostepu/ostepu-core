@@ -38,12 +38,11 @@ foreach ($sheets as $sheet):
                 <li><a href="#">Einsendung herunterladen</a></li>
                 <li><a href="#">Einsendung hochladen</a></li>
                 <li>
-                <?php
-                    print '<a href="TutorAssign.php?cid=';
-                    print $cid . '&sid=';
-                    print $sheet['id'];
-                    print '">Kontrolleurzuweisung</a></li>';
-                ?>
+                    <a href="TutorAssign.php?cid=<?= $user['courses'][0]['course']['id'],
+                                                     '&sid=',
+                                                     $sheet['id'] ?>">
+                        Kontrolleurzuweisung
+                    </a>
                 </li>
                 <li><a href="#">Korrekturassistent</a></li>
             </ol>

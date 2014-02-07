@@ -45,20 +45,18 @@ foreach ($sheets as $sheet):
                 <li><a href="#">Einsendungen herunterladen</a></li>
                 <li><a href="#">Einsendungen hochladen</a></li>
                 <li>
-                <?php
-                    print '<a href="TutorAssign.php?cid=';
-                    print $user['courses'][0]['course']['id'] . '&sid=';
-                    print $sheet['id'];
-                    print '">Kontrolleurzuweisung</a>';
-                ?>
+                    <a href="TutorAssign.php?cid=<?= $user['courses'][0]['course']['id'],
+                                                     '&sid=',
+                                                     $sheet['id'] ?>">
+                        Kontrolleurzuweisung
+                    </a>
                 </li>
                 <li>
-                <?php
-                    print '<a href="MarkingTool.php?cid=';
-                    print $user['courses'][0]['course']['id'] . '&sid=';
-                    print $sheet['id'];
-                    print '">Korrekturassistent</a>';
-                ?>
+                    <a href="MarkingTool.php?cid=<?= $user['courses'][0]['course']['id'],
+                                                     '&sid=',
+                                                     $sheet['id'] ?>">
+                        Korrekturassistent
+                    </a>
                 </li>
             </ol>
         </div>

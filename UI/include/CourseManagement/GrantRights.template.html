@@ -11,10 +11,10 @@
             <label class="form-field left label bold" for="lecturerRightsPerson">Person auswählen:</label>
             <select class="form-field left text-input" name="userID" id="lecturerRightsPerson" size="10">
                 <?php
-                    $studentsArea = "<optgroup label=\"Studenten\">";
-                    $tutorsArea = "<optgroup label=\"Tutoren\">";
-                    $lecturersArea = "<optgroup label=\"Dozenten\">";
-                    $adminsArea = "<optgroup label=\"Administratoren\">";
+                    $studentsArea = '<optgroup label="Studenten">';
+                    $tutorsArea = '<optgroup label="Tutoren">';
+                    $lecturersArea = '<optgroup label="Dozenten">';
+                    $adminsArea = '<optgroup label="Administratoren">';
 
                     $emptyStudents = true;
                     $emptyTutors = true;
@@ -22,44 +22,61 @@
                     $emptyAdmins = true;
 
                     if(!empty($users)) {
+
                         foreach ($users as $user) {
+
                             if ($user['statusName'] == "student") {
-                                $studentsArea .= "<option value=\"" . $user['id'] . "\">" . $user['firstName'] . " ";
+
+                                $studentsArea .= '<option value="' . $user['id'] . '">' . $user['firstName'] . " ";
                                 $studentsArea .= $user['lastName'] . ", " . $user['userName'] . "</option>";
+
                                 $emptyStudents = false;
+
                             } elseif ($user['statusName'] == "tutor") {
-                                $tutorsArea .= "<option value=\"" . $user['id'] . "\">" . $user['firstName'] . " ";
+
+                                $tutorsArea .= '<option value="' . $user['id'] . '">' . $user['firstName'] . " ";
                                 $tutorsArea .= $user['lastName'] . ", " . $user['userName'] . "</option>";
+
                                 $emptyTutors = false;
+
                             } elseif ($user['statusName'] == "lecturer") {
-                                $lecturersArea .= "<option value=\"" . $user['id'] . "\">" . $user['firstName'] . " ";
+
+                                $lecturersArea .= '<option value="' . $user['id'] . '">' . $user['firstName'] . " ";
                                 $lecturersArea .= $user['lastName'] . ", " . $user['userName'] . "</option>";
+
                                 $emptyLecturers = false;
+
                             } elseif ($user['statusName'] == "administrator") {
-                                $adminsArea .= "<option value=\"" . $user['id'] . "\">" . $user['firstName'] . " ";
+
+                                $adminsArea .= '<option value="' . $user['id'] . '">' . $user['firstName'] . " ";
                                 $adminsArea .= $user['lastName'] . ", " . $user['userName'] . "</option>";
+
                                 $emptyAdmins = false;
                             }
                         }
+
                         if ($emptyStudents == false) {
-                            print $studentsArea . "</optgroup>";
+                            print $studentsArea . '</optgroup>';
                         } else {
-                            print "<optgroup label=\"Keine Studenten\"></optgroup>";
+                            print '<optgroup label="Keine Studenten"></optgroup>';
                         }
+
                         if ($emptyTutors == false) {
-                            print $tutorsArea . "</optgroup>";
+                            print $tutorsArea . '</optgroup>';
                         } else {
-                            print "<optgroup label=\"Keine Tutoren\"></optgroup>";
+                            print '<optgroup label="Keine Tutoren"></optgroup>';
                         }
+
                         if ($emptyLecturers == false) {
-                            print $lecturersArea . "</optgroup>";
+                            print $lecturersArea . '</optgroup>';
                         } else {
-                            print "<optgroup label=\"Keine Dozenten\"></optgroup>";
+                            print '<optgroup label="Keine Dozenten"></optgroup>';
                         }
+
                         if ($emptyAdmins == false) {
-                            print $adminsArea . "</optgroup>";
+                            print $adminsArea . '</optgroup>';
                         } else {
-                            print "<optgroup label=\"Keine Administratoren\"></optgroup>";
+                            print '<optgroup label="Keine Administratoren"></optgroup>';
                         }
                     }
                 ?>

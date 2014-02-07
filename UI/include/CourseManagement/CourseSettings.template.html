@@ -10,51 +10,41 @@
     <div class="content-body-wrapper">
         <div class="content-body left">
             <label class="form-field left label bold" for="courseName">Veranstaltungsname:</label>
-            <input class="form-field left text-input" name="courseName" value="<?php print $name; ?>" id="courseName" />
+            <input class="form-field left text-input" name="courseName" value="<?= $name ?>" id="courseName" />
 
             <label class="form-field left label bold new-line" for="semester">Semester:</label>
             <select class="form-field left text-input short" name="semester" id="semester">
-                <?php 
+                <?php
                     // Dynamically creates a list of possible semesters beginning
                     // with the current year + 1 and ending with the current year - 7 or the $semester if it is older
-                    $savedYear = substr($semester, -4);
-                    $currentYear = date('Y') + 1;
-                    if ($savedYear < $currentYear-7) {
-                        $endyear = $savedYear;
-                    } else {
-                        $endyear = $currentYear -7;
-                    }
+                    $savedYear = substr($semester, -4); ?>
+                <?php $currentYear = date('Y') + 1; ?>
+                <?php if ($savedYear < $currentYear - 7): ?>
+                        <?php $endyear = $savedYear; ?>
+                <?php else: ?>
+                        <?php $endyear = $currentYear - 7; ?>
+                <?php endif; ?>
 
+                <?php for ($i = $currentYear; $i >= $endyear; $i--): ?>
 
-                    for ($i = $currentYear; $i >= $endyear; $i--) {
-                        // prints a list item for the summer term
-                        print "<option";
-                        // select it if it is current semester
-                        if ("SS ".$i == $semester){ 
-                            print " selected=\"selected\"";
-                        }
-                        print " value=\"SS " . $i . "\">";
-                        print ("SS " . $i);
-                        print "</option>";
+                        <?php $semesterString = "SS " . $i; ?>
+                        <option <?php echo ($semesterString == $semester) ? 'selected="selected"' : NULL ?>
+                            value="SS <?= $i ?>">
+                            SS <?= $i ?>
+                        </option>
 
-                        // prints a list item for the winter term
-                        print "<option";
-                        // select it if it is current semester
-                        if (("WS " . (string)($i - 1) . "/" . $i) == $semester) {
-                            print " selected=\"selected\"";
-                        }
-                        print " value=\"WS " . (string)($i - 1) . "/" . $i . "\">";
-                        print ("WS " . (string)($i - 1) . "/" . $i);
-                        print "</option>";
-
-                    }
-                ?>
+                        <?php $semesterString = "WS " . (string)($i - 1) . "/" . $i; ?>
+                        <option <?php echo $semesterString == $semester ? 'selected="selected"' : NULL ?>
+                            value="<?= $semesterString ?> "\>
+                            <?php echo $semesterString ?>
+                        </option>
+                <?php endfor; ?>
             </select>
 
             <label class="form-field left label bold new-line" for="defaultGroupSize">
                 Max. Gruppengröße (Standardwert):
             </label>
-            <input class="form-field left text-input short" name="defaultGroupSize" 
+            <input class="form-field left text-input short" name="defaultGroupSize"
             value="<?php print $defaultGroupSize; ?>" id="defaultGroupSize" />
         </div>
     </div> <!-- end: content-body -->

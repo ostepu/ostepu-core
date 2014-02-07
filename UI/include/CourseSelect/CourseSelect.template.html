@@ -7,18 +7,16 @@
         <div class="content-body left">
             <?php foreach ($courses as $course): ?>
                 <span class="left medium bold label new-line">
-                <?php print $statusName[$course['status']]; ?>
+                    <?php print $statusName[$course['status']]; ?>
                 </span>
                 <span class="left form-text course-list">
-                <?php print $course['course']['name']; ?>
+                    <?php print $course['course']['name']; ?>
                 </span>
-                <?php
-                    print '<a href="';
-                    print $sites[$course['status']] . '?cid=';
-                    print $course['course']['id'];
-                    print '" class="body-option-color deny-button right form-text">';
-                    print 'zur Veranstaltung</a>';
-                ?>
+
+                <a href="<?= $sites[$course['status']], '?cid=', $course['course']['id'] ?>"
+                   class="body-option-color deny-button right form-text">
+                    zur Veranstaltung
+                </a>
             <?php endforeach; ?>
         </div>
     </div> <!-- end: content-body -->

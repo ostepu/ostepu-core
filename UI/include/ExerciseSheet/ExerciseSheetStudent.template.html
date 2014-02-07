@@ -54,11 +54,11 @@ foreach ($sheets as $sheet):
             <ol class="body-options body-option-color">
                 <li><a href="#">Aufgabenblatt</a></li>
                 <li><a href="#">Musterlösung</a></li>
-                <?php
-                print '<li><a href="Group.php?sid=';
-                print $sheet['id'] . '&cid=';
-                print $cid . '">Gruppe verwalten</a></li>';
-                ?>
+                <li>
+                    <a href="Group.php?sid=<?= $sheet['id'], '&cid=', $cid ?>">
+                        Gruppe verwalten
+                    </a>
+                </li>
                 <li><a href="#">Alle Anhänge herunterladen</a></li>
                 <li><a href="#">Alle Einsendungen herunterladen</a></li>
             </ol>
