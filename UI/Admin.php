@@ -20,7 +20,8 @@ $user_course_data = $admin_data['user'];
 
 Authentication::checkRights(PRIVILEGE_LEVEL::ADMIN, $cid, $uid, $user_course_data);
 
-$menu = MakeNavigationElementForCourseStatus($user_course_data['courses']);
+$menu = MakeNavigationElementForCourseStatus($user_course_data['courses'],
+                                             PRIVILEGE_LEVEL::ADMIN);
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');

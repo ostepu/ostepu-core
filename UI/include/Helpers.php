@@ -284,7 +284,7 @@ function cleanInput($input)
     return $input;
 }
 
-function MakeNavigationElementForCourseStatus($courses) {
+function MakeNavigationElementForCourseStatus($courses, $requiredPrivilege, $switchDisabled = false) {
     if (count($courses) > 1) {
         return "";
     }
@@ -309,7 +309,10 @@ function MakeNavigationElementForCourseStatus($courses) {
     }
 
     if (isset($navigationElement)) {
-        $navigationElement->bind(array('cid' => $course['id']));
+        $navigationElement->bind(array('cid' => $course['id'],
+                                       'requiredPrivilege' => $requiredPrivilege,
+                                       'courseStatus' => $courseStatus,
+                                       'switchDisabled' => $switchDisabled));
     }
 
     return $navigationElement;

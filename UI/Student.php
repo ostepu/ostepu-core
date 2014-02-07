@@ -18,7 +18,8 @@ $user_course_data = json_decode($user_course_data, true);
 // check userrights for course
 Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $user_course_data);
 
-$menu = MakeNavigationElementForCourseStatus($user_course_data['courses']);
+$menu = MakeNavigationElementForCourseStatus($user_course_data['courses'],
+                                             PRIVILEGE_LEVEL::STUDENT);
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');

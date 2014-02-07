@@ -10,6 +10,8 @@
 
 include_once 'include/Boilerplate.php';
 
+$requiredPrivilege = PRIVILEGE_LEVEL::TUTOR;
+
 // load tutor data from GetSite
 $URI = $getSiteURI . "/tutor/user/{$uid}/course/{$cid}";
 $tutor_data = http_get($URI, true);

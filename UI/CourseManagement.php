@@ -101,7 +101,9 @@ $courseManagement_data = json_decode($courseManagement_data, true);
 
 $user_course_data = $courseManagement_data['user'];
 
-$menu = MakeNavigationElementForCourseStatus($user_course_data['courses']);
+$menu = MakeNavigationElementForCourseStatus($user_course_data['courses'],
+                                             PRIVILEGE_LEVEL::ADMIN,
+                                             true);
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');

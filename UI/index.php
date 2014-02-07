@@ -27,7 +27,7 @@ $h->bind(array("name" => "Übungsplattform",
 
 $pageData = array('uid' => $user['id'],
                   'courses' => $user['courses'],
-                  'sites' => $sites,
+                  'sites' => PRIVILEGE_LEVEL::$SITES,
                   'statusName' => PRIVILEGE_LEVEL::$NAMES);
 
 // construct a login element

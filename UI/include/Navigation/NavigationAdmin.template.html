@@ -1,10 +1,15 @@
 <ul id="navigation" class="navigation">
-    <li>
-        <a href="Student.php?cid=<?= $cid ?>">Studentenrolle einnehmen</a>
-    </li>
-    <li>
-        <a href="Lecturer.php?cid=<?= $cid ?>">Studentenrolle verlassen</a>
-    </li>
+    <?php if (!$switchDisabled): ?>
+        <?php if ($requiredPrivilege == $courseStatus): ?>
+        <li>
+            <a href="Student.php?cid=<?= $cid ?>">Studentenrolle einnehmen</a>
+        </li>
+        <?php else: ?>
+        <li>
+            <a href="Admin.php?cid=<?= $cid ?>">Studentenrolle verlassen</a>
+        </li>
+        <?php endif; ?>
+    <?php endif; ?>
     <li>
         <a href="CourseManagement.php?cid=<?= $cid ?>">Kurs verwalten</a>
     </li>
