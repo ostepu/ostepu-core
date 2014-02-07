@@ -208,7 +208,7 @@ class CControl
         $result = DBRequest::request($sql, false);
         
         // checks the correctness of the query
-        if (!$result['errno'] && $result['content']){
+        if (!$result['errno'] && $result['content'] && $result['numRows']>0){
             $data = DBJson::getRows($result['content']);
             $links = DBJson::getResultObjectsByAttributes($data, Link::getDBPrimaryKey(), Link::getDBConvert());
             $this->_app->response->setBody(Link::encodeLink($links));
@@ -323,7 +323,7 @@ class CControl
         $result = DBRequest::request($sql, false);
         
         // checks the correctness of the query
-        if (!$result['errno'] && $result['content']){
+        if (!$result['errno'] && $result['content'] && $result['numRows']>0){
             $data = DBJson::getRows($result['content']);
             $components = DBJson::getResultObjectsByAttributes($data, Component::getDBPrimaryKey(), Component::getDBConvert());
             $this->_app->response->setBody(Component::encodeComponent($components));
@@ -347,7 +347,7 @@ class CControl
         $result = DBRequest::request($sql, false);
 
         // checks the correctness of the query
-        if (!$result['errno'] && $result['content']){
+        if (!$result['errno'] && $result['content'] && $result['numRows']>0){
             $data = DBJson::getRows($result['content']);
 
             $components = DBJson::getObjectsByAttributes($data, Component::getDBPrimaryKey(), Component::getDBConvert());
@@ -379,7 +379,7 @@ class CControl
         $result = DBRequest::request($sql, false);
         
         // checks the correctness of the query
-        if (!$result['errno'] && $result['content']){
+        if (!$result['errno'] && $result['content'] && $result['numRows']>0){
             $data = DBJson::getRows($result['content']);
 
             $Components = DBJson::getObjectsByAttributes($data, Component::getDBPrimaryKey(), Component::getDBConvert());

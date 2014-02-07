@@ -291,7 +291,7 @@ class DBExerciseSheet
                                         array("esid" => $esid));        
 
         // checks the correctness of the query                                
-        if ($result['status']>=200 && $result['status']<=299){
+        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
             $query = Query::decodeQuery($result['content']);
 
             $data = $query->getResponse();
@@ -342,7 +342,7 @@ class DBExerciseSheet
                                         array("courseid" => $courseid));        
 
         // checks the correctness of the query                             
-        if ($result['status']>=200 && $result['status']<=299){
+        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
             $query = Query::decodeQuery($result['content']);
 
             $data = $query->getResponse();
@@ -405,7 +405,7 @@ class DBExerciseSheet
         }
 
         // checks the correctness of the query    
-        if ($result['status']>=200 && $result['status']<=299 && (!isset($result2) || ($result2['status']>=200 && $result2['status']<=299))){
+        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0 && (!isset($result2) || ($result2['status']>=200 && $result2['status']<=299 && $result2['numRows']>0))){
             $query = Query::decodeQuery($result['content']);
 
             $data = $query->getResponse();
@@ -521,7 +521,7 @@ class DBExerciseSheet
         }
         
         // checks the correctness of the query    
-        if ($result['status']>=200 && $result['status']<=299 && (!isset($result2) || ($result2['status']>=200 && $result2['status']<=299))){
+        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0 && (!isset($result2) || ($result2['status']>=200 && $result2['status']<=299 && $result2['numRows']>0))){
             $query = Query::decodeQuery($result['content']);
 
             $data = $query->getResponse();

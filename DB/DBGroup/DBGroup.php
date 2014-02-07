@@ -287,7 +287,7 @@ class DBGroup
                                         array("userid" => $userid));  
                                         
         // checks the correctness of the query    
-        if ($result['status']>=200 && $result['status']<=299){
+        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
             $query = Query::decodeQuery($result['content']);
 
             $data = $query->getResponse();
@@ -367,7 +367,7 @@ class DBGroup
                                         array());  
                                         
         // checks the correctness of the query    
-        if ($result['status']>=200 && $result['status']<=299){
+        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
             $query = Query::decodeQuery($result['content']);
 
             $data = $query->getResponse();
@@ -456,7 +456,7 @@ class DBGroup
                                             "esid" => $esid));  
                                         
         // checks the correctness of the query    
-        if ($result['status']>=200 && $result['status']<=299){
+        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
             $query = Query::decodeQuery($result['content']);
 
             $data = $query->getResponse();
@@ -542,7 +542,7 @@ class DBGroup
                                         array("esid" => $esid));  
                                         
         // checks the correctness of the query    
-        if ($result['status']>=200 && $result['status']<=299){
+        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
             $query = Query::decodeQuery($result['content']);
 
             $data = $query->getResponse();

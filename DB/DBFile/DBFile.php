@@ -186,7 +186,7 @@ class DBFile
                                         array("fileid" => $fileid));    
         
         // checks the correctness of the query                        
-        if ($result['status']>=200 && $result['status']<=299){
+        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
             $query = Query::decodeQuery($result['content']);
 
             $data = $query->getResponse();
@@ -303,7 +303,7 @@ class DBFile
                                         array("fileid" => $fileid));        
         
         // checks the correctness of the query
-        if ($result['status']>=200 && $result['status']<=299){
+        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
             $query = Query::decodeQuery($result['content']);
 
             $data = $query->getResponse();
@@ -352,7 +352,7 @@ class DBFile
                                         array("hash" => $hash));        
         
         // checks the correctness of the query
-        if ($result['status']>=200 && $result['status']<=299){
+        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
             $query = Query::decodeQuery($result['content']);
 
             $data = $query->getResponse();
@@ -397,7 +397,7 @@ class DBFile
                                         array());        
         
         // checks the correctness of the query
-        if ($result['status']>=200 && $result['status']<=299){
+        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
             $query = Query::decodeQuery($result['content']);
 
             $data = $query->getResponse();

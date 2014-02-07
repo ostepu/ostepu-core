@@ -357,7 +357,7 @@ class DBSession
                                         array("userid" => $userid));        
         
         // checks the correctness of the query   
-        if ($result['status']>=200 && $result['status']<=299){
+        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
             $query = Query::decodeQuery($result['content']);
 
             $data = $query->getResponse();
@@ -406,7 +406,7 @@ class DBSession
                                         array("seid" => $seid));        
         
         // checks the correctness of the query   
-        if ($result['status']>=200 && $result['status']<=299){
+        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
             $query = Query::decodeQuery($result['content']);
 
             $data = $query->getResponse();
@@ -447,7 +447,7 @@ class DBSession
                                         array());        
   
         // checks the correctness of the query   
-        if ($result['status']>=200 && $result['status']<=299){
+        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
             $query = Query::decodeQuery($result['content']);
 
             $data = $query->getResponse();
