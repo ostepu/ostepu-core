@@ -648,19 +648,23 @@ class LgetSite
                     }
                 }
             }
-            foreach($percentages as &$percentage){
+            foreach ($percentages as &$percentage){
                 $int = $percentage['exerciseTypeID'];
                 $percentage['points'] = $points[$int];
-                $percentage['percentage'] = round($percentage['points'] / $percentage['maxPoints'], 3) * 100;
+                $percentage['isApproved'] = true;
 
-                if (($percentage['points'] / $percentage['maxPoints']) >= $percentage['minimumPercentage'] / 100){
-                    $percentage['isApproved'] = true;
+                if ($percentage['maxPoints'] > 0) {
+                    $percentage['percentage'] = round($percentage['points'] / $percentage['maxPoints'], 3) * 100;
+                    if ($percentage['percentage'] < $percentage['minimumPercentage'] / 100) {
+                        $percentage['isApproved'] = false;
+                        $isApprovedForAllExerciseTypes = false;
+                    }
                 }
-                else{
-                    $percentage['isApproved'] = false;
-                    $isApprovedForAllExerciseTypes = false;
+                else {
+                    $percentage['percentage'] = 100;
                 }
             }
+
             $student['percentages'] = $percentages;
             $student['isApproved'] = $isApprovedForAllExerciseTypes;
             $response['users'][] = $student;
