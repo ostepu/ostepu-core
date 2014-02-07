@@ -506,22 +506,20 @@ class LgetSite
     public function groupSite($userid, $courseid, $sheetid){
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
+        $response = array();
 
         //Get the Group of the User for the given sheet
-        $URL = $this->lURL.'/DB/group/exercisesheet/'.$sheetid.'/user/'.$userid;
+        $URL = $this->lURL.'/DB/group/user/'.$userid.'/exercisesheet/'.$sheetid;
         $answer = Request::custom('GET', $URL, $header, $body);
-        $response['group'] = json_decode($answer['content'], true);
+        $response['group'] = json_decode($answer['content'], true)[0];
 
         //Get the maximum Groupsize of the sheet
-        $URL = $this->lURL.'/DB/exercisesheet/exercisesheet/'.$sheetid;
+        $URL = $this->lURL.'/DB/exercisesheet/exercisesheet/'.$sheetid .'/exercise';
         $answer = Request::custom('GET', $URL, $header, $body);
-        $sheet = json_decode($answer['content'], true);
-        $response['groupSize'] = $sheet['groupSize'];
+        $answer = json_decode($answer['content'], true);
+        $response['groupSize'] = $answer['groupSize'];
 
-        //get the exercises of the sheet
-        $URL = $this->lURL.'/DB/exercise/exercisesheet/'.$sheetid;
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $exercises = json_decode($answer['content'], true);
+        $exercises = $answer['exercises'];
 
         $response['groupSubmissions'] = array();
 
@@ -529,6 +527,7 @@ class LgetSite
         foreach ( $exercises as $exercise){
             $newGroupExercise = array();
             foreach ($response['group']['members'] as $user){
+                $newGroupSubmission = array();
                 $URL = $this->lURL.'/DB/submission/user/'.$user['id'].'/exercise/'.$exercise['id'];
                 $answer = Request::custom('GET', $URL, $header, $body);
                 $submission = json_decode($answer['content'], true);
@@ -690,7 +689,7 @@ class LgetSite
         $answer = Request::custom('GET', $URL, $header, $body);
         $allUsers = json_decode($answer['content'], true);
 
-        // only selects the users whose course-status is tutor or lecturer 
+        // only selects the users whose course-status is tutor or lecturer
         if(!empty($allUsers)) {
             foreach($allUsers as $user) {
                 if ($user['courses'][0]['status'] >= 0 && $user['courses'][0]['status'] < 4) {
