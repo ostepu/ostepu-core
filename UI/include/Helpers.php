@@ -182,7 +182,8 @@ function http_put_data($url, $data, $authbool, &$message = 0)
  * @param string $url The URL that should be opnened.
  * @param bool $authbool If true then send sessioninformation in header.
  * @param string $message The Response Message e.g. 404. Argument is optional.
- * @param bool $sessiondelete If true then send a new timestamp. Only necessary if $authbool true.
+ * @param bool $sessiondelete If true then send a new timestamp. Only necessary
+ * if $authbool true.
  */
 function http_delete($url, $authbool, &$message = 0, $sessiondelete = false)
 {
@@ -273,7 +274,8 @@ function cleanInput($input)
 
         if (get_magic_quotes_gpc() == 0) {
             // magic quotes is turned off
-            $input = htmlspecialchars(trim(stripcslashes($input)), ENT_QUOTES, 'UTF-8');
+            $input = htmlspecialchars(trim(stripcslashes($input)),
+                                           ENT_QUOTES, 'UTF-8');
         } else {
             $input = htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
         }
@@ -296,11 +298,13 @@ function MakeNavigationElementForCourseStatus($courses) {
     switch ($courseStatus) {
         case 2:
             // status = Lecturer
-            $navigationElement = Template::WithTemplateFile('include/Navigation/NavigationLecturer.template.html');
+            $file = 'include/Navigation/NavigationLecturer.template.html';
+            $navigationElement = Template::WithTemplateFile($file);
             break;
         case 3:
             // status = Admin
-            $navigationElement = Template::WithTemplateFile('include/Navigation/NavigationAdmin.template.html');
+            $file = 'include/Navigation/NavigationAdmin.template.html';
+            $navigationElement = Template::WithTemplateFile($file);
             break;
     }
 
