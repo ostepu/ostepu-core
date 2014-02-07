@@ -55,8 +55,12 @@ class Template
      * @param array $data An associative array that contains the content for
      * the template.
      */
-    public function bind(array $data)
+    public function bind($data)
     {
+        if (!isset($data)) {
+            return;
+        }
+
         $this->content = $this->content + $data;
     }
 
