@@ -5,7 +5,7 @@
  * @todo make it cheaper to combine exercise type names with type ids
  */ // could use a map indexed by status/type id taht is built on construction
 
-require 'Slim/Slim.php';
+require '../Include/Slim/Slim.php';
 include '../Include/Request.php';
 include_once( '../Include/CConfig.php' );
 include_once '../Include/Logger.php';
