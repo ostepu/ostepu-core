@@ -36,7 +36,7 @@ $databaseURL = $databaseURI . "/exercisesheet/course/{$cid}/exercise";
 $sheetString = http_get($databaseURL, true, $message);
 
 // convert the json string into an associative array
-$sheets = array("sheets" =>json_decode($sheetString, true),
+$sheets = array("sheets" => json_decode($sheetString, true),
                 "uid" => $uid,
                 "cid" => $cid);
 

@@ -21,7 +21,9 @@ if (isset($_POST['action'])) {
 
         foreach ($_POST as $key => $value) {
             // skips the first POST which includes the 'action' type
-            if($key == "action") continue;
+            if($key == "action") {
+                continue;
+            }
 
             // changes the percentage for each exercise type
             $approvalConditionId = $key;
@@ -45,7 +47,7 @@ if (isset($_POST['action'])) {
                 $RequestError = true;
             }
 
-            
+
         }
 
         // creates a notification depending on RequestError
@@ -55,7 +57,7 @@ if (isset($_POST['action'])) {
         else {
             $notifications[] = MakeNotification("success", "Die Zulassungsbedingungen wurden erfolgreich gespeichert!");
         }
-        
+
     }
 }
 
@@ -76,7 +78,6 @@ $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
                "backURL" => "Admin.php?cid={$cid}",
                "notificationElements" => $notifications,
                "navigationElement" => $menu));
-
 
 // construct a content element for setting exam paper conditions
 $setCondition = Template::WithTemplateFile('include/Condition/SetCondition.template.html');
