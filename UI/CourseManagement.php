@@ -101,13 +101,16 @@ $courseManagement_data = json_decode($courseManagement_data, true);
 
 $user_course_data = $courseManagement_data['user'];
 
+$menu = MakeNavigationElementForCourseStatus($user_course_data['courses']);
+
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
 $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
                "backTitle" => "zur Veranstaltung",
                "backURL" => "Admin.php?cid={$cid}",
-               "notificationElements" => $notifications));
+               "notificationElements" => $notifications,
+               "navigationElement" => $menu));
 
 // construct a content element for changing course settings
 $courseSettings = Template::WithTemplateFile('include/CourseManagement/CourseSettings.template.html');

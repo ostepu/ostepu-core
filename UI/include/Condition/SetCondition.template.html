@@ -1,8 +1,9 @@
+<input type="hidden" name="action" value="SetCondition">
 <div class="content-element">
     <div class="content-header">
         <div class="content-title left uppercase">Zulassungsbedingungen</div>
         <div class="info-color bold right">
-            <a href="#">speichern</a>
+            <button class="text-button info-color bold right">speichern</button>
         </div>
     </div>
 
@@ -11,15 +12,15 @@
             <?php
                 // creates an input field for each ExerciseType
                 foreach ($minimumPercentages as $percentage) {
-                    print "<label class=\"form-field left label bold\" ";
-                    print "for=\"".$percentage['exerciseTypeID']."\">";
-                    print $percentage['exerciseType'];
+                    print "<label class=\"form-field left label bold new-line\" ";
+                    print "for=\"".$percentage['approvalConditionId']."\">";
+                    print $percentage['exerciseType']." (Angabe in %)";
                     print "</label>";
 
                     print "<input class=\"form-field left text-input short\" ";
-                    print "name=\"".$percentage['exerciseTypeID']."\" ";
+                    print "name=\"".$percentage['approvalConditionId']."\" ";
                     print "value=\"".$percentage['minimumPercentage']."\" ";
-                    print "id=\"".$percentage['exerciseTypeID']."\" />";
+                    print "id=\"".$percentage['approvalConditionId']."\" />";
                 }
             ?>
         </div>

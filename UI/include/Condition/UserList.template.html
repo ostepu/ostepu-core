@@ -13,38 +13,52 @@
                     <th>
                         Matrikel
                     </th>
+                    <th>
+                        Zulassung
+                    </th>
                     <?php
                         // prints all exercise types as header
                         foreach ($minimumPercentages as $percentage) {
                             print "<th colspan=\"2\">";
-                            print $percentage['exerciseType'];
+                            print $percentage['exerciseType'] . " (max. " . $users[0]['percentages'][0]['maxPoints'] . "P)";
                             print "</th>";
                         }
                     ?>
-                    <th>
-                        Zulassung
-                    </th>
                 </tr>
                 <?php
                     // creates a table row for each student
                     foreach ($users as $user) {
                         print "<tr>";
+
+                        // firstName and lastName
                         print "<td>";
                         print $user['firstName'] . " " . $user['lastName'];
                         print "</td>";
+
+                        // userId
                         print "<td>";
                         print $user['id'];
                         print "</td>";
-                        foreach ($user['percentages'] as $percentage) {
-                            print "<td>";
-                            print $percentage['percentage'] . "%";
-                            print "</td>";
-                            print "<td>";
-                            print "(" . $percentage['points'] . "/" . $percentage['maxPoints'] . ")";
-                        }
-                        print "<td>";
+
+                        // isApproved for all courses
+                        print "<td";
+                        print $user['isApproved']?"":" class=\"critical-color\"";
+                        print ">";
                         print $user['isApproved']?"Ja":"Nein";
                         print "</td>";
+
+                        // percentage for each exerciseType
+                        foreach ($user['percentages'] as $percentage) {
+
+                                // achieved percentage and points
+                                print "<td";
+                                print $percentage['isApproved']?"":" class=\"critical-color\"";
+                                print ">";
+                                print $percentage['percentage'] . "%";
+                                print "</td>";
+                                print "<td>";
+                                print "(" . $percentage['points'] . "P)";
+                        }
                         print "</tr>";
                     }
                 ?>
