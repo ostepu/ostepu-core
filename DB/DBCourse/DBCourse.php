@@ -312,6 +312,10 @@ class DBCourse
                             Course::getDBPrimaryKey(),
                             Course::getDBConvert()['C_exerciseSheets'], 
                             $exerciseSheets,ExerciseSheet::getDBPrimaryKey());  
+                            
+            // only one object as result
+            if (count($res)>0)
+                $res = $res[0];              
             
             $this->_app->response->setBody(Course::encodeCourse($res));
         

@@ -745,10 +745,14 @@ class DBSubmission
                             Submission::getDBPrimaryKey(),
                             Submission::getDBConvert()['S_file'] ,
                             $files,
-                            File::getDBPrimaryKey());
+                            File::getDBPrimaryKey());                     
                 
             // to reindex
             $res = array_values($res); 
+            
+            // only one object as result
+            if (count($res)>0)
+                $res = $res[0]; 
             
             $this->_app->response->setBody(Submission::encodeSubmission($res));
         
