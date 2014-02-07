@@ -74,7 +74,7 @@ class ExternalId extends Object implements JsonSerializable
      *
      * @return an external id object
      */
-    public function createExternalId($externalId,$courseId)
+    public static function createExternalId($externalId,$courseId)
     {
         return new ExternalId(array('id' => $externalId,
         'course' => array('id' => $courseId)));

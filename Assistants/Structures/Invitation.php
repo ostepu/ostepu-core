@@ -92,7 +92,7 @@ class Invitation extends Object implements JsonSerializable
      *
      * @return an invitation object
      */
-    public function createInvitation($leaderId,$memberId,$sheetId)
+    public static function createInvitation($leaderId,$memberId,$sheetId)
     {
         return new Invitation(array('sheet' => $sheetId,
         'leader' => User::createUser($leaderId,null,null,null,null,

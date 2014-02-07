@@ -256,7 +256,7 @@ class Marking extends Object implements JsonSerializable
      *
      * @return an marking object
      */
-    public function createMarking($markingId,$tutorId,$fileId,$submissionId,$tutorComment,
+    public static function createMarking($markingId,$tutorId,$fileId,$submissionId,$tutorComment,
                                 $outstanding,$status,$points,$date)
     {
         return new Marking(array('id' => $markingId,
