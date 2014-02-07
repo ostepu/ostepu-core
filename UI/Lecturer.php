@@ -19,7 +19,7 @@ $lecturer_data['filesystemURI'] = $filesystemURI;
 $user_course_data = $lecturer_data['user'];
 
 // check userrights for course
-Authentication::checkRights(2, $cid, $uid, $user_course_data);
+Authentication::checkRights(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $user_course_data);
 
 if (is_null($user_course_data)) {
     $user_course_data = array();

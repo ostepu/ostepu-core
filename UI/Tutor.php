@@ -19,7 +19,7 @@ $tutor_data['filesystemURI'] = $filesystemURI;
 $user_course_data = $tutor_data['user'];
 
 // check userrights for course
-Authentication::checkRights(1, $cid, $uid, $user_course_data);
+Authentication::checkRights(PRIVILEGE_LEVEL::TUTOR, $cid, $uid, $user_course_data);
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');

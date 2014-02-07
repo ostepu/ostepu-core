@@ -16,7 +16,7 @@ $user_course_data = http_get($databaseURL, true, $message);
 $user_course_data = json_decode($user_course_data, true);
 
 // check userrights for course
-Authentication::checkRights(0, $cid, $uid, $user_course_data);
+Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $user_course_data);
 
 $menu = MakeNavigationElementForCourseStatus($user_course_data['courses']);
 
