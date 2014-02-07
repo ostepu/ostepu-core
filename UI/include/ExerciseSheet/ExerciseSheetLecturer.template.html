@@ -37,10 +37,22 @@ foreach ($sheets as $sheet):
                 <?php endforeach; ?>
             </ol>
         </div>
-
         <div class="content-body right">
             <ol class="body-options body-option-color">
-                <li><a href="#">Aufgabenblatt</a></li>
+                <li>
+                <?php
+                    print '<a href="';
+                    print $filesystemURI . $sheet['sheetFile']['address'] . "/Aufgabenblatt.pdf";
+                    print '">Aufgabenblatt</a>';
+                ?>
+                </li>
+                <li>
+                <?php
+                    print '<a href="';
+                    print $filesystemURI . $sheet['sampleSolution']['address'] . "/Musterloesung.pdf";
+                    print '">Musterlösung</a>';
+                ?>
+                </li>
                 <li><a href="CreateSheet.php">Serie bearbeiten</a></li>
                 <li><a href="#">Einsendungen herunterladen</a></li>
                 <li><a href="#">Einsendungen hochladen</a></li>
@@ -69,9 +81,7 @@ foreach ($sheets as $sheet):
             <li class="footer-text">30 mit Einsendungen</li>
             <li class="footer-text">70 ohne Einsendungen</li>
         </ol>
-    </div>
-
-    <!-- end: content-body-wrapper -->
+    </div> <!-- end: content-body-wrapper -->
 </div> <!-- end: content-element -->
 <?php
 endforeach;

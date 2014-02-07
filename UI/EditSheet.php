@@ -1,7 +1,7 @@
 <?php
 /**
- * @file Admin.php
- * Constructs the page that is displayed to an admin.
+ * @file EditSheet.php
+ * Constructs a page where a user can edit an existing exercise sheet.
  *
  * @author Felix Schmidt
  * @author Florian Lücke
@@ -11,14 +11,14 @@
 include_once 'include/Boilerplate.php';
 
 // load GetSite data for Admin.php
+/*
+ * @todo Use EditSheet data from GetSite
+ */
 $databaseURI = $getSiteURI . "/admin/user/{$uid}/course/{$cid}";
-$admin_data = http_get($databaseURI, false);
-$admin_data = json_decode($admin_data, true);
-$admin_data['filesystemURI'] = $filesystemURI;
+$sheet_data = http_get($databaseURI, false);
+$sheet_data = json_decode($sheet_data, true);
 
-$user_course_data = $admin_data['user'];
-
-Authentication::checkRights(3, $cid, $uid, $user_course_data);
+$user_course_data = $sheet_data['user'];
 
 $menu = MakeNavigationElementForCourseStatus($user_course_data['courses']);
 
@@ -32,11 +32,16 @@ $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
                "navigationElement" => $menu));
 
 
-$t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetLecturer.template.html');
-$t->bind($admin_data);
+$sheetSettings = Template::WithTemplateFile('include/EditSheet/SheetSettings.template.html');
+$sheetSettings->bind($sheet_data);
 
-$w = new HTMLWrapper($h, $t);
-$w->set_config_file('include/configs/config_admin_lecturer.json');
+/*
+ * @todo Manage exercises.
+ */
+
+// wrap all the elements in some HTML and show them on the page
+$w = new HTMLWrapper($h, $sheetSettings);
+$w->set_config_file('include/configs/config_createSheet.json');
 $w->show();
 
 ?>
