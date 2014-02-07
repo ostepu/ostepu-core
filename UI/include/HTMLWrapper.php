@@ -6,7 +6,7 @@
  * @author Florian Lücke
  * @author Ralf Busch
  *
- * @todo Replace the class by a template based solution, maybe MakeHTLMWrapper?
+ * @todo Replace the class by a template based solution
  */
 
 include_once '../Assistants/Logger.php';
@@ -62,10 +62,12 @@ include_once '../Assistants/Logger.php';
         }
 
         /**
-         * defines a form starting from the first element and ending with the last element in arguments.
+         * defines a form starting from the first element and ending with the
+         * last element in arguments.
          *
          * @param string $target The target for the form;
-         * @param Template $arguments Some Templates which have to be in a form tag;
+         * @param Template $arguments Some Templates which have to be in a
+         * form tag;
          * @return self
          */
         public function defineForm($target)
@@ -84,10 +86,18 @@ include_once '../Assistants/Logger.php';
             $formend = "</form>";
 
             // insert formtags before and after the given range
-            $this->contentElements = array_merge(array_slice($this->contentElements, 0, $firstkey),
-                                                 array(0 => $formstart),
-                                                 array_slice($this->contentElements, $firstkey, $endkey-$firstkey+1),
-                                                 array(0 => $formend),array_slice($this->contentElements, $endkey+1));
+            $this->contentElements = array_merge(
+                                        array_slice($this->contentElements,
+                                                    0,
+                                                    $firstkey),
+                                        array(0 => $formstart),
+                                        array_slice($this->contentElements,
+                                                    $firstkey,
+                                                    $endkey-$firstkey+1),
+                                        array(0 => $formend),
+                                        array_slice($this->contentElements,
+                                                    $endkey+1)
+                                                );
         }
 
         /**
@@ -100,15 +110,20 @@ include_once '../Assistants/Logger.php';
             <head>
                 <meta http-equiv=\"content-type\" ";
                 // print content-type (content-dev,charset)
-                print "content=\"{$this->config['content']}; charset={$this->config['charset']}\">\n";
+                print "content=\"{$this->config['content']};";
+                print " charset={$this->config['charset']}\">\n";
+
                 // print stylesheets
                 foreach ($this->config['stylesheets'] as $stylesheet) {
-                    print "<link rel=\"stylesheet\" type=\"text/css\" href=\"$stylesheet\">\n";
+                    print "<link rel=\"stylesheet\" type=\"text/css\"";
+                    print " href=\"$stylesheet\">\n";
                 }
+
                 // print javascripts
                 foreach ($this->config['javascripts'] as $javascript) {
                     print "<script src=\"$javascript\"></script>\n";
                 }
+
                 // print title
                 print "<title>{$this->config['title']}</title>
             </head>
@@ -121,6 +136,7 @@ include_once '../Assistants/Logger.php';
 
                     // try to print all the elements in contentElements
                     foreach ($this->contentElements as $contentElement) {
+
                         // check check if we can somehow print the content
                         if (method_exists($contentElement, 'show')) {
                             $contentElement->show();
@@ -147,12 +163,15 @@ include_once '../Assistants/Logger.php';
         $fileContents = file_get_contents($configdata);
         // check if file is loaded
         if ($fileContents == false) {
-            Logger::Log("Could not open file: {$configdata}", LogLevel::WARNING);
+            Logger::Log("Could not open file: {$configdata}",
+                        LogLevel::WARNING);
         }
+
         $this->config = json_decode($fileContents, true);
         // check if file is valid JSON
         if ($this->config == false || is_array($this->config) == false) {
-            Logger::Log("Invalid JSON in file: {$configdata}", LogLevel::WARNING);
+            Logger::Log("Invalid JSON in file: {$configdata}",
+                        LogLevel::WARNING);
         }
     }
 }
