@@ -53,7 +53,7 @@ if (isset($_POST['action'])) {
 
                 $url = $databaseURI . "/coursestatus/course/{$cid}/user/{$userID}";
                 http_put_data($url, $data, true, $message);
-                
+
                 // show notification
                 if ($message == "201") {
                     $notifications[] = MakeNotification("success", "Die Rechte wurden erfolgreich vergeben!");
@@ -114,7 +114,7 @@ $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
 
 // construct a content element for changing course settings
 $courseSettings = Template::WithTemplateFile('include/CourseManagement/CourseSettings.template.html');
-$courseSettings->bind($courseManagement_data['course'][0]);
+$courseSettings->bind($courseManagement_data['course']);
 
 // construct a content element for granting user-rights
 $grantRights = Template::WithTemplateFile('include/CourseManagement/GrantRights.template.html');
