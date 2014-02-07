@@ -180,7 +180,7 @@ class DBSubmission
                                         array("eid" => $eid));
     
         // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             
             $data = $query->getResponse();
@@ -265,7 +265,7 @@ class DBSubmission
                 
             } else{
                 Logger::Log("PUT EditSubmission failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->stop();
             }
         }
@@ -302,7 +302,7 @@ class DBSubmission
                 
         } else{
             Logger::Log("DELETE DeleteSubmission failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->stop();
         }
     }
@@ -352,7 +352,7 @@ class DBSubmission
                 
             } else{
                 Logger::Log("POST AddSubmission failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->response->setBody(Submission::encodeSubmission($res)); 
                 $this->_app->stop();
             }
@@ -382,7 +382,7 @@ class DBSubmission
                                         array());
                                         
         // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             
             $data = $query->getResponse();
@@ -453,7 +453,7 @@ class DBSubmission
                                         array("userid" => $userid,"esid" => $esid ));
         
         // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             
             $data = $query->getResponse();
@@ -521,7 +521,7 @@ class DBSubmission
                                         array("userid" => $userid,"esid" => $esid ));
         
         // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             
             $data = $query->getResponse();
@@ -589,7 +589,7 @@ class DBSubmission
                                         array("userid" => $userid,"eid" => $eid ));
         
         // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             
             $data = $query->getResponse();
@@ -657,7 +657,7 @@ class DBSubmission
                                         array("userid" => $userid,"eid" => $eid ));
         
         // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             
             $data = $query->getResponse();
@@ -722,7 +722,7 @@ class DBSubmission
                                         array("suid" => $suid));
 
         // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             
             $data = $query->getResponse();
@@ -792,7 +792,7 @@ class DBSubmission
                                         array("esid" => $esid));
  
         // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             
             $data = $query->getResponse();
@@ -858,7 +858,7 @@ class DBSubmission
                                         array("esid" => $esid));
         
         // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             
             $data = $query->getResponse();
@@ -924,7 +924,7 @@ class DBSubmission
                                         array("eid" => $eid));
         
         // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             
             $data = $query->getResponse();
@@ -991,7 +991,7 @@ class DBSubmission
                                         array("userid" => $userid,"eid" => $eid));
         
         // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             
             $data = $query->getResponse();

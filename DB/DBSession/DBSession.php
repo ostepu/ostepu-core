@@ -166,7 +166,7 @@ class DBSession
                 
             } else{
                 Logger::Log("PUT EditSession failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->stop();
             }
         }
@@ -199,7 +199,7 @@ class DBSession
                 
         } else{
             Logger::Log("DELETE RemoveSession failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->stop();
         }
     }
@@ -246,7 +246,7 @@ class DBSession
                 
             } else{
                 Logger::Log("PUT RemoveSession failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->stop();
             }
         }
@@ -281,7 +281,7 @@ class DBSession
                 
         } else{
             Logger::Log("DELETE RemoveUserSession failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->stop();
         }
     }
@@ -328,7 +328,7 @@ class DBSession
                 
             } else{
                 Logger::Log("POST AddSession failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->stop();
             }
         }
@@ -357,7 +357,7 @@ class DBSession
                                         array("userid" => $userid));        
         
         // checks the correctness of the query   
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
 
             $data = $query->getResponse();
@@ -406,7 +406,7 @@ class DBSession
                                         array("seid" => $seid));        
         
         // checks the correctness of the query   
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
 
             $data = $query->getResponse();
@@ -447,7 +447,7 @@ class DBSession
                                         array());        
   
         // checks the correctness of the query   
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
 
             $data = $query->getResponse();

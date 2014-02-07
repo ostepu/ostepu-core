@@ -157,7 +157,7 @@ class DBFile
                 
             } else{
                 Logger::Log("PUT EditFile failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->stop();
             }
         }
@@ -186,7 +186,7 @@ class DBFile
                                         array("fileid" => $fileid));    
         
         // checks the correctness of the query                        
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
 
             $data = $query->getResponse();
@@ -209,14 +209,14 @@ class DBFile
             } else{
                 Logger::Log("DELETE RemoveFile failed (no file in db)",LogLevel::ERROR);
                 $this->_app->response->setBody(File::encodeFile(new File()));
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->stop();
             }
                 
         } else{
             Logger::Log("DELETE RemoveFile failed",LogLevel::ERROR);
             $this->_app->response->setBody(File::encodeFile(new File()));
-            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
+            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->stop();
         }
     }
@@ -268,7 +268,7 @@ class DBFile
             } else{
                 Logger::Log("POST AddFile failed",LogLevel::ERROR);
                 $this->_app->response->setBody(File::encodeFile($res));
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->stop();
             }
         }
@@ -303,7 +303,7 @@ class DBFile
                                         array("fileid" => $fileid));        
         
         // checks the correctness of the query
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
 
             $data = $query->getResponse();
@@ -352,7 +352,7 @@ class DBFile
                                         array("hash" => $hash));        
         
         // checks the correctness of the query
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
 
             $data = $query->getResponse();
@@ -397,7 +397,7 @@ class DBFile
                                         array());        
         
         // checks the correctness of the query
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
 
             $data = $query->getResponse();

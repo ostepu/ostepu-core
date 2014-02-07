@@ -188,7 +188,7 @@ class DBMarking
                 
             } else{
                 Logger::Log("PUT EditMarking failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->stop();
             }
         }
@@ -225,7 +225,7 @@ class DBMarking
                 
         } else{
             Logger::Log("DELETE DeleteMarking failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->stop();
         }
     }
@@ -276,7 +276,7 @@ class DBMarking
                 
             } else{
                 Logger::Log("POST AddMarking failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->response->setBody(Marking::encodeMarking($res)); 
                 $this->_app->stop();
             }
@@ -306,7 +306,7 @@ class DBMarking
                                         array());
         
         // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             
             $data = $query->getResponse();
@@ -401,7 +401,7 @@ class DBMarking
                                         array("mid" => $mid));
  
         // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             
             $data = $query->getResponse();
@@ -500,7 +500,7 @@ class DBMarking
                                         array("suid" => $suid));
         
         // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             
             $data = $query->getResponse();
@@ -598,7 +598,7 @@ class DBMarking
                                         array('eid' => $eid));
         
         // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             
             $data = $query->getResponse();
@@ -692,7 +692,7 @@ class DBMarking
                                         array('esid' => $esid));
         
         // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             
             $data = $query->getResponse();
@@ -789,7 +789,7 @@ class DBMarking
                                             'userid' => $userid));
         
         // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             
             $data = $query->getResponse();
@@ -887,7 +887,7 @@ class DBMarking
                                             'userid' => $userid));
         
         // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             
             $data = $query->getResponse();
@@ -985,7 +985,7 @@ class DBMarking
                                             'userid' => $userid));
         
         // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             
             $data = $query->getResponse();

@@ -163,7 +163,7 @@ class DBSelectedSubmission
                 
             } else{
                 Logger::Log("PUT EditSelectedSubmission failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->stop();
             }
         }
@@ -202,7 +202,7 @@ class DBSelectedSubmission
                 
         } else{
             Logger::Log("DELETE DeleteSelectedSubmission failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->stop();
         }
     }
@@ -244,7 +244,7 @@ class DBSelectedSubmission
                 
             } else{
                 Logger::Log("POST AddSelectedSubmission failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->stop();
             }
         }
@@ -273,7 +273,7 @@ class DBSelectedSubmission
                                         array("eid" => $eid));
         
         // checks the correctness of the query                                     
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             
             $data = $query->getResponse();
@@ -321,7 +321,7 @@ class DBSelectedSubmission
                                         array("esid" => $esid));
         
         // checks the correctness of the query                                     
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             
             $data = $query->getResponse();

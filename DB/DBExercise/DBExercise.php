@@ -1,4 +1,4 @@
-<?php
+s<?php
 /**
  * @file DBExercise.php contains the DBExercise class
  * 
@@ -167,7 +167,7 @@ class DBExercise
                 
             } else{
                 Logger::Log("PUT EditExercise failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->stop();
             }
         }
@@ -203,7 +203,7 @@ class DBExercise
                 
         } else{
             Logger::Log("DELETE DeleteExercise failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->stop();
         }
     }
@@ -253,7 +253,7 @@ class DBExercise
                 
             } else{
                 Logger::Log("POST SetExercise failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->response->setBody(Exercise::encodeExercise($res)); 
                 $this->_app->stop();
             }
@@ -289,7 +289,7 @@ class DBExercise
                                         array("eid" => $eid));        
         
         // checks the correctness of the query
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
 
             $data = $query->getResponse();
@@ -370,7 +370,7 @@ class DBExercise
                                         array());        
 
         // checks the correctness of the query                           
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
 
             $data = $query->getResponse();
@@ -455,7 +455,7 @@ class DBExercise
                                         array("esid" => $esid));        
 
         // checks the correctness of the query                              
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
 
             $data = $query->getResponse();
@@ -528,7 +528,7 @@ class DBExercise
                                         array("courseid" => $courseid));        
 
         // checks the correctness of the query                              
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
 
             $data = $query->getResponse();

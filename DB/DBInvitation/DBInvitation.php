@@ -187,7 +187,7 @@ class DBInvitation
                 
             } else{
                 Logger::Log("PUT EditInvitation failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->stop();
             }
         }
@@ -230,7 +230,7 @@ class DBInvitation
                 
         } else{
             Logger::Log("DELETE DeleteInvitation failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->stop();
         }
     }
@@ -273,7 +273,7 @@ class DBInvitation
                 
             } else{
                 Logger::Log("POST AddInvitation failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->stop();
             }
         }
@@ -296,7 +296,7 @@ class DBInvitation
                                         array());
         
         // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             
             $data = $query->getResponse();
@@ -377,7 +377,7 @@ class DBInvitation
                                         array("userid" => $userid));
         
         // checks the correctness of the query                                       
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             $data = $query->getResponse();
             
@@ -457,7 +457,7 @@ class DBInvitation
                                         array("userid" => $userid));
         
         // checks the correctness of the query                                       
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             
             $data = $query->getResponse();
@@ -541,7 +541,7 @@ class DBInvitation
                                         array("esid" => $esid,"userid" => $userid));
         
         // checks the correctness of the query                                       
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             
             $data = $query->getResponse();
@@ -625,7 +625,7 @@ class DBInvitation
                                         array("esid" => $esid,"userid" => $userid));
         
         // checks the correctness of the query                                       
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             
             $data = $query->getResponse();
@@ -706,7 +706,7 @@ class DBInvitation
                                         array("esid" => $esid));
         
         // checks the correctness of the query                                       
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             
             $data = $query->getResponse();

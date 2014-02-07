@@ -161,7 +161,7 @@ class DBExternalId
                 
             } else{
                 Logger::Log("PUT EditExternalId failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->stop();
             }
         }
@@ -196,7 +196,7 @@ class DBExternalId
                 
         } else{
             Logger::Log("DELETE DeleteExternalId failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->stop();
         }
     }
@@ -242,7 +242,7 @@ class DBExternalId
                 
             } else{
                 Logger::Log("POST AddExternalId failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->stop();
             }
         }
@@ -269,7 +269,7 @@ class DBExternalId
                                         array("exid" => $exid));
        
         // checks the correctness of the query                                     
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             $data = $query->getResponse();
             
@@ -330,7 +330,7 @@ class DBExternalId
                                         array());
         
         // checks the correctness of the query                                    
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             
             $data = $query->getResponse();
@@ -393,7 +393,7 @@ class DBExternalId
                                         array("courseid" => $courseid));
 
         // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             
             $data = $query->getResponse();

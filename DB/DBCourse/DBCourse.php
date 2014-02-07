@@ -165,7 +165,7 @@ class DBCourse
                 
             } else{
                 Logger::Log("PUT EditCourse failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->stop();
             }
         }
@@ -202,7 +202,7 @@ class DBCourse
                 
         } else{
             Logger::Log("DELETE DeleteCourse failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
+            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->stop();
         }
     }
@@ -253,7 +253,7 @@ class DBCourse
                 
             } else{
                 Logger::Log("POST AddCourse failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->response->setBody(Course::encodeCourse($res)); 
                 $this->_app->stop();
             }
@@ -288,8 +288,8 @@ class DBCourse
                                         "Sql/GetCourse.sql", 
                                         array("courseid" => $courseid));
         
-        // checks the correctness of the query                                   
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        // checks the correctness of the query         
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             
             $data = $query->getResponse();
@@ -348,7 +348,7 @@ class DBCourse
                                         array());
         
         // checks the correctness of the query                                       
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             
             $data = $query->getResponse();
@@ -409,7 +409,7 @@ class DBCourse
                                         array("userid" => $userid));
         
         // checks the correctness of the query                                       
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             
             $data = $query->getResponse();

@@ -1,4 +1,4 @@
-<?php
+s<?php
 /**
  * @file DBApprovalCondition.php contains the DBApprovalCondition class
  * 
@@ -162,7 +162,7 @@ class DBApprovalCondition
                 
             } else{
                 Logger::Log("PUT EditApprovalCondition failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 251);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->stop();
             }
         }
@@ -199,7 +199,7 @@ class DBApprovalCondition
                 
         } else{
             Logger::Log("DELETE DeleteApprovalCondition failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 252);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->stop();
         }
     }
@@ -251,7 +251,7 @@ class DBApprovalCondition
             } else{
                 Logger::Log("POST AddApprovalCondition failed",LogLevel::ERROR);
                 $this->_app->response->setBody(ApprovalCondition::encodeApprovalCondition($res)); 
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 251);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->stop();
             }
         }
@@ -279,7 +279,7 @@ class DBApprovalCondition
                                         "Sql/GetAllApprovalConditions.sql", 
                                         array());
         // checks the correctness of the query                                    
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             
             $data = $query->getResponse();
@@ -327,7 +327,7 @@ class DBApprovalCondition
                                         array("apid" => $apid));
         
         // checks the correctness of the query
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             
             $data = $query->getResponse();
@@ -383,7 +383,7 @@ class DBApprovalCondition
                                         array("courseid" => $courseid));
         
         // checks the correctness of the query                                  
-        if ($result['status']>=200 && $result['status']<=299 && $result['numRows']>0){ 
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
             
             $data = $query->getResponse();
