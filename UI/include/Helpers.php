@@ -74,10 +74,7 @@ function http_get($url, $authbool, &$message = 0)
     curl_setopt($c, CURLOPT_URL, $url);
     curl_setopt($c, CURLOPT_HTTPGET, 1);
     if ($authbool) {
-        $date = $_SESSION['LASTACTIVE'];
-        $session = $_SESSION['SESSION'];
-        $user = $_SESSION['UID'];
-        curl_setopt($c, CURLOPT_HTTPHEADER, array("User: {$user}","Session: {$session}","Date : {$date}"));
+        curlSetAuthentication($c);
     }
 
     curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
@@ -117,10 +114,7 @@ function http_post_data($url, $data, $authbool, &$message = 0)
     curl_setopt($c, CURLOPT_POSTFIELDS, $data);
 
     if ($authbool) {
-        $date = $_SESSION['LASTACTIVE'];
-        $session = $_SESSION['SESSION'];
-        $user = $_SESSION['UID'];
-        curl_setopt($c, CURLOPT_HTTPHEADER, array("User: {$user}","Session: {$session}","Date : {$date}"));
+        curlSetAuthentication($c);
     }
 
     curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
@@ -160,10 +154,7 @@ function http_put_data($url, $data, $authbool, &$message = 0)
     curl_setopt($c, CURLOPT_CUSTOMREQUEST, 'PUT');
 
     if ($authbool) {
-        $date = $_SESSION['LASTACTIVE'];
-        $session = $_SESSION['SESSION'];
-        $user = $_SESSION['UID'];
-        curl_setopt($c, CURLOPT_HTTPHEADER, array("User: {$user}","Session: {$session}","Date : {$date}"));
+        curlSetAuthentication($c);
     }
 
     curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
@@ -201,15 +192,7 @@ function http_delete($url, $authbool, &$message = 0, $sessiondelete = false)
     curl_setopt($c, CURLOPT_CUSTOMREQUEST, 'DELETE');
 
     if ($authbool) {
-        if ($sessiondelete) {
-            $date = $_SERVER['REQUEST_TIME'];
-        } else {
-            $date = $_SESSION['LASTACTIVE'];
-        }
-
-        $session = $_SESSION['SESSION'];
-        $user = $_SESSION['UID'];
-        curl_setopt($c, CURLOPT_HTTPHEADER, array("User: {$user}","Session: {$session}","Date : {$date}"));
+        curlSetAuthentication($c);
     }
 
     curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
@@ -228,6 +211,28 @@ function http_delete($url, $authbool, &$message = 0, $sessiondelete = false)
     curl_close($c);
 
     return $retData;
+}
+
+/**
+ * Sets HTTP header fields required for authentication
+ *
+ * @param resource $curl A curl resource, that needs an authentication header.
+ */
+function curlSetAuthentication($curl)
+{
+    if ($sessiondelete) {
+        $date = $_SERVER['REQUEST_TIME'];
+    } else {
+        $date = $_SESSION['LASTACTIVE'];
+    }
+
+    $session = $_SESSION['SESSION'];
+    $user = $_SESSION['UID'];
+    curl_setopt($curl,
+                CURLOPT_HTTPHEADER,
+                array("User: {$user}",
+                      "Session: {$session}",
+                      "Date : {$date}"));
 }
 
 /**
