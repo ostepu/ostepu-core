@@ -70,7 +70,7 @@ class Authentication extends AbstractAuthentication
         $user = json_decode($user, true);
 
         // check if user exists
-        if ($message != "404") {
+        if ($message != "404" && empty($user) == false) {
             // create passwordhash with salt as suffix
             $password = $this->hashData('sha256',$password.$user['salt']);
 
