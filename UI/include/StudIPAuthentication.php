@@ -130,7 +130,8 @@ class StudIPAuthentication extends AbstractAuthentication
         $getUserData = http_get($query, false);
         if ($getUserData != "not found") {
             // convert output to our user structure
-            $getUserData = explode(":", $getUserData);
+            $getUserData = explode(":", utf8_encode($getUserData));
+
             $getUserData = cleanInput($getUserData);
 
             $newUser = new User();
@@ -150,6 +151,7 @@ class StudIPAuthentication extends AbstractAuthentication
     public function createUser($data)
     {
         $data = User::encodeUser($data);
+
         $url = "http://141.48.9.92/uebungsplattform/DB/DBControl/user";
         http_post_data($url, $data, false, $message);
 
