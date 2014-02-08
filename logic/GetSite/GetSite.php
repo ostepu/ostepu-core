@@ -524,7 +524,7 @@ class LgetSite
         $response['groupSubmissions'] = array();
 
         //Get all Submissions of the group for the sheet (sorted by exercise)
-        foreach ( $exercises as $exercise){
+        foreach ( $exercises as $exercise) {
             $newGroupExercise = array();
             foreach ($response['group']['members'] as $user){
                 $newGroupSubmission = array();
@@ -559,6 +559,12 @@ class LgetSite
         $this->app->response->setBody(json_encode($response));
     }
 
+
+    /**
+     * Checks if users reached neccessary points
+     *
+     * @todo filter exerciseTypes that were unused.
+     */
     public function checkCondition($userid, $courseid){
 
         $body = $this->app->request->getBody();
@@ -568,47 +574,60 @@ class LgetSite
         $answer = Request::custom('GET', $URL, $header, $body);
         $possibleExerciseTypes = json_decode($answer['content'], true);
 
+        $URL = $this->lURL.'/DB/exercise/course/'.$courseid;
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $exercises = json_decode($answer['content'], true);
 
         $URL = $this->lURL.'/DB/approvalcondition/course/'.$courseid;
         $answer = Request::custom('GET', $URL, $header, $body);
         $approvalconditions = json_decode($answer['content'], true);
 
+        $URL = $this->lURL.'/DB/user/course/'.$courseid.'/status/0';
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $students = json_decode($answer['content'], true);
+
+        $exerciseTypes = array();
+        foreach ($possibleExerciseTypes as $exerciseType) {
+            $exerciseTypes[$exerciseType['id']] = $exerciseType;
+        }
+
+        $exercisesById = array();
+        foreach ($exercises as $exercise) {
+            $exercisesById[$exercise['id']] = $exercise;
+        }
+
+        $exercisesByType = array();
+        foreach ($exercises as $exercise) {
+            if (!isset($exercisesByType[$exercise['type']])) {
+                $exercisesByType[$exercise['type']] = array();
+            }
+            unset($exercise['submissions']);
+            $exercisesByType[$exercise['type']][] = $exercise;
+        }
+
+        $maxPointsByType = array();
+        foreach ($exercisesByType as $type => $exercises) {
+            $maxPointsByType[$type] = array_reduce($exercises,
+                                                   function ($value, $exercise) {
+                if ($exercise['bonus'] == 0) {
+                    $value += $exercise['maxPoints'];
+                }
+
+                return $value;
+            }, 0);
+        }
+
         foreach ($approvalconditions as $ac){
             $newMinPercentage = array();
-            foreach ($possibleExerciseTypes as $eT){
-                if($ac['exerciseTypeId'] == $eT['id']){
-                    $newMinPercentage['approvalConditionId'] = $ac['id'];
-                    $newMinPercentage['exerciseTypeID'] = $ac['exerciseTypeId'];
-                    $newMinPercentage['exerciseType'] = $eT['name'];
-                    $newMinPercentage['minimumPercentage'] = $ac['percentage'] * 100;
 
-                    $response['minimumPercentages'][] = $newMinPercentage;
-                    break;
-                }
-            }
-        }
-        $percentages = array();
-        $URL = $this->lURL.'/DB/exercise/course/'.$courseid;
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $exercises = json_decode($answer['content'], true);
-        foreach($response['minimumPercentages'] as $condition){
-            $maxPoints = 0;
-            $percentage['exerciseTypeID'] = $condition['exerciseTypeID'];
-            $percentage['exerciseType'] = $condition['exerciseType'];
-            $percentage['minimumPercentage'] = $condition['minimumPercentage'];
+            $newMinPercentage['approvalConditionId'] = $ac['id'];
+            $newMinPercentage['exerciseTypeID'] = $ac['exerciseTypeId'];
 
-            foreach($exercises as $exercise){
-                if($exercise['type'] == $condition['exerciseTypeID']){
-                    $maxPoints = $maxPoints + $exercise['maxPoints'];
-                    $percentage['exerciseIds'][] = $exercise['id'];
-                }
-            }
+            $typeID = $ac['exerciseTypeId'];
+            $newMinPercentage['exerciseType'] = $exerciseTypes[$typeID]['name'];
+            $newMinPercentage['minimumPercentage'] = $ac['percentage'] * 100;
 
-            $percentage['maxPoints'] = $maxPoints;
-            $percentage['points'] = "";
-            $percentage['isApproved'] = "";
-
-            $percentages[] = $percentage;
+            $response['minimumPercentages'][] = $newMinPercentage;
         }
 
         $allMarkings = array();
@@ -622,55 +641,62 @@ class LgetSite
             }
         }
 
-        $URL = $this->lURL.'/DB/user/course/'.$courseid.'/status/0';
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $students = json_decode($answer['content'], true);
-
-        foreach ($students as $student){
-            $isApprovedForAllExerciseTypes = true;
-            $points = array();
-            foreach($percentages as $percentage){
-                $int = $percentage['exerciseTypeID'];
-                $points[$int] = 0;
+        $studentMarkings = array();
+        foreach ($allMarkings as $marking) {
+            $studentID = $marking['submission']['studentId'];
+            if (!isset($studentMarkings[$studentID])) {
+                $studentMarkings[$studentID] = array();
             }
-            foreach($exercises as $exercise){
-                foreach($allMarkings as $marking){
-                    if(($marking['submission']['studentId'] == $student['id'])
-                        and ($marking['submission']['exerciseId'] == $exercise['id'])){
-                        foreach($percentages as $percentage){
-                            if(in_array($exercise['id'], $percentage['exerciseIds'])){
-                                $int = $percentage['exerciseTypeID'];
-                                $points[$int] = $points[$int] + $marking['points'];
-                            }
+
+            $exerciseID = $marking['submission']['exerciseId'];
+            $exerciseType = $exercisesById[$exerciseID]['type'];
+
+            if (!isset($studentMarkings[$studentID][$exerciseType])) {
+                $studentMarkings[$studentID][$exerciseType] = 0;
+            }
+
+            $studentMarkings[$studentID][$exerciseType] += $marking['points'];
+        }
+
+        foreach ($students as &$student) {
+            unset($student['courses']);
+            unset($student['attachments']);
+            $student['percentages'] = array();
+            foreach ($exerciseTypes as $typeID => $type) {
+
+
+                if (isset($maxPointsByType[$typeID])) {
+                    $thisPercentage = array();
+                    /**
+                     * @todo actually check if user is approved
+                     */
+                    $thisPercentage['isApproved'] = true;
+                    $thisPercentage['exerciseTypeID'] = $typeID;
+                    $thisPercentage['exerciseType'] = $exerciseTypes[$typeID]['name'];
+
+                    if ($maxPointsByType[$typeID] == 0) {
+                        $thisPercentage['minimumPercentage'] = 'NaN';
+                    } else {
+                        if (isset($studentMarkings[$student['id']])
+                            && isset($studentMarkings[$student['id']][$typeID])) {
+                            $points = $studentMarkings[$student['id']][$typeID];
+                            $maxPoints = $maxPointsByType[$typeID];
+                            $percentage = $points / $maxPoints * 100;
+                           $thisPercentage['minimumPercentage'] = $percentage;
+                        } else {
+                            $thisPercentage['minimumPercentage'] = 0;
                         }
 
                     }
+                    $student['percentages'][] = $thisPercentage;
                 }
-            }
-            foreach ($percentages as &$percentage){
-                $int = $percentage['exerciseTypeID'];
-                $percentage['points'] = $points[$int];
-                $percentage['isApproved'] = true;
 
-                if ($percentage['maxPoints'] > 0) {
-                    $percentage['percentage'] = round($percentage['points'] / $percentage['maxPoints'], 3) * 100;
-                    if ($percentage['percentage'] < $percentage['minimumPercentage'] / 100) {
-                        $percentage['isApproved'] = false;
-                        $isApprovedForAllExerciseTypes = false;
-                    }
-                }
-                else {
-                    $percentage['percentage'] = 100;
-                }
             }
-
-            $student['percentages'] = $percentages;
-            $student['isApproved'] = $isApprovedForAllExerciseTypes;
-            $response['users'][] = $student;
         }
 
         $this->flag = 1;
         $response['user'] = $this->userWithCourse($userid, $courseid);
+        $response['users'] = $students;
 
         $this->app->response->setBody(json_encode($response));
     }
