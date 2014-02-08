@@ -4,7 +4,7 @@
  *
  * @author Till Uhlig
  */ 
-include_once( 'Structures.php' );
+include_once( dirname(__FILE__) . '/Structures.php' );
 
 /**
  * the class provides functions for database queries
@@ -40,7 +40,7 @@ class DBRequest
         $currentTime = $_SERVER['REQUEST_TIME'];
         
         // check session
-        // $checkSession = false; // remove the comment this line to disable the session examination
+         $checkSession = false; // remove the comment this line to disable the session examination
 
         // Storing whether or not a session condition is not satisfied
         $sessionFail = false;
