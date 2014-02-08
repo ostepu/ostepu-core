@@ -35,8 +35,7 @@ if (isset($_POST['action'])) {
             $exerciseTypes = cleanInput($_POST['exerciseTypes']);
 
             // creates a new course
-            $newCourse = new Course();
-            $newCourseSettings = Course::encodeCourse($newCourse->createCourse(null, $courseName, $semester, $defaultGroupSize));
+            $newCourseSettings = Course::encodeCourse(Course::createCourse(null, $courseName, $semester, $defaultGroupSize));
             $URI = $databaseURI . "/course";
             $newCourseId = http_post_data($URI, $newCourseSettings, true, $messageNewCourse);
 
@@ -47,9 +46,8 @@ if (isset($_POST['action'])) {
             // creates a new approvalCondition for every selected exerciseType
             foreach ($exerciseTypes as $exerciseType)
             {
-                $newApprovalCondition = new ApprovalCondition();
                 $newApprovalConditionSettings = ApprovalCondition::encodeApprovalCondition(
-                    $newApprovalCondition->createApprovalCondition(null, $newCourseId, $exerciseType, 0));
+                    ApprovalCondition::createApprovalCondition(null, $newCourseId, $exerciseType, 0));
                 $URI = $databaseURI . "/approvalcondition";
                 http_post_data($URI, $newApprovalConditionSettings, true, $messageNewAc);
 
@@ -89,13 +87,11 @@ if (isset($_POST['action'])) {
 
             // both passwords are equal
             if($password == $passwordRepeat) {
-                $newUser = new User();
-
                 /**
                 * @todo What's needed? Flag, salt, failedLogins?
                 * @todo Add the user's title.
                 */
-                $newUserSettings = User::encodeUser($newUser->createUser(null, $userName, $email, $firstName, $lastName,
+                $newUserSettings = User::encodeUser(User::createUser(null, $userName, $email, $firstName, $lastName,
                      null, null, $password));
                 $URI = $databaseURI . "/user";
                 http_post_data($URI, $newUserSettings, true, $message);

@@ -134,8 +134,7 @@ class StudIPAuthentication extends AbstractAuthentication
 
             $getUserData = cleanInput($getUserData);
 
-            $newUser = new User();
-            $user = $newUser->createUser(NULL,$getUserData[4],$getUserData[2],$getUserData[0],$getUserData[1],NULL,"1","noPassword","noSalt","0",$uid);
+            $user = User::createUser(NULL,$getUserData[4],$getUserData[2],$getUserData[0],$getUserData[1],NULL,"1","noPassword","noSalt","0",$uid);
         } else {
             $user = $getUserData;
         }
@@ -168,8 +167,7 @@ class StudIPAuthentication extends AbstractAuthentication
      */
     public function createCourseStatus($userId,$courseId,$status)
     {
-        $newUser = new User();
-        $data = User::encodeUser($newUser->createCourseStatus($userId,$courseId,$status));
+        $data = User::encodeUser(User::createCourseStatus($userId,$courseId,$status));
 
         $url = "http://141.48.9.92/uebungsplattform/DB/DBControl/coursestatus";
         http_post_data($url, $data, true, $message);

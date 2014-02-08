@@ -26,8 +26,7 @@ if (isset($_POST['action'])) {
             $defaultGroupSize = cleanInput($_POST['defaultGroupSize']);
 
             // create new course and edit existing one
-            $newCourse = new Course();
-            $newCourseSettings = Course::encodeCourse($newCourse->createCourse($cid,$courseName,$semester,$defaultGroupSize));
+            $newCourseSettings = Course::encodeCourse(Course::createCourse($cid,$courseName,$semester,$defaultGroupSize));
             $URI = $databaseURI . "/course/course/{$cid}";
             $courseManagement_data = http_put_data($URI, $newCourseSettings, true, $message);
 
@@ -48,8 +47,7 @@ if (isset($_POST['action'])) {
             // validate POST data
             if (is_numeric($userID) == true && is_numeric($Rights) && $Rights >= 0 && $Rights < 3) {
                 // create new coursestatus and edit existing one
-                $newUser = new User();
-                $data = User::encodeUser($newUser->createCourseStatus($userID,$cid,$Rights));
+                $data = User::encodeUser(User::createCourseStatus($userID,$cid,$Rights));
 
                 $url = $databaseURI . "/coursestatus/course/{$cid}/user/{$userID}";
                 http_put_data($url, $data, true, $message);
