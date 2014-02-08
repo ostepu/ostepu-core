@@ -623,16 +623,16 @@ class LgetSite
             }, 0);
         }
 
-        // add the name of the exercise type to the approvalcondition
-        foreach ($approvalconditions as &$ac){
-            $typeID = $ac['exerciseTypeId'];
-            $ac['exerciseType'] = $exerciseTypes[$typeID]['name'];
-        }
-
         $approvalconditionsByType = array();
-        foreach ($approvalconditions as $approvalCondition) {
-            $exerciseTypeID = $approvalCondition['exerciseTypeId'];
-            $approvalconditionsByType[$exerciseTypeID] = $approvalCondition;
+        // add the name of the exercise type to the approvalcondition
+        foreach ($approvalconditions as &$condition){
+            $typeID = $condition['exerciseTypeId'];
+            $condition['exerciseType'] = $exerciseTypes[$typeID]['name'];
+
+            $condition['minimumPercentage'] = $condition['percentage'] * 100;
+
+            $exerciseTypeID = $condition['exerciseTypeId'];
+            $approvalconditionsByType[$exerciseTypeID] = $condition;
         }
 
         $allMarkings = array();
@@ -735,11 +735,6 @@ class LgetSite
         $this->flag = 1;
         $response['user'] = $this->userWithCourse($userid, $courseid);
         $response['users'] = $students;
-
-        // prepare the numbers for the UI
-        foreach ($approvalconditions as &$condition) {
-            $condition['minimumPercentage'] = $condition['percentage'] * 100;
-        }
 
         $response['minimumPercentages'] = $approvalconditions;
 
