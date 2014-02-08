@@ -119,7 +119,11 @@ class Logger
             $infoString .=  " [" . LogLevel::$names[$logLevel] . "]: " . $message . "\n";
 
             // open the log file for appending
-            $fp = fopen($logFile, "a");
+            $fp = @fopen($logFile, "a");
+            
+            if (!$fp) {
+                return;
+            }
 
             // try to lock the file to prevent messages from overlapping
             // or overwriting each other
