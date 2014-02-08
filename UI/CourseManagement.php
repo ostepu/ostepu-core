@@ -116,7 +116,7 @@ $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
 
 // construct a content element for changing course settings
 $courseSettings = Template::WithTemplateFile('include/CourseManagement/CourseSettings.template.html');
-$courseSettings->bind($courseManagement_data['course']);
+$courseSettings->bind($courseManagement_data);
 
 // construct a content element for granting user-rights
 $grantRights = Template::WithTemplateFile('include/CourseManagement/GrantRights.template.html');
