@@ -96,7 +96,7 @@ class DBExerciseType
         $this->_app->delete('/' . $this->getPrefix() . '(/exercisetype)/:etid(/)',
                            array($this,'deleteExerciseType'));
         
-        // POST SetExerciseType
+        // POST AddExerciseType
         $this->_app->post('/' . $this->getPrefix() . '(/)',
                          array($this,'addExerciseType'));  
         

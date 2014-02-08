@@ -1,1 +1,1 @@
-{"id":"26","name":"DBSubmission","address":"localhost\/uebungsplattform\/DB\/DBSubmission","option":"","prefix":"submission","links":[{"id":"48","name":"out","address":"localhost\/uebungsplattform\/DB\/DBQuery","target":"13","owner":"26","relevanz":""}]}
+{"id":"26","name":"DBSubmission","address":"localhost\/uebungsplattform\/DB\/DBSubmission","option":"","prefix":"submission","links":[{"id":"48","name":"out","address":"localhost\/uebungsplattform\/DB\/DBQuery","target":"13","prefix":"query","owner":"26","relevanz":""}]}

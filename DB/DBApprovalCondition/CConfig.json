@@ -1,1 +1,1 @@
-{"id":"21","name":"DBApprovalCondition","address":"localhost\/uebungsplattform\/DB\/DBApprovalCondition","option":"","prefix":"approvalcondition","links":[{"id":"37","name":"out","address":"localhost\/uebungsplattform\/DB\/DBQuery","target":"13","owner":"21","relevanz":""}]}
+{"id":"21","name":"DBApprovalCondition","address":"localhost\/uebungsplattform\/DB\/DBApprovalCondition","option":"","prefix":"approvalcondition","links":[{"id":"37","name":"out","address":"localhost\/uebungsplattform\/DB\/DBQuery","target":"13","prefix":"query","owner":"21","relevanz":""}]}

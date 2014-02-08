@@ -11,7 +11,9 @@ require_once( '../../Assistants/Slim/Slim.php' );
 include_once( '../../Assistants/Structures.php' );
 include_once( '../../Assistants/Request.php' );
 include_once( '../../Assistants/DBJson.php' );
+include_once( '../../Assistants/DBRequest.php' );
 include_once( '../../Assistants/CConfig.php' );
+include_once( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader();
 
