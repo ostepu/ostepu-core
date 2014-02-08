@@ -566,6 +566,8 @@ class LgetSite
      * @warning If there is more than one condition assigned to the same
      * exercise type it is undefined which condition will be evaluated. This
      * might even change per user!.
+     *
+     * @author Florian Lücke
      */
     public function checkCondition($userid, $courseid){
 
@@ -670,6 +672,7 @@ class LgetSite
             unset($student['attachments']);
             $student['percentages'] = array();
 
+            $allApproved = true;
             // iteraterate over all conditions, this will also filter out the
             // exercisetypes that are not needed for this course
             foreach ($approvalconditionsByType as $typeID => $condition) {
@@ -680,7 +683,16 @@ class LgetSite
                     $thisPercentage['exerciseType'] = $exerciseTypes[$typeID]['name'];
 
                     if ($maxPointsByType[$typeID] == 0) {
-                        $thisPercentage['minimumPercentage'] = 'NaN';
+                        $thisPercentage['percentage'] = '100';
+                        $thisPercentage['isApproved'] = true;
+                        $thisPercentage['maxPoints'] = 0;
+                        if (isset($studentMarkings[$student['id']])
+                            && isset($studentMarkings[$student['id']][$typeID])) {
+                            $points = $studentMarkings[$student['id']][$typeID];
+                            $thisPercentage['points'] = $points;
+                        } else {
+                            $thisPercentage['points'] = 0;
+                        }
                     } else {
 
                         // check if there are points for this
@@ -694,17 +706,25 @@ class LgetSite
 
                             $percentageNeeded = $condition['percentage'];
 
-                            $thisPercentage['isApproved'] = ($percentage > $percentageNeeded);
-                            $thisPercentage['minimumPercentage'] = $percentage * 100;
+                            $thisPercentage['points'] = $points;
+                            $thisPercentage['maxPoints'] = $maxPoints;
+
+                            $typeApproved = ($percentage > $percentageNeeded);
+
+                            $allApproved = $allApproved && $typeApproved;
+
+                            $thisPercentage['isApproved'] = $typeApproved;
+                            $thisPercentage['percentage'] = $percentage * 100;
                         } else {
-                            $thisPercentage['minimumPercentage'] = 0;
+                            $thisPercentage['percentage'] = 0;
                         }
 
                     }
 
                     $student['percentages'][] = $thisPercentage;
-
             }
+
+            $student['isApproved'] = $allApproved;
         }
 
         $this->flag = 1;
@@ -713,7 +733,7 @@ class LgetSite
 
         // prepare the numbers for the UI
         foreach ($approvalconditions as &$condition) {
-            $condition['percentage'] *= 100;
+            $condition['minimumPercentage'] = $condition['percentage'] * 100;
         }
 
         $response['minimumPercentages'] = $approvalconditions;
