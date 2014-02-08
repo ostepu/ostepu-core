@@ -10,7 +10,7 @@
     <div class="content-body-wrapper">
         <div class="content-body left">
             <label class="form-field left label bold" for="courseName">Veranstaltungsname:</label>
-            <input class="form-field left text-input" name="courseName" value="Veranstaltungsname" id="courseName" />
+            <input class="form-field left text-input" name="courseName" placeholder="Veranstaltungsname" id="courseName" />
 
             <label class="form-field left label bold new-line" for="semester">Semester:</label>
             <select class="form-field left text-input short" name="semester" id="semester">
@@ -41,10 +41,11 @@
             <label class="form-field left label bold new-line" for="defaultExerciseTypes">
                 Zugelassene Punktearten:
             </label>
-            <div class="checkbox-container">
+            <div class="form-field left checkbox-container-exercisetype">
                 <?php foreach ($exerciseTypes as $exerciseType):
-                print '<input type="checkbox" name="submissionIDs[]" value="';
-                print $exerciseType['name'] . '"/>';
+                print '<input type="checkbox" name="exerciseTypes[]" value="';
+                print $exerciseType['id'];
+                print '"/>';
                 print $exerciseType['name'];
                 print '<br />';
                 endforeach;

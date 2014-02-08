@@ -22,23 +22,53 @@ $notifications = array();
 if (isset($_POST['action'])) {
     // creates a new course
     if ($_POST['action'] == "CreateCourse") {
-        if(isset($_POST['courseName']) && isset($_POST['semester']) && isset($_POST['defaultGroupSize'])) {
+        if(isset($_POST['courseName']) && isset($_POST['semester']) && isset($_POST['defaultGroupSize'])
+            && isset($_POST['exerciseTypes'])) {
+
+            // bool which is true if any error occured
+            $RequestError = false;
+
+            // extracts the php POST data
             $courseName = cleanInput($_POST['courseName']);
             $semester = cleanInput($_POST['semester']);
             $defaultGroupSize = cleanInput($_POST['defaultGroupSize']);
+            $exerciseTypes = cleanInput($_POST['exerciseTypes']);
 
+            // creates a new course
             $newCourse = new Course();
             $newCourseSettings = Course::encodeCourse($newCourse->createCourse(null, $courseName, $semester, $defaultGroupSize));
             $URI = $databaseURI . "/course";
-            http_post_data($URI, $newCourseSettings, true, $messageNewCourse);
+            $newCourseId = http_post_data($URI, $newCourseSettings, true, $messageNewCourse);
 
-            /**
-             * @todo Create a new approvalCondition for every checked ExerciseType input field.
-             */ 
+            // extracts the id of the new course
+            $newCourseId = json_decode($newCourseId, true);
+            $newCourseId = $newCourseId['id'];
 
-            if ($messageNewCourse == "201") {
+            // creates a new approvalCondition for every selected exerciseType
+            foreach ($exerciseTypes as $exerciseType)
+            {
+                $newApprovalCondition = new ApprovalCondition();
+                $newApprovalConditionSettings = ApprovalCondition::encodeApprovalCondition(
+                    $newApprovalCondition->createApprovalCondition(null, $newCourseId, $exerciseType, 0));
+                $URI = $databaseURI . "/approvalcondition";
+                http_post_data($URI, $newApprovalConditionSettings, true, $messageNewAc);
+
+                if ($messageNewAc != "201") {
+                    $RequestError = true;
+                }
+
+            }
+
+            // creates a notification depending on RequestError
+            if ($messageNewCourse == "201" && $RequestError == false) {
                 $notifications[] = MakeNotification("success", "Die Veranstaltung wurde erstellt!");
             }
+            else {
+                $notifications[] = MakeNotification("error", "Beim Speichern ist ein Fehler aufgetreten!");
+            }
+        }
+        else {
+            $notifications[] = MakeNotification("error", "Es wurden nicht alle Felder ausgefüllt!");
         }
     }
 
