@@ -562,14 +562,13 @@ class LgetSite
 
     /**
      * Checks if users reached neccessary points
-     *
-     * @todo filter exerciseTypes that were unused.
      */
     public function checkCondition($userid, $courseid){
 
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
 
+        // load all the data
         $URL = $this->lURL.'/DB/exercisetype';
         $answer = Request::custom('GET', $URL, $header, $body);
         $possibleExerciseTypes = json_decode($answer['content'], true);
@@ -586,6 +585,7 @@ class LgetSite
         $answer = Request::custom('GET', $URL, $header, $body);
         $students = json_decode($answer['content'], true);
 
+        // preprocess the data to make it quicker to get specific values
         $exerciseTypes = array();
         foreach ($possibleExerciseTypes as $exerciseType) {
             $exerciseTypes[$exerciseType['id']] = $exerciseType;
@@ -630,6 +630,12 @@ class LgetSite
             $response['minimumPercentages'][] = $newMinPercentage;
         }
 
+        $approvalconditionsByType = array();
+        foreach ($approvalconditions as $approvalCondition) {
+            $exerciseTypeID = $approvalCondition['exerciseTypeId'];
+            $approvalconditionsByType[$exerciseTypeID] = $approvalCondition;
+        }
+
         $allMarkings = array();
         foreach ($exercises as $exercise){
             $URL = $this->lURL.'/DB/marking/exercise/'.$exercise['id'];
@@ -665,12 +671,9 @@ class LgetSite
             foreach ($exerciseTypes as $typeID => $type) {
 
 
-                if (isset($maxPointsByType[$typeID])) {
+                if (isset($approvalconditionsByType[$typeID])) {
                     $thisPercentage = array();
-                    /**
-                     * @todo actually check if user is approved
-                     */
-                    $thisPercentage['isApproved'] = true;
+
                     $thisPercentage['exerciseTypeID'] = $typeID;
                     $thisPercentage['exerciseType'] = $exerciseTypes[$typeID]['name'];
 
@@ -681,8 +684,13 @@ class LgetSite
                             && isset($studentMarkings[$student['id']][$typeID])) {
                             $points = $studentMarkings[$student['id']][$typeID];
                             $maxPoints = $maxPointsByType[$typeID];
-                            $percentage = $points / $maxPoints * 100;
-                           $thisPercentage['minimumPercentage'] = $percentage;
+                            $percentage = $points / $maxPoints;
+
+                            $condition = $approvalconditionsByType[$typeID];
+                            $percentageNeeded = $condition['percentage'];
+
+                            $thisPercentage['isApproved'] = ($percentage > $percentageNeeded);
+                            $thisPercentage['minimumPercentage'] = $percentage * 100;
                         } else {
                             $thisPercentage['minimumPercentage'] = 0;
                         }
