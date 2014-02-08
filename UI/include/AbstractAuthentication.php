@@ -19,6 +19,11 @@ abstract class AbstractAuthentication
     abstract public function loginUser($username, $password);
 
     /**
+     * @var SiteKey as Password for all Hashfunctions
+     */
+    protected $siteKey = "b67dc54e7d03a9afcd16915a55edbad2d20a954562c482de3863456f01a0dee4";
+
+    /**
      * Generates a random string.
      *
      * @param int $length The length of the random string, 8 by default.
@@ -40,7 +45,7 @@ abstract class AbstractAuthentication
      */
     protected function hashData($method, $data)
     {
-        return hash_hmac($method, $data, $this->_siteKey);
+        return hash_hmac($method, $data, $this->siteKey);
     }
 
     /**
@@ -181,6 +186,31 @@ abstract class AbstractAuthentication
         } else {
             set_error("403");
         }
+    }
+
+    /**
+     * Generates a random Salt hashed with sha1.
+     *
+     * @return string Salt hashed in Sha1.
+     */
+    public function generateSalt()
+    {
+        $random = $this->randomBytes();
+
+        return $this->hashData("sha1", $random);
+    }
+
+    /**
+     * Generates a random Salt hashed with sha1.
+     *
+     * @param string $password Is the password string in plaintext.
+     * @param string $salt Is the salt string, which is hashed in sha1.
+     *
+     * @return string Password hashed in Sha256.
+     */
+    public function hashPassword($password, $salt)
+    {
+        return $this->hashData("sha256", $password . $salt);
     }
 }
 ?>

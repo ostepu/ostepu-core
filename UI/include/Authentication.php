@@ -17,11 +17,6 @@ include_once 'include/AbstractAuthentication.php';
 class Authentication extends AbstractAuthentication
 {
     /**
-     * @var SiteKey as Password for all Hashfunctions
-     */
-    private static $siteKey = "b67dc54e7d03a9afcd16915a55edbad2d20a954562c482de3863456f01a0dee4";
-
-    /**
      * The default contructor which sets our sitekey. Sitekey have to be the same all the time!!
      */
     public function __construct()
