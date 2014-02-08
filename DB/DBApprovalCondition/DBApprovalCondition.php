@@ -1,4 +1,4 @@
-s<?php
+<?php
 /**
  * @file DBApprovalCondition.php contains the DBApprovalCondition class
  * 
