@@ -611,11 +611,15 @@ class LgetSite
             $exercisesByType[$exercise['type']][] = $exercise;
         }
 
+        // calculate the maximum number of points that a user could get
+        // for each exercise type
         $maxPointsByType = array();
         foreach ($exercisesByType as $type => $exercises) {
             $maxPointsByType[$type] = array_reduce($exercises,
                                                    function ($value, $exercise) {
+
                 if ($exercise['bonus'] == 0) {
+                    // only count the
                     $value += $exercise['maxPoints'];
                 }
 
@@ -624,17 +628,24 @@ class LgetSite
         }
 
         $approvalconditionsByType = array();
-        // add the name of the exercise type to the approvalcondition
         foreach ($approvalconditions as &$condition){
+            // add the name of the exercise type to the approvalcondition
             $typeID = $condition['exerciseTypeId'];
             $condition['exerciseType'] = $exerciseTypes[$typeID]['name'];
 
+            // prepare percenteages for the UI
             $condition['minimumPercentage'] = $condition['percentage'] * 100;
 
+            // sort approvalconditions by exercise type
+            /**
+              * @warning this implies that there is *only one* approval
+              * condition per exercise type!
+              */
             $exerciseTypeID = $condition['exerciseTypeId'];
             $approvalconditionsByType[$exerciseTypeID] = $condition;
         }
 
+        // get all markings
         $allMarkings = array();
         foreach ($exercises as $exercise){
             $URL = $this->lURL.'/DB/marking/exercise/'.$exercise['id'];
@@ -682,7 +693,13 @@ class LgetSite
                     $thisPercentage['exerciseTypeID'] = $typeID;
                     $thisPercentage['exerciseType'] = $exerciseTypes[$typeID]['name'];
 
+                    // check if it was possible to get points for this exercisetype
                     if (!isset($maxPointsByType[$typeID])) {
+                        Logger::Log("Unmatchable condition: "
+                                    . $condition['id']
+                                    . "in course: "
+                                    . $courseid, LogLeve::WARNING);
+
                         $maxPointsByType[$typeID] = 0;
                     }
 
@@ -704,6 +721,7 @@ class LgetSite
                         // student-exerciseType combination
                         if (isset($studentMarkings[$student['id']])
                             && isset($studentMarkings[$student['id']][$typeID])) {
+                            // the user has points for this exercise type
 
                             $points = $studentMarkings[$student['id']][$typeID];
                             $maxPoints = $maxPointsByType[$typeID];
@@ -715,13 +733,24 @@ class LgetSite
                             $thisPercentage['maxPoints'] = $maxPoints;
 
                             $typeApproved = ($percentage > $percentageNeeded);
-
                             $allApproved = $allApproved && $typeApproved;
 
                             $thisPercentage['isApproved'] = $typeApproved;
                             $thisPercentage['percentage'] = $percentage * 100;
                         } else {
+
+                            // there are no points for the user for this
+                            // exercise type
                             $thisPercentage['percentage'] = 0;
+                            $thisPercentage['points'] = 0;
+
+                            $maxPoints = $maxPointsByType[$typeID];
+                            $thisPercentage['maxPoints'] = $maxPoints;
+
+                            $typeApproved = ($maxPoints == 0);
+                            $thisPercentage['isApproved'] = $typeApproved;
+
+                            $allApproved = $allApproved && $typeApproved;
                         }
 
                     }
