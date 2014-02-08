@@ -28,6 +28,12 @@ SELECT
     F.F_hash
     " . ($sub==1 ? 
     ",
+    F2.F_id as F_id2,
+    F2.F_displayName as F_displayName2,
+    F2.F_address as F_address2,
+    F2.F_timeStamp as F_timeStamp2,
+    F2.F_fileSize as F_fileSize2,
+    F2.F_hash as F_hash2,
     S.U_id as U_id2,
     S.S_id as S_id2,
     S.F_id_file as F_id_file2,
@@ -46,8 +52,10 @@ from
     Submission S ON (M.S_id = S.S_id)
         left join
     SelectedSubmission SS ON (S.S_id = SS.S_id_selected)
-        join
+        left join
     File F ON (F.F_id = M.F_id_file)
+        left join 
+    File F2 ON (F2.F_id = S.F_id_file)
 where
     M.E_id = '$eid'
         and M.U_id_tutor = '$userid'

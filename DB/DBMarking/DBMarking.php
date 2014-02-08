@@ -322,12 +322,27 @@ class DBMarking
                                             File::getDBPrimaryKey(), 
                                             File::getDBConvert());
                                             
+            // generates an assoc array of files by using a defined list of 
+            // its attributes
+            $files2 = DBJson::getObjectsByAttributes($data, 
+                                            File::getDBPrimaryKey(), 
+                                            File::getDBConvert(),
+                                            '2');                             
+                                            
             // generates an assoc array of a submission by using a defined 
             // list of its attributes
             $submissions = DBJson::getObjectsByAttributes($data,
                                     Submission::getDBPrimaryKey(), 
                                     Submission::getDBConvert(), 
                                     '2');
+                                    
+            // concatenates the submissions and the associated files
+            $submissions = DBJson::concatObjectListsSingleResult($data, 
+                            $submissions,
+                            Submission::getDBPrimaryKey(),
+                            Submission::getDBConvert()['S_file'] ,
+                            $files2,
+                            File::getDBPrimaryKey());                   
                                     
             // sets the selectedForGroup attribute
             foreach ($submissions as &$submission){
@@ -418,12 +433,27 @@ class DBMarking
                                             File::getDBPrimaryKey(), 
                                             File::getDBConvert());
                                             
+            // generates an assoc array of files by using a defined list of 
+            // its attributes
+            $files2 = DBJson::getObjectsByAttributes($data, 
+                                            File::getDBPrimaryKey(), 
+                                            File::getDBConvert(),
+                                            '2');                             
+                                            
             // generates an assoc array of a submission by using a defined 
             // list of its attributes
             $submissions = DBJson::getObjectsByAttributes($data,
                                     Submission::getDBPrimaryKey(), 
                                     Submission::getDBConvert(), 
-                                    '2');                           
+                                    '2');
+                                    
+            // concatenates the submissions and the associated files
+            $submissions = DBJson::concatObjectListsSingleResult($data, 
+                            $submissions,
+                            Submission::getDBPrimaryKey(),
+                            Submission::getDBConvert()['S_file'] ,
+                            $files2,
+                            File::getDBPrimaryKey());                     
                
             // sets the selectedForGroup attribute
             foreach ($submissions as &$submission){
@@ -518,12 +548,27 @@ class DBMarking
                                             File::getDBPrimaryKey(), 
                                             File::getDBConvert());
                                             
+            // generates an assoc array of files by using a defined list of 
+            // its attributes
+            $files2 = DBJson::getObjectsByAttributes($data, 
+                                            File::getDBPrimaryKey(), 
+                                            File::getDBConvert(),
+                                            '2');                             
+                                            
             // generates an assoc array of a submission by using a defined 
             // list of its attributes
             $submissions = DBJson::getObjectsByAttributes($data,
                                     Submission::getDBPrimaryKey(), 
                                     Submission::getDBConvert(), 
                                     '2');
+                                    
+            // concatenates the submissions and the associated files
+            $submissions = DBJson::concatObjectListsSingleResult($data, 
+                            $submissions,
+                            Submission::getDBPrimaryKey(),
+                            Submission::getDBConvert()['S_file'] ,
+                            $files2,
+                            File::getDBPrimaryKey());  
                                     
             // sets the selectedForGroup attribute
             foreach ($submissions as &$submission){
@@ -617,12 +662,27 @@ class DBMarking
                                             File::getDBPrimaryKey(), 
                                             File::getDBConvert());
                                             
+            // generates an assoc array of files by using a defined list of 
+            // its attributes
+            $files2 = DBJson::getObjectsByAttributes($data, 
+                                            File::getDBPrimaryKey(), 
+                                            File::getDBConvert(),
+                                            '2');                             
+                                            
             // generates an assoc array of a submission by using a defined 
             // list of its attributes
             $submissions = DBJson::getObjectsByAttributes($data,
                                     Submission::getDBPrimaryKey(), 
                                     Submission::getDBConvert(), 
                                     '2');
+                                    
+            // concatenates the submissions and the associated files
+            $submissions = DBJson::concatObjectListsSingleResult($data, 
+                            $submissions,
+                            Submission::getDBPrimaryKey(),
+                            Submission::getDBConvert()['S_file'] ,
+                            $files2,
+                            File::getDBPrimaryKey());  
                                     
             // sets the selectedForGroup attribute
             foreach ($submissions as &$submission){
@@ -712,12 +772,27 @@ class DBMarking
                                             File::getDBPrimaryKey(), 
                                             File::getDBConvert());
                                             
+            // generates an assoc array of files by using a defined list of 
+            // its attributes
+            $files2 = DBJson::getObjectsByAttributes($data, 
+                                            File::getDBPrimaryKey(), 
+                                            File::getDBConvert(),
+                                            '2');                             
+                                            
             // generates an assoc array of a submission by using a defined 
             // list of its attributes
             $submissions = DBJson::getObjectsByAttributes($data,
                                     Submission::getDBPrimaryKey(), 
                                     Submission::getDBConvert(), 
                                     '2');
+                                    
+            // concatenates the submissions and the associated files
+            $submissions = DBJson::concatObjectListsSingleResult($data, 
+                            $submissions,
+                            Submission::getDBPrimaryKey(),
+                            Submission::getDBConvert()['S_file'] ,
+                            $files2,
+                            File::getDBPrimaryKey());  
                                     
             // sets the selectedForGroup attribute
             foreach ($submissions as &$submission){
@@ -807,12 +882,27 @@ class DBMarking
                                             File::getDBPrimaryKey(), 
                                             File::getDBConvert());
       
+            // generates an assoc array of files by using a defined list of 
+            // its attributes
+            $files2 = DBJson::getObjectsByAttributes($data, 
+                                            File::getDBPrimaryKey(), 
+                                            File::getDBConvert(),
+                                            '2');                             
+                                            
             // generates an assoc array of a submission by using a defined 
             // list of its attributes
             $submissions = DBJson::getObjectsByAttributes($data,
                                     Submission::getDBPrimaryKey(), 
                                     Submission::getDBConvert(), 
                                     '2');
+                                    
+            // concatenates the submissions and the associated files
+            $submissions = DBJson::concatObjectListsSingleResult($data, 
+                            $submissions,
+                            Submission::getDBPrimaryKey(),
+                            Submission::getDBConvert()['S_file'] ,
+                            $files2,
+                            File::getDBPrimaryKey());  
  
             // sets the selectedForGroup attribute
             foreach ($submissions as &$submission){
@@ -904,12 +994,28 @@ class DBMarking
             $files = DBJson::getObjectsByAttributes($data, 
                                             File::getDBPrimaryKey(), 
                                             File::getDBConvert());
+                                            
+            // generates an assoc array of files by using a defined list of 
+            // its attributes
+            $files2 = DBJson::getObjectsByAttributes($data, 
+                                            File::getDBPrimaryKey(), 
+                                            File::getDBConvert(),
+                                            '2');                             
+                                            
             // generates an assoc array of a submission by using a defined 
             // list of its attributes
             $submissions = DBJson::getObjectsByAttributes($data,
                                     Submission::getDBPrimaryKey(), 
                                     Submission::getDBConvert(), 
                                     '2');
+                                    
+            // concatenates the submissions and the associated files
+            $submissions = DBJson::concatObjectListsSingleResult($data, 
+                            $submissions,
+                            Submission::getDBPrimaryKey(),
+                            Submission::getDBConvert()['S_file'] ,
+                            $files2,
+                            File::getDBPrimaryKey());
                                     
             // sets the selectedForGroup attribute
             foreach ($submissions as &$submission){
@@ -1003,12 +1109,28 @@ class DBMarking
             $files = DBJson::getObjectsByAttributes($data, 
                                             File::getDBPrimaryKey(), 
                                             File::getDBConvert());
+                                            
+            // generates an assoc array of files by using a defined list of 
+            // its attributes
+            $files2 = DBJson::getObjectsByAttributes($data, 
+                                            File::getDBPrimaryKey(), 
+                                            File::getDBConvert(),
+                                            '2');                             
+                                            
             // generates an assoc array of a submission by using a defined 
             // list of its attributes
             $submissions = DBJson::getObjectsByAttributes($data,
                                     Submission::getDBPrimaryKey(), 
                                     Submission::getDBConvert(), 
                                     '2');
+                                    
+            // concatenates the submissions and the associated files
+            $submissions = DBJson::concatObjectListsSingleResult($data, 
+                            $submissions,
+                            Submission::getDBPrimaryKey(),
+                            Submission::getDBConvert()['S_file'] ,
+                            $files2,
+                            File::getDBPrimaryKey());
                                     
             // sets the selectedForGroup attribute
             foreach ($submissions as &$submission){
@@ -1102,12 +1224,28 @@ class DBMarking
             $files = DBJson::getObjectsByAttributes($data, 
                                             File::getDBPrimaryKey(), 
                                             File::getDBConvert());
+                                            
+            // generates an assoc array of files by using a defined list of 
+            // its attributes
+            $files2 = DBJson::getObjectsByAttributes($data, 
+                                            File::getDBPrimaryKey(), 
+                                            File::getDBConvert(),
+                                            '2');                             
+                                            
             // generates an assoc array of a submission by using a defined 
             // list of its attributes
             $submissions = DBJson::getObjectsByAttributes($data,
                                     Submission::getDBPrimaryKey(), 
                                     Submission::getDBConvert(), 
                                     '2');
+                                    
+            // concatenates the submissions and the associated files
+            $submissions = DBJson::concatObjectListsSingleResult($data, 
+                            $submissions,
+                            Submission::getDBPrimaryKey(),
+                            Submission::getDBConvert()['S_file'] ,
+                            $files2,
+                            File::getDBPrimaryKey());
                                     
             // sets the selectedForGroup attribute
             foreach ($submissions as &$submission){
