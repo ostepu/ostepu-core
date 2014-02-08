@@ -562,6 +562,10 @@ class LgetSite
 
     /**
      * Checks if users reached neccessary points
+     *
+     * @warning If there is more than one condition assigned to the same
+     * exercise type it is undefined which condition will be evaluated. This
+     * might even change per user!.
      */
     public function checkCondition($userid, $courseid){
 
@@ -617,17 +621,10 @@ class LgetSite
             }, 0);
         }
 
-        foreach ($approvalconditions as $ac){
-            $newMinPercentage = array();
-
-            $newMinPercentage['approvalConditionId'] = $ac['id'];
-            $newMinPercentage['exerciseTypeID'] = $ac['exerciseTypeId'];
-
+        // add the name of the exercise type to the approvalcondition
+        foreach ($approvalconditions as &$ac){
             $typeID = $ac['exerciseTypeId'];
-            $newMinPercentage['exerciseType'] = $exerciseTypes[$typeID]['name'];
-            $newMinPercentage['minimumPercentage'] = $ac['percentage'] * 100;
-
-            $response['minimumPercentages'][] = $newMinPercentage;
+            $ac['exerciseType'] = $exerciseTypes[$typeID]['name'];
         }
 
         $approvalconditionsByType = array();
@@ -647,6 +644,10 @@ class LgetSite
             }
         }
 
+        // done preprocessing
+        // actual computation starts here
+
+        // add up points that each student reached in a specific exercise type
         $studentMarkings = array();
         foreach ($allMarkings as $marking) {
             $studentID = $marking['submission']['studentId'];
@@ -668,10 +669,11 @@ class LgetSite
             unset($student['courses']);
             unset($student['attachments']);
             $student['percentages'] = array();
-            foreach ($exerciseTypes as $typeID => $type) {
 
+            // iteraterate over all conditions, this will also filter out the
+            // exercisetypes that are not needed for this course
+            foreach ($approvalconditionsByType as $typeID => $condition) {
 
-                if (isset($approvalconditionsByType[$typeID])) {
                     $thisPercentage = array();
 
                     $thisPercentage['exerciseTypeID'] = $typeID;
@@ -680,13 +682,16 @@ class LgetSite
                     if ($maxPointsByType[$typeID] == 0) {
                         $thisPercentage['minimumPercentage'] = 'NaN';
                     } else {
+
+                        // check if there are points for this
+                        // student-exerciseType combination
                         if (isset($studentMarkings[$student['id']])
                             && isset($studentMarkings[$student['id']][$typeID])) {
+
                             $points = $studentMarkings[$student['id']][$typeID];
                             $maxPoints = $maxPointsByType[$typeID];
                             $percentage = $points / $maxPoints;
 
-                            $condition = $approvalconditionsByType[$typeID];
                             $percentageNeeded = $condition['percentage'];
 
                             $thisPercentage['isApproved'] = ($percentage > $percentageNeeded);
@@ -696,8 +701,8 @@ class LgetSite
                         }
 
                     }
+
                     $student['percentages'][] = $thisPercentage;
-                }
 
             }
         }
@@ -705,6 +710,13 @@ class LgetSite
         $this->flag = 1;
         $response['user'] = $this->userWithCourse($userid, $courseid);
         $response['users'] = $students;
+
+        // prepare the numbers for the UI
+        foreach ($approvalconditions as &$condition) {
+            $condition['percentage'] *= 100;
+        }
+
+        $response['minimumPercentages'] = $approvalconditions;
 
         $this->app->response->setBody(json_encode($response));
     }
