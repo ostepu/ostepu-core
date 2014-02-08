@@ -264,6 +264,7 @@ class LgetSite
     public function userWithCourse($userid, $courseid){
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
+
         $URL = $this->lURL.'/DB/coursestatus/course/'.$courseid.'/user/'.$userid;
         $answer = Request::custom('GET', $URL, $header, $body);
         $user = json_decode($answer['content'], true);
@@ -569,7 +570,8 @@ class LgetSite
      *
      * @author Florian Lücke
      */
-    public function checkCondition($userid, $courseid){
+    public function checkCondition($userid, $courseid)
+    {
 
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
@@ -642,7 +644,9 @@ class LgetSite
               * condition per exercise type!
               */
             $exerciseTypeID = $condition['exerciseTypeId'];
+            $condition['maxPoints'] = $maxPointsByType[$exerciseTypeID];
             $approvalconditionsByType[$exerciseTypeID] = $condition;
+
         }
 
         // get all markings
