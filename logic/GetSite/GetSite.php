@@ -78,7 +78,7 @@ class LgetSite
         $this->app->get('/coursemanagement/user/:userid/course/:courseid(/)', array($this, 'courseManagement'));
 
         //GET MainSettings
-        $this->app->get('/mainsettings/user/:userid/course/:courseid(/)', array($this, 'userWithCourse'));
+        $this->app->get('/mainsettings/user/:userid/course/:courseid(/)', array($this, 'mainSettings'));
 
         //GET Upload
         $this->app->get('/upload/user/:userid/course/:courseid(/)', array($this, 'userWithCourse'));
@@ -466,6 +466,21 @@ class LgetSite
                 $response['submissionHistory'][] = $submission;
             }
         }
+
+        $this->flag = 1;
+        $response['user'] = $this->userWithCourse($userid, $courseid);
+
+        $this->app->response->setBody(json_encode($response));
+    }
+
+    public function mainSettings($userid, $courseid){
+        $body = $this->app->request->getBody();
+        $header = $this->app->request->headers->all();
+
+        // returns all possible exercisetypes
+        $URL = $this->lURL.'/DB/exercisetype';
+        $exerciseTypes = Request::custom('GET', $URL, $header, $body);
+        $response['exerciseTypes'] = json_decode($exerciseTypes['content'], true);
 
         $this->flag = 1;
         $response['user'] = $this->userWithCourse($userid, $courseid);
