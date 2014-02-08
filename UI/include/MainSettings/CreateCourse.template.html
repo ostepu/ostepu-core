@@ -37,6 +37,19 @@
             </label>
             <input class="form-field left text-input short" name="defaultGroupSize"
             value="5" id="defaultGroupSize" />
+
+            <label class="form-field left label bold new-line" for="defaultExerciseTypes">
+                Zugelassene Punktearten:
+            </label>
+            <div class="checkbox-container">
+                <?php foreach ($exerciseTypes as $exerciseType):
+                print '<input type="checkbox" name="submissionIDs[]" value="';
+                print $exerciseType['name'] . '"/>';
+                print $exerciseType['name'];
+                print '<br />';
+                endforeach;
+                ?>
+            </div>
         </div>
     </div> <!-- end: content-body -->
 </div> <!-- end: content-wrapper -->

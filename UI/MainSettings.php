@@ -30,9 +30,13 @@ if (isset($_POST['action'])) {
             $newCourse = new Course();
             $newCourseSettings = Course::encodeCourse($newCourse->createCourse(null, $courseName, $semester, $defaultGroupSize));
             $URI = $databaseURI . "/course";
-            http_post_data($URI, $newCourseSettings, true, $message);
+            http_post_data($URI, $newCourseSettings, true, $messageNewCourse);
 
-            if ($message == "201") {
+            /**
+             * @todo Create a new approvalCondition for every checked ExerciseType input field.
+             */ 
+
+            if ($messageNewCourse == "201") {
                 $notifications[] = MakeNotification("success", "Die Veranstaltung wurde erstellt!");
             }
         }
@@ -82,18 +86,19 @@ $databaseURI = $getSiteURI . "/mainsettings/user/{$uid}/course/{$cid}";
 $mainSettings_data = http_get($databaseURI);
 $mainSettings_data = json_decode($mainSettings_data, true);
 
-$user_course_data = $mainSettings_data;
+$user_course_data = $mainSettings_data['user'];
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
-$h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
+$h->bind(array("name" => "Einstellungen",
                "backTitle" => "zur Veranstaltung",
                "backURL" => "Admin.php?cid={$cid}",
                "notificationElements" => $notifications));
 
 // construct a content element for creating new courses
 $createCourse = Template::WithTemplateFile('include/MainSettings/CreateCourse.template.html');
+$createCourse->bind($mainSettings_data);
 
 // construct a content element for creating new users
 $createUser = Template::WithTemplateFile('include/MainSettings/CreateUser.template.html');
