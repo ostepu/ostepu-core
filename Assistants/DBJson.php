@@ -112,10 +112,17 @@ class DBJson
             $key = "";
             if (is_array($id)){
                 foreach ($id as $di){
-                    $key = $key . $row[$di.$extension] . ',';
+                    if (isset($row[$di.$extension])){
+                        $key = $key . $row[$di.$extension] . ',';
+                    }
                 }
             } else{
+                if (isset($row[$id.$extension])){
                 $key = $row[$id.$extension];
+                }
+            }
+            if ($key==""){
+                return array();
             }
 
             foreach ($attributes as $attrib => $value) {  
@@ -124,6 +131,7 @@ class DBJson
                 }
             }
         }
+
         return $res;
     }
     
