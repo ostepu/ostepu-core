@@ -75,7 +75,7 @@ class ExerciseType extends Object implements JsonSerializable
      *
      * @return an exercise type object
      */
-    public function createExerciseType($typeid,$name)
+    public static function createExerciseType($typeid,$name)
     {
         return new ExerciseType(array('id' => $typeid,
         'name' => $name));

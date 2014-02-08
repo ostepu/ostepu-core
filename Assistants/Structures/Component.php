@@ -186,7 +186,7 @@ class Component extends Object implements JsonSerializable
      *
      * @return an component object
      */
-    public function createComponent($id,$name,$address,$option)
+    public static function createComponent($id,$name,$address,$option)
     {
         return new Component(array('id' => $id,
         'name' => $name,

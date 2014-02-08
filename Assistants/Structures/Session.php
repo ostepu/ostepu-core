@@ -72,7 +72,7 @@ class Session extends Object implements JsonSerializable
      *
      * @return an session object
      */
-    public function createSession($userId,$sessionId)
+    public static function createSession($userId,$sessionId)
     {
         return new Session(array('user' => $userId,
         'session' => $sessionId));

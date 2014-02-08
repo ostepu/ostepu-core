@@ -240,7 +240,7 @@ class Exercise extends Object implements JsonSerializable
      *
      * @return an exercise object
      */
-    public function createExercise($exerciseId,$courseId,$sheetId,
+    public static function createExercise($exerciseId,$courseId,$sheetId,
                                     $maxPoints,$type,$link,$bonus)
     {
         return new Exercise(array('id' => $exerciseId,

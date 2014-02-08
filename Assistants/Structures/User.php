@@ -386,7 +386,7 @@ class User extends Object implements JsonSerializable
      *
      * @return an user object
      */
-    public function createUser($userId,$userName,$email,$firstName,$lastName,
+    public static function createUser($userId,$userName,$email,$firstName,$lastName,
                                 $title,$flag,$password,$salt,$failedLogins,$externalId=null,$studentNumber=null)
     {
         return new User(array('id' => $userId,
@@ -413,7 +413,7 @@ class User extends Object implements JsonSerializable
      *
      * @return an course status object
      */
-    public function createCourseStatus($userId,$courseId,$status)
+    public static function createCourseStatus($userId,$courseId,$status)
     {
         return new User(array('id' => $userId,
         'courses' => array(array('status' => $status, 'course' => new Course(array('id' => $courseId))))));

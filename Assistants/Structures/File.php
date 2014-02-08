@@ -218,7 +218,7 @@ class File extends Object implements JsonSerializable
      *
      * @return an file object
      */
-    public function createFile($fileId,$displayName,$address,$timeStamp,$fileSize,$hash)
+    public static function createFile($fileId,$displayName,$address,$timeStamp,$fileSize,$hash)
     {
         return new File(array('fileId' => $fileId,
         'displayName' => $displayName,

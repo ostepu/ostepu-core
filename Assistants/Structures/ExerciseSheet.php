@@ -281,7 +281,7 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * @return an exercise sheet object
      */
-    public function createExerciseSheet($sheetId,$courseId,$endDate,$startDate,$groupSize,$sampleSolutionId,$sheetFileId,$sheetName)
+    public static function createExerciseSheet($sheetId,$courseId,$endDate,$startDate,$groupSize,$sampleSolutionId,$sheetFileId,$sheetName)
     {
         return new ExerciseSheet(array('id' => $sheetId,
         'courseId' => $courseId,
