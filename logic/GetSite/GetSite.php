@@ -682,10 +682,15 @@ class LgetSite
                     $thisPercentage['exerciseTypeID'] = $typeID;
                     $thisPercentage['exerciseType'] = $exerciseTypes[$typeID]['name'];
 
+                    if (!isset($maxPointsByType[$typeID])) {
+                        $maxPointsByType[$typeID] = 0;
+                    }
+
                     if ($maxPointsByType[$typeID] == 0) {
                         $thisPercentage['percentage'] = '100';
                         $thisPercentage['isApproved'] = true;
                         $thisPercentage['maxPoints'] = 0;
+
                         if (isset($studentMarkings[$student['id']])
                             && isset($studentMarkings[$student['id']][$typeID])) {
                             $points = $studentMarkings[$student['id']][$typeID];
