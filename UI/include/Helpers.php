@@ -110,7 +110,7 @@ function http_post_data($url, $data, $authbool, &$message = 0)
     $c = curl_init();
 
     curl_setopt($c, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+    curl_setopt($c, CURLOPT_CUSTOMREQUEST, "POST");
     curl_setopt($c, CURLOPT_POSTFIELDS, $data);
 
     if ($authbool) {
@@ -193,7 +193,7 @@ function http_delete($url, $authbool, &$message = 0, $sessiondelete = false)
     curl_setopt($c, CURLOPT_CUSTOMREQUEST, 'DELETE');
 
     if ($authbool) {
-        curlSetAuthentication($c);
+        curlSetAuthentication($c, $sessiondelete);
     }
 
     curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
@@ -219,7 +219,7 @@ function http_delete($url, $authbool, &$message = 0, $sessiondelete = false)
  *
  * @param resource $curl A curl resource, that needs an authentication header.
  */
-function curlSetAuthentication($curl)
+function curlSetAuthentication($curl, $sessiondelete = false)
 {
     if ($sessiondelete) {
         $date = $_SERVER['REQUEST_TIME'];
