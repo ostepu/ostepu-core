@@ -765,7 +765,7 @@ class LgetSite
         $response['user'] = $this->userWithCourse($userid, $courseid);
         $response['users'] = $students;
 
-        $response['minimumPercentages'] = $approvalconditions;
+        $response['minimumPercentages'] = array_values($approvalconditionsByType);
 
         $this->app->response->setBody(json_encode($response));
     }
