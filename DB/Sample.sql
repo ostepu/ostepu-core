@@ -31,6 +31,7 @@ INSERT INTO `uebungsplattform`.`File` (`F_id`, `F_displayName`, `F_address`, `F_
 INSERT INTO `uebungsplattform`.`File` (`F_id`, `F_displayName`, `F_address`, `F_timeStamp`, `F_fileSize`, `F_hash`) VALUES (7, 'g.pdf', 'file/abcdefg', 1389643115, 700, 'abcdefg');
 INSERT INTO `uebungsplattform`.`File` (`F_id`, `F_displayName`, `F_address`, `F_timeStamp`, `F_fileSize`, `F_hash`) VALUES (8, 'h.pdf', 'file/abcdefgh', 1389643115, 800, 'abcdefgh');
 INSERT INTO `uebungsplattform`.`File` (`F_id`, `F_displayName`, `F_address`, `F_timeStamp`, `F_fileSize`, `F_hash`) VALUES (9, 'i.pdf', 'file/delete', 1389643115, 900, 'delete');
+INSERT INTO `uebungsplattform`.`File` (`F_id`, `F_displayName`, `F_address`, `F_timeStamp`, `F_fileSize`, `F_hash`) VALUES (99, 'test.pdf', 'file/757097c90146e7ad82aceb68015943ac090ca6b4', 1389643115, 1643, '757097c90146e7ad82aceb68015943ac090ca6b4');
 
 COMMIT;
 
