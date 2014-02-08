@@ -798,12 +798,38 @@ class LgetSite
         $answer = Request::custom('GET', $URL, $header, $body);
         $response['course'] = json_decode($answer['content'], true);
 
+        // returns all exerciseTypes
+        $URL = $this->lURL.'/DB/exercisetype';
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $response['exerciseTypes'] = json_decode($answer['content'], true);
+
+        // returns all possible exerciseTypes of the course
+        $URL = $this->lURL.'/DB/approvalcondition/course/' . $courseid;
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $approvalConditions = json_decode($answer['content'], true);
+
         // returns all users of the given course
         $URL = $this->lURL.'/DB/user/course/'.$courseid;
         $answer = Request::custom('GET', $URL, $header, $body);
         $allUsers = json_decode($answer['content'], true);
 
-        // only selects the users whose course-status is tutor or lecturer
+        // adds an 'inCourse' flag to the exerciseType if there is
+        // an approvalCondition with the same id in the same course
+
+        /**
+         * @todo Improve runtime.
+         */
+        if(!empty($approvalConditions)) {
+            foreach ($approvalConditions as &$approvalCondition) {
+                foreach ($response['exerciseTypes'] as &$exerciseType) {
+                    if ($approvalCondition['exerciseTypeId'] == $exerciseType['id']) {
+                        $exerciseType['inCourse'] = true;
+                    }
+                }
+            }
+        }
+
+        // only selects the users whose course-status is student, tutor, lecturer or admin
         if(!empty($allUsers)) {
             foreach($allUsers as $user) {
                 if ($user['courses'][0]['status'] >= 0 && $user['courses'][0]['status'] < 4) {
