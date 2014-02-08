@@ -102,10 +102,6 @@ class DBMarking
         $this->_app->post('/' . $this->getPrefix() . '(/)',
                          array($this,'addMarking'));  
         
-        // GET GetMarking
-        $this->_app->get('/' . $this->getPrefix() . '(/marking)/:mid(/:sub)(/)',
-                        array($this,'getMarking'));
-        
         // GET GetSubmissionMarking
         $this->_app->get('/' . $this->getPrefix() . '/submission/:suid(/:sub)(/)',
                         array($this,'getSubmissionMarking'));
@@ -140,6 +136,10 @@ class DBMarking
         // GET GetTutorExerciseMarkings  
         $this->_app->get('/' . $this->getPrefix() . '/exercise/:eid/tutor/:userid(/:sub)(/)',
                         array($this,'getTutorExerciseMarkings'));  
+                        
+        // GET GetMarking
+        $this->_app->get('/' . $this->getPrefix() . '(/marking)/:mid(/:sub)(/)',
+                        array($this,'getMarking'));          
                         
         // starts slim only if the right prefix was received
         if (strpos ($this->_app->request->getResourceUri(),'/' . 
