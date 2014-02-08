@@ -128,7 +128,7 @@ class CControl
                 $this->_app->response->setStatus(201); 
             } else{
                 Logger::Log("PUT EditLink failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(409);
             }
         }
     }
@@ -153,7 +153,7 @@ class CControl
             $this->_app->response->setStatus(201);                
         } else{
             Logger::Log("DELETE DeleteLink failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(452);
+            $this->_app->response->setStatus(409);
         }
     }
     
@@ -187,7 +187,7 @@ class CControl
                 $this->_app->response->setStatus(201);            
             } else{
                 Logger::Log("POST SetLink failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(409);
             }
         }
     }
@@ -208,7 +208,7 @@ class CControl
         $result = DBRequest::request($sql, false);
         
         // checks the correctness of the query
-        if (!$result['errno'] && $result['content'] && $result['numRows']>0){
+        if (!$result['errno'] && $result['content']){
             $data = DBJson::getRows($result['content']);
             $links = DBJson::getResultObjectsByAttributes($data, Link::getDBPrimaryKey(), Link::getDBConvert());
             $this->_app->response->setBody(Link::encodeLink($links));
@@ -247,7 +247,7 @@ class CControl
                 $this->_app->response->setStatus(201);  
             } else{
                 Logger::Log("PUT EditComponent failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(452);
+                $this->_app->response->setStatus(409);
             }
         }
     }
@@ -272,7 +272,7 @@ class CControl
             $this->_app->response->setStatus(201);
         } else{
             Logger::Log("DELETE DeleteComponent failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(451);
+            $this->_app->response->setStatus(409);
         }
     }
     
@@ -302,7 +302,7 @@ class CControl
                 
             } else{
                 Logger::Log("POST SetComponent failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(409);
             }
         }
     }
@@ -323,7 +323,7 @@ class CControl
         $result = DBRequest::request($sql, false);
         
         // checks the correctness of the query
-        if (!$result['errno'] && $result['content'] && $result['numRows']>0){
+        if (!$result['errno'] && $result['content']){
             $data = DBJson::getRows($result['content']);
             $components = DBJson::getResultObjectsByAttributes($data, Component::getDBPrimaryKey(), Component::getDBConvert());
             $this->_app->response->setBody(Component::encodeComponent($components));
@@ -347,7 +347,7 @@ class CControl
         $result = DBRequest::request($sql, false);
 
         // checks the correctness of the query
-        if (!$result['errno'] && $result['content'] && $result['numRows']>0){
+        if (!$result['errno'] && $result['content']){
             $data = DBJson::getRows($result['content']);
 
             $components = DBJson::getObjectsByAttributes($data, Component::getDBPrimaryKey(), Component::getDBConvert());
@@ -379,7 +379,7 @@ class CControl
         $result = DBRequest::request($sql, false);
         
         // checks the correctness of the query
-        if (!$result['errno'] && $result['content'] && $result['numRows']>0){
+        if (!$result['errno'] && $result['content']){
             $data = DBJson::getRows($result['content']);
 
             $Components = DBJson::getObjectsByAttributes($data, Component::getDBPrimaryKey(), Component::getDBConvert());
