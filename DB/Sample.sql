@@ -43,7 +43,7 @@ USE `uebungsplattform`;
 INSERT INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`,  `U_salt`, `U_failed_logins`) VALUES (4, 'till', 'till@email.de', 'Uhlig', 'Till', NULL, '63bc857a5d61c988f4fa588228461f6eef9303aa713473bb414c23bb1f2c78f6', 1,  'ebf203bdb7928de0947deec93199987a7675c251', 0);
 INSERT INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`,  `U_salt`, `U_failed_logins`) VALUES (2, 'lisa', 'lisa@email.de', 'Dietrich', 'Lisa', NULL, '63bc857a5d61c988f4fa588228461f6eef9303aa713473bb414c23bb1f2c78f6', 1,  'ebf203bdb7928de0947deec93199987a7675c251', 0);
 INSERT INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`,  `U_salt`, `U_failed_logins`) VALUES (3, 'joerg', 'joerg@email.de', 'Baumgarten', 'Joerg', NULL, 'test', 1,  NULL, 0);
-INSERT IGNORE INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`, `U_salt`, `U_failed_logins`) VALUES (1, 'super-admin', NULL, NULL, NULL, NULL, 'test', 1, null, 0);
+INSERT IGNORE INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`, `U_salt`, `U_failed_logins`) VALUES (1, 'super-admin', NULL, NULL, NULL, NULL, '63bc857a5d61c988f4fa588228461f6eef9303aa713473bb414c23bb1f2c78f6', 1, 'ebf203bdb7928de0947deec93199987a7675c251', 0);
 COMMIT;
 
 
