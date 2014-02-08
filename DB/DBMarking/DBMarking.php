@@ -103,37 +103,42 @@ class DBMarking
                          array($this,'addMarking'));  
         
         // GET GetMarking
-        $this->_app->get('/' . $this->getPrefix() . '(/marking)/:mid(/)',
+        $this->_app->get('/' . $this->getPrefix() . '(/marking)/:mid(/:sub)(/)',
                         array($this,'getMarking'));
         
         // GET GetSubmissionMarking
-        $this->_app->get('/' . $this->getPrefix() . '/submission/:suid(/)',
+        $this->_app->get('/' . $this->getPrefix() . '/submission/:suid(/:sub)(/)',
                         array($this,'getSubmissionMarking'));
                         
         // GET GetAllMarkings
-        $this->_app->get('/' . $this->getPrefix() . '(/marking)(/)',
+        $this->_app->get('/' . $this->getPrefix() . '(/marking)(/:sub)(/)',
                         array($this,'getAllMarkings')); 
                         
         // GET GetExerciseMarkings
         $this->_app->get('/' . $this->getPrefix() . 
-                        '/exercise/:eid(/)',
+                        '/exercise/:eid(/:sub)(/)',
                         array($this,'getExerciseMarkings'));  
                         
         // GET GetSheetMarkings
         $this->_app->get('/' . $this->getPrefix() . 
-                        '/exercisesheet/:esid(/)',
+                        '/exercisesheet/:esid(/:sub)(/)',
                         array($this,'getSheetMarkings'));
                         
+        // GET GetCourseMarkings
+        $this->_app->get('/' . $this->getPrefix() . 
+                        '/course/:cid(/:sub)(/)',
+                        array($this,'getCourseMarkings'));
+                        
         // GET GetUserGroupMarkings
-        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid/user/:userid(/)',
+        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid/user/:userid(/:sub)(/)',
                         array($this,'getUserGroupMarkings'));  
                         
         // GET GetTutorSheetMarkings 
-        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid/tutor/:userid(/)',
+        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid/tutor/:userid(/:sub)(/)',
                         array($this,'getTutorSheetMarkings'));
                         
         // GET GetTutorExerciseMarkings  
-        $this->_app->get('/' . $this->getPrefix() . '/exercise/:eid/tutor/:userid(/)',
+        $this->_app->get('/' . $this->getPrefix() . '/exercise/:eid/tutor/:userid(/:sub)(/)',
                         array($this,'getTutorExerciseMarkings'));  
                         
         // starts slim only if the right prefix was received
@@ -296,14 +301,14 @@ class DBMarking
      * Called when this component receives an HTTP GET request to
      * /marking(/) or /marking/marking(/).
      */
-    public function getAllMarkings()
+    public function getAllMarkings($sub = 1)
     {      
         Logger::Log("starts GET GetAllMarkings",LogLevel::DEBUG);
         
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetAllMarkings.sql", 
-                                        array());
+                                        array('sub' => $sub));
         
         // checks the correctness of the query                                        
         if ($result['status']>=200 && $result['status']<=299){ 
@@ -387,7 +392,7 @@ class DBMarking
      *
      * @param int $mid The id of the marking that should be returned.
      */
-    public function getMarking($mid)
+    public function getMarking($mid,$sub = 1)
     {    
         Logger::Log("starts GET GetMarking",LogLevel::DEBUG);
         
@@ -398,7 +403,8 @@ class DBMarking
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetMarking.sql", 
-                                        array("mid" => $mid));
+                                        array("mid" => $mid,
+                                        'sub' => $sub));
  
         // checks the correctness of the query                                        
         if ($result['status']>=200 && $result['status']<=299){ 
@@ -486,7 +492,7 @@ class DBMarking
      *
      * @param int $suid The id of the submission.
      */
-    public function getSubmissionMarking($suid)
+    public function getSubmissionMarking($suid,$sub = 1)
     {    
         Logger::Log("starts GET GetSubmissionMarking",LogLevel::DEBUG);
         
@@ -497,7 +503,8 @@ class DBMarking
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetSubmissionMarking.sql", 
-                                        array("suid" => $suid));
+                                        array("suid" => $suid,
+                                        'sub' => $sub));
         
         // checks the correctness of the query                                        
         if ($result['status']>=200 && $result['status']<=299){ 
@@ -584,7 +591,7 @@ class DBMarking
      *
      * @param int $eid The id of the exercise.
      */
-    public function getExerciseMarkings($eid)
+    public function getExerciseMarkings($eid,$sub = 1)
     {   
         Logger::Log("starts GET GetExerciseMarkings",LogLevel::DEBUG);
         
@@ -595,7 +602,8 @@ class DBMarking
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetExerciseMarkings.sql", 
-                                        array('eid' => $eid));
+                                        array('eid' => $eid,
+                                        'sub' => $sub));
         
         // checks the correctness of the query                                        
         if ($result['status']>=200 && $result['status']<=299){ 
@@ -678,7 +686,7 @@ class DBMarking
      *
      * @param int $esid The id of the exercise sheet.
      */
-    public function getSheetMarkings($esid)
+    public function getSheetMarkings($esid,$sub = 1)
     {     
         Logger::Log("starts GET GetSheetMarkings",LogLevel::DEBUG);
         
@@ -689,7 +697,8 @@ class DBMarking
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetSheetMarkings.sql", 
-                                        array('esid' => $esid));
+                                        array('esid' => $esid,
+                                        'sub' => $sub));
         
         // checks the correctness of the query                                        
         if ($result['status']>=200 && $result['status']<=299){ 
@@ -763,7 +772,102 @@ class DBMarking
         }  
     }
 
+    
+    /**
+     * Returns all markings which belong to a given course.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /marking/course/$cid(/).
+     *
+     * @param int $cid The id of the course.
+     */
+    public function getCourseMarkings($cid,$sub = 1)
+    {     
+        Logger::Log("starts GET GetCourseMarkings",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($cid));
+                            
+        // starts a query, by using a given file
+        $result = DBRequest::getRoutedSqlFile($this->query, 
+                                        "Sql/GetCourseMarkings.sql", 
+                                        array('cid' => $cid,
+                                        'sub' => $sub));
+        
+        // checks the correctness of the query                                        
+        if ($result['status']>=200 && $result['status']<=299){ 
+            $query = Query::decodeQuery($result['content']);
+            
+            $data = $query->getResponse();
 
+            // generates an assoc array of files by using a defined list of 
+            // its attributes
+            $files = DBJson::getObjectsByAttributes($data, 
+                                            File::getDBPrimaryKey(), 
+                                            File::getDBConvert());
+      
+            // generates an assoc array of a submission by using a defined 
+            // list of its attributes
+            $submissions = DBJson::getObjectsByAttributes($data,
+                                    Submission::getDBPrimaryKey(), 
+                                    Submission::getDBConvert(), 
+                                    '2');
+ 
+            // sets the selectedForGroup attribute
+            foreach ($submissions as &$submission){
+                if (!isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
+                    if (!isset($submission['id']) || !isset($submission['selectedForGroup'])){
+                        $submission['selectedForGroup'] = (string) 0;
+                    } elseif ($submission['id'] == $submission['selectedForGroup']) {
+                        $submission['selectedForGroup'] = (string) 1;
+                    } else
+                        $submission['selectedForGroup'] = (string) 0;
+                }
+                else
+                    $submission['selectedForGroup'] = (string) 0;
+            }
+            
+            // generates an assoc array of markings by using a defined list of 
+            // its attributes
+            $markings = DBJson::getObjectsByAttributes($data, 
+                                    Marking::getDBPrimaryKey(), 
+                                    Marking::getDBConvert());  
+
+            // concatenates the markings and the associated files
+            $res = DBJson::concatObjectListsSingleResult($data, 
+                            $markings,
+                            Marking::getDBPrimaryKey(),
+                            Marking::getDBConvert()['M_file'] ,
+                            $files,
+                            File::getDBPrimaryKey());
+  
+            // concatenates the markings and the associated submissions
+            $res = DBJson::concatObjectListsSingleResult($data, 
+                            $res,
+                            Marking::getDBPrimaryKey(),
+                            Marking::getDBConvert()['M_submission'] ,
+                            $submissions,
+                            Submission::getDBPrimaryKey()); 
+                            
+            // to reindex
+            $res = array_values($res); 
+            
+            $this->_app->response->setBody(Marking::encodeMarking($res));
+        
+            $this->_app->response->setStatus(200);
+            if (isset($result['headers']['Content-Type']))
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+                
+        } else{
+            Logger::Log("GET GetCourseMarkings failed",LogLevel::ERROR);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
+            $this->_app->response->setBody(Marking::encodeMarking(new Marking()));
+            $this->_app->stop();
+        }  
+    }
+    
+    
     /**
      * Returns all markings of a group regarding a specific exercise sheet.
      *
@@ -773,7 +877,7 @@ class DBMarking
      * @param int $esid The id of the exercise sheet.
      * @param int $userid The id of the user whose group the marking belongs to.
      */
-    public function getUserGroupMarkings($esid,$userid)
+    public function getUserGroupMarkings($esid,$userid,$sub = 1)
     {     
         Logger::Log("starts GET GetUserGroupMarkings",LogLevel::DEBUG);
         
@@ -786,7 +890,8 @@ class DBMarking
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetUserGroupMarkings.sql", 
                                         array('esid' => $esid,
-                                            'userid' => $userid));
+                                            'userid' => $userid,
+                                            'sub' => $sub));
         
         // checks the correctness of the query                                        
         if ($result['status']>=200 && $result['status']<=299){ 
@@ -871,7 +976,7 @@ class DBMarking
      * @param int $userid The userid of the tutor that created the markings 
      * which should be returned.
      */
-    public function getTutorSheetMarkings($esid,$userid)
+    public function getTutorSheetMarkings($esid,$userid,$sub = 1)
     {     
         Logger::Log("starts GET GetTutorSheetMarkings",LogLevel::DEBUG);
         
@@ -884,7 +989,8 @@ class DBMarking
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetTutorSheetMarkings.sql", 
                                         array('esid' => $esid,
-                                            'userid' => $userid));
+                                            'userid' => $userid,
+                                            'sub' => $sub));
         
         // checks the correctness of the query                                        
         if ($result['status']>=200 && $result['status']<=299){ 
@@ -969,7 +1075,7 @@ class DBMarking
      * @param int $userid The userid of the tutor that created the markings 
      * which should be returned.
      */
-    public function getTutorExerciseMarkings($eid,$userid)
+    public function getTutorExerciseMarkings($eid,$userid,$sub = 1)
     {     
         Logger::Log("starts GET GetTutorExerciseMarkings",LogLevel::DEBUG);
         
@@ -982,7 +1088,8 @@ class DBMarking
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/GetTutorExerciseMarkings.sql", 
                                         array('eid' => $eid,
-                                            'userid' => $userid));
+                                            'userid' => $userid,
+                                            'sub' => $sub));
         
         // checks the correctness of the query                                        
         if ($result['status']>=200 && $result['status']<=299){ 

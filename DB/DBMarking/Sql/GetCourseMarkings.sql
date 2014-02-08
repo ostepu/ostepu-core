@@ -1,9 +1,10 @@
 /**
- * @file GetMarking.sql
- * gets a specified marking from %Marking table
+ * @file GetCourseMarkings.sql
+ * gets all specified markings from %Marking table
  * @author Till Uhlig
- * @param int \$mid a %Marking identifier
+ * @param int \$cid an %Course identifier
  * @result 
+ * - ES, the exercise sheet data
  * - M, the marking data
  * - F, the marking file
  * - S, the submission data
@@ -34,18 +35,20 @@ SELECT
     S.S_date as S_date2,
     SS.S_id_selected as S_selected2,
     S.S_accepted as S_accepted2,
-    S.S_flag as S_flag2,   
+    S.S_flag as S_flag2,
     S.S_leaderId as S_leaderId2,
     S.E_id as E_id2": "" ) 
     .
     "
 from
-    Marking M
+    ExerciseSheet ES
+    join
+    Marking M ON (ES.ES_id = M.ES_id)
+        join
+    SelectedSubmission SS ON (M.S_id = SS.S_id_selected)
         join
     Submission S ON (M.S_id = S.S_id)
-       left join
-    SelectedSubmission SS ON (S.S_id = SS.S_id_selected)
         join
     File F ON (F.F_id = M.F_id_file)
 where
-    M.M_id = '$mid'
+    ES.C_id = '$cid'

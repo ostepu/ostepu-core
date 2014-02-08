@@ -23,7 +23,9 @@ SELECT
     F.F_address,
     F.F_timeStamp,
     F.F_fileSize,
-    F.F_hash,
+    F.F_hash
+    " . ($sub==1 ? 
+    ",
     S.U_id as U_id2,
     S.S_id as S_id2,
     S.F_id_file as F_id_file2,
@@ -33,7 +35,9 @@ SELECT
     S.S_accepted as S_accepted2,
     S.S_flag as S_flag2, 
     S.S_leaderId as S_leaderId2,
-    S.E_id as E_id2
+    S.E_id as E_id2": "" ) 
+    .
+    "
 from
     Marking M
         join
