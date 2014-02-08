@@ -87,7 +87,7 @@ class LgetSite
         $this->app->get('/markingtool/user/:userid/course/:courseid/exercisesheet/:sheetid(/)', array($this, 'markingTool'));
 
         //GET UploadHistory
-        $this->app->get('/uploadhistory/user/:userid/course/:courseid/exercise/:exerciseid(/)', array($this, 'uploadHistory'));
+        $this->app->get('/uploadhistory/user/:userid/course/:courseid/exercisesheet/:sheetid(/)', array($this, 'uploadHistory'));
 
         //GET TutorSite
         $this->app->get('/tutor/user/:userid/course/:courseid(/)', array($this, 'tutorDozentAdmin'));
@@ -451,18 +451,29 @@ class LgetSite
 
     }
 
-    public function uploadHistory($userid, $courseid, $exerciseid){
+    public function uploadHistory($userid, $courseid, $sheetid){
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
 
-        $URL = $this->lURL.'/DB/submission/user/'.$userid.'/exercise/'.$exerciseid;
+        // load all exercises of an exercise sheet
+        $URL = $this->lURL.'/DB/exercisesheet/'.$sheetid.'/exercise/';
         $answer = Request::custom('GET', $URL, $header, $body);
-        $submissions = json_decode($answer['content'], true);
+        $exercisesheet = json_decode($answer['content'], true);
 
-        $response['submissionHistory'] = array();
+        $exercises = $exercisesheet['exercises'];
 
+        // load all submissions for every exercise of the exerciseSheet
+        if(!empty($exercises)) {
+            foreach ($exercises as $exercise) {
+                $URL = $this->lURL.'/DB/submission/user/'.$userid.'/exercise/'.$exercise['id'];
+                $answer = Request::custom('GET', $URL, $header, $body);
+                $submissions[] = json_decode($answer['content'], true);
+            }
+        }
+
+        // add every submission to the response
         if(!empty($submissions)){
-            foreach ($submissions as $submission){
+            foreach ($submissions as $submission) {
                 $response['submissionHistory'][] = $submission;
             }
         }
