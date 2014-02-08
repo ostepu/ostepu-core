@@ -11,7 +11,7 @@ foreach ($sheets as $sheet):
             <?php print date('d.m.Y  -  H:i', $sheet['endDate']); ?>
         </div>
         <div class="exercise-sheet-info info-color bold right">
-            <?php print $sheet['exerciseSheetInfo'] . '%'; ?>
+            <?php print $sheet['percentage'] . '%'; ?>
         </div>
     </div>
 
@@ -24,13 +24,18 @@ foreach ($sheets as $sheet):
                 <li>
 
                     <div class="exercise-type">
-                        <?php print $exercise['exerciseType']; ?>
+                        <?php print $exercise['type']; ?>
                     </div>
 
                     <div class="exercise-points">
                         <?php
-                        print $exercise['points'] . ' / ';
-                        print $exercise['maxPoints'] . ' P';
+                            if(isset($exercise['submission']['marking'])) {
+                                print $exercise['submission']['marking']['points'];
+                            }
+                            else {
+                                print "-";
+                            }
+                            print ' / ' . $exercise['maxPoints'] . ' P';
                         ?>
                     </div>
 
@@ -38,10 +43,42 @@ foreach ($sheets as $sheet):
                         <a href="Upload.php" class="inline">
                             <img src="Images/Upload.png" />
                         </a>
-                        <a href="#" class="plain"><img src="Images/Download.png" /></a>
-                        <a href="#" class="plain"><img src="Images/DownloadCorrection.png" /></a>
+                        <?php 
+                            if(isset($exercise['submission'])) {
+                                $displayName = $exercise['submission']['file']['displayName'];
+                                $fileAddress = $exercise['submission']['file']['address'];
+                                $fileURL = $filesystemURI . $fileAddress . '/' . $displayName;
+
+                                print '<a href="';
+                                print $fileURL;
+                                print '" title="';
+                                print $displayName;
+                                print '" class="plain" target="_blank">';
+                                print '<img src="Images/Download.png" />';
+                                print '</a>';
+                            }
+                        ?>
+                        <?php 
+                            if(isset($exercise['submission']['marking'])) {
+                                $displayName = $exercise['submission']['marking']['file']['displayName'];
+                                $fileAddress = $exercise['submission']['marking']['file']['address'];
+                                $fileURL = $filesystemURI . $fileAddress . '/' . $displayName;
+
+                                print '<a href="';
+                                print $fileURL;
+                                print '" title="';
+                                print $displayName;
+                                print '" class="plain" target="_blank">';
+                                print '<img src="Images/DownloadCorrection.png" />';
+                                print '</a>';
+                            }
+                        ?>
+
                         <a href="#" class="plain"><img src="Images/Attachment.png" /></a>
-                        <a href="#" class="plain"><img src="Images/Delete.png" /></a>
+
+                        <?php if(isset($exercise['submission'])) { ?>
+                            <a href="#" class="plain"><img src="Images/Delete.png" /></a>
+                        <?php } ?>
                     </div>
                 </li>
                 <?php
@@ -52,8 +89,29 @@ foreach ($sheets as $sheet):
 
         <div class="content-body right">
             <ol class="body-options body-option-color">
-                <li><a href="#">Aufgabenblatt</a></li>
-                <li><a href="#">Musterlösung</a></li>
+                <li>
+                    <?php 
+                        $displayName = $sheet['sheetFile']['displayName'];
+                        $fileAddress = $sheet['sheetFile']['address'];
+                        $fileURL = $filesystemURI . $fileAddress . '/' . $displayName; 
+                    ?>
+                    <a href="<?= $fileURL ?>" title="<?= $displayName ?>" target="_blank">
+                        Aufgabenblatt
+                    </a>
+                </li>
+                <li>
+                    <?php
+                        /**
+                         * @todo Check date and hide sampleSolution, if necessary
+                         */
+                        $displayName = $sheet['sampleSolution']['displayName'];
+                        $fileAddress = $sheet['sampleSolution']['address'];
+                        $fileURL = $filesystemURI . $fileAddress . '/' . $displayName; 
+                    ?>
+                    <a href="<?= $fileURL ?>" title="<?= $displayName ?>" target="_blank">
+                        Musterlösung
+                    </a>
+                </li>
                 <li>
                     <a href="Group.php?sid=<?= $sheet['id'], '&cid=', $cid ?>">
                         Gruppe verwalten
@@ -65,14 +123,23 @@ foreach ($sheets as $sheet):
         </div>
     </div> <!-- end: content-body-wrapper -->
 
-    <div class="content-footer">
-        <ol>
-            <li class="footer-text bold">In Gruppe mit:</li>
-            <li class="footer-text">Ralf Busch</li>
-            <li class="footer-text">Florian Lücke</li>
-            <li class="footer-text">Felix Schmidt</li>
-        </ol>
-    </div>
+    <?php
+        /**
+         * @todo isset($sheet['group']['members']) doesn't work ...
+         */
+        if (isset($sheet['group']['members'])) {
+            print '<div class="content-footer">';
+            print '<ol>';
+            print '<li class="footer-text bold">In Gruppe mit:</li>';
+            foreach ($sheet['group']['members'] as $member):
+                print '<li class="footer-text">';
+                print $member['firstName'] . $member['lastName'];
+                print '</li>';
+            endforeach;
+            print '</ol>';
+            print '</div>';
+        }
+    ?>
 </div> <!-- end: content-element -->
 <?php
 endforeach;
