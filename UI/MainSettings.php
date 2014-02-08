@@ -74,25 +74,26 @@ if (isset($_POST['action'])) {
     if ($_POST['action'] == "CreateUser") {
          if(isset($_POST['lastName']) && isset($_POST['firstName']) && isset($_POST['email']) &&
              isset($_POST['userName']) && isset($_POST['password']) && isset($_POST['passwordRepeat'])) {
+
             $lastName = cleanInput($_POST['lastName']);
             $firstName = cleanInput($_POST['firstName']);
             $email = cleanInput($_POST['email']);
             $userName = cleanInput($_POST['userName']);
 
-            /**
-            * @todo Hash passwords.
-            */
             $password = cleanInput($_POST['password']);
             $passwordRepeat = cleanInput($_POST['passwordRepeat']);
 
             // both passwords are equal
             if($password == $passwordRepeat) {
+
+                $salt = $auth->generateSalt();
+                $passwordHash = $auth->hashPassword($password, $salt);
                 /**
-                * @todo What's needed? Flag, salt, failedLogins?
                 * @todo Add the user's title.
                 */
-                $newUserSettings = User::encodeUser(User::createUser(null, $userName, $email, $firstName, $lastName,
-                     null, null, $password));
+                $newUserSettings = User::encodeUser(User::createUser(null, $userName, $email, $firstName, $lastName, null, 1, 
+                                                    $passwordHash, $salt, 0));
+
                 $URI = $databaseURI . "/user";
                 http_post_data($URI, $newUserSettings, true, $message);
 
@@ -109,7 +110,7 @@ if (isset($_POST['action'])) {
 
 // load mainSettings data from GetSite
 $databaseURI = $getSiteURI . "/mainsettings/user/{$uid}/course/{$cid}";
-$mainSettings_data = http_get($databaseURI);
+$mainSettings_data = http_get($databaseURI, true);
 $mainSettings_data = json_decode($mainSettings_data, true);
 
 $user_course_data = $mainSettings_data['user'];
