@@ -188,77 +188,75 @@ class LgetSite
 
     public function studentSiteInfo($userid, $courseid){
 
-        $response = array(
-                        'sheets' => array(),
-                        'user' => array()
-                        );
+        $response = array('sheets' => array(),
+                          'user' => array());
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
 
         //get Exercisesheets
 
-        $URL = $this->lURL.'/DB/exercisesheet/course/'.$courseid;
+        $URL = $this->lURL . '/DB/exercisesheet/course/' . $courseid . '/exercise';
         $answer = Request::custom('GET', $URL, $header, $body);
         $sheets = json_decode($answer['content'], true);
 
-        foreach ($sheets as $sheet){
-            $newSheet = array(
-                        'id' => $sheet['id'],
-                        'courseId'=> $sheet['courseId'],
-                        'endDate'=> $sheet['endDate'],
-                        'startDate'=> $sheet['startDate'],
-                        'sampleSolution'=> $sheet['sampleSolution'],
-                        'sheetFile'=> $sheet['sheetFile'],
-                        'group'=> array()
-                        );
+        foreach ($sheets as &$sheet) {
+            $sheetMaxPoints = 0;
+            $sheetPoints = 0;
 
-            $URL = $this->lURL.'/DB/exercise/exercisesheet/'.$sheet['id'];
+            $exerciseIDindices = array();
+            foreach ($sheet['exercises'] as $idx => $exercise) {
+                $exerciseIDindices[$exercise['id']] = $idx;
+            }
+
+            $URL = $this->lURL . '/DB/marking/exercisesheet/' . $sheet['id']
+                   . '/user/' . $userid;
             $answer = Request::custom('GET', $URL, $header, $body);
-            $exercises = json_decode($answer['content'], true);
+            $markings = json_decode($answer['content'], true);
 
-            foreach($exercises as &$exercise){
-                foreach($exercise['submissions'] as &$submission){
-                    $URL = $this->lURL.'/DB/marking/submission/'.$submission['id'];
-                    $answer = Request::custom('GET', $URL, $header, $body);
-                    $submission['marking'] = json_decode($answer['content'], true);
-                }
+            foreach ($markings as &$marking) {
+                $submissionid = $marking['submission']['id'];
+                unset($marking['submission']);
+
+                $URL = $this->lURL . '/DB/submission/' . $submissionid;
+                $answer = Request::custom('GET', $URL, $header, $body);
+                $submission = json_decode($answer['content'], true);
+
+                $submission['marking'] = $marking;
+
+                $exerciseIndex = $exerciseIDindices[$submission['exerciseId']];
+                $exercise = &$sheet['exercises'][$exerciseIndex];
+
+                $points = $marking['points'];
+                $maxPoints = $exercise['maxPoints'];
+
+                $sheetMaxPoints += $maxPoints;
+                $sheetPoints += $points;
+
+                $exercise['submission'] = $submission;
+                $exercise['percentage'] = $maxPoints != 0 ? $points / $maxPoints * 100 : 100;
             }
 
-            $newSheet['exercises'] = $exercises;
-
-            $maxPoints = 0;
-            $points = 0;
-            foreach($newSheet['exercises'] as $exercise){
-                $maxPoints = $maxPoints + $exercise['maxPoints'];
-                foreach($exercise['submissions'] as $submission){
-                    $points = $points + $submission['marking']['points'];
-                }
-            }
-            $newSheet['percentage'] = $points / $maxPoints;
-
-            $response['sheets'][] = $newSheet;
-
-            //get UserGroups
-            $URL = $this->lURL.'/DB/group/user/'.$userid;
+            $URL = $this->lURL . '/DB/group/user/' . $userid . '/exercisesheet/'
+                   . $sheet['id'];
             $answer = Request::custom('GET', $URL, $header, $body);
-            $groups = json_decode($answer['content'], true);
-            foreach ($groups as $group){
-                foreach ($response['sheets'] as &$sheet){
-                    if ($sheet['id'] == $group['sheetId']){
-                        $sheet['group'] = $group;
-                        break;
-                    }
-                }
+            $group = json_decode($answer['content'], true);
+
+            if (count($group) >= 1) {
+                $sheet['group'] = $group[0];
+            } else {
+                $sheet['group'] = array();
             }
 
+            $sheet['maxPoints'] = $sheetMaxPoints;
+            $sheet['points'] = $sheetPoints;
         }
 
-
         $this->flag = 1;
+
+        $response['sheets'] = $sheets;
         $response['user'] = $this->userWithCourse($userid, $courseid);
 
         $this->app->response->setBody(json_encode($response));
-
     }
 
     public function userWithCourse($userid, $courseid){
@@ -268,28 +266,25 @@ class LgetSite
         $URL = $this->lURL.'/DB/coursestatus/course/'.$courseid.'/user/'.$userid;
         $answer = Request::custom('GET', $URL, $header, $body);
         $user = json_decode($answer['content'], true);
-        $response = array(
-                'id' =>  $user['id'],
-                'userName'=>  $user['userName'],
-                'firstName'=>  $user['firstName'],
-                'lastName'=>  $user['lastName'],
-                'flag'=>  $user['flag'],
-                'email'=>  $user['email'],
-                'courses'=>  array()
-                );
+        $response = array('id' =>  $user['id'],
+                          'userName'=>  $user['userName'],
+                          'firstName'=>  $user['firstName'],
+                          'lastName'=>  $user['lastName'],
+                          'flag'=>  $user['flag'],
+                          'email'=>  $user['email'],
+                          'courses'=>  array());
         foreach ($user['courses'] as $course){
-            $newCourse = array(
-                'status' => $course['status'],
-                'statusName' => $this->getStatusName($course['status']),
-                'course' => $course['course']
-                );
+            $newCourse = array('status' => $course['status'],
+                               'statusName' => $this->getStatusName($course['status']),
+                               'course' => $course['course']);
            $response['courses'][] = $newCourse;
         }
         if ($this->flag == 0){
-        $this->app->response->setBody(json_encode($response));}
-        else{
-        $this->flag = 0;
-        return $response;}
+            $this->app->response->setBody(json_encode($response));
+        } else{
+            $this->flag = 0;
+            return $response;
+        }
     }
 
     public function userWithAllCourses($userid){
@@ -298,21 +293,17 @@ class LgetSite
         $URL = $this->lURL.'/DB/user/user/'.$userid;
         $answer = Request::custom('GET', $URL, $header, $body);
         $user = json_decode($answer['content'], true);
-        $response = array(
-                'id' =>  $user['id'],
-                'userName'=>  $user['userName'],
-                'firstName'=>  $user['firstName'],
-                'lastName'=>  $user['lastName'],
-                'flag'=>  $user['flag'],
-                'email'=>  $user['email'],
-                'courses'=>  array()
-                );
+        $response = array('id' =>  $user['id'],
+                          'userName'=>  $user['userName'],
+                          'firstName'=>  $user['firstName'],
+                          'lastName'=>  $user['lastName'],
+                          'flag'=>  $user['flag'],
+                          'email'=>  $user['email'],
+                          'courses'=>  array());
         foreach ($user['courses'] as $course){
-            $newCourse = array(
-                'status' => $course['status'],
-                'statusName' => $this->getStatusName($course['status']),
-                'course' => $course['course']
-                );
+            $newCourse = array('status' => $course['status'],
+                               'statusName' => $this->getStatusName($course['status']),
+                               'course' => $course['course']);
            $response['courses'][] = $newCourse;
         }
         if ($this->flag == 0){
