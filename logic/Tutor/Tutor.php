@@ -312,16 +312,16 @@ class LTutor
         $answer = Request::custom('GET', $URL, $header, "");
         $user = json_decode($answer['content'], true);
         
-        if(file_exists("./csv")){
-            $dir = "./csv";
-            $files = glob($dir.'/*.*');
-            if ( !empty($files) ) {
-                foreach ($files as $file) {
-                    unlink($file);
-                }
-            }
-            rmdir($dir);  
-        }
+        //if(file_exists("./csv")){
+        //    $dir = "./csv";
+        //    $files = glob($dir.'/*.*');
+        //    if ( !empty($files) ) {
+        //        foreach ($files as $file) {
+        //            unlink($file);
+        //        }
+        //    }
+        //    rmdir($dir);  
+        //}
         mkdir("./csv");
         //this is the true writing of the CSV-file named [tutorname]_[sheetid].csv
         $CSV = fopen('csv/'.$user['lastName'].'_'.$sheetid.'.csv', 'w');
@@ -343,7 +343,7 @@ class LTutor
                                             $marking['submission']['id'];
                     //request to database to get the submission file
                     $answer = Request::custom('GET', $URL, $header,"");
-                    $submisson = json_decode($answer['content'], true);                
+                    $submission = json_decode($answer['content'], true);                
                     
                     //$submission['file'] = array(
                     //            'fileId' => 8,
@@ -353,12 +353,12 @@ class LTutor
                     //            'fileSize' => 158,
                     //            'hash' => 'AFD1S65G4F1A34FWEA',
                     //            );
-                    
-                    $file = $submission['file'];
+                    $newfile = $submission['file'];
     
-                    $file['displayName'] = 
+                    $newfile['displayName'] = 
                         $namesOfExercises[$exerciseId].'/'.$marking['id'];
-                    $filesToZip[] = $file;
+                    if ($newfile['fileId'] > 2){            //inkonsistente DB-FS-Verlinkungen
+                        $filesToZip[] = $newfile;}
                 }
             }
         }
@@ -371,19 +371,20 @@ class LTutor
                 );
         $filesToZip[] = $csvFile;
         
+        
         $URL = $this->lURL.'/FS/zip';
         //request to filesystem to create the Zip-File
         $answer = Request::custom('POST', $URL, $header,json_encode($filesToZip));
         $zipFile = json_decode($answer['content'], true);  
         
-        $URL = $this->lURL.'/FS/zip';
+        $URL = $this->lURL.'/FS/'.$zipFile['address'].'/'.$userid.'_'.$sheetid.'.zip';
         //request to filesystem to get the created Zip-File
-        $answer = Request::custom('POST', $URL, $header,json_encode($filesToZip));
-        $zipFile = json_decode($answer['content'], true); 
+        $answer = Request::custom('GET', $URL, $header,json_encode($filesToZip));
+        print_r($answer);
         
         //ToDo: get Zip-File
-        
-        $this->app->response->setBody($zipFile);
+        $this->app->response->headers->set('Content-Type', 'application/zip');
+        $this->app->response->setBody($answer['content']);
     }
 
     public function uploadZip($userid, $sheetid){
@@ -418,7 +419,6 @@ class LTutor
                 //request to filesystem to save the marking file
                 $answer = Request::custom('POST', $URL, $header,json_encode($file));
                 $markingFile = json_decode($answer['content'], true);
-                
                 
                 $marking = array(
                         'id' => $row[0],
