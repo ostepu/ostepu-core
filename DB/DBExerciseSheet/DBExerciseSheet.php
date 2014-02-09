@@ -452,6 +452,13 @@ class DBExerciseSheet
                 $exercises = DBJson::getObjectsByAttributes($data, 
                                         Exercise::getDBPrimaryKey(), 
                                         Exercise::getDBConvert());
+                                        
+                // generates an assoc array of files by using a defined 
+                // list of its attributes
+                $attachments = DBJson::getObjectsByAttributes($data, File::getDBPrimaryKey(), File::getDBConvert());
+                
+                // concatenates the exercise and the associated attachments
+                $exercises = DBJson::concatObjectListResult($data, $exercises,Exercise::getDBPrimaryKey(),Exercise::getDBConvert()['E_attachments'] ,$attachments,File::getDBPrimaryKey());  
             
                 // concatenates the exercise sheet and the associated exercises
                 $res = DBJson::concatResultObjectLists($data, 
@@ -572,6 +579,13 @@ class DBExerciseSheet
                 $exercises = DBJson::getObjectsByAttributes($data, 
                             Exercise::getDBPrimaryKey(), 
                             Exercise::getDBConvert());
+                            
+                // generates an assoc array of files by using a defined 
+                // list of its attributes
+                $attachments = DBJson::getObjectsByAttributes($data, File::getDBPrimaryKey(), File::getDBConvert());
+                
+                // concatenates the exercise and the associated attachments
+                $exercises = DBJson::concatObjectListResult($data, $exercises,Exercise::getDBPrimaryKey(),Exercise::getDBConvert()['E_attachments'] ,$attachments,File::getDBPrimaryKey());  
             
                 // concatenates the exercise sheet and the associated exercises
                 $res = DBJson::concatResultObjectLists($data, 
