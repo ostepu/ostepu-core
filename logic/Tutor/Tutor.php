@@ -375,15 +375,16 @@ class LTutor
         $URL = $this->lURL.'/FS/zip';
         //request to filesystem to create the Zip-File
         $answer = Request::custom('POST', $URL, $header,json_encode($filesToZip));
-        $zipFile = json_decode($answer['content'], true);  
+        $zipFile = json_decode($answer['content'], true); 
+                   // print_r(json_encode($filesToZip));
         
         $URL = $this->lURL.'/FS/'.$zipFile['address'].'/'.$userid.'_'.$sheetid.'.zip';
         //request to filesystem to get the created Zip-File
         $answer = Request::custom('GET', $URL, $header,json_encode($filesToZip));
-        print_r($answer);
         
         //ToDo: get Zip-File
         $this->app->response->headers->set('Content-Type', 'application/zip');
+        $this->app->response->headers->set('Content-Disposition', $answer['headers']['Content-Disposition']);
         $this->app->response->setBody($answer['content']);
     }
 
