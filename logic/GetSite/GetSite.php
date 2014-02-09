@@ -275,8 +275,6 @@ class LgetSite
 
                 if (count($exercise['attachments']) > 0) {
                     $exercise['attachment'] = $exercise['attachments'][0];
-                } else {
-                    $exercise['attachment'] = $exercise['attachments'];
                 }
 
                 unset($exercise['attachments']);
