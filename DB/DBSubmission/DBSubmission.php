@@ -168,58 +168,14 @@ class DBSubmission
      */
     public function getExerciseSubmissions($eid)
     { 
-        Logger::Log("starts GET GetExerciseSubmissions",LogLevel::DEBUG);
-    
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($eid));
-                       
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetExerciseSubmissions.sql", 
-                                        array("eid" => $eid));
-    
-        // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-
-            // generates an assoc array of files by using a defined list of 
-            // its attributes
-            $files = DBJson::getObjectsByAttributes($data, 
-                                            File::getDBPrimaryKey(), 
-                                            File::getDBConvert());
-                                            
-            // generates an assoc array of submissions by using a defined list of 
-            // its attributes
-            $submissions = DBJson::getObjectsByAttributes($data, 
-                                    Submission::getDBPrimaryKey(), 
-                                    Submission::getDBConvert());  
-                                    
-            // concatenates the submissions and the associated files
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $submissions,
-                            Submission::getDBPrimaryKey(),
-                            Submission::getDBConvert()['S_file'] ,
-                            $files,
-                            File::getDBPrimaryKey());
-                            
-            // to reindex
-            $res = array_values($res); 
-            
-            $this->_app->response->setBody(Submission::encodeSubmission($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetExerciseSubmissions failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Submission::encodeSubmission(new Submission()));
-            $this->_app->stop();
-        } 
+        $this->get("GetExerciseSubmissions",
+                "Sql/GetExerciseSubmissions.sql",
+                isset($userid) ? $userid : "",
+                isset($cid) ? $cid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($mid) ? $mid : "");  
     }
 
 
@@ -365,7 +321,55 @@ class DBSubmission
             $this->_app->response->setBody(Submission::encodeSubmission($res)); 
     }
 
-
+    public function get($functionName,$sqlFile,$userid,$cid,$esid,$eid,$suid,$mid)
+    {
+        Logger::Log("starts GET " . $functionName,LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            $userid == "" ? true : ctype_digit($userid), 
+                            $cid == "" ? true : ctype_digit($cid), 
+                            $esid == "" ? true : ctype_digit($esid), 
+                            $eid == "" ? true : ctype_digit($eid), 
+                            $suid == "" ? true : ctype_digit($suid), 
+                            $mid == "" ? true : ctype_digit($mid));
+                            
+            
+        // starts a query, by using a given file
+        $result = DBRequest::getRoutedSqlFile($this->query, 
+                                        $sqlFile, 
+                                        array("userid" => $userid,
+                                        'cid' => $cid,
+                                        'esid' => $esid,
+                                        'eid' => $eid,
+                                        'suid' => $suid,
+                                        'mid' => $mid));
+ 
+        // checks the correctness of the query                                        
+        if ($result['status']>=200 && $result['status']<=299){ 
+            $query = Query::decodeQuery($result['content']);
+            
+            if ($query->getNumRows()>0){
+                $res = Submission::ExtractSubmission($query->getResponse()); 
+                $this->_app->response->setBody(Submission::encodeSubmission($res));
+        
+                $this->_app->response->setStatus(200);
+                if (isset($result['headers']['Content-Type']))
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+                
+                $this->_app->stop(); 
+            }
+            else
+                $result['status'] = 409;
+                
+        }
+        
+            Logger::Log("GET " . $functionName . " failed",LogLevel::ERROR);
+            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
+            $this->_app->response->setBody(Submission::encodeSubmission(new Submission()));
+            $this->_app->stop();
+    }
+    
     /**
      * Returns all submissions.
      *
@@ -374,57 +378,14 @@ class DBSubmission
      */
     public function getAllSubmissions()
     {    
-        Logger::Log("starts GET GetAllSubmissions",LogLevel::DEBUG);
-
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetAllSubmissions.sql", 
-                                        array());
-                                        
-        // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-
-            // generates an assoc array of files by using a defined list of 
-            // its attributes
-            $files = DBJson::getObjectsByAttributes($data, 
-                                            File::getDBPrimaryKey(), 
-                                            File::getDBConvert());
-                         
-            // generates an assoc array of submissions by using a defined list of 
-            // its attributes
-           $submissions = DBJson::getObjectsByAttributes($data, 
-                                    Submission::getDBPrimaryKey(), 
-                                    Submission::getDBConvert(),
-                                    '2'); 
-                       
-            // concatenates the submissions and the associated files
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $submissions,
-                            Submission::getDBPrimaryKey(),
-                            Submission::getDBConvert()['S_file'] ,
-                            $files,
-                            File::getDBPrimaryKey(),
-                            '',
-                            '2');
-                            
-            // to reindex
-            $res = array_values($res); 
-    
-            $this->_app->response->setBody(Submission::encodeSubmission($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetAllSubmissions failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Submission::encodeSubmission(new Submission()));
-            $this->_app->stop();
-        }
+        $this->get("GetAllSubmissions",
+                "Sql/GetAllSubmissions.sql",
+                isset($userid) ? $userid : "",
+                isset($cid) ? $cid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($mid) ? $mid : "");
     }
 
 
@@ -439,60 +400,15 @@ class DBSubmission
      * @param int $esid The id of the exercise sheet.
      */
     public function getGroupSubmissions($userid, $esid)
-    {         
-        Logger::Log("starts GET GetGroupSubmissions",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($userid),
-                            ctype_digit($esid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetGroupSubmissions.sql", 
-                                        array("userid" => $userid,"esid" => $esid ));
-        
-        // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-
-            // generates an assoc array of files by using a defined list of 
-            // its attributes
-            $files = DBJson::getObjectsByAttributes($data, 
-                                            File::getDBPrimaryKey(), 
-                                            File::getDBConvert());
-                                            
-            // generates an assoc array of submissions by using a defined list of 
-            // its attributes
-            $submissions = DBJson::getObjectsByAttributes($data, 
-                                    Submission::getDBPrimaryKey(), 
-                                    Submission::getDBConvert());  
-                                    
-            // concatenates the submissions and the associated files
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $submissions,
-                            Submission::getDBPrimaryKey(),
-                            Submission::getDBConvert()['S_file'] ,
-                            $files,
-                            File::getDBPrimaryKey());
-                            
-            // to reindex
-            $res = array_values($res); 
-            
-            $this->_app->response->setBody(Submission::encodeSubmission($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetGroupSubmissions failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Submission::encodeSubmission(new Submission()));
-            $this->_app->stop();
-        }
+    {       
+        $this->get("GetGroupSubmissions",
+                "Sql/GetGroupSubmissions.sql",
+                isset($userid) ? $userid : "",
+                isset($cid) ? $cid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($mid) ? $mid : "");
     }
 
 
@@ -507,60 +423,15 @@ class DBSubmission
      * @param int $esid The id of the exercise sheet.
      */
     public function getGroupSelectedSubmissions($userid, $esid)
-    {         
-        Logger::Log("starts GET GetGroupSelectedSubmissions",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($userid),
-                            ctype_digit($esid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetGroupSelectedSubmissions.sql", 
-                                        array("userid" => $userid,"esid" => $esid ));
-        
-        // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-
-            // generates an assoc array of files by using a defined list of 
-            // its attributes
-            $files = DBJson::getObjectsByAttributes($data, 
-                                            File::getDBPrimaryKey(), 
-                                            File::getDBConvert());
-                                            
-            // generates an assoc array of submissions by using a defined list of 
-            // its attributes
-            $submissions = DBJson::getObjectsByAttributes($data, 
-                                    Submission::getDBPrimaryKey(), 
-                                    Submission::getDBConvert());  
-                                    
-            // concatenates the submissions and the associated files
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $submissions,
-                            Submission::getDBPrimaryKey(),
-                            Submission::getDBConvert()['S_file'] ,
-                            $files,
-                            File::getDBPrimaryKey());
-                            
-            // to reindex
-            $res = array_values($res); 
-            
-            $this->_app->response->setBody(Submission::encodeSubmission($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetGroupSelectedSubmissions failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Submission::encodeSubmission(new Submission()));
-            $this->_app->stop();
-        }
+    {       
+        $this->get("GetGroupSelectedSubmissions",
+                "Sql/GetGroupSelectedSubmissions.sql",
+                isset($userid) ? $userid : "",
+                isset($cid) ? $cid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($mid) ? $mid : "");
     }
 
 
@@ -575,60 +446,15 @@ class DBSubmission
      * @param int $eid The id of the exercise.
      */
     public function getGroupExerciseSubmissions($userid, $eid)
-    {         
-        Logger::Log("starts GET GetGroupExerciseSubmissions",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($userid),
-                            ctype_digit($eid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetGroupExerciseSubmissions.sql", 
-                                        array("userid" => $userid,"eid" => $eid ));
-        
-        // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-
-            // generates an assoc array of files by using a defined list of 
-            // its attributes
-            $files = DBJson::getObjectsByAttributes($data, 
-                                            File::getDBPrimaryKey(), 
-                                            File::getDBConvert());
-                                            
-            // generates an assoc array of submissions by using a defined list of 
-            // its attributes
-            $submissions = DBJson::getObjectsByAttributes($data, 
-                                    Submission::getDBPrimaryKey(), 
-                                    Submission::getDBConvert());  
-                                    
-            // concatenates the submissions and the associated files
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $submissions,
-                            Submission::getDBPrimaryKey(),
-                            Submission::getDBConvert()['S_file'] ,
-                            $files,
-                            File::getDBPrimaryKey());
-                            
-            // to reindex
-            $res = array_values($res); 
-            
-            $this->_app->response->setBody(Submission::encodeSubmission($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetGroupExerciseSubmissions failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Submission::encodeSubmission(new Submission()));
-            $this->_app->stop();
-        }
+    {     
+        $this->get("GetGroupExerciseSubmissions",
+                "Sql/GetGroupExerciseSubmissions.sql",
+                isset($userid) ? $userid : "",
+                isset($cid) ? $cid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($mid) ? $mid : "");
     }
 
 
@@ -643,60 +469,15 @@ class DBSubmission
      * @param int $eid The id of the exercise.
      */
     public function getGroupSelectedExerciseSubmissions($userid, $eid)
-    {         
-        Logger::Log("starts GET GetGroupSelectedExerciseSubmissions",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($userid),
-                            ctype_digit($eid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetGroupSelectedExerciseSubmissions.sql", 
-                                        array("userid" => $userid,"eid" => $eid ));
-        
-        // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-
-            // generates an assoc array of files by using a defined list of 
-            // its attributes
-            $files = DBJson::getObjectsByAttributes($data, 
-                                            File::getDBPrimaryKey(), 
-                                            File::getDBConvert());
-                                            
-            // generates an assoc array of submissions by using a defined list of 
-            // its attributes
-            $submissions = DBJson::getObjectsByAttributes($data, 
-                                    Submission::getDBPrimaryKey(), 
-                                    Submission::getDBConvert());  
-                                    
-            // concatenates the submissions and the associated files
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $submissions,
-                            Submission::getDBPrimaryKey(),
-                            Submission::getDBConvert()['S_file'] ,
-                            $files,
-                            File::getDBPrimaryKey());
-                            
-            // to reindex
-            $res = array_values($res); 
-            
-            $this->_app->response->setBody(Submission::encodeSubmission($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetGroupSelectedExerciseSubmissions failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Submission::encodeSubmission(new Submission()));
-            $this->_app->stop();
-        }
+    {      
+        $this->get("GetGroupSelectedExerciseSubmissions",
+                "Sql/GetGroupSelectedExerciseSubmissions.sql",
+                isset($userid) ? $userid : "",
+                isset($cid) ? $cid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($mid) ? $mid : "");
     } 
 
 
@@ -710,62 +491,14 @@ class DBSubmission
      */
     public function getSubmission($suid)
     { 
-        Logger::Log("starts GET GetSubmission",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($suid));
-           
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetSubmission.sql", 
-                                        array("suid" => $suid));
-
-        // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-
-            // generates an assoc array of files by using a defined list of 
-            // its attributes
-            $files = DBJson::getObjectsByAttributes($data, 
-                                            File::getDBPrimaryKey(), 
-                                            File::getDBConvert());
-                                        
-            // generates an assoc array of submissions by using a defined list of 
-            // its attributes
-            $submissions = DBJson::getObjectsByAttributes($data, 
-                                    Submission::getDBPrimaryKey(), 
-                                    Submission::getDBConvert());  
-                           
-            // concatenates the submissions and the associated files
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $submissions,
-                            Submission::getDBPrimaryKey(),
-                            Submission::getDBConvert()['S_file'] ,
-                            $files,
-                            File::getDBPrimaryKey());                     
-                
-            // to reindex
-            $res = array_values($res); 
-            
-            // only one object as result
-            if (count($res)>0)
-                $res = $res[0]; 
-            
-            $this->_app->response->setBody(Submission::encodeSubmission($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetSubmission failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Submission::encodeSubmission(new Submission()));
-            $this->_app->stop();
-        }
+        $this->get("GetSubmission",
+                "Sql/GetSubmission.sql",
+                isset($userid) ? $userid : "",
+                isset($cid) ? $cid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($mid) ? $mid : "");
     } 
 
 
@@ -780,58 +513,14 @@ class DBSubmission
      */
     public function getSheetSubmissions($esid)
     { 
-        Logger::Log("starts GET GetSheetSubmissions",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($esid));
-                       
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetSheetSubmissions.sql", 
-                                        array("esid" => $esid));
- 
-        // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-
-            // generates an assoc array of files by using a defined list of 
-            // its attributes
-            $files = DBJson::getObjectsByAttributes($data, 
-                                            File::getDBPrimaryKey(), 
-                                            File::getDBConvert());
-                                            
-            // generates an assoc array of submissions by using a defined list of 
-            // its attributes
-            $submissions = DBJson::getObjectsByAttributes($data, 
-                                    Submission::getDBPrimaryKey(), 
-                                    Submission::getDBConvert());  
-                                    
-            // concatenates the submissions and the associated files
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $submissions,
-                            Submission::getDBPrimaryKey(),
-                            Submission::getDBConvert()['S_file'],
-                            $files,
-                            File::getDBPrimaryKey());
-                            
-            // to reindex
-            $res = array_values($res); 
-            
-            $this->_app->response->setBody(Submission::encodeSubmission($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetSheetSubmissions failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Submission::encodeSubmission(new Submission()));
-            $this->_app->stop();
-        }
+        $this->get("GetSheetSubmissions",
+                "Sql/GetSheetSubmissions.sql",
+                isset($userid) ? $userid : "",
+                isset($cid) ? $cid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($mid) ? $mid : "");
     } 
 
 
@@ -846,58 +535,14 @@ class DBSubmission
      */
     public function getSelectedSheetSubmissions($esid)
     { 
-        Logger::Log("starts GET GetSelectedSheetSubmissions",LogLevel::DEBUG);
-
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($esid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetSelectedSheetSubmissions.sql", 
-                                        array("esid" => $esid));
-        
-        // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-
-            // generates an assoc array of files by using a defined list of 
-            // its attributes
-            $files = DBJson::getObjectsByAttributes($data, 
-                                            File::getDBPrimaryKey(), 
-                                            File::getDBConvert());
-                                            
-            // generates an assoc array of submissions by using a defined list of 
-            // its attributes
-            $submissions = DBJson::getObjectsByAttributes($data, 
-                                    Submission::getDBPrimaryKey(), 
-                                    Submission::getDBConvert());  
-                                    
-            // concatenates the submissions and the associated files
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $submissions,
-                            Submission::getDBPrimaryKey(),
-                            Submission::getDBConvert()['S_file'] ,
-                            $files,
-                            File::getDBPrimaryKey());
-                            
-            // to reindex
-            $res = array_values($res); 
-            
-            $this->_app->response->setBody(Submission::encodeSubmission($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetSelectedSheetSubmissions failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Submission::encodeSubmission(new Submission()));
-            $this->_app->stop();
-        }
+        $this->get("GetSelectedSheetSubmissions",
+                "Sql/GetSelectedSheetSubmissions.sql",
+                isset($userid) ? $userid : "",
+                isset($cid) ? $cid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($mid) ? $mid : "");
     } 
 
 
@@ -912,58 +557,14 @@ class DBSubmission
      */
     public function getSelectedExerciseSubmissions($eid)
     { 
-        Logger::Log("starts GET GetSelectedExerciseSubmissions",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($eid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetSelectedExerciseSubmissions.sql", 
-                                        array("eid" => $eid));
-        
-        // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-
-            // generates an assoc array of files by using a defined list of 
-            // its attributes
-            $files = DBJson::getObjectsByAttributes($data, 
-                                            File::getDBPrimaryKey(), 
-                                            File::getDBConvert());
-                                            
-            // generates an assoc array of submissions by using a defined list of 
-            // its attributes
-            $submissions = DBJson::getObjectsByAttributes($data, 
-                                    Submission::getDBPrimaryKey(), 
-                                    Submission::getDBConvert());  
-                                    
-            // concatenates the submissions and the associated files
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $submissions,
-                            Submission::getDBPrimaryKey(),
-                            Submission::getDBConvert()['S_file'] ,
-                            $files,
-                            File::getDBPrimaryKey());
-                            
-            // to reindex
-            $res = array_values($res); 
-            
-            $this->_app->response->setBody(Submission::encodeSubmission($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetSelectedExerciseSubmissions failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Submission::encodeSubmission(new Submission()));
-            $this->_app->stop();
-        }
+        $this->get("GetSelectedExerciseSubmissions",
+                "Sql/GetSelectedExerciseSubmissions.sql",
+                isset($userid) ? $userid : "",
+                isset($cid) ? $cid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($mid) ? $mid : "");
     } 
 
     /**
@@ -978,59 +579,14 @@ class DBSubmission
      */
     public function getUserExerciseSubmissions($userid,$eid)
     { 
-        Logger::Log("starts GET GetUserExerciseSubmissions",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($eid), 
-                            ctype_digit($userid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetUserExerciseSubmissions.sql", 
-                                        array("userid" => $userid,"eid" => $eid));
-        
-        // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-
-            // generates an assoc array of files by using a defined list of 
-            // its attributes
-            $files = DBJson::getObjectsByAttributes($data, 
-                                            File::getDBPrimaryKey(), 
-                                            File::getDBConvert());
-                                            
-            // generates an assoc array of submissions by using a defined list of 
-            // its attributes
-            $submissions = DBJson::getObjectsByAttributes($data, 
-                                    Submission::getDBPrimaryKey(), 
-                                    Submission::getDBConvert());  
-                                    
-            // concatenates the submissions and the associated files
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $submissions,
-                            Submission::getDBPrimaryKey(),
-                            Submission::getDBConvert()['S_file'] ,
-                            $files,
-                            File::getDBPrimaryKey());
-                            
-            // to reindex
-            $res = array_values($res); 
-            
-            $this->_app->response->setBody(Submission::encodeSubmission($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetUserExerciseSubmissions failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Submission::encodeSubmission(new Submission()));
-            $this->_app->stop();
-        }
+        $this->get("GetUserExerciseSubmissions",
+                "Sql/GetUserExerciseSubmissions.sql",
+                isset($userid) ? $userid : "",
+                isset($cid) ? $cid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($mid) ? $mid : "");
     }     
 }
 ?>
