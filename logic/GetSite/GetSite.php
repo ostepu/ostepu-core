@@ -60,49 +60,64 @@ class LgetSite
 
 
         //GET TutorAssignmentSiteInfo
-        $this->app->get('/tutorassignment/user/:userid/course/:courseid/exercisesheet/:sheetid(/)', array($this, 'tutorAssignmentSiteInfo'));
+        $this->app->get('/tutorassignment/user/:userid/course/:courseid/exercisesheet/:sheetid(/)',
+                        array($this, 'tutorAssignmentSiteInfo'));
 
         //GET StudentSiteInfo
-        $this->app->get('/student/user/:userid/course/:courseid(/)', array($this, 'studentSiteInfo'));
+        $this->app->get('/student/user/:userid/course/:courseid(/)',
+                        array($this, 'studentSiteInfo'));
 
         //GET AccountSettings
-        $this->app->get('/accountsettings/user/:userid/course/:courseid(/)', array($this, 'userWithCourse'));
+        $this->app->get('/accountsettings/user/:userid/course/:courseid(/)',
+                        array($this, 'userWithCourse'));
 
         //GET CreateSheet
-        $this->app->get('/createsheet/user/:userid/course/:courseid(/)', array($this, 'userWithCourse'));
+        $this->app->get('/createsheet/user/:userid/course/:courseid(/)',
+                        array($this, 'userWithCourse'));
 
         //GET Index
-        $this->app->get('/index/user/:userid(/)', array($this, 'userWithAllCourses'));
+        $this->app->get('/index/user/:userid(/)',
+                        array($this, 'userWithAllCourses'));
 
         //GET CourseManagement
-        $this->app->get('/coursemanagement/user/:userid/course/:courseid(/)', array($this, 'courseManagement'));
+        $this->app->get('/coursemanagement/user/:userid/course/:courseid(/)',
+                        array($this, 'courseManagement'));
 
         //GET MainSettings
-        $this->app->get('/mainsettings/user/:userid/course/:courseid(/)', array($this, 'mainSettings'));
+        $this->app->get('/mainsettings/user/:userid/course/:courseid(/)',
+                        array($this, 'mainSettings'));
 
         //GET Upload
-        $this->app->get('/upload/user/:userid/course/:courseid(/)', array($this, 'userWithCourse'));
+        $this->app->get('/upload/user/:userid/course/:courseid(/)',
+                        array($this, 'userWithCourse'));
 
         //GET MarkingTool
-        $this->app->get('/markingtool/user/:userid/course/:courseid/exercisesheet/:sheetid(/)', array($this, 'markingTool'));
+        $this->app->get('/markingtool/user/:userid/course/:courseid/exercisesheet/:sheetid(/)',
+                        array($this, 'markingTool'));
 
         //GET UploadHistory
-        $this->app->get('/uploadhistory/user/:userid/course/:courseid/exercisesheet/:sheetid(/)', array($this, 'uploadHistory'));
+        $this->app->get('/uploadhistory/user/:userid/course/:courseid/exercisesheet/:sheetid(/)',
+                        array($this, 'uploadHistory'));
 
         //GET TutorSite
-        $this->app->get('/tutor/user/:userid/course/:courseid(/)', array($this, 'tutorDozentAdmin'));
+        $this->app->get('/tutor/user/:userid/course/:courseid(/)',
+                        array($this, 'tutorDozentAdmin'));
 
         //GET AdminSite
-        $this->app->get('/admin/user/:userid/course/:courseid(/)', array($this, 'tutorDozentAdmin'));
+        $this->app->get('/admin/user/:userid/course/:courseid(/)',
+                        array($this, 'tutorDozentAdmin'));
 
         //GET DozentSite
-        $this->app->get('/lecturer/user/:userid/course/:courseid(/)', array($this, 'tutorDozentAdmin'));
+        $this->app->get('/lecturer/user/:userid/course/:courseid(/)',
+                        array($this, 'tutorDozentAdmin'));
 
         //GET GroupSite
-        $this->app->get('/group/user/:userid/course/:courseid/exercisesheet/:sheetid(/)', array($this, 'groupSite'));
+        $this->app->get('/group/user/:userid/course/:courseid/exercisesheet/:sheetid(/)',
+                        array($this, 'groupSite'));
 
         //GET Condition
-        $this->app->get('/condition/user/:userid/course/:courseid(/)', array($this, 'checkCondition'));
+        $this->app->get('/condition/user/:userid/course/:courseid(/)',
+                        array($this, 'checkCondition'));
 
         //run Slim
         $this->app->run();
@@ -112,9 +127,8 @@ class LgetSite
 
         $response = array();
         $assignedSubmissionIDs = array();
-        /**
-         * Get Tutors
-         */
+
+        // get tutors
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
         $URL = $this->lURL.'/DB/user/course/'.$courseid.'/status/1'; //status = 1 => Tutor
@@ -134,9 +148,8 @@ class LgetSite
                     );
             array_push($response,$tutorAssignment);
         }
-        /**
-         * Get Markings
-         */
+
+        // get markings
         $URL = $this->lURL.'/DB/marking/exercisesheet/'.$sheetid;
         $answer = Request::custom('GET', $URL, $header, $body);
         //fuer jedes Marking die zugeordnete Submision im Rueckgabearray dem passenden Tutor zuweisen
@@ -151,9 +164,7 @@ class LgetSite
             }
         }
 
-        /**
-         * Get SelectedSubmissions
-         */
+        // Get SelectedSubmissions
         $URL = $this->lURL.'/DB/selectedsubmission/exercisesheet/'.$sheetid;
         $answer = Request::custom('GET', $URL, $header, $body);
 
@@ -186,6 +197,11 @@ class LgetSite
         $this->app->response->setBody(json_encode($response));
     }
 
+    /**
+     * Compiles data for the Student page
+     *
+     * @author Florian Lücke
+     */
     public function studentSiteInfo($userid, $courseid){
 
         $response = array('sheets' => array(),
@@ -607,7 +623,7 @@ class LgetSite
 
 
     /**
-     * Checks if users reached neccessary points
+     * Compiles data for the Condition site.
      *
      * @warning If there is more than one condition assigned to the same
      * exercise type it is undefined which condition will be evaluated. This
