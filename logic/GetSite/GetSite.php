@@ -214,12 +214,8 @@ class LgetSite
             $markings = json_decode($answer['content'], true);
 
             foreach ($markings as &$marking) {
-                $submissionid = $marking['submission']['id'];
+                $submission = $marking['submission'];
                 unset($marking['submission']);
-
-                $URL = $this->lURL . '/DB/submission/' . $submissionid;
-                $answer = Request::custom('GET', $URL, $header, $body);
-                $submission = json_decode($answer['content'], true);
 
                 $submission['marking'] = $marking;
 
