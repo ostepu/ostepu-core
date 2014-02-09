@@ -234,16 +234,6 @@ class LgetSite
             $sheetPoints = 0;
             $maxSheetPoints = 0;
 
-            $URL = $this->lURL . '/DB/attachment/exercisesheet/' . $sheet['id'];
-            $answer = Request::custom('GET', $URL, $header, $body);
-            $sheetAttachments = json_decode($answer['content'], true);
-
-            $attachmentsByExercise = array();
-            foreach ($sheetAttachments  as $attachment) {
-                $exerciseId = $attachment['exerciseId'];
-                $attachmentsByExercise[$exerciseId] = $attachment;
-            }
-
             if (isset($groupsBySheet[$sheet['id']])) {
                 $group = $groupsBySheet[$sheet['id']];
                 $sheet['group'] = $group;
@@ -267,9 +257,14 @@ class LgetSite
                     $exercise['submission'] = $submission;
                 }
 
-                if (isset($attachmentsByExercise[$exerciseID])) {
-                    $exercise['attachment'] = $attachmentsByExercise[$exerciseID]['file'];
+                if (count($exercise['attachments']) > 0) {
+                    $exercise['attachment'] = $exercise['attachments'][0];
+                } else {
+                    $exercise['attachment'] = $exercise['attachments'];
                 }
+
+                unset($exercise['attachments']);
+
 
                 $typeID = $exercise['type'];
                 if (isset($exerciseTypes[$typeID])) {
