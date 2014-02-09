@@ -186,10 +186,6 @@ class LgetSite
         $this->app->response->setBody(json_encode($response));
     }
 
-    /**
-     * @todo Attachments per exercise
-     * @todo Attachments per sheet
-     */
     public function studentSiteInfo($userid, $courseid){
 
         $response = array('sheets' => array(),
@@ -238,6 +234,16 @@ class LgetSite
             $sheetPoints = 0;
             $maxSheetPoints = 0;
 
+            $URL = $this->lURL . '/DB/attachment/exercisesheet/' . $sheet['id'];
+            $answer = Request::custom('GET', $URL, $header, $body);
+            $sheetAttachments = json_decode($answer['content'], true);
+
+            $attachmentsByExercise = array();
+            foreach ($sheetAttachments  as $attachment) {
+                $exerciseId = $attachment['exerciseId'];
+                $attachmentsByExercise[$exerciseId] = $attachment;
+            }
+
             if (isset($groupsBySheet[$sheet['id']])) {
                 $group = $groupsBySheet[$sheet['id']];
                 $sheet['group'] = $group;
@@ -259,6 +265,10 @@ class LgetSite
                     $submission['marking'] = $marking;
 
                     $exercise['submission'] = $submission;
+                }
+
+                if (isset($attachmentsByExercise[$exerciseID])) {
+                    $exercise['attachment'] = $attachmentsByExercise[$exerciseID]['file'];
                 }
 
                 $typeID = $exercise['type'];
