@@ -103,43 +103,73 @@ class DBMarking
                          array($this,'addMarking'));  
         
         // GET GetSubmissionMarking
-        $this->_app->get('/' . $this->getPrefix() . '/submission/:suid(/:sub)(/)',
-                        array($this,'getSubmissionMarking'));           
-                        
-        // GET GetAllMarkings
-        $this->_app->get('/' . $this->getPrefix() . '(/marking)(/:sub)(/)',
-                        array($this,'getAllMarkings')); 
+        $this->_app->get('/' . $this->getPrefix() . '/submission/:suid(/)',
+                        array($this,'getSubmissionMarking')); 
+        // GET GetSubmissionMarkingNoSubmission
+        $this->_app->get('/' . $this->getPrefix() . '/submission/:suid/nosubmission(/)',
+                        array($this,'getSubmissionMarkingNoSubmission'));            
                         
         // GET GetExerciseMarkings
         $this->_app->get('/' . $this->getPrefix() . 
-                        '/exercise/:eid(/:sub)(/)',
+                        '/exercise/:eid(/)',
                         array($this,'getExerciseMarkings'));  
+        // GET GetExerciseMarkingsNoSubmission
+        $this->_app->get('/' . $this->getPrefix() . 
+                        '/exercise/:eid/nosubmission(/)',
+                        array($this,'getExerciseMarkingsNoSubmission'));  
                         
         // GET GetSheetMarkings
         $this->_app->get('/' . $this->getPrefix() . 
-                        '/exercisesheet/:esid(/:sub)(/)',
+                        '/exercisesheet/:esid(/)',
                         array($this,'getSheetMarkings'));
+        // GET GetSheetMarkingsNoSubmission
+        $this->_app->get('/' . $this->getPrefix() . 
+                        '/exercisesheet/:esid/nosubmission(/)',
+                        array($this,'getSheetMarkingsNoSubmission'));
                         
         // GET GetCourseMarkings
         $this->_app->get('/' . $this->getPrefix() . 
-                        '/course/:cid(/:sub)(/)',
+                        '/course/:cid(/)',
                         array($this,'getCourseMarkings'));
+        // GET GetCourseMarkingsNoSubmission
+        $this->_app->get('/' . $this->getPrefix() . 
+                        '/course/:cid/nosubmission(/)',
+                        array($this,'getCourseMarkingsNoSubmission'));
                         
         // GET GetUserGroupMarkings
-        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid/user/:userid(/:sub)(/)',
+        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid/user/:userid(/)',
                         array($this,'getUserGroupMarkings'));  
+        // GET GetUserGroupMarkingsNoSubmission
+        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid/user/:userid/nosubmission(/)',
+                        array($this,'getUserGroupMarkingsNoSubmission')); 
                         
         // GET GetTutorSheetMarkings 
-        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid/tutor/:userid(/:sub)(/)',
+        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid/tutor/:userid(/)',
                         array($this,'getTutorSheetMarkings'));
-                        
+        // GET GetTutorSheetMarkingsNoSubmission
+        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid/tutor/:userid/nosubmission(/)',
+                        array($this,'getTutorSheetMarkingsNoSubmission'));
+
         // GET GetTutorExerciseMarkings  
-        $this->_app->get('/' . $this->getPrefix() . '/exercise/:eid/tutor/:userid(/:sub)(/)',
+        $this->_app->get('/' . $this->getPrefix() . '/exercise/:eid/tutor/:userid(/)',
                         array($this,'getTutorExerciseMarkings'));  
-        
+        // GET GetTutorExerciseMarkingsNoSubmission
+        $this->_app->get('/' . $this->getPrefix() . '/exercise/:eid/tutor/:userid/nosubmission(/)',
+                        array($this,'getTutorExerciseMarkingsNoSubmission'));  
+                        
         // GET GetMarking
-        $this->_app->get('/' . $this->getPrefix() . '(/marking)/:mid(/:sub)(/)',
+        $this->_app->get('/' . $this->getPrefix() . '(/marking)/:mid(/)',
                         array($this,'getMarking')); 
+        // GET GetMarkingNoSubmission
+        $this->_app->get('/' . $this->getPrefix() . '(/marking)/:mid/nosubmission(/)',
+                        array($this,'getMarkingNoSubmission')); 
+                        
+        // GET GetAllMarkings
+        $this->_app->get('/' . $this->getPrefix() . '(/marking)(/)',
+                        array($this,'getAllMarkings')); 
+        // GET GetAllMarkingsNoSubmission
+        $this->_app->get('/' . $this->getPrefix() . '(/marking)/nosubmission(/)',
+                        array($this,'getAllMarkingsNoSubmission')); 
                         
         // starts slim only if the right prefix was received
         if (strpos ($this->_app->request->getResourceUri(),'/' . 
@@ -294,74 +324,31 @@ class DBMarking
             $this->_app->response->setBody(Marking::encodeMarking($res)); 
     }
 
-
-    /**
-     * Returns all markings.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /marking(/) or /marking/marking(/).
-     */
-    public function getAllMarkings($sub = 1)
-    {      
-        Logger::Log("starts GET GetAllMarkings",LogLevel::DEBUG);
-        
-        if ($sub!=1)
-            $sub = 0;
-            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetAllMarkings.sql", 
-                                        array('sub' => $sub));
-        
-        // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            
-            if ($query->getNumRows()>0){
-                $res = Marking::ExtractMarking($query->getResponse()); 
-                $this->_app->response->setBody(Marking::encodeMarking($res));
-        
-                $this->_app->response->setStatus(200);
-                if (isset($result['headers']['Content-Type']))
-                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-                $this->_app->stop(); 
-            }
-            else
-                $result['status'] = 409; 
-                
-        }
-        
-            Logger::Log("GET GetAllMarkings failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Marking::encodeMarking(new Marking()));
-            $this->_app->stop();
-    }
-
-
-    /**
-     * Returns a marking.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /marking/$mid(/) or /marking/marking/$mid(/).
-     *
-     * @param int $mid The id of the marking that should be returned.
-     */
-    public function getMarking($mid,$sub = 1)
-    {    
-        Logger::Log("starts GET GetMarking",LogLevel::DEBUG);
+    public function get($functionName,$sqlFile,$userid,$cid,$esid,$eid,$suid,$mid,$sub)
+    {
+        Logger::Log("starts GET " . $functionName,LogLevel::DEBUG);
         
         // checks whether incoming data has the correct data type
         DBJson::checkInput($this->_app, 
-                            ctype_digit($mid));
+                            $userid == "" ? true : ctype_digit($userid), 
+                            $cid == "" ? true : ctype_digit($cid), 
+                            $esid == "" ? true : ctype_digit($esid), 
+                            $eid == "" ? true : ctype_digit($eid), 
+                            $suid == "" ? true : ctype_digit($suid), 
+                            $mid == "" ? true : ctype_digit($mid));
                             
         if ($sub!=1)
             $sub = 0;
             
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetMarking.sql", 
-                                        array("mid" => $mid,
+                                        $sqlFile, 
+                                        array("userid" => $userid,
+                                        'cid' => $cid,
+                                        'esid' => $esid,
+                                        'eid' => $eid,
+                                        'suid' => $suid,
+                                        'mid' => $mid,
                                         'sub' => $sub));
  
         // checks the correctness of the query                                        
@@ -383,13 +370,46 @@ class DBMarking
                 
         }
         
-            Logger::Log("GET GetMarking failed",LogLevel::ERROR);
+            Logger::Log("GET " . $functionName . " failed",LogLevel::ERROR);
             $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(Marking::encodeMarking(new Marking()));
             $this->_app->stop();
     }
+    
+    /**
+     * Returns all markings.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /marking(/) or /marking/marking(/).
+     */
+    public function getAllMarkings($sub = 1)
+    {      
+        $this->get("GetAllMarkings","Sql/GetAllMarkings.sql","","","","","","",$sub);
+    }
 
+    public function getAllMarkingsNoSubmission($sub = 0)
+    {      
+        $this->getAllMarkings($sub);
+    }
+    
+    /**
+     * Returns a marking.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /marking/$mid(/) or /marking/marking/$mid(/).
+     *
+     * @param int $mid The id of the marking that should be returned.
+     */
+    public function getMarking($mid,$sub = 1)
+    {    
+        $this->get("GetMarking","Sql/GetMarking.sql","","","","","",$mid,$sub);
+    }
 
+    public function getMarkingNoSubmission($mid,$sub = 0)
+    {    
+        $this->getMarking($mid,$sub);
+    }
+    
     /**
      * Returns a marking to a given submission.
      *
@@ -400,46 +420,14 @@ class DBMarking
      */
     public function getSubmissionMarking($suid,$sub = 1)
     {    
-        Logger::Log("starts GET GetSubmissionMarking",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($suid));
-                            
-        if ($sub!=1)
-            $sub = 0;
-            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetSubmissionMarking.sql", 
-                                        array("suid" => $suid,
-                                        'sub' => $sub));
-        
-        // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            
-            if ($query->getNumRows()>0){
-                $res = Marking::ExtractMarking($query->getResponse()); 
-                $this->_app->response->setBody(Marking::encodeMarking($res));
-        
-                $this->_app->response->setStatus(200);
-                if (isset($result['headers']['Content-Type']))
-                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-                $this->_app->stop(); 
-            }
-            else
-                $result['status'] = 409;  
-        }
-        
-            Logger::Log("GET GetSubmissionMarking failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Marking::encodeMarking(new Marking()));
-            $this->_app->stop(); 
+        $this->get("GetSubmissionMarking","Sql/GetSubmissionMarking.sql","","","","",$suid,"",$sub);
     }
 
-
+    public function getSubmissionMarkingNoSubmission($suid,$sub = 0)
+    {    
+        $this->getSubmissionMarking($suid,$sub);
+    }
+    
     /**
      * Returns all markings which belong to a given exercise.
      *
@@ -450,47 +438,14 @@ class DBMarking
      */
     public function getExerciseMarkings($eid,$sub = 1)
     {   
-        Logger::Log("starts GET GetExerciseMarkings",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($eid));
-                            
-        if ($sub!=1)
-            $sub = 0;
-            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetExerciseMarkings.sql", 
-                                        array('eid' => $eid,
-                                        'sub' => $sub));
-        
-        // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            
-            if ($query->getNumRows()>0){
-                $res = Marking::ExtractMarking($query->getResponse()); 
-                $this->_app->response->setBody(Marking::encodeMarking($res));
-        
-                $this->_app->response->setStatus(200);
-                if (isset($result['headers']['Content-Type']))
-                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-                $this->_app->stop(); 
-            }
-            else
-                $result['status'] = 409;
-                
-        }
-        
-            Logger::Log("GET GetExerciseMarkings failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Marking::encodeMarking(new Marking()));
-            $this->_app->stop();
+        $this->get("GetExerciseMarkings","Sql/GetExerciseMarkings.sql","","","",$eid,"","",$sub);
     }
 
-
+    public function getExerciseMarkingsNoSubmission($eid,$sub = 0)
+    {   
+        $this->getExerciseMarkings($eid,$sub);
+    }
+    
     /**
      * Returns all markings which belong to a given exercise sheet.
      *
@@ -500,46 +455,14 @@ class DBMarking
      * @param int $esid The id of the exercise sheet.
      */
     public function getSheetMarkings($esid,$sub = 1)
-    {     
-        Logger::Log("starts GET GetSheetMarkings",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($esid));
-                            
-        if ($sub!=1)
-            $sub = 0;
-            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetSheetMarkings.sql", 
-                                        array('esid' => $esid,
-                                        'sub' => $sub));
-        
-        // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            
-            if ($query->getNumRows()>0){
-                $res = Marking::ExtractMarking($query->getResponse()); 
-                $this->_app->response->setBody(Marking::encodeMarking($res));
-        
-                $this->_app->response->setStatus(200);
-                if (isset($result['headers']['Content-Type']))
-                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-                $this->_app->stop(); 
-            }
-            else
-                $result['status'] = 409;
-        }
-        
-            Logger::Log("GET GetSheetMarkings failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Marking::encodeMarking(new Marking()));
-            $this->_app->stop();
+    {    
+        $this->get("GetSheetMarkings","Sql/GetSheetMarkings.sql","","",$esid,"","","",$sub);
     }
 
+    public function getSheetMarkingsNoSubmission($esid,$sub = 0)
+    {    
+        $this->getSheetMarkings($esid,$sub);
+    }
     
     /**
      * Returns all markings which belong to a given course.
@@ -551,45 +474,13 @@ class DBMarking
      */
     public function getCourseMarkings($cid,$sub = 1)
     {     
-        Logger::Log("starts GET GetCourseMarkings",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($cid));
-                            
-        if ($sub!=1)
-            $sub = 0;
-            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetCourseMarkings.sql", 
-                                        array('cid' => $cid,
-                                        'sub' => $sub));
-        
-        // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            
-            if ($query->getNumRows()>0){
-                $res = Marking::ExtractMarking($query->getResponse()); 
-                $this->_app->response->setBody(Marking::encodeMarking($res));
-        
-                $this->_app->response->setStatus(200);
-                if (isset($result['headers']['Content-Type']))
-                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-                $this->_app->stop(); 
-            }
-            else
-                $result['status'] = 409;
-        }
-        
-            Logger::Log("GET GetCourseMarkings failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Marking::encodeMarking(new Marking()));
-            $this->_app->stop();
+        $this->get("GetCourseMarkings","Sql/GetCourseMarkings.sql","",$cid,"","","","",$sub);
     }
     
+    public function getCourseMarkingsNoSubmission($cid,$sub = 0)
+    {     
+        $this->getCourseMarkings($cid,$sub);
+    }
     
     /**
      * Returns all markings of a group regarding a specific exercise sheet.
@@ -602,48 +493,14 @@ class DBMarking
      */
     public function getUserGroupMarkings($esid,$userid,$sub = 1)
     {     
-        Logger::Log("starts GET GetUserGroupMarkings",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($esid),
-                            ctype_digit($userid));
-                            
-        if ($sub!=1)
-            $sub = 0;
-            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetUserGroupMarkings.sql", 
-                                        array('esid' => $esid,
-                                            'userid' => $userid,
-                                            'sub' => $sub));
-        
-        // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            
-            if ($query->getNumRows()>0){
-                $res = Marking::ExtractMarking($query->getResponse()); 
-                $this->_app->response->setBody(Marking::encodeMarking($res));
-        
-                $this->_app->response->setStatus(200);
-                if (isset($result['headers']['Content-Type']))
-                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-                $this->_app->stop(); 
-            }
-            else
-                $result['status'] = 409;
-        }
-        
-            Logger::Log("GET GetUserGroupMarkings failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Marking::encodeMarking(new Marking()));
-            $this->_app->stop();  
+        $this->get("GetUserGroupMarkings","Sql/GetUserGroupMarkings.sql",$userid,"",$esid,"","","",$sub);
     }
 
-
+    public function getUserGroupMarkingsNoSubmission($esid,$userid,$sub = 0)
+    {     
+        $this->getUserGroupMarkings($esid,$userid,$sub);
+    }
+    
     /**
      * Returns all markings created by a given tutor regarding 
      * a specific exercise sheet.
@@ -657,48 +514,14 @@ class DBMarking
      */
     public function getTutorSheetMarkings($esid,$userid,$sub = 1)
     {     
-        Logger::Log("starts GET GetTutorSheetMarkings",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($esid),
-                            ctype_digit($userid));
-                            
-        if ($sub!=1)
-            $sub = 0;
-            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetTutorSheetMarkings.sql", 
-                                        array('esid' => $esid,
-                                            'userid' => $userid,
-                                            'sub' => $sub));
-        
-        // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            
-            if ($query->getNumRows()>0){
-                $res = Marking::ExtractMarking($query->getResponse()); 
-                $this->_app->response->setBody(Marking::encodeMarking($res));
-        
-                $this->_app->response->setStatus(200);
-                if (isset($result['headers']['Content-Type']))
-                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-                $this->_app->stop(); 
-            }
-            else
-                $result['status'] = 409;
-        }
-        
-            Logger::Log("GET GetTutorSheetMarkings failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Marking::encodeMarking(new Marking()));
-            $this->_app->stop();  
+        $this->get("GetTutorSheetMarkings","Sql/GetTutorSheetMarkings.sql",$userid,"",$esid,"","","",$sub);
     }
-
-
+    
+    public function getTutorSheetMarkingsNoSubmission($esid,$userid,$sub = 0)
+    {     
+        $this->getTutorSheetMarkings($esid,$userid,$sub);
+    }
+    
     /**
      * Returns all markings created by a given tutor regarding 
      * a specific exercise.
@@ -711,46 +534,13 @@ class DBMarking
      * which should be returned.
      */
     public function getTutorExerciseMarkings($eid,$userid,$sub = 1)
-    {     
-        Logger::Log("starts GET GetTutorExerciseMarkings",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($eid),
-                            ctype_digit($userid));
-         
-        if ($sub!=1)
-            $sub = 0;
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetTutorExerciseMarkings.sql", 
-                                        array('eid' => $eid,
-                                            'userid' => $userid,
-                                            'sub' => $sub));
-        
-        // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            
-            if ($query->getNumRows()>0){
-                $res = Marking::ExtractMarking($query->getResponse()); 
-                $this->_app->response->setBody(Marking::encodeMarking($res));
-        
-                $this->_app->response->setStatus(200);
-                if (isset($result['headers']['Content-Type']))
-                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-                $this->_app->stop(); 
-            }
-            else
-                $result['status'] = 409;   
-        }
-        
-            Logger::Log("GET GetTutorExerciseMarkings failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Marking::encodeMarking(new Marking()));
-            $this->_app->stop();   
+    {   
+        $this->get("GetTutorExerciseMarkings","Sql/GetTutorExerciseMarkings.sql",$userid,"","",$eid,"","",$sub);
+    }
+    
+    public function getTutorExerciseMarkingsNoSubmission($eid,$userid,$sub = 0)
+    {   
+        $this->getTutorExerciseMarkings($eid,$userid,$sub);
     }
 }
 ?>
