@@ -189,7 +189,6 @@ class LgetSite
     /**
      * @todo Attachments per exercise
      * @todo Attachments per sheet
-     * @todo exercise type names
      * @todo percentage per sheet
      */
     public function studentSiteInfo($userid, $courseid){
@@ -212,6 +211,10 @@ class LgetSite
         $answer = Request::custom('GET', $URL, $header, $body);
         $groups = json_decode($answer['content'], true);
 
+        $URL = $this->lURL.'/DB/exercisetype';
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $possibleExerciseTypes = json_decode($answer['content'], true);
+
         $userMarkingsByExercise = array();
         foreach ($markings as &$marking) {
             if ($marking['submission']['studentId'] == $userid) {
@@ -225,6 +228,11 @@ class LgetSite
             if (isset($group['sheetId'])) {
                 $groupsBySheet[$group['sheetId']] = $group;
             }
+        }
+
+        $exerciseTypes = array();
+        foreach ($possibleExerciseTypes as $exerciseType) {
+            $exerciseTypes[$exerciseType['id']] = $exerciseType;
         }
 
         foreach ($sheets as $i => &$sheet) {
@@ -249,6 +257,13 @@ class LgetSite
                     $submission['marking'] = $marking;
 
                     $exercise['submission'] = $submission;
+                }
+
+                $typeID = $exercise['type'];
+                if (isset($exerciseTypes[$typeID])) {
+                    $exercise['typeName'] = $exerciseTypes[$typeID]['name'];
+                } else {
+                    $exercise['typeName'] = "unknown type";
                 }
             }
         }
