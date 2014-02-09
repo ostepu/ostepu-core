@@ -25,6 +25,7 @@
             <?php echo isset($userName) ? $userName : NULL; ?>
         </div>
         <?php if (!isset($hideLogoutLink)): ?>
+            <a class="log-out" href="AccountSettings.php?cid=<?= $courses[0]['course']['id'] ?>">Account</a><br />
             <a class="log-out" href="?action=logout">Ausloggen</a>
         <?php endif; ?>
     </div>
