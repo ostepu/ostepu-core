@@ -12,7 +12,7 @@ foreach ($sheets as $sheet):
 <div class="content-element collapsible">
     <div class="content-header">
         <div class="content-title left uppercase">
-            <?php 
+            <?php
                 print $sheet['sheetName'];
                 if ($isExpired) {
                     print ' (abgelaufen)';
@@ -60,7 +60,7 @@ foreach ($sheets as $sheet):
                             print '" title="';
                             print ' ';
                             print '" class="plain inline" target="_blank">';
-                            print '<img src="Images/Download.png" />';
+                            print '<img src="Images/Upload.png" />';
                             print '</a>';
                         ?>
 
@@ -114,8 +114,8 @@ foreach ($sheets as $sheet):
                                 print '</a>';
                             }
                         ?>
-                        
-                        <?php 
+
+                        <?php
                             // creates a deleteSubmission icon for the submission (if it exists)
                             if(isset($exercise['submission']) && !$isExpired) {
                                 print '<a href="#" class="plain" target="_blank">';
@@ -134,10 +134,10 @@ foreach ($sheets as $sheet):
         <div class="content-body right">
             <ol class="body-options body-option-color">
                 <li>
-                    <?php 
+                    <?php
                         $displayName = $sheet['sheetFile']['displayName'];
                         $fileAddress = $sheet['sheetFile']['address'];
-                        $fileURL = $filesystemURI . $fileAddress . '/' . $displayName; 
+                        $fileURL = $filesystemURI . $fileAddress . '/' . $displayName;
                     ?>
                     <a href="<?= $fileURL ?>" title="<?= $displayName ?>" target="_blank">
                         Aufgabenblatt
@@ -148,7 +148,7 @@ foreach ($sheets as $sheet):
                         if ($isExpired) {
                             $displayName = $sheet['sampleSolution']['displayName'];
                             $fileAddress = $sheet['sampleSolution']['address'];
-                            $fileURL = $filesystemURI . $fileAddress . '/' . $displayName; 
+                            $fileURL = $filesystemURI . $fileAddress . '/' . $displayName;
 
                             print '<li>';
                             print '<a href="';
