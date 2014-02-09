@@ -137,6 +137,10 @@ class LController
         $answer = Request::custom($method, $URI, $header, $body);
         $this->app->response->setBody($answer['content']);
         $this->app->response->setStatus($answer['status']);  
+        $this->app->response->headers->set('Content-Type', $answer['headers']['Content-Type']);
+        if(isset($answer['headers']['Content-Disposition'])){
+            $this->app->response->headers->set('Content-Disposition', $answer['headers']['Content-Disposition']);
+        }
     }
 }
 
