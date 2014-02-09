@@ -101,13 +101,22 @@ foreach ($sheets as $sheet):
                         ?>
 
                         <?php
-                        /**
-                         * @todo Include attachments from GetSite.
-                         */
+                            // creates a downloadAttachemnt icon for the exercise (if it exists)
+                            if(isset($exercise['attachment'])) {
+                                $displayName = $exercise['attachment']['displayName'];
+                                $fileAddress = $exercise['attachment']['address'];
+                                $fileURL = $filesystemURI . $fileAddress . '/' . $displayName;
+
+                                print '<a href="';
+                                print $fileURL;
+                                print '" title="';
+                                print $displayName;
+                                print '" class="plain" target="_blank">';
+                                print '<img src="Images/Attachment.png" />';
+                                print '</a>';
+                            }
                         ?>
                         
-                        <a href="#" class="plain"><img src="Images/Attachment.png" /></a>
-
                         <?php 
                             // creates a deleteSubmission icon for the submission (if it exists)
                             if(isset($exercise['submission']) && !$isExpired) {
