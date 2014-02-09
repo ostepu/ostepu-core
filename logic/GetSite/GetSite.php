@@ -189,7 +189,6 @@ class LgetSite
     /**
      * @todo Attachments per exercise
      * @todo Attachments per sheet
-     * @todo percentage per sheet
      */
     public function studentSiteInfo($userid, $courseid){
 
@@ -247,9 +246,12 @@ class LgetSite
             }
 
             foreach ($sheet['exercises'] as $j => &$exercise) {
+                $maxSheetPoints += $exercise['maxPoints'];
                 $exerciseID = $exercise['id'];
                 if (isset($userMarkingsByExercise[$exerciseID])) {
                     $marking = $userMarkingsByExercise[$exerciseID];
+
+                    $sheetPoints += $marking['points'];
 
                     $submission = $marking['submission'];
                     unset($marking['submission']);
@@ -266,6 +268,10 @@ class LgetSite
                     $exercise['typeName'] = "unknown type";
                 }
             }
+
+            $sheet['maxPoints'] = $maxSheetPoints;
+            $sheet['points'] = $sheetPoints;
+            $sheet['percentage'] = $maxSheetPoints ? $sheetPoints / $maxSheetPoints * 100 : 100;
         }
 
         $this->flag = 1;
