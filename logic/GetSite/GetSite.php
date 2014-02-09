@@ -198,7 +198,7 @@ class LgetSite
     }
 
     /**
-     * Compiles data for the Student page
+     * Compiles data for the Student page.
      *
      * @author Florian Lücke
      */
@@ -699,6 +699,8 @@ class LgetSite
             // prepare percenteages for the UI
             $condition['minimumPercentage'] = $condition['percentage'] * 100;
 
+            $condition['approvalConditionId'] = $condition['id'];
+            unset($condition['id']);
             // sort approvalconditions by exercise type
             /**
               * @warning this implies that there is *only one* approval
@@ -761,7 +763,7 @@ class LgetSite
                     // check if it was possible to get points for this exercisetype
                     if (!isset($maxPointsByType[$typeID])) {
                         Logger::Log("Unmatchable condition: "
-                                    . $condition['id']
+                                    . $condition['approvalConditionId']
                                     . "in course: "
                                     . $courseid, LogLeve::WARNING);
 
