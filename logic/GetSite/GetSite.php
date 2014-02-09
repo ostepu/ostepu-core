@@ -186,6 +186,12 @@ class LgetSite
         $this->app->response->setBody(json_encode($response));
     }
 
+    /**
+     * @todo Attachments per exercise
+     * @todo Attachments per sheet
+     * @todo exercise type names
+     * @todo percentage per sheet
+     */
     public function studentSiteInfo($userid, $courseid){
 
         $response = array('sheets' => array(),
@@ -194,57 +200,57 @@ class LgetSite
         $header = $this->app->request->headers->all();
 
         //get Exercisesheets
-
         $URL = $this->lURL . '/DB/exercisesheet/course/' . $courseid . '/exercise';
         $answer = Request::custom('GET', $URL, $header, $body);
         $sheets = json_decode($answer['content'], true);
 
-        foreach ($sheets as &$sheet) {
-            $sheetMaxPoints = 0;
+        $URL = $this->lURL . '/DB/marking/course/' . $courseid;
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $markings = json_decode($answer['content'], true);
+
+        $URL = $this->lURL . '/DB/group/user/' . $userid;
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $groups = json_decode($answer['content'], true);
+
+        $userMarkingsByExercise = array();
+        foreach ($markings as &$marking) {
+            if ($marking['submission']['studentId'] == $userid) {
+                $exerciseID = $marking['submission']['exerciseId'];
+                $userMarkingsByExercise[$exerciseID] = $marking;
+            }
+        }
+
+        $groupsBySheet = array();
+        foreach ($groups as $group) {
+            if (isset($group['sheetId'])) {
+                $groupsBySheet[$group['sheetId']] = $group;
+            }
+        }
+
+        foreach ($sheets as $i => &$sheet) {
             $sheetPoints = 0;
+            $maxSheetPoints = 0;
 
-            $exerciseIDindices = array();
-            foreach ($sheet['exercises'] as $idx => $exercise) {
-                $exerciseIDindices[$exercise['id']] = $idx;
-            }
-
-            $URL = $this->lURL . '/DB/marking/exercisesheet/' . $sheet['id']
-                   . '/user/' . $userid;
-            $answer = Request::custom('GET', $URL, $header, $body);
-            $markings = json_decode($answer['content'], true);
-
-            foreach ($markings as &$marking) {
-                $submission = $marking['submission'];
-                unset($marking['submission']);
-
-                $submission['marking'] = $marking;
-
-                $exerciseIndex = $exerciseIDindices[$submission['exerciseId']];
-                $exercise = &$sheet['exercises'][$exerciseIndex];
-
-                $points = $marking['points'];
-                $maxPoints = $exercise['maxPoints'];
-
-                $sheetMaxPoints += $maxPoints;
-                $sheetPoints += $points;
-
-                $exercise['submission'] = $submission;
-                $exercise['percentage'] = $maxPoints != 0 ? $points / $maxPoints * 100 : 100;
-            }
-
-            $URL = $this->lURL . '/DB/group/user/' . $userid . '/exercisesheet/'
-                   . $sheet['id'];
-            $answer = Request::custom('GET', $URL, $header, $body);
-            $group = json_decode($answer['content'], true);
-
-            if (count($group) >= 1) {
-                $sheet['group'] = $group[0];
+            if (isset($groupsBySheet[$sheet['id']])) {
+                $group = $groupsBySheet[$sheet['id']];
+                $sheet['group'] = $group;
             } else {
                 $sheet['group'] = array();
             }
 
-            $sheet['maxPoints'] = $sheetMaxPoints;
-            $sheet['points'] = $sheetPoints;
+            foreach ($sheet['exercises'] as $j => &$exercise) {
+                $exerciseID = $exercise['id'];
+                if (isset($userMarkingsByExercise[$exerciseID])) {
+                    $marking = $userMarkingsByExercise[$exerciseID];
+
+                    $submission = $marking['submission'];
+                    unset($marking['submission']);
+
+                    $submission['marking'] = $marking;
+
+                    $exercise['submission'] = $submission;
+                }
+            }
         }
 
         $this->flag = 1;
