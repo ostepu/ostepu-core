@@ -164,7 +164,14 @@ foreach ($sheets as $sheet):
                         Gruppe verwalten
                     </a>
                 </li>
-                <li><a href="#">Alle Anhänge herunterladen</a></li>
+                <li>
+                    <?php
+                        print '<a href="Student.php?cid=';
+                        print $cid . '&action=downloadAttachemnts';
+                        print '&sid=' . $sheet['id'];
+                        print '">Alle Anhänge herunterladen</a>';
+                    ?>
+                </li>
                 <li><a href="#">Alle Einsendungen herunterladen</a></li>
             </ol>
         </div>

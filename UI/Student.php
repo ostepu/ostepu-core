@@ -10,11 +10,32 @@
 
 include_once 'include/Boilerplate.php';
 
+if (isset($_GET['action']) && isset($_GET['sid'])) {
+    if ($_GET['action'] == "downloadAttachemnts") {
+        $attachments = http_get($serverURI . 'logic/Controller/DB/attachment/exercisesheet/' . $sid);
+        $attachments = json_decode($attachments, true);
+
+        $files = array();
+        foreach ($attachments as $attachment) {
+            $files[] = $attachment['file'];
+        }
+
+        $fileString = json_encode($files);
+
+        $zipfile = http_post_data($filesystemURI . 'zip',  $fileString);
+        $zipfile = json_decode($zipfile, true);
+
+        $location = $filesystemURI . $zipfile['address'];
+        header("Location: {$location}/attachments.zip");
+    }
+}
+
 // load tutor data from GetSite
 $URI = $getSiteURI . "/student/user/{$uid}/course/{$cid}";
 $student_data = http_get($URI, true);
 $student_data = json_decode($student_data, true);
 $student_data['filesystemURI'] = $filesystemURI;
+$student_data['cid'] = $cid;
 
 $user_course_data = $student_data['user'];
 
