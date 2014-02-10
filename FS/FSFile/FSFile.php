@@ -85,16 +85,16 @@ class FSFile
         $this->_app->response->headers->set('Content-Type', 'application/json');
         
         // POST File
-        $this->_app->post('/'.FSFile::$_baseDir, array($this,'postFile'));
+        $this->_app->post('/'.FSFile::$_baseDir . '(/)', array($this,'postFile'));
         
         // GET Filedata
-        $this->_app->get('/'.FSFile::$_baseDir.'/:hash', array($this,'getFileData'));
+        $this->_app->get('/'.FSFile::$_baseDir.'/:hash(/)', array($this,'getFileData'));
         
         // GET GetFileDocument
-        $this->_app->get('/'.FSFile::$_baseDir.'/:hash/:filename', array($this,'getFileDocument'));
+        $this->_app->get('/'.FSFile::$_baseDir.'/:hash/:filename(/)', array($this,'getFileDocument'));
         
         // DELETE File
-        $this->_app->delete('/'.FSFile::$_baseDir.'/:hash', array($this,'deleteFile'));
+        $this->_app->delete('/'.FSFile::$_baseDir.'/:hash(/)', array($this,'deleteFile'));
         
         if (strpos($this->_app->request->getResourceUri(), '/'.FSFile::$_baseDir) === 0){
          // run Slim
