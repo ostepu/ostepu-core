@@ -420,5 +420,83 @@ class Marking extends Object implements JsonSerializable
         if ($this->date!==null) $list['date'] = $this->date; 
         return $list;
     }
+    
+    public static function ExtractMarking($data, $singleResult = false)
+    {
+            // generates an assoc array of files by using a defined list of 
+            // its attributes
+            $files = DBJson::getObjectsByAttributes($data, 
+                                            File::getDBPrimaryKey(), 
+                                            File::getDBConvert());
+      
+            // generates an assoc array of files by using a defined list of 
+            // its attributes
+            $files2 = DBJson::getObjectsByAttributes($data, 
+                                            File::getDBPrimaryKey(), 
+                                            File::getDBConvert(),
+                                            '2');                             
+                                            
+            // generates an assoc array of a submission by using a defined 
+            // list of its attributes
+            $submissions = DBJson::getObjectsByAttributes($data,
+                                    Submission::getDBPrimaryKey(), 
+                                    Submission::getDBConvert(), 
+                                    '2');
+                                    
+            // concatenates the submissions and the associated files
+            $submissions = DBJson::concatObjectListsSingleResult($data, 
+                            $submissions,
+                            Submission::getDBPrimaryKey(),
+                            Submission::getDBConvert()['S_file'] ,
+                            $files2,
+                            File::getDBPrimaryKey());  
+ 
+            // sets the selectedForGroup attribute
+            foreach ($submissions as &$submission){
+                if (!isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
+                    if (!isset($submission['id']) || !isset($submission['selectedForGroup'])){
+                        $submission['selectedForGroup'] = (string) 0;
+                    } elseif ($submission['id'] == $submission['selectedForGroup']) {
+                        $submission['selectedForGroup'] = (string) 1;
+                    } else
+                        $submission['selectedForGroup'] = (string) 0;
+                }
+                else
+                    $submission['selectedForGroup'] = (string) 0;
+            }
+            
+            // generates an assoc array of markings by using a defined list of 
+            // its attributes
+            $markings = DBJson::getObjectsByAttributes($data, 
+                                    Marking::getDBPrimaryKey(), 
+                                    Marking::getDBConvert());  
+
+            // concatenates the markings and the associated files
+            $res = DBJson::concatObjectListsSingleResult($data, 
+                            $markings,
+                            Marking::getDBPrimaryKey(),
+                            Marking::getDBConvert()['M_file'] ,
+                            $files,
+                            File::getDBPrimaryKey());
+  
+            // concatenates the markings and the associated submissions
+            $res = DBJson::concatObjectListsSingleResult($data, 
+                            $res,
+                            Marking::getDBPrimaryKey(),
+                            Marking::getDBConvert()['M_submission'] ,
+                            $submissions,
+                            Submission::getDBPrimaryKey()); 
+                   
+            // to reindex
+            $res = array_values($res);
+            
+            if ($singleResult==true){
+                // only one object as result
+                if (count($res)>0)
+                    $res = $res[0];
+            }
+            
+            return $res;
+    }
 }
 ?>

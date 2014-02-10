@@ -451,5 +451,39 @@ class Submission extends Object implements JsonSerializable
         if ($this->leaderId!==null) $list['leaderId'] = $this->leaderId;
         return $list;  
     }
+    
+    public static function ExtractSubmission($data, $singleResult = false)
+    {
+            // generates an assoc array of files by using a defined list of 
+            // its attributes
+            $files = DBJson::getObjectsByAttributes($data, 
+                                            File::getDBPrimaryKey(), 
+                                            File::getDBConvert());
+                                            
+            // generates an assoc array of submissions by using a defined list of 
+            // its attributes
+            $submissions = DBJson::getObjectsByAttributes($data, 
+                                    Submission::getDBPrimaryKey(), 
+                                    Submission::getDBConvert());  
+                                    
+            // concatenates the submissions and the associated files
+            $res = DBJson::concatObjectListsSingleResult($data, 
+                            $submissions,
+                            Submission::getDBPrimaryKey(),
+                            Submission::getDBConvert()['S_file'] ,
+                            $files,
+                            File::getDBPrimaryKey());
+                            
+            // to reindex
+            $res = array_values($res); 
+            
+            if ($singleResult==true){
+                // only one object as result
+                if (count($res)>0)
+                    $res = $res[0]; 
+            }
+                
+            return $res;
+    }
 }
 ?>

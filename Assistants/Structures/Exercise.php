@@ -372,12 +372,12 @@ class Exercise extends Object implements JsonSerializable
         if ($this->id!==null) $list['id'] = $this->id;
         if ($this->courseId!==null) $list['courseId'] = $this->courseId;
         if ($this->sheetId!==null) $list['sheetId'] = $this->sheetId;
-        if ($this->maxPoints!==array()) $list['maxPoints'] = $this->maxPoints;
+        if ($this->maxPoints!==null) $list['maxPoints'] = $this->maxPoints;
         if ($this->type!==null) $list['type'] = $this->type;
         if ($this->link!==null) $list['link'] = $this->link;
-        if ($this->submissions!==array()) $list['submissions'] = $this->submissions;
+        if ($this->submissions!==array() && $this->submissions!==null) $list['submissions'] = $this->submissions;
         if ($this->bonus!==null) $list['bonus'] = $this->bonus;
-        if ($this->attachments!==array()) $list['attachments'] = $this->attachments;
+        if ($this->attachments!==array() && $this->attachments!==null) $list['attachments'] = $this->attachments;
         return $list;
     }
 }

@@ -122,7 +122,7 @@ class DBJson
                 }
             }
             if ($key==""){
-                return array();
+                continue;
             }
 
             foreach ($attributes as $attrib => $value) {  
