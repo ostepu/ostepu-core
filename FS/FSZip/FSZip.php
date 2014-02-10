@@ -134,10 +134,30 @@ class FSZip
         // (the name and the hash are the same)
         $hashArray = array();
         foreach ($fileObject as $part){ 
+            if ($part->getBody() !== null){
+                array_push($hashArray, $part->getBody());
+            }
+            else
             array_push($hashArray, $part->getAddress());
         }
         $hash = sha1(implode("\n",$hashArray));
-       
+        
+        $links = FSZip::filterRelevantLinks($this->_fs, $hash);
+        $result = Request::routeRequest("INFO",
+                                      '/'.FSZip::generateFilePath(FSZip::getBaseDir(), $hash),
+                                      $this->_app->request->headers->all(),
+                                      "",
+                                      $links,
+                                      FSZip::getBaseDir());
+                          
+        if ($result['status']>=200 && $result['status']<=299){
+            $tempObject = File::decodeFile($result['content']);
+            $tempObject->setAddress(FSZip::getBaseDir() . '/' . $hash);
+            $tempObject->setBody(null);
+            $this->_app->response->setStatus(201);
+            $this->_app->response->setBody(File::encodeFile($tempObject));
+            $this->_app->stop();
+        }
         
         // generate zip
         $zip = new ZipArchive();
@@ -163,7 +183,7 @@ class FSZip
                     if (isset($result['content'])){
                         $zip->addFromString($part->getDisplayName(), $result['content']);
                     } else {
-                        $this->_app->response->setStatus(451);
+                        $this->_app->response->setStatus(409);
                         $zipFile->setBody(null);
                         $this->_app->response->setBody(File::encodeFile($zipFile));
                         $zip->close(); 
@@ -192,15 +212,16 @@ class FSZip
                                       FSZip::getBaseDir());
                                       
         unlink($savepath);
-        
+
         if ($result['status']>=200 && $result['status']<=299){
             $tempObject = File::decodeFile($result['content']);
+            $zipFile->setHash($tempObject->getHash());
             $zipFile->setFileSize($tempObject->getFileSize());
             $zipFile->setBody(null);
             $this->_app->response->setStatus($result['status']);
             $this->_app->response->setBody(File::encodeFile($zipFile));
         } else{
-            $this->_app->response->setStatus(451);
+            $this->_app->response->setStatus(409);
             $zipFile->setBody(null);
             $this->_app->response->setBody(File::encodeFile($zipFile));
             $this->_app->stop();
@@ -303,7 +324,7 @@ class FSZip
             $this->_app->response->setStatus($result['status']);
             $this->_app->response->setBody(File::encodeFile($tempObject));
         } else{
-            $this->_app->response->setStatus(452);
+            $this->_app->response->setStatus(409);
             $this->_app->response->setBody(File::encodeFile(new File()));
             $this->_app->stop();
         }

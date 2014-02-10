@@ -108,12 +108,15 @@ class FSBinder
         $fileobject = File::decodeFile($body);
             
         $filePath = FSBinder::$_baseDir."/".implode("/",array_slice ($path,0));
-        FSBinder::generatepath(dirname($filePath));
+        
+        if (!file_exists($filePath)){
+            FSBinder::generatepath(dirname($filePath));
             
-        // writes the file to filesystem
-        $file = fopen($filePath,"w");
-        fwrite($file, base64_decode($fileobject->getBody()));
-        fclose($file);
+            // writes the file to filesystem
+            $file = fopen($filePath,"w");
+            fwrite($file, base64_decode($fileobject->getBody()));
+            fclose($file);
+        }
 
         // resets the file content
         $fileobject->setBody(null);
