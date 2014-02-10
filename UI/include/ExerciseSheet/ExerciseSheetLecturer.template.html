@@ -9,11 +9,23 @@
 
 <?php
 foreach ($sheets as $sheet):
+    
+    /**
+     * @todo Date check needs more testing.
+     */
+
+    // bool if endDate of sheet is greater than the actual date
+    $isExpired = date('U') > date('U', $sheet['endDate']);
 ?>
 <div class="content-element collapsible">
     <div class="content-header">
         <div class="content-title left uppercase">
-            <?php print $sheet['sheetName']; ?>
+            <?php
+                print $sheet['sheetName'];
+                if ($isExpired) {
+                    print ' (abgelaufen)';
+                }
+            ?>
         </div>
         <div class="critical-color bold right">
             <?php print date('d.m.Y  -  H:i', $sheet['endDate']); ?>
