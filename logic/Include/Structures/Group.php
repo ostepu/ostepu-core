@@ -1,55 +1,114 @@
 <?php 
 /**
- * 
+ * @file Group.php contains the Group class
+ */
+ 
+/**
+ * the group structure
+ *
+ * @author Till Uhlig, Florian Lücke
  */
 class Group extends Object implements JsonSerializable
 {
     /**
-     * all members of the group of the current users
-     * 
-     * type: User[]
+     * @var User[] $members all members of the group of the current users
      */
     private $members = array();
-    public function getMembers(){
+    
+    /**
+     * the $members getter
+     *
+     * @return the value of $members
+     */
+    public function getMembers()
+    {
         return $this->members;
     }
-    public function setMembers($value){
+    
+    /**
+     * the $members setter
+     *
+     * @param User[] $value the new value for $members
+     */ 
+    public function setMembers($value)
+    {
         $this->members = $value;
     }
 
     /**
-     * the id of the user that is the leader of the group
-     *
-     * type: User
+     * @var User $leader the id of the user that is the leader of the group
      */
     private $leader = null;
-    public function getLeader(){
+    
+    /**
+     * the $leader getter
+     *
+     * @return the value of $leader
+     */
+    public function getLeader()
+    {
         return $this->leader;
     }
-    public function setLeader($value){
+    
+    /**
+     * the $leader setter
+     *
+     * @param User $value the new value for $leader
+     */ 
+    public function setLeader($value)
+    {
         $this->leader = $value;
     }
 
     /**
-     * the id of the sheet for which this group exists
-     *
-     * type: string
+     * @var string $sheetId the id of the sheet for which this group exists
      */
     private $sheetId = null;
-    public function getSheetId(){
+    
+    /**
+     * the $sheetId getter
+     *
+     * @return the value of $sheetId
+     */
+    public function getSheetId()
+    {
         return $this->sheetId;
     }
-    public function setSheetId($value){
+    
+    /**
+     * the $sheetId setter
+     *
+     * @param string $value the new value for $sheetId
+     */ 
+    public function setSheetId($value)
+    {
         $this->sheetId = $value;
     }
     
-    
-    
-    
     /**
-     * (description)
-     */  
-    public static function getDBConvert(){
+     * Creates an Group object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $leaderId The id of the leader.
+     * @param string $memberId The id of a member.
+     * @param string $sheetId The id of the exercise sheet.
+     *
+     * @return an group object
+     */
+    public function createGroup($leaderId,$memberId,$sheetId)
+    {
+        return new Group(array('sheetId' => $sheetId,
+        'leader' => new User(array('id' => $leaderId)), 
+        'members' => array(new User(array('id' => $memberId)))));
+    } 
+     
+    /**
+     * returns an mapping array to convert between database and structure
+     *
+     * @return the mapping array
+     */
+    public static function getDbConvert()
+    {
         return array(
            'U_member' => 'members',
            'U_leader' => 'leader',
@@ -58,13 +117,16 @@ class Group extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * converts an object to insert/update data
+     *
+     * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData(){
+    public function getInsertData()
+    {
         $values = "";
         
         if ($this->sheetId != null) $this->addInsertData($values, 'ES_id', DBJson::mysql_real_escape_string($this->sheetId));
-        if ($this->members != array()) $this->addInsertData($values, 'U_id_leader', DBJson::mysql_real_escape_string($this->member[0]->getId()));
+        if ($this->members != null && $this->members != array() && $this->members[0] != null) $this->addInsertData($values, 'U_id_leader', DBJson::mysql_real_escape_string($this->members[0]->getId()));
         if ($this->leader != null) $this->addInsertData($values, 'U_id_member', DBJson::mysql_real_escape_string($this->leader->getId()));
         
         if ($values != ""){
@@ -74,16 +136,25 @@ class Group extends Object implements JsonSerializable
     } 
     
     /**
-     * (description)
+     * returns a sting/string[] of the database primary key/keys
+     * 
+     * @return the primary key/keys
      */
-    public static function getDBPrimaryKey(){
+    public static function getDbPrimaryKey()
+    {
         return array('U_id', 'ES_id');
     }
    
     /**
-     * (description)
+     * the constructor
+     * 
+     * @param $data an assoc array with the object informations
      */
-    public function __construct($data=array()) {
+    public function __construct($data=array())
+    {
+        if ($data==null)
+            $data = array();
+        
         foreach ($data AS $key => $value) {
              if (isset($key)){
                 if ($key == 'leader' || $key == 'members'){
@@ -96,16 +167,32 @@ class Group extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * encodes an object to json
+     * 
+     * @param $data the object
+     *
+     * @return the json encoded object
      */
-    public static function encodeGroup($data){
+    public static function encodeGroup($data)
+    {
         return json_encode($data);
     }
     
     /**
-     * (description)
+     * decodes $data to an object
+     * 
+     * @param string $data json encoded data (decode=true) 
+     * or json decoded data (decode=false)
+     * @param bool $decode specifies whether the data must be decoded
+     *
+     * @return the object
      */
-    public static function decodeGroup($data){
+    public static function decodeGroup($data, $decode=true)
+    {
+        if ($decode && $data==null) 
+            $data = "{}";
+            
+        if ($decode)
         $data = json_decode($data);
         if (is_array($data)){
             $result = array();
@@ -123,11 +210,11 @@ class Group extends Object implements JsonSerializable
      */
     public function jsonSerialize()
     {
-        return array(
-            'members' => $this->members,
-            'leader' => $this->leader,
-            'sheetId' => $this->sheetId
-        );
+        $list = array();
+        if ($this->members!==array()) $list['members'] = $this->members;
+        if ($this->leader!==null) $list['leader'] = $this->leader;
+        if ($this->sheetId!==null) $list['sheetId'] = $this->sheetId;
+        return $list;  
     }
 }
 ?>

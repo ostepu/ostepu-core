@@ -1,83 +1,100 @@
 <?php 
 /**
- * 
+ * @file Link.php contains the Link class
+ */
+ 
+/**
+ * the link structure
+ *
+ * @author Till Uhlig
  */
 class Link extends Object implements JsonSerializable
 {
     /**
-     * (description)
+     * @var string $id the db id of the link
      */
     private $id = null;
     
     /**
-     * (description)
-     */
+     * the $id getter
+     *
+     * @return the value of $id
+     */ 
     public function getId()
     {
         return $this->id;
     }
     
     /**
-     * (description)
+     * the $id setter
      *
-     * @param $conf (description)
-     */
+     * @param string $value the new value for $id
+     */ 
     public function setId($value)
     {
         $this->id = $value;
     }
     
     /**
-     * (description)
+     * @var string $target the target component id 
      */
     private $target = null;
     
     /**
-     * (description)
-     */
+     * the $target getter
+     *
+     * @return the value of $target
+     */ 
     public function getTarget()
     {
         return $this->target;
     }
     
     /**
-     * (description)
+     * the $target setter
      *
-     * @param $conf (description)
-     */
+     * @param string $value the new value for $target
+     */ 
     public function setTarget($value)
     {
         $this->target = $value;
     }
     
     /**
-     * (description)
+     * @var string $id the link owner component id
      */
     private $owner = null;
     
     /**
-     * (description)
-     */
+     * the $owner getter
+     *
+     * @return the value of $owner
+     */ 
     public function getOwner()
     {
         return $this->owner;
     }
     
     /**
-     * (description)
+     * the $owner setter
      *
-     * @param $conf (description)
-     */
+     * @param string $value the new value for $owner
+     */ 
     public function setOwner($value)
     {
         $this->owner = $value;
     }
     
+    /**
+     * @var string $name the link name
+     */ 
     private $name = null;
     
     /**
-     * (description)
-     */
+     * the $name getter
+     *
+     * @return the value of $name
+     */ 
     public function getName()
     {
         return $this->name;
@@ -97,23 +114,25 @@ class Link extends Object implements JsonSerializable
     
     
     /**
-     * (description)
+     * @var string $address the URL/address of the target component 
      */
     private $address = null;
     
     /**
-     * (description)
-     */
+     * the $address getter
+     *
+     * @return the value of $address
+     */ 
     public function getAddress()
     {
         return $this->address;
     }
     
     /**
-     * (description)
+     * the $address setter
      *
-     * @param $conf (description)
-     */
+     * @param string $value the new value for $address
+     */ 
     public function setAddress($value)
     {
         $this->address = $value;
@@ -123,23 +142,25 @@ class Link extends Object implements JsonSerializable
     
     
     /**
-     * (description)
+     * @var string $relevanz an optional attribute for components who want to differentiate their links
      */
     private $relevanz = null;
     
     /**
-     * (description)
-     */
+     * the $relevanz getter
+     *
+     * @return the value of $relevanz
+     */ 
     public function getRelevanz()
     {
         return $this->relevanz;
     }
     
     /**
-     * (description)
+     * the $relevanz setter
      *
-     * @param $conf (description)
-     */
+     * @param string $value the new value for $relevanz
+     */ 
     public function setRelevanz($value)
     {
         $this->relevanz = $value;
@@ -149,37 +170,61 @@ class Link extends Object implements JsonSerializable
     
     
     /**
-     * (description)
+     *  @var string $prefix the prefix with which the component operates
      */
     private $prefix = null;
     
     /**
-     * (description)
-     */
+     * the $prefix getter
+     *
+     * @return the value of $prefix
+     */ 
     public function getPrefix()
     {
         return $this->prefix;
     }
     
     /**
-     * (description)
+     * the $prefix setter
      *
-     * @param $conf (description)
-     */
+     * @param string $value the new value for $prefix
+     */ 
     public function setPrefix($value)
     {
         $this->prefix = $value;
     }
    
-    
-    
+    /**
+     * Creates an Link object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $id The id of the link.
+     * @param string $owner The id of the owner.
+     * @param string $target The id of the target.
+     * @param string $name The link name.
+     * @param string $relevanz The relevanz.
+     *
+     * @return an link object
+     */
+    public function createLink($id,$owner,$target,$name,$relevanz)
+    {
+        return new Link(array('id' => $id,
+        'owner' => $owner,
+        'target' => $target,
+        'name' => $name,
+        'relevanz' => $relevanz));
+    }
     
     /**
-     * (description)
-     * @param $param (description)
+     * the constructor
+     * 
+     * @param $data an assoc array with the object informations
      */
-    public function __construct($data=array()) 
+    public function __construct($data=array())
     {
+        if ($data==null)
+            $data = array();
+        
         foreach ($data AS $key => $value) {
             if (isset($key)){
                 $this->{$key} = $value;
@@ -188,7 +233,9 @@ class Link extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * returns an mapping array to convert between database and structure
+     *
+     * @return the mapping array
      */
     public static function getDbConvert()
     {
@@ -204,12 +251,15 @@ class Link extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * converts an object to insert/update data
+     *
+     * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData(){
+    public function getInsertData()
+    {
         $values = "";
         
-        if ($this->id != null) $this->addInsertData($values, 'ES_id', DBJson::mysql_real_escape_string($this->id));
+        if ($this->id != null) $this->addInsertData($values, 'CL_id', DBJson::mysql_real_escape_string($this->id));
         if ($this->name != null) $this->addInsertData($values, 'CL_name', DBJson::mysql_real_escape_string($this->name));
         if ($this->owner != null) $this->addInsertData($values, 'CO_id_owner', DBJson::mysql_real_escape_string($this->owner));
         if ($this->target != null) $this->addInsertData($values, 'CO_id_target', DBJson::mysql_real_escape_string($this->target));
@@ -220,9 +270,11 @@ class Link extends Object implements JsonSerializable
         }
         return $values;
     }
-    
+
     /**
-     * (description)
+     * returns a sting/string[] of the database primary key/keys
+     * 
+     * @return the primary key/keys
      */
     public static function getDbPrimaryKey()
     {
@@ -230,9 +282,11 @@ class Link extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * encodes an object to json
      * 
-     * @param $param (description)
+     * @param $data the object
+     *
+     * @return the json encoded object
      */
     public static function encodeLink($data)
     {
@@ -240,15 +294,22 @@ class Link extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * decodes $data to an object
      * 
-     * @param $param (description)
-     * @param $param (description)
+     * @param string $data json encoded data (decode=true) 
+     * or json decoded data (decode=false)
+     * @param bool $decode specifies whether the data must be decoded
+     *
+     * @return the object
      */
     public static function decodeLink($data, $decode=true)
     {
+        if ($decode && $data==null) 
+            $data = "{}";
+            
         if ($decode)
             $data = json_decode($data);
+            
         if (is_array($data)){
             $result = array();
             foreach ($data AS $key => $value) {
@@ -264,15 +325,15 @@ class Link extends Object implements JsonSerializable
      */
     public function jsonSerialize()  
     {
-        return array(
-            'id' => $this->id,
-            'name' => $this->name,
-            'address' => $this->address,
-            'prefix' => $this->prefix,
-            'target' => $this->target,
-            'owner' => $this->owner,
-            'relevanz' => $this->relevanz
-        );
+        $list = array();
+        if ($this->id!==null) $list['id'] = $this->id;
+        if ($this->name!==null) $list['name'] = $this->name;
+        if ($this->address!==null) $list['address'] = $this->address;
+        if ($this->target!==null) $list['target'] = $this->target;
+        if ($this->prefix!==null) $list['prefix'] = $this->prefix;
+        if ($this->owner!==null) $list['owner'] = $this->owner;
+        if ($this->relevanz!==null) $list['relevanz'] = $this->relevanz;
+        return $list;  
     }
 }
 ?>
