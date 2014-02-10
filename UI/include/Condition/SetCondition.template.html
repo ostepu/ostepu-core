@@ -2,14 +2,19 @@
 <div class="content-element">
     <div class="content-header">
         <div class="content-title left uppercase">Zulassungsbedingungen</div>
+        <?php if (isset($minimumPercentages[0])) { ?>
         <div class="info-color bold right">
             <button class="text-button info-color bold right">speichern</button>
         </div>
+        <?php } ?>
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body left">
-            <?php foreach ($minimumPercentages as $percentage): ?>
+            <?php 
+            if (isset($minimumPercentages[0])) {
+                foreach ($minimumPercentages as $percentage): 
+            ?>
                 <label class="form-field left label bold new-line"
                     for="<?= $percentage['approvalConditionId'] ?>"
                 >
@@ -21,7 +26,13 @@
                        value="<?= $percentage['minimumPercentage'] ?>"
                        id="<?= $percentage['approvalConditionId'] ?>"
                 >
-            <?php endforeach; ?>
+            <?php 
+                endforeach; 
+            }
+            else {
+                print "Dem Kurs wurden noch keine Punktearten zugewiesen.";
+            }
+            ?>
         </div>
     </div> <!-- end: content-body -->
 </div> <!-- end: content-wrapper -->

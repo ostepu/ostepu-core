@@ -5,6 +5,9 @@
 
     <div class="content-body-wrapper">
         <div class="content-body left">
+            <?php
+                if (isset($users[0])) {
+            ?>
             <table>
                 <tr class="bold">
                     <th>
@@ -63,6 +66,12 @@
                     }
                 ?>
             </table>
+            <?php
+                }
+            else {
+                print "Es sind noch keine Daten vorhanden.";
+            }
+            ?>
         </div>
     </div> <!-- end: content-body -->
 </div> <!-- end: content-wrapper -->
