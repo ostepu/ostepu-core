@@ -1,38 +1,30 @@
 <?php 
 /**
- * @file User.php contains the User class
- */
- 
-include_once( 'Include/DBJson.php' );
-
-/**
- * the user structure
- *
- * @author Till Uhlig, Florian Lücke
+ * 
  */
 class User extends Object implements JsonSerializable
 {
 
     /**
-     * @var string $id a id that identifies the user
+     * a id that identifies the user
+     *
+     * type: int
      */
-    private $id = null;
+    private $id;
     
     /**
-     * the $id getter
-     *
-     * @return the value of $id
-     */ 
+     * (description)
+     */
     public function getId()
     {
         return $this->id;
     }
     
     /**
-     * the $id setter
+     * (description)
      *
-     * @param string $value the new value for $id
-     */ 
+     * @param $conf (description)
+     */
     public function setId($value)
     {
         $this->id = $value;
@@ -42,25 +34,25 @@ class User extends Object implements JsonSerializable
     
     
     /**
-     * @var string $userName a string that identifies the user
+     * a string that identifies the user
+     *
+     * type: string
      */
-    private $userName = null; 
+    private $userName; 
     
     /**
-     * the $userName getter
-     *
-     * @return the value of $userName
-     */ 
+     * (description)
+     */
     public function getUserName()
     {
         return $this->userName;
     }
     
     /**
-     * the $userName setter
+     * (description)
      *
-     * @param string $value the new value for $userName
-     */ 
+     * @param $conf (description)
+     */
     public function setUserName($value)
     {
         $this->userName = $value;
@@ -70,25 +62,25 @@ class User extends Object implements JsonSerializable
     
     
     /**
-     * @var string $email The user's email address.
+     * The user's email address.
+     *
+     * type: string
      */
-    private $email = null;
+    private $email;
     
     /**
-     * the $email getter
-     *
-     * @return the value of $email
-     */ 
+     * (description)
+     */
     public function getEmail()
     {
         return $this->email;
     }
     
     /**
-     * the $email setter
+     * (description)
      *
-     * @param string $value the new value for $email
-     */ 
+     * @param $conf (description)
+     */
     public function setEmail($value)
     {
         $this->email = $value;
@@ -98,25 +90,25 @@ class User extends Object implements JsonSerializable
     
     
     /**
-     * @var string $firstName The user's first name(s)
+     * The user's first name(s)
+     *
+     * type: string
      */
-    private $firstName = null;
+    private $firstName;
     
     /**
-     * the $firstName getter
-     *
-     * @return the value of $firstName
-     */ 
+     * (description)
+     */
     public function getFirstName()
     {
         return $this->firstName;
     }
     
     /**
-     * the $firstName setter
+     * (description)
      *
-     * @param string $value the new value for $firstName
-     */ 
+     * @param $conf (description)
+     */
     public function setFirstName($value)
     {
         $this->firstName = $value;
@@ -127,25 +119,25 @@ class User extends Object implements JsonSerializable
     
     
     /**
-     * @var string $lastName The user's last name(s)
+     * The user's last name(s)
+     *
+     * type: string
      */
-    private $lastName = null;
+    private $lastName;
     
     /**
-     * the $lastName getter
-     *
-     * @return the value of $lastName
-     */ 
+     * (description)
+     */
     public function getLastName()
     {
         return $this->lastName;
     }
     
     /**
-     * the $lastName setter
+     * (description)
      *
-     * @param string $value the new value for $lastName
-     */ 
+     * @param $conf (description)
+     */
     public function setLastName($value)
     {
         $this->lastName = $value;
@@ -156,25 +148,25 @@ class User extends Object implements JsonSerializable
     
     
     /**
-     * @var string $title possibly a title the user holds
+     * possibly a title the user holds
+     *
+     * type: string
      */
-    private $title = null; 
+    private $title; 
     
     /**
-     * the $title getter
-     *
-     * @return the value of $title
-     */ 
+     * (description)
+     */
     public function getTitle()
     {
         return $this->title;
     }
     
     /**
-     * the $title setter
+     * (description)
      *
-     * @param string $value the new value for $title
-     */ 
+     * @param $conf (description)
+     */
     public function setTitle($value)
     {
         $this->title = $value;
@@ -185,26 +177,26 @@ class User extends Object implements JsonSerializable
     
     
     /**
-     * @var CourseStatus[] $courses an array of CourseStatus objects that represents the courses
+     * an array of CourseStatus objects that represents the courses
      * the user is enlisted in and which role she/he has in that course
+     *
+     * type: CourseStatus[]
      */
     private $courses = array();
     
     /**
-     * the $courses getter
-     *
-     * @return the value of $courses
-     */ 
+     * (description)
+     */
     public function getCourses()
     {
         return $this->courses;
     }
     
     /**
-     * the $courses setter
+     * (description)
      *
-     * @param CourseStatus[] $value the new value for $courses
-     */ 
+     * @param $param (description)
+     */
     public function setCourses($value)
     {
         $this->courses = $value;
@@ -214,27 +206,25 @@ class User extends Object implements JsonSerializable
     
     
     /**
-     * @var short $flag the account status (removed, active, locked) 
+     * (description)
      *
      * type: short
      */
     private $flag = null;
     
     /**
-     * the $flag getter
-     *
-     * @return the value of $flag
-     */ 
+     * (description)
+     */
     public function getFlag()
     {
         return $this->flag;
     }
     
     /**
-     * the $flag setter
+     * (description)
      *
-     * @param short $value the new value for $flag
-     */ 
+     * @param $param (description)
+     */
     public function setFlag($value)
     {
         $this->flag = $value;
@@ -244,160 +234,85 @@ class User extends Object implements JsonSerializable
     
     
     /**
-     * @var string $password the sha256 hashed password 
+     * (description)
+     *
+     * type: string
      */
     private $password = null;
     
     /**
-     * the $password getter
-     *
-     * @return the value of $password
-     */ 
+     * (description)
+     */
     public function getPassword()
     {
         return $this->password;
     }
     
     /**
-     * the $password setter
+     * (description)
      *
-     * @param string $value the new value for $password
-     */ 
+     * @param $param (description)
+     */
     public function setPassword($value)
     {
         $this->password = $value;
     }
     
     /**
-     * @var string $salt is used for logins/password hashing 
+     * (description)
+     *
+     * type: string
      */
     private $salt = null;
     
     /**
-     * the $salt getter
-     *
-     * @return the value of $salt
-     */ 
+     * (description)
+     */
     public function getSalt()
     {
         return $this->salt;
     }
     
     /**
-     * the $salt setter
+     * (description)
      *
-     * @param string $value the new value for $salt
-     */ 
+     * @param $param (description)
+     */
     public function setSalt($value)
     {
         $this->salt = $value;
     }
     
     /**
-     * @var int $failedLogins a counter, to check how much failed logins detected
+     * (description)
+     *
+     * type: int
      */
     private $failedLogins = null;
     
     /**
-     * the $failedLogins getter
-     *
-     * @return the value of $failedLogins
-     */ 
+     * (description)
+     */
     public function getFailedLogins()
     {
         return $this->failedLogins;
     }
     
     /**
-     * the $failedLogins setter
+     * (description)
      *
-     * @param int $value the new value for $failedLogins
-     */ 
+     * @param $param (description)
+     */
     public function setFailedLogins($value)
     {
         $this->failedLogins = $value;
     }
     
     
-    /**
-     * @var string $externalId represents an alias for a user. For example, for access via Studip.
-     */
-    private $externalId = null;
+    
     
     /**
-     * the $externalId getter
-     *
-     * @return the value of $externalId
-     */ 
-    public function getExternalId()
-    {
-        return $this->externalId;
-    }
-    
-    /**
-     * the $externalId setter
-     *
-     * @param string $value the new value for $externalId
-     */ 
-    public function setExternalId($value)
-    {
-        $this->externalId = $value;
-    }
-    
-    /**
-     * Creates an User object, for database post(insert) and put(update).
-     * Not needed attributes can be set to null.
-     *
-     * @param string $userId The id of the user.
-     * @param string $userName The user name.
-     * @param string $email The email address.
-     * @param string $firstName The first name.
-     * @param string $lastName The last name.
-     * @param string $title The title.
-     * @param string $flag The user flag.
-     * @param string $password The password hash.
-     * @param string $salt The password salt.
-     * @param string $failedLogins The failed logins counter.
-     * @param string $externalId The external ID.
-     *
-     * @return an user object
-     */
-    public function createUser($userId,$userName,$email,$firstName,$lastName,
-                                $title,$flag,$password,$salt,$failedLogins,$externalId="")
-    {
-        return new User(array('id' => $userId,
-        'userName' => $userName,
-        'email' => $email, 
-        'firstName' => $firstName, 
-        'lastName' => $lastName, 
-        'title' => $title, 
-        'flag' => $flag, 
-        'password' => $password, 
-        'salt' => $salt, 
-        'failedLogins' => $failedLogins,
-        'externalId' => $externalId));
-    }
-    
-    /**
-     * Creates an CourseStatus object, for database post(insert) and put(update).
-     * Not needed attributes can be set to null.
-     *
-     * @param string $userId The id of the user.
-     * @param string $courseId The id of the course.
-     * @param string $status The status.
-     *
-     * @return an course status object
-     */
-    public function createCourseStatus($userId,$courseId,$status)
-    {
-        return new User(array('id' => $userId,
-        'courses' => array(array('status' => $status, 'course' => new Course(array('id' => $courseId))))));
-    }
-    
-    /**
-     * returns an mapping array to convert between database and structure
-     *
-     * @return the mapping array
+     * (description)
      */
     public static function getDbConvert()
     {
@@ -412,18 +327,14 @@ class User extends Object implements JsonSerializable
            'U_flag' => 'flag',
            'U_password' => 'password',
            'U_salt' => 'salt',
-           'U_failed_logins' => 'failedLogins',
-           'U_externalId' => 'externalId'
+           'U_failed_logins' => 'failedLogins'
         );
     }
        
     /**
-     * converts an object to insert/update data
-     *
-     * @return a comma separated string e.g. "a=1,b=2"
+     * (description)
      */
-    public function getInsertData()
-    {
+    public function getInsertData(){
         $values = "";
         
         if ($this->id != null) $this->addInsertData($values, 'U_id', DBJson::mysql_real_escape_string($this->id));
@@ -436,7 +347,6 @@ class User extends Object implements JsonSerializable
         if ($this->password != null) $this->addInsertData($values, 'U_password', DBJson::mysql_real_escape_string($this->password));
         if ($this->salt != null) $this->addInsertData($values, 'U_salt', DBJson::mysql_real_escape_string($this->salt));
         if ($this->failedLogins != null) $this->addInsertData($values, 'U_failed_logins', DBJson::mysql_real_escape_string($this->failedLogins));
-        if ($this->externalId != null) $this->addInsertData($values, 'U_externalId', DBJson::mysql_real_escape_string($this->externalId));
         
         
         if ($values != ""){
@@ -446,17 +356,14 @@ class User extends Object implements JsonSerializable
     } 
     
     /**
-     * converts a course status to insert/update data
-     *
-     * @return a comma separated string e.g. "a=1,b=2"
+     * (description)
      */
-    public function getCourseStatusInsertData()
-    {
+    public function getCourseStatusInsertData(){
         $values = "";
                 
         if ($this->id != null) $this->addInsertData($values, 'U_id', $this->id );
-        if ($this->courses != null && $this->courses != array()) $this->addInsertData($values, 'CS_status', $this->courses[0]->getStatus() );
-        if ($this->courses != null && $this->courses != array() && $this->courses[0]->getCourse() != null) $this->addInsertData($values, 'C_id', $this->courses[0]->getCourse()->getId() );
+        if ($this->courses != array()) $this->addInsertData($values, 'CS_status', $this->courses[0]->getStatus() );
+        if ($this->courses != array() && $this->courses->getCourse() != null) $this->addInsertData($values, 'C_id', $this->courses[0]->getCourse()->getId() );
         
         if ($values != ""){
             $values=substr($values,1);
@@ -465,9 +372,7 @@ class User extends Object implements JsonSerializable
     }
     
     /**
-     * returns a sting/string[] of the database primary key/keys
-     * 
-     * @return the primary key/keys
+     * (description)
      */
     public static function getDbPrimaryKey()
     {
@@ -475,68 +380,53 @@ class User extends Object implements JsonSerializable
     }
     
     /**
-     * defines the flag attribut
-     *
-     * @return an mapping array
+     * (description)
      */
-    public static function getFlagDefinition()
-    {
+    public static function getFlagDefinition(){
         return array(
-            '0' => 'inactive', // <- removes all private user data, account removed
-            '1' => 'active', // <- the account is active
+            '0' => 'inactive', // <- removes all private user data
+            '1' => 'active',
             '2' => 'locked' // <- login locked
         );
     }
     
     /**
-     * the constructor
+     * (description)
      * 
-     * @param $data an assoc array with the object informations
+     * @param $param (description)
      */
-    public function __construct($data=array())
+    public function __construct($data=array()) 
     {
-        if ($data==null)
-            $data = array();
-        
         foreach ($data AS $key => $value) {
             if (isset($key)){
-                if ($key == 'courses'){
+                if (is_array($value)) {
                     $this->{$key} = CourseStatus::decodeCourseStatus($value, false);
-                } else
-                    $this->{$key} = $value;
+
+                }
+                $this->{$key} = $value;
             }
         }
     }
     
     /**
-     * encodes an object to json
+     * (description)
      * 
-     * @param $data the object
-     *
-     * @return the json encoded object
+     * @param $param (description)
      */
-    public static function encodeUser($data)
-    {
+    public static function encodeUser($data){
         return json_encode($data);
     }
     
     /**
-     * decodes $data to an object
+     * (description)
      * 
-     * @param string $data json encoded data (decode=true) 
-     * or json decoded data (decode=false)
-     * @param bool $decode specifies whether the data must be decoded
-     *
-     * @return the object
+     * @param $param (description)
+     * @param $param (description)
      */
     public static function decodeUser($data, $decode=true)
     {
-        if ($decode && $data==null) 
-            $data = "{}";
-    
         if ($decode)
             $data = json_decode($data);
- 
         if (is_array($data)){
             $result = array();
             foreach ($data AS $key => $value) {
@@ -552,20 +442,19 @@ class User extends Object implements JsonSerializable
      */
     public function jsonSerialize()  
     {
-        $list = array();
-        if ($this->id!==null) $list['id'] = $this->id;
-        if ($this->userName!==null) $list['userName'] = $this->userName;
-        if ($this->email!==null) $list['email'] = $this->email;
-        if ($this->firstName!==null) $list['firstName'] = $this->firstName;
-        if ($this->lastName!==null) $list['lastName'] = $this->lastName;
-        if ($this->title!==null) $list['title'] = $this->title;
-        if ($this->courses!==array()) $list['courses'] = $this->courses;
-        if ($this->flag!==null) $list['flag'] = $this->flag;
-        if ($this->password!==null) $list['password'] = $this->password; 
-        if ($this->salt!==null) $list['salt'] = $this->salt;
-        if ($this->failedLogins!==null) $list['failedLogins'] = $this->failedLogins;
-        if ($this->externalId!==null) $list['externalId'] = $this->externalId;
-        return $list;
+         $list = array();
+         if ($this->id!==null) $list['id'] = $this->id;
+         if ($this->userName!==null) $list['userName'] = $this->userName;
+         if ($this->email!==null) $list['email'] = $this->email;
+         if ($this->firstName!==null) $list['firstName'] = $this->firstName;
+         if ($this->lastName!==null) $list['lastName'] = $this->lastName;
+         if ($this->title!==null) $list['title'] = $this->title;
+         if ($this->courses!==array()) $list['courses'] = $this->courses;
+         if ($this->flag!==null) $list['flag'] = $this->flag;
+         if ($this->password!==null) $list['password'] = $this->password; 
+         if ($this->salt!==null) $list['salt'] = $this->salt;
+         if ($this->failedLogins!==null) $list['failedLogins'] = $this->failedLogins;
+       return $list;
     }
 }
 ?>

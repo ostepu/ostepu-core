@@ -1,13 +1,7 @@
 <?php 
 /**
- * @file ExerciseSheet.php contains the ExerciseSheet class
- */
- 
-/**
- * the exercise sheet structure
- *
- * @author Till Uhlig, Florian Lücke
- */
+* 
+*/
 class ExerciseSheet extends Object implements JsonSerializable
 {
     /**
@@ -15,23 +9,10 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $id = null;
-    
-    /**
-     * the $id getter
-     *
-     * @return the value of $id
-     */ 
-    public function getId()
-    {
+    private $id;
+    public function getId(){
         return $this->id;
     }
-    
-    /**
-     * the $id setter
-     *
-     * @param string $value the new value for $id
-     */ 
     public function setId($value){
         $this->id = $value;
     }
@@ -41,23 +22,10 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * type: string
      */
-    private $courseId = null;
-    
-    /**
-     * the $courseId getter
-     *
-     * @return the value of $courseId
-     */ 
-    public function getCourseId()
-    {
+    private $courseId;
+    public function getCourseId(){
         return $this->courseId;
     }
-    
-    /**
-     * the $courseId setter
-     *
-     * @param string $value the new value for $courseId
-     */ 
     public function setCourseId($value){
         $this->courseId = $value;
     }
@@ -67,23 +35,10 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * type: date
      */
-    private $endDate = null;
-    
-    /**
-     * the $endDate getter
-     *
-     * @return the value of $endDate
-     */ 
-    public function getEndDate()
-    {
+    private $endDate;
+    public function getEndDate(){
         return $this->endDate;
     }
-    
-    /**
-     * the $endDate setter
-     *
-     * @param date $value the new value for $endDate
-     */ 
     public function setEndDate($value){
         $this->endDate = $value;
     }
@@ -93,23 +48,10 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * type: date
      */
-    private $startDate = null;
-    
-    /**
-     * the $startDate getter
-     *
-     * @return the value of $startDate
-     */ 
-    public function getStartDate()
-    {
+    private $startDate;
+    public function getStartDate(){
         return $this->startDate;
     }
-    
-    /**
-     * the $startDate setter
-     *
-     * @param date $value the new value for $startDate
-     */ 
     public function setStartDate($value){
         $this->startDate = $value;
     }
@@ -120,23 +62,10 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * type: File
      */
-    private $zipFile = null;
-    
-    /**
-     * the $zipFile getter
-     *
-     * @return the value of $id
-     */ 
-    public function getZipFile()
-    {
+    private $zipFile;
+    public function getZipFile(){
         return $this->zipFile;
     }
-    
-    /**
-     * the $zipFile setter
-     *
-     * @param file $value the new value for $zipFile
-     */ 
     public function setZipFile($value){
         $this->zipFile = $value;
     }
@@ -146,23 +75,10 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * type: File
      */
-    private $sampleSolution = null;
-    
-    /**
-     * the $sampleSolution getter
-     *
-     * @return the value of $sampleSolution
-     */ 
-    public function getSampleSolution()
-    {
+    private $sampleSolution;
+    public function getSampleSolution(){
         return $this->sampleSolution;
     }
-    
-    /**
-     * the $sampleSolution setter
-     *
-     * @param file $value the new value for $sampleSolution
-     */ 
     public function setSampleSolution($value){
         $this->sampleSolution = $value;
     }
@@ -172,23 +88,10 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * type: File
      */
-    private $sheetFile = null;
-    
-    /**
-     * the $sheetFile getter
-     *
-     * @return the value of $sheetFile
-     */ 
-    public function getSheetFile()
-    {
+    private $sheetFile;
+    public function getSheetFile(){
         return $this->sheetFile;
     }
-    
-    /**
-     * the $sheetFile setter
-     *
-     * @param file $value the new value for $sheetFile
-     */ 
     public function setSheetFile($value){
         $this->sheetFile = $value;
     }
@@ -199,22 +102,9 @@ class ExerciseSheet extends Object implements JsonSerializable
      * type: Exercise[]
      */
     private $exercises = array();
-    
-    /**
-     * the $exercises getter
-     *
-     * @return the value of $exercises
-     */ 
-    public function getExercises()
-    {
+    public function getExercises(){
         return $this->exercises;
     }
-    
-    /**
-     * the $exercises setter
-     *
-     * @param Exercise[] $value the new value for $exercises
-     */ 
     public function setExercises($value){
         $this->exercises = $value;
     }
@@ -222,81 +112,29 @@ class ExerciseSheet extends Object implements JsonSerializable
     /**
      * the maximum group size that is allowed for this exercise sheet
      *
-     * type: int
+     * type: integer
      */
-    private $groupSize = null;
-    
-    /**
-     * the $groupSize getter
-     *
-     * @return the value of $groupSize
-     */ 
-    public function getGroupSize()
-    {
+    private $groupSize;
+    public function getGroupSize(){
         return $this->groupSize;
     }
-    
-    /**
-     * the $groupSize setter
-     *
-     * @param int $value the new value for $groupSize
-     */ 
     public function setGroupSize($value){
         $this->groupSize = $value;
     }
     
-    private $sheetName = null;
-    
-    /**
-     * the $sheetName getter
-     *
-     * @return the value of $sheetName
-     */ 
-    public function getSheetName()
-    {
+    private $sheetName;
+    public function getSheetName(){
         return $this->sheetName;
     }
-    
-    /**
-     * the $sheetName setter
-     *
-     * @param string $value the new value for $sheetName
-     */ 
     public function setSheetName($value){
         $this->sheetName = $value;
     }
     
-    /**
-     * Creates an ExerciseSheet object, for database post(insert) and put(update).
-     * Not needed attributes can be set to null.
-     *
-     * @param string $sheetId The id of the exercise sheet.
-     * @param string $courseId The id of the course.
-     * @param string $endDate The end date.
-     * @param string $startDate the start date.
-     * @param string $groupSize the max group size.
-     * @param string $sampleSolutionId the file id of the sample solution.
-     * @param string $sheetFileId the file id of the sheet.
-     * @param string $sheetName a optional sheet name.
-     *
-     * @return an exercise sheet object
-     */
-    public function createExerciseSheet($sheetId,$courseId,$endDate,$startDate,$groupSize,$sampleSolutionId,$sheetFileId,$sheetName)
-    {
-        return new ExerciseSheet(array('id' => $sheetId,
-        'courseId' => $courseId,
-        'endDate' => $endDate, 
-        'startDate' => $startDate,
-        'groupSize' => $groupSize, 
-        'sheetName' => $sheetName, 
-        'sampleSolution' => new File(array('fileId' => $sampleSolutionId)),
-        'sheetFile' => new File(array('fileId' => $sheetFileId))));
-    }
+    
+    
     
     /**
-     * returns an mapping array to convert between database and structure
-     *
-     * @return the mapping array
+     * (description)
      */
     public static function getDbConvert()
     {
@@ -315,12 +153,9 @@ class ExerciseSheet extends Object implements JsonSerializable
     }
     
     /**
-     * converts an object to insert/update data
-     *
-     * @return a comma separated string e.g. "a=1,b=2"
+     * (description)
      */
-    public function getInsertData()
-    {
+    public function getInsertData(){
         $values = "";
         
         if ($this->id != null) $this->addInsertData($values, 'ES_id', DBJson::mysql_real_escape_string($this->id));
@@ -339,9 +174,7 @@ class ExerciseSheet extends Object implements JsonSerializable
     }
     
     /**
-     * returns a sting/string[] of the database primary key/keys
-     * 
-     * @return the primary key/keys
+     * (description)
      */
     public static function getDbPrimaryKey()
     {
@@ -349,9 +182,9 @@ class ExerciseSheet extends Object implements JsonSerializable
     }
     
     /**
-     * the constructor
+     * (description)
      * 
-     * @param $data an assoc array with the object informations
+     * @param $param (description)
      */
     public function __construct($data=array()) 
     {
@@ -369,11 +202,9 @@ class ExerciseSheet extends Object implements JsonSerializable
     }
     
     /**
-     * encodes an object to json
+     * (description)
      * 
-     * @param $data the object
-     *
-     * @return the json encoded object
+     * @param $param (description)
      */
     public static function encodeExerciseSheet($data)
     {
@@ -381,19 +212,13 @@ class ExerciseSheet extends Object implements JsonSerializable
     }
     
     /**
-     * decodes $data to an object
+     * (description)
      * 
-     * @param string $data json encoded data (decode=true) 
-     * or json decoded data (decode=false)
-     * @param bool $decode specifies whether the data must be decoded
-     *
-     * @return the object
+     * @param $param (description)
+     * @param $param (description)
      */
     public static function decodeExerciseSheet($data, $decode=true)
     {
-        if ($decode && $data==null) 
-            $data = "{}";
-    
         if ($decode)
             $data = json_decode($data);
         if (is_array($data)){
@@ -408,23 +233,21 @@ class ExerciseSheet extends Object implements JsonSerializable
     
     /**
      * the json serialize function
-     *
-     * @return an array to serialize the object
      */
     public function jsonSerialize() 
     {
-        $list = array();
-        if ($this->id!==null) $list['id'] = $this->id;
-        if ($this->courseId!==null) $list['courseId'] = $this->courseId;
-        if ($this->endDate!==null) $list['endDate'] = $this->endDate;
-        if ($this->startDate!==null) $list['startDate'] = $this->startDate;
-        if ($this->zipFile!==null) $list['zipFile'] = $this->zipFile;
-        if ($this->sampleSolution!==null) $list['sampleSolution'] = $this->sampleSolution;
-        if ($this->sheetFile!==null) $list['sheetFile'] = $this->sheetFile;
-        if ($this->exercises!==array()) $list['exercises'] = $this->exercises;
-        if ($this->groupSize!==null) $list['groupSize'] = $this->groupSize;
-        if ($this->sheetName!==null) $list['sheetName'] = $this->sheetName;
-        return $list;
+        return array(
+            'id'  => $this->id,
+            'courseId' => $this->courseId,
+            'endDate' => $this->endDate,
+            'startDate' => $this->startDate,
+            'zipFile' => $this->zipFile,
+            'sampleSolution' => $this->sampleSolution,
+            'sheetFile' => $this->sheetFile,
+            'exercises' => $this->exercises,
+            'groupSize' => $this->groupSize,
+            'sheetName' => $this->sheetName
+        );
     }
 }
 ?>

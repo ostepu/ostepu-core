@@ -1,35 +1,29 @@
 <?php
 /**
- * @file Course.php contains the Course class
- */
- 
-/**
- * the course structure
- *
- * @author Till Uhlig, Florian Lücke
- */
+* 
+*/
 class Course extends Object implements JsonSerializable
 {
     /**
-     * @var string $id  a string that identifies the course
+     * a string that identifies the course
+     *
+     * type: string
      */
-    private $id = null;
+    private $id;
     
     /**
-     * the $id getter
-     *
-     * @return the value of $id
-     */ 
+     * (description)
+     */
     public function getId()
     {
         return $this->id;
     }
     
     /**
-     * the $id setter
+     * (description)
      *
-     * @param string $value the new value for $id
-     */ 
+     * @param $conf (description)
+     */
     public function setId($value)
     {
         $this->id = $value;
@@ -39,15 +33,15 @@ class Course extends Object implements JsonSerializable
     
     
     /**
-     * @var string $name the name of the course
+     * the name of the course
+     *
+     * type: string
      */
-    private $name = null;
+    private $name;
     
     /**
-     * the $name setter
-     *
-     * @param string $value the new value for $name
-     */ 
+     * (description)
+     */
     public function getName()
     {
         return $this->name;
@@ -67,25 +61,25 @@ class Course extends Object implements JsonSerializable
     
     
     /**
-     * @var string $semester the semester in which the course is offered
+     * the semester in which the course is offered
+     *
+     * type: string
      */
-    private $semester = null;
+    private $semester;
     
     /**
-     * the $semester getter
-     *
-     * @return the value of $semester
-     */ 
+     * (description)
+     */
     public function getSemester()
     {
         return $this->semester;
     }
     
     /**
-     * the $semester setter
+     * (description)
      *
-     * @param string $value the new value for $semester
-     */ 
+     * @param $conf (description)
+     */
     public function setSemester($value)
     {
         $this->semester = $value;
@@ -95,25 +89,25 @@ class Course extends Object implements JsonSerializable
     
     
     /**
-     * @var string[] $exerciseSheets  a set of ids of exercise sheets that belong to this course
+     * a set of ids of exercise sheets that belong to this course
+     *
+     * type: string[]
      */
     private $exerciseSheets = array();
     
-     /**
-     * the $exerciseSheets getter
-     *
-     * @return the value of $exerciseSheets
-     */ 
+    /**
+     * (description)
+     */
     public function getExerciseSheets()
     {
         return $this->exerciseSheets;
     }
     
     /**
-     * the $exerciseSheets setter
+     * (description)
      *
-     * @param string $value the new value for $exerciseSheets
-     */ 
+     * @param $conf (description)
+     */
     public function setExerciseSheets($value)
     {
         $this->exerciseSheets = $value;
@@ -123,25 +117,25 @@ class Course extends Object implements JsonSerializable
     
     
     /**
-     * @var int $defaultGroupSize the default size of groups in the course
+     * the default size of groups in the course
+     *
+     * type: int
      */
-    private $defaultGroupSize = null;
+    private $defaultGroupSize;
     
     /**
-     * the $defaultGroupSize getter
-     *
-     * @return the value of $defaultGroupSize
-     */ 
+     * (description)
+     */
     public function getDefaultGroupSize()
     {
         return $this->defaultGroupSize;
     }
     
     /**
-     * the $defaultGroupSize setter
+     * (description)
      *
-     * @param int $value the new value for $defaultGroupSize
-     */ 
+     * @param $conf (description)
+     */
     public function setDefaultGroupSize($value)
     {
         $this->defaultGroupSize = $value;
@@ -149,29 +143,8 @@ class Course extends Object implements JsonSerializable
     
     
     /**
-     * Creates an Course object, for database post(insert) and put(update).
-     * Not needed attributes can be set to null.
-     *
-     * @param string $courseId The id of the course.
-     * @param string $name The course name.
-     * @param string $semester The semester.
-     * @param string $defaultGroupSize The default group size.
-     *
-     * @return an course object
-     */
-    public function createCourse($courseId,$name,$semester,$defaultGroupSize)
-    {
-        return new Course(array('id' => $courseId,
-        'name' => $name,
-        'semester' => $semester, 
-        'defaultGroupSize' => $defaultGroupSize));
-    }
-     
-    /**
-     * returns an mapping array to convert between database and structure
-     *
-     * @return the mapping array
-     */
+     * (description)
+     */  
     public static function getDbConvert()
     {
         return array(
@@ -182,14 +155,11 @@ class Course extends Object implements JsonSerializable
            'C_exerciseSheets' => 'exerciseSheets'
         );
     }
-
+    
     /**
-     * converts an object to insert/update data
-     *
-     * @return a comma separated string e.g. "a=1,b=2"
+     * (description)
      */
-    public function getInsertData()
-    {
+    public function getInsertData(){
         $values = "";
         
         if ($this->id != null) $this->addInsertData($values, 'C_id', DBJson::mysql_real_escape_string($this->id));
@@ -204,9 +174,7 @@ class Course extends Object implements JsonSerializable
     }
     
     /**
-     * returns a sting/string[] of the database primary key/keys
-     * 
-     * @return the primary key/keys
+     * (description)
      */
     public static function getDbPrimaryKey()
     {
@@ -214,32 +182,27 @@ class Course extends Object implements JsonSerializable
     }
    
     /**
-     * the constructor
+     * (description)
      * 
-     * @param $data an assoc array with the object informations
+     * @param $param (description)
      */
-    public function __construct($data=array())
+    public function __construct($data=array()) 
     {
-        if ($data==null)
-            $data = array();
-        
         foreach ($data AS $key => $value) {
              if (isset($key)){
-                if ($key == 'exerciseSheets') {
-                    $this->{$key} = ExerciseSheet::decodeExerciseSheet($value, false);
+                if (is_array($value)) {
+                    $sub = ExerciseSheet::decodeExerciseSheet($value, false);
+                    $value = $sub;
                 }
-                else
                 $this->{$key} = $value;
             }
         }
     }
     
     /**
-     * encodes an object to json
+     * (description)
      * 
-     * @param $data the object
-     *
-     * @return the json encoded object
+     * @param $param (description)
      */
     public static function encodeCourse($data)
     {
@@ -247,19 +210,13 @@ class Course extends Object implements JsonSerializable
     }
     
     /**
-     * decodes $data to an object
+     * (description)
      * 
-     * @param string $data json encoded data (decode=true) 
-     * or json decoded data (decode=false)
-     * @param bool $decode specifies whether the data must be decoded
-     *
-     * @return the object
+     * @param $param (description)
+     * @param $param (description)
      */
     public static function decodeCourse($data, $decode=true)
     {
-        if ($decode && $data==null) 
-            $data = "{}";
-    
         if ($decode)
             $data = json_decode($data);
         if (is_array($data)){
@@ -277,13 +234,13 @@ class Course extends Object implements JsonSerializable
      */
     public function jsonSerialize() 
     {
-        $list = array();
-        if ($this->id!==null) $list['id'] = $this->id;
-        if ($this->name!==null) $list['name'] = $this->name;
-        if ($this->semester!==null) $list['semester'] = $this->semester;
-        if ($this->exerciseSheets!==array()) $list['exerciseSheets'] = $this->exerciseSheets;
-        if ($this->defaultGroupSize!==null) $list['defaultGroupSize'] = $this->defaultGroupSize;
-        return $list;
+        return array(
+            'id' => $this->id,
+            'name' => $this->name,
+            'semester' => $this->semester,
+            'exerciseSheets' => $this->exerciseSheets,
+            'defaultGroupSize' => $this->defaultGroupSize
+        );
     }
 }
 ?>

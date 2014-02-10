@@ -1,35 +1,31 @@
 <?php 
 /**
- * @file Session.php contains the Session class
- */
- 
-/**
- * the session structure
- *
- * @author Till Uhlig
- */
+* A pair of a course and a status for some user.
+* The status reflects the rights the particular user has in that
+* course
+*/
 class Session extends Object implements JsonSerializable
 {
     /**
-     * @var string $user the db id of an user 
+     * description)
+     *
+     * type: string
      */
-    private $user = null;
+    private $user;
     
     /**
-     * the $user getter
-     *
-     * @return the value of $user
-     */ 
+     * (description)
+     */
     public function getUser()
     {
         return $this->user;
     }
     
     /**
-     * the $user setter
+     * (description)
      *
-     * @param string $value the new value for $user
-     */ 
+     * @param $param (description)
+     */
     public function setUser($value)
     {
         $this->user = $value;
@@ -39,69 +35,50 @@ class Session extends Object implements JsonSerializable
     
     
     /**
-     * @var string $session a string that defines which session the user has in that course.
+     * a string that defines which status the user has in that course.
+     *
+     * type: string
      */
-    private $session = null;
+    private $status;
     
     /**
-     * the $session getter
-     *
-     * @return the value of $session
-     */ 
-    public function getSession()
+     * (description)
+     */
+    public function getStatus()
     {
-        return $this->session;
+        return $this->status;
     }
     
     /**
-     * the $session setter
+     * (description)
      *
-     * @param string $value the new value for $session
-     */ 
-    public function setSession($value)
+     * @param $param (description)
+     */
+    public function setStatus($value)
     {
-        $this->session = $value;
+        $this->status = $value;
     }
    
-    /**
-     * Creates an Session object, for database post(insert) and put(update).
-     * Not needed attributes can be set to null.
-     *
-     * @param string $userId The id of the user.
-     * @param string $sessionId The id of the session.
-     *
-     * @return an session object
-     */
-    public function createSession($userId,$sessionId)
-    {
-        return new Session(array('user' => $userId,
-        'session' => $sessionId));
-    }
     
     /**
-     * returns an mapping array to convert between database and structure
-     *
-     * @return the mapping array
+     * (description)
      */
     public static function getDbConvert()
     {
         return array(
            'U_id' => 'user',
-           'SE_sessionID' => 'session'
+           'SE_id' => 'session'
         );
     }
     
     /**
-     * converts an object to insert/update data
-     *
-     * @return a comma separated string e.g. "a=1,b=2"
+     * (description)
      */
-    public function getInsertData()
-    {
+    public function getInsertData(){
         $values = "";
         
         if ($this->user != null) $this->addInsertData($values, 'U_id', DBJson::mysql_real_escape_string($this->user));
-        if ($this->session != null) $this->addInsertData($values, 'SE_sessionID', DBJson::mysql_real_escape_string($this->session));
+        if ($this->session != null) $this->addInsertData($values, 'SE_id', DBJson::mysql_real_escape_string($this->session));
         
         if ($values != ""){
             $values=substr($values,1);
@@ -109,67 +86,49 @@ class Session extends Object implements JsonSerializable
         return $values;
     }
     
- 
     /**
-     * returns a sting/string[] of the database primary key/keys
-     * @todo hier fehlt noch der primary key/keys
-     * @return the primary key/keys
+     * (description)
      */
+    // TODO: hier fehlt noch der primary key/keys
     public static function getDbPrimaryKey()
     {
         return 'SE_id';
     }
 
     /**
-     * the constructor
+     * (description)
      * 
-     * @param $data an assoc array with the object informations
+     * @param $param (description)
      */
-    public function __construct($data=array())
+    public function __construct($data=array()) 
     {
-        if ($data==null)
-            $data = array();
-        
         foreach ($data AS $key => $value) {
             if (isset($key)){
-              /*  if ($key == "user"){
-                    $this->{$key} = new User($value,false);
-                }
-                else*/
                     $this->{$key} = $value;
             }
         }
     }
     
     /**
-     * encodes an object to json
-     * 
-     * @param $data the object
+     * (description)
      *
-     * @return the json encoded object
+     * @param $param (description)
      */
-    public static function encodeSession($data)
+    public static function encodeCourseStatus($data)
     {
         return json_encode($data);
     }
     
     /**
-     * decodes $data to an object
+     * (description)
      * 
-     * @param string $data json encoded data (decode=true) 
-     * or json decoded data (decode=false)
-     * @param bool $decode specifies whether the data must be decoded
-     *
-     * @return the object
+     * @param $param (description)
+     * @param $param (description)
      */
-    public static function decodeSession($data, $decode=true)
+    public static function decodeCourseStatus($data, $decode=true)
     {
-        if ($decode && $data==null) 
-            $data = "{}";
-    
         if ($decode)
             $data = json_decode($data);
-            
         if (is_array($data)){
             $result = array();
             foreach ($data AS $key => $value) {
@@ -185,10 +144,10 @@ class Session extends Object implements JsonSerializable
      */
     public function jsonSerialize() 
     {
-        $list = array();
-        if ($this->user!==null) $list['user'] = $this->user;
-        if ($this->session!==null) $list['session'] = $this->session;
-        return $list;  
+        return array(
+            'user' => $this->user,
+            'session' => $this->session
+        );
     }
 }
 ?>

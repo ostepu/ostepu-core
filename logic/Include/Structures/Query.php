@@ -1,201 +1,165 @@
 <?php 
 /**
- * @file Query.php contains the Query class
- */
- 
-/**
- * this class is for querying SQL statemets
- *
- * @author Till Uhlig
+ * 
  */
 class Query extends Object implements JsonSerializable
 {
 
     /**
-     * @var string $request the sql statement
-     */ 
+     * (description)
+     *
+     * type: String
+     */
     private $request = null;
     
     /**
-     * the $request getter
-     *
-     * @return the value of $request
-     */ 
+     * (description)
+     */
     public function getRequest()
     {
         return $this->request;
     }
     
     /**
-     * the $request setter
+     * (description)
      *
-     * @param string $value the new value for $idrequest
-     */ 
+     * @param $param (description)
+     */
     public function setRequest($value)
     {
         $this->request = $value;
     }
-
+    
     /**
-     * @var String[] $response a response
-     * - ['content'] = the content/table you received from database
-     * - ['affectedRows'] = the affected rows
-     * - ['insertId'] = on post/insert with auto-increment, the id of the inserted entry
-     * - ['errno'] = the error number
-     * - ['error'] = the error message
-     * - ['numRows'] = on get, the received number of rows
+     * (description)
+     *
+     * type: String[]
      */
     private $response = array();
     
     /**
-     * the $response getter
-     *
-     * @return the value of $response
-     */ 
+     * (description)
+     */
     public function getResponse()
     {
         return $this->response;
     }
     
     /**
-     * the $response setter
+     * (description)
      *
-     * @param string[] $value the new value for $response
-     */ 
+     * @param $param (description)
+     */
     public function setResponse($value)
     {
         $this->response = $value;
     }
     
     /**
-     * @var int $errno a error number
-     */ 
+     * (description)
+     *
+     * type: int
+     */
     private $errno = null;
     
     /**
-     * the $errno getter
-     *
-     * @return the value of $errno
-     */ 
+     * (description)
+     */
     public function getErrno()
     {
         return $this->errno;
     }
     
     /**
-     * the $errno setter
+     * (description)
      *
-     * @param int $value the new value for $errno
-     */ 
+     * @param $param (description)
+     */
     public function setErrno($value)
     {
         $this->errno = $value;
     }  
     
     /**
-     * @var int $insertId the insert id
-     */ 
+     * (description)
+     *
+     * type: int
+     */
     private $insertId = null;
     
-     /**
-     * the $insertId getter
-     *
-     * @return the value of $insertId
-     */ 
+    /**
+     * (description)
+     */
     public function getInsertId()
     {
         return $this->insertId;
     }
     
     /**
-     * the $insertId setter
+     * (description)
      *
-     * @param int $value the new value for $insertId
-     */ 
+     * @param $param (description)
+     */
     public function setInsertId($value)
     {
         $this->insertId = $value;
     } 
     
     /**
-     * @var int $affectedRows the affected rows
-     */ 
+     * (description)
+     *
+     * type: int
+     */
     private $affectedRows = null;
     
     /**
-     * the $affectedRows getter
-     *
-     * @return the value of $affectedRows
-     */ 
+     * (description)
+     */
     public function getAffectedRows()
     {
         return $this->affectedRows;
     }
     
     /**
-     * the $affectedRows setter
+     * (description)
      *
-     * @param int $value the new value for $affectedRows
-     */ 
+     * @param $param (description)
+     */
     public function setAffectedRows($value)
     {
         $this->affectedRows = $value;
     } 
     
     /**
-     * @var int $numRows the number of received rows
-     */ 
+     * (description)
+     *
+     * type: int
+     */
     private $numRows = null;
     
     /**
-     * the $numRows getter
-     *
-     * @return the value of $numRows
-     */ 
+     * (description)
+     */
     public function getNumRows()
     {
         return $this->numRows;
     }
     
     /**
-     * the $numRows setter
+     * (description)
      *
-     * @param int $numRows the new value for $numRows
+     * @param $param (description)
      */
     public function setNumRows($value)
     {
         $this->numRows = $value;
     } 
     
-    /**
-     * @var bool $checkSession specifies whether the session needs to be checked/tested
-     */ 
-    private $checkSession = null;
     
     /**
-     * the $checkSession getter
-     *
-     * @return the value of $checkSession
-     */ 
-    public function getCheckSession()
-    {
-        return $this->checkSession;
-    }
-    
-    /**
-     * the $checkSession setter
-     *
-     * @param bool $value the new value for $checkSession
-     */ 
-    public function setCheckSession($value)
-    {
-        $this->checkSession = $value;
-    } 
-    
-    /**
-     * the constructor
+     * (description)
      * 
-     * @param $data an assoc array with the object informations
+     * @param $param (description)
      */
     public function __construct($data=array()) 
     {
@@ -207,41 +171,32 @@ class Query extends Object implements JsonSerializable
     }
     
     /**
-     * encodes an object to json
+     * (description)
      * 
-     * @param $data the object
-     *
-     * @return the json encoded object
+     * @param $param (description)
      */
     public static function encodeQuery($data){
         return json_encode($data);
     }
     
     /**
-     * decodes $data to an object
+     * (description)
      * 
-     * @param string $data json encoded data (decode=true) 
-     * or json decoded data (decode=false)
-     * @param bool $decode specifies whether the data must be decoded
-     * @todo support query arrays
-     *
-     * @return the object
+     * @param $param (description)
+     * @param $param (description)
      */
     public static function decodeQuery($data, $decode=true)
     {
-        if ($decode && $data==null) 
-            $data = "{}";
-            
         if ($decode)
             $data = json_decode($data,true);
             
         $obj = new Query();
-        if (is_array($data) && !isset($data['response']) && !isset($data['request']) && !isset($data['insertId'])){
+        if (is_array($data) && !isset($data['response']) && !isset($data['request'])){
 
         } else {
             $obj = new Query();
             if (isset($data['request']))
-                $obj->setRequest($data['request']);
+                $obj->setRequest(json_decode(json_encode($data['request'])));
             if (isset($data['response']))
                 $obj->setResponse($data['response']);                
             if (isset($data['affectedRows']))
@@ -252,16 +207,12 @@ class Query extends Object implements JsonSerializable
                 $obj->setErrno($data['errno']); 
             if (isset($data['numRows']))
                 $obj->setNumRows($data['numRows']); 
-            if (isset($data['checkSession']))
-                $obj->setCheckSession($data['checkSession']); 
         }
         return $obj;
     }
     
     /**
      * the json serialize function
-     *
-     * @return an array to serialize the object
      */
     public function jsonSerialize()  
     {       
@@ -272,7 +223,6 @@ class Query extends Object implements JsonSerializable
         if ($this->insertId!==null) $list['insertId'] = $this->insertId;
         if ($this->errno!==null) $list['errno'] = $this->errno;
         if ($this->numRows!==null) $list['numRows'] = $this->numRows;
-        if ($this->checkSession!==null) $list['checkSession'] = $this->checkSession;
         return $list;
     }
 }
