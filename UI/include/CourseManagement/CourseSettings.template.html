@@ -51,14 +51,15 @@
                 Zugelassene Punktearten:
             </label>
             <div class="form-field left checkbox-container-exercisetype">
-                <?php foreach ($exerciseTypes as $exerciseType):
-                print '<input type="checkbox" name="exerciseTypes[]" value="';
-                print $exerciseType['id'];
-                print '"';
-                print isset($exerciseType['inCourse'])?' checked="true"':NULL;
-                print ' />';
-                print $exerciseType['name'];
-                print '<br />';
+                <?php 
+                foreach ($exerciseTypes as $exerciseType):
+                    print '<input type="checkbox" name="exerciseTypes[]" value="';
+                    print $exerciseType['id'];
+                    print '"';
+                    print isset($exerciseType['inCourse'])?' checked="true"':NULL;
+                    print ' />';
+                    print $exerciseType['name'];
+                    print '<br />';
                 endforeach;
                 ?>
             </div>
