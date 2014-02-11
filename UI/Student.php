@@ -12,7 +12,7 @@ include_once 'include/Boilerplate.php';
 
 if (isset($_GET['action']) && isset($_GET['sid'])) {
     if ($_GET['action'] == "downloadAttachemnts") {
-        $attachments = http_get($serverURI . 'logic/Controller/DB/attachment/exercisesheet/' . $sid);
+        $attachments = http_get($serverURI . '/logic/Controller/DB/attachment/exercisesheet/' . $sid);
         $attachments = json_decode($attachments, true);
 
         $files = array();
@@ -22,10 +22,10 @@ if (isset($_GET['action']) && isset($_GET['sid'])) {
 
         $fileString = json_encode($files);
 
-        $zipfile = http_post_data($filesystemURI . 'zip',  $fileString);
+        $zipfile = http_post_data($filesystemURI . '/' . 'zip',  $fileString);
         $zipfile = json_decode($zipfile, true);
 
-        $location = $filesystemURI . $zipfile['address'];
+        $location = $filesystemURI . '/' . $zipfile['address'];
         header("Location: {$location}/attachments.zip");
     }
 }

@@ -11,8 +11,8 @@
 include_once 'include/Boilerplate.php';
 
 // load user data from the database
-$databaseURI = $getSiteURI . "/accountsettings/user/{$uid}";
-$user_data = http_get($databaseURI);
+$URL = $getSiteURI . "/accountsettings/user/{$uid}";
+$user_data = http_get($URL);
 $user_data = json_decode($user_data, true);
 
 // construct a new header

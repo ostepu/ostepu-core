@@ -10,13 +10,13 @@
 include_once 'include/Boilerplate.php';
 
 // load user data from the database
-$databaseURL = $databaseURI . "/user/user/{$uid}";
-$user = http_get($databaseURL);
+$URL = $databaseURI . "/user/user/{$uid}";
+$user = http_get($URL);
 $user = json_decode($user, true);
 
 // load course data from the database
-$databaseURL = $databaseURI . "/course/course/{$cid}";
-$course = http_get($databaseURL);
+$URL = $databaseURI . "/course/course/{$cid}";
+$course = http_get($URL);
 $course = json_decode($course, true)[0];
 
 

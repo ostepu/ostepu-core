@@ -52,7 +52,7 @@ foreach ($sheets as $sheet):
 
                             $displayName = $exercise['attachments'][0]['displayName'];
                             $fileAddress = $exercise['attachments'][0]['address'];
-                            $fileURL = $filesystemURI . $fileAddress . '/' . $displayName;
+                            $fileURL = $filesystemURI . '/' . $fileAddress . '/' . $displayName;
 
                             print '<a href="';
                             print $fileURL;
@@ -74,7 +74,7 @@ foreach ($sheets as $sheet):
                 <li>
                     <?php $displayName = $sheet['sheetFile']['displayName']; ?>
                     <?php $fileAddress = $sheet['sheetFile']['address']; ?>
-                    <?php $fileURL = $filesystemURI . $fileAddress
+                    <?php $fileURL = $filesystemURI . '/' . $fileAddress
                                                     . '/' . $displayName; ?>
                     <a href="<?= $fileURL ?>" title="<?= $displayName ?>"
                         target="_blank">
@@ -84,7 +84,7 @@ foreach ($sheets as $sheet):
                 <li>
                     <?php $displayName = $sheet['sampleSolution']['displayName']; ?>
                     <?php $fileAddress = $sheet['sampleSolution']['address']; ?>
-                    <?php $fileURL = $filesystemURI . $fileAddress
+                    <?php $fileURL = $filesystemURI . '/' . $fileAddress
                                                     . '/' . $displayName; ?>
                     <a href="<?= $fileURL ?>" title="<?= $displayName ?>"
                         target="_blank">
