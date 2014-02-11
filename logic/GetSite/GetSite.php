@@ -69,7 +69,7 @@ class LgetSite
 
         //GET AccountSettings
         $this->app->get('/accountsettings/user/:userid/course/:courseid(/)',
-                        array($this, 'userWithCourse'));
+                        array($this, 'userWithCourseAndHash'));
 
         //GET CreateSheet
         $this->app->get('/createsheet/user/:userid/course/:courseid(/)',
@@ -353,6 +353,34 @@ class LgetSite
         else{
         $this->flag = 0;
         return $response;}
+    }
+
+    public function userWithCourseAndHash($userid, $courseid){
+        $body = $this->app->request->getBody();
+        $header = $this->app->request->headers->all();
+
+        $URL = $this->lURL.'/DB/coursestatus/course/'.$courseid.'/user/'.$userid;
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $user = json_decode($answer['content'], true);
+
+        $URL = $this->lURL.'/DB/user/user/'.$userid;
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $response['user'] = json_decode($answer['content'], true);
+
+        unset($response['user']['courses']);
+
+        foreach ($user['courses'] as $course) {
+            $newCourse = array('status' => $course['status'],
+                               'statusName' => $this->getStatusName($course['status']),
+                               'course' => $course['course']);
+            $response['courses'][] = $newCourse;
+        }
+        if ($this->flag == 0){
+            $this->app->response->setBody(json_encode($response));
+        } else{
+            $this->flag = 0;
+            return $response;
+        }
     }
 
     /**
