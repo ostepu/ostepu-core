@@ -17,7 +17,7 @@ $user = json_decode($user, true);
 // load course data from the database
 $URL = $databaseURI . "/course/course/{$cid}";
 $course = http_get($URL);
-$course = json_decode($course, true)[0];
+$course = json_decode($course, true);
 
 
 // construct a new header
