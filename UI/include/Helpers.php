@@ -233,7 +233,8 @@ function curlSetAuthentication($curl, $sessiondelete = false)
                 CURLOPT_HTTPHEADER,
                 array("User: {$user}",
                       "Session: {$session}",
-                      "Date : {$date}"));
+                      "Date : {$date}")
+                );
 }
 
 /**
