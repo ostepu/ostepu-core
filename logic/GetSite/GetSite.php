@@ -68,8 +68,8 @@ class LgetSite
                         array($this, 'studentSiteInfo'));
 
         //GET AccountSettings
-        $this->app->get('/accountsettings/user/:userid/course/:courseid(/)',
-                        array($this, 'userWithCourseAndHash'));
+        $this->app->get('/accountsettings/user/:userid(/)',
+                        array($this, 'accountsettings'));
 
         //GET CreateSheet
         $this->app->get('/createsheet/user/:userid/course/:courseid(/)',
@@ -353,6 +353,18 @@ class LgetSite
         else{
         $this->flag = 0;
         return $response;}
+    }
+
+    public function accountsettings($userid)
+    {
+        $body = $this->app->request->getBody();
+        $header = $this->app->request->headers->all();
+
+        $URL = $this->lURL . '/DB/user/user/' . $userid;
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $user = json_decode($answer['content'], true);
+
+        $this->app->response->setBody(json_encode($user));
     }
 
     public function userWithCourseAndHash($userid, $courseid){
