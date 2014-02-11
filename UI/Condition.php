@@ -68,7 +68,9 @@ $condition_data = json_decode($condition_data, true);
 
 $user_course_data = $condition_data['user'];
 
-$menu = MakeNavigationElementForCourseStatus($user_course_data['courses']);
+$menu = MakeNavigationElementForCourseStatus($user_course_data['courses'],
+                                             PRIVILEGE_LEVEL::ADMIN,
+                                             true);
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
