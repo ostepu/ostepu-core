@@ -78,9 +78,9 @@ class LAttachment
         $this->app->post('/'.$this->getPrefix().'(/)', 
                         array($this, 'addAttachment'));
 
-        //GET GetAttachmentURL
+        //GET GetAttachment
         $this->app->get('/'.$this->getPrefix().'/attachment/:attachmentid(/)',
-                        array ($this, 'getAttachmentURL'));
+                        array ($this, 'getAttachment'));
 
         //DELETE DeleteAttachment
         $this->app->delete('/'.$this->getPrefix().'/attachment/:attachmentid(/)',
@@ -115,27 +115,35 @@ class LAttachment
          * belongs to this attachment will be stored in the database
          */
         if($answer['status'] >= 200 && $answer['status'] < 300){ 
-            $body['file'] = json_decode($answer['content'], true);
-            $URL = $this->lURL.'/DB/attachment';
-            $answer = Request::custom('POST', $URL, $header, json_encode($body));
-            $this->app->response->setStatus($answer['status']);
+            // first request
+            $URL = $this->lURL.'/DB/file';
+            $answer = Request::custom('POST', $URL, $header, $answer['content']);
+            // second request
+            if($answer['status'] >= 200 && $answer['status'] < 300){
+                $body['file'] = json_decode($answer['content'], true);
+                $URL = $this->lURL.'/DB/attachment';
+                $answer = Request::custom('POST', $URL, $header, json_encode($body));
+                $this->app->response->setStatus($answer['status']);
+            } else {
+                $this->app->response->setStatus($answer['status']);
+            }
         } else {
             $this->app->response->setStatus($answer['status']);
         }
     }
 
     /**
-     * Returns the URL to a given attachment.
+     * Returns an attachment.
      *
      * Called when this component receives an HTTP GET request to
-     * /exercisesheet/exercisesheet/$sheetid/url(/).
+     * /attachment/attachment/$attachmentid(/).
      *
-     * @param int $sheetid The id of the exercise sheet the returned URL belongs to.
+     * @param int $attachmentid The id of the attachment that should be returned.
      */
-    public function getAttachmentURL($fileid) {
+    public function getAttachment($attachmentid) {
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
-        $URL = $this->lURL.'/DB/file/'.$fileid;
+        $URL = $this->lURL.'/DB/attachment/attachment/'.$attachmentid;
         $answer = Request::custom('GET', $URL, $header, $body);
         $this->app->response->setBody($answer['content']);
         $this->app->response->setStatus($answer['status']);
@@ -154,7 +162,7 @@ class LAttachment
         $body = $this->app->request->getBody();
         // request to database
         $URL = $this->lURL.'/DB/attachment/'.$attachmentid;
-        $answer = Request::custum('DELETE', $URL, $header, $body);
+        $answer = Request::custom('DELETE', $URL, $header, $body);
         $this->app->response->setStatus($answer['status']);
 
         /*
@@ -195,13 +203,23 @@ class LAttachment
          * if the file has been stored, the information
          * belongs to this attachment will be stored in the database
          */
-        if($answer['status'] >= 200 && $answer['status'] < 300){
-            $body['file'] = json_decode($answer['content'], true);
-            $URL = $this->lURL.'/DB/attachment/'.$attachmentid;
-            $answer = Request::custom('PUT', $URL, $header, json_encode($body));
-            $this->app->response->setStatus($answer['status']);
+        if($answer['status'] >= 200 && $answer['status'] < 300){ 
+            // first request
+            $URL = $this->lURL.'/DB/file';
+            $answer = Request::custom('POST', $URL, $header, $answer['content']);
+            // second request
+            if($answer['status'] >= 200 && $answer['status'] < 300){
+                $body['file'] = json_decode($answer['content'], true);
+                $URL = $this->lURL.'/DB/attachment/attachment/'.$attachmentid;
+                $answer = Request::custom('PUT', $URL, $header, json_encode($body));
+                $this->app->response->setStatus($answer['status']);
+            } else {
+                $this->app->response->setStatus($answer['status']);
+                print("1");
+            }
         } else {
             $this->app->response->setStatus($answer['status']);
+            print("2");
         }
     }   
 }
