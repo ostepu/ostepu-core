@@ -11,8 +11,8 @@
 include_once 'include/Boilerplate.php';
 
 // load GetSite data for Lecturer.php
-$databaseURI = $getSiteURI . "/lecturer/user/{$uid}/course/{$cid}";
-$lecturer_data = http_get($databaseURI, false);
+$URL = $getSiteURI . "/lecturer/user/{$uid}/course/{$cid}";
+$lecturer_data = http_get($URL, false);
 $lecturer_data = json_decode($lecturer_data, true);
 $lecturer_data['filesystemURI'] = $filesystemURI;
 

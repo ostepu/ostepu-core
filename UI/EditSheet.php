@@ -14,8 +14,8 @@ include_once 'include/Boilerplate.php';
 /*
  * @todo Use EditSheet data from GetSite
  */
-$databaseURI = $getSiteURI . "/admin/user/{$uid}/course/{$cid}";
-$sheet_data = http_get($databaseURI, false);
+$URL = $getSiteURI . "/admin/user/{$uid}/course/{$cid}";
+$sheet_data = http_get($URL, false);
 $sheet_data = json_decode($sheet_data, true);
 
 $user_course_data = $sheet_data['user'];

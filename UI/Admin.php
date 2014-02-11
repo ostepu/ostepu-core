@@ -11,8 +11,8 @@
 include_once 'include/Boilerplate.php';
 
 // load GetSite data for Admin.php
-$databaseURI = $getSiteURI . "/admin/user/{$uid}/course/{$cid}";
-$admin_data = http_get($databaseURI, false);
+$URL = $getSiteURI . "/admin/user/{$uid}/course/{$cid}";
+$admin_data = http_get($URL, false);
 $admin_data = json_decode($admin_data, true);
 $admin_data['filesystemURI'] = $filesystemURI;
 

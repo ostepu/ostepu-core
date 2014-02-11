@@ -61,7 +61,7 @@ if (isset($_POST['action'])) {
 }
 
 // load user data from the database
-$databaseURI = $getSiteURI . "/accountsettings/user/{$uid}/course/{$cid}";
+$databaseURI = $getSiteURI . "/accountsettings/user/{$uid}";
 $accountSettings_data = http_get($databaseURI);
 $accountSettings_data = json_decode($accountSettings_data, true);
 
@@ -70,18 +70,18 @@ $user_course_data = $accountSettings_data['user'];
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
-$h->bind(array("name" => $accountSettings_data['courses'][0]['course']['name'],
+$h->bind(array("name" => "Account-Einstellungen",
                "backTitle" => "Veranstaltungen",
                "backURL" => "index.php",
                "notificationElements" => $notifications));
 
 // construct a content element for account information
 $accountInfo = Template::WithTemplateFile('include/AccountSettings/AccountInfo.template.html');
-$accountInfo->bind($accountSettings_data['user']);
+$accountInfo->bind($user_course_data);
 
 // construct a content element for changing password
 $changePassword = Template::WithTemplateFile('include/AccountSettings/ChangePassword.template.html');
-$changePassword->bind($accountSettings_data['user']);
+$changePassword->bind($user_course_data);
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $accountInfo, $changePassword);

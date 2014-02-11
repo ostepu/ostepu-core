@@ -64,7 +64,7 @@ class StudIPAuthentication extends AbstractAuthentication
         if (isset($_GET['uid']) && isset($_GET['sid']) && isset($_GET['cid'])) {
             // log in user and return result
             $signed = $this->loginUser($this->uid, "");
-            
+
             if ($signed == true) {
 
                 // multiplexer which site the user wants to see
@@ -211,7 +211,7 @@ class StudIPAuthentication extends AbstractAuthentication
                     // set courseStatus to 0 only if status is created in DB successfully
                     if ($CourseStatusResponse == true) {
                         $this->courseStatus = "0";
-                    } 
+                    }
                 }
 
                 return $refresh;
@@ -222,7 +222,7 @@ class StudIPAuthentication extends AbstractAuthentication
                 // if user is a valid user
                 if ($newUser != "not found") {
                     $response = $this->createUser($newUser);
-                
+
                     // if successful try to login new user
                     if ($response == true) {
                         return $this->loginUser($username, "");

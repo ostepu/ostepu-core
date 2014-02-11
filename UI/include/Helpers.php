@@ -233,7 +233,8 @@ function curlSetAuthentication($curl, $sessiondelete = false)
                 CURLOPT_HTTPHEADER,
                 array("User: {$user}",
                       "Session: {$session}",
-                      "Date : {$date}"));
+                      "Date : {$date}")
+                );
 }
 
 /**
@@ -284,7 +285,10 @@ function cleanInput($input)
     return $input;
 }
 
-function MakeNavigationElementForCourseStatus($courses, $requiredPrivilege, $switchDisabled = false) {
+function MakeNavigationElementForCourseStatus($courses,
+                                              $requiredPrivilege,
+                                              $switchDisabled = false)
+{
     if (count($courses) > 1) {
         return "";
     }

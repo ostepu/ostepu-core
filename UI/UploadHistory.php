@@ -19,8 +19,8 @@ if (isset($_POST['sheetID'])) {
 }
 
 // load uploadHistory data from GetSite
-$databaseURI = $getSiteURI . "/uploadhistory/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
-$uploadHistory_data = http_get($databaseURI, false);
+$URL = $getSiteURI . "/uploadhistory/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
+$uploadHistory_data = http_get($URL, false);
 $uploadHistory_data = json_decode($uploadHistory_data, true);
 $uploadHistory_data['filesystemURI'] = $filesystemURI;
 
