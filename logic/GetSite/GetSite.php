@@ -290,7 +290,7 @@ class LgetSite
 
             $sheet['maxPoints'] = $maxSheetPoints;
             $sheet['points'] = $sheetPoints;
-            $sheet['percentage'] = $maxSheetPoints ? $sheetPoints / $maxSheetPoints * 100 : 100;
+            $sheet['percentage'] = $maxSheetPoints ? round($sheetPoints / $maxSheetPoints * 100, 2) : 100;
         }
 
         $this->flag = 1;
