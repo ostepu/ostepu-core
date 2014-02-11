@@ -284,7 +284,10 @@ function cleanInput($input)
     return $input;
 }
 
-function MakeNavigationElementForCourseStatus($courses, $requiredPrivilege, $switchDisabled = false) {
+function MakeNavigationElementForCourseStatus($courses,
+                                              $requiredPrivilege,
+                                              $switchDisabled = false)
+{
     if (count($courses) > 1) {
         return "";
     }
