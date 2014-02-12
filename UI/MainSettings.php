@@ -70,9 +70,11 @@ if (isset($_POST['action'])) {
             // creates a notification depending on RequestError
             if ($messageNewCourse == "201"
                 && $RequestError == false) {
-                $notifications[] = MakeNotification("success", "Die Veranstaltung wurde erstellt!");
+                $notifications[] = MakeNotification("success",
+                                                    "Die Veranstaltung wurde erstellt!");
             } else {
-                $notifications[] = MakeNotification("error", "Beim Speichern ist ein Fehler aufgetreten!");
+                $notifications[] = MakeNotification("error",
+                                                    "Beim Speichern ist ein Fehler aufgetreten!");
             }
         } else {
             if (!isset($_POST['courseName'])
@@ -139,10 +141,12 @@ if (isset($_POST['action'])) {
                 http_post_data($URI, $newUserSettings, true, $message);
 
                 if ($message == "201") {
-                     $notifications[] = MakeNotification("success", "Der User wurde erstellt!");
+                     $notifications[] = MakeNotification("success",
+                                                         "Der User wurde erstellt!");
                 }
             } else {
-                $notifications[] = MakeNotification("error", "Die Passwörter stimmen nicht überein!");
+                $notifications[] = MakeNotification("error",
+                                                    "Die Passwörter stimmen nicht überein!");
             }
         }
     }
