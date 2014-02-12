@@ -88,7 +88,8 @@ if (isset($_POST['action'])) {
                                                     "Bitte eine Semester angeben.");
             }
 
-            if (!isset($_POST['defaultGroupSize'])) {
+            if (!isset($_POST['defaultGroupSize'])
+                || ($_POST['defaultGroupSize'] == '')) {
                 $notifications[] = MakeNotification("warning",
                                                     "Bitte eine standard Gruppengröße angeben.");
             }
@@ -170,6 +171,10 @@ $h->bind(array("name" => "Einstellungen",
 // construct a content element for creating new courses
 $createCourse = Template::WithTemplateFile('include/MainSettings/CreateCourse.template.html');
 $createCourse->bind($mainSettings_data);
+if (count($notifications) != 0) {
+    $createCourse->bind($_POST);
+}
+
 
 // construct a content element for creating new users
 $createUser = Template::WithTemplateFile('include/MainSettings/CreateUser.template.html');
