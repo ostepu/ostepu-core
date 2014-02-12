@@ -22,7 +22,10 @@ $notifications = array();
 if (isset($_POST['action'])) {
     // creates a new course
     if ($_POST['action'] == "CreateCourse") {
-        if(isset($_POST['courseName']) && isset($_POST['semester']) && isset($_POST['defaultGroupSize'])
+		if(isset($_POST['courseName'])
+			&& ($_POST['courseName'] != '')
+			&& isset($_POST['semester'])
+			&& isset($_POST['defaultGroupSize'])
             && isset($_POST['exerciseTypes'])) {
 
             // bool which is true if any error occured
@@ -65,8 +68,27 @@ if (isset($_POST['action'])) {
                 $notifications[] = MakeNotification("error", "Beim Speichern ist ein Fehler aufgetreten!");
             }
         }
-        else {
-            $notifications[] = MakeNotification("error", "Es wurden nicht alle Felder ausgefüllt!");
+		else {
+			if (!isset($_POST['courseName'])
+				 || ($_POST['courseName'] == '') ) {
+				$notifications[] = MakeNotification("warning",
+													"Bitte einen Kurs Namen angeben.");
+			}
+
+			if (!isset($_POST['semester'])) {
+				$notifications[] = MakeNotification("warning",
+													"Bitte eine Semester angeben.");
+			}
+
+			if (!isset($_POST['defaultGroupSize'])) {
+				$notifications[] = MakeNotification("warning",
+													"Bitte eine standard Gruppengröße angeben.");
+			}
+
+			if (!isset($_POST['exerciseTypes'])) {
+				$notifications[] = MakeNotification("warning",
+													"Bitte Aufgabentypen wählen.");
+			}
         }
     }
 
