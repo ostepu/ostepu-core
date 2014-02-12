@@ -22,10 +22,10 @@ $notifications = array();
 if (isset($_POST['action'])) {
     // creates a new course
     if ($_POST['action'] == "CreateCourse") {
-		if(isset($_POST['courseName'])
-			&& ($_POST['courseName'] != '')
-			&& isset($_POST['semester'])
-			&& isset($_POST['defaultGroupSize'])
+        if(isset($_POST['courseName'])
+            && ($_POST['courseName'] != '')
+            && isset($_POST['semester'])
+            && isset($_POST['defaultGroupSize'])
             && isset($_POST['exerciseTypes'])) {
 
             // bool which is true if any error occured
@@ -63,32 +63,30 @@ if (isset($_POST['action'])) {
             // creates a notification depending on RequestError
             if ($messageNewCourse == "201" && $RequestError == false) {
                 $notifications[] = MakeNotification("success", "Die Veranstaltung wurde erstellt!");
-            }
-            else {
+            } else {
                 $notifications[] = MakeNotification("error", "Beim Speichern ist ein Fehler aufgetreten!");
             }
-        }
-		else {
-			if (!isset($_POST['courseName'])
-				 || ($_POST['courseName'] == '') ) {
-				$notifications[] = MakeNotification("warning",
-													"Bitte einen Kurs Namen angeben.");
-			}
+        } else {
+            if (!isset($_POST['courseName'])
+                 || ($_POST['courseName'] == '') ) {
+                $notifications[] = MakeNotification("warning",
+                                                    "Bitte einen Kurs Namen angeben.");
+            }
 
-			if (!isset($_POST['semester'])) {
-				$notifications[] = MakeNotification("warning",
-													"Bitte eine Semester angeben.");
-			}
+            if (!isset($_POST['semester'])) {
+                $notifications[] = MakeNotification("warning",
+                                                    "Bitte eine Semester angeben.");
+            }
 
-			if (!isset($_POST['defaultGroupSize'])) {
-				$notifications[] = MakeNotification("warning",
-													"Bitte eine standard Gruppengröße angeben.");
-			}
+            if (!isset($_POST['defaultGroupSize'])) {
+                $notifications[] = MakeNotification("warning",
+                                                    "Bitte eine standard Gruppengröße angeben.");
+            }
 
-			if (!isset($_POST['exerciseTypes'])) {
-				$notifications[] = MakeNotification("warning",
-													"Bitte Aufgabentypen wählen.");
-			}
+            if (!isset($_POST['exerciseTypes'])) {
+                $notifications[] = MakeNotification("warning",
+                                                    "Bitte Aufgabentypen wählen.");
+            }
         }
     }
 
@@ -113,16 +111,16 @@ if (isset($_POST['action'])) {
                 /**
                 * @todo Add the user's title.
                 */
-				$newUserSettings = User::encodeUser(User::createUser(null,
-																	 $userName,
-																	 $email,
-																	 $firstName,
-																	 $lastName,
-																	 null,
-																	 1, 
-																	 $passwordHash,
-																	 $salt,
-																	 0));
+                $newUserSettings = User::encodeUser(User::createUser(null,
+                                                                     $userName,
+                                                                     $email,
+                                                                     $firstName,
+                                                                     $lastName,
+                                                                     null,
+                                                                     1, 
+                                                                     $passwordHash,
+                                                                     $salt,
+                                                                     0));
 
                 $URI = $databaseURI . "/user";
                 http_post_data($URI, $newUserSettings, true, $message);
@@ -130,11 +128,10 @@ if (isset($_POST['action'])) {
                 if ($message == "201") {
                      $notifications[] = MakeNotification("success", "Der User wurde erstellt!");
                 }
-            }
-            else {
+            } else {
                 $notifications[] = MakeNotification("error", "Die Passwörter stimmen nicht überein!");
             }
-         }
+        }
     }
 }
 
