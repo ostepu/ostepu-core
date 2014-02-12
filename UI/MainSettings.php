@@ -91,8 +91,16 @@ if (isset($_POST['action'])) {
                 /**
                 * @todo Add the user's title.
                 */
-                $newUserSettings = User::encodeUser(User::createUser(null, $userName, $email, $firstName, $lastName, null, 1, 
-                                                    $passwordHash, $salt, 0));
+				$newUserSettings = User::encodeUser(User::createUser(null,
+																	 $userName,
+																	 $email,
+																	 $firstName,
+																	 $lastName,
+																	 null,
+																	 1, 
+																	 $passwordHash,
+																	 $salt,
+																	 0));
 
                 $URI = $databaseURI . "/user";
                 http_post_data($URI, $newUserSettings, true, $message);
