@@ -12,6 +12,7 @@
  * @todo check rights for whole page
  * @todo add function for creating users
  * @todo add function for deleting users
+ * @todo refill the fileds when an error occurs
  */
 
 include_once 'include/Boilerplate.php';
@@ -38,19 +39,25 @@ if (isset($_POST['action'])) {
             $exerciseTypes = cleanInput($_POST['exerciseTypes']);
 
             // creates a new course
-            $newCourseSettings = Course::encodeCourse(Course::createCourse(null, $courseName, $semester, $defaultGroupSize));
+            $newCourse = Course::createCourse(null, $courseName, $semester, $defaultGroupSize);
+            $newCourseSettings = Course::encodeCourse($newCourse);
             $URI = $databaseURI . "/course";
             $newCourseId = http_post_data($URI, $newCourseSettings, true, $messageNewCourse);
+            /**
+             * @todo check for errors here!
+             */
 
             // extracts the id of the new course
             $newCourseId = json_decode($newCourseId, true);
             $newCourseId = $newCourseId['id'];
 
             // creates a new approvalCondition for every selected exerciseType
-            foreach ($exerciseTypes as $exerciseType)
-            {
-                $newApprovalConditionSettings = ApprovalCondition::encodeApprovalCondition(
-                    ApprovalCondition::createApprovalCondition(null, $newCourseId, $exerciseType, 0));
+            foreach ($exerciseTypes as $exerciseType) {
+                $newApprovalCondition = ApprovalCondition::createApprovalCondition(null,
+                                                                                   $newCourseId,
+                                                                                   $exerciseType,
+                                                                                   0);
+                $newApprovalConditionSettings = ApprovalCondition::encodeApprovalCondition($newApprovalCondition);
                 $URI = $databaseURI . "/approvalcondition";
                 http_post_data($URI, $newApprovalConditionSettings, true, $messageNewAc);
 
@@ -61,7 +68,8 @@ if (isset($_POST['action'])) {
             }
 
             // creates a notification depending on RequestError
-            if ($messageNewCourse == "201" && $RequestError == false) {
+            if ($messageNewCourse == "201"
+                && $RequestError == false) {
                 $notifications[] = MakeNotification("success", "Die Veranstaltung wurde erstellt!");
             } else {
                 $notifications[] = MakeNotification("error", "Beim Speichern ist ein Fehler aufgetreten!");
@@ -92,8 +100,12 @@ if (isset($_POST['action'])) {
 
     // creates a new user
     if ($_POST['action'] == "CreateUser") {
-         if(isset($_POST['lastName']) && isset($_POST['firstName']) && isset($_POST['email']) &&
-             isset($_POST['userName']) && isset($_POST['password']) && isset($_POST['passwordRepeat'])) {
+        if(isset($_POST['lastName'])
+            && isset($_POST['firstName'])
+            && isset($_POST['email'])
+            && isset($_POST['userName'])
+            && isset($_POST['password'])
+            && isset($_POST['passwordRepeat'])) {
 
             $lastName = cleanInput($_POST['lastName']);
             $firstName = cleanInput($_POST['firstName']);
