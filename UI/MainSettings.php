@@ -12,7 +12,6 @@
  * @todo check rights for whole page
  * @todo add function for creating users
  * @todo add function for deleting users
- * @todo refill the fileds when an error occurs
  * @todo create a navigation bar for super admins
  * @todo make it easier to check if all required fields are set
  */
