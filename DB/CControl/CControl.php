@@ -175,7 +175,7 @@ class CControl
             // starts a query
             eval("\$sql = \"".file_get_contents("Sql/PostLink.sql")."\";");
             $result = DBRequest::request($sql, false);                
-          echo var_dump($sql);
+
             // checks the correctness of the query
             if (!$result['errno'] && $result['content']){
                 
