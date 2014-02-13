@@ -12,6 +12,7 @@
     include_once( dirname(__FILE__) . '/Structures/Course.php' );   
     include_once( dirname(__FILE__) . '/Structures/CourseStatus.php' );   
     include_once( dirname(__FILE__) . '/Structures/Exercise.php' );   
+    include_once( dirname(__FILE__) . '/Structures/ExerciseFileType.php' );   
     include_once( dirname(__FILE__) . '/Structures/ExerciseSheet.php' );  
     include_once( dirname(__FILE__) . '/Structures/ExerciseType.php' );   
     include_once( dirname(__FILE__) . '/Structures/ExternalId.php' );     
