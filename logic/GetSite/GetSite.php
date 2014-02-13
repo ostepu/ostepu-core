@@ -60,7 +60,7 @@ class LgetSite
 
 
         //GET TutorAssignmentSiteInfo
-        $this->app->get('/tutorassignment/user/:userid/course/:courseid/exercisesheet/:sheetid(/)',
+        $this->app->get('/tutorassign/user/:userid/course/:courseid/exercisesheet/:sheetid(/)',
                         array($this, 'tutorAssignmentSiteInfo'));
 
         //GET StudentSiteInfo
@@ -138,31 +138,24 @@ class LgetSite
         $URL = $this->lURL.'/DB/user/course/'.$courseid.'/status/1'; //status = 1 => Tutor
         $answer = Request::custom('GET', $URL, $header, $body);
         $tutors = json_decode($answer['content'], true);
-        foreach ($tutors AS $tutor){
-            //benoetigte Attribute waehlen
-            $newTutor = array();
-            $newTutor['id'] = $tutor['id'];
-            $newTutor['userName'] = $tutor['userName'];
-            $newTutor['firstName'] = $tutor['firstName'];
-            $newTutor['lastName'] = $tutor['lastName'];
-            //im Rueckgabe-Array für jeden Tutor ein Marking (ohne Submissions) anlegen
-            $tutorAssignment = array(
-                    'tutor' => $newTutor,
-                    'submissions' => array()
-                    );
-            array_push($response,$tutorAssignment);
+
+        if (!empty($tutors)) {
+            foreach ($tutors AS $tutor){
+                //im Rueckgabe-Array für jeden Tutor ein Marking (ohne Submissions) anlegen
+                $response['tutorAssignments'][] = array('tutor' => $tutor, 'submissions' => array());
+            }
         }
 
         // get markings
         $URL = $this->lURL.'/DB/marking/exercisesheet/'.$sheetid;
         $answer = Request::custom('GET', $URL, $header, $body);
-        //fuer jedes Marking die zugeordnete Submision im Rueckgabearray dem passenden Tutor zuweisen
+        // fuer jedes Marking die zugeordnete Submision im Rueckgabearray dem passenden Tutor zuweisen
         foreach (json_decode($answer['content'], true) as $marking){
-            foreach ($response as &$tutorAssignment){
+            foreach ($response['tutorAssignments'] as &$tutorAssignment){
                 if ($marking['tutorId'] == $tutorAssignment['tutor']['id']){
-                    array_push($tutorAssignment['submissions'], $marking['submission']);
+                    $tutorAssignment['submissions'][] = $marking['submission'];
                     //ID's aller bereits zugeordneten Submissions speicher
-                    array_push($assignedSubmissionIDs, $marking['submission']['id']);
+                    $assignedSubmissionIDs[] = $marking['submission']['id'];
                     break;
                 }
             }
@@ -185,18 +178,18 @@ class LgetSite
         $submissions = json_decode($answer['content'], true);
         foreach ($submissions as $submission){
             if (!in_array($submission['submissionId'], $assignedSubmissionIDs)){
-                array_push($unassignedSubmissions, $submission);
+                $unassignedSubmissions[] = $submission;
             }
         }
         $newTutorAssignment = array(
             'tutor' => $virtualTutor,
             'submissions' => $unassignedSubmissions
                     );
-        array_push($response, $newTutorAssignment);
+        $response['tutorAssignments'][] = $newTutorAssignment;
 
-        /**
-        * @todo userWithCourse needs to be attached to the tutorAssignment data
-        */
+        
+        $this->flag = 1;
+        $response['user'] = $this->userWithCourse($userid, $courseid);
 
         $this->app->response->setBody(json_encode($response));
     }
