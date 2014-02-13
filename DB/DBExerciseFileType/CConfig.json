@@ -1,0 +1,1 @@
+{"id":"38","name":"DBExerciseFileType","address":"localhost\/uebungsplattform\/DB\/DBExerciseFileType","option":"","prefix":"exercisefiletype","links":[{"id":"71","name":"out","address":"localhost\/uebungsplattform\/DB\/DBQuery","target":"13","prefix":"query","owner":"38","relevanz":""}]}
