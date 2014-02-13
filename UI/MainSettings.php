@@ -13,6 +13,8 @@
  * @todo add function for creating users
  * @todo add function for deleting users
  * @todo refill the fileds when an error occurs
+ * @todo create a navigation bar for super admins
+ * @todo make it easier to check if all required fields are set
  */
 
 include_once 'include/Boilerplate.php';
@@ -27,6 +29,7 @@ if (isset($_POST['action'])) {
             && ($_POST['courseName'] != '')
             && isset($_POST['semester'])
             && isset($_POST['defaultGroupSize'])
+            && ($_POST['defaultGroupSize'] != '')
             && isset($_POST['exerciseTypes'])) {
 
             // bool which is true if any error occured
@@ -104,11 +107,17 @@ if (isset($_POST['action'])) {
     // creates a new user
     if ($_POST['action'] == "CreateUser") {
         if(isset($_POST['lastName'])
+            && ($_POST['lastName'] != '')
             && isset($_POST['firstName'])
+            && ($_POST['firstName'] != '')
             && isset($_POST['email'])
+            && ($_POST['email'] != '')
             && isset($_POST['userName'])
+            && ($_POST['userName'] != '')
             && isset($_POST['password'])
-            && isset($_POST['passwordRepeat'])) {
+            && ($_POST['password'] != '')
+            && isset($_POST['passwordRepeat'])
+            && ($_POST['passwordRepeat'] != '')) {
 
             $lastName = cleanInput($_POST['lastName']);
             $firstName = cleanInput($_POST['firstName']);
@@ -149,6 +158,38 @@ if (isset($_POST['action'])) {
                 $notifications[] = MakeNotification("error",
                                                     "Die Passwörter stimmen nicht überein!");
             }
+        } else {
+            if (!isset($_POST['lastName'])
+                || $_POST['lastName'] == '') {
+                $notifications[] = MakeNotification("warning",
+                                                  "Ungültiger Nachname.");
+            }
+
+            if (!isset($_POST['firstName'])
+                || $_POST['firstName'] == '') {
+                $notifications[] = MakeNotification("warning",
+                                                    "Ungültiger Nachname.");
+            }
+
+            if (!isset($_POST['userName'])
+                || $_POST['userName'] == '') {
+                $notifications[] = MakeNotification("warning",
+                                                    "Ungültiges Login.");
+            }
+
+            if (!isset($_POST['email'])
+                || $_POST['email'] == '') {
+                $notifications[] = MakeNotification("warning",
+                                                    "Ungültige E-Mail-Adresse.");
+            }
+
+            if (!isset($_POST['password'])
+                || $_POST['password'] == ''
+                || !isset($_POST['passwordRepeat'])
+                || $_POST['passwordRepeat'] == '') {
+                $notifications[] = MakeNotification("warning",
+                                                    "Ungültiges Passwort.");
+            }
         }
     }
 }
@@ -178,6 +219,9 @@ if (count($notifications) != 0) {
 
 // construct a content element for creating new users
 $createUser = Template::WithTemplateFile('include/MainSettings/CreateUser.template.html');
+if (count($notifications) != 0) {
+    $createUser->bind($_POST);
+}
 
 // construct a content element for deleting users
 $deleteUser = Template::WithTemplateFile('include/MainSettings/DeleteUser.template.html');
