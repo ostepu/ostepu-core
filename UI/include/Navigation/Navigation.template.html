@@ -1,15 +1,17 @@
+<?php if ($courseStatus > 1): ?>
 <ul id="navigation" class="navigation">
-    <?php if (!$switchDisabled): ?>
-        <?php if ($requiredPrivilege == $courseStatus): ?>
+<?php if (!$switchDisabled): ?>
+    <?php if ($requiredPrivilege == $courseStatus): ?>
         <li>
             <a href="Student.php?cid=<?= $cid ?>">Studentenrolle einnehmen</a>
         </li>
         <?php else: ?>
         <li>
-            <a href="Admin.php?cid=<?= $cid ?>">Studentenrolle verlassen</a>
+            <a href="<?= $sites[$courseStatus] ?>?cid=<?= $cid ?>">Studentenrolle verlassen</a>
         </li>
-        <?php endif; ?>
     <?php endif; ?>
+<?php endif; ?>
+<?php if ($courseStatus == 3 /* PRIVILEGE_LEVEL::ADMIN */): ?>
     <li>
         <a href="CourseManagement.php?cid=<?= $cid ?>">Kurs verwalten</a>
     </li>
@@ -19,4 +21,6 @@
     <li>
         <a href="UploadHistory.php?cid=<?= $cid ?>">Einsendungsverlauf</a>
     </li>
+<?php endif; ?>
 </ul>
+<?php endif; ?>

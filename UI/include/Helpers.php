@@ -285,39 +285,47 @@ function cleanInput($input)
     return $input;
 }
 
-function MakeNavigationElementForCourseStatus($courses,
-                                              $requiredPrivilege,
-                                              $switchDisabled = false)
+/**
+ * An enumeration of different privilege levels.
+ */
+class PRIVILEGE_LEVEL
 {
-    if (count($courses) > 1) {
-        return "";
-    }
+    const STUDENT = 0;
+    const TUTOR = 1;
+    const LECTURER = 2;
+    const ADMIN = 3;
+    const SUPER_ADMIN = 4;
+
+    static $NAMES = array(
+        self::STUDENT => 'Student',
+        self::TUTOR => 'Tutor',
+        self::LECTURER => 'Dozent',
+        self::ADMIN => 'Admin');
+
+    static $SITES = array(
+        self::STUDENT => 'Student.php',
+        self::TUTOR => 'Tutor.php',
+        self::LECTURER => 'Lecturer.php',
+        self::ADMIN => 'Admin.php');
+}
+
+function MakeNavigationElement($user,
+                               $requiredPrivilege,
+                               $switchDisabled = false)
+{
+    $courses = $user['courses'];
 
     $courseStatus = $courses[0]['status'];
     $course = $courses[0]['course'];
 
-    $navigationElement = NULL;
+    $file = 'include/Navigation/Navigation.template.html';
+    $navigationElement = Template::WithTemplateFile($file);
 
-    // chooses the menu depending on the user's status in the course
-    switch ($courseStatus) {
-        case 2:
-            // status = Lecturer
-            $file = 'include/Navigation/NavigationLecturer.template.html';
-            $navigationElement = Template::WithTemplateFile($file);
-            break;
-        case 3:
-            // status = Admin
-            $file = 'include/Navigation/NavigationAdmin.template.html';
-            $navigationElement = Template::WithTemplateFile($file);
-            break;
-    }
-
-    if (isset($navigationElement)) {
-        $navigationElement->bind(array('cid' => $course['id'],
-                                       'requiredPrivilege' => $requiredPrivilege,
-                                       'courseStatus' => $courseStatus,
-                                       'switchDisabled' => $switchDisabled));
-    }
+    $navigationElement->bind(array('cid' => $course['id'],
+                                   'requiredPrivilege' => $requiredPrivilege,
+                                   'courseStatus' => $courseStatus,
+                                   'switchDisabled' => $switchDisabled,
+                                   'sites' => PRIVILEGE_LEVEL::$SITES));
 
     return $navigationElement;
 }
