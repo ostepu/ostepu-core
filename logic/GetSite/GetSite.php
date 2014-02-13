@@ -84,7 +84,7 @@ class LgetSite
                         array($this, 'courseManagement'));
 
         //GET MainSettings
-        $this->app->get('/mainsettings/user/:userid/course/:courseid(/)',
+        $this->app->get('/mainsettings/user/:userid',
                         array($this, 'mainSettings'));
 
         //GET Upload
@@ -570,7 +570,7 @@ class LgetSite
         $this->app->response->setBody(json_encode($response));
     }
 
-    // receives a set of submissions and returns the selected submission only 
+    // receives a set of submissions and returns the selected submission only
     public function getSelectedSubmission($submissions) {
         if (!empty($submissions)) {
             foreach ($submissions as $submission) {
@@ -620,17 +620,23 @@ class LgetSite
         $this->app->response->setBody(json_encode($response));
     }
 
-    public function mainSettings($userid, $courseid){
+    public function mainSettings($userid){
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
 
         // returns all possible exercisetypes
-        $URL = $this->lURL.'/DB/exercisetype';
+        $URL = $this->lURL . '/DB/exercisetype';
         $exerciseTypes = Request::custom('GET', $URL, $header, $body);
         $response['exerciseTypes'] = json_decode($exerciseTypes['content'], true);
 
+        $URL = $this->lURL . '/DB/user/user/' . $userid;
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $user = json_decode($answer['content'], true);
+
+        unset($user['courses']);
+
         $this->flag = 1;
-        $response['user'] = $this->userWithCourse($userid, $courseid);
+        $response['user'] = $user;
 
         $this->app->response->setBody(json_encode($response));
     }
