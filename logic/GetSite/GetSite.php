@@ -101,7 +101,7 @@ class LgetSite
 
         //GET UploadHistoryWithoutData
         $this->app->get('/uploadhistory/user/:userid/course/:courseid(/)',
-                        array($this, 'userWithCourse'));
+                        array($this, 'uploadHistory'));
 
         //GET TutorSite
         $this->app->get('/tutor/user/:userid/course/:courseid(/)',
@@ -528,6 +528,9 @@ class LgetSite
 
     }
 
+    /**
+     * @todo Needs improvements - almost the same as uploadHistoryWithoutData.
+     */
     public function uploadHistory($userid, $courseid, $sheetid, $uploaduserid){
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
@@ -566,6 +569,30 @@ class LgetSite
             foreach ($submissions as $submission) {
                 $response['submissionHistory'][] = $submission;
             }
+        }
+
+        $this->flag = 1;
+        $response['user'] = $this->userWithCourse($userid, $courseid);
+
+        $this->app->response->setBody(json_encode($response));
+    }
+
+    public function uploadHistoryWithoutData($userid, $courseid){
+        $body = $this->app->request->getBody();
+        $header = $this->app->request->headers->all();
+
+        // load all users of the course
+        $URL = $this->lURL.'/DB/user/course/'.$courseid;
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $response['users'] = json_decode($answer['content'], true);
+
+        // load all exercisesheets of the course
+        $URL = $this->lURL.'/DB/exercisesheet/course/'.$courseid;
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $response['sheets'] = json_decode($answer['content'], true);
+
+        if(!empty($exercisesheet)) {
+            $exercises = $exercisesheet['exercises'];
         }
 
         $this->flag = 1;
