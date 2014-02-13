@@ -315,6 +315,8 @@ function MakeNavigationElement($user,
 {
     $courses = $user['courses'];
 
+    $isSuperAdmin = ($user['userName'] == 'super-admin');
+
     $courseStatus = $courses[0]['status'];
     $course = $courses[0]['course'];
 
@@ -325,7 +327,8 @@ function MakeNavigationElement($user,
                                    'requiredPrivilege' => $requiredPrivilege,
                                    'courseStatus' => $courseStatus,
                                    'switchDisabled' => $switchDisabled,
-                                   'sites' => PRIVILEGE_LEVEL::$SITES));
+                                   'sites' => PRIVILEGE_LEVEL::$SITES,
+                                   'isSuperAdmin' => $isSuperAdmin));
 
     return $navigationElement;
 }
