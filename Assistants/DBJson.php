@@ -250,10 +250,14 @@ class DBJson
             $key2 = "";
             if (is_array($secKey)){
                 foreach ($secKey as $di){
+                    if (isset($rw[$di.$extension])){
                     $key2 = $key2 . $rw[$di.$extension] . ',';
+                    }
                 }
             } else{
-                $key2 = $rw[$secKey.$extension];
+                if (isset($rw[$secKey.$extension])){
+                    $key2 = $rw[$secKey.$extension];
+                }
             }
             
             if (isset($sec[$key2])){
