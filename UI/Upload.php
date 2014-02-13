@@ -10,8 +10,6 @@
 
 include_once 'include/Boilerplate.php';
 
-$sid = 3;
-
 // load user data from the database
 $URL = $getSiteURI . "/upload/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
 $upload_data = http_get($URL, false);
