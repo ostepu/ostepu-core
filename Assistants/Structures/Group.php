@@ -216,5 +216,62 @@ class Group extends Object implements JsonSerializable
         if ($this->sheetId!==null) $list['sheetId'] = $this->sheetId;
         return $list;  
     }
+    
+    public static function ExtractGroup($data, $singleResult = false)
+    {
+            // generates an assoc array of an user by using a defined list of 
+            // its attributes
+            $leader = DBJson::getObjectsByAttributes($data, 
+                                            User::getDBPrimaryKey(), 
+                                            User::getDBConvert()
+                                            );
+            
+            // generates an assoc array of users by using a defined list of 
+            // its attributes
+            $member = DBJson::getObjectsByAttributes($data, 
+                                            User::getDBPrimaryKey(), 
+                                            User::getDBConvert(),
+                                            '2'
+                                            );
+                                            
+            // generates an assoc array of groups by using a defined list of 
+            // its attributes
+            $groups = DBJson::getObjectsByAttributes($data, 
+                                    Group::getDBPrimaryKey(), 
+                                    Group::getDBConvert());
+                                  
+                                    
+            // concatenates the groups and the associated group leader
+            $res = DBJson::concatObjectListsSingleResult($data, 
+                            $groups,
+                            Group::getDBPrimaryKey(),
+                            Group::getDBConvert()['U_leader'] ,
+                            $leader,
+                            User::getDBPrimaryKey()
+                            );
+                            
+       
+            // concatenates the groups and the associated group member
+            $res = DBJson::concatResultObjectLists($data, 
+                            $res,
+                            Group::getDBPrimaryKey(),
+                            Group::getDBConvert()['U_member'] ,
+                            $member,
+                            User::getDBPrimaryKey(),
+                            '2'
+                            );
+                            
+                          
+            // to reindex
+            $res = array_merge($res);
+            
+            if ($singleResult==true){
+                // only one object as result
+                if (count($res)>0)
+                    $res = $res[0]; 
+            }
+                
+            return $res;
+    }
 }
 ?>

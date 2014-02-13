@@ -453,17 +453,13 @@ class Marking extends Object implements JsonSerializable
  
             // sets the selectedForGroup attribute
             foreach ($submissions as &$submission){
-                if (!isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
-                    if (!isset($submission['id']) || !isset($submission['selectedForGroup'])){
-                        $submission['selectedForGroup'] = (string) 0;
-                    } elseif ($submission['id'] == $submission['selectedForGroup']) {
+                if (isset($submission['selectedForGroup'])){
+                    if (isset($submission['id']) && $submission['id'] == $submission['selectedForGroup']) {
                         $submission['selectedForGroup'] = (string) 1;
                     } else
-                        $submission['selectedForGroup'] = (string) 0;
+                        unset($submission['selectedForGroup']);
                 }
-                else
-                    $submission['selectedForGroup'] = (string) 0;
-            }
+            }   
             
             // generates an assoc array of markings by using a defined list of 
             // its attributes

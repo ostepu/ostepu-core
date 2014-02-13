@@ -352,7 +352,7 @@ class Submission extends Object implements JsonSerializable
         if ($this->comment != null) $this->addInsertData($values, 'S_comment', DBJson::mysql_real_escape_string($this->comment));
         if ($this->accepted != null) $this->addInsertData($values, 'S_accepted', DBJson::mysql_real_escape_string($this->accepted));
         if ($this->date != null) $this->addInsertData($values, 'S_date', DBJson::mysql_real_escape_string($this->date));
-        if ($this->selectedForGroup != null) $this->addInsertData($values, 'S_selected', DBJson::mysql_real_escape_string($this->selectedForGroup));
+        //if ($this->selectedForGroup != null) $this->addInsertData($values, 'S_selected', DBJson::mysql_real_escape_string($this->selectedForGroup));
         if ($this->flag != null) $this->addInsertData($values, 'S_flag', DBJson::mysql_real_escape_string($this->flag));
         if ($this->leaderId != null) $this->addInsertData($values, 'S_leaderId', DBJson::mysql_real_escape_string($this->leaderId));
 
@@ -464,7 +464,17 @@ class Submission extends Object implements JsonSerializable
             // its attributes
             $submissions = DBJson::getObjectsByAttributes($data, 
                                     Submission::getDBPrimaryKey(), 
-                                    Submission::getDBConvert());  
+                                    Submission::getDBConvert()); 
+                                    
+            // sets the selectedForGroup attribute
+            foreach ($submissions as &$submission){
+                if (isset($submission['selectedForGroup'])){
+                    if (isset($submission['id']) && $submission['id'] == $submission['selectedForGroup']) {
+                        $submission['selectedForGroup'] = (string) 1;
+                    } else
+                        unset($submission['selectedForGroup']);
+                }
+            }                                      
                                     
             // concatenates the submissions and the associated files
             $res = DBJson::concatObjectListsSingleResult($data, 

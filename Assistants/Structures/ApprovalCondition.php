@@ -239,5 +239,25 @@ class ApprovalCondition extends Object implements JsonSerializable
         if ($this->percentage!==null) $list['percentage'] = $this->percentage;
         return $list; 
     }
+    
+    public static function ExtractApprovalCondition($data, $singleResult = false)
+    {
+            // generates an assoc array of an approval condition by using a 
+            // defined list of its attributes
+            $res = DBJson::getResultObjectsByAttributes($data, 
+                                        ApprovalCondition::getDBPrimaryKey(), 
+                                        ApprovalCondition::getDBConvert()); 
+            
+            // to reindex
+            $res = array_merge($res);
+            
+            if ($singleResult==true){
+                // only one object as result
+                if (count($res)>0)
+                    $res = $res[0]; 
+            }
+                
+            return $res;
+    }
 }
 ?>
