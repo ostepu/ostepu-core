@@ -268,7 +268,57 @@ class DBAttachment
             $this->_app->response->setBody(Attachment::encodeAttachment($res)); 
     }
 
-
+    
+    public function get($functionName,$sqlFile,$userid,$courseid,$esid,$eid,$suid,$aid,$singleResult=false)
+    {
+        Logger::Log("starts GET " . $functionName,LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            $userid == "" ? true : ctype_digit($userid), 
+                            $courseid == "" ? true : ctype_digit($courseid), 
+                            $esid == "" ? true : ctype_digit($esid), 
+                            $eid == "" ? true : ctype_digit($eid), 
+                            $suid == "" ? true : ctype_digit($suid), 
+                            $aid == "" ? true : ctype_digit($aid));
+                            
+            
+        // starts a query, by using a given file
+        $result = DBRequest::getRoutedSqlFile($this->query, 
+                                        $sqlFile, 
+                                        array("userid" => $userid,
+                                        'courseid' => $courseid,
+                                        'esid' => $esid,
+                                        'eid' => $eid,
+                                        'suid' => $suid,
+                                        'aid' => $aid));
+ 
+        // checks the correctness of the query                                        
+        if ($result['status']>=200 && $result['status']<=299){ 
+            $query = Query::decodeQuery($result['content']);
+            
+            if ($query->getNumRows()>0){
+                $res = Attachment::ExtractAttachment($query->getResponse(),$singleResult); 
+                $this->_app->response->setBody(Attachment::encodeAttachment($res));
+        
+                $this->_app->response->setStatus(200);
+                if (isset($result['headers']['Content-Type']))
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+                
+                $this->_app->stop(); 
+            }
+            else
+                $result['status'] = 409;
+                
+        }
+        
+            Logger::Log("GET " . $functionName . " failed",LogLevel::ERROR);
+            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
+            $this->_app->response->setBody(Attachment::encodeAttachment(new Attachment()));
+            $this->_app->stop();
+    }
+    
+    
     /**
      * Returns an attachment.
      *
@@ -279,61 +329,15 @@ class DBAttachment
      */
     public function getAttachment($aid)
     {     
-        Logger::Log("starts GET GetAttachment",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($aid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetAttachment.sql", 
-                                        array("aid" => $aid));
-        
-        // checks the correctness of the query                                       
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-            
-            // generates an assoc array of an file by using a defined list of 
-            // its attributes
-            $file = DBJson::getObjectsByAttributes($data, 
-                                    File::getDBPrimaryKey(), 
-                                    File::getDBConvert());
-            
-            // generates an assoc array of an attachment by using a defined list of 
-            // its attributes
-            $attachment = DBJson::getObjectsByAttributes($data, 
-                                    Attachment::getDBPrimaryKey(), 
-                                    Attachment::getDBConvert());
-            
-            // concatenates the attachment and the associated file
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                                    $attachment,
-                                    Attachment::getDBPrimaryKey(),
-                                    Attachment::getDBConvert()['F_file'], 
-                                    $file,File::getDBPrimaryKey());              
-            
-            // to reindex
-            $res = array_merge($res);
-            
-            // only one object as result
-            if (count($res)>0)
-                $res = $res[0];
-                
-            $this->_app->response->setBody(Attachment::encodeAttachment($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetAttachment failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Attachment::encodeAttachment(new Attachment()));
-            $this->_app->stop();
-        }
+        $this->get("GetAttachment",
+                "Sql/GetAttachment.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($aid) ? $aid : "",
+                true);
     }
 
 
@@ -345,53 +349,14 @@ class DBAttachment
      */
     public function getAllAttachments()
     {    
-        Logger::Log("starts GET GetAllAttachments",LogLevel::DEBUG);
-        
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetAllAttachments.sql", 
-                                        array());
-        
-        // checks the correctness of the query                                     
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-            
-            // generates an assoc array of files by using a defined list of 
-            // its attributes
-            $files = DBJson::getObjectsByAttributes($data, 
-                                    File::getDBPrimaryKey(), 
-                                    File::getDBConvert());
-            
-            // generates an assoc array of attachments by using a defined list of 
-            // its attributes
-            $attachments = DBJson::getObjectsByAttributes($data, 
-            Attachment::getDBPrimaryKey(), 
-            Attachment::getDBConvert());
-            
-            // concatenates the attachments and the associated files
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                                    $attachments, 
-                                    Attachment::getDBPrimaryKey(), 
-                                    Attachment::getDBConvert()['F_file'], 
-                                    $files,File::getDBPrimaryKey());              
-            
-            // to reindex
-            $res = array_merge($res);
-                
-            $this->_app->response->setBody(Attachment::encodeAttachment($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetAllAttachments failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Attachment::encodeAttachment(new Attachment()));
-            $this->_app->stop();
-        }
+        $this->get("GetAllAttachments",
+                "Sql/GetAllAttachments.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($aid) ? $aid : "");
     }
 
 
@@ -405,56 +370,14 @@ class DBAttachment
      */
     public function getExerciseAttachments($eid)
     {     
-        Logger::Log("starts GET GetExerciseAttachments",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($eid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetExerciseAttachments.sql", 
-                                        array("eid" => $eid));
-        
-        // checks the correctness of the query                                    
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-            
-            // generates an assoc array of files by using a defined list of 
-            // its attributes
-            $files = DBJson::getObjectsByAttributes($data, 
-                                    File::getDBPrimaryKey(), 
-                                    File::getDBConvert());
-            
-            // generates an assoc array of attachments by using a defined list of 
-            // its attributes
-            $attachments = DBJson::getObjectsByAttributes($data, 
-                                    Attachment::getDBPrimaryKey(), 
-                                    Attachment::getDBConvert());
-            
-            // concatenates the attachments and the associated files
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                                $attachments,Attachment::getDBPrimaryKey(), 
-                                Attachment::getDBConvert()['F_file'], 
-                                $files,File::getDBPrimaryKey());              
-           
-            // to reindex
-            $res = array_merge($res);
-                
-            $this->_app->response->setBody(Attachment::encodeAttachment($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetExerciseAttachments failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Attachment::encodeAttachment(new Attachment()));
-            $this->_app->stop();
-        }
+        $this->get("GetExerciseAttachments",
+                "Sql/GetExerciseAttachments.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($aid) ? $aid : "");
     }
 
 
@@ -468,56 +391,14 @@ class DBAttachment
      */
     public function getSheetAttachments($esid)
     {      
-        Logger::Log("starts GET GetSheetAttachments",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($esid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetSheetAttachments.sql", 
-                                        array("esid" => $esid));
-        
-        // checks the correctness of the query                                    
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-            
-            // generates an assoc array of files by using a defined list of 
-            // its attributes
-            $files = DBJson::getObjectsByAttributes($data, 
-                                    File::getDBPrimaryKey(), 
-                                    File::getDBConvert());
-            
-            // generates an assoc array of attachments by using a defined list of 
-            // its attributes
-            $attachments = DBJson::getObjectsByAttributes($data, 
-                                    Attachment::getDBPrimaryKey(), 
-                                    Attachment::getDBConvert());
-            
-            // concatenates the attachments and the associated files
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                        $attachments,Attachment::getDBPrimaryKey(), 
-                        Attachment::getDBConvert()['F_file'], 
-                        $files,File::getDBPrimaryKey());              
-            
-            // to reindex
-            $res = array_merge($res);
-                
-            $this->_app->response->setBody(Attachment::encodeAttachment($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetSheetAttachments failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Attachment::encodeAttachment(new Attachment()));
-            $this->_app->stop();
-        }
+        $this->get("GetSheetAttachments",
+                "Sql/GetSheetAttachments.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($aid) ? $aid : "");
     }
 }
 ?>

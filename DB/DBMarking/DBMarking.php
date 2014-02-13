@@ -250,7 +250,7 @@ class DBMarking
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/DeleteMarking.sql", 
                                         array("mid" => $mid));    
-        
+
         // checks the correctness of the query                          
         if ($result['status']>=200 && $result['status']<=299){
         
@@ -324,7 +324,7 @@ class DBMarking
             $this->_app->response->setBody(Marking::encodeMarking($res)); 
     }
 
-    public function get($functionName,$sqlFile,$userid,$cid,$esid,$eid,$suid,$mid,$sub)
+    public function get($functionName,$sqlFile,$userid,$cid,$esid,$eid,$suid,$mid,$sub,$singleResult=false)
     {
         Logger::Log("starts GET " . $functionName,LogLevel::DEBUG);
         
@@ -356,7 +356,7 @@ class DBMarking
             $query = Query::decodeQuery($result['content']);
             
             if ($query->getNumRows()>0){
-                $res = Marking::ExtractMarking($query->getResponse()); 
+                $res = Marking::ExtractMarking($query->getResponse(), $singleResult); 
                 $this->_app->response->setBody(Marking::encodeMarking($res));
         
                 $this->_app->response->setStatus(200);
@@ -402,12 +402,12 @@ class DBMarking
      */
     public function getMarking($mid,$sub = 1)
     {    
-        $this->get("GetMarking","Sql/GetMarking.sql","","","","","",$mid,$sub);
+        $this->get("GetMarking","Sql/GetMarking.sql","","","","","",$mid,$sub,true);
     }
 
     public function getMarkingNoSubmission($mid,$sub = 0)
     {    
-        $this->getMarking($mid,$sub);
+        $this->getMarking($mid,$sub,true);
     }
     
     /**
@@ -420,12 +420,12 @@ class DBMarking
      */
     public function getSubmissionMarking($suid,$sub = 1)
     {    
-        $this->get("GetSubmissionMarking","Sql/GetSubmissionMarking.sql","","","","",$suid,"",$sub);
+        $this->get("GetSubmissionMarking","Sql/GetSubmissionMarking.sql","","","","",$suid,"",$sub,true);
     }
 
     public function getSubmissionMarkingNoSubmission($suid,$sub = 0)
     {    
-        $this->getSubmissionMarking($suid,$sub);
+        $this->getSubmissionMarking($suid,$sub,true);
     }
     
     /**

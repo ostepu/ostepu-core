@@ -334,7 +334,56 @@ class DBSession
         }
     }
 
-
+    public function get($functionName,$sqlFile,$userid,$courseid,$esid,$eid,$seid,$mid,$singleResult=false, $checkSession=true)
+    {
+        Logger::Log("starts GET " . $functionName,LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        $seid = DBJson::mysql_real_escape_string($seid);
+        DBJson::checkInput($this->_app, 
+                            $userid == "" ? true : ctype_digit($userid), 
+                            $courseid == "" ? true : ctype_digit($courseid), 
+                            $esid == "" ? true : ctype_digit($esid), 
+                            $eid == "" ? true : ctype_digit($eid),
+                            $mid == "" ? true : ctype_digit($mid));
+                            
+            
+        // starts a query, by using a given file
+        $result = DBRequest::getRoutedSqlFile($this->query, 
+                                        $sqlFile, 
+                                        array("userid" => $userid,
+                                        'courseid' => $courseid,
+                                        'esid' => $esid,
+                                        'eid' => $eid,
+                                        'seid' => $seid,
+                                        'mid' => $mid),
+                                        $checkSession);
+ 
+        // checks the correctness of the query                                        
+        if ($result['status']>=200 && $result['status']<=299){ 
+            $query = Query::decodeQuery($result['content']);
+            
+            if ($query->getNumRows()>0){
+                $res = Session::ExtractSession($query->getResponse(),$singleResult); 
+                $this->_app->response->setBody(Session::encodeSession($res));
+        
+                $this->_app->response->setStatus(200);
+                if (isset($result['headers']['Content-Type']))
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+                
+                $this->_app->stop(); 
+            }
+            else
+                $result['status'] = 409;
+                
+        }
+        
+            Logger::Log("GET " . $functionName . " failed",LogLevel::ERROR);
+            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
+            $this->_app->response->setBody(Session::encodeSession(new Session()));
+            $this->_app->stop();
+    }
+    
     /**
      * Returns a session identified by an userId.
      *
@@ -345,44 +394,15 @@ class DBSession
      */
     public function getUserSession($userid)
     {
-        Logger::Log("starts GET GetUserSession",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($userid));
-        
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetUserSession.sql", 
-                                        array("userid" => $userid));        
-        
-        // checks the correctness of the query   
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-
-            $data = $query->getResponse();
-            
-            // generates an assoc array of an session by using a defined list 
-            // of its attributes
-            $session = DBJson::getResultObjectsByAttributes($data, 
-                                        Session::getDBPrimaryKey(), 
-                                        Session::getDBConvert());
-            
-            // only one object as result
-            if (count($session)>0)
-                $session = $session[0];
-            
-            $this->_app->response->setBody(Session::encodeSession($session));
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetUserSession failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Session::encodeSession(new Session()));
-            $this->_app->stop();
-        }
+        $this->get("GetUserSession",
+                "Sql/GetUserSession.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($seid) ? $seid : "",
+                isset($mid) ? $mid : "",
+                true);
     }
 
 
@@ -396,38 +416,15 @@ class DBSession
      */
     public function getSessionUser($seid)
     {
-        Logger::Log("starts GET GetSessionUser",LogLevel::DEBUG);
-        
-        $seid = DBJson::mysql_real_escape_string($seid);
-        
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetSessionUser.sql", 
-                                        array("seid" => $seid));        
-        
-        // checks the correctness of the query   
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-
-            $data = $query->getResponse();
-            
-            // generates an assoc array of a session by using a defined list 
-            // of its attributes
-            $session = DBJson::getResultObjectsByAttributes($data, 
-                                            Session::getDBPrimaryKey(), 
-                                            Session::getDBConvert());
-            
-            $this->_app->response->setBody(Session::encodeSession($session));
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetSessionUser failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Session::encodeSession(new Session()));
-            $this->_app->stop();
-        }
+        $this->get("GetSessionUser",
+                "Sql/GetSessionUser.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($seid) ? $seid : "",
+                isset($mid) ? $mid : "",
+                true);
     }
 
 
@@ -439,36 +436,14 @@ class DBSession
      */
     public function getAllSessions()
     {
-        Logger::Log("starts GET GetAllSessions",LogLevel::DEBUG);
-        
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetAllSessions.sql", 
-                                        array());        
-  
-        // checks the correctness of the query   
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-
-            $data = $query->getResponse();
-            
-            // generates an assoc array of sessions by using a defined list 
-            // of its attributes
-            $session = DBJson::getResultObjectsByAttributes($data, 
-                                        Session::getDBPrimaryKey(), 
-                                        Session::getDBConvert());
-          
-            $this->_app->response->setBody(Session::encodeSession($session));
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetAllSessions failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Session::encodeSession(new Session()));
-            $this->_app->stop();
-        }
+        $this->get("GetAllSessions",
+                "Sql/GetAllSessions.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($seid) ? $seid : "",
+                isset($mid) ? $mid : "");
     }
 }
 ?>

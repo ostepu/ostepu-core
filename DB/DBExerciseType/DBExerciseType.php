@@ -261,7 +261,57 @@ class DBExerciseType
             $this->_app->response->setBody(ExerciseType::encodeExerciseType($res)); 
     }
 
-
+    
+    public function get($functionName,$sqlFile,$userid,$courseid,$esid,$eid,$etid,$mid,$singleResult=false)
+    {
+        Logger::Log("starts GET " . $functionName,LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            $userid == "" ? true : ctype_digit($userid), 
+                            $courseid == "" ? true : ctype_digit($courseid), 
+                            $esid == "" ? true : ctype_digit($esid), 
+                            $eid == "" ? true : ctype_digit($eid), 
+                            $etid == "" ? true : ctype_digit($etid), 
+                            $mid == "" ? true : ctype_digit($mid));
+                            
+            
+        // starts a query, by using a given file
+        $result = DBRequest::getRoutedSqlFile($this->query, 
+                                        $sqlFile, 
+                                        array("userid" => $userid,
+                                        'courseid' => $courseid,
+                                        'esid' => $esid,
+                                        'eid' => $eid,
+                                        'etid' => $etid,
+                                        'mid' => $mid));
+ 
+        // checks the correctness of the query                                        
+        if ($result['status']>=200 && $result['status']<=299){ 
+            $query = Query::decodeQuery($result['content']);
+            
+            if ($query->getNumRows()>0){
+                $res = ExerciseType::ExtractExerciseType($query->getResponse(),$singleResult); 
+                $this->_app->response->setBody(ExerciseType::encodeExerciseType($res));
+        
+                $this->_app->response->setStatus(200);
+                if (isset($result['headers']['Content-Type']))
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+                
+                $this->_app->stop(); 
+            }
+            else
+                $result['status'] = 409;
+                
+        }
+        
+            Logger::Log("GET " . $functionName . " failed",LogLevel::ERROR);
+            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
+            $this->_app->response->setBody(ExerciseType::encodeExerciseType(new ExerciseType()));
+            $this->_app->stop();
+    }
+    
+    
     /**
      * Returns all exercise types.
      *
@@ -270,37 +320,14 @@ class DBExerciseType
      */
     public function getAllExerciseTypes()
     {      
-        Logger::Log("starts GET GetAllExerciseType",LogLevel::DEBUG);
-        
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetAllExerciseTypes.sql", 
-                                        array());
-        
-        // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-            
-            // generates an assoc array of exercise types by using a defined 
-            // list of its attributes
-            $exerciseTypes = DBJson::getResultObjectsByAttributes($data, 
-                                        ExerciseType::getDBPrimaryKey(), 
-                                        ExerciseType::getDBConvert());
- 
-            $this->_app->response->setBody(ExerciseType::encodeExerciseType($exerciseTypes));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetAllExerciseType failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(ExerciseTypes::encodeExerciseType(new ExerciseType()));
-            $this->_app->stop();
-        }
+        $this->get("GetAllExerciseTypes",
+                "Sql/GetAllExerciseTypes.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($etid) ? $etid : "",
+                isset($mid) ? $mid : "");
     }
 
 
@@ -313,49 +340,16 @@ class DBExerciseType
      * @param string $etid The id of the exercise type that should be returned.
      */
     public function getExerciseType($etid)
-    {        
-        Logger::Log("starts GET GetExerciseType",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($etid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetExerciseType.sql", 
-                                        array("etid" => $etid));
-        
-        // checks the correctness of the query                                       
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-            
-            // generates an assoc array of an exercise type by using a defined 
-            // list of its attributes
-            $exerciseType = DBJson::getResultObjectsByAttributes($data, 
-                                        ExerciseType::getDBPrimaryKey(), 
-                                        ExerciseType::getDBConvert()); 
-            
-            // to reindex
-            $exerciseType = array_merge($exerciseType);
-            
-            // only one object as result
-           if (count($exerciseType)>0)
-                $exerciseType = $exerciseType[0];
-                
-            $this->_app->response->setBody(ExerciseType::encodeExerciseType($exerciseType));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetExerciseType failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(ExerciseType::encodeExerciseType(new ExerciseType()));
-            $this->_app->stop();
-        }
+    {      
+        $this->get("GetExerciseType",
+                "Sql/GetExerciseType.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($etid) ? $etid : "",
+                isset($mid) ? $mid : "",
+                true);
     }
 
 }

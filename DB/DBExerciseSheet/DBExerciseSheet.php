@@ -268,7 +268,56 @@ class DBExerciseSheet
             $this->_app->response->setBody(ExerciseSheet::encodeExerciseSheet($res)); 
     }
 
-
+    
+    public function getUrl($functionName,$sqlFile,$userid,$courseid,$esid,$eid,$fileid,$hash,$singleResult=false)
+    {
+        Logger::Log("starts GET " . $functionName,LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        $hash = DBJson::mysql_real_escape_string($hash);
+        DBJson::checkInput($this->_app, 
+                            $userid == "" ? true : ctype_digit($userid), 
+                            $courseid == "" ? true : ctype_digit($courseid), 
+                            $esid == "" ? true : ctype_digit($esid), 
+                            $eid == "" ? true : ctype_digit($eid), 
+                            $fileid == "" ? true : ctype_digit($fileid));
+                            
+            
+        // starts a query, by using a given file
+        $result = DBRequest::getRoutedSqlFile($this->query, 
+                                        $sqlFile, 
+                                        array("userid" => $userid,
+                                        'courseid' => $courseid,
+                                        'esid' => $esid,
+                                        'eid' => $eid,
+                                        'fileid' => $fileid,
+                                        'hash' => $hash));
+ 
+        // checks the correctness of the query                                        
+        if ($result['status']>=200 && $result['status']<=299){ 
+            $query = Query::decodeQuery($result['content']);
+            
+            if ($query->getNumRows()>0){
+                $res = File::ExtractFile($query->getResponse(),$singleResult); 
+                $this->_app->response->setBody(File::encodeFile($res));
+        
+                $this->_app->response->setStatus(200);
+                if (isset($result['headers']['Content-Type']))
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+                
+                $this->_app->stop(); 
+            }
+            else
+                $result['status'] = 409;
+                
+        }
+        
+            Logger::Log("GET " . $functionName . " failed",LogLevel::ERROR);
+            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
+            $this->_app->response->setBody(File::encodeFile(new File()));
+            $this->_app->stop();
+    }
+    
     /**
      * Returns the URL to a given exercise sheet.
      *
@@ -278,45 +327,16 @@ class DBExerciseSheet
      * @param int $esid The id of the exercise sheet the returned URL belongs to.
      */
     public function getExerciseSheetURL($esid)
-    {     
-        Logger::Log("starts GET GetExerciseSheetURL",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($esid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetExerciseSheetURL.sql", 
-                                        array("esid" => $esid));        
-
-        // checks the correctness of the query                                
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-
-            $data = $query->getResponse();
-            
-            // generates an assoc array of an file by using a defined 
-            // list of its attributes
-            $exerciseSheetFile = DBJson::getResultObjectsByAttributes($data, 
-                                                        File::getDBPrimaryKey(), 
-                                                        File::getDBConvert());
-            
-            // only one object as result
-            if (count($exerciseSheetFile)>0)
-                $exerciseSheetFile = $exerciseSheetFile[0];
-            
-            $this->_app->response->setBody(File::encodeFile($exerciseSheetFile));
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetExerciseSheetURL failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(File::encodeExerciseSheet(new File()));
-            $this->_app->stop();
-        }
+    {  
+        $this->getUrl("GetExerciseSheetURL",
+                "Sql/GetExerciseSheetURL.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($fileid) ? $fileid : "",
+                isset($hash) ? $hash : "",
+                true);
     }
 
 
@@ -329,38 +349,15 @@ class DBExerciseSheet
      * @param int $courseid The id of the course.
      */
     public function getCourseSheetURLs($courseid)
-    {     
-        Logger::Log("starts GET GetCourseSheetURLs",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($courseid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetCourseSheetURLs.sql", 
-                                        array("courseid" => $courseid));        
-
-        // checks the correctness of the query                             
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-
-            $data = $query->getResponse();
-            
-            // generates an assoc array of files by using a defined list of its attributes
-            $exerciseSheetFiles = DBJson::getResultObjectsByAttributes($data, File::getDBPrimaryKey(), File::getDBConvert());
-            
-            $this->_app->response->setBody(File::encodeFile($exerciseSheetFiles));
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetCourseSheetURLs failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(File::encodeFile(new File()));
-            $this->_app->stop();
-        }
+    {    
+        $this->getUrl("GetCourseSheetURLs",
+                "Sql/GetCourseSheetURLs.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($fileid) ? $fileid : "",
+                isset($hash) ? $hash : "");
     }
 
 
@@ -377,7 +374,7 @@ class DBExerciseSheet
         Logger::Log("starts GET GetExerciseSheet",LogLevel::DEBUG);  
                             
         if (count($esid)<1){
-            Logger::Log("PUT EditExerciseSheet wrong use",LogLevel::ERROR);
+            Logger::Log("GET EditExerciseSheet wrong use",LogLevel::ERROR);
                 $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(ExerciseSheet::encodeExerciseSheet(new ExerciseSheet()));
             $this->_app->stop();
@@ -407,6 +404,8 @@ class DBExerciseSheet
         // checks the correctness of the query    
         if ($result['status']>=200 && $result['status']<=299 && (!isset($result2) || ($result2['status']>=200 && $result2['status']<=299))){
             $query = Query::decodeQuery($result['content']);
+            
+            if ($query->getNumRows()>0){
 
             $data = $query->getResponse();
             
@@ -479,13 +478,19 @@ class DBExerciseSheet
             $this->_app->response->setStatus(200);
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+            $this->_app->stop();
+            
+            } else
+                $result['status'] = 409;
                 
-        } else{
+        }
+        
+        
             Logger::Log("GET GetExerciseSheet failed",LogLevel::ERROR);
                 $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(ExerciseSheet::encodeExerciseSheet(new ExerciseSheet()));
             $this->_app->stop();
-        }
+        
     }
 
 
@@ -530,7 +535,8 @@ class DBExerciseSheet
         // checks the correctness of the query    
         if ($result['status']>=200 && $result['status']<=299 && (!isset($result2) || ($result2['status']>=200 && $result2['status']<=299))){
             $query = Query::decodeQuery($result['content']);
-
+            
+            if ($query->getNumRows()>0){
             $data = $query->getResponse();
             
             // generates an assoc array of an exercise sheet by using a defined list of its attributes
@@ -604,12 +610,17 @@ class DBExerciseSheet
             if (isset($result['headers']['Content-Type']))
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
-        } else{
+            $this->_app->stop();
+            
+            } else
+                $result['status'] = 409;
+                
+        } 
+        
             Logger::Log("GET GetCourseSheets failed",LogLevel::ERROR);
                 $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->response->setBody(ExerciseSheet::encodeExerciseSheet(new ExerciseSheet()));
-            $this->_app->stop();
-        }    
+            $this->_app->stop();  
 
     }
 

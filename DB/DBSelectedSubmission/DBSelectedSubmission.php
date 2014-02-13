@@ -250,7 +250,55 @@ class DBSelectedSubmission
         }
     }
 
-
+    public function get($functionName,$sqlFile,$userid,$courseid,$esid,$eid,$suid,$mid,$singleResult=false)
+    {
+        Logger::Log("starts GET " . $functionName,LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            $userid == "" ? true : ctype_digit($userid), 
+                            $courseid == "" ? true : ctype_digit($courseid), 
+                            $esid == "" ? true : ctype_digit($esid), 
+                            $eid == "" ? true : ctype_digit($eid), 
+                            $suid == "" ? true : ctype_digit($suid), 
+                            $mid == "" ? true : ctype_digit($mid));
+                            
+            
+        // starts a query, by using a given file
+        $result = DBRequest::getRoutedSqlFile($this->query, 
+                                        $sqlFile, 
+                                        array("userid" => $userid,
+                                        'courseid' => $courseid,
+                                        'esid' => $esid,
+                                        'eid' => $eid,
+                                        'suid' => $suid,
+                                        'mid' => $mid));
+ 
+        // checks the correctness of the query                                        
+        if ($result['status']>=200 && $result['status']<=299){ 
+            $query = Query::decodeQuery($result['content']);
+            
+            if ($query->getNumRows()>0){
+                $res = SelectedSubmission::ExtractSelectedSubmission($query->getResponse(),$singleResult); 
+                $this->_app->response->setBody(SelectedSubmission::encodeSelectedSubmission($res));
+        
+                $this->_app->response->setStatus(200);
+                if (isset($result['headers']['Content-Type']))
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+                
+                $this->_app->stop(); 
+            }
+            else
+                $result['status'] = 409;
+                
+        }
+        
+            Logger::Log("GET " . $functionName . " failed",LogLevel::ERROR);
+            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
+            $this->_app->response->setBody(SelectedSubmission::encodeSelectedSubmission(new SelectedSubmission()));
+            $this->_app->stop();
+    }
+    
     /**
      * Returns the submission that should be marked.
      *
@@ -261,41 +309,14 @@ class DBSelectedSubmission
      */
     public function getExerciseSelected($eid)
     {    
-        Logger::Log("starts GET GetExerciseSelected",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($eid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetExerciseSelected.sql", 
-                                        array("eid" => $eid));
-        
-        // checks the correctness of the query                                     
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-            
-            // generates an assoc array of selected entry's by using a defined list of 
-            // its attributes
-            $selected = DBJson::getResultObjectsByAttributes($data, 
-                                    SelectedSubmission::getDBPrimaryKey(), 
-                                    SelectedSubmission::getDBConvert());          
-                
-            $this->_app->response->setBody(SelectedSubmission::encodeSelectedSubmission($selected));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetExerciseSelected failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(SelectedSubmission::encodeSelectedSubmission(new SelectedSubmission()));
-            $this->_app->stop();
-        }
+        $this->get("GetExerciseSelected",
+                "Sql/GetExerciseSelected.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($mid) ? $mid : "");
     } 
 
 
@@ -309,41 +330,14 @@ class DBSelectedSubmission
      */
     public function getSheetSelected($esid)
     {  
-        Logger::Log("starts GET GetSheetSelected",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($esid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetSheetSelected.sql", 
-                                        array("esid" => $esid));
-        
-        // checks the correctness of the query                                     
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-            
-            // generates an assoc array of selected entry's by using a defined list of 
-            // its attributes
-            $selected = DBJson::getResultObjectsByAttributes($data, 
-                                    SelectedSubmission::getDBPrimaryKey(), 
-                                    SelectedSubmission::getDBConvert());          
-                
-            $this->_app->response->setBody(SelectedSubmission::encodeSelectedSubmission($selected));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetSheetSelected failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(SelectedSubmission::encodeSelectedSubmission(new SelectedSubmission()));
-            $this->_app->stop();
-        }
+        $this->get("GetSheetSelected",
+                "Sql/GetSheetSelected.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($mid) ? $mid : "");
     }
 }
 ?>

@@ -263,7 +263,57 @@ class DBApprovalCondition
             $this->_app->response->setBody(ApprovalCondition::encodeApprovalCondition($res)); 
     }
 
-
+    
+    public function get($functionName,$sqlFile,$userid,$courseid,$esid,$eid,$suid,$apid,$singleResult=false)
+    {
+        Logger::Log("starts GET " . $functionName,LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            $userid == "" ? true : ctype_digit($userid), 
+                            $courseid == "" ? true : ctype_digit($courseid), 
+                            $esid == "" ? true : ctype_digit($esid), 
+                            $eid == "" ? true : ctype_digit($eid), 
+                            $suid == "" ? true : ctype_digit($suid), 
+                            $apid == "" ? true : ctype_digit($apid));
+                            
+            
+        // starts a query, by using a given file
+        $result = DBRequest::getRoutedSqlFile($this->query, 
+                                        $sqlFile, 
+                                        array("userid" => $userid,
+                                        'courseid' => $courseid,
+                                        'esid' => $esid,
+                                        'eid' => $eid,
+                                        'suid' => $suid,
+                                        'apid' => $apid));
+ 
+        // checks the correctness of the query                                        
+        if ($result['status']>=200 && $result['status']<=299){ 
+            $query = Query::decodeQuery($result['content']);
+            
+            if ($query->getNumRows()>0){
+                $res = ApprovalCondition::ExtractApprovalCondition($query->getResponse(),$singleResult); 
+                $this->_app->response->setBody(ApprovalCondition::encodeApprovalCondition($res));
+        
+                $this->_app->response->setStatus(200);
+                if (isset($result['headers']['Content-Type']))
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+                
+                $this->_app->stop(); 
+            }
+            else
+                $result['status'] = 409;
+                
+        }
+        
+            Logger::Log("GET " . $functionName . " failed",LogLevel::ERROR);
+            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
+            $this->_app->response->setBody(ApprovalCondition::encodeApprovalCondition(new ApprovalCondition()));
+            $this->_app->stop();
+    }
+    
+    
     /**
      * Returns all minimum requirements for being able to take part in an exam.
      *
@@ -272,36 +322,14 @@ class DBApprovalCondition
      */
     public function getAllApprovalConditions()
     {   
-        Logger::Log("starts GET GetAllApprovalConditions",LogLevel::DEBUG);
-        
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetAllApprovalConditions.sql", 
-                                        array());
-        // checks the correctness of the query                                    
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-            
-            // generates an assoc array of approval conditions by using a 
-            // defined list of its attributes
-            $approvalConditions = DBJson::getResultObjectsByAttributes($data,
-                                        ApprovalCondition::getDBPrimaryKey(), 
-                                        ApprovalCondition::getDBConvert());
- 
-            $this->_app->response->setBody(ApprovalCondition::encodeApprovalCondition($approvalConditions));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetAllApprovalConditions failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(ApprovalCondition::encodeApprovalCondition(new ApprovalCondition()));
-            $this->_app->stop();
-        }
+         $this->get("GetAllApprovalConditions",
+                "Sql/GetAllApprovalConditions.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($apid) ? $apid : "");
     }
 
 
@@ -315,48 +343,15 @@ class DBApprovalCondition
      */
     public function getApprovalCondition($apid)
     {     
-        Logger::Log("starts GET GetApprovalCondition",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($apid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetApprovalCondition.sql", 
-                                        array("apid" => $apid));
-        
-        // checks the correctness of the query
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-            
-            // generates an assoc array of an approval condition by using a 
-            // defined list of its attributes
-            $approvalCondition = DBJson::getResultObjectsByAttributes($data, 
-                                        ApprovalCondition::getDBPrimaryKey(), 
-                                        ApprovalCondition::getDBConvert()); 
-            
-            // to reindex
-            $approvalCondition = array_merge($approvalCondition);
-            
-            // only one object as result
-            if (count($approvalCondition)>0)
-                $approvalCondition = $approvalCondition[0];
-                
-            $this->_app->response->setBody(ApprovalCondition::encodeApprovalCondition($approvalCondition));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetApprovalCondition failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(ApprovalCondition::encodeApprovalCondition(new ApprovalCondition()));
-            $this->_app->stop();
-        }
+         $this->get("GetApprovalCondition",
+                "Sql/GetApprovalCondition.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($apid) ? $apid : "",
+                true);
     }
 
 
@@ -371,44 +366,14 @@ class DBApprovalCondition
      */
     public function getCourseApprovalConditions($courseid)
     {      
-        Logger::Log("starts GET GetCourseApprovalConditions",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($courseid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetCourseApprovalConditions.sql", 
-                                        array("courseid" => $courseid));
-        
-        // checks the correctness of the query                                  
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-            
-            // generates an assoc array of approval conditions by using a 
-            // defined list of its attributes
-            $approvalConditions = DBJson::getResultObjectsByAttributes($data, 
-                                        ApprovalCondition::getDBPrimaryKey(), 
-                                        ApprovalCondition::getDBConvert()); 
-            
-            // to reindex
-            $approvalCondition = array_merge($approvalConditions);
-                
-            $this->_app->response->setBody(ApprovalCondition::encodeApprovalCondition($approvalConditions));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetCourseApprovalConditions failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(ApprovalCondition::encodeApprovalCondition(new ApprovalCondition()));
-            $this->_app->stop();
-        }
+         $this->get("getCourseApprovalConditions",
+                "Sql/getCourseApprovalConditions.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($apid) ? $apid : "");
     }
 }
 ?>

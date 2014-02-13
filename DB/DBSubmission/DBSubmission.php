@@ -147,6 +147,10 @@ class DBSubmission
          // GET GetSubmission 
         $this->_app->get('/' . $this->getPrefix() . '(/submission)/:suid(/)',
                         array($this,'getSubmission'));  
+                        
+         // GET GetCourseSubmissions
+        $this->_app->get('/' . $this->getPrefix() . '/course/:courseid(/)',
+                        array($this,'getCourseSubmissions'));  
               
         // starts slim only if the right prefix was received
         if (strpos ($this->_app->request->getResourceUri(),'/' . 
@@ -171,7 +175,7 @@ class DBSubmission
         $this->get("GetExerciseSubmissions",
                 "Sql/GetExerciseSubmissions.sql",
                 isset($userid) ? $userid : "",
-                isset($cid) ? $cid : "",
+                isset($courseid) ? $courseid : "",
                 isset($esid) ? $esid : "",
                 isset($eid) ? $eid : "",
                 isset($suid) ? $suid : "",
@@ -248,7 +252,7 @@ class DBSubmission
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/DeleteSubmission.sql", 
                                         array("suid" => $suid));    
-        
+
         // checks the correctness of the query                          
         if ($result['status']>=200 && $result['status']<=299){
         
@@ -321,14 +325,14 @@ class DBSubmission
             $this->_app->response->setBody(Submission::encodeSubmission($res)); 
     }
 
-    public function get($functionName,$sqlFile,$userid,$cid,$esid,$eid,$suid,$mid)
+    public function get($functionName,$sqlFile,$userid,$courseid,$esid,$eid,$suid,$mid,$singleResult=false)
     {
         Logger::Log("starts GET " . $functionName,LogLevel::DEBUG);
         
         // checks whether incoming data has the correct data type
         DBJson::checkInput($this->_app, 
                             $userid == "" ? true : ctype_digit($userid), 
-                            $cid == "" ? true : ctype_digit($cid), 
+                            $courseid == "" ? true : ctype_digit($courseid), 
                             $esid == "" ? true : ctype_digit($esid), 
                             $eid == "" ? true : ctype_digit($eid), 
                             $suid == "" ? true : ctype_digit($suid), 
@@ -339,7 +343,7 @@ class DBSubmission
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         $sqlFile, 
                                         array("userid" => $userid,
-                                        'cid' => $cid,
+                                        'courseid' => $courseid,
                                         'esid' => $esid,
                                         'eid' => $eid,
                                         'suid' => $suid,
@@ -350,7 +354,7 @@ class DBSubmission
             $query = Query::decodeQuery($result['content']);
             
             if ($query->getNumRows()>0){
-                $res = Submission::ExtractSubmission($query->getResponse()); 
+                $res = Submission::ExtractSubmission($query->getResponse(),$singleResult); 
                 $this->_app->response->setBody(Submission::encodeSubmission($res));
         
                 $this->_app->response->setStatus(200);
@@ -381,7 +385,7 @@ class DBSubmission
         $this->get("GetAllSubmissions",
                 "Sql/GetAllSubmissions.sql",
                 isset($userid) ? $userid : "",
-                isset($cid) ? $cid : "",
+                isset($courseid) ? $courseid : "",
                 isset($esid) ? $esid : "",
                 isset($eid) ? $eid : "",
                 isset($suid) ? $suid : "",
@@ -404,7 +408,7 @@ class DBSubmission
         $this->get("GetGroupSubmissions",
                 "Sql/GetGroupSubmissions.sql",
                 isset($userid) ? $userid : "",
-                isset($cid) ? $cid : "",
+                isset($courseid) ? $courseid : "",
                 isset($esid) ? $esid : "",
                 isset($eid) ? $eid : "",
                 isset($suid) ? $suid : "",
@@ -427,7 +431,7 @@ class DBSubmission
         $this->get("GetGroupSelectedSubmissions",
                 "Sql/GetGroupSelectedSubmissions.sql",
                 isset($userid) ? $userid : "",
-                isset($cid) ? $cid : "",
+                isset($courseid) ? $courseid : "",
                 isset($esid) ? $esid : "",
                 isset($eid) ? $eid : "",
                 isset($suid) ? $suid : "",
@@ -450,7 +454,7 @@ class DBSubmission
         $this->get("GetGroupExerciseSubmissions",
                 "Sql/GetGroupExerciseSubmissions.sql",
                 isset($userid) ? $userid : "",
-                isset($cid) ? $cid : "",
+                isset($courseid) ? $courseid : "",
                 isset($esid) ? $esid : "",
                 isset($eid) ? $eid : "",
                 isset($suid) ? $suid : "",
@@ -473,7 +477,7 @@ class DBSubmission
         $this->get("GetGroupSelectedExerciseSubmissions",
                 "Sql/GetGroupSelectedExerciseSubmissions.sql",
                 isset($userid) ? $userid : "",
-                isset($cid) ? $cid : "",
+                isset($courseid) ? $courseid : "",
                 isset($esid) ? $esid : "",
                 isset($eid) ? $eid : "",
                 isset($suid) ? $suid : "",
@@ -494,11 +498,12 @@ class DBSubmission
         $this->get("GetSubmission",
                 "Sql/GetSubmission.sql",
                 isset($userid) ? $userid : "",
-                isset($cid) ? $cid : "",
+                isset($courseid) ? $courseid : "",
                 isset($esid) ? $esid : "",
                 isset($eid) ? $eid : "",
                 isset($suid) ? $suid : "",
-                isset($mid) ? $mid : "");
+                isset($mid) ? $mid : "",
+                true);
     } 
 
 
@@ -516,7 +521,7 @@ class DBSubmission
         $this->get("GetSheetSubmissions",
                 "Sql/GetSheetSubmissions.sql",
                 isset($userid) ? $userid : "",
-                isset($cid) ? $cid : "",
+                isset($courseid) ? $courseid : "",
                 isset($esid) ? $esid : "",
                 isset($eid) ? $eid : "",
                 isset($suid) ? $suid : "",
@@ -538,7 +543,7 @@ class DBSubmission
         $this->get("GetSelectedSheetSubmissions",
                 "Sql/GetSelectedSheetSubmissions.sql",
                 isset($userid) ? $userid : "",
-                isset($cid) ? $cid : "",
+                isset($courseid) ? $courseid : "",
                 isset($esid) ? $esid : "",
                 isset($eid) ? $eid : "",
                 isset($suid) ? $suid : "",
@@ -560,7 +565,7 @@ class DBSubmission
         $this->get("GetSelectedExerciseSubmissions",
                 "Sql/GetSelectedExerciseSubmissions.sql",
                 isset($userid) ? $userid : "",
-                isset($cid) ? $cid : "",
+                isset($courseid) ? $courseid : "",
                 isset($esid) ? $esid : "",
                 isset($eid) ? $eid : "",
                 isset($suid) ? $suid : "",
@@ -582,11 +587,32 @@ class DBSubmission
         $this->get("GetUserExerciseSubmissions",
                 "Sql/GetUserExerciseSubmissions.sql",
                 isset($userid) ? $userid : "",
-                isset($cid) ? $cid : "",
+                isset($courseid) ? $courseid : "",
                 isset($esid) ? $esid : "",
                 isset($eid) ? $eid : "",
                 isset($suid) ? $suid : "",
                 isset($mid) ? $mid : "");
-    }     
+    }    
+
+    /**
+     * Returns all course submissions (including overwritten ones) of a given course 
+     * of a specific exercise.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /submission/course/$courseid(/).
+     *
+     * @param int $courseid The id of the course.
+     */
+    public function getCourseSubmissions($courseid)
+    { 
+        $this->get("GetCourseSubmissions",
+                "Sql/GetCourseSubmissions.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($mid) ? $mid : "");
+    }   
 }
 ?>

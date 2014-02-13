@@ -248,7 +248,56 @@ class DBExternalId
         }
     }
 
-
+    public function get($functionName,$sqlFile,$userid,$courseid,$esid,$eid,$exid,$mid,$singleResult=false)
+    {
+        Logger::Log("starts GET " . $functionName,LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        $exid = DBJson::mysql_real_escape_string($exid);
+        DBJson::checkInput($this->_app, 
+                            $userid == "" ? true : ctype_digit($userid), 
+                            $courseid == "" ? true : ctype_digit($courseid), 
+                            $esid == "" ? true : ctype_digit($esid), 
+                            $eid == "" ? true : ctype_digit($eid),
+                            $mid == "" ? true : ctype_digit($mid));
+                            
+            
+        // starts a query, by using a given file
+        $result = DBRequest::getRoutedSqlFile($this->query, 
+                                        $sqlFile, 
+                                        array("userid" => $userid,
+                                        'courseid' => $courseid,
+                                        'esid' => $esid,
+                                        'eid' => $eid,
+                                        'exid' => $exid,
+                                        'mid' => $mid));
+ 
+        // checks the correctness of the query                                        
+        if ($result['status']>=200 && $result['status']<=299){ 
+            $query = Query::decodeQuery($result['content']);
+            
+            if ($query->getNumRows()>0){
+                $res = ExternalId::ExtractExternalId($query->getResponse(),$singleResult); 
+                $this->_app->response->setBody(ExternalId::encodeExternalId($res));
+        
+                $this->_app->response->setStatus(200);
+                if (isset($result['headers']['Content-Type']))
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+                
+                $this->_app->stop(); 
+            }
+            else
+                $result['status'] = 409;
+                
+        }
+        
+            Logger::Log("GET " . $functionName . " failed",LogLevel::ERROR);
+            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
+            $this->_app->response->setBody(ExternalId::encodeExternalId(new ExternalId()));
+            $this->_app->stop();
+    }
+    
+    
     /**
      * Returns the alias for an already existing course.
      *
@@ -259,58 +308,15 @@ class DBExternalId
      */
     public function getExternalId($exid)
     {    
-        Logger::Log("starts GET GetExternalId",LogLevel::DEBUG);
-        
-        $exid = DBJson::mysql_real_escape_string($exid);
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetExternalId.sql", 
-                                        array("exid" => $exid));
-       
-        // checks the correctness of the query                                     
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            $data = $query->getResponse();
-            
-            // generates an assoc array of courses by using a defined list of 
-            // its attributes
-            $course = DBJson::getObjectsByAttributes($data, 
-                                    Course::getDBPrimaryKey(), 
-                                    Course::getDBConvert());
-            
-            // generates an assoc array of external IDs by using a defined list of 
-            // its attributes
-            $externalIds = DBJson::getObjectsByAttributes($data, 
-                                    ExternalId::getDBPrimaryKey(), 
-                                    ExternalId::getDBConvert());
-            
-            // concatenates the external IDs and the associated courses
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                        $externalIds,ExternalId::getDBPrimaryKey(), 
-                        ExternalId::getDBConvert()['EX_course'], 
-                        $course,Course::getDBPrimaryKey());              
-      
-            // to reindex
-            $res = array_values($res);
-               
-            // only one object as result
-            // @todo only one object as result
-            /*if (count($res)>1)
-                $res = $res[0];*/
-             
-            $this->_app->response->setBody(ExternalId::encodeExternalId($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                 
-        } else{
-            Logger::Log("GET GetExternalId failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(ExternalId::encodeExternalId(new ExternalId()));
-            $this->_app->stop();
-        }
+            $this->get("GetExternalId",
+                "Sql/GetExternalId.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($exid) ? $exid : "",
+                isset($mid) ? $mid : "",
+                true);  
     }   
 
 
@@ -322,52 +328,14 @@ class DBExternalId
      */
     public function getAllExternalIds()
     {    
-        Logger::Log("starts GET GetAllExternalIds",LogLevel::DEBUG);
-        
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetAllExternalIds.sql", 
-                                        array());
-        
-        // checks the correctness of the query                                    
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-            
-            // generates an assoc array of courses by using a defined list of 
-            // its attributes
-            $course = DBJson::getObjectsByAttributes($data, 
-                                    Course::getDBPrimaryKey(), 
-                                    Course::getDBConvert());
-            
-            // generates an assoc array of external IDs by using a defined list of 
-            // its attributes
-            $externalIds = DBJson::getObjectsByAttributes($data, 
-                                    ExternalId::getDBPrimaryKey(), 
-                                    ExternalId::getDBConvert());
-            
-            // concatenates the external IDs and the associated courses
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                        $externalIds,ExternalId::getDBPrimaryKey(), 
-                        ExternalId::getDBConvert()['EX_course'], 
-                        $course,Course::getDBPrimaryKey());              
-            
-            // to reindex
-            $res = array_values($res);
-            
-            $this->_app->response->setBody(ExternalId::encodeExternalId($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetAllExternalIds failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(ExternalId::encodeExternalId(new ExternalId()));
-            $this->_app->stop();
-        }
+            $this->get("GetAllExternalIds",
+                "Sql/GetAllExternalIds.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($exid) ? $exid : "",
+                isset($mid) ? $mid : "");
     }    
 
 
@@ -381,56 +349,14 @@ class DBExternalId
      */
     public function getCourseExternalIds($courseid)
     {    
-        Logger::Log("starts GET getCourseExternalIds",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($courseid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetCourseExternalIds.sql", 
-                                        array("courseid" => $courseid));
-
-        // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-            
-            // generates an assoc array of a course by using a defined list of 
-            // its attributes
-            $course = DBJson::getObjectsByAttributes($data, 
-                                    Course::getDBPrimaryKey(), 
-                                    Course::getDBConvert());
-           
-            // generates an assoc array of external IDs by using a defined list of 
-            // its attributes
-            $externalIds = DBJson::getObjectsByAttributes($data, 
-                                    ExternalId::getDBPrimaryKey(), 
-                                    ExternalId::getDBConvert());
-            
-            // concatenates the external IDs and the associated course
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $externalIds,ExternalId::getDBPrimaryKey(), 
-                            ExternalId::getDBConvert()['EX_course'], 
-                            $course,Course::getDBPrimaryKey());              
-            
-            // to reindex
-            $res = array_values($res);
-            
-            $this->_app->response->setBody(ExternalId::encodeExternalId($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetExerciseSheet failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(ExternalId::encodeExternalId(new ExternalId()));
-            $this->_app->stop();
-        }
+            $this->get("getCourseExternalIds",
+                "Sql/getCourseExternalIds.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($exid) ? $exid : "",
+                isset($mid) ? $mid : "");
     }
 }
 ?>
