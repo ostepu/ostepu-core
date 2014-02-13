@@ -88,8 +88,8 @@ class LgetSite
                         array($this, 'mainSettings'));
 
         //GET Upload
-        $this->app->get('/upload/user/:userid/course/:courseid(/)',
-                        array($this, 'userWithCourse'));
+        $this->app->get('/upload/user/:userid/course/:courseid/exercisesheet/:sheetid(/)',
+                        array($this, 'upload'));
 
         //GET MarkingTool
         $this->app->get('/markingtool/user/:userid/course/:courseid/exercisesheet/:sheetid(/)',
@@ -550,6 +550,56 @@ class LgetSite
                 $response['submissionHistory'][] = $submission;
             }
         }
+
+        $this->flag = 1;
+        $response['user'] = $this->userWithCourse($userid, $courseid);
+
+        $this->app->response->setBody(json_encode($response));
+    }
+
+    // receives a set of submissions and returns the selected submission only 
+    public function getSelectedSubmission($submissions) {
+        if (!empty($submissions)) {
+            foreach ($submissions as $submission) {
+                if (isset($submission['selectedForGroup'])) {
+                    return $submission;
+                }
+            }
+        }
+    }
+
+    public function upload($userid, $courseid, $sheetid){
+        $body = $this->app->request->getBody();
+        $header = $this->app->request->headers->all();
+
+        // loads all exercises of an exercise sheet
+        $URL = $this->lURL.'/DB/exercisesheet/'.$sheetid.'/exercise/';
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $exercisesheet = json_decode($answer['content'], true);
+
+        $exercises = $exercisesheet['exercises'];
+
+        $exercisesById = array();
+        foreach ($exercises as &$exercise) {
+            $exercisesById[$exercise['id']] = &$exercise;
+        }
+
+        // loads all submissions for every exercise of the exerciseSheet
+        if (!empty($exercises)) {
+            foreach ($exercises as &$exercise) {
+                $URL = $this->lURL.'/DB/submission/user/'.$userid.'/exercise/'.$exercise['id'];
+                $answer = Request::custom('GET', $URL, $header, $body);
+                $submissions = json_decode($answer['content'], true);
+
+                //only adds the selected submissions to the response
+                if (!empty($submissions)) {
+                    $selectedSubmission = $this->getSelectedSubmission($submissions);
+                    $exercisesById[$selectedSubmission['exerciseId']]['selectedSubmission'] = $selectedSubmission;
+                }
+            }
+        }
+
+        $response['exercises'] = $exercises;
 
         $this->flag = 1;
         $response['user'] = $this->userWithCourse($userid, $courseid);
