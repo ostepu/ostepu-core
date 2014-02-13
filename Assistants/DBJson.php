@@ -112,10 +112,17 @@ class DBJson
             $key = "";
             if (is_array($id)){
                 foreach ($id as $di){
-                    $key = $key . $row[$di.$extension] . ',';
+                    if (isset($row[$di.$extension])){
+                        $key = $key . $row[$di.$extension] . ',';
+                    }
                 }
             } else{
+                if (isset($row[$id.$extension])){
                 $key = $row[$id.$extension];
+                }
+            }
+            if ($key==""){
+                continue;
             }
 
             foreach ($attributes as $attrib => $value) {  
@@ -124,6 +131,7 @@ class DBJson
                 }
             }
         }
+
         return $res;
     }
     
@@ -242,10 +250,14 @@ class DBJson
             $key2 = "";
             if (is_array($secKey)){
                 foreach ($secKey as $di){
+                    if (isset($rw[$di.$extension])){
                     $key2 = $key2 . $rw[$di.$extension] . ',';
+                    }
                 }
             } else{
-                $key2 = $rw[$secKey.$extension];
+                if (isset($rw[$secKey.$extension])){
+                    $key2 = $rw[$secKey.$extension];
+                }
             }
             
             if (isset($sec[$key2])){

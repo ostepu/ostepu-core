@@ -72,7 +72,7 @@ class Session extends Object implements JsonSerializable
      *
      * @return an session object
      */
-    public function createSession($userId,$sessionId)
+    public static function createSession($userId,$sessionId)
     {
         return new Session(array('user' => $userId,
         'session' => $sessionId));
@@ -189,6 +189,23 @@ class Session extends Object implements JsonSerializable
         if ($this->user!==null) $list['user'] = $this->user;
         if ($this->session!==null) $list['session'] = $this->session;
         return $list;  
+    }
+    
+    public static function ExtractSession($data, $singleResult = false)
+    {
+            // generates an assoc array of sessions by using a defined list 
+            // of its attributes
+            $res = DBJson::getResultObjectsByAttributes($data, 
+                                        Session::getDBPrimaryKey(), 
+                                        Session::getDBConvert());
+            
+            if ($singleResult==true){
+                // only one object as result
+                if (count($res)>0)
+                    $res = $res[0]; 
+            }
+                
+            return $res;
     }
 }
 ?>

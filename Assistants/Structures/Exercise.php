@@ -240,7 +240,7 @@ class Exercise extends Object implements JsonSerializable
      *
      * @return an exercise object
      */
-    public function createExercise($exerciseId,$courseId,$sheetId,
+    public static function createExercise($exerciseId,$courseId,$sheetId,
                                     $maxPoints,$type,$link,$bonus)
     {
         return new Exercise(array('id' => $exerciseId,
@@ -372,13 +372,64 @@ class Exercise extends Object implements JsonSerializable
         if ($this->id!==null) $list['id'] = $this->id;
         if ($this->courseId!==null) $list['courseId'] = $this->courseId;
         if ($this->sheetId!==null) $list['sheetId'] = $this->sheetId;
-        if ($this->maxPoints!==array()) $list['maxPoints'] = $this->maxPoints;
+        if ($this->maxPoints!==null) $list['maxPoints'] = $this->maxPoints;
         if ($this->type!==null) $list['type'] = $this->type;
         if ($this->link!==null) $list['link'] = $this->link;
-        if ($this->submissions!==array()) $list['submissions'] = $this->submissions;
+        if ($this->submissions!==array() && $this->submissions!==null) $list['submissions'] = $this->submissions;
         if ($this->bonus!==null) $list['bonus'] = $this->bonus;
-        if ($this->attachments!==array()) $list['attachments'] = $this->attachments;
+        if ($this->attachments!==array() && $this->attachments!==null) $list['attachments'] = $this->attachments;
         return $list;
+    }
+    
+    public static function ExtractExercise($data, $singleResult = false)
+    {
+            // generates an assoc array of an exercise by using a defined 
+            // list of its attributes
+            $exercise = DBJson::getObjectsByAttributes($data, 
+                                    Exercise::getDBPrimaryKey(), 
+                                    Exercise::getDBConvert());           
+            
+            
+            // generates an assoc array of files by using a defined 
+            // list of its attributes
+            $attachments = DBJson::getObjectsByAttributes($data, 
+                                        File::getDBPrimaryKey(), 
+                                        File::getDBConvert());
+            
+            
+            // generates an assoc array of submissions by using a defined 
+            // list of its attributes
+            $submissions = DBJson::getObjectsByAttributes($data,
+                                    Submission::getDBPrimaryKey(), 
+                                    Submission::getDBConvert(),
+                                    '2');
+                                    
+            // sets the selectedForGroup attribute
+            foreach ($submissions as &$submission){
+                if (isset($submission['selectedForGroup'])){
+                    if (isset($submission['id']) && $submission['id'] == $submission['selectedForGroup']) {
+                        $submission['selectedForGroup'] = (string) 1;
+                    } else
+                        unset($submission['selectedForGroup']);
+                }
+            }        
+            
+            // concatenates the exercise and the associated attachments
+            $res = DBJson::concatObjectListResult($data, $exercise, Exercise::getDBPrimaryKey(),Exercise::getDBConvert()['E_attachments'] ,$attachments,File::getDBPrimaryKey());  
+            
+            // concatenates the exercise and the associated submissions
+            $res = DBJson::concatResultObjectLists($data, $res, Exercise::getDBPrimaryKey(),Exercise::getDBConvert()['E_submissions'] ,$submissions,Submission::getDBPrimaryKey(), '2');
+                   
+            // to reindex
+            $res = array_values($res);
+            
+            if ($singleResult){
+                // only one object as result
+                if (count($res)>0)
+                    $res = $res[0];
+            }
+                
+            return $res;
     }
 }
 ?>

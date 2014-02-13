@@ -92,7 +92,7 @@ class Backup extends Object implements JsonSerializable
      *
      * @return an backup object
      */
-    public function createBackup($backupId,$date,$fileId)
+    public static function createBackup($backupId,$date,$fileId)
     {
         return new Backup(array('id' => $backupId,
         'date' => $date, 

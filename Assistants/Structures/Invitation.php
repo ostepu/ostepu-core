@@ -92,7 +92,7 @@ class Invitation extends Object implements JsonSerializable
      *
      * @return an invitation object
      */
-    public function createInvitation($leaderId,$memberId,$sheetId)
+    public static function createInvitation($leaderId,$memberId,$sheetId)
     {
         return new Invitation(array('sheet' => $sheetId,
         'leader' => User::createUser($leaderId,null,null,null,null,
@@ -213,6 +213,56 @@ class Invitation extends Object implements JsonSerializable
         if ($this->leader!==null) $list['leader'] = $this->leader;
         if ($this->sheet!==null) $list['sheet'] = $this->sheet;
         return $list;  
+    }
+    
+    public static function ExtractInvitation($data, $singleResult = false)
+    {
+            // generates an assoc array of users by using a defined list of 
+            // its attributes
+            $leader = DBJson::getObjectsByAttributes($data, 
+                                            User::getDBPrimaryKey(), 
+                                            User::getDBConvert());
+            
+            // generates an assoc array of users by using a defined list of 
+            // its attributes
+            $member = DBJson::getObjectsByAttributes($data, 
+                                            User::getDBPrimaryKey(), 
+                                            User::getDBConvert(), 
+                                            '2');
+                                            
+            // generates an assoc array of invitations by using a defined list of 
+            // its attributes
+            $invitations = DBJson::getObjectsByAttributes($data, 
+                                    Invitation::getDBPrimaryKey(), 
+                                    Invitation::getDBConvert());  
+                                    
+            // concatenates the invitations and the associated invitation leader
+            $res = DBJson::concatObjectListsSingleResult($data, 
+                            $invitations,
+                            Invitation::getDBPrimaryKey(),
+                            Invitation::getDBConvert()['U_leader'] ,
+                            $leader,
+                            User::getDBPrimaryKey());
+       
+            // concatenates the invitations and the associated invitation member
+            $res = DBJson::concatObjectListsSingleResult($data, 
+                            $res,
+                            Invitation::getDBPrimaryKey(),
+                            Invitation::getDBConvert()['U_member'] ,
+                            $member,
+                            User::getDBPrimaryKey(),
+                            '2');
+                            
+            // to reindex
+            $res = array_values($res); 
+            
+            if ($singleResult==true){
+                // only one object as result
+                if (count($res)>0)
+                    $res = $res[0]; 
+            }
+                
+            return $res;
     }
 }
 ?>
