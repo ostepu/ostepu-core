@@ -308,19 +308,9 @@ class LgetSite
         $URL = $this->lURL.'/DB/coursestatus/course/'.$courseid.'/user/'.$userid;
         $answer = Request::custom('GET', $URL, $header, $body);
         $user = json_decode($answer['content'], true);
-        $response = array('id' =>  $user['id'],
-                          'userName'=>  $user['userName'],
-                          'firstName'=>  $user['firstName'],
-                          'lastName'=>  $user['lastName'],
-                          'flag'=>  $user['flag'],
-                          'email'=>  $user['email'],
-                          'courses'=>  array());
-        foreach ($user['courses'] as $course){
-            $newCourse = array('status' => $course['status'],
-                               'statusName' => $this->getStatusName($course['status']),
-                               'course' => $course['course']);
-           $response['courses'][] = $newCourse;
-        }
+
+        $response = $user;
+
         if ($this->flag == 0){
             $this->app->response->setBody(json_encode($response));
         } else{
