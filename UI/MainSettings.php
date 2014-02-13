@@ -13,45 +13,65 @@
  * @todo add function for creating users
  * @todo add function for deleting users
  * @todo create a navigation bar for super admins
- * @todo make it easier to check if all required fields are set
+ * @todo unset $_POST on success
  */
 
 include_once 'include/Boilerplate.php';
 include_once '../Assistants/Structures.php';
+include_once 'include/FormEvaluator.php';
 
 $notifications = array();
 
 if (isset($_POST['action'])) {
     // creates a new course
     if ($_POST['action'] == "CreateCourse") {
-        if(isset($_POST['courseName'])
-            && ($_POST['courseName'] != '')
-            && isset($_POST['semester'])
-            && isset($_POST['defaultGroupSize'])
-            && ($_POST['defaultGroupSize'] != '')
-            && isset($_POST['exerciseTypes'])) {
+
+        $f = new FormEvaluator($_POST);
+        $f->checkStringForKey('courseName',
+                              FormEvaluator::REQUIRED,
+                              true,
+                              'warning',
+                              'Ungültiger Kursname.');
+
+        $f->checkStringForKey('semester',
+                              FormEvaluator::REQUIRED,
+                              true,
+                              'warning',
+                              'Ungültiges Semester.');
+
+        $f->checkNumberForKey('defaultGroupSize',
+                              FormEvaluator::REQUIRED,
+                              'warning',
+                              'Ungültige Gruppengröße.');
+
+        $f->checkArrayForKey('exerciseTypes',
+                             FormEvaluator::REQUIRED,
+                             true,
+                             'warning',
+                             'Ungültige Aufgabentypen.');
+
+        if($f->evaluate(true)) {
 
             // bool which is true if any error occured
             $RequestError = false;
 
+            $foundValues = $f->foundValues;
+
             // extracts the php POST data
-            $courseName = cleanInput($_POST['courseName']);
-            $semester = cleanInput($_POST['semester']);
-            $defaultGroupSize = cleanInput($_POST['defaultGroupSize']);
-            $exerciseTypes = cleanInput($_POST['exerciseTypes']);
+            $courseName = $foundValues['courseName'];
+            $semester = $foundValues['semester'];
+            $defaultGroupSize = $foundValues['defaultGroupSize'];
+            $exerciseTypes = $foundValues['exerciseTypes'];
 
             // creates a new course
             $newCourse = Course::createCourse(null, $courseName, $semester, $defaultGroupSize);
             $newCourseSettings = Course::encodeCourse($newCourse);
             $URI = $databaseURI . "/course";
-            $newCourseId = http_post_data($URI, $newCourseSettings, true, $messageNewCourse);
-            /**
-             * @todo check for errors here!
-             */
+            $newCourse = http_post_data($URI, $newCourseSettings, true, $messageNewCourse);
 
             // extracts the id of the new course
-            $newCourseId = json_decode($newCourseId, true);
-            $newCourseId = $newCourseId['id'];
+            $newCourse = json_decode($newCourse, true);
+            $newCourseId = $newCourse['id'];
 
             // creates a new approvalCondition for every selected exerciseType
             foreach ($exerciseTypes as $exerciseType) {
@@ -79,61 +99,61 @@ if (isset($_POST['action'])) {
                                                     "Beim Speichern ist ein Fehler aufgetreten!");
             }
         } else {
-            if (!isset($_POST['courseName'])
-                 || ($_POST['courseName'] == '') ) {
-                $notifications[] = MakeNotification("warning",
-                                                    "Bitte einen Kurs Namen angeben.");
-            }
-
-            if (!isset($_POST['semester'])) {
-                $notifications[] = MakeNotification("warning",
-                                                    "Bitte eine Semester angeben.");
-            }
-
-            if (!isset($_POST['defaultGroupSize'])
-                || ($_POST['defaultGroupSize'] == '')) {
-                $notifications[] = MakeNotification("warning",
-                                                    "Bitte eine standard Gruppengröße angeben.");
-            }
-
-            if (!isset($_POST['exerciseTypes'])) {
-                $notifications[] = MakeNotification("warning",
-                                                    "Bitte Aufgabentypen wählen.");
-            }
+            $notifications = $notifications + $f->notifications;
         }
     }
 
     // creates a new user
     if ($_POST['action'] == "CreateUser") {
-        if(isset($_POST['lastName'])
-            && ($_POST['lastName'] != '')
-            && isset($_POST['firstName'])
-            && ($_POST['firstName'] != '')
-            && isset($_POST['email'])
-            && ($_POST['email'] != '')
-            && isset($_POST['userName'])
-            && ($_POST['userName'] != '')
-            && isset($_POST['password'])
-            && ($_POST['password'] != '')
-            && isset($_POST['passwordRepeat'])
-            && ($_POST['passwordRepeat'] != '')) {
+        $f = new FormEvaluator($_POST);
+        $f->checkStringForKey('lastName',
+                              FormEvaluator::REQUIRED,
+                              true,
+                              'warning',
+                              'Ungüliger Nachname.');
 
-            $lastName = cleanInput($_POST['lastName']);
-            $firstName = cleanInput($_POST['firstName']);
-            $email = cleanInput($_POST['email']);
-            $userName = cleanInput($_POST['userName']);
+        $f->checkStringForKey('firstName',
+                              FormEvaluator::REQUIRED,
+                              true,
+                              'warning',
+                              'Ungüliger Vorname.');
 
-            $password = cleanInput($_POST['password']);
-            $passwordRepeat = cleanInput($_POST['passwordRepeat']);
+        $f->checkStringForKey('email',
+                              FormEvaluator::REQUIRED,
+                              true,
+                              'warning',
+                              'Ungülige E-Mail-Adresse.');
+
+        $f->checkStringForKey('password',
+                              FormEvaluator::REQUIRED,
+                              true,
+                              'warning',
+                              'Ungüliges Passwort.');
+
+        $f->checkStringForKey('passwordRepeat',
+                              FormEvaluator::REQUIRED,
+                              true,
+                              'warning',
+                              'Ungüliges Passwort.');
+
+        if($f->evaluate(true)) {
+
+            $foundValues = $f->foundValues;
+
+            $lastName = $foundValues['lastName'];
+            $firstName = $foundValues['firstName'];
+            $email = $foundValues['email'];
+            $userName = $foundValues['userName'];
+
+            $password = $foundValues['password'];
+            $passwordRepeat = $foundValues['passwordRepeat'];
 
             // both passwords are equal
             if($password == $passwordRepeat) {
 
                 $salt = $auth->generateSalt();
                 $passwordHash = $auth->hashPassword($password, $salt);
-                /**
-                * @todo Add the user's title.
-                */
+
                 $newUser = User::createUser(null,
                                             $userName,
                                             $email,
@@ -144,13 +164,14 @@ if (isset($_POST['action'])) {
                                             $passwordHash,
                                             $salt,
                                             0);
+
                 $newUserSettings = User::encodeUser($newUser);
 
                 $URI = $databaseURI . "/user";
                 http_post_data($URI, $newUserSettings, true, $message);
 
                 if ($message == "201") {
-                     $notifications[] = MakeNotification("success",
+                    $notifications[] = MakeNotification("success",
                                                          "Der User wurde erstellt!");
                 }
             } else {
@@ -158,37 +179,7 @@ if (isset($_POST['action'])) {
                                                     "Die Passwörter stimmen nicht überein!");
             }
         } else {
-            if (!isset($_POST['lastName'])
-                || $_POST['lastName'] == '') {
-                $notifications[] = MakeNotification("warning",
-                                                  "Ungültiger Nachname.");
-            }
-
-            if (!isset($_POST['firstName'])
-                || $_POST['firstName'] == '') {
-                $notifications[] = MakeNotification("warning",
-                                                    "Ungültiger Nachname.");
-            }
-
-            if (!isset($_POST['userName'])
-                || $_POST['userName'] == '') {
-                $notifications[] = MakeNotification("warning",
-                                                    "Ungültiges Login.");
-            }
-
-            if (!isset($_POST['email'])
-                || $_POST['email'] == '') {
-                $notifications[] = MakeNotification("warning",
-                                                    "Ungültige E-Mail-Adresse.");
-            }
-
-            if (!isset($_POST['password'])
-                || $_POST['password'] == ''
-                || !isset($_POST['passwordRepeat'])
-                || $_POST['passwordRepeat'] == '') {
-                $notifications[] = MakeNotification("warning",
-                                                    "Ungültiges Passwort.");
-            }
+            $notifications = $notifications + $f->notifications;
         }
     }
 }
