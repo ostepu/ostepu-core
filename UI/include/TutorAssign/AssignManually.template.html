@@ -27,10 +27,12 @@
                             ?>
                         </div>
                         <div class="checkbox-container">
-                            <?php foreach ($tutorAssignment['submissions'] as $submissionID):
-                            print '<input type="checkbox" name="submissionIDs[]" value="';
-                            print $submissionID . '"/>';
-                            print $submissionID;
+                            <?php foreach ($tutorAssignment['submissions'] as $submission):
+                            print '<input type="checkbox" name="';
+                            print $submission['id'];
+                            print '" value="';
+                            print $submission['id'] . '"/>';
+                            print $submission['id'];
                             print '<br />';
                             endforeach;
                             ?>
