@@ -1,27 +1,40 @@
+<input type="hidden" name="action" value="ShowUploadHistory">
 <div class="content-element">
     <div class="content-header">
         <div class="content-title left uppercase">Einsendungsverlauf ansehen</div>
-        <button class="text-button right bold info-color">
-            Einsendungen anzeigen
-        </button>
+        <div class="info-color bold right">
+            <button class="text-button info-color bold right">Einsendungen anzeigen</button>
+        </div>
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body left">
             <label class="form-field left label bold" for="Student">Studenten auswählen:</label>
-            <select class="form-field left text-input" name="userID" id="Student">
-                <option value="">Bitte wählen</option>
-                <option value="1" >Ralf Busch</option>
-                <option value="2" >Felix Schmidt</option>
-                <option value="3" >Florian Lücke</option>
+            <select class="form-field left text-input" name="userID" id="Student" size="10">
+                <?php
+                    foreach ($users as $user) {
+                        print '<option value="';
+                        print $user['id'] . '"';
+                        print $user['id'] == $uploadUserID ? ' selected="selected"' : NULL;
+                        print '>';
+                        print $user['firstName'] . " " . $user['lastName'];
+                        print '</option>';
+                    }
+                ?>
             </select>
 
             <label class="form-field left label bold new-line" for="ExerciseSheet">Serie auswählen:</label>
             <select class="form-field left text-input" name="sheetID" id="ExerciseSheet">
-                <option value="">Bitte wählen</option>
-                <option value="1" >1</option>
-                <option value="2" >2</option>
-                <option value="3" >3</option>
+                <?php
+                    foreach ($sheets as $sheet) {
+                        print '<option value="';
+                        print $sheet['id'] . '"';
+                        print $sheet['id'] == $sheetID ? ' selected="selected"' : NULL;
+                        print '>';
+                        print $sheet['sheetName'];
+                        print '</option>';
+                    }
+                ?>
             </select>
         </div>
     </div> <!-- end: content-body -->
