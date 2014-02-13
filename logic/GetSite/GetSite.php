@@ -84,7 +84,7 @@ class LgetSite
                         array($this, 'courseManagement'));
 
         //GET MainSettings
-        $this->app->get('/mainsettings/user/:userid/course/:courseid(/)',
+        $this->app->get('/mainsettings/user/:userid',
                         array($this, 'mainSettings'));
 
         //GET Upload
@@ -312,19 +312,9 @@ class LgetSite
         $URL = $this->lURL.'/DB/coursestatus/course/'.$courseid.'/user/'.$userid;
         $answer = Request::custom('GET', $URL, $header, $body);
         $user = json_decode($answer['content'], true);
-        $response = array('id' =>  $user['id'],
-                          'userName'=>  $user['userName'],
-                          'firstName'=>  $user['firstName'],
-                          'lastName'=>  $user['lastName'],
-                          'flag'=>  $user['flag'],
-                          'email'=>  $user['email'],
-                          'courses'=>  array());
-        foreach ($user['courses'] as $course){
-            $newCourse = array('status' => $course['status'],
-                               'statusName' => $this->getStatusName($course['status']),
-                               'course' => $course['course']);
-           $response['courses'][] = $newCourse;
-        }
+
+        $response = $user;
+
         if ($this->flag == 0){
             $this->app->response->setBody(json_encode($response));
         } else{
@@ -577,6 +567,7 @@ class LgetSite
         $this->app->response->setBody(json_encode($response));
     }
 
+
     public function uploadHistoryWithoutData($userid, $courseid){
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
@@ -651,17 +642,23 @@ class LgetSite
         $this->app->response->setBody(json_encode($response));
     }
 
-    public function mainSettings($userid, $courseid){
+    public function mainSettings($userid){
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
 
         // returns all possible exercisetypes
-        $URL = $this->lURL.'/DB/exercisetype';
+        $URL = $this->lURL . '/DB/exercisetype';
         $exerciseTypes = Request::custom('GET', $URL, $header, $body);
         $response['exerciseTypes'] = json_decode($exerciseTypes['content'], true);
 
+        $URL = $this->lURL . '/DB/user/user/' . $userid;
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $user = json_decode($answer['content'], true);
+
+        unset($user['courses']);
+
         $this->flag = 1;
-        $response['user'] = $this->userWithCourse($userid, $courseid);
+        $response['user'] = $user;
 
         $this->app->response->setBody(json_encode($response));
     }
