@@ -22,20 +22,42 @@
             </div>
             <div class="content-body-wrapper">
                 <div class="content-body left">
-                    <label class="short left label bold" for="studentComment">Kommentar:</label>
+                    <?php
+                        if (isset($exercise['selectedSubmission'])) {
+                            print '<div class="form-field left bold new-line" for="selectedSubmission">';
+                            print 'bisherige Einsendung:</div>';
+
+                            $displayName = $exercise['selectedSubmission']['file']['displayName'];
+                            $fileAddress = $exercise['selectedSubmission']['file']['address'];
+                            $date = $exercise['selectedSubmission']['file']['timeStamp'];
+                            $fileURL = $filesystemURI . '/' . $fileAddress . '/' . $displayName;
+
+                            print '<a href="';
+                            print $fileURL;
+                            print '" title="';
+                            print $displayName;
+                            print '" class="left body-option-color" target="_blank">';
+                            print 'Herunterladen ';
+                            print "(" . date('d.m.Y  -  H:i', $date) . ")";
+                            print '</a>';
+                        }
+                    ?>
+
+                    <label class="short left label bold new-line" for="studentComment">Kommentar:</label>
                     <?php $name = "exercises[{$key}]";
                     print '<textarea name="' . $name;
                     print '[\'comment\']" class="form-field text-input" rows="5">';
+                    print '</textarea>';
                     ?>
-                </textarea>
-                <label class="short left label bold new-line" for="studentComment">Datei:</label>
-                <?php
-                print '<input type="file" class="button left" name="';
-                print $name . '[\'file\']">';
-                print '<input type="hidden" name="' . $name;
-                $exerciseID = $exercise['exerciseID'];
-                print '[\'exerciseID\']" value="' . $exerciseID . '">';
-                ?>
+                    
+                    <label class="short left label bold new-line" for="studentComment">Datei:</label>
+                    <?php
+                    print '<input type="file" class="button left" name="';
+                    print $name . '[\'file\']">';
+                    print '<input type="hidden" name="' . $name;
+                    $exerciseID = $exercise['exerciseID'];
+                    print '[\'exerciseID\']" value="' . $exerciseID . '">';
+                    ?>
                 </div>
             </div>
         </div>
