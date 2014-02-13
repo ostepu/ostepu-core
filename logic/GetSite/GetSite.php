@@ -533,10 +533,9 @@ class LgetSite
         $answer = Request::custom('GET', $URL, $header, $body);
         $exercisesheet = json_decode($answer['content'], true);
 
-        $exercises = $exercisesheet['exercises'];
-
         // load all submissions for every exercise of the exerciseSheet
         if(!empty($exercises)) {
+            $exercises = $exercisesheet['exercises'];
             foreach ($exercises as $exercise) {
                 $URL = $this->lURL.'/DB/submission/user/'.$userid.'/exercise/'.$exercise['id'];
                 $answer = Request::custom('GET', $URL, $header, $body);
