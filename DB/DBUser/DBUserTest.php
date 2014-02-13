@@ -4,9 +4,8 @@
  *
  * @author Till Uhlig
  */
- 
-include_once( '../../Assistants/Request.php' );
-include_once( '../../Assistants/Structures.php' );
+include_once( '/../../Assistants/Request.php' );
+include_once('/../../Assistants/Structures.php' );
 
 /**
  * A class, to test the DBUser component
