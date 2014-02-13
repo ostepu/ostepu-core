@@ -9,20 +9,20 @@
  */
  
 SELECT 
-    U2.U_id,
-    U2.U_username,
-    U2.U_firstName,
-    U2.U_lastName,
-    U2.U_email,
-    U2.U_title,
-    U2.U_flag,
-    U.U_id as U_id2,
-    U.U_username as U_username2,
-    U.U_firstName as U_firstName2,
-    U.U_lastName as U_lastName2,
-    U.U_email as U_email2,
-    U.U_title as U_title2,
-    U.U_flag as U_flag2,
+    U.U_id,
+    U.U_username,
+    U.U_firstName,
+    U.U_lastName,
+    U.U_email,
+    U.U_title,
+    U.U_flag,
+    U2.U_id as U_id2,
+    U2.U_username as U_username2,
+    U2.U_firstName as U_firstName2,
+    U2.U_lastName as U_lastName2,
+    U2.U_email as U_email2,
+    U2.U_title as U_title2,
+    U2.U_flag as U_flag2,
     G.ES_id
 FROM
     ((`Group` G
