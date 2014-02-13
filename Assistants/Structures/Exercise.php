@@ -380,5 +380,56 @@ class Exercise extends Object implements JsonSerializable
         if ($this->attachments!==array() && $this->attachments!==null) $list['attachments'] = $this->attachments;
         return $list;
     }
+    
+    public static function ExtractExercise($data, $singleResult = false)
+    {
+            // generates an assoc array of an exercise by using a defined 
+            // list of its attributes
+            $exercise = DBJson::getObjectsByAttributes($data, 
+                                    Exercise::getDBPrimaryKey(), 
+                                    Exercise::getDBConvert());           
+            
+            
+            // generates an assoc array of files by using a defined 
+            // list of its attributes
+            $attachments = DBJson::getObjectsByAttributes($data, 
+                                        File::getDBPrimaryKey(), 
+                                        File::getDBConvert());
+            
+            
+            // generates an assoc array of submissions by using a defined 
+            // list of its attributes
+            $submissions = DBJson::getObjectsByAttributes($data,
+                                    Submission::getDBPrimaryKey(), 
+                                    Submission::getDBConvert(),
+                                    '2');
+                                    
+            // sets the selectedForGroup attribute
+            foreach ($submissions as &$submission){
+                if (isset($submission['selectedForGroup'])){
+                    if (isset($submission['id']) && $submission['id'] == $submission['selectedForGroup']) {
+                        $submission['selectedForGroup'] = (string) 1;
+                    } else
+                        unset($submission['selectedForGroup']);
+                }
+            }        
+            
+            // concatenates the exercise and the associated attachments
+            $res = DBJson::concatObjectListResult($data, $exercise, Exercise::getDBPrimaryKey(),Exercise::getDBConvert()['E_attachments'] ,$attachments,File::getDBPrimaryKey());  
+            
+            // concatenates the exercise and the associated submissions
+            $res = DBJson::concatResultObjectLists($data, $res, Exercise::getDBPrimaryKey(),Exercise::getDBConvert()['E_submissions'] ,$submissions,Submission::getDBPrimaryKey(), '2');
+                   
+            // to reindex
+            $res = array_values($res);
+            
+            if ($singleResult){
+                // only one object as result
+                if (count($res)>0)
+                    $res = $res[0];
+            }
+                
+            return $res;
+    }
 }
 ?>

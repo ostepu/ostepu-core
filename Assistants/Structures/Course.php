@@ -285,5 +285,35 @@ class Course extends Object implements JsonSerializable
         if ($this->defaultGroupSize!==null) $list['defaultGroupSize'] = $this->defaultGroupSize;
         return $list;
     }
+    
+    public static function ExtractCourse($data, $singleResult = false)
+    {
+            // generates an assoc array of courses by using a defined list of 
+            // its attributes
+            $courses = DBJson::getObjectsByAttributes($data, 
+                                    Course::getDBPrimaryKey(), 
+                                    Course::getDBConvert());
+            
+            // generates an assoc array of exercise sheets by using a defined list of 
+            // its attributes
+            $exerciseSheets = DBJson::getObjectsByAttributes($data, 
+                ExerciseSheet::getDBPrimaryKey(), 
+                array(ExerciseSheet::getDBPrimaryKey() => ExerciseSheet::getDBConvert()[ExerciseSheet::getDBPrimaryKey()]));
+            
+            // concatenates the courses and the associated exercise sheet IDs
+            $res = DBJson::concatResultObjectListAsArray($data, 
+                        $courses,
+                        Course::getDBPrimaryKey(),
+                        Course::getDBConvert()['C_exerciseSheets'],
+                        $exerciseSheets,ExerciseSheet::getDBPrimaryKey());
+            
+            if ($singleResult==true){
+                // only one object as result
+                if (count($res)>0)
+                    $res = $res[0]; 
+            }
+                
+            return $res;
+    }
 }
 ?>

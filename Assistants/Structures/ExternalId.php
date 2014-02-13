@@ -190,5 +190,37 @@ class ExternalId extends Object implements JsonSerializable
         if ($this->course!==null) $list['course'] = $this->course;
         return $list;
     }
+    
+    public static function ExtractExternalId($data, $singleResult = false)
+    {
+            // generates an assoc array of courses by using a defined list of 
+            // its attributes
+            $course = DBJson::getObjectsByAttributes($data, 
+                                    Course::getDBPrimaryKey(), 
+                                    Course::getDBConvert());
+            
+            // generates an assoc array of external IDs by using a defined list of 
+            // its attributes
+            $externalIds = DBJson::getObjectsByAttributes($data, 
+                                    ExternalId::getDBPrimaryKey(), 
+                                    ExternalId::getDBConvert());
+            
+            // concatenates the external IDs and the associated courses
+            $res = DBJson::concatObjectListsSingleResult($data, 
+                        $externalIds,ExternalId::getDBPrimaryKey(), 
+                        ExternalId::getDBConvert()['EX_course'], 
+                        $course,Course::getDBPrimaryKey());              
+            
+            // to reindex
+            $res = array_values($res);
+            
+            if ($singleResult==true){
+                // only one object as result
+                if (count($res)>0)
+                    $res = $res[0]; 
+            }
+                
+            return $res;
+    }
 }
 ?>
