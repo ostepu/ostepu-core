@@ -96,8 +96,12 @@ class LgetSite
                         array($this, 'markingTool'));
 
         //GET UploadHistory
-        $this->app->get('/uploadhistory/user/:userid/course/:courseid/exercisesheet/:sheetid(/)',
+        $this->app->get('/uploadhistory/user/:userid/course/:courseid/exercisesheet/:sheetid/uploaduser/:uploaduserid(/)',
                         array($this, 'uploadHistory'));
+
+        //GET UploadHistoryWithoutData
+        $this->app->get('/uploadhistory/user/:userid/course/:courseid(/)',
+                        array($this, 'userWithCourse'));
 
         //GET TutorSite
         $this->app->get('/tutor/user/:userid/course/:courseid(/)',
@@ -524,7 +528,7 @@ class LgetSite
 
     }
 
-    public function uploadHistory($userid, $courseid, $sheetid){
+    public function uploadHistory($userid, $courseid, $sheetid, $uploaduserid){
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
 
@@ -551,7 +555,7 @@ class LgetSite
         if(!empty($exercises)) {
             //$exercises = $exercisesheet['exercises'];
             foreach ($exercises as $exercise) {
-                $URL = $this->lURL.'/DB/submission/user/'.$userid.'/exercise/'.$exercise['id'];
+                $URL = $this->lURL.'/DB/submission/user/'.$uploaduserid.'/exercise/'.$exercise['id'];
                 $answer = Request::custom('GET', $URL, $header, $body);
                 $submissions[] = json_decode($answer['content'], true);
             }
