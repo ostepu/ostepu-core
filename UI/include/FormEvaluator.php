@@ -95,22 +95,20 @@ class FormEvaluator {
                 }
 
                 if ($result == true) {
-                    $this->insertValue($key, $value);
-                    return true;
+                    return $value;
                 } else {
                     return false;
                 }
             }
 
-            $this->insertValue($key, $value);
-            return true;
+            return $value;
 
         } elseif ($required == true) {
             // the value is not set and is required
             return false;
         }
 
-        return true;
+        return NULL;
     }
 
     // checks if $this->formValues[$key] contains a valid array
@@ -135,15 +133,14 @@ class FormEvaluator {
                 }
             }
 
-            $this->insertValue($key, $value);
-            return true;
+            return $value;
 
         } elseif ($required == true) {
             // the value is not set and is required
             return false;
         }
 
-        return true;
+        return NULL;
     }
 
     // checks if $this->formValues[$key] contains a valid number
@@ -151,7 +148,6 @@ class FormEvaluator {
                                     $required,
                                     $range,
                                     $notIn) {
-
 
         if (isset($this->formValues[$key])) {
             // the value is set
@@ -186,8 +182,7 @@ class FormEvaluator {
 
                 if ($result == true) {
                     // valid number
-                    $this->insertValue($key, $number);
-                    return true;
+                    return $number;
 
                 } else {
                     // invalid number
@@ -195,15 +190,33 @@ class FormEvaluator {
                 }
             }
 
-            $this->insertValue($key, $number);
-            return true;
+            return $number;
 
         } elseif ($required == true) {
             // the value is not set and is required
             return false;
         }
 
-        return true;
+        return NULL;
+    }
+
+    // check if value is an integer
+    private function evaluateInteger($key,
+                                    $required,
+                                    $range,
+                                    $notIn)
+    {
+        $result = $this->evaluateNumber($key,
+                                        $required,
+                                        $range,
+                                        $notIn);
+        if ($result !== false) {
+            if (filter_var($result, FILTER_VALIDATE_INT) !== false) {
+                return $result;
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -276,9 +289,18 @@ class FormEvaluator {
                 $result = $this->evaluateArray($key,
                                                $required,
                                                $notEmpty);
+            } elseif ($type == 'integer') {
+                $range = $value['range'];
+                $notIn = $value['notIn'];
+
+                // check if the value for $key is valid
+                $result = $this->evaluateInteger($key,
+                                                $required,
+                                                $range,
+                                                $notIn);
             }
 
-            if ($result == false) {
+            if ($result === false) {
                 // the value for $key is invalid
 
                 // if the value was not required, we don't care
@@ -290,6 +312,8 @@ class FormEvaluator {
                 // create a notification
                 $this->notifications[] = MakeNotification($value['messageType'],
                                                           $value['message']);
+            } else {
+                $this->insertValue($key, $result);
             }
         }
 
@@ -396,6 +420,43 @@ class FormEvaluator {
                                 'notEmpty' => $notEmpty,
                                 'messageType' => $messageType,
                                 'message' => $message);
+        return $this;
+    }
+
+    /**
+     * Add check for an integer.
+     *
+     * @param string $key The key that should be checked.
+     * @param bool $required True if it is required that there is a value for
+     * this key, false otherwise.
+     * @see FormEvaluator::REQUIRED
+     * @see FormEvaluator::OPTIONAL
+     * @param string $messageType The type of message that is generated when
+     * an error occurs.
+     * @param string $message The message that is returned on error.
+     * @param array $range (optional) an associative array with optional keys
+     * 'min' and 'max' that contain a number that corresponds to the minimum
+     * and maximum value of $key's value (inclusive).
+     * @param bool $notIn (optional) If true reverse the meaning of $range, to
+     * exclude 'min', 'max' and all values in between.
+     * @return self
+     * @see FormEvaluator::checkNumberForKey
+     */
+    public function checkIntegerForKey($key,
+                                      $required,
+                                      $messageType,
+                                      $message,
+                                      $range = NULL,
+                                      $notIn = NULL)
+    {
+        $this->values[] = array('key' => $key,
+                                'type' => 'integer',
+                                'required' => $required,
+                                'messageType' => $messageType,
+                                'message' => $message,
+                                'range' => $range,
+                                'notIn' => $notIn);
+
         return $this;
     }
 }

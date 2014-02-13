@@ -20,8 +20,6 @@ include_once 'include/Boilerplate.php';
 include_once '../Assistants/Structures.php';
 include_once 'include/FormEvaluator.php';
 
-$notifications = array();
-
 if (isset($_POST['action'])) {
     // creates a new course
     if ($_POST['action'] == "CreateCourse") {
@@ -39,10 +37,11 @@ if (isset($_POST['action'])) {
                               'warning',
                               'Ungültiges Semester.');
 
-        $f->checkNumberForKey('defaultGroupSize',
+        $f->checkIntegerForKey('defaultGroupSize',
                               FormEvaluator::REQUIRED,
                               'warning',
-                              'Ungültige Gruppengröße.');
+                              'Ungültige Gruppengröße.',
+                              array('min' => 0));
 
         $f->checkArrayForKey('exerciseTypes',
                              FormEvaluator::REQUIRED,
