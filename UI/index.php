@@ -19,11 +19,16 @@ if (is_null($user)) {
     $user = array();
 }
 
+$menu = MakeNavigationElement($user,
+                              PRIVILEGE_LEVEL::STUDENT,
+                              true);
+
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user);
 $h->bind(array("name" => "Übungsplattform",
-               "notificationElements" => $notifications));
+               "notificationElements" => $notifications,
+               "navigationElement" => $menu));
 
 $pageData = array('uid' => $user['id'],
                   'courses' => $user['courses'],

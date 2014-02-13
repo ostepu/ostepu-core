@@ -25,9 +25,8 @@ if (is_null($user_course_data)) {
     $user_course_data = array();
 }
 
-$menu = MakeNavigationElementForCourseStatus($user_course_data['courses'],
-                                             PRIVILEGE_LEVEL::LECTURER);
-
+$menu = MakeNavigationElement($user_course_data,
+                              PRIVILEGE_LEVEL::LECTURER);
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
