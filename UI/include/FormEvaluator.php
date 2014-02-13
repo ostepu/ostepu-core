@@ -4,9 +4,6 @@
  * Contains the FormEvaluator class
  *
  * @todo better error checking for function parameters
- * @todo add option for email adresses.
- * @todo add check for integer numbers
- * @todo maybe use filter_var ?
  *
  * @author Florian Lücke
  */
@@ -219,6 +216,26 @@ class FormEvaluator {
         return false;
     }
 
+    // chek if value is an email address
+    private function evaluateEmail($key,
+                                   $required)
+    {
+        if (isset($this->formValues[$key])) {
+            $value = $this->formValues[$key];
+
+            if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
+                return $value;
+            }
+
+            return false;
+
+        } elseif ($required == true) {
+            return false;
+        }
+
+        return NULL;
+    }
+
     /**
      * Construct a new form evaluator.
      *
@@ -298,6 +315,9 @@ class FormEvaluator {
                                                 $required,
                                                 $range,
                                                 $notIn);
+            } elseif ($type == 'email') {
+                $result = $this->evaluateEmail($key,
+                                               $required);
             }
 
             if ($result === false) {
@@ -359,6 +379,33 @@ class FormEvaluator {
     }
 
     /**
+     * Add check for an email address.
+     *
+     * @param string $key The key that should be checked.
+     * @param bool $required True if it is required that there is a value for
+     * this key, false otherwise.
+     * @see FormEvaluator::REQUIRED
+     * @see FormEvaluator::OPTIONAL
+     * @param string $messageType The type of message that is generated when
+     * an error occurs.
+     * @param string $message The message that is returned on error.
+     * @return self
+     */
+    public function checkEmailForKey($key,
+                                      $required,
+                                      $notEmpty,
+                                      $messageType,
+                                      $message)
+    {
+        $this->values[] = array('key' => $key,
+                                'type' => 'email',
+                                'required' => $required,
+                                'messageType' => $messageType,
+                                'message' => $message);
+        return $this;
+    }
+
+    /**
      * Add check for a number.
      *
      * @param string $key The key that should be checked.
@@ -375,6 +422,7 @@ class FormEvaluator {
      * @param bool $notIn (optional) If true reverse the meaning of $range, to
      * exclude 'min', 'max' and all values in between.
      * @return self
+     * @see FormEvaluator::checkNumberForKey
      */
     public function checkNumberForKey($key,
                                       $required,

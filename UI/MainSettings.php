@@ -117,7 +117,7 @@ if (isset($_POST['action'])) {
                               'warning',
                               'Ungüliger Vorname.');
 
-        $f->checkStringForKey('email',
+        $f->checkEmailForKey('email',
                               FormEvaluator::REQUIRED,
                               true,
                               'warning',
