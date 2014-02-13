@@ -99,9 +99,9 @@ class LgetSite
         $this->app->get('/uploadhistory/user/:userid/course/:courseid/exercisesheet/:sheetid/uploaduser/:uploaduserid(/)',
                         array($this, 'uploadHistory'));
 
-        //GET UploadHistoryWithoutData
-        $this->app->get('/uploadhistory/user/:userid/course/:courseid(/)',
-                        array($this, 'uploadHistory'));
+        //GET UploadHistoryOptions
+        $this->app->get('/uploadhistoryoptions/user/:userid/course/:courseid(/)',
+                        array($this, 'uploadHistoryOptions'));
 
         //GET TutorSite
         $this->app->get('/tutor/user/:userid/course/:courseid(/)',
@@ -518,9 +518,6 @@ class LgetSite
 
     }
 
-    /**
-     * @todo Needs improvements - almost the same as uploadHistoryWithoutData.
-     */
     public function uploadHistory($userid, $courseid, $sheetid, $uploaduserid){
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
@@ -529,16 +526,6 @@ class LgetSite
         $URL = $this->lURL.'/DB/exercisesheet/'.$sheetid.'/exercise/';
         $answer = Request::custom('GET', $URL, $header, $body);
         $exercisesheet = json_decode($answer['content'], true);
-
-        // load all users of the course
-        $URL = $this->lURL.'/DB/user/course/'.$courseid;
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $response['users'] = json_decode($answer['content'], true);
-
-        // load all exercisesheets of the course
-        $URL = $this->lURL.'/DB/exercisesheet/course/'.$courseid;
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $response['sheets'] = json_decode($answer['content'], true);
 
         if(!empty($exercisesheet)) {
             $exercises = $exercisesheet['exercises'];
@@ -568,7 +555,7 @@ class LgetSite
     }
 
 
-    public function uploadHistoryWithoutData($userid, $courseid){
+    public function uploadHistoryOptions($userid, $courseid){
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
 
