@@ -184,18 +184,18 @@ if (isset($_POST['action'])) {
 }
 
 // load mainSettings data from GetSite
-$databaseURI = $getSiteURI . "/mainsettings/user/{$uid}/course/{$cid}";
+$databaseURI = $getSiteURI . "/mainsettings/user/{$uid}";
 $mainSettings_data = http_get($databaseURI, true);
 $mainSettings_data = json_decode($mainSettings_data, true);
 
-$user_course_data = $mainSettings_data['user'];
+$user_data = $mainSettings_data['user'];
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
-$h->bind($user_course_data);
+$h->bind($user_data);
 $h->bind(array("name" => "Einstellungen",
-               "backTitle" => "zur Veranstaltung",
-               "backURL" => "Admin.php?cid={$cid}",
+               "backTitle" => "Veranstaltungen",
+               "backURL" => "index.php",
                "notificationElements" => $notifications));
 
 // construct a content element for creating new courses
