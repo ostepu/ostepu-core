@@ -16,6 +16,7 @@
 
 include_once 'include/Boilerplate.php';
 include_once '../Assistants/Structures.php';
+include_once 'include/FormEvaluator.php';
 
 if (isset($_POST['action'])) {
     if ($_POST['action'] == "CourseSettings") {
@@ -96,7 +97,7 @@ if (isset($_POST['action'])) {
             // validate POST data
             if (is_numeric($userID) == true && is_numeric($Rights) && $Rights >= 0 && $Rights < 3) {
                 // create new coursestatus and edit existing one
-                $data = User::encodeUser(User::createCourseStatus($userID,$cid,$Rights));
+                $data = User::encodeUser(User::createCourseStatus($userID, $cid, $Rights));
 
                 $url = $databaseURI . "/coursestatus/course/{$cid}/user/{$userID}";
                 http_put_data($url, $data, true, $message);
@@ -138,6 +139,55 @@ if (isset($_POST['action'])) {
         } else {
             $notifications[] = MakeNotification("error", "Es wurden nicht alle Felder ausgefüllt!");
         }
+    } elseif ($_POST['action'] == "AddUser") {
+
+        $f = new FormEvaluator($_POST);
+
+        $f->checkStringForKey('userName',
+                              FormEvaluator::REQUIRED,
+                              true,
+                              'warning',
+                              'Ungültiger Nutzername.');
+
+        $f->checkIntegerForKey('rights',
+                               FormEvaluator::REQUIRED,
+                               'warning',
+                               'Ungültige Rechte-ID.',
+                               array('min' => 0, 'max' => 2));
+
+        if ($f->evaluate(true)) {
+            $foundValues = $f->foundValues;
+
+            $userName = $foundValues['userName'];
+            $rights = $foundValues['rights'];
+
+            $URL = $databaseURI . '/user/user/' . $userName;
+            $user = http_get($URL, true);
+            $user = json_decode($user, true);
+
+            $userId = $user['id'];
+
+            $newUser = User::createCourseStatus($userId, $cid, $rights);
+            $newUser = User::encodeUser($newUser);
+
+            $URL = $databaseURI . '/coursestatus';
+            http_post_data($URL, $newUser, true, $message);
+
+            if ($message == "201") {
+                $notifications[] = MakeNotification('success',
+                                                    'Der Beutzer wurde'
+                                                    .' erfolgreich in die'
+                                                    .' Veranstaltung eingetragem.');
+            } else {
+                set_error("409");
+                exit;
+            }
+        } else {
+            $notifications = $notifications + $f->notifications;
+        }
+    } else {
+        $notifications[] = MakeNotification('error',
+                                            'Unbekannte Aktion.');
     }
 }
 
@@ -173,15 +223,19 @@ $grantRights->bind($courseManagement_data);
 $revokeRights = Template::WithTemplateFile('include/CourseManagement/RevokeRights.template.html');
 $revokeRights->bind($courseManagement_data);
 
+// construct a content element for adding users
+$addUser = Template::WithTemplateFile('include/CourseManagement/AddUser.template.html');
+
 /**
  * @todo combine the templates into a single file
  */
 
 // wrap all the elements in some HTML and show them on the page
-$w = new HTMLWrapper($h, $courseSettings, $grantRights, $revokeRights);
+$w = new HTMLWrapper($h, $courseSettings, $grantRights, $revokeRights, $addUser);
 $w->defineForm(basename(__FILE__)."?cid=".$cid, $courseSettings);
 $w->defineForm(basename(__FILE__)."?cid=".$cid, $grantRights);
 $w->defineForm(basename(__FILE__)."?cid=".$cid, $revokeRights);
+$w->defineForm(basename(__FILE__)."?cid=".$cid, $addUser);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
 
