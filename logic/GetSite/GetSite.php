@@ -533,9 +533,23 @@ class LgetSite
         $answer = Request::custom('GET', $URL, $header, $body);
         $exercisesheet = json_decode($answer['content'], true);
 
+        // load all users of the course
+        $URL = $this->lURL.'/DB/user/course/'.$courseid;
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $response['users'] = json_decode($answer['content'], true);
+
+        // load all exercisesheets of the course
+        $URL = $this->lURL.'/DB/exercisesheet/course/'.$courseid;
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $response['sheets'] = json_decode($answer['content'], true);
+
+        if(!empty($exercisesheet)) {
+            $exercises = $exercisesheet['exercises'];
+        }
+
         // load all submissions for every exercise of the exerciseSheet
         if(!empty($exercises)) {
-            $exercises = $exercisesheet['exercises'];
+            //$exercises = $exercisesheet['exercises'];
             foreach ($exercises as $exercise) {
                 $URL = $this->lURL.'/DB/submission/user/'.$userid.'/exercise/'.$exercise['id'];
                 $answer = Request::custom('GET', $URL, $header, $body);
