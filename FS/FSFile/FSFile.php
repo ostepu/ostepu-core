@@ -114,48 +114,63 @@ class FSFile
     public function postFile()
     {       
         $body = $this->_app->request->getBody();
-        $fileObject = File::decodeFile($body);
-        $fileObject->setHash(sha1(base64_decode($fileObject->getBody())));
-        $filePath = FSFile::generateFilePath(FSFile::getBaseDir(), $fileObject->getHash());
-        $fileObject->setAddress(FSFile::getBaseDir() . '/' . $fileObject->getHash());
+        $fileObjects = File::decodeFile($body);
         
-        $links = FSFile::filterRelevantLinks($this->_fs, $fileObject->getHash());
+        $result = array();
         
-        $result = Request::routeRequest("INFO",
-                                      '/'.$filePath,
-                                      $this->_app->request->headers->all(),
-                                      "",
-                                      $links,
-                                      FSFile::getBaseDir());
+        foreach ($fileObjects as $fileObject){ 
+        
+            $fileObject->setHash(sha1(base64_decode($fileObject->getBody())));
+            $filePath = FSFile::generateFilePath(FSFile::getBaseDir(), $fileObject->getHash());
+            $fileObject->setAddress(FSFile::getBaseDir() . '/' . $fileObject->getHash());
+        
+            $links = FSFile::filterRelevantLinks($this->_fs, $fileObject->getHash());
+        
+            $result = Request::routeRequest("INFO",
+                                        '/'.$filePath,
+                                        $this->_app->request->headers->all(),
+                                        "",
+                                        $links,
+                                        FSFile::getBaseDir());
                                       
-        if ($result['status']>=200 && $result['status']<=299){
-            $tempObject = File::decodeFile($result['content']);
-            $fileObject->setFileSize($tempObject->getFileSize());
-            $fileObject->setBody(null);
-            $this->_app->response->setStatus(201);
-            $this->_app->response->setBody(File::encodeFile($fileObject));
-            $this->_app->stop();
+            if ($result['status']>=200 && $result['status']<=299){
+                $tempObject = File::decodeFile($result['content']);
+                $fileObject->setFileSize($tempObject->getFileSize());
+                $fileObject->setBody(null);
+                $result[] = $fileObject;
+                //$this->_app->response->setStatus(201);
+               // $this->_app->response->setBody(File::encodeFile($fileObject));
+                //$this->_app->stop();
+                continue;
+            }
+        
+            $result = Request::routeRequest("POST",
+                                        '/'.$filePath,
+                                        $this->_app->request->headers->all(),
+                                        File::encodeFile($fileObject),
+                                        $links,
+                                        FSFile::getBaseDir());
+        
+            if ($result['status']>=200 && $result['status']<=299){
+                $tempObject = File::decodeFile($result['content']);
+                $fileObject->setFileSize($tempObject->getFileSize());
+                $fileObject->setBody(null);
+                $result[] = $fileObject;
+                //$this->_app->response->setStatus($result['status']);
+                //$this->_app->response->setBody(File::encodeFile($fileObject));
+            } else{
+                $this->_app->response->setStatus(409);
+               // $fileObject->setBody(null);
+                $this->_app->response->setBody(File::encodeFile($result));
+                $this->_app->stop();
+            }
         }
         
-        $result = Request::routeRequest("POST",
-                                      '/'.$filePath,
-                                      $this->_app->request->headers->all(),
-                                      File::encodeFile($fileObject),
-                                      $links,
-                                      FSFile::getBaseDir());
+        if (count($result)==1)
+            $result = $result[0];
         
-        if ($result['status']>=200 && $result['status']<=299){
-            $tempObject = File::decodeFile($result['content']);
-            $fileObject->setFileSize($tempObject->getFileSize());
-            $fileObject->setBody(null);
-            $this->_app->response->setStatus($result['status']);
-            $this->_app->response->setBody(File::encodeFile($fileObject));
-        } else{
-            $this->_app->response->setStatus(409);
-            $fileObject->setBody(null);
-            $this->_app->response->setBody(File::encodeFile($fileObject));
-            $this->_app->stop();
-        }
+        $this->_app->response->setStatus(201);
+        $this->_app->response->setBody(File::encodeFile($result));
     }
 
 
