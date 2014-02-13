@@ -18,6 +18,11 @@ if (isset($_POST['sheetID'])) {
     Logger::Log("No Data", LogLevel::INFO);
 }
 
+// set $sid = 0 if there is no sid in the URL
+if (!isset($_GET['sid'])) {
+    $sid = 0;
+}
+
 // load uploadHistory data from GetSite
 $URL = $getSiteURI . "/uploadhistory/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
 $uploadHistory_data = http_get($URL, false);

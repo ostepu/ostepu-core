@@ -56,10 +56,9 @@ foreach ($sheets as $sheet):
                         <?php
                             // creates an upload icon
                             print '<a href="';
-                            print '#';
-                            print '" title="';
-                            print ' ';
-                            print '" class="plain inline" target="_blank">';
+                            print 'Upload.php?cid=' . $cid . '&sid=' . $sheet['id'];
+                            print '" title="Upload" ';
+                            print 'class="plain inline">';
                             print '<img src="Images/Upload.png" />';
                             print '</a>';
                         ?>
