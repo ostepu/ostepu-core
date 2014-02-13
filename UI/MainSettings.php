@@ -104,6 +104,7 @@ if (isset($_POST['action'])) {
 
     // creates a new user
     if ($_POST['action'] == "CreateUser") {
+
         $f = new FormEvaluator($_POST);
         $f->checkStringForKey('lastName',
                               FormEvaluator::REQUIRED,
@@ -166,6 +167,9 @@ if (isset($_POST['action'])) {
 
                 $newUserSettings = User::encodeUser($newUser);
 
+                print_r($newUserSettings);
+                exit;
+
                 $URI = $databaseURI . "/user";
                 http_post_data($URI, $newUserSettings, true, $message);
 
@@ -221,9 +225,9 @@ $deleteUser = Template::WithTemplateFile('include/MainSettings/DeleteUser.templa
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $createCourse, $createUser, $deleteUser);
-$w->defineForm(basename(__FILE__)."?cid=".$cid, $createCourse);
-$w->defineForm(basename(__FILE__)."?cid=".$cid, $createUser);
-$w->defineForm(basename(__FILE__)."?cid=".$cid, $deleteUser);
+$w->defineForm(basename(__FILE__), $createCourse);
+$w->defineForm(basename(__FILE__), $createUser);
+$w->defineForm(basename(__FILE__), $deleteUser);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
 
