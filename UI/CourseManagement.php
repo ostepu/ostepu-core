@@ -82,7 +82,7 @@ if (isset($_POST['action'])) {
             else {
                 $notifications[] = MakeNotification("error", "Beim Speichern ist ein Fehler aufgetreten!");
             }
-        } 
+        }
         else {
             $notifications[] = MakeNotification("error", "Es wurden nicht alle Felder ausgefüllt!");
         }
@@ -148,9 +148,9 @@ $courseManagement_data = json_decode($courseManagement_data, true);
 
 $user_course_data = $courseManagement_data['user'];
 
-$menu = MakeNavigationElementForCourseStatus($user_course_data['courses'],
-                                             PRIVILEGE_LEVEL::ADMIN,
-                                             true);
+$menu = MakeNavigationElement($user_course_data,
+                              PRIVILEGE_LEVEL::ADMIN,
+                              true);
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
