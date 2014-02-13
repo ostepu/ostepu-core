@@ -89,41 +89,74 @@ class LSubmission
         
         $header = $this->app->request->headers->all();
         $body = json_decode($this->app->request->getBody(), true);
-        $file = json_encode($body['file']);
+        $file = $body['file'];
         
         //Request to FileSystem
         $URL = $this->lURL.'/FS/file';
-        $answer = Request::custom('POST', $URL, $header, $file);
-
+        $answer = Request::custom('POST', $URL, $header, json_encode($file));
+        
         if(($answer['status'] >= 200) and ($answer['status'] <= 300)){ //if file was succsessfully saved to FS
-            $newbody->{'file'} = $answer['content'];
+            $newfile = json_decode($answer['content'], true);
             //Request to DB to save the file
-            $URL = $this->lURL.'/DB/file';
-            $answer = Request::custom('POST', $URL, $header, json_encode($newbody));
-            $DBanswer = json_decode($answer['content'], true);
+            $file['address'] = $newfile['address'];
+            $file['fileSize'] = $newfile['fileSize'];
+            $file['hash'] = $newfile['hash'];
+            unset($file['body']);
+            $body['file'] = $file;
+            //check wheter the file allready exists
+            $URL = $this->lURL.'/DB/file/hash/'.$file['hash'];
+            $answer = Request::custom('GET', $URL, $header, "");
+            $answer = json_decode($answer['content'], true);
+            if ($answer == "[]"){       //if file does not exists, POST-Request to add it
+                $URL = $this->lURL.'/DB/file';
+                $answer = Request::custom('POST', $URL, $header, json_encode($file));
+                $answer = json_decode($answer['content'], true);
+            }
         } else{
             $this->app->response->setStatus($answer['status']);
         }
         
         $submission = $body;
-        $submission['file'] = array(
-                    'id' => $DBanswer['id']
-                    );
+        $submission['file']['fileId'] = $answer['fileId'];
+        
         //Get the LeaderId of the Group the submission belongs to        
-        $URL = $this->lURL.'/DB/exercise/exercise/'.$DBanswer['exerciseId'];
+        $URL = $this->lURL.'/DB/exercise/exercise/'.$submission['exerciseId'];
         $answer = Request::custom('GET', $URL, $header, "");
         $exercise = json_decode($answer['content'], true);        
         
-        $URL = $this->lURL.'/DB/group/exercisesheet/'.$exercise['sheetId'].'/user/'.$submission['studentId'];
-        $answer = Request::custom('GET', $URL, $header, "");
-        $group = json_decode($answer['content'], true);
+        //Fehlerhafte Ausgabe der DB (ist in Bearbeitung)
+        //$URL = $this->lURL.'/DB/group/user/'.$submission['studentId'].'/exercisesheet/'.$exercise['sheetId'];
+        //$answer = Request::custom('GET', $URL, $header, "");
+        //$group = json_decode($answer['content'], true);
         
-        $submission['leaderId'] = $group['leader']['id'];
+        //Alternative Abfrage solange DB-Fehler noch nicht gefixt ist
+            $URL = $this->lURL.'/DB/group/exercisesheet/'.$exercise['sheetId'];
+            $answer = Request::custom('GET', $URL, $header, "");
+            $groups = json_decode($answer['content'], true);
+            
         
+            foreach ($groups as $group){
+                if(isset($group['leader'])){
+                    //print_r($group['leader']['id']);
+                    if ($submission['studentId'] == $group['leader']['id']){
+                        $submission['leaderId'] = $group['leader']['id'];
+                        break;
+                    }else{
+                        foreach($group['members'] as $member){
+                            if($submission['studentId'] == $member['id']){
+                                $submission['leaderId'] = $group['leader']['id'];
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            
+        //$submission['leaderId'] = $group['leader']['id'];
         //Request to DB to add the submission
         $URL = $this->lURL.'/DB/submission';
         $answer = Request::custom('POST', $URL, $header, json_encode($submission));
-        $answer = json_decode($answer['content'], true);
         
         $this->app->response->setStatus($answer['status']);
     }
