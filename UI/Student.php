@@ -11,7 +11,7 @@
 include_once 'include/Boilerplate.php';
 
 if (isset($_GET['action']) && isset($_GET['sid'])) {
-    if ($_GET['action'] == "downloadAttachemnts") {
+    if ($_GET['action'] == "downloadAttachments") {
         $attachments = http_get($serverURI . '/logic/Controller/DB/attachment/exercisesheet/' . $sid);
         $attachments = json_decode($attachments, true);
 
