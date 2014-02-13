@@ -1,8 +1,8 @@
 /**
- * @file GetSelectedSheetSubmissions.sql
- * gets the specified selected submissions from %Submission table
+ * @file GetCourseSubmissions.sql
+ * gets the specified submissions from %Submission table
  * @author Till Uhlig
- * @param int \$eid an %Exercise identifier
+ * @param int \$courseid an %Course identifier
  * @result 
  * - F, the submission file
  * - S, the submission data
@@ -27,11 +27,13 @@ select
     S.S_leaderId,
     S.E_id
 from
-    Submission S
+    Exercise E
+    join
+    Submission S ON (E.E_id = S.E_id)
         join
     File F ON (S.F_id_file = F.F_id)
-        join
+        left join
     SelectedSubmission SS ON (S.S_id = SS.S_id_selected
         and S.E_id = SS.E_id)
 where
-    S.ES_id = '$esid'
+    E.C_id = '$courseid'
