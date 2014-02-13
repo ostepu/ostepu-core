@@ -118,6 +118,12 @@ if (isset($_POST['action'])) {
                               'warning',
                               'Ungüliger Vorname.');
 
+        $f->checkStringForKey('userName',
+                              FormEvaluator::REQUIRED,
+                              true,
+                              'warning',
+                              'Ungüliger Benutzername.');
+
         $f->checkEmailForKey('email',
                               FormEvaluator::REQUIRED,
                               true,
@@ -166,9 +172,6 @@ if (isset($_POST['action'])) {
                                             0);
 
                 $newUserSettings = User::encodeUser($newUser);
-
-                print_r($newUserSettings);
-                exit;
 
                 $URI = $databaseURI . "/user";
                 http_post_data($URI, $newUserSettings, true, $message);
