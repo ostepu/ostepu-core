@@ -9,17 +9,53 @@
 
     <div class="content-body-wrapper">
         <div class="content-body left">
-            <label class="form-field left label bold new-line" for="lastName">Nachname:</label>
-            <input class="form-field left text-input" name="lastName" id="lastName" />
+            <label class="form-field left label bold new-line"for="lastName">Nachname:</label>
+            <?php if (isset($lastName)): ?>
+                <input class="form-field left text-input"
+                       name="lastName"
+                       id="lastName"
+                       value="<?= $lastName ?>" />
+            <?php else: ?>
+                <input class="form-field left text-input"
+                       name="lastName"
+                       id="lastName" />
+            <?php endif; ?>
 
             <label class="form-field left label bold new-line" for="firstName">Vorname:</label>
-            <input class="form-field left text-input" name="firstName" id="firstName" />
+            <?php if (isset($firstName)): ?>
+                <input class="form-field left text-input"
+                       name="firstName"
+                       id="firstName"
+                       value="<?= $firstName ?>" />
+            <?php else: ?>
+                <input class="form-field left text-input"
+                       name="firstName"
+                       id="firstName" />
+            <?php endif; ?>
 
             <label class="form-field left label bold new-line" for="email">Email:</label>
-            <input class="form-field left text-input" name="email" id="email" />
+            <?php if (isset($email)): ?>
+                <input class="form-field left text-input"
+                       name="email"
+                       id="email"
+                       value="<?= $email ?>" />
+            <?php else: ?>
+                <input class="form-field left text-input"
+                       name="email"
+                       id="email" />
+            <?php endif; ?>
 
             <label class="form-field left label bold new-line" for="userName">Login / Kürzel:</label>
-            <input class="form-field left text-input" name="userName" id="userName" />
+            <?php if (isset($userName)): ?>
+                <input class="form-field left text-input"
+                       name="userName"
+                       id="userName"
+                       value="<?= $userName ?>" />
+            <?php else: ?>
+                <input class="form-field left text-input"
+                       name="userName"
+                       id="userName" />
+            <?php endif; ?>
 
             <label class="form-field left label bold new-line" for="password">Passwort:</label>
             <input class="form-field left text-input" type="password" name="password" id="password" />
