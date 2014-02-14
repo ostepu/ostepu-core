@@ -11,7 +11,8 @@
                 <?php foreach ($tutorAssignments as $tutorAssignment): ?>
                     <div class="tutor-assign-element left">
                         <div class="tutor-assign-element-title bold">
-                            <?php print '<input type="radio" name="tutorID" value="';
+                            <?php 
+                            print '<input type="radio" name="tutorID" value="';
                             print $tutorAssignment['tutor']['id'] . '"/>';
                             if ($tutorAssignment['tutor']['userName'] != "unassigned") {
                                 print $tutorAssignment['tutor']['firstName'];
@@ -26,14 +27,15 @@
                             }
                             ?>
                         </div>
-                        <div class="checkbox-container">
-                            <?php foreach ($tutorAssignment['submissions'] as $submission):
-                            print '<input type="checkbox" name="';
-                            print $submission['id'];
-                            print '" value="';
-                            print $submission['id'] . '"/>';
-                            print $submission['id'];
-                            print '<br />';
+                        <div class="form-field checkbox-container">
+                            <?php 
+                            foreach ($tutorAssignment['submissions'] as $submission):
+                                print '<input type="checkbox" name="';
+                                print $submission['submissionId'];
+                                print '" value="';
+                                print $submission['submissionId'] . '"/>';
+                                print $submission['submissionId'];
+                                print '<br />';
                             endforeach;
                             ?>
                         </div>
