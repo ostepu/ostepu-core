@@ -115,9 +115,9 @@ foreach ($sheets as $sheet):
     <div class="content-footer">
         <ol>
             <li class="footer-text bold">Einsendungen:</li>
-            <li class="footer-text">100 Studenten</li>
-            <li class="footer-text">30 mit Einsendungen</li>
-            <li class="footer-text">70 ohne Einsendungen</li>
+            <li class="footer-text"><?=$sheet['courseUserCount'] ?> Studenten</li>
+            <li class="footer-text"><?=$sheet['studentsWithSubmissionCount'] ?> mit Einsendungen</li>
+            <li class="footer-text"><?=$sheet['studentsWithoutSubmissionCount'] ?> ohne Einsendungen</li>
         </ol>
     </div> <!-- end: content-body-wrapper -->
 </div> <!-- end: content-element -->
