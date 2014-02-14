@@ -142,6 +142,8 @@ class LgetSite
         if (!empty($tutors)) {
             foreach ($tutors AS $tutor){
                 //im Rueckgabe-Array für jeden Tutor ein Marking (ohne Submissions) anlegen
+                unset($tutor['salt']);
+                unset($tutor['password']);
                 $response['tutorAssignments'][] = array('tutor' => $tutor, 'submissions' => array());
             }
         }
@@ -152,7 +154,14 @@ class LgetSite
         // fuer jedes Marking die zugeordnete Submision im Rueckgabearray dem passenden Tutor zuweisen
         foreach (json_decode($answer['content'], true) as $marking){
             foreach ($response['tutorAssignments'] as &$tutorAssignment){
-                if ($marking['tutorId'] == $tutorAssignment['tutor']['id']){
+                if ($marking['tutorId'] == $tutorAssignment['tutor']['id']) {
+                    // removes unnecessary information
+                    unset($marking['submission']['file']);
+                    unset($marking['submission']['comment']);
+                    unset($marking['submission']['accepted']);
+                    unset($marking['submission']['date']);
+                    unset($marking['submission']['flag']);
+                    unset($marking['submission']['selectedForGroup']);
                     $tutorAssignment['submissions'][] = $marking['submission'];
                     //ID's aller bereits zugeordneten Submissions speicher
                     $assignedSubmissionIDs[] = $marking['submission']['id'];
@@ -178,6 +187,7 @@ class LgetSite
         $submissions = json_decode($answer['content'], true);
         foreach ($submissions as $submission){
             if (!in_array($submission['submissionId'], $assignedSubmissionIDs)){
+                $submission['unassigned'] = true;
                 $unassignedSubmissions[] = $submission;
             }
         }
