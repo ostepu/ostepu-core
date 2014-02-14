@@ -155,6 +155,10 @@ class LgetSite
         foreach (json_decode($answer['content'], true) as $marking){
             foreach ($response['tutorAssignments'] as &$tutorAssignment){
                 if ($marking['tutorId'] == $tutorAssignment['tutor']['id']) {
+                    // renames 'id' to 'submissionId'
+                    $marking['submission']['submissionId'] = $marking['submission']['id'];
+                    unset($marking['submission']['id']);
+
                     // removes unnecessary information
                     unset($marking['submission']['file']);
                     unset($marking['submission']['comment']);
