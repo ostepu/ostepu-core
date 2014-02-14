@@ -23,6 +23,7 @@ SELECT
     F.F_address,
     F.F_timeStamp,
     F.F_fileSize,
+    F.F_comment,
     F.F_hash
     " . ($sub==1 ? 
     ",
@@ -31,6 +32,7 @@ SELECT
     F2.F_address as F_address2,
     F2.F_timeStamp as F_timeStamp2,
     F2.F_fileSize as F_fileSize2,
+    F2.F_comment as F_comment2,
     F2.F_hash as F_hash2,
     S.U_id as U_id2,
     S.S_id as S_id2,

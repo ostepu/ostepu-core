@@ -345,8 +345,8 @@ class DBCourse
      */
     public function getAllCourses()
     {    
-        $this->get("getAllCourses",
-                "Sql/getAllCourses.sql",
+        $this->get("GetAllCourses",
+                "Sql/GetAllCourses.sql",
                 isset($userid) ? $userid : "",
                 isset($courseid) ? $courseid : "",
                 isset($esid) ? $esid : "",

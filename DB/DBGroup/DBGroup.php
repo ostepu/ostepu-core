@@ -367,8 +367,8 @@ class DBGroup
      */
     public function getUserSheetGroups($userid, $esid)
     {    
-        $this->get("getUserSheetGroups",
-                "Sql/getUserSheetGroups.sql",
+        $this->get("GetUserSheetGroups",
+                "Sql/GetUserSheetGroups.sql",
                 isset($userid) ? $userid : "",
                 isset($courseid) ? $courseid : "",
                 isset($esid) ? $esid : "",

@@ -349,8 +349,8 @@ class DBExternalId
      */
     public function getCourseExternalIds($courseid)
     {    
-            $this->get("getCourseExternalIds",
-                "Sql/getCourseExternalIds.sql",
+            $this->get("GetCourseExternalIds",
+                "Sql/GetCourseExternalIds.sql",
                 isset($userid) ? $userid : "",
                 isset($courseid) ? $courseid : "",
                 isset($esid) ? $esid : "",

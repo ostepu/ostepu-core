@@ -11,6 +11,7 @@ select
     F_address,
     F_timeStamp,
     F_fileSize,
+    F_comment,
     F_hash
 from
     File

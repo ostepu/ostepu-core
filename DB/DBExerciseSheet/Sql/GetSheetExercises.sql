@@ -23,6 +23,7 @@ select
     F.F_timeStamp,
     F.F_fileSize,
     F.F_hash,
+    F.F_comment,
     S.U_id as U_id2,
     S.S_id as S_id2,
     S.F_id_file as F_id_file2,

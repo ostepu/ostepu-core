@@ -366,8 +366,8 @@ class DBApprovalCondition
      */
     public function getCourseApprovalConditions($courseid)
     {      
-         $this->get("getCourseApprovalConditions",
-                "Sql/getCourseApprovalConditions.sql",
+         $this->get("GetCourseApprovalConditions",
+                "Sql/GetCourseApprovalConditions.sql",
                 isset($userid) ? $userid : "",
                 isset($courseid) ? $courseid : "",
                 isset($esid) ? $esid : "",
