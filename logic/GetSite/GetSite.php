@@ -471,7 +471,7 @@ class LgetSite
                 foreach ($exercise['submissions'] as $submission) {
                     // for all submissions belonging to $exercise
 
-                    foreach ($$group['members'] as $member) {
+                    foreach ($group['members'] as $member) {
 
                         // for each member of $group test if the member has
                         // submitted $submissin
