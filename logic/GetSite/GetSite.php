@@ -670,7 +670,23 @@ class LgetSite
         $answer = Request::custom('GET', $URL, $header, $body);
         $sheets = json_decode($answer['content'], true);
 
+        // returns all students of the course
+        $URL = $this->lURL . '/DB/user/course/' . $courseid;
+        $courseUser = Request::custom('GET', $URL, $header, $body);
+        $courseUser = json_decode($courseUser['content'], true);
+
         foreach ($sheets as &$sheet) {
+
+            // returns all selected submissions for the sheet
+            $URL = $this->lURL . '/DB/selectedsubmission/exercisesheet/'.$sheet['id'];
+            $selectedSubmissions = Request::custom('GET', $URL, $header, $body);
+            $selectedSubmissions = json_decode($selectedSubmissions['content'], true);
+
+            // adds counts for the additional information in the footer
+            $sheet['courseUserCount'] = count($courseUser);
+            $sheet['studentsWithSubmissionCount'] = count($selectedSubmissions);
+            $sheet['studentsWithoutSubmissionCount'] = $sheet['courseUserCount'] - $sheet['studentsWithSubmissionCount'];
+
             foreach ($sheet['exercises'] as &$exercise) {
                 foreach ($exerciseTypes as $exerciseType) {
                     if ($exerciseType['id'] == $exercise['type']) {
