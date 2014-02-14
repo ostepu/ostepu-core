@@ -450,10 +450,12 @@ class LgetSite
          * @todo maybe this should be available as a function?
          */
         // add the name of the exercise type to the exercise
-        foreach ($exercises as &$exercise) {
-            foreach ($exerciseTypes as $exerciseType) {
-                if ($exerciseType['id'] == $exercise['type']) {
-                    $exercise['typeName'] = $exerciseType['name'];
+        if (isset($exercises)) {
+            foreach ($exercises as &$exercise) {
+                foreach ($exerciseTypes as $exerciseType) {
+                    if ($exerciseType['id'] == $exercise['type']) {
+                        $exercise['typeName'] = $exerciseType['name'];
+                    }
                 }
             }
         }
@@ -461,24 +463,26 @@ class LgetSite
         foreach ($response['groups'] as &$group) {
             // for all groups for the sheet with id $sheetid
 
-            foreach ($exercises as $idx => $exercise) {
-                // for all exercises of the sheet with id $seetid
+            if (isset($exercises)) {
+                foreach ($exercises as $idx => $exercise) {
+                    // for all exercises of the sheet with id $seetid
 
-                $group['exercises'][$idx] = $exercise;
-                unset($group['exercises'][$idx]['submissions']);
-                $group['exercises'][$idx]['submission'] = array();
+                    $group['exercises'][$idx] = $exercise;
+                    unset($group['exercises'][$idx]['submissions']);
+                    $group['exercises'][$idx]['submission'] = array();
 
-                foreach ($exercise['submissions'] as $submission) {
-                    // for all submissions belonging to $exercise
+                    foreach ($exercise['submissions'] as $submission) {
+                        // for all submissions belonging to $exercise
 
-                    foreach ($group['members'] as $member) {
+                        foreach ($group['members'] as $member) {
 
-                        // for each member of $group test if the member has
-                        // submitted $submissin
+                            // for each member of $group test if the member has
+                            // submitted $submissin
 
-                        if ($member['id'] == $submission['userID']) {
-                            // a member of the
-                            $group['exercises'][$idx]['submission'] = $submission;
+                            if ($member['id'] == $submission['studentId']) {
+                                // a member of the
+                                $group['exercises'][$idx]['submission'] = $submission;
+                            }
                         }
                     }
                 }
