@@ -168,7 +168,7 @@ class LgetSite
                     unset($marking['submission']['selectedForGroup']);
                     $tutorAssignment['submissions'][] = $marking['submission'];
                     //ID's aller bereits zugeordneten Submissions speicher
-                    $assignedSubmissionIDs[] = $marking['submission']['id'];
+                    $assignedSubmissionIDs[] = $marking['submission']['submissionId'];
                     break;
                 }
             }
