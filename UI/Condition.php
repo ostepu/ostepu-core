@@ -68,6 +68,45 @@ $condition_data = json_decode($condition_data, true);
 
 $user_course_data = $condition_data['user'];
 
+// manages table sort
+if (isset($_GET['sortby'])) {
+    $sortBy = cleanInput($_GET['sortby']);
+
+    switch ($sortBy) {
+        case "firstName":
+            function compare_firstName($a, $b) {
+                return strnatcmp($a['firstName'], $b['firstName']);
+            }
+            usort($condition_data['users'], 'compare_firstName');
+            break;
+
+        case "lastName":
+            function compare_lastName($a, $b) {
+                return strnatcmp($a['lastName'], $b['lastName']);
+            }
+            usort($condition_data['users'], 'compare_lastName');
+            break;
+
+        /**
+         * @todo Change when 'Matrikelnummer' is included in database. 
+         */
+        case "userName":
+            function compare_userName($a, $b) {
+                return $a['userName'] < $b['userName'];
+            }
+            usort($condition_data['users'], 'compare_userName');
+            break;
+
+        case "isApproved":
+            function compare_isApproved($a, $b) {
+                return strnatcmp($a['isApproved'], $b['isApproved']);
+            }
+            usort($condition_data['users'], 'compare_isApproved');
+            break;
+    }
+}
+
+
 $menu = MakeNavigationElementForCourseStatus($user_course_data['courses'],
                                              PRIVILEGE_LEVEL::ADMIN,
                                              true);

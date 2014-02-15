@@ -6,24 +6,64 @@
     <div class="content-body-wrapper">
         <div class="content-body left">
             <?php
+                $fileName = "Condition.php";
+
                 if (isset($users[0])) {
             ?>
             <table>
                 <tr class="bold">
                     <th>
-                        Name
+                        <?php
+                            print '<a class="body-option-color plain" href="';
+                            print $fileName;
+                            print '?cid=';
+                            print $user['courses'][0]['course']['id'];
+                            print '&sortby=firstName">Vorname</a>';
+                        ?>
                     </th>
                     <th>
-                        Matrikel
+                        <?php
+                            print '<a class="body-option-color plain" href="';
+                            print $fileName;
+                            print '?cid=';
+                            print $user['courses'][0]['course']['id'];
+                            print '&sortby=lastName">Nachname</a>';
+                        ?>
                     </th>
                     <th>
-                        Zulassung
+                        <?php
+                            print '<a class="body-option-color plain" href="';
+                            print $fileName;
+                            print '?cid=';
+                            print $user['courses'][0]['course']['id'];
+                            print '&sortby=userName">Matrikel</a>';
+                        ?>
+                    </th>
+                    <th>
+                        <?php
+                            print '<a class="body-option-color plain" href="';
+                            print $fileName;
+                            print '?cid=';
+                            print $user['courses'][0]['course']['id'];
+                            print '&sortby=isApproved">Zulassung</a>';
+                        ?>
                     </th>
                     <?php
                         // prints all exercise types as header
                         foreach ($minimumPercentages as $percentage) {
                             print "<th colspan=\"2\">";
+
+                            /**
+                             * @todo Sort by exerciseType doesn't work yet.
+                             */
+                            print '<a class="body-option-color plain" href="';
+                            print $fileName;
+                            print '?cid=';
+                            print $user['courses'][0]['course']['id'];
+                            print '&sortby=isApproved">';
                             print $percentage['exerciseType'] . " (max. " . $percentage['maxPoints'] . "P)";
+                            print '</a>';
+
                             print "</th>";
                         }
                     ?>
@@ -33,9 +73,14 @@
                     foreach ($users as $user) {
                         print "<tr>";
 
-                        // firstName and lastName
+                        // firstName
                         print "<td>";
-                        print $user['firstName'] . " " . $user['lastName'];
+                        print $user['firstName'];
+                        print "</td>";
+
+                        // lastName
+                        print "<td>";
+                        print $user['lastName'];
                         print "</td>";
 
                         // userId

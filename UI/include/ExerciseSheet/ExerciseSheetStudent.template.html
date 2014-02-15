@@ -98,7 +98,7 @@ foreach ($sheets as $sheet):
                         ?>
 
                         <?php
-                            // creates a downloadAttachemnt icon for the exercise (if it exists)
+                            // creates a downloadAttachment icon for the exercise (if it exists)
                             if(isset($exercise['attachment'])) {
                                 $displayName = $exercise['attachment']['displayName'];
                                 $fileAddress = $exercise['attachment']['address'];
@@ -165,13 +165,26 @@ foreach ($sheets as $sheet):
                 </li>
                 <li>
                     <?php
+                    /**
+                     * @todo Only show if there are any attachments.
+                     */
                         print '<a href="Student.php?cid=';
-                        print $cid . '&action=downloadAttachemnts';
+                        print $cid . '&action=downloadAttachments';
                         print '&sid=' . $sheet['id'];
                         print '">Alle Anhänge herunterladen</a>';
                     ?>
                 </li>
-                <li><a href="#">Alle Einsendungen herunterladen</a></li>
+                <li>
+                    <?php
+                    /**
+                     * @todo Only show if there are any markings.
+                     */
+                        print '<a href="Student.php?cid=';
+                        print $cid . '&action=downloadMarkings';
+                        print '&sid=' . $sheet['id'];
+                        print '">Alle Einsendungen herunterladen</a>';
+                    ?>
+                </li>
             </ol>
         </div>
     </div> <!-- end: content-body-wrapper -->

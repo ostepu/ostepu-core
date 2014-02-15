@@ -1,78 +1,106 @@
+<?php
+foreach ($groups as $group):
+?>
 <div class="content-element">
     <div class="content-header">
-        <div class="content-title left uppercase">Max Mustermann (211234123)</div>
+        <div class="content-title left uppercase"><?php print $group['leader']['firstName'] . " " . $group['leader']['lastName']; ?></div>
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body left">
             <ol class="full-width-exercise-list">
+                <?php
+                    foreach ($group['exercises'] as $exercise) {
+                ?>
                 <li>
-                    <input class="form-field text-input very-short" name="exercisePoints" value="1" id="exercisePoints" />
-                    <label class="form-field label very-short" for="exercisePoints">TP (2)</label> 
-                    <input class="form-field text-input" name="markingComment" value="Kommentar ..." id="markingComment" />
+                    <?php
+                        print '<input class="form-field text-input very-short" name="exercisePoints" value="';
+                        print $exercise['submission']['marking']['points'];
+                        print '" id="exercisePoints" />';
+                    ?>
+
+                    <label class="form-field label very-short" for="exercisePoints">
+                        <?php
+                            print $exercise['typeName'];
+                            print ' ' . $$exercise['maxPoints'];
+                        ?>
+                    </label>
+
+                    <?php
+                        print '<input class="form-field text-input" name="markingComment" value="';
+                        print $exercise['submission']['marking']['tutorComment'];
+                        print '" id="markingComment" />';
+                    ?>
+
                     <select class="form-field text-input very-short" name="exerciseType" id="exerciseType"> 
                         <option value="1">uk</option>
                         <option value="2">k</option>
                         <option value="3">vl</option>
                         <option value="4">ne</option>
                     </select>
-                    <div class="exercise-sheet-images right">
-                        <img src="Images/Download.png" /> 
-                        <img src="Images/DownloadCorrection.png" />
-                    </div> 
-                </li>
-                <li class="skip-item">
-                    <ol class="full-width-exercise-list secondLevel">
-                        <li>
-                            <input class="form-field text-input very-short" name="exercisePoints" value="1" id="exercisePoints" />
-                            <label class="form-field label very-short" for="exercisePoints">TP (2)</label> 
-                            <input class="form-field text-input" name="markingComment" value="Kommentar ..." id="markingComment" />
-                            <select class="form-field text-input very-short" name="exerciseType" id="exerciseType"> 
-                                <option value="1">uk</option>
-                                <option value="2">k</option>
-                                <option value="3">vl</option>
-                                <option value="4">ne</option>
-                            </select>
-                            <div class="exercise-sheet-images right">
-                                    <img src="Images/Download.png" /> 
-                                    <img src="Images/DownloadCorrection.png" />
-                            </div> 
-                        </li>
-                        <li>
-                            <input class="form-field text-input very-short" name="exercisePoints" value="1" id="exercisePoints" />
-                            <label class="form-field label very-short" for="exercisePoints">TP (2)</label> 
-                            <input class="form-field text-input" name="markingComment" value="Kommentar ..." id="markingComment" />
-                            <select class="form-field text-input very-short" name="exerciseType" id="exerciseType"> 
-                                <option value="1">uk</option>
-                                <option value="2">k</option>
-                                <option value="3">vl</option>
-                                <option value="4">ne</option>
-                            </select>
-                            <div class="exercise-sheet-images right">
-                                    <img src="Images/Download.png" /> 
-                                    <img src="Images/DownloadCorrection.png" />
-                            </div> 
-                        </li>
-                    </ol>
-                </li>
-                <li>
-                    <input class="form-field text-input very-short" name="exercisePoints" value="1" id="exercisePoints" />
-                    <label class="form-field label" for="exercisePoints">PP (2)</label> 
-                    <input class="form-field text-input" name="markingComment" value="Kommentar ..." id="markingComment" />
-                    <select class="form-field text-input very-short" name="exerciseType" id="exerciseType"> 
-                        <option value="1">uk</option>
-                        <option value="2">k</option>
-                        <option value="3">vl</option>
-                        <option value="4">ne</option>
-                    </select>
+
                     <a href="#" class="body-option-color">Kommentar des Studenten</a>
+
                     <div class="exercise-sheet-images right">
-                        <img src="Images/Download.png" /> 
-                        <img src="Images/DownloadCorrection.png" />
+                        <?php
+                            // creates a download icon for the submission (if it exists)
+                            if(isset($exercise['submission'])) {
+                                $displayName = $exercise['submission']['file']['displayName'];
+                                $fileAddress = $exercise['submission']['file']['address'];
+                                $fileURL = $filesystemURI . '/' . $fileAddress . '/' . $displayName;
+
+                                print '<a href="';
+                                print $fileURL;
+                                print '" title="';
+                                print $displayName;
+                                print '" class="plain" target="_blank">';
+                                print '<img src="Images/Download.png" />';
+                                print '</a>';
+                            }
+                        ?>
+
+                        <?php
+                            // creates a downloadCorrection icon for the marking (if it exists)
+                            if(isset($exercise['submission']['marking'])) {
+                                $displayName = $exercise['submission']['marking']['file']['displayName'];
+                                $fileAddress = $exercise['submission']['marking']['file']['address'];
+                                $fileURL = $filesystemURI . '/' . $fileAddress . '/' . $displayName;
+
+                                print '<a href="';
+                                print $fileURL;
+                                print '" title="';
+                                print $displayName;
+                                print '" class="plain" target="_blank">';
+                                print '<img src="Images/DownloadCorrection.png" />';
+                                print '</a>';
+                            }
+                        ?>
                     </div> 
                 </li>
+                <?php
+                    }
+                ?>
             </ol>
 
         </div>
     </div> <!-- end: content-body -->
+
+    <?php
+        // prints a footer list-item for every group member of the sheet
+        if (isset($group['members'][0])) {
+            print '<div class="content-footer">';
+            print '<ol>';
+            print '<li class="footer-text bold">Weitere Gruppenmitglieder:</li>';
+            foreach ($group['members'] as $member):
+                print '<li class="footer-text">';
+                print $member['firstName'] . " " . $member['lastName'];
+                print '</li>';
+            endforeach;
+            print '</ol>';
+            print '</div>';
+        }
+    ?>
 </div> <!-- end: content-wrapper -->
+<?php
+endforeach;
+?>

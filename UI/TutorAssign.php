@@ -1,6 +1,7 @@
 <?php
 /**
  * @file TutorAssign.php
+ * Constructs the page for managing tutor assignments.
  *
  * @author Felix Schmidt
  * @author Florian Lücke
@@ -9,25 +10,17 @@
 
 include_once 'include/Boilerplate.php';
 
-if (isset($_POST['action'])) {
-    Logger::Log($_POST, LogLevel::INFO);
-    /**
-     * @todo assign tutors based on the selected method
-     */
-
-    // redirect, so the user can reload the page without a warning
-    header("Location: TutorAssign.php");
-} else {
-    Logger::Log("No Assignment Data", LogLevel::INFO);
-}
-
 /**
- * @todo Combine user course and status request into GetSite request
+ * @todo Remove $sid.
  */
-// load user and course data from the database
-$databaseURL = $databaseURI . "/coursestatus/course/{$cid}/user/{$uid}";
-$user_course_data = http_get($databaseURL, true, $message);
-$user_course_data = json_decode($user_course_data, true);
+$sid = 40;
+
+// load user data from the database
+$URL = $getSiteURI . "/tutorassign/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
+$tutorAssign_data = http_get($URL, false);
+$tutorAssign_data = json_decode($tutorAssign_data, true);
+
+$user_course_data = $tutorAssign_data['user'];
 
 // check userrights for course
 Authentication::checkRights(1, $cid, $uid, $user_course_data);
@@ -37,24 +30,18 @@ $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
 $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
                "backTitle" => "zur Veranstaltung",
-               "backURL" => "Tutor.php?cid={$cid}",
+               "backURL" => "Admin.php?cid={$cid}",
                "notificationElements" => $notifications));
 
-$databaseURL = $databaseURI . "/tutorassignment/course/{$cid}/exercisesheet/{$sid}";
-$data = http_get($databaseURL, true);
-$data = json_decode($data, true);
-
-$tutorAssignment = array("tutorAssignments" => $data);
-
-// construct a content element for managing groups
+// construct a content element for assigning tutors automatically
 $assignAutomatically = Template::WithTemplateFile('include/TutorAssign/AssignAutomatically.template.html');
-$assignAutomatically->bind($tutorAssignment);
+$assignAutomatically->bind($tutorAssign_data);
 
-// construct a content element for creating groups
+// construct a content element for assigning tutors manually
 $assignManually = Template::WithTemplateFile('include/TutorAssign/AssignManually.template.html');
-$assignManually->bind($tutorAssignment);
+$assignManually->bind($tutorAssign_data);
 
-// construct a content element for joining groups
+// construct a content element for removing assignments from tutors
 $assignCancel = Template::WithTemplateFile('include/TutorAssign/AssignRemove.template.html');
 
 // wrap all the elements in some HTML and show them on the page
