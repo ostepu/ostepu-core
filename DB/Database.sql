@@ -126,7 +126,7 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`Group` (
   CONSTRAINT `redundanz`
     FOREIGN KEY (`C_id` , `ES_id`)
     REFERENCES `uebungsplattform`.`ExerciseSheet` (`C_id` , `ES_id`)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE CASCADE,
   CONSTRAINT `fk_Group_Course1`
     FOREIGN KEY (`C_id`)
@@ -223,7 +223,7 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`Exercise` (
   CONSTRAINT `redundanz2`
     FOREIGN KEY (`C_id` , `ES_id`)
     REFERENCES `uebungsplattform`.`ExerciseSheet` (`C_id` , `ES_id`)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE CASCADE,
   CONSTRAINT `fk_Exercise_Course1`
     FOREIGN KEY (`C_id`)
@@ -269,7 +269,7 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`Submission` (
   CONSTRAINT `redundanz5`
     FOREIGN KEY (`ES_id` , `E_id`)
     REFERENCES `uebungsplattform`.`Exercise` (`ES_id` , `E_id`)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE CASCADE,
   CONSTRAINT `fk_Submission_ExerciseSheet1`
     FOREIGN KEY (`ES_id`)
@@ -316,7 +316,7 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`Marking` (
   CONSTRAINT `redundanz6`
     FOREIGN KEY (`ES_id` , `E_id` , `S_id`)
     REFERENCES `uebungsplattform`.`Submission` (`ES_id` , `E_id` , `S_id`)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE CASCADE,
   CONSTRAINT `fk_Marking_ExerciseSheet1`
     FOREIGN KEY (`ES_id`)
@@ -356,7 +356,7 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`Attachment` (
   CONSTRAINT `redundanz3`
     FOREIGN KEY (`ES_id` , `E_id`)
     REFERENCES `uebungsplattform`.`Exercise` (`ES_id` , `E_id`)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE CASCADE,
   CONSTRAINT `fk_Attachment_ExerciseSheet1`
     FOREIGN KEY (`ES_id`)
@@ -401,6 +401,7 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`SelectedSubmission` (
   `ES_id` INT NULL,
   PRIMARY KEY (`U_id_leader`, `E_id`),
   INDEX `redundanz7` USING BTREE (`ES_id` ASC, `E_id` ASC),
+  UNIQUE INDEX `S_id_selected_UNIQUE` (`S_id_selected` ASC),
   CONSTRAINT `fk_SelectedSubmission_User1`
     FOREIGN KEY (`U_id_leader`)
     REFERENCES `uebungsplattform`.`User` (`U_id`)
@@ -419,7 +420,7 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`SelectedSubmission` (
   CONSTRAINT `redundanz7`
     FOREIGN KEY (`ES_id` , `E_id`)
     REFERENCES `uebungsplattform`.`Exercise` (`ES_id` , `E_id`)
-    ON DELETE CASCADE
+    ON DELETE NO ACTION
     ON UPDATE CASCADE,
   CONSTRAINT `fk_SelectedSubmission_ExerciseSheet1`
     FOREIGN KEY (`ES_id`)
@@ -779,6 +780,19 @@ begin
 if ((SELECT COUNT(G.U_id_leader) FROM `Group` G WHERE G.U_id_member = NEW.U_id_member AND G.ES_id = NEW.ES_id)+(SELECT COUNT(U_id_member) FROM Invitation WHERE U_id_member = NEW.U_id_member AND ES_id = NEW.ES_id))>=(SELECT E.ES_groupSize FROM ExerciseSheet E WHERE E.ES_id = NEW.ES_id) 
 then SIGNAL sqlstate '45001' set message_text = "maximal groupsize reached";
 end if;
+end;$$
+
+USE `uebungsplattform`$$
+CREATE TRIGGER `CourseStatus_AINS` AFTER INSERT ON `CourseStatus` FOR EACH ROW
+/*add group for the new member in this course
+@author: Lisa Dietrich */
+begin
+/*if NEW.CS_status = 0 then
+INSERT INTO `Group` 
+SELECT NEW.U_id , NEW.U_id , null, E.ES_id 
+FROM ExerciseSheet E
+WHERE E.C_id = NEW.C_id;
+end if;*/
 end;$$
 
 USE `uebungsplattform`$$
