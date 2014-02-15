@@ -97,6 +97,16 @@ class DBSelectedSubmission
         $this->_app->delete('/' . $this->getPrefix() . 
                             '/leader/:userid/exercise/:eid(/)',
                             array($this,'deleteSelectedSubmission'));
+                            
+        // PUT EditSubmissionSelectedSubmission
+        $this->_app->put('/' . $this->getPrefix() . 
+                        '/submission/:suid(/)',
+                        array($this,'editSubmissionSelectedSubmission'));
+        
+        // DELETE DeleteSubmissionSelectedSubmission
+        $this->_app->delete('/' . $this->getPrefix() . 
+                            '/submission/:suid(/)',
+                            array($this,'deleteSubmissionSelectedSubmission'));
         
         // POST AddSelectedSubmission
         $this->_app->post('/' . $this->getPrefix() . '(/)',
@@ -169,7 +179,55 @@ class DBSelectedSubmission
         }
     }
 
+    
+    /**
+     * Sets the submission that should be marked.
+     *
+     * Called when this component receives an HTTP PUT request to
+     * /selectedsubmission/submission/$suid(/).
+     * The request body should contain a JSON object representing the new selectedSubmission.
+     *
+     * @param string $suid The id or the submission.
+     */
+    public function editSubmissionSelectedSubmission($suid)
+    {
+        Logger::Log("starts PUT EditSubmissionSelectedSubmission",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($suid));
 
+        // decode the received selected submission data, as an object
+        $insert = SelectedSubmission::decodeSelectedSubmission($this->_app->request->getBody());
+
+        // always been an array
+        if (!is_array($insert))
+            $insert = array($insert);
+
+        foreach ($insert as $in){
+            // generates the update data for the object
+            $data = $in->getInsertData();
+ 
+            // starts a query, by using a given file
+            $result = DBRequest::getRoutedSqlFile($this->query, 
+                                    "Sql/EditSubmissionSelectedSubmission.sql", 
+                                    array("suid" => $suid, "values" => $data));                   
+ 
+            // checks the correctness of the query
+            if ($result['status']>=200 && $result['status']<=299){
+                $this->_app->response->setStatus(201);
+                if (isset($result['headers']['Content-Type']))
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+                
+            } else{
+                Logger::Log("PUT EditSubmissionSelectedSubmission failed",LogLevel::ERROR);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
+                $this->_app->stop();
+            }
+        }
+    }
+    
+    
     /**
      * Unsets the submission that should be marked.
      *
@@ -207,7 +265,42 @@ class DBSelectedSubmission
         }
     }
 
-
+    
+    /**
+     * Unsets the submission that should be marked.
+     *
+     * Called when this component receives an HTTP DELETE request to
+     * /selectedsubmission/submission/$suid(/).
+     *
+     * @param string $suid The id or the submission.
+     */
+    public function deleteSubmissionSelectedSubmission($suid)
+    {
+        Logger::Log("starts DELETE DeleteSubmissionSelectedSubmission",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($suid));
+                            
+        // starts a query, by using a given file
+        $result = DBRequest::getRoutedSqlFile($this->query, 
+                                        "Sql/DeleteSubmissionSelectedSubmission.sql", 
+                                        array("suid" => $suid));    
+        
+        // checks the correctness of the query                          
+        if ($result['status']>=200 && $result['status']<=299){
+        
+            $this->_app->response->setStatus(201);
+            if (isset($result['headers']['Content-Type']))
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+                
+        } else{
+            Logger::Log("DELETE DeleteSubmissionSelectedSubmission failed",LogLevel::ERROR);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
+            $this->_app->stop();
+        }
+    }
+    
     /**
      * Sets the submission that should be marked.
      *
