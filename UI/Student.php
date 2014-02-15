@@ -27,6 +27,22 @@ if (isset($_GET['action']) && isset($_GET['sid'])) {
 
         $location = $filesystemURI . '/' . $zipfile['address'];
         header("Location: {$location}/attachments.zip");
+    } elseif ($_GET['action'] == "downloadMarkings") {
+        $markings = http_get($serverURI . '/logic/Controller/DB/marking/exercisesheet/' . $sid . '/user/' . $uid);
+        $markings = json_decode($markings, true);
+
+        $files = array();
+        foreach ($markings as $marking) {
+            $files[] = $marking['file'];
+        }
+
+        $fileString = json_encode($files);
+
+        $zipfile = http_post_data($filesystemURI . '/' . 'zip',  $fileString);
+        $zipfile = json_decode($zipfile, true);
+
+        $location = $filesystemURI . '/' . $zipfile['address'];
+        header("Location: {$location}/markings.zip");
     }
 }
 
