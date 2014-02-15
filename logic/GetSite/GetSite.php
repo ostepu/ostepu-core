@@ -201,7 +201,7 @@ class LgetSite
                     );
         $response['tutorAssignments'][] = $newTutorAssignment;
 
-        
+
         $this->flag = 1;
         $response['user'] = $this->userWithCourse($userid, $courseid);
 
@@ -590,7 +590,7 @@ class LgetSite
         $this->app->response->setBody(json_encode($response));
     }
 
-    // receives a set of submissions and returns the selected submission only 
+    // receives a set of submissions and returns the selected submission only
     public function getSelectedSubmission($submissions) {
         if (!empty($submissions)) {
             foreach ($submissions as $submission) {
@@ -856,6 +856,9 @@ class LgetSite
         }
 
         // get all markings
+        /**
+         * @todo Could get course markings here instead. '/marking/course/:cid'
+         */
         $allMarkings = array();
         foreach ($exercises as $exercise){
             $URL = $this->lURL.'/DB/marking/exercise/'.$exercise['id'];
