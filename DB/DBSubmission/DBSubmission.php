@@ -128,6 +128,11 @@ class DBSubmission
                         '/group/user/:userid/exercise/:eid/selected(/)',
                         array($this,'getGroupSelectedExerciseSubmissions'));
                         
+        // GET GetGroupSelectedCourseSubmissions
+        $this->_app->get('/' . $this->getPrefix() . 
+                        '/group/user/:userid/course/:courseid/selected(/)',
+                        array($this,'getGroupSelectedCourseSubmissions'));
+                        
         // GET GetSelectedSheetSubmissions  
         $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid/selected(/)',
                         array($this,'getSelectedSheetSubmissions'));                 
@@ -438,7 +443,30 @@ class DBSubmission
                 isset($mid) ? $mid : "");
     }
 
-
+    
+    /**
+     * Returns the submissions of a given group of a specific course
+     * which should be marked.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /submission/group/user/$userid/course/$courseid/selected(/).
+     *
+     * @param int $userid The id of the user.
+     * @param int $courseid The id of the course.
+     */
+    public function getGroupSelectedCourseSubmissions($userid, $courseid)
+    {       
+        $this->get("GetGroupSelectedCourseSubmissions",
+                "Sql/GetGroupSelectedCourseSubmissions.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($mid) ? $mid : "");
+    }
+    
+    
     /**
      * Returns all submissions (including overwritten ones) of a given group
      * of a specific exercise.

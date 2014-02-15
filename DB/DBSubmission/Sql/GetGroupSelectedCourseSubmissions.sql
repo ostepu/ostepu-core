@@ -1,8 +1,8 @@
 /**
- * @file GetGroupSelectedeSubmissions.sql
+ * @file GetGroupSelectedCourseSubmissions.sql
  * gets the specified selected submissions from %Submission table
  * @author Till Uhlig
- * @param int \$esid an %ExerciseSheet identifier
+ * @param int \$courseid an %Course identifier
  * @param int \$userid a %User identifier
  * @result 
  * - F, the submission file
@@ -33,11 +33,11 @@ from
         join
     `Group` G2 ON (G.U_id_leader = '$userid'
         and G.U_id_member = G2.U_id_member
-        and G.ES_id = '$esid'
+        and G.C_id = '$courseid'
         and G2.ES_id = G.ES_id)
         join
     (Submission S
-    join Exercise E ON (S.E_id = E.E_id and E.ES_id = '$esid')) ON (G2.U_id_leader = S.U_id)
+    join Exercise E ON (S.E_id = E.E_id and E.C_id = '$courseid')) ON (G2.U_id_leader = S.U_id)
         join
     File F ON (S.F_id_file = F.F_id)
         join
