@@ -464,16 +464,16 @@ class LgetSite
     public function getMarkingStatusDefinitions()
     {
         return array(array('id' => 0,
-                           'shortName' => 'UK',
+                           'shortName' => 'uk',
                            'longName' => 'unkorrigiert'),
                      array('id' => 1,
-                           'shortName' => 'VL',
+                           'shortName' => 'vl',
                            'longName' => utf8_encode('vorläufig')),
                      array('id' => 2,
-                           'shortName' => 'K',
+                           'shortName' => 'k',
                            'longName' => utf8_encode('endgültig korrigiert')),
                      array('id' => 3,
-                           'shortName' => 'NE',
+                           'shortName' => 'ne',
                            'longName' => 'nicht eingesendet'));
     }
 
