@@ -1,5 +1,9 @@
 <?php
-foreach ($students as $group):
+foreach ($markingStatus as $status) {
+    $statusShortNames[] = $status['shortName'];
+}
+
+foreach ($groups as $group):
 ?>
 <div class="content-element">
     <div class="content-header">
@@ -22,7 +26,7 @@ foreach ($students as $group):
                     <label class="form-field label very-short" for="exercisePoints">
                         <?php
                             print $exercise['typeName'];
-                            print ' ' . $$exercise['maxPoints'];
+                            print '/ ' . $exercise['maxPoints'] . 'P';
                         ?>
                     </label>
 
@@ -33,15 +37,19 @@ foreach ($students as $group):
                     ?>
 
                     <select class="form-field text-input very-short" name="exerciseType" id="exerciseType"> 
-                        <option value="1">uk</option>
-                        <option value="2">k</option>
-                        <option value="3">vl</option>
-                        <option value="4">ne</option>
+                        <?php
+                            foreach ($markingStatus as $status) {
+                                print '<option value="';
+                                print $status['id'] . '"';
+                                print $status['id'] == $exercise['submission']['marking']['status'] ? ' selected="selected"' : NULL;
+                                print '>';
+                                print $status['shortName'];
+                                print '</option>';
+                            }
+                        ?>
                     </select>
 
-                    <a href="#" class="body-option-color">Kommentar des Studenten</a>
-
-                    <div class="exercise-sheet-images right">
+                    <div class="exercise-sheet-images">
                         <?php
                             // creates a download icon for the submission (if it exists)
                             if(isset($exercise['submission'])) {
@@ -75,7 +83,19 @@ foreach ($students as $group):
                                 print '</a>';
                             }
                         ?>
-                    </div> 
+                    </div>
+
+                    <?php
+                        $studentComment = $exercise['submission']['comment'];
+
+                        if (!empty($studentComment)) {
+                            print '<a href="javascript:alert(\'';
+                            print $studentComment;
+                            print '\')" class="body-option-color right">';
+                            print 'Kommentar des Studenten';
+                            print '</a>';
+                        }
+                    ?>
                 </li>
                 <?php
                     }
