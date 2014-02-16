@@ -468,10 +468,10 @@ class LgetSite
                            'longName' => 'unkorrigiert'),
                      array('id' => 1,
                            'shortName' => 'vl',
-                           'longName' => utf8_encode('vorläufig')),
+                           'longName' => 'vorläufig'),
                      array('id' => 2,
                            'shortName' => 'k',
-                           'longName' => utf8_encode('endgültig korrigiert')),
+                           'longName' => 'endgültig korrigiert'),
                      array('id' => 3,
                            'shortName' => 'ne',
                            'longName' => 'nicht eingesendet'));
