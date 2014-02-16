@@ -500,11 +500,15 @@ class LgetSite
         $answer = Request::custom('GET', $URL, $header, $body);
         $markings = json_decode($answer['content'], true);
 
-        $URL = "{$this->lURL}/DB/user/course/{$courseid}";
+        $URL = "{$this->lURL}/DB/user/course/{$courseid}/status/1";
         $answer = Request::custom('GET', $URL, $header, $body);
-        $users = json_decode($answer['content'], true);
+        $tutors = json_decode($answer['content'], true);
 
-        // collect all sheetIds and find the current sheet
+        $URL = "{$this->lURL}/DB/group/exercisesheet/{$sheetid}";
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $groups = json_decode($answer['content'], true);
+
+        // find the current sheet and it's exercises
         foreach ($sheets as &$sheet) {
             $thisSheetId = $sheet['id'];
 
@@ -517,62 +521,49 @@ class LgetSite
         }
 
         if (isset($thisExerciseSheet) == false) {
-            $this->app->halt(404, "");
+            $this->app->halt(404, '{"code":404,reason":"invalid sheet id"}');
         }
 
-        // reverse marking and submission, oder by user and exercise
-        $userExerciseSubmissions = array();
+        // save a reference to each user's group and add exercises to each group
+        $userGroups = array();
+        foreach ($groups as &$group) {
+            $leaderId = $group['leader']['id'];
+            $userGroups[$leaderId] = &$group;
+
+            foreach ($group['members'] as $member) {
+                $memberId = $member['id'];
+                $userGroups[$memberId] = &$group;
+            }
+
+            $group['exercises'] = $exercises;
+        }
+
+        // save the index of each exercise
+        $exerciseIndices = array();
+        foreach ($exercises as $idx => $exercise) {
+            $exerciseId = $exercise['id'];
+            $exerciseIndices[$exerciseId] = $idx;
+        }
+
         foreach ($markings as $marking) {
+
+            // reverse marking and submission
             $submission = $marking['submission'];
             unset($marking['submission']);
-
             $submission['marking'] = $marking;
-            $studentId = $submission['studentId'];
-
-            if (isset($userExerciseSubmissions[$studentId])) {
-                $userExerciseSubmissions[$studentId] = array();
-            }
 
             $exerciseId = $submission['exerciseId'];
-            $userExerciseSubmissions[$studentId][$exerciseId] = $submission;
+            $exerciseIndex = $exerciseIndices[$exerciseId];
+            $studentId = $submission['studentId'];
+
+            // assign the submission to its group
+            $group = &$userGroups[$studentId];
+            $groupExercises = &$group['exercises'];
+            $groupExercises[$exerciseIndex]['submission'] = $submission;
         }
 
-        // find students and tutors
-        $students = array();
-        $tutors = array();
-        foreach ($users as &$user) {
-            $courseStatus = $user['courses'][0];
-            $status = $courseStatus['status'];
-
-            unset($user['courses']);
-            unset($user['password']);
-            unset($user['salt']);
-
-            if ($status == 0) {
-                $students[] = $user;
-            } elseif ($status == 1) {
-                $tutors[] = $user;
-            }
-        }
-
-        foreach ($students as &$student) {
-            $student['exercises'] = $exercises;
-            $studentId = $student['id'];
-
-            foreach ($student['exercises'] as &$exercise) {
-                $exerciseId = $exercise['id'];
-
-                if (isset($userExerciseSubmissions[$studentId])) {
-                    if (isset($userExerciseSubmissions[$studentId][$exerciseId])) {
-                        $submission = $userExerciseSubmissions[$studentId][$exerciseId];
-                        $exercise['submission'] = $submission;
-                    }
-                }
-            }
-        }
-
+        $response['groups'] = $groups;
         $response['tutors'] = $tutors;
-        $response['students'] = $students;
         $response['exerciseSheets'] = $sheets;
         $response['markingStatus'] = $this->getMarkingStatusDefinitions();
 
