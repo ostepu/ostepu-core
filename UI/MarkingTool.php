@@ -9,11 +9,41 @@
 
 include_once 'include/Boilerplate.php';
 
-// load MarkingTool data from GetSite
+if (isset($_POST['action'])) {
+    if ($_POST['action'] == "ShowMarkingTool") {
+        if (isset($_POST['sheetID']) && isset($_POST['tutorID']) && isset($_POST['statusID'])) {
+            $sid = cleanInput($_POST['sheetID']);
+            
+            if ($_POST['tutorID'] != "all") {
+                $tutorID = cleanInput($_POST['tutorID']);
+            }
+            if ($_POST['statusID'] != "all") {
+                $statusID = cleanInput($_POST['statusID']);
+            }
+        }
+    }
+}
+
+// create URI for GetSite
 $URI = $getSiteURI . "/markingtool/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
+
+if (!empty($tutorID)) {
+    $URI .= "/tutor/{$tutorID}";
+}
+
+if (!empty($statusID)) {
+    $URI .= "/status/{$statusID}";
+}
+
+// load MarkingTool data from GetSite
 $markingTool_data = http_get($URI, true);
 $markingTool_data = json_decode($markingTool_data, true);
 $markingTool_data['filesystemURI'] = $filesystemURI;
+
+// adds the selected sheetID, tutorID and statusID
+$markingTool_data['sheetID'] = $sid;
+$markingTool_data['tutorID'] = $tutorID;
+$markingTool_data['statusID'] = $statusID;
 
 $user_course_data = $markingTool_data['user'];
 
@@ -28,13 +58,15 @@ $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
                "navigationElement" => $menu));
 
 
-$searchSettings = Template::WithTemplateFile('include/MarkingTool/SearchSettings.template.html');
+$searchSettings = Template::WithTemplateFile('include/MarkingTool/MarkingToolSettings.template.html');
+$searchSettings->bind($markingTool_data);
 
-$markingElement = Template::WithTemplateFile('include/MarkingTool/MarkingElement.template.html');
+$markingElement = Template::WithTemplateFile('include/MarkingTool/MarkingTool.template.html');
 $markingElement->bind($markingTool_data);
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $searchSettings, $markingElement);
+$w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, $searchSettings);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
 

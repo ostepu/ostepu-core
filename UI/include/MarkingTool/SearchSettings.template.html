@@ -1,48 +1,60 @@
+<input type="hidden" name="action" value="ShowMarkingTool">
 <div class="content-element">
     <div class="content-header">
         <div class="content-title left uppercase">Suchfilter</div>
         <div class="info-color bold right">
-            <a href="#">Einsendungen anzeigen</a>
-        </div>   
+            <button class="text-button info-color bold right">Einsendungen anzeigen</button>
+        </div>
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body left">
-            <label class="form-field left label bold" for="SettingExerciseSheet">Serie:</label> 
-            <select class="form-field left text-input" name="SettingExerciseSheet" id="SettingExerciseSheet"> 
-                <option value="1" >1</option>
-                <option value="2" >2</option>
-                <option value="3" >3</option>
+            <label class="form-field left label bold new-line" for="sheetID">Serie auswählen:</label>
+            <select class="form-field left text-input" name="sheetID" id="sheetID">
+                <?php
+                    foreach ($exerciseSheets as $sheet) {
+                        print '<option value="';
+                        print $sheet['id'] . '"';
+                        print $sheet['id'] == $sheetID ? ' selected="selected"' : NULL;
+                        print '>';
+                        print $sheet['sheetName'];
+                        print '</option>';
+                    }
+                ?>
             </select>
 
-            <label class="form-field left label bold new-line" for="SettingsExercise">Aufgabe:</label> 
-            <select class="form-field left text-input" name="SettingsExercise" id="SettingsExercise"> 
-                <option value="1" >Alle</option>
-                <option value="2" >1</option>
-                <option value="3" >2</option>
+            <label class="form-field left label bold new-line" for="tutorID">Kontrolleur:</label> 
+            <select class="form-field left text-input" name="tutorID" id="tutorID">
+                <option value="all">Alle</option>
+                <?php
+                    foreach ($tutors as $tutor) {
+                        print '<option value="';
+                        print $tutor['id'] . '"';
+                        if (!empty($tutorID)) {
+                            print $tutor['id'] == $tutorID ? ' selected="selected"' : NULL;
+                        }
+                        print '>';
+                        print $tutor['firstName'] . ' ' . $tutor['lastName'];
+                        print '</option>';
+                    }
+                ?>
             </select>
 
-            <label class="form-field left label bold new-line" for="SettingStudent">Student:</label> 
-            <select class="form-field left text-input" name="SettingStudent" id="SettingStudent"> 
-                <option value="1" >Alle</option>
-                <option value="2" >Felix Schmidt</option>
-                <option value="3" >Florian Lücke</option>
-            </select>
-
-            <label class="form-field left label bold new-line" for="SettingTutor">Kontrolleur:</label> 
-            <select class="form-field left text-input" name="SettingTutor" id="SettingTutor"> 
-                <option value="1" >Alle</option>
-                <option value="2" >Felix Schmidt</option>
-                <option value="3" >Florian Lücke</option>
-            </select>
-
-            <label class="form-field left label bold new-line" for="SettingStatus">Korrekturstatus:</label> 
-            <select class="form-field left text-input" name="SettingStatus" id="SettingStatus"> 
-                <option value="1" >Alle</option>
-                <option value="2" >Unkontrolliert</option>
-                <option value="3" >Kontrolliert</option>
-                <option value="4" >Nicht eingesendet</option>
-                <option value="5" >Vorläufig</option>
+            <label class="form-field left label bold new-line" for="statusID">Korrekturstatus:</label> 
+            <select class="form-field left text-input" name="statusID" id="statusID">
+                <option value="all">Alle</option>
+                <?php
+                    foreach ($markingStatus as $status) {
+                        print '<option value="';
+                        print $status['id'] . '"';
+                        if (!empty($statusID)) {
+                            print $status['id'] == $statusID ? ' selected="selected"' : NULL;
+                        }
+                        print '>';
+                        print $status['longName'];
+                        print '</option>';
+                    }
+                ?>
             </select>
         </div>
     </div> <!-- end: content-body -->
