@@ -508,6 +508,16 @@ class LgetSite
         $answer = Request::custom('GET', $URL, $header, $body);
         $groups = json_decode($answer['content'], true);
 
+        $URL = $this->lURL.'/DB/exercisetype';
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $possibleExerciseTypes = json_decode($answer['content'], true);
+
+        // oder exercise types by id
+        $exerciseTypes = array();
+        foreach ($possibleExerciseTypes as $exerciseType) {
+            $exerciseTypes[$exerciseType['id']] = $exerciseType;
+        }
+
         // find the current sheet and it's exercises
         foreach ($sheets as &$sheet) {
             $thisSheetId = $sheet['id'];
@@ -524,6 +534,19 @@ class LgetSite
             $this->app->halt(404, '{"code":404,reason":"invalid sheet id"}');
         }
 
+                // save the index of each exercise
+        $exerciseIndices = array();
+        foreach ($exercises as $idx => &$exercise) {
+            $exerciseId = $exercise['id'];
+            $typeId = $exercise['type'];
+
+            $type = $exerciseTypes[$typeId];
+
+            $exercise['typeName'] = $type['name'];
+
+            $exerciseIndices[$exerciseId] = $idx;
+        }
+
         // save a reference to each user's group and add exercises to each group
         $userGroups = array();
         foreach ($groups as &$group) {
@@ -536,13 +559,6 @@ class LgetSite
             }
 
             $group['exercises'] = $exercises;
-        }
-
-        // save the index of each exercise
-        $exerciseIndices = array();
-        foreach ($exercises as $idx => $exercise) {
-            $exerciseId = $exercise['id'];
-            $exerciseIndices[$exerciseId] = $idx;
         }
 
         foreach ($markings as $marking) {
