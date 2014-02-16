@@ -213,17 +213,24 @@ class LgetSite
      *
      * @author Florian Lücke
      */
-    public function studentSiteInfo($userid, $courseid){
+    public function studentSiteInfo($userid, $courseid)
+    {
 
         $response = array('sheets' => array(),
                           'user' => array());
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
 
-        //get Exercisesheets
-        $URL = $this->lURL . '/DB/exercisesheet/course/' . $courseid . '/exercise';
+        //Get neccessary data
+        $URL = $this->lURL . '/DB/exercisesheet/course/' . $courseid
+               . '/exercise';
         $answer = Request::custom('GET', $URL, $header, $body);
         $sheets = json_decode($answer['content'], true);
+
+        $URL = $this->lURL . '/DB/submission/group/user/' . $userid . '/course/'
+               . $courseid . '/selected';
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $submissions = json_decode($answer['content'], true);
 
         $URL = $this->lURL . '/DB/marking/course/' . $courseid;
         $answer = Request::custom('GET', $URL, $header, $body);
@@ -237,14 +244,34 @@ class LgetSite
         $answer = Request::custom('GET', $URL, $header, $body);
         $possibleExerciseTypes = json_decode($answer['content'], true);
 
-        $userMarkingsByExercise = array();
+        // oder submissions by exercise
+        $submissionsByExercise = array();
+        foreach ($submissions as &$submission) {
+            $exerciseId = $submission['exerciseId'];
+            $submissionsByExercise[$exerciseId] = &$submission;
+        }
+
+        // add markings to the submissions
         foreach ($markings as &$marking) {
-            if ($marking['submission']['studentId'] == $userid) {
-                $exerciseID = $marking['submission']['exerciseId'];
-                $userMarkingsByExercise[$exerciseID] = $marking;
+            $studentId = $marking['submission']['studentId'];
+            $exerciseId = $marking['submission']['exerciseId'];
+
+            if (isset($submissionsByExercise[$exerciseId])) {
+                // only check submissions that have the same exercise id
+                // as the marking (there should be 1 at most)
+                $selectedSubmission = &$submissionsByExercise[$exerciseId];
+                $selectedSubmissionStudentId = $selectedSubmission['studentId'];
+
+                if ($selectedSubmissionStudentId == $studentId) {
+                    // the student id of the selected submission and the student
+                    // id of the marking match
+                    unset($marking['submission']);
+                    $selectedSubmission['marking'] = $marking;
+                }
             }
         }
 
+        // order groups by sheet
         $groupsBySheet = array();
         foreach ($groups as $group) {
             if (isset($group['sheetId'])) {
@@ -252,15 +279,17 @@ class LgetSite
             }
         }
 
+        // oder exercise types by id
         $exerciseTypes = array();
         foreach ($possibleExerciseTypes as $exerciseType) {
             $exerciseTypes[$exerciseType['id']] = $exerciseType;
         }
 
-        foreach ($sheets as $i => &$sheet) {
+        foreach ($sheets as &$sheet) {
             $sheetPoints = 0;
             $maxSheetPoints = 0;
 
+            // add group to the sheet
             if (isset($groupsBySheet[$sheet['id']])) {
                 $group = $groupsBySheet[$sheet['id']];
                 $sheet['group'] = $group;
@@ -268,29 +297,32 @@ class LgetSite
                 $sheet['group'] = array();
             }
 
-            foreach ($sheet['exercises'] as $j => &$exercise) {
+            // prepare exercises
+            foreach ($sheet['exercises'] as &$exercise) {
                 $maxSheetPoints += $exercise['maxPoints'];
                 $exerciseID = $exercise['id'];
-                if (isset($userMarkingsByExercise[$exerciseID])) {
-                    $marking = $userMarkingsByExercise[$exerciseID];
 
-                    $sheetPoints += $marking['points'];
+                // add submission to exercise
+                if (isset($submissionsByExercise[$exerciseID])) {
+                    $submission = $submissionsByExercise[$exerciseID];
 
-                    $submission = $marking['submission'];
-                    unset($marking['submission']);
+                    if (isset($submission['marking'])) {
+                        $marking = $submission['marking'];
 
-                    $submission['marking'] = $marking;
+                        $sheetPoints += $marking['points'];
+                    }
 
                     $exercise['submission'] = $submission;
                 }
 
+                // add attachments to exercise
                 if (count($exercise['attachments']) > 0) {
                     $exercise['attachment'] = $exercise['attachments'][0];
                 }
 
                 unset($exercise['attachments']);
 
-
+                // add type name to exercise
                 $typeID = $exercise['type'];
                 if (isset($exerciseTypes[$typeID])) {
                     $exercise['typeName'] = $exerciseTypes[$typeID]['name'];
@@ -301,7 +333,12 @@ class LgetSite
 
             $sheet['maxPoints'] = $maxSheetPoints;
             $sheet['points'] = $sheetPoints;
-            $sheet['percentage'] = $maxSheetPoints ? round($sheetPoints / $maxSheetPoints * 100, 2) : 100;
+            if ($maxSheetPoints != 0) {
+                $percentage = round($sheetPoints / $maxSheetPoints * 100, 2);
+                $sheet['percentage'] = $percentage;
+            } else {
+                $sheet['percentage'] = 100;
+            }
         }
 
         $this->flag = 1;
