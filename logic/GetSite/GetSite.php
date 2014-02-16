@@ -211,6 +211,9 @@ class LgetSite
     /**
      * Compiles data for the Student page.
      *
+     * @todo add an indicator if a sheet has attachments
+     * @todo add an indicator if a sheet has markings.
+     *
      * @author Florian Lücke
      */
     public function studentSiteInfo($userid, $courseid)
