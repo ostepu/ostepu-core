@@ -1,12 +1,21 @@
 <?php
-include_once( 'Include/Request.php' );
-include_once( 'Include/Structures.php' );
+/**
+ * @file DBExerciseSheetTest.php contains the DBExerciseSheetTest class
+ *
+ * @author Till Uhlig
+ */ 
+ 
+include_once( '/../../Assistants/Request.php' );
+include_once( '/../../Assistants/Structures.php' );
 
+/**
+ * A class, to test the DBExerciseSheet component
+ */
 class DBExerciseSheetTest extends PHPUnit_Framework_TestCase
 {
     private $url = "";
     
-    public function testDBExerciseType()
+    public function testDBExerciseSheet()
     {
         // loads the component url from phpunit.ini file
         if (file_exists("phpunit.ini")){
@@ -67,16 +76,47 @@ class DBExerciseSheetTest extends PHPUnit_Framework_TestCase
     
     public function AddExerciseSheet()
     {
+        $result = Request::delete($this->url . 'DBExerciseSheet/exercisesheet/100',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for AddExerciseSheet call");
+        
+        //createExerciseSheet($sheetId,$courseId,$endDate,$startDate,$groupSize,$sampleSolutionId,$sheetFileId,$sheetName)
+        $obj = ExerciseSheet::createExerciseSheet("100","1",null,null,null,null,null,null);
 
+        $result = Request::post($this->url . 'DBExerciseSheet/exercisesheet',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),ExerciseSheet::encodeExerciseSheet($obj));
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for AddExerciseSheet call");   
+        
+        $result = Request::post($this->url . 'DBExerciseSheet/exercisesheet',array(),"");
+        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for AddExerciseSheet call");  
     }
     
     public function DeleteExerciseSheet()
     {
-
+        $result = Request::delete($this->url . 'DBExerciseSheet/exercisesheet/100',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for DeleteExerciseSheet call");
+       
+        $result = Request::delete($this->url . 'DBExerciseSheet/exercisesheet/AAA',array(),"");
+        $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for DeleteExerciseSheet call");
+       
+        $result = Request::delete($this->url . 'DBExerciseSheet/exercisesheet/100',array(),"");
+        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for DeleteExerciseSheet call");
     }
     
     public function EditExerciseSheet()
     {
+        //createExerciseSheet($sheetId,$courseId,$endDate,$startDate,$groupSize,$sampleSolutionId,$sheetFileId,$sheetName)
+        $obj = ExerciseSheet::createExerciseSheet("100","1",null,null,null,null,null,"Neu");
 
+        $result = Request::put($this->url . 'DBExerciseSheet/exercisesheet/100',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),ExerciseSheet::encodeExerciseSheet($obj));
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for EditExerciseSheet call"); 
+        
+        $result = Request::put($this->url . 'DBExerciseSheet/exercisesheet/AAA',array(),"");
+        $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for EditExerciseSheet call"); 
+        
+        $result = Request::put($this->url . 'DBExerciseSheet/exercisesheet/100',array(),"");
+        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for EditExerciseSheet call"); 
+        
+        $result = Request::get($this->url . 'DBExerciseSheet/exercisesheet/100',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
+        $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for EditExerciseSheet call");
+        $this->assertContains('"sheetName":"Neu"',$result['content']);
     }
 }

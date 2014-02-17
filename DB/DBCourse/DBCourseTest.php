@@ -1,7 +1,16 @@
 <?php
-include_once( 'Include/Request.php' );
-include_once( 'Include/Structures.php' );
+/**
+ * @file DBCourseTest.php contains the DBCourseTest class
+ *
+ * @author Till Uhlig
+ */ 
+ 
+include_once( '/../../Assistants/Request.php' );
+include_once( '/../../Assistants/Structures.php' );
 
+/**
+ * A class, to test the DBCourse component
+ */
 class DBCourseTest extends PHPUnit_Framework_TestCase
 {
     private $url = "";

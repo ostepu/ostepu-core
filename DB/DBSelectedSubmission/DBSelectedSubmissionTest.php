@@ -1,7 +1,16 @@
 <?php
-include_once( 'Include/Request.php' );
-include_once( 'Include/Structures.php' );
+/**
+ * @file DBSelectedSubmissionTest.php contains the DBSelectedSubmissionTest class
+ *
+ * @author Till Uhlig
+ */ 
+ 
+include_once( '/../../Assistants/Request.php' );
+include_once( '/../../Assistants/Structures.php' );
 
+/**
+ * A class, to test the DBSelectedSubmission component
+ */
 class DBSelectedSubmissionTest extends PHPUnit_Framework_TestCase
 {    
     private $url = "";
@@ -75,7 +84,7 @@ class DBSelectedSubmissionTest extends PHPUnit_Framework_TestCase
     public function EditSelectedSubmission()
     {
         //createSelectedSubmission($leaderId,$submissionId,$exerciseId)
-        $obj = SelectedSubmission::createSelectedSubmission("4","2","1");
+        $obj = SelectedSubmission::createSelectedSubmission("4","5","1");
         
         $result = Request::put($this->url . 'DBSelectedSubmission/selectedsubmission/leader/4/exercise/1',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),SelectedSubmission::encodeSelectedSubmission($obj));
         $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for EditSelectedSubmission call");      

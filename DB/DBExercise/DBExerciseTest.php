@@ -1,7 +1,16 @@
 <?php
-include_once( 'Include/Request.php' );
-include_once( 'Include/Structures.php' );
+/**
+ * @file DBExerciseTest.php contains the DBExerciseTest class
+ *
+ * @author Till Uhlig
+ */ 
+ 
+include_once( '/../../Assistants/Request.php' );
+include_once( '/../../Assistants/Structures.php' );
 
+/**
+ * A class, to test the DBExercise component
+ */
 class DBExerciseTest extends PHPUnit_Framework_TestCase
 {
     private $url = "";
@@ -65,16 +74,47 @@ class DBExerciseTest extends PHPUnit_Framework_TestCase
     
     public function AddExercise()
     {
+        $result = Request::delete($this->url . 'DBExercise/exercise/100',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for AddExercise call");
+        
+        //createExercise($exerciseId,$courseId,$sheetId,$maxPoints,$type,$link,$bonus)
+        $obj = Exercise::createExercise("100",null,"1","10","1","100","0");
 
+        $result = Request::post($this->url . 'DBExercise/exercise',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),Exercise::encodeExercise($obj));
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for AddExercise call");   
+        
+        $result = Request::post($this->url . 'DBExercise/exercise',array(),"");
+        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for AddExercise call"); 
     }
     
     public function DeleteExercise()
     {
-
+        $result = Request::delete($this->url . 'DBExercise/exercise/100',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for DeleteExercise call");
+        
+        $result = Request::delete($this->url . 'DBExercise/exercise/AAA',array(),"");
+        $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for DeleteExercise call");
+        
+        $result = Request::delete($this->url . 'DBExercise/exercise/100',array(),"");
+        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for DeleteExercise call");
     }
     
     public function EditExercise()
     {
+        //createExercise($exerciseId,$courseId,$sheetId,$maxPoints,$type,$link,$bonus)
+        $obj = Exercise::createExercise("100",null,"1","10","1","100","1");
 
+        $result = Request::put($this->url . 'DBExercise/exercise/100',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),Exercise::encodeExercise($obj));
+        $this->assertEquals(201, $result['status'], "Unexpected HTTP status code for EditExercise call"); 
+        
+        $result = Request::put($this->url . 'DBExercise/exercise/AAA',array(),"");
+        $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for EditExercise call");  
+        
+        $result = Request::put($this->url . 'DBExercise/exercise/100',array(),"");
+        $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for EditExercise call"); 
+        
+        $result = Request::get($this->url . 'DBExercise/exercise/100',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
+        $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for GetExercise call");
+        $this->assertContains('"bonus":"1"',$result['content']);
     }
 }
