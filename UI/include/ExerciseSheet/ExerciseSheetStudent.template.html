@@ -163,28 +163,26 @@ foreach ($sheets as $sheet):
                         Gruppe verwalten
                     </a>
                 </li>
-                <li>
-                    <?php
-                    /**
-                     * @todo Only show if there are any attachments.
-                     */
+                <?php
+                    if ($sheet['hasAttachments']) {
+                        print '<li>';
                         print '<a href="Student.php?cid=';
                         print $cid . '&action=downloadAttachments';
                         print '&sid=' . $sheet['id'];
                         print '">Alle Anhänge herunterladen</a>';
-                    ?>
-                </li>
-                <li>
-                    <?php
-                    /**
-                     * @todo Only show if there are any markings.
-                     */
+                        print '</li>';
+                    }
+                ?>
+                <?php
+                    if ($sheet['hasMarkings']) {
+                        print '<li>';
                         print '<a href="Student.php?cid=';
                         print $cid . '&action=downloadMarkings';
                         print '&sid=' . $sheet['id'];
                         print '">Alle Einsendungen herunterladen</a>';
-                    ?>
-                </li>
+                        print '</li>';
+                    }
+                ?>
             </ol>
         </div>
     </div> <!-- end: content-body-wrapper -->
