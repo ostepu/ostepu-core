@@ -140,8 +140,11 @@ class DBExerciseType
         $insert = ExerciseType::decodeExerciseType($this->_app->request->getBody());
         
         // always been an array
-        if (!is_array($insert))
+        $arr = true;
+        if (!is_array($insert)){
             $insert = array($insert);
+            $arr=false;
+        }
 
         foreach ($insert as $in){
             // generates the update data for the object
@@ -219,8 +222,11 @@ class DBExerciseType
         $insert = ExerciseType::decodeExerciseType($this->_app->request->getBody());
         
         // always been an array
-        if (!is_array($insert))
+        $arr = true;
+        if (!is_array($insert)){
             $insert = array($insert);
+            $arr=false;
+        }
         
         // this array contains the indices of the inserted objects
         $res = array();
@@ -254,7 +260,7 @@ class DBExerciseType
             }
         }
         
-        if (count($res)==1){
+        if (!$arr && count($res)==1){
             $this->_app->response->setBody(ExerciseType::encodeExerciseType($res[0])); 
         }
         else
