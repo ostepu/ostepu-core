@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`File` (
   `F_displayName` VARCHAR(255) NULL,
   `F_address` CHAR(55) NOT NULL,
   `F_timeStamp` BIGINT NULL DEFAULT 0,
-  `F_fileSize` INT NULL,
+  `F_fileSize` INT NULL DEFAULT 0,
   `F_hash` CHAR(40) NULL,
   `F_comment` VARCHAR(255) NULL,
   PRIMARY KEY (`F_id`),
