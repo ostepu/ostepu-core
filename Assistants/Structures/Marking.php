@@ -333,8 +333,9 @@ class Marking extends Object implements JsonSerializable
     public static function getStatusDefinition()
     {
         return array(
-            '0' => '???', // vorläufig
-            '1' => '???', // endgültig
+            array('shortName' => 'ne','longName' => 'nicht eingereicht'),
+            array('shortName' => 'uk','longName' => 'unkorrigiert'),
+            array('shortName' => 'vl','longName' => 'vorläufig'),
         );
     }
     
@@ -449,7 +450,8 @@ class Marking extends Object implements JsonSerializable
                             Submission::getDBPrimaryKey(),
                             Submission::getDBConvert()['S_file'] ,
                             $files2,
-                            File::getDBPrimaryKey());  
+                            File::getDBPrimaryKey(),
+                            '2');  
  
             // sets the selectedForGroup attribute
             foreach ($submissions as &$submission){
