@@ -297,7 +297,7 @@ class LgetSite
             $maxSheetPoints = 0;
 
             $hasAttachments = false;
-            $hasMarkings = fasle;
+            $hasMarkings = false;
 
             // add group to the sheet
             if (isset($groupsBySheet[$sheet['id']])) {
