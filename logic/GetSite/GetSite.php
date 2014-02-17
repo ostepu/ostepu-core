@@ -234,25 +234,23 @@ class LgetSite
         $header = $this->app->request->headers->all();
 
         //Get neccessary data
-        $URL = $this->lURL . '/DB/exercisesheet/course/' . $courseid
-               . '/exercise';
+        $URL = "{$this->lURL}/DB/exercisesheet/course/{$courseid}/exercise";
         $answer = Request::custom('GET', $URL, $header, $body);
         $sheets = json_decode($answer['content'], true);
 
-        $URL = $this->lURL . '/DB/submission/group/user/' . $userid . '/course/'
-               . $courseid . '/selected';
+        $URL = "{$this->lURL}/DB/submission/group/user/{$userid}/course/{$courseid}/selected";
         $answer = Request::custom('GET', $URL, $header, $body);
         $submissions = json_decode($answer['content'], true);
 
-        $URL = $this->lURL . '/DB/marking/course/' . $courseid;
+        $URL = "{$this->lURL}/DB/marking/course/{$courseid}";
         $answer = Request::custom('GET', $URL, $header, $body);
         $markings = json_decode($answer['content'], true);
 
-        $URL = $this->lURL . '/DB/group/user/' . $userid;
+        $URL = "{$this->lURL}/DB/group/user/{$userid}";
         $answer = Request::custom('GET', $URL, $header, $body);
         $groups = json_decode($answer['content'], true);
 
-        $URL = $this->lURL.'/DB/exercisetype';
+        $URL = "{$this->lURL}/DB/exercisetype";
         $answer = Request::custom('GET', $URL, $header, $body);
         $possibleExerciseTypes = json_decode($answer['content'], true);
 
