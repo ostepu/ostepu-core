@@ -220,9 +220,6 @@ class LgetSite
     /**
      * Compiles data for the Student page.
      *
-     * @todo add an indicator if a sheet has attachments
-     * @todo add an indicator if a sheet has markings.
-     *
      * @author Florian Lücke
      */
     public function studentSiteInfo($userid, $courseid)
@@ -299,6 +296,9 @@ class LgetSite
             $sheetPoints = 0;
             $maxSheetPoints = 0;
 
+            $hasAttachments = false;
+            $hasMarkings = fasle;
+
             // add group to the sheet
             if (isset($groupsBySheet[$sheet['id']])) {
                 $group = $groupsBySheet[$sheet['id']];
@@ -320,6 +320,8 @@ class LgetSite
                         $marking = $submission['marking'];
 
                         $sheetPoints += $marking['points'];
+
+                        $hasMarkings = true;
                     }
 
                     $exercise['submission'] = $submission;
@@ -328,6 +330,7 @@ class LgetSite
                 // add attachments to exercise
                 if (count($exercise['attachments']) > 0) {
                     $exercise['attachment'] = $exercise['attachments'][0];
+                    $hasAttachments = true;
                 }
 
                 unset($exercise['attachments']);
@@ -341,6 +344,8 @@ class LgetSite
                 }
             }
 
+            $sheet['hasMarkings'] = $hasMarkings;
+            $sheet['hasAttachments'] = $hasAttachments;
             $sheet['maxPoints'] = $maxSheetPoints;
             $sheet['points'] = $sheetPoints;
             if ($maxSheetPoints != 0) {
