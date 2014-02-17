@@ -67,7 +67,7 @@ class DBMarkingTest extends PHPUnit_Framework_TestCase
     {
         $result = Request::get($this->url . 'DBMarking/marking/exercisesheet/1/user/2',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for GetUserGroupMarkings call");
-        $this->assertContains('{"id":"3","tutorId":"1","tutorComment":"nichts","outstanding":"0","status":"0","points":"13","date":"1389643115","file":',$result['content']);  
+        $this->assertContains('{"id":"1","tutorId":"2"',$result['content']);  
         
         $result = Request::get($this->url . 'DBMarking/marking/exercisesheet/AAA/user/2',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetUserGroupMarkings call");
