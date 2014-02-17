@@ -47,7 +47,7 @@
                     foreach ($markingStatus as $status) {
                         print '<option value="';
                         print $status['id'] . '"';
-                        if (!empty($statusID)) {
+                        if (isset($statusID)) {
                             print $status['id'] == $statusID ? ' selected="selected"' : NULL;
                         }
                         print '>';

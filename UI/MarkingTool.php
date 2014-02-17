@@ -27,11 +27,11 @@ if (isset($_POST['action'])) {
 // create URI for GetSite
 $URI = $getSiteURI . "/markingtool/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
 
-if (!empty($tutorID)) {
+if (isset($tutorID)) {
     $URI .= "/tutor/{$tutorID}";
 }
 
-if (!empty($statusID)) {
+if (isset($statusID)) {
     $URI .= "/status/{$statusID}";
 }
 
@@ -44,6 +44,8 @@ $markingTool_data['filesystemURI'] = $filesystemURI;
 $markingTool_data['sheetID'] = $sid;
 $markingTool_data['tutorID'] = $tutorID;
 $markingTool_data['statusID'] = $statusID;
+
+$markingTool_data['URI'] = $URI;
 
 $user_course_data = $markingTool_data['user'];
 

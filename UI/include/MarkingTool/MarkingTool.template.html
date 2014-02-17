@@ -1,8 +1,5 @@
 <?php
-foreach ($markingStatus as $status) {
-    $statusShortNames[] = $status['shortName'];
-}
-
+if (!empty($groups)) {
 foreach ($groups as $group):
 ?>
 <div class="content-element">
@@ -25,7 +22,6 @@ foreach ($groups as $group):
 
                     <label class="form-field label very-short" for="exercisePoints">
                         <?php
-                            print $exercise['typeName'];
                             print '/ ' . $exercise['maxPoints'] . 'P';
                         ?>
                     </label>
@@ -41,7 +37,9 @@ foreach ($groups as $group):
                             foreach ($markingStatus as $status) {
                                 print '<option value="';
                                 print $status['id'] . '"';
-                                print $status['id'] == $exercise['submission']['marking']['status'] ? ' selected="selected"' : NULL;
+                                if (isset($exercise['submission']['marking']['status'])) {
+                                    print $status['id'] == $exercise['submission']['marking']['status'] ? ' selected="selected"' : NULL;
+                                }
                                 print '>';
                                 print $status['shortName'];
                                 print '</option>';
@@ -101,7 +99,6 @@ foreach ($groups as $group):
                     }
                 ?>
             </ol>
-
         </div>
     </div> <!-- end: content-body -->
 
@@ -123,4 +120,19 @@ foreach ($groups as $group):
 </div> <!-- end: content-wrapper -->
 <?php
 endforeach;
+} else {
+?>
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left uppercase">Ergebnis</div>
+    </div>
+
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            Zu Ihrer Auswahl sind keine Einsendungen vorhanden.
+        </div>
+    </div> <!-- end: content-body -->
+</div> <!-- end: content-wrapper -->
+<?php
+}
 ?>
