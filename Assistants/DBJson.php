@@ -382,7 +382,7 @@ class DBJson
                 $key = $rw[$primKey . $primextension];
             }
 
-            if (isset($sec[$rw[$secKey.$secextension]])){
+            if (isset($rw[$secKey.$secextension]) && isset($sec[$rw[$secKey.$secextension]])){
                 if (!isset($prim[$key][$primAttrib]))
                     $prim[$key][$primAttrib] = $sec[$rw[$secKey.$secextension]];
             }
