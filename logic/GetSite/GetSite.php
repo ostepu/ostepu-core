@@ -237,9 +237,17 @@ class LgetSite
         $answer = Request::custom('GET', $URL, $header, $body);
         $submissions = json_decode($answer['content'], true);
 
+        if (!isset($submissions)) {
+            $submissions = array();
+        }
+
         $URL = "{$this->lURL}/DB/marking/course/{$courseid}";
         $answer = Request::custom('GET', $URL, $header, $body);
         $markings = json_decode($answer['content'], true);
+
+        if (!isset($markings)) {
+            $markings = array();
+        }
 
         $URL = "{$this->lURL}/DB/group/user/{$userid}";
         $answer = Request::custom('GET', $URL, $header, $body);
