@@ -314,7 +314,7 @@ class DBAttachment
                 $this->_app->stop(); 
             }
             else
-                $result['status'] = 409;
+                $result['status'] = 404;
                 
         }
         

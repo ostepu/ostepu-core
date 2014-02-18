@@ -314,7 +314,7 @@ class DBExerciseSheet
                 $this->_app->stop(); 
             }
             else
-                $result['status'] = 409;
+                $result['status'] = 404;
                 
         }
         
@@ -487,7 +487,7 @@ class DBExerciseSheet
             $this->_app->stop();
             
             } else
-                $result['status'] = 409;
+                $result['status'] = 404;
                 
         }
         
@@ -619,7 +619,7 @@ class DBExerciseSheet
             $this->_app->stop();
             
             } else
-                $result['status'] = 409;
+                $result['status'] = 404;
                 
         } 
         
