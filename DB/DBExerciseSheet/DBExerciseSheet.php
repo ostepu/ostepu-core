@@ -421,12 +421,12 @@ class DBExerciseSheet
                                     ExerciseSheet::getDBConvert());
             
             // generates an assoc array of an file by using a defined list of its attributes
-            $sampleSolutions = DBJson::getObjectsByAttributes($data, 
+            $exerciseSheetFile = DBJson::getObjectsByAttributes($data, 
                                             File::getDBPrimaryKey(), 
                                             File::getDBConvert());
             
             // generates an assoc array of an file by using a defined list of its attributes
-            $exerciseSheetFile = DBJson::getObjectsByAttributes($data, 
+            $sampleSolutions = DBJson::getObjectsByAttributes($data, 
                                             File::getDBPrimaryKey(), 
                                             File::getDBConvert(), 
                                             '2');
@@ -435,16 +435,16 @@ class DBExerciseSheet
             $res = DBJson::concatObjectListsSingleResult($data, 
                             $exerciseSheet,
                             ExerciseSheet::getDBPrimaryKey(),
-                            ExerciseSheet::getDBConvert()['F_id_sampleSolution'],
-                            $sampleSolutions,
+                            ExerciseSheet::getDBConvert()['F_id_file'],
+                            $exerciseSheetFile,
                             File::getDBPrimaryKey());  
             
             // concatenates the exercise sheet and the associated exercise sheet file
             $res = DBJson::concatObjectListsSingleResult($data, 
                             $res,
                             ExerciseSheet::getDBPrimaryKey(),
-                            ExerciseSheet::getDBConvert()['F_id_file'] ,
-                            $exerciseSheetFile,
+                            ExerciseSheet::getDBConvert()['F_id_sampleSolution'] ,
+                            $sampleSolutions,
                             File::getDBPrimaryKey(), 
                             '2');
             
@@ -560,28 +560,28 @@ class DBExerciseSheet
             }
             
             // generates an assoc array of an file by using a defined list of its attributes
-            $sampleSolutions = DBJson::getObjectsByAttributes($data, 
+            $exerciseSheetFile = DBJson::getObjectsByAttributes($data, 
                                                 File::getDBPrimaryKey(), 
                                                 File::getDBConvert());
             
             // generates an assoc array of an file by using a defined list of its attributes
-            $exerciseSheetFile = DBJson::getObjectsByAttributes($data, 
+            $sampleSolutions = DBJson::getObjectsByAttributes($data, 
                                                 File::getDBPrimaryKey(), 
                                                 File::getDBConvert(), '2');
           
             // concatenates the exercise sheet and the associated sample solution
             $res = DBJson::concatObjectListsSingleResult($data, 
                             $exerciseSheet,ExerciseSheet::getDBPrimaryKey(),
-                            ExerciseSheet::getDBConvert()['F_id_sampleSolution'],
-                            $sampleSolutions,
+                            ExerciseSheet::getDBConvert()['F_id_file'],
+                            $exerciseSheetFile,
                             File::getDBPrimaryKey());  
             
             // concatenates the exercise sheet and the associated exercise sheet file
             $res = DBJson::concatObjectListsSingleResult($data, 
                             $res,
                             ExerciseSheet::getDBPrimaryKey(),
-                            ExerciseSheet::getDBConvert()['F_id_file'],
-                            $exerciseSheetFile,File::getDBPrimaryKey(), '2');
+                            ExerciseSheet::getDBConvert()['F_id_sampleSolution'],
+                            $sampleSolutions,File::getDBPrimaryKey(), '2');
            
             // checks the exercise option
             if (in_array('exercise',$options)){
