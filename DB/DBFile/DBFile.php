@@ -263,10 +263,11 @@ class DBFile
                 $queryResult = Query::decodeQuery($result['content']);
                 
                 // sets the new auto-increment id
-                $obj = new File();
-                $obj->setFileId($queryResult->getInsertId());
+                //$obj = new File();
+                $in->setFileId($queryResult->getInsertId());
+                $in->setBody(null);
             
-                array_push($res, $obj);
+                array_push($res, $in);
                 $this->_app->response->setStatus(201);
                 if (isset($result['headers']['Content-Type']))
                     $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
