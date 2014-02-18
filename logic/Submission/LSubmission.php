@@ -94,9 +94,9 @@ class LSubmission
         $this->app->get('/'.$this->getPrefix().'/exerciseSheet/:sheetid/user/:userid/history(/)',
                         array($this, 'showSubmissionsHistory'));
 
-        //GetSubmissionURL
+        //GetSubmissionFile
         $this->app->get('/'.$this->getPrefix().'/submission/:submissionid(/)',
-                        array($this, 'getSubmissionURL'));
+                        array($this, 'getSubmissionFile'));
 
         $this->app->run();
     }
@@ -151,7 +151,8 @@ class LSubmission
         //$URL = $this->lURL.'/DB/group/user/'.$submission['studentId'].'/exercisesheet/'.$exercise['sheetId'];
         //$answer = Request::custom('GET', $URL, $header, "");
         //$group = json_decode($answer['content'], true);
-        
+        //$submission['leaderId'] = $group['leader']['id'];
+		
         //Alternative Abfrage solange DB-Fehler noch nicht gefixt ist
             $URL = $this->lURL.'/DB/group/exercisesheet/'.$exercise['sheetId'];
             $answer = Request::custom('GET', $URL, $header, "");
@@ -175,8 +176,6 @@ class LSubmission
                 }
             }
             
-            
-        //$submission['leaderId'] = $group['leader']['id'];
         //Request to DB to add the submission
         $URL = $this->lURL.'/DB/submission';
         $answer = Request::custom('POST', $URL, $header, json_encode($submission));
@@ -268,7 +267,7 @@ class LSubmission
     public function showSubmissionsHistory($sheetid, $userid){
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
-        $URL = $this->lURL.'/DB/exerciseSheet/'.$sheetid.'/user/'.$userid.'/history';
+        $URL = $this->lURL.'/DB/exercisesheet/'.$sheetid.'/user/'.$userid.'/history';
         $answer = Request::custom('GET', $URL, $header, $body);
         $this->app->response->setBody($answer['content']);
         $this->app->response->setStatus($answer['status']);
@@ -282,11 +281,19 @@ class LSubmission
      *
      * @param int $submissionid The id of the requested submission.
      */
-    public function getSubmissionURL($submissionid){
+    public function getSubmissionFile($submissionid){
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
         $URL = $this->lURL.'/DB/submission/'.$submissionid;
-        $answer = Request::custom('GET', $URL, $header, $body);
+        $answer = Request::custom('GET', $URL, $header, "");
+		$submission = json_decode($answer['content'], true);
+		
+
+		$URL = $this->lURL.'/FS/'.$submission['file']['address'].'/'.$submission['file']['displayName'];
+        $answer = Request::custom('GET', $URL, $header, "");
+		
+		$this->app->response->headers->set('Content-Type', $answer['headers']['Content-Type']);
+        $this->app->response->headers->set('Content-Disposition', $answer['headers']['Content-Disposition']);
         $this->app->response->setBody($answer['content']);
         $this->app->response->setStatus($answer['status']);
     }
