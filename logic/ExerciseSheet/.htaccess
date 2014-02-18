@@ -1,2 +1,2 @@
 RewriteEngine On
-RewriteRule ^ LExercisesheet.php [QSA,L]
+RewriteRule ^ LExerciseSheet.php [QSA,L]
