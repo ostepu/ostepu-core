@@ -50,7 +50,7 @@ class LExerciseSheet
 
     /**
      * @var string $lURL the URL of the logic-controller
-     */ 
+     */
     private $lURL = ""; // readed out from config below
 
     /**
@@ -75,7 +75,7 @@ class LExerciseSheet
         $this->lURL = $this->query->getAddress();
 
         // POST AddExerciseSheet
-        $this->app->post('/'.$this->getPrefix().'/course/:courseid(/)',
+        $this->app->post('/'.$this->getPrefix().'(/)',
                         array($this, 'addExerciseSheet'));
 
         // PUT EditExerciseSheet
@@ -98,55 +98,56 @@ class LExerciseSheet
         $this->app->run();
     }
 
-    
+
     /**
-     * Adds an exercise sheet.
+     * Adds an exercisesheet.
      *
      * Called when this component receives an HTTP POST request to
-     * /exercisesheet/course/$sourseid(/).
+     * /exercisesheet(/).
      * The request body should contain a JSON object representing the exercise
      * sheet's attributes.
-     * Adds the sheet file, samplesolution file and attachment file to the filesystem first. At success
+     * Adds the sheet file and samplesolution file to the filesystem first. At success
      * the information belongs to this exercisesheet will be stored in the database.
-     * Prerequisite: The Files in the body exists.
-     *
-     * @param int $courseid The id of the course to which the exercisesheet should be added.
      */
-     public function addExerciseSheet($courseid){
+     public function addExerciseSheet(){
         $header = $this->app->request->headers->all();
         $body = json_decode($this->app->request->getBody(), true);
 
         // get files from body
         $samplesolutionfile = json_encode($body['sampleSolution']);
         $sheetfile = json_encode($body['sheetFile']);
-        $attachments = json_encode($body['attachments']);
 
-        // set URLs for requests to filesystem
-        $sampleURL = $this->lURL.'/FS/samplesolution/course/'.$courseid;
-        $sheetURL = $this->lURL.'/FS/sheetfile/course/'.$courseid;
-        $attachmentsURL = $this->lURL.'/FS/attachments/course/'.$courseid;
+        // set URL for requests to filesystem
+        $URL = $this->lURL.'/FS/file';
 
         // requests to filesystem
-        $sampleanswer = Request::custom('POST', $sampleURL, $header, $samplesolutionfile);
-        $sheetanswer = Request::custom('POST', $sheetURL, $header, $sheetfile);
-        $attachmentsanswer = Request::custom('POST', $attachmentsURL, $header, $attachments);
+        $sampleanswer = Request::custom('POST', $URL, $header, $samplesolutionfile);
+        $sheetanswer = Request::custom('POST', $URL, $header, $sheetfile);
 
         /*
          * if the files has been stored, the information
          * belongs to this exercisesheet will be stored in the database
          */
         if($sampleanswer['status'] >= 200 and $sampleanswer['status'] < 300
-            and $sheetanswer['status'] >= 200 and $sheetanswer['status'] < 300
-            and $attachmentsanswer['status'] >= 200 
-            and $attachmentsanswer['status'] < 300){
-                // set the request body for database
-                $body['sampleSolution'] = $sampleanswer['content'];
-                $body['sheetFile'] = $sheetanswer['content'];
-                $body['attachments'] = $attachmentsanswer['content'];
-                // request to database
-                $URL = $this->lURL.'/DB/course/'.$courseid;
-                $answer = Request::custom('POST', $URL, $header, json_encode($body));
-                $this->app->response->setStatus($answer['status']);
+            and $sheetanswer['status'] >= 200 and $sheetanswer['status'] < 300){
+                // first request to store the fileinformation to the DBfile table
+                $URL = $this->lURL.'/DB/file';
+                $sampleanswer = Request::custom('POST', $URL, $header, $sampleanswer['content']);
+                $sheetanswer = Request::custom('POST', $URL, $header, $sheetanswer['content']);
+                if($sampleanswer['status'] >= 200 and $sampleanswer['status'] < 300
+                    and $sheetanswer['status'] >= 200 and $sheetanswer['status'] < 300){
+                        // set the request body for database
+                        $body['sampleSolution'] = json_decode($sampleanswer['content'], true);
+                        $body['sheetFile'] = json_decode($sheetanswer['content'], true);
+                        // request to database
+                        $URL = $this->lURL.'/DB/exercisesheet';
+                        $answer = Request::custom('POST', $URL, $header, json_encode($body));
+                        $this->app->response->setStatus($answer['status']);
+                } else {
+                    $this->app->response->setStatus(400);
+                }
+        } else {
+            $this->app->response->setStatus(400);
         }
     }
 
@@ -157,46 +158,50 @@ class LExerciseSheet
      * /exercisesheet/exercisesheet/$sheetid(/).
      * The request body should contain a JSON object representing the exercise
      * sheet's attributes.
-     * Adds the sheet file, samplesolution file and attachment file to the filesystem first. At success
+     * Adds the sheet file and samplesolution file to the filesystem first. At success
      * the information belongs to this exercisesheet will be stored in the database.
-     * Prerequisite: The Files in the body exists.  
      *
      * @param int $sheetid The id of the exercise sheet that is beeing updated.
      */
     public function editExerciseSheet($sheetid){
         $header = $this->app->request->headers->all();
-        $body = json_decode($this->app->request->getBody());
+        $body = json_decode($this->app->request->getBody(), true);
+
         // get files from body
         $samplesolutionfile = json_encode($body['sampleSolution']);
         $sheetfile = json_encode($body['sheetFile']);
-        $attachments = json_encode($body['attachments']);
 
-        // set URLs for requests to filesystem
-        $sampleURL = $this->lURL.'/FS/samplesolution/exercisesheet/'.$sheetid;
-        $sheetURL = $this->lURL.'/FS/sheetfile/course/exercisesheet/'.$sheetid;
-        $attachmentsURL = $this->lURL.'/FS/attachments/exercisesheet/'.$sheetid;
+        // set URL for requests to filesystem
+        $URL = $this->lURL.'/FS/file';
 
         // requests to filesystem
-        $sampleanswer = Request::custom('POST', $sampleURL, $header, $samplesolutionfile);
-        $sheetanswer = Request::custom('POST', $sheetURL, $header, $sheetfile);
-        $attachmentsanswer = Request::custom('POST', $attachmentsURL, $header, $attachments);
+        $sampleanswer = Request::custom('POST', $URL, $header, $samplesolutionfile);
+        $sheetanswer = Request::custom('POST', $URL, $header, $sheetfile);
 
         /*
          * if the files has been stored, the information
          * belongs to this exercisesheet will be stored in the database
          */
         if($sampleanswer['status'] >= 200 and $sampleanswer['status'] < 300
-            and $sheetanswer['status'] >= 200 and $sheetanswer['status'] < 300
-            and $attachmentsanswer['status'] >= 200
-            and $attachmentsanswer['status'] < 300){
-                // set the request body for database
-                $body['sampleSolution'] = $sampleanswer['content'];
-                $body['sheetFile'] = $sheetanswer['content'];
-                $body['attachments'] = $attachmentsanswer['content'];
-                // request to database
-                $URL = $this->lURL.'/DB/exercisesheet/'.$sheetid;
-                $answer = Request::custom('PUT', $URL, $header, json_encode($body));
-                $this->app->response->setStatus($answer['status']);
+            and $sheetanswer['status'] >= 200 and $sheetanswer['status'] < 300){
+                // first request to store the fileinformation to the DBfile table
+                $URL = $this->lURL.'/DB/file';
+                $sampleanswer = Request::custom('POST', $URL, $header, $sampleanswer['content']);
+                $sheetanswer = Request::custom('POST', $URL, $header, $sheetanswer['content']);
+                if($sampleanswer['status'] >= 200 and $sampleanswer['status'] < 300
+                    and $sheetanswer['status'] >= 200 and $sheetanswer['status'] < 300){
+                        // set the request body for database
+                        $body['sampleSolution'] = json_decode($sampleanswer['content'], true);
+                        $body['sheetFile'] = json_decode($sheetanswer['content'], true);
+                        // request to database
+                        $URL = $this->lURL.'/DB/exercisesheet/exercisesheet/'.$sheetid;
+                        $answer = Request::custom('PUT', $URL, $header, json_encode($body));
+                        $this->app->response->setStatus($answer['status']);
+                } else {
+                    $this->app->response->setStatus(400);
+                }
+        } else {
+            $this->app->response->setStatus(400);
         }
     }
 
@@ -210,9 +215,8 @@ class LExerciseSheet
      */
     public function getExerciseSheetURL($sheetid){
         $header = $this->app->request->headers->all();
-        $body = $this->app->request->getBody();
-        $URL = $this->lURL.'/DB/exercisesheet/'.$sheetid.'/url';
-        $answer = Request::custom('GET', $URL, $header, $body);
+        $URL = $this->lURL.'/DB/exercisesheet/exercisesheet/'.$sheetid.'/url';
+        $answer = Request::custom('GET', $URL, $header, "");
         $this->app->response->setBody($answer['content']);
         $this->app->response->setStatus($answer['status']);
     }
@@ -227,42 +231,53 @@ class LExerciseSheet
      */
     public function getExerciseSheet($sheetid){
         $header = $this->app->request->headers->all();
-        $body = $this->app->request->getBody();
-        $URL = $this->lURL.'/DB/exercisesheet/'.$sheetid;
-        $answer = Request::custom('GET', $URL, $header, $body);
-        var_dump($answer);
+        $URL = $this->lURL.'/DB/exercisesheet/exercisesheet/'.$sheetid;
+        $answer = Request::custom('GET', $URL, $header, "");
         $this->app->response->setBody($answer['content']);
         $this->app->response->setStatus($answer['status']);
     }
 
     /**
-     * Deletes an exercise sheet. 
+     * Deletes an exercise sheet.
      *
      * Called when this component receives an HTTP DELETE request to
      * /exercisesheet/exercisesheet/$sheetid(/).
      * Deletes the exercise sheet information from the database first. At success
      * the file belongs to this exercise will be deleted from the filesystem.
      *
-     * @param int $esid The id of the exercise sheet that is being deleted.
+     * @param int $sheetid The id of the exercise sheet that is being deleted.
      */
     public function deleteExerciseSheet($sheetid){
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
-        $URL = $this->lURL.'/DB/exercisesheet/'.$sheetid;
+        // getExerciseSheet
+        $URL = $this->lURL.'/DB/exercisesheet/exercisesheet/'.$sheetid;
+        $answer = Request::custom('GET', $URL, $header, "");
+        $exerciseSheet = json_decode($answer['content'], true);
+        $sampleFileAddress = $exerciseSheet['sampleSolution']['address'];
+        $sampleFileid = $exerciseSheet['sampleSolution']['fileId'];
+        $sheetFileAddress = $exerciseSheet['sheetFile']['address'];
+        $sheetFileid = $exerciseSheet['sheetFile']['fileId'];
+
+        $URL = $this->lURL.'/DB/exercisesheet/exercisesheet/'.$sheetid;
         // request to database
         $answer = Request::custom('DELETE', $URL, $header, $body);
         $this->app->response->setStatus($answer['status']);
 
         /*
-         * if the file information has been deleted, the file
-         * will being deleted from filesystem
+         * if the file information has been deleted, the files
+         * will being deleted from filetable and from filesystem
          */
-        $fileObject = json_decode($answer['content'], true);
-        // if address-field exists, read it out
-        if (isset($fileObject['address']) and $answer['status'] >= 200 and $answer['status'] < 300){
-            $fileAddress = $fileObject['address'];
-            // request to filesystem
-            $URL = $this->lURL.'/FS/file/'.$fileAddress;
+        if ($answer['status'] >= 200 and $answer['status'] < 300){
+            // requests to file-table of DB
+            $URL = $this->lURL.'/DB/file/'.$sampleFileid;
+            $answer = Request::custom('DELETE', $URL, $header, "");
+            $URL = $this->lURL.'/DB/file/'.$sheetFileid;
+            $answer = Request::custom('DELETE', $URL, $header, "");
+            // requests to filesystem
+            $URL = $this->lURL.'/FS/'.$sampleFileAddress;
+            $answer = Request::custom('DELETE', $URL, $header, $body);
+            $URL = $this->lURL.'/FS/'.$sheetFileAddress;
             $answer = Request::custom('DELETE', $URL, $header, $body);
         }
     }
