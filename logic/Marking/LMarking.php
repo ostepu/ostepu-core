@@ -1,6 +1,6 @@
 <?php
 /**
- * @file LUser.php Contains the LUser class
+ * @file LMarking.php Contains the LMarking class
  * 
  * @author Peter Koenig
  * @author Christian Elze

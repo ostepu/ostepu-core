@@ -1,4 +1,11 @@
 <?php
+/**
+ * @file LSubmission.php Contains the LSubmission class
+ * 
+ * @author Peter Koenig
+ * @author Christian Elze
+ * @author Martin Daute 
+ */
 
 require '../Include/Slim/Slim.php';
 include '../Include/Request.php';
@@ -6,19 +13,25 @@ include_once( '../Include/CConfig.php' );
 
 \Slim\Slim::registerAutoloader();
 
+/**
+ * A class, to handle requests to the LSubmission-Component
+ */
 class LSubmission
 {
+    /**
+     * @var Component $_conf the component data object
+     */
     private $_conf=null;
 
     /**
-     * Prefix of this component
+     * @var string $_prefix the prefix, the class works with
      */
     private static $_prefix = "submission";
 
     /**
-     * Gets the Prefix of this component.
+     * the $_prefix getter
      *
-     * @return mixed
+     * @return the value of $_prefix
      */
     public static function getPrefix()
     {
@@ -26,14 +39,18 @@ class LSubmission
     }
 
     /**
-     * Sets the Prefix of this component.
+     * the $_prefix setter
      *
-     * @param mixed $_prefix the _prefix
+     * @param string $value the new value for $_prefix
      */
     public static function setPrefix($value)
     {
         LSubmission::$_prefix = $value;
     }
+    
+    /**
+     * @var string $lURL the URL of the logic-controller
+     */
     private $lURL = ""; //aus config lesen
 
     /**
@@ -41,15 +58,21 @@ class LSubmission
      *
      * This function contains the REST actions with the assignments to
      * the functions.
+     *
+     * @param Component $conf component data
      */
     public function __construct($conf)
     {
+        // initialize slim 
         $this->app = new \Slim\Slim();
         $this->app->response->headers->set('Content-Type', 'application/json');
+        
+        // initialize component
         $this->_conf = $conf;
         $this->query = array();
-
         $this->query = CConfig::getLink($conf->getLinks(),"controller");
+        
+        // initialize lURL
         $this->lURL = $this->query->getAddress();
 
         //AddSubmission

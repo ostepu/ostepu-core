@@ -1,5 +1,12 @@
 <?php
-
+/**
+ * @file LTutor.php Contains the LTutor class
+ * 
+ * @author Peter Koenig
+ * @author Christian Elze
+ * @author Martin Daute 
+ */
+ 
 require '../Include/Slim/Slim.php';
 include '../Include/Request.php';
 include_once( '../Include/CConfig.php' );
@@ -14,26 +21,48 @@ include_once( '../Include/CConfig.php' );
 class LTutor
 {    
     /**
-     *Values needed for conversation with other components
+     * @var Component $_conf the component data object
      */
     private $_conf=null;
     
+    /**
+     * @var string $_prefix the prefix, the class works with
+     */
     private static $_prefix = "tutor";
     
+    /**
+     * the $_prefix getter
+     *
+     * @return the value of $_prefix
+     */
     public static function getPrefix()
     {
         return LTutor::$_prefix;
     }
+
+    /**
+     * the $_prefix setter
+     *
+     * @param string $value the new value for $_prefix
+     */
     public static function setPrefix($value)
     {
         LTutor::$_prefix = $value;
     }
+    
     /**
-     *Address of the Logic-Controller
-     *dynamic set by CConf below
+     * @var string $lURL the URL of the logic-controller
      */
     private $lURL = ""; //aus config lesen
-    
+
+    /**
+     * REST actions
+     *
+     * This function contains the REST actions with the assignments to 
+     * the functions.
+     *
+     * @param Component $conf component data
+     */
     public function __construct($conf)
     {    
         /**
@@ -41,13 +70,15 @@ class LTutor
          */
         $this->app = new \Slim\Slim();
         $this->app->response->headers->set('Content-Type', 'application/json');
+        
         /**
          *Set the Logiccontroller-URL
          */
         $this->_conf = $conf;
         $this->query = array();
-        
         $this->query = CConfig::getLink($conf->getLinks(),"controller");
+        
+        // initialize lURL
         $this->lURL = $this->query->getAddress();
         
         //Set auto allocation by exercise
