@@ -1,4 +1,11 @@
 <?php
+/**
+ * @file LSubmission.php Contains the LSubmission class
+ * 
+ * @author Peter Koenig
+ * @author Christian Elze
+ * @author Martin Daute 
+ */
 
 require '../Include/Slim/Slim.php';
 include '../Include/Request.php';
@@ -6,19 +13,25 @@ include_once( '../Include/CConfig.php' );
 
 \Slim\Slim::registerAutoloader();
 
+/**
+ * A class, to handle requests to the LSubmission-Component
+ */
 class LSubmission
 {
+    /**
+     * @var Component $_conf the component data object
+     */
     private $_conf=null;
 
     /**
-     * Prefix of this component
+     * @var string $_prefix the prefix, the class works with
      */
     private static $_prefix = "submission";
 
     /**
-     * Gets the Prefix of this component.
+     * the $_prefix getter
      *
-     * @return mixed
+     * @return the value of $_prefix
      */
     public static function getPrefix()
     {
@@ -26,14 +39,18 @@ class LSubmission
     }
 
     /**
-     * Sets the Prefix of this component.
+     * the $_prefix setter
      *
-     * @param mixed $_prefix the _prefix
+     * @param string $value the new value for $_prefix
      */
     public static function setPrefix($value)
     {
         LSubmission::$_prefix = $value;
     }
+    
+    /**
+     * @var string $lURL the URL of the logic-controller
+     */
     private $lURL = ""; //aus config lesen
 
     /**
@@ -41,15 +58,21 @@ class LSubmission
      *
      * This function contains the REST actions with the assignments to
      * the functions.
+     *
+     * @param Component $conf component data
      */
     public function __construct($conf)
     {
+        // initialize slim 
         $this->app = new \Slim\Slim();
         $this->app->response->headers->set('Content-Type', 'application/json');
+        
+        // initialize component
         $this->_conf = $conf;
         $this->query = array();
-
         $this->query = CConfig::getLink($conf->getLinks(),"controller");
+        
+        // initialize lURL
         $this->lURL = $this->query->getAddress();
 
         //AddSubmission
@@ -71,9 +94,9 @@ class LSubmission
         $this->app->get('/'.$this->getPrefix().'/exerciseSheet/:sheetid/user/:userid/history(/)',
                         array($this, 'showSubmissionsHistory'));
 
-        //GetSubmissionURL
+        //GetSubmissionFile
         $this->app->get('/'.$this->getPrefix().'/submission/:submissionid(/)',
-                        array($this, 'getSubmissionURL'));
+                        array($this, 'getSubmissionFile'));
 
         $this->app->run();
     }
@@ -128,7 +151,8 @@ class LSubmission
         //$URL = $this->lURL.'/DB/group/user/'.$submission['studentId'].'/exercisesheet/'.$exercise['sheetId'];
         //$answer = Request::custom('GET', $URL, $header, "");
         //$group = json_decode($answer['content'], true);
-        
+        //$submission['leaderId'] = $group['leader']['id'];
+		
         //Alternative Abfrage solange DB-Fehler noch nicht gefixt ist
             $URL = $this->lURL.'/DB/group/exercisesheet/'.$exercise['sheetId'];
             $answer = Request::custom('GET', $URL, $header, "");
@@ -152,8 +176,6 @@ class LSubmission
                 }
             }
             
-            
-        //$submission['leaderId'] = $group['leader']['id'];
         //Request to DB to add the submission
         $URL = $this->lURL.'/DB/submission';
         $answer = Request::custom('POST', $URL, $header, json_encode($submission));
@@ -245,7 +267,7 @@ class LSubmission
     public function showSubmissionsHistory($sheetid, $userid){
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
-        $URL = $this->lURL.'/DB/exerciseSheet/'.$sheetid.'/user/'.$userid.'/history';
+        $URL = $this->lURL.'/DB/exercisesheet/'.$sheetid.'/user/'.$userid.'/history';
         $answer = Request::custom('GET', $URL, $header, $body);
         $this->app->response->setBody($answer['content']);
         $this->app->response->setStatus($answer['status']);
@@ -259,11 +281,19 @@ class LSubmission
      *
      * @param int $submissionid The id of the requested submission.
      */
-    public function getSubmissionURL($submissionid){
+    public function getSubmissionFile($submissionid){
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
         $URL = $this->lURL.'/DB/submission/'.$submissionid;
-        $answer = Request::custom('GET', $URL, $header, $body);
+        $answer = Request::custom('GET', $URL, $header, "");
+		$submission = json_decode($answer['content'], true);
+		
+
+		$URL = $this->lURL.'/FS/'.$submission['file']['address'].'/'.$submission['file']['displayName'];
+        $answer = Request::custom('GET', $URL, $header, "");
+		
+		$this->app->response->headers->set('Content-Type', $answer['headers']['Content-Type']);
+        $this->app->response->headers->set('Content-Disposition', $answer['headers']['Content-Disposition']);
         $this->app->response->setBody($answer['content']);
         $this->app->response->setStatus($answer['status']);
     }

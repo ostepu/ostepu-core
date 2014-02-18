@@ -1,7 +1,7 @@
 <?php
 /**
  * @file LUser.php Contains the LUser class
- * 
+ *
  * @author Peter Koenig
  * @author Martin Daute
  * @author Christian Elze
@@ -71,77 +71,117 @@ class LExerciseType
         $this->_conf = $conf;
         $this->query = CConfig::getLink($conf->getLinks(),"controller");
 
-        // initialize lURL        
+        // initialize lURL
         $this->lURL = $this->query->getAddress();
 
-        // POST setPossibleTypes
-        $this->app->post('/'.$this->getPrefix().'/course/:courseid(/)' ,
-                            array($this, 'setPossibleTypes'));
+        // POST addType
+        $this->app->post('/'.$this->getPrefix().'(/)' ,
+                            array($this, 'addType'));
 
-        // DELETE deletePossibleTypes
-        $this->app->delete('/'.$this->getPrefix().'/course/:courseid(/)' ,
-                            array($this, 'deletePossibleTypes'));
+        // DELETE deleteType
+        $this->app->delete('/'.$this->getPrefix().'/exercisetype/:typeid(/)' ,
+                            array($this, 'deleteType'));
 
-        // PUT editPossibleType
-        $this->app->put('/'.$this->getPrefix().'/course/:courseid(/)' ,
-                            array($this, 'editPossibleTypes'));
+        // PUT editType
+        $this->app->put('/'.$this->getPrefix().'/exercisetype/:typeid(/)' ,
+                            array($this, 'editType'));
+
+        // GET getType
+        $this->app->get('/'.$this->getPrefix().'/exercisetype/:typeid(/)' ,
+                            array($this, 'getType'));
+
+        // GET getAllTypes
+        $this->app->get('/'.$this->getPrefix().'(/)' ,
+                            array($this, 'getAllTypes'));
 
         // run Slim
         $this->app->run();
     }
 
     /**
-     * Sets a possible exercise type of a course
+     * Adds an exercise type
      *
      * Called when this component receives an HTTP POST request to
-     * /exercisetype/course/$courseid(/).
-     * The request body should contain a JSON object representing the 
+     * /exercisetype(/).
+     * The request body should contain a JSON object representing the
      * new exercise type's attributes.
-     *
-     * @param int $courseid The id of the course the type should being added.
      */
-    public function setPossibleTypes($courseid)
+    public function addType()
     {
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
-        $URL = $this->lURL.'/DB/exerciseType/course/'.$courseid;
+        $URL = $this->lURL.'/DB/exercisetype';
         $answer = Request::custom('POST', $URL, $header, $body);
         $this->app->response->setStatus($answer['status']);
+        $this->app->response->setBody($answer['content']);
     }
 
     /**
-     * Deletes a possible exercise type of a course
+     * Deletes an exercise type
      *
      * Called when this component receives an HTTP DELETE request to
-     * /exercisetype/course/$courseid(/).
+     * /exercisetype/exercisetype/$typeid(/).
      *
-     * @param int $courseid The id of the course the type should being deleted.
+     * @param int $typeid The id of the exercisetype that should being deleted.
      */
-    public function deletePossibleTypes($courseid)
+    public function deleteType($typeid)
     {
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
-        $URL = $this->lURL.'/DB/exerciseType/course/'.$courseid;
+        $URL = $this->lURL.'/DB/exercisetype/exercisetype/'.$typeid;
         $answer = Request::custom('DELETE', $URL, $header, $body);
         $this->app->response->setStatus($answer['status']);
     }
 
     /**
-     * Edits possible exercise types of a course
+     * Edits an exercise type
      *
      * Called when this component receives an HTTP POST request to
-     * /exercisetype/course/$courseid(/).
-     * The request body should contain a JSON object representing the 
+     * /exercisetype/exercisetype/$typeid(/).
+     * The request body should contain a JSON object representing the
      * new exercise type's attributes.
      *
-     * @param int $courseid The id of the course the type should being updated.
+     * @param int $typeid The id of the exercisetype that should being updatedd.
      */
-    public function editPossibleTypes($courseid)
+    public function editType($typeid)
     {
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
-        $URL = $this->lURL.'/DB/exerciseType/course/'.$courseid;
+        $URL = $this->lURL.'/DB/exercisetype/exercisetype/'.$typeid;
         $answer = Request::custom('PUT', $URL, $header, $body);
+        $this->app->response->setStatus($answer['status']);
+    }
+
+    /**
+     * Returns an exercise type
+     *
+     * Called when this component receives an HTTP DELETE request to
+     * /exercisetype/exercisetype/$typeid(/).
+     *
+     * @param int $typeid The id of the exercisetype that should being returned.
+     */
+    public function getType($typeid)
+    {
+        $header = $this->app->request->headers->all();
+        $body = $this->app->request->getBody();
+        $URL = $this->lURL.'/DB/exercisetype/exercisetype/'.$typeid;
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $this->app->response->setStatus($answer['status']);
+        $this->app->response->setBody($answer['content']);
+    }
+
+    /**
+     * Returns all exercise types
+     *
+     * Called when this component receives an HTTP DELETE request to
+     * /exercisetype(/).
+     */
+    public function getAllTypes()
+    {
+        $header = $this->app->request->headers->all();
+        $body = $this->app->request->getBody();
+        $URL = $this->lURL.'/DB/exercisetype';
+        $answer = Request::custom('GET', $URL, $header, $body);
         $this->app->response->setStatus($answer['status']);
         $this->app->response->setBody($answer['content']);
     }

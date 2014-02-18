@@ -1,10 +1,10 @@
-<?php 
+<?php
 /**
  * @file LAttachment.php Contains the LAttachment class
- * 
+ *
  * @author Martin Daute
  * @author Peter Koenig
- * @author Christian Elze 
+ * @author Christian Elze
  */
 
 require '../Include/Slim/Slim.php';
@@ -20,7 +20,7 @@ class LAttachment
 {
     /**
      * @var Component $_conf the component data object
-     */  
+     */
     private $_conf=null;
 
     /**
@@ -50,7 +50,7 @@ class LAttachment
 
     /**
      * @var string $lURL the URL of the logic-controller
-     */ 
+     */
     private $lURL = ""; // readed out from config below
 
     /**
@@ -75,7 +75,7 @@ class LAttachment
         $this->lURL = $this->query->getAddress();
 
         //POST AddAttachment
-        $this->app->post('/'.$this->getPrefix().'(/)', 
+        $this->app->post('/'.$this->getPrefix().'(/)',
                         array($this, 'addAttachment'));
 
         //GET GetAttachment
@@ -98,7 +98,7 @@ class LAttachment
      *
      * Called when this component receives an HTTP POST request to
      * /attachment(/).
-     * The request body should contain a JSON object representing the 
+     * The request body should contain a JSON object representing the
      * attachment's attributes.
      */
     public function addAttachment(){
@@ -114,7 +114,7 @@ class LAttachment
          * if the file has been stored, the information
          * belongs to this attachment will be stored in the database
          */
-        if($answer['status'] >= 200 && $answer['status'] < 300){ 
+        if($answer['status'] >= 200 && $answer['status'] < 300){
             // first request
             $URL = $this->lURL.'/DB/file';
             $answer = Request::custom('POST', $URL, $header, $answer['content']);
@@ -160,6 +160,12 @@ class LAttachment
     public function deleteAttachment($attachmentid){
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
+        //getAttachment to get the fileID and fileAddress
+        $URL = $this->lURL.'/DB/attachment/attachment/'.$attachmentid;
+        $answer = Request::custom('GET', $URL, $header, "");
+        $fileid = json_decode($answer['content'], true);
+        $fileAddress = $fileid['file']['address'];
+        $fileid = $fileid['file']['fileId'];
         // request to database
         $URL = $this->lURL.'/DB/attachment/'.$attachmentid;
         $answer = Request::custom('DELETE', $URL, $header, $body);
@@ -167,16 +173,15 @@ class LAttachment
 
         /*
          * if the file information has been deleted, the file
-         * will being deleted from filesystem
+         * will being deleted from filetable and from filesystem
          */
-        $fileObject = json_decode($answer['content'], true);
-        //if address-field exists, read it out
-        if (isset($fileObject['address']) &&
-            $answer['status'] >= 200 && $answer['status'] < 300){
-                $fileAddress = $fileObject['address'];
+        if ($answer['status'] >= 200 && $answer['status'] < 300){
+                //request to file-table of DB
+                $URL = $this->lURL.'/DB/file/'.$fileid;
+                $answer = Request::custom('DELETE', $URL, $header, "");
                 // request to filesystem
-                $URL = $this->lURL.'/FS/file/'.$fileAddress;
-                $answer = Request::custom('DELETE', $URL, $header, $body);
+                $URL = $this->lURL.'/FS/'.$fileAddress;
+                $answer = Request::custom('DELETE', $URL, $header, "");
         }
     }
 
@@ -185,12 +190,12 @@ class LAttachment
      *
      * Called when this component receives an HTTP PUT request to
      * /attachment/attachment/$attachmentid(/).
-     * The request body should contain a JSON object representing the 
+     * The request body should contain a JSON object representing the
      * attachment's new attributes.
      *
      * @param string $attachmentid The id of the attachment that is being updated.
      */
-    public function editAttachment($attachmentid){  
+    public function editAttachment($attachmentid){
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
         $body = json_decode($body, true);
@@ -203,7 +208,7 @@ class LAttachment
          * if the file has been stored, the information
          * belongs to this attachment will be stored in the database
          */
-        if($answer['status'] >= 200 && $answer['status'] < 300){ 
+        if($answer['status'] >= 200 && $answer['status'] < 300){
             // first request
             $URL = $this->lURL.'/DB/file';
             $answer = Request::custom('POST', $URL, $header, $answer['content']);
@@ -215,13 +220,11 @@ class LAttachment
                 $this->app->response->setStatus($answer['status']);
             } else {
                 $this->app->response->setStatus($answer['status']);
-                print("1");
             }
         } else {
             $this->app->response->setStatus($answer['status']);
-            print("2");
         }
-    }   
+    }
 }
 
 // get new config data from DB
@@ -230,5 +233,4 @@ $com = new CConfig(LAttachment::getPrefix());
 // create a new instance of LExercisesheet class with the config data
 if (!$com->used())
     new LAttachment($com->loadConfig());
-
 ?>

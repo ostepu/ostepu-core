@@ -1,7 +1,7 @@
 <?php
 /**
  * @file LExercise.php Contains the LExercise class
- * 
+ *
  * @author Martin Daute
  * @author Christian Elze
  * @author Peter Koenig
@@ -50,7 +50,7 @@ class LExercise
 
     /**
      * @var string $lURL the URL of the logic-controller
-     */ 
+     */
     private $lURL = ""; // readed out from config below
 
     /**
@@ -98,37 +98,16 @@ class LExercise
      *
      * Called when this component receives an HTTP POST request to
      * /exercise(/).
-     * The request body should contain a JSON object representing the exercise's 
+     * The request body should contain a JSON object representing the exercise's
      * attributes.
-     * Adds the exercise file to the filesystem first. At success
-     * the informations belongs to this exercise will be stored in the database.
      */
     public function addExercise(){
         $header = $this->app->request->headers->all();
-
-        // get the file object from the request body to send it to the filesystem
-        $body = json_decode($this->app->request->getBody(), true);
-        var_dump($body);
-        $file = json_encode($body['file']);
-
-        // request to the filesystem to save the file
-        $URL = $this->lURL.'/FS';
-        $answer = Request::custom('POST', $URL, $header, $file);
-
-        /*
-         * if the file has been stored, the information
-         * belongs to this exercise will be stored in the database
-         */
-        if($answer['status'] >= 200 && $answer['status'] < 300){ 
-            $body['file'] = json_decode($answer['content'], true);
-            // send a request to database
-            $URL = $this->lURL.'/DB';
-            $answer = Request::custom('POST', $URL, $header, json_encode($body));
-            $this->app->response->setStatus($answer['status']);
-        } else {
-            // if the file has not been stored response the (error-)status-code
-            $this->app->response->setStatus($answer['status']);
-        }
+        $body = $this->app->request->getBody();
+        // request to database
+        $URL = $this->lURL.'/DB/exercise';
+        $answer = Request::custom('POST', $URL, $header, $body);
+        $this->app->response->setStatus($answer['status']);
     }
 
     /**
@@ -155,31 +134,16 @@ class LExercise
      *
      * Called when this component receives an HTTP DELETE request to
      * /exercise/exercise/$exerciseid(/).
-     * Deletes the exercise information from the database first. At success
-     * the file belongs to this exercise will be deleted from the filesystem.
      *
      * @param int $exerciseid The id of the exercise that is beeing deleted.
      */
     public function deleteExercise($exerciseid){
         $header = $this->app->request->headers->all();
-        $body = $this->app->request->getBody();
-        $URL = $this->lURL.'/DB/exercise/'.$exerciseid;
+        $URL = $this->lURL.'/DB/exercise/exercise/'.$exerciseid;
         // request to database
-        $answer = Request::custum('DELETE', $URL, $header, $body);
+        print_r($URL);
+        $answer = Request::custom('DELETE', $URL, $header, "");
         $this->app->response->setStatus($answer['status']);
-
-        /*
-         * if the file information has been deleted, the file
-         * will being deleted from filesystem
-         */
-        $fileObject = json_decode($answer['content'], true);
-        // if address-field exists, read it out
-        if (isset($fileObject['address']) and $answer['status'] >= 200 && $answer['status'] < 300){
-            $fileAddress = $fileObject['address'];
-            // request to filesystem
-            $URL = $this->lURL.'/FS/'.$fileAddress;
-            $answer = Request::custom('DELETE', $URL, $header, $body);
-        }
     }
 
     /**
