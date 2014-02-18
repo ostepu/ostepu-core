@@ -137,7 +137,6 @@ class LgetSite
     }
 
     public function tutorAssignmentSiteInfo($userid, $courseid, $sheetid){
-
         $response = array();
         $assignedSubmissionIDs = array();
 
@@ -224,7 +223,6 @@ class LgetSite
      */
     public function studentSiteInfo($userid, $courseid)
     {
-
         $response = array('sheets' => array(),
                           'user' => array());
         $body = $this->app->request->getBody();
@@ -488,7 +486,6 @@ class LgetSite
      */
     public function markingTool($userid, $courseid, $sheetid)
     {
-
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
 
@@ -590,7 +587,6 @@ class LgetSite
         $response['user'] = $this->userWithCourse($userid, $courseid);
 
         $this->app->response->setBody(json_encode($response));
-
     }
 
     /**
@@ -1197,7 +1193,6 @@ class LgetSite
      */
     public function checkCondition($userid, $courseid)
     {
-
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
 
