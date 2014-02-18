@@ -203,7 +203,6 @@ class LAttachment
         // Request to FS
         $URL = $this->lURL.'/FS/file';
         $answer = Request::custom('POST', $URL, $header, json_encode($file));
-        print($answer['status'] . "\n");
 
         /*
          * if the file has been stored, the information
@@ -213,21 +212,17 @@ class LAttachment
             // first request
             $URL = $this->lURL.'/DB/file';
             $answer = Request::custom('POST', $URL, $header, $answer['content']);
-                    print($answer['status'] . "\n");
             // second request
             if($answer['status'] >= 200 && $answer['status'] < 300){
                 $body['file'] = json_decode($answer['content'], true);
                 $URL = $this->lURL.'/DB/attachment/attachment/'.$attachmentid;
                 $answer = Request::custom('PUT', $URL, $header, json_encode($body));
-                        print($answer['status'] . "\n");
                 $this->app->response->setStatus($answer['status']);
             } else {
                 $this->app->response->setStatus($answer['status']);
-                print("1");
             }
         } else {
             $this->app->response->setStatus($answer['status']);
-            print("2");
         }
     }
 }
@@ -238,5 +233,4 @@ $com = new CConfig(LAttachment::getPrefix());
 // create a new instance of LExercisesheet class with the config data
 if (!$com->used())
     new LAttachment($com->loadConfig());
-
 ?>
