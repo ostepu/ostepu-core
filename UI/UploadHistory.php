@@ -37,9 +37,9 @@ $uploadHistoryOptions_data['sheetID'] = $sheetID;
 
 $user_course_data = $uploadHistoryOptions_data['user'];
 
-/**
- * @todo Add menu.
- */
+$menu = MakeNavigationElement($user_course_data,
+                              PRIVILEGE_LEVEL::ADMIN,
+                              true);
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
