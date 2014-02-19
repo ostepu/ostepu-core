@@ -689,7 +689,9 @@ USE `uebungsplattform`$$
 CREATE TRIGGER `File_AINS` AFTER INSERT ON `File` FOR EACH ROW
 /*delete from removableFiles if address exists
 @author Lisa*/
+begin
 #Delete From RemovableFiles where F_address = NEW.F_address
+end;
 $$
 
 USE `uebungsplattform`$$
@@ -738,7 +740,7 @@ CREATE TRIGGER `Group_BINS` BEFORE INSERT ON `Group` FOR EACH ROW
 @author Lisa*/
 BEGIN
 SET NEW.C_id = (select ES.C_id from ExerciseSheet ES where ES.ES_id = NEW.ES_id limit 1);
-if (NEW.C_id = NULL) then
+if (NEW.C_id is NULL) then
 SIGNAL sqlstate '45001' set message_text = "no corresponding exercisesheet";
 END if;
 END;$$
@@ -751,7 +753,7 @@ CREATE TRIGGER `Group_BUPD` BEFORE UPDATE ON `Group` FOR EACH ROW
 @author Lisa Dietrich*/
 BEGIN
 SET NEW.C_id = (select ES.C_id from ExerciseSheet ES where ES.ES_id = NEW.ES_id limit 1);
-if (NEW.C_id = NULL) then
+if (NEW.C_id is NULL) then
 SIGNAL sqlstate '45001' set message_text = "no corresponding exercisesheet";
 END if;
 if not exists (Select * from Invitation where U_id_member = NEW.U_id_member and U_id_leader = NEW.U_id_leader and ES_id = NEW.ES_id limit 1)
@@ -824,7 +826,7 @@ CREATE TRIGGER `Exercise_BINS` BEFORE INSERT ON `Exercise` FOR EACH ROW
 @author Lisa*/
 BEGIN
 SET NEW.C_id = (select ES.C_id from ExerciseSheet ES where ES.ES_id = NEW.ES_id limit 1);
-if (NEW.C_id = NULL) then
+if (NEW.C_id is NULL) then
 SIGNAL sqlstate '45001' set message_text = "no corresponding exercisesheet";
 END if;
 END;$$
@@ -836,7 +838,7 @@ CREATE TRIGGER `Exercise_BUPD` BEFORE UPDATE ON `Exercise` FOR EACH ROW
 @author Lisa*/
 BEGIN
 SET NEW.C_id = (select ES.C_id from ExerciseSheet ES where ES.ES_id = NEW.ES_id limit 1);
-if (NEW.C_id = NULL) then
+if (NEW.C_id is NULL) then
 SIGNAL sqlstate '45001' set message_text = "no corresponding exercisesheet";
 END if;
 END;$$
@@ -859,8 +861,13 @@ CREATE TRIGGER `Submission_BINS` BEFORE INSERT ON `Submission` FOR EACH ROW
 @author Lisa*/
 BEGIN
 SET NEW.ES_id = (select E.ES_id from Exercise E where E.E_id = NEW.E_id limit 1);
-if (NEW.ES_id = NULL) then
-SIGNAL sqlstate '45001' set message_text = "no corresponding exercisesheet";
+if (NEW.ES_id is NULL) then
+SIGNAL sqlstate '23000' set message_text = "no corresponding exercisesheet";
+END if;
+
+SET NEW.S_leaderId = (SELECT U_id_member FROM `Group` G WHERE G.U_id_leader = NEW.U_id and G.ES_id = NEW.ES_id limit 1);
+if (NEW.S_leaderId is NULL) then
+SIGNAL sqlstate '23000' set message_text = "no corresponding group leader";
 END if;
 END;$$
 
@@ -871,8 +878,13 @@ CREATE TRIGGER `Submission_BUPD` BEFORE UPDATE ON `Submission` FOR EACH ROW
 @author Lisa*/
 BEGIN
 SET NEW.ES_id = (select E.ES_id from Exercise E where E.E_id = NEW.E_id limit 1);
-if (NEW.ES_id = NULL) then
-SIGNAL sqlstate '45001' set message_text = "no corresponding exercisesheet";
+if (NEW.ES_id is NULL) then
+SIGNAL sqlstate '23000' set message_text = "no corresponding exercisesheet";
+END if;
+
+SET NEW.S_leaderId = (SELECT U_id_member FROM `Group` G WHERE G.U_id_leader = NEW.U_id and G.ES_id = NEW.ES_id limit 1);
+if (NEW.S_leaderId is NULL) then
+SIGNAL sqlstate '23000' set message_text = "no corresponding group leader";
 END if;
 END;$$
 
@@ -889,12 +901,12 @@ CREATE TRIGGER `Marking_BINS` BEFORE INSERT ON `Marking` FOR EACH ROW
 @author Lisa*/
 BEGIN
 SET NEW.E_id = (select S.E_id from Submission S where S.S_id = NEW.S_id limit 1);
-if (NEW.E_id = NULL) then
+if (NEW.E_id is NULL) then
 SIGNAL sqlstate '45001' set message_text = "no corresponding submission";
 END if;
 
 SET NEW.ES_id = (select S.ES_id from Submission S where S.S_id = NEW.S_id limit 1);
-if (NEW.ES_id = NULL) then
+if (NEW.ES_id is NULL) then
 SIGNAL sqlstate '45001' set message_text = "no corresponding submission";
 END if;
 END;$$
@@ -906,12 +918,12 @@ CREATE TRIGGER `Marking_BUPD` BEFORE UPDATE ON `Marking` FOR EACH ROW
 @author Lisa*/
 BEGIN
 SET NEW.E_id = (select S.E_id from Submission S where S.S_id = NEW.S_id limit 1);
-if (NEW.E_id = NULL) then
+if (NEW.E_id is NULL) then
 SIGNAL sqlstate '45001' set message_text = "no corresponding submission";
 END if;
 
 SET NEW.ES_id = (select S.ES_id from Submission S where S.S_id = NEW.S_id limit 1);
-if (NEW.ES_id = NULL) then
+if (NEW.ES_id is NULL) then
 SIGNAL sqlstate '45001' set message_text = "no corresponding submission";
 END if;
 END;$$
@@ -945,7 +957,7 @@ if not send error message
 author Lisa*/
 BEGIN
 SET NEW.ES_id = (select E.ES_id from Exercise E where E.E_id = NEW.E_id limit 1);
-if (NEW.ES_id = NULL) then
+if (NEW.ES_id is NULL) then
 SIGNAL sqlstate '45001' set message_text = "no corresponding exercise";
 END if;
 END;$$
@@ -957,7 +969,7 @@ if not send error message
 author Lisa*/
 BEGIN
 SET NEW.ES_id = (select E.ES_id from Exercise E where E.E_id = NEW.E_id limit 1);
-if (NEW.ES_id = NULL) then
+if (NEW.ES_id is NULL) then
 SIGNAL sqlstate '45001' set message_text = "no corresponding exercise";
 END if;
 END;$$
@@ -969,7 +981,7 @@ CREATE TRIGGER `SelectedSubmission_BINS` BEFORE INSERT ON `SelectedSubmission` F
 @author Lisa*/
 BEGIN
 SET NEW.ES_id = (select E.ES_id from Exercise E where E.E_id = NEW.E_id limit 1);
-if (NEW.ES_id = NULL) then
+if (NEW.ES_id is NULL) then
 SIGNAL sqlstate '45001' set message_text = "no corresponding exercise";
 END if;
 END;$$
@@ -981,7 +993,7 @@ CREATE TRIGGER `SelectedSubmission_BUPD` BEFORE UPDATE ON `SelectedSubmission` F
 @author Lisa*/
 BEGIN
 SET NEW.ES_id = (select E.ES_id from Exercise E where E.E_id = NEW.E_id limit 1);
-if (NEW.ES_id = NULL) then
+if (NEW.ES_id is NULL) then
 SIGNAL sqlstate '45001' set message_text = "no corresponding exercise";
 END if;
 END;$$
