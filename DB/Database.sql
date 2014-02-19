@@ -680,8 +680,8 @@ CREATE TRIGGER `File_ADEL` AFTER DELETE ON `File` FOR EACH ROW
 /* insert fileaddress into removableFiles
 @author Lisa*/
 begin
-insert IGNORE into RemovableFiles 
-set F_address = OLD.F_address;
+#insert IGNORE into RemovableFiles 
+#set F_address = OLD.F_address;
 end;
 $$
 
@@ -689,7 +689,7 @@ USE `uebungsplattform`$$
 CREATE TRIGGER `File_AINS` AFTER INSERT ON `File` FOR EACH ROW
 /*delete from removableFiles if address exists
 @author Lisa*/
-Delete From RemovableFiles where F_address = NEW.F_address
+#Delete From RemovableFiles where F_address = NEW.F_address
 $$
 
 USE `uebungsplattform`$$
@@ -728,7 +728,7 @@ end;$$
 USE `uebungsplattform`$$
 CREATE TRIGGER `ExerciseSheet_ADEL` AFTER DELETE ON `ExerciseSheet` FOR EACH ROW
 BEGiN
-DELETE IGNORE FROM `File` WHERE F_id = OLD.F_id_file or F_id = OLD.F_id_sampleSolution;
+##DELETE IGNORE FROM `File` WHERE F_id = OLD.F_id_file or F_id = OLD.F_id_sampleSolution;
 END;$$
 
 USE `uebungsplattform`$$
@@ -879,7 +879,7 @@ END;$$
 USE `uebungsplattform`$$
 CREATE TRIGGER `Submission_ADEL` AFTER DELETE ON `Submission` FOR EACH ROW
 BEGIN
-Delete ignore from `File` where OLD.F_id_file = F_id;
+##Delete ignore from `File` where OLD.F_id_file = F_id;
 END;$$
 
 USE `uebungsplattform`$$
@@ -927,7 +927,7 @@ end; $$
 USE `uebungsplattform`$$
 CREATE TRIGGER `Marking_ADEL` AFTER DELETE ON `Marking` FOR EACH ROW
 BEGIN
-delete ignore from `File` where F_id = OLD.F_id_file;
+##delete ignore from `File` where F_id = OLD.F_id_file;
 END;$$
 
 USE `uebungsplattform`$$
@@ -935,7 +935,7 @@ CREATE TRIGGER `Attachment_ADEL` AFTER DELETE ON `Attachment` FOR EACH ROW
 /*delete corresponding data
 author Till*/
 begin
-Delete IGNORE From `File` where F_id = OLD.F_id;
+##Delete IGNORE From `File` where F_id = OLD.F_id;
 end;$$
 
 USE `uebungsplattform`$$
