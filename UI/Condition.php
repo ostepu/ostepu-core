@@ -32,9 +32,8 @@ if (isset($_POST['action'])) {
             if (is_numeric($percentage) && $percentage >= 0 && $percentage <= 100) {
                 $percentage = $percentage / 100;
 
-                $newApprovalCondition = new ApprovalCondition();
-                $newApprovalConditionSettings = ApprovalCondition::encodeApprovalCondition(
-                         $newApprovalCondition->createApprovalCondition($approvalConditionId, $cid, null, $percentage));
+                $newApprovalCondition = ApprovalCondition::createApprovalCondition($approvalConditionId, $cid, null, $percentage);
+                $newApprovalConditionSettings = ApprovalCondition::encodeApprovalCondition($newApprovalCondition);
                 $URI = $databaseURI . "/approvalcondition/approvalcondition/" . $approvalConditionId;
                 http_put_data($URI, $newApprovalConditionSettings, true, $message);
 
