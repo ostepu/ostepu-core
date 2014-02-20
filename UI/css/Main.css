@@ -73,6 +73,11 @@ a:after {
     padding: 0 40px 20px 40px;
 }
 
+.content-description {
+    padding-bottom: 30px;
+    line-height: 150%;
+}
+
 .content-footer {
     padding: 30px 40px 25px 40px;
     overflow: auto;
