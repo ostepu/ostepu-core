@@ -1,7 +1,5 @@
-<form action="Upload.php" method="POST" enctype="multipart/form-data">
-    <input type="hidden" name="sheetID" value="<?= $sheetID ?>">
+<form action="Upload.php?cid=<?= $cid ?>&sid=<?= $sid ?>" method="POST" enctype="multipart/form-data">
     <input type="hidden" name="action" value="submit">
-    <input type="hidden" name="userID" value="<?= $uid ?>">
     <button class="submit" type="submit" name="submit" id="submitButton">
         <div class="content-element">
             <div class="content-header">
@@ -40,14 +38,20 @@
                             </a>
                     <?php endif; ?>
 
-                    <label class="short left label bold new-line" for="studentComment">Kommentar:</label>
-                    <?php $name = "exercises[{$key}]"; ?>
-                    <textarea name="<?= $name ?>['comment']" class="form-field text-input" rows="5"></textarea>
+                    <label class="short left label bold new-line"
+                           for="studentComment">Kommentar:</label>
+                    <textarea name="exercises[<?= $key ?>][comment]"
+                              class="form-field text-input"
+                              rows="5"></textarea>
 
-                    <label class="short left label bold new-line" for="studentComment">Datei:</label>
-                    <input type="file" class="button left" name="<?= $name ?>['file']">
-                    <?php $exerciseID = $exercise['exerciseID']; ?>
-                    <input type="hidden" name="<?= $name ?>['exerciseID']" value="<?= $exerciseID ?>">
+                    <label class="short left label bold new-line"
+                           for="studentComment">Datei:</label>
+                    <input type="file"
+                           class="button left"
+                           name="file<?= $exercise['id'] ?>">
+                    <input type="hidden"
+                           name="exercises[<?= $key ?>][exerciseID]"
+                           value="<?= $exercise['id'] ?>">
                 </div>
             </div>
         </div>
