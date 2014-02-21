@@ -82,7 +82,10 @@ $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
                "backURL" => "index.php",
                "notificationElements" => $notifications,
                "navigationElement" => $menu));
-
+/**
+ * @todo also display the group leader
+ * @todo fix attachment downloads
+ */
 $t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetStudent.template.html');
 $t->bind($student_data);
 
