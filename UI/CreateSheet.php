@@ -36,9 +36,7 @@ $course = json_decode($course, true)[0];
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user);
 $h->bind($course);
-$h->bind(array("backTitle" => "zur Veranstaltung",
-               "backURL" => "Lecturer.php?cid={$cid}",
-               "navigationElement" => $menu,
+$h->bind(array("navigationElement" => $menu,
                "notificationElements" => $notifications));
 
 /**

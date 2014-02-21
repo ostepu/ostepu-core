@@ -54,6 +54,7 @@ if (isset($_POST['action'])) {
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind(array("backTitle" => "Veranstaltung wechseln",
                "name" => "Übungsplattform",
+               "hideBackLink" => "true",
                "hideLogoutLink" => "true",
                "notificationElements" => $notifications));
 

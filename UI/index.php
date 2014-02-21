@@ -27,6 +27,7 @@ $menu = MakeNavigationElement($user,
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user);
 $h->bind(array("name" => "Übungsplattform",
+               "hideBackLink" => "true",
                "notificationElements" => $notifications,
                "navigationElement" => $menu));
 
