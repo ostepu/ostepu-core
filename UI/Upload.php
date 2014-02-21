@@ -40,11 +40,6 @@ $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
  * @see http://php.net/manual/de/function.hash.php
  */
 
-
-/**
- * @todo fix the template so textareas don't contain spaces bx default
- */
-
 $t = Template::WithTemplateFile('include/Upload/Upload.template.html');
 $t->bind($upload_data);
 
