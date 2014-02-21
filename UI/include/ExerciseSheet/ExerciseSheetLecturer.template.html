@@ -8,6 +8,7 @@
 </div> <!-- end: content-element -->
 
 <?php
+if (!empty($sheets)) {
 foreach ($sheets as $sheet):
 
     /**
@@ -121,6 +122,21 @@ foreach ($sheets as $sheet):
         </ol>
     </div> <!-- end: content-body-wrapper -->
 </div> <!-- end: content-element -->
-<?php
+<?php 
 endforeach;
+} else {
+?>
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left uppercase">Hinweis</div>
+    </div>
+
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            Es sind noch keine Aufgabenblätter vorhanden.
+        </div>
+    </div> <!-- end: content-body -->
+</div> <!-- end: content-wrapper -->
+<?php
+}
 ?>
