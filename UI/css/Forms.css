@@ -9,6 +9,7 @@
 .form-field {
     width: 250px;
     margin-bottom: 7px;
+    display: inline-block;
 }
 
 .new-line {

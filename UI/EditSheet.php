@@ -26,8 +26,6 @@ $menu = MakeNavigationElementForCourseStatus($user_course_data['courses']);
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
 $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
-               "backTitle" => "Veranstaltung wechseln",
-               "backURL" => "index.php",
                "notificationElements" => $notifications,
                "navigationElement" => $menu));
 

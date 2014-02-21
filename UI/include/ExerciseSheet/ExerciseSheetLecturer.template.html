@@ -8,6 +8,7 @@
 </div> <!-- end: content-element -->
 
 <?php
+if (!empty($sheets)) {
 foreach ($sheets as $sheet):
 
     /**
@@ -92,6 +93,18 @@ foreach ($sheets as $sheet):
                     </a>
                 </li>
                 <li><a href="CreateSheet.php">Serie bearbeiten</a></li>
+                <?php
+                    if ($sheet['hasAttachments']) {
+                        print '<li>';
+                        print '<a href="';
+                        print PRIVILEGE_LEVEL::$SITES[$courses[0]['status']];
+                        print '?cid=';
+                        print $cid . '&action=downloadAttachments';
+                        print '&sid=' . $sheet['id'];
+                        print '">Alle Anhänge herunterladen</a>';
+                        print '</li>';
+                    }
+                ?>
                 <li><a href="#">Einsendungen herunterladen</a></li>
                 <li><a href="#">Einsendungen hochladen</a></li>
                 <li>
@@ -121,6 +134,21 @@ foreach ($sheets as $sheet):
         </ol>
     </div> <!-- end: content-body-wrapper -->
 </div> <!-- end: content-element -->
-<?php
+<?php 
 endforeach;
+} else {
+?>
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left uppercase">Hinweis</div>
+    </div>
+
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            Es sind noch keine Aufgabenblätter vorhanden.
+        </div>
+    </div> <!-- end: content-body -->
+</div> <!-- end: content-wrapper -->
+<?php
+}
 ?>

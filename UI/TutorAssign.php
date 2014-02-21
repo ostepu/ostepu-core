@@ -29,8 +29,6 @@ Authentication::checkRights(1, $cid, $uid, $user_course_data);
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
 $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
-               "backTitle" => "zur Veranstaltung",
-               "backURL" => "Admin.php?cid={$cid}",
                "notificationElements" => $notifications));
 
 // construct a content element for assigning tutors automatically

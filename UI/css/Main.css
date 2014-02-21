@@ -73,6 +73,11 @@ a:after {
     padding: 0 40px 20px 40px;
 }
 
+.content-description {
+    padding-bottom: 30px;
+    line-height: 150%;
+}
+
 .content-footer {
     padding: 30px 40px 25px 40px;
     overflow: auto;
@@ -122,6 +127,11 @@ ol {
 
 li {
     padding-bottom: 7px;
+}
+
+li:before {
+    display: inline-block;
+    width:  30px;
 }
 
 table {
@@ -231,7 +241,7 @@ ol.full-width-exercise-list .secondLevel li:before {
 }
 
 .body-option-color, .body-option-color a {
-    color: #5A96C3;
+    color: #6b9cc1;
 }
 
 .normal {

@@ -1,4 +1,5 @@
 <?php
+if (!empty($sheets)) {
 foreach ($sheets as $sheet):
 
     /**
@@ -85,6 +86,16 @@ foreach ($sheets as $sheet):
                         Musterlösung
                     </a>
                 </li>
+                <?php
+                    if ($sheet['hasAttachments']) {
+                        print '<li>';
+                        print '<a href="Student.php?cid=';
+                        print $cid . '&action=downloadAttachments';
+                        print '&sid=' . $sheet['id'];
+                        print '">Alle Anhänge herunterladen</a>';
+                        print '</li>';
+                    }
+                ?>
                 <li><a href="#">Einsendung herunterladen</a></li>
                 <li><a href="#">Einsendung hochladen</a></li>
                 <li>
@@ -107,4 +118,21 @@ foreach ($sheets as $sheet):
         </ol>
     </div><!-- end: content-body-wrapper -->
 </div> <!-- end: content-element -->
-<?php endforeach; ?>
+<?php 
+endforeach;
+} else {
+?>
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left uppercase">Hinweis</div>
+    </div>
+
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            Es sind noch keine Aufgabenblätter vorhanden.
+        </div>
+    </div> <!-- end: content-body -->
+</div> <!-- end: content-wrapper -->
+<?php
+}
+?>

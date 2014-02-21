@@ -8,6 +8,12 @@
             <a class="change-course" href="<?= $backURL ?>">
                 <?php print $backTitle; ?>
             </a>
+        <?php elseif (!isset($hideBackLink)): ?>
+            <a class="change-course" href="
+                <?= PRIVILEGE_LEVEL::$SITES[$courses[0]['status']] . "?cid=" . $courses[0]['course']['id'] ?>
+            ">
+                zur Veranstaltung
+            </a>
         <?php endif; ?>
     </div>
     <div class="course-extra-info left">

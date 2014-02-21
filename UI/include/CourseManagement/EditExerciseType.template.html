@@ -1,0 +1,34 @@
+<input type="hidden" name="action" value="EditExerciseType">
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left uppercase">Punkteart ändern</div>
+        <button class="text-button info-color bold right">verändern</button>
+    </div>
+
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            <div class="content-description">
+                Wählen Sie die gewünschte Punkteart aus und vergeben Sie anschließend
+                einen neuen Namen. Achtung: Die Änderung betrifft alle Veranstaltungen
+                der Übungsplattform!
+            </div>
+            <label class="form-field left label bold" for="exerciseTypeID">Punkteart:</label>
+            <select class="form-field left text-input" name="exerciseTypeID" id="exerciseTypeID" size="10">
+            <?php
+                if(!empty($exerciseTypes)) {
+                    foreach ($exerciseTypes as $exerciseType) {
+                        print '<option value="';
+                        print $exerciseType['id'];
+                        print '">';
+                        print $exerciseType['name'];
+                        print "</option>";
+                    }
+                }
+            ?>
+            </select>
+            
+            <label class="form-field left label bold new-line" for="exerciseTypeName">Neuer Name:</label>
+            <input class="form-field left text-input" name="exerciseTypeName" id="exerciseTypeName" />
+        </div>
+    </div>
+</div>

@@ -1,4 +1,5 @@
 <?php
+if (!empty($sheets)) {
 foreach ($sheets as $sheet):
 
     /**
@@ -8,7 +9,6 @@ foreach ($sheets as $sheet):
     // bool if endDate of sheet is greater than the actual date
     $isExpired = date('U') > date('U', $sheet['endDate']);
 ?>
-
 <div class="content-element collapsible">
     <div class="content-header">
         <div class="content-title left uppercase">
@@ -116,8 +116,15 @@ foreach ($sheets as $sheet):
 
                         <?php
                             // creates a deleteSubmission icon for the submission (if it exists)
-                            if(isset($exercise['submission']) && !$isExpired) {
-                                print '<a href="#" class="plain" target="_blank">';
+
+                            /**
+                             * @todo add "&& !$isExpired" to if condition after testing.
+                             */ 
+                            if(isset($exercise['submission'])) {
+                                print '<a href="Student.php?cid=';
+                                print $cid . '&action=deleteSubmission';
+                                print '&suid=' . $exercise['submission']['id'];
+                                print '" title="Einsendung löschen" class="plain">';
                                 print '<img src="Images/Delete.png" />';
                                 print '</a>';
                             }
@@ -166,7 +173,7 @@ foreach ($sheets as $sheet):
                 <?php
                     if ($sheet['hasAttachments']) {
                         print '<li>';
-                        print '<a href="Student.php?cid=';
+                        print '<a href="Tutor.php?cid=';
                         print $cid . '&action=downloadAttachments';
                         print '&sid=' . $sheet['id'];
                         print '">Alle Anhänge herunterladen</a>';
@@ -203,6 +210,21 @@ foreach ($sheets as $sheet):
         }
     ?>
 </div> <!-- end: content-element -->
-<?php
+<?php 
 endforeach;
+} else {
+?>
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left uppercase">Hinweis</div>
+    </div>
+
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            Es sind noch keine Aufgabenblätter vorhanden.
+        </div>
+    </div> <!-- end: content-body -->
+</div> <!-- end: content-wrapper -->
+<?php
+}
 ?>

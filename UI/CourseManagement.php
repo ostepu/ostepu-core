@@ -87,6 +87,49 @@ if (isset($_POST['action'])) {
         else {
             $notifications[] = MakeNotification("error", "Es wurden nicht alle Felder ausgefüllt!");
         }
+    } elseif ($_POST['action'] == "AddExerciseType") {
+        // check if POST data is send
+        if(isset($_POST['exerciseTypeName'])) {
+            // clean Input
+            $exerciseTypeName = cleanInput($_POST['exerciseTypeName']);
+
+            // create new exerciseType
+            $data = ExerciseType::encodeExerciseType(ExerciseType::createExerciseType(null, $exerciseTypeName));
+
+            $url = $databaseURI . "/exercisetype";
+            http_post_data($url, $data, true, $message);
+
+            // show notification
+            if ($message == "201") {
+                $notifications[] = MakeNotification("success", "Die Punkteart wurden erfolgreich angelegt!");
+            } else {
+                $notifications[] = MakeNotification("error", "Beim Speichern ist ein Fehler aufgetreten!");
+            }
+        } else {
+            $notifications[] = MakeNotification("error", "Es wurden nicht alle Felder ausgefüllt!");
+        }
+    } elseif ($_POST['action'] == "EditExerciseType") {
+        // check if POST data is send
+        if(isset($_POST['exerciseTypeID']) && isset($_POST['exerciseTypeName'])) {
+            // clean Input
+            $exerciseTypeID = cleanInput($_POST['exerciseTypeID']);
+            $exerciseTypeName = cleanInput($_POST['exerciseTypeName']);
+
+            // create new exerciseType
+            $data = ExerciseType::encodeExerciseType(ExerciseType::createExerciseType($exerciseTypeID, $exerciseTypeName));
+
+            $url = $databaseURI . "/exercisetype/" . $exerciseTypeID;
+            http_put_data($url, $data, true, $message);
+
+            // show notification
+            if ($message == "201") {
+                $notifications[] = MakeNotification("success", "Die Punkteart wurden erfolgreich geändert!");
+            } else {
+                $notifications[] = MakeNotification("error", "Beim Speichern ist ein Fehler aufgetreten!");
+            }
+        } else {
+            $notifications[] = MakeNotification("error", "Es wurden nicht alle Felder ausgefüllt!");
+        }
     } elseif ($_POST['action'] == "GrantRights") {
         // check if POST data is send
         if(isset($_POST['userID']) && isset($_POST['Rights'])) {
@@ -206,14 +249,19 @@ $menu = MakeNavigationElement($user_course_data,
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
 $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
-               "backTitle" => "zur Veranstaltung",
-               "backURL" => "Admin.php?cid={$cid}",
                "notificationElements" => $notifications,
                "navigationElement" => $menu));
 
 // construct a content element for changing course settings
 $courseSettings = Template::WithTemplateFile('include/CourseManagement/CourseSettings.template.html');
 $courseSettings->bind($courseManagement_data);
+
+// construct a content element for adding exercise types
+$addExerciseType = Template::WithTemplateFile('include/CourseManagement/AddExerciseType.template.html');
+
+// construct a content element for editing exercise types
+$editExerciseType = Template::WithTemplateFile('include/CourseManagement/EditExerciseType.template.html');
+$editExerciseType->bind($courseManagement_data);
 
 // construct a content element for granting user-rights
 $grantRights = Template::WithTemplateFile('include/CourseManagement/GrantRights.template.html');
@@ -231,8 +279,10 @@ $addUser = Template::WithTemplateFile('include/CourseManagement/AddUser.template
  */
 
 // wrap all the elements in some HTML and show them on the page
-$w = new HTMLWrapper($h, $courseSettings, $grantRights, $revokeRights, $addUser);
+$w = new HTMLWrapper($h, $courseSettings, $addExerciseType, $editExerciseType, $grantRights, $revokeRights, $addUser);
 $w->defineForm(basename(__FILE__)."?cid=".$cid, $courseSettings);
+$w->defineForm(basename(__FILE__)."?cid=".$cid, $addExerciseType);
+$w->defineForm(basename(__FILE__)."?cid=".$cid, $editExerciseType);
 $w->defineForm(basename(__FILE__)."?cid=".$cid, $grantRights);
 $w->defineForm(basename(__FILE__)."?cid=".$cid, $revokeRights);
 $w->defineForm(basename(__FILE__)."?cid=".$cid, $addUser);

@@ -10,8 +10,8 @@
 
 include_once 'include/Boilerplate.php';
 
-if (isset($_GET['action']) && isset($_GET['sid'])) {
-    if ($_GET['action'] == "downloadAttachments") {
+if (isset($_GET['action'])) {
+    if ($_GET['action'] == "downloadAttachments" && isset($_GET['sid'])) {
         $attachments = http_get($serverURI . '/logic/Controller/DB/attachment/exercisesheet/' . $sid);
         $attachments = json_decode($attachments, true);
 
@@ -27,7 +27,20 @@ if (isset($_GET['action']) && isset($_GET['sid'])) {
 
         $location = $filesystemURI . '/' . $zipfile['address'];
         header("Location: {$location}/attachments.zip");
-    } elseif ($_GET['action'] == "downloadMarkings") {
+    } elseif ($_GET['action'] == "deleteSubmission" && isset($_GET['suid'])) {
+        /**
+         * @todo Check if the user is allowed to delete the submission
+         */
+        $URI = $databaseURI . "/selectedsubmission/submission/" . $suid;
+
+        http_delete($URI, true, $message);
+
+        if ($message == "201") {
+            $notifications[] = MakeNotification("success", "Die Einsendung wurde gelöscht!");
+        } else {
+            $notifications[] = MakeNotification("error", "Beim Löschen ist ein Fehler aufgetreten!");
+        }
+    } elseif ($_GET['action'] == "downloadMarkings" && isset($_GET['sid'])) {
         $markings = http_get($serverURI . '/logic/Controller/DB/marking/exercisesheet/' . $sid . '/user/' . $uid);
         $markings = json_decode($markings, true);
 

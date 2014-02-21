@@ -21,9 +21,7 @@ if (isset($_POST['action'])) {
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
-$h->bind(array("backTitle" => "zur Veranstaltung",
-               "backURL" => "Student.php?cid={$cid}",
-               "navigationElement" => $menu,
+$h->bind(array("navigationElement" => $menu,
                "notificationElements" => $notifications));
 
 // construct a content element for managing groups
