@@ -129,6 +129,11 @@ li {
     padding-bottom: 7px;
 }
 
+li:before {
+    display: inline-block;
+    width:  30px;
+}
+
 table {
     width: 850px;
 }
