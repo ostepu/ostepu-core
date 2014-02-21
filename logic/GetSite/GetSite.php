@@ -1373,7 +1373,7 @@ class LgetSite
                             $allApproved = $allApproved && $typeApproved;
 
                             $thisPercentage['isApproved'] = $typeApproved;
-                            $thisPercentage['percentage'] = $percentage * 100;
+                            $thisPercentage['percentage'] = round($percentage * 100, 2);
                         } else {
 
                             // there are no points for the user for this
