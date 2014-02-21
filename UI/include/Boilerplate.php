@@ -32,6 +32,12 @@ if (isset($_GET['sid'])) {
     Logger::Log('no sheet id!\n');
 }
 
+if (isset($_GET['suid'])) {
+    $suid = $_GET['suid'];
+} else {
+    Logger::Log('no submission id!\n');
+}
+
 $serverURI = "http://141.48.9.92/uebungsplattform";
 $databaseURI = $serverURI . "/DB/DBControl";
 $filesystemURI = $serverURI . "/FS/FSControl";

@@ -31,13 +31,14 @@ if (isset($_GET['action'])) {
         /**
          * @todo Check if the user is allowed to delete the submission
          */
-        $URI = $databaseURI . "/selectedsubmission/" . $suid;
+        $URI = $databaseURI . "/selectedsubmission/submission/" . $suid;
+
         http_delete($URI, true, $message);
 
         if ($message == "201") {
             $notifications[] = MakeNotification("success", "Die Einsendung wurde gelöscht!");
         } else {
-            $notifications[] = MakeNotification("success", "Beim Löschen ist ein Fehler aufgetreten!");
+            $notifications[] = MakeNotification("error", "Beim Löschen ist ein Fehler aufgetreten!");
         }
     } elseif ($_GET['action'] == "downloadMarkings" && isset($_GET['sid'])) {
         $markings = http_get($serverURI . '/logic/Controller/DB/marking/exercisesheet/' . $sid . '/user/' . $uid);

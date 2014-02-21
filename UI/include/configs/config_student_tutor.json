@@ -7,7 +7,8 @@
         "css/Main.css",
         "css/Exercises.css",
         "css/Navigation.css",
-        "css/Header.css"
+        "css/Header.css",
+        "css/Notifications.css"
     ],
     "javascripts":[
         "javascript/retina.js",
