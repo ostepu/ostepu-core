@@ -1106,10 +1106,23 @@ class LgetSite
 
         foreach ($sheets as &$sheet) {
 
+            $hasAttachments = false;
+
             // returns all selected submissions for the sheet
             $URL = $this->lURL . '/DB/selectedsubmission/exercisesheet/'.$sheet['id'];
             $selectedSubmissions = Request::custom('GET', $URL, $header, $body);
             $selectedSubmissions = json_decode($selectedSubmissions['content'], true);
+
+            foreach ($sheet['exercises'] as &$exercise) {
+                // add attachments to exercise
+                if (count($exercise['attachments']) > 0) {
+                    $exercise['attachment'] = $exercise['attachments'][0];
+                    $hasAttachments = true;
+                    break;
+                }
+            }
+
+            $sheet['hasAttachments'] = $hasAttachments;
 
             // adds counts for the additional information in the footer
             $sheet['courseUserCount'] = count($courseUser);
