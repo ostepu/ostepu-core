@@ -9,7 +9,6 @@ foreach ($sheets as $sheet):
     // bool if endDate of sheet is greater than the actual date
     $isExpired = date('U') > date('U', $sheet['endDate']);
 ?>
-
 <div class="content-element collapsible">
     <div class="content-header">
         <div class="content-title left uppercase">
@@ -167,7 +166,7 @@ foreach ($sheets as $sheet):
                 <?php
                     if ($sheet['hasAttachments']) {
                         print '<li>';
-                        print '<a href="Student.php?cid=';
+                        print '<a href="Tutor.php?cid=';
                         print $cid . '&action=downloadAttachments';
                         print '&sid=' . $sheet['id'];
                         print '">Alle Anhänge herunterladen</a>';

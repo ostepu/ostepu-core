@@ -86,6 +86,16 @@ foreach ($sheets as $sheet):
                         Musterlösung
                     </a>
                 </li>
+                <?php
+                    if ($sheet['hasAttachments']) {
+                        print '<li>';
+                        print '<a href="Student.php?cid=';
+                        print $cid . '&action=downloadAttachments';
+                        print '&sid=' . $sheet['id'];
+                        print '">Alle Anhänge herunterladen</a>';
+                        print '</li>';
+                    }
+                ?>
                 <li><a href="#">Einsendung herunterladen</a></li>
                 <li><a href="#">Einsendung hochladen</a></li>
                 <li>

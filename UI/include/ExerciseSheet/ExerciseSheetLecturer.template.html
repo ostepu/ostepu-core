@@ -93,6 +93,18 @@ foreach ($sheets as $sheet):
                     </a>
                 </li>
                 <li><a href="CreateSheet.php">Serie bearbeiten</a></li>
+                <?php
+                    if ($sheet['hasAttachments']) {
+                        print '<li>';
+                        print '<a href="';
+                        print PRIVILEGE_LEVEL::$SITES[$courses[0]['status']];
+                        print '?cid=';
+                        print $cid . '&action=downloadAttachments';
+                        print '&sid=' . $sheet['id'];
+                        print '">Alle Anhänge herunterladen</a>';
+                        print '</li>';
+                    }
+                ?>
                 <li><a href="#">Einsendungen herunterladen</a></li>
                 <li><a href="#">Einsendungen hochladen</a></li>
                 <li>
