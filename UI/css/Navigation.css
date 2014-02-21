@@ -11,7 +11,7 @@ ul.navigation {
     overflow: auto;
     padding: 7px 40px;
     /* color 1, var 1 */
-    background-color: #5a96c3;
+    background-color: #6b9cc1;
     border-radius: 5px;
 }
 
@@ -25,7 +25,7 @@ ul.navigation li {
 ul.navigation a {
     float: left;
     /* color 1, var 2*/
-    color: #335570;
+    color: #1e4360;
 }
 
 .navigation a:hover {
