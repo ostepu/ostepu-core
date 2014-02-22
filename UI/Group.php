@@ -12,29 +12,30 @@
 
 include_once 'include/Boilerplate.php';
 
-if (isset($_POST['action'])) {
-    Logger::Log($_POST, LogLevel::INFO);
-    header("Location: Group.php");
-} else {
-    Logger::Log("No Group Data", LogLevel::INFO);
-}
+// load mainSettings data from GetSite
+$databaseURI = $getSiteURI . "/group/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
+$group_data = http_get($databaseURI, true);
+$group_data = json_decode($group_data, true);
+
+$user_course_data = $group_data['user'];
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
-$h->bind(array("navigationElement" => $menu,
+$h->bind($user_course_data);
+$h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
                "notificationElements" => $notifications));
 
 // construct a content element for managing groups
 $manageGroup = Template::WithTemplateFile('include/Group/ManageGroup.template.html');
-$manageGroup->bind(array());
+$manageGroup->bind($group_data['group']);
 
 // construct a content element for creating groups
 $createGroup = Template::WithTemplateFile('include/Group/InviteGroup.template.html');
-$createGroup->bind(array());
+$createGroup->bind($group_data);
 
 // construct a content element for joining groups
 $invitations = Template::WithTemplateFile('include/Group/Invitations.template.html');
-$invitations->bind(array());
+$invitations->bind($group_data);
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $manageGroup, $createGroup, $invitations);

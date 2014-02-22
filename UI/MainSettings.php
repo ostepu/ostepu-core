@@ -195,11 +195,11 @@ $databaseURI = $getSiteURI . "/mainsettings/user/{$uid}";
 $mainSettings_data = http_get($databaseURI, true);
 $mainSettings_data = json_decode($mainSettings_data, true);
 
-$user_data = $mainSettings_data['user'];
+$user_course_data = $mainSettings_data['user'];
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
-$h->bind($user_data);
+$h->bind($user_course_data);
 $h->bind(array("name" => "Einstellungen",
                "backTitle" => "Veranstaltungen",
                "backURL" => "index.php",
