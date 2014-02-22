@@ -7,7 +7,7 @@
  */
 
 .exercise-sheet-images {
-    padding-left: 50px;
+    padding-left: 20px;
     display: inline;
 }
 
@@ -26,23 +26,23 @@
 }
 
 .exercise-type {
-    width: 170px;
+    width: 150px;
     padding-left: 5px;
     display: inline-block;
 }
 
 .exercise-points {
     text-align: right;
-    padding-right: 50px;
+    padding-right: 40px;
     display: inline-block;
-    width: 80px;
+    width: 70px;
 }
 
 .exercise-status {
     color: #abacad;
     text-align: left;
     display: inline-block;
-    width: 170px;
+    width: 150px;
 }
 
 .exercise-list {
