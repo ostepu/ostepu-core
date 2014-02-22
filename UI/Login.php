@@ -27,6 +27,7 @@ if (isset($_POST['action'])) {
     $input['username'] = strtolower($_POST['username']);
     $input['password'] = $_POST['password'];
 
+    $input = cleanInput($input);
 
     // if a hidden Post named back and the php file exists set backurl
     if (isset($_POST['back']) && file_exists(parse_url($_POST['back'], PHP_URL_PATH))) {
@@ -34,8 +35,6 @@ if (isset($_POST['action'])) {
     } else {
         $input['back'] = "index.php";
     }
-
-    $input = cleanInput($input);
 
     // log in user and return result
     $signed = $auth->loginUser($input['username'], $input['password']);
