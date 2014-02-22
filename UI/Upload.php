@@ -9,26 +9,23 @@
  */
 
 include_once 'include/Boilerplate.php';
-include_once 'include/FormEvealuator.php';
 include_once '../Assistants/Structures.php';
 
-// load user data from the database
-$URL = $getSiteURI . "/upload/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
-$upload_data = http_get($URL, false);
-$upload_data = json_decode($upload_data, true);
-$upload_data['filesystemURI'] = $filesystemURI;
-$upload_data['cid'] = $cid;
-$upload_data['sid'] = $cid;
-
-$user_course_data = $upload_data['user'];
-
-if (isset($_POST['action'])) {
+if (isset($_POST['action']) && $_POST['action'] == 'submit') {
     // handle uploading files
     /**
-     * @todo add error handling
-     * @todo make the submission selected
      * @todo don't automatically accept the submission
+     * @todo clean up the code a bit.
      */
+    $timestamp = time();
+
+    $URL = $databaseURI . '/group/user/' . $uid . '/exercisesheet/' . $sid;
+    $group = http_get($URL, true);
+    print $group;
+    $group = json_decode($group, true)[0];
+
+    $leaderId = $group['leader']['id'];
+
     foreach ($_POST['exercises'] as $key => $exercise) {
         $exerciseId = cleanInput($exercise['exerciseID']);
         $fileName = "file{$exerciseId}";
@@ -39,31 +36,42 @@ if (isset($_POST['action'])) {
 
             if ($error === 0) {
                 $filePath = $file['tmp_name'];
-                $data = file_get_contents($filePath);
-                $data = base64_encode($data);
-
                 $displayName = $file['name'];
 
-                $timestamp = time();
-
-                $fileObj = array('timestamp' => $timestamp,
-                                 'displayName' => $displayName,
-                                 'body' => $data);
-
                 // upload the file to the filesystem
-                $URL = $filesystemURI . '/file';
-                $fileObj = http_post_data($URL, json_encode($fileObj), true);
-                print $fileObj;
-                $fileObj = json_decode($fileObj, true);
+                $jsonFile = uploadFileToFileSystem($filesystemURI,
+                                                  $filePath,
+                                                  $displayName,
+                                                  $timestamp,
+                                                  $message);
+                if ($message != "201") {
+                    // upload failed generate notification and continue with
+                    // the next exercise
+                    $exercise = $key + 1;
+                    $errormsg = "{$message}: Aufgabe {$exercise} konnte nicht hochgeladen werden.";
+                    $notifications[] = MakeNotification('error',
+                                                        $errormsg);
+                    continue;
+                }
 
+                $fileObj = json_decode($jsonFile, true);
 
-                $fileObj['timestamp'] = $timestamp;
+                $fileObj['timeStamp'] = $timestamp;
 
                 // save the file in the datebase
-                $URL = $databaseURI . '/file';
-                $fileObj = http_post_data($URL, json_encode($fileObj), true);
-                print $fileObj;
-                $fileObj = json_decode($fileObj, true);
+                $jsonFile = saveFileInDatabase($databaseURI, $fileObj, $message);
+
+                if (($message != "201") && ($message != "200")) {
+                    // saving failed
+                    $exercise = $key + 1;
+                    $errormsg = "{$message}: Aufgabe {$exercise} konnte nicht hochgeladen werden.";
+                    $notifications[] = MakeNotification('error',
+                                                        $errormsg);
+                    continue;
+                } else {
+                    // saving succeeded
+                    $fileObj = json_decode($jsonFile, true);
+                }
 
                 $fileId = $fileObj['fileId'];
 
@@ -81,11 +89,59 @@ if (isset($_POST['action'])) {
                 $URL = $databaseURI . '/submission';
                 $returnedSubmission = http_post_data($URL,
                                                      json_encode($submission),
-                                                     true);
+                                                     true,
+                                                     $message);
+
+                if ($message != "201") {
+                    $exercise = $key + 1;
+                    $errormsg = "{$message}: Aufgabe {$exercise} konnte nicht hochgeladen werden.";
+                    $notifications[] = MakeNotification('error',
+                                                        $errormsg);
+                    continue;
+                }
+
+                $returnedSubmission = json_decode($returnedSubmission, true);
+
+                // make the submission selected
+                $submissionId = $returnedSubmission['id'];
+                $selectedSubmission = SelectedSubmission::createSelectedSubmission($leaderId,
+                                                                                   $submissionId,
+                                                                                   $exerciseId);
+                $URL = $databaseURI . '/selectedsubmission';
+                $returnedSubmission = http_post_data($URL,
+                                                     json_encode($selectedSubmission),
+                                                     true,
+                                                     $message);
+                if ($message != "201") {
+                    $URL = $databaseURI . '/selectedsubmission/leader/' . $leaderId
+                           . '/exercise/' . $exerciseId;
+                    $returnedSubmission = http_put_data($URL,
+                                                        json_encode($selectedSubmission),
+                                                        true,
+                                                        $message);
+                }
+
+                if ($message != "201") {
+                    $exercise = $key + 1;
+                    $errormsg = "{$message}: Aufgabe {$exercise} konnte nicht ausgewählt werden.";
+                    $notifications[] = MakeNotification('error',
+                                                        $errormsg);
+                    continue;
+                }
             }
         }
     }
 }
+
+// load user data from the database
+$URL = $getSiteURI . "/upload/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
+$upload_data = http_get($URL, false);
+$upload_data = json_decode($upload_data, true);
+$upload_data['filesystemURI'] = $filesystemURI;
+$upload_data['cid'] = $cid;
+$upload_data['sid'] = $sid;
+
+$user_course_data = $upload_data['user'];
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');

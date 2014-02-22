@@ -321,4 +321,66 @@ function MakeNavigationElement($user,
     return $navigationElement;
 }
 
+/**
+ * Saves a file to an instance of a filesystem server
+ *
+ * @param string $filesystemURI The url at which the server is running.
+ * @param string $filePath The local path at which the file is located.
+ * @param string $displayName The displayname of the uploaded file
+ * @param int $timestamp The UNIX timestamp of the upload
+ * @param string &$message The HTTP status code of the transmission
+ *
+ * @return string Om success rturns a json object, representing the file in the
+ * filesystem. NULL otherwise.
+ */
+function uploadFileToFileSystem($filesystemURI,
+                                $filePath,
+                                $displayName,
+                                $timestamp,
+                                &$message)
+{
+    $data = file_get_contents($filePath);
+    $data = base64_encode($data);
+
+    $file = array('timeStamp' => $timestamp,
+                     'displayName' => $displayName,
+                     'body' => $data);
+
+    // upload the file to the filesystem
+    $URL = $filesystemURI . '/file';
+    $jsonFile = http_post_data($URL,
+                              json_encode($file),
+                              true,
+                              $message);
+
+    return $jsonFile;
+}
+
+/**
+ * Saves a reference to a file in the Database.
+ *
+ * @param string $databaseURI The url at which the server is running.
+ * @param array $file An associative array or file object representing a file
+ * @param string &$ message The HTTP status code of the transmission.
+ *
+ * @return string Om success rturns a json object, representing the file in the
+ * database. NULL otherwise.
+ */
+function saveFileInDatabase($databaseURI,
+                            $file,
+                            &$message)
+{
+    $URL = $databaseURI . '/file';
+    $jsonFile = http_post_data($URL, json_encode($file), true, $message);
+
+    if ($message != "201") {
+        //POST failed, check if the file already exists
+        $hash = $file['hash'];
+        $URL = $databaseURI . '/file/hash/' . $hash;
+        $jsonFile = http_get($URL, true, $message);
+    }
+
+    return $jsonFile;
+}
+
 ?>
