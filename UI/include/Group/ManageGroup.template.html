@@ -1,37 +1,53 @@
-<form action="Group.php" method="POST" name="invitations">
-    <input type="hidden" name="action" value="manage">
-    <div class="content-element">
-        <div class="content-header">
-            <div class="content-title left">Gruppe verwalten</div>
-            <button name="action" value="leave" class="right text-button critical-color bold">verlassen</button>
-        </div>
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left">Gruppeneinsendungen verwalten</div>
+        <button name="action" value="leave" class="right text-button info-color bold">speichern</button>
+    </div>
 
-        <div class="content-body-wrapper">
-            <div class="content-body left">
-                <ol class="exercise-list invitation-list">
-                    <li class="bold">
-                        <?php 
-                        if (isset($leader['firstName']) && isset($leader['lastName'])) {
-                            print $leader['firstName'] . " " . $leader['lastName'];
-                        } else {
-                            print $leader['userName'];
-                        }
-                        print ' (Gruppenführer)';
-                        print '<button name="kick" value="';
-                        print $leader['userID'];
-                        print '" class="right text-button body-option-color">hinauswerfen</button>'. "\n";
-                        ?>
-                    </li>
-                    <?php foreach ($members as $member):
-                    print "<li>\n";
-                    print $member['firstName'] . " " . $member['lastName'];
-                    print '<button name="kick" value="';
-                    print $member['id'];
-                    print '" class="right text-button body-option-color">hinauswerfen</button>' . "\n";
-                    print "</li>\n";
-                    endforeach; ?>
-                </ol>
-            </div>
-        </div> <!-- end: content-body-wrapper -->
-    </div> <!-- end: content-element -->
-</form>
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            <?php
+            /**
+             * @todo Include sub-exercises
+             */
+            $exerciseCounter = 0;
+
+            foreach ($groupSubmissions as $groupSubmission):
+                $exerciseCounter++;
+
+                print '<div class="bold label new-line">';
+                print 'Aufgabe ';
+                print $exerciseCounter;
+                print '</div>';
+                foreach ($groupSubmission as $userExerciseSubmission):
+
+                    $firstName = $userExerciseSubmission['user']['firstName'];
+                    $lastName = $userExerciseSubmission['user']['lastName'];
+
+                    foreach ($userExerciseSubmission['submission'] as $submission):
+                        // prints the name of the member
+                        print '<div class="group-member-name left new-line">';
+                        print $firstName . ' ' . $lastName . ' ';
+                        print '</div>';
+
+                        $displayName = $submission['file']['displayName'];
+                        $fileAddress = $submission['file']['address'];
+
+                        // prints a link for downloading the submission
+                        print '<a class="left body-option-color" href="';
+                        print $filesystemURI . '/' . $fileAddress . '/' . $displayName;
+                        print '" title="';
+                        print $displayName;
+                        print '" target="_blank">Einsendung ansehen</a>';
+
+                        // prints a link for setting the submission as selected
+                        print '<button name="accept" class="right text-button body-option-color" value="';
+                        print $submission['id'];
+                        print "\">\nEinsendung auswählen\n</button>\n";
+                    endforeach;
+                endforeach;
+            endforeach; 
+            ?>
+        </div>
+    </div> <!-- end: content-body-wrapper -->
+</div> <!-- end: content-element -->
