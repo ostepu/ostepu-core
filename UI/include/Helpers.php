@@ -86,10 +86,6 @@ function http_get($url, $authbool, &$message = 0)
         Authentication::logoutUser();
     }
 
-    if ($message == "409") {
-        set_error("409");
-    }
-
     curl_close($c);
 
     return $retData;
@@ -124,10 +120,6 @@ function http_post_data($url, $data, $authbool, &$message = 0)
 
     if ($message == "401") {
         Authentication::logoutUser();
-    }
-
-    if ($message == "409") {
-        set_error("409");
     }
 
     curl_close($c);
@@ -166,10 +158,6 @@ function http_put_data($url, $data, $authbool, &$message = 0)
         Authentication::logoutUser();
     }
 
-    if ($message == "409") {
-        set_error("409");
-    }
-
     curl_close($c);
 
     return $retData;
@@ -203,10 +191,6 @@ function http_delete($url, $authbool, &$message = 0, $sessiondelete = false)
 
     if ($message == "401" && $sessiondelete == false) {
         Authentication::logoutUser();
-    }
-
-    if ($message == "409") {
-        set_error("409");
     }
 
     curl_close($c);
