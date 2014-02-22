@@ -15,7 +15,7 @@
     width: 17px;
     height: 17px;
     padding-right: 10px;
-    margin-bottom: -3px;
+    margin-bottom: -5px;
 }
 
 .exercise-sheet-info, .exercise-points {
@@ -26,19 +26,31 @@
 }
 
 .exercise-type {
-    width: 200px;
+    width: 170px;
     padding-left: 5px;
     display: inline-block;
 }
 
 .exercise-points {
     text-align: right;
+    padding-right: 50px;
     display: inline-block;
-    width: 100px;
+    width: 80px;
+}
+
+.exercise-status {
+    color: #abacad;
+    text-align: left;
+    display: inline-block;
+    width: 170px;
 }
 
 .exercise-list {
     counter-reset: item;
+}
+
+.exercise-list li {
+    height: 18px;
 }
 
 .exercise-list li:before {

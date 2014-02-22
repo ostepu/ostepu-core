@@ -52,17 +52,19 @@ foreach ($sheets as $sheet):
                         ?>
                     </div>
 
-                    <div class="exercise-sheet-images">
+                    <div class="exercise-status">
                         <?php
-                            // creates an upload icon
-                            print '<a href="';
-                            print 'Upload.php?cid=' . $cid . '&sid=' . $sheet['id'];
-                            print '" title="Upload" ';
-                            print 'class="plain inline">';
-                            print '<img src="Images/Upload.png" />';
-                            print '</a>';
+                            if (isset($exercise['submission']['marking'])) {
+                                print $exercise['submission']['marking']['status'];
+                            } elseif (isset($exercise['submission'])) {
+                                print 'unkontrolliert';
+                            } else {
+                                print 'nicht eingesendet';
+                            }
                         ?>
+                    </div>
 
+                    <div class="exercise-sheet-images">
                         <?php
                             // creates a download icon for the submission (if it exists)
                             if(isset($exercise['submission'])) {
@@ -130,6 +132,7 @@ foreach ($sheets as $sheet):
                             }
                         ?>
                     </div>
+
                 </li>
                 <?php
                 endforeach;
@@ -139,6 +142,22 @@ foreach ($sheets as $sheet):
 
         <div class="content-body right">
             <ol class="body-options body-option-color">
+                <?php
+                    // shows link to sampleSolution
+                    if ($isExpired) {
+                        $displayName = $sheet['sampleSolution']['displayName'];
+                        $fileAddress = $sheet['sampleSolution']['address'];
+                        $fileURL = $filesystemURI . '/' . $fileAddress . '/' . $displayName;
+
+                        print '<li>';
+                        print '<a href="';
+                        print $fileURL . '" title="';
+                        print $displayName . '" target="_blank">';
+                        print 'Musterlösung';
+                        print '</a>';
+                        print '</li>';
+                    }
+                ?>
                 <li>
                     <?php
                         $displayName = $sheet['sheetFile']['displayName'];
@@ -149,31 +168,25 @@ foreach ($sheets as $sheet):
                         Aufgabenblatt
                     </a>
                 </li>
-                    <?php
-                        // shows link to sampleSolution
-                        if ($isExpired) {
-                            $displayName = $sheet['sampleSolution']['displayName'];
-                            $fileAddress = $sheet['sampleSolution']['address'];
-                            $fileURL = $filesystemURI . '/' . $fileAddress . '/' . $displayName;
-
-                            print '<li>';
-                            print '<a href="';
-                            print $fileURL . '" title="';
-                            print $displayName . '" target="_blank">';
-                            print 'Musterlösung';
-                            print '</a>';
-                            print '</li>';
-                        }
-                    ?>
                 <li>
                     <a href="Group.php?sid=<?= $sheet['id'], '&cid=', $cid ?>">
                         Gruppe verwalten
                     </a>
                 </li>
+                <li>
+                    <?php
+                        // creates an upload link
+                        print '<a href="';
+                        print 'Upload.php?cid=' . $cid . '&sid=' . $sheet['id'];
+                        print '" title="Upload">';
+                        print 'Aufgaben hochladen';
+                        print '</a>';
+                    ?>
+                </li>
                 <?php
                     if ($sheet['hasAttachments']) {
                         print '<li>';
-                        print '<a href="Tutor.php?cid=';
+                        print '<a href="Student.php?cid=';
                         print $cid . '&action=downloadAttachments';
                         print '&sid=' . $sheet['id'];
                         print '">Alle Anhänge herunterladen</a>';
