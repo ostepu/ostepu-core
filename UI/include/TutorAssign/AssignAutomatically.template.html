@@ -1,0 +1,37 @@
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left uppercase">Automatische Zuweisung</div>
+        <div class="info-color bold right">
+            <a href="#">automatisch zuteilen</a>
+        </div>   
+    </div>
+
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            <div class="tutor-assign-element left">
+                Unzugeordnete automatisch zuteilen an:
+            </div>    
+            <div class="tutor-assign-element left">
+                <?php foreach ($tutorAssignments as $tutorAssignment): ?>
+                    <input type="checkbox" />
+                    <?php print $tutorAssignment['tutor']['firstName']; ?>
+                    <?php print " "; ?>
+                    <?php print $tutorAssignment['tutor']['lastName']; ?>
+                    <?php print " "; ?>
+                    <?php print "(" . count($tutorAssignment['submissionIDs']) . ")"; ?>
+                    <br />
+                <?php endforeach; ?>
+            </div>
+            <div class="tutor-assign-element left">
+                nach: 
+            </div>  
+            <div class="tutor-assign-element left">
+                <select>
+                    <option>Zufall</option>
+                    <option>Nr. aufsteigend</option>
+                    <option>Nr. absteigend</option>
+                </select>
+            </div>      
+        </div>
+    </div> <!-- end: content-body-wrapper -->
+</div> <!-- end: content-element -->

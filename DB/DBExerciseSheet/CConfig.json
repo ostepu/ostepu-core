@@ -1,0 +1,1 @@
+{"id":"10","name":"DBExerciseSheet","address":"localhost\/uebungsplattform\/DB\/DBExerciseSheet","option":"","prefix":"exercisesheet","links":[{"id":"10","name":"out","address":"localhost\/uebungsplattform\/DB\/DBQuery","prefix":null,"target":"13","owner":"10","relevanz":""}]}

@@ -1,0 +1,1 @@
+INSERT INTO Course SET $values

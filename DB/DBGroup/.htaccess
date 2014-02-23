@@ -1,0 +1,2 @@
+RewriteEngine On
+RewriteRule ^ DBGroup.php [QSA,L]
