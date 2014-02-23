@@ -94,6 +94,11 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
                                                         $errormsg);
                     continue;
                 }
+
+                $exercise = $key + 1;
+                $msg = "Aufgabe {$exercise} wurde erfolgreich eingesendet.";
+                $notifications[] = MakeNotification('success',
+                                                    $msg);
             }
         }
     }
