@@ -324,11 +324,12 @@ function MakeNavigationElement($user,
 /**
  * Saves a file to an instance of a filesystem server
  *
- * @param string $filesystemURI The url at which the server is running.
+ * @param string $filesystemURI The url at which the filesystem server is running.
  * @param string $filePath The local path at which the file is located.
  * @param string $displayName The displayname of the uploaded file
  * @param int $timestamp The UNIX timestamp of the upload
- * @param string &$message The HTTP status code of the transmission
+ * @param string &$message A reference to a variable that will contain the HTTP
+ * status code on return.
  *
  * @return string Om success rturns a json object, representing the file in the
  * filesystem. NULL otherwise.
@@ -359,11 +360,12 @@ function uploadFileToFileSystem($filesystemURI,
 /**
  * Saves a reference to a file in the Database.
  *
- * @param string $databaseURI The url at which the server is running.
+ * @param string $databaseURI The url at which the database server is running.
  * @param array $file An associative array or file object representing a file
- * @param string &$ message The HTTP status code of the transmission.
+ * @param string &$message A reference to a variable that will contain the HTTP
+ * status code on return.
  *
- * @return string Om success rturns a json object, representing the file in the
+ * @return string On success rturns a json object, representing the file in the
  * database. NULL otherwise.
  */
 function saveFileInDatabase($databaseURI,
@@ -381,6 +383,45 @@ function saveFileInDatabase($databaseURI,
     }
 
     return $jsonFile;
+}
+
+/**
+ * Updates the selected submission of a group.
+ *
+ * @param string $databaseURI The url at which the database server is running.
+ * @param int $leaderId The id of the the group's leader
+ * @param int $submissionUd The new selected submission
+ * @param int $exerciseId The submission's exercise id.
+ * @param string &$message A reference to a variable that will contain the HTTP
+ * status code on return.
+ *
+ * @return string On success rturns a json object, representing the selected
+ * submission in the database. NULL otherwise.
+ */
+function updateSelectedSubmission($databaseURI,
+                                  $leaderId,
+                                  $submissionId,
+                                  $exerciseId,
+                                  &$message)
+{
+    $selectedSubmission = SelectedSubmission::createSelectedSubmission($leaderId,
+                                                                       $submissionId,
+                                                                       $exerciseId);
+    $URL = $databaseURI . '/selectedsubmission';
+    $returnedSubmission = http_post_data($URL,
+                                         json_encode($selectedSubmission),
+                                         true,
+                                         $message);
+    if ($message != "201") {
+        $URL = $databaseURI . '/selectedsubmission/leader/' . $leaderId
+               . '/exercise/' . $exerciseId;
+        $returnedSubmission = http_put_data($URL,
+                                            json_encode($selectedSubmission),
+                                            true,
+                                            $message);
+    }
+
+    return $returnedSubmission;
 }
 
 ?>

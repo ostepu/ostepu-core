@@ -21,7 +21,6 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
 
     $URL = $databaseURI . '/group/user/' . $uid . '/exercisesheet/' . $sid;
     $group = http_get($URL, true);
-    print $group;
     $group = json_decode($group, true)[0];
 
     $leaderId = $group['leader']['id'];
@@ -40,10 +39,10 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
 
                 // upload the file to the filesystem
                 $jsonFile = uploadFileToFileSystem($filesystemURI,
-                                                  $filePath,
-                                                  $displayName,
-                                                  $timestamp,
-                                                  $message);
+                                                   $filePath,
+                                                   $displayName,
+                                                   $timestamp,
+                                                   $message);
                 if ($message != "201") {
                     // upload failed generate notification and continue with
                     // the next exercise
@@ -104,22 +103,11 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
 
                 // make the submission selected
                 $submissionId = $returnedSubmission['id'];
-                $selectedSubmission = SelectedSubmission::createSelectedSubmission($leaderId,
-                                                                                   $submissionId,
-                                                                                   $exerciseId);
-                $URL = $databaseURI . '/selectedsubmission';
-                $returnedSubmission = http_post_data($URL,
-                                                     json_encode($selectedSubmission),
-                                                     true,
-                                                     $message);
-                if ($message != "201") {
-                    $URL = $databaseURI . '/selectedsubmission/leader/' . $leaderId
-                           . '/exercise/' . $exerciseId;
-                    $returnedSubmission = http_put_data($URL,
-                                                        json_encode($selectedSubmission),
-                                                        true,
-                                                        $message);
-                }
+                $returnedSubmission = updateSelectedSubmission($databaseURI,
+                                                               $leaderId,
+                                                               $submissionId,
+                                                               $exerciseId,
+                                                               $message);
 
                 if ($message != "201") {
                     $exercise = $key + 1;
