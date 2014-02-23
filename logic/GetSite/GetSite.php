@@ -5,10 +5,10 @@
  * @todo make it cheaper to combine exercise type names with type ids
  */ // could use a map indexed by status/type id taht is built on construction
 
-require '../Include/Slim/Slim.php';
-include '../Include/Request.php';
-include_once( '../Include/CConfig.php' );
-include_once '../Include/Logger.php';
+require '../../Assistants/Slim/Slim.php';
+include '../../Assistants/Request.php';
+include_once '../../Assistants/CConfig.php';
+include_once '../../Assistants/Logger.php';
 
 \Slim\Slim::registerAutoloader();
 /**
