@@ -1,29 +1,35 @@
 <?php 
 /**
-* 
-*/
+ * @file File.php contains the File class
+ */
+ 
+/**
+ * the file structure
+ *
+ * @author Till Uhlig, Florian Lücke
+ */
 class File extends Object implements JsonSerializable
 {
     /**
-     * An id that identifies the file.
-     *
-     * type: string
+     * @var string $fileId An id that identifies the file.
      */
     private $fileId=null;
     
     /**
-     * (description)
-     */
+     * the $fileId getter
+     *
+     * @return the value of $fileId
+     */ 
     public function getFileId()
     {
         return $this->fileId;
     }
     
     /**
-     * (description)
-     * 
-     * @param $param (description)
-     */
+     * the $fileId setter
+     *
+     * @param string $value the new value for $fileId
+     */ 
     public function setFileId($value)
     {
         $this->fileId = $value;
@@ -33,25 +39,25 @@ class File extends Object implements JsonSerializable
     
     
     /**
-     * The name that should be displayed for the file.
-     *
-     * type: string
+     * @var string $displayName The name that should be displayed for the file.
      */
     private $displayName=null;
     
     /**
-     * (description)
-     */
+     * the $displayName getter
+     *
+     * @return the value of $displayName
+     */ 
     public function getDisplayName()
     {
         return $this->displayName;
     }
     
     /**
-     * (description)
-     * 
-     * @param $param (description)
-     */
+     * the $displayName setter
+     *
+     * @param string $value the new value for $displayName
+     */ 
     public function setDisplayName($value)
     {
         $this->displayName = $value;
@@ -61,25 +67,25 @@ class File extends Object implements JsonSerializable
     
     
     /**
-     * The URL of the file
-     *
-     * type: string
+     * @var string $address The URL of the file
      */
     private $address=null;
     
     /**
-     * (description)
-     */
+     * the $address getter
+     *
+     * @return the value of $address
+     */ 
     public function getAddress()
     {
         return $this->address;
     }
     
     /**
-     * (description)
-     * 
-     * @param $param (description)
-     */
+     * the $address setter
+     *
+     * @param string $value the new value for $address
+     */ 
     public function setAddress($value)
     {
         $this->address = $value;
@@ -89,26 +95,26 @@ class File extends Object implements JsonSerializable
     
     
     /**
-     * When the file was created, this is necessary since the file might
+     * @var date $timeStamp When the file was created, this is necessary since the file might
      * be on another server as the server logic and/or interface.
-     *
-     * type: date/integer
      */
     private $timeStamp=null;
     
     /**
-     * (description)
-     */
+     * the $timeStamp getter
+     *
+     * @return the value of $timeStamp
+     */ 
     public function getTimeStamp()
     {
         return $this->timeStamp;
     }
     
     /**
-     * (description)
-     * 
-     * @param $param (description)
-     */
+     * the $timeStamp setter
+     *
+     * @param date $value the new value for $timeStamp
+     */ 
     public function seTimeStamp($value)
     {
         $this->timeStamp = $value;
@@ -118,25 +124,25 @@ class File extends Object implements JsonSerializable
     
     
     /**
-     * the size of the file.
-     *
-     * type: decimal
+     * @var int $fileSize the size of the file.
      */
     private $fileSize=null;
     
     /**
-     * (description)
-     */
+     * the $fileSize getter
+     *
+     * @return the value of $fileSize
+     */ 
     public function getFileSize()
     {
         return $this->fileSize;
     }
     
     /**
-     * (description)
-     * 
-     * @param $param (description)
-     */
+     * the $fileSize setter
+     *
+     * @param int $value the new value for $fileSize
+     */ 
     public function setFileSize($value)
     {
         $this->fileSize = $value;
@@ -146,26 +152,26 @@ class File extends Object implements JsonSerializable
     
     
     /**
-     * hash of the file, ensures that the user has up-/downloaded the right
+     * @var string $hash hash of the file, ensures that the user has up-/downloaded the right
      * file.
-     *
-     * type: string/integer
      */
     private $hash=null;
     
     /**
-     * (description)
-     */
+     * the $hash getter
+     *
+     * @return the value of $hash
+     */ 
     public function getHash()
     {
         return $this->hash;
     }
     
     /**
-     * (description)
-     * 
-     * @param $param (description)
-     */
+     * the $hash setter
+     *
+     * @param string $value the new value for $hash
+     */ 
     public function setHash($value)
     {
         $this->hash = $value;
@@ -175,25 +181,25 @@ class File extends Object implements JsonSerializable
     
     
      /**
-     * content
-     *
-     * type: string
+     * @var string $body content (base64 encoded)
      */
     private $body=null;
     
     /**
-     * (description)
-     */
+     * the $body getter
+     *
+     * @return the value of $body
+     */ 
     public function getBody()
     {
         return $this->body;
     }
     
     /**
-     * (description)
-     * 
-     * @param $param (description)
-     */
+     * the $body setter
+     *
+     * @param string $value the new value for $body
+     */ 
     public function setBody($value)
     {
         $this->body = $value;
@@ -201,9 +207,61 @@ class File extends Object implements JsonSerializable
     
     
     
+     /**
+     * @var string $comment a file comment
+     */
+    private $comment=null;
     
     /**
-     * (description)
+     * the $comment getter
+     *
+     * @return the value of $comment
+     */ 
+    public function getComment()
+    {
+        return $this->body;
+    }
+    
+    /**
+     * the $comment setter
+     *
+     * @param string $value the new value for $comment
+     */ 
+    public function setComment($value)
+    {
+        $this->comment = $value;
+    }
+    
+    
+    /**
+     * Creates an File object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $fileId The id of the file.
+     * @param string $displayName The display name.
+     * @param string $address The address.
+     * @param string $timeStamp The time stamp.
+     * @param string $fileSize The file size.
+     * @param string $hash The hash.
+     * @param string $comment The file comment.
+     * 
+     * @return an file object
+     */
+    public static function createFile($fileId,$displayName,$address,$timeStamp,$fileSize,$hash, $comment="")
+    {
+        return new File(array('fileId' => $fileId,
+        'displayName' => $displayName,
+        'address' => $address, 
+        'timeStamp' => $timeStamp,
+        'fileSize' => $fileSize, 
+        'hash' => $hash, 
+        'comment' => $comment));
+    }
+    
+    /**
+     * returns an mapping array to convert between database and structure
+     *
+     * @return the mapping array
      */
     public static function getDbConvert()
     {
@@ -214,22 +272,27 @@ class File extends Object implements JsonSerializable
            'F_timeStamp' => 'timeStamp',
            'F_fileSize' => 'fileSize',
            'F_hash' => 'hash',
-           'F_body' => 'body'
+           'F_body' => 'body',
+           'F_comment' => 'comment'
         );
     }
     
     /**
-     * (description)
+     * converts an object to insert/update data
+     *
+     * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData(){
+    public function getInsertData()
+    {
         $values = "";
         
-        if ($this->fileId != null) $this->addInsertData($values, 'F_id', $this->fileId );
-        if ($this->displayName != null) $this->addInsertData($values, 'F_displayName', $this->displayName );
-        if ($this->address != null) $this->addInsertData($values, 'F_address', $this->address );
-        if ($this->timeStamp != null) $this->addInsertData($values, 'F_timeStamp', $this->timeStamp );
-        if ($this->fileSize != null) $this->addInsertData($values, 'F_fileSize', $this->fileSize );
-        if ($this->hash != null) $this->addInsertData($values, 'F_hash', $this->hash );
+        if ($this->fileId != null) $this->addInsertData($values, 'F_id', DBJson::mysql_real_escape_string($this->fileId));
+        if ($this->displayName != null) $this->addInsertData($values, 'F_displayName', DBJson::mysql_real_escape_string($this->displayName));
+        if ($this->address != null) $this->addInsertData($values, 'F_address', DBJson::mysql_real_escape_string($this->address));
+        if ($this->timeStamp != null) $this->addInsertData($values, 'F_timeStamp', DBJson::mysql_real_escape_string($this->timeStamp));
+        if ($this->fileSize != null) $this->addInsertData($values, 'F_fileSize', DBJson::mysql_real_escape_string($this->fileSize));
+        if ($this->hash != null) $this->addInsertData($values, 'F_hash', DBJson::mysql_real_escape_string($this->hash));
+        if ($this->comment != null) $this->addInsertData($values, 'F_comment', DBJson::mysql_real_escape_string($this->comment));
         
         if ($values != ""){
             $values=substr($values,1);
@@ -238,7 +301,9 @@ class File extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * returns a sting/string[] of the database primary key/keys
+     * 
+     * @return the primary key/keys
      */
     public static function getDbPrimaryKey()
     {
@@ -246,12 +311,15 @@ class File extends Object implements JsonSerializable
     } 
            
     /**
-     * (description)
+     * the constructor
      * 
-     * @param $param (description)
+     * @param $data an assoc array with the object informations
      */
     public function __construct($data=array())
     {
+        if ($data==null)
+            $data = array();
+        
         foreach ($data AS $key => $value) {
             if (isset($key)){
                 $this->{$key} = $value;
@@ -260,24 +328,34 @@ class File extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * encodes an object to json
      * 
-     * @param $param (description)
+     * @param $data the object
+     *
+     * @return the json encoded object
      */
     public static function encodeFile($data)
     {
         return json_encode($data);
     }
-    
+
     /**
-     * (description)
+     * decodes $data to an object
      * 
-     * @param $param (description)
+     * @param string $data json encoded data (decode=true) 
+     * or json decoded data (decode=false)
+     * @param bool $decode specifies whether the data must be decoded
+     *
+     * @return the object
      */
     public static function decodeFile($data, $decode=true)
     {   
-        if ($decode == true)
+        if ($decode && $data==null) 
+            $data = "{}";
+            
+        if ($decode)
             $data = json_decode($data);
+            
         if (is_array($data)){
             $result = array();
             foreach ($data AS $key => $value) {
@@ -289,19 +367,37 @@ class File extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
-     */   
+     * the json serialize function
+     */  
     public function jsonSerialize()
     {
-        return array(
-            'fileId' => $this->fileId,
-            'displayName' => $this->displayName,
-            'address' => $this->address,
-            'timeStamp' => $this->timeStamp,
-            'fileSize' => $this->fileSize,
-            'hash' => $this->hash,
-            'body' => $this->body
-        );
+        $list = array();
+        if ($this->fileId!==null) $list['fileId'] = $this->fileId;
+        if ($this->displayName!==null) $list['displayName'] = $this->displayName;
+        if ($this->address!==null) $list['address'] = $this->address;
+        if ($this->timeStamp!==null) $list['timeStamp'] = $this->timeStamp;
+        if ($this->fileSize!==null) $list['fileSize'] = $this->fileSize;
+        if ($this->hash!==null) $list['hash'] = $this->hash;
+        if ($this->body!==null) $list['body'] = $this->body;
+        if ($this->comment!==null) $list['comment'] = $this->comment;
+        return $list; 
+    }
+    
+    public static function ExtractFile($data, $singleResult = false)
+    {
+            // generates an assoc array of files by using a defined list of 
+            // its attributes
+            $res = DBJson::getResultObjectsByAttributes($data, 
+                                        File::getDBPrimaryKey(), 
+                                        File::getDBConvert());
+            
+            if ($singleResult==true){
+                // only one object as result
+                if (count($res)>0)
+                    $res = $res[0]; 
+            }
+                
+            return $res;
     }
 }
 ?>

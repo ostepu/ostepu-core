@@ -1,29 +1,37 @@
 <?php 
 /**
- * 
+ * @file ExternalId.php contains the ExternalId class
+ */
+ 
+/**
+ * the external id structure
+ *
+ * @author Till Uhlig
  */
 class ExternalId extends Object implements JsonSerializable
 {
     /**
-     * (description)
+     * the db id of the external id
      *
      * type: string
      */
     private $id = null;
     
     /**
-     * (description)
-     */
+     * the $id getter
+     *
+     * @return the value of $id
+     */ 
     public function getId()
     {
         return $this->id;
     }
     
     /**
-     * (description)
+     * the $id setter
      *
-     * @param $conf (description)
-     */
+     * @param string $value the new value for $id
+     */ 
     public function setId($value)
     {
         $this->id = $value;
@@ -31,34 +39,51 @@ class ExternalId extends Object implements JsonSerializable
     
       
     /**
-     * (description)
+     * the corresponding course
      *
      * type: Course
      */
     private $course = null;
     
     /**
-     * (description)
-     */
+     * the $course getter
+     *
+     * @return the value of $course
+     */ 
     public function getCourse()
     {
         return $this->course;
     }
     
     /**
-     * (description)
+     * the $course setter
      *
-     * @param $conf (description)
-     */
+     * @param Course $value the new value for $course
+     */ 
     public function setCourse($value)
     {
         $this->course = $value;
     }
     
+    /**
+     * Creates an ExternalId object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $externalId The id of the external id .
+     * @param string $courseId The id of the course.
+     *
+     * @return an external id object
+     */
+    public static function createExternalId($externalId,$courseId)
+    {
+        return new ExternalId(array('id' => $externalId,
+        'course' => array('id' => $courseId)));
+    }
     
     /**
-     * (description)
-     * @param $param (description)
+     * the constructor
+     * 
+     * @param $data an assoc array with the object informations
      */
     public function __construct($data=array()) 
     {
@@ -74,7 +99,9 @@ class ExternalId extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * returns an mapping array to convert between database and structure
+     *
+     * @return the mapping array
      */
     public static function getDbConvert()
     {
@@ -85,13 +112,16 @@ class ExternalId extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * converts an object to insert/update data
+     *
+     * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData(){
+    public function getInsertData()
+    {
         $values = "";
         
-        if ($this->id != null) $this->addInsertData($values, 'EX_id', $this->id );
-        if ($this->course != null) $this->addInsertData($values, 'EX_course', $this->course->getId() );
+        if ($this->id != null) $this->addInsertData($values, 'EX_id', DBJson::mysql_real_escape_string($this->id));
+        if ($this->course != null) $this->addInsertData($values, 'C_id', DBJson::mysql_real_escape_string($this->course->getId()));
         
         if ($values != ""){
             $values=substr($values,1);
@@ -100,7 +130,9 @@ class ExternalId extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * returns a sting/string[] of the database primary key/keys
+     * 
+     * @return the primary key/keys
      */
     public static function getDbPrimaryKey()
     {
@@ -108,9 +140,11 @@ class ExternalId extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * encodes an object to json
      * 
-     * @param $param (description)
+     * @param $data the object
+     *
+     * @return the json encoded object
      */
     public static function encodeExternalId($data)
     {
@@ -118,15 +152,22 @@ class ExternalId extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * decodes $data to an object
      * 
-     * @param $param (description)
-     * @param $param (description)
+     * @param string $data json encoded data (decode=true) 
+     * or json decoded data (decode=false)
+     * @param bool $decode specifies whether the data must be decoded
+     *
+     * @return the object
      */
     public static function decodeExternalId($data, $decode=true)
     {
+        if ($decode && $data==null) 
+            $data = "{}";
+    
         if ($decode)
             $data = json_decode($data);
+            
         if (is_array($data)){
             $result = array();
             foreach ($data AS $key => $value) {
@@ -138,14 +179,48 @@ class ExternalId extends Object implements JsonSerializable
     }
 
     /**
-     * (description)
+     * the json serialize function
+     *
+     * @return an array to serialize the object
      */
-    public function jsonSerialize() 
+    public function jsonSerialize()  
     {
-        return array(
-            'id' => $this->id,
-            'course' => $this->course
-        );
+        $list = array();
+        if ($this->id!==null) $list['id'] = $this->id;
+        if ($this->course!==null) $list['course'] = $this->course;
+        return $list;
+    }
+    
+    public static function ExtractExternalId($data, $singleResult = false)
+    {
+            // generates an assoc array of courses by using a defined list of 
+            // its attributes
+            $course = DBJson::getObjectsByAttributes($data, 
+                                    Course::getDBPrimaryKey(), 
+                                    Course::getDBConvert());
+            
+            // generates an assoc array of external IDs by using a defined list of 
+            // its attributes
+            $externalIds = DBJson::getObjectsByAttributes($data, 
+                                    ExternalId::getDBPrimaryKey(), 
+                                    ExternalId::getDBConvert());
+            
+            // concatenates the external IDs and the associated courses
+            $res = DBJson::concatObjectListsSingleResult($data, 
+                        $externalIds,ExternalId::getDBPrimaryKey(), 
+                        ExternalId::getDBConvert()['EX_course'], 
+                        $course,Course::getDBPrimaryKey());              
+            
+            // to reindex
+            $res = array_values($res);
+            
+            if ($singleResult==true){
+                // only one object as result
+                if (count($res)>0)
+                    $res = $res[0]; 
+            }
+                
+            return $res;
     }
 }
 ?>

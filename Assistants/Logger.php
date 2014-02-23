@@ -6,6 +6,22 @@
  * This file contains two classes. This is an exception but it seemed neccessary
  * to keep them as close toghether as possible as LogLevel is only used to
  * enumerate values for Logger
+ *
+ * Example usage:
+ * @code{.php}
+ * //log to file test.log in home directory
+ * Logger::Log("test", LogLevel::INFO, "~/test.log");
+ *
+ * // log to file test2.log in /var/log
+ * Logger::Log("test2", LogLevel::INFO, "/var/log/test2.log");
+ *
+ * // set the location for all logs to /var/log/test2.log
+ * Logger::$logFile = "/var/log/test2.log";
+ * // log to file test2.log in /var/log
+ * Logger::Log("test3");
+ * @endcode
+ *
+ * @author Florian Lücke
  */
 
 /**
@@ -18,7 +34,7 @@ class Logger
     /**
      * @var int $logLevel The levels that should be logged. Can also be multiple
      * LogLevels connected with bitwise or. (e.g. LogLevel:ERROR | LogLevel::DEBUG)
-     * @sa LogLevel
+     * @see LogLevel
      */
     static $logLevel = LogLevel::ALL;
 
@@ -39,13 +55,20 @@ class Logger
      *
      * @param mixed $message The log message.
      * @param int $logLevel One of the constants defined in the class LogLevel.
+     * @param string $logFile An alternative location for the log.
      * @return nothing
      */
-    public static function Log($message, $logLevel = LogLevel::INFO)
+    public static function Log($message,
+                               $logLevel = LogLevel::INFO,
+                               $logFile = NULL)
     {
         // if the function is called with the no prority don't log anything
         if ($logLevel == LogLevel::NONE) {
             return;
+        }
+
+        if (!isset($logFile)) {
+            $logFile = self::$logFile;
         }
 
         // get the current date and time
@@ -67,12 +90,12 @@ class Logger
 
                 // show class/instance Method
                 if (isset($callerInfo['type'])) {
-                    $infoString .= $callerInfo['type'];
+                    $infoString .= " " . $callerInfo['type'];
                 }
 
                 // shwo calling function
                 if (isset($callerInfo['function'])) {
-                    $infoString .= $callerInfo['function'] . "()";
+                    $infoString .= " " . $callerInfo['function'] . "()";
                 }
             } else {
                 // the function was invoked from outside a class
@@ -98,7 +121,11 @@ class Logger
             $infoString .=  " [" . LogLevel::$names[$logLevel] . "]: " . $message . "\n";
 
             // open the log file for appending
-            $fp = fopen(self::$logFile, "a");
+            $fp = @fopen($logFile, "a");
+
+            if (!$fp) {
+                return;
+            }
 
             // try to lock the file to prevent messages from overlapping
             // or overwriting each other
@@ -110,7 +137,8 @@ class Logger
                 flock($fp, LOCK_UN);
 
             } else {
-                die("Getting lock on " . self::$logFile . " failed!\n");
+
+                die("Getting lock on " . $logFile . " failed!\n");
             }
 
             fclose($fp);

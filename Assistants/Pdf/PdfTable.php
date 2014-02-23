@@ -1,6 +1,15 @@
 <?php
+/**
+* @file PdfTable.php contains the Pdf class
+*/ 
+
 require('fpdf/fpdf.php');
 
+/**
+ * the Pdf class id used to generate a pdf from an assoc array
+ *
+ * @author Till Uhlig
+ */
 class Pdf extends FPDF
 {
 
@@ -101,6 +110,7 @@ class Pdf extends FPDF
         $this->SetDrawColor(0,51,102);
         $this->SetLineWidth(.3);
         $this->SetFont('','B');
+        
         //Header
         $width = array();
         foreach($data as $row)
