@@ -424,4 +424,45 @@ function updateSelectedSubmission($databaseURI,
     return $returnedSubmission;
 }
 
+/**
+ * Creates a submission for a file
+ *
+ * @param string $databaseURI The url at which the database server is running.
+ * @param int $userid The id of the user that submitted the file.
+ * @param int $fileId The id of the file that the uder submitted.
+ * @param int $exerciseId The id of the exercise the submission is for.
+ * @param string $comment A comment the uder left on the submission.
+ * @param int $timestapm The UNIX timestamp of the submission
+ * @param string &$message A reference to a variable that will contain the HTTP
+ * status code on return.
+ *
+ * @return string On success rturns a json object, representing the selected
+ * submission in the database. NULL otherwise.
+ */
+function submitFile($databaseURI,
+                    $userid,
+                    $fileId,
+                    $exerciseId,
+                    $comment,
+                    $timestamp,
+                    &$message)
+{
+    $submission = Submission::createSubmission(NULL,
+                                               $userid,
+                                               $fileId,
+                                               $exerciseId,
+                                               $comment,
+                                               1,
+                                               $timestamp,
+                                               NULL,
+                                               NULL);
+    $URL = $databaseURI . '/submission';
+    $returnedSubmission = http_post_data($URL,
+                                         json_encode($submission),
+                                         true,
+                                         $message);
+
+    return $returnedSubmission;
+}
+
 ?>

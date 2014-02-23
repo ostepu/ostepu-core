@@ -76,20 +76,13 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
 
                 // create a new submission with the file
                 $comment = cleanInput($exercise['comment']);
-                $submission = Submission::createSubmission(NULL,
-                                                           $uid,
-                                                           $fileId,
-                                                           $exerciseId,
-                                                           $comment,
-                                                           1,
-                                                           $timestamp,
-                                                           NULL,
-                                                           NULL);
-                $URL = $databaseURI . '/submission';
-                $returnedSubmission = http_post_data($URL,
-                                                     json_encode($submission),
-                                                     true,
-                                                     $message);
+                $returnedSubmission = submitFile($databaseURI,
+                                                 $uid,
+                                                 $fileId,
+                                                 $exerciseId,
+                                                 $comment,
+                                                 $timestamp,
+                                                 $message);
 
                 if ($message != "201") {
                     $exercise = $key + 1;
