@@ -219,6 +219,8 @@ class LgetSite
     /**
      * Compiles data for the Student page.
      *
+     * @todo include markingStatusName
+     *
      * @author Florian Lücke
      */
     public function studentSiteInfo($userid, $courseid)
