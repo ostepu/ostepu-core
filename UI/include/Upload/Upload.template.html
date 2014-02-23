@@ -3,9 +3,13 @@
     <button class="submit" type="submit" name="submit" id="submitButton">
         <div class="content-element">
             <div class="content-header">
-                <div class="content-title left uppercase">Absenden</div>
+                <div class="content-title left uppercase">alle absenden</div>
                 <div class="info-color bold right">
-                    <a href="javascript:void(0);" class="add-exercise" id="function">absenden</a>
+                    <a href="javascript:void(0);"
+                       class="add-exercise"
+                       id="function">
+                      alle absenden
+                    </a>
                 </div>
             </div>
         </div> <!-- end: content-wrapper -->
@@ -17,17 +21,22 @@
                 <div class="content-title left uppercase">
                     Aufgabe <?= $key + 1 ?>
                 </div>
+                <button class="text-button info-color bold right">
+                  alle absenden
+                </button>
             </div>
             <div class="content-body-wrapper">
                 <div class="content-body left">
                     <?php if (isset($exercise['selectedSubmission'])): ?>
-                            <div class="form-field left bold new-line" for="selectedSubmission">
+                            <div class="form-field wider left bold new-line">
                                 bisherige Einsendung:
                             </div>
 
-                            <?php $displayName = $exercise['selectedSubmission']['file']['displayName']; ?>
-                            <?php $fileAddress = $exercise['selectedSubmission']['file']['address']; ?>
-                            <?php $date = $exercise['selectedSubmission']['date']; ?>
+                            <?php $sub = $exercise['selectedSubmission']; ?>
+                            <?php $file = $sub['file']; ?>
+                            <?php $displayName = $file['displayName']; ?>
+                            <?php $fileAddress = $file['address']; ?>
+                            <?php $date = $sub['date']; ?>
                             <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
 
                             <a href="<?= $fileURL ?>"
@@ -36,6 +45,16 @@
                                target="_blank">
                                 Herunterladen (<?= date('d.m.Y  -  H:i', $date) ?>)
                             </a>
+
+                            <?php if (isset($sub['comment'])): ?>
+                                <div class="form-field wider left bold new-line">
+                                    Kommentar der bisherigen Einsendung:
+                                </div> <br />
+                                <input type="text"
+                                        class="left wider form-field text-input"
+                                        value="<?= $sub['comment'] ?>"
+                                        disabled/>
+                            <?php endif; ?>
                     <?php endif; ?>
 
                     <label class="short left label bold new-line"

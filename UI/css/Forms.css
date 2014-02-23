@@ -28,6 +28,14 @@
     width: 75px;
 }
 
+.wider {
+    width: 300px;
+}
+
+.very-wide {
+    width: 748px;
+}
+
 .text-input {
     margin: 0 20px 7px 0;
     padding: 0;
