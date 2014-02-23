@@ -15,7 +15,6 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
     // handle uploading files
     /**
      * @todo don't automatically accept the submission
-     * @todo clean up the code a bit.
      */
     $timestamp = time();
 
@@ -23,82 +22,90 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
     $group = http_get($URL, true);
     $group = json_decode($group, true)[0];
 
-    $leaderId = $group['leader']['id'];
+    if (!isset($group['leader'])) {
+        $errormsg = "500: Internal Server Error. <br />Zur Zeit können keine Aufgaben eingesendet werden.";
+        $notifications[] = MakeNotification('error',
+                                            $errormsg);
+        Logger::Log('error', "No group set for user {$uid} in course {$cid}!");
+    } else {
 
-    foreach ($_POST['exercises'] as $key => $exercise) {
-        $exerciseId = cleanInput($exercise['exerciseID']);
-        $fileName = "file{$exerciseId}";
+        $leaderId = $group['leader']['id'];
 
-        if (isset($_FILES[$fileName])) {
-            $file = $_FILES[$fileName];
-            $error = $file['error'];
+        foreach ($_POST['exercises'] as $key => $exercise) {
+            $exerciseId = cleanInput($exercise['exerciseID']);
+            $fileName = "file{$exerciseId}";
 
-            if ($error === 0) {
-                $filePath = $file['tmp_name'];
-                $displayName = $file['name'];
+            if (isset($_FILES[$fileName])) {
+                $file = $_FILES[$fileName];
+                $error = $file['error'];
 
-                // upload the file to the filesystem
-                $jsonFile = fullUpload($filesystemURI,
-                                       $databaseURI,
-                                       $filePath,
-                                       $displayName,
-                                       $timestamp,
-                                       $message);
+                if ($error === 0) {
+                    $filePath = $file['tmp_name'];
+                    $displayName = $file['name'];
 
-                if (($message != "201") && ($message != "200")) {
-                    // saving failed
+                    // upload the file to the filesystem
+                    $jsonFile = fullUpload($filesystemURI,
+                                           $databaseURI,
+                                           $filePath,
+                                           $displayName,
+                                           $timestamp,
+                                           $message);
+
+                    if (($message != "201") && ($message != "200")) {
+                        // saving failed
+                        $exercise = $key + 1;
+                        $errormsg = "{$message}: Aufgabe {$exercise} konnte nicht hochgeladen werden.";
+                        $notifications[] = MakeNotification('error',
+                                                            $errormsg);
+                        continue;
+                    } else {
+                        // saving succeeded
+                        $fileObj = json_decode($jsonFile, true);
+                    }
+
+                    $fileId = $fileObj['fileId'];
+
+                    // create a new submission with the file
+                    $comment = cleanInput($exercise['comment']);
+                    $returnedSubmission = submitFile($databaseURI,
+                                                     $uid,
+                                                     $fileId,
+                                                     $exerciseId,
+                                                     $comment,
+                                                     $timestamp,
+                                                     $message);
+
+                    if ($message != "201") {
+                        $exercise = $key + 1;
+                        $errormsg = "{$message}: Aufgabe {$exercise} konnte nicht hochgeladen werden.";
+                        $notifications[] = MakeNotification('error',
+                                                            $errormsg);
+                        continue;
+                    }
+
+                    $returnedSubmission = json_decode($returnedSubmission, true);
+
+                    // make the submission selected
+                    $submissionId = $returnedSubmission['id'];
+                    $returnedSubmission = updateSelectedSubmission($databaseURI,
+                                                                   $leaderId,
+                                                                   $submissionId,
+                                                                   $exerciseId,
+                                                                   $message);
+
+                    if ($message != "201") {
+                        $exercise = $key + 1;
+                        $errormsg = "{$message}: Aufgabe {$exercise} konnte nicht ausgewählt werden.";
+                        $notifications[] = MakeNotification('error',
+                                                            $errormsg);
+                        continue;
+                    }
+
                     $exercise = $key + 1;
-                    $errormsg = "{$message}: Aufgabe {$exercise} konnte nicht hochgeladen werden.";
-                    $notifications[] = MakeNotification('error',
-                                                        $errormsg);
-                    continue;
-                } else {
-                    // saving succeeded
-                    $fileObj = json_decode($jsonFile, true);
+                    $msg = "Aufgabe {$exercise} wurde erfolgreich eingesendet.";
+                    $notifications[] = MakeNotification('success',
+                                                        $msg);
                 }
-
-                $fileId = $fileObj['fileId'];
-
-                // create a new submission with the file
-                $comment = cleanInput($exercise['comment']);
-                $returnedSubmission = submitFile($databaseURI,
-                                                 $uid,
-                                                 $fileId,
-                                                 $exerciseId,
-                                                 $comment,
-                                                 $timestamp,
-                                                 $message);
-
-                if ($message != "201") {
-                    $exercise = $key + 1;
-                    $errormsg = "{$message}: Aufgabe {$exercise} konnte nicht hochgeladen werden.";
-                    $notifications[] = MakeNotification('error',
-                                                        $errormsg);
-                    continue;
-                }
-
-                $returnedSubmission = json_decode($returnedSubmission, true);
-
-                // make the submission selected
-                $submissionId = $returnedSubmission['id'];
-                $returnedSubmission = updateSelectedSubmission($databaseURI,
-                                                               $leaderId,
-                                                               $submissionId,
-                                                               $exerciseId,
-                                                               $message);
-
-                if ($message != "201") {
-                    $exercise = $key + 1;
-                    $errormsg = "{$message}: Aufgabe {$exercise} konnte nicht ausgewählt werden.";
-                    $notifications[] = MakeNotification('error',
-                                                        $errormsg);
-                    continue;
-                }
-
-                $exercise = $key + 1;
-                $msg = "Aufgabe {$exercise} wurde erfolgreich eingesendet.";
-                $notifications[] = MakeNotification('success',
-                                                    $msg);
             }
         }
     }
