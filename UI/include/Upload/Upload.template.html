@@ -27,7 +27,7 @@
 
                             <?php $displayName = $exercise['selectedSubmission']['file']['displayName']; ?>
                             <?php $fileAddress = $exercise['selectedSubmission']['file']['address']; ?>
-                            <?php $date = $exercise['selectedSubmission']['file']['timeStamp']; ?>
+                            <?php $date = $exercise['selectedSubmission']['date']; ?>
                             <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
 
                             <a href="<?= $fileURL ?>"
