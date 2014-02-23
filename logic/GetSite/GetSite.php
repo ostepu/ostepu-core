@@ -1187,25 +1187,25 @@ class LgetSite
         // order submissions by exercise and user, only take latest
         $exerciseUserSubmissions = array();
         foreach ($submissions as $submission) {
-            $userid = $submission['studentId'];
+            $userId = $submission['studentId'];
             $exerciseId = $submission['exerciseId'];
 
             if (isset($exerciseUserSubmissions[$exerciseId]) == false) {
                 $exerciseUserSubmissions[$exerciseId] = array();
             }
 
-            if (isset($exerciseUserSubmissions[$exerciseId][$userid]) == false) {
-                $user = &$usersById[$userid];
+            if (isset($exerciseUserSubmissions[$exerciseId][$userId]) == false) {
+                $user = &$usersById[$userId];
                 $userSubmission = array('user' => $user,
                                             'submission' => $submission);
-                $exerciseUserSubmissions[$exerciseId][$userid] = $userSubmission;
+                $exerciseUserSubmissions[$exerciseId][$userId] = $userSubmission;
             } else {
-                $lastUserSubmission = $exerciseUserSubmissions[$exerciseId][$userid];
+                $lastUserSubmission = $exerciseUserSubmissions[$exerciseId][$userId];
                 if ($lastUserSubmission['submission']['date'] < $submission['date']) {
-                    $user = &$usersById[$userid];
+                    $user = &$usersById[$userId];
                     $userSubmission = array('user' => $user,
                                             'submission' => $submission);
-                    $exerciseUserSubmissions[$exerciseId][$userid] = $userSubmission;
+                    $exerciseUserSubmissions[$exerciseId][$userId] = $userSubmission;
                 }
             }
         }
