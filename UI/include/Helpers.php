@@ -344,8 +344,8 @@ function uploadFileToFileSystem($filesystemURI,
     $data = base64_encode($data);
 
     $file = array('timeStamp' => $timestamp,
-                     'displayName' => $displayName,
-                     'body' => $data);
+                  'displayName' => $displayName,
+                  'body' => $data);
 
     // upload the file to the filesystem
     $URL = $filesystemURI . '/file';
@@ -381,6 +381,44 @@ function saveFileInDatabase($databaseURI,
         $URL = $databaseURI . '/file/hash/' . $hash;
         $jsonFile = http_get($URL, true, $message);
     }
+
+    return $jsonFile;
+}
+
+/**
+ * Stores a file in filesystem and database.
+ *
+ * @param string $filesystemURI The url at which the filesystem server is running.
+ * @param string $databaseURI The url at which the database server is running.
+ * @param string $filePath The local path at which the file is located.
+ * @param string $displayName The displayname of the uploaded file
+ * @param int $timestamp The UNIX timestamp of the upload
+ * @param string &$message A reference to a variable that will contain the HTTP
+ * status code on return.
+ */
+function fullUpload($filesystemURI,
+                    $databaseURI,
+                    $filePath,
+                    $displayName,
+                    $timestamp,
+                    &$message)
+{
+    $jsonFile = uploadFileToFileSystem($filesystemURI,
+                                       $filePath,
+                                       $displayName,
+                                       $timestamp,
+                                       $message);
+
+    if ($message != "201") {
+        return NULL;
+    }
+
+    $fileObj = json_decode($jsonFile, true);
+    $fileObj['timeStamp'] = $timestamp;
+
+    $jsonFile = saveFileInDatabase($databaseURI,
+                                   $fileObj,
+                                   $message);
 
     return $jsonFile;
 }

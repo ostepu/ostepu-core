@@ -38,27 +38,12 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
                 $displayName = $file['name'];
 
                 // upload the file to the filesystem
-                $jsonFile = uploadFileToFileSystem($filesystemURI,
-                                                   $filePath,
-                                                   $displayName,
-                                                   $timestamp,
-                                                   $message);
-                if ($message != "201") {
-                    // upload failed generate notification and continue with
-                    // the next exercise
-                    $exercise = $key + 1;
-                    $errormsg = "{$message}: Aufgabe {$exercise} konnte nicht hochgeladen werden.";
-                    $notifications[] = MakeNotification('error',
-                                                        $errormsg);
-                    continue;
-                }
-
-                $fileObj = json_decode($jsonFile, true);
-
-                $fileObj['timeStamp'] = $timestamp;
-
-                // save the file in the datebase
-                $jsonFile = saveFileInDatabase($databaseURI, $fileObj, $message);
+                $jsonFile = fullUpload($filesystemURI,
+                                       $databaseURI,
+                                       $filePath,
+                                       $displayName,
+                                       $timestamp,
+                                       $message);
 
                 if (($message != "201") && ($message != "200")) {
                     // saving failed
