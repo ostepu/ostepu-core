@@ -9,6 +9,7 @@ require '../../Assistants/Slim/Slim.php';
 include '../../Assistants/Request.php';
 include_once '../../Assistants/CConfig.php';
 include_once '../../Assistants/Logger.php';
+include_once '../../Assistants/Structures.php';
 
 \Slim\Slim::registerAutoloader();
 /**
@@ -259,6 +260,8 @@ class LgetSite
         $answer = Request::custom('GET', $URL, $header, $body);
         $possibleExerciseTypes = json_decode($answer['content'], true);
 
+        $markingStatus = Marking::getStatusDefinition();
+
         // oder submissions by exercise
         $submissionsByExercise = array();
         foreach ($submissions as &$submission) {
@@ -280,6 +283,12 @@ class LgetSite
                 if ($selectedSubmissionStudentId == $studentId) {
                     // the student id of the selected submission and the student
                     // id of the marking match
+
+                    // add marking status name to the marking
+                    $status = $marking['status'];
+                    $statusName = $markingStatus[$status]['longName'];
+                    $marking['status'] = $statusName;
+
                     unset($marking['submission']);
                     $selectedSubmission['marking'] = $marking;
                 }
