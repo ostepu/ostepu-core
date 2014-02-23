@@ -171,7 +171,7 @@ class LTutor
     public function autoAllocateByGroup($courseid, $sheetid){
         
         $header = $this->app->request->headers->all();
-        $body = json_decode($this->app->request->getBody());        
+        $body = json_decode($this->app->request->getBody(), true);        
         $URL = $this->lURL.'/DB/marking';
         
         $tutors = $body['tutors'];
@@ -343,19 +343,12 @@ class LTutor
         $answer = Request::custom('GET', $URL, $header, "");
         $user = json_decode($answer['content'], true);
         
-        //if(file_exists("./csv")){
-        //    $dir = "./csv";
-        //    $files = glob($dir.'/*.*');
-        //    if ( !empty($files) ) {
-        //        foreach ($files as $file) {
-        //            unlink($file);
-        //        }
-        //    }
-        //    rmdir($dir);  
-        //}
-        mkdir("./csv");
+		
+		$this->deleteDir("./csv");
+		mkdir("./csv");
+
         //this is the true writing of the CSV-file named [tutorname]_[sheetid].csv
-        $CSV = fopen('csv/'.$user['lastName'].'_'.$sheetid.'.csv', 'w');
+        $CSV = fopen('./csv/'.$user['lastName'].'_'.$sheetid.'.csv', 'w');
         
         foreach($rows as $row){
             fputcsv($CSV, $row, ';');
@@ -407,13 +400,11 @@ class LTutor
         //request to filesystem to create the Zip-File
         $answer = Request::custom('POST', $URL, $header,json_encode($filesToZip));
         $zipFile = json_decode($answer['content'], true); 
-                   // print_r(json_encode($filesToZip));
         
         $URL = $this->lURL.'/FS/'.$zipFile['address'].'/'.$userid.'_'.$sheetid.'.zip';
         //request to filesystem to get the created Zip-File
         $answer = Request::custom('GET', $URL, $header,json_encode($filesToZip));
         
-        //ToDo: get Zip-File
         $this->app->response->headers->set('Content-Type', 'application/zip');
         $this->app->response->headers->set('Content-Disposition', $answer['headers']['Content-Disposition']);
         $this->app->response->setBody($answer['content']);
@@ -470,6 +461,30 @@ class LTutor
         fclose($csv);
         
     }
+	
+	/**
+	* Delete hole directory inclusiv files and dirs
+	*
+	* @param string $path 
+	* @return boolean
+	*/
+	public function deleteDir($path)
+	{
+		if (is_dir($path) === true) {
+			$files = array_diff(scandir($path), array('.', '..'));
+
+			foreach ($files as $file) {
+				$this->deleteDir(realpath($path) . '/' . $file);
+			}
+			return rmdir($path);
+		}
+		
+		// Datei entfernen
+		else if (is_file($path) === true) {
+			return unlink($path);
+		}
+		return false;
+	}  
     
 }
 /**
