@@ -1152,49 +1152,79 @@ class LgetSite
         $response = array();
 
         //Get the Group of the User for the given sheet
-        $URL = $this->lURL.'/DB/group/user/'.$userid.'/exercisesheet/'.$sheetid;
+        $URL = "{$this->lURL}/DB/group/user/{$userid}/exercisesheet/{$sheetid}";
         $answer = Request::custom('GET', $URL, $header, $body);
-        $response['group'] = json_decode($answer['content'], true)[0];
+        $group = json_decode($answer['content'], true)[0];
 
         //Get the maximum Groupsize of the sheet
-        $URL = $this->lURL.'/DB/exercisesheet/exercisesheet/'.$sheetid .'/exercise';
+        $URL = "{$this->lURL}/DB/exercisesheet/exercisesheet/{$sheetid}/exercise";
         $answer = Request::custom('GET', $URL, $header, $body);
-        $answer = json_decode($answer['content'], true);
-        $response['groupSize'] = $answer['groupSize'];
+        $sheet = json_decode($answer['content'], true);
 
-        $exercises = $answer['exercises'];
+        $exercises = &$sheet['exercises'];
 
-        $response['groupSubmissions'] = array();
-
-        //Get all Submissions of the group for the sheet (sorted by exercise)
-        foreach ( $exercises as $exercise) {
-            $newGroupExercise = array();
-            foreach ($response['group']['members'] as $user){
-                $newGroupSubmission = array();
-                $URL = $this->lURL.'/DB/submission/user/'.$user['id'].'/exercise/'.$exercise['id'];
-                $answer = Request::custom('GET', $URL, $header, $body);
-                $submission = json_decode($answer['content'], true);
-
-                if ($submission != NULL){
-                    $newGroupSubmission['user'] = $user;
-                    $newGroupSubmission['submission'] = $submission;
-                    $newGroupExercise[] = $newGroupSubmission;
-                }
-            }
-            $response['groupSubmissions'][] = $newGroupExercise;
-        }
-
-        $URL = $this->lURL.'/DB/invitation/leader/user/'.$userid;
+        $URL = "{$this->lURL}/DB/submission/group/user/{$userid}/exercisesheet/{$sheetid}";
         $answer = Request::custom('GET', $URL, $header, $body);
-        $response['invitations'] = json_decode($answer['content'], true);
+        $submissions = json_decode($answer['content'], true);
 
-        $URL = $this->lURL.'/DB/invitation/member/user/'.$userid;
+        $URL = "{$this->lURL}/DB/invitation/leader/user/{$userid}";
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $invited = json_decode($answer['content'], true);
+
+        $URL = "{$this->lURL}/DB/invitation/member/user/{$userid}";
         $answer = Request::custom('GET', $URL, $header, $body);
         $invitations = json_decode($answer['content'], true);
 
-        foreach($invitations as $invitation){
-            $response['invitations'][] = $invitation;
+        // oder users by id
+        $usersById = array();
+        $leaderId = $group['leader']['id'];
+        $usersById[$leaderId] = &$group['leader'];
+        foreach ($group['members'] as &$member) {
+            $userId = $member['id'];
+            $usersById[$userId] = &$member;
         }
+
+        // order submissions by exercise and user, only take latest
+        $exerciseUserSubmissions = array();
+        foreach ($submissions as $submission) {
+            $userid = $submission['studentId'];
+            $exerciseId = $submission['exerciseId'];
+
+            if (isset($exerciseUserSubmissions[$exerciseId]) == false) {
+                $exerciseUserSubmissions[$exerciseId] = array();
+            }
+
+            if (isset($exerciseUserSubmissions[$exerciseId][$userid]) == false) {
+                $user = &$usersById[$userid];
+                $userSubmission = array('user' => $user,
+                                            'submission' => $submission);
+                $exerciseUserSubmissions[$exerciseId][$userid] = $userSubmission;
+            } else {
+                $lastUserSubmission = $exerciseUserSubmissions[$exerciseId][$userid];
+                if ($lastUserSubmission['submission']['date'] < $submission['date']) {
+                    $user = &$usersById[$userid];
+                    $userSubmission = array('user' => $user,
+                                            'submission' => $submission);
+                    $exerciseUserSubmissions[$exerciseId][$userid] = $userSubmission;
+                }
+            }
+        }
+
+        foreach ($exercises as &$exercise) {
+            $exerciseId = &$exercise['id'];
+            if (isset($exerciseUserSubmissions[$exerciseId])) {
+                $groupSubmissions = array_values($exerciseUserSubmissions[$exerciseId]);
+                $exercise['groupSubmissions'] = $groupSubmissions;
+            } else {
+                $exercise['groupSubmissions'] = array();
+            }
+
+        }
+
+        $response['exercises'] = $exercises;
+        $response['group'] = $group;
+        $response['invitations'] = $invited + $invitations;
+        $response['groupSize'] = $sheet['groupSize'];
 
         $this->flag = 1;
         $response['user'] = $this->userWithCourse($userid, $courseid);
