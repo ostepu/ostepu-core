@@ -1154,11 +1154,11 @@ class LgetSite
         $answer = Request::custom('GET', $URL, $header, $body);
         $submissions = json_decode($answer['content'], true);
 
-        $URL = "{$this->lURL}/DB/invitation/leader/user/{$userid}";
+        $URL = "{$this->lURL}/DB/invitation/leader/exercisesheet/{$sheetid}/user/{$userid}";
         $answer = Request::custom('GET', $URL, $header, $body);
         $invited = json_decode($answer['content'], true);
 
-        $URL = "{$this->lURL}/DB/invitation/member/user/{$userid}";
+        $URL = "{$this->lURL}/DB/invitation/member/exercisesheet/{$sheetid}/user/{$userid}";
         $answer = Request::custom('GET', $URL, $header, $body);
         $invitations = json_decode($answer['content'], true);
 
