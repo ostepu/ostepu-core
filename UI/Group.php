@@ -12,11 +12,32 @@
 
 include_once 'include/Boilerplate.php';
 
+if (isset($_POST['action'])) {
+    // removes a group member
+    if ($_POST['action'] == "RemoveGroupMember") {
+        if (isset($_POST['removeMember'])) {
+            $userID = cleanInput($_POST['removeMember']);
+
+            // creates a new group for the user that is removed
+            $newGroupSettings = Group::encodeGroup(Group::createGroup($userID, $userID, $sid));
+            $URI = $databaseURI . "/group/user/{$userID}/exercisesheet/{$sid}";
+            http_put_data($URI, $newGroupSettings, true, $message);
+
+            if ($message == "201") {
+                $notifications[] = MakeNotification("success", "Der Nutzer {$_POST['kick']} wurde aus der Gruppe entfernt.");
+            } else {
+                $notifications[] = MakeNotification("error", "Beim Entfernen ist ein Fehler aufgetreten.");
+            }
+        }
+    }
+}
+
 // load mainSettings data from GetSite
 $databaseURI = $getSiteURI . "/group/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
 $group_data = http_get($databaseURI, true);
 $group_data = json_decode($group_data, true);
 $group_data['filesystemURI'] = $filesystemURI;
+$group_data['uid'] = $uid;
 
 $user_course_data = $group_data['user'];
 
@@ -31,7 +52,7 @@ $hasInvitations = !empty($group_data['invitations']);
 
 // construct a content element for group information
 $groupMembers = Template::WithTemplateFile('include/Group/GroupMembers.template.html');
-$groupMembers->bind($group_data['group']);
+$groupMembers->bind($group_data);
 
 // construct a content element for managing groups
 if ($isInGroup) {
@@ -51,6 +72,7 @@ if ($hasInvitations) {
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $groupMembers, $manageGroup, $createGroup, $invitations);
+$w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, $groupMembers);
 $w->set_config_file('include/configs/config_group.json');
 $w->show();
 

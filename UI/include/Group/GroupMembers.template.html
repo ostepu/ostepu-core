@@ -1,7 +1,8 @@
 <?php
-    $isInGroup = !empty($members);
+    $isInGroup = !empty($group['members']);
 ?>
-<input type="hidden" name="action" value="manage">
+
+<input type="hidden" name="action" value="RemoveGroupMember">
 <div class="content-element">
     <div class="content-header">
         <div class="content-title left">Gruppenübersicht</div>
@@ -15,7 +16,9 @@
             <?php if ($isInGroup): ?>
                 <ol class="exercise-list invitation-list">
                 <li class="bold">
-                    <?php 
+                    <?php
+                    $leader = $group['leader'];
+
                     if (isset($leader['firstName']) && isset($leader['lastName'])) {
                         print $leader['firstName'] . " " . $leader['lastName'];
                     } else {
@@ -23,17 +26,17 @@
                     }
                     print ' (Gruppenführer)';
 
-                    if ($leader['userID'] != $uid) {
-                        print '<button name="kick" value="';
-                        print $leader['userID'];
+                    if ($leader['id'] != $uid) {
+                        print '<button name="removeMember" value="';
+                        print $leader['id'];
                         print '" class="right text-button body-option-color">hinauswerfen</button>'. "\n";
                     }
                     ?>
                 </li>
-                <?php foreach ($members as $member):
+                <?php foreach ($group['members'] as $member):
                 print "<li>\n";
                 print $member['firstName'] . " " . $member['lastName'];
-                print '<button name="kick" value="';
+                print '<button name="removeMember" value="';
                 print $member['id'];
                 print '" class="right text-button body-option-color">hinauswerfen</button>' . "\n";
                 print "</li>\n";
