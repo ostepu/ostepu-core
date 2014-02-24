@@ -31,7 +31,7 @@ from
     Submission S
         join
     File F ON (S.F_id_file = F.F_id)
-        join
+        left join
     SelectedSubmission SS ON (S.S_id = SS.S_id_selected
         and S.E_id = SS.E_id)
 where
