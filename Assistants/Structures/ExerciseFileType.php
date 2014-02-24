@@ -1,17 +1,17 @@
 <?php 
 /**
- * @file ExerciseType.php contains the ExerciseType class
+ * @file ExerciseFileType.php contains the ExerciseFileType class
  */
  
 /**
- * the exercise type structure
+ * the exercise file type structure
  *
  * @author Till Uhlig
  */
 class ExerciseFileType extends Object implements JsonSerializable
 {
     /**
-     * db id of the exercise type 
+     * db id of the exercise file type 
      *
      * type: string
      */
