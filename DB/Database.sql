@@ -725,6 +725,10 @@ begin
 IF NEW.ES_groupSize is null 
 then Set NEW.ES_groupSize = (SELECT C_defaultGroupSize FROM Course WHERE C_id = NEW.C_id limit 1);
 end if;
+
+if (NEW.ES_groupSize is NULL) then
+SIGNAL sqlstate '23000' set message_text = "no corresponding course for exercisesheet";
+END if;
 end;$$
 
 USE `uebungsplattform`$$
@@ -756,7 +760,7 @@ SET NEW.C_id = (select ES.C_id from ExerciseSheet ES where ES.ES_id = NEW.ES_id 
 if (NEW.C_id is NULL) then
 SIGNAL sqlstate '45001' set message_text = "no corresponding exercisesheet";
 END if;
-if not exists (Select * from Invitation where U_id_member = NEW.U_id_member and U_id_leader = NEW.U_id_leader and ES_id = NEW.ES_id limit 1)
+if NEW.U_id_member <> NEW.U_id_leader and not exists (Select * from Invitation where U_id_member = NEW.U_id_member and U_id_leader = NEW.U_id_leader and ES_id = NEW.ES_id limit 1)
 then SIGNAL sqlstate '45001' set message_text = "corresponding ivitation does not exist";
 end if;
 END;$$
@@ -978,9 +982,16 @@ USE `uebungsplattform`$$
 CREATE TRIGGER `SelectedSubmission_BINS` BEFORE INSERT ON `SelectedSubmission` FOR EACH ROW
 /*check if corresponding exercise exists
 @if not send error message
-@author Lisa*/
+@author Lisa, Till*/
 BEGIN
-SET NEW.ES_id = (select E.ES_id from Exercise E where E.E_id = NEW.E_id limit 1);
+SET NEW.ES_id = (select E.ES_id from Exercise E, `Group` G, Submission S where 
+E.E_id = NEW.E_id and
+ 
+S.S_id = NEW.S_id_selected and 
+G.U_id_leader = S.U_id and 
+NEW.U_id_leader = G.U_id_member and
+G.ES_id = E.ES_id
+ limit 1);
 if (NEW.ES_id is NULL) then
 SIGNAL sqlstate '45001' set message_text = "no corresponding exercise";
 END if;
