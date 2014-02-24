@@ -16,9 +16,10 @@ if (isset($_POST['action'])) {
     // removes a group member
     if ($_POST['action'] == "RemoveGroupMember") {
         if (isset($_POST['removeMember'])) {
+            // extracts the member that is being removed
             $userID = cleanInput($_POST['removeMember']);
 
-            // creates a new group for the user that is removed
+            // creates a new group for the user that is being removed
             $newGroupSettings = Group::encodeGroup(Group::createGroup($userID, $userID, $sid));
             $URI = $databaseURI . "/group/user/{$userID}/exercisesheet/{$sid}";
             http_put_data($URI, $newGroupSettings, true, $message);
@@ -27,6 +28,45 @@ if (isset($_POST['action'])) {
                 $notifications[] = MakeNotification("success", "Der Nutzer {$_POST['kick']} wurde aus der Gruppe entfernt.");
             } else {
                 $notifications[] = MakeNotification("error", "Beim Entfernen ist ein Fehler aufgetreten.");
+            }
+        }
+    }
+
+    // invites users to the group
+    if ($_POST['action'] == "InviteGroup") {
+        if (isset($_POST['userName'])) {
+            foreach ($_POST['userName'] as $key => $memberName) {
+                
+                // skips empty input fields
+                if (empty($memberName)) {
+                    continue;
+                }
+
+                // extracts the memberName
+                $memberName = cleanInput($memberName);
+
+                // extracts the userID
+                $URI = $databaseURI . "/user/user/{$memberName}";
+                $user_data = http_get($URI, true);
+                $user_data = json_decode($user_data, true);
+
+                // invites the user to the current group
+                if (empty($user_data)) {
+                    $notifications[] = MakeNotification("error", "Der User existiert nicht.");
+                } else {
+                    $memberID = $user_data['id'];
+
+                    $newInvitation = Invitation::encodeInvitation(Invitation::createInvitation($uid, $memberID, $sid));
+                    $URI = $databaseURI . "/invitation";
+                    http_post_data($URI, $newInvitation, true, $message);
+
+                    if ($message == "201") {
+                        $notifications[] = MakeNotification("success", "Der Nutzer {$memberName} wurde eingeladen.");
+                    } else {
+                        $notifications[] = MakeNotification("error", "Bei der Einladung ist ein Fehler aufgetreten. 
+                            Eventuell wurde schon eine Einladung an {$memberName} gesendet.");
+                    }
+                }
             }
         }
     }
@@ -73,6 +113,7 @@ if ($hasInvitations) {
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $groupMembers, $manageGroup, $createGroup, $invitations);
 $w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, $groupMembers);
+$w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, $createGroup);
 $w->set_config_file('include/configs/config_group.json');
 $w->show();
 
