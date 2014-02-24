@@ -16,12 +16,6 @@ include_once 'include/Helpers.php';
 $auth = new Authentication();
 Authentication::preventSessionFix();
 
-// check if already logged in
-if(Authentication::checkLogin()) {
-    header('Location: index.php');
-    exit();
-}
-
 if (isset($_POST['action'])) {
     // trim and stripslashes the input
     $input['username'] = strtolower($_POST['username']);
@@ -47,6 +41,12 @@ if (isset($_POST['action'])) {
     }
 } else {
     $notifications = array();
+}
+
+// check if already logged in
+if(Authentication::checkLogin()) {
+    header('Location: index.php');
+    exit();
 }
 
 // construct a new header

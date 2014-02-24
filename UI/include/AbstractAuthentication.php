@@ -89,7 +89,8 @@ abstract class AbstractAuthentication
      */
     public static function checkLogin()
     {
-        session_regenerate_id(true);
+
+        // check if logged in
         if (!isset($_SESSION['SIGNED']) || !$_SESSION['SIGNED']) {
             return false;
         }

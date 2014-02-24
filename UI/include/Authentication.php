@@ -44,7 +44,7 @@ class Authentication extends AbstractAuthentication
             session_start();
 
             // generate new session id
-            session_regenerate_id();
+            session_regenerate_id(true);
 
             // save status that serverSID is given
             $_SESSION['SERVER_SID'] = true;
