@@ -1208,8 +1208,8 @@ class LgetSite
 
         }
 
-        $response['invitationsFromGroup'] = $invitations;
-        $response['invitationsToGroup'] = $invited;
+        $response['invitationsFromGroup'] = $invited;
+        $response['invitationsToGroup'] = $invitations;
         $response['exercises'] = $exercises;
         $response['group'] = $group;
         $response['groupSize'] = $sheet['groupSize'];
