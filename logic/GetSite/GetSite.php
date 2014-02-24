@@ -1141,7 +1141,7 @@ class LgetSite
         //Get the Group of the User for the given sheet
         $URL = "{$this->lURL}/DB/group/user/{$userid}/exercisesheet/{$sheetid}";
         $answer = Request::custom('GET', $URL, $header, $body);
-        $group = json_decode($answer['content'], true)[0];
+        $group = json_decode($answer['content'], true);
 
         //Get the maximum Groupsize of the sheet
         $URL = "{$this->lURL}/DB/exercisesheet/exercisesheet/{$sheetid}/exercise";
@@ -1184,7 +1184,7 @@ class LgetSite
             if (isset($exerciseUserSubmissions[$exerciseId][$userId]) == false) {
                 $user = &$usersById[$userId];
                 $userSubmission = array('user' => $user,
-                                            'submission' => $submission);
+                                        'submission' => $submission);
                 $exerciseUserSubmissions[$exerciseId][$userId] = $userSubmission;
             } else {
                 $lastUserSubmission = $exerciseUserSubmissions[$exerciseId][$userId];
