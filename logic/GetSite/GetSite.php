@@ -326,7 +326,8 @@ class LgetSite
 
             // prepare exercises
             foreach ($sheet['exercises'] as &$exercise) {
-                $maxSheetPoints += $exercise['maxPoints'];
+                $isBonus = $exercise['bonus'];
+                $maxSheetPoints += $isBonus ? $exercise['maxPoints'] : 0;
                 $exerciseID = $exercise['id'];
 
                 // add submission to exercise
