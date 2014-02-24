@@ -3,7 +3,7 @@ Deny from all
 
 # allow access to ExerciseSettings and Subtask templates these are needed to
 # generate CreateSheet site.
-<FilesMatch "(ExerciseSettings.template.html|Subtask.template.html)">
+<FilesMatch "(ExerciseSettings.template.php|Subtask.template.php)">
     Order Allow,Deny
     Allow from all
 </FilesMatch>

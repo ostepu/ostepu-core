@@ -116,6 +116,7 @@ function deleteSubtask(event) {
 
         firstSubtask.find('.delete-subtask').fadeOut('fast');
     }
+    renumberExercises();
 }
 
 /**
@@ -127,7 +128,7 @@ function deleteSubtask(event) {
 function addExercise(event) {
 
     // append content to last exercise
-    $.get("include/CreateSheet/ExerciseSettings.template.html", function (data) {
+    $.get("include/CreateSheet/ExerciseSettings.template.php", function (data) {
 
         var collapsible = $(".collapsible");
         if (collapsible.length == 1) {
@@ -164,7 +165,7 @@ function addSubtask(event) {
     var trig = $(this);
 
     // insert subtask
-    $.get("include/CreateSheet/Subtask.template.html", function (data) {
+    $.get("include/CreateSheet/Subtask.template.php", function (data) {
         trig.parent().before(data);
 
         var insertedSubtask = trig.parent().parent().find('li').not( ".skip-item" ).last();
