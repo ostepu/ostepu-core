@@ -13,21 +13,43 @@
 include_once 'include/Boilerplate.php';
 
 if (isset($_POST['action'])) {
-    // removes a group member
-    if ($_POST['action'] == "RemoveGroupMember") {
-        if (isset($_POST['removeMember'])) {
-            // extracts the member that is being removed
-            $userID = cleanInput($_POST['removeMember']);
+    // removes all group members and deletes the group
+    if ($_POST['action'] == "RemoveGroupMember" && isset($_POST['removeMember'])) {
+        // extracts the member that is being removed
+        $userID = cleanInput($_POST['removeMember']);
 
-            // creates a new group for the user that is being removed
-            $newGroupSettings = Group::encodeGroup(Group::createGroup($userID, $userID, $sid));
-            $URI = $databaseURI . "/group/user/{$userID}/exercisesheet/{$sid}";
+        // creates a new group for the user that is being removed
+        $newGroupSettings = Group::encodeGroup(Group::createGroup($userID, $userID, $sid));
+        $URI = $databaseURI . "/group/user/{$userID}/exercisesheet/{$sid}";
+        http_put_data($URI, $newGroupSettings, true, $message);
+
+        if ($message == "201") {
+            $notifications[] = MakeNotification("success", "Der Nutzer {$_POST['kick']} wurde aus der Gruppe entfernt.");
+        } else {
+            $notifications[] = MakeNotification("error", "Beim Entfernen ist ein Fehler aufgetreten.");
+        }
+    }
+
+    // removes a group member
+    if ($_POST['action'] == "RemoveGroupMember" && isset($_POST['leaveGroup'])) {
+        // extracts the leader of the group
+        $leaderID = cleanInput($_POST['leaveGroup']);
+
+        // check if the user that wants to leave is the leader of the group
+        if ($leaderID == $uid) {
+            /**
+             * @todo Finish this. 
+             */
+        } else {
+            // creates a new group for the user that wants to leave
+            $newGroupSettings = Group::encodeGroup(Group::createGroup($uid, $uid, $sid));
+            $URI = $databaseURI . "/group/user/{$uid}/exercisesheet/{$sid}";
             http_put_data($URI, $newGroupSettings, true, $message);
 
             if ($message == "201") {
-                $notifications[] = MakeNotification("success", "Der Nutzer {$_POST['kick']} wurde aus der Gruppe entfernt.");
+                $notifications[] = MakeNotification("success", "Sie haben die Gruppe verlassen.");
             } else {
-                $notifications[] = MakeNotification("error", "Beim Entfernen ist ein Fehler aufgetreten.");
+                $notifications[] = MakeNotification("error", "Beim Verlassen ist ein Fehler aufgetreten.");
             }
         }
     }
@@ -97,6 +119,7 @@ $group_data['uid'] = $uid;
 
 $user_course_data = $group_data['user'];
 
+
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
@@ -104,21 +127,31 @@ $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
                "notificationElements" => $notifications));
 
 $isInGroup = !empty($group_data['group']['members']);
+$isLeader = $group_data['group']['leader']['id'] == $uid;
 $hasInvitations = !empty($group_data['invitations']);
+
+$group_data['isInGroup'] = $isInGroup;
+$group_data['isLeader'] = $isLeader;
 
 // construct a content element for group information
 $groupMembers = Template::WithTemplateFile('include/Group/GroupMembers.template.html');
 $groupMembers->bind($group_data);
 
 // construct a content element for managing groups
-if ($isInGroup) {
+if ($isInGroup && $isLeader) {
     $manageGroup = Template::WithTemplateFile('include/Group/ManageGroup.template.html');
     $manageGroup->bind($group_data);
+} elseif ($isInGroup) {
+    /**
+     * @todo Construct a different page for the members
+     */
 }
 
 // construct a content element for creating groups
-$createGroup = Template::WithTemplateFile('include/Group/InviteGroup.template.html');
-$createGroup->bind($group_data);
+if ($isLeader) {
+    $createGroup = Template::WithTemplateFile('include/Group/InviteGroup.template.html');
+    $createGroup->bind($group_data);
+}
 
 // construct a content element for joining groups
 if ($hasInvitations) {

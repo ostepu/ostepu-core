@@ -1,13 +1,14 @@
-<?php
-    $isInGroup = !empty($group['members']);
-?>
-
 <input type="hidden" name="action" value="RemoveGroupMember">
 <div class="content-element">
     <div class="content-header">
         <div class="content-title left">Gruppenübersicht</div>
         <?php if ($isInGroup): ?>
-        <button name="action" value="leave" class="right text-button critical-color bold">verlassen</button>
+        <button 
+            name="leaveGroup" 
+            value="<?= $group['leader']['id'] ?>" 
+            class="right text-button critical-color bold">
+            verlassen
+        </button>
         <?php endif; ?>
     </div>
 
@@ -26,21 +27,27 @@
                     }
                     print ' (Gruppenführer)';
 
-                    if ($leader['id'] != $uid) {
+                    if ($leader['id'] != $uid && $isLeader) {
                         print '<button name="removeMember" value="';
                         print $leader['id'];
                         print '" class="right text-button body-option-color">hinauswerfen</button>'. "\n";
                     }
                     ?>
                 </li>
-                <?php foreach ($group['members'] as $member):
-                print "<li>\n";
-                print $member['firstName'] . " " . $member['lastName'];
-                print '<button name="removeMember" value="';
-                print $member['id'];
-                print '" class="right text-button body-option-color">hinauswerfen</button>' . "\n";
-                print "</li>\n";
-                endforeach; ?>
+                <?php 
+                foreach ($group['members'] as $member) {
+                    print "<li>\n";
+                    print $member['firstName'] . " " . $member['lastName'];
+
+                    if ($isLeader) {
+                        print '<button name="removeMember" value="';
+                        print $member['id'];
+                        print '" class="right text-button body-option-color">hinauswerfen</button>';
+                    }
+
+                    print "</li>";
+                }
+                ?>
             </ol>
             <?php else: ?>
                 Sie befinden sich in keiner Gruppe.

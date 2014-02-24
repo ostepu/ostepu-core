@@ -1,6 +1,3 @@
-<?php
-    $isInGroup = !empty($group['members']);
-?>
 <input type="hidden" name="action" value="ManageInvitations">
 <div class="content-element">
     <div class="content-header">
@@ -11,8 +8,8 @@
         <div class="content-body left">
             <?php if ($isInGroup): ?>
                 <div class="content-description">
-                    Um eine Einladung zu einer anderen Gruppe anzunehmen, müssen Sie 
-                    zuerst Ihre eigene Gruppe verlassen.
+                    Um eine Einladung von einer anderen Gruppe anzunehmen, müssen Sie 
+                    zuerst die aktuelle Gruppe verlassen.
                 </div>
             <?php endif; ?>
             <ol class="exercise-list invitation-list">
