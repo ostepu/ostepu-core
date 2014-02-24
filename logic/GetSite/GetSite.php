@@ -74,7 +74,7 @@ class LgetSite
 
         //GET CreateSheet
         $this->app->get('/createsheet/user/:userid/course/:courseid(/)',
-                        array($this, 'userWithCourse'));
+                        array($this, 'createSheetInfo'));
 
         //GET Index
         $this->app->get('/index/user/:userid(/)',
@@ -1497,6 +1497,40 @@ class LgetSite
                     $response['users'][] = $user;
                 }
             }
+        }
+
+        $this->flag = 1;
+
+        // adds the user_course_data to the response
+        $response['user'] = $this->userWithCourse($userid, $courseid);
+
+        $this->app->response->setBody(json_encode($response));
+    }
+
+    public function createSheetInfo($userid, $courseid) {
+        $body = $this->app->request->getBody();
+        $header = $this->app->request->headers->all();
+
+        // returns all possible exerciseTypes of the course
+        $URL = $this->lURL.'/DB/approvalcondition/course/' . $courseid;
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $response['exerciseTypes'] = json_decode($answer['content'], true);
+
+        // returns all exerciseTypes
+        $URL = $this->lURL.'/DB/exercisetype';
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $allexerciseTypes = json_decode($answer['content'], true);
+        
+        if(!empty($response['exerciseTypes'])) {
+            foreach ($response['exerciseTypes'] as &$exerciseType) {
+                foreach ($allexerciseTypes as &$allexerciseType) {
+                    if ($exerciseType['exerciseTypeId'] == $allexerciseType['id']) {
+                        $exerciseType['name'] = $allexerciseType['name'];
+                    }
+                }
+            }
+        } else {
+            unset($response['exerciseTypes']);
         }
 
         $this->flag = 1;
