@@ -481,22 +481,6 @@ class LgetSite
             return "super-administrator";}
     }
 
-    public function getMarkingStatusDefinitions()
-    {
-        return array(array('id' => 3,
-                           'shortName' => 'ne',
-                           'longName' => 'nicht eingesendet'),
-                     array('id' => 0,
-                           'shortName' => 'uk',
-                           'longName' => 'unkorrigiert'),
-                     array('id' => 1,
-                           'shortName' => 'vl',
-                           'longName' => 'vorläufig'),
-                     array('id' => 2,
-                           'shortName' => 'k',
-                           'longName' => 'endgültig korrigiert'));
-    }
-
     /**
      * Compiles data for the marking tool page.
      * This version is used when no additional parameters are given.
@@ -600,7 +584,7 @@ class LgetSite
         $response['groups'] = $groups;
         $response['tutors'] = $tutors;
         $response['exerciseSheets'] = $sheets;
-        $response['markingStatus'] = $this->getMarkingStatusDefinitions();
+        $response['markingStatus'] = Marking::getStatusDefinition();
 
         $this->flag = 1;
         $response['user'] = $this->userWithCourse($userid, $courseid);
@@ -718,7 +702,7 @@ class LgetSite
         $response['groups'] = array_values($filteredGroups);
         $response['tutors'] = $tutors;
         $response['exerciseSheets'] = $sheets;
-        $response['markingStatus'] = $this->getMarkingStatusDefinitions();
+        $response['markingStatus'] = Marking::getStatusDefinition();
 
         $this->flag = 1;
         $response['user'] = $this->userWithCourse($userid, $courseid);
@@ -838,7 +822,7 @@ class LgetSite
         $response['groups'] = array_values($filteredGroups);
         $response['tutors'] = $tutors;
         $response['exerciseSheets'] = $sheets;
-        $response['markingStatus'] = $this->getMarkingStatusDefinitions();
+        $response['markingStatus'] = Marking::getStatusDefinition();
 
         $this->flag = 1;
         $response['user'] = $this->userWithCourse($userid, $courseid);
@@ -957,7 +941,7 @@ class LgetSite
         $response['groups'] = array_values($filteredGroups);
         $response['tutors'] = $tutors;
         $response['exerciseSheets'] = $sheets;
-        $response['markingStatus'] = $this->getMarkingStatusDefinitions();
+        $response['markingStatus'] = Marking::getStatusDefinition();
 
         $this->flag = 1;
         $response['user'] = $this->userWithCourse($userid, $courseid);
