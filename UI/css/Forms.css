@@ -41,6 +41,11 @@
     padding: 0;
 }
 
+.radio {
+    margin: -2px 0 10px 0;
+    padding: 0;
+}
+
 .label {
     margin: 0 20px 7px 0;
     line-height: 20px;

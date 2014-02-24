@@ -22,9 +22,12 @@
                         print $leader['userName'];
                     }
                     print ' (Gruppenführer)';
-                    print '<button name="kick" value="';
-                    print $leader['userID'];
-                    print '" class="right text-button body-option-color">hinauswerfen</button>'. "\n";
+
+                    if ($leader['userID'] != $uid) {
+                        print '<button name="kick" value="';
+                        print $leader['userID'];
+                        print '" class="right text-button body-option-color">hinauswerfen</button>'. "\n";
+                    }
                     ?>
                 </li>
                 <?php foreach ($members as $member):
