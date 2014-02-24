@@ -91,7 +91,7 @@ if (isset($_POST['action'])) {
                 foreach ($invitations as $invitation) {
                     $URI = $databaseURI . "/invitation/user/{$leaderID}/";
                     $URI .= "exercisesheet/{$sid}/user/{$invitation['member']['id']}";
-                    
+
                     http_delete($URI, true, $message);
 
                     if ($message != "201") {
@@ -193,6 +193,40 @@ if (isset($_POST['action'])) {
             $notifications[] = MakeNotification("success", "Die Einladung wurde abgelehnt.");
         } else {
             $notifications[] = MakeNotification("error", "Beim Ablehnen der Einladung ist ein Fehler aufgetreten.");
+        }
+    }
+
+    // accepts an invitation to a group
+    if ($_POST['action'] == "ManageInvitations" && isset($_POST['acceptInvitation'])) {
+        // bool which is true if any error occured
+        $RequestError = false;
+
+        // extracts the leader of the invitation that is being removed
+        $leaderID = cleanInput($_POST['acceptInvitation']);
+
+        // adds the user to the group
+        $newGroupSettings = Group::encodeGroup(Group::createGroup($leaderID, $uid, $sid));
+        $URI = $databaseURI . "/group/user/{$uid}/exercisesheet/{$sid}";
+        http_put_data($URI, $newGroupSettings, true, $message);
+
+        if ($message != "201") {
+            $RequestError = true;
+        }
+
+        // deletes the invitation
+        $URI = $databaseURI . "/invitation/user/{$leaderID}/exercisesheet/{$sid}/user/{$uid}";
+        http_delete($URI, true, $message);
+
+        if ($message != "201") {
+            $RequestError = true;
+        }
+
+        // shows notification
+        if ($RequestError == false) {
+            $notifications[] = MakeNotification("success", "Sie haben die Einladung angenommen.");
+        }
+        else {
+            $notifications[] = MakeNotification("error", "Beim Annehmen der Einladung ist ein Fehler aufgetreten!");
         }
     }
 }
