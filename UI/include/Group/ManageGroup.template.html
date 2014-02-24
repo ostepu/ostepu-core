@@ -35,8 +35,8 @@
                     print $exerciseCounter;
                     print '" id="';
                     print $exerciseCounter; 
-                    print '" checked="';
-                    print isset($submission['selectedForGroup']) ? "true" : "false";
+                    print '"';
+                    print isset($submission['selectedForGroup']) ? ' checked="checked"' : NULL;
                     print '" value="';
                     print $submission['id'];
                     print '" />';
@@ -46,6 +46,9 @@
                     // prints the name of the member
                     print '<div class="group-member-name left">';
                     print $user['firstName'] . ' ' . $user['lastName'] . ' ';
+
+
+
                     print '</div>';
 
                     $displayName = $submission['file']['displayName'];

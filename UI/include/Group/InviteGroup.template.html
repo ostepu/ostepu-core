@@ -1,23 +1,25 @@
-<form action="Group.php" method="POST">
-    <input type="hidden" name="action" value="invite">
-    <div class="content-element">
-        <div class="content-header">
-            <div class="content-title left">Gruppe erstellen</div>
-            <button class="right text-button info-color bold">erstellen</button>
-        </div>
+<input type="hidden" name="action" value="invite">
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left">Nutzer zur Gruppe hinzufügen</div>
+        <button class="right text-button info-color bold">erstellen</button>
+    </div>
 
-        <div class="content-body-wrapper">
-            <div class="content-body left">
-                <div class="content-description">
-                    Die maximale Gruppengröße für diese Serie beträgt <?= $groupSize ?>.
-                </div>
-                <?php for ($i = 0; $i < $groupSize; $i++): ?>
-                    <label class="short left label bold new-line">
-                        Matrikel:
-                    </label>
-                    <input class="form-field left text-input" type="text" name="ids[]">
-                <?php endfor; ?>
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            <?php $emptyGroupMembers = $groupSize - count($group['members']); ?>
+            <div class="content-description">
+                Die maximale Gruppengröße für diese Serie beträgt <?= $groupSize ?>.
+                <?php if ($emptyGroupMembers <= 0): ?>
+                Es können keine weiteren Nutzer mehr hinzugefügt werden.
+                <?php endif; ?>
             </div>
-        </div> <!-- end: content-body-wrapper -->
-    </div> <!-- end: content-element -->
-</form>
+            <?php for ($i = 0; $i < $emptyGroupMembers; $i++): ?>
+                <label class="short left label bold new-line">
+                    Matrikel:
+                </label>
+                <input class="form-field left text-input" type="text" name="ids[]">
+            <?php endfor; ?>
+        </div>
+    </div> <!-- end: content-body-wrapper -->
+</div> <!-- end: content-element -->
