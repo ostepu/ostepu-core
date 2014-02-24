@@ -107,6 +107,11 @@ class DBSelectedSubmission
         $this->_app->delete('/' . $this->getPrefix() . 
                             '/submission/:suid(/)',
                             array($this,'deleteSubmissionSelectedSubmission'));
+                            
+        // DELETE DeleteUserSheetSelectedSubmission
+        $this->_app->delete('/' . $this->getPrefix() . 
+                            '/user/:userid/exercisesheet/:esid(/)',
+                            array($this,'deleteUserSheetSelectedSubmission'));
         
         // POST AddSelectedSubmission
         $this->_app->post('/' . $this->getPrefix() . '(/)',
@@ -271,6 +276,42 @@ class DBSelectedSubmission
         }
     }
 
+    /**
+     * Unsets the submission that should be marked.
+     *
+     * Called when this component receives an HTTP DELETE request to
+     * /selectedsubmission/user/$userid/exercisesheet/$esid(/).
+     *
+     * @param string $userid The id or the user which leads the group.
+     * @param int $esid The id of the exercise sheet.
+     */
+    public function DeleteUserSheetSubmission($userid, $esid)
+    {
+        Logger::Log("starts DELETE DeleteUserSheetSubmission",LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            ctype_digit($userid),
+                            ctype_digit($esid));
+                            
+        // starts a query, by using a given file
+        $result = DBRequest::getRoutedSqlFile($this->query, 
+                                        "Sql/DeleteUserSheetSubmission.sql", 
+                                        array("userid" => $userid,"esid" => $esid));    
+        
+        // checks the correctness of the query                          
+        if ($result['status']>=200 && $result['status']<=299){
+        
+            $this->_app->response->setStatus(201);
+            if (isset($result['headers']['Content-Type']))
+                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+                
+        } else{
+            Logger::Log("DELETE DeleteUserSheetSubmission failed",LogLevel::ERROR);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
+            $this->_app->stop();
+        }
+    }
     
     /**
      * Unsets the submission that should be marked.
