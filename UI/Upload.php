@@ -20,7 +20,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
 
     $URL = $databaseURI . '/group/user/' . $uid . '/exercisesheet/' . $sid;
     $group = http_get($URL, true);
-    $group = json_decode($group, true)[0];
+    $group = json_decode($group, true);
 
     if (!isset($group['leader'])) {
         $errormsg = "500: Internal Server Error. <br />Zur Zeit können keine Aufgaben eingesendet werden.";
