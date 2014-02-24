@@ -70,6 +70,22 @@ if (isset($_POST['action'])) {
             }
         }
     }
+
+    // removes an invitation to a group
+    if ($_POST['action'] == "ManageInvitations" && isset($_POST['denyInvitation'])) {
+        // extracts the leader of the invitation that is being removed
+        $leaderID = cleanInput($_POST['denyInvitation']);
+
+        // deletes the invitation
+        $URI = $databaseURI . "/invitation/user/{$leaderID}/exercisesheet/{$sid}/user/{$uid}";
+        http_delete($URI, true, $message);
+
+        if ($message == "201") {
+            $notifications[] = MakeNotification("success", "Die Einladung wurde abgelehnt.");
+        } else {
+            $notifications[] = MakeNotification("error", "Beim Ablehnen der Einladung ist ein Fehler aufgetreten.");
+        }
+    }
 }
 
 // load mainSettings data from GetSite
@@ -114,6 +130,7 @@ if ($hasInvitations) {
 $w = new HTMLWrapper($h, $groupMembers, $manageGroup, $createGroup, $invitations);
 $w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, $groupMembers);
 $w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, $createGroup);
+$w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, $invitations);
 $w->set_config_file('include/configs/config_group.json');
 $w->show();
 

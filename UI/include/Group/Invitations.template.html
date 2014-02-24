@@ -1,41 +1,39 @@
 <?php
     $isInGroup = !empty($group['members']);
 ?>
-<form action="Group.php" method="POST">
-    <input type="hidden" name="action" value="acceptdeny">
-    <div class="content-element">
-        <div class="content-header">
-            <div class="content-title left">Einladungen</div>
-        </div>
+<input type="hidden" name="action" value="ManageInvitations">
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left">Einladungen zu anderen Gruppen</div>
+    </div>
 
-        <div class="content-body-wrapper">
-            <div class="content-body left">
-                <?php if ($isInGroup): ?>
-                    <div class="content-description">
-                        Um eine Einladung zu einer anderen Gruppe anzunehmen, müssen Sie 
-                        zuerst Ihre eigene Gruppe verlassen.
-                    </div>
-                <?php endif; ?>
-                <ol class="exercise-list invitation-list">
-                    <?php
-                    foreach ($invitations as $invitation):
-                        print "<li>\n";
-                        print $invitation['leader']['firstName'];
-                        print " ";
-                        print $invitation['leader']['lastName'];
-                        print '<button name="accept" class="right text-button body-option-color" value="';
-                        print $invitation['leader']['userID'];
-                        print "\">\nablehnen\n</button>\n";
-                        if (!$isInGroup):
-                            print '<button name="deny" class="right text-button body-option-color" value="';
-                            print $invitation['leader']['userID'];
-                            print "\">\nannehmen\n</button>\n";
-                        endif;
-                        print "</li>\n";
-                    endforeach;
-                    ?>
-                </ol>
-            </div>
-        </div> <!-- end: content-body-wrapper -->
-    </div> <!-- end: content-element -->
-</form>
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            <?php if ($isInGroup): ?>
+                <div class="content-description">
+                    Um eine Einladung zu einer anderen Gruppe anzunehmen, müssen Sie 
+                    zuerst Ihre eigene Gruppe verlassen.
+                </div>
+            <?php endif; ?>
+            <ol class="exercise-list invitation-list">
+                <?php
+                foreach ($invitations as $invitation):
+                    print "<li>";
+                    print $invitation['leader']['firstName'];
+                    print " ";
+                    print $invitation['leader']['lastName'];
+                        print '<button name="denyInvitation" class="right text-button body-option-color" value="';
+                        print $invitation['leader']['id'];
+                        print '">ablehnen</button>';
+                    if (!$isInGroup):
+                        print '<button name="acceptInvitation" class="right text-button body-option-color" value="';
+                        print $invitation['leader']['id'];
+                        print '">annehmen</button>';
+                    endif;
+                    print "</li>";
+                endforeach;
+                ?>
+            </ol>
+        </div>
+    </div> <!-- end: content-body-wrapper -->
+</div> <!-- end: content-element -->
