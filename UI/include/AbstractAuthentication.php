@@ -179,8 +179,16 @@ abstract class AbstractAuthentication
     {
         // check if user exists in course
         if ($data !== array()) {
+            // find the right course
+            $status = -1;
+            foreach ($data['courses'] as $element) {
+                if ($element['course']['id'] == $cid) {
+                    $status = $element['status'];
+                    break;
+                }
+            }
             // check if minimum right is given
-            if ($data['courses'][0]['status'] < $minimum) {
+            if ($status < $minimum) {
                 set_error("403");
             }
 
