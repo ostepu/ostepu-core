@@ -469,16 +469,8 @@ class LgetSite
     * @todo Receive the names from the database instead of defining it here.
     */
     public function getStatusName($courseStatus){
-        if ($courseStatus == 0){
-            return "student";}
-        elseif ($courseStatus == 1){
-            return "tutor";}
-        elseif ($courseStatus == 2){
-            return "lecturer";}
-        elseif ($courseStatus == 3){
-            return "administrator";}
-        elseif ($courseStatus == 4){
-            return "super-administrator";}
+        $statusNames = CourseStatus::getStatusDefinition();
+        return $statusNames[$courseStatus];
     }
 
     /**
