@@ -1208,9 +1208,10 @@ class LgetSite
 
         }
 
+        $response['invitationsFromGroup'] = $invitations;
+        $response['invitationsToGroup'] = $invited;
         $response['exercises'] = $exercises;
         $response['group'] = $group;
-        $response['invitations'] = $invited + $invitations;
         $response['groupSize'] = $sheet['groupSize'];
 
         $this->flag = 1;
