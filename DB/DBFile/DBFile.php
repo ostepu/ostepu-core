@@ -377,7 +377,8 @@ class DBFile
                 isset($esid) ? $esid : "",
                 isset($eid) ? $eid : "",
                 isset($fileid) ? $fileid : "",
-                isset($hash) ? $hash : "");
+                isset($hash) ? $hash : "",
+                true);
     }
 
 
