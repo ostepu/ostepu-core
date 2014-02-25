@@ -1,8 +1,9 @@
+<input type="hidden" name="action" value="ManageGroup">
 <div class="content-element">
     <div class="content-header">
         <div class="content-title left">Gruppeneinsendungen verwalten</div>
         <?php if ($isLeader): ?>
-        <button name="action" value="leave" class="right text-button info-color bold">speichern</button>
+        <button class="right text-button info-color bold">speichern</button>
         <?php endif; ?>
     </div>
 
@@ -33,6 +34,7 @@
                 print '</div>';
 
                 if (!empty($exercise['groupSubmissions'])):
+                    $exerciseID = $exercise['id'];
                     foreach ($exercise['groupSubmissions'] as $userExerciseSubmission):
                         $submission = $userExerciseSubmission['submission'];
                         $user = $userExerciseSubmission['user'];
@@ -43,9 +45,9 @@
                                 // prints a radio button for setting the submission as selected
                                 // (group leaders only)
                                 print '<input type="radio" name="';
-                                print $exerciseCounter;
+                                print 'exercises[' . $exerciseID . ']';
                                 print '" id="';
-                                print $exerciseCounter; 
+                                print $exerciseID;
                                 print '"';
                                 print isset($submission['selectedForGroup']) ? ' checked="checked"' : NULL;
                                 print '" value="';

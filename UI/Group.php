@@ -132,6 +132,39 @@ if (isset($_POST['action'])) {
         }
     }
 
+    // updates the selectedSubmissions for the group
+    if ($_POST['action'] == "ManageGroup" && isset($_POST['exercises'])) {
+        $exercises = cleanInput($_POST['exercises']);
+
+        // bool which is true if any error occured
+        $RequestError = false;
+        
+        // extracts the exerciseIDs and the submissionIDs and updates
+        // the selectedSubmissions
+        foreach ($exercises as $key => $value) {
+            $exerciseID = $key;
+            $submissionID = $value;
+
+            updateSelectedSubmission($databaseURI,
+                                     $uid,
+                                     $submissionID,
+                                     $exerciseID,
+                                     $message);
+
+            if ($message != "201") {
+                $RequestError = true;
+            }
+        }
+
+        // shows notification
+        if ($RequestError == false) {
+            $notifications[] = MakeNotification("success", "Die Einsendungen wurden ausgewählt.");
+        }
+        else {
+            $notifications[] = MakeNotification("error", "Beim Speichern ist ein Fehler aufgetreten!");
+        }
+    }
+
     // invites users to the group
     if ($_POST['action'] == "InviteGroup") {
         if (isset($_POST['userName'])) {
@@ -250,8 +283,10 @@ $groupMembers = Template::WithTemplateFile('include/Group/GroupMembers.template.
 $groupMembers->bind($group_data);
 
 // construct a content element for managing groups
-$groupManagement = Template::WithTemplateFile('include/Group/GroupManagement.template.html');
-$groupManagement->bind($group_data);
+if ($isInGroup) {
+    $groupManagement = Template::WithTemplateFile('include/Group/GroupManagement.template.html');
+    $groupManagement->bind($group_data);
+}
 
 // construct a content element for creating groups
 if ($isLeader) {
@@ -268,6 +303,7 @@ if ($hasInvitations) {
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $groupMembers, $groupManagement, $invitationsFromGroup, $invitationsToGroup);
 $w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, $groupMembers);
+$w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, $groupManagement);
 $w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, $invitationsFromGroup);
 $w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, $invitationsToGroup);
 $w->set_config_file('include/configs/config_group.json');
