@@ -566,7 +566,7 @@ class LgetSite
             $submission['marking'] = $marking;
 
             // filter out markings by the tutor with id $tutorid
-            if ($selector($marking, $tutor, $statusid) || ($shouldfilter == false)) {
+            if (($shouldfilter == false) || $selector($marking, $tutor, $statusid)) {
                 $exerciseId = $submission['exerciseId'];
                 $exerciseIndex = $exerciseIndices[$exerciseId];
                 $studentId = $submission['studentId'];
