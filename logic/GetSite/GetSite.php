@@ -474,124 +474,13 @@ class LgetSite
         return $statusNames[$courseStatus];
     }
 
-    /**
-     * Compiles data for the marking tool page.
-     * This version is used when no additional parameters are given.
-     *
-     * @author Florian Lücke
-     */
-    public function markingTool($userid, $courseid, $sheetid)
-    {
-        $body = $this->app->request->getBody();
-        $header = $this->app->request->headers->all();
-
-        $response = array();
-
-        //Get neccessary data
-        $URL = "{$this->lURL}/DB/exercisesheet/course/{$courseid}/exercise";
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $sheets = json_decode($answer['content'], true);
-
-        $URL = "{$this->lURL}/DB/marking/exercisesheet/{$sheetid}";
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $markings = json_decode($answer['content'], true);
-
-        $URL = "{$this->lURL}/DB/user/course/{$courseid}/status/1";
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $tutors = json_decode($answer['content'], true);
-
-        $URL = "{$this->lURL}/DB/group/exercisesheet/{$sheetid}";
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $groups = json_decode($answer['content'], true);
-
-        $URL = $this->lURL.'/DB/exercisetype';
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $possibleExerciseTypes = json_decode($answer['content'], true);
-
-        // oder exercise types by id
-        $exerciseTypes = array();
-        foreach ($possibleExerciseTypes as $exerciseType) {
-            $exerciseTypes[$exerciseType['id']] = $exerciseType;
-        }
-
-        // find the current sheet and it's exercises
-        foreach ($sheets as &$sheet) {
-            $thisSheetId = $sheet['id'];
-
-            if ($thisSheetId == $sheetid) {
-                $thisExerciseSheet = $sheet;
-                $exercises = $thisExerciseSheet['exercises'];
-            }
-
-            unset($sheet['exercises']);
-        }
-
-        if (isset($thisExerciseSheet) == false) {
-            $this->app->halt(404, '{"code":404,reason":"invalid sheet id"}');
-        }
-
-                // save the index of each exercise
-        $exerciseIndices = array();
-        foreach ($exercises as $idx => &$exercise) {
-            $exerciseId = $exercise['id'];
-            $typeId = $exercise['type'];
-
-            $type = $exerciseTypes[$typeId];
-
-            $exercise['typeName'] = $type['name'];
-
-            $exerciseIndices[$exerciseId] = $idx;
-        }
-
-        // save a reference to each user's group and add exercises to each group
-        $userGroups = array();
-        foreach ($groups as &$group) {
-            $leaderId = $group['leader']['id'];
-            $userGroups[$leaderId] = &$group;
-
-            foreach ($group['members'] as $member) {
-                $memberId = $member['id'];
-                $userGroups[$memberId] = &$group;
-            }
-
-            $group['exercises'] = $exercises;
-        }
-
-        foreach ($markings as $marking) {
-
-            // reverse marking and submission
-            $submission = $marking['submission'];
-            unset($marking['submission']);
-            $submission['marking'] = $marking;
-
-            $exerciseId = $submission['exerciseId'];
-            $exerciseIndex = $exerciseIndices[$exerciseId];
-            $studentId = $submission['studentId'];
-
-            // assign the submission to its group
-            $group = &$userGroups[$studentId];
-            $groupExercises = &$group['exercises'];
-            $groupExercises[$exerciseIndex]['submission'] = $submission;
-        }
-
-        $response['groups'] = $groups;
-        $response['tutors'] = $tutors;
-        $response['exerciseSheets'] = $sheets;
-        $response['markingStatus'] = Marking::getStatusDefinition();
-
-        $this->flag = 1;
-        $response['user'] = $this->userWithCourse($userid, $courseid);
-
-        $this->app->response->setBody(json_encode($response));
-    }
-
-    /**
-     * Compiles data for the marking tool page.
-     * This version is used when we want markings from a specific tutor.
-     *
-     * @author Florian Lücke
-     */
-    public function markingToolTutor($userid, $courseid, $sheetid, $tutorid)
+    public function markingToolBase($userid,
+                                    $courseid,
+                                    $sheetid,
+                                    $tutorId,
+                                    $statusid,
+                                    $shouldfilter,
+                                    $selector)
     {
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
@@ -677,7 +566,7 @@ class LgetSite
             $submission['marking'] = $marking;
 
             // filter out markings by the tutor with id $tutorid
-            if ($marking['tutorId'] == $tutorid) {
+            if ($selector($marking, $tutor, $statusid) || ($shouldfilter == false)) {
                 $exerciseId = $submission['exerciseId'];
                 $exerciseIndex = $exerciseIndices[$exerciseId];
                 $studentId = $submission['studentId'];
@@ -692,7 +581,7 @@ class LgetSite
             }
         }
 
-        $response['groups'] = array_values($filteredGroups);
+        $response['groups'] = $shouldfilter == true ? array_values($filteredGroups) : $groups;
         $response['tutors'] = $tutors;
         $response['exerciseSheets'] = $sheets;
         $response['markingStatus'] = Marking::getStatusDefinition();
@@ -701,6 +590,48 @@ class LgetSite
         $response['user'] = $this->userWithCourse($userid, $courseid);
 
         $this->app->response->setBody(json_encode($response));
+    }
+
+    /**
+     * Compiles data for the marking tool page.
+     * This version is used when no additional parameters are given.
+     *
+     * @author Florian Lücke
+     */
+    public function markingTool($userid, $courseid, $sheetid)
+    {
+        $this->markingToolBase($userid,
+                               $courseid,
+                               $sheetid,
+                               NULL,
+                               NULL,
+                               false,
+                               NULL);
+    }
+
+    /**
+     * Compiles data for the marking tool page.
+     * This version is used when we want markings from a specific tutor.
+     *
+     * @author Florian Lücke
+     */
+    public function markingToolTutor($userid, $courseid, $sheetid, $tutorid)
+    {
+        $selector = function ($marking, $tutor, $statusid) {
+            if ($marking['tutorId'] == $tutorid) {
+                return true;
+            }
+
+            return false;
+        };
+
+        $this->markingToolBase($userid,
+                               $courseid,
+                               $sheetid,
+                               $tutorid,
+                               NULL,
+                               true,
+                               $selector);
     }
 
     /**
@@ -713,114 +644,21 @@ class LgetSite
      */
     public function markingToolStatus($userid, $courseid, $sheetid, $statusid)
     {
-        $body = $this->app->request->getBody();
-        $header = $this->app->request->headers->all();
-
-        $response = array();
-
-        //Get neccessary data
-        $URL = "{$this->lURL}/DB/exercisesheet/course/{$courseid}/exercise";
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $sheets = json_decode($answer['content'], true);
-
-        $URL = "{$this->lURL}/DB/marking/exercisesheet/{$sheetid}";
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $markings = json_decode($answer['content'], true);
-
-        $URL = "{$this->lURL}/DB/user/course/{$courseid}/status/1";
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $tutors = json_decode($answer['content'], true);
-
-        $URL = "{$this->lURL}/DB/group/exercisesheet/{$sheetid}";
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $groups = json_decode($answer['content'], true);
-
-        $URL = $this->lURL.'/DB/exercisetype';
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $possibleExerciseTypes = json_decode($answer['content'], true);
-
-        // oder exercise types by id
-        $exerciseTypes = array();
-        foreach ($possibleExerciseTypes as $exerciseType) {
-            $exerciseTypes[$exerciseType['id']] = $exerciseType;
-        }
-
-        // find the current sheet and it's exercises
-        foreach ($sheets as &$sheet) {
-            $thisSheetId = $sheet['id'];
-
-            if ($thisSheetId == $sheetid) {
-                $thisExerciseSheet = $sheet;
-                $exercises = $thisExerciseSheet['exercises'];
-            }
-
-            unset($sheet['exercises']);
-        }
-
-        if (isset($thisExerciseSheet) == false) {
-            $this->app->halt(404, '{"code":404,reason":"invalid sheet id"}');
-        }
-
-                // save the index of each exercise
-        $exerciseIndices = array();
-        foreach ($exercises as $idx => &$exercise) {
-            $exerciseId = $exercise['id'];
-            $typeId = $exercise['type'];
-
-            $type = $exerciseTypes[$typeId];
-
-            $exercise['typeName'] = $type['name'];
-
-            $exerciseIndices[$exerciseId] = $idx;
-        }
-
-        // save a reference to each user's group and add exercises to each group
-        $userGroups = array();
-        foreach ($groups as &$group) {
-            $leaderId = $group['leader']['id'];
-            $userGroups[$leaderId] = &$group;
-
-            foreach ($group['members'] as $member) {
-                $memberId = $member['id'];
-                $userGroups[$memberId] = &$group;
-            }
-
-            $group['exercises'] = $exercises;
-        }
-
-        $filteredGroups = array();
-        foreach ($markings as $marking) {
-
-            // reverse marking and submission
-            $submission = $marking['submission'];
-            unset($marking['submission']);
-            $submission['marking'] = $marking;
-
-            // filter out markings by the tutor with id $tutorid
+        $selector = function ($marking, $tutor, $statusid) {
             if ($marking['status'] == $statusid) {
-                $exerciseId = $submission['exerciseId'];
-                $exerciseIndex = $exerciseIndices[$exerciseId];
-                $studentId = $submission['studentId'];
-
-                // assign the submission to its group
-                $group = &$userGroups[$studentId];
-                $groupExercises = &$group['exercises'];
-                $groupExercises[$exerciseIndex]['submission'] = $submission;
-
-                $leaderId = &$group['leader']['id'];
-                $filteredGroups[$leaderId] = &$group;
+                return true;
             }
-        }
 
-        $response['groups'] = array_values($filteredGroups);
-        $response['tutors'] = $tutors;
-        $response['exerciseSheets'] = $sheets;
-        $response['markingStatus'] = Marking::getStatusDefinition();
+            return false;
+        };
 
-        $this->flag = 1;
-        $response['user'] = $this->userWithCourse($userid, $courseid);
-
-        $this->app->response->setBody(json_encode($response));
+        $this->markingToolBase($userid,
+                               $courseid,
+                               $sheetid,
+                               NULL,
+                               $statusid,
+                               true,
+                               $selector);
     }
 
     /**
@@ -832,114 +670,22 @@ class LgetSite
      */
     public function markingToolTutorStatus($userid, $courseid, $sheetid, $tutorid, $statusid)
     {
-        $body = $this->app->request->getBody();
-        $header = $this->app->request->headers->all();
-
-        $response = array();
-
-        //Get neccessary data
-        $URL = "{$this->lURL}/DB/exercisesheet/course/{$courseid}/exercise";
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $sheets = json_decode($answer['content'], true);
-
-        $URL = "{$this->lURL}/DB/marking/exercisesheet/{$sheetid}";
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $markings = json_decode($answer['content'], true);
-
-        $URL = "{$this->lURL}/DB/user/course/{$courseid}/status/1";
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $tutors = json_decode($answer['content'], true);
-
-        $URL = "{$this->lURL}/DB/group/exercisesheet/{$sheetid}";
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $groups = json_decode($answer['content'], true);
-
-        $URL = $this->lURL.'/DB/exercisetype';
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $possibleExerciseTypes = json_decode($answer['content'], true);
-
-        // oder exercise types by id
-        $exerciseTypes = array();
-        foreach ($possibleExerciseTypes as $exerciseType) {
-            $exerciseTypes[$exerciseType['id']] = $exerciseType;
-        }
-
-        // find the current sheet and it's exercises
-        foreach ($sheets as &$sheet) {
-            $thisSheetId = $sheet['id'];
-
-            if ($thisSheetId == $sheetid) {
-                $thisExerciseSheet = $sheet;
-                $exercises = $thisExerciseSheet['exercises'];
+        $selector = function ($marking, $tutor, $statusid) {
+            if (($marking['status'] == $statusid)
+                && ($marking['tutorId'] == $tutorid)) {
+                return true;
             }
 
-            unset($sheet['exercises']);
-        }
+            return false;
+        };
 
-        if (isset($thisExerciseSheet) == false) {
-            $this->app->halt(404, '{"code":404,reason":"invalid sheet id"}');
-        }
-
-                // save the index of each exercise
-        $exerciseIndices = array();
-        foreach ($exercises as $idx => &$exercise) {
-            $exerciseId = $exercise['id'];
-            $typeId = $exercise['type'];
-
-            $type = $exerciseTypes[$typeId];
-
-            $exercise['typeName'] = $type['name'];
-
-            $exerciseIndices[$exerciseId] = $idx;
-        }
-
-        // save a reference to each user's group and add exercises to each group
-        $userGroups = array();
-        foreach ($groups as &$group) {
-            $leaderId = $group['leader']['id'];
-            $userGroups[$leaderId] = &$group;
-
-            foreach ($group['members'] as $member) {
-                $memberId = $member['id'];
-                $userGroups[$memberId] = &$group;
-            }
-
-            $group['exercises'] = $exercises;
-        }
-
-        $filteredGroups = array();
-        foreach ($markings as $marking) {
-
-            // reverse marking and submission
-            $submission = $marking['submission'];
-            unset($marking['submission']);
-            $submission['marking'] = $marking;
-
-            // filter out markings by the tutor with id $tutorid
-            if ($marking['status'] == $statusid && $marking['tutorId'] == $tutorid) {
-                $exerciseId = $submission['exerciseId'];
-                $exerciseIndex = $exerciseIndices[$exerciseId];
-                $studentId = $submission['studentId'];
-
-                // assign the submission to its group
-                $group = &$userGroups[$studentId];
-                $groupExercises = &$group['exercises'];
-                $groupExercises[$exerciseIndex]['submission'] = $submission;
-
-                $leaderId = &$group['leader']['id'];
-                $filteredGroups[$leaderId] = &$group;
-            }
-        }
-
-        $response['groups'] = array_values($filteredGroups);
-        $response['tutors'] = $tutors;
-        $response['exerciseSheets'] = $sheets;
-        $response['markingStatus'] = Marking::getStatusDefinition();
-
-        $this->flag = 1;
-        $response['user'] = $this->userWithCourse($userid, $courseid);
-
-        $this->app->response->setBody(json_encode($response));
+        $this->markingToolBase($userid,
+                               $courseid,
+                               $sheetid,
+                               $tutorid,
+                               $statusid,
+                               true,
+                               $selector);
     }
 
     public function uploadHistory($userid, $courseid, $sheetid, $uploaduserid){
@@ -1520,7 +1266,7 @@ class LgetSite
         $URL = $this->lURL.'/DB/exercisetype';
         $answer = Request::custom('GET', $URL, $header, $body);
         $allexerciseTypes = json_decode($answer['content'], true);
-        
+
         if(!empty($response['exerciseTypes'])) {
             foreach ($response['exerciseTypes'] as &$exerciseType) {
                 foreach ($allexerciseTypes as &$allexerciseType) {
