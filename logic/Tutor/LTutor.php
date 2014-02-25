@@ -1,12 +1,12 @@
 <?php
 /**
  * @file LTutor.php Contains the LTutor class
- *
+ * 
  * @author Peter Koenig
  * @author Christian Elze
- * @author Martin Daute
+ * @author Martin Daute 
  */
-
+ 
 require '../Include/Slim/Slim.php';
 include '../Include/Request.php';
 include_once( '../Include/CConfig.php' );
@@ -19,17 +19,17 @@ include_once( '../Include/CConfig.php' );
  * This class handles everything belongs to TutorAssignments
  */
 class LTutor
-{
+{    
     /**
      * @var Component $_conf the component data object
      */
     private $_conf=null;
-
+    
     /**
      * @var string $_prefix the prefix, the class works with
      */
     private static $_prefix = "tutor";
-
+    
     /**
      * the $_prefix getter
      *
@@ -49,7 +49,7 @@ class LTutor
     {
         LTutor::$_prefix = $value;
     }
-
+    
     /**
      * @var string $lURL the URL of the logic-controller
      */
@@ -58,47 +58,50 @@ class LTutor
     /**
      * REST actions
      *
-     * This function contains the REST actions with the assignments to
+     * This function contains the REST actions with the assignments to 
      * the functions.
      *
      * @param Component $conf component data
      */
     public function __construct($conf)
-    {
+    {    
         /**
          *Initialise the Slim-Framework
          */
         $this->app = new \Slim\Slim();
         $this->app->response->headers->set('Content-Type', 'application/json');
-
+        
         /**
          *Set the Logiccontroller-URL
          */
         $this->_conf = $conf;
         $this->query = array();
         $this->query = CConfig::getLink($conf->getLinks(),"controller");
-
+        
         // initialize lURL
         $this->lURL = $this->query->getAddress();
-
+        
         //Set auto allocation by exercise
         $this->app->post('/'.$this->getPrefix().
-            '/auto/exercise/course/:courseid/exercisesheet/:sheetid(/)',
+            '/auto/exercise/course/:courseid/exercisesheet/:sheetid(/)', 
                 array($this, 'autoAllocateByExercise'));
-
+        
         //Set auto allocation by group
         $this->app->post('/'.$this->getPrefix().
-            '/auto/group/course/:courseid/exercisesheet/:sheetid(/)',
+            '/auto/group/course/:courseid/exercisesheet/:sheetid(/)', 
                 array($this, 'autoAllocateByGroup'));
-
+        
         //Get zip
         $this->app->get('/'.$this->getPrefix().'/user/:userid/exercisesheet/:sheetid(/)',
                 array($this, 'getZip'));
-
+                
+        //uploadZip
+        $this->app->post('/'.$this->getPrefix().'/user/:userid/exercisesheet/:sheetid(/)', array($this, 'uploadZip'));
+        
         //run Slim
         $this->app->run();
     }
-
+    
     /**
      * Function to auto allocate exercises to tutors
      *
@@ -109,9 +112,9 @@ class LTutor
      */
     public function autoAllocateByExercise($courseid, $sheetid){
         $header = $this->app->request->headers->all();
-        $body = json_decode($this->app->request->getBody());
+        $body = json_decode($this->app->request->getBody());        
         $URL = $this->lURL.'/DB/marking';
-
+        
         $tutors = $body['tutors'];
         $submissions = array();
         foreach($body['unassigned'] as $submission){
@@ -143,17 +146,17 @@ class LTutor
             }
 
         }
-
+        
         //requests to database
         foreach($markings as $marking){
             $answer = Request::custom('POST', $URL, $header,
                     json_encode($marking));
         }
-
+        
         $URL = $this->lURL.'/getsite/tutorassignment/course/'
                         .$courseid.'/exercisesheet/'.$sheetid;
         $answer = Request::custom('GET', $URL, $header, "");
-
+        
         $this->app->response->setBody($answer['content']);
     }
 
@@ -166,11 +169,11 @@ class LTutor
      * @param $sheetid an integer identifies the exercisesheet
      */
     public function autoAllocateByGroup($courseid, $sheetid){
-
+        
         $header = $this->app->request->headers->all();
-        $body = json_decode($this->app->request->getBody(), true);
+        $body = json_decode($this->app->request->getBody(), true);        
         $URL = $this->lURL.'/DB/marking';
-
+        
         $tutors = $body['tutors'];
         $submissions = array();
         foreach($body['unassigned'] as $submission){
@@ -199,22 +202,22 @@ class LTutor
             } else {
                 $i = 0;
             }
-
+            
         }
-
+        
         //requests to database
         foreach($markings as $marking){
-            $answer = Request::custom('POST', $URL, $header,
+            $answer = Request::custom('POST', $URL, $header, 
                     json_encode($marking));
         }
-
+        
         $URL = $this->lURL.'/getsite/tutorassignment/course/'
                     .$courseid.'/exercisesheet/'.$sheetid;
         $answer = Request::custom('GET', $URL, $header, "");
-
+        
         $this->app->response->setBody($answer['content']);
     }
-
+    
     /**
      * Function to get a zip with csv
      *
@@ -228,7 +231,7 @@ class LTutor
     public function getZip($userid, $sheetid){
         $header = $this->app->request->headers->all();
         $body = json_decode($this->app->request->getBody());
-
+       
         $URL = $this->lURL.'/DB/marking/exercisesheet/'.$sheetid.'/tutor/'.$userid;
         //request to database to get the markings
         $answer = Request::custom('GET', $URL, $header,"");
@@ -246,7 +249,8 @@ class LTutor
         $sortedMarkings = array();
         $rows = array();
         $exerciseIdWithExistingMarkings = array();
-
+        $namesOfExercises = array();
+        
         //exercises with informations of marking and submissions
         //sorted by exercise ID and checked of existence
         foreach( $markings as $marking){
@@ -257,20 +261,24 @@ class LTutor
                 $exerciseIdWithExistingMarkings[] = $id;
             }
         }
-
+        
         //formating, create the layout of the CSV-file for the tutor
-        //first two rows of an exercise are the heads of the table
+        //first two rows of an exercise are the heads of the table           
         foreach ($exercises as $exercise){
             $firstRow = array();
             $secondRow = array();
             $row = array();
-
+            
             if ($exercise != $exercise['link']){
                 $count++;
                 $firstRow[] = 'Aufgabe '.$count;
+                $int = $exercise['id'];
+                $namesOfExercises[$int] = 'Aufgabe '.$count;
                 $subtask = 0;
             }else{
                 $firstRow[] = 'Aufgabe '.$count.$alphabet[$subtask];
+                $int = $exercise['id'];
+                $namesOfExercises[$int] = 'Aufgabe '.$count.$alphabet[$subtask];
                 $subtask++;
             }
             $firstRow[] = $exercise['id'];
@@ -284,19 +292,44 @@ class LTutor
 
             $rows[] = $firstRow;
             $rows[] = $secondRow;
-
+            
             //formating, write known informations of the markings in the CSV-file
             //after the second row to each exercise
             if(in_array($exercise['id'], $exerciseIdWithExistingMarkings)){
                 foreach($sortedMarkings[$exercise['id']] as $marking){
+                    $row = array();
+                    //MarkingId
                     $row[] = $marking['id'];
-                    $row[] = "";
+                    //Points
+                    if(array_key_exists('points', $marking)) { 
+                        $row[] = $marking['points'];
+                    }else {
+                        $row[] = "";
+                    }
+                    //MaxPoints
                     $row[] = $exercise['maxPoints'];
-                    $row[] = "";
-                    $row[] = 0;
-                    $row[] = "";
+                    //Outstanding
+                    if(array_key_exists('outstanding', $marking)) { 
+                        $row[] = $marking['outstanding'];
+                    }else {
+                        $row[] = "";
+                    }
+                    //Status
+                    if(array_key_exists('status', $marking)) { 
+                        $row[] = $marking['status'];
+                    }else {
+                        $row[] = 0;
+                    }
+                    //TutorComment
+                    if(array_key_exists('tutorComment', $marking)) { 
+                        $row[] = $marking['tutorComment'];
+                    }else {
+                        $row[] = "";
+                    }
+                    //StudentComment
                     $submission = $marking['submission'];
                     $row[] = $submission['comment'];
+                    
                     $rows[] = $row;
                 }
             }
@@ -309,19 +342,20 @@ class LTutor
         $URL = $this->lURL.'/DB/user/user/'.$userid;
         $answer = Request::custom('GET', $URL, $header, "");
         $user = json_decode($answer['content'], true);
-
+        
+		
 		$this->deleteDir("./csv");
 		mkdir("./csv");
 
         //this is the true writing of the CSV-file named [tutorname]_[sheetid].csv
         $CSV = fopen('./csv/'.$user['lastName'].'_'.$sheetid.'.csv', 'w');
-
+        
         foreach($rows as $row){
             fputcsv($CSV, $row, ';');
         }
-
+        
         fclose($CSV);
-
+        
         //Create Zip
         $filesToZip = array();
         //Push all SubmissionFiles to an array in order of exercises
@@ -333,8 +367,8 @@ class LTutor
                                             $marking['submission']['id'];
                     //request to database to get the submission file
                     $answer = Request::custom('GET', $URL, $header,"");
-                    $submission = json_decode($answer['content'], true);
-
+                    $submission = json_decode($answer['content'], true);                
+                    
                     //$submission['file'] = array(
                     //            'fileId' => 8,
                     //            'displayName' => "test.pdf",
@@ -344,15 +378,15 @@ class LTutor
                     //            'hash' => 'AFD1S65G4F1A34FWEA',
                     //            );
                     $newfile = $submission['file'];
-
-                    $newfile['displayName'] =
+    
+                    $newfile['displayName'] = 
                         $namesOfExercises[$exerciseId].'/'.$marking['id'];
                     if ($newfile['fileId'] > 2){            //inkonsistente DB-FS-Verlinkungen
                         $filesToZip[] = $newfile;}
                 }
             }
         }
-
+        
         //push the .csv-file to the array
         $path = './csv/'.$user['lastName'].'_'.$sheetid.'.csv';
         $csvFile = array(
@@ -360,34 +394,34 @@ class LTutor
                     'body' => base64_encode(file_get_contents($path))
                 );
         $filesToZip[] = $csvFile;
-
-
+        
+        
         $URL = $this->lURL.'/FS/zip';
         //request to filesystem to create the Zip-File
         $answer = Request::custom('POST', $URL, $header,json_encode($filesToZip));
-        $zipFile = json_decode($answer['content'], true);
-
+        $zipFile = json_decode($answer['content'], true); 
+        
         $URL = $this->lURL.'/FS/'.$zipFile['address'].'/'.$userid.'_'.$sheetid.'.zip';
         //request to filesystem to get the created Zip-File
         $answer = Request::custom('GET', $URL, $header,json_encode($filesToZip));
-
+        
         $this->app->response->headers->set('Content-Type', 'application/zip');
         $this->app->response->headers->set('Content-Disposition', $answer['headers']['Content-Disposition']);
-        $this->app->response->setBody($answer['content']);
+        $this->app->response->setBody(json_encode($answer['content']));
     }
 
     public function uploadZip($userid, $sheetid){
         $header = $this->app->request->headers->all();
         $body = json_decode($this->app->request->getBody(), true); //1 file-Object
-
+        
         $URL = 'http://141.48.9.92/uebungsplattform/DB/DBUser/user/'.$userid;
         //request to database to get the tutor
         $answer = Request::custom('GET', $URL, $header,"");
-        $user = json_decode($answer['content'], true);
-
+        $user = json_decode($answer['content'], true); 
+        
         $filename = $user['userName'].'.zip';
         file_put_contents($filename, base64_decode($body['body']));
-
+        
         $zip = new ZipArchive();
         $zip->open($filename);
         $zip->extractTo('./'.$userid.'/');
@@ -403,12 +437,12 @@ class LTutor
                         'displayName' => $exerciseName.'_'.$row[0],
                         'body' => base64_encode($fileBody),
                         );
-
+                
                 $URL = $this->lURL.'/FS/file';
                 //request to filesystem to save the marking file
                 $answer = Request::custom('POST', $URL, $header,json_encode($file));
                 $markingFile = json_decode($answer['content'], true);
-
+                
                 $marking = array(
                         'id' => $row[0],
                         'points' => $row[1],
@@ -418,20 +452,20 @@ class LTutor
                         'file' => $markingFile['address'],
                         'status' => $row[4],
                         );
-
+                        
                  $URL = $this->lURL.'/DB/marking/'.$marking['id'];
                 //request to database to edit the marking
                 $answer = Request::custom('PUT', $URL, $header,json_encode($marking));
             }
         }
         fclose($csv);
-
+        
     }
-
+	
 	/**
 	* Delete hole directory inclusiv files and dirs
 	*
-	* @param string $path
+	* @param string $path 
 	* @return boolean
 	*/
 	public function deleteDir($path)
@@ -444,17 +478,17 @@ class LTutor
 			}
 			return rmdir($path);
 		}
-
+		
 		// Datei entfernen
 		else if (is_file($path) === true) {
 			return unlink($path);
 		}
 		return false;
-	}
-
+	}  
+    
 }
 /**
- * get new Config-Datas from DB
+ * get new Config-Datas from DB 
  */
 $com = new CConfig(LTutor::getPrefix());
 
