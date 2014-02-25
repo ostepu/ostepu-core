@@ -4,8 +4,9 @@
  *
  * @author Till Uhlig
  */ 
-include_once( 'Request/CreateRequest.php' );   
-include_once( 'Request/MultiRequest.php' );   
+include_once( dirname(__FILE__) . '/Request/CreateRequest.php' );   
+include_once( dirname(__FILE__) . '/Request/MultiRequest.php' );   
+include_once( dirname(__FILE__) . '/Logger.php' );
 
 /**
  * the Request class offers functions to get results of POST,GET,PUT.DELETE and 
@@ -56,6 +57,7 @@ class Request
      */
     public static function custom($method, $target, $header,  $content)
     {
+        $begin = microtime(true);
         // creates a custom request
         $ch = Request_CreateRequest::createCustom($method,$target,$header,$content);
         $content = curl_exec($ch);
@@ -74,7 +76,8 @@ class Request
         // sets the received status code
         $result['status'] = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         
-        curl_close($ch); 
+        curl_close($ch);
+        Logger::Log($target . ' ' . (round((microtime(true) - $begin),2)). 's', LogLevel::DEBUG, "/var/www/uebungsplattform/laufzeit.log");
         return $result; 
     }
        

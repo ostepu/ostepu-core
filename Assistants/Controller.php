@@ -5,9 +5,9 @@
  * @author Till Uhlig
  */ 
 
-//require_once('Slim/Slim.php');
-include_once('Structures.php');
-include_once('Request.php');
+require_once(dirname(__FILE__) . '/Slim/Slim.php');
+include_once(dirname(__FILE__) . '/Structures.php');
+include_once(dirname(__FILE__) . '/Request.php');
 
 \Slim\Slim::registerAutoloader();
    
@@ -126,9 +126,9 @@ class Controller
                     $this->_app->stop();
                     return;
                 }
-                elseif ($ch['status'] == 401){
+                elseif ($ch['status'] == 401 || $ch['status'] == 404 || $ch['status'] == 406){
                     $this->_app->response->setStatus($ch['status']);
-                    $this->_app->response->setBody("");
+                    $this->_app->response->setBody($ch['content']);
                     if (isset($ch['headers']['Content-Type']))
                         $this->_app->response->headers->set('Content-Type', 
                                             $ch['headers']['Content-Type']);
@@ -177,9 +177,9 @@ class Controller
                 $this->_app->stop();
                 return;
             }
-            elseif ($ch['status'] == 401){
+            elseif ($ch['status'] == 401 || $ch['status'] == 404 || $ch['status'] == 406){
                 $this->_app->response->setStatus($ch['status']);
-                $this->_app->response->setBody("");
+                $this->_app->response->setBody($ch['content']);
                 if (isset($ch['headers']['Content-Type']))
                     $this->_app->response->headers->set('Content-Type', 
                                         $ch['headers']['Content-Type']);

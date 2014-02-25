@@ -1,17 +1,17 @@
 <?php 
 /**
- * @file ExerciseType.php contains the ExerciseType class
+ * @file ExerciseFileType.php contains the ExerciseFileType class
  */
  
 /**
- * the exercise type structure
+ * the exercise file type structure
  *
  * @author Till Uhlig
  */
-class ExerciseType extends Object implements JsonSerializable
+class ExerciseFileType extends Object implements JsonSerializable
 {
     /**
-     * db id of the exercise type 
+     * db id of the exercise file type 
      *
      * type: string
      */
@@ -40,45 +40,76 @@ class ExerciseType extends Object implements JsonSerializable
     
     
     /**
-     * the exercise type name
+     * the mime type 
      *
      * type: string
      */
-    private $name = null;
+    private $text = null;
     
     /**
-     * the $name getter
+     * the $text getter
      *
      * @return the value of $name
      */ 
-    public function getName()
+    public function getText()
     {
-        return $this->name;
+        return $this->text;
     }
     
     /**
-     * the $name setter
+     * the $text setter
      *
-     * @param string $value the new value for $name
+     * @param string $value the new value for $text
      */ 
-    public function setName($value)
+    public function setText($value)
     {
-        $this->name = $value;
+        $this->text = $value;
+    }
+    
+    
+     /**
+     * the exercise id
+     *
+     * type: string
+     */
+    private $exerciseId = null;
+    
+    /**
+     * the $exerciseId getter
+     *
+     * @return the value of $name
+     */ 
+    public function getExerciseId()
+    {
+        return $this->exerciseId;
     }
     
     /**
-     * Creates an ExerciseType object, for database post(insert) and put(update).
+     * the $exerciseId setter
+     *
+     * @param string $value the new value for $exerciseId
+     */ 
+    public function setExerciseId($value)
+    {
+        $this->exerciseId = $value;
+    }
+    
+    
+    /**
+     * Creates an ExerciseFileType object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
      *
-     * @param string $typeid The id of the exercise type.
-     * @param string $name The name of the exercise type.
+     * @param string $typeid The id of the exercise file type.
+     * @param string $text The text which specifies the mime type of the file.
+     * @param string $exerciseId The exercise id.
      *
      * @return an exercise type object
      */
-    public static function createExerciseType($typeid,$name)
+    public static function createExerciseFileType($typeid,$name,$exerciseId)
     {
-        return new ExerciseType(array('id' => $typeid,
-        'name' => $name));
+        return new ExerciseFileType(array('id' => $typeid,
+        'text' => $text,
+        'exerciseId' => $exerciseId));
     }
     
     /**
@@ -103,8 +134,10 @@ class ExerciseType extends Object implements JsonSerializable
     public static function getDbConvert()
     {
         return array(
-           'ET_id' => 'id',
-           'ET_name' => 'name'
+           'EFT_id' => 'id',
+           'EFT_text' => 'text',
+           'E_id' => 'exerciseId'
+           
         );
     }
     
@@ -117,8 +150,9 @@ class ExerciseType extends Object implements JsonSerializable
     {
         $values = "";
         
-        if ($this->id != null) $this->addInsertData($values, 'ET_id', DBJson::mysql_real_escape_string($this->id));
-        if ($this->name != null) $this->addInsertData($values, 'ET_name', DBJson::mysql_real_escape_string($this->name));
+        if ($this->id != null) $this->addInsertData($values, 'EFT_id', DBJson::mysql_real_escape_string($this->id));
+        if ($this->text != null) $this->addInsertData($values, 'EFT_text', DBJson::mysql_real_escape_string($this->text));
+        if ($this->exerciseId != null) $this->addInsertData($values, 'E_id', DBJson::mysql_real_escape_string($this->exerciseId));
         
         if ($values != ""){
             $values=substr($values,1);
@@ -133,7 +167,7 @@ class ExerciseType extends Object implements JsonSerializable
      */
     public static function getDbPrimaryKey()
     {
-        return 'ET_id';
+        return 'EFT_id';
     }
     
     /**
@@ -143,7 +177,7 @@ class ExerciseType extends Object implements JsonSerializable
      *
      * @return the json encoded object
      */
-    public static function encodeExerciseType($data)
+    public static function encodeExerciseFileType($data)
     {
         return json_encode($data);
     }
@@ -157,7 +191,7 @@ class ExerciseType extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeExerciseType($data, $decode=true)
+    public static function decodeExerciseFileType($data, $decode=true)
     {
         if ($decode && $data==null) 
             $data = "{}";
@@ -167,11 +201,11 @@ class ExerciseType extends Object implements JsonSerializable
         if (is_array($data)){
             $result = array();
             foreach ($data AS $key => $value) {
-                array_push($result, new ExerciseType($value));
+                array_push($result, new ExerciseFileType($value));
             }
             return $result;   
         } else
-            return new ExerciseType($data);
+            return new ExerciseFileType($data);
     }
 
     /**
@@ -183,17 +217,18 @@ class ExerciseType extends Object implements JsonSerializable
     {
         $list = array();
         if ($this->id!==null) $list['id'] = $this->id;
-        if ($this->name!==null) $list['name'] = $this->name;
+        if ($this->text!==null) $list['text'] = $this->text;
+        if ($this->exerciseId!==null) $list['exerciseId'] = $this->exerciseId;
         return $list;
     }
     
-    public static function ExtractExerciseType($data, $singleResult = false)
+    public static function ExtractExerciseFileType($data, $singleResult = false)
     {
-            // generates an assoc array of an exercise type by using a defined 
+            // generates an assoc array of an exercise file type by using a defined 
             // list of its attributes
             $res = DBJson::getResultObjectsByAttributes($data, 
-                                        ExerciseType::getDBPrimaryKey(), 
-                                        ExerciseType::getDBConvert()); 
+                                        ExerciseFileType::getDBPrimaryKey(), 
+                                        ExerciseFileType::getDBConvert()); 
             
             // to reindex
             $res = array_merge($res);

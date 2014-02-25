@@ -211,5 +211,37 @@ class Attachment extends Object implements JsonSerializable
         if ($this->file!==null) $list['file'] = $this->file;
         return $list;  
     }
+    
+    public static function ExtractAttachment($data, $singleResult = false)
+    {
+            // generates an assoc array of files by using a defined list of 
+            // its attributes
+            $files = DBJson::getObjectsByAttributes($data, 
+                                    File::getDBPrimaryKey(), 
+                                    File::getDBConvert());
+            
+            // generates an assoc array of attachments by using a defined list of 
+            // its attributes
+            $attachments = DBJson::getObjectsByAttributes($data, 
+                                    Attachment::getDBPrimaryKey(), 
+                                    Attachment::getDBConvert());
+            
+            // concatenates the attachments and the associated files
+            $res = DBJson::concatObjectListsSingleResult($data, 
+                        $attachments,Attachment::getDBPrimaryKey(), 
+                        Attachment::getDBConvert()['F_file'], 
+                        $files,File::getDBPrimaryKey());              
+            
+            // to reindex
+            $res = array_merge($res);
+            
+            if ($singleResult==true){
+                // only one object as result
+                if (count($res)>0)
+                    $res = $res[0]; 
+            }
+                
+            return $res;
+    }
 }
 ?>

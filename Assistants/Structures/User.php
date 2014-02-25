@@ -367,6 +367,64 @@ class User extends Object implements JsonSerializable
     {
         $this->studentNumber = $value;
     }
+    
+    
+    
+    /**
+     * @var string $isSuperAdmin is this user a super-admin
+     */
+    private $isSuperAdmin = null;
+    
+    /**
+     * the $isSuperAdmin getter
+     *
+     * @return the value of $isSuperAdmin
+     */ 
+    public function getIsSuperAdmin()
+    {
+        return $this->isSuperAdmin;
+    }
+    
+    /**
+     * the $isSuperAdmin setter
+     *
+     * @param string $value the new value for $isSuperAdmin
+     */ 
+    public function setIsSuperAdmin($value)
+    {
+        $this->isSuperAdmin = $value;
+    }
+    
+    
+    
+    
+    /**
+     * @var string $comment the user comment
+     */
+    private $comment = null;
+    
+    /**
+     * the $comment getter
+     *
+     * @return the value of $comment
+     */ 
+    public function getComment()
+    {
+        return $this->comment;
+    }
+    
+    /**
+     * the $comment setter
+     *
+     * @param string $value the new value for $comment
+     */ 
+    public function setComment($value)
+    {
+        $this->comment = $value;
+    }
+    
+    
+    
     /**
      * Creates an User object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -383,11 +441,13 @@ class User extends Object implements JsonSerializable
      * @param string $failedLogins The failed logins counter.
      * @param string $externalId The external ID.
      * @param string $studentNumber The student number.
+     * @param string $isSuperAdmin The super admin flag.  
+     * @param string $comment The user comment.  
      *
      * @return an user object
      */
     public static function createUser($userId,$userName,$email,$firstName,$lastName,
-                                $title,$flag,$password,$salt,$failedLogins,$externalId=null,$studentNumber=null)
+                                $title,$flag,$password,$salt,$failedLogins,$externalId=null,$studentNumber=null,$isSuperAdmin=null,$comment="")
     {
         return new User(array('id' => $userId,
         'userName' => $userName,
@@ -399,8 +459,10 @@ class User extends Object implements JsonSerializable
         'password' => $password, 
         'salt' => $salt, 
         'failedLogins' => $failedLogins,
-        'externalId' => $externalId
-        ,'studentNumber' => $studentNumber));
+        'externalId' => $externalId,
+        'studentNumber' => $studentNumber,
+        'isSuperAdmin' => $isSuperAdmin,
+        'comment' => $comment));
     }
     
     /**
@@ -439,7 +501,9 @@ class User extends Object implements JsonSerializable
            'U_salt' => 'salt',
            'U_failed_logins' => 'failedLogins',
            'U_studentNumber' => 'studentNumber',
-           'U_externalId' => 'externalId'
+           'U_externalId' => 'externalId',
+           'U_isSuperAdmin' => 'isSuperAdmin',
+           'U_comment' => 'comment'
         );
     }
        
@@ -464,6 +528,8 @@ class User extends Object implements JsonSerializable
         if ($this->failedLogins != null) $this->addInsertData($values, 'U_failed_logins', DBJson::mysql_real_escape_string($this->failedLogins));
         if ($this->externalId != null) $this->addInsertData($values, 'U_externalId', DBJson::mysql_real_escape_string($this->externalId));
         if ($this->studentNumber != null) $this->addInsertData($values, 'U_studentNumber', DBJson::mysql_real_escape_string($this->studentNumber));
+        if ($this->isSuperAdmin != null) $this->addInsertData($values, 'U_isSuperAdmin', DBJson::mysql_real_escape_string($this->isSuperAdmin));
+        if ($this->comment != null) $this->addInsertData($values, 'U_comment', DBJson::mysql_real_escape_string($this->comment));
         
         if ($values != ""){
             $values=substr($values,1);
@@ -592,7 +658,100 @@ class User extends Object implements JsonSerializable
         if ($this->failedLogins!==null) $list['failedLogins'] = $this->failedLogins;
         if ($this->externalId!==null) $list['externalId'] = $this->externalId;
         if ($this->studentNumber!==null) $list['studentNumber'] = $this->studentNumber;
+        if ($this->isSuperAdmin!==null) $list['isSuperAdmin'] = $this->isSuperAdmin;
+        if ($this->comment!==null) $list['comment'] = $this->comment;
         return $list;
+    }
+    
+    public static function ExtractUser($data, $singleResult = false)
+    {
+            // generates an assoc array of users by using a defined list of its 
+            // attributes
+            $users = DBJson::getObjectsByAttributes($data, 
+                                    User::getDBPrimaryKey(), 
+                                    User::getDBConvert());
+            
+            // generates an assoc array of course stats by using a defined list of 
+            // its attributes
+            $courseStatus = DBJson::getObjectsByAttributes($data, 
+                                CourseStatus::getDBPrimaryKey(), 
+                                CourseStatus::getDBConvert());
+
+            // generates an assoc array of courses by using a defined list of 
+            // its attributes
+            $courses = DBJson::getObjectsByAttributes($data, 
+                                                    Course::getDBPrimaryKey(), 
+                                                    Course::getDBConvert());
+           
+            // concatenates the course stats and the associated courses
+            $res = DBJson::concatObjectListsSingleResult($data, 
+                                    $courseStatus,
+                                    CourseStatus::getDBPrimaryKey(),
+                                    CourseStatus::getDBConvert()['CS_course'], 
+                                    $courses,Course::getDBPrimaryKey());              
+
+            // concatenates the users and the associated course stats
+            $res = DBJson::concatResultObjectLists($data, 
+                                $users,
+                                User::getDBPrimaryKey(),
+                                User::getDBConvert()['U_courses'],
+                                $res,CourseStatus::getDBPrimaryKey());     
+            //  to reindex
+            //$res = array_merge($res);
+ 
+            if ($singleResult){
+                // only one object as result
+                if (count($res)>0)
+                    $res = $res[0];    
+            }   
+               
+            return $res;
+    }
+    
+    public static function ExtractCourseStatus($data, $singleResult = false)
+    {
+            // generates an assoc array of a user by using a defined list of its 
+            // attributes
+            $user = DBJson::getObjectsByAttributes($data, 
+                                    User::getDBPrimaryKey(), 
+                                    User::getDBConvert());
+            
+            // generates an assoc array of course stats by using a defined list of 
+            // its attributes
+            $courseStatus = DBJson::getObjectsByAttributes($data, 
+                                CourseStatus::getDBPrimaryKey(), 
+                                CourseStatus::getDBConvert());
+            
+            // generates an assoc array of courses by using a defined list of 
+            // its attributes
+            $courses = DBJson::getObjectsByAttributes($data, 
+                                                    Course::getDBPrimaryKey(), 
+                                                    Course::getDBConvert());
+                                
+            // concatenates the course stats and the associated courses
+            $res = DBJson::concatObjectListsSingleResult($data, 
+                                    $courseStatus,
+                                    CourseStatus::getDBPrimaryKey(),
+                                    CourseStatus::getDBConvert()['CS_course'], 
+                                    $courses,Course::getDBPrimaryKey());              
+
+            // concatenates the users and the associated course stats
+            $res = DBJson::concatResultObjectLists($data, 
+                                $user,
+                                User::getDBPrimaryKey(),
+                                User::getDBConvert()['U_courses'],
+                                $res,CourseStatus::getDBPrimaryKey()); 
+                                //  to reindex
+            //$res = array_merge($res);
+
+            
+            if ($singleResult==true){
+                // only one object as result
+                if (count($res)>0)
+                    $res = $res[0]; 
+            }
+                
+            return $res;
     }
 }
 ?>
