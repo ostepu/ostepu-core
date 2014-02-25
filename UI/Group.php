@@ -288,6 +288,11 @@ if (isset($_POST['action'])) {
             $RequestError = true;
         }
 
+        // deletes all selectedSubmissions
+        if (!removeSelectedSubmission($uid, $sid)) {
+            $RequestError = true;
+        }
+
         // shows notification
         if ($RequestError == false) {
             $notifications[] = MakeNotification("success", "Sie haben die Einladung angenommen.");
