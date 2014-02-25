@@ -15,6 +15,11 @@
     <div class="content-body-wrapper">
         <div class="content-body left">
             <?php if ($isInGroup): ?>
+            <div class="content-description">
+                Achtung: Wenn Sie die Gruppe verlassen, werden Ihre bisherigen Einsendungen gelöscht.
+            </div>
+            <?php endif; ?>
+            <?php if ($isInGroup): ?>
                 <ol class="exercise-list invitation-list">
                 <?php
                     // prints group leader

@@ -11,15 +11,10 @@
 include_once 'include/Boilerplate.php';
 
 /**
- * @todo Create "remove all submissions" function.
- */
-
-/**
  * Removes a user from a group.
  *
  * @param $uid The id of the user that is being removed
  * @param $sid The id of the sheet
- * @param $databaseURI The URI of the database
  */
 function removeUserFromGroup($uid, $sid)
 {
@@ -36,17 +31,49 @@ function removeUserFromGroup($uid, $sid)
     }
 }
 
+/**
+ * Removes all selectedSubmissions of a user regarding
+ * a particular sheet.
+ *
+ * @param $uid The id of the user
+ * @param $sid The id of the sheet
+ */
+function removeSelectedSubmission($uid, $sid)
+{
+    global $databaseURI;
+
+    $URI = $databaseURI . "/selectedsubmission/user/{$uid}/exercisesheet/{$sid}";
+    http_delete($URI, true, $message);
+
+    if ($message == "201") {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 if (isset($_POST['action'])) {
     // removes a group member
     if ($_POST['action'] == "RemoveGroupMember" && isset($_POST['removeMember'])) {
         // extracts the member that is being removed
         $userID = cleanInput($_POST['removeMember']);
 
+        // bool which is true if any error occured
+        $RequestError = false;
+
         // removes the user from the group
         if (removeUserFromGroup($userID, $sid)) {
-            $notifications[] = MakeNotification("success", "Der Nutzer wurde aus der Gruppe entfernt.");
+            if (!removeSelectedSubmission($member['id'], $sid)) {
+                $RequestError = true;
+            }
         } else {
+            $RequestError = true;
+        }
+
+        if ($RequestError) {
             $notifications[] = MakeNotification("error", "Beim Entfernen ist ein Fehler aufgetreten.");
+        } else {
+            $notifications[] = MakeNotification("success", "Der Nutzer wurde aus der Gruppe entfernt.");
         }
     }
 
@@ -100,23 +127,25 @@ if (isset($_POST['action'])) {
                 }
             }
 
-            // removes all users from the group
+            // removes all members from the group
             if (!empty($group)) {
-                // removes all members
                 if (!empty($group['members'])) {
                     foreach ($group['members'] as $member) {
                         if (!removeUserFromGroup($member['id'], $sid)) {
+                            $RequestError = true;
+                        }
+                        if (!removeSelectedSubmission($member['id'], $sid)) {
                             $RequestError = true;
                         }
                     }
                 }
 
                 // shows notification
-                if ($RequestError == false) {
-                    $notifications[] = MakeNotification("success", "Sie haben die Gruppe verlassen.");
+                if ($RequestError) {
+                    $notifications[] = MakeNotification("error", "Beim Verlassen ist ein Fehler aufgetreten!");
                 }
                 else {
-                    $notifications[] = MakeNotification("error", "Beim Verlassen ist ein Fehler aufgetreten!");
+                    $notifications[] = MakeNotification("success", "Sie haben die Gruppe verlassen.");
                 }
 
             } else {
@@ -124,10 +153,24 @@ if (isset($_POST['action'])) {
             }
 
         } else {
+            // bool which is true if any error occured
+            $RequestError = false;
+
+            // removes the user from the group
             if (removeUserFromGroup($uid, $sid)) {
-                $notifications[] = MakeNotification("success", "Sie haben die Gruppe verlassen.");
+                if (!removeSelectedSubmission($uid, $sid)) {
+                    $RequestError = true;
+                }
             } else {
+                $RequestError = true;
+                $notifications[] = MakeNotification("error", "Fehler else.");
+            }
+
+            // shows notification
+            if ($RequestError) {
                 $notifications[] = MakeNotification("error", "Beim Verlassen ist ein Fehler aufgetreten.");
+            } else {
+                $notifications[] = MakeNotification("success", "Sie haben die Gruppe verlassen.");
             }
         }
     }
