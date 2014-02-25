@@ -102,11 +102,6 @@ if (isset($_POST['action'])) {
 
             // removes all users from the group
             if (!empty($group)) {
-                // removes leader
-                if (!removeUserFromGroup($group['leader']['id'], $sid)) {
-                    $RequestError = true;
-                }
-
                 // removes all members
                 if (!empty($group['members'])) {
                     foreach ($group['members'] as $member) {
@@ -255,14 +250,8 @@ $groupMembers = Template::WithTemplateFile('include/Group/GroupMembers.template.
 $groupMembers->bind($group_data);
 
 // construct a content element for managing groups
-if ($isInGroup && $isLeader) {
-    $manageGroup = Template::WithTemplateFile('include/Group/ManageGroup.template.html');
-    $manageGroup->bind($group_data);
-} elseif ($isInGroup) {
-    /**
-     * @todo Construct a different page for the members
-     */
-}
+$manageGroup = Template::WithTemplateFile('include/Group/ManageGroup.template.html');
+$manageGroup->bind($group_data);
 
 // construct a content element for creating groups
 if ($isLeader) {
