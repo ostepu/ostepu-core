@@ -285,9 +285,9 @@ class DBSelectedSubmission
      * @param string $userid The id or the user which leads the group.
      * @param int $esid The id of the exercise sheet.
      */
-    public function DeleteUserSheetSubmission($userid, $esid)
+    public function deleteUserSheetSelectedSubmission($userid, $esid)
     {
-        Logger::Log("starts DELETE DeleteUserSheetSubmission",LogLevel::DEBUG);
+        Logger::Log("starts DELETE DeleteUserSheetSelectedSubmission",LogLevel::DEBUG);
         
         // checks whether incoming data has the correct data type
         DBJson::checkInput($this->_app, 
@@ -296,7 +296,7 @@ class DBSelectedSubmission
                             
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/DeleteUserSheetSubmission.sql", 
+                                        "Sql/DeleteUserSheetSelectedSubmission.sql", 
                                         array("userid" => $userid,"esid" => $esid));    
         
         // checks the correctness of the query                          
@@ -307,7 +307,7 @@ class DBSelectedSubmission
                 $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
                 
         } else{
-            Logger::Log("DELETE DeleteUserSheetSubmission failed",LogLevel::ERROR);
+            Logger::Log("DELETE DeleteUserSheetSelectedSubmission failed",LogLevel::ERROR);
                 $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->stop();
         }
