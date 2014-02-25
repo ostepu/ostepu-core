@@ -205,6 +205,34 @@ class File extends Object implements JsonSerializable
         $this->body = $value;
     }
     
+    
+    
+     /**
+     * @var string $comment a file comment
+     */
+    private $comment=null;
+    
+    /**
+     * the $comment getter
+     *
+     * @return the value of $comment
+     */ 
+    public function getComment()
+    {
+        return $this->body;
+    }
+    
+    /**
+     * the $comment setter
+     *
+     * @param string $value the new value for $comment
+     */ 
+    public function setComment($value)
+    {
+        $this->comment = $value;
+    }
+    
+    
     /**
      * Creates an File object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -215,17 +243,19 @@ class File extends Object implements JsonSerializable
      * @param string $timeStamp The time stamp.
      * @param string $fileSize The file size.
      * @param string $hash The hash.
-     *
+     * @param string $comment The file comment.
+     * 
      * @return an file object
      */
-    public static function createFile($fileId,$displayName,$address,$timeStamp,$fileSize,$hash)
+    public static function createFile($fileId,$displayName,$address,$timeStamp,$fileSize,$hash, $comment="")
     {
         return new File(array('fileId' => $fileId,
         'displayName' => $displayName,
         'address' => $address, 
         'timeStamp' => $timeStamp,
         'fileSize' => $fileSize, 
-        'hash' => $hash));
+        'hash' => $hash, 
+        'comment' => $comment));
     }
     
     /**
@@ -242,7 +272,8 @@ class File extends Object implements JsonSerializable
            'F_timeStamp' => 'timeStamp',
            'F_fileSize' => 'fileSize',
            'F_hash' => 'hash',
-           'F_body' => 'body'
+           'F_body' => 'body',
+           'F_comment' => 'comment'
         );
     }
     
@@ -261,6 +292,7 @@ class File extends Object implements JsonSerializable
         if ($this->timeStamp != null) $this->addInsertData($values, 'F_timeStamp', DBJson::mysql_real_escape_string($this->timeStamp));
         if ($this->fileSize != null) $this->addInsertData($values, 'F_fileSize', DBJson::mysql_real_escape_string($this->fileSize));
         if ($this->hash != null) $this->addInsertData($values, 'F_hash', DBJson::mysql_real_escape_string($this->hash));
+        if ($this->comment != null) $this->addInsertData($values, 'F_comment', DBJson::mysql_real_escape_string($this->comment));
         
         if ($values != ""){
             $values=substr($values,1);
@@ -347,7 +379,25 @@ class File extends Object implements JsonSerializable
         if ($this->fileSize!==null) $list['fileSize'] = $this->fileSize;
         if ($this->hash!==null) $list['hash'] = $this->hash;
         if ($this->body!==null) $list['body'] = $this->body;
+        if ($this->comment!==null) $list['comment'] = $this->comment;
         return $list; 
+    }
+    
+    public static function ExtractFile($data, $singleResult = false)
+    {
+            // generates an assoc array of files by using a defined list of 
+            // its attributes
+            $res = DBJson::getResultObjectsByAttributes($data, 
+                                        File::getDBPrimaryKey(), 
+                                        File::getDBConvert());
+            
+            if ($singleResult==true){
+                // only one object as result
+                if (count($res)>0)
+                    $res = $res[0]; 
+            }
+                
+            return $res;
     }
 }
 ?>

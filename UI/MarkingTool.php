@@ -13,10 +13,11 @@ if (isset($_POST['action'])) {
     if ($_POST['action'] == "ShowMarkingTool") {
         if (isset($_POST['sheetID']) && isset($_POST['tutorID']) && isset($_POST['statusID'])) {
             $sid = cleanInput($_POST['sheetID']);
-            
+
             if ($_POST['tutorID'] != "all") {
                 $tutorID = cleanInput($_POST['tutorID']);
             }
+
             if ($_POST['statusID'] != "all") {
                 $statusID = cleanInput($_POST['statusID']);
             }
@@ -42,8 +43,13 @@ $markingTool_data['filesystemURI'] = $filesystemURI;
 
 // adds the selected sheetID, tutorID and statusID
 $markingTool_data['sheetID'] = $sid;
-$markingTool_data['tutorID'] = $tutorID;
-$markingTool_data['statusID'] = $statusID;
+if (isset($tutorID)) {
+    $markingTool_data['tutorID'] = $tutorID;
+}
+
+if (isset($statusID)) {
+    $markingTool_data['statusID'] = $statusID;
+}
 
 $markingTool_data['URI'] = $URI;
 
@@ -54,8 +60,7 @@ $user_course_data = $markingTool_data['user'];
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
 $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
-               "notificationElements" => $notifications,
-               "navigationElement" => $menu));
+               "notificationElements" => $notifications));
 
 
 $searchSettings = Template::WithTemplateFile('include/MarkingTool/MarkingToolSettings.template.html');
