@@ -250,26 +250,26 @@ $groupMembers = Template::WithTemplateFile('include/Group/GroupMembers.template.
 $groupMembers->bind($group_data);
 
 // construct a content element for managing groups
-$manageGroup = Template::WithTemplateFile('include/Group/ManageGroup.template.html');
-$manageGroup->bind($group_data);
+$groupManagement = Template::WithTemplateFile('include/Group/GroupManagement.template.html');
+$groupManagement->bind($group_data);
 
 // construct a content element for creating groups
 if ($isLeader) {
-    $createGroup = Template::WithTemplateFile('include/Group/InviteGroup.template.html');
-    $createGroup->bind($group_data);
+    $invitationsFromGroup = Template::WithTemplateFile('include/Group/InvitationsFromGroup.template.html');
+    $invitationsFromGroup->bind($group_data);
 }
 
 // construct a content element for joining groups
 if ($hasInvitations) {
-    $invitations = Template::WithTemplateFile('include/Group/Invitations.template.html');
-    $invitations->bind($group_data);
+    $invitationsToGroup = Template::WithTemplateFile('include/Group/InvitationsToGroup.template.html');
+    $invitationsToGroup->bind($group_data);
 }
 
 // wrap all the elements in some HTML and show them on the page
-$w = new HTMLWrapper($h, $groupMembers, $manageGroup, $createGroup, $invitations);
+$w = new HTMLWrapper($h, $groupMembers, $groupManagement, $invitationsFromGroup, $invitationsToGroup);
 $w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, $groupMembers);
-$w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, $createGroup);
-$w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, $invitations);
+$w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, $invitationsFromGroup);
+$w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, $invitationsToGroup);
 $w->set_config_file('include/configs/config_group.json');
 $w->show();
 
