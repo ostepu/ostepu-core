@@ -226,6 +226,31 @@ class Exercise extends Object implements JsonSerializable
         $this->bonus = $value;
     }
     
+    
+    /**
+     * @var ExerciseFileType[] $fileTypes a set of exercise file types that belong to this exercise
+     */
+    private $fileTypes = array();
+    
+    /**
+     * the $fileTypes getter
+     *
+     * @return the value of $fileTypes
+     */ 
+    public function getFileTypes()
+    {
+        return $this->fileTypes;
+    }
+    
+    /**
+     * the $fileTypes setter
+     *
+     * @param ExerciseFileType[] $value the new value for $fileTypes
+     */
+    public function setFileTypes($value){
+        $this->fileTypes = $value;
+    }
+    
     /**
      * Creates an Exercise object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -268,7 +293,8 @@ class Exercise extends Object implements JsonSerializable
            'E_id_link' => 'link',
            'E_submissions' => 'submissions',
            'E_bonus' => 'bonus',
-           'E_attachments' => 'attachments'
+           'E_attachments' => 'attachments',
+           'E_fileTypes' => 'fileTypes'
         );
     }
     
@@ -317,6 +343,8 @@ class Exercise extends Object implements JsonSerializable
                     $this->{$key} = Submission::decodeSubmission($value, false);
                 }elseif ($key == 'attachments') {
                     $this->{$key} = File::decodeFile($value, false);
+                }elseif ($key == 'fileTypes') {
+                    $this->{$key} = ExerciseFileType::decodeExerciseFileType($value, false);
                 } else
                 $this->{$key} = $value;
             }
@@ -378,6 +406,7 @@ class Exercise extends Object implements JsonSerializable
         if ($this->submissions!==array() && $this->submissions!==null) $list['submissions'] = $this->submissions;
         if ($this->bonus!==null) $list['bonus'] = $this->bonus;
         if ($this->attachments!==array() && $this->attachments!==null) $list['attachments'] = $this->attachments;
+        if ($this->fileTypes!==array() && $this->fileTypes!==null) $list['fileTypes'] = $this->fileTypes;
         return $list;
     }
     
@@ -404,6 +433,13 @@ class Exercise extends Object implements JsonSerializable
                                     Submission::getDBConvert(),
                                     '2');
                                     
+            // generates an assoc array of exercise file types by using a defined 
+            // list of its attributes
+            $fileTypes = DBJson::getObjectsByAttributes($data,
+                                    ExerciseFileType::getDBPrimaryKey(), 
+                                    ExerciseFileType::getDBConvert());
+                                   
+                                    
             // sets the selectedForGroup attribute
             foreach ($submissions as &$submission){
                 if (isset($submission['selectedForGroup'])){
@@ -413,6 +449,9 @@ class Exercise extends Object implements JsonSerializable
                         unset($submission['selectedForGroup']);
                 }
             }        
+            
+            // concatenates the exercise and the associated filetypes
+            $exercise = DBJson::concatObjectListResult($data, $exercise, Exercise::getDBPrimaryKey(),Exercise::getDBConvert()['E_fileTypes'] ,$fileTypes,ExerciseFileType::getDBPrimaryKey());  
             
             // concatenates the exercise and the associated attachments
             $res = DBJson::concatObjectListResult($data, $exercise, Exercise::getDBPrimaryKey(),Exercise::getDBConvert()['E_attachments'] ,$attachments,File::getDBPrimaryKey());  
