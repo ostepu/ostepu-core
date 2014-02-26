@@ -332,7 +332,7 @@ class LgetSite
 
                 // add submission to exercise
                 if (isset($submissionsByExercise[$exerciseID])) {
-                    $submission = $submissionsByExercise[$exerciseID];
+                    $submission = &$submissionsByExercise[$exerciseID];
 
                     if (isset($submission['marking'])) {
                         $marking = $submission['marking'];
