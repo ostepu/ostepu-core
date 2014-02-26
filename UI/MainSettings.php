@@ -228,6 +228,35 @@ if (isset($_POST['action'])) {
             $notifications = $notifications + $f->notifications;
         }
     }
+
+    // deletes an user
+    if ($_POST['action'] == "DeleteUser") {
+        if(isset($_POST['userName'])) {
+            // clean Input
+            $userName = cleanInput($_POST['userName']);
+
+            // extracts the userID
+            $URI = $databaseURI . "/user/user/{$userName}";
+            $user_data = http_get($URI, true);
+            $user_data = json_decode($user_data, true);
+
+            if (empty($user_data)) {
+                $notifications[] = MakeNotification("error", "Ungültiges Kürzel.");
+            } else {
+                $userID = $user_data['id'];
+
+                // deletes the user
+                $url = $databaseURI . "/user/{$userID}";
+                http_delete($url, true, $message);
+
+                if ($message == "201") {
+                    $notifications[] = MakeNotification("success", "Der Nutzer wurde erfolgreich gelöscht.");
+                } else {
+                    $notifications[] = MakeNotification("error", "Beim Löschen ist ein Fehler aufgetreten.");
+                }
+            }
+        }
+    }
 }
 
 // load mainSettings data from GetSite
