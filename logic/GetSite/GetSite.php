@@ -792,6 +792,7 @@ class LgetSite
         }
 
         $response['exercises'] = $exercises;
+        $response['sheetName'] = $exercisesheet['sheetName'];
 
         $this->flag = 1;
         $response['user'] = $this->userWithCourse($userid, $courseid);
