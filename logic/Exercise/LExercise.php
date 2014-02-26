@@ -10,6 +10,7 @@
 require '../Include/Slim/Slim.php';
 include '../Include/Request.php';
 include_once( '../Include/CConfig.php' );
+include_once '../Include/Structures.php';
 
 \Slim\Slim::registerAutoloader();
 
@@ -98,16 +99,109 @@ class LExercise
      *
      * Called when this component receives an HTTP POST request to
      * /exercise(/).
-     * The request body should contain a JSON object representing the exercise's
-     * attributes.
+     * The request body should contain a JSON object representing an array of exercises
      */
     public function addExercise(){
         $header = $this->app->request->headers->all();
-        $body = $this->app->request->getBody();
-        // request to database
-        $URL = $this->lURL.'/DB/exercise';
-        $answer = Request::custom('POST', $URL, $header, $body);
-        $this->app->response->setStatus($answer['status']);
+        $body = json_decode($this->app->request->getBody(), true);
+
+        // pointer to the previous subexercise
+        $previousSubexercise = 0;
+        // counter for current subexercise
+        $counter = 1;
+        $allright = true;
+
+        if (isset($body) == true && empty($body) == false) {
+            foreach ($body as $subexercise) {
+                //upload attachement if it exists
+                if (isset($subexercise['attachments']) == true && empty($subexercise['attachments']) == false) {
+                    // get attachment
+                    $attachmentFile = json_encode($subexercise['attachments']);
+
+                    // set URL for requests to filesystem
+                    $URL = $this->lURL.'/FS/file';
+
+                    // upload sampleSolution
+                    $answer = Request::custom('POST', $URL, $header, $attachmentFile);
+                    if($answer['status'] == 201) {
+                        $URL = $this->lURL.'/DB/file';
+                        $answer2 = Request::custom('POST', $URL, $header, $answer['content']);
+
+                        // if file already exists
+                        if($answer2['status'] != 201) {
+                            $attachmentFSContent = json_decode($answer['content'], true);
+                            $answer2 = Request::custom('GET', $URL.'/hash/'.$attachmentFSContent['hash'], $header, "");
+                            if ($answer2['status'] == 200) {
+                                $id = json_decode($answer2['content'], true);
+                                $subexercise['attachments'] = $id;
+                            } else {
+                                $allright = false;
+                                break;
+                            }
+                        } elseif ($answer2['status'] == 201) {
+                            $id = json_decode($answer2['content'], true);
+                            $subexercise['attachments'] = $id;
+                        }
+                    } else {
+                        $allright = false;
+                        break;
+                    }
+                }
+
+                // create exercise in DB
+                $subexerciseJSON = json_encode($subexercise);
+                $URL = $this->lURL.'/DB/exercise';
+                $subexerciseAnswer = Request::custom('POST', $URL, $header, $subexerciseJSON);
+
+                if ($subexerciseAnswer['status'] == 201) {
+                    $subexerciseOutput = json_decode($subexerciseAnswer['content'], true);
+
+                    if (isset($subexerciseOutput['id'])) {
+                        $linkid = $subexerciseOutput['id'];
+                        if ($counter == 1) {
+                            $previousSubexercise = $linkid;
+                        }
+                    }
+                    // create attachement in DB
+                    if (isset($subexercise['attachments']) == true && empty($subexercise['attachments']) == false) {
+                        $AttachmentObj = Attachment::createAttachment(NULL,$linkid,$subexercise['attachments']['fileId']);
+                        $AttachmentObjJSON = Attachment::encodeAttachment($AttachmentObj);
+                        $URL = $this->lURL."/DB/attachment";
+                        $AttachmentAnswer = Request::custom('POST', $URL, $header, $AttachmentObjJSON);
+
+                        if ($AttachmentAnswer['status'] != 201) {
+                            $allright = false;
+                            break;
+                        }
+                    }
+                    // update link
+                    $subexerciseObj = Exercise::createExercise(NULL,NULL,NULL, NULL, NULL, $previousSubexercise, NULL);
+                    $subexerciseObjJSON = Exercise::encodeExercise($subexerciseObj);
+                    
+                    $URL = $this->lURL."/DB/exercise/exercise/".$linkid;
+                    $subexercisePutAnswer = Request::custom('PUT', $URL, $header, $subexerciseObjJSON);
+
+                    if ($subexercisePutAnswer['status'] == 201) {
+                        if ($counter > 1) {
+                            $previousSubexercise = $linkid;
+                        }
+
+                        $counter++;
+                    } else {
+                        $allright = false;
+                        break;
+                    }
+                } else {
+                    $allright = false;
+                    break;
+                }
+            }
+        }
+        if ($allright == true) {
+             $this->app->response->setStatus(201);
+        } else {
+            $this->app->response->setStatus(409);
+        }
     }
 
     /**
