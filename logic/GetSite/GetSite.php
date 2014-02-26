@@ -760,6 +760,13 @@ class LgetSite
         }
     }
 
+    /**
+     * Compiles data for the upload page.
+     * called whe the component receives an HTTP GET request to
+     * /upload/user/$userid/course/$courseid/exercisesheet/$sheetid
+     *
+     * @author Florian Lücke.
+     */
     public function upload($userid, $courseid, $sheetid){
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
@@ -769,24 +776,30 @@ class LgetSite
         $answer = Request::custom('GET', $URL, $header, $body);
         $exercisesheet = json_decode($answer['content'], true);
 
-        $exercises = $exercisesheet['exercises'];
+        $URL = "{$this->lURL}/DB/submission/group/user/{$userid}/exercisesheet/{$sheetid}/selected";
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $submissions = json_decode($answer['content'], true);
 
-        $exercisesById = array();
-        foreach ($exercises as &$exercise) {
-            $exercisesById[$exercise['id']] = &$exercise;
+        if (isset($submissions) == false) {
+            $submissions = array();
+        }
+
+        $exercises = &$exercisesheet['exercises'];
+
+        $submissionsByExercise = array();
+        foreach ($submissions as &$submission) {
+            $exerciseId = $submission['exerciseId'];
+            $submissionsByExercise[$exerciseId] = &$submission;
         }
 
         // loads all submissions for every exercise of the exerciseSheet
         if (!empty($exercises)) {
             foreach ($exercises as &$exercise) {
-                $URL = "{$this->lURL}/DB/submission/user/{$userid}/exercise/{$exercise['id']}";
-                $answer = Request::custom('GET', $URL, $header, $body);
-                $submissions = json_decode($answer['content'], true);
+                $exerciseId = $exercise['id'];
 
-                //only adds the selected submissions to the response
-                if (!empty($submissions)) {
-                    $selectedSubmission = $this->getSelectedSubmission($submissions);
-                    $exercisesById[$selectedSubmission['exerciseId']]['selectedSubmission'] = $selectedSubmission;
+                if (isset($submissionsByExercise[$exerciseId])) {
+                    $submission = &$submissionsByExercise[$exerciseId];
+                    $exercise['selectedSubmission'] = &$submission;
                 }
             }
         }
