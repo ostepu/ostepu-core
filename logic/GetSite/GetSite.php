@@ -749,17 +749,6 @@ class LgetSite
         $this->app->response->setBody(json_encode($response));
     }
 
-    // receives a set of submissions and returns the selected submission only
-    public function getSelectedSubmission($submissions) {
-        if (!empty($submissions)) {
-            foreach ($submissions as $submission) {
-                if (isset($submission['selectedForGroup'])) {
-                    return $submission;
-                }
-            }
-        }
-    }
-
     /**
      * Compiles data for the upload page.
      * called whe the component receives an HTTP GET request to
