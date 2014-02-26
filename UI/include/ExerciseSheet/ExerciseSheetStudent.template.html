@@ -124,12 +124,9 @@ foreach ($sheets as $sheet):
                              * @todo add "&& !$isExpired" to if condition after testing.
                              */ 
                             if(isset($exercise['submission'])) {
-                                print '<a href="Student.php?cid=';
-                                print $cid . '&action=deleteSubmission';
-                                print '&suid=' . $exercise['submission']['id'];
-                                print '" title="Einsendung löschen" class="plain">';
-                                print '<img src="Images/Delete.png" />';
-                                print '</a>';
+                                print '<input type="image" name="deleteSubmission" value="';
+                                print $exercise['submission']['id'];
+                                print '" class="text-button" src="Images/Delete.png" />';
                             }
                         ?>
                     </div>

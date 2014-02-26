@@ -29,12 +29,10 @@ if (isset($_POST['action'])) {
 
         $location = $filesystemURI . '/' . $zipfile['address'];
         header("Location: {$location}/attachments.zip");
-    } elseif ($_GET['action'] == "deleteSubmission" && isset($_GET['suid'])) {
-        /**
-         * @todo Check if the user is allowed to delete the submission
-         */
-        $URI = $databaseURI . "/selectedsubmission/submission/" . $suid;
+    } elseif ($_POST['action'] == "ExerciseSheetStudent" && isset($_POST['deleteSubmission'])) {
+        $suid = cleanInput($_POST['deleteSubmission']);
 
+        $URI = $databaseURI . "/selectedsubmission/submission/" . $suid;
         http_delete($URI, true, $message);
 
         if ($message == "201") {

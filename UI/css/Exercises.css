@@ -18,6 +18,14 @@
     margin-bottom: -5px;
 }
 
+.exercise-sheet-images input {
+    width: 17px;
+    height: 17px;
+    border: 0;
+    padding: 0 10px 0 0;
+    margin: 0 0 -4px 0;
+}
+
 .exercise-sheet-info, .exercise-points {
 }
 
