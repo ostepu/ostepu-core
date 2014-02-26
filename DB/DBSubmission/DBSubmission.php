@@ -133,6 +133,11 @@ class DBSubmission
                         '/group/user/:userid/course/:courseid/selected(/)',
                         array($this,'getGroupSelectedCourseSubmissions'));
                         
+        // GET GetGroupCourseSubmissions
+        $this->_app->get('/' . $this->getPrefix() . 
+                        '/group/user/:userid/course/:courseid(/)',
+                        array($this,'getGroupCourseSubmissions'));
+                        
         // GET GetSelectedSheetSubmissions  
         $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid/selected(/)',
                         array($this,'getSelectedSheetSubmissions'));                 
@@ -464,6 +469,28 @@ class DBSubmission
     {       
         $this->get("GetGroupSelectedCourseSubmissions",
                 "Sql/GetGroupSelectedCourseSubmissions.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($mid) ? $mid : "");
+    }
+    
+    
+    /**
+     * Returns the submissions of a given group of a specific course
+     *
+     * Called when this component receives an HTTP GET request to
+     * /submission/group/user/$userid/course/$courseid(/).
+     *
+     * @param int $userid The id of the user.
+     * @param int $courseid The id of the course.
+     */
+    public function getGroupCourseSubmissions($userid, $courseid)
+    {       
+        $this->get("GetGroupCourseSubmissions",
+                "Sql/GetGroupCourseSubmissions.sql",
                 isset($userid) ? $userid : "",
                 isset($courseid) ? $courseid : "",
                 isset($esid) ? $esid : "",

@@ -29,7 +29,7 @@ select
     S.E_id
 from
     Submission S
-        join
+        left join
     File F ON (S.F_id_file = F.F_id)
         join
     SelectedSubmission SS ON (S.S_id = SS.S_id_selected

@@ -31,7 +31,7 @@ from
     Exercise E
     join
     Submission S ON (E.E_id = S.E_id)
-        join
+       left join
     File F ON (S.F_id_file = F.F_id)
         left join
     SelectedSubmission SS ON (S.S_id = SS.S_id_selected

@@ -38,7 +38,7 @@ from
         join
     (Submission S
     join Exercise E ON (S.E_id = E.E_id and E.ES_id = '$esid')) ON (G2.U_id_leader = S.U_id)
-        join
+        left join
     File F ON (S.F_id_file = F.F_id)
         left join
     SelectedSubmission SS ON (S.S_id = SS.S_id_selected
