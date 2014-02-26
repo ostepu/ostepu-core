@@ -70,7 +70,7 @@ include_once '../Assistants/Logger.php';
          * form tag;
          * @return self
          */
-        public function defineForm($target, $fileupload = false)
+        public function defineForm($target, $fileupload)
         {
             $arguments = func_get_args();
             array_shift($arguments);

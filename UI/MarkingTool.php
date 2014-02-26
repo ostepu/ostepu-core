@@ -66,7 +66,7 @@ $markingElement->bind($markingTool_data);
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $searchSettings, $markingElement);
-$w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, $searchSettings);
+$w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $searchSettings);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
 

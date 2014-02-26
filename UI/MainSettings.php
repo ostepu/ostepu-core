@@ -228,9 +228,9 @@ $deleteUser = Template::WithTemplateFile('include/MainSettings/DeleteUser.templa
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $createCourse, $createUser, $deleteUser);
-$w->defineForm(basename(__FILE__), $createCourse);
-$w->defineForm(basename(__FILE__), $createUser);
-$w->defineForm(basename(__FILE__), $deleteUser);
+$w->defineForm(basename(__FILE__), false, $createCourse);
+$w->defineForm(basename(__FILE__), false, $createUser);
+$w->defineForm(basename(__FILE__), false, $deleteUser);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
 

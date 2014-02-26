@@ -85,7 +85,7 @@ $changePassword->bind($accountSettings_data);
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $accountInfo, $changePassword);
-$w->defineForm(basename(__FILE__), $changePassword);
+$w->defineForm(basename(__FILE__), false, $changePassword);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
 
