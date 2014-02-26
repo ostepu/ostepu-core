@@ -894,6 +894,13 @@ class LgetSite
         $this->app->response->setBody(json_encode($response));
     }
 
+    /**
+     * Compiles data for group site.
+     * Called when this component receives an HTTP GET request to
+     * /upload/user/$userid/course/$courseid/exercisesheet/$sheetid
+     *
+     * @author Florian Lücke.
+     */
     public function groupSite($userid, $courseid, $sheetid){
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
@@ -950,6 +957,9 @@ class LgetSite
             } else {
                 $lastUserSubmission = $exerciseUserSubmissions[$exerciseId][$userId];
                 if ($lastUserSubmission['submission']['date'] < $submission['date']) {
+
+                    // smaller date means less seconds since refrence date
+                    // so $lastSubmission is older
                     $user = &$usersById[$userId];
                     $userSubmission = array('user' => $user,
                                             'submission' => $submission);
@@ -958,6 +968,7 @@ class LgetSite
             }
         }
 
+        // insert submissions into the exercises
         foreach ($exercises as &$exercise) {
             $exerciseId = &$exercise['id'];
             if (isset($exerciseUserSubmissions[$exerciseId])) {
