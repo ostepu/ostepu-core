@@ -765,7 +765,7 @@ class LgetSite
         $header = $this->app->request->headers->all();
 
         // loads all exercises of an exercise sheet
-        $URL = $this->lURL.'/DB/exercisesheet/'.$sheetid.'/exercise/';
+        $URL = "{$this->lURL}/DB/exercisesheet/{$sheetid}/exercise/";
         $answer = Request::custom('GET', $URL, $header, $body);
         $exercisesheet = json_decode($answer['content'], true);
 
@@ -779,7 +779,7 @@ class LgetSite
         // loads all submissions for every exercise of the exerciseSheet
         if (!empty($exercises)) {
             foreach ($exercises as &$exercise) {
-                $URL = $this->lURL.'/DB/submission/user/'.$userid.'/exercise/'.$exercise['id'];
+                $URL = "{$this->lURL}/DB/submission/user/{$userid}/exercise/{$exercise['id']}";
                 $answer = Request::custom('GET', $URL, $header, $body);
                 $submissions = json_decode($answer['content'], true);
 
