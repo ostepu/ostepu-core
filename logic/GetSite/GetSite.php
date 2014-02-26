@@ -806,7 +806,7 @@ class LgetSite
         // returns all courses
         $URL = $this->lURL . '/DB/course';
         $courses = Request::custom('GET', $URL, $header, $body);
-        $response['courses'] = json_decode($courses['content'], true);
+        $courses = json_decode($courses['content'], true);
 
         // returns all possible exercisetypes
         $URL = $this->lURL . '/DB/exercisetype';
@@ -820,7 +820,15 @@ class LgetSite
 
         unset($user['courses']);
 
+        // sorts courses by name
+        function compare_courseName($a, $b) {
+             return strnatcmp($a['name'], $b['name']);
+        }
+        usort($courses, 'compare_courseName');
+
         $this->flag = 1;
+
+        $response['courses'] = $courses;
         $response['user'] = $user;
 
         $this->app->response->setBody(json_encode($response));
