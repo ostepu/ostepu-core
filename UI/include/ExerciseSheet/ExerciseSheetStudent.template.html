@@ -37,7 +37,10 @@ foreach ($sheets as $sheet):
                 <li>
 
                     <div class="exercise-type">
-                        <?php print $exercise['typeName']; ?>
+                        <?php
+                            print $exercise['typeName'];
+                            print $exercise['bonus'] ? ' (*)' : NULL;
+                        ?>
                     </div>
 
                     <div class="exercise-points">
@@ -49,6 +52,7 @@ foreach ($sheets as $sheet):
                             else {
                                 print "-";
                             }
+
                             print ' / ' . $exercise['maxPoints'] . ' P';
                         ?>
                     </div>
@@ -82,7 +86,7 @@ foreach ($sheets as $sheet):
                                 print '</a>';
                             }
                         ?>
-                        
+
                         <?php
                             // creates a download icon for the submission (if it exists)
                             if(isset($exercise['submission'])) {

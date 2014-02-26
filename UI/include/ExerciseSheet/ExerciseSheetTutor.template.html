@@ -36,7 +36,10 @@ foreach ($sheets as $sheet):
                 ?>
                 <li>
                     <div class="exercise-type">
-                        <?php print $exercise['typeName']; ?>
+                        <?php
+                            print $exercise['typeName'];
+                            print $exercise['bonus'] ? ' (*)' : NULL;
+                        ?>
                     </div>
                     <div class="exercise-points">
                         <?php print $exercise['maxPoints'] . ' P'; ?>
