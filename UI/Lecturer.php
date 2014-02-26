@@ -30,6 +30,11 @@ if (isset($_POST['action'])) {
         $location = $filesystemURI . '/' . $zipfile['address'];
         header("Location: {$location}/attachments.zip");
     }
+    if ($_POST['action'] == "ExerciseSheetLecturer" && isset($_POST['downloadCSV'])) {
+        $sid = cleanInput($_POST['downloadCSV']);
+        $location = $logicURI . '/tutor/user/' . $uid . '/exercisesheet/' . $sid;
+        header("Location: {$location}");
+    }
 }
 
 // load GetSite data for Lecturer.php

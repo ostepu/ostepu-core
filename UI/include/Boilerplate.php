@@ -41,6 +41,7 @@ if (isset($_GET['suid'])) {
 $serverURI = "http://141.48.9.92/uebungsplattform";
 $databaseURI = $serverURI . "/DB/DBControl";
 $filesystemURI = $serverURI . "/FS/FSControl";
+$logicURI = $serverURI . "/logic/Controller";
 $getSiteURI = $serverURI . "/logic/GetSite";
 
 ?>
