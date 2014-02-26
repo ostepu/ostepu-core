@@ -803,11 +803,17 @@ class LgetSite
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
 
+        // returns all courses
+        $URL = $this->lURL . '/DB/course';
+        $courses = Request::custom('GET', $URL, $header, $body);
+        $response['courses'] = json_decode($courses['content'], true);
+
         // returns all possible exercisetypes
         $URL = $this->lURL . '/DB/exercisetype';
         $exerciseTypes = Request::custom('GET', $URL, $header, $body);
         $response['exerciseTypes'] = json_decode($exerciseTypes['content'], true);
 
+        // returns the user
         $URL = $this->lURL . '/DB/user/user/' . $userid;
         $answer = Request::custom('GET', $URL, $header, $body);
         $user = json_decode($answer['content'], true);
