@@ -1,2 +1,2 @@
 RewriteEngine On
-RewriteRule ^ Tutor.php [QSA,L]
+RewriteRule ^ LTutor.php [QSA,L]
