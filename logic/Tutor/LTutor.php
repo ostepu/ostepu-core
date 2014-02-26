@@ -343,9 +343,9 @@ class LTutor
         $answer = Request::custom('GET', $URL, $header, "");
         $user = json_decode($answer['content'], true);
         
-		
-		$this->deleteDir("./csv");
-		mkdir("./csv");
+        
+        $this->deleteDir("./csv");
+        mkdir("./csv");
 
         //this is the true writing of the CSV-file named [tutorname]_[sheetid].csv
         $CSV = fopen('./csv/'.$user['lastName'].'_'.$sheetid.'.csv', 'w');
@@ -380,7 +380,7 @@ class LTutor
                     $newfile = $submission['file'];
     
                     $newfile['displayName'] = 
-                        $namesOfExercises[$exerciseId].'/'.$marking['id'];
+                        $namesOfExercises[$exerciseId].'/'.$marking['id'].'.pdf';
                     if ($newfile['fileId'] > 2){            //inkonsistente DB-FS-Verlinkungen
                         $filesToZip[] = $newfile;}
                 }
@@ -395,7 +395,6 @@ class LTutor
                 );
         $filesToZip[] = $csvFile;
         
-        
         $URL = $this->lURL.'/FS/zip';
         //request to filesystem to create the Zip-File
         $answer = Request::custom('POST', $URL, $header,json_encode($filesToZip));
@@ -403,11 +402,11 @@ class LTutor
         
         $URL = $this->lURL.'/FS/'.$zipFile['address'].'/'.$userid.'_'.$sheetid.'.zip';
         //request to filesystem to get the created Zip-File
-        $answer = Request::custom('GET', $URL, $header,json_encode($filesToZip));
+        $answer = Request::custom('GET', $URL, $header,"");
         
-        $this->app->response->headers->set('Content-Type', 'application/zip');
+        $this->app->response->headers->set('Content-Type', $answer['headers']['Content-Type']);
         $this->app->response->headers->set('Content-Disposition', $answer['headers']['Content-Disposition']);
-        $this->app->response->setBody(json_encode($answer['content']));
+        $this->app->response->setBody($answer['content']);
     }
 
     public function uploadZip($userid, $sheetid){
@@ -442,7 +441,7 @@ class LTutor
                 //request to filesystem to save the marking file
                 $answer = Request::custom('POST', $URL, $header,json_encode($file));
                 $markingFile = json_decode($answer['content'], true);
-                
+
                 $marking = array(
                         'id' => $row[0],
                         'points' => $row[1],
@@ -461,30 +460,30 @@ class LTutor
         fclose($csv);
         
     }
-	
-	/**
-	* Delete hole directory inclusiv files and dirs
-	*
-	* @param string $path 
-	* @return boolean
-	*/
-	public function deleteDir($path)
-	{
-		if (is_dir($path) === true) {
-			$files = array_diff(scandir($path), array('.', '..'));
+    
+    /**
+    * Delete hole directory inclusiv files and dirs
+    *
+    * @param string $path 
+    * @return boolean
+    */
+    public function deleteDir($path)
+    {
+        if (is_dir($path) === true) {
+            $files = array_diff(scandir($path), array('.', '..'));
 
-			foreach ($files as $file) {
-				$this->deleteDir(realpath($path) . '/' . $file);
-			}
-			return rmdir($path);
-		}
-		
-		// Datei entfernen
-		else if (is_file($path) === true) {
-			return unlink($path);
-		}
-		return false;
-	}  
+            foreach ($files as $file) {
+                $this->deleteDir(realpath($path) . '/' . $file);
+            }
+            return rmdir($path);
+        }
+        
+        // Datei entfernen
+        else if (is_file($path) === true) {
+            return unlink($path);
+        }
+        return false;
+    }  
     
 }
 /**
