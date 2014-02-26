@@ -1,10 +1,9 @@
 <?php
 /**
- * @todo make it cheaper to combine course status names with status ids
- * @todo make it cheaper to combine marking status names with status ids
- * @todo make it cheaper to combine exercise type names with type ids
- */ // could use a map indexed by status/type id taht is built on construction
-
+ * @file GetSite.php
+ *
+ * contains the LgetSite class.
+ */
 require '../../Assistants/Slim/Slim.php';
 include '../../Assistants/Request.php';
 include_once '../../Assistants/CConfig.php';
@@ -12,10 +11,9 @@ include_once '../../Assistants/Logger.php';
 include_once '../../Assistants/Structures.php';
 
 \Slim\Slim::registerAutoloader();
+
 /**
- * The GetSite class
- *
- * This class gives all informations needed to print a Site
+ * This class gives all information needed to print a Site
  */
 class LgetSite
 {
@@ -474,6 +472,13 @@ class LgetSite
         return $statusNames[$courseStatus];
     }
 
+    /**
+     * Function that handles all requests for marking tool.
+     * Used by the functions that are called by Slim when data for the marking
+     * tool is requested
+     *
+     * @author Florian Lücke
+     */
     public function markingToolBase($userid,
                                     $courseid,
                                     $sheetid,
@@ -530,7 +535,7 @@ class LgetSite
             $this->app->halt(404, '{"code":404,reason":"invalid sheet id"}');
         }
 
-                // save the index of each exercise
+        // save the index of each exercise
         $exerciseIndices = array();
         foreach ($exercises as $idx => &$exercise) {
             $exerciseId = $exercise['id'];
@@ -1227,7 +1232,7 @@ class LgetSite
         // an approvalCondition with the same id in the same course
 
         /**
-         * @todo Improve runtime.
+         * @todo Improve running time.
          */
         if(!empty($approvalConditions)) {
             foreach ($approvalConditions as &$approvalCondition) {
@@ -1302,14 +1307,10 @@ class LgetSite
     }
 }
 
-/**
- * get new Config-Datas from DB
- */
+// get new componenent configuartion from the database
 $com = new CConfig(LgetSite::getPrefix());
 
-/**
- * make a new instance of LgetSite-Class with the Config-Datas
- */
+// start the component with the newly received configuration
 if (!$com->used())
     new LgetSite($com->loadConfig());
 ?>
