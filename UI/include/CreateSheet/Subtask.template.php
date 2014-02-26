@@ -1,11 +1,16 @@
 <li>
-    <input class="form-field text-input very-short" name="exercises[0][subexercises][0][maxPoints]" value="1" id="exerciseMaxPoints" />
+    <input class="form-field text-input very-short" name="exercises[0][subexercises][0][maxPoints]" placeholder="Punkte" id="exerciseMaxPoints" />
     <select class="form-field text-input short" name="exercises[0][subexercises][0][exerciseType]" id="exerciseType">
-        <option value="1">Theorie Punkt(e)</option>
-        <option value="2">Theorie Bonus Punkt(e)</option>
-        <option value="3">Praxis Punkt(e)</option>
-        <option value="4">Praxis Bonus Punkt(e)</option>
-        <option value="5">...</option>
+        <?php
+        session_start();
+        if (isset($_SESSION['JSCACHE'])) {
+            $cache = json_decode($_SESSION['JSCACHE']);
+
+            foreach ($cache as $excercisetype) {
+                print "<option value=\"".$excercisetype->exerciseTypeId."\">".$excercisetype->name."</option>";
+            }
+        }
+        ?>
     </select>
     <input class="form-field text-input short" name="exercises[0][subexercises][0][mime-type]" value="pdf" id="exerciseType" />
     <input class="button" type="file" name="exercises[0][subexercises][0][attachment]" value="Anhang auswählen ..." />

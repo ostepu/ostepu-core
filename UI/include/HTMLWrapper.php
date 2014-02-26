@@ -70,9 +70,10 @@ include_once '../Assistants/Logger.php';
          * form tag;
          * @return self
          */
-        public function defineForm($target)
+        public function defineForm($target, $fileupload = false)
         {
             $arguments = func_get_args();
+            array_shift($arguments);
             array_shift($arguments);
 
             // get position of the Templates in contentElements
@@ -82,7 +83,11 @@ include_once '../Assistants/Logger.php';
             $endkey = array_search($end, $this->contentElements, true);
 
             // define form
-            $formstart = "<form action=\"{$target}\" method=\"POST\">";
+            if ($fileupload == false) {
+                $formstart = "<form action=\"{$target}\" method=\"POST\">";
+            } else {
+                $formstart = "<form action=\"{$target}\" method=\"POST\" enctype=\"multipart/form-data\">";
+            }
             $formend = "</form>";
 
             // insert formtags before and after the given range
