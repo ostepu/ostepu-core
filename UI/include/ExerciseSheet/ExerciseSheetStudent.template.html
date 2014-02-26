@@ -67,6 +67,23 @@ foreach ($sheets as $sheet):
 
                     <div class="exercise-sheet-images">
                         <?php
+                            // creates a downloadAttachment icon for the exercise (if it exists)
+                            if(isset($exercise['attachment'])) {
+                                $displayName = $exercise['attachment']['displayName'];
+                                $fileAddress = $exercise['attachment']['address'];
+                                $fileURL = $filesystemURI . '/' . $fileAddress . '/' . $displayName;
+
+                                print '<a href="';
+                                print $fileURL;
+                                print '" title="';
+                                print $displayName;
+                                print '" class="plain" target="_blank">';
+                                print '<img src="Images/Attachment.png" />';
+                                print '</a>';
+                            }
+                        ?>
+                        
+                        <?php
                             // creates a download icon for the submission (if it exists)
                             if(isset($exercise['submission'])) {
                                 $displayName = $exercise['submission']['file']['displayName'];
@@ -96,23 +113,6 @@ foreach ($sheets as $sheet):
                                 print $displayName;
                                 print '" class="plain" target="_blank">';
                                 print '<img src="Images/DownloadCorrection.png" />';
-                                print '</a>';
-                            }
-                        ?>
-
-                        <?php
-                            // creates a downloadAttachment icon for the exercise (if it exists)
-                            if(isset($exercise['attachment'])) {
-                                $displayName = $exercise['attachment']['displayName'];
-                                $fileAddress = $exercise['attachment']['address'];
-                                $fileURL = $filesystemURI . '/' . $fileAddress . '/' . $displayName;
-
-                                print '<a href="';
-                                print $fileURL;
-                                print '" title="';
-                                print $displayName;
-                                print '" class="plain" target="_blank">';
-                                print '<img src="Images/Attachment.png" />';
                                 print '</a>';
                             }
                         ?>
