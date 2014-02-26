@@ -102,6 +102,46 @@ if (isset($_POST['action'])) {
         }
     }
 
+    if ($_POST['action'] == "SetAdmin") {
+        // check if POST data is send
+        if(isset($_POST['courseID']) && isset($_POST['userName'])) {
+            // clean Input
+            $courseID = cleanInput($_POST['courseID']);
+            $userName = cleanInput($_POST['userName']);
+
+            // extracts the userID
+            $URI = $databaseURI . "/user/user/{$userName}";
+            $user_data = http_get($URI, true);
+            $user_data = json_decode($user_data, true);
+
+            // sets admin rights for the user
+            if (empty($user_data)) {
+                $notifications[] = MakeNotification("error", "Ungültiges Kürzel.");
+            } else {
+                $userID = $user_data['id'];
+                $status = 3;
+
+                $data = User::encodeUser(User::createCourseStatus($userID, $courseID, $status));
+                $url = $databaseURI . "/coursestatus";
+                http_post_data($url, $data, true, $message);
+
+                if ($message != "201") {
+                    $data = User::encodeUser(User::createCourseStatus($userID, $courseID, $status));
+                    $url = $databaseURI . "/coursestatus/course/{$courseID}/user/{$userID}";
+                    http_put_data($url, $data, true, $message);
+
+                    if ($message == "201") {
+                        $notifications[] = MakeNotification("success", "Der Admin wurde eingetragen.");
+                    } else {
+                        $notifications[] = MakeNotification("error", "Beim Eintragen ist ein Fehler aufgetreten.");
+                    }
+                } else {
+                    $notifications[] = MakeNotification("success", "Der Admin wurde eingetragen.");
+                }
+            }
+        }
+    }
+
     // creates a new user
     if ($_POST['action'] == "CreateUser") {
 
@@ -212,6 +252,9 @@ if (count($notifications) != 0) {
     $createCourse->bind($_POST);
 }
 
+// construct a content element for setting admins
+$setAdmin = Template::WithTemplateFile('include/MainSettings/SetAdmin.template.html');
+$setAdmin->bind($mainSettings_data);
 
 // construct a content element for creating new users
 $createUser = Template::WithTemplateFile('include/MainSettings/CreateUser.template.html');
@@ -227,8 +270,9 @@ $deleteUser = Template::WithTemplateFile('include/MainSettings/DeleteUser.templa
  */
 
 // wrap all the elements in some HTML and show them on the page
-$w = new HTMLWrapper($h, $createCourse, $createUser, $deleteUser);
+$w = new HTMLWrapper($h, $createCourse, $setAdmin, $createUser, $deleteUser);
 $w->defineForm(basename(__FILE__), $createCourse);
+$w->defineForm(basename(__FILE__), $setAdmin);
 $w->defineForm(basename(__FILE__), $createUser);
 $w->defineForm(basename(__FILE__), $deleteUser);
 $w->set_config_file('include/configs/config_default.json');
