@@ -10,8 +10,10 @@
 
 include_once 'include/Boilerplate.php';
 
-if (isset($_GET['action']) && isset($_GET['sid'])) {
-    if ($_GET['action'] == "downloadAttachments") {
+if (isset($_POST['action'])) {
+    if ($_POST['action'] == "ExerciseSheetLecturer" && isset($_POST['downloadAttachments'])) {
+        $sid = cleanInput($_POST['downloadAttachments']);
+
         $attachments = http_get($serverURI . '/logic/Controller/DB/attachment/exercisesheet/' . $sid);
         $attachments = json_decode($attachments, true);
 
@@ -58,6 +60,7 @@ $t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetLecturer.tem
 $t->bind($admin_data);
 
 $w = new HTMLWrapper($h, $t);
+$w->defineForm(basename(__FILE__)."?cid=".$cid, $t);
 $w->set_config_file('include/configs/config_admin_lecturer.json');
 $w->show();
 

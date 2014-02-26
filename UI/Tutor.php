@@ -10,8 +10,10 @@
 
 include_once 'include/Boilerplate.php';
 
-if (isset($_GET['action']) && isset($_GET['sid'])) {
-    if ($_GET['action'] == "downloadAttachments") {
+if (isset($_POST['action'])) {
+    if ($_POST['action'] == "ExerciseSheetTutor" && isset($_POST['downloadAttachments'])) {
+        $sid = cleanInput($_POST['downloadAttachments']);
+
         $attachments = http_get($serverURI . '/logic/Controller/DB/attachment/exercisesheet/' . $sid);
         $attachments = json_decode($attachments, true);
 
@@ -56,6 +58,7 @@ $t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetTutor.templa
 $t->bind($tutor_data);
 
 $w = new HTMLWrapper($h, $t);
+$w->defineForm(basename(__FILE__)."?cid=".$cid, $t);
 $w->set_config_file('include/configs/config_student_tutor.json');
 $w->show();
 

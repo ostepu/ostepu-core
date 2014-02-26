@@ -1,3 +1,4 @@
+<input type="hidden" name="action" value="ExerciseSheetLecturer">
 <div class="content-element interactive add">
     <div class="content-header">
         <div class="content-title left uppercase">Neue Serie</div>
@@ -96,12 +97,11 @@ foreach ($sheets as $sheet):
                 <?php
                     if ($sheet['hasAttachments']) {
                         print '<li>';
-                        print '<a href="';
-                        print PRIVILEGE_LEVEL::$SITES[$courses[0]['status']];
-                        print '?cid=';
-                        print $cid . '&action=downloadAttachments';
-                        print '&sid=' . $sheet['id'];
-                        print '">Alle Anhänge herunterladen</a>';
+                        print '<button name="downloadAttachments" value="';
+                        print $sheet['id'];
+                        print '" class="text-button body-option-color">';
+                        print 'Alle Anhänge herunterladen';
+                        print '</button>';
                         print '</li>';
                     }
                 ?>

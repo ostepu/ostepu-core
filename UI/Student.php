@@ -10,8 +10,10 @@
 
 include_once 'include/Boilerplate.php';
 
-if (isset($_GET['action'])) {
-    if ($_GET['action'] == "downloadAttachments" && isset($_GET['sid'])) {
+if (isset($_POST['action'])) {
+    if ($_POST['action'] == "ExerciseSheetStudent" && isset($_POST['downloadAttachments'])) {
+        $sid = cleanInput($_POST['downloadAttachments']);
+
         $attachments = http_get($serverURI . '/logic/Controller/DB/attachment/exercisesheet/' . $sid);
         $attachments = json_decode($attachments, true);
 
@@ -40,7 +42,9 @@ if (isset($_GET['action'])) {
         } else {
             $notifications[] = MakeNotification("error", "Beim Löschen ist ein Fehler aufgetreten!");
         }
-    } elseif ($_GET['action'] == "downloadMarkings" && isset($_GET['sid'])) {
+    } elseif ($_POST['action'] == "ExerciseSheetStudent" && isset($_POST['downloadMarkings'])) {
+        $sid = cleanInput($_POST['downloadAttachments']);
+        
         $markings = http_get($serverURI . '/logic/Controller/DB/marking/exercisesheet/' . $sid . '/user/' . $uid);
         $markings = json_decode($markings, true);
 
@@ -90,6 +94,7 @@ $t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetStudent.temp
 $t->bind($student_data);
 
 $w = new HTMLWrapper($h, $t);
+$w->defineForm(basename(__FILE__)."?cid=".$cid, $t);
 $w->set_config_file('include/configs/config_student_tutor.json');
 $w->show();
 

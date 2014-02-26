@@ -1,3 +1,4 @@
+<input type="hidden" name="action" value="ExerciseSheetTutor">
 <?php
 if (!empty($sheets)) {
 foreach ($sheets as $sheet):
@@ -89,10 +90,11 @@ foreach ($sheets as $sheet):
                 <?php
                     if ($sheet['hasAttachments']) {
                         print '<li>';
-                        print '<a href="Student.php?cid=';
-                        print $cid . '&action=downloadAttachments';
-                        print '&sid=' . $sheet['id'];
-                        print '">Alle Anhänge herunterladen</a>';
+                        print '<button name="downloadAttachments" value="';
+                        print $sheet['id'];
+                        print '" class="text-button body-option-color">';
+                        print 'Alle Anhänge herunterladen';
+                        print '</button>';
                         print '</li>';
                     }
                 ?>
