@@ -22,7 +22,9 @@ select
     F.F_timeStamp,
     F.F_fileSize,
     F.F_comment,
-    F.F_hash
+    F.F_hash,
+    EFT_id,
+    EFT_text
     " . ($sub==1 ? 
     ",
     S.U_id as U_id2,
@@ -38,6 +40,8 @@ select
     "
 from
     Exercise E
+        left join
+    ExerciseFileType EFT ON E.E_id = EFT.E_id
         left join
     (Attachment A
     natural join File F) ON E.E_id = A.E_id

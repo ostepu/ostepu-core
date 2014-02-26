@@ -430,6 +430,7 @@ class DBExerciseSheet
                                             File::getDBPrimaryKey(), 
                                             File::getDBConvert(), 
                                             '2');
+                                            
           
             // concatenates the exercise sheet and the associated sample solution
             $res = DBJson::concatObjectListsSingleResult($data, 
@@ -464,6 +465,16 @@ class DBExerciseSheet
                 
                 // concatenates the exercise and the associated attachments
                 $exercises = DBJson::concatObjectListResult($data, $exercises,Exercise::getDBPrimaryKey(),Exercise::getDBConvert()['E_attachments'] ,$attachments,File::getDBPrimaryKey());  
+            
+                // generates an assoc array of exercise file types by using a defined 
+                // list of its attributes
+                $fileTypes = DBJson::getObjectsByAttributes($data,
+                                    ExerciseFileType::getDBPrimaryKey(), 
+                                    ExerciseFileType::getDBConvert());
+                                    
+                // concatenates the exercise and the associated filetypes
+                $exercises = DBJson::concatObjectListResult($data, $exercises, Exercise::getDBPrimaryKey(),Exercise::getDBConvert()['E_fileTypes'] ,$fileTypes,ExerciseFileType::getDBPrimaryKey());  
+            
             
                 // concatenates the exercise sheet and the associated exercises
                 $res = DBJson::concatResultObjectLists($data, 
@@ -598,6 +609,15 @@ class DBExerciseSheet
                 
                 // concatenates the exercise and the associated attachments
                 $exercises = DBJson::concatObjectListResult($data, $exercises,Exercise::getDBPrimaryKey(),Exercise::getDBConvert()['E_attachments'] ,$attachments,File::getDBPrimaryKey());  
+            
+                // generates an assoc array of exercise file types by using a defined 
+                // list of its attributes
+                $fileTypes = DBJson::getObjectsByAttributes($data,
+                                    ExerciseFileType::getDBPrimaryKey(), 
+                                    ExerciseFileType::getDBConvert());
+                                    
+                // concatenates the exercise and the associated filetypes
+                $exercises = DBJson::concatObjectListResult($data, $exercises, Exercise::getDBPrimaryKey(),Exercise::getDBConvert()['E_fileTypes'] ,$fileTypes,ExerciseFileType::getDBPrimaryKey());  
             
                 // concatenates the exercise sheet and the associated exercises
                 $res = DBJson::concatResultObjectLists($data, 
