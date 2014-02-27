@@ -153,6 +153,30 @@ class Exercise extends Object implements JsonSerializable
     public function setLink($value){
         $this->link = $value;
     }
+    
+    /**
+     * @var string $linkName The type of points this exercise yields.
+     */
+    private $linkName = null;
+    
+    /**
+     * the $linkName getter
+     *
+     * @return the value of $linkName
+     */ 
+    public function getLinkName()
+    {
+        return $this->linkName;
+    }
+    
+    /**
+     * the $linkName setter
+     *
+     * @param int $value the new value for $linkName
+     */
+    public function setLinkName($value){
+        $this->linkName = $value;
+    }
 
     /**
      * @var Submission[] $submissiona the submissions for this exercise
@@ -241,6 +265,8 @@ class Exercise extends Object implements JsonSerializable
     {
         return $this->fileTypes;
     }
+    
+    
     
     /**
      * the $fileTypes setter
@@ -407,7 +433,9 @@ class Exercise extends Object implements JsonSerializable
         if ($this->bonus!==null) $list['bonus'] = $this->bonus;
         if ($this->attachments!==array() && $this->attachments!==null) $list['attachments'] = $this->attachments;
         if ($this->fileTypes!==array() && $this->fileTypes!==null) $list['fileTypes'] = $this->fileTypes;
-        return $list;
+        if ($this->linkName!==null) $list['linkName'] = $this->linkName;
+       
+       return $list;
     }
     
     public static function ExtractExercise($data, $singleResult = false)
