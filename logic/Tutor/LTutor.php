@@ -289,13 +289,12 @@ class LTutor
             $secondRow[] = 'Status';
             $secondRow[] = 'TutorComment';
             $secondRow[] = 'StudentComment';
-
-            $rows[] = $firstRow;
-            $rows[] = $secondRow;
             
             //formating, write known informations of the markings in the CSV-file
             //after the second row to each exercise
             if(in_array($exercise['id'], $exerciseIdWithExistingMarkings)){
+				$rows[] = $firstRow;
+				$rows[] = $secondRow;
                 foreach($sortedMarkings[$exercise['id']] as $marking){
                     $row = array();
                     //MarkingId
@@ -332,9 +331,10 @@ class LTutor
                     
                     $rows[] = $row;
                 }
+				//an empty row after an exercise
+				$rows[] = array();
             }
-            //an empty row after an exercise
-            $rows[] = array();
+            
         }
 
         //request to database to get the user name of the tutor for the
@@ -343,9 +343,9 @@ class LTutor
         $answer = Request::custom('GET', $URL, $header, "");
         $user = json_decode($answer['content'], true);
         
-        
-        $this->deleteDir("./csv");
-        mkdir("./csv");
+		
+		$this->deleteDir("./csv");
+		mkdir("./csv");
 
         //this is the true writing of the CSV-file named [tutorname]_[sheetid].csv
         $CSV = fopen('./csv/'.$user['lastName'].'_'.$sheetid.'.csv', 'w');
@@ -369,14 +369,6 @@ class LTutor
                     $answer = Request::custom('GET', $URL, $header,"");
                     $submission = json_decode($answer['content'], true);                
                     
-                    //$submission['file'] = array(
-                    //            'fileId' => 8,
-                    //            'displayName' => "test.pdf",
-                    //            'address' => "test/abc",
-                    //            'timeStamp' => 123456789,
-                    //            'fileSize' => 158,
-                    //            'hash' => 'AFD1S65G4F1A34FWEA',
-                    //            );
                     $newfile = $submission['file'];
     
                     $newfile['displayName'] = 
@@ -387,6 +379,7 @@ class LTutor
             }
         }
         
+		
         //push the .csv-file to the array
         $path = './csv/'.$user['lastName'].'_'.$sheetid.'.csv';
         $csvFile = array(
@@ -394,12 +387,12 @@ class LTutor
                     'body' => base64_encode(file_get_contents($path))
                 );
         $filesToZip[] = $csvFile;
-        
+
         $URL = $this->lURL.'/FS/zip';
         //request to filesystem to create the Zip-File
         $answer = Request::custom('POST', $URL, $header,json_encode($filesToZip));
         $zipFile = json_decode($answer['content'], true); 
-        
+        print_r($zipFile);
         $URL = $this->lURL.'/FS/'.$zipFile['address'].'/'.$userid.'_'.$sheetid.'.zip';
         //request to filesystem to get the created Zip-File
         $answer = Request::custom('GET', $URL, $header,"");
@@ -441,7 +434,7 @@ class LTutor
                 //request to filesystem to save the marking file
                 $answer = Request::custom('POST', $URL, $header,json_encode($file));
                 $markingFile = json_decode($answer['content'], true);
-
+				
                 $marking = array(
                         'id' => $row[0],
                         'points' => $row[1],
@@ -460,30 +453,30 @@ class LTutor
         fclose($csv);
         
     }
-    
-    /**
-    * Delete hole directory inclusiv files and dirs
-    *
-    * @param string $path 
-    * @return boolean
-    */
-    public function deleteDir($path)
-    {
-        if (is_dir($path) === true) {
-            $files = array_diff(scandir($path), array('.', '..'));
+	
+	/**
+	* Delete hole directory inclusiv files and dirs
+	*
+	* @param string $path 
+	* @return boolean
+	*/
+	public function deleteDir($path)
+	{
+		if (is_dir($path) === true) {
+			$files = array_diff(scandir($path), array('.', '..'));
 
-            foreach ($files as $file) {
-                $this->deleteDir(realpath($path) . '/' . $file);
-            }
-            return rmdir($path);
-        }
-        
-        // Datei entfernen
-        else if (is_file($path) === true) {
-            return unlink($path);
-        }
-        return false;
-    }  
+			foreach ($files as $file) {
+				$this->deleteDir(realpath($path) . '/' . $file);
+			}
+			return rmdir($path);
+		}
+		
+		// Datei entfernen
+		else if (is_file($path) === true) {
+			return unlink($path);
+		}
+		return false;
+	}  
     
 }
 /**
