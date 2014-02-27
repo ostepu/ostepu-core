@@ -90,6 +90,10 @@ class LgetSite
         $this->app->get('/upload/user/:userid/course/:courseid/exercisesheet/:sheetid(/)',
                         array($this, 'upload'));
 
+        //GET TutorUpload
+        $this->app->get('/tutorupload/user/:userid/course/:courseid/exercisesheet/:sheetid(/)',
+                        array($this, 'upload'));
+
         //GET MarkingTool
         $this->app->get('/markingtool/user/:userid/course/:courseid/exercisesheet/:sheetid(/)',
                         array($this, 'markingTool'));
