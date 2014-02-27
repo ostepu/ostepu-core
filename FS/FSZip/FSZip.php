@@ -141,7 +141,7 @@ class FSZip
                 array_push($hashArray, $part->getBody());
             }
             else
-            array_push($hashArray, $part->getAddress());
+            array_push($hashArray, $part->getAddress().$part->getDisplayName());
         }
         $hash = sha1(implode("\n",$hashArray));
         
@@ -255,7 +255,7 @@ class FSZip
                 array_push($hashArray, $part->getBody());
             }
             else
-            array_push($hashArray, $part->getAddress());
+            array_push($hashArray, $part->getAddress().$part->getDisplayName());
         }
         $hash = sha1(implode("\n",$hashArray));
         

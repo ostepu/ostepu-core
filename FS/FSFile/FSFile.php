@@ -116,7 +116,14 @@ class FSFile
         $body = $this->_app->request->getBody();
         $fileObjects = File::decodeFile($body);
         
-        $result = array();
+        // always been an array
+        $arr = true;
+        if (!is_array($fileObjects)){
+            $fileObjects = array($fileObjects);
+            $arr=false;
+        }
+        
+        $res = array();
         
         foreach ($fileObjects as $fileObject){ 
         
@@ -137,7 +144,7 @@ class FSFile
                 $tempObject = File::decodeFile($result['content']);
                 $fileObject->setFileSize($tempObject->getFileSize());
                 $fileObject->setBody(null);
-                $result[] = $fileObject;
+                $res[] = $fileObject;
                 //$this->_app->response->setStatus(201);
                // $this->_app->response->setBody(File::encodeFile($fileObject));
                 //$this->_app->stop();
@@ -155,22 +162,22 @@ class FSFile
                 $tempObject = File::decodeFile($result['content']);
                 $fileObject->setFileSize($tempObject->getFileSize());
                 $fileObject->setBody(null);
-                $result[] = $fileObject;
+                $res[] = $fileObject;
                 //$this->_app->response->setStatus($result['status']);
                 //$this->_app->response->setBody(File::encodeFile($fileObject));
             } else{
                 $this->_app->response->setStatus(409);
                // $fileObject->setBody(null);
-                $this->_app->response->setBody(File::encodeFile($result));
+                $this->_app->response->setBody(File::encodeFile($res));
                 $this->_app->stop();
             }
         }
         
-        if (count($result)==1)
-            $result = $result[0];
+        if (!$arr && count($res)==1)
+            $res = $res[0];
         
         $this->_app->response->setStatus(201);
-        $this->_app->response->setBody(File::encodeFile($result));
+        $this->_app->response->setBody(File::encodeFile($res));
     }
 
 
