@@ -1,0 +1,28 @@
+<input type="hidden" name="action" value="submit">
+
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left uppercase">
+            TITEL EINGEBEN
+        </div>
+        <button class="text-button info-color bold right">
+          absenden
+        </button>
+    </div>
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            <div class="content-description">
+                Geben Sie hier den Speicherort der *.zip-Datei mit den korrigierten Einsendungen
+                an und klicken Sie anschließend auf "absenden", um die Einsendungen hochzuladen.
+            </div>
+                <label class="short left label bold new-line"
+                       for="studentComment">Datei (*.zip):</label>
+                <input type="file"
+                       class="button left"
+                       name="file<?= $sid ?>">
+                <input type="hidden"
+                       name="<?= $sid ?>"
+                       value="<?= $sid ?>">
+        </div>
+    </div>
+</div>
