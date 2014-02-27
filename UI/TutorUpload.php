@@ -1,7 +1,7 @@
 <?php
 /**
- * @file Upload.php
- * Shows a form to upload solutions.
+ * @file TutorUpload.php
+ * Shows a form for tutors for uploading markings.
  *
  * @author Felix Schmidt
  * @author Florian Lücke
@@ -11,107 +11,43 @@
 include_once 'include/Boilerplate.php';
 include_once '../Assistants/Structures.php';
 
-if (isset($_POST['action']) && $_POST['action'] == 'submit') {
-    // handle uploading files
-    /**
-     * @todo don't automatically accept the submission
-     */
-    $timestamp = time();
+// if (isset($_POST['action']) && $_POST['action'] == 'TutorUpload') {
+//     //$fileName = "MarkingFile";
+//     //if (isset($_FILES[$fileName])) {
+//         $file = $_FILES['MarkingFile'];
+//         $error = $file['error'];
 
-    $URL = $databaseURI . '/group/user/' . $uid . '/exercisesheet/' . $sid;
-    $group = http_get($URL, true);
-    $group = json_decode($group, true);
+//         if ($error == 0) {
+//             $filePath = $file['tmp_name'];
+//             $displayName = $file['name'];
 
-    if (!isset($group['leader'])) {
-        $errormsg = "500: Internal Server Error. <br />Zur Zeit können keine Aufgaben eingesendet werden.";
-        $notifications[] = MakeNotification('error',
-                                            $errormsg);
-        Logger::Log('error', "No group set for user {$uid} in course {$cid}!");
-    } else {
+//             // creates the JSON object containing the file
+//             $data = file_get_contents($filePath);
+//             $data = base64_encode($data);
 
-        $leaderId = $group['leader']['id'];
+//             $file = array('timeStamp' => $timestamp,
+//                           'displayName' => $displayName,
+//                           'body' => $data);
 
-        foreach ($_POST['exercises'] as $key => $exercise) {
-            $exerciseId = cleanInput($exercise['exerciseID']);
-            $fileName = "file{$exerciseId}";
+//             $notifications[] = MakeNotification('success', $filePath);
 
-            if (isset($_FILES[$fileName])) {
-                $file = $_FILES[$fileName];
-                $error = $file['error'];
+//             // tutor/user/:userid/exercisesheet/:sheetid(/)
 
-                if ($error === 0) {
-                    $filePath = $file['tmp_name'];
-                    $displayName = $file['name'];
 
-                    // upload the file to the filesystem
-                    $jsonFile = fullUpload($filesystemURI,
-                                           $databaseURI,
-                                           $filePath,
-                                           $displayName,
-                                           $timestamp,
-                                           $message);
+//             // if ($message == "201") {
+//             //     $errormsg = "Die Datei wurde hochgeladen.";
+//             //     $notifications[] = MakeNotification('success',
+//             //                                         $errormsg);
+//             // } else {
+//             //     $errormsg = "Beim Hochladen ist ein Fehler aufgetreten.";
+//             //     $notifications[] = MakeNotification('error',
+//             //                                         $errormsg);
+//             // }
+//         }
+//     //}
+// }
 
-                    if (($message != "201") && ($message != "200")) {
-                        // saving failed
-                        $exercise = $key + 1;
-                        $errormsg = "{$message}: Aufgabe {$exercise} konnte nicht hochgeladen werden.";
-                        $notifications[] = MakeNotification('error',
-                                                            $errormsg);
-                        continue;
-                    } else {
-                        // saving succeeded
-                        $fileObj = json_decode($jsonFile, true);
-                    }
-
-                    $fileId = $fileObj['fileId'];
-
-                    // create a new submission with the file
-                    $comment = cleanInput($exercise['comment']);
-                    $returnedSubmission = submitFile($databaseURI,
-                                                     $uid,
-                                                     $fileId,
-                                                     $exerciseId,
-                                                     $comment,
-                                                     $timestamp,
-                                                     $message);
-
-                    if ($message != "201") {
-                        $exercise = $key + 1;
-                        $errormsg = "{$message}: Aufgabe {$exercise} konnte nicht hochgeladen werden.";
-                        $notifications[] = MakeNotification('error',
-                                                            $errormsg);
-                        continue;
-                    }
-
-                    $returnedSubmission = json_decode($returnedSubmission, true);
-
-                    // make the submission selected
-                    $submissionId = $returnedSubmission['id'];
-                    $returnedSubmission = updateSelectedSubmission($databaseURI,
-                                                                   $leaderId,
-                                                                   $submissionId,
-                                                                   $exerciseId,
-                                                                   $message);
-
-                    if ($message != "201") {
-                        $exercise = $key + 1;
-                        $errormsg = "{$message}: Aufgabe {$exercise} konnte nicht ausgewählt werden.";
-                        $notifications[] = MakeNotification('error',
-                                                            $errormsg);
-                        continue;
-                    }
-
-                    $exercise = $key + 1;
-                    $msg = "Aufgabe {$exercise} wurde erfolgreich eingesendet.";
-                    $notifications[] = MakeNotification('success',
-                                                        $msg);
-                }
-            }
-        }
-    }
-}
-
-// load user data from the database
+// load tutorUpload data from GetSite
 /**
  * @todo Use TutorUpload data. 
  */
