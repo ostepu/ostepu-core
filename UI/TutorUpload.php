@@ -11,50 +11,49 @@
 include_once 'include/Boilerplate.php';
 include_once '../Assistants/Structures.php';
 
-// if (isset($_POST['action']) && $_POST['action'] == 'TutorUpload') {
-//     //$fileName = "MarkingFile";
-//     //if (isset($_FILES[$fileName])) {
-//         $file = $_FILES['MarkingFile'];
-//         $error = $file['error'];
+if (isset($_POST['action']) && $_POST['action'] == 'TutorUpload') {
+    if (isset($_FILES['MarkingFile'])) {
+        /**
+         * @todo Check for *.zip filetype?
+         */
+        $file = $_FILES['MarkingFile'];
+        $error = $file['error'];
 
-//         if ($error == 0) {
-//             $filePath = $file['tmp_name'];
-//             $displayName = $file['name'];
+        if ($error == 0) {
+            $filePath = $file['tmp_name'];
+            $displayName = $file['name'];
 
-//             // creates the JSON object containing the file
-//             $data = file_get_contents($filePath);
-//             $data = base64_encode($data);
+            // creates the JSON object containing the file
+            $data = file_get_contents($filePath);
+            $data = base64_encode($data);
 
-//             $file = array('timeStamp' => $timestamp,
-//                           'displayName' => $displayName,
-//                           'body' => $data);
+            $file = array('timeStamp' => $timestamp,
+                          'displayName' => $displayName,
+                          'body' => $data);
 
-//             $notifications[] = MakeNotification('success', $filePath);
+            // sends the JSON object to the logic
+            $URI = $logicURI . "/tutor/user/{$uid}/exercisesheet/{$sid}";
+            $courseManagement_data = http_post_data($URI, $file, true, $message);
 
-//             // tutor/user/:userid/exercisesheet/:sheetid(/)
-
-
-//             // if ($message == "201") {
-//             //     $errormsg = "Die Datei wurde hochgeladen.";
-//             //     $notifications[] = MakeNotification('success',
-//             //                                         $errormsg);
-//             // } else {
-//             //     $errormsg = "Beim Hochladen ist ein Fehler aufgetreten.";
-//             //     $notifications[] = MakeNotification('error',
-//             //                                         $errormsg);
-//             // }
-//         }
-//     //}
-// }
+            if ($message == "201" || $message == "200") {
+                $errormsg = "Die Datei wurde hochgeladen.";
+                $notifications[] = MakeNotification('success',
+                                                    $errormsg);
+            } else {
+                $errormsg = "Beim Hochladen ist ein Fehler aufgetreten.";
+                $notifications[] = MakeNotification('error',
+                                                    $errormsg);
+            }
+        }
+    }
+}
 
 // load tutorUpload data from GetSite
-/**
- * @todo Use TutorUpload data. 
- */
-$URL = $getSiteURI . "/upload/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
+$URL = $getSiteURI . "/tutorupload/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
 $tutorUpload_data = http_get($URL, false);
 $tutorUpload_data = json_decode($tutorUpload_data, true);
 $tutorUpload_data['filesystemURI'] = $filesystemURI;
+$tutorUpload_data['cid'] = $cid;
 $tutorUpload_data['sid'] = $sid;
 
 $user_course_data = $tutorUpload_data['user'];
