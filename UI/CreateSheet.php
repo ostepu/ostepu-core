@@ -25,6 +25,8 @@ $createsheetData = json_decode($createsheetData, true);
 
 $_SESSION['JSCACHE'] = json_encode($createsheetData['exerciseTypes']);
 
+$errorInSent = false;
+
 if (isset($_POST['action']) && $_POST['action'] == "new") {
     $timestamp = time();
 
@@ -39,12 +41,12 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                           FormEvaluator::REQUIRED,
                           true,
                           'warning',
-                          'Ungültiger Bearbeitungsanfang.');
+                          'Leerer Bearbeitungsanfang.');
     $f->checkStringForKey('endDate',
                           FormEvaluator::REQUIRED,
                           true,
                           'warning',
-                          'Ungültiger Bearbeitungsende.');
+                          'Leerer Bearbeitungsende.');
     $f->checkIntegerForKey('groupSize',
                            FormEvaluator::REQUIRED,
                            'warning',
@@ -55,6 +57,14 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                          true,
                          'warning',
                          'Bitte erstellen Sie mindestens eine Aufgabe.');
+    // check if startDate is not later than endDate and if it matches format
+    $correctDates = true;
+    if (strtotime(str_replace(" - ", " ", $_POST['startDate'])) > strtotime(str_replace(" - ", " ", $_POST['endDate']))
+        || !preg_match("#\d\d.\d\d.\d\d\d\d - \d\d:\d\d#", $_POST['startDate']) || !preg_match("#\d\d.\d\d.\d\d\d\d - \d\d:\d\d#", $_POST['endDate'])) {
+        $correctDates = false;
+        $errormsg = "Überprüfen Sie Bearbeitungsanfang sowie Bearbeitungsende!";
+        array_push($notifications, MakeNotification('warning', $errormsg));
+    }
     // check if sheetPDF is given
     $noFile = false;
     if ($_FILES['sheetPDF']['error'] == 4) {
@@ -64,39 +74,45 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
     }
     // validate subtasks
     $correctExercise = true;
-    foreach ($_POST['exercises'] as $exercise) {
-        // evaluate if subexercises per exercise isnt empty
-        $eval = new FormEvaluator($exercise);
-        $eval->checkArrayForKey('subexercises',
-                                FormEvaluator::REQUIRED,
-                                true,
-                                'warning',
-                                'Ungültige Anzahl an Teilaufgaben.');
-        if ($eval->evaluate(true)) {
-            // evaluate subexercises
-            foreach ($exercise['subexercises'] as $subexercise) {
-                // evaluate given subexercises
-                $subeval = new FormEvaluator($subexercise);
-                $subeval->checkIntegerForKey('maxPoints',
-                                             FormEvaluator::REQUIRED,
-                                             'warning',
-                                             'Ungültige Punkteanzahl angegeben.',
-                                             array('min' => 1));
-                if ($subeval->evaluate(true) == false) {
-                    $notifications = array_merge($notifications, $subeval->notifications);
-                    $correctExercise = false;
-                    break;
+    $validatedExercises = array();
+    if (isset($_POST['exercises']) == true && empty($_POST['exercises']) == false) {
+        foreach ($_POST['exercises'] as $exercise) {
+            // evaluate if subexercises per exercise isnt empty
+            $eval = new FormEvaluator($exercise);
+            $eval->checkArrayForKey('subexercises',
+                                    FormEvaluator::REQUIRED,
+                                    true,
+                                    'warning',
+                                    'Ungültige Anzahl an Teilaufgaben.');
+            if ($eval->evaluate(true)) {
+                // clean Exercises
+                $foundValues = $eval->foundValues;
+                array_push($validatedExercises, $foundValues['subexercises']);
+                // evaluate subexercises
+                foreach ($exercise['subexercises'] as $subexercise) {
+                    // evaluate given subexercises
+                    $subeval = new FormEvaluator($subexercise);
+                    $subeval->checkIntegerForKey('maxPoints',
+                                                 FormEvaluator::REQUIRED,
+                                                 'warning',
+                                                 'Ungültige Punkteanzahl angegeben.',
+                                                 array('min' => 1));
+                    if ($subeval->evaluate() == false) {
+                        $notifications = array_merge($notifications, $subeval->notifications);
+                        $correctExercise = false;
+                        break;
+                    }
                 }
+            }  else {
+                $notifications = array_merge($notifications, $eval->notifications);
+                $correctExercise = false;
+                break;
             }
-        }  else {
-            $notifications = array_merge($notifications, $eval->notifications);
-            $correctExercise = false;
-            break;
         }
     }
-    $errorInSent = false;
+
     // only if validation was correct
-    if ($f->evaluate(true) && $noFile == false && $correctExercise == true) {
+    if ($f->evaluate(true) && $noFile == false && $correctExercise == true && $correctDates == true) {
         // get sheetPDF
         $filePath = $_FILES['sheetPDF']['tmp_name'];
         $displayName = $_FILES['sheetPDF']['name'];
@@ -108,8 +124,8 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
         // create exerciseSheet
         $foundValues = $f->foundValues;
         $sheetName = $foundValues['sheetName'];
-        $startDate = $foundValues['startDate'];
-        $endDate = $foundValues['endDate'];
+        $startDate = strtotime(str_replace(" - ", " ", $foundValues['startDate']));
+        $endDate = strtotime(str_replace(" - ", " ", $foundValues['endDate']));
         $groupSize = $foundValues['groupSize'];
 
         $myExerciseSheet = ExerciseSheet::createExerciseSheet(NULL,$cid,$endDate,$startDate,$groupSize,NULL, NULL,$sheetName);
@@ -146,7 +162,7 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                     if (isset($output['id'])) {
                         $id = $output['id'];
                     }
-                    $subexerciseObj = Exercise::createExercise(NULL,$cid,$id, $subexercise['maxPoints'],$subexercise['exerciseType'],NULL,NULL);
+                    $subexerciseObj = Exercise::createExercise(NULL,$cid,$id, $validatedExercises[$key1][$key2]['maxPoints'],$validatedExercises[$key1][$key2]['exerciseType'],NULL,NULL);
                     // add attachement if given
                     if ($_FILES['exercises']['error'][$key1]['subexercises'][$key2]['attachment'] != 4) {
                         $filePath = $_FILES['exercises']['tmp_name'][$key1]['subexercises'][$key2]['attachment'];

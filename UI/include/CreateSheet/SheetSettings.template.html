@@ -14,10 +14,20 @@
             <input class="form-field left text-input" name="sheetName" placeholder="Bonusserie" id="sheetName" /> (optional)
 
             <label class="form-field left label bold new-line" for="startDate">Bearbeitungsanfang:</label>
-            <input class="form-field left text-input" name="startDate" value="01.01.2013 - 00:00" id="startDate" />
+            <div id="datetimepicker1" class="input-append left date">
+                <input class="form-field text-input" data-format="dd.MM.yyyy - hh:mm" type="text" id="startDate" name="startDate"/>
+                <span class="add-on">
+                  ...
+                </span>
+            </div>
 
             <label class="form-field left label bold new-line" for="endDate">Bearbeitungsende:</label>
-            <input class="form-field left text-input" name="endDate" value="08.01.2013 - 23:59" id="endDate" />
+            <div id="datetimepicker2" class="input-append left date">
+                <input class="form-field text-input" data-format="dd.MM.yyyy - hh:mm" type="text" id="endDate" name="endDate"/>
+                <span class="add-on">
+                  ...
+                </span>
+            </div>
 
             <label class="form-field left label bold new-line" for="sheetPDF">Übungsblatt (PDF):</label>
             <input class="left button" type="file" name="sheetPDF" value="Datei auswählen ..." />

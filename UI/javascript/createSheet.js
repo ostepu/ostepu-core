@@ -5,6 +5,29 @@
 
 
 $(document).ready( function() {
+    $.fn.datetimepicker.dates['de'] = {
+        days: ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag", "Montag"],
+        daysShort: ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So", "Mo"],
+        daysMin: ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So", "Mo"],
+        months: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
+        monthsShort: ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"],
+        today: "Heute"
+    };
+
+    $('#datetimepicker1').datetimepicker({
+      language: 'de',
+      pick12HourFormat: false,
+      pickSeconds: false,
+    });
+
+    $('#datetimepicker2').datetimepicker({
+      language: 'de',
+      pick12HourFormat: false,
+      pickSeconds: false,
+    });
+
+    setCurrentTimeData();
+    
     // suppress Propagation
     $('.collapsible').children('.content-header').find('a').on("click",suppressPropagation);
     $('.interactive.add').children('.content-header').find('a').on("click",suppressPropagation);
@@ -19,6 +42,21 @@ $(document).ready( function() {
     });
     $('.body-option-color.right.deny-button.skip-list-item').on("click",addSubtask);
 });
+
+/**
+ * sets the current time
+ */
+function setCurrentTimeData() {
+    var picker = $('#datetimepicker1').data('datetimepicker');
+    var localDate = picker.getLocalDate();
+
+    picker.setLocalDate(new Date(localDate.getYear()+1900, localDate.getMonth(), localDate.getDate(), 0, 0));
+
+    var picker = $('#datetimepicker2').data('datetimepicker');
+    var localDate = picker.getLocalDate();
+
+    picker.setLocalDate(new Date(localDate.getYear()+1900, localDate.getMonth(), localDate.getDate()+7, 23, 59));
+} 
 
 /**
  * Renames page elements.

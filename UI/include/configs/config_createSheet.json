@@ -9,11 +9,14 @@
         "css/Header.css",
         "css/Forms.css",
         "css/Navigation.css",
-        "css/Notifications.css"
+        "css/Notifications.css",
+        "css/bootstrap-datetimepicker.css"
     ],
     "javascripts":[
         "javascript/retina.js",
         "javascript/jquery-2.0.3.min.js",
+        "javascript/bootstrap.min.js",
+        "javascript/bootstrap-datetimepicker.min.js",
         "javascript/sheets.js",
         "javascript/interactive.js",
         "javascript/createSheet.js"
