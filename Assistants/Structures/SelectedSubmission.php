@@ -109,7 +109,7 @@ class SelectedSubmission extends Object implements JsonSerializable
         return array(
            'U_id_leader' => 'leaderId',
            'S_id_selected' => 'submissionId',
-           'E_id' => 'exerciseId',
+           'E_id' => 'exerciseId'
         );
     }
     

@@ -125,7 +125,7 @@ class Attachment extends Object implements JsonSerializable
         
         if ($this->id != null) $this->addInsertData($values, 'A_id', DBJson::mysql_real_escape_string($this->id));
         if ($this->exerciseId != null) $this->addInsertData($values, 'E_id', DBJson::mysql_real_escape_string($this->exerciseId));
-        if ($this->file != null) $this->addInsertData($values, 'F_id', DBJson::mysql_real_escape_string($this->file->getFileId()));
+        if ($this->file != null && $this->file->getFileId() != null) $this->addInsertData($values, 'F_id', DBJson::mysql_real_escape_string($this->file->getFileId()));
         
         if ($values != ""){
             $values=substr($values,1);
