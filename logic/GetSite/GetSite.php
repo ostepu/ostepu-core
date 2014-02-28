@@ -18,7 +18,7 @@ include_once '../../Assistants/Structures.php';
 class LgetSite
 {
     /**
-     *Values needed for conversation with other components
+     * Values needed for conversation with other components
      */
     private $_conf=null;
 
@@ -35,24 +35,20 @@ class LgetSite
 
 
     /**
-     *Address of the Logic-Controller
-     *dynamic set by CConf below
+     * Address of the logic controller.
      */
     private $lURL = "";
+
     private $flag = 0;
 
     public function __construct($conf)
     {
-        /**
-         *Initialise the Slim-Framework
-         */
+        // Initialize Slim
         $this->app = new \Slim\Slim();
         $this->app->response->headers->set('Content-Type', 'application/json');
-        /**
-         *Set the Logiccontroller-URL
-         */
+
+        // Set the logic controller URL
         $this->_conf = $conf;
-        $this->query = array();
 
         $this->query = CConfig::getLink($conf->getLinks(),"controller");
         $this->lURL = $this->query->getAddress();
@@ -146,15 +142,19 @@ class LgetSite
         // get tutors
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
-        $URL = $this->lURL.'/DB/user/course/'.$courseid.'/status/1'; //status = 1 => Tutor
+
+        // get all users with status 1 (tutor)
+        $URL = $this->lURL.'/DB/user/course/'.$courseid.'/status/1';
         $answer = Request::custom('GET', $URL, $header, $body);
         $tutors = json_decode($answer['content'], true);
 
         if (!empty($tutors)) {
-            foreach ($tutors AS $tutor){
-                //im Rueckgabe-Array für jeden Tutor ein Marking (ohne Submissions) anlegen
+
+            foreach ($tutors as &$tutor){
                 unset($tutor['salt']);
                 unset($tutor['password']);
+
+                // create an empty marking for each tutor
                 $response['tutorAssignments'][] = array('tutor' => $tutor, 'submissions' => array());
             }
         }
@@ -162,15 +162,17 @@ class LgetSite
         // get markings
         $URL = $this->lURL.'/DB/marking/exercisesheet/'.$sheetid;
         $answer = Request::custom('GET', $URL, $header, $body);
-        // fuer jedes Marking die zugeordnete Submision im Rueckgabearray dem passenden Tutor zuweisen
+
+        // assign submissions for the markings to the right tutor
         foreach (json_decode($answer['content'], true) as $marking){
             foreach ($response['tutorAssignments'] as &$tutorAssignment){
                 if ($marking['tutorId'] == $tutorAssignment['tutor']['id']) {
-                    // renames 'id' to 'submissionId'
+
+                    // rename 'id' to 'submissionId'
                     $marking['submission']['submissionId'] = $marking['submission']['id'];
                     unset($marking['submission']['id']);
 
-                    // removes unnecessary information
+                    // remove unnecessary information
                     unset($marking['submission']['file']);
                     unset($marking['submission']['comment']);
                     unset($marking['submission']['accepted']);
@@ -178,7 +180,8 @@ class LgetSite
                     unset($marking['submission']['flag']);
                     unset($marking['submission']['selectedForGroup']);
                     $tutorAssignment['submissions'][] = $marking['submission'];
-                    //ID's aller bereits zugeordneten Submissions speicher
+
+                    // save ids of all assigned submission
                     $assignedSubmissionIDs[] = $marking['submission']['submissionId'];
                     break;
                 }
@@ -189,12 +192,10 @@ class LgetSite
         $URL = $this->lURL.'/DB/selectedsubmission/exercisesheet/'.$sheetid;
         $answer = Request::custom('GET', $URL, $header, $body);
 
-        $virtualTutor = array(
-                    'id' => null,
-                    'userName' => "unassigned",
-                    'firstName' => null,
-                    'lastName' => null
-                    );
+        $virtualTutor = array('id' => null,
+                              'userName' => "unassigned",
+                              'firstName' => null,
+                              'lastName' => null);
 
         $unassignedSubmissions = array();
 
@@ -206,10 +207,10 @@ class LgetSite
                 $unassignedSubmissions[] = $submission;
             }
         }
-        $newTutorAssignment = array(
-            'tutor' => $virtualTutor,
-            'submissions' => $unassignedSubmissions
-                    );
+
+        $newTutorAssignment = array('tutor' => $virtualTutor,
+                                    'submissions' => $unassignedSubmissions);
+
         $response['tutorAssignments'][] = $newTutorAssignment;
 
 
@@ -264,7 +265,7 @@ class LgetSite
 
         $markingStatus = Marking::getStatusDefinition();
 
-        // oder submissions by exercise
+        // order submissions by exercise
         $submissionsByExercise = array();
         foreach ($submissions as &$submission) {
             $exerciseId = $submission['exerciseId'];
@@ -405,9 +406,11 @@ class LgetSite
     public function userWithAllCourses($userid){
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
+
         $URL = $this->lURL.'/DB/user/user/'.$userid;
         $answer = Request::custom('GET', $URL, $header, $body);
         $user = json_decode($answer['content'], true);
+
         $response = array('id' =>  $user['id'],
                           'userName'=>  $user['userName'],
                           'firstName'=>  $user['firstName'],
@@ -415,17 +418,20 @@ class LgetSite
                           'flag'=>  $user['flag'],
                           'email'=>  $user['email'],
                           'courses'=>  array());
+
         foreach ($user['courses'] as $course){
             $newCourse = array('status' => $course['status'],
                                'statusName' => $this->getStatusName($course['status']),
                                'course' => $course['course']);
-           $response['courses'][] = $newCourse;
+            $response['courses'][] = $newCourse;
         }
-        if ($this->flag == 0){
-        $this->app->response->setBody(json_encode($response));}
-        else{
-        $this->flag = 0;
-        return $response;}
+
+        if ($this->flag == 0) {
+            $this->app->response->setBody(json_encode($response));
+        } else {
+            $this->flag = 0;
+            return $response;
+        }
     }
 
     public function accountsettings($userid)
@@ -517,7 +523,7 @@ class LgetSite
         $answer = Request::custom('GET', $URL, $header, $body);
         $possibleExerciseTypes = json_decode($answer['content'], true);
 
-        // oder exercise types by id
+        // order exercise types by id
         $exerciseTypes = array();
         foreach ($possibleExerciseTypes as $exerciseType) {
             $exerciseTypes[$exerciseType['id']] = $exerciseType;
