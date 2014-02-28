@@ -188,9 +188,9 @@ if (isset($_POST['action'])) {
 
         $f->checkStringForKey('userName',
                               FormEvaluator::REQUIRED,
-                              true,
                               'warning',
-                              'Ungültiger Nutzername.');
+                              'Ungültiger Nutzername.',
+                              array('min' => 1));
 
         $f->checkIntegerForKey('rights',
                                FormEvaluator::REQUIRED,

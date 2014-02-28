@@ -35,6 +35,8 @@ if (isset($_POST['MarkingTool'])) {
     foreach ($_POST['exercises'] as $key => $exercises) {
         if ($key == $leaderID) {
             foreach ($exercises as $exerciseId => $exercise) {
+                print json_encode($exercise);
+
                 $maxPoints = cleanInput($exercise['maxPoints']);
 
                 $f = new FormEvaluator($exercise);
@@ -47,9 +49,9 @@ if (isset($_POST['MarkingTool'])) {
 
                 $f->checkStringForKey('tutorComment',
                                       FormEvaluator::OPTIONAL,
-                                      true,
                                       'warning',
-                                      'Ungültiger Kommentar.');
+                                      'Ungültiger Kommentar.',
+                                      array('min' => 1));
 
                 /**
                  * @todo get maxStatusID for FormEvaluator.
@@ -61,18 +63,19 @@ if (isset($_POST['MarkingTool'])) {
                                        array('min' => 0, 'max' => 4));
 
                 if ($f->evaluate(true)) {
+                    print "success";
                     $foundValues = $f->foundValues;
 
                     $tutorComment = $foundValues['tutorComment'];
                     $points = $foundValues['points'];
                     $status = $foundValues['status'];
 
-                    // $msg = "eid: " . $exerciseId;
-                    // $msg .= "; points: " . $points;
-                    // $msg .= "; cmt: " . $tutorComment;
-                    // $msg .= "; status: " . $status;
-                    // $notifications[] = MakeNotification("success", $msg);
-                    
+                    $msg = "eid: " . $exerciseId;
+                    $msg .= "; points: " . $points;
+                    $msg .= "; cmt: " . $tutorComment;
+                    $msg .= "; status: " . $status;
+                    $notifications[] = MakeNotification("success", $msg);
+
                 } else {
                     $notifications = $notifications + $f->notifications;
                 }
