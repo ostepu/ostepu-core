@@ -135,7 +135,8 @@ class LgetSite
         $this->app->run();
     }
 
-    public function tutorAssignmentSiteInfo($userid, $courseid, $sheetid){
+    public function tutorAssignmentSiteInfo($userid, $courseid, $sheetid)
+    {
         $response = array();
         $assignedSubmissionIDs = array();
 
@@ -164,8 +165,8 @@ class LgetSite
         $answer = Request::custom('GET', $URL, $header, $body);
 
         // assign submissions for the markings to the right tutor
-        foreach (json_decode($answer['content'], true) as $marking){
-            foreach ($response['tutorAssignments'] as &$tutorAssignment){
+        foreach (json_decode($answer['content'], true) as $marking ) {
+            foreach ($response['tutorAssignments'] as &$tutorAssignment ) {
                 if ($marking['tutorId'] == $tutorAssignment['tutor']['id']) {
 
                     // rename 'id' to 'submissionId'
@@ -201,8 +202,8 @@ class LgetSite
 
 
         $submissions = json_decode($answer['content'], true);
-        foreach ($submissions as &$submission){
-            if (!in_array($submission['submissionId'], $assignedSubmissionIDs)){
+        foreach ($submissions as &$submission) {
+            if (!in_array($submission['submissionId'], $assignedSubmissionIDs)) {
                 $submission['unassigned'] = true;
                 $unassignedSubmissions[] = $submission;
             }
@@ -385,7 +386,8 @@ class LgetSite
         $this->app->response->setBody(json_encode($response));
     }
 
-    public function userWithCourse($userid, $courseid){
+    public function userWithCourse($userid, $courseid)
+    {
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
 
@@ -403,7 +405,8 @@ class LgetSite
         }
     }
 
-    public function userWithAllCourses($userid){
+    public function userWithAllCourses($userid)
+    {
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
 
@@ -419,7 +422,7 @@ class LgetSite
                           'email'=>  $user['email'],
                           'courses'=>  array());
 
-        foreach ($user['courses'] as $course){
+        foreach ($user['courses'] as $course) {
             $newCourse = array('status' => $course['status'],
                                'statusName' => $this->getStatusName($course['status']),
                                'course' => $course['course']);
@@ -446,7 +449,8 @@ class LgetSite
         $this->app->response->setBody(json_encode($user));
     }
 
-    public function userWithCourseAndHash($userid, $courseid){
+    public function userWithCourseAndHash($userid, $courseid)
+    {
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
 
@@ -477,7 +481,8 @@ class LgetSite
     /**
     * @todo Receive the names from the database instead of defining it here.
     */
-    public function getStatusName($courseStatus){
+    public function getStatusName($courseStatus)
+    {
         $statusNames = CourseStatus::getStatusDefinition();
         return $statusNames[$courseStatus];
     }
@@ -703,7 +708,8 @@ class LgetSite
                                $selector);
     }
 
-    public function uploadHistory($userid, $courseid, $sheetid, $uploaduserid){
+    public function uploadHistory($userid, $courseid, $sheetid, $uploaduserid)
+    {
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
 
@@ -727,7 +733,7 @@ class LgetSite
         }
 
         // add every submission to the response
-        if(!empty($submissions)){
+        if(!empty($submissions)) {
             foreach ($submissions as $submission) {
                 $response['submissionHistory'][] = $submission;
             }
@@ -740,7 +746,8 @@ class LgetSite
     }
 
 
-    public function uploadHistoryOptions($userid, $courseid){
+    public function uploadHistoryOptions($userid, $courseid)
+    {
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
 
@@ -771,7 +778,8 @@ class LgetSite
      *
      * @author Florian Lücke.
      */
-    public function upload($userid, $courseid, $sheetid){
+    public function upload($userid, $courseid, $sheetid)
+    {
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
 
@@ -817,7 +825,8 @@ class LgetSite
         $this->app->response->setBody(json_encode($response));
     }
 
-    public function mainSettings($userid){
+    public function mainSettings($userid)
+    {
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
 
@@ -852,7 +861,8 @@ class LgetSite
         $this->app->response->setBody(json_encode($response));
     }
 
-    public function tutorDozentAdmin($userid, $courseid){
+    public function tutorDozentAdmin($userid, $courseid)
+    {
 
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
@@ -919,7 +929,8 @@ class LgetSite
      *
      * @author Florian Lücke.
      */
-    public function groupSite($userid, $courseid, $sheetid){
+    public function groupSite($userid, $courseid, $sheetid)
+    {
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
         $response = array();
@@ -1228,7 +1239,8 @@ class LgetSite
         $this->app->response->setBody(json_encode($response));
     }
 
-    public function courseManagement($userid, $courseid) {
+    public function courseManagement($userid, $courseid)
+    {
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
 
