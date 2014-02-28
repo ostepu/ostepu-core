@@ -86,6 +86,9 @@ class FormEvaluator {
                 } else {
                     $min = 0;
                 }
+            } else {
+                $min = 0;
+                $max = INF;
             }
 
             if (is_null($possibleValues) == false) {
