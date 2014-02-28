@@ -45,6 +45,7 @@ SELECT
     S.S_accepted as S_accepted2,
     S.S_flag as S_flag2,   
     S.S_leaderId as S_leaderId2,
+    S.S_hideFile as S_hideFile2,
     S.E_id as E_id2": "" ) 
     .
     "

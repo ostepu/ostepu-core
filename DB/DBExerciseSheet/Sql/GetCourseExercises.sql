@@ -17,6 +17,7 @@ select
     E.E_maxPoints,
     E.E_bonus,
     E.E_id_link,
+    E.E_linkName,
     F.F_id,
     F.F_displayName,
     F.F_address,

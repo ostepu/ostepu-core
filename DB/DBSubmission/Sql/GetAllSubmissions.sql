@@ -25,6 +25,7 @@ select
     S.S_accepted,
     S.S_flag,
     S.S_leaderId,
+    S.S_hideFile,
     S.E_id
 from
     Submission S

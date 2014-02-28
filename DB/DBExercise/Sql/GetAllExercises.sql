@@ -16,6 +16,7 @@ select
     E.E_maxPoints,
     E.E_bonus,
     E.E_id_link,
+    E.E_linkName,
     F.F_id,
     F.F_displayName,
     F.F_address,
@@ -35,6 +36,7 @@ select
     SS.S_id_selected as S_selected2,
     S.S_accepted as S_accepted2,
     S.S_leaderId as S_leaderId2,
+    S.S_hideFile as S_hideFile2,
     S.E_id as E_id2": "" ) 
     .
     "

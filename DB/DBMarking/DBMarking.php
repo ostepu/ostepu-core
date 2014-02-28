@@ -160,6 +160,7 @@ class DBMarking
         // GET GetMarking
         $this->_app->get('/' . $this->getPrefix() . '(/marking)/:mid(/)',
                         array($this,'getMarking')); 
+                        
         // GET GetMarkingNoSubmission
         $this->_app->get('/' . $this->getPrefix() . '(/marking)/:mid/nosubmission(/)',
                         array($this,'getMarkingNoSubmission')); 
