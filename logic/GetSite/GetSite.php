@@ -540,7 +540,6 @@ class LgetSite
 
             if ($thisSheetId == $sheetid) {
                 $thisExerciseSheet = $sheet;
-                $exercises = $thisExerciseSheet['exercises'];
             }
 
             unset($sheet['exercises']);
@@ -551,8 +550,9 @@ class LgetSite
         }
 
         // save the index of each exercise and add exercise type name
+        $exercises = array();
         $exerciseIndices = array();
-        foreach ($exercises as $idx => &$exercise) {
+        foreach ($thisExerciseSheet['exercises'] as $idx => $exercise) {
             $exerciseId = $exercise['id'];
             $typeId = $exercise['type'];
 
@@ -564,6 +564,7 @@ class LgetSite
             }
 
             $exerciseIndices[$exerciseId] = $idx;
+            $exercises[] = $exercise;
         }
 
         // save a reference to each user's group and add exercises to each group
