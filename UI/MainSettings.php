@@ -27,13 +27,13 @@ if (isset($_POST['action'])) {
         $f = new FormEvaluator($_POST);
         $f->checkStringForKey('courseName',
                               FormEvaluator::REQUIRED,
-                              true,
                               'warning',
-                              'Ungültiger Kursname.');
+                              'Ungültiger Kursname.',
+                              array('min' => 1));
 
         $f->checkStringForKey('semester',
                               FormEvaluator::REQUIRED,
-                              true,
+                              array('min' => 1),
                               'warning',
                               'Ungültiges Semester.');
 
@@ -148,21 +148,21 @@ if (isset($_POST['action'])) {
         $f = new FormEvaluator($_POST);
         $f->checkStringForKey('lastName',
                               FormEvaluator::REQUIRED,
-                              true,
                               'warning',
-                              'Ungüliger Nachname.');
+                              'Ungüliger Nachname.',
+                              array('min' => 1));
 
         $f->checkStringForKey('firstName',
                               FormEvaluator::REQUIRED,
-                              true,
                               'warning',
-                              'Ungüliger Vorname.');
+                              'Ungüliger Vorname.',
+                              array('min' => 1));
 
         $f->checkStringForKey('userName',
                               FormEvaluator::REQUIRED,
-                              true,
                               'warning',
-                              'Ungüliger Benutzername.');
+                              'Ungüliger Benutzername.',
+                              array('min' => 1));
 
         $f->checkEmailForKey('email',
                               FormEvaluator::REQUIRED,
@@ -170,17 +170,20 @@ if (isset($_POST['action'])) {
                               'warning',
                               'Ungülige E-Mail-Adresse.');
 
+        /**
+         * @todo maybe passwords should have a minuimum length > 1
+         */
         $f->checkStringForKey('password',
                               FormEvaluator::REQUIRED,
-                              true,
                               'warning',
-                              'Ungüliges Passwort.');
+                              'Ungüliges Passwort.',
+                              array('min' => 1));
 
         $f->checkStringForKey('passwordRepeat',
                               FormEvaluator::REQUIRED,
-                              true,
                               'warning',
-                              'Ungüliges Passwort.');
+                              'Ungülige Passwortwiederholung.',
+                              array('min' => 1));
 
         if($f->evaluate(true)) {
 
