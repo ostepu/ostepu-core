@@ -401,9 +401,9 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`SelectedSubmission` (
   `S_id_selected` INT NOT NULL,
   `E_id` INT NOT NULL,
   `ES_id` INT NULL,
-  PRIMARY KEY (`U_id_leader`, `E_id`),
   INDEX `redundanz7` USING BTREE (`ES_id` ASC, `E_id` ASC),
   UNIQUE INDEX `S_id_selected_UNIQUE` (`S_id_selected` ASC),
+  PRIMARY KEY (`E_id`, `U_id_leader`),
   CONSTRAINT `fk_SelectedSubmission_User1`
     FOREIGN KEY (`U_id_leader`)
     REFERENCES `uebungsplattform`.`User` (`U_id`)
@@ -986,18 +986,30 @@ CREATE TRIGGER `SelectedSubmission_BINS` BEFORE INSERT ON `SelectedSubmission` F
 @if not send error message
 @author Lisa, Till*/
 BEGIN
+SET NEW.E_id = (SELECT S.E_id FROM Submission S WHERE S.S_id = NEW.S_id_selected limit 1);
+
+SET NEW.U_id_leader = (SELECT G.U_id_member FROM `Group` G, Submission S WHERE S.S_id = NEW.S_id_selected and G.U_id_leader = S.U_id and G.ES_id = S.ES_id limit 1);
+
+if (NEW.U_id_leader is NULL) then
+SIGNAL sqlstate '23000' set message_text = "no corresponding group leader";
+END if;
+
+
 SET NEW.ES_id = (select E.ES_id from Exercise E, `Group` G, Submission S where 
 E.E_id = NEW.E_id and
- 
 S.S_id = NEW.S_id_selected and 
 G.U_id_leader = S.U_id and 
 NEW.U_id_leader = G.U_id_member and
 G.ES_id = E.ES_id
  limit 1);
+
 if (NEW.ES_id is NULL) then
 SIGNAL sqlstate '45001' set message_text = "no corresponding exercise";
 END if;
-END;$$
+END;
+
+
+$$
 
 USE `uebungsplattform`$$
 CREATE TRIGGER `SelectedSubmission_BUPD` BEFORE UPDATE ON `SelectedSubmission` FOR EACH ROW
@@ -1005,6 +1017,15 @@ CREATE TRIGGER `SelectedSubmission_BUPD` BEFORE UPDATE ON `SelectedSubmission` F
 @if not send error message
 @author Lisa*/
 BEGIN
+SET NEW.E_id = (SELECT S.E_id FROM Submission S WHERE S.S_id = NEW.S_id_selected limit 1);
+
+SET NEW.U_id_leader = (SELECT G.U_id_member FROM `Group` G, Submission S WHERE S.S_id = NEW.S_id_selected and G.U_id_leader = S.U_id and G.ES_id = S.ES_id limit 1);
+
+if (NEW.U_id_leader is NULL) then
+SIGNAL sqlstate '23000' set message_text = "no corresponding group leader";
+END if;
+
+
 SET NEW.ES_id = (select E.ES_id from Exercise E where E.E_id = NEW.E_id limit 1);
 if (NEW.ES_id is NULL) then
 SIGNAL sqlstate '45001' set message_text = "no corresponding exercise";
