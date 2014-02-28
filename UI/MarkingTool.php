@@ -35,7 +35,7 @@ function saveMarking($points, $tutorComment, $status, $submissionID, $markingID)
         $newMarking = Marking::createMarking($markingID, 
                                              null, 
                                              null, 
-                                             $submissionID,
+                                             null,
                                              $tutorComment,
                                              null,
                                              $status,
@@ -61,7 +61,7 @@ function saveMarking($points, $tutorComment, $status, $submissionID, $markingID)
     } elseif ($submissionID == -1 && $markingID == -1) {
         // neither the submission nor the marking exist - both
         // need to be created before adding the marking data
-        
+
         /**
          * @todo Finish this function.
          */
