@@ -550,15 +550,18 @@ class LgetSite
             $this->app->halt(404, '{"code":404,reason":"invalid sheet id"}');
         }
 
-        // save the index of each exercise
+        // save the index of each exercise and add exercise type name
         $exerciseIndices = array();
         foreach ($exercises as $idx => &$exercise) {
             $exerciseId = $exercise['id'];
             $typeId = $exercise['type'];
 
-            $type = $exerciseTypes[$typeId];
-
-            $exercise['typeName'] = $type['name'];
+            if (isset($exerciseTypes[$typeId])) {
+                $type = $exerciseTypes[$typeId];
+                $exercise['typeName'] = $type['name'];
+            } else {
+                $exercise['typeName'] = "unknown";
+            }
 
             $exerciseIndices[$exerciseId] = $idx;
         }
