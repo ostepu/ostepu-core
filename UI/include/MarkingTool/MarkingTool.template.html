@@ -1,10 +1,22 @@
 <?php
 if (!empty($groups)) {
 foreach ($groups as $group):
+
+    $leaderID = $group['leader']['id'];
 ?>
 <div class="content-element">
     <div class="content-header">
-        <div class="content-title left uppercase"><?php print $group['leader']['firstName'] . " " . $group['leader']['lastName']; ?></div>
+
+        <div class="content-title left uppercase">
+            <?php print $group['leader']['firstName'] . " " . $group['leader']['lastName']; ?>
+        </div>
+        <div class="info-color bold right">
+            <button class="text-button info-color bold right" 
+                    name="MarkingTool"
+                    value="<?= $leaderID ?>">
+                    speichern
+            </button>
+        </div>
     </div>
 
     <div class="content-body-wrapper">
@@ -12,11 +24,13 @@ foreach ($groups as $group):
             <ol class="full-width-exercise-list">
                 <?php
                     foreach ($group['exercises'] as $exercise) {
+                    $eid = $exercise['id'];
                 ?>
                 <li>
                     <?php
-                        print '<input class="form-field text-input very-short" name="exercisePoints" value="';
-                        print $exercise['submission']['marking']['points'];
+                        print '<input class="form-field text-input very-short" name="';
+                        print 'exercises[' . $leaderID . '][' . $eid . '][points]" value="';
+                        print isset($exercise['submission']['marking']) ? $exercise['submission']['marking']['points'] : 0;
                         print '" id="exercisePoints" />';
                     ?>
 
@@ -26,17 +40,24 @@ foreach ($groups as $group):
                         ?>
                     </div>
 
+                    <input type="hidden" 
+                           name="exercises[<?= $leaderID ?>][<?= $eid ?>][maxPoints]" 
+                           value="<?= $exercise['maxPoints'] ?>" />
+
                     <?php
-                        print '<input class="form-field text-input" name="markingComment" value="';
+                        print '<input class="form-field text-input" name="';
+                        print 'exercises[' . $leaderID . '][' . $eid . '][tutorComment]" value="';
                         print $exercise['submission']['marking']['tutorComment'];
                         print '" id="markingComment" />';
                     ?>
 
-                    <select class="form-field text-input very-short" name="exerciseType" id="exerciseType"> 
+                    <select class="form-field text-input very-short" 
+                            name="exercises[<?= $leaderID ?>][<?= $eid ?>][status]" 
+                            id="exerciseType"> 
                         <?php
                             foreach ($markingStatus as $status) {
                                 print '<option value="';
-                                print $status['id'] . '"';
+                                print $status['id'] . '" ';
                                 if (isset($exercise['submission']['marking']['status'])) {
                                     print $status['id'] == $exercise['submission']['marking']['status'] ? ' selected="selected"' : NULL;
                                 }

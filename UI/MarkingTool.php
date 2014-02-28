@@ -8,22 +8,79 @@
  */
 
 include_once 'include/Boilerplate.php';
+include_once '../Assistants/Structures.php';
+include_once 'include/FormEvaluator.php';
 
-if (isset($_POST['action'])) {
-    if ($_POST['action'] == "ShowMarkingTool") {
-        if (isset($_POST['sheetID']) && isset($_POST['tutorID']) && isset($_POST['statusID'])) {
-            $sid = cleanInput($_POST['sheetID']);
 
-            if ($_POST['tutorID'] != "all") {
-                $tutorID = cleanInput($_POST['tutorID']);
-            }
 
-            if ($_POST['statusID'] != "all") {
-                $statusID = cleanInput($_POST['statusID']);
+// changes search settings
+if (isset($_POST['action']) && $_POST['action'] == "ShowMarkingTool") {
+    if (isset($_POST['sheetID']) && isset($_POST['tutorID']) && isset($_POST['statusID'])) {
+        $sid = cleanInput($_POST['sheetID']);
+
+        if ($_POST['tutorID'] != "all") {
+            $tutorID = cleanInput($_POST['tutorID']);
+        }
+
+        if ($_POST['statusID'] != "all") {
+            $statusID = cleanInput($_POST['statusID']);
+        }
+    }
+}
+
+// saves marking changes of a group
+if (isset($_POST['MarkingTool'])) {
+    $leaderID = cleanInput($_POST['MarkingTool']);
+
+    foreach ($_POST['exercises'] as $key => $exercises) {
+        if ($key == $leaderID) {
+            foreach ($exercises as $exerciseId => $exercise) {
+                $maxPoints = cleanInput($exercise['maxPoints']);
+
+                $f = new FormEvaluator($exercise);
+
+                $f->checkIntegerForKey('points',
+                                       FormEvaluator::REQUIRED,
+                                       'warning',
+                                       'Ungültige Punktzahl.',
+                                       array('min' => 0, 'max' => $maxPoints));
+
+                $f->checkStringForKey('tutorComment',
+                                      FormEvaluator::OPTIONAL,
+                                      true,
+                                      'warning',
+                                      'Ungültiger Kommentar.');
+
+                /**
+                 * @todo get maxStatusID for FormEvaluator.
+                 */
+                $f->checkIntegerForKey('status',
+                                       FormEvaluator::REQUIRED,
+                                       'warning',
+                                       'Ungültiger Status.',
+                                       array('min' => 0, 'max' => 4));
+
+                if ($f->evaluate(true)) {
+                    $foundValues = $f->foundValues;
+
+                    $tutorComment = $foundValues['tutorComment'];
+                    $points = $foundValues['points'];
+                    $status = $foundValues['status'];
+
+                    // $msg = "eid: " . $exerciseId;
+                    // $msg .= "; points: " . $points;
+                    // $msg .= "; cmt: " . $tutorComment;
+                    // $msg .= "; status: " . $status;
+                    // $notifications[] = MakeNotification("success", $msg);
+                    
+                } else {
+                    $notifications = $notifications + $f->notifications;
+                }
             }
         }
     }
 }
+
 
 // create URI for GetSite
 $URI = $getSiteURI . "/markingtool/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
@@ -72,6 +129,7 @@ $markingElement->bind($markingTool_data);
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $searchSettings, $markingElement);
 $w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, $searchSettings);
+$w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, $markingElement);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
 
