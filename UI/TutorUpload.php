@@ -31,18 +31,20 @@ if (isset($_POST['action']) && $_POST['action'] == 'TutorUpload') {
                           'displayName' => $displayName,
                           'body' => $data);
 
+            $file = json_encode($file);
+
             // sends the JSON object to the logic
             $URI = $logicURI . "/tutor/user/{$uid}/exercisesheet/{$sid}";
-            $courseManagement_data = http_post_data($URI, $file, true, $message);
+            
+            $error = http_post_data($URI, $file, true, $message);
 
             if ($message == "201" || $message == "200") {
                 $errormsg = "Die Datei wurde hochgeladen.";
                 $notifications[] = MakeNotification('success',
                                                     $errormsg);
             } else {
-                $errormsg = "Beim Hochladen ist ein Fehler aufgetreten.";
                 $notifications[] = MakeNotification('error',
-                                                    $errormsg);
+                                                    $error);
             }
         }
     }
