@@ -201,7 +201,7 @@ class LgetSite
 
 
         $submissions = json_decode($answer['content'], true);
-        foreach ($submissions as $submission){
+        foreach ($submissions as &$submission){
             if (!in_array($submission['submissionId'], $assignedSubmissionIDs)){
                 $submission['unassigned'] = true;
                 $unassignedSubmissions[] = $submission;
