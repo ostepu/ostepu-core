@@ -155,7 +155,7 @@ class Exercise extends Object implements JsonSerializable
     }
     
     /**
-     * @var string $linkName The type of points this exercise yields.
+     * @var string $linkName the name of the link.
      */
     private $linkName = null;
     
@@ -287,12 +287,13 @@ class Exercise extends Object implements JsonSerializable
      * @param string $maxPoints the max points
      * @param string $type the id of the exercise type
      * @param string $link the id of the exercise, this exercise belongs to
+     * @param string $linkName the name of the sub exercise.
      * @param string $bonus the bonus flag
      *
      * @return an exercise object
      */
     public static function createExercise($exerciseId,$courseId,$sheetId,
-                                    $maxPoints,$type,$link,$bonus)
+                                    $maxPoints,$type,$link,$bonus,$linkName = null)
     {
         return new Exercise(array('id' => $exerciseId,
         'courseId' => $courseId,
@@ -300,6 +301,7 @@ class Exercise extends Object implements JsonSerializable
         'maxPoints' => $maxPoints, 
         'type' => $type, 
         'link' => $link, 
+        'linkName' => $linkName, 
         'bonus' => $bonus));
     }
     
@@ -317,6 +319,7 @@ class Exercise extends Object implements JsonSerializable
            'E_maxPoints' => 'maxPoints',
            'ET_id' => 'type',
            'E_id_link' => 'link',
+           'E_linkName' => 'linkName',
            'E_submissions' => 'submissions',
            'E_bonus' => 'bonus',
            'E_attachments' => 'attachments',
@@ -338,6 +341,7 @@ class Exercise extends Object implements JsonSerializable
         if ($this->maxPoints != null) $this->addInsertData($values, 'E_maxPoints', DBJson::mysql_real_escape_string($this->maxPoints));
         if ($this->type != null) $this->addInsertData($values, 'ET_id', DBJson::mysql_real_escape_string($this->type));
         if ($this->link != null) $this->addInsertData($values, 'E_id_link', DBJson::mysql_real_escape_string($this->link));
+        if ($this->linkName != null) $this->addInsertData($values, 'E_linkName', DBJson::mysql_real_escape_string($this->linkName));
         if ($this->bonus != null) $this->addInsertData($values, 'E_bonus', DBJson::mysql_real_escape_string($this->bonus));
         
         if ($values != ""){
