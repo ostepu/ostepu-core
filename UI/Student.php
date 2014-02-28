@@ -41,7 +41,7 @@ if (isset($_POST['action'])) {
             $notifications[] = MakeNotification("error", "Beim Löschen ist ein Fehler aufgetreten!");
         }
     } elseif ($_POST['action'] == "ExerciseSheetStudent" && isset($_POST['downloadMarkings'])) {
-        $sid = cleanInput($_POST['downloadAttachments']);
+        $sid = cleanInput($_POST['downloadMarkings']);
         
         $markings = http_get($serverURI . '/logic/Controller/DB/marking/exercisesheet/' . $sid . '/user/' . $uid);
         $markings = json_decode($markings, true);
