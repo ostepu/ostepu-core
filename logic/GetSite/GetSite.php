@@ -150,7 +150,7 @@ class LgetSite
 
         if (!empty($tutors)) {
 
-            foreach ($tutors as &$tutor){
+            foreach ($tutors as &$tutor) {
                 unset($tutor['salt']);
                 unset($tutor['password']);
 
