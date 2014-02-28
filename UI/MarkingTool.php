@@ -11,7 +11,62 @@ include_once 'include/Boilerplate.php';
 include_once '../Assistants/Structures.php';
 include_once 'include/FormEvaluator.php';
 
+/**
+ * Stores a marking in the database.
+ *
+ * @param $points The points of the marking
+ * @param $tutorComment The tutor's comment
+ * @param $status The status of the marking
+ * @param $submissionID The id of the submission, if set, -1 otherwise.
+ * @param $markingID The id of the marking, if set, -1 otherwise.
+ *
+ * @return bool Returns true on success, false otherwise 
+ */
+function saveMarking($points, $tutorComment, $status, $submissionID, $markingID)
+{
+    global $databaseURI;
 
+    // submission and marking already exist and don't 
+    // need to be created before adding the marking data
+    if ($submissionID != -1 && $markingID != -1) {
+        /**
+         * @todo Add current date to marking.
+         */
+        $newMarking = Marking::createMarking($markingID, 
+                                             null, 
+                                             null, 
+                                             $submissionID,
+                                             $tutorComment,
+                                             null,
+                                             $status,
+                                             $points,
+                                             null);
+
+        $newMarking = Marking::encodeMarking($newMarking);
+        $URI = $databaseURI . "/marking/{$markingID}";
+        http_put_data($URI, $newMarking, true, $message);
+
+        if ($message != 201) {
+            return false;
+        } else {
+            return true;
+        }
+    } elseif ($submissionID != -1 && $markingID == -1) {
+        // only the submission exists, the marking still
+        // needs to be created before adding the marking data
+
+        /**
+         * @todo Finish this function.
+         */
+    } elseif ($submissionID == -1 && $markingID == -1) {
+        // neither the submission nor the marking exist - both
+        // need to be created before adding the marking data
+        
+        /**
+         * @todo Finish this function.
+         */
+    }
+}
 
 // changes search settings
 if (isset($_POST['action']) && $_POST['action'] == "ShowMarkingTool") {
@@ -31,13 +86,14 @@ if (isset($_POST['action']) && $_POST['action'] == "ShowMarkingTool") {
 // saves marking changes of a group
 if (isset($_POST['MarkingTool'])) {
     $leaderID = cleanInput($_POST['MarkingTool']);
+    $maxMarkingStatus = cleanInput($_POST['maxMarkingStatus']);
 
     foreach ($_POST['exercises'] as $key => $exercises) {
         if ($key == $leaderID) {
             foreach ($exercises as $exerciseId => $exercise) {
-                print json_encode($exercise);
-
                 $maxPoints = cleanInput($exercise['maxPoints']);
+                $submissionID = cleanInput($exercise['submissionID']);
+                $markingID = cleanInput($exercise['markingID']);
 
                 $f = new FormEvaluator($exercise);
 
@@ -60,21 +116,27 @@ if (isset($_POST['MarkingTool'])) {
                                        FormEvaluator::REQUIRED,
                                        'warning',
                                        'Ungültiger Status.',
-                                       array('min' => 0, 'max' => 4));
+                                       array('min' => 0, 'max' => $maxMarkingStatus));
 
                 if ($f->evaluate(true)) {
-                    print "success";
                     $foundValues = $f->foundValues;
 
-                    $tutorComment = $foundValues['tutorComment'];
                     $points = $foundValues['points'];
+                    $tutorComment = $foundValues['tutorComment'];
                     $status = $foundValues['status'];
 
-                    $msg = "eid: " . $exerciseId;
-                    $msg .= "; points: " . $points;
-                    $msg .= "; cmt: " . $tutorComment;
-                    $msg .= "; status: " . $status;
-                    $notifications[] = MakeNotification("success", $msg);
+                    // $msg = "eid: " . $exerciseId;
+                    // $msg .= "; points: " . $points;
+                    // $msg .= "; cmt: " . $tutorComment;
+                    // $msg .= "; status: " . $status;
+                    // $msg .= "; sub: " . $submissionID;
+                    // $msg .= "; mar: " . $markingID;
+                    // $notifications[] = MakeNotification("success", $msg);
+
+                    
+                    if (saveMarking($points, $tutorComment, $status, $submissionID, $markingID)) {
+                        $notifications[] = MakeNotification("success", "Übung erfolgreich gespeichert.");
+                    }
 
                 } else {
                     $notifications = $notifications + $f->notifications;

@@ -1,12 +1,14 @@
+<input type="hidden" 
+       name="maxMarkingStatus" 
+       value="<?= count($markingStatus) - 1 ?>" />
 <?php
-if (!empty($groups)) {
-foreach ($groups as $group):
+    if (!empty($groups)) {
+    foreach ($groups as $group):
 
     $leaderID = $group['leader']['id'];
 ?>
 <div class="content-element">
     <div class="content-header">
-
         <div class="content-title left uppercase">
             <?php print $group['leader']['firstName'] . " " . $group['leader']['lastName']; ?>
         </div>
@@ -26,6 +28,19 @@ foreach ($groups as $group):
                     foreach ($group['exercises'] as $exercise) {
                     $eid = $exercise['id'];
                 ?>
+
+                <input type="hidden" 
+                       name="exercises[<?= $leaderID ?>][<?= $eid ?>][maxPoints]" 
+                       value="<?= $exercise['maxPoints'] ?>" />
+
+                <input type="hidden" 
+                       name="exercises[<?= $leaderID ?>][<?= $eid ?>][submissionID]" 
+                       value="<?= isset($exercise['submission']) ? $exercise['submission']['id'] : -1 ?>" />
+
+                <input type="hidden" 
+                       name="exercises[<?= $leaderID ?>][<?= $eid ?>][markingID]" 
+                       value="<?= isset($exercise['submission']['marking']) ? $exercise['submission']['marking']['id'] : -1 ?>" />
+
                 <li>
                     <?php
                         print '<input class="form-field text-input very-short" name="';
@@ -38,11 +53,8 @@ foreach ($groups as $group):
                         <?php
                             print '/ ' . $exercise['maxPoints'] . 'P';
                         ?>
+                        <?= $exercise['id'] ?>
                     </div>
-
-                    <input type="hidden" 
-                           name="exercises[<?= $leaderID ?>][<?= $eid ?>][maxPoints]" 
-                           value="<?= $exercise['maxPoints'] ?>" />
 
                     <?php
                         print '<input class="form-field text-input" name="';
