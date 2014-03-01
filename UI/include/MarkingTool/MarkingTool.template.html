@@ -49,9 +49,10 @@
                         print '" id="exercisePoints" />';
                     ?>
 
-                    <div class="form-field label very-short" for="exercisePoints">
+                    <div class="form-field label short" for="exercisePoints">
                         <?php
                             print '/ ' . $exercise['maxPoints'] . 'P';
+                            print $exercise['bonus'] ? ' (*)' : NULL;
                         ?>
                     </div>
 
@@ -113,19 +114,18 @@
                                 print '</a>';
                             }
                         ?>
-                    </div>
 
-                    <?php
-                        $studentComment = $exercise['submission']['comment'];
+                        <?php
+                            $studentComment = $exercise['submission']['comment'];
 
-                        if (!empty($studentComment)) {
-                            print '<a href="javascript:alert(\'';
-                            print $studentComment;
-                            print '\')" class="body-option-color right">';
-                            print 'Kommentar des Studenten';
-                            print '</a>';
-                        }
-                    ?>
+                            if (!empty($studentComment)) {
+                                print '<a href="javascript:alert(\'';
+                                print $studentComment;
+                                print '\')" class="body-option-color exercise-comment right">';
+                                print 'Kommentar (Student)';
+                                print '</a>';
+                            }
+                        ?>
                 </li>
                 <?php
                     }
