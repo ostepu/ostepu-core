@@ -8,8 +8,8 @@
  * @author Ralf Busch
  *
  * @todo choose correct groupsize for no Group (0 or 1)
- * @todo choose correct mimetype and evaluate it in $subeval
  * @todo evaluate correct exercisetype in $subeval
+ * @todo dont reset form if an error exists
  */
 ini_set('error_reporting', -1);
 ini_set('display_errors', 1);
@@ -60,7 +60,8 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
     // check if startDate is not later than endDate and if it matches format
     $correctDates = true;
     if (strtotime(str_replace(" - ", " ", $_POST['startDate'])) > strtotime(str_replace(" - ", " ", $_POST['endDate']))
-        || !preg_match("#\d\d.\d\d.\d\d\d\d - \d\d:\d\d#", $_POST['startDate']) || !preg_match("#\d\d.\d\d.\d\d\d\d - \d\d:\d\d#", $_POST['endDate'])) {
+        || !preg_match("#\d\d.\d\d.\d\d\d\d - \d\d:\d\d#", $_POST['startDate'])
+        || !preg_match("#\d\d.\d\d.\d\d\d\d - \d\d:\d\d#", $_POST['endDate'])) {
         $correctDates = false;
         $errormsg = "Überprüfen Sie Bearbeitungsanfang sowie Bearbeitungsende!";
         array_push($notifications, MakeNotification('warning', $errormsg));
@@ -69,14 +70,14 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
     $noFile = false;
     if ($_FILES['sheetPDF']['error'] == 4) {
         $noFile = true;
-        $errormsg = "Bitte laden sie ein Übungsblatt (PDF) hoch.";
+        $errormsg = "Bitte laden Sie ein Übungsblatt (PDF) hoch.";
         array_push($notifications, MakeNotification('warning', $errormsg));
     }
     // validate subtasks
     $correctExercise = true;
     $validatedExercises = array();
     if (isset($_POST['exercises']) == true && empty($_POST['exercises']) == false) {
-        foreach ($_POST['exercises'] as $exercise) {
+        foreach ($_POST['exercises'] as $key1 => $exercise) {
             // evaluate if subexercises per exercise isnt empty
             $eval = new FormEvaluator($exercise);
             $eval->checkArrayForKey('subexercises',
@@ -89,7 +90,7 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                 $foundValues = $eval->foundValues;
                 array_push($validatedExercises, $foundValues['subexercises']);
                 // evaluate subexercises
-                foreach ($exercise['subexercises'] as $subexercise) {
+                foreach ($exercise['subexercises'] as $key2 => $subexercise) {
                     // evaluate given subexercises
                     $subeval = new FormEvaluator($subexercise);
                     $subeval->checkIntegerForKey('maxPoints',
@@ -109,6 +110,21 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                         $correctExercise = false;
                         break;
                     }
+
+                    // evaluate mime-types
+                    $mimeTypes = explode(",", $subexercise['mime-type']);
+                    foreach ($mimeTypes as &$mimeType) {
+                        if (FILE_TYPE::checkSupportedFileType(trim(strtolower($mimeType))) == false) {
+                            $errormsg = "Sie haben eine nicht unterstützte Dateiendung verwendet.";
+                            array_push($notifications, MakeNotification('warning', $errormsg));
+                            $correctExercise = false;
+                            break;
+                        } else { // if mime-type is supported replace fileending with mimetype
+                            $mimeType = FILE_TYPE::getMimeTypeByFileEnding(trim(strtolower($mimeType)));
+                        }
+                    }
+                    // save mimeTypes in validated Exercises
+                    $validatedExercises[$key1][$key2]['mime-type'] = $mimeTypes;
                 }
             }  else {
                 $notifications = array_merge($notifications, $eval->notifications);
@@ -159,11 +175,11 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
 
         // create subtasks as exercise
         if ($message == 201) {
-            foreach ($_POST['exercises'] as $key1 => $exercise) {
+            foreach ($validatedExercises as $key1 => $exercise) {
 
                 // creation
                 $exercises = array();
-                foreach ($exercise['subexercises'] as $key2 => $subexercise) {
+                foreach ($exercise as $key2 => $subexercise) {
 
                     // create subexercise object
                     if (isset($output['id'])) {
@@ -171,14 +187,15 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                     }
 
                     // set bonus
-                    if (preg_match("#[0-9]+b$#", $validatedExercises[$key1][$key2]['exerciseType']) == true) {
+                    if (preg_match("#[0-9]+b$#", $subexercise['exerciseType']) == true) {
                         $bonus = "1";
                     } else {
                         $bonus = "0";
                     }
 
                     // create exercise
-                    $subexerciseObj = Exercise::createExercise(NULL,$cid,$id, $validatedExercises[$key1][$key2]['maxPoints'],$validatedExercises[$key1][$key2]['exerciseType'],$key1+1,$bonus,$key2+1);
+                    $subexerciseObj = Exercise::createExercise(NULL,$cid,$id, $subexercise['maxPoints'],
+                                                               $subexercise['exerciseType'],$key1+1,$bonus,$key2+1);
                     // add attachement if given
                     if ($_FILES['exercises']['error'][$key1]['subexercises'][$key2]['attachment'] != 4) {
                         $filePath = $_FILES['exercises']['tmp_name'][$key1]['subexercises'][$key2]['attachment'];
@@ -190,6 +207,8 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                         $attachementFile->setBody($data);
                         $subexerciseObj->setAttachments($attachementFile);
                     }
+                    // set FileTypes (only as an array with strings in it)
+                    $subexerciseObj->setFileTypes($subexercise['mime-type']);
                     // add subexercise to exercises
                     array_push($exercises, $subexerciseObj);
                 }
@@ -227,9 +246,6 @@ $h->bind(array("name" => $createsheetData['user']['courses'][0]['course']['name'
 
 Authentication::checkRights(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $createsheetData['user']);
 
-/**
- * @todo combine the templates in a single file
- */
 $sheetSettings = Template::WithTemplateFile('include/CreateSheet/SheetSettings.template.html');
 $sheetSettings->bind($createsheetData['user']);
 
