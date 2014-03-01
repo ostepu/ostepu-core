@@ -117,7 +117,7 @@ class LExercise
                     // set URL for requests to filesystem
                     $URL = $this->lURL.'/FS/file';
 
-                    // upload sampleSolution
+                    // upload Attachment
                     $answer = Request::custom('POST', $URL, $header, $attachmentFile);
                     if($answer['status'] == 201) {
                         $URL = $this->lURL.'/DB/file';
