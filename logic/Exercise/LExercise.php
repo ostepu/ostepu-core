@@ -105,10 +105,6 @@ class LExercise
         $header = $this->app->request->headers->all();
         $body = json_decode($this->app->request->getBody(), true);
 
-        // pointer to the previous subexercise
-        $previousSubexercise = 0;
-        // counter for current subexercise
-        $counter = 1;
         $allright = true;
 
         if (isset($body) == true && empty($body) == false) {
@@ -158,9 +154,6 @@ class LExercise
 
                     if (isset($subexerciseOutput['id'])) {
                         $linkid = $subexerciseOutput['id'];
-                        if ($counter == 1) {
-                            $previousSubexercise = $linkid;
-                        }
                     }
                     // create attachement in DB
                     if (isset($subexercise['attachments']) == true && empty($subexercise['attachments']) == false) {
@@ -173,23 +166,6 @@ class LExercise
                             $allright = false;
                             break;
                         }
-                    }
-                    // update link
-                    $subexerciseObj = Exercise::createExercise(NULL,NULL,NULL, NULL, NULL, $previousSubexercise, NULL);
-                    $subexerciseObjJSON = Exercise::encodeExercise($subexerciseObj);
-                    
-                    $URL = $this->lURL."/DB/exercise/exercise/".$linkid;
-                    $subexercisePutAnswer = Request::custom('PUT', $URL, $header, $subexerciseObjJSON);
-
-                    if ($subexercisePutAnswer['status'] == 201) {
-                        if ($counter > 1) {
-                            $previousSubexercise = $linkid;
-                        }
-
-                        $counter++;
-                    } else {
-                        $allright = false;
-                        break;
                     }
                 } else {
                     $allright = false;
