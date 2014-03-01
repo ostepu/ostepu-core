@@ -145,6 +145,8 @@ class LExercise
                 }
 
                 // create exercise in DB
+                $FileTypesArrayTemp = $subexercise['fileTypes'];
+                unset($subexercise['fileTypes']);
                 $subexerciseJSON = json_encode($subexercise);
                 $URL = $this->lURL.'/DB/exercise';
                 $subexerciseAnswer = Request::custom('POST', $URL, $header, $subexerciseJSON);
@@ -167,6 +169,23 @@ class LExercise
                             break;
                         }
                     }
+
+                    // create ExerciseFileTypes
+                    foreach ($FileTypesArrayTemp as $fileType) {
+                        $myExerciseFileType = ExerciseFileType::createExerciseFileType(NULL,$fileType,$linkid);
+                        $myExerciseFileTypeJSON = ExerciseFileType::encodeExerciseFileType($myExerciseFileType);
+                        $URL = $this->lURL."/DB/exercisefiletype";
+                        $AttachmentAnswer = Request::custom('POST', $URL, $header, $myExerciseFileTypeJSON);
+
+                        if ($AttachmentAnswer['status'] != 201) {
+                            $allright = false;
+                            break;
+                        }
+                    }
+                    if ($allright == false) {
+                        break;
+                    }
+                    
                 } else {
                     $allright = false;
                     break;
