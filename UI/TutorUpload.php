@@ -13,38 +13,45 @@ include_once '../Assistants/Structures.php';
 
 if (isset($_POST['action']) && $_POST['action'] == 'TutorUpload') {
     if (isset($_FILES['MarkingFile'])) {
-        /**
-         * @todo Check for *.zip filetype?
-         */
         $file = $_FILES['MarkingFile'];
         $error = $file['error'];
 
         if ($error == 0) {
             $filePath = $file['tmp_name'];
             $displayName = $file['name'];
+            $type = $file["type"];
 
-            // creates the JSON object containing the file
-            $data = file_get_contents($filePath);
-            $data = base64_encode($data);
+            // checks file ending
+            if ($type == "application/zip") {
 
-            $file = array('timeStamp' => $timestamp,
-                          'displayName' => $displayName,
-                          'body' => $data);
+                // creates the JSON object containing the file
+                $data = file_get_contents($filePath);
 
-            $file = json_encode($file);
+                $data = base64_encode($data);
 
-            // sends the JSON object to the logic
-            $URI = $logicURI . "/tutor/user/{$uid}/exercisesheet/{$sid}";
-            
-            $error = http_post_data($URI, $file, true, $message);
+                $file = array('timeStamp' => $timestamp,
+                              'displayName' => $displayName,
+                              'body' => $data);
 
-            if ($message == "201" || $message == "200") {
-                $errormsg = "Die Datei wurde hochgeladen.";
-                $notifications[] = MakeNotification('success',
-                                                    $errormsg);
+                $file = json_encode($file);
+
+                // sends the JSON object to the logic
+                $URI = $logicURI . "/tutor/user/{$uid}/exercisesheet/{$sid}";
+                
+                $error = http_post_data($URI, $file, true, $message);
+
+                if ($message == "201" || $message == "200") {
+                    $successmsg = "Die Datei wurde hochgeladen.";
+                    $notifications[] = MakeNotification('success',
+                                                        $successmsg);
+                } else {
+                    $notifications[] = MakeNotification('error',
+                                                        $error);
+                }
             } else {
+                $errormsg = "Es handelt sich nicht um ein *.zip-Archiv.";
                 $notifications[] = MakeNotification('error',
-                                                    $error);
+                                                    $errormsg);
             }
         }
     }
