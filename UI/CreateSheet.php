@@ -102,6 +102,13 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                         $correctExercise = false;
                         break;
                     }
+                    // evaluate ExerciseTypes
+                    if (preg_match("#[0-9]+b?$#", $subexercise['exerciseType']) == false) {
+                        $errormsg = "Falsche Exercise Typen.";
+                        array_push($notifications, MakeNotification('warning', $errormsg));
+                        $correctExercise = false;
+                        break;
+                    }
                 }
             }  else {
                 $notifications = array_merge($notifications, $eval->notifications);
@@ -163,8 +170,15 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                         $id = $output['id'];
                     }
 
-                    // create Excercise
-                    $subexerciseObj = Exercise::createExercise(NULL,$cid,$id, $validatedExercises[$key1][$key2]['maxPoints'],$validatedExercises[$key1][$key2]['exerciseType'],$key1+1,false,$key2+1);
+                    // set bonus
+                    if (preg_match("#[0-9]+b$#", $validatedExercises[$key1][$key2]['exerciseType']) == true) {
+                        $bonus = "1";
+                    } else {
+                        $bonus = "0";
+                    }
+
+                    // create exercise
+                    $subexerciseObj = Exercise::createExercise(NULL,$cid,$id, $validatedExercises[$key1][$key2]['maxPoints'],$validatedExercises[$key1][$key2]['exerciseType'],$key1+1,$bonus,$key2+1);
                     // add attachement if given
                     if ($_FILES['exercises']['error'][$key1]['subexercises'][$key2]['attachment'] != 4) {
                         $filePath = $_FILES['exercises']['tmp_name'][$key1]['subexercises'][$key2]['attachment'];

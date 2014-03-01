@@ -15,9 +15,10 @@
                         <?php
                         session_start();
                         if (isset($_SESSION['JSCACHE'])) {
-                            $cache = json_decode($_SESSION['JSCACHE']);
+                            $cache = json_decode($_SESSION['JSCACHE'], true);
                             foreach ($cache as $excercisetype) {
-                                print "<option value=\"".$excercisetype->exerciseTypeId."\">".$excercisetype->name."</option>";
+                                print "<option value=\"".$excercisetype['exerciseTypeId']."\">".$excercisetype['name']."</option>";
+                                print "<option value=\"".$excercisetype['exerciseTypeId']."b\">".$excercisetype['name']." (Bonus)</option>";
                             }
                         }
                         ?>
