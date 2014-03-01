@@ -162,7 +162,9 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                     if (isset($output['id'])) {
                         $id = $output['id'];
                     }
-                    $subexerciseObj = Exercise::createExercise(NULL,$cid,$id, $validatedExercises[$key1][$key2]['maxPoints'],$validatedExercises[$key1][$key2]['exerciseType'],NULL,NULL);
+
+                    // create Excercise
+                    $subexerciseObj = Exercise::createExercise(NULL,$cid,$id, $validatedExercises[$key1][$key2]['maxPoints'],$validatedExercises[$key1][$key2]['exerciseType'],$key1+1,false,$key2+1);
                     // add attachement if given
                     if ($_FILES['exercises']['error'][$key1]['subexercises'][$key2]['attachment'] != 4) {
                         $filePath = $_FILES['exercises']['tmp_name'][$key1]['subexercises'][$key2]['attachment'];
@@ -219,11 +221,10 @@ $sheetSettings->bind($createsheetData['user']);
 
 $createExercise = Template::WithTemplateFile('include/CreateSheet/CreateExercise.template.html');
 
-$exerciseSettings = Template::WithTemplateFile('include/CreateSheet/ExerciseSettings.template.php');
 
 // wrap all the elements in some HTML and show them on the page
-$w = new HTMLWrapper($h, $sheetSettings, $createExercise, $exerciseSettings);
-$w->defineForm(basename(__FILE__)."?cid=".$cid, true, $sheetSettings, $createExercise, $exerciseSettings);
+$w = new HTMLWrapper($h, $sheetSettings, $createExercise);
+$w->defineForm(basename(__FILE__)."?cid=".$cid, true, $sheetSettings, $createExercise);
 $w->set_config_file('include/configs/config_createSheet.json');
 $w->show();
 
