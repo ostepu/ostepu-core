@@ -149,41 +149,38 @@ if (isset($_POST['action'])) {
         $f->checkStringForKey('lastName',
                               FormEvaluator::REQUIRED,
                               'warning',
-                              'Ungüliger Nachname.',
+                              'Ungültiger Nachname.',
                               array('min' => 1));
 
         $f->checkStringForKey('firstName',
                               FormEvaluator::REQUIRED,
                               'warning',
-                              'Ungüliger Vorname.',
+                              'Ungültiger Vorname.',
                               array('min' => 1));
 
         $f->checkStringForKey('userName',
                               FormEvaluator::REQUIRED,
                               'warning',
-                              'Ungüliger Benutzername.',
+                              'Ungültiger Benutzername.',
                               array('min' => 1));
 
         $f->checkEmailForKey('email',
                               FormEvaluator::REQUIRED,
                               true,
                               'warning',
-                              'Ungülige E-Mail-Adresse.');
+                              'Ungültige E-Mail-Adresse.');
 
-        /**
-         * @todo maybe passwords should have a minuimum length > 1
-         */
         $f->checkStringForKey('password',
                               FormEvaluator::REQUIRED,
                               'warning',
-                              'Ungüliges Passwort.',
-                              array('min' => 1));
+                              'Ungültiges Passwort.',
+                              array('min' => 6));
 
         $f->checkStringForKey('passwordRepeat',
                               FormEvaluator::REQUIRED,
                               'warning',
-                              'Ungülige Passwortwiederholung.',
-                              array('min' => 1));
+                              'Ungültige Passwortwiederholung.',
+                              array('min' => 6));
 
         if($f->evaluate(true)) {
 
