@@ -467,7 +467,7 @@ function updateSelectedSubmission($databaseURI,
  *
  * @param string $databaseURI The url at which the database server is running.
  * @param int $userid The id of the user that submitted the file.
- * @param int $fileId The id of the file that the uder submitted.
+ * @param int $fileId The id of the file that the user submitted.
  * @param int $exerciseId The id of the exercise the submission is for.
  * @param string $comment A comment the uder left on the submission.
  * @param int $timestapm The UNIX timestamp of the submission

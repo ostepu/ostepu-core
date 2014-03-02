@@ -1,0 +1,25 @@
+<form action="TutorUpload.php?cid=<?= $cid ?>&sid=<?= $sid ?>" method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="action" value="TutorUpload">
+    <div class="content-element">
+        <div class="content-header">
+            <div class="content-title left uppercase">
+                <?= $sheetName ?>
+            </div>
+            <button class="text-button info-color bold right">
+                absenden
+            </button>
+        </div>
+        <div class="content-body-wrapper">
+            <div class="content-body left">
+                <div class="content-description">
+                    Geben Sie hier den Speicherort der *.zip-Datei mit den korrigierten Einsendungen
+                    an und klicken Sie anschließend auf "absenden", um die Einsendungen hochzuladen.
+                </div>
+                <label class="short left label bold new-line">
+                    Datei (*.zip):
+                </label>
+                <input type="file" class="button left" name="MarkingFile">
+            </div>
+        </div>
+    </div>
+</form>

@@ -27,13 +27,13 @@ if (isset($_POST['action'])) {
         $f = new FormEvaluator($_POST);
         $f->checkStringForKey('courseName',
                               FormEvaluator::REQUIRED,
-                              true,
                               'warning',
-                              'Ungültiger Kursname.');
+                              'Ungültiger Kursname.',
+                              array('min' => 1));
 
         $f->checkStringForKey('semester',
                               FormEvaluator::REQUIRED,
-                              true,
+                              array('min' => 1),
                               'warning',
                               'Ungültiges Semester.');
 
@@ -102,45 +102,85 @@ if (isset($_POST['action'])) {
         }
     }
 
+    if ($_POST['action'] == "SetAdmin") {
+        // check if POST data is send
+        if(isset($_POST['courseID']) && isset($_POST['userName'])) {
+            // clean Input
+            $courseID = cleanInput($_POST['courseID']);
+            $userName = cleanInput($_POST['userName']);
+
+            // extracts the userID
+            $URI = $databaseURI . "/user/user/{$userName}";
+            $user_data = http_get($URI, true);
+            $user_data = json_decode($user_data, true);
+
+            // sets admin rights for the user
+            if (empty($user_data)) {
+                $notifications[] = MakeNotification("error", "Ungültiges Kürzel.");
+            } else {
+                $userID = $user_data['id'];
+                $status = 3;
+
+                $data = User::encodeUser(User::createCourseStatus($userID, $courseID, $status));
+                $url = $databaseURI . "/coursestatus";
+                http_post_data($url, $data, true, $message);
+
+                if ($message != "201") {
+                    $data = User::encodeUser(User::createCourseStatus($userID, $courseID, $status));
+                    $url = $databaseURI . "/coursestatus/course/{$courseID}/user/{$userID}";
+                    http_put_data($url, $data, true, $message);
+
+                    if ($message == "201") {
+                        $notifications[] = MakeNotification("success", "Der Admin wurde eingetragen.");
+                    } else {
+                        $notifications[] = MakeNotification("error", "Beim Eintragen ist ein Fehler aufgetreten.");
+                    }
+                } else {
+                    $notifications[] = MakeNotification("success", "Der Admin wurde eingetragen.");
+                }
+            }
+        }
+    }
+
     // creates a new user
     if ($_POST['action'] == "CreateUser") {
 
         $f = new FormEvaluator($_POST);
         $f->checkStringForKey('lastName',
                               FormEvaluator::REQUIRED,
-                              true,
                               'warning',
-                              'Ungüliger Nachname.');
+                              'Ungültiger Nachname.',
+                              array('min' => 1));
 
         $f->checkStringForKey('firstName',
                               FormEvaluator::REQUIRED,
-                              true,
                               'warning',
-                              'Ungüliger Vorname.');
+                              'Ungültiger Vorname.',
+                              array('min' => 1));
 
         $f->checkStringForKey('userName',
                               FormEvaluator::REQUIRED,
-                              true,
                               'warning',
-                              'Ungüliger Benutzername.');
+                              'Ungültiger Benutzername.',
+                              array('min' => 1));
 
         $f->checkEmailForKey('email',
                               FormEvaluator::REQUIRED,
                               true,
                               'warning',
-                              'Ungülige E-Mail-Adresse.');
+                              'Ungültige E-Mail-Adresse.');
 
         $f->checkStringForKey('password',
                               FormEvaluator::REQUIRED,
-                              true,
                               'warning',
-                              'Ungüliges Passwort.');
+                              'Ungültiges Passwort.',
+                              array('min' => 6));
 
         $f->checkStringForKey('passwordRepeat',
                               FormEvaluator::REQUIRED,
-                              true,
                               'warning',
-                              'Ungüliges Passwort.');
+                              'Ungültige Passwortwiederholung.',
+                              array('min' => 6));
 
         if($f->evaluate(true)) {
 
@@ -188,6 +228,35 @@ if (isset($_POST['action'])) {
             $notifications = $notifications + $f->notifications;
         }
     }
+
+    // deletes an user
+    if ($_POST['action'] == "DeleteUser") {
+        if(isset($_POST['userName'])) {
+            // clean Input
+            $userName = cleanInput($_POST['userName']);
+
+            // extracts the userID
+            $URI = $databaseURI . "/user/user/{$userName}";
+            $user_data = http_get($URI, true);
+            $user_data = json_decode($user_data, true);
+
+            if (empty($user_data)) {
+                $notifications[] = MakeNotification("error", "Ungültiges Kürzel.");
+            } else {
+                $userID = $user_data['id'];
+
+                // deletes the user
+                $url = $databaseURI . "/user/{$userID}";
+                http_delete($url, true, $message);
+
+                if ($message == "201") {
+                    $notifications[] = MakeNotification("success", "Der Nutzer wurde erfolgreich gelöscht.");
+                } else {
+                    $notifications[] = MakeNotification("error", "Beim Löschen ist ein Fehler aufgetreten.");
+                }
+            }
+        }
+    }
 }
 
 // load mainSettings data from GetSite
@@ -212,6 +281,9 @@ if (count($notifications) != 0) {
     $createCourse->bind($_POST);
 }
 
+// construct a content element for setting admins
+$setAdmin = Template::WithTemplateFile('include/MainSettings/SetAdmin.template.html');
+$setAdmin->bind($mainSettings_data);
 
 // construct a content element for creating new users
 $createUser = Template::WithTemplateFile('include/MainSettings/CreateUser.template.html');
@@ -227,8 +299,9 @@ $deleteUser = Template::WithTemplateFile('include/MainSettings/DeleteUser.templa
  */
 
 // wrap all the elements in some HTML and show them on the page
-$w = new HTMLWrapper($h, $createCourse, $createUser, $deleteUser);
+$w = new HTMLWrapper($h, $createCourse, $setAdmin, $createUser, $deleteUser);
 $w->defineForm(basename(__FILE__), false, $createCourse);
+$w->defineForm(basename(__FILE__), false, $setAdmin);
 $w->defineForm(basename(__FILE__), false, $createUser);
 $w->defineForm(basename(__FILE__), false, $deleteUser);
 $w->set_config_file('include/configs/config_default.json');

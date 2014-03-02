@@ -13,7 +13,11 @@
                 Hier können die Grunddaten der aktuellen Veranstaltung verändert werden.
             </div>
             <label class="form-field left label bold" for="courseName">Veranstaltungsname:</label>
-            <input class="form-field left text-input" name="courseName" value="<?= $course['name'] ?>" id="courseName" />
+            <input class="form-field left text-input" 
+                   name="courseName" 
+                   value="<?= $course['name'] ?>" 
+                   id="courseName"
+                   maxlength="255" />
 
             <label class="form-field left label bold new-line" for="semester">Semester:</label>
             <select class="form-field left text-input short" name="semester" id="semester">
@@ -48,7 +52,7 @@
                 Max. Gruppengröße (Standardwert):
             </label>
             <input class="form-field left text-input short" name="defaultGroupSize"
-            value="<?= $course['defaultGroupSize']; ?>" id="defaultGroupSize" />
+            value="<?= $course['defaultGroupSize']; ?>" id="defaultGroupSize" maxlength="3" />
 
             <label class="form-field left label bold new-line" for="defaultExerciseTypes">
                 Zugelassene Punktearten:

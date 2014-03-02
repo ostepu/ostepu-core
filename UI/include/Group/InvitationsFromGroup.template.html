@@ -7,7 +7,7 @@
 
     <div class="content-body-wrapper">
         <div class="content-body left">
-            <?php $emptyGroupMembers = $groupSize - count($group['members']) - 1; ?>
+            <?php $emptyGroupMembers = $groupSize - count($group['members']) - count($invitationsFromGroup) - 1; ?>
             <div class="content-description">
                 <?php if ($emptyGroupMembers > 0): ?>
                 Geben Sie hier die Kürzel der Nutzer an, welche der Gruppe beitreten sollen.

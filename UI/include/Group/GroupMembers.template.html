@@ -15,38 +15,50 @@
     <div class="content-body-wrapper">
         <div class="content-body left">
             <?php if ($isInGroup): ?>
+            <div class="content-description">
+                Achtung: Wenn Sie die Gruppe verlassen, werden Ihre bisherigen Einsendungen gelöscht.
+            </div>
+            <?php endif; ?>
+            <?php if ($isInGroup): ?>
                 <ol class="exercise-list invitation-list">
-                <li class="bold">
-                    <?php
+                <?php
+                    // prints group leader
+                    print '<li class="bold">';
                     $leader = $group['leader'];
 
-                    if (isset($leader['firstName']) && isset($leader['lastName'])) {
-                        print $leader['firstName'] . " " . $leader['lastName'];
-                    } else {
-                        print $leader['userName'];
-                    }
+                    print $leader['firstName'] . " " . $leader['lastName'];
                     print ' (Gruppenführer)';
+                    print '</li>';
 
-                    if ($leader['id'] != $uid && $isLeader) {
-                        print '<button name="removeMember" value="';
-                        print $leader['id'];
-                        print '" class="right text-button body-option-color">hinauswerfen</button>'. "\n";
-                    }
-                    ?>
-                </li>
-                <?php 
-                foreach ($group['members'] as $member) {
-                    print "<li>\n";
-                    print $member['firstName'] . " " . $member['lastName'];
 
-                    if ($isLeader) {
-                        print '<button name="removeMember" value="';
-                        print $member['id'];
-                        print '" class="right text-button body-option-color">hinauswerfen</button>';
+                    // prints group members
+                    foreach ($group['members'] as $member) {
+                        print "<li>";
+                        print $member['firstName'] . " " . $member['lastName'];
+
+                        if ($isLeader) {
+                            print '<button name="removeMember" value="';
+                            print $member['id'];
+                            print '" class="right text-button body-option-color">aus Gruppe entfernen</button>';
+                        }
+
+                        print "</li>";
                     }
 
-                    print "</li>";
-                }
+                    // prints group invitations
+                    foreach ($invitationsFromGroup as $invitationFromGroup) {
+                        $member = $invitationFromGroup['member'];
+                        print "<li>Ausstehend: ";
+                        print $member['firstName'] . " " . $member['lastName'];
+
+                        if ($isLeader) {
+                            print '<button name="removeInvitation" value="';
+                            print $member['id'];
+                            print '" class="right text-button body-option-color">Einladung zurücknehmen</button>';
+                        }
+
+                        print "</li>";
+                    }
                 ?>
             </ol>
             <?php else: ?>

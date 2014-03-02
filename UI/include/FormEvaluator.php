@@ -66,7 +66,7 @@ class FormEvaluator {
     // checks if $this->formValues[$key] contains a valid string
     private function evaluateString($key,
                                     $required,
-                                    $notEmpty,
+                                    $length,
                                     $possibleValues,
                                     $notIn) {
 
@@ -74,11 +74,21 @@ class FormEvaluator {
             // the value is set
             $value = $this->formValues[$key];
 
-            if ($value == '') {
-                if ($notEmpty == true) {
-                    // the value is empty, biut it should not be
-                    return false;
+            if (is_null($length) == false) {
+                if (isset($length['max'])) {
+                    $max = $length['max'];
+                } else {
+                    $max = INF;
                 }
+
+                if (isset($length['min'])) {
+                    $min = $length['min'];
+                } else {
+                    $min = 0;
+                }
+            } else {
+                $min = 0;
+                $max = INF;
             }
 
             if (is_null($possibleValues) == false) {
@@ -98,7 +108,11 @@ class FormEvaluator {
                 }
             }
 
-            return $value;
+            if (strlen($value) <= $max && strlen($value) >= $min) {
+                return $value;
+            } else {
+                return false;
+            }
 
         } elseif ($required == true) {
             // the value is not set and is required
@@ -282,12 +296,12 @@ class FormEvaluator {
             if ($type == 'string') {
                 $oneOf = $value['oneOf'];
                 $notIn = $value['notIn'];
-                $notEmpty = $value['notEmpty'];
+                $length = $value['length'];
 
                 // check if the value for $key is valid
                 $result = $this->evaluateString($key,
                                                 $required,
-                                                $notEmpty,
+                                                $length,
                                                 $oneOf,
                                                 $notIn);
             } elseif ($type == 'number') {
@@ -348,11 +362,12 @@ class FormEvaluator {
      * this key, false otherwise.
      * @see FormEvaluator::REQUIRED
      * @see FormEvaluator::OPTIONAL
-     * @param bool $notEmpty True if the value for $key should not be an empty
-     * string, false otherwise.
      * @param string $messageType The type of message that is generated when
      * an error occurs.
      * @param string $message The message that is returned on error.
+     * @param bool $length (optional) An associative array with optional keys
+     * 'min' and 'max' that contain a number that corresponds to the minimum
+     * and maximum value of $key's value (inclusive).
      * @param array $oneOf (optional) An array of values that are valid for
      * this string.
      * @param bool $notIn (optional) True if the value for $key may not be one
@@ -361,16 +376,16 @@ class FormEvaluator {
      */
     public function checkStringForKey($key,
                                       $required,
-                                      $notEmpty,
                                       $messageType,
                                       $message,
+                                      $length = NULL,
                                       $oneOf = NULL,
                                       $notIn = false)
     {
         $this->values[] = array('key' => $key,
                                 'type' => 'string',
                                 'required' => $required,
-                                'notEmpty' => $notEmpty,
+                                'length' => $length,
                                 'messageType' => $messageType,
                                 'message' => $message,
                                 'oneOf' => $oneOf,
@@ -416,7 +431,7 @@ class FormEvaluator {
      * @param string $messageType The type of message that is generated when
      * an error occurs.
      * @param string $message The message that is returned on error.
-     * @param array $range (optional) an associative array with optional keys
+     * @param array $range (optional) An associative array with optional keys
      * 'min' and 'max' that contain a number that corresponds to the minimum
      * and maximum value of $key's value (inclusive).
      * @param bool $notIn (optional) If true reverse the meaning of $range, to
