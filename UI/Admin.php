@@ -12,23 +12,7 @@ include_once 'include/Boilerplate.php';
 
 if (isset($_POST['action'])) {
     if ($_POST['action'] == "ExerciseSheetLecturer" && isset($_POST['downloadAttachments'])) {
-        $sid = cleanInput($_POST['downloadAttachments']);
-
-        $attachments = http_get($serverURI . '/logic/Controller/DB/attachment/exercisesheet/' . $sid);
-        $attachments = json_decode($attachments, true);
-
-        $files = array();
-        foreach ($attachments as $attachment) {
-            $files[] = $attachment['file'];
-        }
-
-        $fileString = json_encode($files);
-
-        $zipfile = http_post_data($filesystemURI . '/' . 'zip',  $fileString);
-        $zipfile = json_decode($zipfile, true);
-
-        $location = $filesystemURI . '/' . $zipfile['address'];
-        header("Location: {$location}/attachments.zip");
+        downloadAttachmentsOfSheet($_POST['downloadAttachments']);
     }
     if ($_POST['action'] == "ExerciseSheetLecturer" && isset($_POST['downloadCSV'])) {
         $sid = cleanInput($_POST['downloadCSV']);

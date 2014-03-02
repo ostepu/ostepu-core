@@ -463,7 +463,7 @@ function updateSelectedSubmission($databaseURI,
 }
 
 /**
- * Creates a submission for a file
+ * Creates a submission for a file.
  *
  * @param string $databaseURI The url at which the database server is running.
  * @param int $userid The id of the user that submitted the file.
@@ -501,6 +501,26 @@ function submitFile($databaseURI,
                                          $message);
 
     return $returnedSubmission;
+}
+
+/**
+ * Starts download of all attachments of a sheet.
+ *
+ * @param $sheetId The id of the sheet whose attachments are downloaded.
+ */
+function downloadAttachmentsOfSheet($sheetId)
+{
+    $tokenString = "downloadAttachments{$sid}{$uid}";
+    $token = md5($tokenString);
+
+    $sid = cleanInput($_POST['downloadAttachments']);
+
+    if (!isset($_SESSION['downloads'][$token])) {
+        $_SESSION['downloads'][$token] = array('download' => 'attachments',
+                                               'sid' => $sid);
+    }
+
+    header("Location: Download.php?t={$token}");
 }
 
 ?>

@@ -11,23 +11,8 @@
 include_once 'include/Boilerplate.php';
 
 if (isset($_POST['downloadAttachments'])) {
-    $sid = cleanInput($_POST['downloadAttachments']);
+    downloadAttachmentsOfSheet($_POST['downloadAttachments']);
 
-    $attachments = http_get($serverURI . '/logic/Controller/DB/attachment/exercisesheet/' . $sid);
-    $attachments = json_decode($attachments, true);
-
-    $files = array();
-    foreach ($attachments as $attachment) {
-        $files[] = $attachment['file'];
-    }
-
-    $fileString = json_encode($files);
-
-    $zipfile = http_post_data($filesystemURI . '/zip',  $fileString);
-    $zipfile = json_decode($zipfile, true);
-
-    $location = $filesystemURI . '/' . $zipfile['address'];
-    header("Location: {$location}/attachments.zip");
 } elseif (isset($_POST['deleteSubmission'])) {
     $suid = cleanInput($_POST['deleteSubmission']);
 
@@ -39,6 +24,7 @@ if (isset($_POST['downloadAttachments'])) {
     } else {
         $notifications[] = MakeNotification("error", "Beim Löschen ist ein Fehler aufgetreten!");
     }
+
 } elseif (isset($_POST['downloadMarkings'])) {
     $sid = cleanInput($_POST['downloadAttachments']);
 
