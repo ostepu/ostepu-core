@@ -34,17 +34,14 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
     $f = new FormEvaluator($_POST);
     $f->checkStringForKey('sheetName',
                           FormEvaluator::REQUIRED,
-                          false,
                           'error',
                           'Ungültiger Blattname.');
     $f->checkStringForKey('startDate',
                           FormEvaluator::REQUIRED,
-                          true,
                           'warning',
                           'Leerer Bearbeitungsanfang.');
     $f->checkStringForKey('endDate',
                           FormEvaluator::REQUIRED,
-                          true,
                           'warning',
                           'Leerer Bearbeitungsende.');
     $f->checkIntegerForKey('groupSize',
@@ -54,7 +51,6 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                            array('min' => 0,'max' => 10));
     $f->checkArrayForKey('exercises',
                          FormEvaluator::REQUIRED,
-                         true,
                          'warning',
                          'Bitte erstellen Sie mindestens eine Aufgabe.');
     // check if startDate is not later than endDate and if it matches format
@@ -82,7 +78,6 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
             $eval = new FormEvaluator($exercise);
             $eval->checkArrayForKey('subexercises',
                                     FormEvaluator::REQUIRED,
-                                    true,
                                     'warning',
                                     'Ungültige Anzahl an Teilaufgaben.');
             if ($eval->evaluate(true)) {
