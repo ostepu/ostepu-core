@@ -1,247 +1,187 @@
-<input type="hidden" name="action" value="ExerciseSheetStudent">
-<?php
-if (!empty($sheets)) {
-foreach ($sheets as $sheet):
+<?php if (!empty($sheets)): ?>
+    <?php foreach ($sheets as $sheet):?>
+    <?php /**
+           * @todo Date check needs more testing.
+           */
 
-    /**
-     * @todo Date check needs more testing.
-     */
-
-    // bool if endDate of sheet is greater than the actual date
-    $isExpired = date('U') > date('U', $sheet['endDate']);
-?>
-<div class="content-element collapsible">
-    <div class="content-header">
-        <div class="content-title left uppercase">
-            <?php
-                print $sheet['sheetName'];
-                if ($isExpired) {
-                    print ' (abgelaufen)';
-                }
-            ?>
-        </div>
-        <div class="critical-color bold right">
-            <?php print date('d.m.Y  -  H:i', $sheet['endDate']); ?>
-        </div>
-        <div class="exercise-sheet-info info-color bold right">
-            <?php print $sheet['percentage'] . '%'; ?>
-        </div>
-    </div>
-
-    <div class="content-body-wrapper">
-        <div class="content-body left">
-            <ol class="exercise-list">
-                <?php
-                foreach ($sheet['exercises'] as $exercise):
-                ?>
-                <li>
-
-                    <div class="exercise-type">
-                        <?php
-                            print $exercise['typeName'];
-                            print $exercise['bonus'] ? ' (*)' : NULL;
-                        ?>
-                    </div>
-
-                    <div class="exercise-points">
-                        <?php
-                            // prints the achieved and the maximum points
-                            if(isset($exercise['submission']['marking'])) {
-                                print $exercise['submission']['marking']['points'];
-                            }
-                            else {
-                                print "-";
-                            }
-
-                            print ' / ' . $exercise['maxPoints'] . ' P';
-                        ?>
-                    </div>
-
-                    <div class="exercise-status">
-                        <?php
-                            if (isset($exercise['submission']['marking'])) {
-                                print $exercise['submission']['marking']['status'];
-                            } elseif (isset($exercise['submission'])) {
-                                print 'unkontrolliert';
-                            } else {
-                                print 'nicht eingesendet';
-                            }
-                        ?>
-                    </div>
-
-                    <div class="exercise-sheet-images">
-                        <?php
-                            // creates a downloadAttachment icon for the exercise (if it exists)
-                            if(isset($exercise['attachment'])) {
-                                $displayName = $exercise['attachment']['displayName'];
-                                $fileAddress = $exercise['attachment']['address'];
-                                $fileURL = $filesystemURI . '/' . $fileAddress . '/' . $displayName;
-
-                                print '<a href="';
-                                print $fileURL;
-                                print '" title="';
-                                print $displayName;
-                                print '" class="plain" target="_blank">';
-                                print '<img src="Images/Attachment.png" />';
-                                print '</a>';
-                            }
-                        ?>
-
-                        <?php
-                            // creates a download icon for the submission (if it exists)
-                            if(isset($exercise['submission'])) {
-                                $displayName = $exercise['submission']['file']['displayName'];
-                                $fileAddress = $exercise['submission']['file']['address'];
-                                $fileURL = $filesystemURI . '/' . $fileAddress . '/' . $displayName;
-
-                                print '<a href="';
-                                print $fileURL;
-                                print '" title="';
-                                print $displayName;
-                                print '" class="plain" target="_blank">';
-                                print '<img src="Images/Download.png" />';
-                                print '</a>';
-                            }
-                        ?>
-
-                        <?php
-                            // creates a downloadCorrection icon for the marking (if it exists)
-                            if(isset($exercise['submission']['marking'])) {
-                                $displayName = $exercise['submission']['marking']['file']['displayName'];
-                                $fileAddress = $exercise['submission']['marking']['file']['address'];
-                                $fileURL = $filesystemURI . '/' . $fileAddress . '/' . $displayName;
-
-                                print '<a href="';
-                                print $fileURL;
-                                print '" title="';
-                                print $displayName;
-                                print '" class="plain" target="_blank">';
-                                print '<img src="Images/DownloadCorrection.png" />';
-                                print '</a>';
-                            }
-                        ?>
-
-                        <?php
-                            // creates a deleteSubmission icon for the submission (if it exists)
-
-                            /**
-                             * @todo add "&& !$isExpired" to if condition after testing.
-                             */ 
-                            if(isset($exercise['submission'])) {
-                                print '<input type="image" name="deleteSubmission" value="';
-                                print $exercise['submission']['id'];
-                                print '" class="text-button" src="Images/Delete.png" />';
-                            }
-                        ?>
-                    </div>
-
-                </li>
-                <?php
-                endforeach;
-                ?>
-            </ol>
+           // bool if endDate of sheet is greater than the actual date ?>
+    <?php $isExpired = date('U') > date('U', $sheet['endDate']); ?>
+    <div class="content-element collapsible">
+        <div class="content-header">
+            <div class="content-title left uppercase">
+                <?= $sheet['sheetName'], " " ?>
+                <?php if ($isExpired): ?>
+                    (abgelaufen)
+                <?php endif; ?>
+            </div>
+            <div class="critical-color bold right">
+                <?= date('d.m.Y  -  H:i', $sheet['endDate']); ?>
+            </div>
+            <div class="exercise-sheet-info info-color bold right">
+                <?= $sheet['percentage'], '%' ?>
+            </div>
         </div>
 
-        <div class="content-body right">
-            <ol class="body-options body-option-color">
-                <?php
-                    // shows link to sampleSolution
-                    if ($isExpired) {
-                        $displayName = $sheet['sampleSolution']['displayName'];
-                        $fileAddress = $sheet['sampleSolution']['address'];
-                        $fileURL = $filesystemURI . '/' . $fileAddress . '/' . $displayName;
+        <div class="content-body-wrapper">
+            <div class="content-body left">
+                <ol class="exercise-list">
+                    <?php foreach ($sheet['exercises'] as $exercise): ?>
+                    <li>
 
-                        print '<li>';
-                        print '<a href="';
-                        print $fileURL . '" title="';
-                        print $displayName . '" target="_blank">';
-                        print 'Musterlösung';
-                        print '</a>';
-                        print '</li>';
-                    }
-                ?>
-                <li>
-                    <?php
-                        $displayName = $sheet['sheetFile']['displayName'];
-                        $fileAddress = $sheet['sheetFile']['address'];
-                        $fileURL = $filesystemURI . '/' . $fileAddress . '/' . $displayName;
-                    ?>
-                    <a href="<?= $fileURL ?>" title="<?= $displayName ?>" target="_blank">
-                        Aufgabenblatt
-                    </a>
-                </li>
-                <li>
-                    <a href="Group.php?sid=<?= $sheet['id'], '&cid=', $cid ?>">
-                        Gruppe verwalten
-                    </a>
-                </li>
-                <li>
-                    <?php
-                        // creates an upload link
-                        print '<a href="';
-                        print 'Upload.php?cid=' . $cid . '&sid=' . $sheet['id'];
-                        print '" title="Upload">';
-                        print 'Aufgaben hochladen';
-                        print '</a>';
-                    ?>
-                </li>
-                <?php
-                    if ($sheet['hasAttachments']) {
-                        print '<li>';
-                        print '<button name="downloadAttachments" value="';
-                        print $sheet['id'];
-                        print '" class="text-button body-option-color">';
-                        print 'Alle Anhänge herunterladen';
-                        print '</button>';
-                        print '</li>';
-                    }
-                ?>
-                <?php
-                    if ($sheet['hasMarkings']) {
-                        print '<li>';
-                        print '<button name="downloadMarkings" value="';
-                        print $sheet['id'];
-                        print '" class="text-button">';
-                        print 'Alle Einsendungen herunterladen';
-                        print '</button>';
-                        print '</li>';
-                    }
-                ?>
-            </ol>
+                        <div class="exercise-type">
+                            <?= $exercise['typeName'] ?>
+                            <?= $exercise['bonus'] ? ' (*)' : '' ?>
+                        </div>
+
+                        <div class="exercise-points">
+                            <?php // prints the achieved and the maximum points ?>
+                            <?php if(isset($exercise['submission']['marking'])): ?>
+                                <?= $exercise['submission']['marking']['points'] ?>
+                            <?php else: ?>
+                                -
+                            <?php endif; ?>
+                            / <?= $exercise['maxPoints'] ?> P
+                        </div>
+
+                        <div class="exercise-status">
+                            <?php if (isset($exercise['submission']['marking'])): ?>
+                                <?= $exercise['submission']['marking']['status']; ?>
+                            <?php elseif (isset($exercise['submission'])): ?>
+                                unkontrolliert
+                            <?php else: ?>
+                                nicht eingesendet
+                            <?php endif; ?>
+                        </div>
+
+                        <div class="exercise-sheet-images">
+                            <?php // creates a downloadAttachment icon for the exercise (if it exists) ?>
+                            <?php if(isset($exercise['attachment'])): ?>
+                                <?php $displayName = $exercise['attachment']['displayName']; ?>
+                                <?php $fileAddress = $exercise['attachment']['address']; ?>
+                                <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
+
+                                <a href="<?= $fileURL ?>" title="<?= $displayName ?>" class="plain" target="_blank">
+                                    <img src="Images/Attachment.png" />
+                                </a>
+                            <?php endif; ?>
+
+                            <?php // creates a download icon for the submission (if it exists) ?>
+                            <?php if(isset($exercise['submission'])): ?>
+                                <?php $displayName = $exercise['submission']['file']['displayName']; ?>
+                                <?php $fileAddress = $exercise['submission']['file']['address']; ?>
+                                <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
+
+                                <a href="<?= $fileURL ?>" title="<?= $displayName ?>" class="plain" target="_blank">
+                                    <img src="Images/Download.png" />
+                                </a>
+                            <?php endif; ?>
+
+                            <?php // creates a downloadCorrection icon for the marking (if it exists) ?>
+                            <?php if(isset($exercise['attachment'])): ?>
+                                <?php $displayName = $exercise['submission']['marking']['file']['displayName']; ?>
+                                <?php $fileAddress = $exercise['submission']['marking']['file']['address']; ?>
+                                <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
+
+                                <a href="<?= $fileURL ?>" title="<?= $displayName ?>" class="plain" target="_blank">
+                                    <img src="Images/DownloadCorrection.png" />
+                                </a>
+                            <?php endif; ?>
+
+                            <?php // creates a deleteSubmission icon for the submission (if it exists) ?>
+                            <?php /**
+                                   * @todo add "&& !$isExpired" to if condition after testing.
+                                   */ ?>
+                            <?php if (isset($exercise['submission'])): ?>
+                                    <input type="image" name="deleteSubmission" value="<?= $exercise['submission']['id'] ?>" class="text-button" src="Images/Delete.png" />
+                            <?php endif; ?>
+                        </div>
+
+                    </li>
+                    <?php endforeach; ?>
+                </ol>
+            </div>
+
+            <div class="content-body right">
+                <ol class="body-options body-option-color">
+                    <?php // creates a downloadAttachment icon for the exercise (if it exists) ?>
+                    <?php if($isExpired): ?>
+                        <?php $displayName = $sheet['sampleSolution']['displayName']; ?>
+                        <?php $fileAddress = $sheet['sampleSolution']['address']; ?>
+                        <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
+                        <li>
+                            <a href="<?= $fileURL ?>" title="<?= $displayName ?>" class="plain" target="_blank">
+                                Musterlösung
+                            </a>
+                        </li>
+                    <?php endif; ?>
+
+                    <li>
+                        <?php $displayName = $sheet['sheetFile']['displayName']; ?>
+                        <?php $fileAddress = $sheet['sheetFile']['address']; ?>
+                        <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
+                        <a href="<?= $fileURL ?>" title="<?= $displayName ?>" target="_blank">
+                            Aufgabenblatt
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Group.php?sid=<?= $sheet['id'], '&cid=', $cid ?>">
+                            Gruppe verwalten
+                        </a>
+                    </li>
+                    <li>
+                        <a href="Upload.php?cid=<?= $cid ?>&sid=<?= $sheet['id'] ?>" title="Upload">
+                            Aufgaben hochladen
+                        </a>
+                    </li>
+
+                    <?php // prints a link to download attachments ?>
+                    <?php if ($sheet['hasAttachments']): ?>
+                        <li>
+                            <button name="downloadAttachments" value="<?= $sheet['id'] ?>" class="text-button body-option-color">
+                                Alle Anhänge herunterladen
+                            </button>
+                        </li>
+                    <?php endif; ?>
+
+                    <?php // prints a link to download markings ?>
+                    <?php if ($sheet['hasMarkings']): ?>
+                        <li>
+                            <button name="downloadMarkings" value="<?= $sheet['id'] ?>" class="text-button body-option-color">
+                                Alle Einsendungen herunterladen
+                            </button>
+                        </li>
+                    <?php endif; ?>
+                </ol>
+            </div>
+        </div> <!-- end: content-body-wrapper -->
+
+        <?php // prints a footer list-item for every group member of the sheet ?>
+        <?php if (isset($sheet['group']['members'][0])): ?>
+            <div class="content-footer">
+                <ol>
+                    <li class="footer-text bold">
+                        In Gruppe mit:
+                    </li>
+                    <?php foreach ($sheet['group']['members'] as $member): ?>
+                        <li class="footer-text">
+                            <?= $member['firstName'], " ", $member['lastName'] ?>
+                        </li>
+                    <?php endforeach; ?>
+                </ol>
+            </div>
+        <?php endif; ?>
+    </div> <!-- end: content-element -->
+    <?php endforeach; ?>
+<?php else: ?>
+    <div class="content-element">
+        <div class="content-header">
+            <div class="content-title left uppercase">Hinweis</div>
         </div>
-    </div> <!-- end: content-body-wrapper -->
 
-    <?php
-        // prints a footer list-item for every group member of the sheet
-        if (isset($sheet['group']['members'][0])) {
-            print '<div class="content-footer">';
-            print '<ol>';
-            print '<li class="footer-text bold">In Gruppe mit:</li>';
-            foreach ($sheet['group']['members'] as $member):
-                print '<li class="footer-text">';
-                print $member['firstName'] . " " . $member['lastName'];
-                print '</li>';
-            endforeach;
-            print '</ol>';
-            print '</div>';
-        }
-    ?>
-</div> <!-- end: content-element -->
-<?php 
-endforeach;
-} else {
-?>
-<div class="content-element">
-    <div class="content-header">
-        <div class="content-title left uppercase">Hinweis</div>
-    </div>
-
-    <div class="content-body-wrapper">
-        <div class="content-body left">
-            Es sind noch keine Aufgabenblätter vorhanden.
-        </div>
-    </div> <!-- end: content-body -->
-</div> <!-- end: content-wrapper -->
-<?php
-}
-?>
+        <div class="content-body-wrapper">
+            <div class="content-body left">
+                Es sind noch keine Aufgabenblätter vorhanden.
+            </div>
+        </div> <!-- end: content-body -->
+    </div> <!-- end: content-wrapper -->
+<?php endif; ?>

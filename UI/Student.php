@@ -10,55 +10,53 @@
 
 include_once 'include/Boilerplate.php';
 
-if (isset($_POST['action'])) {
-    if ($_POST['action'] == "ExerciseSheetStudent" && isset($_POST['downloadAttachments'])) {
-        $sid = cleanInput($_POST['downloadAttachments']);
+if (isset($_POST['downloadAttachments'])) {
+    $sid = cleanInput($_POST['downloadAttachments']);
 
-        $attachments = http_get($serverURI . '/logic/Controller/DB/attachment/exercisesheet/' . $sid);
-        $attachments = json_decode($attachments, true);
+    $attachments = http_get($serverURI . '/logic/Controller/DB/attachment/exercisesheet/' . $sid);
+    $attachments = json_decode($attachments, true);
 
-        $files = array();
-        foreach ($attachments as $attachment) {
-            $files[] = $attachment['file'];
-        }
-
-        $fileString = json_encode($files);
-
-        $zipfile = http_post_data($filesystemURI . '/' . 'zip',  $fileString);
-        $zipfile = json_decode($zipfile, true);
-
-        $location = $filesystemURI . '/' . $zipfile['address'];
-        header("Location: {$location}/attachments.zip");
-    } elseif ($_POST['action'] == "ExerciseSheetStudent" && isset($_POST['deleteSubmission'])) {
-        $suid = cleanInput($_POST['deleteSubmission']);
-
-        $URI = $databaseURI . "/selectedsubmission/submission/" . $suid;
-        http_delete($URI, true, $message);
-
-        if ($message == "201") {
-            $notifications[] = MakeNotification("success", "Die Einsendung wurde gelöscht!");
-        } else {
-            $notifications[] = MakeNotification("error", "Beim Löschen ist ein Fehler aufgetreten!");
-        }
-    } elseif ($_POST['action'] == "ExerciseSheetStudent" && isset($_POST['downloadMarkings'])) {
-        $sid = cleanInput($_POST['downloadAttachments']);
-        
-        $markings = http_get($serverURI . '/logic/Controller/DB/marking/exercisesheet/' . $sid . '/user/' . $uid);
-        $markings = json_decode($markings, true);
-
-        $files = array();
-        foreach ($markings as $marking) {
-            $files[] = $marking['file'];
-        }
-
-        $fileString = json_encode($files);
-
-        $zipfile = http_post_data($filesystemURI . '/' . 'zip',  $fileString);
-        $zipfile = json_decode($zipfile, true);
-
-        $location = $filesystemURI . '/' . $zipfile['address'];
-        header("Location: {$location}/markings.zip");
+    $files = array();
+    foreach ($attachments as $attachment) {
+        $files[] = $attachment['file'];
     }
+
+    $fileString = json_encode($files);
+
+    $zipfile = http_post_data($filesystemURI . '/zip',  $fileString);
+    $zipfile = json_decode($zipfile, true);
+
+    $location = $filesystemURI . '/' . $zipfile['address'];
+    header("Location: {$location}/attachments.zip");
+} elseif (isset($_POST['deleteSubmission'])) {
+    $suid = cleanInput($_POST['deleteSubmission']);
+
+    $URI = $databaseURI . "/selectedsubmission/submission/" . $suid;
+    http_delete($URI, true, $message);
+
+    if ($message == "201") {
+        $notifications[] = MakeNotification("success", "Die Einsendung wurde gelöscht!");
+    } else {
+        $notifications[] = MakeNotification("error", "Beim Löschen ist ein Fehler aufgetreten!");
+    }
+} elseif (isset($_POST['downloadMarkings'])) {
+    $sid = cleanInput($_POST['downloadAttachments']);
+
+    $markings = http_get($serverURI . '/logic/Controller/DB/marking/exercisesheet/' . $sid . '/user/' . $uid);
+    $markings = json_decode($markings, true);
+
+    $files = array();
+    foreach ($markings as $marking) {
+        $files[] = $marking['file'];
+    }
+
+    $fileString = json_encode($files);
+
+    $zipfile = http_post_data($filesystemURI . '/zip',  $fileString);
+    $zipfile = json_decode($zipfile, true);
+
+    $location = $filesystemURI . '/' . $zipfile['address'];
+    header("Location: {$location}/markings.zip");
 }
 
 // load tutor data from GetSite
