@@ -22,7 +22,7 @@ class Request_MultiRequest
      */ 
     private $handles=array();
 
-    private $rolling_window = 3;
+    private $rolling_window = 2;
     private $i = 0;
     
     /**
