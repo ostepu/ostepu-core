@@ -112,43 +112,78 @@ class LExerciseSheet
      public function addExerciseSheet(){
         $header = $this->app->request->headers->all();
         $body = json_decode($this->app->request->getBody(), true);
+        
+        // if sheetFile is given
+        if (isset($body['sheetFile']) == true && empty($body['sheetFile']) == false) {
+            // get sheetfile
+            $sheetfile = json_encode($body['sheetFile']);
 
-        // get files from body
-        $samplesolutionfile = json_encode($body['sampleSolution']);
-        $sheetfile = json_encode($body['sheetFile']);
+            // set URL for requests to filesystem
+            $URL = $this->lURL.'/FS/file';
 
-        // set URL for requests to filesystem
-        $URL = $this->lURL.'/FS/file';
-
-        // requests to filesystem
-        $sampleanswer = Request::custom('POST', $URL, $header, $samplesolutionfile);
-        $sheetanswer = Request::custom('POST', $URL, $header, $sheetfile);
-
-        /*
-         * if the files has been stored, the information
-         * belongs to this exercisesheet will be stored in the database
-         */
-        if($sampleanswer['status'] >= 200 and $sampleanswer['status'] < 300
-            and $sheetanswer['status'] >= 200 and $sheetanswer['status'] < 300){
-                // first request to store the fileinformation to the DBfile table
+            // upload sheetfile
+            $sheetanswer = Request::custom('POST', $URL, $header, $sheetfile);
+            if($sheetanswer['status'] == 201) {
                 $URL = $this->lURL.'/DB/file';
-                $sampleanswer = Request::custom('POST', $URL, $header, $sampleanswer['content']);
-                $sheetanswer = Request::custom('POST', $URL, $header, $sheetanswer['content']);
-                if($sampleanswer['status'] >= 200 and $sampleanswer['status'] < 300
-                    and $sheetanswer['status'] >= 200 and $sheetanswer['status'] < 300){
-                        // set the request body for database
-                        $body['sampleSolution'] = json_decode($sampleanswer['content'], true);
-                        $body['sheetFile'] = json_decode($sheetanswer['content'], true);
-                        // request to database
-                        $URL = $this->lURL.'/DB/exercisesheet';
-                        $answer = Request::custom('POST', $URL, $header, json_encode($body));
-                        $this->app->response->setStatus($answer['status']);
-                } else {
-                    $this->app->response->setStatus(400);
+                $sheetanswer2 = Request::custom('POST', $URL, $header, $sheetanswer['content']);
+
+                // if file already exists
+                if($sheetanswer2['status'] != 201) {
+                    $sheetFSContent = json_decode($sheetanswer['content'], true);
+                    $sheetanswer2 = Request::custom('GET', $URL.'/hash/'.$sheetFSContent['hash'], $header, "");
+                    if ($sheetanswer2['status'] == 200) {
+                        $id = json_decode($sheetanswer2['content'], true);
+                        $body['sheetFile'] = $id;
+                    }
+                } elseif ($sheetanswer2['status'] == 201) {
+                    $id = json_decode($sheetanswer2['content'], true);
+                    $body['sheetFile'] = $id;
                 }
+            } else {
+                $this->app->response->setStatus(409);
+            } 
         } else {
-            $this->app->response->setStatus(400);
+            $this->app->response->setStatus(409);
         }
+
+        // if sampleSolution is given
+        if (isset($body['sampleSolution']) == true && empty($body['sampleSolution']) == false) {
+            // get sampleSolution
+            $sheetfile = json_encode($body['sampleSolution']);
+
+            // set URL for requests to filesystem
+            $URL = $this->lURL.'/FS/file';
+
+            // upload sampleSolution
+            $sheetanswer = Request::custom('POST', $URL, $header, $sheetfile);
+            if($sheetanswer['status'] == 201) {
+                $URL = $this->lURL.'/DB/file';
+                $sheetanswer2 = Request::custom('POST', $URL, $header, $sheetanswer['content']);
+
+                // if file already exists
+                if($sheetanswer2['status'] != 201) {
+                    $sheetFSContent = json_decode($sheetanswer['content'], true);
+                    $sheetanswer2 = Request::custom('GET', $URL.'/hash/'.$sheetFSContent['hash'], $header, "");
+                    if ($sheetanswer2['status'] == 200) {
+                        $id = json_decode($sheetanswer2['content'], true);
+                        $body['sampleSolution'] = $id;
+                    }
+                } elseif ($sheetanswer2['status'] == 201) {
+                    $id = json_decode($sheetanswer2['content'], true);
+                    $body['sampleSolution'] = $id;
+                }
+            } else {
+                $this->app->response->setStatus(409);
+            } 
+        } else {
+            $this->app->response->setStatus(409);
+        }
+
+        // create ExerciseSheet
+        $URL = $this->lURL.'/DB/exercisesheet';
+        $CreateSheetDB = Request::custom('POST', $URL, $header, json_encode($body));
+        $this->app->response->setBody($CreateSheetDB['content']);
+        $this->app->response->setStatus($CreateSheetDB['status']);
     }
 
     /**

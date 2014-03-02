@@ -1,17 +1,17 @@
 <?php 
 /**
- * @file ExternalId.php contains the ExternalId class
+ * @file ExerciseFileType.php contains the ExerciseFileType class
  */
  
 /**
- * the external id structure
+ * the exercise file type structure
  *
  * @author Till Uhlig
  */
-class ExternalId extends Object implements JsonSerializable
+class ExerciseFileType extends Object implements JsonSerializable
 {
     /**
-     * the db id of the external id
+     * db id of the exercise file type 
      *
      * type: string
      */
@@ -37,47 +37,79 @@ class ExternalId extends Object implements JsonSerializable
         $this->id = $value;
     }
     
-      
+    
+    
     /**
-     * the corresponding course
+     * the mime type 
      *
-     * type: Course
+     * type: string
      */
-    private $course = null;
+    private $text = null;
     
     /**
-     * the $course getter
+     * the $text getter
      *
-     * @return the value of $course
+     * @return the value of $name
      */ 
-    public function getCourse()
+    public function getText()
     {
-        return $this->course;
+        return $this->text;
     }
     
     /**
-     * the $course setter
+     * the $text setter
      *
-     * @param Course $value the new value for $course
+     * @param string $value the new value for $text
      */ 
-    public function setCourse($value)
+    public function setText($value)
     {
-        $this->course = $value;
+        $this->text = $value;
+    }
+    
+    
+     /**
+     * the exercise id
+     *
+     * type: string
+     */
+    private $exerciseId = null;
+    
+    /**
+     * the $exerciseId getter
+     *
+     * @return the value of $name
+     */ 
+    public function getExerciseId()
+    {
+        return $this->exerciseId;
     }
     
     /**
-     * Creates an ExternalId object, for database post(insert) and put(update).
+     * the $exerciseId setter
+     *
+     * @param string $value the new value for $exerciseId
+     */ 
+    public function setExerciseId($value)
+    {
+        $this->exerciseId = $value;
+    }
+    
+    
+    /**
+     * Creates an ExerciseFileType object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
      *
-     * @param string $externalId The id of the external id .
-     * @param string $courseId The id of the course.
+     * @param string $typeid The id of the exercise file type.
+     * @param string $text The text which specifies the mime type of the file.
+     * @param string $exerciseId The exercise id.
      *
-     * @return an external id object
+     * @return an exercise type object
      */
-    public static function createExternalId($externalId,$courseId)
+    public static function createExerciseFileType($typeid,$text,$exerciseId)
     {
-        return new ExternalId(array('id' => $externalId,
-        'course' => array('id' => $courseId)));
+        return new ExerciseFileType(array('id' => $typeid,
+        'text' => $text,
+        'exerciseId' => $exerciseId));
     }
     
     /**
@@ -89,11 +121,7 @@ class ExternalId extends Object implements JsonSerializable
     {
         foreach ($data AS $key => $value) {
             if (isset($key)){
-                if ($key == 'course'){
-                    $this->{$key} = new Course($value,false);
-                }
-                else
-                    $this->{$key} = $value;
+                $this->{$key} = $value;
             }
         }
     }
@@ -106,8 +134,9 @@ class ExternalId extends Object implements JsonSerializable
     public static function getDbConvert()
     {
         return array(
-           'EX_id' => 'id',
-           'EX_course' => 'course'
+           'EFT_id' => 'id',
+           'EFT_text' => 'text',
+           'E_id' => 'exerciseId' 
         );
     }
     
@@ -120,8 +149,9 @@ class ExternalId extends Object implements JsonSerializable
     {
         $values = "";
         
-        if ($this->id != null) $this->addInsertData($values, 'EX_id', DBJson::mysql_real_escape_string($this->id));
-        if ($this->course != null && $this->course->getId() != null) $this->addInsertData($values, 'C_id', DBJson::mysql_real_escape_string($this->course->getId()));
+        if ($this->id != null) $this->addInsertData($values, 'EFT_id', DBJson::mysql_real_escape_string($this->id));
+        if ($this->text != null) $this->addInsertData($values, 'EFT_text', DBJson::mysql_real_escape_string($this->text));
+        if ($this->exerciseId != null) $this->addInsertData($values, 'E_id', DBJson::mysql_real_escape_string($this->exerciseId));
         
         if ($values != ""){
             $values=substr($values,1);
@@ -136,7 +166,7 @@ class ExternalId extends Object implements JsonSerializable
      */
     public static function getDbPrimaryKey()
     {
-        return 'EX_id';
+        return 'EFT_id';
     }
     
     /**
@@ -146,7 +176,7 @@ class ExternalId extends Object implements JsonSerializable
      *
      * @return the json encoded object
      */
-    public static function encodeExternalId($data)
+    public static function encodeExerciseFileType($data)
     {
         return json_encode($data);
     }
@@ -160,22 +190,21 @@ class ExternalId extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeExternalId($data, $decode=true)
+    public static function decodeExerciseFileType($data, $decode=true)
     {
         if ($decode && $data==null) 
             $data = "{}";
     
         if ($decode)
             $data = json_decode($data);
-            
         if (is_array($data)){
             $result = array();
             foreach ($data AS $key => $value) {
-                array_push($result, new ExternalId($value));
+                array_push($result, new ExerciseFileType($value));
             }
             return $result;   
         } else
-            return new ExternalId($data);
+            return new ExerciseFileType($data);
     }
 
     /**
@@ -187,32 +216,21 @@ class ExternalId extends Object implements JsonSerializable
     {
         $list = array();
         if ($this->id!==null) $list['id'] = $this->id;
-        if ($this->course!==null) $list['course'] = $this->course;
+        if ($this->text!==null) $list['text'] = $this->text;
+        if ($this->exerciseId!==null) $list['exerciseId'] = $this->exerciseId;
         return $list;
     }
     
-    public static function ExtractExternalId($data, $singleResult = false)
+    public static function ExtractExerciseFileType($data, $singleResult = false)
     {
-            // generates an assoc array of courses by using a defined list of 
-            // its attributes
-            $course = DBJson::getObjectsByAttributes($data, 
-                                    Course::getDBPrimaryKey(), 
-                                    Course::getDBConvert());
-            
-            // generates an assoc array of external IDs by using a defined list of 
-            // its attributes
-            $externalIds = DBJson::getObjectsByAttributes($data, 
-                                    ExternalId::getDBPrimaryKey(), 
-                                    ExternalId::getDBConvert());
-            
-            // concatenates the external IDs and the associated courses
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                        $externalIds,ExternalId::getDBPrimaryKey(), 
-                        ExternalId::getDBConvert()['EX_course'], 
-                        $course,Course::getDBPrimaryKey());              
+            // generates an assoc array of an exercise file type by using a defined 
+            // list of its attributes
+            $res = DBJson::getResultObjectsByAttributes($data, 
+                                        ExerciseFileType::getDBPrimaryKey(), 
+                                        ExerciseFileType::getDBConvert()); 
             
             // to reindex
-            $res = array_values($res);
+            $res = array_merge($res);
             
             if ($singleResult==true){
                 // only one object as result

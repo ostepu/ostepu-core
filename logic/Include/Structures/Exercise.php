@@ -1,128 +1,314 @@
 <?php
 /**
- * Contains all relevant Data for an exercise.
+ * @file Exercise.php contains the Exercise class
+ */
+ 
+/**
+ * the exercise structure
+ *
+ * @author Till Uhlig, Florian Lücke
  */
 class Exercise extends Object implements JsonSerializable
 {
     /**
-     * a string that identifies the exercise.
-     *
-     * type: string
+     * @var string $id a string that identifies the exercise.
      */
-    private $id;
-    public function getId(){
+    private $id = null;
+    
+    /**
+     * the $id getter
+     *
+     * @return the value of $id
+     */ 
+    public function getId()
+    {
         return $this->id;
     }
+    
+    /**
+     * the $id setter
+     *
+     * @param string $value the new value for $id
+     */
     public function setId($value){
         $this->id = $value;
     }
 
     /**
-     * The id of the course this exercise belongs to.
-     *
-     * type: string
+     * @var string $courseId The id of the course this exercise belongs to.
      */
-    private $courseId;
-    public function getCourseId(){
+    private $courseId = null;
+    
+    /**
+     * the $courseId getter
+     *
+     * @return the value of $courseId
+     */ 
+    public function getCourseId()
+    {
         return $this->courseId;
     }
+    
+    /**
+     * the $courseId setter
+     *
+     * @param string $value the new value for $courseId
+     */
     public function setCourseId($value){
         $this->courseId = $value;
     }
 
     /**
-     * The id of the sheet this exercise is on.
-     *
-     * type: string
+     * @var string $sheetId The id of the sheet this exercise is on.
      */
-    private $sheetId;
-    public function getSheetId(){
+    private $sheetId = null;
+    
+    /**
+     * the $sheetId getter
+     *
+     * @return the value of $sheetId
+     */ 
+    public function getSheetId()
+    {
         return $this->sheetId;
     }
+    
+    /**
+     * the $sheetId setter
+     *
+     * @param string $value the new value for $sheetId
+     */
     public function setSheetId($value){
         $this->sheetId = $value;
     }
 
     /**
-     * The maximum amount of points a student can reach in this exercise.
-     *
-     * type: decimal
+     * @var int $maxPoints The maximum amount of points a student can reach in this exercise.
      */
-    private $maxPoints;
-    public function getMaxPoints(){
+    private $maxPoints = null;
+    
+    /**
+     * the $maxPoints getter
+     *
+     * @return the value of $maxPoints
+     */ 
+    public function getMaxPoints()
+    {
         return $this->maxPoints;
     }
+    
+    /**
+     * the $maxPoints setter
+     *
+     * @param int $value the new value for $maxPoints
+     */
     public function setMaxPoints($value){
         $this->maxPoints = $value;
     }
 
     /**
-     * The type of points this exercise yields.
-     *
-     * type: string
+     * @var int $type The type of points this exercise yields.
      */
-    private $type;
-    public function getType(){
+    private $type = null;
+    
+    /**
+     * the $type getter
+     *
+     * @return the value of $type
+     */ 
+    public function getType()
+    {
         return $this->type;
     }
+    
+    /**
+     * the $int setter
+     *
+     * @param string $value the new value for $type
+     */
     public function setType($value){
         $this->type = $value;
     }
     
     /**
-     * The type of points this exercise yields.
-     *
-     * type: int
+     * @var int $link The type of points this exercise yields.
      */
-    private $link;
-    public function getLink(){
+    private $link = null;
+    
+    /**
+     * the $link getter
+     *
+     * @return the value of $link
+     */ 
+    public function getLink()
+    {
         return $this->link;
     }
+    
+    /**
+     * the $link setter
+     *
+     * @param int $value the new value for $link
+     */
     public function setLink($value){
         $this->link = $value;
     }
+    
+    /**
+     * @var string $linkName the name of the link.
+     */
+    private $linkName = null;
+    
+    /**
+     * the $linkName getter
+     *
+     * @return the value of $linkName
+     */ 
+    public function getLinkName()
+    {
+        return $this->linkName;
+    }
+    
+    /**
+     * the $linkName setter
+     *
+     * @param int $value the new value for $linkName
+     */
+    public function setLinkName($value){
+        $this->linkName = $value;
+    }
 
     /**
-     * the submissions (?) for this exercise
-     *
-     * type: Submission[]
+     * @var Submission[] $submissiona the submissions for this exercise
      */
-    private $submissions;
-    public function getSubmissions(){
+    private $submissions = array();
+    
+    /**
+     * the $submissions getter
+     *
+     * @return the value of $submissions
+     */ 
+    public function getSubmissions()
+    {
         return $submissions;
     }
+    
+    /**
+     * the $submissions setter
+     *
+     * @param Submission[] $value the new value for $submissions
+     */
     public function setSubmissions($value){
         $submissions = $value;
     }
     
     /**
-     * a set of attachments that belong to this sheet
-     *
-     * type: File[]
+     * @var File[] $attachements a set of attachments that belong to this sheet
      */
     private $attachments = array();
-    public function getAttachments(){
+    
+    /**
+     * the $attachments getter
+     *
+     * @return the value of $attachments
+     */ 
+    public function getAttachments()
+    {
         return $this->attachments;
     }
+    
+    /**
+     * the $attachments setter
+     *
+     * @param File[] $value the new value for $attachments
+     */
     public function setAttachments($value){
         $this->attachments = $value;
     }
     
     /**
-     * (description)
-     *
-     * type: Bool
+     * @var bool $bonus bonus=true means bonus points
      */
     private $bonus = null;
-    public function getBonus(){
+    
+    /**
+     * the $bonus getter
+     *
+     * @return the value of $bonus
+     */ 
+    public function getBonus()
+    {
         return $this->bonus;
     }
+    
+    /**
+     * the $bonus setter
+     *
+     * @param Bool $value the new value for $bonus
+     */
     public function setBonus($value){
         $this->bonus = $value;
     }
     
+    
     /**
-     * (description)
+     * @var ExerciseFileType[] $fileTypes a set of exercise file types that belong to this exercise
+     */
+    private $fileTypes = array();
+    
+    /**
+     * the $fileTypes getter
+     *
+     * @return the value of $fileTypes
+     */ 
+    public function getFileTypes()
+    {
+        return $this->fileTypes;
+    }
+    
+    
+    
+    /**
+     * the $fileTypes setter
+     *
+     * @param ExerciseFileType[] $value the new value for $fileTypes
+     */
+    public function setFileTypes($value){
+        $this->fileTypes = $value;
+    }
+    
+    /**
+     * Creates an Exercise object, for database post(insert) and put(update).
+     * Not needed attributes can be set to null.
+     *
+     * @param string $exerciseId The id of the exercise.
+     * @param string $courseId The id of the course. (do not use!)
+     * @param string $sheetId The id of the exercise sheet.
+     * @param string $maxPoints the max points
+     * @param string $type the id of the exercise type
+     * @param string $link the id of the exercise, this exercise belongs to
+     * @param string $linkName the name of the sub exercise.
+     * @param string $bonus the bonus flag
+     *
+     * @return an exercise object
+     */
+    public static function createExercise($exerciseId,$courseId,$sheetId,
+                                    $maxPoints,$type,$link,$bonus,$linkName = null)
+    {
+        return new Exercise(array('id' => $exerciseId,
+        'courseId' => $courseId,
+        'sheetId' => $sheetId, 
+        'maxPoints' => $maxPoints, 
+        'type' => $type, 
+        'link' => $link, 
+        'linkName' => $linkName, 
+        'bonus' => $bonus));
+    }
+    
+    /**
+     * returns an mapping array to convert between database and structure
+     *
+     * @return the mapping array
      */
     public static function getDbConvert()
     {
@@ -133,16 +319,21 @@ class Exercise extends Object implements JsonSerializable
            'E_maxPoints' => 'maxPoints',
            'ET_id' => 'type',
            'E_id_link' => 'link',
+           'E_linkName' => 'linkName',
            'E_submissions' => 'submissions',
            'E_bonus' => 'bonus',
-           'E_attachments' => 'attachments'
+           'E_attachments' => 'attachments',
+           'E_fileTypes' => 'fileTypes'
         );
     }
     
-    /**
-     * (description)
+     /**
+     * converts an object to insert/update data
+     *
+     * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData(){
+    public function getInsertData()
+    {
         $values = "";
         
         if ($this->id != null) $this->addInsertData($values, 'E_id', DBJson::mysql_real_escape_string($this->id));
@@ -150,6 +341,7 @@ class Exercise extends Object implements JsonSerializable
         if ($this->maxPoints != null) $this->addInsertData($values, 'E_maxPoints', DBJson::mysql_real_escape_string($this->maxPoints));
         if ($this->type != null) $this->addInsertData($values, 'ET_id', DBJson::mysql_real_escape_string($this->type));
         if ($this->link != null) $this->addInsertData($values, 'E_id_link', DBJson::mysql_real_escape_string($this->link));
+        if ($this->linkName != null) $this->addInsertData($values, 'E_linkName', DBJson::mysql_real_escape_string($this->linkName));
         if ($this->bonus != null) $this->addInsertData($values, 'E_bonus', DBJson::mysql_real_escape_string($this->bonus));
         
         if ($values != ""){
@@ -159,16 +351,19 @@ class Exercise extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * returns a sting/string[] of the database primary key/keys
+     * 
+     * @return the primary key/keys
      */
     public static function getDbPrimaryKey()
     {
         return 'E_id';
     }
-/**
-     * (description)
+    
+    /**
+     * the constructor
      * 
-     * @param $param (description)
+     * @param $data an assoc array with the object informations
      */
     public function __construct($data=array()) 
     {
@@ -178,6 +373,8 @@ class Exercise extends Object implements JsonSerializable
                     $this->{$key} = Submission::decodeSubmission($value, false);
                 }elseif ($key == 'attachments') {
                     $this->{$key} = File::decodeFile($value, false);
+                }elseif ($key == 'fileTypes') {
+                    $this->{$key} = ExerciseFileType::decodeExerciseFileType($value, false);
                 } else
                 $this->{$key} = $value;
             }
@@ -185,9 +382,11 @@ class Exercise extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * encodes an object to json
      * 
-     * @param $param (description)
+     * @param $data the object
+     *
+     * @return the json encoded object
      */
     public static function encodeExercise($data)
     {
@@ -195,13 +394,19 @@ class Exercise extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * decodes $data to an object
      * 
-     * @param $param (description)
-     * @param $param (description)
+     * @param string $data json encoded data (decode=true) 
+     * or json decoded data (decode=false)
+     * @param bool $decode specifies whether the data must be decoded
+     *
+     * @return the object
      */
     public static function decodeExercise($data, $decode=true)
     {
+        if ($decode && $data==null) 
+            $data = "{}";
+    
         if ($decode)
             $data = json_decode($data);
         if (is_array($data)){
@@ -216,20 +421,86 @@ class Exercise extends Object implements JsonSerializable
     
     /**
      * the json serialize function
+     *
+     * @return an array to serialize the object
      */
     public function jsonSerialize()
     {
-        return array(
-            'id' => $this->id,
-            'courseId' => $this->courseId,
-            'sheetId' => $this->sheetId,
-            'maxPoints' => $this->maxPoints,
-            'type' => $this->type,
-            'link' => $this->link,
-            'submissions' => $this->submissions,
-            'bonus' => $this->bonus,
-            'attachments' => $this->attachments
-        );
+        $list = array();
+        if ($this->id!==null) $list['id'] = $this->id;
+        if ($this->courseId!==null) $list['courseId'] = $this->courseId;
+        if ($this->sheetId!==null) $list['sheetId'] = $this->sheetId;
+        if ($this->maxPoints!==null) $list['maxPoints'] = $this->maxPoints;
+        if ($this->type!==null) $list['type'] = $this->type;
+        if ($this->link!==null) $list['link'] = $this->link;
+        if ($this->submissions!==array() && $this->submissions!==null) $list['submissions'] = $this->submissions;
+        if ($this->bonus!==null) $list['bonus'] = $this->bonus;
+        if ($this->attachments!==array() && $this->attachments!==null) $list['attachments'] = $this->attachments;
+        if ($this->fileTypes!==array() && $this->fileTypes!==null) $list['fileTypes'] = $this->fileTypes;
+        if ($this->linkName!==null) $list['linkName'] = $this->linkName;
+       
+       return $list;
+    }
+    
+    public static function ExtractExercise($data, $singleResult = false)
+    {
+            // generates an assoc array of an exercise by using a defined 
+            // list of its attributes
+            $exercise = DBJson::getObjectsByAttributes($data, 
+                                    Exercise::getDBPrimaryKey(), 
+                                    Exercise::getDBConvert());           
+            
+            
+            // generates an assoc array of files by using a defined 
+            // list of its attributes
+            $attachments = DBJson::getObjectsByAttributes($data, 
+                                        File::getDBPrimaryKey(), 
+                                        File::getDBConvert());
+            
+            
+            // generates an assoc array of submissions by using a defined 
+            // list of its attributes
+            $submissions = DBJson::getObjectsByAttributes($data,
+                                    Submission::getDBPrimaryKey(), 
+                                    Submission::getDBConvert(),
+                                    '2');
+                                    
+            // generates an assoc array of exercise file types by using a defined 
+            // list of its attributes
+            $fileTypes = DBJson::getObjectsByAttributes($data,
+                                    ExerciseFileType::getDBPrimaryKey(), 
+                                    ExerciseFileType::getDBConvert());
+                                   
+                                    
+            // sets the selectedForGroup attribute
+            foreach ($submissions as &$submission){
+                if (isset($submission['selectedForGroup'])){
+                    if (isset($submission['id']) && $submission['id'] == $submission['selectedForGroup']) {
+                        $submission['selectedForGroup'] = (string) 1;
+                    } else
+                        unset($submission['selectedForGroup']);
+                }
+            }        
+            
+            // concatenates the exercise and the associated filetypes
+            $exercise = DBJson::concatObjectListResult($data, $exercise, Exercise::getDBPrimaryKey(),Exercise::getDBConvert()['E_fileTypes'] ,$fileTypes,ExerciseFileType::getDBPrimaryKey());  
+            
+            // concatenates the exercise and the associated attachments
+            $res = DBJson::concatObjectListResult($data, $exercise, Exercise::getDBPrimaryKey(),Exercise::getDBConvert()['E_attachments'] ,$attachments,File::getDBPrimaryKey());  
+            
+            // concatenates the exercise and the associated submissions
+            $res = DBJson::concatResultObjectLists($data, $res, Exercise::getDBPrimaryKey(),Exercise::getDBConvert()['E_submissions'] ,$submissions,Submission::getDBPrimaryKey(), '2');
+                   
+            // to reindex
+            $res = array_values($res);
+            
+            if ($singleResult){
+                // only one object as result
+                if (count($res)>0)
+                    $res = $res[0];
+            }
+                
+            return $res;
     }
 }
 ?>

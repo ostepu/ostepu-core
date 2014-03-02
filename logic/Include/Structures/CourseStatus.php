@@ -1,69 +1,70 @@
 <?php 
 /**
-* A pair of a course and a status for some user.
-* The status reflects the rights the particular user has in that
-* course
-*/
+ * @file CourseStatus.php contains the CourseStatus class
+ */
+ 
+/**
+ * the course status structure
+ *
+ * @author Till Uhlig, Florian Lücke
+ */
 class CourseStatus extends Object implements JsonSerializable
 {
     /**
-     * A course.
-     *
-     * type: Course
+     * @var Course $course A course.
      */
-    private $course;
+    private $course = null;
     
     /**
-     * (description)
-     */
+     * the $course getter
+     *
+     * @return the value of $course
+     */ 
     public function getCourse()
     {
         return $this->course;
     }
     
     /**
-     * (description)
+     * the $course setter
      *
-     * @param $param (description)
-     */
+     * @param string $value the new value for $course
+     */ 
     public function setCourse($value)
     {
         $this->course = $value;
     }
-
-    
-    
+   
     
     /**
-     * a string that defines which status the user has in that course.
+     * @var string $status  a string that defines which status the user has in that course.
+     */
+    private $status = null;
+    
+    /**
+     * the $status getter
      *
-     * type: string
-     */
-    private $status;
-    
-    /**
-     * (description)
-     */
+     * @return the value of $status
+     */ 
     public function getStatus()
     {
         return $this->status;
     }
     
     /**
-     * (description)
+     * the $status setter
      *
-     * @param $param (description)
-     */
+     * @param string $value the new value for $status
+     */ 
     public function setStatus($value)
     {
         $this->status = $value;
     }
-
-    
-    
     
     /**
-     * (description)
+     * returns an mapping array to convert between database and structure
+     *
+     * @return the mapping array
      */
     public static function getDbConvert()
     {
@@ -74,13 +75,16 @@ class CourseStatus extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * converts an object to insert/update data
+     *
+     * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData(){
+    public function getInsertData()
+    {
         $values = "";
         
         if ($this->status != null) $this->addInsertData($values, 'CS_status', DBJson::mysql_real_escape_string($this->status));
-        if ($this->course != null) $this->addInsertData($values, 'C_id', DBJson::mysql_real_escape_string($this->course->getId()));
+        if ($this->course != null && $this->course->getId() != null) $this->addInsertData($values, 'C_id', DBJson::mysql_real_escape_string($this->course->getId()));
         
         if ($values != ""){
             $values=substr($values,1);
@@ -89,7 +93,9 @@ class CourseStatus extends Object implements JsonSerializable
     }  
     
     /**
-     * (description)
+     * returns a sting/string[] of the database primary key/keys
+     * 
+     * @return the primary key/keys
      */
     public static function getDbPrimaryKey()
     {
@@ -97,9 +103,10 @@ class CourseStatus extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * returns an array to get the course status defintions
      */
-    public static function getStatusDefinition(){
+    public static function getStatusDefinition()
+    {
         return array(
             '0' => 'student',
             '1' => 'tutor',
@@ -110,12 +117,15 @@ class CourseStatus extends Object implements JsonSerializable
     }
    
     /**
-     * (description)
+     * the constructor
      * 
-     * @param $param (description)
+     * @param $data an assoc array with the object informations
      */
-    public function __construct($data=array()) 
+    public function __construct($data=array())
     {
+        if ($data==null)
+            $data = array();
+        
         foreach ($data AS $key => $value) {
             if (isset($key)){
                 if ($key == 'course'){
@@ -129,9 +139,11 @@ class CourseStatus extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * encodes an object to json
+     * 
+     * @param $data the object
      *
-     * @param $param (description)
+     * @return the json encoded object
      */
     public static function encodeCourseStatus($data)
     {
@@ -139,13 +151,19 @@ class CourseStatus extends Object implements JsonSerializable
     }
     
     /**
-     * (description)
+     * decodes $data to an object
      * 
-     * @param $param (description)
-     * @param $param (description)
+     * @param string $data json encoded data (decode=true) 
+     * or json decoded data (decode=false)
+     * @param bool $decode specifies whether the data must be decoded
+     *
+     * @return the object
      */
     public static function decodeCourseStatus($data, $decode=true)
     {
+        if ($decode && $data==null) 
+            $data = "{}";
+    
         if ($decode)
             $data = json_decode($data);
             
@@ -164,10 +182,10 @@ class CourseStatus extends Object implements JsonSerializable
      */
     public function jsonSerialize() 
     {
-        return array(
-            'course' => $this->course,
-            'status' => $this->status
-        );
+        $list = array();
+        if ($this->course!==null) $list['course'] = $this->course;
+        if ($this->status!==null) $list['status'] = $this->status;
+        return $list;
     }
 }
 ?>
