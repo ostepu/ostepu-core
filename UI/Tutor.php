@@ -10,16 +10,14 @@
 
 include_once 'include/Boilerplate.php';
 
-if (isset($_POST['action'])) {
-    if ($_POST['action'] == "ExerciseSheetTutor" && isset($_POST['downloadAttachments'])) {
-        downloadAttachmentsOfSheet($_POST['downloadAttachments']);
+if (isset($_POST['downloadAttachments'])) {
+    downloadAttachmentsOfSheet($_POST['downloadAttachments']);
+}
 
-    }
-    if ($_POST['action'] == "ExerciseSheetTutor" && isset($_POST['downloadCSV'])) {
-        $sid = cleanInput($_POST['downloadCSV']);
-        $location = $logicURI . '/tutor/user/' . $uid . '/exercisesheet/' . $sid;
-        header("Location: {$location}");
-    }
+if (isset($_POST['downloadCSV'])) {
+    $sid = cleanInput($_POST['downloadCSV']);
+    $location = $logicURI . '/tutor/user/' . $uid . '/exercisesheet/' . $sid;
+    header("Location: {$location}");
 }
 
 $requiredPrivilege = PRIVILEGE_LEVEL::TUTOR;
