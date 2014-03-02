@@ -508,29 +508,6 @@ function submitFile($databaseURI,
  */
 class FILE_TYPE
 {
-
-    const DOC = 'doc';
-    const PDF = 'pdf';
-    const AI = 'ai';
-    const EPS = 'eps';
-    const PS = 'ps';
-    const HTM = 'htm';
-    const HTML = 'html';
-    const SHTML = 'shtml';
-    const XHTML = 'xhtml';
-    const XML = 'xml';
-    const GTAR = 'gtar';
-    const PHP = 'php';
-    const TAR = 'tar';
-    const ZIP = 'zip';
-    const JPG = 'jpg';
-    const PNG = 'png';
-    const GIF = 'gif';
-    const CSV = 'csv';
-    const CSS = 'css';
-    const JS = 'js';
-    const TXT = 'txt';
-
     public static $mimeType = array(
         'gz' => 'application/gzip',
         'xls' => 'application/msexcel',
