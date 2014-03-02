@@ -19,6 +19,7 @@ SELECT
     M.M_status,
     M.M_points,
     M.M_date,
+    M.M_hideFile,
     F.F_id,
     F.F_displayName,
     F.F_address,

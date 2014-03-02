@@ -297,6 +297,7 @@ CREATE TABLE IF NOT EXISTS `uebungsplattform`.`Marking` (
   `M_date` BIGINT NULL DEFAULT 0,
   `E_id` INT NULL,
   `ES_id` INT NULL,
+  `M_hideFile` SMALLINT NULL DEFAULT 0,
   PRIMARY KEY (`M_id`),
   UNIQUE INDEX `M_id_UNIQUE` USING BTREE (`M_id` ASC),
   INDEX `redundanz6` USING BTREE (`ES_id` ASC, `E_id` ASC, `S_id` ASC),
@@ -871,7 +872,7 @@ if (NEW.ES_id is NULL) then
 SIGNAL sqlstate '23000' set message_text = "no corresponding exercisesheet";
 END if;
 
-SET NEW.S_leaderId = (SELECT U_id_member FROM `Group` G WHERE G.U_id_leader = NEW.U_id and G.ES_id = NEW.ES_id limit 1);
+SET NEW.S_leaderId = (SELECT G.U_id_member FROM `Group` G WHERE G.U_id_leader = NEW.U_id and G.ES_id = NEW.ES_id limit 1);
 if (NEW.S_leaderId is NULL) then
 SIGNAL sqlstate '23000' set message_text = "no corresponding group leader";
 END if;
@@ -888,7 +889,7 @@ if (NEW.ES_id is NULL) then
 SIGNAL sqlstate '23000' set message_text = "no corresponding exercisesheet";
 END if;
 
-SET NEW.S_leaderId = (SELECT U_id_member FROM `Group` G WHERE G.U_id_leader = NEW.U_id and G.ES_id = NEW.ES_id limit 1);
+SET NEW.S_leaderId = (SELECT G.U_id_member FROM `Group` G WHERE G.U_id_leader = NEW.U_id and G.ES_id = NEW.ES_id limit 1);
 if (NEW.S_leaderId is NULL) then
 SIGNAL sqlstate '23000' set message_text = "no corresponding group leader";
 END if;
