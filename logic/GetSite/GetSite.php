@@ -236,19 +236,19 @@ class LgetSite
         $header = $this->app->request->headers->all();
 
         // load all Requests async
-        $URL = "{$this->lURL}/DB/exercisesheet/course/{$courseid}/exercise";
+        $URL = "http://localhost/uebungsplattform/DB/DBControl/exercisesheet/course/{$courseid}/exercise";
         $handler1 = Request_CreateRequest::createGet($URL, $header, $body);
 
-        $URL = "{$this->lURL}/DB/submission/group/user/{$userid}/course/{$courseid}/selected";
+        $URL = "http://localhost/uebungsplattform/DB/DBControl/submission/group/user/{$userid}/course/{$courseid}/selected";
         $handler2 = Request_CreateRequest::createGet($URL, $header, $body);
 
-        $URL = "{$this->lURL}/DB/marking/course/{$courseid}";
+        $URL = "http://localhost/uebungsplattform/DB/DBControl/marking/course/{$courseid}";
         $handler3 = Request_CreateRequest::createGet($URL, $header, $body);
 
-        $URL = "{$this->lURL}/DB/group/user/{$userid}";
+        $URL = "http://localhost/uebungsplattform/DB/DBControl/group/user/{$userid}";
         $handler4 = Request_CreateRequest::createGet($URL, $header, $body);
 
-        $URL = "{$this->lURL}/DB/exercisetype";
+        $URL = "http://localhost/uebungsplattform/DB/DBControl/exercisetype";
         $handler5 = Request_CreateRequest::createGet($URL, $header, $body);
 
         $multiRequestHandle = new Request_MultiRequest();
@@ -888,11 +888,11 @@ class LgetSite
         // load first pack of Requests
         $multiRequestHandle2 = new Request_MultiRequest();
 
-        $URL = $this->lURL . '/DB/exercisetype';
+        $URL = 'http://localhost/uebungsplattform/DB/DBControl/exercisetype';
         $handler1 = Request_CreateRequest::createGet($URL, $header, $body);
-        $URL = $this->lURL . '/DB/exercisesheet/course/'.$courseid.'/exercise';
+        $URL = 'http://localhost/uebungsplattform/DB/DBControl/exercisesheet/course/'.$courseid.'/exercise';
         $handler2 = Request_CreateRequest::createGet($URL, $header, $body);
-        $URL = $this->lURL . '/DB/exercisesheet/course/'.$courseid.'/exercise';
+        $URL = 'http://localhost/uebungsplattform/DB/DBControl/exercisesheet/course/'.$courseid.'/exercise';
         $handler3 = Request_CreateRequest::createGet($URL, $header, $body);
 
         $multiRequestHandle2->addRequest($handler1);
@@ -910,7 +910,7 @@ class LgetSite
         $multiRequestHandle = new Request_MultiRequest();
 
         foreach ($sheets as $sheet) {
-            $URL = $this->lURL . '/DB/selectedsubmission/exercisesheet/'.$sheet['id'];
+            $URL = 'http://localhost/uebungsplattform/DB/DBControl/selectedsubmission/exercisesheet/'.$sheet['id'];
             $handler = Request_CreateRequest::createGet($URL, $header, $body);
 
             $multiRequestHandle->addRequest($handler);
