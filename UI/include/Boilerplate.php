@@ -42,7 +42,6 @@ $serverURI = "http://141.48.9.92/uebungsplattform";
 $databaseURI = $serverURI . "/DB/DBControl";
 $logicURI = $serverURI . "/logic/Controller";
 $filesystemURI = $serverURI . "/FS/FSControl";
-$logicURI = $serverURI . "/logic/Controller";
 $getSiteURI = $serverURI . "/logic/GetSite";
 
 ?>
