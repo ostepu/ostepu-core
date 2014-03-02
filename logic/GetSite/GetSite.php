@@ -235,6 +235,7 @@ class LgetSite
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
 
+        // load all Requests async
         $URL = "{$this->lURL}/DB/exercisesheet/course/{$courseid}/exercise";
         $handler1 = Request_CreateRequest::createGet($URL, $header, $body);
 
@@ -884,19 +885,28 @@ class LgetSite
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
 
+        // load first pack of Requests
+        $multiRequestHandle2 = new Request_MultiRequest();
+
         $URL = $this->lURL . '/DB/exercisetype';
-        $exerciseTypes = Request::custom('GET', $URL, $header, $body);
-        $exerciseTypes = json_decode($exerciseTypes['content'], true);
-
+        $handler1 = Request_CreateRequest::createGet($URL, $header, $body);
         $URL = $this->lURL . '/DB/exercisesheet/course/'.$courseid.'/exercise';
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $sheets = json_decode($answer['content'], true);
+        $handler2 = Request_CreateRequest::createGet($URL, $header, $body);
+        $URL = $this->lURL . '/DB/exercisesheet/course/'.$courseid.'/exercise';
+        $handler3 = Request_CreateRequest::createGet($URL, $header, $body);
 
-        // returns all students of the course
-        $URL = $this->lURL . '/DB/user/course/' . $courseid;
-        $courseUser = Request::custom('GET', $URL, $header, $body);
-        $courseUser = json_decode($courseUser['content'], true);
+        $multiRequestHandle2->addRequest($handler1);
+        $multiRequestHandle2->addRequest($handler2);
+        $multiRequestHandle2->addRequest($handler3);
 
+        $answer2 = $multiRequestHandle2->run();
+
+        // decode answers (given in the order which they've been declared)
+        $exerciseTypes = json_decode($answer2[0]['content'], true);
+        $sheets = json_decode($answer2[1]['content'], true);
+        $courseUser = json_decode($answer2[2]['content'], true);
+
+        // load alls selectedsubmission in one pack
         $multiRequestHandle = new Request_MultiRequest();
 
         foreach ($sheets as $sheet) {
@@ -913,8 +923,6 @@ class LgetSite
             $hasAttachments = false;
 
             // returns all selected submissions for the sheet
-            /*$URL = $this->lURL . '/DB/selectedsubmission/exercisesheet/'.$sheet['id'];
-            $selectedSubmissions = Request::custom('GET', $URL, $header, $body);*/
             $selectedSubmissions = json_decode($answer[$key]['content'], true);
 
             foreach ($sheet['exercises'] as &$exercise) {
