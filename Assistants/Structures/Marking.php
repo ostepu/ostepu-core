@@ -239,7 +239,31 @@ class Marking extends Object implements JsonSerializable
         $this->date = $value;
     }
 
-
+    /**
+     * @var int $hideFile Determines whether a marking file is displayed.
+     */
+    private $hideFile = null;
+    
+    /**
+     * the $hideFile getter
+     *
+     * @return the value of $hideFile
+     */ 
+    public function getHideFile()
+    {
+        return $this->hideFile;
+    }
+    
+    /**
+     * the $hideFile setter
+     *
+     * @param hideFile $value the new value for $hideFile
+     */ 
+    public function setHideFile($value)
+    {
+        $this->hideFile = $value;
+    }
+    
     /**
      * Creates an Marking object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -253,11 +277,12 @@ class Marking extends Object implements JsonSerializable
      * @param string $status The status flag.
      * @param string $points The points.
      * @param string $date The date.
+     * @param string $hideFile displays a marking.
      *
      * @return an marking object
      */
     public static function createMarking($markingId,$tutorId,$fileId,$submissionId,$tutorComment,
-                                $outstanding,$status,$points,$date)
+                                $outstanding,$status,$points,$date, $hideFile=null)
     {
         return new Marking(array('id' => $markingId,
         'tutorId' => $tutorId,
@@ -267,6 +292,7 @@ class Marking extends Object implements JsonSerializable
         'outstanding' => $outstanding,
         'status' => $status,
         'points' => $points,
+        'hideFile' => $hideFile,
         'date' => $date));
     }
 
@@ -286,6 +312,7 @@ class Marking extends Object implements JsonSerializable
            'M_outstanding' => 'outstanding',
            'M_status' => 'status',
            'M_points' => 'points',
+           'M_hideFile' => 'hideFile',
            'M_date' => 'date'
         );
     }
@@ -308,6 +335,7 @@ class Marking extends Object implements JsonSerializable
         if ($this->status != null) $this->addInsertData($values, 'M_status', DBJson::mysql_real_escape_string($this->status));
         if ($this->points != null) $this->addInsertData($values, 'M_points', DBJson::mysql_real_escape_string($this->points));
         if ($this->date != null) $this->addInsertData($values, 'M_date', DBJson::mysql_real_escape_string($this->date));
+        if ($this->hideFile != null) $this->addInsertData($values, 'M_hideFile', DBJson::mysql_real_escape_string($this->hideFile));
 
         if ($values != ""){
             $values=substr($values,1);
@@ -420,6 +448,7 @@ class Marking extends Object implements JsonSerializable
         if ($this->outstanding!==null) $list['outstanding'] = $this->outstanding;
         if ($this->status!==null) $list['status'] = $this->status;
         if ($this->date!==null) $list['date'] = $this->date;
+        if ($this->hideFile!==null) $list['hideFile'] = $this->hideFile;
         return $list;
     }
 
