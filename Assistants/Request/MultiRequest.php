@@ -79,6 +79,7 @@ class Request_MultiRequest
             $status_cme = curl_multi_exec($this->requests, $running_handles);
         }*/
         $res = array();
+        $maxx = count($this->handles);
         do {
             while(($execrun = curl_multi_exec($this->requests, $running_handles)) == CURLM_CALL_MULTI_PERFORM);
             if($execrun != CURLM_OK)
@@ -86,7 +87,7 @@ class Request_MultiRequest
             // a request was just completed -- find out which one
             while($done = curl_multi_info_read($this->requests)) {
                 $info = curl_getinfo($done['handle']);
-                if ($info['http_code'] == 200)  {
+                if ($info['http_code'] == 200 || $info['http_code'] == 404)  {
                     
 
                     $content  = curl_multi_getcontent($done['handle']);
@@ -105,10 +106,11 @@ class Request_MultiRequest
             
                     $result['content'] = substr($content, $header_size);
                     $result['status'] = curl_getinfo($done['handle'], CURLINFO_HTTP_CODE);
+
                     $res[array_search($done['handle'], $this->handles)] = $result;
                     //array_push($res,$result);
                     
-                    if ($this->i < 5)
+                    if ($this->i < $maxx)
                     curl_multi_add_handle($this->requests,$this->handles[$this->i]);
                     $this->i = $this->i + 1;
 

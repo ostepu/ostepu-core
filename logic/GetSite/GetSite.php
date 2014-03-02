@@ -235,19 +235,19 @@ class LgetSite
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
 
-        $URL = "http://141.48.9.92/uebungsplattform/DB/DBControl/exercisesheet/course/{$courseid}/exercise";
+        $URL = "{$this->lURL}/DB/exercisesheet/course/{$courseid}/exercise";
         $handler1 = Request_CreateRequest::createGet($URL, $header, $body);
 
-        $URL = "http://141.48.9.92/uebungsplattform/DB/DBControl/submission/group/user/{$userid}/course/{$courseid}/selected";
+        $URL = "{$this->lURL}/DB/submission/group/user/{$userid}/course/{$courseid}/selected";
         $handler2 = Request_CreateRequest::createGet($URL, $header, $body);
 
-        $URL = "http://141.48.9.92/uebungsplattform/DB/DBControl/marking/course/{$courseid}";
+        $URL = "{$this->lURL}/DB/marking/course/{$courseid}";
         $handler3 = Request_CreateRequest::createGet($URL, $header, $body);
 
-        $URL = "http://141.48.9.92/uebungsplattform/DB/DBControl/group/user/{$userid}";
+        $URL = "{$this->lURL}/DB/group/user/{$userid}";
         $handler4 = Request_CreateRequest::createGet($URL, $header, $body);
 
-        $URL = "http://141.48.9.92/uebungsplattform/DB/DBControl/exercisetype";
+        $URL = "{$this->lURL}/DB/exercisetype";
         $handler5 = Request_CreateRequest::createGet($URL, $header, $body);
 
         $multiRequestHandle = new Request_MultiRequest();
@@ -879,14 +879,25 @@ class LgetSite
         $courseUser = Request::custom('GET', $URL, $header, $body);
         $courseUser = json_decode($courseUser['content'], true);
 
-        foreach ($sheets as &$sheet) {
+        $multiRequestHandle = new Request_MultiRequest();
+
+        foreach ($sheets as $sheet) {
+            $URL = $this->lURL . '/DB/selectedsubmission/exercisesheet/'.$sheet['id'];
+            $handler = Request_CreateRequest::createGet($URL, $header, $body);
+
+            $multiRequestHandle->addRequest($handler);
+        }
+
+        $answer = $multiRequestHandle->run();
+
+        foreach ($sheets as $key => &$sheet) {
 
             $hasAttachments = false;
 
             // returns all selected submissions for the sheet
-            $URL = $this->lURL . '/DB/selectedsubmission/exercisesheet/'.$sheet['id'];
-            $selectedSubmissions = Request::custom('GET', $URL, $header, $body);
-            $selectedSubmissions = json_decode($selectedSubmissions['content'], true);
+            /*$URL = $this->lURL . '/DB/selectedsubmission/exercisesheet/'.$sheet['id'];
+            $selectedSubmissions = Request::custom('GET', $URL, $header, $body);*/
+            $selectedSubmissions = json_decode($answer[$key]['content'], true);
 
             foreach ($sheet['exercises'] as &$exercise) {
                 // add attachments to exercise
