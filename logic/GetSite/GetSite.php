@@ -6,8 +6,6 @@
  */
 require '../../Assistants/Slim/Slim.php';
 include '../../Assistants/Request.php';
-include '../../Assistants/CreateRequest.php';
-include '../../Assistants/MultiRequest.php';
 include_once '../../Assistants/CConfig.php';
 include_once '../../Assistants/Logger.php';
 include_once '../../Assistants/Structures.php';
