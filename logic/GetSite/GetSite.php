@@ -6,6 +6,8 @@
  */
 require '../../Assistants/Slim/Slim.php';
 include '../../Assistants/Request.php';
+include '../../Assistants/CreateRequest.php';
+include '../../Assistants/MultiRequest.php';
 include_once '../../Assistants/CConfig.php';
 include_once '../../Assistants/Logger.php';
 include_once '../../Assistants/Structures.php';
@@ -233,34 +235,47 @@ class LgetSite
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
 
-        //Get neccessary data
         $URL = "{$this->lURL}/DB/exercisesheet/course/{$courseid}/exercise";
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $sheets = json_decode($answer['content'], true);
+        $handler1 = Request_CreateRequest::createGet($URL, $header, $body);
 
         $URL = "{$this->lURL}/DB/submission/group/user/{$userid}/course/{$courseid}/selected";
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $submissions = json_decode($answer['content'], true);
+        $handler2 = Request_CreateRequest::createGet($URL, $header, $body);
+
+        $URL = "{$this->lURL}/DB/marking/course/{$courseid}";
+        $handler3 = Request_CreateRequest::createGet($URL, $header, $body);
+
+        $URL = "{$this->lURL}/DB/group/user/{$userid}";
+        $handler4 = Request_CreateRequest::createGet($URL, $header, $body);
+
+        $URL = "{$this->lURL}/DB/exercisetype";
+        $handler5 = Request_CreateRequest::createGet($URL, $header, $body);
+
+        $multiRequestHandle = new Request_MultiRequest();
+        $multiRequestHandle->addRequest($handler1);
+        $multiRequestHandle->addRequest($handler2);
+        $multiRequestHandle->addRequest($handler3);
+        $multiRequestHandle->addRequest($handler4);
+        $multiRequestHandle->addRequest($handler5);
+
+        $answer = $multiRequestHandle->run();
+        
+        //Get neccessary data
+        $sheets = json_decode($answer[0]['content'], true);
+        $submissions = json_decode($answer[1]['content'], true);
 
         if (!isset($submissions)) {
             $submissions = array();
         }
 
-        $URL = "{$this->lURL}/DB/marking/course/{$courseid}";
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $markings = json_decode($answer['content'], true);
+        $markings = json_decode($answer[2]['content'], true);
 
         if (!isset($markings)) {
             $markings = array();
         }
 
-        $URL = "{$this->lURL}/DB/group/user/{$userid}";
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $groups = json_decode($answer['content'], true);
+        $groups = json_decode($answer[3]['content'], true);
 
-        $URL = "{$this->lURL}/DB/exercisetype";
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $possibleExerciseTypes = json_decode($answer['content'], true);
+        $possibleExerciseTypes = json_decode($answer[4]['content'], true);
 
         $markingStatus = Marking::getStatusDefinition();
 
