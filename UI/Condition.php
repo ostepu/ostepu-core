@@ -126,7 +126,7 @@ $userList->bind($condition_data);
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $setCondition, $userList);
-$w->defineForm(basename(__FILE__)."?cid=".$cid, $setCondition);
+$w->defineForm(basename(__FILE__)."?cid=".$cid, false, $setCondition);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
 

@@ -10,16 +10,38 @@
 
 include_once 'include/Boilerplate.php';
 include_once '../Assistants/Structures.php';
+include_once 'include/FormEvaluator.php';
 
 if (isset($_POST['action'])) {
     // changes the user's password
     if ($_POST['action'] == "SetPassword") {
-        if(!empty($_POST['newPassword']) && !empty($_POST['newPasswordRepeat'])) {
+        $f = new FormEvaluator($_POST);
 
-            // extracts the php POST data
-            $oldPassword = cleanInput($_POST['oldPassword']);
-            $newPassword = cleanInput($_POST['newPassword']);
-            $newPasswordRepeat = cleanInput($_POST['newPasswordRepeat']);
+        $f->checkStringForKey('oldPassword',
+                              FormEvaluator::OPTIONAL,
+                              'warning',
+                              'Ungüliges altes Passwort.',
+                              array('min' => 1));
+
+        $f->checkStringForKey('newPassword',
+                              FormEvaluator::REQUIRED,
+                              'warning',
+                              'Ungüliges neues Passwort.',
+                              array('min' => 3));
+
+        $f->checkStringForKey('newPasswordRepeat',
+                              FormEvaluator::REQUIRED,
+                              'warning',
+                              'Ungülige Passwortwiederholung.',
+                              array('min' => 3));
+
+        if($f->evaluate(true)) {
+
+            $foundValues = $f->foundValues;
+
+            $oldPassword = $foundValues['oldPassword'];
+            $newPassword = $foundValues['newPassword'];
+            $newPasswordRepeat = $foundValues['newPasswordRepeat'];
 
             // loads user data from database
             $URI = $databaseURI . "/user/user/{$uid}";
@@ -53,9 +75,8 @@ if (isset($_POST['action'])) {
             else {
                 $notifications[] = MakeNotification("error", "Das alte Passwort ist nicht korrekt!");
             }
-        }
-        else {
-            $notifications[] = MakeNotification("error", "Es wurden nicht alle Felder ausgefüllt!");
+        } else {
+            $notifications = $notifications + $f->notifications;
         }
     }
 }
@@ -85,7 +106,7 @@ $changePassword->bind($accountSettings_data);
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $accountInfo, $changePassword);
-$w->defineForm(basename(__FILE__), $changePassword);
+$w->defineForm(basename(__FILE__), false, $changePassword);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
 

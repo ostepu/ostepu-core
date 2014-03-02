@@ -9,16 +9,22 @@
 
     <div class="content-body-wrapper">
         <div class="content-body left">
+            <div class="content-description">
+                Hier können Sie einen neuen Benutzer anlegen. Beachten Sie, dass das
+                Passwort eine Mindestlänge von 6 Zeichen besitzen muss.
+            </div>
             <label class="form-field left label bold new-line"for="lastName">Nachname:</label>
             <?php if (isset($lastName)): ?>
                 <input class="form-field left text-input"
                        name="lastName"
                        id="lastName"
-                       value="<?= $lastName ?>" />
+                       value="<?= $lastName ?>"
+                       maxlength="255" />
             <?php else: ?>
                 <input class="form-field left text-input"
                        name="lastName"
-                       id="lastName" />
+                       id="lastName"
+                       maxlength="255" />
             <?php endif; ?>
 
             <label class="form-field left label bold new-line" for="firstName">Vorname:</label>
@@ -26,11 +32,13 @@
                 <input class="form-field left text-input"
                        name="firstName"
                        id="firstName"
-                       value="<?= $firstName ?>" />
+                       value="<?= $firstName ?>"
+                       maxlength="255" />
             <?php else: ?>
                 <input class="form-field left text-input"
                        name="firstName"
-                       id="firstName" />
+                       id="firstName"
+                       maxlength="255" />
             <?php endif; ?>
 
             <label class="form-field left label bold new-line" for="email">Email:</label>
@@ -38,11 +46,13 @@
                 <input class="form-field left text-input"
                        name="email"
                        id="email"
-                       value="<?= $email ?>" />
+                       value="<?= $email ?>"
+                       maxlength="255" />
             <?php else: ?>
                 <input class="form-field left text-input"
                        name="email"
-                       id="email" />
+                       id="email"
+                       maxlength="255" />
             <?php endif; ?>
 
             <label class="form-field left label bold new-line" for="userName">Login / Kürzel:</label>
@@ -50,11 +60,13 @@
                 <input class="form-field left text-input"
                        name="userName"
                        id="userName"
-                       value="<?= $userName ?>" />
+                       value="<?= $userName ?>"
+                       maxlength="255" />
             <?php else: ?>
                 <input class="form-field left text-input"
                        name="userName"
-                       id="userName" />
+                       id="userName"
+                       maxlength="255" />
             <?php endif; ?>
 
             <label class="form-field left label bold new-line" for="password">Passwort:</label>

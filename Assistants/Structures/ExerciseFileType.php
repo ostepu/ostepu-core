@@ -136,8 +136,7 @@ class ExerciseFileType extends Object implements JsonSerializable
         return array(
            'EFT_id' => 'id',
            'EFT_text' => 'text',
-           'E_id' => 'exerciseId'
-           
+           'E_id' => 'exerciseId' 
         );
     }
     

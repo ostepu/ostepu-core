@@ -280,12 +280,12 @@ $addUser = Template::WithTemplateFile('include/CourseManagement/AddUser.template
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $courseSettings, $addExerciseType, $editExerciseType, $grantRights, $revokeRights, $addUser);
-$w->defineForm(basename(__FILE__)."?cid=".$cid, $courseSettings);
-$w->defineForm(basename(__FILE__)."?cid=".$cid, $addExerciseType);
-$w->defineForm(basename(__FILE__)."?cid=".$cid, $editExerciseType);
-$w->defineForm(basename(__FILE__)."?cid=".$cid, $grantRights);
-$w->defineForm(basename(__FILE__)."?cid=".$cid, $revokeRights);
-$w->defineForm(basename(__FILE__)."?cid=".$cid, $addUser);
+$w->defineForm(basename(__FILE__)."?cid=".$cid, false, $courseSettings);
+$w->defineForm(basename(__FILE__)."?cid=".$cid, false, $addExerciseType);
+$w->defineForm(basename(__FILE__)."?cid=".$cid, false, $editExerciseType);
+$w->defineForm(basename(__FILE__)."?cid=".$cid, false, $grantRights);
+$w->defineForm(basename(__FILE__)."?cid=".$cid, false, $revokeRights);
+$w->defineForm(basename(__FILE__)."?cid=".$cid, false, $addUser);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
 

@@ -350,10 +350,10 @@ if ($hasInvitations) {
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $groupMembers, $groupManagement, $invitationsFromGroup, $invitationsToGroup);
-$w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, $groupMembers);
-$w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, $groupManagement);
-$w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, $invitationsFromGroup);
-$w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, $invitationsToGroup);
+$w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $groupMembers);
+$w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $groupManagement);
+$w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $invitationsFromGroup);
+$w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $invitationsToGroup);
 $w->set_config_file('include/configs/config_group.json');
 $w->show();
 

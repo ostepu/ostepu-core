@@ -15,12 +15,14 @@
                        name="courseName"
                        placeholder="Veranstaltungsname"
                        id="courseName"
-                       value="<?= $courseName ?>"/>
+                       value="<?= $courseName ?>"
+                       maxlength="255" />
             <?php else: ?>
                 <input class="form-field left text-input"
                        name="courseName"
                        placeholder="Veranstaltungsname"
-                       id="courseName" />
+                       id="courseName"
+                       maxlength="255" />
             <?php endif; ?>
 
             <label class="form-field left label bold new-line" for="semester">Semester:</label>
@@ -50,12 +52,14 @@
                 <input class="form-field left text-input short"
                        name="defaultGroupSize"
                        id="defaultGroupSize"
-                       value="<?= $defaultGroupSize ?>"/>
+                       value="<?= $defaultGroupSize ?>"
+                       maxlength="3" />
             <?php else: ?>
                 <input class="form-field left text-input short"
                        name="defaultGroupSize"
                        value="5"
-                       id="defaultGroupSize" />
+                       id="defaultGroupSize"
+                       maxlength="3" />
             <?php endif; ?>
 
             <label class="form-field left label bold new-line" for="defaultExerciseTypes">

@@ -545,4 +545,58 @@ function downloadMarkingsForSheet($userId, $sheetId)
     header("Location: Download.php?t={$token}");
 }
 
+/*
+ * An enumeration of different mime-types.
+ */
+class FILE_TYPE
+{
+    public static $mimeType = array(
+        'gz' => 'application/gzip',
+        'xls' => 'application/msexcel',
+        'ppt' => 'application/mspowerpoint',
+        'doc' => 'application/msword',
+        'pdf' => 'application/pdf',
+        'ai' => 'application/postscript',
+        'eps' => 'application/postscript',
+        'ps' => 'application/postscript',
+        'htm' => 'text/html',
+        'html' => 'text/html',
+        'shtml' => 'application/xhtml+xml',
+        'xhtml' => 'application/xhtml+xml',
+        'xml' => 'text/xml',
+        'gtar' => 'application/x-gtar',
+        'php' => 'application/x-httpd-php',
+        'tar' => 'application/x-tar',
+        'zip' => 'application/zip',
+        'jpg' => 'image/jpeg',
+        'png' => 'image/png',
+        'gif' => 'image/gif',
+        'csv' => 'text/comma-separated-values',
+        'css' => 'text/css',
+        'js' => 'text/javascript',
+        'txt' => 'text/plain');
+
+    /**
+     * Check if FileType has a given MimeType.
+     *
+     * @param string $end The fileending string without ".".
+     *
+     * @return bool Returns true if filetype is supported.
+     */
+    public static function checkSupportedFileType($end) {
+        return array_key_exists($end, self::$mimeType);
+    }
+
+    /**
+     * Returns a mime-type to given fileending.
+     *
+     * @param string $end The fileending string without ".".
+     *
+     * @return string Returns mime-type.
+     */
+    public static function getMimeTypeByFileEnding($end) {
+        return self::$mimeType[$end];
+    }
+}
+
 ?>

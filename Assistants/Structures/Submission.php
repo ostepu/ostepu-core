@@ -135,6 +135,33 @@ class Submission extends Object implements JsonSerializable
         $this->file = $value;
     }
     
+    
+    /**
+     * @var int $hideFile Determines whether a submission file is displayed.
+     */
+    private $hideFile = null;
+    
+    /**
+     * the $hideFile getter
+     *
+     * @return the value of $hideFile
+     */ 
+    public function getHideFile()
+    {
+        return $this->hideFile;
+    }
+    
+    /**
+     * the $hideFile setter
+     *
+     * @param hideFile $value the new value for $hideFile
+     */ 
+    public function setHideFile($value)
+    {
+        $this->hideFile = $value;
+    }
+    
+    
     /**
      * @var bool $accepted If the submission has been accepted for marking.
      */
@@ -302,7 +329,7 @@ class Submission extends Object implements JsonSerializable
      *
      * @return an submission object
      */
-    public static function createSubmission($submissionId,$studentId,$fileId,$exerciseId,$comment,$accepted,$date,$flag,$leaderId=null)
+    public static function createSubmission($submissionId,$studentId,$fileId,$exerciseId,$comment,$accepted,$date,$flag,$leaderId=null,$hideFile=null)
     {
         return new Submission(array('id' => $submissionId,
         'studentId' => $studentId, 
@@ -311,7 +338,8 @@ class Submission extends Object implements JsonSerializable
         'accepted' => $accepted, 
         'date' => $date, 
         'flag' => $flag, 
-        'leaderId' => $leaderId, 
+        'leaderId' => $leaderId,
+        'hideFile' => $hideFile, 
         'file' => new File(array('fileId' => $fileId))));
     }
     
@@ -332,6 +360,7 @@ class Submission extends Object implements JsonSerializable
            'S_date' => 'date',
            'S_flag' => 'flag',
            'S_leaderId' => 'leaderId',
+           'S_hideFile' => 'hideFile',
            'S_selected' => 'selectedForGroup'
         );
     }
@@ -355,6 +384,7 @@ class Submission extends Object implements JsonSerializable
         //if ($this->selectedForGroup != null) $this->addInsertData($values, 'S_selected', DBJson::mysql_real_escape_string($this->selectedForGroup));
         if ($this->flag != null) $this->addInsertData($values, 'S_flag', DBJson::mysql_real_escape_string($this->flag));
         if ($this->leaderId != null) $this->addInsertData($values, 'S_leaderId', DBJson::mysql_real_escape_string($this->leaderId));
+        if ($this->hideFile != null) $this->addInsertData($values, 'S_hideFile', DBJson::mysql_real_escape_string($this->hideFile));
 
         if ($values != ""){
             $values=substr($values,1);
@@ -449,6 +479,7 @@ class Submission extends Object implements JsonSerializable
         if ($this->exerciseNumber!==null) $list['exerciseNumber'] = $this->exerciseNumber;
         if ($this->flag!==null) $list['flag'] = $this->flag;
         if ($this->leaderId!==null) $list['leaderId'] = $this->leaderId;
+        if ($this->hideFile!==null) $list['hideFile'] = $this->hideFile;
         return $list;  
     }
     

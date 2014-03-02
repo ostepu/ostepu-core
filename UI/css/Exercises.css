@@ -53,6 +53,12 @@
     width: 150px;
 }
 
+.exercise-comment {
+    width: 150px;
+    display: inline-block;
+    padding-top: 4px;
+}
+
 .exercise-list {
     counter-reset: item;
 }

@@ -14,28 +14,43 @@
             <input class="form-field left text-input" name="sheetName" placeholder="Bonusserie" id="sheetName" /> (optional)
 
             <label class="form-field left label bold new-line" for="startDate">Bearbeitungsanfang:</label>
-            <input class="form-field left text-input" name="startDate" value="01.01.2013" id="startDate" />
+            <div id="datetimepicker1" class="input-append left date">
+                <input class="form-field text-input" data-format="dd.MM.yyyy - hh:mm" type="text" id="startDate" name="startDate"/>
+                <span class="add-on">
+                  ...
+                </span>
+            </div>
 
             <label class="form-field left label bold new-line" for="endDate">Bearbeitungsende:</label>
-            <input class="form-field left text-input" name="endDate" value="08.01.2013" id="endDate" />
+            <div id="datetimepicker2" class="input-append left date">
+                <input class="form-field text-input" data-format="dd.MM.yyyy - hh:mm" type="text" id="endDate" name="endDate"/>
+                <span class="add-on">
+                  ...
+                </span>
+            </div>
 
             <label class="form-field left label bold new-line" for="sheetPDF">Übungsblatt (PDF):</label>
             <input class="left button" type="file" name="sheetPDF" value="Datei auswählen ..." />
 
             <label class="form-field left label bold new-line" for="sheetSolution">Musterlösung (PDF):</label>
-            <input class="left button" type="file" name="sheetSolution" value="Datei auswählen ..." />
-
-            <label class="form-field left label bold new-line" for="sheetAttachment">Anhänge zur Serie (ZIP):</label>
-            <input class="left button" type="file" name="sheetAttachment" value="Datei auswählen ..." />
+            <input class="left button" type="file" name="sheetSolution" value="Datei auswählen ..." /> <div class="content-body left">(optional)</div>
 
             <label class="form-field left label bold new-line" for="groupSize">Gruppenstärke:</label>
             <select class="form-field left text-input very-short" name="groupSize" id="groupSize">
-                <option value="1">1</option>
-                <option value="2">2</option>
-                <option value="3">3</option>
-                <option value="4">4</option>
-                <option value="5">5</option>
-                <option value="6">6</option>
+                <?php
+                    if ($courses[0]['course']['defaultGroupSize'] < 10) {
+                        $maxgroup = 10;
+                    } else {
+                        $maxgroup = $courses[0]['course']['defaultGroupSize'];
+                    }
+                    for ($i=0; $i <= $maxgroup; $i++) { 
+                        print "<option value=\"".$i."\"";
+                        if ($i == $courses[0]['course']['defaultGroupSize']) {
+                            print " selected=\"selected\"";
+                        }
+                        print ">".$i."</option>";
+                    }
+                ?>
             </select>
         </div>
     </div> <!-- end: content-body -->
