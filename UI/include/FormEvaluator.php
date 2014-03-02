@@ -68,7 +68,8 @@ class FormEvaluator {
                                     $required,
                                     $length,
                                     $possibleValues,
-                                    $notIn) {
+                                    $notIn)
+    {
 
         if (isset($this->formValues[$key])) {
             // the value is set
@@ -94,9 +95,10 @@ class FormEvaluator {
             if (is_null($possibleValues) == false) {
 
                 // check if $value is in $possibleValues
-                $result = array_search($value, $possibleValues) !== false;
+                $result = array_search($value, $possibleValues, true);
+                $result = $result !== false;
 
-                if ($notIn) {
+                if ($notIn == true) {
                     // value should not be found.
                     $result = !$result;
                 }
@@ -125,29 +127,83 @@ class FormEvaluator {
     // checks if $this->formValues[$key] contains a valid array
     private function evaluateArray($key,
                                    $required,
-                                   $notEmpty) {
-
+                                   $options)
+    {
         if (isset($this->formValues[$key])) {
-            // the value is set
+            $values = $this->formValues[$key];
 
-            $value = $this->formValues[$key];
+            if (! is_array($values)) {
+                return $required ? false : NULL;
+            }
 
-            if (is_array($value) == false) {
-                // the value is not an array
-                return false;
-            } else {
-                if (count($value) == 0) {
-                    if ($notEmpty == true) {
-                        // the value is an array, but is empty and should not be
+            $type = $options['type'];
+
+            $arrayValues = array();
+
+            if ($type == 'string') {
+                $length = $options['length'];
+                $possibleValues = $options['oneOf'];
+                $notIn = $options = $options['notIn'];
+
+                foreach ($values as $value) {
+                    $this->formValues['temp'] = $value;
+                    $result = $this->evaluateString('temp',
+                                                    $required,
+                                                    $length,
+                                                    $possibleValues,
+                                                    $notIn);
+
+                    if ($result === false) {
                         return false;
                     }
+
+                    $arrayValues[] = $result;
+                    unset($this->formValues['temp']);
+                }
+
+
+            } elseif ($type == 'number') {
+                $range = $options['range'];
+                $notIn = $options['notIn'];
+
+                foreach ($values as $value) {
+                    $this->formValues['temp'] = $value;
+                    $result = $this->evaluateNumber('temp',
+                                                    $required,
+                                                    $range,
+                                                    $notIn);
+
+                    if ($result === false) {
+                        return false;
+                    }
+
+                    $arrayValues[] = $result;
+                    unset($this->formValues['temp']);
+                }
+            } elseif ($type == 'integer') {
+                $range = $options['range'];
+                $notIn = $options['notIn'];
+
+                foreach ($values as $value) {
+                    $this->formValues['temp'] = $value;
+                    $result = $this->evaluateInteger('temp',
+                                                    $required,
+                                                    $range,
+                                                    $notIn);
+
+                    if ($result === false) {
+                        return false;
+                    }
+
+                    $arrayValues[] = $result;
+                    unset($this->formValues['temp']);
                 }
             }
 
-            return $value;
+            return $arrayValues;
 
         } elseif ($required == true) {
-            // the value is not set and is required
+
             return false;
         }
 
@@ -158,7 +214,8 @@ class FormEvaluator {
     private function evaluateNumber($key,
                                     $required,
                                     $range,
-                                    $notIn) {
+                                    $notIn)
+    {
 
         if (isset($this->formValues[$key])) {
             // the value is set
@@ -213,9 +270,9 @@ class FormEvaluator {
 
     // check if value is an integer
     private function evaluateInteger($key,
-                                    $required,
-                                    $range,
-                                    $notIn)
+                                     $required,
+                                     $range,
+                                     $notIn)
     {
         $result = $this->evaluateNumber($key,
                                         $required,
@@ -256,7 +313,8 @@ class FormEvaluator {
      * @param array $values The form values.
      * @see FormEvaluator::ForFormValues($values)
      */
-    public function __construct($values) {
+    public function __construct($values)
+    {
         $this->formValues = $values;
     }
 
@@ -314,12 +372,12 @@ class FormEvaluator {
                                                 $range,
                                                 $notIn);
             } elseif ($type == 'array') {
-                $notEmpty = $value['notEmpty'];
+                $options = $value['options'];
 
                 // check if the value for $key is valid
                 $result = $this->evaluateArray($key,
                                                $required,
-                                               $notEmpty);
+                                               $options);
             } elseif ($type == 'integer') {
                 $range = $value['range'];
                 $notIn = $value['notIn'];
@@ -367,7 +425,7 @@ class FormEvaluator {
      * @param string $message The message that is returned on error.
      * @param bool $length (optional) An associative array with optional keys
      * 'min' and 'max' that contain a number that corresponds to the minimum
-     * and maximum value of $key's value (inclusive).
+     * and maximum length of $key's value (inclusive).
      * @param array $oneOf (optional) An array of values that are valid for
      * this string.
      * @param bool $notIn (optional) True if the value for $key may not be one
@@ -437,7 +495,7 @@ class FormEvaluator {
      * @param bool $notIn (optional) If true reverse the meaning of $range, to
      * exclude 'min', 'max' and all values in between.
      * @return self
-     * @see FormEvaluator::checkNumberForKey
+     * @see FormEvaluator::checkIntegerForKey
      */
     public function checkNumberForKey($key,
                                       $required,
@@ -454,35 +512,6 @@ class FormEvaluator {
                                 'range' => $range,
                                 'notIn' => $notIn);
 
-        return $this;
-    }
-
-    /**
-     * Add check for an array.
-     * @param string $key The key that should be checked.
-     * @param bool $required True if it is required that there is a value for
-     * this key, false otherwise.
-     * @see FormEvaluator::REQUIRED
-     * @see FormEvaluator::OPTIONAL
-     * @param bool $notEmpty True if the value for $key should not be an empty
-     * array, false otherwise.
-     * @param string $messageType The type of message that is generated when
-     * an error occurs.
-     * @param string $message The message that is returned on error.
-     * @return self
-     */
-    public function checkArrayForKey($key,
-                                     $required,
-                                     $notEmpty,
-                                     $messageType,
-                                     $message)
-    {
-        $this->values[] = array('key' => $key,
-                                'type' => 'array',
-                                'required' => $required,
-                                'notEmpty' => $notEmpty,
-                                'messageType' => $messageType,
-                                'message' => $message);
         return $this;
     }
 
@@ -520,6 +549,116 @@ class FormEvaluator {
                                 'range' => $range,
                                 'notIn' => $notIn);
 
+        return $this;
+    }
+
+    /**
+     * Add check for an array.
+     * @param string $key The key that should be checked.
+     * @param bool $required True if it is required that there is a value for
+     * this key, false otherwise.
+     * @see FormEvaluator::REQUIRED
+     * @see FormEvaluator::OPTIONAL
+     * @param string $messageType The type of message that is generated when
+     * an error occurs.
+     * @param string $message The message that is returned on error.
+     * @param bool $length (optional) An associative array with optional keys
+     * 'min' and 'max' that contain a number that corresponds to the minimum
+     * and maximum length of the strings in the array (inclusive).
+     * @param array $oneOf (optional) An array of values that are valid for
+     * the strings.
+     * @param bool $notIn (optional) True if the strings in the array may not
+     * be one of the values in $oneOf, false otherwise.
+     * @return self
+     */
+    public function checkArrayOfStringsForKey($key,
+                                              $required,
+                                              $messageType,
+                                              $message,
+                                              $length = NULL,
+                                              $oneOf = NULL,
+                                              $notIn = NULL)
+    {
+        $this->values[] = array('key' => $key,
+                                'type' => 'array',
+                                'required' => $required,
+                                'messageType' => $messageType,
+                                'message' => $message,
+                                'options' => array('type' => 'string',
+                                                   'required' => $required,
+                                                   'length' => $length,
+                                                   'oneOf' => $oneOf,
+                                                   'notIn' => $notIn));
+        return $this;
+    }
+
+    /**
+     * Add check for an array.
+     * @param string $key The key that should be checked.
+     * @param bool $required True if it is required that there is a value for
+     * this key, false otherwise.
+     * @see FormEvaluator::REQUIRED
+     * @see FormEvaluator::OPTIONAL
+     * @param string $messageType The type of message that is generated when
+     * an error occurs.
+     * @param string $message The message that is returned on error.
+     * @param array $range (optional) An associative array with optional keys
+     * 'min' and 'max' that contain a number that corresponds to the minimum
+     * and maximum value of $key's value (inclusive).
+     * @param bool $notIn (optional) If true reverse the meaning of $range, to
+     * exclude 'min', 'max' and all values in between.
+     * @return self
+     */
+    public function checkArrayOfNumbersForKey($key,
+                                              $required,
+                                              $messageType,
+                                              $message,
+                                              $range = NULL,
+                                              $notIn = NULL)
+    {
+        $this->values[] = array('key' => $key,
+                                'type' => 'array',
+                                'required' => $required,
+                                'messageType' => $messageType,
+                                'message' => $message,
+                                'options' => array('type' => 'number',
+                                                   'range' => $range,
+                                                   'notIn' => $notIn));
+        return $this;
+    }
+
+    /**
+     * Add check for an array.
+     * @param string $key The key that should be checked.
+     * @param bool $required True if it is required that there is a value for
+     * this key, false otherwise.
+     * @see FormEvaluator::REQUIRED
+     * @see FormEvaluator::OPTIONAL
+     * @param string $messageType The type of message that is generated when
+     * an error occurs.
+     * @param string $message The message that is returned on error.
+     * @param array $range (optional) An associative array with optional keys
+     * 'min' and 'max' that contain a number that corresponds to the minimum
+     * and maximum value of $key's value (inclusive).
+     * @param bool $notIn (optional) If true reverse the meaning of $range, to
+     * exclude 'min', 'max' and all values in between.
+     * @return self
+     */
+    public function checkArrayOfIntegersForKey($key,
+                                              $required,
+                                              $messageType,
+                                              $message,
+                                              $range = NULL,
+                                              $notIn = NULL)
+    {
+        $this->values[] = array('key' => $key,
+                                'type' => 'array',
+                                'required' => $required,
+                                'messageType' => $messageType,
+                                'message' => $message,
+                                'options' => array('type' => 'integer',
+                                                   'range' => $range,
+                                                   'notIn' => $notIn));
         return $this;
     }
 }
