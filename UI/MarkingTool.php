@@ -56,7 +56,7 @@ function createDummyFile()
                                    $fileObj,
                                    $message);
 
-    if ($message != "201") {
+    if ($message != "201" && $message != "200") {
         return NULL;
     }
 
@@ -75,7 +75,7 @@ function createDummyFile()
  *
  * @return Returns the submission on success, NULL otherwise 
  */
-function createSubmission($points, $tutorComment, $status, $submissionID)
+function createSubmission($leaderID, $eID)
 {
     global $databaseURI;
     global $filesystemURI;
@@ -91,22 +91,46 @@ function createSubmission($points, $tutorComment, $status, $submissionID)
          * @todo Add hideFile flag
          */
         $newSubmission = Submission::createSubmission(null,
-                                                      null,
+                                                      $leaderID,
                                                       $fileID,
-                                                      $submissionID,
-                                                      $tutorComment,
+                                                      $eID,
                                                       null,
-                                                      $status,
-                                                      $points,
+                                                      1,
                                                       time());
 
         $newSubmission = Submission::encodeSubmission($newSubmission);
+
         $URI = $databaseURI . "/submission";
         $submission = http_post_data($URI, $newSubmission, true, $message);
 
         if ($message != "201") {
             return NULL;
         }
+
+        $submission = json_decode($submission, true);
+        $submissionID = $submission['id'];
+
+        /**
+         * @todo Remove leaderID when database is fixed.
+         */
+        $URI = $databaseURI . "/submission/{$submissionID}";
+        $submission = http_get($URI, true, $message);
+        $submission = json_decode($submission, true);
+        $leaderID = $submission['leaderId'];
+
+        // makes the currently created submission selected
+        updateSelectedSubmission($databaseURI,
+                                 $leaderID,
+                                 $submissionID,
+                                 $eID,
+                                 $message);
+
+        if ($message != "201") {
+            return NULL;
+        }
+
+
+        
     } else {
         return NULL;
     }
@@ -127,7 +151,7 @@ function createSubmission($points, $tutorComment, $status, $submissionID)
  *
  * @return bool Returns the marking on success, NULL otherwise 
  */
-function createMarking($points, $tutorComment, $status, $submissionID)
+function createMarking($points, $tutorComment, $status, $submissionID, $tutorID)
 {
     global $databaseURI;
     global $filesystemURI;
@@ -143,7 +167,7 @@ function createMarking($points, $tutorComment, $status, $submissionID)
          * @todo Add hideFile flag
          */
         $newMarking = Marking::createMarking(null,
-                                             null,
+                                             $tutorID,
                                              $fileID,
                                              $submissionID,
                                              $tutorComment,
@@ -178,7 +202,7 @@ function createMarking($points, $tutorComment, $status, $submissionID)
  *
  * @return bool Returns true on success, false otherwise 
  */
-function saveMarking($points, $tutorComment, $status, $submissionID, $markingID)
+function saveMarking($points, $tutorComment, $status, $submissionID, $markingID, $leaderID, $tutorID, $eID)
 {
     global $databaseURI;
 
@@ -212,36 +236,31 @@ function saveMarking($points, $tutorComment, $status, $submissionID, $markingID)
         // needs to be created before adding the marking data
 
         // creates the marking in the database
-        // $marking = createMarking($points, $tutorComment, $status, $submissionID);
-        // if (empty($marking)) {
-        //     return false;
-        // } else {
-        //     return true;
-        // }
+        $marking = createMarking($points, $tutorComment, $status, $submissionID, $tutorID);
+        if (empty($marking)) {
+            return false;
+        } else {
+            return true;
+        }
     } elseif ($submissionID == -1 && $markingID == -1) {
         // neither the submission nor the marking exist - they both
         // need to be created before adding the marking data
 
-        // creates the dummy file in the database
-        // $jsonFile = createDummyFile();
-        // $jsonFile = json_decode($jsonFile, true);
-        // $fileID = $jsonFile['fileId'];
-
-        // print($fileID);
-
         // creates the submission in the database
-        // $submission = createSubmission();
-        // if (!empty($submission)) {
-        //     // creates the marking in the database
-        //     $marking = createMarking($points, $tutorComment, $status, $submissionID));
-        //     if (!empty($marking)) {
-        //         return true;
-        //     } else {
-        //         return false;
-        //     }
-        // } else {
-        //     return false;
-        // }
+        $submission = createSubmission($leaderID, $eID);
+
+        if (!empty($submission)) {
+            // creates the marking in the database
+            $submissionID = $submission['id'];
+            $marking = createMarking($points, $tutorComment, $status, $submissionID, $tutorID);
+            if (!empty($marking)) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
     }
 }
 
@@ -302,17 +321,12 @@ if (isset($_POST['MarkingTool'])) {
                     $tutorComment = $foundValues['tutorComment'];
                     $status = $foundValues['status'];
 
-                    // $msg = "eid: " . $exerciseId;
-                    // $msg .= "; points: " . $points;
-                    // $msg .= "; cmt: " . $tutorComment;
-                    // $msg .= "; status: " . $status;
-                    // $msg .= "; sub: " . $submissionID;
-                    // $msg .= "; mar: " . $markingID;
-                    // $notifications[] = MakeNotification("success", $msg);
-
-                    
-                    if (saveMarking($points, $tutorComment, $status, $submissionID, $markingID)) {
-                        $notifications[] = MakeNotification("success", "Übung erfolgreich gespeichert.");
+                    if (saveMarking($points, $tutorComment, $status, $submissionID, $markingID, $leaderID, $uid, $exerciseId)) {
+                        $msg = "Die Korrektur wurde erfolgreich gespeichert.";
+                        $notifications[] = MakeNotification("success", $msg);
+                    } else {
+                        $msg = "Beim Speichern ist ein Fehler aufgetreten.";
+                        $notifications[] = MakeNotification("error", $msg);
                     }
 
                 } else {
