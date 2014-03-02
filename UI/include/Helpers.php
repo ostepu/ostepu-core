@@ -513,11 +513,33 @@ function downloadAttachmentsOfSheet($sheetId)
     $tokenString = "downloadAttachments{$sid}{$uid}";
     $token = md5($tokenString);
 
-    $sid = cleanInput($_POST['downloadAttachments']);
+    $sid = cleanInput($sheetId);
 
     if (!isset($_SESSION['downloads'][$token])) {
         $_SESSION['downloads'][$token] = array('download' => 'attachments',
                                                'sid' => $sid);
+    }
+
+    header("Location: Download.php?t={$token}");
+}
+
+/**
+ * Starts download of all markings of a sheet.
+ *
+ * @param $sheetId The id of the sheet whose markings are downloaded.
+ */
+function downloadMarkingsForSheet($userId, $sheetId)
+{
+    $tokenString = "downloadMarkings{$sid}{$uid}";
+    $token = md5($tokenString);
+
+    $sid = cleanInput($sheetId);
+    $uid = cleanInput($userId);
+
+    if (!isset($_SESSION['downloads'][$token])) {
+        $_SESSION['downloads'][$token] = array('download' => 'markings',
+                                               'sid' => $sid,
+                                               'uid' => $uid);
     }
 
     header("Location: Download.php?t={$token}");
