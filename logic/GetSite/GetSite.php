@@ -1,10 +1,9 @@
 <?php
 /**
- * @todo make it cheaper to combine course status names with status ids
- * @todo make it cheaper to combine marking status names with status ids
- * @todo make it cheaper to combine exercise type names with type ids
- */ // could use a map indexed by status/type id taht is built on construction
-
+ * @file GetSite.php
+ *
+ * contains the LgetSite class.
+ */
 require '../../Assistants/Slim/Slim.php';
 include '../../Assistants/Request.php';
 include_once '../../Assistants/CConfig.php';
@@ -12,10 +11,9 @@ include_once '../../Assistants/Logger.php';
 include_once '../../Assistants/Structures.php';
 
 \Slim\Slim::registerAutoloader();
+
 /**
- * The GetSite class
- *
- * This class gives all informations needed to print a Site
+ * This class gives all information needed to print a Site
  */
 class LgetSite
 {
@@ -90,6 +88,10 @@ class LgetSite
 
         //GET Upload
         $this->app->get('/upload/user/:userid/course/:courseid/exercisesheet/:sheetid(/)',
+                        array($this, 'upload'));
+
+        //GET TutorUpload
+        $this->app->get('/tutorupload/user/:userid/course/:courseid/exercisesheet/:sheetid(/)',
                         array($this, 'upload'));
 
         //GET MarkingTool
@@ -332,7 +334,7 @@ class LgetSite
 
                 // add submission to exercise
                 if (isset($submissionsByExercise[$exerciseID])) {
-                    $submission = $submissionsByExercise[$exerciseID];
+                    $submission = &$submissionsByExercise[$exerciseID];
 
                     if (isset($submission['marking'])) {
                         $marking = $submission['marking'];
@@ -474,6 +476,13 @@ class LgetSite
         return $statusNames[$courseStatus];
     }
 
+    /**
+     * Function that handles all requests for marking tool.
+     * Used by the functions that are called by Slim when data for the marking
+     * tool is requested
+     *
+     * @author Florian Lücke
+     */
     public function markingToolBase($userid,
                                     $courseid,
                                     $sheetid,
@@ -530,7 +539,7 @@ class LgetSite
             $this->app->halt(404, '{"code":404,reason":"invalid sheet id"}');
         }
 
-                // save the index of each exercise
+        // save the index of each exercise
         $exerciseIndices = array();
         foreach ($exercises as $idx => &$exercise) {
             $exerciseId = $exercise['id'];
@@ -749,49 +758,52 @@ class LgetSite
         $this->app->response->setBody(json_encode($response));
     }
 
-    // receives a set of submissions and returns the selected submission only
-    public function getSelectedSubmission($submissions) {
-        if (!empty($submissions)) {
-            foreach ($submissions as $submission) {
-                if (isset($submission['selectedForGroup'])) {
-                    return $submission;
-                }
-            }
-        }
-    }
-
+    /**
+     * Compiles data for the upload page.
+     * called whe the component receives an HTTP GET request to
+     * /upload/user/$userid/course/$courseid/exercisesheet/$sheetid
+     *
+     * @author Florian Lücke.
+     */
     public function upload($userid, $courseid, $sheetid){
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
 
         // loads all exercises of an exercise sheet
-        $URL = $this->lURL.'/DB/exercisesheet/'.$sheetid.'/exercise/';
+        $URL = "{$this->lURL}/DB/exercisesheet/{$sheetid}/exercise/";
         $answer = Request::custom('GET', $URL, $header, $body);
         $exercisesheet = json_decode($answer['content'], true);
 
-        $exercises = $exercisesheet['exercises'];
+        $URL = "{$this->lURL}/DB/submission/group/user/{$userid}/exercisesheet/{$sheetid}/selected";
+        $answer = Request::custom('GET', $URL, $header, $body);
+        $submissions = json_decode($answer['content'], true);
 
-        $exercisesById = array();
-        foreach ($exercises as &$exercise) {
-            $exercisesById[$exercise['id']] = &$exercise;
+        if (isset($submissions) == false) {
+            $submissions = array();
+        }
+
+        $exercises = &$exercisesheet['exercises'];
+
+        $submissionsByExercise = array();
+        foreach ($submissions as &$submission) {
+            $exerciseId = $submission['exerciseId'];
+            $submissionsByExercise[$exerciseId] = &$submission;
         }
 
         // loads all submissions for every exercise of the exerciseSheet
         if (!empty($exercises)) {
             foreach ($exercises as &$exercise) {
-                $URL = $this->lURL.'/DB/submission/user/'.$userid.'/exercise/'.$exercise['id'];
-                $answer = Request::custom('GET', $URL, $header, $body);
-                $submissions = json_decode($answer['content'], true);
+                $exerciseId = $exercise['id'];
 
-                //only adds the selected submissions to the response
-                if (!empty($submissions)) {
-                    $selectedSubmission = $this->getSelectedSubmission($submissions);
-                    $exercisesById[$selectedSubmission['exerciseId']]['selectedSubmission'] = $selectedSubmission;
+                if (isset($submissionsByExercise[$exerciseId])) {
+                    $submission = &$submissionsByExercise[$exerciseId];
+                    $exercise['selectedSubmission'] = &$submission;
                 }
             }
         }
 
         $response['exercises'] = $exercises;
+        $response['sheetName'] = $exercisesheet['sheetName'];
 
         $this->flag = 1;
         $response['user'] = $this->userWithCourse($userid, $courseid);
@@ -803,18 +815,32 @@ class LgetSite
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
 
+        // returns all courses
+        $URL = $this->lURL . '/DB/course';
+        $courses = Request::custom('GET', $URL, $header, $body);
+        $courses = json_decode($courses['content'], true);
+
         // returns all possible exercisetypes
         $URL = $this->lURL . '/DB/exercisetype';
         $exerciseTypes = Request::custom('GET', $URL, $header, $body);
         $response['exerciseTypes'] = json_decode($exerciseTypes['content'], true);
 
+        // returns the user
         $URL = $this->lURL . '/DB/user/user/' . $userid;
         $answer = Request::custom('GET', $URL, $header, $body);
         $user = json_decode($answer['content'], true);
 
         unset($user['courses']);
 
+        // sorts courses by name
+        function compare_courseName($a, $b) {
+             return strnatcmp($a['name'], $b['name']);
+        }
+        usort($courses, 'compare_courseName');
+
         $this->flag = 1;
+
+        $response['courses'] = $courses;
         $response['user'] = $user;
 
         $this->app->response->setBody(json_encode($response));
@@ -880,6 +906,13 @@ class LgetSite
         $this->app->response->setBody(json_encode($response));
     }
 
+    /**
+     * Compiles data for group site.
+     * Called when this component receives an HTTP GET request to
+     * /upload/user/$userid/course/$courseid/exercisesheet/$sheetid
+     *
+     * @author Florian Lücke.
+     */
     public function groupSite($userid, $courseid, $sheetid){
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
@@ -936,6 +969,9 @@ class LgetSite
             } else {
                 $lastUserSubmission = $exerciseUserSubmissions[$exerciseId][$userId];
                 if ($lastUserSubmission['submission']['date'] < $submission['date']) {
+
+                    // smaller date means less seconds since refrence date
+                    // so $lastSubmission is older
                     $user = &$usersById[$userId];
                     $userSubmission = array('user' => $user,
                                             'submission' => $submission);
@@ -944,6 +980,7 @@ class LgetSite
             }
         }
 
+        // insert submissions into the exercises
         foreach ($exercises as &$exercise) {
             $exerciseId = &$exercise['id'];
             if (isset($exerciseUserSubmissions[$exerciseId])) {
@@ -1213,7 +1250,7 @@ class LgetSite
         // an approvalCondition with the same id in the same course
 
         /**
-         * @todo Improve runtime.
+         * @todo Improve running time.
          */
         if(!empty($approvalConditions)) {
             foreach ($approvalConditions as &$approvalCondition) {
@@ -1288,14 +1325,10 @@ class LgetSite
     }
 }
 
-/**
- * get new Config-Datas from DB
- */
+// get new componenent configuartion from the database
 $com = new CConfig(LgetSite::getPrefix());
 
-/**
- * make a new instance of LgetSite-Class with the Config-Datas
- */
+// start the component with the newly received configuration
 if (!$com->used())
     new LgetSite($com->loadConfig());
 ?>
