@@ -10,6 +10,7 @@
 require '../Include/Slim/Slim.php';
 include '../Include/Request.php';
 include_once( '../Include/CConfig.php' );
+include '../Include/LFileHandler.php';
 
 \Slim\Slim::registerAutoloader();
 
@@ -105,29 +106,15 @@ class LAttachment
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
         $body = json_decode($body, true);
-        $file = $body['file'];
-        // Request to FS
-        $URL = $this->lURL.'/FS/file';
-        $answer = Request::custom('POST', $URL, $header, json_encode($file));
 
-        /*
-         * if the file has been stored, the information
-         * belongs to this attachment will be stored in the database
-         */
-        if($answer['status'] >= 200 && $answer['status'] < 300){
-            // first request
-            $URL = $this->lURL.'/DB/file';
-            $answer = Request::custom('POST', $URL, $header, $answer['content']);
-            // second request
-            if($answer['status'] >= 200 && $answer['status'] < 300){
-                $body['file'] = json_decode($answer['content'], true);
-                $URL = $this->lURL.'/DB/attachment';
-                $answer = Request::custom('POST', $URL, $header, json_encode($body));
-                $this->app->response->setStatus($answer['status']);
-            } else {
-                $this->app->response->setStatus($answer['status']);
-            }
-        } else {
+        //add the File
+        $body['file'] = LFileHandler::add($this->lURL, $header, $body['file']);
+        // if file has not been saved
+        if(empty($body['file'])){
+            $this->app->response->setStatus(409);
+        } else { // if file has been saved
+            $URL = $this->lURL.'/DB/attachment';
+            $answer = Request::custom('POST', $URL, $header, json_encode($body));
             $this->app->response->setStatus($answer['status']);
         }
     }
@@ -160,28 +147,21 @@ class LAttachment
     public function deleteAttachment($attachmentid){
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
-        //getAttachment to get the fileID and fileAddress
+        //getAttachment to get the file of the Attachment
         $URL = $this->lURL.'/DB/attachment/attachment/'.$attachmentid;
         $answer = Request::custom('GET', $URL, $header, "");
-        $fileid = json_decode($answer['content'], true);
-        $fileAddress = $fileid['file']['address'];
-        $fileid = $fileid['file']['fileId'];
-        // request to database
-        $URL = $this->lURL.'/DB/attachment/'.$attachmentid;
-        $answer = Request::custom('DELETE', $URL, $header, $body);
-        $this->app->response->setStatus($answer['status']);
+        $body = json_decode($answer['content'], true);
 
-        /*
-         * if the file information has been deleted, the file
-         * will being deleted from filetable and from filesystem
-         */
-        if ($answer['status'] >= 200 && $answer['status'] < 300){
-                //request to file-table of DB
-                $URL = $this->lURL.'/DB/file/'.$fileid;
-                $answer = Request::custom('DELETE', $URL, $header, "");
-                // request to filesystem
-                $URL = $this->lURL.'/FS/'.$fileAddress;
-                $answer = Request::custom('DELETE', $URL, $header, "");
+        if (isset($body['file'])) {
+            // request to database
+            $URL = $this->lURL.'/DB/attachment/'.$attachmentid;
+            $answer = Request::custom('DELETE', $URL, $header, $body);
+            $this->app->response->setStatus($answer['status']);
+
+            // delete the file
+            LFileHandler::delete($this->lURL, $header, $body['file']);
+        } else {
+            $this->app->response->setStatus(409);
         }
     }
 
