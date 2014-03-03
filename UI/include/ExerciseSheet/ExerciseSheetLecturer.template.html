@@ -86,16 +86,16 @@ foreach ($sheets as $sheet):
                         Aufgabenblatt
                     </a>
                 </li>
-                <li>
-                    <?php $displayName = $sheet['sampleSolution']['displayName']; ?>
-                    <?php $fileAddress = $sheet['sampleSolution']['address']; ?>
-                    <?php $fileURL = $filesystemURI . '/' . $fileAddress
-                                                    . '/' . $displayName; ?>
-                    <a href="<?= $fileURL ?>" title="<?= $displayName ?>"
-                        target="_blank">
-                        Musterlösung
-                    </a>
-                </li>
+                <?php if (isset($sheet['sampleSolution'])): ?>
+                    <li>
+                        <?php $displayName = $sheet['sampleSolution']['displayName']; ?>
+                        <?php $fileAddress = $sheet['sampleSolution']['address']; ?>
+                        <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
+                        <a href="<?= $fileURL ?>" title="<?= $displayName ?>" target="_blank">
+                            Musterlösung
+                        </a>
+                    </li>
+                <?php endif; ?>
                 <li><a href="CreateSheet.php">Serie bearbeiten</a></li>
                 <?php
                     if ($sheet['hasAttachments']) {

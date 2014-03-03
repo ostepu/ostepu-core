@@ -52,14 +52,16 @@
             </div>
             <div class="content-body right">
                 <ol class="body-options body-option-color">
-                    <li>
-                        <?php $displayName = $sheet['sampleSolution']['displayName']; ?>
-                        <?php $fileAddress = $sheet['sampleSolution']['address']; ?>
-                        <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
-                        <a href="<?= $fileURL ?>" title="<?= $displayName ?>" target="_blank">
-                            Musterlösung
-                        </a>
-                    </li>
+                    <?php if (isset($sheet['sampleSolution'])): ?>
+                        <li>
+                            <?php $displayName = $sheet['sampleSolution']['displayName']; ?>
+                            <?php $fileAddress = $sheet['sampleSolution']['address']; ?>
+                            <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
+                            <a href="<?= $fileURL ?>" title="<?= $displayName ?>" target="_blank">
+                                Musterlösung
+                            </a>
+                        </li>
+                    <?php endif; ?>
 
                     <li>
                         <?php $displayName = $sheet['sheetFile']['displayName']; ?>

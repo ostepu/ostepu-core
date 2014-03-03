@@ -104,7 +104,7 @@
             <div class="content-body right">
                 <ol class="body-options body-option-color">
                     <?php // creates a downloadAttachment icon for the exercise (if it exists) ?>
-                    <?php if($isExpired): ?>
+                    <?php if($isExpired && isset($sheet['sampleSolution'])): ?>
                         <?php $displayName = $sheet['sampleSolution']['displayName']; ?>
                         <?php $fileAddress = $sheet['sampleSolution']['address']; ?>
                         <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
