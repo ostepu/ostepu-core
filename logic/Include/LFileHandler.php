@@ -30,7 +30,6 @@ class LFileHandler
         $displayName = $file['displayName'];
         //request to filesystem to save the file
         $answer = Request::custom('POST', $URL, $header, $file);
-
         // check if file has been saved
         if ($answer['status'] >= 200 and $answer['status'] < 300) {
             $file = json_decode($answer['content'], true);
@@ -40,6 +39,7 @@ class LFileHandler
             $returnFile = json_decode($answer['content'], true);
             if (empty($returnFile)) { //if file does not exists, add it to db file table
                 $URL = $lURL.'/DB/file';
+                $file['displayName'] = $displayName;
                 $answer = Request::custom('POST', $URL, $header, json_encode($file));
                 // check if file has been saved
                 if ($answer['status'] >= 200 and $answer['status'] < 300) {

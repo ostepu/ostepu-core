@@ -179,29 +179,32 @@ class LAttachment
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
         $body = json_decode($body, true);
-        $file = $body['file'];
-        // Request to FS
-        $URL = $this->lURL.'/FS/file';
-        $answer = Request::custom('POST', $URL, $header, json_encode($file));
+        if (isset($body['file']['body']))
+        {
+            //getAttachment to get the file of the old Attachment
+            $URL = $this->lURL.'/DB/attachment/attachment/'.$attachmentid;
+            $answer = Request::custom('GET', $URL, $header, "");
+            $bodyOld = json_decode($answer['content'], true);
+            //save the new file
+            $body['file'] = LFileHandler::add($this->lURL, $header, $body['file']);
 
-        /*
-         * if the file has been stored, the information
-         * belongs to this attachment will be stored in the database
-         */
-        if($answer['status'] >= 200 && $answer['status'] < 300){
-            // first request
-            $URL = $this->lURL.'/DB/file';
-            $answer = Request::custom('POST', $URL, $header, $answer['content']);
-            // second request
-            if($answer['status'] >= 200 && $answer['status'] < 300){
-                $body['file'] = json_decode($answer['content'], true);
+
+            // if file has not been saved
+            if(empty($body['file'])){
+                $this->app->response->setStatus(409);
+            } else { // if file has been saved
+                //save the new information
                 $URL = $this->lURL.'/DB/attachment/attachment/'.$attachmentid;
                 $answer = Request::custom('PUT', $URL, $header, json_encode($body));
                 $this->app->response->setStatus($answer['status']);
-            } else {
-                $this->app->response->setStatus($answer['status']);
             }
+
+            // delete the old file
+            LFileHandler::delete($this->lURL, $header, $bodyOld['file']);
         } else {
+            // save the new information
+            $URL = $this->lURL.'/DB/attachment/attachment/'.$attachmentid;
+            $answer = Request::custom('PUT', $URL, $header, json_encode($body));
             $this->app->response->setStatus($answer['status']);
         }
     }
