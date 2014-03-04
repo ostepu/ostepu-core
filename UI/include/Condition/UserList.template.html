@@ -5,50 +5,118 @@
 
     <div class="content-body-wrapper">
         <div class="content-body left">
+            <?php
+                $fileName = "Condition.php";
+
+                if (isset($users[0])) {
+            ?>
             <table>
                 <tr class="bold">
                     <th>
-                        Name
+                        <?php
+                            print '<a class="body-option-color plain" href="';
+                            print $fileName;
+                            print '?cid=';
+                            print $user['courses'][0]['course']['id'];
+                            print '&sortby=firstName">Vorname</a>';
+                        ?>
                     </th>
                     <th>
-                        Matrikel
+                        <?php
+                            print '<a class="body-option-color plain" href="';
+                            print $fileName;
+                            print '?cid=';
+                            print $user['courses'][0]['course']['id'];
+                            print '&sortby=lastName">Nachname</a>';
+                        ?>
+                    </th>
+                    <th>
+                        <?php
+                            print '<a class="body-option-color plain" href="';
+                            print $fileName;
+                            print '?cid=';
+                            print $user['courses'][0]['course']['id'];
+                            print '&sortby=userName">Matrikel</a>';
+                        ?>
+                    </th>
+                    <th>
+                        <?php
+                            print '<a class="body-option-color plain" href="';
+                            print $fileName;
+                            print '?cid=';
+                            print $user['courses'][0]['course']['id'];
+                            print '&sortby=isApproved">Zulassung</a>';
+                        ?>
                     </th>
                     <?php
                         // prints all exercise types as header
-                        foreach ($users[0]['points'] as $points) {
+                        foreach ($minimumPercentages as $percentage) {
                             print "<th colspan=\"2\">";
-                            print $points['name'];
+
+                            /**
+                             * @todo Sort by exerciseType doesn't work yet.
+                             */
+                            print '<a class="body-option-color plain" href="';
+                            print $fileName;
+                            print '?cid=';
+                            print $user['courses'][0]['course']['id'];
+                            print '&sortby=isApproved">';
+                            print $percentage['exerciseType'] . " (max. " . $percentage['maxPoints'] . "P)";
+                            print '</a>';
+
                             print "</th>";
                         }
                     ?>
-                    <th>
-                        Zulassung
-                    </th>
                 </tr>
                 <?php
                     // creates a table row for each student
                     foreach ($users as $user) {
                         print "<tr>";
+
+                        // firstName
                         print "<td>";
-                        print $user['user']['firstName'] . " " . $user['user']['lastName'];
+                        print $user['firstName'];
                         print "</td>";
+
+                        // lastName
                         print "<td>";
-                        print $user['user']['id'];
+                        print $user['lastName'];
                         print "</td>";
-                        foreach ($user['points'] as $points) {
-                            print "<td>";
-                            print $points['percentage'] . "%";
-                            print "</td>";
-                            print "<td>";
-                            print "(" . $points['points'] . "/" . $points['maxpoints'] . ")";
+
+                        // userId
+                        print "<td>";
+                        print $user['id'];
+                        print "</td>";
+
+                        // isApproved for all courses
+                        print "<td";
+                        print $user['isApproved']?"":" class=\"critical-color\"";
+                        print ">";
+                        print $user['isApproved']?"Ja":"Nein";
+                        print "</td>";
+
+                        // percentage for each exerciseType
+                        foreach ($user['percentages'] as $percentage) {
+
+                                // achieved percentage and points
+                                print "<td";
+                                print $percentage['isApproved']?"":" class=\"critical-color\"";
+                                print ">";
+                                print $percentage['percentage'] . "%";
+                                print "</td>";
+                                print "<td>";
+                                print "(" . $percentage['points'] . "P)";
                         }
-                        print "<td>";
-                        print $user['approval'];
-                        print "</td>";
                         print "</tr>";
                     }
                 ?>
             </table>
+            <?php
+                }
+            else {
+                print "Es sind noch keine Daten vorhanden.";
+            }
+            ?>
         </div>
     </div> <!-- end: content-body -->
 </div> <!-- end: content-wrapper -->

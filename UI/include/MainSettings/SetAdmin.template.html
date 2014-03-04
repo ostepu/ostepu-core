@@ -1,0 +1,36 @@
+<input type="hidden" name="action" value="SetAdmin">
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left uppercase">Admin ernennen</div>
+        <button class="text-button info-color bold right">ernennen</button>
+    </div>
+
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            <div class="content-description">
+                Wählen Sie eine Veranstaltung aus und geben Sie anschließend
+                das Kürzel der Person ein, welche in dieser Veranstaltung zum
+                Admin ernannt werden soll. Die Person muss bereits in der 
+                Übungsplattform eingetragen sein.
+            </div>
+            <label class="form-field left label bold" for="courseID">Veranstaltung:</label>
+            <select class="form-field left text-input" name="courseID" id="courseID" size="10">
+            <?php
+                if(!empty($courses)) {
+                    foreach ($courses as $course) {
+                        print '<option value="';
+                        print $course['id'];
+                        print '">';
+                        print $course['name'];
+                        print "</option>";
+                    }
+                }
+            ?>
+            </select>
+            
+            <label class="form-field left label bold new-line" for="userName">Kürzel:</label>
+            <input class="form-field left text-input" name="userName" id="userName" />
+            </div>
+        </div>
+    </div>
+</div>

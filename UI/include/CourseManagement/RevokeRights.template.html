@@ -1,0 +1,87 @@
+<input type="hidden" name="action" value="RevokeRights">
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left uppercase">Nutzer entfernen</div>
+        <button class="text-button info-color bold right">entfernen</button>
+    </div>
+
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            <div class="content-description">
+                Wählen Sie die Person aus, welche aus der Veranstaltung entfernt werden soll.
+            </div>
+            <label class="form-field left label bold" for="lecturerRightsPerson">Person auswählen:</label>
+            <select class="form-field left text-input" name="userID" id="lecturerRightsPerson" size="10">
+                <?php
+                    $studentsArea = '<optgroup label="Studenten">';
+                    $tutorsArea = '<optgroup label="Tutoren">';
+                    $lecturersArea = '<optgroup label="Dozenten">';
+                    $adminsArea = '<optgroup label="Administratoren">';
+
+                    $emptyStudents = true;
+                    $emptyTutors = true;
+                    $emptyLecturers = true;
+                    $emptyAdmins = true;
+
+                    if(!empty($users)) {
+
+                        foreach ($users as $user) {
+
+                            if ($user['statusName'] == "student") {
+
+                                $studentsArea .= '<option value="' . $user['id'] . '">' . $user['firstName'] . " ";
+                                $studentsArea .= $user['lastName'] . ", " . $user['userName'] . "</option>";
+
+                                $emptyStudents = false;
+
+                            } elseif ($user['statusName'] == "tutor") {
+
+                                $tutorsArea .= '<option value="' . $user['id'] . '">' . $user['firstName'] . " ";
+                                $tutorsArea .= $user['lastName'] . ", " . $user['userName'] . "</option>";
+
+                                $emptyTutors = false;
+
+                            } elseif ($user['statusName'] == "lecturer") {
+
+                                $lecturersArea .= '<option value="' . $user['id'] . '">' . $user['firstName'] . " ";
+                                $lecturersArea .= $user['lastName'] . ", " . $user['userName'] . "</option>";
+
+                                $emptyLecturers = false;
+
+                            } elseif ($user['statusName'] == "administrator") {
+
+                                $adminsArea .= '<option value="' . $user['id'] . '">' . $user['firstName'] . " ";
+                                $adminsArea .= $user['lastName'] . ", " . $user['userName'] . "</option>";
+
+                                $emptyAdmins = false;
+                            }
+                        }
+
+                        if ($emptyStudents == false) {
+                            print $studentsArea . '</optgroup>';
+                        } else {
+                            print '<optgroup label="Keine Studenten"></optgroup>';
+                        }
+
+                        if ($emptyTutors == false) {
+                            print $tutorsArea . '</optgroup>';
+                        } else {
+                            print '<optgroup label="Keine Tutoren"></optgroup>';
+                        }
+
+                        if ($emptyLecturers == false) {
+                            print $lecturersArea . '</optgroup>';
+                        } else {
+                            print '<optgroup label="Keine Dozenten"></optgroup>';
+                        }
+
+                        if ($emptyAdmins == false) {
+                            print $adminsArea . '</optgroup>';
+                        } else {
+                            print '<optgroup label="Keine Administratoren"></optgroup>';
+                        }
+                    }
+                ?>            </select>
+        </div>
+    </div> <!-- end: content-body -->
+</div> <!-- end: content-wrapper -->

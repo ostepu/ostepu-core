@@ -1,52 +1,50 @@
 <?php
-include 'include/Header/Header.php';
-include 'include/HTMLWrapper.php';
-include_once 'include/Template.php';
-?>
+/**
+ * @file TutorAssign.php
+ * Constructs the page for managing tutor assignments.
+ *
+ * @author Felix Schmidt
+ * @author Florian Lücke
+ * @author Ralf Busch
+ */
 
-<?php
-if (isset($_POST['action'])) {
-    Logger::Log($_POST, LogLevel::INFO);
-    /**
-     * @todo assign tutors based on the selected method
-     */
+include_once 'include/Boilerplate.php';
 
-    // redirect, so the user can reload the page without a warning
-    header("Location: TutorAssign.php");
-} else {
-    Logger::Log("No Assignment Data", LogLevel::INFO);
-}
-?>
+/**
+ * @todo Remove $sid.
+ */
+$sid = 40;
 
-<?php
-// construct a new Header
-$h = new Header("Datenstrukturen",
-                "",
-                "Florian Lücke",
-                "211221492");
+// load user data from the database
+$URL = $getSiteURI . "/tutorassign/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
+$tutorAssign_data = http_get($URL, false);
+$tutorAssign_data = json_decode($tutorAssign_data, true);
 
-$h->setBackURL("index.php")
-  ->setBackTitle("zur Veranstaltung");
+$user_course_data = $tutorAssign_data['user'];
 
-$data = file_get_contents("http://localhost/Uebungsplattform/UI/Data/TutorAssignData");
-$data = json_decode($data, true);
+// check userrights for course
+Authentication::checkRights(1, $cid, $uid, $user_course_data);
 
-$tutorAssignment = $data;
+// construct a new header
+$h = Template::WithTemplateFile('include/Header/Header.template.html');
+$h->bind($user_course_data);
+$h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
+               "notificationElements" => $notifications));
 
-// construct a content element for managing groups
+// construct a content element for assigning tutors automatically
 $assignAutomatically = Template::WithTemplateFile('include/TutorAssign/AssignAutomatically.template.html');
-$assignAutomatically->bind($tutorAssignment);
+$assignAutomatically->bind($tutorAssign_data);
 
-// construct a content element for creating groups
+// construct a content element for assigning tutors manually
 $assignManually = Template::WithTemplateFile('include/TutorAssign/AssignManually.template.html');
-$assignManually->bind($tutorAssignment);
+$assignManually->bind($tutorAssign_data);
 
-// construct a content element for joining groups
+// construct a content element for removing assignments from tutors
 $assignCancel = Template::WithTemplateFile('include/TutorAssign/AssignRemove.template.html');
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $assignAutomatically, $assignManually, $assignCancel);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
-?>
 
+?>

@@ -153,6 +153,30 @@ class Exercise extends Object implements JsonSerializable
     public function setLink($value){
         $this->link = $value;
     }
+    
+    /**
+     * @var string $linkName the name of the link.
+     */
+    private $linkName = null;
+    
+    /**
+     * the $linkName getter
+     *
+     * @return the value of $linkName
+     */ 
+    public function getLinkName()
+    {
+        return $this->linkName;
+    }
+    
+    /**
+     * the $linkName setter
+     *
+     * @param int $value the new value for $linkName
+     */
+    public function setLinkName($value){
+        $this->linkName = $value;
+    }
 
     /**
      * @var Submission[] $submissiona the submissions for this exercise
@@ -261,12 +285,13 @@ class Exercise extends Object implements JsonSerializable
      * @param string $maxPoints the max points
      * @param string $type the id of the exercise type
      * @param string $link the id of the exercise, this exercise belongs to
+     * @param string $linkName the name of the sub exercise.
      * @param string $bonus the bonus flag
      *
      * @return an exercise object
      */
     public static function createExercise($exerciseId,$courseId,$sheetId,
-                                    $maxPoints,$type,$link,$bonus)
+                                    $maxPoints,$type,$link,$bonus,$linkName = null)
     {
         return new Exercise(array('id' => $exerciseId,
         'courseId' => $courseId,
@@ -274,6 +299,7 @@ class Exercise extends Object implements JsonSerializable
         'maxPoints' => $maxPoints, 
         'type' => $type, 
         'link' => $link, 
+        'linkName' => $linkName, 
         'bonus' => $bonus));
     }
     
@@ -291,6 +317,7 @@ class Exercise extends Object implements JsonSerializable
            'E_maxPoints' => 'maxPoints',
            'ET_id' => 'type',
            'E_id_link' => 'link',
+           'E_linkName' => 'linkName',
            'E_submissions' => 'submissions',
            'E_bonus' => 'bonus',
            'E_attachments' => 'attachments',
@@ -312,6 +339,7 @@ class Exercise extends Object implements JsonSerializable
         if ($this->maxPoints != null) $this->addInsertData($values, 'E_maxPoints', DBJson::mysql_real_escape_string($this->maxPoints));
         if ($this->type != null) $this->addInsertData($values, 'ET_id', DBJson::mysql_real_escape_string($this->type));
         if ($this->link != null) $this->addInsertData($values, 'E_id_link', DBJson::mysql_real_escape_string($this->link));
+        if ($this->linkName != null) $this->addInsertData($values, 'E_linkName', DBJson::mysql_real_escape_string($this->linkName));
         if ($this->bonus != null) $this->addInsertData($values, 'E_bonus', DBJson::mysql_real_escape_string($this->bonus));
         
         if ($values != ""){
@@ -407,7 +435,9 @@ class Exercise extends Object implements JsonSerializable
         if ($this->bonus!==null) $list['bonus'] = $this->bonus;
         if ($this->attachments!==array() && $this->attachments!==null) $list['attachments'] = $this->attachments;
         if ($this->fileTypes!==array() && $this->fileTypes!==null) $list['fileTypes'] = $this->fileTypes;
-        return $list;
+        if ($this->linkName!==null) $list['linkName'] = $this->linkName;
+       
+       return $list;
     }
     
     public static function ExtractExercise($data, $singleResult = false)

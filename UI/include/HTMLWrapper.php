@@ -2,9 +2,13 @@
 /**
  * @file HTMLWrapper.php
  * Contains the HTMLWrapper class
+ *
+ * @author Florian Lücke
+ * @author Ralf Busch
+ *
+ * @todo Replace the class by a template based solution
  */
 
-include_once 'include/Header/Header.php';
 include_once '../Assistants/Logger.php';
 
     /**
@@ -24,12 +28,6 @@ include_once '../Assistants/Logger.php';
         private $contentElements;
 
         /**
-         * @var string A navigation bar that should be inserted between
-         * header and body
-         */
-        private $navigationElement;
-
-        /**
          * @var array defines all links in the document head
          */
         private $config;
@@ -42,7 +40,7 @@ include_once '../Assistants/Logger.php';
          * @param mixed ... Page elements that should be displayed as
          * the page content
          */
-        public function __construct(Header $header)
+        public function __construct($header)
         {
             $this->header = $header;
             $arguments = func_get_args();
@@ -64,6 +62,50 @@ include_once '../Assistants/Logger.php';
         }
 
         /**
+         * defines a form starting from the first element and ending with the
+         * last element in arguments.
+         *
+         * @param string $target The target for the form;
+         * @param Template $arguments Some Templates which have to be in a
+         * form tag;
+         * @return self
+         */
+        public function defineForm($target, $fileupload)
+        {
+            $arguments = func_get_args();
+            array_shift($arguments);
+            array_shift($arguments);
+
+            // get position of the Templates in contentElements
+            $first = array_values($arguments)[0];
+            $firstkey = array_search($first, $this->contentElements, true);
+            $end = end($arguments);
+            $endkey = array_search($end, $this->contentElements, true);
+
+            // define form
+            if ($fileupload == false) {
+                $formstart = "<form action=\"{$target}\" method=\"POST\">";
+            } else {
+                $formstart = "<form action=\"{$target}\" method=\"POST\" enctype=\"multipart/form-data\">";
+            }
+            $formend = "</form>";
+
+            // insert formtags before and after the given range
+            $this->contentElements = array_merge(
+                                        array_slice($this->contentElements,
+                                                    0,
+                                                    $firstkey),
+                                        array(0 => $formstart),
+                                        array_slice($this->contentElements,
+                                                    $firstkey,
+                                                    $endkey-$firstkey+1),
+                                        array(0 => $formend),
+                                        array_slice($this->contentElements,
+                                                    $endkey+1)
+                                                );
+        }
+
+        /**
          * A function that displays the wrapper
          */
         public function show()
@@ -73,15 +115,20 @@ include_once '../Assistants/Logger.php';
             <head>
                 <meta http-equiv=\"content-type\" ";
                 // print content-type (content-dev,charset)
-                print "content=\"{$this->config['content']}; charset={$this->config['charset']}\">\n";
+                print "content=\"{$this->config['content']};";
+                print " charset={$this->config['charset']}\">\n";
+
                 // print stylesheets
                 foreach ($this->config['stylesheets'] as $stylesheet) {
-                    print "<link rel=\"stylesheet\" type=\"text/css\" href=\"$stylesheet\">\n";
+                    print "<link rel=\"stylesheet\" type=\"text/css\"";
+                    print " href=\"$stylesheet\">\n";
                 }
+
                 // print javascripts
                 foreach ($this->config['javascripts'] as $javascript) {
                     print "<script src=\"$javascript\"></script>\n";
                 }
+
                 // print title
                 print "<title>{$this->config['title']}</title>
             </head>
@@ -90,14 +137,11 @@ include_once '../Assistants/Logger.php';
 
                     $this->header->show();
 
-                    if (!is_null($this->navigationElement)) {
-                        print $this->navigationElement;
-                    }
-
                     print '<div id="content-wrapper" class="content-wrapper">';
 
                     // try to print all the elements in contentElements
                     foreach ($this->contentElements as $contentElement) {
+
                         // check check if we can somehow print the content
                         if (method_exists($contentElement, 'show')) {
                             $contentElement->show();
@@ -115,20 +159,6 @@ include_once '../Assistants/Logger.php';
         }
 
     /**
-     * Sets the value of navigationElement.
-     *
-     * @param $navigationElement the navigation element
-     *
-     * @return self
-     */
-    public function setNavigationElement($navigationElement)
-    {
-        $this->navigationElement = $navigationElement;
-
-        return $this;
-    }
-
-    /**
      * Sets a configfile for links etc. for the head area
      *
      * @param string $configdata is the configfile;
@@ -138,13 +168,16 @@ include_once '../Assistants/Logger.php';
         $fileContents = file_get_contents($configdata);
         // check if file is loaded
         if ($fileContents == false) {
-            Logger::Log("Could not open file: {$configdata}", LogLevel::WARNING);
+            Logger::Log("Could not open file: {$configdata}",
+                        LogLevel::WARNING);
         }
+
         $this->config = json_decode($fileContents, true);
         // check if file is valid JSON
-        if ($this->config== false || !is_array($this->config)) {
-            Logger::Log("Invalid JSON in file: {$configdata}", LogLevel::WARNING);
+        if ($this->config == false || is_array($this->config) == false) {
+            Logger::Log("Invalid JSON in file: {$configdata}",
+                        LogLevel::WARNING);
         }
     }
 }
-    ?>
+?>

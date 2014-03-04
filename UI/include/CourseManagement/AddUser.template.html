@@ -1,0 +1,31 @@
+<input type="hidden" name="action" value="AddUser">
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left uppercase">Nutzer hinzufügen</div>
+        <button class="text-button info-color bold right">hinzufügen</button>
+    </div>
+
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            <div class="content-description">
+                Geben Sie das Kürzel und die gewünschten Rechte der Person ein, welche 
+                zur Veranstaltung hinzugefügt werden soll. Die Person muss bereits 
+                in der Übungsplattform eingetragen sein.
+            </div>
+            <label class="form-field left label bold" for="userName">Kürzel der Person:</label>
+            <input class="form-field text-input"
+                   name="userName"
+                   id="userName"
+            />
+            <div class="form-field left label bold new-line" for="tutorRightsRight">Rechte:</div>
+            <div class="form-field left">
+                <input type="radio" name="rights" id="grantStudentRights" checked="true" value="0"/>
+                <label for="grantStudentRights"> Student</label>
+                <input type="radio" name="rights" id="grantTutorRights" value="1"/>
+                <label for="grantTutorRights"> Tutor</label>
+                <input type="radio" name="rights" id="grantLecturerRights" value="2"/>
+                <label for="grantLecturerRights"> Dozent</label>
+            </div>
+        </div>
+    </div>
+</div>

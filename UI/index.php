@@ -1,41 +1,40 @@
 <?php
-include 'include/Header/Header.php';
-include 'include/HTMLWrapper.php';
-include_once 'include/Template.php';
-include_once 'include/Helpers.php';
+/**
+ * @file index.php
+ * Generates a page that shows an overview of a user's courses.
+ *
+ * @author Felix Schmidt
+ * @author Florian Lücke
+ * @author Ralf Busch
+ */
 
-if (isset($_GET['uid'])) {
-    $uid = $_GET['uid'];
-} else {
-    $uid = 0;
-}
-
-$sites = array('0' => 'Student.php',
-               '1' => 'Tutor.php',
-               '3' => 'Lecturer.php');
-
-$statusName = array('0' => 'Student',
-                    '1' => 'Tutor',
-                    '3' => 'Dozent');
+include_once 'include/Boilerplate.php';
 
 // load user data from the database
-$databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/user/user/{$uid}";
-$user = http_get($databaseURI);
+$databaseURI = $databaseURI . "/user/user/{$uid}";
+$user = http_get($databaseURI, false);
 $user = json_decode($user, true);
 
-// construct a new Header
-$h = new Header("Übungsplattform",
-                "",
-                $user['firstName'] . ' ' . $user['lastName'],
-                $user['userName']);
+if (is_null($user)) {
+    $user = array();
+}
 
-$h->setBackURL("index.php?uid={$uid}")
-  ->setBackTitle("zur Veranstaltung");
+$menu = MakeNavigationElement($user,
+                              PRIVILEGE_LEVEL::STUDENT,
+                              true);
+
+// construct a new header
+$h = Template::WithTemplateFile('include/Header/Header.template.html');
+$h->bind($user);
+$h->bind(array("name" => "Übungsplattform",
+               "hideBackLink" => "true",
+               "notificationElements" => $notifications,
+               "navigationElement" => $menu));
 
 $pageData = array('uid' => $user['id'],
                   'courses' => $user['courses'],
-                  'sites' => $sites,
-                  'statusName' => $statusName);
+                  'sites' => PRIVILEGE_LEVEL::$SITES,
+                  'statusName' => PRIVILEGE_LEVEL::$NAMES);
 
 // construct a login element
 $courseSelect = Template::WithTemplateFile('include/CourseSelect/CourseSelect.template.html');
@@ -45,5 +44,5 @@ $courseSelect->bind($pageData);
 $w = new HTMLWrapper($h, $courseSelect);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
-?>
 
+?>

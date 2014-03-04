@@ -1,0 +1,75 @@
+<input type="hidden" name="action" value="CourseSettings">
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left uppercase">Veranstaltungseinstellungen</div>
+        <div class="info-color bold right">
+            <button class="text-button info-color bold right">speichern</button>
+        </div>
+    </div>
+
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            <div class="content-description">
+                Hier können die Grunddaten der aktuellen Veranstaltung verändert werden.
+            </div>
+            <label class="form-field left label bold" for="courseName">Veranstaltungsname:</label>
+            <input class="form-field left text-input" 
+                   name="courseName" 
+                   value="<?= $course['name'] ?>" 
+                   id="courseName"
+                   maxlength="255" />
+
+            <label class="form-field left label bold new-line" for="semester">Semester:</label>
+            <select class="form-field left text-input short" name="semester" id="semester">
+                <?php
+                    // Dynamically creates a list of possible semesters beginning
+                    // with the current year + 1 and ending with the current year - 7 or the $semester if it is older
+                    $savedYear = substr($course['semester'], -4); ?>
+                <?php $currentYear = date('Y') + 1; ?>
+                <?php if ($savedYear < $currentYear - 7): ?>
+                        <?php $endyear = $savedYear; ?>
+                <?php else: ?>
+                        <?php $endyear = $currentYear - 7; ?>
+                <?php endif; ?>
+
+                <?php for ($i = $currentYear; $i >= $endyear; $i--): ?>
+
+                        <?php $semesterString = "SS " . $i; ?>
+                        <option <?php echo ($semesterString == $semester) ? 'selected="selected"' : NULL ?>
+                            value="SS <?= $i ?>">
+                            SS <?= $i ?>
+                        </option>
+
+                        <?php $semesterString = "WS " . (string)($i - 1) . "/" . $i; ?>
+                        <option <?php echo $semesterString == $semester ? 'selected="selected"' : NULL ?>
+                            value="<?= $semesterString ?> "\>
+                            <?php echo $semesterString ?>
+                        </option>
+                <?php endfor; ?>
+            </select>
+
+            <label class="form-field left label bold new-line" for="defaultGroupSize">
+                Max. Gruppengröße (Standardwert):
+            </label>
+            <input class="form-field left text-input short" name="defaultGroupSize"
+            value="<?= $course['defaultGroupSize']; ?>" id="defaultGroupSize" maxlength="3" />
+
+            <label class="form-field left label bold new-line" for="defaultExerciseTypes">
+                Zugelassene Punktearten:
+            </label>
+            <div class="form-field left checkbox-container">
+                <?php 
+                foreach ($exerciseTypes as $exerciseType):
+                    print '<input type="checkbox" name="exerciseTypes[]" value="';
+                    print $exerciseType['id'];
+                    print '"';
+                    print isset($exerciseType['inCourse'])?' checked="true"':NULL;
+                    print ' />';
+                    print $exerciseType['name'];
+                    print '<br />';
+                endforeach;
+                ?>
+            </div>
+        </div>
+    </div> <!-- end: content-body -->
+</div> <!-- end: content-wrapper -->

@@ -1,0 +1,31 @@
+<input type="hidden" name="action" value="InviteGroup">
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left">Einladungen zum Beitritt versenden</div>
+        <button class="right text-button info-color bold">versenden</button>
+    </div>
+
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            <?php $emptyGroupMembers = $groupSize - count($group['members']) - count($invitationsFromGroup) - 1; ?>
+            <div class="content-description">
+                <?php if ($emptyGroupMembers > 0): ?>
+                Geben Sie hier die Kürzel der Nutzer an, welche der Gruppe beitreten sollen.
+                Diese erhalten dann eine Einladung, welche sie annehmen müssen, um ein Mitglied
+                der Gruppe zu werden.
+
+                Die maximale Gruppengröße für diese Serie beträgt <?= $groupSize ?>.
+                <?php else: ?>
+                Es können keine weiteren Nutzer mehr hinzugefügt werden, da die maximale
+                Gruppengröße bereits erreicht wurde.
+                <?php endif; ?>
+            </div>
+            <?php for ($i = 0; $i < $emptyGroupMembers; $i++): ?>
+                <label class="short left label bold new-line">
+                    Kürzel:
+                </label>
+                <input class="form-field left text-input" type="text" name="userName[]" />
+            <?php endfor; ?>
+        </div>
+    </div> <!-- end: content-body-wrapper -->
+</div> <!-- end: content-element -->

@@ -1,0 +1,1 @@
+ErrorDocument 404 /uebungsplattform/UI/Error.php?msg=404

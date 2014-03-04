@@ -8,7 +8,8 @@
         "css/Exercises.css",
         "css/Header.css",
         "css/Forms.css",
-        "css/Navigation.css"
+        "css/Navigation.css",
+        "css/Notifications.css"
     ],
     "javascripts":[
         "javascript/retina.js"

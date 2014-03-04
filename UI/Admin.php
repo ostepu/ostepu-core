@@ -2,38 +2,55 @@
 /**
  * @file Admin.php
  * Constructs the page that is displayed to an admin.
+ *
+ * @author Felix Schmidt
+ * @author Florian Lücke
+ * @author Ralf Busch
  */
 
-include_once 'include/Header/Header.php';
-include_once 'include/HTMLWrapper.php';
-include_once 'include/Template.php';
+include_once 'include/Boilerplate.php';
+
+if (isset($_POST['action'])) {
+    if ($_POST['action'] == "ExerciseSheetLecturer" && isset($_POST['downloadAttachments'])) {
+        downloadAttachmentsOfSheet($_POST['downloadAttachments']);
+    }
+    if ($_POST['action'] == "ExerciseSheetLecturer" && isset($_POST['downloadCSV'])) {
+        $sid = cleanInput($_POST['downloadCSV']);
+        $location = $logicURI . '/tutor/user/' . $uid . '/exercisesheet/' . $sid;
+        header("Location: {$location}");
+    }
+}
+
+// load GetSite data for Admin.php
+$URL = $getSiteURI . "/admin/user/{$uid}/course/{$cid}";
+$admin_data = http_get($URL, false);
+$admin_data = json_decode($admin_data, true);
+$admin_data['filesystemURI'] = $filesystemURI;
+$admin_data['cid'] = $cid;
+
+$user_course_data = $admin_data['user'];
+
+Authentication::checkRights(PRIVILEGE_LEVEL::ADMIN, $cid, $uid, $user_course_data);
+
+$menu = MakeNavigationElement($user_course_data,
+                              PRIVILEGE_LEVEL::ADMIN);
 
 // construct a new header
-$h = new Header("Datenstrukturen",
-                "",
-                "Florian Lücke",
-                "Admin");
+$h = Template::WithTemplateFile('include/Header/Header.template.html');
+$h->bind($user_course_data);
+$h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
+               "backTitle" => "Veranstaltung wechseln",
+               "backURL" => "index.php",
+               "notificationElements" => $notifications,
+               "navigationElement" => $menu));
 
-// include the navigation bar
-$menu = Template::WithTemplateFile('include/Navigation/NavigationAdmin.template.html');
-$menu->bind(array());
-
-// convert the json string into an associative array
-$sheets = json_decode($sheetString, true);
-
-// construct some exercise sheets
-$sheetString = file_get_contents("http://localhost/Uebungsplattform/UI/Data/SheetData");
-
-// convert the json string into an associative array
-$sheets = json_decode($sheetString, true);
 
 $t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetLecturer.template.html');
+$t->bind($admin_data);
 
-$t->bind($sheets);
-
-$w = new HTMLWrapper($h, $createSheet, $t);
-$w->setNavigationElement($menu);
+$w = new HTMLWrapper($h, $t);
+$w->defineForm(basename(__FILE__)."?cid=".$cid, $t);
 $w->set_config_file('include/configs/config_admin_lecturer.json');
 $w->show();
-?>
 
+?>

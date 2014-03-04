@@ -1,0 +1,170 @@
+<input type="hidden" 
+       name="maxMarkingStatus" 
+       value="<?= count($markingStatus) - 1 ?>" />
+<?php
+    if (!empty($groups)) {
+    foreach ($groups as $group):
+
+    $leaderID = $group['leader']['id'];
+?>
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left uppercase">
+            <?php print $group['leader']['firstName'] . " " . $group['leader']['lastName']; ?>
+        </div>
+        <div class="info-color bold right">
+            <button class="text-button info-color bold right" 
+                    name="MarkingTool"
+                    value="<?= $leaderID ?>">
+                    speichern
+            </button>
+        </div>
+    </div>
+
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            <ol class="full-width-exercise-list">
+                <?php
+                    foreach ($group['exercises'] as $exercise) {
+                    $eid = $exercise['id'];
+                ?>
+
+                <input type="hidden" 
+                       name="exercises[<?= $leaderID ?>][<?= $eid ?>][maxPoints]" 
+                       value="<?= $exercise['maxPoints'] ?>" />
+
+                <input type="hidden" 
+                       name="exercises[<?= $leaderID ?>][<?= $eid ?>][submissionID]" 
+                       value="<?= isset($exercise['submission']) ? $exercise['submission']['id'] : -1 ?>" />
+
+                <input type="hidden" 
+                       name="exercises[<?= $leaderID ?>][<?= $eid ?>][markingID]" 
+                       value="<?= isset($exercise['submission']['marking']) ? $exercise['submission']['marking']['id'] : -1 ?>" />
+
+                <li>
+                    <?php
+                        print '<input class="form-field text-input very-short" name="';
+                        print 'exercises[' . $leaderID . '][' . $eid . '][points]" value="';
+                        print isset($exercise['submission']['marking']) ? $exercise['submission']['marking']['points'] : 0;
+                        print '" id="exercisePoints" />';
+                    ?>
+
+                    <div class="form-field label short" for="exercisePoints">
+                        <?php
+                            print '/ ' . $exercise['maxPoints'] . 'P';
+                            print $exercise['bonus'] ? ' (*)' : NULL;
+                        ?>
+                    </div>
+
+                    <?php
+                        print '<input class="form-field text-input" name="';
+                        print 'exercises[' . $leaderID . '][' . $eid . '][tutorComment]" value="';
+                        print $exercise['submission']['marking']['tutorComment'];
+                        print '" id="markingComment" maxlength="255" />';
+                    ?>
+
+                    <select class="form-field text-input very-short" 
+                            name="exercises[<?= $leaderID ?>][<?= $eid ?>][status]" 
+                            id="exerciseType"> 
+                        <?php
+                            foreach ($markingStatus as $status) {
+                                print '<option value="';
+                                print $status['id'] . '" ';
+                                if (isset($exercise['submission']['marking']['status'])) {
+                                    print $status['id'] == $exercise['submission']['marking']['status'] ? ' selected="selected"' : NULL;
+                                }
+                                print '>';
+                                print $status['shortName'];
+                                print '</option>';
+                            }
+                        ?>
+                    </select>
+
+                    <div class="exercise-sheet-images">
+                        <?php
+                            // creates a download icon for the submission (if it exists)
+                            if(isset($exercise['submission'])) {
+                                $displayName = $exercise['submission']['file']['displayName'];
+                                $fileAddress = $exercise['submission']['file']['address'];
+                                $fileURL = $filesystemURI . '/' . $fileAddress . '/' . $displayName;
+
+                                print '<a href="';
+                                print $fileURL;
+                                print '" title="';
+                                print $displayName;
+                                print '" class="plain" target="_blank">';
+                                print '<img src="Images/Download.png" />';
+                                print '</a>';
+                            }
+                        ?>
+
+                        <?php
+                            // creates a downloadCorrection icon for the marking (if it exists)
+                            if(isset($exercise['submission']['marking'])) {
+                                $displayName = $exercise['submission']['marking']['file']['displayName'];
+                                $fileAddress = $exercise['submission']['marking']['file']['address'];
+                                $fileURL = $filesystemURI . '/' . $fileAddress . '/' . $displayName;
+
+                                print '<a href="';
+                                print $fileURL;
+                                print '" title="';
+                                print $displayName;
+                                print '" class="plain" target="_blank">';
+                                print '<img src="Images/DownloadCorrection.png" />';
+                                print '</a>';
+                            }
+                        ?>
+
+                        <?php
+                            $studentComment = $exercise['submission']['comment'];
+
+                            if (!empty($studentComment)) {
+                                print '<a href="javascript:alert(\'';
+                                print $studentComment;
+                                print '\')" class="body-option-color exercise-comment right">';
+                                print 'Kommentar (Student)';
+                                print '</a>';
+                            }
+                        ?>
+                </li>
+                <?php
+                    }
+                ?>
+            </ol>
+        </div>
+    </div> <!-- end: content-body -->
+
+    <?php
+        // prints a footer list-item for every group member of the sheet
+        if (isset($group['members'][0])) {
+            print '<div class="content-footer">';
+            print '<ol>';
+            print '<li class="footer-text bold">Weitere Gruppenmitglieder:</li>';
+            foreach ($group['members'] as $member):
+                print '<li class="footer-text">';
+                print $member['firstName'] . " " . $member['lastName'];
+                print '</li>';
+            endforeach;
+            print '</ol>';
+            print '</div>';
+        }
+    ?>
+</div> <!-- end: content-wrapper -->
+<?php
+endforeach;
+} else {
+?>
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left uppercase">Ergebnis</div>
+    </div>
+
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            Zu Ihrer Auswahl sind keine Einsendungen vorhanden.
+        </div>
+    </div> <!-- end: content-body -->
+</div> <!-- end: content-wrapper -->
+<?php
+}
+?>

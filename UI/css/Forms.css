@@ -1,6 +1,6 @@
 /**
  * @file Forms.css
- * Layout styles for
+ * Layout styles for form elements.
  *
  * @author Felix Schmidt
  * @author Florian Lücke
@@ -9,6 +9,7 @@
 .form-field {
     width: 250px;
     margin-bottom: 7px;
+    display: inline-block;
 }
 
 .new-line {
@@ -23,8 +24,25 @@
     width: 50px;
 }
 
+.medium {
+    width: 75px;
+}
+
+.wider {
+    width: 300px;
+}
+
+.very-wide {
+    width: 748px;
+}
+
 .text-input {
     margin: 0 20px 7px 0;
+    padding: 0;
+}
+
+.radio {
+    margin: -2px 0 10px 0;
     padding: 0;
 }
 
@@ -39,10 +57,17 @@
 
 .checkbox-container {
     border: 2px solid #ccc;
-    padding: 10px;
-    width: 100px;
-    height: 100px;
+    margin-top: 2px;
+    height: 140px;
+    color: #000000;
+    font-size: 80%;
+    background: #ffffff;
     overflow-y: scroll;
+}
+
+.form-text {
+    margin-bottom: 0;
+    margin-top: 3px;
 }
 
 textarea.text-input {

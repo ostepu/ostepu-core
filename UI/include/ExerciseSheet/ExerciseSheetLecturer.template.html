@@ -1,22 +1,36 @@
+<input type="hidden" name="action" value="ExerciseSheetLecturer">
 <div class="content-element interactive add">
     <div class="content-header">
         <div class="content-title left uppercase">Neue Serie</div>
         <div class="info-color bold right">
-            <a href="CreateSheet.php" class="exercise-sheet-end bold right" id="target">Serie anlegen</a>
+            <?php print "<a href=\"CreateSheet.php?cid={$cid}\" class=\"exercise-sheet-end bold right\" id=\"target\">Serie anlegen</a>"; ?>
         </div>
     </div>
 </div> <!-- end: content-element -->
 
 <?php
+if (!empty($sheets)) {
 foreach ($sheets as $sheet):
+
+    /**
+     * @todo Date check needs more testing.
+     */
+
+    // bool if endDate of sheet is greater than the actual date
+    $isExpired = date('U') > date('U', $sheet['endDate']);
 ?>
 <div class="content-element collapsible">
     <div class="content-header">
         <div class="content-title left uppercase">
-            <?php print $sheet['sheetName']; ?>
+            <?php
+                print $sheet['sheetName'];
+                if ($isExpired) {
+                    print ' (abgelaufen)';
+                }
+            ?>
         </div>
         <div class="critical-color bold right">
-            <?php print $sheet['endDate']; ?>
+            <?php print date('d.m.Y  -  H:i', $sheet['endDate']); ?>
         </div>
     </div>
 
@@ -28,24 +42,102 @@ foreach ($sheets as $sheet):
                 ?>
                 <li>
                     <div class="exercise-type">
-                        <?php print $exercise['exerciseType']; ?>
+                        <?php
+                            print $exercise['typeName'];
+                            print $exercise['bonus'] ? ' (*)' : NULL;
+                        ?>
                     </div>
                     <div class="exercise-points">
                         <?php print $exercise['maxPoints'] . ' P'; ?>
                     </div>
+                    <?php
+                        // creates a downloadAttachment icon for the exercise (if it exists)
+                        if(isset($exercise['attachments'][0])) {
+                            print '<div class="exercise-sheet-images">';
+
+                            $displayName = $exercise['attachments'][0]['displayName'];
+                            $fileAddress = $exercise['attachments'][0]['address'];
+                            $fileURL = $filesystemURI . '/' . $fileAddress . '/' . $displayName;
+
+                            print '<a href="';
+                            print $fileURL;
+                            print '" title="';
+                            print $displayName;
+                            print '" class="plain" target="_blank">';
+                            print '<img src="Images/Attachment.png" />';
+                            print '</a>';
+
+                            print '</div>';
+                        }
+                    ?>
                 </li>
                 <?php endforeach; ?>
             </ol>
         </div>
-
         <div class="content-body right">
             <ol class="body-options body-option-color">
-                <li><a href="#">Aufgabenblatt</a></li>
+                <li>
+                    <?php $displayName = $sheet['sheetFile']['displayName']; ?>
+                    <?php $fileAddress = $sheet['sheetFile']['address']; ?>
+                    <?php $fileURL = $filesystemURI . '/' . $fileAddress
+                                                    . '/' . $displayName; ?>
+                    <a href="<?= $fileURL ?>" title="<?= $displayName ?>"
+                        target="_blank">
+                        Aufgabenblatt
+                    </a>
+                </li>
+                <?php if (isset($sheet['sampleSolution'])): ?>
+                    <li>
+                        <?php $displayName = $sheet['sampleSolution']['displayName']; ?>
+                        <?php $fileAddress = $sheet['sampleSolution']['address']; ?>
+                        <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
+                        <a href="<?= $fileURL ?>" title="<?= $displayName ?>" target="_blank">
+                            Musterlösung
+                        </a>
+                    </li>
+                <?php endif; ?>
                 <li><a href="CreateSheet.php">Serie bearbeiten</a></li>
-                <li><a href="#">Einsendungen herunterladen</a></li>
-                <li><a href="#">Einsendungen hochladen</a></li>
-                <li><a href="TutorAssign.php">Kontrolleurzuweisung</a></li>
-                <li><a href="#">Korrekturassistent</a></li>
+                <?php
+                    if ($sheet['hasAttachments']) {
+                        print '<li>';
+                        print '<button name="downloadAttachments" value="';
+                        print $sheet['id'];
+                        print '" class="text-button body-option-color">';
+                        print 'Alle Anhänge herunterladen';
+                        print '</button>';
+                        print '</li>';
+                    }
+                ?>
+                <?php
+                    print '<li>';
+                    print '<button name="downloadCSV" value="';
+                    print $sheet['id'];
+                    print '" class="text-button body-option-color">';
+                    print 'Einsendungen herunterladen';
+                    print '</button>';
+                    print '</li>';
+                ?>
+                <li>
+                    <a href="TutorUpload.php?cid=<?= $user['courses'][0]['course']['id'],
+                                                     '&sid=',
+                                                     $sheet['id'] ?>">
+                        Einsendungen hochladen
+                    </a>
+                </li>
+                <li>
+                    <a href="TutorAssign.php?cid=<?= $user['courses'][0]['course']['id'],
+                                                     '&sid=',
+                                                     $sheet['id'] ?>">
+                        Kontrolleurzuweisung
+                    </a>
+                </li>
+                <li>
+                    <a href="MarkingTool.php?cid=<?= $user['courses'][0]['course']['id'],
+                                                     '&sid=',
+                                                     $sheet['id'] ?>">
+                        Korrekturassistent
+                    </a>
+                </li>
             </ol>
         </div>
     </div>
@@ -53,14 +145,27 @@ foreach ($sheets as $sheet):
     <div class="content-footer">
         <ol>
             <li class="footer-text bold">Einsendungen:</li>
-            <li class="footer-text">100 Studenten</li>
-            <li class="footer-text">30 mit Einsendungen</li>
-            <li class="footer-text">70 ohne Einsendungen</li>
+            <li class="footer-text"><?=$sheet['courseUserCount'] ?> Studenten</li>
+            <li class="footer-text"><?=$sheet['studentsWithSubmissionCount'] ?> mit Einsendungen</li>
+            <li class="footer-text"><?=$sheet['studentsWithoutSubmissionCount'] ?> ohne Einsendungen</li>
         </ol>
+    </div> <!-- end: content-body-wrapper -->
+</div> <!-- end: content-element -->
+<?php 
+endforeach;
+} else {
+?>
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left uppercase">Hinweis</div>
     </div>
 
-    <!-- end: content-body-wrapper -->
-</div> <!-- end: content-element -->
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            Es sind noch keine Aufgabenblätter vorhanden.
+        </div>
+    </div> <!-- end: content-body -->
+</div> <!-- end: content-wrapper -->
 <?php
-endforeach;
+}
 ?>

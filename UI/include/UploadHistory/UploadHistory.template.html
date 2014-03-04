@@ -1,77 +1,41 @@
-<form action="UploadHistory.php" method="GET">
-    <div class="content-element">
-        <div class="content-header">
-            <div class="content-title left uppercase">Einsendungsverlauf ansehen</div>
-            <button class="text-button right bold info-color">
-                Einsendungen anzeigen
-            </button>
+<?php
+    $counter = 0;
+    foreach ($submissionHistory as $exercise):
+    $counter++;
+?>
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left uppercase">Aufgabe <?= $counter ?></div>
+    </div>
+
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            <?php
+                if (!empty($exercise)) {
+                    foreach ($exercise as $submission):
+                        // prints the submission date
+                        print '<div class="form-field left bold new-line">';
+                        print date('d.m.Y  -  H:i', $submission['date']);
+                        print '</div>';
+
+                        $displayName = $submission['file']['displayName'];
+                        $fileAddress = $submission['file']['address'];
+
+                        // prints the link for downloading the submission
+                        print '<a class="left body-option-color" href="';
+                        print $filesystemURI . '/' . $fileAddress . '/' . $displayName;
+                        print '" title="';
+                        print $displayName;
+                        print '" target="_blank">Einsendung ansehen</a>';
+                    endforeach;
+                }
+                else {
+                    print 'Keine Einsendungen vorhanden.';
+                }
+            ?>
         </div>
-
-        <div class="content-body-wrapper">
-            <div class="content-body left">
-                <label class="form-field left label bold" for="Student">Studenten auswählen:</label>
-                <select class="form-field left text-input" name="userID" id="Student">
-                    <option value="">Bitte wählen</option>
-                    <option value="1" >Ralf Busch</option>
-                    <option value="2" >Felix Schmidt</option>
-                    <option value="3" >Florian Lücke</option>
-                </select>
-
-                <label class="form-field left label bold new-line" for="ExerciseSheet">Serie auswählen:</label>
-                <select class="form-field left text-input" name="sheetID" id="ExerciseSheet">
-                    <option value="">Bitte wählen</option>
-                    <option value="1" >1</option>
-                    <option value="2" >2</option>
-                    <option value="3" >3</option>
-                </select>
-            </div>
-        </div> <!-- end: content-body -->
-    </div> <!-- end: content-wrapper -->
-
-    <div class="content-element">
-        <div class="content-header">
-            <div class="content-title left uppercase">Aufgabe 1</div>
-        </div>
-
-        <div class="content-body-wrapper">
-            <div class="content-body left">
-                <div class="form-field left bold">21.10.2013, 13:00:</div>
-                <div class="form-field left" href="#">herunterladen</div>
-
-                <div class="form-field left bold new-line">21.10.2013, 13:04:</div>
-                <div class="form-field left" href="#">herunterladen</div>
-
-                <div class="form-field left bold new-line">22.10.2013, 20:00:</div>
-                <div class="form-field left" href="a">herunterladen</div>
-            </div>
-        </div> <!-- end: content-body -->
-    </div> <!-- end: content-wrapper -->
-
-    <div class="content-element">
-        <div class="content-header">
-            <div class="content-title uppercase">Aufgabe 2</div>
-        </div>
-
-        <div class="content-body-wrapper">
-            <div class="content-body left">
-                <div class="form-field left bold">18.11.2013, 13:00:</div>
-                <div class="form-field left" href="#">herunterladen</div>
-
-                <div class="form-field left bold new-line">19.11.2013, 13:04:</div>
-                <div class="form-field left" href="#">herunterladen</div>
-            </div>
-        </div> <!-- end: content-body -->
-    </div> <!-- end: content-wrapper -->
-
-    <div class="content-element">
-        <div class="content-header">
-            <div class="content-title uppercase">Aufgabe 3</div>
-        </div>
-
-        <div class="content-body-wrapper">
-            <div class="content-body left">
-                <div class="form-field left bold">Keine Einsendungen</div>
-            </div>
-        </div> <!-- end: content-body -->
-    </div> <!-- end: content-wrapper -->
-</form>
+    </div>
+</div>
+<?php
+    endforeach;
+?>

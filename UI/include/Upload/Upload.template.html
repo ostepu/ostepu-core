@@ -1,13 +1,15 @@
-<form action="Upload.php" method="POST" enctype="multipart/form-data">
-    <?php print '<input type="hidden" name="sheetID" value="' . $sheetID . '">'; ?>
+<form action="Upload.php?cid=<?= $cid ?>&sid=<?= $sid ?>" method="POST" enctype="multipart/form-data">
     <input type="hidden" name="action" value="submit">
-    <?php print '<input type="hidden" name="userID" value="' . $uid . '">'; ?>
     <button class="submit" type="submit" name="submit" id="submitButton">
         <div class="content-element">
             <div class="content-header">
-                <div class="content-title left uppercase">Absenden</div>
+                <div class="content-title left uppercase">alle absenden</div>
                 <div class="info-color bold right">
-                    <a href="javascript:void(0);" class="add-exercise" id="function">absenden</a>
+                    <a href="javascript:void(0);"
+                       class="add-exercise"
+                       id="function">
+                      alle absenden
+                    </a>
                 </div>
             </div>
         </div> <!-- end: content-wrapper -->
@@ -17,25 +19,59 @@
         <div class="content-element">
             <div class="content-header">
                 <div class="content-title left uppercase">
-                    <?php print "Aufgabe " . ($key + 1); ?>
+                    Aufgabe <?= $key + 1 ?>
                 </div>
+                <button class="text-button info-color bold right">
+                  alle absenden
+                </button>
             </div>
             <div class="content-body-wrapper">
                 <div class="content-body left">
-                    <label class="short left label bold" for="studentComment">Kommentar:</label>
-                    <?php $name = "exercises[{$key}]";
-                    print '<textarea name="' . $name;
-                    print '[\'comment\']" class="form-field text-input" rows="5">';
-                    ?>
-                </textarea>
-                <label class="short left label bold new-line" for="studentComment">Datei:</label>
-                <?php
-                print '<input type="file" class="button left" name="';
-                print $name . '[\'file\']">';
-                print '<input type="hidden" name="' . $name;
-                $exerciseID = $exercise['exerciseID'];
-                print '[\'exerciseID\']" value="' . $exerciseID . '">';
-                ?>
+                    <?php if (isset($exercise['selectedSubmission'])): ?>
+                            <div class="form-field wider left bold new-line">
+                                bisherige Einsendung:
+                            </div>
+
+                            <?php $sub = $exercise['selectedSubmission']; ?>
+                            <?php $file = $sub['file']; ?>
+                            <?php $displayName = $file['displayName']; ?>
+                            <?php $fileAddress = $file['address']; ?>
+                            <?php $date = $sub['date']; ?>
+                            <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
+
+                            <a href="<?= $fileURL ?>"
+                               title="<?= $displayName ?>"
+                               class="left body-option-color"
+                               target="_blank">
+                                Herunterladen (<?= date('d.m.Y  -  H:i', $date) ?>)
+                            </a>
+
+                            <?php if (isset($sub['comment'])): ?>
+                                <div class="form-field wider left bold new-line">
+                                    Kommentar der bisherigen Einsendung:
+                                </div> <br />
+                                <input type="text"
+                                        class="left wider form-field text-input"
+                                        value="<?= $sub['comment'] ?>"
+                                        disabled/>
+                            <?php endif; ?>
+                    <?php endif; ?>
+
+                    <label class="short left label bold new-line"
+                           for="studentComment">Kommentar:</label>
+                    <textarea name="exercises[<?= $key ?>][comment]"
+                              class="form-field text-input"
+                              rows="5"
+                              maxlength="255"></textarea>
+
+                    <label class="short left label bold new-line"
+                           for="studentComment">Datei:</label>
+                    <input type="file"
+                           class="button left"
+                           name="file<?= $exercise['id'] ?>">
+                    <input type="hidden"
+                           name="exercises[<?= $key ?>][exerciseID]"
+                           value="<?= $exercise['id'] ?>">
                 </div>
             </div>
         </div>

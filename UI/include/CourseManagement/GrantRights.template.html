@@ -1,0 +1,99 @@
+<input type="hidden" name="action" value="GrantRights">
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left uppercase">Rechte verändern</div>
+        <button class="text-button info-color bold right">verändern</button>
+    </div>
+
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            <div class="content-description">
+                Wählen Sie die Person und anschließend die gewünschten Rechte aus, um die Berechtigungen 
+                eines Nutzers zu verändern.
+            </div>
+            <label class="form-field left label bold" for="lecturerRightsPerson">Person auswählen:</label>
+            <select class="form-field left text-input" name="userID" id="lecturerRightsPerson" size="10">
+                <?php
+                    $studentsArea = '<optgroup label="Studenten">';
+                    $tutorsArea = '<optgroup label="Tutoren">';
+                    $lecturersArea = '<optgroup label="Dozenten">';
+                    $adminsArea = '<optgroup label="Administratoren">';
+
+                    $emptyStudents = true;
+                    $emptyTutors = true;
+                    $emptyLecturers = true;
+                    $emptyAdmins = true;
+
+                    if(!empty($users)) {
+
+                        foreach ($users as $user) {
+
+                            if ($user['statusName'] == "student") {
+
+                                $studentsArea .= '<option value="' . $user['id'] . '">' . $user['firstName'] . " ";
+                                $studentsArea .= $user['lastName'] . ", " . $user['userName'] . "</option>";
+
+                                $emptyStudents = false;
+
+                            } elseif ($user['statusName'] == "tutor") {
+
+                                $tutorsArea .= '<option value="' . $user['id'] . '">' . $user['firstName'] . " ";
+                                $tutorsArea .= $user['lastName'] . ", " . $user['userName'] . "</option>";
+
+                                $emptyTutors = false;
+
+                            } elseif ($user['statusName'] == "lecturer") {
+
+                                $lecturersArea .= '<option value="' . $user['id'] . '">' . $user['firstName'] . " ";
+                                $lecturersArea .= $user['lastName'] . ", " . $user['userName'] . "</option>";
+
+                                $emptyLecturers = false;
+
+                            } elseif ($user['statusName'] == "administrator") {
+
+                                $adminsArea .= '<option value="' . $user['id'] . '">' . $user['firstName'] . " ";
+                                $adminsArea .= $user['lastName'] . ", " . $user['userName'] . "</option>";
+
+                                $emptyAdmins = false;
+                            }
+                        }
+
+                        if ($emptyStudents == false) {
+                            print $studentsArea . '</optgroup>';
+                        } else {
+                            print '<optgroup label="Keine Studenten"></optgroup>';
+                        }
+
+                        if ($emptyTutors == false) {
+                            print $tutorsArea . '</optgroup>';
+                        } else {
+                            print '<optgroup label="Keine Tutoren"></optgroup>';
+                        }
+
+                        if ($emptyLecturers == false) {
+                            print $lecturersArea . '</optgroup>';
+                        } else {
+                            print '<optgroup label="Keine Dozenten"></optgroup>';
+                        }
+
+                        if ($emptyAdmins == false) {
+                            print $adminsArea . '</optgroup>';
+                        } else {
+                            print '<optgroup label="Keine Administratoren"></optgroup>';
+                        }
+                    }
+                ?>
+            </select>
+
+            <div class="form-field left label bold new-line" for="tutorRightsRight">Rechte:</div>
+            <div class="form-field left">
+                <input type="radio" name="Rights" id="grantStudentRights" checked="true" value="0"/>
+                <label for="grantStudentRights"> Student</label>
+                <input type="radio" name="Rights" id="grantTutorRights" value="1"/>
+                <label for="grantTutorRights"> Tutor</label>
+                <input type="radio" name="Rights" id="grantLecturerRights" value="2"/>
+                <label for="grantLecturerRights"> Dozent</label>
+            </div>
+        </div>
+    </div> <!-- end: content-body -->
+</div> <!-- end: content-wrapper -->

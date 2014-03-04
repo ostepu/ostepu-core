@@ -1,31 +1,43 @@
+<input type="hidden" name="action" value="SetCondition">
 <div class="content-element">
     <div class="content-header">
         <div class="content-title left uppercase">Zulassungsbedingungen</div>
+        <?php if (isset($minimumPercentages[0])) { ?>
         <div class="info-color bold right">
-            <a href="#">speichern</a>
+            <button class="text-button info-color bold right">speichern</button>
         </div>
+        <?php } ?>
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body left">
-            <label class="form-field left label bold" for="Point1">Praxispunkte:</label>
-            <input class="form-field left text-input short" name="Point1" value="50" id="Point1" />
+            <div class="content-description">
+                Geben Sie die Zahlenangaben in Prozent pro möglicher Punkteart an, welche für die
+                Zulassung notwendig sind.
+            </div>
+            <?php 
+            if (isset($minimumPercentages[0])) {
+                foreach ($minimumPercentages as $percentage): 
+            ?>
+                <label class="form-field left label bold new-line"
+                    for="<?= $percentage['approvalConditionId'] ?>"
+                >
+                    <?php print $percentage['exerciseType'] . " (Angabe in %)"; ?>
+                </label>
 
-            <label class="form-field left label bold new-line" for="Point2">Theoriepunkte:</label>
-            <input class="form-field left text-input short" name="Point2" value="30" id="Point2" />
-
-            <label class="form-field left label bold new-line" for="Point3">Irgendwas:</label>
-            <input class="form-field left text-input short" name="Point3" value="100" id="Point3" />
-
-            <label class="form-field left label bold new-line" for="UntilExercise">Berücksichtigen bis Serie:</label>
-            <select class="form-field left text-input short" name="UntilExercise" id="UntilExercise">
-                <option value="1" >1</option>
-                <option value="2" >2</option>
-                <option value="3" >3</option>
-                <option value="4" >4</option>
-                <option value="5" >5</option>
-                <option value="6" >6</option>
-            </select>
+                <input class="form-field left text-input short"
+                       name="<?= $percentage['approvalConditionId'] ?>"
+                       value="<?= $percentage['minimumPercentage'] ?>"
+                       id="<?= $percentage['approvalConditionId'] ?>"
+                       maxlength="2"
+                >
+            <?php 
+                endforeach; 
+            }
+            else {
+                print "Dem Kurs wurden noch keine Punktearten zugewiesen.";
+            }
+            ?>
         </div>
     </div> <!-- end: content-body -->
 </div> <!-- end: content-wrapper -->

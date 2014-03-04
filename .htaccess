@@ -7,3 +7,7 @@ RewriteRule ^Sheets/([0-9]+)$ Sheet.php?id=$1
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^Sheets/?$ Sheet.php
+
+<ifmodule mod_deflate.c>
+AddOutputFilterByType DEFLATE text/text text/html text/plain text/xml text/css application/x-javascript application/javascript application/json
+</ifmodule>

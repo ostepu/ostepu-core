@@ -1,55 +1,129 @@
-<?php
-foreach ($sheets as $sheet):
-?>
-<div class="content-element collapsible">
-    <div class="content-header">
-        <div class="content-title left uppercase">
-            <?php print $sheet['sheetName']; ?>
-        </div>
-        <div class="critical-color bold right">
-            <?php print $sheet['endDate']; ?>
-        </div>
-        <div class="exercise-sheet-info info-color bold right">
-            <?php print $sheet['exerciseSheetInfo'] . ' unkorrigiert'; ?>
-        </div>
-    </div>
+<?php if (!empty($sheets)): ?>
+    <?php foreach ($sheets as $sheet):?>
+    <?php /**
+           * @todo Date check needs more testing.
+           */
 
-    <div class="content-body-wrapper">
-        <div class="content-body left">
-            <ol class="exercise-list">
-                <?php
-                foreach ($sheet['exercises'] as $exercise):
-                ?>
-                <li>
-                    <div class="exercise-type">
-                        <?php print $exercise['exerciseType']; ?>
-                    </div>
-                    <div class="exercise-points">
-                        <?php print $exercise['maxPoints'] . ' P'; ?>
-                    </div>
-                </li>
-                <?php endforeach; ?>
-            </ol>
+           // bool if endDate of sheet is greater than the actual date ?>
+    <?php $isExpired = date('U') > date('U', $sheet['endDate']); ?>
+    <div class="content-element collapsible">
+        <div class="content-header">
+            <div class="content-title left uppercase">
+                    <?= $sheet['sheetName'], " " ?>
+                    <?php if ($isExpired): ?>
+                        (abgelaufen)
+                    <?php endif; ?>
+            </div>
+            <div class="critical-color bold right">
+                <?= date('d.m.Y  -  H:i', $sheet['endDate']); ?>
+            </div>
+            <div class="exercise-sheet-info info-color bold right">
+                <?= $sheet['exerciseSheetInfo'], ' unkorrigiert' ?>
+            </div>
         </div>
-        <div class="content-body right">
-            <ol class="body-options body-option-color">
-                <li><a href="#">Aufgabenblatt</a></li>
-                <li><a href="#">Musterlösung</a></li>
-                <li><a href="#">Einsendung herunterladen</a></li>
-                <li><a href="#">Einsendung hochladen</a></li>
-                <li><a href="TutorAssign.php">Kontrolleurzuweisung</a></li>
-                <li><a href="#">Korrekturassistent</a></li>
-            </ol>
-        </div>
-    </div>
 
-    <div class="content-footer">
-        <ol>
-            <li class="footer-text bold">Einsendungen:</li>
-            <li class="footer-text">100 Studenten</li>
-            <li class="footer-text">30 mit Einsendungen</li>
-            <li class="footer-text">70 ohne Einsendungen</li>
-        </ol>
-    </div><!-- end: content-body-wrapper -->
-</div> <!-- end: content-element -->
-<?php endforeach; ?>
+        <div class="content-body-wrapper">
+            <div class="content-body left">
+                <ol class="exercise-list">
+                    <?php foreach ($sheet['exercises'] as $exercise): ?>
+                    <li>
+                        <div class="exercise-type">
+                            <?= $exercise['typeName'] ?>
+                            <?= $exercise['bonus'] ? ' (*)' : '' ?>
+                        </div>
+                        <div class="exercise-points">
+                            <?= $exercise['maxPoints']?> P
+                        </div>
+                        <div class="exercise-sheet-images">
+                        <?php // creates a downloadAttachment icon for the exercise (if it exists) ?>
+                        <?php if(isset($exercise['attachment'])): ?>
+                            <?php $displayName = $exercise['attachment']['displayName']; ?>
+                            <?php $fileAddress = $exercise['attachment']['address']; ?>
+                            <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
+
+                            <a href="<?= $fileURL ?>" title="<?= $displayName ?>" class="plain" target="_blank">
+                                <img src="Images/Attachment.png" />
+                            </a>
+                        <?php endif; ?>
+                        </div>
+                    </li>
+                    <?php endforeach; ?>
+                </ol>
+            </div>
+            <div class="content-body right">
+                <ol class="body-options body-option-color">
+                    <?php if (isset($sheet['sampleSolution'])): ?>
+                        <li>
+                            <?php $displayName = $sheet['sampleSolution']['displayName']; ?>
+                            <?php $fileAddress = $sheet['sampleSolution']['address']; ?>
+                            <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
+                            <a href="<?= $fileURL ?>" title="<?= $displayName ?>" target="_blank">
+                                Musterlösung
+                            </a>
+                        </li>
+                    <?php endif; ?>
+
+                    <li>
+                        <?php $displayName = $sheet['sheetFile']['displayName']; ?>
+                        <?php $fileAddress = $sheet['sheetFile']['address']; ?>
+                        <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
+                        <a href="<?= $fileURL ?>" title="<?= $displayName ?>" target="_blank">
+                            Aufgabenblatt
+                        </a>
+                    </li>
+
+                    <?php // prints a link to download attachments ?>
+                    <?php if ($sheet['hasAttachments']): ?>
+                        <li>
+                            <button name="downloadAttachments" value="<?= $sheet['id'] ?>" class="text-button body-option-color">
+                                Alle Anhänge herunterladen
+                            </button>
+                        </li>
+                    <?php endif; ?>
+
+                    <li>
+                        <button name="downloadCSV" value="$sheet['id']" class="text-button body-option-color">
+                            Einsendungen herunterladen
+                        </button>
+                    </li>
+                    <li>
+                        <a href="TutorUpload.php?cid=<?= $user['courses'][0]['course']['id'],
+                                                         '&sid=',
+                                                         $sheet['id'] ?>">
+                            Einsendungen hochladen
+                        </a>
+                    </li>
+                    <li>
+                        <a href="TutorAssign.php?cid=<?= $user['courses'][0]['course']['id'],
+                                                         '&sid=',
+                                                         $sheet['id'] ?>">
+                            Kontrolleurzuweisung
+                        </a>
+                    </li>
+                </ol>
+            </div>
+        </div>
+
+        <div class="content-footer">
+            <ol>
+                <li class="footer-text bold">Einsendungen:</li>
+                <li class="footer-text"><?=$sheet['courseUserCount'] ?> Studenten</li>
+                <li class="footer-text"><?=$sheet['studentsWithSubmissionCount'] ?> mit Einsendungen</li>
+                <li class="footer-text"><?=$sheet['studentsWithoutSubmissionCount'] ?> ohne Einsendungen</li>
+            </ol>
+        </div><!-- end: content-body-wrapper -->
+    </div> <!-- end: content-element -->
+    <?php endforeach; ?>
+<?php else: ?>
+    <div class="content-element">
+        <div class="content-header">
+            <div class="content-title left uppercase">Hinweis</div>
+        </div>
+
+        <div class="content-body-wrapper">
+            <div class="content-body left">
+                Es sind noch keine Aufgabenblätter vorhanden.
+            </div>
+        </div> <!-- end: content-body -->
+    </div> <!-- end: content-wrapper -->
+<?php endif; ?>

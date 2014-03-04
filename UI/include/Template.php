@@ -2,6 +2,8 @@
 /**
  * @file Template.php
  * Contains the Template class.
+ *
+ * @author Florian Lücke
  */
 
 include_once 'Helpers.php';
@@ -11,7 +13,6 @@ include_once '../Assistants/Logger.php';
  * Template class.
  *
  * Applies templates to format data.
- * @author Florian Lücke
  */
 class Template
 {
@@ -23,10 +24,11 @@ class Template
      * Construct a new template.
      *
      * @param string $template A template string.
-     * @sa Template::WithTemplateFile($fileName)
+     * @see Template::WithTemplateFile($fileName)
      */
     public function __construct($template)
     {
+        $this->content = array();
         $this->template = $template;
     }
 
@@ -35,7 +37,7 @@ class Template
      *
      * @param string $fileName The name of a file in which a template is stored
      */
-    public function WithTemplateFile($fileName)
+    public static function WithTemplateFile($fileName)
     {
         $templateString = file_get_contents($fileName);
 
@@ -53,9 +55,13 @@ class Template
      * @param array $data An associative array that contains the content for
      * the template.
      */
-    public function bind(array $data)
+    public function bind($data)
     {
-        $this->content = $data;
+        if (!isset($data)) {
+            return;
+        }
+
+        $this->content = $this->content + $data;
     }
 
     /**
@@ -63,7 +69,7 @@ class Template
      */
     public function show()
     {
-        echo $this->__toString();
+        print $this->__toString();
     }
 
     /**

@@ -2,56 +2,52 @@
 /**
  * @file Tutor.php
  * Constructs the page that is displayed to a tutor.
+ *
+ * @author Felix Schmidt
+ * @author Florian Lücke
+ * @author Ralf Busch
  */
 
-include_once 'include/Header/Header.php';
-include_once 'include/HTMLWrapper.php';
-include_once 'include/Template.php';
-include_once 'include/Helpers.php';
+include_once 'include/Boilerplate.php';
 
-if (isset($_GET['cid'])) {
-    $cid = $_GET['cid'];
-} else {
-    die('no course id!\n');
+if (isset($_POST['downloadAttachments'])) {
+    downloadAttachmentsOfSheet($_POST['downloadAttachments']);
 }
 
-if (isset($_GET['uid'])) {
-    $uid = $_GET['uid'];
-} else {
-    die('no user id!\n');
+if (isset($_POST['downloadCSV'])) {
+    $sid = cleanInput($_POST['downloadCSV']);
+    $location = $logicURI . '/tutor/user/' . $uid . '/exercisesheet/' . $sid;
+    header("Location: {$location}");
 }
 
-// load user data from the database
-$databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/user/user/{$uid}";
-$user = http_get($databaseURI);
-$user = json_decode($user, true);
+$requiredPrivilege = PRIVILEGE_LEVEL::TUTOR;
 
-// load course data from the database
-$databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/course/course/{$cid}";
-$course = http_get($databaseURI);
-$course = json_decode($course, true)[0];
+// load tutor data from GetSite
+$URI = $getSiteURI . "/tutor/user/{$uid}/course/{$cid}";
+$tutor_data = http_get($URI, true);
+$tutor_data = json_decode($tutor_data, true);
+$tutor_data['filesystemURI'] = $filesystemURI;
+$tutor_data['cid'] = $cid;
+
+$user_course_data = $tutor_data['user'];
+
+// check userrights for course
+Authentication::checkRights(PRIVILEGE_LEVEL::TUTOR, $cid, $uid, $user_course_data);
 
 // construct a new header
-$h = new Header($course['name'],
-                "",
-                $user['firstName'] . ' ' . $user['lastName'],
-                $user['userName']);
-
-$databaseURL = "http://141.48.9.92/uebungsplattform/DB/DBExerciseSheet/exercisesheet/course/{$cid}/exercise";
-
-// construct some exercise sheets
-$sheetString = http_get($databaseURL);
-
-// convert the json string into an associative array
-$sheets = array("sheets" =>json_decode($sheetString, true),
-                "uid" => $uid,
-                "cid" => $cid);
+$h = Template::WithTemplateFile('include/Header/Header.template.html');
+$h->bind($user_course_data);
+$h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
+               "backTitle" => "Veranstaltung wechseln",
+               "backURL" => "index.php",
+               "notificationElements" => $notifications));
 
 $t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetTutor.template.html');
-$t->bind($sheets);
+$t->bind($tutor_data);
 
 $w = new HTMLWrapper($h, $t);
+$w->defineForm(basename(__FILE__)."?cid=".$cid, $t);
 $w->set_config_file('include/configs/config_student_tutor.json');
 $w->show();
-?>
 
+?>

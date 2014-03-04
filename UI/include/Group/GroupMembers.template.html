@@ -1,0 +1,69 @@
+<input type="hidden" name="action" value="RemoveGroupMember">
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left">Gruppenübersicht</div>
+        <?php if ($isInGroup): ?>
+        <button 
+            name="leaveGroup" 
+            value="<?= $group['leader']['id'] ?>" 
+            class="right text-button critical-color bold">
+            verlassen
+        </button>
+        <?php endif; ?>
+    </div>
+
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            <?php if ($isInGroup): ?>
+            <div class="content-description">
+                Achtung: Wenn Sie die Gruppe verlassen, werden Ihre bisherigen Einsendungen gelöscht.
+            </div>
+            <?php endif; ?>
+            <?php if ($isInGroup): ?>
+                <ol class="exercise-list invitation-list">
+                <?php
+                    // prints group leader
+                    print '<li class="bold">';
+                    $leader = $group['leader'];
+
+                    print $leader['firstName'] . " " . $leader['lastName'];
+                    print ' (Gruppenführer)';
+                    print '</li>';
+
+
+                    // prints group members
+                    foreach ($group['members'] as $member) {
+                        print "<li>";
+                        print $member['firstName'] . " " . $member['lastName'];
+
+                        if ($isLeader) {
+                            print '<button name="removeMember" value="';
+                            print $member['id'];
+                            print '" class="right text-button body-option-color">aus Gruppe entfernen</button>';
+                        }
+
+                        print "</li>";
+                    }
+
+                    // prints group invitations
+                    foreach ($invitationsFromGroup as $invitationFromGroup) {
+                        $member = $invitationFromGroup['member'];
+                        print "<li>Ausstehend: ";
+                        print $member['firstName'] . " " . $member['lastName'];
+
+                        if ($isLeader) {
+                            print '<button name="removeInvitation" value="';
+                            print $member['id'];
+                            print '" class="right text-button body-option-color">Einladung zurücknehmen</button>';
+                        }
+
+                        print "</li>";
+                    }
+                ?>
+            </ol>
+            <?php else: ?>
+                Sie befinden sich in keiner Gruppe.
+            <?php endif; ?>
+        </div>
+    </div> <!-- end: content-body-wrapper -->
+</div> <!-- end: content-element -->

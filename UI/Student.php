@@ -5,60 +5,63 @@
  *
  * @author Felix Schmidt
  * @author Florian Lücke
+ * @author Ralf Busch
  */
 
-include_once 'include/Header/Header.php';
-include_once 'include/HTMLWrapper.php';
-include_once 'include/Template.php';
-include_once 'include/Helpers.php';
+include_once 'include/Boilerplate.php';
 
-if (isset($_GET['cid'])) {
-    $cid = $_GET['cid'];
-} else {
-    die('no course id!\n');
+if (isset($_POST['downloadAttachments'])) {
+    downloadAttachmentsOfSheet($_POST['downloadAttachments']);
+
+} elseif (isset($_POST['deleteSubmission'])) {
+    $suid = cleanInput($_POST['deleteSubmission']);
+
+    $URI = $databaseURI . "/selectedsubmission/submission/" . $suid;
+    http_delete($URI, true, $message);
+
+    if ($message == "201") {
+        $notifications[] = MakeNotification("success", "Die Einsendung wurde gelöscht!");
+    } else {
+        $notifications[] = MakeNotification("error", "Beim Löschen ist ein Fehler aufgetreten!");
+    }
+
+} elseif (isset($_POST['downloadMarkings'])) {
+    downloadMarkingsForSheet($uid, $_POST['downloadMarkings']);
 }
 
-if (isset($_GET['uid'])) {
-    $uid = $_GET['uid'];
-} else {
-    die('no user id!\n');
-}
+// load tutor data from GetSite
+$URI = $getSiteURI . "/student/user/{$uid}/course/{$cid}";
+$student_data = http_get($URI, true);
+$student_data = json_decode($student_data, true);
+$student_data['filesystemURI'] = $filesystemURI;
+$student_data['cid'] = $cid;
 
-// load user data from the database
-$databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/user/user/{$uid}";
-$user = http_get($databaseURI);
-$user = json_decode($user, true);
+$user_course_data = $student_data['user'];
 
-// load course data from the database
-$databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/course/course/{$cid}";
-$course = http_get($databaseURI);
-$course = json_decode($course, true)[0];
+// check userrights for course
+Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $user_course_data);
+
+$menu = MakeNavigationElement($user_course_data,
+                              PRIVILEGE_LEVEL::STUDENT);
 
 // construct a new header
-$h = new Header($course['name'],
-                "",
-                $user['firstName'] . ' ' . $user['lastName'],
-                $user['userName']);
-
-$h->setBackURL("index.php?uid={$uid}");
-$h->setPoints(75);
-
-// load all exercise sheets for the current course
-$databaseURL = "http://141.48.9.92/uebungsplattform/DB/DBExerciseSheet/exercisesheet/course/{$cid}/exercise";
-
-// construct some exercise sheets
-$sheetString = http_get($databaseURL);
-
-// convert the json string into an associative array
-$sheets = array("sheets" =>json_decode($sheetString, true),
-                "uid" => $uid,
-                "cid" => $cid);
-
+$h = Template::WithTemplateFile('include/Header/Header.template.html');
+$h->bind($user_course_data);
+$h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
+               "backTitle" => "Veranstaltung wechseln",
+               "backURL" => "index.php",
+               "notificationElements" => $notifications,
+               "navigationElement" => $menu));
+/**
+ * @todo also display the group leader
+ * @todo fix attachment downloads
+ */
 $t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetStudent.template.html');
-
-$t->bind($sheets);
+$t->bind($student_data);
 
 $w = new HTMLWrapper($h, $t);
+$w->defineForm(basename(__FILE__)."?cid=".$cid, $t);
 $w->set_config_file('include/configs/config_student_tutor.json');
 $w->show();
+
 ?>

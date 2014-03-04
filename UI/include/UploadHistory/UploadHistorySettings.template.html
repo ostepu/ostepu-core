@@ -1,0 +1,41 @@
+<input type="hidden" name="action" value="ShowUploadHistory">
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left uppercase">Einsendungsverlauf ansehen</div>
+        <div class="info-color bold right">
+            <button class="text-button info-color bold right">Einsendungen anzeigen</button>
+        </div>
+    </div>
+
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            <label class="form-field left label bold" for="Student">Studenten auswählen:</label>
+            <select class="form-field left text-input" name="userID" id="Student" size="10">
+                <?php
+                    foreach ($users as $user) {
+                        print '<option value="';
+                        print $user['id'] . '"';
+                        print $user['id'] == $uploadUserID ? ' selected="selected"' : NULL;
+                        print '>';
+                        print $user['firstName'] . " " . $user['lastName'];
+                        print '</option>';
+                    }
+                ?>
+            </select>
+
+            <label class="form-field left label bold new-line" for="ExerciseSheet">Serie auswählen:</label>
+            <select class="form-field left text-input" name="sheetID" id="ExerciseSheet">
+                <?php
+                    foreach ($sheets as $sheet) {
+                        print '<option value="';
+                        print $sheet['id'] . '"';
+                        print $sheet['id'] == $sheetID ? ' selected="selected"' : NULL;
+                        print '>';
+                        print $sheet['sheetName'];
+                        print '</option>';
+                    }
+                ?>
+            </select>
+        </div>
+    </div> <!-- end: content-body -->
+</div> <!-- end: content-wrapper -->

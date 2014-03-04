@@ -1,14 +1,48 @@
 <div id="header" class="header">
     <div class="course-info left">
-        <div class="course-title uppercase">%title%</div>
-        <a class="change-course" href="%backURL%">%backTitle%</a>
+        <div class="course-title uppercase">
+            <?php print $name; ?>
+        </div>
+        <?php if (isset($backURL) && isset($backTitle) && !is_null($backURL)
+            && !is_null($backTitle)): ?>
+            <a class="change-course" href="<?= $backURL ?>">
+                <?php print $backTitle; ?>
+            </a>
+        <?php elseif (!isset($hideBackLink)): ?>
+            <a class="change-course" href="
+                <?= PRIVILEGE_LEVEL::$SITES[$courses[0]['status']] . "?cid=" . $courses[0]['course']['id'] ?>
+            ">
+                zur Veranstaltung
+            </a>
+        <?php endif; ?>
     </div>
     <div class="course-extra-info left">
-        %extraInfo%
+        <?php echo isset($extraInfo) ? $extraInfo : NULL ?>
     </div>
     <div class="user-info right">
-        <div class="user-name">%username%</div>
-        <div class="user-id">%userid%</div>
-        <a class="log-out" href="#">Ausloggen</a>
+        <div class="user-name">
+            <?php
+            if (isset($firstName) && isset($lastName)) {
+                print $firstName . ' ' . $lastName;
+            }
+            ?>
+        </div>
+        <div class="user-id">
+            <?php echo isset($userName) ? $userName : NULL; ?>
+        </div>
+        <?php if (!isset($hideLogoutLink)): ?>
+            <a class="log-out" href="AccountSettings.php">Account</a><br />
+            <a class="log-out" href="?action=logout">Ausloggen</a>
+        <?php endif; ?>
     </div>
 </div>
+
+<?php echo isset($navigationElement) ? $navigationElement : NULL; ?>
+
+<?php
+if (isset($notificationElements)) {
+    foreach ($notificationElements as $notificationElement) {
+        print $notificationElement;
+    }
+}
+?>

@@ -1,0 +1,36 @@
+<input type="hidden" name="action" value="ManageInvitations">
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left">Einladungen zu anderen Gruppen</div>
+    </div>
+
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            <?php if ($isInGroup): ?>
+                <div class="content-description">
+                    Um eine Einladung von einer anderen Gruppe anzunehmen, müssen Sie 
+                    zuerst die aktuelle Gruppe verlassen.
+                </div>
+            <?php endif; ?>
+            <ol class="exercise-list invitation-list">
+                <?php
+                foreach ($invitationsToGroup as $invitation):
+                    print "<li>";
+                    print $invitation['leader']['firstName'];
+                    print " ";
+                    print $invitation['leader']['lastName'];
+                        print '<button name="denyInvitation" class="right text-button body-option-color" value="';
+                        print $invitation['leader']['id'];
+                        print '">ablehnen</button>';
+                    if (!$isInGroup):
+                        print '<button name="acceptInvitation" class="right text-button body-option-color" value="';
+                        print $invitation['leader']['id'];
+                        print '">annehmen</button>';
+                    endif;
+                    print "</li>";
+                endforeach;
+                ?>
+            </ol>
+        </div>
+    </div> <!-- end: content-body-wrapper -->
+</div> <!-- end: content-element -->
