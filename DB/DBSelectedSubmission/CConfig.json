@@ -1,1 +1,0 @@
-{"id":"27","name":"DBSelectedSubmission","address":"localhost\/uebungsplattform\/DB\/DBSelectedSubmission","option":"","prefix":"selectedsubmission","links":[{"id":"46","name":"out","address":"localhost\/uebungsplattform\/DB\/DBQuery","target":"13","owner":"27","relevanz":""}]}

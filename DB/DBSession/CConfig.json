@@ -1,1 +1,0 @@
-{"id":"25","name":"DBSession","address":"localhost\/uebungsplattform\/DB\/DBSession","option":"","prefix":"session","links":[{"id":"33","name":"out","address":"localhost\/uebungsplattform\/DB\/DBQuery","target":"13","owner":"25","relevanz":""}]}

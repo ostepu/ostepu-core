@@ -1,1 +1,0 @@
-{"id":"8","name":"DBAttachment","address":"localhost\/uebungsplattform\/DB\/DBAttachment","option":"","prefix":"attachment","links":[{"id":"8","name":"out","address":"localhost\/uebungsplattform\/DB\/DBQuery","target":"13","owner":"8","relevanz":""}]}
