@@ -86,19 +86,19 @@ class FSPdf
         $this->_app->response->headers->set('Content-Type', 'application/json');
         
         // POST PostPdfPermanent
-        $this->_app->post('/'.FSPdf::$_baseDir . '/:orientation/permanent', array($this,'postPdfPermanent'));
+        $this->_app->post('/'.FSPdf::$_baseDir . '/:orientation(/)', array($this,'postPdfPermanent'));
         
         // POST PostPdfTemporary
-        $this->_app->post('/'.FSPdf::$_baseDir . '/:orientation/temporary/:filename', array($this,'postPdfTemporary'));
+        $this->_app->post('/'.FSPdf::$_baseDir . '/:orientation/:filename(/)', array($this,'postPdfTemporary'));
         
         // GET GetPdfData
-        $this->_app->get('/'.FSPdf::$_baseDir.'/:hash', array($this,'getPdfData'));
+        $this->_app->get('/'.FSPdf::$_baseDir.'/:hash(/)', array($this,'getPdfData'));
         
         // GET GetPdfDocument
-        $this->_app->get('/'.FSPdf::$_baseDir.'/:hash/:filename', array($this,'getPdfDocument'));
+        $this->_app->get('/'.FSPdf::$_baseDir.'/:hash/:filename(/)', array($this,'getPdfDocument'));
         
         // DELETE DeletePdf
-        $this->_app->delete('/'.FSPdf::$_baseDir.'/:hash', array($this,'deletePdf'));
+        $this->_app->delete('/'.FSPdf::$_baseDir.'/:hash(/)', array($this,'deletePdf'));
 
          // run Slim
          $this->_app->run();

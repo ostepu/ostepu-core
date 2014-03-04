@@ -17,12 +17,16 @@ select
     E.E_maxPoints,
     E.E_bonus,
     E.E_id_link,
+    E.E_linkName,
     F.F_id,
     F.F_displayName,
     F.F_address,
     F.F_timeStamp,
     F.F_fileSize,
     F.F_hash,
+    F.F_comment,
+    EFT_id,
+    EFT_text,
     S.U_id as U_id2,
     S.S_id as S_id2,
     S.F_id_file as F_id_file2,
@@ -33,6 +37,8 @@ select
     S.E_id as E_id2
 from
     Exercise E
+            left join
+    ExerciseFileType EFT ON E.E_id = EFT.E_id
         left join
     (Attachment A
     natural join File F) ON E.E_id = A.E_id

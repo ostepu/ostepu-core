@@ -11,7 +11,9 @@ require_once( '../../Assistants/Slim/Slim.php' );
 include_once( '../../Assistants/Structures.php' );
 include_once( '../../Assistants/Request.php' );
 include_once( '../../Assistants/DBJson.php' );
+include_once( '../../Assistants/DBRequest.php' );
 include_once( '../../Assistants/CConfig.php' );
+include_once( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader();
 
@@ -108,10 +110,10 @@ class DBGroup
         $this->_app->get('/' . $this->getPrefix() . '(/group)(/)',
                         array($this,'getAllGroups'));
                         
-        // GET GetSheetUserGroups
+        // GET GetUserSheetGroups
         $this->_app->get('/' . $this->getPrefix() . 
                         '/user/:userid/exercisesheet/:esid(/)',
-                        array($this,'getSheetUserGroups'));
+                        array($this,'getUserSheetGroups'));
         
         // GET GetSheetGroups
         $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid(/)',
@@ -152,8 +154,11 @@ class DBGroup
         $insert = Group::decodeGroup($this->_app->request->getBody());
         
         // always been an array
-        if (!is_array($insert))
+        $arr = true;
+        if (!is_array($insert)){
             $insert = array($insert);
+            $arr=false;
+        }
 
         foreach ($insert as $in){
             // generates the update data for the object
@@ -174,7 +179,7 @@ class DBGroup
                 
             } else{
                 Logger::Log("PUT EditGroup failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->stop();
             }
         }
@@ -215,7 +220,7 @@ class DBGroup
                 
         } else{
             Logger::Log("DELETE DeleteGroup failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->stop();
         }
     }
@@ -237,8 +242,11 @@ class DBGroup
         $insert = Group::decodeGroup($this->_app->request->getBody());
      
         // always been an array
-        if (!is_array($insert))
+        $arr = true;
+        if (!is_array($insert)){
             $insert = array($insert);
+            $arr=false;
+        }
 
         foreach ($insert as $in){
             // generates the insert data for the object
@@ -258,13 +266,61 @@ class DBGroup
 
             } else{
                 Logger::Log("POST AddGroup failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->stop();
             }
         }
     }
 
-
+    public function get($functionName,$sqlFile,$userid,$courseid,$esid,$eid,$suid,$mid,$singleResult=false)
+    {
+        Logger::Log("starts GET " . $functionName,LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            $userid == "" ? true : ctype_digit($userid), 
+                            $courseid == "" ? true : ctype_digit($courseid), 
+                            $esid == "" ? true : ctype_digit($esid), 
+                            $eid == "" ? true : ctype_digit($eid), 
+                            $suid == "" ? true : ctype_digit($suid), 
+                            $mid == "" ? true : ctype_digit($mid));
+                            
+            
+        // starts a query, by using a given file
+        $result = DBRequest::getRoutedSqlFile($this->query, 
+                                        $sqlFile, 
+                                        array("userid" => $userid,
+                                        'courseid' => $courseid,
+                                        'esid' => $esid,
+                                        'eid' => $eid,
+                                        'suid' => $suid,
+                                        'mid' => $mid));
+ 
+        // checks the correctness of the query                                        
+        if ($result['status']>=200 && $result['status']<=299){ 
+            $query = Query::decodeQuery($result['content']);
+            
+            if ($query->getNumRows()>0){
+                $res = Group::ExtractGroup($query->getResponse(),$singleResult); 
+                $this->_app->response->setBody(Group::encodeGroup($res));
+        
+                $this->_app->response->setStatus(200);
+                if (isset($result['headers']['Content-Type']))
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+                
+                $this->_app->stop(); 
+            }
+            else
+                $result['status'] = 404;
+                
+        }
+        
+            Logger::Log("GET " . $functionName . " failed",LogLevel::ERROR);
+            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
+            $this->_app->response->setBody(Group::encodeGroup(new Group()));
+            $this->_app->stop();
+    }
+    
     /**
      * Returns all groups a given user is part of.
      *
@@ -275,79 +331,14 @@ class DBGroup
      */
     public function getUserGroups($userid)
     {     
-        Logger::Log("starts GET GetUserGroups",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($userid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetUserGroups.sql", 
-                                        array("userid" => $userid));  
-                                        
-        // checks the correctness of the query    
-        if ($result['status']>=200 && $result['status']<=299){
-            $query = Query::decodeQuery($result['content']);
-
-            $data = $query->getResponse();
-
-            // generates an assoc array of an user by using a defined list of 
-            // its attributes
-            $leader = DBJson::getObjectsByAttributes($data, 
-                                            User::getDBPrimaryKey(), 
-                                            User::getDBConvert()
-                                            );
-            
-            // generates an assoc array of users by using a defined list of 
-            // its attributes
-            $member = DBJson::getObjectsByAttributes($data, 
-                                            User::getDBPrimaryKey(), 
-                                            User::getDBConvert(),
-                                            '2'
-                                            );
-                                            
-            // generates an assoc array of groups by using a defined list of 
-            // its attributes
-            $groups = DBJson::getObjectsByAttributes($data, 
-                                    Group::getDBPrimaryKey(), 
-                                    Group::getDBConvert());
-                                  
-                                    
-            // concatenates the groups and the associated group leader
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $groups,
-                            Group::getDBPrimaryKey(),
-                            Group::getDBConvert()['U_leader'] ,
-                            $leader,
-                            User::getDBPrimaryKey()
-                            );
-       
-            // concatenates the groups and the associated group member
-            $res = DBJson::concatResultObjectLists($data, 
-                            $res,
-                            Group::getDBPrimaryKey(),
-                            Group::getDBConvert()['U_member'] ,
-                            $member,
-                            User::getDBPrimaryKey(),
-                            '2'
-                            );
-                            
-                          
-            // to reindex
-            $res = array_merge($res);
-        
-            $this->_app->response->setBody(Group::encodeGroup($res));
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetUserGroups failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Group::encodeGroup(new Group()));
-            $this->_app->stop();
-        }
+        $this->get("GetUserGroups",
+                "Sql/GetUserGroups.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($mid) ? $mid : "");
     }   
 
 
@@ -359,74 +350,14 @@ class DBGroup
      */
     public function getAllGroups()
     {     
-        Logger::Log("starts GET GetAllGroups",LogLevel::DEBUG);
-        
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetAllGroups.sql", 
-                                        array());  
-                                        
-        // checks the correctness of the query    
-        if ($result['status']>=200 && $result['status']<=299){
-            $query = Query::decodeQuery($result['content']);
-
-            $data = $query->getResponse();
-
-            // generates an assoc array of an user by using a defined list of 
-            // its attributes
-            $leader = DBJson::getObjectsByAttributes($data, 
-                                            User::getDBPrimaryKey(), 
-                                            User::getDBConvert()
-                                            );
-            
-            // generates an assoc array of users by using a defined list of 
-            // its attributes
-            $member = DBJson::getObjectsByAttributes($data, 
-                                            User::getDBPrimaryKey(), 
-                                            User::getDBConvert(),
-                                            '2'
-                                            );
-                                            
-            // generates an assoc array of groups by using a defined list of 
-            // its attributes
-            $groups = DBJson::getObjectsByAttributes($data, 
-                                    Group::getDBPrimaryKey(), 
-                                    Group::getDBConvert());
-                                  
-                                    
-            // concatenates the groups and the associated group leader
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $groups,
-                            Group::getDBPrimaryKey(),
-                            Group::getDBConvert()['U_leader'] ,
-                            $leader,
-                            User::getDBPrimaryKey()
-                            );
-       
-            // concatenates the groups and the associated group member
-            $res = DBJson::concatResultObjectLists($data, 
-                            $res,
-                            Group::getDBPrimaryKey(),
-                            Group::getDBConvert()['U_member'] ,
-                            $member,
-                            User::getDBPrimaryKey(),
-                            '2'
-                            );
-                                                  
-            // to reindex
-            $res = array_merge($res);
-        
-            $this->_app->response->setBody(Group::encodeGroup($res));
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetAllGroups failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Group::encodeGroup(new Group()));
-            $this->_app->stop();
-        }
+        $this->get("GetAllGroups",
+                "Sql/GetAllGroups.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($mid) ? $mid : "");
     } 
 
 
@@ -440,83 +371,17 @@ class DBGroup
      * @param int $userid The id of the user.
      * @param int $esid The id of the exercise sheet.
      */
-    public function getSheetUserGroups($userid, $esid)
+    public function getUserSheetGroups($userid, $esid)
     {    
-        Logger::Log("starts GET GetSheetUserGroups",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($userid),
-                            ctype_digit($esid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetSheetUserGroups.sql", 
-                                        array("userid" => $userid,
-                                            "esid" => $esid));  
-                                        
-        // checks the correctness of the query    
-        if ($result['status']>=200 && $result['status']<=299){
-            $query = Query::decodeQuery($result['content']);
-
-            $data = $query->getResponse();
-
-            // generates an assoc array of an user by using a defined list of 
-            // its attributes
-            $leader = DBJson::getObjectsByAttributes($data, 
-                                            User::getDBPrimaryKey(), 
-                                            User::getDBConvert(),
-                                            '2');
-            
-            // generates an assoc array of usersby using a defined list of 
-            // its attributes
-            $member = DBJson::getObjectsByAttributes($data, 
-                                            User::getDBPrimaryKey(), 
-                                            User::getDBConvert(),
-                                            '2'
-                                            );
-                                            
-            // generates an assoc array of groups by using a defined list of 
-            // its attributes
-            $groups = DBJson::getObjectsByAttributes($data, 
-                                    Group::getDBPrimaryKey(), 
-                                    Group::getDBConvert());
-                                  
-                                    
-            // concatenates the groups and the associated group leader
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $groups,
-                            Group::getDBPrimaryKey(),
-                            Group::getDBConvert()['U_leader'] ,
-                            $leader,
-                            User::getDBPrimaryKey()
-                            );
-       
-            // concatenates the groups and the associated group member
-            $res = DBJson::concatResultObjectLists($data, 
-                            $res,
-                            Group::getDBPrimaryKey(),
-                            Group::getDBConvert()['U_member'] ,
-                            $member,
-                            User::getDBPrimaryKey(),
-                            '2'
-                            );
-                            
-                          
-            // to reindex
-            $res = array_merge($res);
-        
-            $this->_app->response->setBody(Group::encodeGroup($res));
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetSheetUserGroups failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Group::encodeGroup(new Group()));
-            $this->_app->stop();
-        }
+        $this->get("GetUserSheetGroups",
+                "Sql/GetUserSheetGroups.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($mid) ? $mid : "",
+                true);
     }
 
 
@@ -530,78 +395,14 @@ class DBGroup
      */
     public function getSheetGroups($esid)
     {     
-        Logger::Log("starts GET GetSheetGroups",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($esid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetSheetGroups.sql", 
-                                        array("esid" => $esid));  
-                                        
-        // checks the correctness of the query    
-        if ($result['status']>=200 && $result['status']<=299){
-            $query = Query::decodeQuery($result['content']);
-
-            $data = $query->getResponse();
-
-            // generates an assoc array of an user by using a defined list of 
-            // its attributes
-            $leader = DBJson::getResultObjectsByAttributes($data, 
-                                            User::getDBPrimaryKey(), 
-                                            User::getDBConvert());
-            
-            // generates an assoc array of usersby using a defined list of 
-            // its attributes
-            $member = DBJson::getObjectsByAttributes($data, 
-                                            User::getDBPrimaryKey(), 
-                                            User::getDBConvert(),
-                                            '2'
-                                            );
-                                            
-            // generates an assoc array of groups by using a defined list of 
-            // its attributes
-            $groups = DBJson::getObjectsByAttributes($data, 
-                                    Group::getDBPrimaryKey(), 
-                                    Group::getDBConvert());
-                                  
-                                    
-            // concatenates the groups and the associated group leader
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $groups,
-                            Group::getDBPrimaryKey(),
-                            Group::getDBConvert()['U_leader'] ,
-                            $leader,
-                            User::getDBPrimaryKey(),
-                            '2'
-                            );
-       
-            // concatenates the groups and the associated group member
-            $res = DBJson::concatResultObjectLists($data, 
-                            $res,
-                            Group::getDBPrimaryKey(),
-                            Group::getDBConvert()['U_member'] ,
-                            $member,
-                            User::getDBPrimaryKey(),
-                            '2'
-                            );
-                          
-            // to reindex
-            $res = array_merge($res);
-        
-            $this->_app->response->setBody(Group::encodeGroup($res));
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetSheetGroups failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Group::encodeGroup(new Group()));
-            $this->_app->stop();
-        }
+        $this->get("GetSheetGroups",
+                "Sql/GetSheetGroups.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($mid) ? $mid : "");
     }
 }
 ?>

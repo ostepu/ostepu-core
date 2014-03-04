@@ -166,8 +166,11 @@ class DBUser
         $insert = User::decodeUser($this->_app->request->getBody());
         
         // always been an array
-        if (!is_array($insert))
+        $arr = true;
+        if (!is_array($insert)){
             $insert = array($insert);
+            $arr=false;
+        }
 
         foreach ($insert as $in){
             // generates the update data for the object
@@ -186,7 +189,7 @@ class DBUser
                     
             } else{
                 Logger::Log("PUT EditUser failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->stop();
             }
         }
@@ -226,7 +229,7 @@ class DBUser
             Logger::Log("DELETE RemoveUser failed",LogLevel::ERROR);
            // $this->_app->response->headers->set("Connection", "Close");
             $this->_app->response->setBody(User::encodeUser(new User()));
-            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);   
+            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);   
             $this->_app->stop();            
         }
     }
@@ -264,7 +267,7 @@ class DBUser
             Logger::Log("DELETE RemoveUserPermanent failed",LogLevel::ERROR);
            // $this->_app->response->headers->set("Connection", "Close");
             $this->_app->response->setBody(User::encodeUser(new User()));
-            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);   
+            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);   
             $this->_app->stop();            
         }
     }
@@ -284,8 +287,11 @@ class DBUser
         $insert = User::decodeUser($this->_app->request->getBody());
         
         // always been an array
-        if (!is_array($insert))
+        $arr = true;
+        if (!is_array($insert)){
             $insert = array($insert);
+            $arr=false;
+        }
         
         // this array contains the indices of the inserted objects
         $res = array();
@@ -314,13 +320,13 @@ class DBUser
                 
             } else{
                 Logger::Log("POST AddUser failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->response->setBody(User::encodeUser($res)); 
                 $this->_app->stop();
             }
         }
         
-        if (count($res)==1){
+        if (!$arr && count($res)==1){
             $this->_app->response->setBody(User::encodeUser($res[0])); 
         }
         else
@@ -328,7 +334,57 @@ class DBUser
 
     }
 
+    public function get($functionName,$sqlFile,$userid,$courseid,$esid,$eid,$suid,$statusid,$singleResult=false,$checkSession=true)
+    {
+        Logger::Log("starts GET " . $functionName,LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        $userid = DBJson::mysql_real_escape_string($userid);
+        
+        DBJson::checkInput($this->_app, 
+                            $courseid == "" ? true : ctype_digit($courseid), 
+                            $esid == "" ? true : ctype_digit($esid), 
+                            $eid == "" ? true : ctype_digit($eid), 
+                            $suid == "" ? true : ctype_digit($suid), 
+                            $statusid == "" ? true : ctype_digit($statusid));
+                            
+            
+        // starts a query, by using a given file
+        $result = DBRequest::getRoutedSqlFile($this->query, 
+                                        $sqlFile, 
+                                        array("userid" => $userid,
+                                        'courseid' => $courseid,
+                                        'esid' => $esid,
+                                        'eid' => $eid,
+                                        'suid' => $suid,
+                                        'statusid' => $statusid),
+                                        $checkSession);
+ 
+        // checks the correctness of the query                                        
+        if ($result['status']>=200 && $result['status']<=299){ 
+            $query = Query::decodeQuery($result['content']);
+            
+            if ($query->getNumRows()>0){
+                $res = User::ExtractUser($query->getResponse(),$singleResult); 
+                $this->_app->response->setBody(User::encodeUser($res));
 
+                $this->_app->response->setStatus(200);
+                if (isset($result['headers']['Content-Type']))
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+                
+                $this->_app->stop(); 
+            }
+            else
+                $result['status'] = 404;
+                
+        }
+        
+            Logger::Log("GET " . $functionName . " failed",LogLevel::ERROR);
+            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
+            $this->_app->response->setBody(User::encodeUser(new User()));
+            $this->_app->stop();
+    
+    }
     /**
      * Returns all users.
      *
@@ -337,65 +393,14 @@ class DBUser
      */
     public function getUsers()
     {
-        Logger::Log("starts GET GetUsers",LogLevel::DEBUG);
-        
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetUsers.sql", 
-                                        array());
-                  
-        // checks the correctness of the query      
-        if ($result['status']>=200 && $result['status']<=299){
-            $query = Query::decodeQuery($result['content']);
-            $data = $query->getResponse();
-            
-            // generates an assoc array of users by using a defined list of 
-            // its attributes
-            $users = DBJson::getObjectsByAttributes($data, 
-                                    User::getDBPrimaryKey(), 
-                                    User::getDBConvert());
-            
-            // generates an assoc array of course stats by using a defined list of 
-            // its attributes
-            $courseStatus = DBJson::getObjectsByAttributes($data, 
-                                CourseStatus::getDBPrimaryKey(), 
-                                CourseStatus::getDBConvert());
-            
-            // generates an assoc array of courses by using a defined list of 
-            // its attributes
-            $courses = DBJson::getObjectsByAttributes($query->getResponse(), 
-                                                    Course::getDBPrimaryKey(), 
-                                                    Course::getDBConvert());
-                                
-            // concatenates the course stats and the associated courses
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                                    $courseStatus,
-                                    CourseStatus::getDBPrimaryKey(),
-                                    CourseStatus::getDBConvert()['CS_course'], 
-                                    $courses,Course::getDBPrimaryKey());              
-
-            // concatenates the users and the associated course stats
-            $res = DBJson::concatResultObjectLists($data, 
-                                $users,
-                                User::getDBPrimaryKey(),
-                                User::getDBConvert()['U_courses'],
-                                $res,CourseStatus::getDBPrimaryKey()); 
-                                
-            //  to reindex
-            // $res = array_values($res);    
-            
-            $this->_app->response->setBody(User::encodeUser($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetUsers failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(User::encodeUser(new User()));
-            $this->_app->stop();
-        }
+        $this->get("GetUsers",
+                "Sql/GetUsers.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($statusid) ? $statusid : "");
     }
 
 
@@ -409,69 +414,16 @@ class DBUser
      */
     public function getUser($userid)
     {
-        Logger::Log("starts GET GetUser",LogLevel::DEBUG);
-
-        $userid = DBJson::mysql_real_escape_string($userid);
-
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetUser.sql", 
-                                        array("userid" => $userid),
-                                        false);
-        
-        // checks the correctness of the query                                 
-        if ($result['status']>=200 && $result['status']<=299){
-            $query = Query::decodeQuery($result['content']);
-            $data = $query->getResponse();
-            
-            // generates an assoc array of a user by using a defined list of its 
-            // attributes
-            $user = DBJson::getObjectsByAttributes($data, 
-                                    User::getDBPrimaryKey(), 
-                                    User::getDBConvert());
-            
-            // generates an assoc array of course stats by using a defined list of 
-            // its attributes
-            $courseStatus = DBJson::getObjectsByAttributes($data, 
-                                CourseStatus::getDBPrimaryKey(), 
-                                CourseStatus::getDBConvert());
-            
-            // generates an assoc array of courses by using a defined list of 
-            // its attributes
-            $courses = DBJson::getObjectsByAttributes($query->getResponse(), 
-                                                    Course::getDBPrimaryKey(), 
-                                                    Course::getDBConvert());
-                                
-            // concatenates the course stats and the associated courses
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                                    $courseStatus,
-                                    CourseStatus::getDBPrimaryKey(),
-                                    CourseStatus::getDBConvert()['CS_course'], 
-                                    $courses,Course::getDBPrimaryKey());              
-
-            // concatenates the users and the associated course stats
-            $res = DBJson::concatResultObjectLists($data, 
-                                $user,
-                                User::getDBPrimaryKey(),
-                                User::getDBConvert()['U_courses'],
-                                $res,CourseStatus::getDBPrimaryKey());     
-            //  to reindex
-            //$res = array_merge($res);
-            
-            // only one object as result
-            if (count($res)>0)
-                $res = $res[0];    
-                
-            $this->_app->response->setBody(User::encodeUser($res));
-
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);              
-        } else{
-            Logger::Log("GET GetUser failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(User::encodeUser(new User()));
-        }
+        $this->get("GetUser",
+                "Sql/GetUser.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($statusid) ? $statusid : "",
+                true,
+                false);
     }
 
 
@@ -485,70 +437,16 @@ class DBUser
      */
     public function getIncreaseUserFailedLogin($userid)
     {
-        Logger::Log("starts GET GetIncreaseUserFailedLogin",LogLevel::DEBUG);
-        
-        $userid = DBJson::mysql_real_escape_string($userid);
-
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetIncreaseUserFailedLogin.sql", 
-                                        array("userid" => $userid),
-                                        false);
-        
-        // checks the correctness of the query                                 
-        if ($result['status']>=200 && $result['status']<=299){
-            $query = Query::decodeQuery($result['content']);
-            $data = $query->getResponse();
-            
-            // generates an assoc array of a user by using a defined list of its 
-            // attributes
-            $user = DBJson::getObjectsByAttributes($data, 
-                                    User::getDBPrimaryKey(), 
-                                    User::getDBConvert());
-            
-            // generates an assoc array of course stats by using a defined list of 
-            // its attributes
-            $courseStatus = DBJson::getObjectsByAttributes($data, 
-                                CourseStatus::getDBPrimaryKey(), 
-                                CourseStatus::getDBConvert());
-            
-            // generates an assoc array of courses by using a defined list of 
-            // its attributes
-            $courses = DBJson::getObjectsByAttributes($query->getResponse(), 
-                                                    Course::getDBPrimaryKey(), 
-                                                    Course::getDBConvert());
-                                
-            // concatenates the course stats and the associated courses
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                                    $courseStatus,
-                                    CourseStatus::getDBPrimaryKey(),
-                                    CourseStatus::getDBConvert()['CS_course'], 
-                                    $courses,Course::getDBPrimaryKey());              
-
-            // concatenates the users and the associated course stats
-            $res = DBJson::concatResultObjectLists($data, 
-                                $user,
-                                User::getDBPrimaryKey(),
-                                User::getDBConvert()['U_courses'],
-                                $res,CourseStatus::getDBPrimaryKey());   
-                                
-            //  to reindex
-            //$res = array_merge($res);
-            
-            // only one object as result
-            if (count($res)>0)
-                $res = $res[0];    
-                
-            $this->_app->response->setBody(User::encodeUser($res));
-
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);              
-        } else{
-            Logger::Log("GET GetIncreaseUserFailedLogin failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(User::encodeUser(new User()));
-        }
+        $this->get("GetIncreaseUserFailedLogin",
+                "Sql/GetIncreaseUserFailedLogin.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($statusid) ? $statusid : "",
+                true,
+                false);
     }
 
 
@@ -561,70 +459,15 @@ class DBUser
      * @param int $courseid The id or the course.
      */
     public function getCourseMember($courseid)
-    {     
-        Logger::Log("starts GET GetCourseMember",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($courseid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetCourseMember.sql", 
-                                        array("courseid" => $courseid));        
-        
-        // checks the correctness of the query 
-        if ($result['status']>=200 && $result['status']<=299){
-            $query = Query::decodeQuery($result['content']);
-            $data = $query->getResponse();
-            
-            // generates an assoc array of users by using a defined list of 
-            // its attributes
-            $users = DBJson::getObjectsByAttributes($data, 
-                                    User::getDBPrimaryKey(), 
-                                    User::getDBConvert());
-            
-            // generates an assoc array of course stats by using a defined list of 
-            // its attributes
-            $courseStatus = DBJson::getObjectsByAttributes($data, 
-                                CourseStatus::getDBPrimaryKey(), 
-                                CourseStatus::getDBConvert());
-            
-            // generates an assoc array of courses by using a defined list of 
-            // its attributes
-            $courses = DBJson::getObjectsByAttributes($query->getResponse(), 
-                                                    Course::getDBPrimaryKey(), 
-                                                    Course::getDBConvert());
-                                
-            // concatenates the course stats and the associated courses
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                                    $courseStatus,
-                                    CourseStatus::getDBPrimaryKey(),
-                                    CourseStatus::getDBConvert()['CS_course'], 
-                                    $courses,Course::getDBPrimaryKey());              
-
-            // concatenates the users and the associated course stats
-            $res = DBJson::concatResultObjectLists($data, 
-                                $users,
-                                User::getDBPrimaryKey(),
-                                User::getDBConvert()['U_courses'],
-                                $res,CourseStatus::getDBPrimaryKey());  
-                                
-            //  to reindex
-            //$res = array_merge($res);   
-            
-            $this->_app->response->setBody(User::encodeUser($res));
-            
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetCourseMember failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(User::encodeUser(new User()));
-            $this->_app->stop();
-        }
+    {    
+        $this->get("GetCourseMember",
+                "Sql/GetCourseMember.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($statusid) ? $statusid : "");
     }
 
 
@@ -640,70 +483,14 @@ class DBUser
      */
     public function getGroupMember($userid, $esid)
     {   
-        Logger::Log("starts GET GetGroupMember",LogLevel::DEBUG);
-   
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($esid));
-                            
-        $userid = DBJson::mysql_real_escape_string($userid);
-        
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetGroupMember.sql", 
-                                        array("userid" => $userid,"esid" => $esid));
-
-        // checks the correctness of the query 
-        if ($result['status']>=200 && $result['status']<=299){
-            $query = Query::decodeQuery($result['content']);
-            $data = $query->getResponse();
-            
-            // generates an assoc array of users by using a defined list of 
-            // its attributes
-            $users = DBJson::getObjectsByAttributes($data, 
-                                    User::getDBPrimaryKey(), 
-                                    User::getDBConvert());
-            
-            // generates an assoc array of course stats by using a defined list of 
-            // its attributes
-            $courseStatus = DBJson::getObjectsByAttributes($data, 
-                                CourseStatus::getDBPrimaryKey(), 
-                                CourseStatus::getDBConvert());
-            
-            // generates an assoc array of courses by using a defined list of 
-            // its attributes
-            $courses = DBJson::getObjectsByAttributes($query->getResponse(), 
-                                                    Course::getDBPrimaryKey(), 
-                                                    Course::getDBConvert());
-                                
-            // concatenates the course stats and the associated courses
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                                    $courseStatus,
-                                    CourseStatus::getDBPrimaryKey(),
-                                    CourseStatus::getDBConvert()['CS_course'], 
-                                    $courses,Course::getDBPrimaryKey());              
-
-            // concatenates the users and the associated course stats
-            $res = DBJson::concatResultObjectLists($data, 
-                                $users,
-                                User::getDBPrimaryKey(),
-                                User::getDBConvert()['U_courses'],
-                                $res,CourseStatus::getDBPrimaryKey());                                 
-            //  to reindex
-            //$res = array_merge($res);   
-            
-            $this->_app->response->setBody(User::encodeUser($res));
-            
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetGroupMember failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(User::encodeUser(new User()));
-            $this->_app->stop();
-        }
+        $this->get("GetGroupMember",
+                "Sql/GetGroupMember.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($statusid) ? $statusid : "");
     }
 
 
@@ -717,66 +504,14 @@ class DBUser
      */
     public function getUserByStatus($statusid)
     {
-        Logger::Log("starts GET GetUserByStatus",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($statusid));
-
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetUserByStatus.sql", 
-                                        array("statusid" => $statusid));
-        
-        // checks the correctness of the query                                 
-        if ($result['status']>=200 && $result['status']<=299){
-            $query = Query::decodeQuery($result['content']);
-            $data = $query->getResponse();
-            
-            // generates an assoc array of users by using a defined list of its 
-            // attributes
-            $users = DBJson::getObjectsByAttributes($data, 
-                                    User::getDBPrimaryKey(), 
-                                    User::getDBConvert());
-            
-            // generates an assoc array of course stats by using a defined list of 
-            // its attributes
-            $courseStatus = DBJson::getObjectsByAttributes($data, 
-                                CourseStatus::getDBPrimaryKey(), 
-                                CourseStatus::getDBConvert());
-            
-            // generates an assoc array of courses by using a defined list of 
-            // its attributes
-            $courses = DBJson::getObjectsByAttributes($query->getResponse(), 
-                                                    Course::getDBPrimaryKey(), 
-                                                    Course::getDBConvert());
-                                
-            // concatenates the course stats and the associated courses
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                                    $courseStatus,
-                                    CourseStatus::getDBPrimaryKey(),
-                                    CourseStatus::getDBConvert()['CS_course'], 
-                                    $courses,Course::getDBPrimaryKey());              
-
-            // concatenates the users and the associated course stats
-            $res = DBJson::concatResultObjectLists($data, 
-                                $users,
-                                User::getDBPrimaryKey(),
-                                User::getDBConvert()['U_courses'],
-                                $res,CourseStatus::getDBPrimaryKey());    
-            //  to reindex
-            //$res = array_merge($res); 
-                
-            $this->_app->response->setBody(User::encodeUser($res));
-
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);              
-        } else{
-            Logger::Log("GET GetUserByStatus failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(User::encodeUser(new User()));
-        }
+        $this->get("GetUserByStatus",
+                "Sql/GetUserByStatus.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($statusid) ? $statusid : "");
     }
 
 
@@ -792,67 +527,14 @@ class DBUser
      */
     public function getCourseUserByStatus($courseid,$statusid)
     {
-        Logger::Log("starts GET GetUserByStatus",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($courseid), 
-                            ctype_digit($statusid));                 
-
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetCourseUserByStatus.sql", 
-                                        array("statusid" => $statusid,"courseid" => $courseid));
-        
-        // checks the correctness of the query                                 
-        if ($result['status']>=200 && $result['status']<=299){
-            $query = Query::decodeQuery($result['content']);
-            $data = $query->getResponse();
-            
-            // generates an assoc array of users by using a defined list of its 
-            // attributes
-            $users = DBJson::getObjectsByAttributes($data, 
-                                    User::getDBPrimaryKey(), 
-                                    User::getDBConvert());
-            
-            // generates an assoc array of course stats by using a defined list of 
-            // its attributes
-            $courseStatus = DBJson::getObjectsByAttributes($data, 
-                                CourseStatus::getDBPrimaryKey(), 
-                                CourseStatus::getDBConvert());
-            
-            // generates an assoc array of courses by using a defined list of 
-            // its attributes
-            $courses = DBJson::getObjectsByAttributes($query->getResponse(), 
-                                                    Course::getDBPrimaryKey(), 
-                                                    Course::getDBConvert());
-                                
-            // concatenates the course stats and the associated courses
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                                    $courseStatus,
-                                    CourseStatus::getDBPrimaryKey(),
-                                    CourseStatus::getDBConvert()['CS_course'], 
-                                    $courses,Course::getDBPrimaryKey());              
-
-            // concatenates the users and the associated course stats
-            $res = DBJson::concatResultObjectLists($data, 
-                                $users,
-                                User::getDBPrimaryKey(),
-                                User::getDBConvert()['U_courses'],
-                                $res,CourseStatus::getDBPrimaryKey());    
-            //  to reindex
-            //$res = array_merge($res); 
-                
-            $this->_app->response->setBody(User::encodeUser($res));
-
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);              
-        } else{
-            Logger::Log("GET GetUserByStatus failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(User::encodeUser(new User()));
-        }
+        $this->get("GetCourseUserByStatus",
+                "Sql/GetCourseUserByStatus.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($statusid) ? $statusid : "");
     }
 
 }

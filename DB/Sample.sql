@@ -1,6 +1,7 @@
-SET UNIQUE_CHECKS=0;
-SET FOREIGN_KEY_CHECKS=0;
-SET SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+#SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+#SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+#SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+
 
 -- -----------------------------------------------------
 -- Data for table `uebungsplattform`.`Course`
@@ -31,6 +32,7 @@ INSERT INTO `uebungsplattform`.`File` (`F_id`, `F_displayName`, `F_address`, `F_
 INSERT INTO `uebungsplattform`.`File` (`F_id`, `F_displayName`, `F_address`, `F_timeStamp`, `F_fileSize`, `F_hash`) VALUES (7, 'g.pdf', 'file/abcdefg', 1389643115, 700, 'abcdefg');
 INSERT INTO `uebungsplattform`.`File` (`F_id`, `F_displayName`, `F_address`, `F_timeStamp`, `F_fileSize`, `F_hash`) VALUES (8, 'h.pdf', 'file/abcdefgh', 1389643115, 800, 'abcdefgh');
 INSERT INTO `uebungsplattform`.`File` (`F_id`, `F_displayName`, `F_address`, `F_timeStamp`, `F_fileSize`, `F_hash`) VALUES (9, 'i.pdf', 'file/delete', 1389643115, 900, 'delete');
+INSERT INTO `uebungsplattform`.`File` (`F_id`, `F_displayName`, `F_address`, `F_timeStamp`, `F_fileSize`, `F_hash`) VALUES (99, 'test.pdf', 'file/757097c90146e7ad82aceb68015943ac090ca6b4', 1389643115, 1643, '757097c90146e7ad82aceb68015943ac090ca6b4');
 
 COMMIT;
 
@@ -40,10 +42,10 @@ COMMIT;
 -- -----------------------------------------------------
 START TRANSACTION;
 USE `uebungsplattform`;
-INSERT INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`,  `U_salt`, `U_failed_logins`) VALUES (4, 'till', 'till@email.de', 'Uhlig', 'Till', NULL, '8a781bfbb17a5e4b03b812c33317931308a2996a69eb4f3e6e857e030f0687e8', 1,  'd2cfb5d8f16b22708fa145871a74bf1e0aaa96ef', 0);
-INSERT INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`,  `U_salt`, `U_failed_logins`) VALUES (2, 'lisa', 'lisa@email.de', 'Dietrich', 'Lisa', NULL, '8a781bfbb17a5e4b03b812c33317931308a2996a69eb4f3e6e857e030f0687e8', 1,  'd2cfb5d8f16b22708fa145871a74bf1e0aaa96ef', 0);
+INSERT INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`,  `U_salt`, `U_failed_logins`) VALUES (4, 'till', 'till@email.de', 'Uhlig', 'Till', NULL, '63bc857a5d61c988f4fa588228461f6eef9303aa713473bb414c23bb1f2c78f6', 1,  'ebf203bdb7928de0947deec93199987a7675c251', 0);
+INSERT INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`,  `U_salt`, `U_failed_logins`) VALUES (2, 'lisa', 'lisa@email.de', 'Dietrich', 'Lisa', NULL, '63bc857a5d61c988f4fa588228461f6eef9303aa713473bb414c23bb1f2c78f6', 1,  'ebf203bdb7928de0947deec93199987a7675c251', 0);
 INSERT INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`,  `U_salt`, `U_failed_logins`) VALUES (3, 'joerg', 'joerg@email.de', 'Baumgarten', 'Joerg', NULL, 'test', 1,  NULL, 0);
-INSERT IGNORE INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`, `U_salt`, `U_failed_logins`) VALUES (1, 'super-admin', NULL, NULL, NULL, NULL, 'test', 1, null, 0);
+INSERT IGNORE INTO `uebungsplattform`.`User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`, `U_salt`, `U_failed_logins`) VALUES (1, 'super-admin', NULL, NULL, NULL, NULL, '63bc857a5d61c988f4fa588228461f6eef9303aa713473bb414c23bb1f2c78f6', 1, 'ebf203bdb7928de0947deec93199987a7675c251', 0);
 COMMIT;
 
 
@@ -51,16 +53,16 @@ COMMIT;
 -- -----------------------------------------------------
 -- Data for table `uebungsplattform`.`Group`
 -- -----------------------------------------------------
-/*START TRANSACTION;
+START TRANSACTION;
 USE `uebungsplattform`;
-INSERT INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `C_id`, `ES_id`) VALUES (1, 1, NULL, 1);
-INSERT INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `C_id`, `ES_id`) VALUES (2, 1, NULL, 1);
-INSERT INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `C_id`, `ES_id`) VALUES (3, 1, NULL, 1);
-INSERT INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `C_id`, `ES_id`) VALUES (1, 1, NULL, 2);
-INSERT INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `C_id`, `ES_id`) VALUES (2, 2, NULL, 2);
-INSERT INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `C_id`, `ES_id`) VALUES (3, 3, NULL, 2);
+INSERT ignore INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `C_id`, `ES_id`) VALUES (1, 1, NULL, 1);
+INSERT ignore INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `C_id`, `ES_id`) VALUES (2, 1, NULL, 1);
+INSERT ignore INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `C_id`, `ES_id`) VALUES (3, 1, NULL, 1);
+INSERT ignore INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `C_id`, `ES_id`) VALUES (1, 1, NULL, 2);
+INSERT ignore INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `C_id`, `ES_id`) VALUES (2, 2, NULL, 2);
+INSERT ignore INTO `uebungsplattform`.`Group` (`U_id_leader`, `U_id_member`, `C_id`, `ES_id`) VALUES (3, 3, NULL, 2);
 
-COMMIT;*/
+COMMIT;
 
 -- -----------------------------------------------------
 -- Data for table `uebungsplattform`.`CourseStatus`
@@ -201,7 +203,7 @@ COMMIT;
 START TRANSACTION;
 USE `uebungsplattform`;
 INSERT INTO `uebungsplattform`.`SelectedSubmission` (`U_id_leader`, `S_id_selected`, `E_id`, `ES_id`) VALUES (1, 2, 1, NULL);
-INSERT INTO `uebungsplattform`.`SelectedSubmission` (`U_id_leader`, `S_id_selected`, `E_id`, `ES_id`) VALUES (2, 3, 3, NULL);
+INSERT INTO `uebungsplattform`.`SelectedSubmission` (`U_id_leader`, `S_id_selected`, `E_id`, `ES_id`) VALUES (2, 3, 1, NULL);
 INSERT INTO `uebungsplattform`.`SelectedSubmission` (`U_id_leader`, `S_id_selected`, `E_id`, `ES_id`) VALUES (3, 6, 2, NULL);
 
 COMMIT;
@@ -249,6 +251,7 @@ INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `C
 INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (35, 'LExerciseType', 'localhost/uebungsplattform/logic/ExerciseType', '');
 INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (36, 'LSampleSolution', 'localhost/uebungsplattform/logic/SampleSolution', '');
 INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (37, 'LGetSite', 'localhost/uebungsplattform/logic/GetSite', '');
+INSERT INTO `uebungsplattform`.`Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (38, 'DBExerciseFileType', 'localhost/uebungsplattform/DB/DBExerciseFileType', '');
 COMMIT;
 
 
@@ -325,6 +328,8 @@ INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_n
 INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (67, 37, 'controller', '', 14);
 INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (68, 14, 'out', '', 36);
 INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (69, 14, 'out', '', 37);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (70, 4, 'out', '', 38);
+INSERT INTO `uebungsplattform`.`ComponentLinkage` (`CL_id`, `CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (71, 38, 'out', '', 13);
 
 COMMIT;
 

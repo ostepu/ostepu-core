@@ -16,6 +16,7 @@ select
     F.F_address,
     F.F_timeStamp,
     F.F_fileSize,
+    F.F_comment,
     F.F_hash,
     S.U_id,
     S.S_id,
@@ -26,6 +27,7 @@ select
     S.S_accepted,
     S.S_flag,
     S.S_leaderId,
+    S.S_hideFile,
     S.E_id
 from
    (Submission S

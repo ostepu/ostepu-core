@@ -15,6 +15,7 @@ select
     F.F_address,
     F.F_timeStamp,
     F.F_fileSize,
+    F.F_comment,
     F.F_hash
 from
     Attachment A

@@ -16,6 +16,9 @@ SELECT
     U.U_email,
     U.U_title,
     U.U_flag,
+    U.U_studentNumber,
+    U.U_isSuperAdmin,
+    U.U_comment,
     U2.U_id as U_id2,
     U2.U_username as U_username2,
     U2.U_firstName as U_firstName2,
@@ -23,6 +26,9 @@ SELECT
     U2.U_email as U_email2,
     U2.U_title as U_title2,
     U2.U_flag as U_flag2,
+    U2.U_studentNumber as U_studentNumber2,
+    U2.U_isSuperAdmin as U_isSuperAdmin2,
+    U2.U_comment as U_comment2,
     I.ES_id
 from
     Invitation I

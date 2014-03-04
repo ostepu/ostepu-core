@@ -206,7 +206,7 @@ class Link extends Object implements JsonSerializable
      *
      * @return an link object
      */
-    public function createLink($id,$owner,$target,$name,$relevanz)
+    public static function createLink($id,$owner,$target,$name,$relevanz)
     {
         return new Link(array('id' => $id,
         'owner' => $owner,

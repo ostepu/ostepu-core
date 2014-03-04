@@ -75,7 +75,7 @@ class ExerciseType extends Object implements JsonSerializable
      *
      * @return an exercise type object
      */
-    public function createExerciseType($typeid,$name)
+    public static function createExerciseType($typeid,$name)
     {
         return new ExerciseType(array('id' => $typeid,
         'name' => $name));
@@ -185,6 +185,26 @@ class ExerciseType extends Object implements JsonSerializable
         if ($this->id!==null) $list['id'] = $this->id;
         if ($this->name!==null) $list['name'] = $this->name;
         return $list;
+    }
+    
+    public static function ExtractExerciseType($data, $singleResult = false)
+    {
+            // generates an assoc array of an exercise type by using a defined 
+            // list of its attributes
+            $res = DBJson::getResultObjectsByAttributes($data, 
+                                        ExerciseType::getDBPrimaryKey(), 
+                                        ExerciseType::getDBConvert()); 
+            
+            // to reindex
+            $res = array_merge($res);
+            
+            if ($singleResult==true){
+                // only one object as result
+                if (count($res)>0)
+                    $res = $res[0]; 
+            }
+                
+            return $res;
     }
 }
 ?>

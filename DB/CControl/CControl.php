@@ -128,7 +128,7 @@ class CControl
                 $this->_app->response->setStatus(201); 
             } else{
                 Logger::Log("PUT EditLink failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(409);
             }
         }
     }
@@ -153,7 +153,7 @@ class CControl
             $this->_app->response->setStatus(201);                
         } else{
             Logger::Log("DELETE DeleteLink failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(452);
+            $this->_app->response->setStatus(409);
         }
     }
     
@@ -175,7 +175,7 @@ class CControl
             // starts a query
             eval("\$sql = \"".file_get_contents("Sql/PostLink.sql")."\";");
             $result = DBRequest::request($sql, false);                
-          echo var_dump($sql);
+
             // checks the correctness of the query
             if (!$result['errno'] && $result['content']){
                 
@@ -187,7 +187,7 @@ class CControl
                 $this->_app->response->setStatus(201);            
             } else{
                 Logger::Log("POST SetLink failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(409);
             }
         }
     }
@@ -247,7 +247,7 @@ class CControl
                 $this->_app->response->setStatus(201);  
             } else{
                 Logger::Log("PUT EditComponent failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(452);
+                $this->_app->response->setStatus(409);
             }
         }
     }
@@ -272,7 +272,7 @@ class CControl
             $this->_app->response->setStatus(201);
         } else{
             Logger::Log("DELETE DeleteComponent failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(451);
+            $this->_app->response->setStatus(409);
         }
     }
     
@@ -302,7 +302,7 @@ class CControl
                 
             } else{
                 Logger::Log("POST SetComponent failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(451);
+                $this->_app->response->setStatus(409);
             }
         }
     }

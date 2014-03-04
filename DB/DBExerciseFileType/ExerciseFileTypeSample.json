@@ -1,0 +1,29 @@
+/**
+ * @file ExerciseFileTypeSample.json This file represents a valid JSON object of type ExerciseFileType for DBExerciseFileType.
+ * 
+ * @author Till Uhlig
+ */ 
+
+    [
+       {
+           "id": "1",
+           "text": "abc",
+           "exerciseId": "1"
+       },
+       {
+           "id": "2",
+           "text": "abc2",
+           "exerciseId": "1"
+       },
+       {
+           "id": "4",
+           "text": "neuesneues",
+           "exerciseId": "1"
+       },
+       {
+           "id": "5",
+           "text": "neuesneues",
+           "exerciseId": "1"
+       }
+    ]
+

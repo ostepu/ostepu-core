@@ -5,8 +5,8 @@
  * @author Till Uhlig
  */ 
  
-include_once( '../../Assistants/Request.php' );
-include_once( '../../Assistants/Structures.php' );
+include_once( '/../../Assistants/Request.php' );
+include_once( '/../../Assistants/Structures.php' );
 
 /**
  * A class, to test the DBCourseStatus component
@@ -36,7 +36,7 @@ class DBCourseStatusTest extends PHPUnit_Framework_TestCase
     {
         $result = Request::get($this->url . 'DBCourseStatus/coursestatus/course/1',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for GetCourseRights call");
-        $this->assertContains('{"id":"2","userName":"lisa","email":"lisa@email.de","firstName":"Lisa","lastName":"Dietrich","flag":"1","courses":',$result['content']);
+        $this->assertContains('{"id":"2","userName":"lisa","email":"lisa@email.de","firstName":"Lisa","lastName":"Dietrich","flag":"1"',$result['content']);
         
         $result = Request::get($this->url . 'DBCourseStatus/coursestatus/course/AAA',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetCourseRights call");   
@@ -46,7 +46,7 @@ class DBCourseStatusTest extends PHPUnit_Framework_TestCase
     {
         $result = Request::get($this->url . 'DBCourseStatus/coursestatus/user/2',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for GetMemberRights call");
-        $this->assertContains('{"id":"2","userName":"lisa","email":"lisa@email.de","firstName":"Lisa","lastName":"Dietrich","flag":"1","courses":',$result['content']);
+        $this->assertContains('{"id":"2","userName":"lisa","email":"lisa@email.de","firstName":"Lisa","lastName":"Dietrich","flag":"1"',$result['content']);
         
         $result = Request::get($this->url . 'DBCourseStatus/coursestatus/user/AAA',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetMemberRights call");   
@@ -57,7 +57,7 @@ class DBCourseStatusTest extends PHPUnit_Framework_TestCase
     
         $result = Request::get($this->url . 'DBCourseStatus/coursestatus/course/1/user/2',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for GetMemberRight call");
-        $this->assertContains('{"id":"2","userName":"lisa","email":"lisa@email.de","firstName":"Lisa","lastName":"Dietrich","flag":"1","courses":',$result['content']);
+        $this->assertContains('{"id":"2","userName":"lisa","email":"lisa@email.de","firstName":"Lisa","lastName":"Dietrich","flag":"1"',$result['content']);
         
         $result = Request::get($this->url . 'DBCourseStatus/coursestatus/course/AAA/user/2',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetMemberRight call");   

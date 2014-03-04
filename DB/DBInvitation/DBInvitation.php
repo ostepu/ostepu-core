@@ -164,8 +164,11 @@ class DBInvitation
         $insert = Invitation::decodeInvitation($this->_app->request->getBody());
         
         // always been an array
-        if (!is_array($insert))
+        $arr = true;
+        if (!is_array($insert)){
             $insert = array($insert);
+            $arr=false;
+        }
 
         foreach ($insert as $in){
             // generates the update data for the object
@@ -187,7 +190,7 @@ class DBInvitation
                 
             } else{
                 Logger::Log("PUT EditInvitation failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->stop();
             }
         }
@@ -230,7 +233,7 @@ class DBInvitation
                 
         } else{
             Logger::Log("DELETE DeleteInvitation failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->stop();
         }
     }
@@ -252,8 +255,11 @@ class DBInvitation
         $insert = Invitation::decodeInvitation($this->_app->request->getBody());
         
         // always been an array
-        if (!is_array($insert))
+        $arr = true;
+        if (!is_array($insert)){
             $insert = array($insert);
+            $arr=false;
+        }
 
         foreach ($insert as $in){
             // generates the insert data for the object
@@ -273,13 +279,63 @@ class DBInvitation
                 
             } else{
                 Logger::Log("POST AddInvitation failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->stop();
             }
         }
     }
 
 
+    public function get($functionName,$sqlFile,$userid,$courseid,$esid,$eid,$suid,$mid,$singleResult=false)
+    {
+        Logger::Log("starts GET " . $functionName,LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            $userid == "" ? true : ctype_digit($userid), 
+                            $courseid == "" ? true : ctype_digit($courseid), 
+                            $esid == "" ? true : ctype_digit($esid), 
+                            $eid == "" ? true : ctype_digit($eid), 
+                            $suid == "" ? true : ctype_digit($suid), 
+                            $mid == "" ? true : ctype_digit($mid));
+                            
+            
+        // starts a query, by using a given file
+        $result = DBRequest::getRoutedSqlFile($this->query, 
+                                        $sqlFile, 
+                                        array("userid" => $userid,
+                                        'courseid' => $courseid,
+                                        'esid' => $esid,
+                                        'eid' => $eid,
+                                        'suid' => $suid,
+                                        'mid' => $mid));
+ 
+        // checks the correctness of the query                                        
+        if ($result['status']>=200 && $result['status']<=299){ 
+            $query = Query::decodeQuery($result['content']);
+            
+            if ($query->getNumRows()>0){
+                $res = Invitation::ExtractInvitation($query->getResponse(),$singleResult); 
+                $this->_app->response->setBody(Invitation::encodeInvitation($res));
+        
+                $this->_app->response->setStatus(200);
+                if (isset($result['headers']['Content-Type']))
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+                
+                $this->_app->stop(); 
+            }
+            else
+                $result['status'] = 404;
+                
+        }
+        
+            Logger::Log("GET " . $functionName . " failed",LogLevel::ERROR);
+            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
+            $this->_app->response->setBody(Invitation::encodeInvitation(new Invitation()));
+            $this->_app->stop();
+    }
+    
+    
     /**
      * Returns all invitations.
      *
@@ -288,70 +344,14 @@ class DBInvitation
      */
     public function getAllInvitations()
     {    
-        Logger::Log("starts GET GetAllInvitations",LogLevel::DEBUG);
-        
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetAllInvitations.sql", 
-                                        array());
-        
-        // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299){
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-
-            // generates an assoc array of users by using a defined list of 
-            // its attributes
-            $leader = DBJson::getObjectsByAttributes($data, 
-                                            User::getDBPrimaryKey(), 
-                                            User::getDBConvert());
-            
-            // generates an assoc array of users by using a defined list of 
-            // its attributes
-            $member = DBJson::getObjectsByAttributes($data, 
-                                            User::getDBPrimaryKey(), 
-                                            User::getDBConvert(), 
-                                            '2');
-                                            
-            // generates an assoc array of invitations by using a defined list of 
-            // its attributes
-            $invitations = DBJson::getObjectsByAttributes($data, 
-                                    Invitation::getDBPrimaryKey(), 
-                                    Invitation::getDBConvert());  
-                                    
-            // concatenates the invitations and the associated invitation leader
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $invitations,
-                            Invitation::getDBPrimaryKey(),
-                            Invitation::getDBConvert()['U_leader'] ,
-                            $leader,
-                            User::getDBPrimaryKey());
-       
-            // concatenates the invitations and the associated invitation member
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $res,
-                            Invitation::getDBPrimaryKey(),
-                            Invitation::getDBConvert()['U_member'] ,
-                            $member,
-                            User::getDBPrimaryKey(),
-                            '2');
-                            
-            // to reindex
-            $res = array_values($res); 
-            
-            $this->_app->response->setBody(Invitation::encodeInvitation($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetAllInvitations failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Invitation::encodeInvitation(new Invitation()));
-            $this->_app->stop();
-        }
+        $this->get("GetAllInvitations",
+                "Sql/GetAllInvitations.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($mid) ? $mid : "");
     }
 
 
@@ -365,73 +365,14 @@ class DBInvitation
      */
     public function getLeaderInvitations($userid)
     {    
-        Logger::Log("starts GET GetLeaderInvitations",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($userid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetLeaderInvitations.sql", 
-                                        array("userid" => $userid));
-        
-        // checks the correctness of the query                                       
-        if ($result['status']>=200 && $result['status']<=299){
-            $query = Query::decodeQuery($result['content']);
-            $data = $query->getResponse();
-            
-            // generates an assoc array of users by using a defined list of 
-            // its attributes
-            $leader = DBJson::getObjectsByAttributes($data, 
-                                            User::getDBPrimaryKey(), 
-                                            User::getDBConvert());
-            
-            // generates an assoc array of users by using a defined list of 
-            // its attributes
-            $member = DBJson::getObjectsByAttributes($data, 
-                                            User::getDBPrimaryKey(), 
-                                            User::getDBConvert(), 
-                                            '2');
-                                            
-            // generates an assoc array of invitations by using a defined list 
-            // of its attributes
-            $invitations = DBJson::getObjectsByAttributes($data, 
-                                    Invitation::getDBPrimaryKey(), 
-                                    Invitation::getDBConvert());  
-                                    
-            // concatenates the invitations and the associated invitation leader
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $invitations,
-                            Invitation::getDBPrimaryKey(),
-                            Invitation::getDBConvert()['U_leader'] ,
-                            $leader,
-                            User::getDBPrimaryKey());
-       
-            // concatenates the invitations and the associated invitation member
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $res,
-                            Invitation::getDBPrimaryKey(),
-                            Invitation::getDBConvert()['U_member'] ,
-                            $member,
-                            User::getDBPrimaryKey(),
-                            '2');
-                            
-            // to reindex
-            $res = array_values($res); 
-                
-            $this->_app->response->setBody(Invitation::encodeInvitation($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetLeaderInvitations failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Invitation::encodeInvitation(new Invitation()));
-            $this->_app->stop();
-        }
+        $this->get("GetLeaderInvitations",
+                "Sql/GetLeaderInvitations.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($mid) ? $mid : "");
     }
 
 
@@ -445,74 +386,14 @@ class DBInvitation
      */
     public function getMemberInvitations($userid)
     {    
-        Logger::Log("starts GET GetMemberInvitations",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($userid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetMemberInvitations.sql", 
-                                        array("userid" => $userid));
-        
-        // checks the correctness of the query                                       
-        if ($result['status']>=200 && $result['status']<=299){
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-            
-            // generates an assoc array of users by using a defined list of 
-            // its attributes
-            $leader = DBJson::getObjectsByAttributes($data, 
-                                            User::getDBPrimaryKey(), 
-                                            User::getDBConvert());
-            
-            // generates an assoc array of users by using a defined list of 
-            // its attributes
-            $member = DBJson::getObjectsByAttributes($data, 
-                                            User::getDBPrimaryKey(), 
-                                            User::getDBConvert(), 
-                                            '2');
-                                            
-            // generates an assoc array of invitations by using a defined list of 
-            // its attributes
-            $invitations = DBJson::getObjectsByAttributes($data, 
-                                    Invitation::getDBPrimaryKey(), 
-                                    Invitation::getDBConvert());  
-                                    
-            // concatenates the invitations and the associated invitation leader
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $invitations,
-                            Invitation::getDBPrimaryKey(),
-                            Invitation::getDBConvert()['U_leader'] ,
-                            $leader,
-                            User::getDBPrimaryKey());
-       
-            // concatenates the invitations and the associated invitation member
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $res,
-                            Invitation::getDBPrimaryKey(),
-                            Invitation::getDBConvert()['U_member'] ,
-                            $member,
-                            User::getDBPrimaryKey(),
-                            '2');
-                            
-            // to reindex
-            $res = array_values($res); 
-                
-            $this->_app->response->setBody(Invitation::encodeInvitation($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetMemberInvitations failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Invitation::encodeInvitation(new Invitation()));
-            $this->_app->stop();
-        }
+        $this->get("GetMemberInvitations",
+                "Sql/GetMemberInvitations.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($mid) ? $mid : "");
     }
 
 
@@ -528,75 +409,14 @@ class DBInvitation
      */
     public function getSheetLeaderInvitations($esid,$userid)
     {     
-        Logger::Log("starts GET GetSheetLeaderInvitations",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($esid), 
-                            ctype_digit($userid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetSheetLeaderInvitations.sql", 
-                                        array("esid" => $esid,"userid" => $userid));
-        
-        // checks the correctness of the query                                       
-        if ($result['status']>=200 && $result['status']<=299){
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-            
-            // generates an assoc array of users by using a defined list of 
-            // its attributes
-            $leader = DBJson::getObjectsByAttributes($data, 
-                                            User::getDBPrimaryKey(), 
-                                            User::getDBConvert());
-            
-            // generates an assoc array of users by using a defined list of 
-            // its attributes
-            $member = DBJson::getObjectsByAttributes($data, 
-                                            User::getDBPrimaryKey(), 
-                                            User::getDBConvert(), 
-                                            '2');
-                                            
-            // generates an assoc array of invitations by using a defined list of 
-            // its attributes
-            $invitations = DBJson::getObjectsByAttributes($data, 
-                                    Invitation::getDBPrimaryKey(), 
-                                    Invitation::getDBConvert());  
-                                    
-            // concatenates the invitations and the associated invitation leader
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $invitations,
-                            Invitation::getDBPrimaryKey(),
-                            Invitation::getDBConvert()['U_leader'] ,
-                            $leader,
-                            User::getDBPrimaryKey());
-       
-            // concatenates the invitations and the associated invitation member
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $res,
-                            Invitation::getDBPrimaryKey(),
-                            Invitation::getDBConvert()['U_member'] ,
-                            $member,
-                            User::getDBPrimaryKey(),
-                            '2');
-                            
-            // to reindex
-            $res = array_values($res); 
-                
-            $this->_app->response->setBody(Invitation::encodeInvitation($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetSheetLeaderInvitations failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Invitation::encodeInvitation(new Invitation()));
-            $this->_app->stop();
-        }
+        $this->get("GetSheetLeaderInvitations",
+                "Sql/GetSheetLeaderInvitations.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($mid) ? $mid : "");
     }
 
 
@@ -612,75 +432,14 @@ class DBInvitation
      */
     public function getSheetMemberInvitations($esid,$userid)
     {      
-        Logger::Log("starts GET GetSheetMemberInvitations",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($esid), 
-                            ctype_digit($userid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetSheetMemberInvitations.sql", 
-                                        array("esid" => $esid,"userid" => $userid));
-        
-        // checks the correctness of the query                                       
-        if ($result['status']>=200 && $result['status']<=299){
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-            
-            // generates an assoc array of users by using a defined list of 
-            // its attributes
-            $leader = DBJson::getObjectsByAttributes($data, 
-                                            User::getDBPrimaryKey(), 
-                                            User::getDBConvert());
-            
-            // generates an assoc array of users by using a defined list of 
-            // its attributes
-            $member = DBJson::getObjectsByAttributes($data, 
-                                            User::getDBPrimaryKey(), 
-                                            User::getDBConvert(), 
-                                            '2');
-                                            
-            // generates an assoc array of invitations by using a defined list of 
-            // its attributes
-            $invitations = DBJson::getObjectsByAttributes($data, 
-                                    Invitation::getDBPrimaryKey(), 
-                                    Invitation::getDBConvert());  
-                                    
-            // concatenates the invitations and the associated invitation leader
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $invitations,
-                            Invitation::getDBPrimaryKey(),
-                            Invitation::getDBConvert()['U_leader'] ,
-                            $leader,
-                            User::getDBPrimaryKey());
-       
-            // concatenates the invitations and the associated invitation member
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $res,
-                            Invitation::getDBPrimaryKey(),
-                            Invitation::getDBConvert()['U_member'] ,
-                            $member,
-                            User::getDBPrimaryKey(),
-                            '2');
-                            
-            // to reindex
-            $res = array_values($res); 
-                
-            $this->_app->response->setBody(Invitation::encodeInvitation($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetSheetMemberInvitations failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Invitation::encodeInvitation(new Invitation()));
-            $this->_app->stop();
-        }
+        $this->get("GetSheetMemberInvitations",
+                "Sql/GetSheetMemberInvitations.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($mid) ? $mid : "");  
     }
 
 
@@ -694,74 +453,14 @@ class DBInvitation
      */
     public function getSheetInvitations($esid)
     {     
-        Logger::Log("starts GET GetSheetInvitations",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($esid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetSheetInvitations.sql", 
-                                        array("esid" => $esid));
-        
-        // checks the correctness of the query                                       
-        if ($result['status']>=200 && $result['status']<=299){
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-            
-            // generates an assoc array of users by using a defined list of 
-            // its attributes
-            $leader = DBJson::getObjectsByAttributes($data, 
-                                            User::getDBPrimaryKey(), 
-                                            User::getDBConvert());
-            
-            // generates an assoc array of users by using a defined list of 
-            // its attributes
-            $member = DBJson::getObjectsByAttributes($data, 
-                                            User::getDBPrimaryKey(), 
-                                            User::getDBConvert(), 
-                                            '2');
-                                            
-            // generates an assoc array of invitations by using a defined list of 
-            // its attributes
-            $invitations = DBJson::getObjectsByAttributes($data, 
-                                    Invitation::getDBPrimaryKey(), 
-                                    Invitation::getDBConvert());  
-                                    
-            // concatenates the invitations and the associated invitation leader
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $invitations,
-                            Invitation::getDBPrimaryKey(),
-                            Invitation::getDBConvert()['U_leader'] ,
-                            $leader,
-                            User::getDBPrimaryKey());
-       
-            // concatenates the invitations and the associated invitation member
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $res,
-                            Invitation::getDBPrimaryKey(),
-                            Invitation::getDBConvert()['U_member'] ,
-                            $member,
-                            User::getDBPrimaryKey(),
-                            '2');
-                            
-            // to reindex
-            $res = array_values($res); 
-                
-            $this->_app->response->setBody(Invitation::encodeInvitation($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetSheetInvitations failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Invitation::encodeInvitation(new Invitation()));
-            $this->_app->stop();
-        }
+        $this->get("GetSheetInvitations",
+                "Sql/GetSheetInvitations.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($mid) ? $mid : "");
     }
 }
 ?>

@@ -4,9 +4,8 @@
  *
  * @author Till Uhlig
  */
- 
-include_once( '../../Assistants/Request.php' );
-include_once( '../../Assistants/Structures.php' );
+include_once( '/../../Assistants/Request.php' );
+include_once('/../../Assistants/Structures.php' );
 
 /**
  * A class, to test the DBUser component
@@ -128,17 +127,17 @@ class DBUserTest extends PHPUnit_Framework_TestCase
     
     public function GetCourseUserByStatus()
     {
-        $result = Request::get($this->url . 'DBUser/user/course/1/status/0',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
+        $result = Request::get($this->url . 'DBUser/user/course/3/status/0',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(200, $result['status'], "Unexpected HTTP status code for GetCourseUserByStatus call");      
         $this->assertContains('"userName":"lisa"',$result['content']);
         
         $result = Request::get($this->url . 'DBUser/user/course/AAA/status/0',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetCourseUserByStatus call"); 
         
-        $result = Request::get($this->url . 'DBUser/user/course/1/status/AAA',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
+        $result = Request::get($this->url . 'DBUser/user/course/3/status/AAA',array('SESSION: abc', 'USER: 3', 'DATE: ' . time()),"");
         $this->assertEquals(412, $result['status'], "Unexpected HTTP status code for GetCourseUserByStatus call"); 
    
-        $result = Request::get($this->url . 'DBUser/user/course/1/status/0',array(),"");
+        $result = Request::get($this->url . 'DBUser/user/course/3/status/0',array(),"");
         $this->assertEquals(401, $result['status'], "Unexpected HTTP status code for GetUsers call");
         $this->assertContains('[]',$result['content']);
     }

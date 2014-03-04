@@ -144,8 +144,11 @@ class DBCourse
         $insert = Course::decodeCourse($this->_app->request->getBody());
         
         // always been an array
-        if (!is_array($insert))
+        $arr = true;
+        if (!is_array($insert)){
             $insert = array($insert);
+            $arr=false;
+        }
 
         foreach ($insert as $in){
             // generates the update data for the object
@@ -165,7 +168,7 @@ class DBCourse
                 
             } else{
                 Logger::Log("PUT EditCourse failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->stop();
             }
         }
@@ -202,7 +205,7 @@ class DBCourse
                 
         } else{
             Logger::Log("DELETE DeleteCourse failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
+            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->stop();
         }
     }
@@ -224,8 +227,11 @@ class DBCourse
         $insert = Course::decodeCourse($this->_app->request->getBody());
         
         // always been an array
-        if (!is_array($insert))
+        $arr = true;
+        if (!is_array($insert)){
             $insert = array($insert);
+            $arr=false;
+        }
         
         // this array contains the indices of the inserted objects
         $res = array();
@@ -253,20 +259,68 @@ class DBCourse
                 
             } else{
                 Logger::Log("POST AddCourse failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->response->setBody(Course::encodeCourse($res)); 
                 $this->_app->stop();
             }
         }
         
-        if (count($res)==1){
+        if (!$arr && count($res)==1){
             $this->_app->response->setBody(Course::encodeCourse($res[0])); 
         }
         else
             $this->_app->response->setBody(Course::encodeCourse($res)); 
     }
 
-
+    public function get($functionName,$sqlFile,$userid,$courseid,$esid,$eid,$suid,$mid,$singleResult=false)
+    {
+        Logger::Log("starts GET " . $functionName,LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            $userid == "" ? true : ctype_digit($userid), 
+                            $courseid == "" ? true : ctype_digit($courseid), 
+                            $esid == "" ? true : ctype_digit($esid), 
+                            $eid == "" ? true : ctype_digit($eid), 
+                            $suid == "" ? true : ctype_digit($suid), 
+                            $mid == "" ? true : ctype_digit($mid));
+                            
+            
+        // starts a query, by using a given file
+        $result = DBRequest::getRoutedSqlFile($this->query, 
+                                        $sqlFile, 
+                                        array("userid" => $userid,
+                                        'courseid' => $courseid,
+                                        'esid' => $esid,
+                                        'eid' => $eid,
+                                        'suid' => $suid,
+                                        'mid' => $mid));
+ 
+        // checks the correctness of the query                                        
+        if ($result['status']>=200 && $result['status']<=299){ 
+            $query = Query::decodeQuery($result['content']);
+            
+            if ($query->getNumRows()>0){
+                $res = Course::ExtractCourse($query->getResponse(),$singleResult); 
+                $this->_app->response->setBody(Course::encodeCourse($res));
+        
+                $this->_app->response->setStatus(200);
+                if (isset($result['headers']['Content-Type']))
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+                
+                $this->_app->stop(); 
+            }
+            else
+                $result['status'] = 404;
+                
+        }
+        
+            Logger::Log("GET " . $functionName . " failed",LogLevel::ERROR);
+            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
+            $this->_app->response->setBody(Course::encodeCourse(new Course()));
+            $this->_app->stop();
+    }
+    
     /**
      * Returns a course.
      *
@@ -277,54 +331,15 @@ class DBCourse
      */
     public function getCourse($courseid)
     {    
-        Logger::Log("starts GET GetCourse",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($courseid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetCourse.sql", 
-                                        array("courseid" => $courseid));
-        
-        // checks the correctness of the query                                   
-        if ($result['status']>=200 && $result['status']<=299){
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-            
-            // generates an assoc array of an course by using a defined list of 
-            // its attributes
-            $course = DBJson::getObjectsByAttributes($data, 
-                                    Course::getDBPrimaryKey(), 
-                                    Course::getDBConvert());
-            
-            // generates an assoc array of exercise sheets by using a defined list of 
-            // its attributes
-            $exerciseSheets = DBJson::getObjectsByAttributes($data, 
-                ExerciseSheet::getDBPrimaryKey(), 
-                array(ExerciseSheet::getDBPrimaryKey() => ExerciseSheet::getDBConvert()[ExerciseSheet::getDBPrimaryKey()]));
-            
-            // concatenates the course and the associated exercise sheet IDs
-            $res = DBJson::concatResultObjectListAsArray($data, 
-                            $course,
-                            Course::getDBPrimaryKey(),
-                            Course::getDBConvert()['C_exerciseSheets'], 
-                            $exerciseSheets,ExerciseSheet::getDBPrimaryKey());  
-            
-            $this->_app->response->setBody(Course::encodeCourse($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetCourse failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Course::encodeCourse(new Course()));
-            $this->_app->stop();
-        }
+        $this->get("GetCourse",
+                "Sql/GetCourse.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($mid) ? $mid : "",
+                true);
     }   
 
 
@@ -336,50 +351,14 @@ class DBCourse
      */
     public function getAllCourses()
     {    
-        Logger::Log("starts GET GetAllCourses",LogLevel::DEBUG);
-        
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetAllCourses.sql", 
-                                        array());
-        
-        // checks the correctness of the query                                       
-        if ($result['status']>=200 && $result['status']<=299){
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-            
-            // generates an assoc array of courses by using a defined list of 
-            // its attributes
-            $courses = DBJson::getObjectsByAttributes($data, 
-                                    Course::getDBPrimaryKey(), 
-                                    Course::getDBConvert());
-            
-            // generates an assoc array of exercise sheets by using a defined list of 
-            // its attributes
-            $exerciseSheets = DBJson::getObjectsByAttributes($data, 
-                ExerciseSheet::getDBPrimaryKey(), 
-                array(ExerciseSheet::getDBPrimaryKey() => ExerciseSheet::getDBConvert()[ExerciseSheet::getDBPrimaryKey()]));
-            
-            // concatenates the courses and the associated exercise sheet IDs
-            $res = DBJson::concatResultObjectListAsArray($data, 
-                        $courses,
-                        Course::getDBPrimaryKey(),
-                        Course::getDBConvert()['C_exerciseSheets'],
-                        $exerciseSheets,ExerciseSheet::getDBPrimaryKey());  
-            
-            $this->_app->response->setBody(Course::encodeCourse($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetAllCourses failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Course::encodeCourse(new Course()));
-            $this->_app->stop();
-        }
+        $this->get("GetAllCourses",
+                "Sql/GetAllCourses.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($mid) ? $mid : "");
     }
 
 
@@ -393,53 +372,14 @@ class DBCourse
      */
     public function getUserCourses($userid)
     {    
-        Logger::Log("starts GET GetUserCourses",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($userid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetUserCourses.sql", 
-                                        array("userid" => $userid));
-        
-        // checks the correctness of the query                                       
-        if ($result['status']>=200 && $result['status']<=299){
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-            
-            // generates an assoc array of courses by using a defined list of 
-            // its attributes
-            $courses = DBJson::getObjectsByAttributes($data, 
-                                    Course::getDBPrimaryKey(), 
-                                    Course::getDBConvert());
-            
-            // generates an assoc array of exercise sheets by using a defined list of 
-            // its attributes
-            $exerciseSheets = DBJson::getObjectsByAttributes($data, 
-                ExerciseSheet::getDBPrimaryKey(), 
-                array(ExerciseSheet::getDBPrimaryKey() => ExerciseSheet::getDBConvert()[ExerciseSheet::getDBPrimaryKey()]));
-            
-            // concatenates the courses and the associated exercise sheet IDs
-            $res = DBJson::concatResultObjectListAsArray($data, 
-                            $courses,Course::getDBPrimaryKey(),
-                            Course::getDBConvert()['C_exerciseSheets'],
-                            $exerciseSheets,ExerciseSheet::getDBPrimaryKey());  
-            
-            $this->_app->response->setBody(Course::encodeCourse($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetUserCourses failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Course::encodeCourse(new Course()));
-            $this->_app->stop();
-        }
+        $this->get("GetUserCourses",
+                "Sql/GetUserCourses.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($suid) ? $suid : "",
+                isset($mid) ? $mid : "");
     }
     
 }

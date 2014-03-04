@@ -136,8 +136,11 @@ class DBFile
         $insert = File::decodeFile($this->_app->request->getBody());
         
         // always been an array
-        if (!is_array($insert))
+        $arr = true;
+        if (!is_array($insert)){
             $insert = array($insert);
+            $arr=false;
+        }
 
         foreach ($insert as $in){
             // generates the update data for the object
@@ -157,7 +160,7 @@ class DBFile
                 
             } else{
                 Logger::Log("PUT EditFile failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->stop();
             }
         }
@@ -186,7 +189,7 @@ class DBFile
                                         array("fileid" => $fileid));    
         
         // checks the correctness of the query                        
-        if ($result['status']>=200 && $result['status']<=299){
+        if ($result['status']>=200 && $result['status']<=299){ 
             $query = Query::decodeQuery($result['content']);
 
             $data = $query->getResponse();
@@ -209,14 +212,14 @@ class DBFile
             } else{
                 Logger::Log("DELETE RemoveFile failed (no file in db)",LogLevel::ERROR);
                 $this->_app->response->setBody(File::encodeFile(new File()));
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->stop();
             }
                 
         } else{
             Logger::Log("DELETE RemoveFile failed",LogLevel::ERROR);
             $this->_app->response->setBody(File::encodeFile(new File()));
-            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
+            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->stop();
         }
     }
@@ -238,8 +241,11 @@ class DBFile
         $insert = File::decodeFile($this->_app->request->getBody());
         
         // always been an array
-        if (!is_array($insert))
+        $arr = true;
+        if (!is_array($insert)){
             $insert = array($insert);
+            $arr=false;
+        }
         
         // this array contains the indices of the inserted objects
         $res = array();
@@ -257,10 +263,11 @@ class DBFile
                 $queryResult = Query::decodeQuery($result['content']);
                 
                 // sets the new auto-increment id
-                $obj = new File();
-                $obj->setFileId($queryResult->getInsertId());
+                //$obj = new File();
+                $in->setFileId($queryResult->getInsertId());
+                $in->setBody(null);
             
-                array_push($res, $obj);
+                array_push($res, $in);
                 $this->_app->response->setStatus(201);
                 if (isset($result['headers']['Content-Type']))
                     $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
@@ -268,19 +275,69 @@ class DBFile
             } else{
                 Logger::Log("POST AddFile failed",LogLevel::ERROR);
                 $this->_app->response->setBody(File::encodeFile($res));
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->stop();
             }
         }
         
-        if (count($res)==1){
+        if (!$arr && count($res)==1){
             $this->_app->response->setBody(File::encodeFile($res[0])); 
         }
         else
             $this->_app->response->setBody(File::encodeFile($res)); 
     }
 
-
+    
+    public function get($functionName,$sqlFile,$userid,$courseid,$esid,$eid,$fileid,$hash,$singleResult=false)
+    {
+        Logger::Log("starts GET " . $functionName,LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        $hash = DBJson::mysql_real_escape_string($hash);
+        DBJson::checkInput($this->_app, 
+                            $userid == "" ? true : ctype_digit($userid), 
+                            $courseid == "" ? true : ctype_digit($courseid), 
+                            $esid == "" ? true : ctype_digit($esid), 
+                            $eid == "" ? true : ctype_digit($eid), 
+                            $fileid == "" ? true : ctype_digit($fileid));
+                            
+            
+        // starts a query, by using a given file
+        $result = DBRequest::getRoutedSqlFile($this->query, 
+                                        $sqlFile, 
+                                        array("userid" => $userid,
+                                        'courseid' => $courseid,
+                                        'esid' => $esid,
+                                        'eid' => $eid,
+                                        'fileid' => $fileid,
+                                        'hash' => $hash));
+ 
+        // checks the correctness of the query                                        
+        if ($result['status']>=200 && $result['status']<=299){ 
+            $query = Query::decodeQuery($result['content']);
+            
+            if ($query->getNumRows()>0){
+                $res = File::ExtractFile($query->getResponse(),$singleResult); 
+                $this->_app->response->setBody(File::encodeFile($res));
+        
+                $this->_app->response->setStatus(200);
+                if (isset($result['headers']['Content-Type']))
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+                
+                $this->_app->stop(); 
+            }
+            else
+                $result['status'] = 404;
+                
+        }
+        
+            Logger::Log("GET " . $functionName . " failed",LogLevel::ERROR);
+            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
+            $this->_app->response->setBody(File::encodeFile(new File()));
+            $this->_app->stop();
+    }
+    
+    
     /**
      * Returns a file.
      *
@@ -291,44 +348,15 @@ class DBFile
      */
     public function getFile($fileid)
     {
-        Logger::Log("starts GET GetFile",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($fileid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetFile.sql", 
-                                        array("fileid" => $fileid));        
-        
-        // checks the correctness of the query
-        if ($result['status']>=200 && $result['status']<=299){
-            $query = Query::decodeQuery($result['content']);
-
-            $data = $query->getResponse();
-            
-            // generates an assoc array of an file by using a defined list of 
-            // its attributes
-            $file = DBJson::getResultObjectsByAttributes($data, 
-                                        File::getDBPrimaryKey(), 
-                                        File::getDBConvert());
-            
-            // only one object as result 
-            if (count($file)>0)
-                $file = $file[0];
-                
-            $this->_app->response->setBody(File::encodeFile($file));
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetFile failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(File::encodeFile(new File()));
-            $this->_app->stop();
-        }
+        $this->get("GetFile",
+                "Sql/GetFile.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($fileid) ? $fileid : "",
+                isset($hash) ? $hash : "",
+                true);
     }
 
 
@@ -342,42 +370,15 @@ class DBFile
      */
     public function getFileByHash($hash)
     {
-        Logger::Log("starts GET GetFileByHash",LogLevel::DEBUG);
-        
-        $hash = DBJson::mysql_real_escape_string($hash);
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetFileByHash.sql", 
-                                        array("hash" => $hash));        
-        
-        // checks the correctness of the query
-        if ($result['status']>=200 && $result['status']<=299){
-            $query = Query::decodeQuery($result['content']);
-
-            $data = $query->getResponse();
-            
-            // generates an assoc array of an file by using a defined list of 
-            // its attributes
-            $file = DBJson::getResultObjectsByAttributes($data, 
-                                        File::getDBPrimaryKey(), 
-                                        File::getDBConvert());
-            
-            // only one object as result 
-            if (count($file)>0)
-                $file = $file[0];
-                
-            $this->_app->response->setBody(File::encodeFile($file));
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetFileByHash failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(File::encodeFile(new File()));
-            $this->_app->stop();
-        }
+        $this->get("GetFileByHash",
+                "Sql/GetFileByHash.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($fileid) ? $fileid : "",
+                isset($hash) ? $hash : "",
+                true);
     }
 
 
@@ -389,36 +390,14 @@ class DBFile
      */
     public function getAllFiles()
     {
-        Logger::Log("starts GET GetAllFiles",LogLevel::DEBUG);
-        
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetAllFiles.sql", 
-                                        array());        
-        
-        // checks the correctness of the query
-        if ($result['status']>=200 && $result['status']<=299){
-            $query = Query::decodeQuery($result['content']);
-
-            $data = $query->getResponse();
-            
-            // generates an assoc array of files by using a defined list of 
-            // its attributes
-            $file = DBJson::getResultObjectsByAttributes($data, 
-                                        File::getDBPrimaryKey(), 
-                                        File::getDBConvert());
-                
-            $this->_app->response->setBody(File::encodeFile($file));
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetAllFiles failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(File::encodeFile(new File()));
-            $this->_app->stop();
-        }
+        $this->get("GetAllFiles",
+                "Sql/GetAllFiles.sql",
+                isset($userid) ? $userid : "",
+                isset($courseid) ? $courseid : "",
+                isset($esid) ? $esid : "",
+                isset($eid) ? $eid : "",
+                isset($fileid) ? $fileid : "",
+                isset($hash) ? $hash : "");
     }
 }
 

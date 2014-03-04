@@ -1,5 +1,5 @@
 /** 
- * @file DeleteAttachment.sql
+ * @file DeleteSelectedSubmission.sql
  * deletes a specified selected submission row from %SelectedSubmission table
  * @author  Till Uhlig
  * @param int \$userid a %User identifier

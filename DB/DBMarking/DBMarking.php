@@ -102,39 +102,75 @@ class DBMarking
         $this->_app->post('/' . $this->getPrefix() . '(/)',
                          array($this,'addMarking'));  
         
-        // GET GetMarking
-        $this->_app->get('/' . $this->getPrefix() . '(/marking)/:mid(/)',
-                        array($this,'getMarking'));
-        
         // GET GetSubmissionMarking
         $this->_app->get('/' . $this->getPrefix() . '/submission/:suid(/)',
-                        array($this,'getSubmissionMarking'));
-                        
-        // GET GetAllMarkings
-        $this->_app->get('/' . $this->getPrefix() . '(/marking)(/)',
-                        array($this,'getAllMarkings')); 
+                        array($this,'getSubmissionMarking')); 
+        // GET GetSubmissionMarkingNoSubmission
+        $this->_app->get('/' . $this->getPrefix() . '/submission/:suid/nosubmission(/)',
+                        array($this,'getSubmissionMarkingNoSubmission'));            
                         
         // GET GetExerciseMarkings
         $this->_app->get('/' . $this->getPrefix() . 
                         '/exercise/:eid(/)',
                         array($this,'getExerciseMarkings'));  
+        // GET GetExerciseMarkingsNoSubmission
+        $this->_app->get('/' . $this->getPrefix() . 
+                        '/exercise/:eid/nosubmission(/)',
+                        array($this,'getExerciseMarkingsNoSubmission'));  
                         
         // GET GetSheetMarkings
         $this->_app->get('/' . $this->getPrefix() . 
                         '/exercisesheet/:esid(/)',
                         array($this,'getSheetMarkings'));
+        // GET GetSheetMarkingsNoSubmission
+        $this->_app->get('/' . $this->getPrefix() . 
+                        '/exercisesheet/:esid/nosubmission(/)',
+                        array($this,'getSheetMarkingsNoSubmission'));
+                        
+        // GET GetCourseMarkings
+        $this->_app->get('/' . $this->getPrefix() . 
+                        '/course/:cid(/)',
+                        array($this,'getCourseMarkings'));
+        // GET GetCourseMarkingsNoSubmission
+        $this->_app->get('/' . $this->getPrefix() . 
+                        '/course/:cid/nosubmission(/)',
+                        array($this,'getCourseMarkingsNoSubmission'));
                         
         // GET GetUserGroupMarkings
         $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid/user/:userid(/)',
                         array($this,'getUserGroupMarkings'));  
+        // GET GetUserGroupMarkingsNoSubmission
+        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid/user/:userid/nosubmission(/)',
+                        array($this,'getUserGroupMarkingsNoSubmission')); 
                         
         // GET GetTutorSheetMarkings 
         $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid/tutor/:userid(/)',
                         array($this,'getTutorSheetMarkings'));
-                        
+        // GET GetTutorSheetMarkingsNoSubmission
+        $this->_app->get('/' . $this->getPrefix() . '/exercisesheet/:esid/tutor/:userid/nosubmission(/)',
+                        array($this,'getTutorSheetMarkingsNoSubmission'));
+
         // GET GetTutorExerciseMarkings  
         $this->_app->get('/' . $this->getPrefix() . '/exercise/:eid/tutor/:userid(/)',
                         array($this,'getTutorExerciseMarkings'));  
+        // GET GetTutorExerciseMarkingsNoSubmission
+        $this->_app->get('/' . $this->getPrefix() . '/exercise/:eid/tutor/:userid/nosubmission(/)',
+                        array($this,'getTutorExerciseMarkingsNoSubmission'));  
+                        
+        // GET GetMarking
+        $this->_app->get('/' . $this->getPrefix() . '(/marking)/:mid(/)',
+                        array($this,'getMarking')); 
+                        
+        // GET GetMarkingNoSubmission
+        $this->_app->get('/' . $this->getPrefix() . '(/marking)/:mid/nosubmission(/)',
+                        array($this,'getMarkingNoSubmission')); 
+                        
+        // GET GetAllMarkings
+        $this->_app->get('/' . $this->getPrefix() . '(/marking)(/)',
+                        array($this,'getAllMarkings')); 
+        // GET GetAllMarkingsNoSubmission
+        $this->_app->get('/' . $this->getPrefix() . '(/marking)/nosubmission(/)',
+                        array($this,'getAllMarkingsNoSubmission')); 
                         
         // starts slim only if the right prefix was received
         if (strpos ($this->_app->request->getResourceUri(),'/' . 
@@ -168,8 +204,11 @@ class DBMarking
         $insert = Marking::decodeMarking($this->_app->request->getBody());
         
         // always been an array
-        if (!is_array($insert))
+        $arr = true;
+        if (!is_array($insert)){
             $insert = array($insert);
+            $arr=false;
+        }
 
         foreach ($insert as $in){
             // generates the update data for the object
@@ -188,7 +227,7 @@ class DBMarking
                 
             } else{
                 Logger::Log("PUT EditMarking failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->stop();
             }
         }
@@ -215,7 +254,7 @@ class DBMarking
         $result = DBRequest::getRoutedSqlFile($this->query, 
                                         "Sql/DeleteMarking.sql", 
                                         array("mid" => $mid));    
-        
+
         // checks the correctness of the query                          
         if ($result['status']>=200 && $result['status']<=299){
         
@@ -225,7 +264,7 @@ class DBMarking
                 
         } else{
             Logger::Log("DELETE DeleteMarking failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 452);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
             $this->_app->stop();
         }
     }
@@ -247,8 +286,11 @@ class DBMarking
         $insert = Marking::decodeMarking($this->_app->request->getBody());
         
         // always been an array
-        if (!is_array($insert))
+        $arr = true;
+        if (!is_array($insert)){
             $insert = array($insert);
+            $arr=false;
+        }
         
         // this array contains the indices of the inserted objects
         $res = array();
@@ -276,109 +318,87 @@ class DBMarking
                 
             } else{
                 Logger::Log("POST AddMarking failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 451);
+                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
                 $this->_app->response->setBody(Marking::encodeMarking($res)); 
                 $this->_app->stop();
             }
         }
         
-        if (count($res)==1){
+        if (!$arr && count($res)==1){
             $this->_app->response->setBody(Marking::encodeMarking($res[0])); 
         }
         else
             $this->_app->response->setBody(Marking::encodeMarking($res)); 
     }
 
-
+    public function get($functionName,$sqlFile,$userid,$cid,$esid,$eid,$suid,$mid,$sub,$singleResult=false)
+    {
+        Logger::Log("starts GET " . $functionName,LogLevel::DEBUG);
+        
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput($this->_app, 
+                            $userid == "" ? true : ctype_digit($userid), 
+                            $cid == "" ? true : ctype_digit($cid), 
+                            $esid == "" ? true : ctype_digit($esid), 
+                            $eid == "" ? true : ctype_digit($eid), 
+                            $suid == "" ? true : ctype_digit($suid), 
+                            $mid == "" ? true : ctype_digit($mid));
+                            
+        if ($sub!=1)
+            $sub = 0;
+            
+        // starts a query, by using a given file
+        $result = DBRequest::getRoutedSqlFile($this->query, 
+                                        $sqlFile, 
+                                        array("userid" => $userid,
+                                        'cid' => $cid,
+                                        'esid' => $esid,
+                                        'eid' => $eid,
+                                        'suid' => $suid,
+                                        'mid' => $mid,
+                                        'sub' => $sub));
+ 
+        // checks the correctness of the query                                        
+        if ($result['status']>=200 && $result['status']<=299){ 
+            $query = Query::decodeQuery($result['content']);
+            
+            if ($query->getNumRows()>0){
+                $res = Marking::ExtractMarking($query->getResponse(), $singleResult); 
+                $this->_app->response->setBody(Marking::encodeMarking($res));
+        
+                $this->_app->response->setStatus(200);
+                if (isset($result['headers']['Content-Type']))
+                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+                
+                $this->_app->stop(); 
+            }
+            else
+                $result['status'] = 404;
+                
+        }
+        
+            Logger::Log("GET " . $functionName . " failed",LogLevel::ERROR);
+            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
+            $this->_app->response->setBody(Marking::encodeMarking(new Marking()));
+            $this->_app->stop();
+    }
+    
     /**
      * Returns all markings.
      *
      * Called when this component receives an HTTP GET request to
      * /marking(/) or /marking/marking(/).
      */
-    public function getAllMarkings()
+    public function getAllMarkings($sub = 1)
     {      
-        Logger::Log("starts GET GetAllMarkings",LogLevel::DEBUG);
-        
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetAllMarkings.sql", 
-                                        array());
-        
-        // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299){
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-
-            // generates an assoc array of files by using a defined list of 
-            // its attributes
-            $files = DBJson::getObjectsByAttributes($data, 
-                                            File::getDBPrimaryKey(), 
-                                            File::getDBConvert());
-                                            
-            // generates an assoc array of a submission by using a defined 
-            // list of its attributes
-            $submissions = DBJson::getObjectsByAttributes($data,
-                                    Submission::getDBPrimaryKey(), 
-                                    Submission::getDBConvert(), 
-                                    '2');
-                                    
-            // sets the selectedForGroup attribute
-            foreach ($submissions as &$submission){
-                if (!isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
-                    if (!isset($submission['id']) || !isset($submission['selectedForGroup'])){
-                        $submission['selectedForGroup'] = (string) 0;
-                    } elseif ($submission['id'] == $submission['selectedForGroup']) {
-                        $submission['selectedForGroup'] = (string) 1;
-                    } else
-                        $submission['selectedForGroup'] = (string) 0;
-                }
-                else
-                    $submission['selectedForGroup'] = (string) 0;
-            } 
-                    
-            // generates an assoc array of markings by using a defined list of 
-            // its attributes
-            $markings = DBJson::getObjectsByAttributes($data, 
-                                    Marking::getDBPrimaryKey(), 
-                                    Marking::getDBConvert());  
-                                    
-            // concatenates the markings and the associated files
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $markings,
-                            Marking::getDBPrimaryKey(),
-                            Marking::getDBConvert()['M_file'] ,
-                            $files,
-                            File::getDBPrimaryKey());
-                            
-            // concatenates the markings and the associated submissions
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $res,
-                            Marking::getDBPrimaryKey(),
-                            Marking::getDBConvert()['M_submission'] ,
-                            $submissions,
-                            Submission::getDBPrimaryKey(),
-                            '2');   
-                            
-            // to reindex
-            $res = array_values($res); 
-            
-            $this->_app->response->setBody(Marking::encodeMarking($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetAllMarkings failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Marking::encodeMarking(new Marking()));
-            $this->_app->stop();
-        }
+        $this->get("GetAllMarkings","Sql/GetAllMarkings.sql","","","","","","",$sub);
     }
 
-
+    public function getAllMarkingsNoSubmission($sub = 0)
+    {      
+        $this->getAllMarkings($sub);
+    }
+    
     /**
      * Returns a marking.
      *
@@ -387,97 +407,16 @@ class DBMarking
      *
      * @param int $mid The id of the marking that should be returned.
      */
-    public function getMarking($mid)
+    public function getMarking($mid,$sub = 1)
     {    
-        Logger::Log("starts GET GetMarking",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($mid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetMarking.sql", 
-                                        array("mid" => $mid));
- 
-        // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299){
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-
-            // generates an assoc array of a file by using a defined list of 
-            // its attributes
-            $file = DBJson::getObjectsByAttributes($data, 
-                                            File::getDBPrimaryKey(), 
-                                            File::getDBConvert());
-                                            
-            // generates an assoc array of a submission by using a defined 
-            // list of its attributes
-            $submissions = DBJson::getObjectsByAttributes($data,
-                                    Submission::getDBPrimaryKey(), 
-                                    Submission::getDBConvert(), 
-                                    '2');                           
-               
-            // sets the selectedForGroup attribute
-            foreach ($submissions as &$submission){
-                if (!isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
-                    if (!isset($submission['id']) || !isset($submission['selectedForGroup'])){
-                        $submission['selectedForGroup'] = (string) 0;
-                    } elseif ($submission['id'] == $submission['selectedForGroup']) {
-                        $submission['selectedForGroup'] = (string) 1;
-                    } else
-                        $submission['selectedForGroup'] = (string) 0;
-                }
-                else
-                    $submission['selectedForGroup'] = (string) 0;
-            }
-
-            // generates an assoc array of a marking by using a defined list of 
-            // its attributes
-            $marking = DBJson::getObjectsByAttributes($data, 
-                                    Marking::getDBPrimaryKey(), 
-                                    Marking::getDBConvert());  
-                 
-            // concatenates the markings and the associated files
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $marking,
-                            Marking::getDBPrimaryKey(),
-                            Marking::getDBConvert()['M_file'] ,
-                            $file,
-                            File::getDBPrimaryKey());
-            
-            // concatenates the markings and the associated submissions
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $res,
-                            Marking::getDBPrimaryKey(),
-                            Marking::getDBConvert()['M_submission'] ,
-                            $submissions,
-                            Submission::getDBPrimaryKey(),
-                            '2');  
-                   
-            // to reindex
-            $res = array_values($res);
-            
-            // only one object as result
-            if (count($res)>0)
-                $res = $res[0]; 
-                
-            $this->_app->response->setBody(Marking::encodeMarking($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetMarking failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Marking::encodeMarking(new Marking()));
-            $this->_app->stop();
-        }  
+        $this->get("GetMarking","Sql/GetMarking.sql","","","","","",$mid,$sub,true);
     }
 
-
+    public function getMarkingNoSubmission($mid,$sub = 0)
+    {    
+        $this->getMarking($mid,$sub,true);
+    }
+    
     /**
      * Returns a marking to a given submission.
      *
@@ -486,96 +425,16 @@ class DBMarking
      *
      * @param int $suid The id of the submission.
      */
-    public function getSubmissionMarking($suid)
+    public function getSubmissionMarking($suid,$sub = 1)
     {    
-        Logger::Log("starts GET GetSubmissionMarking",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($suid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetSubmissionMarking.sql", 
-                                        array("suid" => $suid));
-        
-        // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299){
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-
-            // generates an assoc array of a file by using a defined list of 
-            // its attributes
-            $file = DBJson::getObjectsByAttributes($data, 
-                                            File::getDBPrimaryKey(), 
-                                            File::getDBConvert());
-                                            
-            // generates an assoc array of a submission by using a defined 
-            // list of its attributes
-            $submissions = DBJson::getObjectsByAttributes($data,
-                                    Submission::getDBPrimaryKey(), 
-                                    Submission::getDBConvert(), 
-                                    '2');
-                                    
-            // sets the selectedForGroup attribute
-            foreach ($submissions as &$submission){
-                if (!isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
-                    if (!isset($submission['id']) || !isset($submission['selectedForGroup'])){
-                        $submission['selectedForGroup'] = (string) 0;
-                    } elseif ($submission['id'] == $submission['selectedForGroup']) {
-                        $submission['selectedForGroup'] = (string) 1;
-                    } else
-                        $submission['selectedForGroup'] = (string) 0;
-                }
-                else
-                    $submission['selectedForGroup'] = (string) 0;
-            }
-            
-            // generates an assoc array of a marking by using a defined list of 
-            // its attributes
-            $marking = DBJson::getObjectsByAttributes($data, 
-                                    Marking::getDBPrimaryKey(), 
-                                    Marking::getDBConvert());  
-                                    
-            // concatenates the markings and the associated files
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $marking,
-                            Marking::getDBPrimaryKey(),
-                            Marking::getDBConvert()['M_file'] ,
-                            $file,
-                            File::getDBPrimaryKey());
-                            
-            // concatenates the markings and the associated submissions
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $res,
-                            Marking::getDBPrimaryKey(),
-                            Marking::getDBConvert()['M_submission'] ,
-                            $submissions,
-                            Submission::getDBPrimaryKey());  
-                            
-            // to reindex
-            $res = array_values($res);
-            
-            // only one object as result
-            if (count($res)>0)
-                $res = $res[0]; 
-                
-            $this->_app->response->setBody(Marking::encodeMarking($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetSubmissionMarking failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Marking::encodeMarking(new Marking()));
-            $this->_app->stop();
-        }   
+        $this->get("GetSubmissionMarking","Sql/GetSubmissionMarking.sql","","","","",$suid,"",$sub,true);
     }
 
-
+    public function getSubmissionMarkingNoSubmission($suid,$sub = 0)
+    {    
+        $this->getSubmissionMarking($suid,$sub,true);
+    }
+    
     /**
      * Returns all markings which belong to a given exercise.
      *
@@ -584,92 +443,16 @@ class DBMarking
      *
      * @param int $eid The id of the exercise.
      */
-    public function getExerciseMarkings($eid)
+    public function getExerciseMarkings($eid,$sub = 1)
     {   
-        Logger::Log("starts GET GetExerciseMarkings",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($eid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetExerciseMarkings.sql", 
-                                        array('eid' => $eid));
-        
-        // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299){
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-
-            // generates an assoc array of files by using a defined list of 
-            // its attributes
-            $files = DBJson::getObjectsByAttributes($data, 
-                                            File::getDBPrimaryKey(), 
-                                            File::getDBConvert());
-                                            
-            // generates an assoc array of a submission by using a defined 
-            // list of its attributes
-            $submissions = DBJson::getObjectsByAttributes($data,
-                                    Submission::getDBPrimaryKey(), 
-                                    Submission::getDBConvert(), 
-                                    '2');
-                                    
-            // sets the selectedForGroup attribute
-            foreach ($submissions as &$submission){
-                if (!isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
-                    if (!isset($submission['id']) || !isset($submission['selectedForGroup'])){
-                        $submission['selectedForGroup'] = (string) 0;
-                    } elseif ($submission['id'] == $submission['selectedForGroup']) {
-                        $submission['selectedForGroup'] = (string) 1;
-                    } else
-                        $submission['selectedForGroup'] = (string) 0;
-                }
-                else
-                    $submission['selectedForGroup'] = (string) 0;
-            }
-            
-            // generates an assoc array of markings by using a defined list of 
-            // its attributes
-            $markings = DBJson::getObjectsByAttributes($data, 
-                                    Marking::getDBPrimaryKey(), 
-                                    Marking::getDBConvert());  
-                                    
-            // concatenates the markings and the associated files
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $markings,
-                            Marking::getDBPrimaryKey(),
-                            Marking::getDBConvert()['M_file'] ,
-                            $files,
-                            File::getDBPrimaryKey());
-                            
-            // concatenates the markings and the associated submissions
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $res,
-                            Marking::getDBPrimaryKey(),
-                            Marking::getDBConvert()['M_submission'] ,
-                            $submissions,
-                            Submission::getDBPrimaryKey());  
-                            
-            // to reindex
-            $res = array_values($res); 
-            
-            $this->_app->response->setBody(Marking::encodeMarking($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetExerciseMarkings failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Marking::encodeMarking(new Marking()));
-            $this->_app->stop();
-        }
+        $this->get("GetExerciseMarkings","Sql/GetExerciseMarkings.sql","","","",$eid,"","",$sub);
     }
 
-
+    public function getExerciseMarkingsNoSubmission($eid,$sub = 0)
+    {   
+        $this->getExerciseMarkings($eid,$sub);
+    }
+    
     /**
      * Returns all markings which belong to a given exercise sheet.
      *
@@ -678,92 +461,34 @@ class DBMarking
      *
      * @param int $esid The id of the exercise sheet.
      */
-    public function getSheetMarkings($esid)
-    {     
-        Logger::Log("starts GET GetSheetMarkings",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($esid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetSheetMarkings.sql", 
-                                        array('esid' => $esid));
-        
-        // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299){
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-
-            // generates an assoc array of files by using a defined list of 
-            // its attributes
-            $files = DBJson::getObjectsByAttributes($data, 
-                                            File::getDBPrimaryKey(), 
-                                            File::getDBConvert());
-                                            
-            // generates an assoc array of a submission by using a defined 
-            // list of its attributes
-            $submissions = DBJson::getObjectsByAttributes($data,
-                                    Submission::getDBPrimaryKey(), 
-                                    Submission::getDBConvert(), 
-                                    '2');
-                                    
-            // sets the selectedForGroup attribute
-            foreach ($submissions as &$submission){
-                if (!isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
-                    if (!isset($submission['id']) || !isset($submission['selectedForGroup'])){
-                        $submission['selectedForGroup'] = (string) 0;
-                    } elseif ($submission['id'] == $submission['selectedForGroup']) {
-                        $submission['selectedForGroup'] = (string) 1;
-                    } else
-                        $submission['selectedForGroup'] = (string) 0;
-                }
-                else
-                    $submission['selectedForGroup'] = (string) 0;
-            }
-            
-            // generates an assoc array of markings by using a defined list of 
-            // its attributes
-            $markings = DBJson::getObjectsByAttributes($data, 
-                                    Marking::getDBPrimaryKey(), 
-                                    Marking::getDBConvert());  
-                                    
-            // concatenates the markings and the associated files
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $markings,
-                            Marking::getDBPrimaryKey(),
-                            Marking::getDBConvert()['M_file'] ,
-                            $files,
-                            File::getDBPrimaryKey());
-                            
-            // concatenates the markings and the associated submissions
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $res,
-                            Marking::getDBPrimaryKey(),
-                            Marking::getDBConvert()['M_submission'] ,
-                            $submissions,
-                            Submission::getDBPrimaryKey());  
-                            
-            // to reindex
-            $res = array_values($res); 
-            
-            $this->_app->response->setBody(Marking::encodeMarking($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetSheetMarkings failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Marking::encodeMarking(new Marking()));
-            $this->_app->stop();
-        }  
+    public function getSheetMarkings($esid,$sub = 1)
+    {    
+        $this->get("GetSheetMarkings","Sql/GetSheetMarkings.sql","","",$esid,"","","",$sub);
     }
 
-
+    public function getSheetMarkingsNoSubmission($esid,$sub = 0)
+    {    
+        $this->getSheetMarkings($esid,$sub);
+    }
+    
+    /**
+     * Returns all markings which belong to a given course.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /marking/course/$cid(/).
+     *
+     * @param int $cid The id of the course.
+     */
+    public function getCourseMarkings($cid,$sub = 1)
+    {     
+        $this->get("GetCourseMarkings","Sql/GetCourseMarkings.sql","",$cid,"","","","",$sub);
+    }
+    
+    public function getCourseMarkingsNoSubmission($cid,$sub = 0)
+    {     
+        $this->getCourseMarkings($cid,$sub);
+    }
+    
     /**
      * Returns all markings of a group regarding a specific exercise sheet.
      *
@@ -773,93 +498,16 @@ class DBMarking
      * @param int $esid The id of the exercise sheet.
      * @param int $userid The id of the user whose group the marking belongs to.
      */
-    public function getUserGroupMarkings($esid,$userid)
+    public function getUserGroupMarkings($esid,$userid,$sub = 1)
     {     
-        Logger::Log("starts GET GetUserGroupMarkings",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($esid),
-                            ctype_digit($userid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetUserGroupMarkings.sql", 
-                                        array('esid' => $esid,
-                                            'userid' => $userid));
-        
-        // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299){
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-
-            // generates an assoc array of files by using a defined list of 
-            // its attributes
-            $files = DBJson::getObjectsByAttributes($data, 
-                                            File::getDBPrimaryKey(), 
-                                            File::getDBConvert());
-            // generates an assoc array of a submission by using a defined 
-            // list of its attributes
-            $submissions = DBJson::getObjectsByAttributes($data,
-                                    Submission::getDBPrimaryKey(), 
-                                    Submission::getDBConvert(), 
-                                    '2');
-                                    
-            // sets the selectedForGroup attribute
-            foreach ($submissions as &$submission){
-                if (!isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
-                    if (!isset($submission['id']) || !isset($submission['selectedForGroup'])){
-                        $submission['selectedForGroup'] = (string) 0;
-                    } elseif ($submission['id'] == $submission['selectedForGroup']) {
-                        $submission['selectedForGroup'] = (string) 1;
-                    } else
-                        $submission['selectedForGroup'] = (string) 0;
-                }
-                else
-                    $submission['selectedForGroup'] = (string) 0;
-            }
-            
-            // generates an assoc array of markings by using a defined list of 
-            // its attributes
-            $markings = DBJson::getObjectsByAttributes($data, 
-                                    Marking::getDBPrimaryKey(), 
-                                    Marking::getDBConvert());  
-                                    
-            // concatenates the markings and the associated files
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $markings,
-                            Marking::getDBPrimaryKey(),
-                            Marking::getDBConvert()['M_file'] ,
-                            $files,
-                            File::getDBPrimaryKey());
-                            
-            // concatenates the markings and the associated submissions
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $res,
-                            Marking::getDBPrimaryKey(),
-                            Marking::getDBConvert()['M_submission'] ,
-                            $submissions,
-                            Submission::getDBPrimaryKey());  
-                            
-            // to reindex
-            $res = array_values($res); 
-            
-            $this->_app->response->setBody(Marking::encodeMarking($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetUserGroupMarkings failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Marking::encodeMarking(new Marking()));
-            $this->_app->stop();
-        }    
+        $this->get("GetUserGroupMarkings","Sql/GetUserGroupMarkings.sql",$userid,"",$esid,"","","",$sub);
     }
 
-
+    public function getUserGroupMarkingsNoSubmission($esid,$userid,$sub = 0)
+    {     
+        $this->getUserGroupMarkings($esid,$userid,$sub);
+    }
+    
     /**
      * Returns all markings created by a given tutor regarding 
      * a specific exercise sheet.
@@ -871,93 +519,16 @@ class DBMarking
      * @param int $userid The userid of the tutor that created the markings 
      * which should be returned.
      */
-    public function getTutorSheetMarkings($esid,$userid)
+    public function getTutorSheetMarkings($esid,$userid,$sub = 1)
     {     
-        Logger::Log("starts GET GetTutorSheetMarkings",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($esid),
-                            ctype_digit($userid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetTutorSheetMarkings.sql", 
-                                        array('esid' => $esid,
-                                            'userid' => $userid));
-        
-        // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299){
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-
-            // generates an assoc array of files by using a defined list of 
-            // its attributes
-            $files = DBJson::getObjectsByAttributes($data, 
-                                            File::getDBPrimaryKey(), 
-                                            File::getDBConvert());
-            // generates an assoc array of a submission by using a defined 
-            // list of its attributes
-            $submissions = DBJson::getObjectsByAttributes($data,
-                                    Submission::getDBPrimaryKey(), 
-                                    Submission::getDBConvert(), 
-                                    '2');
-                                    
-            // sets the selectedForGroup attribute
-            foreach ($submissions as &$submission){
-                if (!isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
-                    if (!isset($submission['id']) || !isset($submission['selectedForGroup'])){
-                        $submission['selectedForGroup'] = (string) 0;
-                    } elseif ($submission['id'] == $submission['selectedForGroup']) {
-                        $submission['selectedForGroup'] = (string) 1;
-                    } else
-                        $submission['selectedForGroup'] = (string) 0;
-                }
-                else
-                    $submission['selectedForGroup'] = (string) 0;
-            }
-            
-            // generates an assoc array of markings by using a defined list of 
-            // its attributes
-            $markings = DBJson::getObjectsByAttributes($data, 
-                                    Marking::getDBPrimaryKey(), 
-                                    Marking::getDBConvert());  
-                                    
-            // concatenates the markings and the associated files
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $markings,
-                            Marking::getDBPrimaryKey(),
-                            Marking::getDBConvert()['M_file'] ,
-                            $files,
-                            File::getDBPrimaryKey());
-                            
-            // concatenates the markings and the associated submissions
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $res,
-                            Marking::getDBPrimaryKey(),
-                            Marking::getDBConvert()['M_submission'] ,
-                            $submissions,
-                            Submission::getDBPrimaryKey());  
-                            
-            // to reindex
-            $res = array_values($res); 
-            
-            $this->_app->response->setBody(Marking::encodeMarking($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetTutorSheetMarkings failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Marking::encodeMarking(new Marking()));
-            $this->_app->stop();
-        }    
+        $this->get("GetTutorSheetMarkings","Sql/GetTutorSheetMarkings.sql",$userid,"",$esid,"","","",$sub);
     }
-
-
+    
+    public function getTutorSheetMarkingsNoSubmission($esid,$userid,$sub = 0)
+    {     
+        $this->getTutorSheetMarkings($esid,$userid,$sub);
+    }
+    
     /**
      * Returns all markings created by a given tutor regarding 
      * a specific exercise.
@@ -969,90 +540,14 @@ class DBMarking
      * @param int $userid The userid of the tutor that created the markings 
      * which should be returned.
      */
-    public function getTutorExerciseMarkings($eid,$userid)
-    {     
-        Logger::Log("starts GET GetTutorExerciseMarkings",LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($eid),
-                            ctype_digit($userid));
-                            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/GetTutorExerciseMarkings.sql", 
-                                        array('eid' => $eid,
-                                            'userid' => $userid));
-        
-        // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299){
-            $query = Query::decodeQuery($result['content']);
-            
-            $data = $query->getResponse();
-
-            // generates an assoc array of files by using a defined list of 
-            // its attributes
-            $files = DBJson::getObjectsByAttributes($data, 
-                                            File::getDBPrimaryKey(), 
-                                            File::getDBConvert());
-            // generates an assoc array of a submission by using a defined 
-            // list of its attributes
-            $submissions = DBJson::getObjectsByAttributes($data,
-                                    Submission::getDBPrimaryKey(), 
-                                    Submission::getDBConvert(), 
-                                    '2');
-                                    
-            // sets the selectedForGroup attribute
-            foreach ($submissions as &$submission){
-                if (!isset($submission['selectedForGroup']) || $submission['selectedForGroup']==null){
-                    if (!isset($submission['id']) || !isset($submission['selectedForGroup'])){
-                        $submission['selectedForGroup'] = (string) 0;
-                    } elseif ($submission['id'] == $submission['selectedForGroup']) {
-                        $submission['selectedForGroup'] = (string) 1;
-                    } else
-                        $submission['selectedForGroup'] = (string) 0;
-                }
-                else
-                    $submission['selectedForGroup'] = (string) 0;
-            }
-            
-            // generates an assoc array of markings by using a defined list of 
-            // its attributes
-            $markings = DBJson::getObjectsByAttributes($data, 
-                                    Marking::getDBPrimaryKey(), 
-                                    Marking::getDBConvert());  
-                                    
-            // concatenates the markings and the associated files
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $markings,
-                            Marking::getDBPrimaryKey(),
-                            Marking::getDBConvert()['M_file'] ,
-                            $files,
-                            File::getDBPrimaryKey());
-                            
-            // concatenates the markings and the associated submissions
-            $res = DBJson::concatObjectListsSingleResult($data, 
-                            $res,
-                            Marking::getDBPrimaryKey(),
-                            Marking::getDBConvert()['M_submission'] ,
-                            $submissions,
-                            Submission::getDBPrimaryKey());  
-                            
-            // to reindex
-            $res = array_values($res); 
-            
-            $this->_app->response->setBody(Marking::encodeMarking($res));
-        
-            $this->_app->response->setStatus(200);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("GET GetTutorExerciseMarkings failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(Marking::encodeMarking(new Marking()));
-            $this->_app->stop();
-        }    
+    public function getTutorExerciseMarkings($eid,$userid,$sub = 1)
+    {   
+        $this->get("GetTutorExerciseMarkings","Sql/GetTutorExerciseMarkings.sql",$userid,"","",$eid,"","",$sub);
+    }
+    
+    public function getTutorExerciseMarkingsNoSubmission($eid,$userid,$sub = 0)
+    {   
+        $this->getTutorExerciseMarkings($eid,$userid,$sub);
     }
 }
 ?>

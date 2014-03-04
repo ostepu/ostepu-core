@@ -14,17 +14,19 @@ select
     F.F_address,
     F.F_timeStamp,
     F.F_fileSize,
+    F.F_comment,
     F.F_hash,
-    S.U_id as U_id2,
-    S.S_id as S_id2,
-    S.F_id_file as F_id_file2,
-    S.S_comment as S_comment2,
-    S.S_date as S_date2,
-    SS.S_id_selected as S_selected2,
-    S.S_accepted as S_accepted2,
-    S.S_flag as S_flag2,
-    S.S_leaderId as S_leaderId2,
-    S.E_id as E_id2
+    S.U_id,
+    S.S_id,
+    S.F_id_file,
+    S.S_comment,
+    S.S_date,
+    SS.S_id_selected,
+    S.S_accepted,
+    S.S_flag,
+    S.S_leaderId,
+    S.S_hideFile,
+    S.E_id
 from
     Submission S
     join File F on (S.F_id_file = F.F_id)

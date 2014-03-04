@@ -1,1 +1,1 @@
-{"id":"18","name":"DBCourseStatus","address":"localhost\/uebungsplattform\/DB\/DBCourseStatus","option":"","prefix":"coursestatus","links":[{"id":"44","name":"out","address":"localhost\/uebungsplattform\/DB\/DBQuery","prefix":"query","target":"13","owner":"18","relevanz":""}]}
+{"id":"18","name":"DBCourseStatus","address":"localhost\/uebungsplattform\/DB\/DBCourseStatus","option":"","prefix":"coursestatus","links":[{"id":"44","name":"out","address":"localhost\/uebungsplattform\/DB\/DBQuery","target":"13","owner":"18","relevanz":""}]}
