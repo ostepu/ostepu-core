@@ -7,7 +7,7 @@
  * @author Peter Koenig
  */
 
-require 'Slim/Slim.php';
+require '../Include/Slim/Slim.php';
 include '../Include/Request.php';
 include_once( '../Include/CConfig.php' );
 
@@ -75,7 +75,7 @@ class LUser
         $this->lURL = $this->query->getAddress();
 
         // PUT SetUserRights
-        $this->app->put('/'.$this->getPrefix().'/user/:userid/right', array($this, 'setUserRights'));
+        $this->app->put('/'.$this->getPrefix().'/user/:userid/right(/)', array($this, 'setUserRights'));
 
         // POST AddUser
         $this->app->post('/'.$this->getPrefix().'(/)', array($this, 'addUser'));
@@ -106,8 +106,20 @@ class LUser
     public function setUserRights($userid){
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
-        $URL = $this->lURL.'/DB/user/user/'.$userid.'/right';
-        $answer = Request::custom('PUT', $URL, $header, $body);
+        
+        $URL = $this->lURL.'/DB/user/user/'.$userid;
+        $answer = Request::custom('GET', $URL, $header, "");
+        $user = json_decode($answer['content'],true);
+        unset($user['courses']);
+        unset($user['password']);
+        unset($user['salt']);
+        unset($user['failedLogins']);
+        $user['courses'][] = json_decode($body,true);
+        print_r(json_encode($user));
+        $courseid = $user['courses'][0]['course']['id'];
+        
+        $URL = $this->lURL.'/DB/coursestatus/course/'.$courseid.'/user/'.$userid;
+        $answer = Request::custom('PUT', $URL, $header, json_encode($user));
         $this->app->response->setStatus($answer['status']);
     }
 

@@ -1,13 +1,13 @@
 <?php
 /**
  * @file LCourse.php contains the LCourse class
- * 
+ *
  * @author Christian Elze
  * @author Peter König
  * @author Martin Daute
  */
 
-require 'Slim/Slim.php';
+require '../Include/Slim/Slim.php';
 include '../Include/Request.php';
 include_once( '../Include/CConfig.php' );
 
@@ -32,7 +32,7 @@ class LCourse
      * the $_prefix getter
      *
      * @return the value of $_prefix
-     */    
+     */
     public static function getPrefix()
     {
         return LCourse::$_prefix;
@@ -42,7 +42,7 @@ class LCourse
      * the $_prefix setter
      *
      * @param string $value the new value for $_prefix
-     */ 
+     */
     public static function setPrefix($value)
     {
         LCourse::$_prefix = $value;
@@ -84,7 +84,7 @@ class LCourse
         $this->app->delete('/'.$this->getPrefix().'/course/:courseid(/)', array($this, 'deleteCourse'));
 
         //POST AddCourseMember
-        $this->app->put('/'.$this->getPrefix().'/course/:courseid/user/:userid(/)', array($this, 'addCourseMember'));
+        $this->app->post('/'.$this->getPrefix().'/course/:courseid/user/:userid/status/:status(/)', array($this, 'addCourseMember'));
 
         //GET GetCourseMember
         $this->app->get('/'.$this->getPrefix().'/course/:courseid/user(/)', array($this, 'getCourseMember'));
@@ -149,18 +149,25 @@ class LCourse
     /**
      * Adds a user to a course.
      *
-     * Called when this component receives an HTTP PUT request to
-     * /course/$courseid/user/$userid(/).
+     * Called when this component receives an HTTP POST request to
+     * /course/$courseid/user/$userid/status/$status(/).
      *
      * @param int $courseid The id of the course to which the user is being added.
      * @param int $userid The id of the user that is being added.
+     * @param int $status The status this user should have in this course.
      */
-    public function addCourseMember($courseid, $userid){
-        $body = $this->app->request->getBody();
+    public function addCourseMember($courseid, $userid, $status){
         $header = $this->app->request->headers->all();
-        $URL = $this->lURL.'/DB/course/'.$courseid.'/course/'.$userid;
-        $answer = Request::custom('PUT', $URL, $header, $body);
-        $this->app->response->setStatus($answer['status']);        
+        $body = array('id' => $userid,
+                      'courses' => array(array('status' => $status,
+                                               'course' => array('id' => $courseid)
+                                               )
+                                         )
+                      );
+        $body = json_encode($body);
+        $URL = $this->lURL.'/DB/coursestatus';
+        $answer = Request::custom('POST', $URL, $header, $body);
+        $this->app->response->setStatus($answer['status']);
     }
 
     /**
@@ -174,7 +181,7 @@ class LCourse
     public function getCourseMember($courseid){
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
-        $URL = $this->lURL.'/DB/course/'.$courseid.'/user';
+        $URL = $this->lURL.'/DB/user/course/'.$courseid;
         $answer = Request::custom('GET', $URL, $header, $body);
         $this->app->response->setStatus($answer['status']);
         $this->app->response->setBody($answer['content']);

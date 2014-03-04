@@ -1,15 +1,16 @@
 <?php
 /**
  * @file LExercise.php Contains the LExercise class
- * 
+ *
  * @author Martin Daute
  * @author Christian Elze
  * @author Peter Koenig
  */
 
-require 'Slim/Slim.php';
+require '../Include/Slim/Slim.php';
 include '../Include/Request.php';
 include_once( '../Include/CConfig.php' );
+include_once '../Include/Structures.php';
 
 \Slim\Slim::registerAutoloader();
 
@@ -50,7 +51,7 @@ class LExercise
 
     /**
      * @var string $lURL the URL of the logic-controller
-     */ 
+     */
     private $lURL = ""; // readed out from config below
 
     /**
@@ -98,36 +99,103 @@ class LExercise
      *
      * Called when this component receives an HTTP POST request to
      * /exercise(/).
-     * The request body should contain a JSON object representing the exercise's 
-     * attributes.
-     * Adds the exercise file to the filesystem first. At success
-     * the informations belongs to this exercise will be stored in the database.
+     * The request body should contain a JSON object representing an array of exercises
      */
     public function addExercise(){
         $header = $this->app->request->headers->all();
-
-        // get the file object from the request body to send it to the filesystem
         $body = json_decode($this->app->request->getBody(), true);
-        var_dump($body);
-        $file = json_encode($body['file']);
 
-        // request to the filesystem to save the file
-        $URL = $this->lURL.'/FS';
-        $answer = Request::custom('POST', $URL, $header, $file);
+        $allright = true;
 
-        /*
-         * if the file has been stored, the information
-         * belongs to this exercise will be stored in the database
-         */
-        if($answer['status'] >= 200 && $answer['status'] < 300){ 
-            $body['file'] = json_decode($answer['content'], true);
-            // send a request to database
-            $URL = $this->lURL.'/DB';
-            $answer = Request::custom('POST', $URL, $header, json_encode($body));
-            $this->app->response->setStatus($answer['status']);
+        if (isset($body) == true && empty($body) == false) {
+            foreach ($body as $subexercise) {
+                //upload attachement if it exists
+                if (isset($subexercise['attachments']) == true && empty($subexercise['attachments']) == false) {
+                    // get attachment
+                    $attachmentFile = json_encode($subexercise['attachments']);
+
+                    // set URL for requests to filesystem
+                    $URL = $this->lURL.'/FS/file';
+
+                    // upload Attachment
+                    $answer = Request::custom('POST', $URL, $header, $attachmentFile);
+                    if($answer['status'] == 201) {
+                        $URL = $this->lURL.'/DB/file';
+                        $answer2 = Request::custom('POST', $URL, $header, $answer['content']);
+
+                        // if file already exists
+                        if($answer2['status'] != 201) {
+                            $attachmentFSContent = json_decode($answer['content'], true);
+                            $answer2 = Request::custom('GET', $URL.'/hash/'.$attachmentFSContent['hash'], $header, "");
+                            if ($answer2['status'] == 200) {
+                                $id = json_decode($answer2['content'], true);
+                                $subexercise['attachments'] = $id;
+                            } else {
+                                $allright = false;
+                                break;
+                            }
+                        } elseif ($answer2['status'] == 201) {
+                            $id = json_decode($answer2['content'], true);
+                            $subexercise['attachments'] = $id;
+                        }
+                    } else {
+                        $allright = false;
+                        break;
+                    }
+                }
+
+                // create exercise in DB
+                $FileTypesArrayTemp = $subexercise['fileTypes'];
+                unset($subexercise['fileTypes']);
+                $subexerciseJSON = json_encode($subexercise);
+                $URL = $this->lURL.'/DB/exercise';
+                $subexerciseAnswer = Request::custom('POST', $URL, $header, $subexerciseJSON);
+
+                if ($subexerciseAnswer['status'] == 201) {
+                    $subexerciseOutput = json_decode($subexerciseAnswer['content'], true);
+
+                    if (isset($subexerciseOutput['id'])) {
+                        $linkid = $subexerciseOutput['id'];
+                    }
+                    // create attachement in DB
+                    if (isset($subexercise['attachments']) == true && empty($subexercise['attachments']) == false) {
+                        $AttachmentObj = Attachment::createAttachment(NULL,$linkid,$subexercise['attachments']['fileId']);
+                        $AttachmentObjJSON = Attachment::encodeAttachment($AttachmentObj);
+                        $URL = $this->lURL."/DB/attachment";
+                        $AttachmentAnswer = Request::custom('POST', $URL, $header, $AttachmentObjJSON);
+
+                        if ($AttachmentAnswer['status'] != 201) {
+                            $allright = false;
+                            break;
+                        }
+                    }
+
+                    // create ExerciseFileTypes
+                    foreach ($FileTypesArrayTemp as $fileType) {
+                        $myExerciseFileType = ExerciseFileType::createExerciseFileType(NULL,$fileType,$linkid);
+                        $myExerciseFileTypeJSON = ExerciseFileType::encodeExerciseFileType($myExerciseFileType);
+                        $URL = $this->lURL."/DB/exercisefiletype";
+                        $AttachmentAnswer = Request::custom('POST', $URL, $header, $myExerciseFileTypeJSON);
+
+                        if ($AttachmentAnswer['status'] != 201) {
+                            $allright = false;
+                            break;
+                        }
+                    }
+                    if ($allright == false) {
+                        break;
+                    }
+                    
+                } else {
+                    $allright = false;
+                    break;
+                }
+            }
+        }
+        if ($allright == true) {
+             $this->app->response->setStatus(201);
         } else {
-            // if the file has not been stored response the (error-)status-code
-            $this->app->response->setStatus($answer['status']);
+            $this->app->response->setStatus(409);
         }
     }
 
@@ -155,31 +223,16 @@ class LExercise
      *
      * Called when this component receives an HTTP DELETE request to
      * /exercise/exercise/$exerciseid(/).
-     * Deletes the exercise information from the database first. At success
-     * the file belongs to this exercise will be deleted from the filesystem.
      *
      * @param int $exerciseid The id of the exercise that is beeing deleted.
      */
     public function deleteExercise($exerciseid){
         $header = $this->app->request->headers->all();
-        $body = $this->app->request->getBody();
-        $URL = $this->lURL.'/DB/exercise/'.$exerciseid;
+        $URL = $this->lURL.'/DB/exercise/exercise/'.$exerciseid;
         // request to database
-        $answer = Request::custum('DELETE', $URL, $header, $body);
+        print_r($URL);
+        $answer = Request::custom('DELETE', $URL, $header, "");
         $this->app->response->setStatus($answer['status']);
-
-        /*
-         * if the file information has been deleted, the file
-         * will being deleted from filesystem
-         */
-        $fileObject = json_decode($answer['content'], true);
-        // if address-field exists, read it out
-        if (isset($fileObject['address']) and $answer['status'] >= 200 && $answer['status'] < 300){
-            $fileAddress = $fileObject['address'];
-            // request to filesystem
-            $URL = $this->lURL.'/FS/'.$fileAddress;
-            $answer = Request::custom('DELETE', $URL, $header, $body);
-        }
     }
 
     /**

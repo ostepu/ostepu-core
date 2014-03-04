@@ -122,7 +122,7 @@ class Logger
 
             // open the log file for appending
             $fp = @fopen($logFile, "a");
-            
+
             if (!$fp) {
                 return;
             }

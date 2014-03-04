@@ -1,13 +1,13 @@
 <?php
 /**
- * @file LUser.php Contains the LUser class
+ * @file LMarking.php Contains the LMarking class
  * 
  * @author Peter Koenig
  * @author Christian Elze
  * @author Martin Daute 
  */
 
-require 'Slim/Slim.php';
+require '../Include/Slim/Slim.php';
 include '../Include/Request.php';
 include_once( '../Include/CConfig.php' );
 
