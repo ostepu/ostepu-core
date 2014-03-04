@@ -303,8 +303,8 @@ class ExerciseSheet extends Object implements JsonSerializable
         return array(
            'ES_id' => 'id',
            'C_id' => 'courseId',
-           'ES_startDate' => 'endDate',
-           'ES_endDate' => 'startDate',
+           'ES_startDate' => 'startDate',
+           'ES_endDate' => 'endDate',
            'F_id_zip' => 'zipFile',
            'ES_groupSize' => 'groupSize',
            'F_id_sampleSolution' => 'sampleSolution',

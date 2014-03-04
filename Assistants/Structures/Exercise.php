@@ -266,6 +266,8 @@ class Exercise extends Object implements JsonSerializable
         return $this->fileTypes;
     }
     
+    
+    
     /**
      * the $fileTypes setter
      *
