@@ -5,6 +5,13 @@
 
 
 $(document).ready( function() {
+
+    // set mouse curser on mouse-over to pointer
+    $('.collapsible').children('.content-header').css('cursor','pointer');
+
+    // map click events
+    $('.collapsible').children('.content-header').on("click",collapseElement);
+
     $.fn.datetimepicker.dates['de'] = {
         days: ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag", "Montag"],
         daysShort: ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So", "Mo"],
@@ -50,12 +57,16 @@ function setCurrentTimeData() {
     var picker = $('#datetimepicker1').data('datetimepicker');
     var localDate = picker.getLocalDate();
 
-    picker.setLocalDate(new Date(localDate.getYear()+1900, localDate.getMonth(), localDate.getDate(), 0, 0));
+    if (!$('#startDate').val()) {
+        picker.setLocalDate(new Date(localDate.getYear()+1900, localDate.getMonth(), localDate.getDate(), 0, 0));
+    }
 
     var picker = $('#datetimepicker2').data('datetimepicker');
     var localDate = picker.getLocalDate();
 
-    picker.setLocalDate(new Date(localDate.getYear()+1900, localDate.getMonth(), localDate.getDate()+7, 23, 59));
+    if (!$('#endDate').val()) {
+        picker.setLocalDate(new Date(localDate.getYear()+1900, localDate.getMonth(), localDate.getDate()+7, 23, 59));
+    }
 } 
 
 /**
@@ -223,4 +234,17 @@ function addSubtask(event) {
 
         renumberExercises();
     });
+}
+
+/**
+ * toggle function on click to hide/show .content-header elements
+ */
+function collapseElement(event) {
+    // trig = event sender
+    var trig = $(this);
+    // toggle the next available element of .content-body-wrapper near the "trig" with duration "fast"
+    if (trig.parent('.collapsible').length !== 0) {
+        trig.parent().children('.content-body-wrapper, .content-footer').slideToggle('fast');
+        trig.toggleClass( 'inactive',  !trig.hasClass('inactive') );
+    }
 }
