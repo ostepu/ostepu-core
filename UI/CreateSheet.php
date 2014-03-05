@@ -56,8 +56,8 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
     // check if startDate is not later than endDate and if it matches format
     $correctDates = true;
     if (strtotime(str_replace(" - ", " ", $_POST['startDate'])) > strtotime(str_replace(" - ", " ", $_POST['endDate']))
-        || !preg_match("#\d\d.\d\d.\d\d\d\d - \d\d:\d\d#", $_POST['startDate'])
-        || !preg_match("#\d\d.\d\d.\d\d\d\d - \d\d:\d\d#", $_POST['endDate'])) {
+        || !preg_match("#^\d\d.\d\d.\d\d\d\d - \d\d:\d\d$#", $_POST['startDate'])
+        || !preg_match("#^\d\d.\d\d.\d\d\d\d - \d\d:\d\d$#", $_POST['endDate'])) {
         $correctDates = false;
         $errormsg = "Überprüfen Sie Bearbeitungsanfang sowie Bearbeitungsende!";
         array_push($notifications, MakeNotification('warning', $errormsg));
