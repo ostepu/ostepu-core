@@ -1,72 +1,74 @@
-<?php
+<?php 
+
+
 /**
  * @file FSPdf.php contains the FSPdf class
- * 
+ *
  * @author Till Uhlig
  * @author Felix Schmidt
- */ 
+ */
 
-require_once( '../../Assistants/Slim/Slim.php' );
-include_once( '../../Assistants/CConfig.php' );
-include_once( '../../Assistants/CConfig.php' );
-include_once( '../../Assistants/Structures.php' );
-include_once( '../../Assistants/Pdf/PdfTable.php' );
+require_once ( '../../Assistants/Slim/Slim.php' );
+include_once ( '../../Assistants/CConfig.php' );
+include_once ( '../../Assistants/CConfig.php' );
+include_once ( '../../Assistants/Structures.php' );
+include_once ( '../../Assistants/Pdf/PdfTable.php' );
 
-\Slim\Slim::registerAutoloader();
+\Slim\Slim::registerAutoloader( );
 
 // runs the CConfig
-$com = new CConfig(FSPdf::getBaseDir());
+$com = new CConfig( FSPdf::getBaseDir( ) );
 
 // runs the FSPdf
-if (!$com->used())
-    new FSPdf($com->loadConfig());
+if ( !$com->used( ) )
+    new FSPdf( $com->loadConfig( ) );
 
 /**
  * A class for creating, storing and loading PDF files from the file system
  */
 class FSPdf
 {
+
     /**
      * @var string $_baseDir the name of the folder where the pdf files should be
      * stored in the file system
      */
-    private static $_baseDir = "pdf";
-    
+    private static $_baseDir = 'pdf';
+
     /**
      * the string $_baseDir getter
      *
      * @return the value of $_baseDir
-     */ 
-    public static function getBaseDir()
+     */
+    public static function getBaseDir( )
     {
         return FSPdf::$_baseDir;
     }
-    
+
     /**
      * the $_baseDir setter
      *
      * @param string $value the new value for $_baseDir
-     */  
-    public static function setBaseDir($value)
+     */
+    public static function setBaseDir( $value )
     {
         FSPdf::$_baseDir = $value;
     }
 
     /**
      * @var Slim $_app the slim object
-     */ 
+     */
     private $_app;
-    
+
     /**
      * @var Component $_conf the component data object
-     */ 
+     */
     private $_conf;
-    
+
     /**
      * @var Link[] $_fs links to components which work with files, e.g. FSBinder
-     */ 
-    private $_fs = array();
-
+     */
+    private $_fs = array( );
 
     /**
      * REST actions
@@ -76,34 +78,66 @@ class FSPdf
      *
      * @param Component $conf component data
      */
-    public function __construct($_conf)
+    public function __construct( $_conf )
     {
         $this->_conf = $_conf;
-        $this->_fs = $this->_conf->getLinks();
-        
-        $this->_app = new \Slim\Slim(array('debug' => false));
+        $this->_fs = $this->_conf->getLinks( );
 
-        $this->_app->response->headers->set('Content-Type', 'application/json');
-        
+        $this->_app = new \Slim\Slim( array( 'debug' => false ) );
+
+        $this->_app->response->headers->set( 
+                                            'Content-Type',
+                                            'application/json'
+                                            );
+
         // POST PostPdfPermanent
-        $this->_app->post('/'.FSPdf::$_baseDir . '/:orientation(/)', array($this,'postPdfPermanent'));
-        
+        $this->_app->post( 
+                          '/' . FSPdf::$_baseDir . '/:orientation(/)',
+                          array( 
+                                $this,
+                                'postPdfPermanent'
+                                )
+                          );
+
         // POST PostPdfTemporary
-        $this->_app->post('/'.FSPdf::$_baseDir . '/:orientation/:filename(/)', array($this,'postPdfTemporary'));
-        
+        $this->_app->post( 
+                          '/' . FSPdf::$_baseDir . '/:orientation/:filename(/)',
+                          array( 
+                                $this,
+                                'postPdfTemporary'
+                                )
+                          );
+
         // GET GetPdfData
-        $this->_app->get('/'.FSPdf::$_baseDir.'/:hash(/)', array($this,'getPdfData'));
-        
+        $this->_app->get( 
+                         '/' . FSPdf::$_baseDir . '/:hash(/)',
+                         array( 
+                               $this,
+                               'getPdfData'
+                               )
+                         );
+
         // GET GetPdfDocument
-        $this->_app->get('/'.FSPdf::$_baseDir.'/:hash/:filename(/)', array($this,'getPdfDocument'));
-        
+        $this->_app->get( 
+                         '/' . FSPdf::$_baseDir . '/:hash/:filename(/)',
+                         array( 
+                               $this,
+                               'getPdfDocument'
+                               )
+                         );
+
         // DELETE DeletePdf
-        $this->_app->delete('/'.FSPdf::$_baseDir.'/:hash(/)', array($this,'deletePdf'));
+        $this->_app->delete( 
+                            '/' . FSPdf::$_baseDir . '/:hash(/)',
+                            array( 
+                                  $this,
+                                  'deletePdf'
+                                  )
+                            );
 
-         // run Slim
-         $this->_app->run();
-    } 
-
+        // run Slim
+        $this->_app->run( );
+    }
 
     /**
      * Creates a PDF file consisting of the request body and permanently
@@ -115,53 +149,78 @@ class FSPdf
      *
      * @param string $orientation The orientation of the PDF, e.g. portrait or landscape.
      */
-    public function postPdfPermanent($orientation)
-    {       
-        $body = $this->_app->request->getBody();
-        $data = json_decode($body, true);
-        if (count($data)==0){
-            $this->_app->response->setStatus(409);
+    public function postPdfPermanent( $orientation )
+    {
+        $body = $this->_app->request->getBody( );
+        $data = json_decode( 
+                            $body,
+                            true
+                            );
+        if ( count( $data ) == 0 ){
+            $this->_app->response->setStatus( 409 );
             return;
         }
 
-        
-        $pdf=new PDF($orientation, "mm", "A4");
-        $pdf->SetAutoPageBreak(true);
- 
-        $pdf->SetFont('Courier', '', 10);
-        $pdf->AddPage();
-        $pdf->Table($data, $orientation);
-        
+        $pdf = new PDF( 
+                       $orientation,
+                       'mm',
+                       'A4'
+                       );
+        $pdf->SetAutoPageBreak( true );
+
+        $pdf->SetFont( 
+                      'Courier',
+                      '',
+                      10
+                      );
+        $pdf->AddPage( );
+        $pdf->Table( 
+                    $data,
+                    $orientation
+                    );
+
         // stores the pdf binary data to $result
-        $result = $pdf->Output("", "S");
-        $fileObject = new File();
-        $fileObject->setHash(sha1($body));
-        $filePath = FSPdf::generateFilePath(FSPdf::getBaseDir(), $fileObject->getHash());
-        $fileObject->setAddress(FSPdf::getBaseDir() . '/' . $fileObject->getHash());
-        $fileObject->setBody(base64_encode($result));
-        
-        $links = FSPdf::filterRelevantLinks($this->_fs, $fileObject->getHash());
-        $result = Request::routeRequest("POST",
-                                        '/'.$filePath,
-                                        $this->_app->request->headers->all(),
-                                        File::encodeFile($fileObject),
+        $result = $pdf->Output( 
+                               '',
+                               'S'
+                               );
+        $fileObject = new File( );
+        $fileObject->setHash( sha1( $body ) );
+        $filePath = FSPdf::generateFilePath( 
+                                            FSPdf::getBaseDir( ),
+                                            $fileObject->getHash( )
+                                            );
+        $fileObject->setAddress( FSPdf::getBaseDir( ) . '/' . $fileObject->getHash( ) );
+        $fileObject->setBody( base64_encode( $result ) );
+
+        $links = FSPdf::filterRelevantLinks( 
+                                            $this->_fs,
+                                            $fileObject->getHash( )
+                                            );
+        $result = Request::routeRequest( 
+                                        'POST',
+                                        '/' . $filePath,
+                                        $this->_app->request->headers->all( ),
+                                        File::encodeFile( $fileObject ),
                                         $links,
-                                        FSPdf::getBaseDir());
-        
-        if ($result['status']>=200 && $result['status']<=299){
-            $tempObject = File::decodeFile($result['content']);
-            $fileObject->setFileSize($tempObject->getFileSize());
-            $fileObject->setBody(null);
-            $this->_app->response->setStatus($result['status']);
-            $this->_app->response->setBody(File::encodeFile($fileObject));
-        } else{
-            $this->_app->response->setStatus(451);
-            $fileObject->setBody(null);
-            $this->_app->response->setBody(File::encodeFile($fileObject));
-            $this->_app->stop();
+                                        FSPdf::getBaseDir( )
+                                        );
+
+        if ( $result['status'] >= 200 && 
+             $result['status'] <= 299 ){
+            $tempObject = File::decodeFile( $result['content'] );
+            $fileObject->setFileSize( $tempObject->getFileSize( ) );
+            $fileObject->setBody( null );
+            $this->_app->response->setStatus( $result['status'] );
+            $this->_app->response->setBody( File::encodeFile( $fileObject ) );
+            
+        } else {
+            $this->_app->response->setStatus( 451 );
+            $fileObject->setBody( null );
+            $this->_app->response->setBody( File::encodeFile( $fileObject ) );
+            $this->_app->stop( );
         }
     }
-
 
     /**
      * Creates a PDF file consisting of the request body and then returns it.
@@ -173,30 +232,55 @@ class FSPdf
      * @param string $orientation The orientation of the PDF file, e.g. portrait or landscape.
      * @param string $filename A freely chosen filename of the PDF file which should be stored.
      */
-    public function postPdfTemporary($orientation, $filename = "")
-    {       
-        $body = $this->_app->request->getBody();
-        $data = json_decode($body, true);
-        if (count($data)==0){
-            $this->_app->response->setStatus(409);
+    public function postPdfTemporary( 
+                                     $orientation,
+                                     $filename = ''
+                                     )
+    {
+        $body = $this->_app->request->getBody( );
+        $data = json_decode( 
+                            $body,
+                            true
+                            );
+        if ( count( $data ) == 0 ){
+            $this->_app->response->setStatus( 409 );
             return;
         }
 
-        $pdf=new PDF($orientation, "mm", "A4");
-        $pdf->SetAutoPageBreak(true);
- 
-        $pdf->SetFont('Courier', '', 10);
-        $pdf->AddPage();
-        $pdf->Table($data, $orientation);
-        
-        // stores the pdf binary data to $result
-        $result = $pdf->Output("", "S");
-        $this->_app->response->setStatus(200);
-        $this->_app->response->headers->set('Content-Type', 'application/octet-stream');
-        $this->_app->response->headers->set('Content-Disposition', "attachment; filename=\"$filename\"");
-        $this->_app->response->setBody($result);
-    }
+        $pdf = new PDF( 
+                       $orientation,
+                       'mm',
+                       'A4'
+                       );
+        $pdf->SetAutoPageBreak( true );
 
+        $pdf->SetFont( 
+                      'Courier',
+                      '',
+                      10
+                      );
+        $pdf->AddPage( );
+        $pdf->Table( 
+                    $data,
+                    $orientation
+                    );
+
+        // stores the pdf binary data to $result
+        $result = $pdf->Output( 
+                               '',
+                               'S'
+                               );
+        $this->_app->response->setStatus( 200 );
+        $this->_app->response->headers->set( 
+                                            'Content-Type',
+                                            'application/octet-stream'
+                                            );
+        $this->_app->response->headers->set( 
+                                            'Content-Disposition',
+                                            "attachment; filename=\"$filename\""
+                                            );
+        $this->_app->response->setBody( $result );
+    }
 
     /**
      * Returns a PDF file.
@@ -207,30 +291,46 @@ class FSPdf
      * @param string $hash The hash of the file which should be returned.
      * @param string $filename A freely chosen filename of the returned file.
      */
-    public function getPdfDocument($hash, $filename)
-    {      
-        $links = FSPdf::filterRelevantLinks($this->_fs, $hash);
-        $filePath = FSPdf::generateFilePath(FSPdf::getBaseDir(), $hash);
-        $result = Request::routeRequest("GET",
-                                      '/'.$filePath,
-                                      $this->_app->request->headers->all(),
-                                      "",
-                                      $links,
-                                      FSPdf::getBaseDir());
-        
-        if (isset($result['status']))
-            $this->_app->response->setStatus($result['status']);
-        
-        if (isset($result['content']))
-            $this->_app->response->setBody($result['content']);
+    public function getPdfDocument( 
+                                   $hash,
+                                   $filename
+                                   )
+    {
+        $links = FSPdf::filterRelevantLinks( 
+                                            $this->_fs,
+                                            $hash
+                                            );
+        $filePath = FSPdf::generateFilePath( 
+                                            FSPdf::getBaseDir( ),
+                                            $hash
+                                            );
+        $result = Request::routeRequest( 
+                                        'GET',
+                                        '/' . $filePath,
+                                        $this->_app->request->headers->all( ),
+                                        '',
+                                        $links,
+                                        FSPdf::getBaseDir( )
+                                        );
 
-        if (isset($result['headers']['Content-Type']))
-            $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-            
-        $this->_app->response->headers->set('Content-Disposition', "attachment; filename=\"$filename\"");
-        $this->_app->stop();
+        if ( isset( $result['status'] ) )
+            $this->_app->response->setStatus( $result['status'] );
+
+        if ( isset( $result['content'] ) )
+            $this->_app->response->setBody( $result['content'] );
+
+        if ( isset( $result['headers']['Content-Type'] ) )
+            $this->_app->response->headers->set( 
+                                                'Content-Type',
+                                                $result['headers']['Content-Type']
+                                                );
+
+        $this->_app->response->headers->set( 
+                                            'Content-Disposition',
+                                            "attachment; filename=\"$filename\""
+                                            );
+        $this->_app->stop( );
     }
-
 
     /**
      * Returns the PDF file infos as a JSON file object.
@@ -240,34 +340,47 @@ class FSPdf
      *
      * @param string $hash The hash of the requested file.
      */
-    public function getPdfData($hash)
-    {  
-        $links = FSPdf::filterRelevantLinks($this->_fs, $hash);
-        $filePath = FSPdf::generateFilePath(FSPdf::getBaseDir(), $hash);
-        $result = Request::routeRequest("INFO",
-                                      '/'.$filePath,
-                                      $this->_app->request->headers->all(),
-                                      "",
-                                      $links,
-                                      FSPdf::getBaseDir());
-                                      
-        if (isset($result['headers']['Content-Type']))
-            $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+    public function getPdfData( $hash )
+    {
+        $links = FSPdf::filterRelevantLinks( 
+                                            $this->_fs,
+                                            $hash
+                                            );
+        $filePath = FSPdf::generateFilePath( 
+                                            FSPdf::getBaseDir( ),
+                                            $hash
+                                            );
+        $result = Request::routeRequest( 
+                                        'INFO',
+                                        '/' . $filePath,
+                                        $this->_app->request->headers->all( ),
+                                        '',
+                                        $links,
+                                        FSPdf::getBaseDir( )
+                                        );
+
+        if ( isset( $result['headers']['Content-Type'] ) )
+            $this->_app->response->headers->set( 
+                                                'Content-Type',
+                                                $result['headers']['Content-Type']
+                                                );
+
+        if ( $result['status'] >= 200 && 
+             $result['status'] <= 299 && 
+             isset( $result['content'] ) ){
+            $tempObject = File::decodeFile( $result['content'] );
+            $tempObject->setAddress( FSPdf::getBaseDir( ) . '/' . $hash );
+            $this->_app->response->setStatus( $result['status'] );
+            $this->_app->response->setBody( File::encodeFile( $tempObject ) );
             
-        if ($result['status']>=200 && $result['status']<=299 && isset($result['content'])){
-            $tempObject = File::decodeFile($result['content']);
-            $tempObject->setAddress(FSPdf::getBaseDir() . '/' . $hash);
-            $this->_app->response->setStatus($result['status']);
-            $this->_app->response->setBody(File::encodeFile($tempObject));
-        } else{
-            $this->_app->response->setStatus(409);
-            $this->_app->response->setBody(File::encodeFile(new File()));
-            $this->_app->stop();
-        }                              
+        } else {
+            $this->_app->response->setStatus( 409 );
+            $this->_app->response->setBody( File::encodeFile( new File( ) ) );
+            $this->_app->stop( );
+        }
 
-        $this->_app->stop();
+        $this->_app->stop( );
     }
-
 
     /**
      * Deletes a PDF file.
@@ -277,30 +390,40 @@ class FSPdf
      *
      * @param string $hash The hash of the file which should be deleted.
      */
-    public function deletePdf($hash)
+    public function deletePdf( $hash )
     {
-        $links = FSPdf::filterRelevantLinks($this->_fs, $hash);
-        $filePath = FSPdf::generateFilePath(FSPdf::getBaseDir(), $hash);
-        $result = Request::routeRequest("DELETE",
-                                      '/'.$filePath,
-                                      $this->_app->request->headers->all(),
-                                      "",
-                                      $links,
-                                      FSPdf::getBaseDir());
-                                      
-        if ($result['status']>=200 && $result['status']<=299 && isset($result['content'])){
-            $tempObject = File::decodeFile($result['content']);
-            $tempObject->setAddress(FSPdf::getBaseDir() . '/' . $hash);
-            $this->_app->response->setStatus($result['status']);
-            $this->_app->response->setBody(File::encodeFile($tempObject));
-        } else{
-            $this->_app->response->setStatus(452);
-            $this->_app->response->setBody(File::encodeFile(new File()));
-            $this->_app->stop();
-        }
-        $this->_app->stop();  
-    }
+        $links = FSPdf::filterRelevantLinks( 
+                                            $this->_fs,
+                                            $hash
+                                            );
+        $filePath = FSPdf::generateFilePath( 
+                                            FSPdf::getBaseDir( ),
+                                            $hash
+                                            );
+        $result = Request::routeRequest( 
+                                        'DELETE',
+                                        '/' . $filePath,
+                                        $this->_app->request->headers->all( ),
+                                        '',
+                                        $links,
+                                        FSPdf::getBaseDir( )
+                                        );
 
+        if ( $result['status'] >= 200 && 
+             $result['status'] <= 299 && 
+             isset( $result['content'] ) ){
+            $tempObject = File::decodeFile( $result['content'] );
+            $tempObject->setAddress( FSPdf::getBaseDir( ) . '/' . $hash );
+            $this->_app->response->setStatus( $result['status'] );
+            $this->_app->response->setBody( File::encodeFile( $tempObject ) );
+            
+        } else {
+            $this->_app->response->setStatus( 452 );
+            $this->_app->response->setBody( File::encodeFile( new File( ) ) );
+            $this->_app->stop( );
+        }
+        $this->_app->stop( );
+    }
 
     /**
      * Creates a file path by splitting the hash.
@@ -308,56 +431,79 @@ class FSPdf
      * @param string $type The prefix of the file path.
      * @param string $hash The hash of the file.
      */
-    public static function generateFilePath($type,$file)
+    public static function generateFilePath( 
+                                            $type,
+                                            $file
+                                            )
     {
-       if (strlen($file)>=4){
-           return $type . "/" . $file[0] . "/" . $file[1] . "/" . $file[2] . "/" . substr($file,3);
-       } else
-           return "";
+        if ( strlen( $file ) >= 4 ){
+            return $type . '/' . $file[0] . '/' . $file[1] . '/' . $file[2] . '/' . substr( 
+                                                                                           $file,
+                                                                                           3
+                                                                                           );
+            
+        } else 
+            return'';
     }
-
 
     /**
      * Creates the path in the filesystem, if necessary.
      *
      * @param string $path The path which should be created.
      */
-    public static function generatepath($path)
+    public static function generatepath( $path )
     {
-        $parts = explode("/", $path);
-        if (count($parts)>0){
+        $parts = explode( 
+                         '/',
+                         $path
+                         );
+        if ( count( $parts ) > 0 ){
             $path = $parts[0];
-            for($i=1;$i<=count($parts);$i++){
-                if (!is_dir($path))
-                    mkdir($path,0755);
-                if ($i<count($parts))
-                    $path = $path . '/' . $parts[$i];
+            for ( $i = 1;$i <= count( $parts );$i++ ){
+                if ( !is_dir( $path ) )
+                    mkdir( 
+                          $path,
+                          0755
+                          );
+                if ( $i < count( $parts ) )
+                    $path .= '/' . $parts[$i];
             }
         }
-    }  
-    
+    }
+
     /**
      * Selects the components which are responsible for handling the file with
      * the given hash.
      *
-     * @param link[] $linkedComponents An array of links to components which could 
+     * @param link[] $linkedComponents An array of links to components which could
      * possibly handle the file.
      * @param string $hash The hash of the file.
      */
-    public static function filterRelevantLinks($linkedComponents, $hash)
+    public static function filterRelevantLinks( 
+                                               $linkedComponents,
+                                               $hash
+                                               )
     {
-        $result = array();
-        foreach ($linkedComponents as $link){
-            $in = explode('-', $link->getRelevanz());
-            if (count($in)<2){
-                array_push($result,$link);
-            } elseif (FSPdf::isRelevant($hash, $in[0],$in[1])) {
-                array_push($result,$link);
+        $result = array( );
+        foreach ( $linkedComponents as $link ){
+            $in = explode( 
+                          '-',
+                          $link->getRelevanz( )
+                          );
+            if ( count( $in ) < 2 ){
+                $result[] = $link;
+                
+            }elseif ( FSPdf::isRelevant( 
+                                        $hash,
+                                        $in[0],
+                                        $in[1]
+                                        ) ){
+                $result[] = $link;
             }
         }
         return $result;
     }
-    
+
     /**
      * Decides if the given component is responsible for the specific hash.
      *
@@ -365,21 +511,41 @@ class FSPdf
      * @param string $_relevantBegin The minimum hash the component is responsible for.
      * @param string $_relevantEnd The maximum hash the component is responsible for.
      */
-    public static function isRelevant($hash,$relevant_begin,$relevant_end)
+    public static function isRelevant( 
+                                      $hash,
+                                      $relevant_begin,
+                                      $relevant_end
+                                      )
     {
+
         // to compare the begin and the end, we need an other form
-        $begin = hexdec(substr($relevant_begin,0,strlen($relevant_begin)));
-        $end = hexdec(substr($relevant_end,0,strlen($relevant_end)));
-        
+        $begin = hexdec( substr( 
+                                $relevant_begin,
+                                0,
+                                strlen( $relevant_begin )
+                                ) );
+        $end = hexdec( substr( 
+                              $relevant_end,
+                              0,
+                              strlen( $relevant_end )
+                              ) );
+
         // the numeric form of the test hash
-        $current = hexdec(substr($hash,0,strlen($relevant_end)));
-        
-        if ($current>=$begin && $current<=$end){
+        $current = hexdec( substr( 
+                                  $hash,
+                                  0,
+                                  strlen( $relevant_end )
+                                  ) );
+
+        if ( $current >= $begin && 
+             $current <= $end ){
             return true;
-        }
-        else
+            
+        } else 
             return false;
-    }  
+    }
 }
 
+ 
 ?>
+

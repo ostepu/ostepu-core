@@ -1,78 +1,86 @@
-<?php
+<?php 
+
+
 /**
  * @file DBUser.php Contains the DBUser class
- * 
+ *
  * @author Till Uhlig
  * @author Felix Schmidt
  * @verbinclude DB/DBUser/UserSample.json
- */ 
+ */
 
-require_once( '../../Assistants/Slim/Slim.php' );
-include_once( '../../Assistants/Structures.php' );
-include_once( '../../Assistants/Request.php' );
-include_once( '../../Assistants/DBRequest.php' );
-include_once( '../../Assistants/DBJson.php' );
-include_once( '../../Assistants/CConfig.php' );
-include_once( '../../Assistants/Logger.php' );
+require_once ( '../../Assistants/Slim/Slim.php' );
+include_once ( '../../Assistants/Structures.php' );
+include_once ( '../../Assistants/Request.php' );
+include_once ( '../../Assistants/DBRequest.php' );
+include_once ( '../../Assistants/DBJson.php' );
+include_once ( '../../Assistants/CConfig.php' );
+include_once ( '../../Assistants/Logger.php' );
 
-\Slim\Slim::registerAutoloader();
+\Slim\Slim::registerAutoloader( );
 
-Logger::Log("begin DBUser",LogLevel::DEBUG);
+Logger::Log( 
+            'begin DBUser',
+            LogLevel::DEBUG
+            );
 
 // runs the CConfig
-$com = new CConfig(DBUser::getPrefix());
+$com = new CConfig( DBUser::getPrefix( ) );
 
 // runs the DBUser
-if (!$com->used())
-    new DBUser($com->loadConfig());
-    
-Logger::Log("end DBUser",LogLevel::DEBUG);
-    
+if ( !$com->used( ) )
+    new DBUser( $com->loadConfig( ) );
+
+Logger::Log( 
+            'end DBUser',
+            LogLevel::DEBUG
+            );
+
 /**
  * A class, to abstract the "User" table from database
  */
 class DBUser
 {
+
     /**
      * @var Slim $_app the slim object
-     */ 
-    private $_app=null;
-    
+     */
+    private $_app = null;
+
     /**
      * @var Component $_conf the component data object
-     */ 
-    private $_conf=null;
-    
+     */
+    private $_conf = null;
+
     /**
      * @var Link[] $query a list of links to a query component
-     */ 
-    private $query=array();
-    
+     */
+    private $query = array( );
+
     /**
      * @var string $_prefix the prefixes, the class works with (comma separated)
-     */ 
-    private static $_prefix = "user";
-    
+     */
+    private static $_prefix = 'user';
+
     /**
      * the $_prefix getter
      *
      * @return the value of $_prefix
-     */ 
-    public static function getPrefix()
+     */
+    public static function getPrefix( )
     {
         return DBUser::$_prefix;
     }
-    
+
     /**
      * the $_prefix setter
      *
      * @param string $value the new value for $_prefix
-     */ 
-    public static function setPrefix($value)
+     */
+    public static function setPrefix( $value )
     {
         DBUser::$_prefix = $value;
-    } 
-    
+    }
 
     /**
      * REST actions
@@ -82,69 +90,132 @@ class DBUser
      *
      * @param Component $conf component data
      */
-    public function __construct($conf)
+    public function __construct( $conf )
     {
+
         // initialize component
         $this->_conf = $conf;
-        $this->query = array(CConfig::getLink($conf->getLinks(),"out"));
-        
+        $this->query = array( CConfig::getLink( 
+                                               $conf->getLinks( ),
+                                               'out'
+                                               ) );
+
         // initialize slim
-        $this->_app = new \Slim\Slim(array('debug' => false));
-        $this->_app->response->headers->set('Content-Type', 'application/json');
-                        
+        $this->_app = new \Slim\Slim( array( 'debug' => false ) );
+        $this->_app->response->headers->set( 
+                                            'Content-Type',
+                                            'application/json'
+                                            );
+
         // PUT EditUser
-        $this->_app->put('/' . $this->getPrefix() . '(/user)/:userid(/)',
-                        array($this, 'editUser'));
-                        
+        $this->_app->put( 
+                         '/' . $this->getPrefix( ) . '(/user)/:userid(/)',
+                         array( 
+                               $this,
+                               'editUser'
+                               )
+                         );
+
         // DELETE RemoveUser
-        $this->_app->delete('/' . $this->getPrefix() . '(/user)/:userid(/)',
-                        array($this, 'removeUser'));
-                        
+        $this->_app->delete( 
+                            '/' . $this->getPrefix( ) . '(/user)/:userid(/)',
+                            array( 
+                                  $this,
+                                  'removeUser'
+                                  )
+                            );
+
         // DELETE RemoveUserPermanent
-        $this->_app->delete('/' . $this->getPrefix() . '(/user)/:userid/permanent(/)',
-                        array($this, 'removeUserPermanent'));
-                        
+        $this->_app->delete( 
+                            '/' . $this->getPrefix( ) . '(/user)/:userid/permanent(/)',
+                            array( 
+                                  $this,
+                                  'removeUserPermanent'
+                                  )
+                            );
+
         // POST AddUser
-        $this->_app->post('/' . $this->getPrefix() . '(/)',
-                        array($this, 'addUser'));
-                        
+        $this->_app->post( 
+                          '/' . $this->getPrefix( ) . '(/)',
+                          array( 
+                                $this,
+                                'addUser'
+                                )
+                          );
+
         // GET GetUsers
-        $this->_app->get('/' . $this->getPrefix() . '(/user)(/)',
-                        array($this, 'getUsers'));
-                        
+        $this->_app->get( 
+                         '/' . $this->getPrefix( ) . '(/user)(/)',
+                         array( 
+                               $this,
+                               'getUsers'
+                               )
+                         );
+
         // GET GetIncreaseUserFailedLogin
-        $this->_app->get('/' . $this->getPrefix() . '(/user)/:userid/IncFailedLogin(/)',
-                        array($this,'getIncreaseUserFailedLogin'));  
-                        
+        $this->_app->get( 
+                         '/' . $this->getPrefix( ) . '(/user)/:userid/IncFailedLogin(/)',
+                         array( 
+                               $this,
+                               'getIncreaseUserFailedLogin'
+                               )
+                         );
+
         // GET GetUser
-        $this->_app->get('/' . $this->getPrefix() . '(/user)/:userid(/)',
-                        array($this, 'getUser'));
-                        
+        $this->_app->get( 
+                         '/' . $this->getPrefix( ) . '(/user)/:userid(/)',
+                         array( 
+                               $this,
+                               'getUser'
+                               )
+                         );
+
         // GET GetCourseUserByStatus
-        $this->_app->get('/' . $this->getPrefix() . '/course/:courseid/status/:statusid(/)',
-                        array($this, 'getCourseUserByStatus'));  
-                        
+        $this->_app->get( 
+                         '/' . $this->getPrefix( ) . '/course/:courseid/status/:statusid(/)',
+                         array( 
+                               $this,
+                               'getCourseUserByStatus'
+                               )
+                         );
+
         // GET GetCourseMember
-        $this->_app->get('/' . $this->getPrefix() . '/course/:courseid(/)',
-                        array($this,'getCourseMember'));
-                        
+        $this->_app->get( 
+                         '/' . $this->getPrefix( ) . '/course/:courseid(/)',
+                         array( 
+                               $this,
+                               'getCourseMember'
+                               )
+                         );
+
         // GET GetGroupMember
-        $this->_app->get('/' . $this->getPrefix() . '/group/user/:userid/exercisesheet/:esid(/)',
-                        array($this,'getGroupMember'));  
-                        
+        $this->_app->get( 
+                         '/' . $this->getPrefix( ) . '/group/user/:userid/exercisesheet/:esid(/)',
+                         array( 
+                               $this,
+                               'getGroupMember'
+                               )
+                         );
+
         // GET GetUserByStatus
-        $this->_app->get('/' . $this->getPrefix() . '/status/:statusid(/)',
-                        array($this, 'getUserByStatus'));
-                        
-           
-                        
+        $this->_app->get( 
+                         '/' . $this->getPrefix( ) . '/status/:statusid(/)',
+                         array( 
+                               $this,
+                               'getUserByStatus'
+                               )
+                         );
+
         // starts slim only if the right prefix was received
-        if (strpos ($this->_app->request->getResourceUri(),'/' . $this->getPrefix()) === 0){
+        if ( strpos( 
+                    $this->_app->request->getResourceUri( ),
+                    '/' . $this->getPrefix( )
+                    ) === 0 ){
+
             // run Slim
-            $this->_app->run();
+            $this->_app->run( );
         }
     }
-    
 
     /**
      * Edits a user.
@@ -156,45 +227,60 @@ class DBUser
      *
      * @param string $userid The id or the username of the user that is being updated.
      */
-    public function editUser($userid)
+    public function editUser( $userid )
     {
-        Logger::Log("starts PUT EditUser",LogLevel::DEBUG);
-        
-        $userid = DBJson::mysql_real_escape_string($userid);
-        
+        Logger::Log( 
+                    'starts PUT EditUser',
+                    LogLevel::DEBUG
+                    );
+
+        $userid = DBJson::mysql_real_escape_string( $userid );
+
         // decode the received user data, as an object
-        $insert = User::decodeUser($this->_app->request->getBody());
-        
+        $insert = User::decodeUser( $this->_app->request->getBody( ) );
+
         // always been an array
         $arr = true;
-        if (!is_array($insert)){
-            $insert = array($insert);
-            $arr=false;
+        if ( !is_array( $insert ) ){
+            $insert = array( $insert );
+            $arr = false;
         }
 
-        foreach ($insert as $in){
+        foreach ( $insert as $in ){
+
             // generates the update data for the object
-            $data = $in->getInsertData();
-            
+            $data = $in->getInsertData( );
+
             // starts a query, by using a given file
-            $result = DBRequest::getRoutedSqlFile($this->query, 
-                                            "Sql/EditUser.sql", 
-                                            array("userid" => $userid, "values" => $data));                   
-           
+            $result = DBRequest::getRoutedSqlFile( 
+                                                  $this->query,
+                                                  'Sql/EditUser.sql',
+                                                  array( 
+                                                        'userid' => $userid,
+                                                        'values' => $data
+                                                        )
+                                                  );
+
             // checks the correctness of the query
-            if ($result['status']>=200 && $result['status']<=299){
-                $this->_app->response->setStatus(201);
-                if (isset($result['headers']['Content-Type']))
-                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                    
-            } else{
-                Logger::Log("PUT EditUser failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-                $this->_app->stop();
+            if ( $result['status'] >= 200 && 
+                 $result['status'] <= 299 ){
+                $this->_app->response->setStatus( 201 );
+                if ( isset( $result['headers']['Content-Type'] ) )
+                    $this->_app->response->headers->set( 
+                                                        'Content-Type',
+                                                        $result['headers']['Content-Type']
+                                                        );
+                
+            } else {
+                Logger::Log( 
+                            'PUT EditUser failed',
+                            LogLevel::ERROR
+                            );
+                $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+                $this->_app->stop( );
             }
         }
     }
-
 
     /**
      * Deletes a user (updates the user flag = 0).
@@ -204,33 +290,50 @@ class DBUser
      *
      * @param string $userid The id or the username of the user that is being deleted.
      */
-    public function removeUser($userid)
+    public function removeUser( $userid )
     {
-        Logger::Log("starts DELETE RemoveUser",LogLevel::DEBUG);
+        Logger::Log( 
+                    'starts DELETE RemoveUser',
+                    LogLevel::DEBUG
+                    );
 
-        $userid = DBJson::mysql_real_escape_string($userid);
-        
+        $userid = DBJson::mysql_real_escape_string( $userid );
+
         // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/DeleteUser.sql", 
-                                        array("userid" => $userid));    
-                                        
-        // checks the correctness of the query                          
-        if ($result['status']>=200 && $result['status']<=299){
-           // $this->_app->response->setBody(User::encodeUser(new User()));
-            
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+        $result = DBRequest::getRoutedSqlFile( 
+                                              $this->query,
+                                              'Sql/DeleteUser.sql',
+                                              array( 'userid' => $userid )
+                                              );
 
-            Logger::Log("DELETE RemoveUser ok",LogLevel::DEBUG);   
-            $this->_app->response->setStatus(201);
-            $this->_app->stop();
-        } else{
-            Logger::Log("DELETE RemoveUser failed",LogLevel::ERROR);
-           // $this->_app->response->headers->set("Connection", "Close");
-            $this->_app->response->setBody(User::encodeUser(new User()));
-            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);   
-            $this->_app->stop();            
+        // checks the correctness of the query
+        if ( $result['status'] >= 200 && 
+             $result['status'] <= 299 ){
+
+            // $this->_app->response->setBody(User::encodeUser(new User()));
+            if ( isset( $result['headers']['Content-Type'] ) )
+                $this->_app->response->headers->set( 
+                                                    'Content-Type',
+                                                    $result['headers']['Content-Type']
+                                                    );
+
+            Logger::Log( 
+                        'DELETE RemoveUser ok',
+                        LogLevel::DEBUG
+                        );
+            $this->_app->response->setStatus( 201 );
+            $this->_app->stop( );
+            
+        } else {
+            Logger::Log( 
+                        'DELETE RemoveUser failed',
+                        LogLevel::ERROR
+                        );
+
+            // $this->_app->response->headers->set("Connection", "Close");
+            $this->_app->response->setBody( User::encodeUser( new User( ) ) );
+            $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+            $this->_app->stop( );
         }
     }
 
@@ -242,36 +345,53 @@ class DBUser
      *
      * @param string $userid The id or the username of the user that is being deleted.
      */
-    public function removeUserPermanent($userid)
+    public function removeUserPermanent( $userid )
     {
-        Logger::Log("starts DELETE RemoveUserPermanent",LogLevel::DEBUG);
+        Logger::Log( 
+                    'starts DELETE RemoveUserPermanent',
+                    LogLevel::DEBUG
+                    );
 
-        $userid = DBJson::mysql_real_escape_string($userid);
-        
+        $userid = DBJson::mysql_real_escape_string( $userid );
+
         // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/DeleteUserPermanent.sql", 
-                                        array("userid" => $userid));    
-                              
-        // checks the correctness of the query                          
-        if ($result['status']>=200 && $result['status']<=299){
-           // $this->_app->response->setBody(User::encodeUser(new User()));
-            
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+        $result = DBRequest::getRoutedSqlFile( 
+                                              $this->query,
+                                              'Sql/DeleteUserPermanent.sql',
+                                              array( 'userid' => $userid )
+                                              );
 
-            Logger::Log("DELETE RemoveUserPermanent ok",LogLevel::DEBUG);   
-            $this->_app->response->setStatus(201);
-            $this->_app->stop();
-        } else{
-            Logger::Log("DELETE RemoveUserPermanent failed",LogLevel::ERROR);
-           // $this->_app->response->headers->set("Connection", "Close");
-            $this->_app->response->setBody(User::encodeUser(new User()));
-            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);   
-            $this->_app->stop();            
+        // checks the correctness of the query
+        if ( $result['status'] >= 200 && 
+             $result['status'] <= 299 ){
+
+            // $this->_app->response->setBody(User::encodeUser(new User()));
+            if ( isset( $result['headers']['Content-Type'] ) )
+                $this->_app->response->headers->set( 
+                                                    'Content-Type',
+                                                    $result['headers']['Content-Type']
+                                                    );
+
+            Logger::Log( 
+                        'DELETE RemoveUserPermanent ok',
+                        LogLevel::DEBUG
+                        );
+            $this->_app->response->setStatus( 201 );
+            $this->_app->stop( );
+            
+        } else {
+            Logger::Log( 
+                        'DELETE RemoveUserPermanent failed',
+                        LogLevel::ERROR
+                        );
+
+            // $this->_app->response->headers->set("Connection", "Close");
+            $this->_app->response->setBody( User::encodeUser( new User( ) ) );
+            $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+            $this->_app->stop( );
         }
     }
-    
+
     /**
      * Adds a user and then returns the created user.
      *
@@ -279,130 +399,172 @@ class DBUser
      * /user(/).
      * The request body should contain a JSON object representing the new user.
      */
-    public function addUser()
+    public function addUser( )
     {
-        Logger::Log("starts POST AddUser",LogLevel::DEBUG);
-        
+        Logger::Log( 
+                    'starts POST AddUser',
+                    LogLevel::DEBUG
+                    );
+
         // decode the received user data, as an object
-        $insert = User::decodeUser($this->_app->request->getBody());
-        
+        $insert = User::decodeUser( $this->_app->request->getBody( ) );
+
         // always been an array
         $arr = true;
-        if (!is_array($insert)){
-            $insert = array($insert);
-            $arr=false;
+        if ( !is_array( $insert ) ){
+            $insert = array( $insert );
+            $arr = false;
         }
-        
+
         // this array contains the indices of the inserted objects
-        $res = array();
-        foreach ($insert as $in){
+        $res = array( );
+        foreach ( $insert as $in ){
+
             // generates the insert data for the object
-            $data = $in->getInsertData();
+            $data = $in->getInsertData( );
 
             // starts a query, by using a given file
-            $result = DBRequest::getRoutedSqlFile($this->query, 
-                                            "Sql/AddUser.sql", 
-                                            array("values" => $data),
-                                            false);                   
-                               
-            // checks the correctness of the query    
-            if ($result['status']>=200 && $result['status']<=299 ){
-                $queryResult = Query::decodeQuery($result['content']);
-                
+            $result = DBRequest::getRoutedSqlFile( 
+                                                  $this->query,
+                                                  'Sql/AddUser.sql',
+                                                  array( 'values' => $data ),
+                                                  false
+                                                  );
+
+            // checks the correctness of the query
+            if ( $result['status'] >= 200 && 
+                 $result['status'] <= 299 ){
+                $queryResult = Query::decodeQuery( $result['content'] );
+
                 // sets the new auto-increment id
-                $obj = new User();
-                $obj->setId($queryResult->getInsertId());
+                $obj = new User( );
+                $obj->setId( $queryResult->getInsertId( ) );
 
-                array_push($res, $obj);
-                $this->_app->response->setStatus(201);
-                if (isset($result['headers']['Content-Type']))
-                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+                $res[] = $obj;
+                $this->_app->response->setStatus( 201 );
+                if ( isset( $result['headers']['Content-Type'] ) )
+                    $this->_app->response->headers->set( 
+                                                        'Content-Type',
+                                                        $result['headers']['Content-Type']
+                                                        );
                 
-            } else{
-                Logger::Log("POST AddUser failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-                $this->_app->response->setBody(User::encodeUser($res)); 
-                $this->_app->stop();
+            } else {
+                Logger::Log( 
+                            'POST AddUser failed',
+                            LogLevel::ERROR
+                            );
+                $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+                $this->_app->response->setBody( User::encodeUser( $res ) );
+                $this->_app->stop( );
             }
         }
-        
-        if (!$arr && count($res)==1){
-            $this->_app->response->setBody(User::encodeUser($res[0])); 
-        }
-        else
-            $this->_app->response->setBody(User::encodeUser($res)); 
 
+        if ( !$arr && 
+             count( $res ) == 1 ){
+            $this->_app->response->setBody( User::encodeUser( $res[0] ) );
+            
+        } else 
+            $this->_app->response->setBody( User::encodeUser( $res ) );
     }
 
-    public function get($functionName,$sqlFile,$userid,$courseid,$esid,$eid,$suid,$statusid,$singleResult=false,$checkSession=true)
+    public function get( 
+                        $functionName,
+                        $sqlFile,
+                        $userid,
+                        $courseid,
+                        $esid,
+                        $eid,
+                        $suid,
+                        $statusid,
+                        $singleResult = false,
+                        $checkSession = true
+                        )
     {
-        Logger::Log("starts GET " . $functionName,LogLevel::DEBUG);
-        
-        // checks whether incoming data has the correct data type
-        $userid = DBJson::mysql_real_escape_string($userid);
-        
-        DBJson::checkInput($this->_app, 
-                            $courseid == "" ? true : ctype_digit($courseid), 
-                            $esid == "" ? true : ctype_digit($esid), 
-                            $eid == "" ? true : ctype_digit($eid), 
-                            $suid == "" ? true : ctype_digit($suid), 
-                            $statusid == "" ? true : ctype_digit($statusid));
-                            
-            
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        $sqlFile, 
-                                        array("userid" => $userid,
-                                        'courseid' => $courseid,
-                                        'esid' => $esid,
-                                        'eid' => $eid,
-                                        'suid' => $suid,
-                                        'statusid' => $statusid),
-                                        $checkSession);
- 
-        // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            
-            if ($query->getNumRows()>0){
-                $res = User::ExtractUser($query->getResponse(),$singleResult); 
-                $this->_app->response->setBody(User::encodeUser($res));
+        Logger::Log( 
+                    'starts GET ' . $functionName,
+                    LogLevel::DEBUG
+                    );
 
-                $this->_app->response->setStatus(200);
-                if (isset($result['headers']['Content-Type']))
-                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+        // checks whether incoming data has the correct data type
+        $userid = DBJson::mysql_real_escape_string( $userid );
+
+        DBJson::checkInput( 
+                           $this->_app,
+                           $courseid == '' ? true : ctype_digit( $courseid ),
+                           $esid == '' ? true : ctype_digit( $esid ),
+                           $eid == '' ? true : ctype_digit( $eid ),
+                           $suid == '' ? true : ctype_digit( $suid ),
+                           $statusid == '' ? true : ctype_digit( $statusid )
+                           );
+
+        // starts a query, by using a given file
+        $result = DBRequest::getRoutedSqlFile( 
+                                              $this->query,
+                                              $sqlFile,
+                                              array( 
+                                                    'userid' => $userid,
+                                                    'courseid' => $courseid,
+                                                    'esid' => $esid,
+                                                    'eid' => $eid,
+                                                    'suid' => $suid,
+                                                    'statusid' => $statusid
+                                                    ),
+                                              $checkSession
+                                              );
+
+        // checks the correctness of the query
+        if ( $result['status'] >= 200 && 
+             $result['status'] <= 299 ){
+            $query = Query::decodeQuery( $result['content'] );
+
+            if ( $query->getNumRows( ) > 0 ){
+                $res = User::ExtractUser( 
+                                         $query->getResponse( ),
+                                         $singleResult
+                                         );
+                $this->_app->response->setBody( User::encodeUser( $res ) );
+
+                $this->_app->response->setStatus( 200 );
+                if ( isset( $result['headers']['Content-Type'] ) )
+                    $this->_app->response->headers->set( 
+                                                        'Content-Type',
+                                                        $result['headers']['Content-Type']
+                                                        );
+
+                $this->_app->stop( );
                 
-                $this->_app->stop(); 
-            }
-            else
+            } else 
                 $result['status'] = 404;
-                
         }
-        
-            Logger::Log("GET " . $functionName . " failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(User::encodeUser(new User()));
-            $this->_app->stop();
-    
+
+        Logger::Log( 
+                    'GET ' . $functionName . ' failed',
+                    LogLevel::ERROR
+                    );
+        $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+        $this->_app->response->setBody( User::encodeUser( new User( ) ) );
+        $this->_app->stop( );
     }
+
     /**
      * Returns all users.
      *
      * Called when this component receives an HTTP GET request to
      * /user(/) or /user/user(/).
      */
-    public function getUsers()
+    public function getUsers( )
     {
-        $this->get("GetUsers",
-                "Sql/GetUsers.sql",
-                isset($userid) ? $userid : "",
-                isset($courseid) ? $courseid : "",
-                isset($esid) ? $esid : "",
-                isset($eid) ? $eid : "",
-                isset($suid) ? $suid : "",
-                isset($statusid) ? $statusid : "");
+        $this->get( 
+                   'GetUsers',
+                   'Sql/GetUsers.sql',
+                   isset( $userid ) ? $userid : '',
+                   isset( $courseid ) ? $courseid : '',
+                   isset( $esid ) ? $esid : '',
+                   isset( $eid ) ? $eid : '',
+                   isset( $suid ) ? $suid : '',
+                   isset( $statusid ) ? $statusid : ''
+                   );
     }
-
 
     /**
      * Returns a user.
@@ -412,20 +574,21 @@ class DBUser
      *
      * @param string $userid The id or the username of the user that should be returned.
      */
-    public function getUser($userid)
+    public function getUser( $userid )
     {
-        $this->get("GetUser",
-                "Sql/GetUser.sql",
-                isset($userid) ? $userid : "",
-                isset($courseid) ? $courseid : "",
-                isset($esid) ? $esid : "",
-                isset($eid) ? $eid : "",
-                isset($suid) ? $suid : "",
-                isset($statusid) ? $statusid : "",
-                true,
-                false);
+        $this->get( 
+                   'GetUser',
+                   'Sql/GetUser.sql',
+                   isset( $userid ) ? $userid : '',
+                   isset( $courseid ) ? $courseid : '',
+                   isset( $esid ) ? $esid : '',
+                   isset( $eid ) ? $eid : '',
+                   isset( $suid ) ? $suid : '',
+                   isset( $statusid ) ? $statusid : '',
+                   true,
+                   false
+                   );
     }
-
 
     /**
      * Increases the number of failed login attempts of a user and then returns the user.
@@ -435,20 +598,21 @@ class DBUser
      *
      * @param string $userid The id or the username of the user.
      */
-    public function getIncreaseUserFailedLogin($userid)
+    public function getIncreaseUserFailedLogin( $userid )
     {
-        $this->get("GetIncreaseUserFailedLogin",
-                "Sql/GetIncreaseUserFailedLogin.sql",
-                isset($userid) ? $userid : "",
-                isset($courseid) ? $courseid : "",
-                isset($esid) ? $esid : "",
-                isset($eid) ? $eid : "",
-                isset($suid) ? $suid : "",
-                isset($statusid) ? $statusid : "",
-                true,
-                false);
+        $this->get( 
+                   'GetIncreaseUserFailedLogin',
+                   'Sql/GetIncreaseUserFailedLogin.sql',
+                   isset( $userid ) ? $userid : '',
+                   isset( $courseid ) ? $courseid : '',
+                   isset( $esid ) ? $esid : '',
+                   isset( $eid ) ? $eid : '',
+                   isset( $suid ) ? $suid : '',
+                   isset( $statusid ) ? $statusid : '',
+                   true,
+                   false
+                   );
     }
-
 
     /**
      * Returns all users of a course.
@@ -458,18 +622,19 @@ class DBUser
      *
      * @param int $courseid The id or the course.
      */
-    public function getCourseMember($courseid)
-    {    
-        $this->get("GetCourseMember",
-                "Sql/GetCourseMember.sql",
-                isset($userid) ? $userid : "",
-                isset($courseid) ? $courseid : "",
-                isset($esid) ? $esid : "",
-                isset($eid) ? $eid : "",
-                isset($suid) ? $suid : "",
-                isset($statusid) ? $statusid : "");
+    public function getCourseMember( $courseid )
+    {
+        $this->get( 
+                   'GetCourseMember',
+                   'Sql/GetCourseMember.sql',
+                   isset( $userid ) ? $userid : '',
+                   isset( $courseid ) ? $courseid : '',
+                   isset( $esid ) ? $esid : '',
+                   isset( $eid ) ? $eid : '',
+                   isset( $suid ) ? $suid : '',
+                   isset( $statusid ) ? $statusid : ''
+                   );
     }
-
 
     /**
      * Returns all members of the group the user is part of
@@ -481,18 +646,22 @@ class DBUser
      * @param string $userid The id or the username of the user.
      * @param int $esid The id of the exercise sheet.
      */
-    public function getGroupMember($userid, $esid)
-    {   
-        $this->get("GetGroupMember",
-                "Sql/GetGroupMember.sql",
-                isset($userid) ? $userid : "",
-                isset($courseid) ? $courseid : "",
-                isset($esid) ? $esid : "",
-                isset($eid) ? $eid : "",
-                isset($suid) ? $suid : "",
-                isset($statusid) ? $statusid : "");
+    public function getGroupMember( 
+                                   $userid,
+                                   $esid
+                                   )
+    {
+        $this->get( 
+                   'GetGroupMember',
+                   'Sql/GetGroupMember.sql',
+                   isset( $userid ) ? $userid : '',
+                   isset( $courseid ) ? $courseid : '',
+                   isset( $esid ) ? $esid : '',
+                   isset( $eid ) ? $eid : '',
+                   isset( $suid ) ? $suid : '',
+                   isset( $statusid ) ? $statusid : ''
+                   );
     }
-
 
     /**
      * Returns all users with a given status.
@@ -502,21 +671,22 @@ class DBUser
      *
      * @param string $statusid The status the users should have.
      */
-    public function getUserByStatus($statusid)
+    public function getUserByStatus( $statusid )
     {
-        $this->get("GetUserByStatus",
-                "Sql/GetUserByStatus.sql",
-                isset($userid) ? $userid : "",
-                isset($courseid) ? $courseid : "",
-                isset($esid) ? $esid : "",
-                isset($eid) ? $eid : "",
-                isset($suid) ? $suid : "",
-                isset($statusid) ? $statusid : "");
+        $this->get( 
+                   'GetUserByStatus',
+                   'Sql/GetUserByStatus.sql',
+                   isset( $userid ) ? $userid : '',
+                   isset( $courseid ) ? $courseid : '',
+                   isset( $esid ) ? $esid : '',
+                   isset( $eid ) ? $eid : '',
+                   isset( $suid ) ? $suid : '',
+                   isset( $statusid ) ? $statusid : ''
+                   );
     }
 
-
     /**
-     * Returns all users with a given status which are members of a 
+     * Returns all users with a given status which are members of a
      * specific course.
      *
      * Called when this component receives an HTTP GET request to
@@ -525,17 +695,24 @@ class DBUser
      * @param string $courseid The courseid of the course.
      * @param string $statusid The status the users should have.
      */
-    public function getCourseUserByStatus($courseid,$statusid)
+    public function getCourseUserByStatus( 
+                                          $courseid,
+                                          $statusid
+                                          )
     {
-        $this->get("GetCourseUserByStatus",
-                "Sql/GetCourseUserByStatus.sql",
-                isset($userid) ? $userid : "",
-                isset($courseid) ? $courseid : "",
-                isset($esid) ? $esid : "",
-                isset($eid) ? $eid : "",
-                isset($suid) ? $suid : "",
-                isset($statusid) ? $statusid : "");
+        $this->get( 
+                   'GetCourseUserByStatus',
+                   'Sql/GetCourseUserByStatus.sql',
+                   isset( $userid ) ? $userid : '',
+                   isset( $courseid ) ? $courseid : '',
+                   isset( $esid ) ? $esid : '',
+                   isset( $eid ) ? $eid : '',
+                   isset( $suid ) ? $suid : '',
+                   isset( $statusid ) ? $statusid : ''
+                   );
     }
-
 }
+
+ 
 ?>
+
