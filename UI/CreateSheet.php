@@ -74,6 +74,9 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
     $validatedExercises = array();
     if (isset($_POST['exercises']) == true && empty($_POST['exercises']) == false) {
         foreach ($_POST['exercises'] as $key1 => $exercise) {
+            if ($correctExercise == false) {
+                break;
+            }
             // evaluate if subexercises per exercise isnt empty
             $eval = new FormEvaluator($exercise);
             $eval->checkArrayForKey('subexercises',
