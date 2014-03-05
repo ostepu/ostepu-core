@@ -1,0 +1,289 @@
+\section{Datenstrukturen}
+Die meisten Datenstrukturen werden unter
+\textcolor{blue}{Assistants/Structures.php} beschrieben, dabei gibt es einige grundlegende Operationen die eine solche Datenstruktur zur Verfügung stellt.
+
+Diese sollen hier am Beispiel der $Course$ Datenstruktur in der Datei \textcolor{blue}{Assistants/Structures/Course.php} erklärt werden.
+
+\subsection{Attribute}
+\begin{minipage}{\textwidth}
+\begin{lstlisting}
+private $id = null;
+
+    public function getId()
+    {
+        return $this->id;
+    }
+    
+    public function setId($value)
+    {
+        $this->id = $value;
+    }
+\end{lstlisting}
+\end{minipage}
+
+Jedes Attribut wird als eigene Variable mit default Wert definiert, dieser wird bei der Übertragung ignoriert, sodass default Werte nicht nutzlos übertragen werden. Zudem sollten $get$ und $set$ Funktionen für die Attribute entworfen und genutzt werden.
+
+\begin{minipage}{\textwidth}
+Beispiel:
+\begin{lstlisting}
+$obj = new Course();
+$obj->setId(2);
+echo $obj->getId();
+// Ausgabe: 2
+\end{lstlisting}
+\end{minipage}
+
+\subsection{Objekte für PUT und POST erstellen}
+\begin{minipage}{\textwidth}
+\begin{lstlisting}
+    public static function createCourse($courseId,$name,$semester,$defaultGroupSize)
+    {
+    	...
+    }
+\end{lstlisting}
+\end{minipage}
+
+Um das erstellen neuer Objekte für eine Course Datenstruktur zu erleichtern, wurden $create$ Funktionen entworfen, diese nehmen die möglichen in die Datenbank eintragbaren Attribute entgegen und bringen sie in eine Form, mit der die Datenbank bei PUT und POST arbeiten kann.
+
+Es wird ein Course Objekt zurückgegeben. Dieses kann mit \textcolor{blue}{Course::encodeCourse()} oder \textcolor{blue}{json\_encode()} zum Versand in einem HTTP Request mittels JSON vorbereitet werden.
+
+Will man den default-Wert der Datenbank bei einem POST Befehl für seinen Eintrag nutzen oder ein Attribut bei einem PUT im Originaleintrag nicht ändern, so wird beim Aufruf der \blau{createCourse()} Funktion an der entsprechenden Stelle \blau{null} notiert. 
+
+\begin{minipage}{\textwidth}
+Beispiel:
+\begin{lstlisting}
+$obj = Course::createCourse(1,'AAA','09/10',null);
+echo $obj->getId();
+// Ausgabe: 1
+
+$result = Request::post('DBCourse/course',
+                        array(),
+                        Course::encodeCourse($obj));
+\end{lstlisting}
+\end{minipage}
+
+\subsection{Datenbankattributnamen in Datenstrukturnamen konvertieren}
+\begin{minipage}{\textwidth}
+\begin{lstlisting}
+  public static function getDbConvert()
+    {
+    	...
+    }
+\end{lstlisting}
+\end{minipage}
+
+Um zwischen den Bezeichnungen der Datenbank und denen der allgemein genutzten Datenstrukturen umwandeln zu können, gibt diese Funktion ein assoziatives Array zurück. 
+
+Dabei ist es möglich das einige Konvertierungen nicht real in der Datenbank existieren, dieser Fall tritt ein, wenn die Datenstruktur beispielsweise vorsieht, dass $Course$ Objekte eine Liste von ExerciseSheets enthalten soll, dazu gibt es dann in der $Course$ Datenstruktur den Eintrag:
+ 
+\begin{minipage}{\textwidth}
+\begin{lstlisting}
+'C_exerciseSheets' => 'exerciseSheets'
+\end{lstlisting}
+\end{minipage}
+
+Dieser wird von den Komponenten genutzt und ist vorallem vorgesehen um das ganze exakt zu beschreiben.
+
+\begin{minipage}{\textwidth}
+Beispiel:
+\begin{lstlisting}
+echo Course::getDbConvert()['C_id'];
+// Ausgabe: id
+\end{lstlisting}
+\end{minipage}
+
+\subsection{Primärschlüssel der Datenbanktabellen}
+\begin{minipage}{\textwidth}
+\begin{lstlisting}
+    public static function getDbPrimaryKey()
+    {
+    	...
+    }
+\end{lstlisting}
+\end{minipage}
+
+Die \blau{getDbPrimaryKey()} Funktionen liefern die Primärschlüssel der Tabellen entweder als einzelnen String, wenn der Primärschlüssel nicht aus mehreren Attributen besteht und als Array, wenn er sich aus mehreren Attributen zusammensetzt.
+
+\begin{minipage}{\textwidth}
+Beispiel:
+\begin{lstlisting}
+echo Course::getDbPrimaryKey();
+// Ausgabe: C_id
+\end{lstlisting}
+\end{minipage}
+
+\subsection{PUT und POST Daten aus Objekten erstellen}
+\begin{minipage}{\textwidth}
+\begin{lstlisting}
+    public function getInsertData()
+    {
+    	...
+    }
+\end{lstlisting}
+\end{minipage}
+
+Die \blau{getInsertData()} Funktionen wandeln ein Objekt in für SQL Anfragen nutzbare Zuweisungen um.
+
+Dabei liefert die Funktion einen String zurück.
+
+\begin{minipage}{\textwidth}
+Beispiel:
+\begin{lstlisting}
+echo Course::getInsertData();
+// Ausgabe: C_id = '1', C_name= 'AAA', C_semester = '09/10'
+\end{lstlisting}
+\end{minipage}
+
+\subsection{Konstruktor}
+\begin{minipage}{\textwidth}
+\begin{lstlisting}
+    public function __construct($data=array())
+    {
+    	...
+    }
+\end{lstlisting}
+\end{minipage}
+
+Der Konstruktor soll entweder ein leeres Objekt mit den default Werten oder direkt aus einem assoziativen Array heraus erzeugen.
+
+\begin{minipage}{\textwidth}
+Beispiel:
+\begin{lstlisting}
+$obj = new Course();
+echo $obj->getId();
+// Ausgabe: null
+
+$obj = new Course(array(
+                 'id' => '1',
+                 'name' => 'AAA'));
+ echo $obj->getId();
+// Ausgabe: 1
+\end{lstlisting}
+\end{minipage}
+
+\subsection{ein Objekt in JSON umwandeln}
+\begin{minipage}{\textwidth}
+\begin{lstlisting}
+    public static function encodeCourse($data)
+    {
+    	...
+    }
+\end{lstlisting}
+\end{minipage}
+
+Um ein Objekt der Datenstrukturen zu serialisieren wird die \blau{encodeCourse()} Funktion genutzt. Sie wandelt ein Objekt in einen validen JSON-String um.
+
+\begin{minipage}{\textwidth}
+Beispiel:
+\begin{lstlisting}
+$obj = Course::createCourse(1,'AAA','09/10',null);
+echo Course::encodeCourse($obj);
+
+// Ausgabe: 
+//	{
+//           "id": "1",
+//           "name": "AAA",
+//           "semester": "09/10"
+//	}
+\end{lstlisting}
+\end{minipage}
+
+\subsection{ein Objekt aus JSON erstellen}
+\begin{minipage}{\textwidth}
+\begin{lstlisting}
+    public static function decodeCourse($data, $decode=true)
+    {
+    	...
+    }
+\end{lstlisting}
+\end{minipage}
+
+Diese Funktion wandelt JSON-Daten die ein oder mehrere Objekte darstellen können und dabei auch Unterobjekte enthalten können, in ein Objekt der Datenstruktur um. So könnte beispielsweise ein $Submission$ Objekt zusätzlich ein angehängtes $File$ Objekt besitzen, dieses wird an dieser Stelle ebenfalls dekodiert, mit der \blau{File::decodeFile()} Funktion und an die $Submission$ angehängt.
+
+\begin{minipage}{\textwidth}
+Beispiel:
+\begin{lstlisting}
+$data = '{"id": "1","name": "AAA","semester": "09/10"}';
+$obj = Course::decodeCourse($data);
+echo $obj->getId();
+// Ausgabe: 1
+
+$data = '[{"id": "1","name": "AAA","semester": "09/10"},
+          {"id": "2"}]';
+$obj = Course::decodeCourse($data);
+echo $obj[1]->getId();
+// Ausgabe: 2
+\end{lstlisting}
+\end{minipage}
+
+\subsection{JSON Serialisierung}
+\begin{minipage}{\textwidth}
+\begin{lstlisting}
+    public function jsonSerialize() 
+    {
+    	...
+    }
+\end{lstlisting}
+\end{minipage}
+
+Um Objekte dieser Datenstruktur mit \blau{Course::encodeCourse()} zu serialisieren, wird eine \blau{jsonSerialize()} Funktion benötigt, die festlegt, welche Attribute umgewandelt werden und welche nicht. 
+
+Diese Funktion wird nicht direkt Aufgerufen.
+
+\subsection{Objekte aus einer Datenbankantwort extrahieren}
+\begin{minipage}{\textwidth}
+\begin{lstlisting}
+    public static function ExtractCourse($data, $singleResult = false)
+    {
+    	...
+    }
+\end{lstlisting}
+\end{minipage}
+
+Datenbankantworten, die als assoziatives Array vorliegen, werden mit dieser Funktion in assoziative Arrays umgewandelt, die der Datenstruktur entsprechen, diese können als Objekte der Datenstruktur genutzt werden, um sie dann beispielsweise zu serialisieren.
+
+\begin{minipage}{\textwidth}
+Beispiel:
+\begin{lstlisting}
+$res = Course::ExtractCourse(
+                             array(
+                                   array(
+                                         'id' => '1',
+                                         'name' => 'AAA'
+                                   )
+                             ),
+                             true);
+echo Course::encodeCourse($obj);
+
+// Ausgabe: 
+//	{
+//           "id": "1",
+//           "name": "AAA",
+//           "semester": "09/10"
+//	}
+\end{lstlisting}
+\end{minipage}
+
+\begin{minipage}{\textwidth}
+Beispiel 2:
+\begin{lstlisting}
+$res = Course::ExtractCourse(
+                             array(
+                                   array(
+                                         'id' => '1',
+                                         'name' => 'AAA'
+                                   )
+                             ),
+                             false);
+echo Course::encodeCourse($obj);
+
+// Ausgabe: 
+//  [
+//	    {
+//               "id": "1",
+//               "name": "AAA",
+//               "semester": "09/10"
+//	    }
+//  ]
+\end{lstlisting}
+\end{minipage}

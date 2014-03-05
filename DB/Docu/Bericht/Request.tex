@@ -1,0 +1,107 @@
+\section{HTTP Requests erstellen}
+Für HTTP-Requests nutzen wir cURL, dazu wurden Hilfsklassen entwickelt, welche den Zugriff darauf erlauben. Alles notwendige dazu finden wir in den Dateien \blau{Assistants/Request.php} und \blau{Assistants/Request/CreateRequest.php}.
+
+\subsection{Anfragen für Anfänger}
+\begin{minipage}{\textwidth}
+\begin{lstlisting}
+    public static function custom($method, 
+                                  $target, 
+                                  $header,  
+                                  $content)
+    {
+        ...
+    }
+\end{lstlisting}
+\end{minipage}
+
+Dabei werden GET,PUT und POST unterstützt, zudem gibt es auch die Möglichkeit, eigene Methoden anzugeben.
+\blau{Assistants/Request.php}
+
+\begin{minipage}{\textwidth}
+Beispiel:
+\begin{lstlisting}
+$ch = Request::custom(
+                  'GET', // Methode
+                  'http://.../DBCourse/course', // Anfrageziel
+                  array(), // Header
+                  ''); // Content
+echo $ch['status'];
+echo $ch['content']; 
+                     
+// Ausgabe: (nur beispielhaft)
+//          200
+//          []         
+\end{lstlisting}
+\end{minipage}
+Auf den Header greifen Sie über \blau{\$ch['headers']} zu.
+
+\subsection{Anfragen mit Verknüpfungen}
+\begin{minipage}{\textwidth}
+\begin{lstlisting}
+    public static function routeRequest($method, 
+                                        $resourceUri, 
+                                        $header,  
+                                        $content,
+                                        $linkedComponents,
+                                        $prefix,
+                                        $linkName=NULL)
+    {
+        ...
+    }
+\end{lstlisting}
+\end{minipage}
+
+Wenn wir eine Liste von $Link$ Objekten zur Verfügung haben, so können wir die \blau{Request::routeRequest()} Funktion nutzen, um das Ziel unserer Anfrage aus mehreren Verknüpfungen suchen zu lassen.
+\blau{Assistants/Request.php}
+
+\begin{minipage}{\textwidth}
+Beispiel:
+\begin{lstlisting}
+$ch = Request::routeRequest("GET", // Methode
+                            '/course', // Anfrage-URI
+                            array(), // Header
+                            '', // Content
+                            $links); // Linkliste
+echo $ch['status'];
+echo $ch['content']; 
+                     
+// Ausgabe: (nur beispielhaft)
+//          200
+//          []
+\end{lstlisting}
+\end{minipage}
+
+\subsection{Anfragen mit SQL Dateien}
+\begin{minipage}{\textwidth}
+\begin{lstlisting}
+    public static function getRoutedSqlFile($querys, 
+                                            $sqlFile, 
+                                            $vars,
+                                            $checkSession=true)
+    {
+    	...
+    }
+\end{lstlisting}
+\end{minipage}
+Wenn wir eine Liste von $Link$ Objekten zur Verfügung haben und den Inhalt einer SQL Datei mit der Datenbank über die $DBQuery$ Komponente ausführen wollen, so können wir die \blau{DBRequest::getRroutedSqlFile()} Funktion nutzen.
+Dabei können zusätzlich Variablen als Array übergeben werden, die dann innerhalb der SQL Datei global zur Verfügung stehen, da der Inhalt der SQL Datei mit PHP interpretiert wird über \blau{eval()}.
+
+Es kann optional angegeben werden ob in der $Query$ Struktur, die zur $DBQuery$ Komponente geschickt wird, das Flag zur Prüfung der Session abgeschaltet werden soll.
+\blau{Assistants/DBRequest.php}
+
+\begin{minipage}{\textwidth}
+Beispiel:
+\begin{lstlisting}
+$ch = DBRequest::getRoutedSqlFile($links, // Linkliste
+                    'Beispiel.sql', // SQL Datei
+                    array('userid' => $userid, // Platzhalter
+                          'courseid' => $courseid),
+                    false); // checksession ist hier aus
+echo $ch['status'];
+echo $ch['content']; 
+                     
+// Ausgabe: (nur beispielhaft)
+//          200
+//          []
+\end{lstlisting}
+\end{minipage}
