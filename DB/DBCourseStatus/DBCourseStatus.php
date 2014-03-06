@@ -1,74 +1,75 @@
-<?php
+<?php 
+
+
 /**
  * @file DBCourseStatus.php contains the DBCourseStatus class
- * 
+ *
  * @author Till Uhlig
  * @author Felix Schmidt
  * @example DB/DBCourseStatus/CourseStatusSample.json
- */ 
+ */
 
-require_once( '../../Assistants/Slim/Slim.php' );
-include_once( '../../Assistants/Structures.php' );
-include_once( '../../Assistants/Request.php' );
-include_once( '../../Assistants/DBJson.php' );
-include_once( '../../Assistants/CConfig.php' );
-include_once( '../../Assistants/Logger.php' );
+require_once ( '../../Assistants/Slim/Slim.php' );
+include_once ( '../../Assistants/Structures.php' );
+include_once ( '../../Assistants/Request.php' );
+include_once ( '../../Assistants/DBJson.php' );
+include_once ( '../../Assistants/CConfig.php' );
+include_once ( '../../Assistants/Logger.php' );
 
-\Slim\Slim::registerAutoloader();
+\Slim\Slim::registerAutoloader( );
 
 // runs the CConfig
-$com = new CConfig(DBCourseStatus::getPrefix());
+$com = new CConfig( DBCourseStatus::getPrefix( ) );
 
 // runs the DBUser
-if (!$com->used())
-    new DBCourseStatus($com->loadConfig());  
-
+if ( !$com->used( ) )
+    new DBCourseStatus( $com->loadConfig( ) );
 
 /**
  * A class, to abstract the "CourseStatus" table from database
  */
 class DBCourseStatus
 {
+
     /**
      * @var Slim $_app the slim object
      */
-    private $_app=null;
-    
+    private $_app = null;
+
     /**
      * @var Component $_conf the component data object
-     */ 
-    private $_conf=null;
-    
+     */
+    private $_conf = null;
+
     /**
      * @var Link[] $query a list of links to a query component
-     */ 
-    private $query=array();
-    
+     */
+    private $query = array( );
+
     /**
      * @var string $_prefix the prefixes, the class works with (comma separated)
-     */ 
-    private static $_prefix = "coursestatus";
-    
+     */
+    private static $_prefix = 'coursestatus';
+
     /**
      * the $_prefix getter
      *
      * @return the value of $_prefix
-     */ 
-    public static function getPrefix()
+     */
+    public static function getPrefix( )
     {
         return DBCourseStatus::$_prefix;
     }
-    
+
     /**
      * the $_prefix setter
      *
      * @param string $value the new value for $_prefix
-     */ 
-    public static function setPrefix($value)
+     */
+    public static function setPrefix( $value )
     {
         DBCourseStatus::$_prefix = $value;
     }
-
 
     /**
      * REST actions
@@ -78,49 +79,89 @@ class DBCourseStatus
      *
      * @param Component $conf component data
      */
-    public function __construct($conf)
+    public function __construct( $conf )
     {
+
         // initialize component
         $this->_conf = $conf;
-        $this->query = array(CConfig::getLink($conf->getLinks(),"out"));
-        
+        $this->query = array( CConfig::getLink( 
+                                               $conf->getLinks( ),
+                                               'out'
+                                               ) );
+
         // initialize slim
-        $this->_app = new \Slim\Slim();
-        $this->_app->response->headers->set('Content-Type', 'application/json');
+        $this->_app = new \Slim\Slim( );
+        $this->_app->response->headers->set( 
+                                            'Content-Type',
+                                            'application/json'
+                                            );
 
         // PUT EditMemberRight
-        $this->_app->put('/' . $this->getPrefix() . '/course/:courseid/user/:userid(/)',
-                        array($this, 'editMemberRight'));
-                        
+        $this->_app->put( 
+                         '/' . $this->getPrefix( ) . '/course/:courseid/user/:userid(/)',
+                         array( 
+                               $this,
+                               'editMemberRight'
+                               )
+                         );
+
         // DELETE RemoveCourseMember
-        $this->_app->delete('/' . $this->getPrefix() . '/course/:courseid/user/:userid(/)', 
-                            array($this,'removeCourseMember'));
-                            
+        $this->_app->delete( 
+                            '/' . $this->getPrefix( ) . '/course/:courseid/user/:userid(/)',
+                            array( 
+                                  $this,
+                                  'removeCourseMember'
+                                  )
+                            );
+
         // POST AddCourseMember
-        $this->_app->post('/' . $this->getPrefix() . '(/)', ///course/:courseid/user/:userid
-                         array($this,'addCourseMember'));
-        
+        $this->_app->post( 
+                          '/' . $this->getPrefix( ) . '(/)',
+
+        // /course/:courseid/user/:userid
+        array( 
+              $this,
+              'addCourseMember'
+              )
+                          );
+
         // GET GetMemberRight
-        $this->_app->get('/' . $this->getPrefix() . '/course/:courseid/user/:userid(/)',
-                        array($this,'getMemberRight'));
-                        
+        $this->_app->get( 
+                         '/' . $this->getPrefix( ) . '/course/:courseid/user/:userid(/)',
+                         array( 
+                               $this,
+                               'getMemberRight'
+                               )
+                         );
+
         // GET GetMemberRights
-        $this->_app->get('/' . $this->getPrefix() . '/user/:userid(/)',
-                        array($this,'getMemberRights'));  
-                        
+        $this->_app->get( 
+                         '/' . $this->getPrefix( ) . '/user/:userid(/)',
+                         array( 
+                               $this,
+                               'getMemberRights'
+                               )
+                         );
+
         // GET GetCourseRights
-        $this->_app->get('/' . $this->getPrefix() . '/course/:courseid(/)',
-                        array($this,'getCourseRights'));  
-                        
-        // starts slim only if the right prefix was received              
-        if (strpos ($this->_app->request->getResourceUri(),'/' . 
-                    $this->getPrefix()) === 0){
-                    
+        $this->_app->get( 
+                         '/' . $this->getPrefix( ) . '/course/:courseid(/)',
+                         array( 
+                               $this,
+                               'getCourseRights'
+                               )
+                         );
+
+        // starts slim only if the right prefix was received
+        if ( strpos( 
+                    $this->_app->request->getResourceUri( ),
+                    '/' . $this->getPrefix( )
+                    ) === 0 ){
+
             // run Slim
-            $this->_app->run();
+            $this->_app->run( );
         }
     }
-
 
     /**
      * Edits the course status of a user in a specific course.
@@ -133,48 +174,69 @@ class DBCourseStatus
      * @param int $courseid The id of the course.
      * @param int $userid The id of the user whose status is being updated.
      */
-    public function editMemberRight($courseid,$userid)
+    public function editMemberRight( 
+                                    $courseid,
+                                    $userid
+                                    )
     {
-        Logger::Log("starts PUT EditMemberRight",LogLevel::DEBUG);
-        
+        Logger::Log( 
+                    'starts PUT EditMemberRight',
+                    LogLevel::DEBUG
+                    );
+
         // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($courseid),
-                            ctype_digit($userid));
-                            
+        DBJson::checkInput( 
+                           $this->_app,
+                           ctype_digit( $courseid ),
+                           ctype_digit( $userid )
+                           );
+
         // decode the received user data, as an object
-        $insert = User::decodeUser($this->_app->request->getBody());
-        
+        $insert = User::decodeUser( $this->_app->request->getBody( ) );
+
         // always been an array
         $arr = true;
-        if (!is_array($insert)){
-            $insert = array($insert);
-            $arr=false;
+        if ( !is_array( $insert ) ){
+            $insert = array( $insert );
+            $arr = false;
         }
 
-        foreach ($insert as $in){
+        foreach ( $insert as $in ){
+
             // generates the update data for the object
-            $data = $in->getCourseStatusInsertData();
-            
+            $data = $in->getCourseStatusInsertData( );
+
             // starts a query, by using a given file
-            $result = DBRequest::getRoutedSqlFile($this->query, 
-                                            "Sql/EditMemberRight.sql", 
-                                            array("courseid" => $courseid,"userid" => $userid, "values" => $data));                   
-           
+            $result = DBRequest::getRoutedSqlFile( 
+                                                  $this->query,
+                                                  'Sql/EditMemberRight.sql',
+                                                  array( 
+                                                        'courseid' => $courseid,
+                                                        'userid' => $userid,
+                                                        'values' => $data
+                                                        )
+                                                  );
+
             // checks the correctness of the query
-            if ($result['status']>=200 && $result['status']<=299){
-                $this->_app->response->setStatus(201);
-                if (isset($result['headers']['Content-Type']))
-                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+            if ( $result['status'] >= 200 && 
+                 $result['status'] <= 299 ){
+                $this->_app->response->setStatus( 201 );
+                if ( isset( $result['headers']['Content-Type'] ) )
+                    $this->_app->response->headers->set( 
+                                                        'Content-Type',
+                                                        $result['headers']['Content-Type']
+                                                        );
                 
-            } else{
-                Logger::Log("PUT EditMemberRight failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-                $this->_app->stop();
+            } else {
+                Logger::Log( 
+                            'PUT EditMemberRight failed',
+                            LogLevel::ERROR
+                            );
+                $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+                $this->_app->stop( );
             }
         }
     }
-
 
     /**
      * Deletes the course status of a user in a specific course.
@@ -185,130 +247,187 @@ class DBCourseStatus
      * @param int $courseid The id of the course.
      * @param int $userid The id of the user whose status is being deleted.
      */
-    public function removeCourseMember($courseid,$userid)
+    public function removeCourseMember( 
+                                       $courseid,
+                                       $userid
+                                       )
     {
-        Logger::Log("starts DELETE RemoveCourseMember",LogLevel::DEBUG);
-        
+        Logger::Log( 
+                    'starts DELETE RemoveCourseMember',
+                    LogLevel::DEBUG
+                    );
+
         // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            ctype_digit($courseid),
-                            ctype_digit($userid));
-                            
+        DBJson::checkInput( 
+                           $this->_app,
+                           ctype_digit( $courseid ),
+                           ctype_digit( $userid )
+                           );
+
         // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        "Sql/RemoveCourseMember.sql", 
-                                        array("courseid" => $courseid,"userid" => $userid));    
-                                        
-        // checks the correctness of the query                          
-        if ($result['status']>=200 && $result['status']<=299){
-            $this->_app->response->setStatus(201);
-            if (isset($result['headers']['Content-Type']))
-                $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-                
-        } else{
-            Logger::Log("DELETE RemoveCourseMember failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->stop();
+        $result = DBRequest::getRoutedSqlFile( 
+                                              $this->query,
+                                              'Sql/RemoveCourseMember.sql',
+                                              array( 
+                                                    'courseid' => $courseid,
+                                                    'userid' => $userid
+                                                    )
+                                              );
+
+        // checks the correctness of the query
+        if ( $result['status'] >= 200 && 
+             $result['status'] <= 299 ){
+            $this->_app->response->setStatus( 201 );
+            if ( isset( $result['headers']['Content-Type'] ) )
+                $this->_app->response->headers->set( 
+                                                    'Content-Type',
+                                                    $result['headers']['Content-Type']
+                                                    );
+            
+        } else {
+            Logger::Log( 
+                        'DELETE RemoveCourseMember failed',
+                        LogLevel::ERROR
+                        );
+            $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+            $this->_app->stop( );
         }
     }
-
 
     /**
      * Adds a course status to a user in a specific course.
      *
      * Called when this component receives an HTTP POST request to
      * /coursestatus(/).
-     * The request body should contain a JSON object representing the user's 
+     * The request body should contain a JSON object representing the user's
      * course status.
      */
-    public function addCourseMember()
+    public function addCourseMember( )
     {
-        Logger::Log("starts POST AddCourseMember",LogLevel::DEBUG);
-        
+        Logger::Log( 
+                    'starts POST AddCourseMember',
+                    LogLevel::DEBUG
+                    );
+
         // decode the received user data, as an object
-        $insert = User::decodeUser($this->_app->request->getBody());
-        
+        $insert = User::decodeUser( $this->_app->request->getBody( ) );
+
         // always been an array
         $arr = true;
-        if (!is_array($insert)){
-            $insert = array($insert);
-            $arr=false;
+        if ( !is_array( $insert ) ){
+            $insert = array( $insert );
+            $arr = false;
         }
 
-        foreach ($insert as $in){
+        foreach ( $insert as $in ){
+
             // generates the insert data for the object
-            $data = $in->getCourseStatusInsertData();
-            
+            $data = $in->getCourseStatusInsertData( );
+
             // starts a query, by using a given file
-            $result = DBRequest::getRoutedSqlFile($this->query, 
-                                            "Sql/AddCourseMember.sql", 
-                                            array("values" => $data));                   
-           
-            // checks the correctness of the query    
-            if ($result['status']>=200 && $result['status']<=299){
-                $this->_app->response->setStatus(201);
-                if (isset($result['headers']['Content-Type']))
-                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+            $result = DBRequest::getRoutedSqlFile( 
+                                                  $this->query,
+                                                  'Sql/AddCourseMember.sql',
+                                                  array( 'values' => $data )
+                                                  );
+
+            // checks the correctness of the query
+            if ( $result['status'] >= 200 && 
+                 $result['status'] <= 299 ){
+                $this->_app->response->setStatus( 201 );
+                if ( isset( $result['headers']['Content-Type'] ) )
+                    $this->_app->response->headers->set( 
+                                                        'Content-Type',
+                                                        $result['headers']['Content-Type']
+                                                        );
                 
-            } else{
-                Logger::Log("POST AddCourseMember failed",LogLevel::ERROR);
-                $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-                $this->_app->stop();
+            } else {
+                Logger::Log( 
+                            'POST AddCourseMember failed',
+                            LogLevel::ERROR
+                            );
+                $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+                $this->_app->stop( );
             }
         }
     }
 
-    
-    public function get($functionName,$sqlFile,$userid,$courseid,$esid,$eid,$suid,$mid,$singleResult=false)
+    public function get( 
+                        $functionName,
+                        $sqlFile,
+                        $userid,
+                        $courseid,
+                        $esid,
+                        $eid,
+                        $suid,
+                        $mid,
+                        $singleResult = false
+                        )
     {
-        Logger::Log("starts GET " . $functionName,LogLevel::DEBUG);
-        
+        Logger::Log( 
+                    'starts GET ' . $functionName,
+                    LogLevel::DEBUG
+                    );
+
         // checks whether incoming data has the correct data type
-        DBJson::checkInput($this->_app, 
-                            $userid == "" ? true : ctype_digit($userid), 
-                            $courseid == "" ? true : ctype_digit($courseid), 
-                            $esid == "" ? true : ctype_digit($esid), 
-                            $eid == "" ? true : ctype_digit($eid), 
-                            $suid == "" ? true : ctype_digit($suid), 
-                            $mid == "" ? true : ctype_digit($mid));
-                            
-            
+        DBJson::checkInput( 
+                           $this->_app,
+                           $userid == '' ? true : ctype_digit( $userid ),
+                           $courseid == '' ? true : ctype_digit( $courseid ),
+                           $esid == '' ? true : ctype_digit( $esid ),
+                           $eid == '' ? true : ctype_digit( $eid ),
+                           $suid == '' ? true : ctype_digit( $suid ),
+                           $mid == '' ? true : ctype_digit( $mid )
+                           );
+
         // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile($this->query, 
-                                        $sqlFile, 
-                                        array("userid" => $userid,
-                                        'courseid' => $courseid,
-                                        'esid' => $esid,
-                                        'eid' => $eid,
-                                        'suid' => $suid,
-                                        'mid' => $mid));
- 
-        // checks the correctness of the query                                        
-        if ($result['status']>=200 && $result['status']<=299){ 
-            $query = Query::decodeQuery($result['content']);
-            
-            if ($query->getNumRows()>0){
-                $res = User::ExtractCourseStatus($query->getResponse(),$singleResult); 
-                $this->_app->response->setBody(User::encodeUser($res));
-        
-                $this->_app->response->setStatus(200);
-                if (isset($result['headers']['Content-Type']))
-                    $this->_app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+        $result = DBRequest::getRoutedSqlFile( 
+                                              $this->query,
+                                              $sqlFile,
+                                              array( 
+                                                    'userid' => $userid,
+                                                    'courseid' => $courseid,
+                                                    'esid' => $esid,
+                                                    'eid' => $eid,
+                                                    'suid' => $suid,
+                                                    'mid' => $mid
+                                                    )
+                                              );
+
+        // checks the correctness of the query
+        if ( $result['status'] >= 200 && 
+             $result['status'] <= 299 ){
+            $query = Query::decodeQuery( $result['content'] );
+
+            if ( $query->getNumRows( ) > 0 ){
+                $res = User::ExtractCourseStatus( 
+                                                 $query->getResponse( ),
+                                                 $singleResult
+                                                 );
+                $this->_app->response->setBody( User::encodeUser( $res ) );
+
+                $this->_app->response->setStatus( 200 );
+                if ( isset( $result['headers']['Content-Type'] ) )
+                    $this->_app->response->headers->set( 
+                                                        'Content-Type',
+                                                        $result['headers']['Content-Type']
+                                                        );
+
+                $this->_app->stop( );
                 
-                $this->_app->stop(); 
-            }
-            else
+            } else 
                 $result['status'] = 404;
-                
         }
-        
-            Logger::Log("GET " . $functionName . " failed",LogLevel::ERROR);
-            $this->_app->response->setStatus(isset($result['status']) ? $result['status'] : 409);
-            $this->_app->response->setBody(User::encodeUser(new User()));
-            $this->_app->stop();
+
+        Logger::Log( 
+                    'GET ' . $functionName . ' failed',
+                    LogLevel::ERROR
+                    );
+        $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+        $this->_app->response->setBody( User::encodeUser( new User( ) ) );
+        $this->_app->stop( );
     }
-    
-    
+
     /**
      * Returns the course status of a user in a specific course.
      *
@@ -318,19 +437,23 @@ class DBCourseStatus
      * @param int $courseid The id of the course.
      * @param int $userid The id of the user whose status is being returned.
      */
-    public function getMemberRight($courseid,$userid)
+    public function getMemberRight( 
+                                   $courseid,
+                                   $userid
+                                   )
     {
-        $this->get("GetMemberRight",
-                "Sql/GetMemberRight.sql",
-                isset($userid) ? $userid : "",
-                isset($courseid) ? $courseid : "",
-                isset($esid) ? $esid : "",
-                isset($eid) ? $eid : "",
-                isset($suid) ? $suid : "",
-                isset($mid) ? $mid : "",
-                true);
+        $this->get( 
+                   'GetMemberRight',
+                   'Sql/GetMemberRight.sql',
+                   isset( $userid ) ? $userid : '',
+                   isset( $courseid ) ? $courseid : '',
+                   isset( $esid ) ? $esid : '',
+                   isset( $eid ) ? $eid : '',
+                   isset( $suid ) ? $suid : '',
+                   isset( $mid ) ? $mid : '',
+                   true
+                   );
     }
-
 
     /**
      * Returns all course status objects of a user.
@@ -340,18 +463,19 @@ class DBCourseStatus
      *
      * @param int $userid The id of the user.
      */
-    public function getMemberRights($userid)
+    public function getMemberRights( $userid )
     {
-        $this->get("GetMemberRights",
-                "Sql/GetMemberRights.sql",
-                isset($userid) ? $userid : "",
-                isset($courseid) ? $courseid : "",
-                isset($esid) ? $esid : "",
-                isset($eid) ? $eid : "",
-                isset($suid) ? $suid : "",
-                isset($mid) ? $mid : "");
+        $this->get( 
+                   'GetMemberRights',
+                   'Sql/GetMemberRights.sql',
+                   isset( $userid ) ? $userid : '',
+                   isset( $courseid ) ? $courseid : '',
+                   isset( $esid ) ? $esid : '',
+                   isset( $eid ) ? $eid : '',
+                   isset( $suid ) ? $suid : '',
+                   isset( $mid ) ? $mid : ''
+                   );
     }
-
 
     /**
      * Returns all course status objects of a course.
@@ -361,16 +485,21 @@ class DBCourseStatus
      *
      * @param int $courseid The id of the course.
      */
-    public function getCourseRights($courseid)
+    public function getCourseRights( $courseid )
     {
-        $this->get("GetCourseRights",
-                "Sql/GetCourseRights.sql",
-                isset($userid) ? $userid : "",
-                isset($courseid) ? $courseid : "",
-                isset($esid) ? $esid : "",
-                isset($eid) ? $eid : "",
-                isset($suid) ? $suid : "",
-                isset($mid) ? $mid : "");
+        $this->get( 
+                   'GetCourseRights',
+                   'Sql/GetCourseRights.sql',
+                   isset( $userid ) ? $userid : '',
+                   isset( $courseid ) ? $courseid : '',
+                   isset( $esid ) ? $esid : '',
+                   isset( $eid ) ? $eid : '',
+                   isset( $suid ) ? $suid : '',
+                   isset( $mid ) ? $mid : ''
+                   );
     }
 }
+
+ 
 ?>
+

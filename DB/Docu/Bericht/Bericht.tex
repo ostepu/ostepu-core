@@ -1,0 +1,147 @@
+\documentclass[10pt,a4paper,final,parskip]{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage[german]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{lmodern}
+\usepackage{paralist}
+\usepackage{color}
+\usepackage{tabularx} % für die erweiterten tabular Funktionen
+ \usepackage{multirow}
+ 
+\usepackage{listings,xcolor}
+%\usepackage{inconsolata}
+% Farben definieren
+\usepackage{xcolor}
+\definecolor{codeGray}{RGB}{240,240,240}
+\definecolor{codeBlack}{RGB}{0,0,0}
+\definecolor{codeRed}{RGB}{221,0,0}
+\definecolor{codeBlue}{rgb}{0,0,187}
+\definecolor{codeYellow}{RGB}{255,128,0}
+\definecolor{codeGreen}{RGB}{0,119,0}
+
+\newcommand{\blau}[1]{\textcolor{blue}{#1}}
+% zum erzeugen von "todo" Zeilen
+\newcommand{\todo}[1]{\colorbox{yellow}{\parbox{\textwidth}{Todo: \textbf{#1}}}}
+
+
+% … und zuweisen
+\lstset{%
+    language=PHP,%
+    %
+    % Farben, diktengleiche Schrift
+    backgroundcolor={\color{codeGray}},% 
+    basicstyle={\small\ttfamily\color{codeGreen}},% 
+    commentstyle={\color{codeYellow}},%
+    keywordstyle={\color{codeBlue}},%
+    stringstyle={\color{codeRed}},%
+    identifierstyle={\color{codeBlue}},%
+    %
+    % Zeilenumbrüche aktivieren, Leerzeichen nicht hervorheben    
+    breaklines=true,%
+    showstringspaces=false,%
+    % 
+    % Listing-Caption unterhalb (bottom)
+    captionpos=b,%
+    % 
+    % Listing einrahmen
+    frame=single,%
+    rulecolor={\color{codeBlack}},%
+    % 
+    % winzige Zeilennummern links
+   % numbers=left,%
+ %   numberstyle={\tiny\color{codeBlack}}%
+}
+
+\newenvironment{php}
+{\begin{minipage}{\textwidth}
+\begin{lstlisting}}
+{\end{lstlisting}
+\end{minipage}}
+
+\newenvironment{beispiel}
+{\begin{minipage}{\textwidth}
+Beispiel
+\begin{lstlisting}}
+{\end{lstlisting}
+\end{minipage}}
+
+\begin{document}
+
+
+
+\tableofcontents
+\cleardoublepage
+
+\section{Einrichten}
+Zum Einrichten des Systems müssen einige Dinge beachtet werden, diese werden entweder hier, in nachfolgenden Kapiteln oder an ganz anderer Stelle beschrieben. Trotzdem sollen hier bereits wichtige Informationen dazu zusammengetragen werden.
+
+\subsection{ Datenbank einspielen}
+Das einspielen der Datenbank erfolgt wie im Kapitel \ref{DBEinrichten} zum Einspielen der Datenbank beschrieben.
+Beachten Sie dabei, dass die dort gegebenen Datenbankdefinitionen und Beispiele für ein festes Schema/Datenbank mit dem Namen $uebungsplattform$ angelegt wurden.
+Diese festen Angaben sind in de \blau{DB/Database.sql}, \blau{DB/Sample.sql} und \blau{DB/Components.sql} so vermerkt. Für den Fall, dass Sie die Datenbank mit einem anderen Namen anlegen möchten, muss dies beachtet werden.
+
+Zum Einspielen können die in Kapitel \ref{DBEinrichten} beschriebenen Schritte/Befehle genutzt werden, oder aber
+\blau{cat Database.sql Components.sql $|$ mysql} genutzt werden.
+Bei Fehlern probieren Sie \blau{cat Database.sql Components.sql $|$ mysql $--$force}.
+
+\subsection{ Datenbankzugriff einrichten}
+Wie im Kapitel \ref{DBEinrichten} die Dateien für den Zugang zur Datenbank anpassen, beachten Sie dabei, wirklich alle anzupassen, jene im Ordner \blau{DB/CControl} und \blau{DB/DBQuery}.
+
+\subsection{ Komponenten verknüpfen}
+Befolgen Sie die Schritte aus dem Kapitel \ref{Verknuepfung} mittels \blau{localhost/uebungsplattform/DB/CControl/send}. Beachten Sie, dass die Komponenten (\blau{logic/...}, \blau{DB/...}) dazu in ihrem Ordner Schreibrechte benötigen, um die \blau{CConfig.json} Dateien anlegen zu können.
+Die Beispielverknüpfungen der \blau{DB/Components.sql} sind für die Komponenten mit dem Basispfad \blau{localhost/uebungsplattform/} eingetragen. Sollten Ihre Komponenten im einzelnen oder in ihrer Gesamtheit einen anderen Pfad besitzen, so müssen Sie diese entsprechend Anpassen.
+
+\subsection{Benutzeroberfläche verknüpfen}
+\todo{ausfüllen}
+
+\input{Datenbankschicht}
+
+\input{Datenstrukturen}
+ 
+\input{Komponenten}
+  
+\input{Request}
+
+\section{Den Logger nutzen}
+Um Informationen nachvollziehbar speichern zu können, wurde eine Logger Klasse angelegt, diese ist zu finden unter \blau{Assistants/Logger.php}.
+
+\begin{minipage}{\textwidth}
+Beispiel:
+\begin{lstlisting}
+Logger::Log("ERROR Eintrag",LogLevel::ERROR);
+Logger::Log("WARNING Eintrag",LogLevel::WARNING);
+Logger::Log("INFO Eintrag",LogLevel::INFO);
+Logger::Log("DEBUG Eintrag",LogLevel::DEBUG);
+Logger::Log("Eigene Zieldatei",
+            LogLevel::DEBUG, 
+            "/var/www/ziel.log");
+\end{lstlisting}
+\end{minipage}
+ 
+\section{Verteilerkomponenenten}
+\subsection{Controller Klasse}
+Um es anderen Arbeitsbereichen zu erleichtern, die Komponenten eines Bereiches anzusprechen, wurden zentrale Ansprechpunkte eingerichtet, diese werden als Controller bezeichnet.
+
+Sie nehmen Anfragen entgegen und suchen den Empfänger, um anschließend den Erfolg oder Misserfolg an den Anfragenden zurück zuleiten.
+
+Eine einfache Implementierung ist die \blau{Assistants/Controller.php}. Sowohl die Datenbankschicht (DB) mit der DBControl Komponente \blau{DB/DBControl} und das Dateisystem (FS) mit der FSControl Komponente \blau{FS/FSControl} nutzen diese Klasse. Dabei werden 401,404 und 406 Fehler von dahinter aufgerufenen Komponenten direkt weitergegeben und der Suchvorgang beendet, alle weiteren Fehlernummern werden zu einer 409 zusammengefasst.
+
+Dabei werden Aufrufe wie:\\
+\blau{http://localhost/uebungsplattform/DB/DBCourse/course}\\
+\blau{http://localhost/uebungsplattform/DB/DBUser/user}\\
+\blau{http://localhost/uebungsplattform/DB/DBMarking/marking}\\
+
+vereinheitlicht zu:\\
+\blau{http://localhost/uebungsplattform/DB/DBControl/course}\\
+\blau{http://localhost/uebungsplattform/DB/DBControl/user}\\
+\blau{http://localhost/uebungsplattform/DB/DBControl/marking}\\
+
+\subsection{Logik Controller}
+Eine weitere eigenständige Variante ist der LController des Logikbereichs unter \blau{logic/Controller}. Da dieser Aufrufe an zwei weitere Bereiche leiten muss, ist hier die Herangehensweise etwas anders.
+
+\input{Probleme}
+
+\end{document}
