@@ -4,6 +4,7 @@
  * 
  * @author Till Uhlig
  * @author Felix Schmidt
+ * @example FS/FSFile/FileSample.json
  */ 
 
 require_once( '../../Assistants/Slim/Slim.php' );
