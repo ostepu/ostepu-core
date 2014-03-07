@@ -49,10 +49,10 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                            'warning',
                            'Ungültige Gruppenstärke.',
                            array('min' => 0,'max' => 10));
-    $f->checkArrayForKey('exercises',
-                         FormEvaluator::REQUIRED,
-                         'warning',
-                         'Bitte erstellen Sie mindestens eine Aufgabe.');
+    $f->checkArrayOfArraysForKey('exercises',
+                                 FormEvaluator::REQUIRED,
+                                 'warning',
+                                 'Bitte erstellen Sie mindestens eine Aufgabe.');
     // check if startDate is not later than endDate and if it matches format
     $correctDates = true;
     if (strtotime(str_replace(" - ", " ", $_POST['startDate'])) > strtotime(str_replace(" - ", " ", $_POST['endDate']))
