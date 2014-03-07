@@ -5,7 +5,7 @@
         <a href="MainSettings.php">Verwaltung</a>
     </li>
 <?php endif; ?>
-<?php if (!$switchDisabled): ?>
+<?php if (!$switchDisabled && !$forIndex): ?>
     <?php if ($requiredPrivilege == $courseStatus): ?>
         <li>
             <a href="Student.php?cid=<?= $cid ?>">Studentenrolle einnehmen</a>
@@ -16,7 +16,7 @@
         </li>
     <?php endif; ?>
 <?php endif; ?>
-<?php if ($courseStatus == 3 /* PRIVILEGE_LEVEL::ADMIN */): ?>
+<?php if ($courseStatus == 3 /* PRIVILEGE_LEVEL::ADMIN */  && !$forIndex): ?>
     <li>
         <a href="CourseManagement.php?cid=<?= $cid ?>">Kurs verwalten</a>
     </li>

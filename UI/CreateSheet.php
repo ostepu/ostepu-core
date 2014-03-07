@@ -56,8 +56,8 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
     // check if startDate is not later than endDate and if it matches format
     $correctDates = true;
     if (strtotime(str_replace(" - ", " ", $_POST['startDate'])) > strtotime(str_replace(" - ", " ", $_POST['endDate']))
-        || !preg_match("#\d\d.\d\d.\d\d\d\d - \d\d:\d\d#", $_POST['startDate'])
-        || !preg_match("#\d\d.\d\d.\d\d\d\d - \d\d:\d\d#", $_POST['endDate'])) {
+        || !preg_match("#^\d\d.\d\d.\d\d\d\d - \d\d:\d\d$#", $_POST['startDate'])
+        || !preg_match("#^\d\d.\d\d.\d\d\d\d - \d\d:\d\d$#", $_POST['endDate'])) {
         $correctDates = false;
         $errormsg = "Überprüfen Sie Bearbeitungsanfang sowie Bearbeitungsende!";
         array_push($notifications, MakeNotification('warning', $errormsg));
@@ -74,6 +74,9 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
     $validatedExercises = array();
     if (isset($_POST['exercises']) == true && empty($_POST['exercises']) == false) {
         foreach ($_POST['exercises'] as $key1 => $exercise) {
+            if ($correctExercise == false) {
+                break;
+            }
             // evaluate if subexercises per exercise isnt empty
             $eval = new FormEvaluator($exercise);
             $eval->checkArrayForKey('subexercises',
@@ -130,7 +133,8 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
     }
 
     // only if validation was correct
-    if ($f->evaluate(true) && $noFile == false && $correctExercise == true && $correctDates == true) {
+    $ready = $f->evaluate(true);
+    if ($ready == true && $noFile == false && $correctExercise == true && $correctDates == true) {
         // get sheetPDF
         $filePath = $_FILES['sheetPDF']['tmp_name'];
         $displayName = $_FILES['sheetPDF']['name'];
@@ -242,15 +246,46 @@ $h->bind(array("name" => $createsheetData['user']['courses'][0]['course']['name'
 Authentication::checkRights(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $createsheetData['user']);
 
 $sheetSettings = Template::WithTemplateFile('include/CreateSheet/SheetSettings.template.html');
-$sheetSettings->bind($createsheetData['user']);
-
 $createExercise = Template::WithTemplateFile('include/CreateSheet/CreateExercise.template.html');
 
+if (isset($_POST['action']) && $_POST['action'] == "new") {
+    // if post failed don't reset form
+    if ($ready != true || $noFile != false || $correctExercise != true || $correctDates != true) {
+        $sheetSettings->bind($createsheetData['user']);
+        $sheetSettings->bind(cleanInput($_POST));
 
-// wrap all the elements in some HTML and show them on the page
-$w = new HTMLWrapper($h, $sheetSettings, $createExercise);
-$w->defineForm(basename(__FILE__)."?cid=".$cid, true, $sheetSettings, $createExercise);
-$w->set_config_file('include/configs/config_createSheet.json');
-$w->show();
+        if (isset($_POST['exercises'])) {
+            $exerciseSettings = Template::WithTemplateFile('include/CreateSheet/ExerciseSettings.template.php');
+            $exerciseSettings->bind(cleanInput($_POST));
 
+            // wrap all the elements in some HTML and show them on the page
+            $w = new HTMLWrapper($h, $sheetSettings, $createExercise, $exerciseSettings);
+            $w->defineForm(basename(__FILE__)."?cid=".$cid, true, $sheetSettings, $createExercise, $exerciseSettings);
+            $w->set_config_file('include/configs/config_createSheet.json');
+            $w->show();
+        } else {
+            // wrap all the elements in some HTML and show them on the page
+            $w = new HTMLWrapper($h, $sheetSettings, $createExercise);
+            $w->defineForm(basename(__FILE__)."?cid=".$cid, true, $sheetSettings, $createExercise);
+            $w->set_config_file('include/configs/config_createSheet.json');
+            $w->show();
+        }
+    }  else { // otherwise show normal page
+        $sheetSettings->bind($createsheetData['user']);
+
+        // wrap all the elements in some HTML and show them on the page
+        $w = new HTMLWrapper($h, $sheetSettings, $createExercise);
+        $w->defineForm(basename(__FILE__)."?cid=".$cid, true, $sheetSettings, $createExercise);
+        $w->set_config_file('include/configs/config_createSheet.json');
+        $w->show();
+    }
+} else { // otherwise show normal page
+    $sheetSettings->bind($createsheetData['user']);
+
+    // wrap all the elements in some HTML and show them on the page
+    $w = new HTMLWrapper($h, $sheetSettings, $createExercise);
+    $w->defineForm(basename(__FILE__)."?cid=".$cid, true, $sheetSettings, $createExercise);
+    $w->set_config_file('include/configs/config_createSheet.json');
+    $w->show();
+}
 ?>

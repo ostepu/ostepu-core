@@ -11,11 +11,15 @@
     <div class="content-body-wrapper">
         <div class="content-body left">
             <label class="form-field left label bold" for="sheetName">Blattname:</label>
-            <input class="form-field left text-input" name="sheetName" placeholder="Bonusserie" id="sheetName" /> (optional)
+            <input class="form-field left text-input" name="sheetName" placeholder="Bonusserie"
+            <?php if (isset($sheetName)) {?> value="<?= $sheetName ?>" <?php } ?>
+            id="sheetName" /> (optional)
 
             <label class="form-field left label bold new-line" for="startDate">Bearbeitungsanfang:</label>
             <div id="datetimepicker1" class="input-append left date">
-                <input class="form-field text-input" data-format="dd.MM.yyyy - hh:mm" type="text" id="startDate" name="startDate"/>
+                <input class="form-field text-input" data-format="dd.MM.yyyy - hh:mm"
+                <?php if (isset($startDate)) {?> value="<?= $startDate ?>" <?php } ?>
+                type="text" id="startDate" name="startDate"/>
                 <span class="add-on">
                   ...
                 </span>
@@ -23,7 +27,9 @@
 
             <label class="form-field left label bold new-line" for="endDate">Bearbeitungsende:</label>
             <div id="datetimepicker2" class="input-append left date">
-                <input class="form-field text-input" data-format="dd.MM.yyyy - hh:mm" type="text" id="endDate" name="endDate"/>
+                <input class="form-field text-input" data-format="dd.MM.yyyy - hh:mm"
+                <?php if (isset($endDate)) {?> value="<?= $endDate ?>" <?php } ?>
+                type="text" id="endDate" name="endDate"/>
                 <span class="add-on">
                   ...
                 </span>
@@ -45,7 +51,9 @@
                     }
                     for ($i=0; $i <= $maxgroup; $i++) { 
                         print "<option value=\"".$i."\"";
-                        if ($i == $courses[0]['course']['defaultGroupSize']) {
+                        if (isset($groupSize) == false && $i == $courses[0]['course']['defaultGroupSize']) {
+                            print " selected=\"selected\"";
+                        } else if (isset($groupSize) == true && $i == $groupSize) {
                             print " selected=\"selected\"";
                         }
                         print ">".$i."</option>";

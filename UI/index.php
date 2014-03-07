@@ -20,7 +20,8 @@ if (is_null($user)) {
 }
 
 $menu = MakeNavigationElement($user,
-                              PRIVILEGE_LEVEL::STUDENT,
+                              PRIVILEGE_LEVEL::LECTURER,
+                              true,
                               true);
 
 // construct a new header
