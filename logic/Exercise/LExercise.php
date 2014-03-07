@@ -5,12 +5,13 @@
  * @author Martin Daute
  * @author Christian Elze
  * @author Peter Koenig
+ * @author Ralf Busch
  */
 
-require '../Include/Slim/Slim.php';
-include '../Include/Request.php';
-include_once( '../Include/CConfig.php' );
-include_once '../Include/Structures.php';
+require '../../Assistants/Slim/Slim.php';
+include '../../Assistants/Request.php';
+include_once '../../Assistants/CConfig.php';
+include_once '../../Assistants/Structures.php';
 
 \Slim\Slim::registerAutoloader();
 
