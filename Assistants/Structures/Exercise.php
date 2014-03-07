@@ -153,6 +153,30 @@ class Exercise extends Object implements JsonSerializable
     public function setLink($value){
         $this->link = $value;
     }
+    
+    /**
+     * @var string $linkName the name of the link.
+     */
+    private $linkName = null;
+    
+    /**
+     * the $linkName getter
+     *
+     * @return the value of $linkName
+     */ 
+    public function getLinkName()
+    {
+        return $this->linkName;
+    }
+    
+    /**
+     * the $linkName setter
+     *
+     * @param int $value the new value for $linkName
+     */
+    public function setLinkName($value){
+        $this->linkName = $value;
+    }
 
     /**
      * @var Submission[] $submissiona the submissions for this exercise
@@ -226,6 +250,33 @@ class Exercise extends Object implements JsonSerializable
         $this->bonus = $value;
     }
     
+    
+    /**
+     * @var ExerciseFileType[] $fileTypes a set of exercise file types that belong to this exercise
+     */
+    private $fileTypes = array();
+    
+    /**
+     * the $fileTypes getter
+     *
+     * @return the value of $fileTypes
+     */ 
+    public function getFileTypes()
+    {
+        return $this->fileTypes;
+    }
+    
+    
+    
+    /**
+     * the $fileTypes setter
+     *
+     * @param ExerciseFileType[] $value the new value for $fileTypes
+     */
+    public function setFileTypes($value){
+        $this->fileTypes = $value;
+    }
+    
     /**
      * Creates an Exercise object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -236,12 +287,13 @@ class Exercise extends Object implements JsonSerializable
      * @param string $maxPoints the max points
      * @param string $type the id of the exercise type
      * @param string $link the id of the exercise, this exercise belongs to
+     * @param string $linkName the name of the sub exercise.
      * @param string $bonus the bonus flag
      *
      * @return an exercise object
      */
     public static function createExercise($exerciseId,$courseId,$sheetId,
-                                    $maxPoints,$type,$link,$bonus)
+                                    $maxPoints,$type,$link,$bonus,$linkName = null)
     {
         return new Exercise(array('id' => $exerciseId,
         'courseId' => $courseId,
@@ -249,6 +301,7 @@ class Exercise extends Object implements JsonSerializable
         'maxPoints' => $maxPoints, 
         'type' => $type, 
         'link' => $link, 
+        'linkName' => $linkName, 
         'bonus' => $bonus));
     }
     
@@ -266,9 +319,11 @@ class Exercise extends Object implements JsonSerializable
            'E_maxPoints' => 'maxPoints',
            'ET_id' => 'type',
            'E_id_link' => 'link',
+           'E_linkName' => 'linkName',
            'E_submissions' => 'submissions',
            'E_bonus' => 'bonus',
-           'E_attachments' => 'attachments'
+           'E_attachments' => 'attachments',
+           'E_fileTypes' => 'fileTypes'
         );
     }
     
@@ -286,6 +341,7 @@ class Exercise extends Object implements JsonSerializable
         if ($this->maxPoints != null) $this->addInsertData($values, 'E_maxPoints', DBJson::mysql_real_escape_string($this->maxPoints));
         if ($this->type != null) $this->addInsertData($values, 'ET_id', DBJson::mysql_real_escape_string($this->type));
         if ($this->link != null) $this->addInsertData($values, 'E_id_link', DBJson::mysql_real_escape_string($this->link));
+        if ($this->linkName != null) $this->addInsertData($values, 'E_linkName', DBJson::mysql_real_escape_string($this->linkName));
         if ($this->bonus != null) $this->addInsertData($values, 'E_bonus', DBJson::mysql_real_escape_string($this->bonus));
         
         if ($values != ""){
@@ -317,6 +373,8 @@ class Exercise extends Object implements JsonSerializable
                     $this->{$key} = Submission::decodeSubmission($value, false);
                 }elseif ($key == 'attachments') {
                     $this->{$key} = File::decodeFile($value, false);
+                }elseif ($key == 'fileTypes') {
+                    $this->{$key} = ExerciseFileType::decodeExerciseFileType($value, false);
                 } else
                 $this->{$key} = $value;
             }
@@ -378,7 +436,10 @@ class Exercise extends Object implements JsonSerializable
         if ($this->submissions!==array() && $this->submissions!==null) $list['submissions'] = $this->submissions;
         if ($this->bonus!==null) $list['bonus'] = $this->bonus;
         if ($this->attachments!==array() && $this->attachments!==null) $list['attachments'] = $this->attachments;
-        return $list;
+        if ($this->fileTypes!==array() && $this->fileTypes!==null) $list['fileTypes'] = $this->fileTypes;
+        if ($this->linkName!==null) $list['linkName'] = $this->linkName;
+       
+       return $list;
     }
     
     public static function ExtractExercise($data, $singleResult = false)
@@ -404,6 +465,13 @@ class Exercise extends Object implements JsonSerializable
                                     Submission::getDBConvert(),
                                     '2');
                                     
+            // generates an assoc array of exercise file types by using a defined 
+            // list of its attributes
+            $fileTypes = DBJson::getObjectsByAttributes($data,
+                                    ExerciseFileType::getDBPrimaryKey(), 
+                                    ExerciseFileType::getDBConvert());
+                                   
+                                    
             // sets the selectedForGroup attribute
             foreach ($submissions as &$submission){
                 if (isset($submission['selectedForGroup'])){
@@ -413,6 +481,9 @@ class Exercise extends Object implements JsonSerializable
                         unset($submission['selectedForGroup']);
                 }
             }        
+            
+            // concatenates the exercise and the associated filetypes
+            $exercise = DBJson::concatObjectListResult($data, $exercise, Exercise::getDBPrimaryKey(),Exercise::getDBConvert()['E_fileTypes'] ,$fileTypes,ExerciseFileType::getDBPrimaryKey());  
             
             // concatenates the exercise and the associated attachments
             $res = DBJson::concatObjectListResult($data, $exercise, Exercise::getDBPrimaryKey(),Exercise::getDBConvert()['E_attachments'] ,$attachments,File::getDBPrimaryKey());  

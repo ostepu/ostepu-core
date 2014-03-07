@@ -1,17 +1,17 @@
 <?php 
 /**
- * @file ExerciseType.php contains the ExerciseType class
+ * @file ExerciseFileType.php contains the ExerciseFileType class
  */
  
 /**
- * the exercise type structure
+ * the exercise file type structure
  *
  * @author Till Uhlig
  */
 class ExerciseFileType extends Object implements JsonSerializable
 {
     /**
-     * db id of the exercise type 
+     * db id of the exercise file type 
      *
      * type: string
      */
@@ -105,7 +105,7 @@ class ExerciseFileType extends Object implements JsonSerializable
      *
      * @return an exercise type object
      */
-    public static function createExerciseFileType($typeid,$name,$exerciseId)
+    public static function createExerciseFileType($typeid,$text,$exerciseId)
     {
         return new ExerciseFileType(array('id' => $typeid,
         'text' => $text,
@@ -136,8 +136,7 @@ class ExerciseFileType extends Object implements JsonSerializable
         return array(
            'EFT_id' => 'id',
            'EFT_text' => 'text',
-           'E_id' => 'exerciseId'
-           
+           'E_id' => 'exerciseId' 
         );
     }
     

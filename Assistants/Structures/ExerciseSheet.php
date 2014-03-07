@@ -303,8 +303,8 @@ class ExerciseSheet extends Object implements JsonSerializable
         return array(
            'ES_id' => 'id',
            'C_id' => 'courseId',
-           'ES_startDate' => 'endDate',
-           'ES_endDate' => 'startDate',
+           'ES_startDate' => 'startDate',
+           'ES_endDate' => 'endDate',
            'F_id_zip' => 'zipFile',
            'ES_groupSize' => 'groupSize',
            'F_id_sampleSolution' => 'sampleSolution',
@@ -329,8 +329,8 @@ class ExerciseSheet extends Object implements JsonSerializable
         if ($this->startDate != null) $this->addInsertData($values, 'ES_startDate', DBJson::mysql_real_escape_string($this->startDate));
         if ($this->groupSize != null) $this->addInsertData($values, 'ES_groupSize', DBJson::mysql_real_escape_string($this->groupSize));
         if ($this->sheetName != null) $this->addInsertData($values, 'ES_name', DBJson::mysql_real_escape_string($this->sheetName));
-        if ($this->sheetFile != null) $this->addInsertData($values, 'F_id_file', DBJson::mysql_real_escape_string($this->sheetFile->getFileId()));
-        if ($this->sampleSolution != null) $this->addInsertData($values, 'F_id_sampleSolution', DBJson::mysql_real_escape_string($this->sampleSolution->getFileId()));
+        if ($this->sheetFile != null && $this->sheetFile->getFileId() != null) $this->addInsertData($values, 'F_id_file', DBJson::mysql_real_escape_string($this->sheetFile->getFileId()));
+        if ($this->sampleSolution != null && $this->sampleSolution->getFileId() != null) $this->addInsertData($values, 'F_id_sampleSolution', DBJson::mysql_real_escape_string($this->sampleSolution->getFileId()));
         
         if ($values != ""){
             $values=substr($values,1);

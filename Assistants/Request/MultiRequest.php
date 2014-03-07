@@ -87,7 +87,7 @@ class Request_MultiRequest
             // a request was just completed -- find out which one
             while($done = curl_multi_info_read($this->requests)) {
                 $info = curl_getinfo($done['handle']);
-                if ($info['http_code'] == 200 || $info['http_code'] == 404)  {
+                if ($info['http_code'] == 200 || $info['http_code'] == 404 || $info['http_code'] == 401)  {
                     
 
                     $content  = curl_multi_getcontent($done['handle']);
@@ -117,7 +117,11 @@ class Request_MultiRequest
                     // remove the curl handle that just completed
                     curl_multi_remove_handle($this->requests, $done['handle']);
                 } else {
-                    // request failed.  add error handling.
+                    // on all other status messages simply return an empty result with status 409
+                    $result = array();
+                    $result['content'] = array();
+                    $result['status'] = 409;
+                    $res[array_search($done['handle'], $this->handles)] = $result;
                 }
             }
         } while ($running_handles);

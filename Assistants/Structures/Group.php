@@ -127,7 +127,7 @@ class Group extends Object implements JsonSerializable
         
         if ($this->sheetId != null) $this->addInsertData($values, 'ES_id', DBJson::mysql_real_escape_string($this->sheetId));
         if ($this->members != null && $this->members != array() && $this->members[0] != null) $this->addInsertData($values, 'U_id_leader', DBJson::mysql_real_escape_string($this->members[0]->getId()));
-        if ($this->leader != null) $this->addInsertData($values, 'U_id_member', DBJson::mysql_real_escape_string($this->leader->getId()));
+        if ($this->leader != null && $this->leader->getId() != null) $this->addInsertData($values, 'U_id_member', DBJson::mysql_real_escape_string($this->leader->getId()));
         
         if ($values != ""){
             $values=substr($values,1);
