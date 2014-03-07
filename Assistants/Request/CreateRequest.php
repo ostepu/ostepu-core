@@ -49,8 +49,9 @@ class Request_CreateRequest
         /**
          * @todo CURLOPT_FRESH_CONNECT and CURLOPT_FORBID_REUSE, we need that?
          */
-        curl_setopt($ch, CURLOPT_FRESH_CONNECT, 1);
-        curl_setopt($ch, CURLOPT_FORBID_REUSE, 1); 
+        curl_setopt($ch, CURLOPT_FRESH_CONNECT, 0);
+        curl_setopt($ch, CURLOPT_FORBID_REUSE, 0);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); 
         
         
         curl_setopt($ch, CURLOPT_HEADER, 1);
