@@ -133,13 +133,18 @@ class LController
         foreach ($string as $str) {
             $URI = $URI.'/'.$str;
         }
-        // send the new request and set the response
-        $answer = Request::custom($method, $URI, $header, $body);
-        $this->app->response->setBody($answer['content']);
-        $this->app->response->setStatus($answer['status']);  
-        $this->app->response->headers->set('Content-Type', $answer['headers']['Content-Type']);
-        if(isset($answer['headers']['Content-Disposition'])){
-            $this->app->response->headers->set('Content-Disposition', $answer['headers']['Content-Disposition']);
+        // check if method is get, then only redirect request to save a lot of time,bandwith
+        if ($method == 'GET') {
+            $this->app->redirect('http://'.$URI);
+        } else {
+            // send the new request and set the response
+            $answer = Request::custom($method, $URI, $header, $body);
+            $this->app->response->setBody($answer['content']);
+            $this->app->response->setStatus($answer['status']);  
+            $this->app->response->headers->set('Content-Type', $answer['headers']['Content-Type']);
+            if(isset($answer['headers']['Content-Disposition'])){
+                $this->app->response->headers->set('Content-Disposition', $answer['headers']['Content-Disposition']);
+            }
         }
     }
 }
