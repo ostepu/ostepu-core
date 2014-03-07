@@ -7,9 +7,9 @@
  * @author Martin Daute 
  */
 
-require '../Include/Slim/Slim.php';
-include '../Include/Request.php';
-include_once( '../Include/CConfig.php' );
+require '../../Assistants/Slim/Slim.php';
+include '../../Assistants/Request.php';
+include_once '../../Assistants/CConfig.php';
 
 \Slim\Slim::registerAutoloader();
 
