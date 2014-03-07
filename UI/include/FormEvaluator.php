@@ -199,7 +199,13 @@ class FormEvaluator {
                     unset($this->formValues['temp']);
                 }
             } elseif ($type == 'array') {
-                $arrayValues = $values;
+                foreach ($values as $value) {
+                    if (is_array($value)) {
+                        $arrayValues[] = $value;
+                    } else {
+                        return false;
+                    }
+                }
             }
 
             return $arrayValues;
@@ -665,7 +671,8 @@ class FormEvaluator {
     }
 
     /**
-     * Add check for an array.
+     * Add check for an array of arrays.
+     *
      * @param string $key The key that should be checked.
      * @param bool $required True if it is required that there is a value for
      * this key, false otherwise.
@@ -674,28 +681,19 @@ class FormEvaluator {
      * @param string $messageType The type of message that is generated when
      * an error occurs.
      * @param string $message The message that is returned on error.
-     * @param array $range (optional) An associative array with optional keys
-     * 'min' and 'max' that contain a number that corresponds to the minimum
-     * and maximum value of $key's value (inclusive).
-     * @param bool $notIn (optional) If true reverse the meaning of $range, to
-     * exclude 'min', 'max' and all values in between.
      * @return self
      */
-    public function checkArrayForKey($key,
-                                              $required,
-                                              $messageType,
-                                              $message,
-                                              $range = NULL,
-                                              $notIn = NULL)
+    public function checkArrayOfArraysForKey($key,
+                                             $required,
+                                             $messageType,
+                                             $message)
     {
         $this->values[] = array('key' => $key,
                                 'type' => 'array',
                                 'required' => $required,
                                 'messageType' => $messageType,
                                 'message' => $message,
-                                'options' => array('type' => 'array',
-                                                   'range' => $range,
-                                                   'notIn' => $notIn));
+                                'options' => array('type' => 'array'));
         return $this;
     }
 }

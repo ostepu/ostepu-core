@@ -43,11 +43,10 @@ if (isset($_POST['action'])) {
                               'Ungültige Gruppengröße.',
                               array('min' => 0));
 
-        $f->checkArrayForKey('exerciseTypes',
-                             FormEvaluator::REQUIRED,
-                             true,
-                             'warning',
-                             'Ungültige Aufgabentypen.');
+        $f->checkArrayOfIntegersForKey('exerciseTypes',
+                                       FormEvaluator::OPTIONAL,
+                                       'warning',
+                                       'Ungültige Aufgabentypen.');
 
         if($f->evaluate(true)) {
 

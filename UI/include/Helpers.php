@@ -295,7 +295,8 @@ class PRIVILEGE_LEVEL
 
 function MakeNavigationElement($user,
                                $requiredPrivilege,
-                               $switchDisabled = false)
+                               $switchDisabled = false,
+                               $forIndex = false)
 {
     $courses = $user['courses'];
 
@@ -316,7 +317,8 @@ function MakeNavigationElement($user,
                                    'courseStatus' => $courseStatus,
                                    'switchDisabled' => $switchDisabled,
                                    'sites' => PRIVILEGE_LEVEL::$SITES,
-                                   'isSuperAdmin' => $isSuperAdmin));
+                                   'isSuperAdmin' => $isSuperAdmin,
+                                   'forIndex' => $forIndex));
 
     return $navigationElement;
 }

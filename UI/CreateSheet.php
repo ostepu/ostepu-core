@@ -48,11 +48,11 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                            FormEvaluator::REQUIRED,
                            'warning',
                            'Ungültige Gruppenstärke.',
-                           array('min' => 0,'max' => 10));
-    $f->checkArrayForKey('exercises',
-                         FormEvaluator::REQUIRED,
-                         'warning',
-                         'Bitte erstellen Sie mindestens eine Aufgabe.');
+                           array('min' => 0,'max' => $createsheetData['user']['courses'][0]['course']['defaultGroupSize']));
+    $f->checkArrayOfArraysForKey('exercises',
+                                 FormEvaluator::REQUIRED,
+                                 'warning',
+                                 'Bitte erstellen Sie mindestens eine Aufgabe.');
     // check if startDate is not later than endDate and if it matches format
     $correctDates = true;
     if (strtotime(str_replace(" - ", " ", $_POST['startDate'])) > strtotime(str_replace(" - ", " ", $_POST['endDate']))
@@ -79,7 +79,7 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
             }
             // evaluate if subexercises per exercise isnt empty
             $eval = new FormEvaluator($exercise);
-            $eval->checkArrayForKey('subexercises',
+            $eval->checkArrayOfArraysForKey('subexercises',
                                     FormEvaluator::REQUIRED,
                                     'warning',
                                     'Ungültige Anzahl an Teilaufgaben.');
