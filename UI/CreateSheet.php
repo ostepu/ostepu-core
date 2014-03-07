@@ -79,7 +79,7 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
             }
             // evaluate if subexercises per exercise isnt empty
             $eval = new FormEvaluator($exercise);
-            $eval->checkArrayForKey('subexercises',
+            $eval->checkArrayOfArraysForKey('subexercises',
                                     FormEvaluator::REQUIRED,
                                     'warning',
                                     'Ungültige Anzahl an Teilaufgaben.');
