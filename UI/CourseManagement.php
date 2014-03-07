@@ -47,7 +47,11 @@ if (isset($_POST['action'])) {
             $etDelete = array_diff($currentExerciseTypes, $selectedExerciseTypes);
 
             // exercises types which don't exist in the database and need to be created
-            $etCreate = array_diff($selectedExerciseTypes, $currentExerciseTypes);
+            if (!empty($currentExerciseTypes)) {
+                $etCreate = array_diff($selectedExerciseTypes, $currentExerciseTypes);
+            } else {
+                $etCreate = $selectedExerciseTypes;
+            }
 
             // deletes approvalConditions
             foreach($etDelete as $exerciseType) {
