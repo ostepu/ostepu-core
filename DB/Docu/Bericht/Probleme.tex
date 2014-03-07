@@ -1,0 +1,28 @@
+\section{Probleme}
+Es gibt Bereiche, auf die man eine Auge haben sollte, weil sie entweder nicht komplett sauber definiert wurden oder nicht klar ist, ob sie so funktionieren, wie sie sollen. Zudem sind dinge Aufgetreten, die einem das Entwickeln erschwert haben.
+
+\subsection{Aufrufzeiten lokaler Komponenten}
+Zum Aufruf andere Komponenten innerhalb des Systems wird cURL genutzt, dabei entstammen die meisten Aufrufe der 
+\textcolor{blue}{Assistants/Request.php}. Bei jedem Aufruf einer lokalen Komponente verlieren wir einige Millisekunden zum Aufbau der Verbindung (etwa 20ms), eventuell muss daran gearbeitet werden, diesen Verlust durch entsprechende Serverkonfiguration zu kompensieren oder den Versuch unternehmen, den cURL Aufruf lediglich zu Simulieren und keine Verbindung über cURL Aufzubauen, wenn es sich um einen lokalen Aufruf handelt, sondern den PHP Code direkt auszuführen.
+
+\subsection{Dateien löschen}
+Für das löschen von Dateien muss sowohl die $File$ Tabelle der Datenbank als auch das Dateisystem betrachtet werden. Eine Datei kann erst aus dem Dateisystem gelöscht werden, wenn sie in der Datenbank nicht länger benötigt wird. Dazu prüft die Datenbank die Fremdschlüsselbedingungen, sodass sie das löschen eines Datenbankeintrages von selbst ablehnt, sofern dieser noch benötigt wird.
+
+Da einige Tabellen Zeiger auf die $File$ Tabelle nutzen, beispielsweise enthält eine $Submission$ einen Zeiger auf eine Datei der $File$ Tabelle. Sodass theoretisch beim löschen einer Submission sowohl der $File$ als auch der $Submission$ Eintrag manuell gelöscht werden müssen.
+
+Das Problem entsteht an der Stelle, wo $ExerciseSheet$ rekursiv im Fall des Löschens, seine $Submission$, $Marking$ und $Exercise$ automatisch aus der Datenbank entfernt, um selbst gelöscht zu werden (durch die Fremdschlüsselbedingungen).
+
+Wird nun eine solche $Submission$ rekursiv beim löschen der $ExerciseSheet$ entfernt, geht der Verweis auf die $File$ Tabelle verloren und es kommt zu keinem sauberen Löschvorgang der Dateien aus der $File$ Tabelle und dem Dateisystem.
+
+Eine Idee zur Lösung dieses Problems war es eine zusätzliche $RemovableFiles$ Tabelle anzulegen, in welche rekursiv entfernte $File$ Einträge verschoben werden. Sodass man diese Einträge abrufen und das Dateisystem bereinigen kann.
+
+\subsection{Lange Aufrufzeiten, viele Anfragen}
+- Aufbereitung der Daten \\
+- neue gezieltere Anfragen in der DBL erstellen \\
+- meist ist es schneller mehr abzufragen und Daten zu verwerfen, als mehrere kleine Anfragen zu stellen\\
+\todo{aufschreiben}
+
+\subsection{Requests funktionieren nicht im Uninetz}
+- Firewalleinstellungen, \\
+- GET mit Content/Postfield geht nicht\\
+\todo{aufschreiben}
