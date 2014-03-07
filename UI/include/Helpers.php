@@ -296,7 +296,7 @@ class PRIVILEGE_LEVEL
 function MakeNavigationElement($user,
                                $requiredPrivilege,
                                $switchDisabled = false,
-                               $forIndex)
+                               $forIndex = false)
 {
     $courses = $user['courses'];
 
