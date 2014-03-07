@@ -48,7 +48,7 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                            FormEvaluator::REQUIRED,
                            'warning',
                            'Ungültige Gruppenstärke.',
-                           array('min' => 0,'max' => 10));
+                           array('min' => 0,'max' => $createsheetData['user']['courses'][0]['course']['defaultGroupSize']));
     $f->checkArrayOfArraysForKey('exercises',
                                  FormEvaluator::REQUIRED,
                                  'warning',
