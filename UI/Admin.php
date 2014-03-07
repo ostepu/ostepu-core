@@ -23,12 +23,13 @@ if (isset($_POST['action'])) {
 
 // load GetSite data for Admin.php
 $URL = $getSiteURI . "/admin/user/{$uid}/course/{$cid}";
-$admin_data = http_get($URL, false);
+$admin_data = http_get($URL, true);
 $admin_data = json_decode($admin_data, true);
 $admin_data['filesystemURI'] = $filesystemURI;
 $admin_data['cid'] = $cid;
 
 $user_course_data = $admin_data['user'];
+
 
 Authentication::checkRights(PRIVILEGE_LEVEL::ADMIN, $cid, $uid, $user_course_data);
 
