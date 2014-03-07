@@ -29,7 +29,7 @@ class LFileHandler
         $URL = $lURL.'/FS/file';
         $displayName = $file['displayName'];
         //request to filesystem to save the file
-        $answer = Request::custom('POST', $URL, $header, $file);
+        $answer = Request::custom('POST', $URL, $header, json_encode($file));
         // check if file has been saved
         if ($answer['status'] >= 200 and $answer['status'] < 300) {
             $file = json_decode($answer['content'], true);
