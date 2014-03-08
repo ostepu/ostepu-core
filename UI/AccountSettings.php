@@ -83,7 +83,7 @@ if (isset($_POST['action'])) {
 
 // load user data from the database
 $databaseURI = $getSiteURI . "/accountsettings/user/{$uid}";
-$accountSettings_data = http_get($databaseURI);
+$accountSettings_data = http_get($databaseURI, true);
 $accountSettings_data = json_decode($accountSettings_data, true);
 
 $user_course_data = $accountSettings_data['user'];

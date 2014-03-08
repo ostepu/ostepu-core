@@ -62,7 +62,7 @@ if (isset($_POST['action'])) {
 
 // load user data from the database
 $URL = $getSiteURI . "/condition/user/{$uid}/course/{$cid}";
-$condition_data = http_get($URL, false);
+$condition_data = http_get($URL, true);
 $condition_data = json_decode($condition_data, true);
 
 $user_course_data = $condition_data['user'];

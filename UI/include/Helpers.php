@@ -243,6 +243,20 @@ EOF;
 }
 
 /**
+ * Converts bytes into a readable file size.
+ *
+ * @param int $size bytes that need to be converted
+ * @return string readable file size
+ */
+function formatBytes($size)
+{
+    $base = log($size) / log(1024);
+    $suffixes = array('', 'K', 'M', 'G', 'T');   
+
+    return round(pow(1024, $base - floor($base)), 2) . $suffixes[floor($base)] . "B";
+}
+
+/**
  * Delete masked slashes from array and trim it.
  *
  * @param mixed $input Some input that needs to be

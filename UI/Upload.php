@@ -113,7 +113,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
 
 // load user data from the database
 $URL = $getSiteURI . "/upload/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
-$upload_data = http_get($URL, false);
+$upload_data = http_get($URL, true);
 $upload_data = json_decode($upload_data, true);
 $upload_data['filesystemURI'] = $filesystemURI;
 $upload_data['cid'] = $cid;

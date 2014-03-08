@@ -24,7 +24,7 @@ if (isset($_POST['action'])) {
 
 // load GetSite data for Lecturer.php
 $URL = $getSiteURI . "/lecturer/user/{$uid}/course/{$cid}";
-$lecturer_data = http_get($URL, false);
+$lecturer_data = http_get($URL, true);
 $lecturer_data = json_decode($lecturer_data, true);
 $lecturer_data['filesystemURI'] = $filesystemURI;
 $lecturer_data['cid'] = $cid;
