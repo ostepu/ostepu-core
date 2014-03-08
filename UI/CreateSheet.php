@@ -103,7 +103,7 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                     }
                     // evaluate ExerciseTypes
                     if (preg_match("#[0-9]+b?$#", $subexercise['exerciseType']) == false) {
-                        $errormsg = "Falsche Exercise Typen.";
+                        $errormsg = "Falsche Aufgabentypen.";
                         array_push($notifications, MakeNotification('warning', $errormsg));
                         $correctExercise = false;
                         break;
@@ -225,11 +225,11 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                 $errormsg = "Die Serie wurde erstellt.";
                 array_push($notifications, MakeNotification('success', $errormsg));
             } else {
-                $errormsg = "Beim Erstellen ist ein Fehler entstanden.";
+                $errormsg = "Beim Erstellen ist ein Fehler aufgetreten.";
                 array_push($notifications, MakeNotification('error', $errormsg));
             }
         } else {
-            $errormsg = "Beim Erstellen ist ein Fehler entstanden.";
+            $errormsg = "Beim Erstellen ist ein Fehler aufgetreten.";
             array_push($notifications, MakeNotification('error', $errormsg));
         }
     }  else {
