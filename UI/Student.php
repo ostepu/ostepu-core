@@ -16,13 +16,21 @@ if (isset($_POST['downloadAttachments'])) {
 } elseif (isset($_POST['deleteSubmission'])) {
     $suid = cleanInput($_POST['deleteSubmission']);
 
-    $URI = $databaseURI . "/selectedsubmission/submission/" . $suid;
-    http_delete($URI, true, $message);
+    // extractes the studentId of the submission
+    $URI = $databaseURI . "/submission/" . $suid;
+    $submission = http_get($URI, true);
+    $submission = json_decode($submission, true);
 
-    if ($message == "201") {
-        $notifications[] = MakeNotification("success", "Die Einsendung wurde gelöscht!");
-    } else {
-        $notifications[] = MakeNotification("error", "Beim Löschen ist ein Fehler aufgetreten!");
+    // only deletes the submission if it belongs to the user
+    if ($submission['studentId'] == $uid) {
+        $URI = $databaseURI . "/selectedsubmission/submission/" . $suid;
+        http_delete($URI, true, $message);
+
+        if ($message == "201") {
+            $notifications[] = MakeNotification("success", "Die Einsendung wurde gelöscht!");
+        } else {
+            $notifications[] = MakeNotification("error", "Beim Löschen ist ein Fehler aufgetreten!");
+        }
     }
 
 } elseif (isset($_POST['downloadMarkings'])) {
