@@ -114,6 +114,15 @@ class DBMarking
                                   'deleteMarking'
                                   )
                             );
+							
+        // DELETE DeleteSheetMarkings
+        $this->_app->delete( 
+                            '/' . $this->getPrefix( ) . '(/marking)/exercisesheet/:esid(/)',
+                            array( 
+                                  $this,
+                                  'deleteSheetMarkings'
+                                  )
+                            );
 
         // POST AddMarking
         $this->_app->post( 
@@ -408,6 +417,55 @@ class DBMarking
         } else {
             Logger::Log( 
                         'DELETE DeleteMarking failed',
+                        LogLevel::ERROR
+                        );
+            $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+            $this->_app->stop( );
+        }
+    }
+	
+    /**
+     * Deletes markings.
+     *
+     * Called when this component receives an HTTP DELETE request to
+     * /marking/exercisesheet/$esid(/) or /marking/marking/exercisesheet/$esid(/).
+     *
+     * @param int $esid The id of the exercise sheet of the markings that are being deleted.
+     */
+    public function deleteSheetMarkings( $esid )
+    {
+        Logger::Log( 
+                    'starts DELETE DeleteSheetMarkings',
+                    LogLevel::DEBUG
+                    );
+
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput( 
+                           $this->_app,
+                           ctype_digit( $esid )
+                           );
+
+        // starts a query, by using a given file
+        $result = DBRequest::getRoutedSqlFile( 
+                                              $this->query,
+                                              'Sql/DeleteSheetMarkings.sql',
+                                              array( 'esid' => $esid )
+                                              );
+
+        // checks the correctness of the query
+        if ( $result['status'] >= 200 && 
+             $result['status'] <= 299 ){
+
+            $this->_app->response->setStatus( 201 );
+            if ( isset( $result['headers']['Content-Type'] ) )
+                $this->_app->response->headers->set( 
+                                                    'Content-Type',
+                                                    $result['headers']['Content-Type']
+                                                    );
+            
+        } else {
+            Logger::Log( 
+                        'DELETE DeleteSheetMarkings failed',
                         LogLevel::ERROR
                         );
             $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
