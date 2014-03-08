@@ -236,7 +236,7 @@ class LgetSite
         $header = $this->app->request->headers->all();
 
         // load all Requests async
-        $URL = $this->lURL . '/DB/exercisesheet/course/' . $courseid . '/exercise';
+        $URL = $this->lURL . '/exercisesheet/course/' . $courseid . '/exercise';
         $handler1 = Request_CreateRequest::createGet($URL, $header, $body);
 
         $URL = $this->lURL . '/DB/submission/group/user/' . $userid . '/course/' . $courseid . '/selected';
@@ -522,7 +522,7 @@ class LgetSite
         $response = array();
 
         //Get neccessary data
-        $URL = "{$this->lURL}/DB/exercisesheet/course/{$courseid}/exercise";
+        $URL = "{$this->lURL}/exercisesheet/course/{$courseid}/exercise";
         $answer = Request::custom('GET', $URL, $header, $body);
         $sheets = json_decode($answer['content'], true);
 
@@ -732,7 +732,7 @@ class LgetSite
         $header = $this->app->request->headers->all();
 
         // load all exercises of an exercise sheet
-        $URL = $this->lURL.'/DB/exercisesheet/'.$sheetid.'/exercise/';
+        $URL = $this->lURL.'/exercisesheet/exercisesheet/'.$sheetid.'/exercise/';
         $answer = Request::custom('GET', $URL, $header, $body);
         $exercisesheet = json_decode($answer['content'], true);
 
@@ -775,7 +775,7 @@ class LgetSite
         $response['users'] = json_decode($answer['content'], true);
 
         // load all exercisesheets of the course
-        $URL = $this->lURL.'/DB/exercisesheet/course/'.$courseid;
+        $URL = $this->lURL.'/exercisesheet/course/'.$courseid;
         $answer = Request::custom('GET', $URL, $header, $body);
         $response['sheets'] = json_decode($answer['content'], true);
 
@@ -802,7 +802,7 @@ class LgetSite
         $header = $this->app->request->headers->all();
 
         // loads all exercises of an exercise sheet
-        $URL = "{$this->lURL}/DB/exercisesheet/{$sheetid}/exercise/";
+        $URL = "{$this->lURL}/exercisesheet/exercisesheet/{$sheetid}/exercise/";
         $answer = Request::custom('GET', $URL, $header, $body);
         $exercisesheet = json_decode($answer['content'], true);
 
@@ -891,7 +891,7 @@ class LgetSite
 
         $URL = $this->lURL . '/DB/exercisetype';
         $handler1 = Request_CreateRequest::createGet($URL, $header, $body);
-        $URL = $this->lURL . '/DB/exercisesheet/course/' . $courseid . '/exercise';
+        $URL = $this->lURL . '/exercisesheet/course/' . $courseid . '/exercise';
         $handler2 = Request_CreateRequest::createGet($URL, $header, $body);
         $URL = $this->lURL . '/DB/user/course/' . $courseid;
         $handler3 = Request_CreateRequest::createGet($URL, $header, $body);
@@ -978,7 +978,7 @@ class LgetSite
         $group = json_decode($answer['content'], true);
 
         //Get the maximum Groupsize of the sheet
-        $URL = "{$this->lURL}/DB/exercisesheet/exercisesheet/{$sheetid}/exercise";
+        $URL = "{$this->lURL}/exercisesheet/exercisesheet/{$sheetid}/exercise";
         $answer = Request::custom('GET', $URL, $header, $body);
         $sheet = json_decode($answer['content'], true);
 
