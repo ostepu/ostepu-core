@@ -447,7 +447,7 @@ class User extends Object implements JsonSerializable
      * @return an user object
      */
     public static function createUser($userId,$userName,$email,$firstName,$lastName,
-                                $title,$flag,$password,$salt,$failedLogins,$externalId=null,$studentNumber=null,$isSuperAdmin=null,$comment="")
+                                $title,$flag,$password,$salt,$failedLogins,$externalId=null,$studentNumber=null,$isSuperAdmin=null,$comment=null)
     {
         return new User(array('id' => $userId,
         'userName' => $userName,
