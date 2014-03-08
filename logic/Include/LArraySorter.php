@@ -29,11 +29,10 @@ class LArraySorter
      * e.g. orderby($data, 'key1', SORT_DESC, 'key2', SORT_ASC).
      *
      * @param array $data The array which will be sorted.
-     * @param string $key The header of the request.
+     * @param string $key The key of $data.
      * @param mixed $sortorder Either SORT_ASC to sort ascendingly or SORT_DESC to sort descendingly.
      *
-     * @return array $file A file that represents the new information
-     * which belongs to the added one. If there are an error, an empty array is returned.
+     * @return array An array ordered by given parameters.
      */
     public static function orderBy()
     {
