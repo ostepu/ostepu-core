@@ -490,15 +490,6 @@ AUTO_INCREMENT = 1;
 
 
 -- -----------------------------------------------------
--- Table `uebungsplattform`.`RemovableFiles`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `uebungsplattform`.`RemovableFiles` (
-  `F_address` CHAR(55) NULL,
-  UNIQUE INDEX `F_address_UNIQUE` (`F_address` ASC))
-ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
 -- Table `uebungsplattform`.`Session`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `uebungsplattform`.`Session` (
@@ -712,7 +703,7 @@ CREATE TRIGGER `ExerciseSheet_AINS` AFTER INSERT ON `ExerciseSheet` FOR EACH ROW
 /*insert new group for every exerciseSheet
 @author Lisa*/
 begin
-INSERT INTO `Group` 
+INSERT IGNORE INTO `Group` 
 SELECT C.U_id , C.U_id , null , NEW.ES_id 
 FROM CourseStatus C
 WHERE C.C_id = NEW.C_id and C.CS_status = 0 ;
@@ -796,12 +787,12 @@ CREATE TRIGGER `CourseStatus_AINS` AFTER INSERT ON `CourseStatus` FOR EACH ROW
 /*add group for the new member in this course
 @author: Lisa Dietrich */
 begin
-/*if NEW.CS_status = 0 then
-INSERT INTO `Group` 
+if NEW.CS_status = 0 then
+INSERT IGNORE INTO `Group` 
 SELECT NEW.U_id , NEW.U_id , null, E.ES_id 
 FROM ExerciseSheet E
 WHERE E.C_id = NEW.C_id;
-end if;*/
+end if;
 end;$$
 
 USE `uebungsplattform`$$
