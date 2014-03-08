@@ -893,7 +893,7 @@ class LgetSite
         $handler1 = Request_CreateRequest::createGet($URL, $header, $body);
         $URL = $this->lURL . '/DB/exercisesheet/course/' . $courseid . '/exercise';
         $handler2 = Request_CreateRequest::createGet($URL, $header, $body);
-        $URL = $this->lURL . '/DB/exercisesheet/course/' . $courseid . '/exercise';
+        $URL = $this->lURL . '/DB/user/course/' . $courseid;
         $handler3 = Request_CreateRequest::createGet($URL, $header, $body);
 
         $multiRequestHandle2->addRequest($handler1);
