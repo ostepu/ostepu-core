@@ -11,6 +11,7 @@
 require '../../Assistants/Slim/Slim.php';
 include '../../Assistants/Request.php';
 include_once '../../Assistants/CConfig.php';
+include '../Include/LArraySorter.php';
 
 \Slim\Slim::registerAutoloader();
 
@@ -90,6 +91,18 @@ class LExerciseSheet
         // GET GetExerciseSheet
         $this->app->get('/'.$this->getPrefix().'/exercisesheet/:sheetid(/)',
                         array($this, 'getExerciseSheet'));
+
+        // GET GetExerciseSheet incl exercises
+        $this->app->get('/'.$this->getPrefix().'/exercisesheet/:sheetid/exercise(/)',
+                        array($this, 'getExerciseSheetExercise'));
+
+        // GET GetExerciseSheet from course incl exercises
+        $this->app->get('/'.$this->getPrefix().'/course/:courseid(/)',
+                        array($this, 'getExerciseSheetCourse'));
+
+        // GET GetExerciseSheet from course incl exercises
+        $this->app->get('/'.$this->getPrefix().'/course/:courseid/exercise(/)',
+                        array($this, 'getExerciseSheetCourseExercise'));
 
         // DELETE DeleteExerciseSheet
         $this->app->delete('/'.$this->getPrefix().'/exercisesheet/:sheetid(/)',
@@ -270,6 +283,90 @@ class LExerciseSheet
         $URL = $this->lURL.'/DB/exercisesheet/exercisesheet/'.$sheetid;
         $answer = Request::custom('GET', $URL, $header, "");
         $this->app->response->setBody($answer['content']);
+        $this->app->response->setStatus($answer['status']);
+    }
+
+    /**
+     * Returns an exercise sheet with exercises.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /exercisesheet/exercisesheet/$sheetid(/).
+     *
+     * @param int $sheetid The id of the exercise sheet that should be returned.
+     */
+    public function getExerciseSheetExercise($sheetid){
+        $header = $this->app->request->headers->all();
+        $URL = $this->lURL.'/DB/exercisesheet/exercisesheet/'.$sheetid.'/exercise';
+        $answer = Request::custom('GET', $URL, $header, "");
+
+        $sheet = json_decode($answer['content'], true);
+
+        // sort exercises by link = exerercises and linkName = subexercise ascendingly
+        if (isset($sheet['exercises']) && is_array($sheet['exercises'])) {
+            $sheet['exercises'] = LArraySorter::orderBy($sheet['exercises'], 'link', SORT_ASC, 'linkName', SORT_ASC);
+        }
+
+        $sheet = json_encode($sheet);
+
+        $this->app->response->setBody($sheet);
+        $this->app->response->setStatus($answer['status']);
+    }
+
+    /**
+     * Returns an exercise sheet with exercises.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /exercisesheet/exercisesheet/$sheetid(/).
+     *
+     * @param int $sheetid The id of the exercise sheet that should be returned.
+     */
+    public function getExerciseSheetCourse($courseid){
+        $header = $this->app->request->headers->all();
+        $URL = $this->lURL.'/DB/exercisesheet/course/'.$courseid;
+        $answer = Request::custom('GET', $URL, $header, "");
+
+        $sheets = json_decode($answer['content'], true);
+
+        // latest sheets on top
+        if (is_array($sheets)) {
+            $sheets = LArraySorter::reverse($sheets);
+        }
+
+        $sheets = json_encode($sheets);
+
+        $this->app->response->setBody($sheets);
+        $this->app->response->setStatus($answer['status']);
+    }
+
+    /**
+     * Returns an exercise sheet with exercises.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /exercisesheet/exercisesheet/$sheetid(/).
+     *
+     * @param int $sheetid The id of the exercise sheet that should be returned.
+     */
+    public function getExerciseSheetCourseExercise($courseid){
+        $header = $this->app->request->headers->all();
+        $URL = $this->lURL.'/DB/exercisesheet/course/'.$courseid.'/exercise';
+        $answer = Request::custom('GET', $URL, $header, "");
+
+        $sheets = json_decode($answer['content'], true);
+        // latest sheets on top
+        if (is_array($sheets)) {
+            $sheets = LArraySorter::reverse($sheets);
+
+            // sort exercises by link = exerercises and linkName = subexercise ascendingly
+            foreach ($sheets as &$sheet) {
+                if (isset($sheet['exercises']) && is_array($sheet['exercises'])) {
+                    $sheet['exercises'] = LArraySorter::orderBy($sheet['exercises'], 'link', SORT_ASC, 'linkName', SORT_ASC);
+                }
+            }
+        }
+
+        $sheets = json_encode($sheets);
+
+        $this->app->response->setBody($sheets);
         $this->app->response->setStatus($answer['status']);
     }
 
