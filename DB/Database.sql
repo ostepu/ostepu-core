@@ -796,6 +796,19 @@ end if;
 end;$$
 
 USE `uebungsplattform`$$
+CREATE TRIGGER `CourseStatus_AUPD` AFTER UPDATE ON `CourseStatus` FOR EACH ROW
+/*add group for the new member in this course
+@author: Till Uhlig */
+begin
+if NEW.CS_status = 0 then
+INSERT IGNORE INTO `Group` 
+SELECT NEW.U_id , NEW.U_id , null, E.ES_id 
+FROM ExerciseSheet E
+WHERE E.C_id = NEW.C_id;
+end if;
+end;$$
+
+USE `uebungsplattform`$$
 CREATE TRIGGER `ExerciseType_BDEL` BEFORE DELETE ON `ExerciseType` FOR EACH ROW
 /* delete corresponding data
 @author Till*/
