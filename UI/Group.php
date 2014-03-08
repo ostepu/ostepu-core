@@ -63,7 +63,7 @@ if (isset($_POST['action'])) {
 
         // removes the user from the group
         if (removeUserFromGroup($userID, $sid)) {
-            if (!removeSelectedSubmission($member['id'], $sid)) {
+            if (!removeSelectedSubmission($userID, $sid)) {
                 $RequestError = true;
             }
         } else {
@@ -138,6 +138,11 @@ if (isset($_POST['action'])) {
                             $RequestError = true;
                         }
                     }
+                }
+
+                // removes the selectedSubmissions of the leader
+                if (!removeSelectedSubmission($group['leader']['id'], $sid)) {
+                    $RequestError = true;
                 }
 
                 // shows notification

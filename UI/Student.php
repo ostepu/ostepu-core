@@ -35,6 +35,7 @@ $student_data = http_get($URI, true);
 $student_data = json_decode($student_data, true);
 $student_data['filesystemURI'] = $filesystemURI;
 $student_data['cid'] = $cid;
+$student_data['uid'] = $uid;
 
 $user_course_data = $student_data['user'];
 

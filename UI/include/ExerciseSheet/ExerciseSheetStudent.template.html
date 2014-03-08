@@ -91,7 +91,7 @@
                             <?php /**
                                    * @todo add "&& !$isExpired" to if condition after testing.
                                    */ ?>
-                            <?php if (isset($exercise['submission'])): ?>
+                            <?php if (isset($exercise['submission']) && $sheet['group']['leader']['id'] == $uid): ?>
                                     <input type="image" name="deleteSubmission" value="<?= $exercise['submission']['id'] ?>" class="text-button" src="Images/Delete.png" />
                             <?php endif; ?>
                         </div>
