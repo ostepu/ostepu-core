@@ -43,7 +43,10 @@
                                title="<?= $displayName ?>"
                                class="left body-option-color"
                                target="_blank">
-                                Herunterladen (<?= date('d.m.Y  -  H:i', $date) ?>)
+                                Herunterladen (
+                                <?= date('d.m.Y  -  H:i', $date) ?>,
+                                <?= formatBytes($file['fileSize']) ?>
+                                )
                             </a>
 
                             <?php if (isset($sub['comment'])): ?>
