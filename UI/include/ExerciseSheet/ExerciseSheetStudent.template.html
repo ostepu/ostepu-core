@@ -94,7 +94,8 @@
                             <?php if (isset($exercise['submission']) 
                                       && $sheet['group']['leader']['id'] == $uid
                                       && $exercise['submission']['hideFile'] == "0"): ?>
-                                    <input type="image" name="deleteSubmission" value="<?= $exercise['submission']['id'] ?>" class="text-button" src="Images/Delete.png" />
+                                    <input type="image" name="deleteSubmission" value="<?= $exercise['submission']['id'] ?>" 
+                                           class="text-button" src="Images/Delete.png" title="Einsendung löschen" />
                             <?php endif; ?>
                         </div>
 
