@@ -54,10 +54,10 @@ from
     ExerciseSheet ES
     join
     Marking M ON (ES.ES_id = M.ES_id)
-        join
-    SelectedSubmission SS ON (M.S_id = SS.S_id_selected)
-        join
+	    join
     Submission S ON (M.S_id = S.S_id)
+        left join
+    SelectedSubmission SS ON (M.S_id = SS.S_id_selected)
         left join
     File F ON (F.F_id = M.F_id_file)
         left join 
