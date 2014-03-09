@@ -68,10 +68,8 @@ function createDummyFile()
  * The submission contains a dummy file for consistency reasons
  * which isn't shown to anyone by setting the 'hideFile' flag 
  *
- * @param $points The points of the marking
- * @param $tutorComment The tutor's comment
- * @param $status The status of the marking
- * @param $submissionID The id of the submission that belongs to the marking.
+ * @param $leaderID The userID of the group leader
+ * @param $eID The id of the exercisesheet
  *
  * @return Returns the submission on success, NULL otherwise 
  */
@@ -137,7 +135,8 @@ function createSubmission($leaderID, $eID)
  * @param $points The points of the marking
  * @param $tutorComment The tutor's comment
  * @param $status The status of the marking
- * @param $submissionID The id of the submission that belongs to the marking.
+ * @param $submissionID The id of the submission that belongs to the marking
+ * @param $tutorID The id of the tutor who creates the marking
  *
  * @return bool Returns the marking on success, NULL otherwise 
  */
@@ -185,8 +184,11 @@ function createMarking($points, $tutorComment, $status, $submissionID, $tutorID)
  * @param $points The points of the marking
  * @param $tutorComment The tutor's comment
  * @param $status The status of the marking
- * @param $submissionID The id of the submission, if set, -1 otherwise.
- * @param $markingID The id of the marking, if set, -1 otherwise.
+ * @param $submissionID The id of the submission, if set, -1 otherwise
+ * @param $markingID The id of the marking, if set, -1 otherwise
+ * @param $leaderID The id of the group leader
+ * @param $tutorID The id of the tutor who creates the marking
+ * @param $eID The id of the exercisesheet
  *
  * @return bool Returns true on success, false otherwise 
  */
