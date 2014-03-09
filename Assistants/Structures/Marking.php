@@ -361,7 +361,7 @@ class Marking extends Object implements JsonSerializable
     public static function getStatusDefinition()
     {
         return array(
-            array('id' => 0, 'shortName' => 'ne','longName' => 'nicht eingereicht'),
+            array('id' => 0, 'shortName' => 'ne','longName' => 'nicht eingesendet'),
             array('id' => 1, 'shortName' => 'uk','longName' => 'unkorrigiert'),
             array('id' => 2, 'shortName' => 'vl','longName' => 'vorläufig'),
             array('id' => 3, 'shortName' => 'k','longName' => 'korrigiert')
