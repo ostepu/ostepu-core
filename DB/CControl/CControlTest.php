@@ -60,6 +60,7 @@ class CControlTest extends PHPUnit_Framework_TestCase
                             $result['status'],
                             'Unexpected HTTP status code for GetLink call'
                             );
+
         $this->assertContains( 
                               '"id":"1"',
                               $result['content']

@@ -63,9 +63,20 @@ class DBMarkingTest extends PHPUnit_Framework_TestCase
                             'Unexpected HTTP status code for GetTutorExerciseMarkings call'
                             );
         $this->assertContains( 
-                              '{"id":"2","tutorId":"2","tutorComment":"nichts","outstanding":"1","status":"0","points":"12","date":"1389643115","file":',
+                              '{"id":"2","tutorId":"2","tutorComment":"nichts","outstanding":"1","status":"0","points":"12"',
                               $result['content']
                               );
+
+        $result = Request::get( 
+                               $this->url . 'DBMarking/marking/exercise/1/tutor/2',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetTutorExerciseMarkings call'
+                            );
 
         $result = Request::get( 
                                $this->url . 'DBMarking/marking/exercise/AAA/tutor/2',
@@ -115,9 +126,20 @@ class DBMarkingTest extends PHPUnit_Framework_TestCase
                             'Unexpected HTTP status code for GetTutorSheetMarkings call'
                             );
         $this->assertContains( 
-                              '{"id":"2","tutorId":"2","tutorComment":"nichts","outstanding":"1","status":"0","points":"12","date":"1389643115","file":',
+                              '{"id":"2","tutorId":"2","tutorComment":"nichts","outstanding":"1","status":"0","points":"12"',
                               $result['content']
                               );
+
+        $result = Request::get( 
+                               $this->url . 'DBMarking/marking/exercisesheet/1/tutor/2',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetTutorSheetMarkings call'
+                            );
 
         $result = Request::get( 
                                $this->url . 'DBMarking/marking/exercisesheet/AAA/tutor/2',
@@ -167,9 +189,20 @@ class DBMarkingTest extends PHPUnit_Framework_TestCase
                             'Unexpected HTTP status code for GetUserGroupMarkings call'
                             );
         $this->assertContains( 
-                              '{"id":"1","tutorId":"2"',
+                              '{"id":"3","tutorId":"1"',
                               $result['content']
                               );
+
+        $result = Request::get( 
+                               $this->url . 'DBMarking/marking/exercisesheet/1/user/2',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetUserGroupMarkings call'
+                            );
 
         $result = Request::get( 
                                $this->url . 'DBMarking/marking/exercisesheet/AAA/user/2',
@@ -219,9 +252,20 @@ class DBMarkingTest extends PHPUnit_Framework_TestCase
                             'Unexpected HTTP status code for GetSheetMarkings call'
                             );
         $this->assertContains( 
-                              '{"id":"2","tutorId":"2","tutorComment":"nichts","outstanding":"1","status":"0","points":"12","date":"1389643115","file":',
+                              '{"id":"2","tutorId":"2","tutorComment":"nichts","outstanding":"1","status":"0","points":"12"',
                               $result['content']
                               );
+
+        $result = Request::get( 
+                               $this->url . 'DBMarking/marking/exercisesheet/1',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetSheetMarkings call'
+                            );
 
         $result = Request::get( 
                                $this->url . 'DBMarking/marking/exercisesheet/AAA',
@@ -256,9 +300,20 @@ class DBMarkingTest extends PHPUnit_Framework_TestCase
                             'Unexpected HTTP status code for GetExerciseMarkings call'
                             );
         $this->assertContains( 
-                              '{"id":"2","tutorId":"2","tutorComment":"nichts","outstanding":"1","status":"0","points":"12","date":"1389643115","file":',
+                              '{"id":"2","tutorId":"2","tutorComment":"nichts","outstanding":"1","status":"0","points":"12"',
                               $result['content']
                               );
+
+        $result = Request::get( 
+                               $this->url . 'DBMarking/marking/exercise/1',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetExerciseMarkings call'
+                            );
 
         $result = Request::get( 
                                $this->url . 'DBMarking/marking/exercise/AAA',
@@ -293,9 +348,20 @@ class DBMarkingTest extends PHPUnit_Framework_TestCase
                             'Unexpected HTTP status code for GetAllMarkings call'
                             );
         $this->assertContains( 
-                              '{"id":"2","tutorId":"2","tutorComment":"nichts","outstanding":"1","status":"0","points":"12","date":"1389643115","file":',
+                              '{"id":"2","tutorId":"2","tutorComment":"nichts","outstanding":"1","status":"0","points":"12"',
                               $result['content']
                               );
+
+        $result = Request::get( 
+                               $this->url . 'DBMarking/marking',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetAllMarkings call'
+                            );
     }
 
     public function GetSubmissionMarking( )
@@ -315,9 +381,20 @@ class DBMarkingTest extends PHPUnit_Framework_TestCase
                             'Unexpected HTTP status code for GetSubmissionMarking call'
                             );
         $this->assertContains( 
-                              '{"id":"1","tutorId":"2","tutorComment":"nichts","outstanding":"0","status":"0","points":"10","date":"1389643115","file":',
+                              '{"id":"1","tutorId":"2","tutorComment":"nichts","outstanding":"0","status":"0","points":"10"',
                               $result['content']
                               );
+
+        $result = Request::get( 
+                               $this->url . 'DBMarking/marking/submission/1',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetSubmissionMarking call'
+                            );
 
         $result = Request::get( 
                                $this->url . 'DBMarking/marking/submission/AAA',
@@ -352,9 +429,20 @@ class DBMarkingTest extends PHPUnit_Framework_TestCase
                             'Unexpected HTTP status code for GetMarking call'
                             );
         $this->assertContains( 
-                              '{"id":"1","tutorId":"2","tutorComment":"nichts","outstanding":"0","status":"0","points":"10","date":"1389643115","file":',
+                              '{"id":"1","tutorId":"2","tutorComment":"nichts","outstanding":"0","status":"0","points":"10"',
                               $result['content']
                               );
+
+        $result = Request::get( 
+                               $this->url . 'DBMarking/marking/1',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetMarking call'
+                            );
 
         $result = Request::get( 
                                $this->url . 'DBMarking/marking/AAA',

@@ -60,6 +60,17 @@ class DBExerciseTypeTest extends PHPUnit_Framework_TestCase
                               '{"id":"1","name":"Theorie"}',
                               $result['content']
                               );
+
+        $result = Request::get( 
+                               $this->url . 'DBExerciseType/exercisetype',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetAllExerciseTypes call'
+                            );
     }
 
     public function GetExerciseType( )
@@ -94,6 +105,17 @@ class DBExerciseTypeTest extends PHPUnit_Framework_TestCase
                                );
         $this->assertEquals( 
                             412,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetExerciseType call'
+                            );
+
+        $result = Request::get( 
+                               $this->url . 'DBExerciseType/exercisetype/1',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
                             $result['status'],
                             'Unexpected HTTP status code for GetExerciseType call'
                             );
@@ -135,6 +157,17 @@ class DBExerciseTypeTest extends PHPUnit_Framework_TestCase
                               '{"id":100}',
                               $result['content']
                               );
+
+        $result = Request::post( 
+                                $this->url . 'DBExerciseType/exercisetype',
+                                array( ),
+                                ExerciseType::encodeExerciseType( $obj )
+                                );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for AddExerciseType call'
+                            );
     }
 
     public function DeleteExerciseType( )

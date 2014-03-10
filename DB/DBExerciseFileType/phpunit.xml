@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phpunit>
-    <testsuite name="DBExerciseType">
-        <directory>./DBExerciseTypeTest.php</directory>
+    <testsuite name="DBExerciseFileType">
+        <directory>./DBExerciseFileTypeTest.php</directory>
     </testsuite>
 </phpunit>

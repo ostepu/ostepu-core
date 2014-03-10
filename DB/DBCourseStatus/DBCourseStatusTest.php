@@ -63,6 +63,17 @@ class DBCourseStatusTest extends PHPUnit_Framework_TestCase
                               );
 
         $result = Request::get( 
+                               $this->url . 'DBCourseStatus/coursestatus/course/1',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetCourseRights call'
+                            );
+
+        $result = Request::get( 
                                $this->url . 'DBCourseStatus/coursestatus/course/AAA',
                                array( 
                                      'SESSION: abc',
@@ -98,6 +109,17 @@ class DBCourseStatusTest extends PHPUnit_Framework_TestCase
                               '{"id":"2","userName":"lisa","email":"lisa@email.de","firstName":"Lisa","lastName":"Dietrich","flag":"1"',
                               $result['content']
                               );
+
+        $result = Request::get( 
+                               $this->url . 'DBCourseStatus/coursestatus/user/2',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetMemberRights call'
+                            );
 
         $result = Request::get( 
                                $this->url . 'DBCourseStatus/coursestatus/user/AAA',
@@ -136,6 +158,17 @@ class DBCourseStatusTest extends PHPUnit_Framework_TestCase
                               '{"id":"2","userName":"lisa","email":"lisa@email.de","firstName":"Lisa","lastName":"Dietrich","flag":"1"',
                               $result['content']
                               );
+
+        $result = Request::get( 
+                               $this->url . 'DBCourseStatus/coursestatus/course/1/user/2',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetMemberRight call'
+                            );
 
         $result = Request::get( 
                                $this->url . 'DBCourseStatus/coursestatus/course/AAA/user/2',
@@ -232,6 +265,17 @@ class DBCourseStatusTest extends PHPUnit_Framework_TestCase
                                   );
         $this->assertEquals( 
                             201,
+                            $result['status'],
+                            'Unexpected HTTP status code for RemoveCourseMember call'
+                            );
+
+        $result = Request::delete( 
+                                  $this->url . 'DBCourseStatus/coursestatus/course/1/user/1',
+                                  array( ),
+                                  ''
+                                  );
+        $this->assertEquals( 
+                            401,
                             $result['status'],
                             'Unexpected HTTP status code for RemoveCourseMember call'
                             );

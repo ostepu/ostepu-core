@@ -64,6 +64,17 @@ class DBGroupTest extends PHPUnit_Framework_TestCase
                               );
 
         $result = Request::get( 
+                               $this->url . 'DBGroup/group/exercisesheet/1',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetSheetGroups call'
+                            );
+
+        $result = Request::get( 
                                $this->url . 'DBGroup/group/exercisesheet/AAA',
                                array( 
                                      'SESSION: abc',
@@ -101,6 +112,17 @@ class DBGroupTest extends PHPUnit_Framework_TestCase
                               );
 
         $result = Request::get( 
+                               $this->url . 'DBGroup/group/user/2/exercisesheet/1',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetSheetUserGroups call'
+                            );
+
+        $result = Request::get( 
                                $this->url . 'DBGroup/group/user/2/exercisesheet/AAA',
                                array( 
                                      'SESSION: abc',
@@ -136,6 +158,17 @@ class DBGroupTest extends PHPUnit_Framework_TestCase
                               '{"sheetId":"2","leader":{"id":"2","userName":"lisa","email":"lisa@email.de","firstName":"Lisa","lastName":"Dietrich","flag":"1"',
                               $result['content']
                               );
+
+        $result = Request::get( 
+                               $this->url . 'DBGroup/group',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetAllGroups call'
+                            );
     }
 
     public function GetUserGroups( )
@@ -158,6 +191,17 @@ class DBGroupTest extends PHPUnit_Framework_TestCase
                               '{"sheetId":"2","leader":{"id":"2","userName":"lisa","email":"lisa@email.de","firstName":"Lisa","lastName":"Dietrich","flag":"1"',
                               $result['content']
                               );
+
+        $result = Request::get( 
+                               $this->url . 'DBGroup/group/user/2',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetUserGroups call'
+                            );
 
         $result = Request::get( 
                                $this->url . 'DBGroup/group/user/AAA',
@@ -239,6 +283,17 @@ class DBGroupTest extends PHPUnit_Framework_TestCase
                                   );
         $this->assertEquals( 
                             201,
+                            $result['status'],
+                            'Unexpected HTTP status code for DeleteGroup call'
+                            );
+
+        $result = Request::delete( 
+                                  $this->url . 'DBGroup/group/user/1/exercisesheet/1',
+                                  array( ),
+                                  ''
+                                  );
+        $this->assertEquals( 
+                            401,
                             $result['status'],
                             'Unexpected HTTP status code for DeleteGroup call'
                             );

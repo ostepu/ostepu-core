@@ -64,6 +64,17 @@ class DBAttachmentTest extends PHPUnit_Framework_TestCase
                               );
 
         $result = Request::get( 
+                               $this->url . 'DBAttachment/attachment/exercisesheet/1',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetSheetAttachments call'
+                            );
+
+        $result = Request::get( 
                                $this->url . 'DBAttachment/attachment/exercisesheet/AAA',
                                array( 
                                      'SESSION: abc',
@@ -101,6 +112,17 @@ class DBAttachmentTest extends PHPUnit_Framework_TestCase
                               );
 
         $result = Request::get( 
+                               $this->url . 'DBAttachment/attachment/exercise/1',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetExerciseAttachments call'
+                            );
+
+        $result = Request::get( 
                                $this->url . 'DBAttachment/attachment/exercise/AAA',
                                array( 
                                      'SESSION: abc',
@@ -136,6 +158,17 @@ class DBAttachmentTest extends PHPUnit_Framework_TestCase
                               '{"id":"1","exerciseId":"1","file":{"fileId":"1","displayName":"a.pdf","address":"file\/abcdef","timeStamp":"1389643115","fileSize":"100","hash":"abcdef"}}',
                               $result['content']
                               );
+
+        $result = Request::get( 
+                               $this->url . 'DBAttachment/attachment',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetAllAttachments call'
+                            );
     }
 
     public function GetAttachment( )
@@ -158,6 +191,17 @@ class DBAttachmentTest extends PHPUnit_Framework_TestCase
                               '{"id":"1","exerciseId":"1","file":{"fileId":"1","displayName":"a.pdf","address":"file\/abcdef","timeStamp":"1389643115","fileSize":"100","hash":"abcdef"}}',
                               $result['content']
                               );
+
+        $result = Request::get( 
+                               $this->url . 'DBAttachment/attachment/1',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetAttachment call'
+                            );
 
         $result = Request::get( 
                                $this->url . 'DBAttachment/attachment/AAA',
