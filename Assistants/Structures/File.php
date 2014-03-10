@@ -1,8 +1,10 @@
 <?php 
+
+
 /**
  * @file File.php contains the File class
  */
- 
+
 /**
  * the file structure
  *
@@ -10,229 +12,209 @@
  */
 class File extends Object implements JsonSerializable
 {
+
     /**
      * @var string $fileId An id that identifies the file.
      */
-    private $fileId=null;
-    
+    private $fileId = null;
+
     /**
      * the $fileId getter
      *
      * @return the value of $fileId
-     */ 
-    public function getFileId()
+     */
+    public function getFileId( )
     {
         return $this->fileId;
     }
-    
+
     /**
      * the $fileId setter
      *
      * @param string $value the new value for $fileId
-     */ 
-    public function setFileId($value)
+     */
+    public function setFileId( $value )
     {
         $this->fileId = $value;
     }
 
-    
-    
-    
     /**
      * @var string $displayName The name that should be displayed for the file.
      */
-    private $displayName=null;
-    
+    private $displayName = null;
+
     /**
      * the $displayName getter
      *
      * @return the value of $displayName
-     */ 
-    public function getDisplayName()
+     */
+    public function getDisplayName( )
     {
         return $this->displayName;
     }
-    
+
     /**
      * the $displayName setter
      *
      * @param string $value the new value for $displayName
-     */ 
-    public function setDisplayName($value)
+     */
+    public function setDisplayName( $value )
     {
         $this->displayName = $value;
     }
 
-    
-    
-    
     /**
      * @var string $address The URL of the file
      */
-    private $address=null;
-    
+    private $address = null;
+
     /**
      * the $address getter
      *
      * @return the value of $address
-     */ 
-    public function getAddress()
+     */
+    public function getAddress( )
     {
         return $this->address;
     }
-    
+
     /**
      * the $address setter
      *
      * @param string $value the new value for $address
-     */ 
-    public function setAddress($value)
+     */
+    public function setAddress( $value )
     {
         $this->address = $value;
     }
 
-    
-    
-    
     /**
      * @var date $timeStamp When the file was created, this is necessary since the file might
      * be on another server as the server logic and/or interface.
      */
-    private $timeStamp=null;
-    
+    private $timeStamp = null;
+
     /**
      * the $timeStamp getter
      *
      * @return the value of $timeStamp
-     */ 
-    public function getTimeStamp()
+     */
+    public function getTimeStamp( )
     {
         return $this->timeStamp;
     }
-    
+
     /**
      * the $timeStamp setter
      *
      * @param date $value the new value for $timeStamp
-     */ 
-    public function seTimeStamp($value)
+     */
+    public function seTimeStamp( $value )
     {
         $this->timeStamp = $value;
     }
 
-    
-    
-    
     /**
      * @var int $fileSize the size of the file.
      */
-    private $fileSize=null;
-    
+    private $fileSize = null;
+
     /**
      * the $fileSize getter
      *
      * @return the value of $fileSize
-     */ 
-    public function getFileSize()
+     */
+    public function getFileSize( )
     {
         return $this->fileSize;
     }
-    
+
     /**
      * the $fileSize setter
      *
      * @param int $value the new value for $fileSize
-     */ 
-    public function setFileSize($value)
+     */
+    public function setFileSize( $value )
     {
         $this->fileSize = $value;
     }
 
-    
-    
-    
     /**
      * @var string $hash hash of the file, ensures that the user has up-/downloaded the right
      * file.
      */
-    private $hash=null;
-    
+    private $hash = null;
+
     /**
      * the $hash getter
      *
      * @return the value of $hash
-     */ 
-    public function getHash()
+     */
+    public function getHash( )
     {
         return $this->hash;
     }
-    
+
     /**
      * the $hash setter
      *
      * @param string $value the new value for $hash
-     */ 
-    public function setHash($value)
+     */
+    public function setHash( $value )
     {
         $this->hash = $value;
     }
-    
-    
-    
-    
-     /**
+
+    /**
      * @var string $body content (base64 encoded)
      */
-    private $body=null;
-    
+    private $body = null;
+
     /**
      * the $body getter
      *
      * @return the value of $body
-     */ 
-    public function getBody()
+     */
+    public function getBody( )
     {
         return $this->body;
     }
-    
+
     /**
      * the $body setter
      *
      * @param string $value the new value for $body
-     */ 
-    public function setBody($value)
+     */
+    public function setBody( $value )
     {
         $this->body = $value;
     }
-    
-    
-    
-     /**
+
+    /**
      * @var string $comment a file comment
      */
-    private $comment=null;
-    
+    private $comment = null;
+
     /**
      * the $comment getter
      *
      * @return the value of $comment
-     */ 
-    public function getComment()
+     */
+    public function getComment( )
     {
         return $this->body;
     }
-    
+
     /**
      * the $comment setter
      *
      * @param string $value the new value for $comment
-     */ 
-    public function setComment($value)
+     */
+    public function setComment( $value )
     {
         $this->comment = $value;
     }
-    
-    
+
     /**
      * Creates an File object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -244,160 +226,234 @@ class File extends Object implements JsonSerializable
      * @param string $fileSize The file size.
      * @param string $hash The hash.
      * @param string $comment The file comment.
-     * 
+     *
      * @return an file object
      */
-    public static function createFile($fileId,$displayName,$address,$timeStamp,$fileSize,$hash, $comment="")
+    public static function createFile( 
+                                      $fileId,
+                                      $displayName,
+                                      $address,
+                                      $timeStamp,
+                                      $fileSize,
+                                      $hash,
+                                      $comment = ''
+                                      )
     {
-        return new File(array('fileId' => $fileId,
-        'displayName' => $displayName,
-        'address' => $address, 
-        'timeStamp' => $timeStamp,
-        'fileSize' => $fileSize, 
-        'hash' => $hash, 
-        'comment' => $comment));
+        return new File( array( 
+                               'fileId' => $fileId,
+                               'displayName' => $displayName,
+                               'address' => $address,
+                               'timeStamp' => $timeStamp,
+                               'fileSize' => $fileSize,
+                               'hash' => $hash,
+                               'comment' => $comment
+                               ) );
     }
-    
+
     /**
      * returns an mapping array to convert between database and structure
      *
      * @return the mapping array
      */
-    public static function getDbConvert()
+    public static function getDbConvert( )
     {
-        return array(
-           'F_id' => 'fileId',
-           'F_displayName' => 'displayName',
-           'F_address' => 'address',
-           'F_timeStamp' => 'timeStamp',
-           'F_fileSize' => 'fileSize',
-           'F_hash' => 'hash',
-           'F_body' => 'body',
-           'F_comment' => 'comment'
-        );
+        return array( 
+                     'F_id' => 'fileId',
+                     'F_displayName' => 'displayName',
+                     'F_address' => 'address',
+                     'F_timeStamp' => 'timeStamp',
+                     'F_fileSize' => 'fileSize',
+                     'F_hash' => 'hash',
+                     'F_body' => 'body',
+                     'F_comment' => 'comment'
+                     );
     }
-    
+
     /**
      * converts an object to insert/update data
      *
      * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData()
+    public function getInsertData( )
     {
-        $values = "";
-        
-        if ($this->fileId != null) $this->addInsertData($values, 'F_id', DBJson::mysql_real_escape_string($this->fileId));
-        if ($this->displayName != null) $this->addInsertData($values, 'F_displayName', DBJson::mysql_real_escape_string($this->displayName));
-        if ($this->address != null) $this->addInsertData($values, 'F_address', DBJson::mysql_real_escape_string($this->address));
-        if ($this->timeStamp != null) $this->addInsertData($values, 'F_timeStamp', DBJson::mysql_real_escape_string($this->timeStamp));
-        if ($this->fileSize != null) $this->addInsertData($values, 'F_fileSize', DBJson::mysql_real_escape_string($this->fileSize));
-        if ($this->hash != null) $this->addInsertData($values, 'F_hash', DBJson::mysql_real_escape_string($this->hash));
-        if ($this->comment != null) $this->addInsertData($values, 'F_comment', DBJson::mysql_real_escape_string($this->comment));
-        
-        if ($values != ""){
-            $values=substr($values,1);
+        $values = '';
+
+        if ( $this->fileId != null )
+            $this->addInsertData( 
+                                 $values,
+                                 'F_id',
+                                 DBJson::mysql_real_escape_string( $this->fileId )
+                                 );
+        if ( $this->displayName != null )
+            $this->addInsertData( 
+                                 $values,
+                                 'F_displayName',
+                                 DBJson::mysql_real_escape_string( $this->displayName )
+                                 );
+        if ( $this->address != null )
+            $this->addInsertData( 
+                                 $values,
+                                 'F_address',
+                                 DBJson::mysql_real_escape_string( $this->address )
+                                 );
+        if ( $this->timeStamp != null )
+            $this->addInsertData( 
+                                 $values,
+                                 'F_timeStamp',
+                                 DBJson::mysql_real_escape_string( $this->timeStamp )
+                                 );
+        if ( $this->fileSize != null )
+            $this->addInsertData( 
+                                 $values,
+                                 'F_fileSize',
+                                 DBJson::mysql_real_escape_string( $this->fileSize )
+                                 );
+        if ( $this->hash != null )
+            $this->addInsertData( 
+                                 $values,
+                                 'F_hash',
+                                 DBJson::mysql_real_escape_string( $this->hash )
+                                 );
+        if ( $this->comment != null )
+            $this->addInsertData( 
+                                 $values,
+                                 'F_comment',
+                                 DBJson::mysql_real_escape_string( $this->comment )
+                                 );
+
+        if ( $values != '' ){
+            $values = substr( 
+                             $values,
+                             1
+                             );
         }
         return $values;
     }
-    
+
     /**
      * returns a sting/string[] of the database primary key/keys
-     * 
+     *
      * @return the primary key/keys
      */
-    public static function getDbPrimaryKey()
+    public static function getDbPrimaryKey( )
     {
-        return 'F_id';
-    } 
-           
+        return'F_id';
+    }
+
     /**
      * the constructor
-     * 
+     *
      * @param $data an assoc array with the object informations
      */
-    public function __construct($data=array())
+    public function __construct( $data = array( ) )
     {
-        if ($data==null)
-            $data = array();
-        
-        foreach ($data AS $key => $value) {
-            if (isset($key)){
-                $this->{$key} = $value;
+        if ( $data == null )
+            $data = array( );
+
+        foreach ( $data AS $key => $value ){
+            if ( isset( $key ) ){
+                $this->{
+                    $key
+                    
+                } = $value;
             }
         }
     }
-    
+
     /**
      * encodes an object to json
-     * 
+     *
      * @param $data the object
      *
      * @return the json encoded object
      */
-    public static function encodeFile($data)
+    public static function encodeFile( $data )
     {
-        return json_encode($data);
+        return json_encode( $data );
     }
 
     /**
      * decodes $data to an object
-     * 
-     * @param string $data json encoded data (decode=true) 
+     *
+     * @param string $data json encoded data (decode=true)
      * or json decoded data (decode=false)
      * @param bool $decode specifies whether the data must be decoded
      *
      * @return the object
      */
-    public static function decodeFile($data, $decode=true)
-    {   
-        if ($decode && $data==null) 
-            $data = "{}";
-            
-        if ($decode)
-            $data = json_decode($data);
-            
-        if (is_array($data)){
-            $result = array();
-            foreach ($data AS $key => $value) {
-                array_push($result, new File($value));
+    public static function decodeFile( 
+                                      $data,
+                                      $decode = true
+                                      )
+    {
+        if ( $decode && 
+             $data == null )
+            $data = '{}';
+
+        if ( $decode )
+            $data = json_decode( $data );
+
+        if ( is_array( $data ) ){
+            $result = array( );
+            foreach ( $data AS $key => $value ){
+                $result[] = new File( $value );
             }
-            return $result;   
-        } else
-            return new File($data);
+            return $result;
+            
+        } else 
+            return new File( $data );
     }
-    
+
     /**
      * the json serialize function
-     */  
-    public function jsonSerialize()
+     */
+    public function jsonSerialize( )
     {
-        $list = array();
-        if ($this->fileId!==null) $list['fileId'] = $this->fileId;
-        if ($this->displayName!==null) $list['displayName'] = $this->displayName;
-        if ($this->address!==null) $list['address'] = $this->address;
-        if ($this->timeStamp!==null) $list['timeStamp'] = $this->timeStamp;
-        if ($this->fileSize!==null) $list['fileSize'] = $this->fileSize;
-        if ($this->hash!==null) $list['hash'] = $this->hash;
-        if ($this->body!==null) $list['body'] = $this->body;
-        if ($this->comment!==null) $list['comment'] = $this->comment;
-        return $list; 
+        $list = array( );
+        if ( $this->fileId !== null )
+            $list['fileId'] = $this->fileId;
+        if ( $this->displayName !== null )
+            $list['displayName'] = $this->displayName;
+        if ( $this->address !== null )
+            $list['address'] = $this->address;
+        if ( $this->timeStamp !== null )
+            $list['timeStamp'] = $this->timeStamp;
+        if ( $this->fileSize !== null )
+            $list['fileSize'] = $this->fileSize;
+        if ( $this->hash !== null )
+            $list['hash'] = $this->hash;
+        if ( $this->body !== null )
+            $list['body'] = $this->body;
+        if ( $this->comment !== null )
+            $list['comment'] = $this->comment;
+        return $list;
     }
-    
-    public static function ExtractFile($data, $singleResult = false)
+
+    public static function ExtractFile( 
+                                       $data,
+                                       $singleResult = false
+                                       )
     {
-            // generates an assoc array of files by using a defined list of 
-            // its attributes
-            $res = DBJson::getResultObjectsByAttributes($data, 
-                                        File::getDBPrimaryKey(), 
-                                        File::getDBConvert());
-            
-            if ($singleResult==true){
-                // only one object as result
-                if (count($res)>0)
-                    $res = $res[0]; 
-            }
-                
-            return $res;
+
+        // generates an assoc array of files by using a defined list of
+        // its attributes
+        $res = DBJson::getResultObjectsByAttributes( 
+                                                    $data,
+                                                    File::getDBPrimaryKey( ),
+                                                    File::getDBConvert( )
+                                                    );
+
+        if ( $singleResult == true ){
+
+            // only one object as result
+            if ( count( $res ) > 0 )
+                $res = $res[0];
+        }
+
+        return $res;
     }
 }
+
+ 
 ?>
+

@@ -1,16 +1,18 @@
-<?php
- /**
+<?php 
+
+
+/**
  * @file DBJson.php contains the DBJson class
  *
  * @author Till Uhlig
- */ 
-
+ */
 
 /**
  * the DBJson class is written for several tasks, not only json tasks
  */
 class DBJson
 {
+
     /**
      * masks control characters (like the mysql mysql_real_escape_string())
      *
@@ -18,17 +20,41 @@ class DBJson
      *
      * @return the masked text
      */
-    function mysql_real_escape_string($inp)
+    function mysql_real_escape_string( $inp )
     {
-        if(is_array($inp))
-            return array_map(__METHOD__, $inp);
+        if ( is_array( $inp ) )
+            return array_map( 
+                             __METHOD__,
+                             $inp
+                             );
 
-        if(!empty($inp) && is_string($inp)) {
-            return str_replace(array('\\', "\0", "\n", "\r", "'", '"', "\x1a"), array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'), $inp);
+        if ( !empty( $inp ) && 
+             is_string( $inp ) ){
+            return str_replace( 
+                               array( 
+                                     '\\',
+                                     "\0",
+                                     "\n",
+                                     "\r",
+                                     "'",
+                                     '"',
+                                     "\x1a"
+                                     ),
+                               array( 
+                                     '\\\\',
+                                     '\\0',
+                                     '\\n',
+                                     '\\r',
+                                     "\\'",
+                                     '\\"',
+                                     '\\Z'
+                                     ),
+                               $inp
+                               );
         }
 
         return $inp;
-    } 
+    }
 
     /**
      * The function checks whether an input list of arguments, has the correct data type
@@ -36,22 +62,31 @@ class DBJson
      *
      * @param Slim $app a running slim instance
      */
-    public static function checkInput()
+    public static function checkInput( )
     {
-        $args = func_get_args();
-        
-        // the first argument ist the slim instance, remove from the test list
-        $app = &$args[0];
-        $args = array_slice ( $args, 1, count($args) );
+        $args = func_get_args( );
 
-        foreach ($args as &$a) {
+        // the first argument ist the slim instance, remove from the test list
+        $app =  & $args[0];
+        $args = array_slice( 
+                            $args,
+                            1,
+                            count( $args )
+                            );
+
+        foreach ( $args as & $a ){
+
             // search a argument, which is not true
-            if (!$a){
+            if ( !$a ){
+
                 // one of the arguments isn't true, abort progress
-                Logger::Log("access denied",LogLevel::ERROR);
-                $app->response->setBody("[]");
-                $app->response->setStatus(412);
-                $app->stop();
+                Logger::Log( 
+                            'access denied',
+                            LogLevel::ERROR
+                            );
+                $app->response->setBody( '[]' );
+                $app->response->setStatus( 412 );
+                $app->stop( );
                 break;
             }
         }
@@ -62,21 +97,21 @@ class DBJson
      *
      * @param mysql $object a mysql answer
      *
-     * @return an array of json (string[]) 
+     * @return an array of json (string[])
      */
-    public static function getJson($object)
+    public static function getJson( $object )
     {
-        if (!$object){
-            throw new Exception("Invalid query. Error: " . mysql_error());
+        if ( !$object ){
+            throw new Exception( 'Invalid query. Error: ' . mysql_error( ) );
         }
-        
-        $res = array();
-        while ($row = mysql_fetch_assoc($object)) {
-            array_push($res, $row);
+
+        $res = array( );
+        while ( $row = mysql_fetch_assoc( $object ) ){
+            $res[] = $row;
         }
-        return json_encode($res);
+        return json_encode( $res );
     }
-        
+
     /**
      * the function reads the passed mysql object content
      *
@@ -84,16 +119,16 @@ class DBJson
      *
      * @return an array, which represents the received columns (string[][])
      */
-    public static function getRows($data)
+    public static function getRows( $data )
     {
-        $res = array();
-        
-        while ($row = mysql_fetch_assoc($data)) {                   
-            array_push($res,$row);
+        $res = array( );
+
+        while ( $row = mysql_fetch_assoc( $data ) ){
+            $res[] = $row;
         }
         return $res;
     }
-    
+
     /**
      * extract an array of attributes from a data array, using a list of object attributes
      *
@@ -104,37 +139,42 @@ class DBJson
      *
      * @return an array of assoc arrays
      */
-    public static function getObjectsByAttributes($data, $id, $attributes, $extension = "")
+    public static function getObjectsByAttributes( 
+                                                  $data,
+                                                  $id,
+                                                  $attributes,
+                                                  $extension = ''
+                                                  )
     {
-        $res = array();
+        $res = array( );
 
-        foreach ($data as $row) { 
-            $key = "";
-            if (is_array($id)){
-                foreach ($id as $di){
-                    if (isset($row[$di.$extension])){
-                        $key = $key . $row[$di.$extension] . ',';
+        foreach ( $data as $row ){
+            $key = '';
+            if ( is_array( $id ) ){
+                foreach ( $id as $di ){
+                    if ( isset( $row[$di . $extension] ) ){
+                        $key .= $row[$di . $extension] . ',';
                     }
                 }
-            } else{
-                if (isset($row[$id.$extension])){
-                $key = $row[$id.$extension];
+            } else {
+                if ( isset( $row[$id . $extension] ) ){
+                    $key = $row[$id . $extension];
                 }
             }
-            if ($key==""){
+            if ( $key == '' ){
                 continue;
             }
 
-            foreach ($attributes as $attrib => $value) {  
-                if (isset($row[$attrib.$extension])){          
-                    $res[$key][$value] =  $row[$attrib.$extension];
+            foreach ( $attributes as $attrib => $value ){
+                if ( isset( $row[$attrib . $extension] ) ){
+                    $res[$key][$value] = $row[$attrib . $extension];
                 }
             }
         }
 
         return $res;
     }
-    
+
     /**
      * extract an array of attributes from a data array, using a list of object attributes
      *
@@ -145,22 +185,27 @@ class DBJson
      *
      * @return an array of arrays
      */
-    public static function getResultObjectsByAttributes($data, $id, $attributes, $extension = "")
+    public static function getResultObjectsByAttributes( 
+                                                        $data,
+                                                        $id,
+                                                        $attributes,
+                                                        $extension = ''
+                                                        )
     {
-        $res = array();
-        foreach ($data as $row) {  
+        $res = array( );
+        foreach ( $data as $row ){
             $temp = NULL;
-            foreach ($attributes as $attrib => $value) {  
-                if (isset($row[$attrib.$extension])){              
-                    $temp[$value] =  $row[$attrib.$extension];
+            foreach ( $attributes as $attrib => $value ){
+                if ( isset( $row[$attrib . $extension] ) ){
+                    $temp[$value] = $row[$attrib . $extension];
                 }
             }
-            array_push($res,$temp);
+            $res[] = $temp;
         }
-    
+
         return $res;
     }
-    
+
     /**
      * generates insert data from input
      *
@@ -168,30 +213,46 @@ class DBJson
      * @param string[] $attributes the object attributes (string[])
      * @param string $seperator the seperator, e.g. ','
      *
-     * @return an array, with two entrys (columns and values), the elements are comma separated strings 
+     * @return an array, with two entrys (columns and values), the elements are comma separated strings
      * e.g. columns = a,b,c and values = '1','2','3'
      */
-    public static function getInsertDataFromInput($data, $attributes, $seperator)
+    public static function getInsertDataFromInput( 
+                                                  $data,
+                                                  $attributes,
+                                                  $seperator
+                                                  )
     {
         $row = $data;
 
-        $temp = array();
-        $t1 = "";
-        $t2 = "";
-        foreach ($attributes as $attrib => $value) {  
-            if (isset($row[$value]) && !is_array($row[$value]) && gettype($row[$value])!= 'object'){    
-                $t1 = $t1 . $seperator . $attrib;
-                $t2 = $t2 . $seperator . "'" . $row[$value] . "'";
+        $temp = array( );
+        $t1 = '';
+        $t2 = '';
+        foreach ( $attributes as $attrib => $value ){
+            if ( isset( $row[$value] ) && 
+                 !is_array( $row[$value] ) && 
+                 gettype( $row[$value] ) != 'object' ){
+                $t1 .= $seperator . $attrib;
+                $t2 .= $seperator . "'" . $row[$value] . "'";
             }
         }
 
-        if ($t1 != "" && $t2 != ""){
-            $t1=substr($t1,1);  
-            $t2=substr($t2,1);
-        }    
-        return array ('columns' => $t1, 'values' => $t2);
+        if ( $t1 != '' && 
+             $t2 != '' ){
+            $t1 = substr( 
+                         $t1,
+                         1
+                         );
+            $t2 = substr( 
+                         $t2,
+                         1
+                         );
+        }
+        return array( 
+                     'columns' => $t1,
+                     'values' => $t2
+                     );
     }
-    
+
     /**
      * generates update data from input
      *
@@ -201,23 +262,34 @@ class DBJson
      *
      * @return a string e.g. ",a=1, b=2, c=3"
      */
-    public static function getUpdateDataFromInput($data, $attributes, $seperator)
+    public static function getUpdateDataFromInput( 
+                                                  $data,
+                                                  $attributes,
+                                                  $seperator
+                                                  )
     {
-        $data = json_decode($data,true);
-        
-            $temp = "";
-            foreach ($attributes as $attrib => $value) {  
-                if (isset($data[$value]) && !is_array($data[$value])){    
-                    $temp = $temp . $seperator . $attrib . '=' . "'" . $data[$value] . "'";
-                }
+        $data = json_decode( 
+                            $data,
+                            true
+                            );
+
+        $temp = '';
+        foreach ( $attributes as $attrib => $value ){
+            if ( isset( $data[$value] ) && 
+                 !is_array( $data[$value] ) ){
+                $temp .= $seperator . $attrib . '=' . "'" . $data[$value] . "'";
             }
-            if ($temp != ""){
-                $temp=substr($temp,1);  
-            }
-    
+        }
+        if ( $temp != '' ){
+            $temp = substr( 
+                           $temp,
+                           1
+                           );
+        }
+
         return $temp;
-    } 
-    
+    }
+
     /**
      * concatenates two arrays by using attribute lists, removes assoc indizes
      *
@@ -231,50 +303,57 @@ class DBJson
      *
      * @return string[][], the concatenated lists
      */
-    public static function concatResultObjectLists($data, $prim, $primKey, $primAttrib, $sec, $secKey, $extension = "")
+    public static function concatResultObjectLists( 
+                                                   $data,
+                                                   $prim,
+                                                   $primKey,
+                                                   $primAttrib,
+                                                   $sec,
+                                                   $secKey,
+                                                   $extension = ''
+                                                   )
     {
-        foreach ($prim as &$row){
-            $row[$primAttrib] = array();
+        foreach ( $prim as & $row ){
+            $row[$primAttrib] = array( );
         }
-    
-        foreach ($data as $rw){
-            $key = "";
-            if (is_array($primKey)){
-                foreach ($primKey as $di){
-                    $key = $key . $rw[$di] . ',';
+
+        foreach ( $data as $rw ){
+            $key = '';
+            if ( is_array( $primKey ) ){
+                foreach ( $primKey as $di ){
+                    $key .= $rw[$di] . ',';
                 }
-            } else{
+            } else {
                 $key = $rw[$primKey];
             }
-            
-            $key2 = "";
-            if (is_array($secKey)){
-                foreach ($secKey as $di){
-                    if (isset($rw[$di.$extension])){
-                    $key2 = $key2 . $rw[$di.$extension] . ',';
+
+            $key2 = '';
+            if ( is_array( $secKey ) ){
+                foreach ( $secKey as $di ){
+                    if ( isset( $rw[$di . $extension] ) ){
+                        $key2 .= $rw[$di . $extension] . ',';
                     }
                 }
-            } else{
-                if (isset($rw[$secKey.$extension])){
-                    $key2 = $rw[$secKey.$extension];
+            } else {
+                if ( isset( $rw[$secKey . $extension] ) ){
+                    $key2 = $rw[$secKey . $extension];
                 }
             }
-            
-            if (isset($sec[$key2])){
+
+            if ( isset( $sec[$key2] ) ){
                 $prim[$key][$primAttrib][$key2] = $sec[$key2];
             }
+        }
 
+        foreach ( $prim as & $row ){
+            $row[$primAttrib] = array_values( $row[$primAttrib] );
         }
-        
-        foreach ($prim as &$row){
-            $row[$primAttrib] = array_values($row[$primAttrib]);
-        }
-        
-        $prim = array_values($prim);
+
+        $prim = array_values( $prim );
 
         return $prim;
     }
-    
+
     /**
      * concatenates two arrays by using attribute lists, assoc indizes remain
      *
@@ -288,30 +367,38 @@ class DBJson
      *
      * @return string[][], the concatenated lists
      */
-    public static function concatObjectLists($data, $prim, $primKey, $primAttrib, $sec, $secKey, $extension = "")
+    public static function concatObjectLists( 
+                                             $data,
+                                             $prim,
+                                             $primKey,
+                                             $primAttrib,
+                                             $sec,
+                                             $secKey,
+                                             $extension = ''
+                                             )
     {
-        foreach ($prim as &$row){
-            $row[$primAttrib] = array();
+        foreach ( $prim as & $row ){
+            $row[$primAttrib] = array( );
         }
-    
-        foreach ($data as $rw){
-            $key = "";
-            if (is_array($primKey)){
-                foreach ($primKey as $di){
-                    $key = $key . $rw[$di] . ',';
+
+        foreach ( $data as $rw ){
+            $key = '';
+            if ( is_array( $primKey ) ){
+                foreach ( $primKey as $di ){
+                    $key .= $rw[$di] . ',';
                 }
-            } else{
+            } else {
                 $key = $rw[$primKey];
             }
-        
-            if (isset($sec[$rw[$secKey.$extension]])){       
-                $prim[$key][$primAttrib][$rw[$secKey.$extension]] =  $sec[$rw[$secKey.$extension]];
+
+            if ( isset( $sec[$rw[$secKey . $extension]] ) ){
+                $prim[$key][$primAttrib][$rw[$secKey . $extension]] = $sec[$rw[$secKey . $extension]];
             }
         }
-    
+
         return $prim;
     }
-    
+
     /**
      * concatenates two arrays by using attribute lists, assoc indizes remain,
      * only one secondary object will attached to an primary object
@@ -326,35 +413,43 @@ class DBJson
      *
      * @return string[][], the concatenated lists
      */
-    public static function concatObjectListResult($data, $prim, $primKey, $primAttrib, $sec, $secKey, $extension = "")
+    public static function concatObjectListResult( 
+                                                  $data,
+                                                  $prim,
+                                                  $primKey,
+                                                  $primAttrib,
+                                                  $sec,
+                                                  $secKey,
+                                                  $extension = ''
+                                                  )
     {
-        foreach ($prim as &$row){
-            $row[$primAttrib] = array();
+        foreach ( $prim as & $row ){
+            $row[$primAttrib] = array( );
         }
-    
-        foreach ($data as $rw){
-            $key = "";
-            if (is_array($primKey)){
-                foreach ($primKey as $di){
-                    $key = $key . $rw[$di] . ',';
+
+        foreach ( $data as $rw ){
+            $key = '';
+            if ( is_array( $primKey ) ){
+                foreach ( $primKey as $di ){
+                    $key .= $rw[$di] . ',';
                 }
-            } else{
+            } else {
                 $key = $rw[$primKey];
             }
-            
-            if (isset($rw[$secKey.$extension]) && isset($sec[$rw[$secKey.$extension]])){        
-                $prim[$key][$primAttrib][$rw[$secKey.$extension]] =  $sec[$rw[$secKey.$extension]];
+
+            if ( isset( $rw[$secKey . $extension] ) && 
+                 isset( $sec[$rw[$secKey . $extension]] ) ){
+                $prim[$key][$primAttrib][$rw[$secKey . $extension]] = $sec[$rw[$secKey . $extension]];
             }
         }
-    
-    
-        foreach ($prim as &$row){
-            $row[$primAttrib] = array_values($row[$primAttrib]);
+
+        foreach ( $prim as & $row ){
+            $row[$primAttrib] = array_values( $row[$primAttrib] );
         }
-        
+
         return $prim;
     }
-    
+
     /**
      * concatenates two arrays by using attribute lists, removes assoc indizes,
      * only one secondary object will attached to an primary object
@@ -366,34 +461,44 @@ class DBJson
      * @param string[][] $sec the structure with objects, you want to attach
      * @param string $secKey a primary key of the objects you want to attach
      * @param string $secextension optional, a const postfix for the column names of the objects you want to attach (string)
-     * @param string $primextension optional, a const postfix for the column names of the objects where you want to attach (string) 
+     * @param string $primextension optional, a const postfix for the column names of the objects where you want to attach (string)
      *
      * @return string[][], the concatenated lists
      */
-    public static function concatObjectListsSingleResult($data, $prim, $primKey, $primAttrib, $sec, $secKey, $secextension = "", $primextension = "")
+    public static function concatObjectListsSingleResult( 
+                                                         $data,
+                                                         $prim,
+                                                         $primKey,
+                                                         $primAttrib,
+                                                         $sec,
+                                                         $secKey,
+                                                         $secextension = '',
+                                                         $primextension = ''
+                                                         )
     {
-        foreach ($data as $rw){
-            $key = "";
-            if (is_array($primKey)){
-                foreach ($primKey as $di){
-                    $key = $key . $rw[$di . $primextension] . ',';
+        foreach ( $data as $rw ){
+            $key = '';
+            if ( is_array( $primKey ) ){
+                foreach ( $primKey as $di ){
+                    $key .= $rw[$di . $primextension] . ',';
                 }
-            } else{
+            } else {
                 $key = $rw[$primKey . $primextension];
             }
 
-            if (isset($rw[$secKey.$secextension]) && isset($sec[$rw[$secKey.$secextension]])){
-                if (!isset($prim[$key][$primAttrib]))
-                    $prim[$key][$primAttrib] = $sec[$rw[$secKey.$secextension]];
+            if ( isset( $rw[$secKey . $secextension] ) && 
+                 isset( $sec[$rw[$secKey . $secextension]] ) ){
+                if ( !isset( $prim[$key][$primAttrib] ) )
+                    $prim[$key][$primAttrib] = $sec[$rw[$secKey . $secextension]];
             }
         }
-   
+
         return $prim;
     }
-    
+
     /**
      * concatenates two arrays by using attribute lists, removes assoc indizes,
-     * the secondary objects will be collected in one array, 
+     * the secondary objects will be collected in one array,
      * which will be attached to the primary object
      *
      * @param string[][] $data an array, which represents the data, received sql data
@@ -406,29 +511,40 @@ class DBJson
      *
      * @return string[][], the concatenated lists
      */
-    public static function concatResultObjectListAsArray($data, $prim, $primKey, $primAttrib, $sec, $secKey, $extension = "")
+    public static function concatResultObjectListAsArray( 
+                                                         $data,
+                                                         $prim,
+                                                         $primKey,
+                                                         $primAttrib,
+                                                         $sec,
+                                                         $secKey,
+                                                         $extension = ''
+                                                         )
     {
-        foreach ($prim as &$row){
-            $row[$primAttrib] = array();
+        foreach ( $prim as & $row ){
+            $row[$primAttrib] = array( );
         }
-    
-        foreach ($data as $rw){
-            $key = "";
-            if (is_array($primKey)){
-                foreach ($primKey as $di){
-                    $key = $key . $rw[$di] . ',';
+
+        foreach ( $data as $rw ){
+            $key = '';
+            if ( is_array( $primKey ) ){
+                foreach ( $primKey as $di ){
+                    $key .= $rw[$di] . ',';
                 }
-            } else{
+            } else {
                 $key = $rw[$primKey];
             }
-            
-            if (isset($sec[$rw[$secKey]])){
-                array_push($prim[$key][$primAttrib], $rw[$secKey]);
+
+            if ( isset( $sec[$rw[$secKey]] ) ){
+                $prim[$key][$primAttrib][] = $rw[$secKey];
             }
         }
-        
-        $prim = array_merge($prim);
+
+        $prim = array_merge( $prim );
         return $prim;
     }
 }
+
+ 
 ?>
+
