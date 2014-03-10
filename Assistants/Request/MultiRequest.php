@@ -87,7 +87,7 @@ class Request_MultiRequest
             // a request was just completed -- find out which one
             while($done = curl_multi_info_read($this->requests)) {
                 $info = curl_getinfo($done['handle']);
-                if ($info['http_code'] == 200 || $info['http_code'] == 404 || $info['http_code'] == 401)  {
+                if ($info['http_code'] == 200 || $info['http_code'] == 201 || $info['http_code'] == 404 || $info['http_code'] == 401)  {
                     
 
                     $content  = curl_multi_getcontent($done['handle']);
