@@ -302,8 +302,11 @@ class LgetSite
                     // the student id of the selected submission and the student
                     // id of the marking match
 
-                    // add marking status name to the marking
+                    // add marking status to the marking
                     $status = $marking['status'];
+                    $marking['statusId'] = $status;
+
+                    // add marking status name to the marking
                     $statusName = $markingStatus[$status]['longName'];
                     $marking['status'] = $statusName;
 
