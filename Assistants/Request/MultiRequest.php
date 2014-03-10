@@ -21,6 +21,9 @@ class Request_MultiRequest
      * requests (used in run())
      */ 
     private $handles=array();
+
+    private $rolling_window = 4;
+    private $i = 0;
     
     /**
      * the constructor
@@ -38,7 +41,10 @@ class Request_MultiRequest
      */ 
     public function addRequest($request)
     {
-        curl_multi_add_handle($this->requests,$request);   
+        if ($this->i < $this->rolling_window) {
+            $this->i = $this->i + 1;
+            curl_multi_add_handle($this->requests,$request);
+        }
         array_push($this->handles,$request);
     }
     
@@ -54,7 +60,7 @@ class Request_MultiRequest
         
         // execute all requests and waits for the first incoming 
         // "performing" message
-        do {
+       /* do {
             $status_cme = curl_multi_exec($this->requests, $running_handles);
         } while ($status_cme == CURLM_CALL_MULTI_PERFORM);
 
@@ -71,11 +77,58 @@ class Request_MultiRequest
                 } while ($status_cme == CURLM_CALL_MULTI_PERFORM);
             } else
             $status_cme = curl_multi_exec($this->requests, $running_handles);
-        }
+        }*/
+        $res = array();
+        $maxx = count($this->handles);
+        do {
+            while(($execrun = curl_multi_exec($this->requests, $running_handles)) == CURLM_CALL_MULTI_PERFORM);
+            if($execrun != CURLM_OK)
+                break;
+            // a request was just completed -- find out which one
+            while($done = curl_multi_info_read($this->requests)) {
+                $info = curl_getinfo($done['handle']);
+                if ($info['http_code'] == 200 || $info['http_code'] == 201 || $info['http_code'] == 404 || $info['http_code'] == 401)  {
+                    
+
+                    $content  = curl_multi_getcontent($done['handle']);
+
+                    $result = curl_getinfo($done['handle']);
+                    $header_size = curl_getinfo($done['handle'], CURLINFO_HEADER_SIZE);
+                    
+                    $result['headers'] = array();
+                    $head = explode("\r\n",substr($content, 0, $header_size));
+                    foreach ($head as $f){
+                        $value = split(": ",$f);
+                        if (count($value)>=2){
+                            $result['headers'][$value[0]] = $value[1];
+                        }
+                    }
+            
+                    $result['content'] = substr($content, $header_size);
+                    $result['status'] = curl_getinfo($done['handle'], CURLINFO_HTTP_CODE);
+
+                    $res[array_search($done['handle'], $this->handles)] = $result;
+                    //array_push($res,$result);
+                    
+                    if ($this->i < $maxx)
+                    curl_multi_add_handle($this->requests,$this->handles[$this->i]);
+                    $this->i = $this->i + 1;
+
+                    // remove the curl handle that just completed
+                    curl_multi_remove_handle($this->requests, $done['handle']);
+                } else {
+                    // on all other status messages simply return an empty result with status 409
+                    $result = array();
+                    $result['content'] = array();
+                    $result['status'] = 409;
+                    $res[array_search($done['handle'], $this->handles)] = $result;
+                }
+            }
+        } while ($running_handles);
         
         // now we can generate the result data for every request
-        $res = array();
-        foreach($this->handles as $k){    
+        
+        /*foreach($this->handles as $k){    
         
             $error = curl_error($k);
             
@@ -91,8 +144,8 @@ class Request_MultiRequest
                 
                 $result['headers'] = array();
                 $head = explode("\r\n",substr($content, 0, $header_size));
-                foreach ($head as $k){
-                    $value = split(": ",$k);
+                foreach ($head as $f){
+                    $value = split(": ",$f);
                     if (count($value)>=2){
                         $result['headers'][$value[0]] = $value[1];
                     }
@@ -104,8 +157,8 @@ class Request_MultiRequest
             }
 
             // close current handler
-            curl_multi_remove_handle($this->requests, $k );
-        }
+            //curl_multi_remove_handle($this->requests, $k );
+        }*/
 
         // close the multi curl object
         curl_multi_close($this->requests); 
