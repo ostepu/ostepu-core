@@ -1,0 +1,1 @@
+{"id":"170","name":"LMusterkomponente","address":"localhost\/uebungsplattform\/logic\/Musterkomponente","prefix":"musterkomponente","links":[{"id":"28","name":"out","address":"localhost\/uebungsplattform\/logic\/Controller","prefix":"","target":"14","owner":"17","relevanz":""},{"id":"","name":"","address":"","prefix":"","target":"","owner":"","relevanz":""}]}
