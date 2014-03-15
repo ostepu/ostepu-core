@@ -539,7 +539,7 @@ class LgetSite
         $URL = "{$this->lURL}/DB/group/exercisesheet/{$sheetid}";
         $handler4 = Request_CreateRequest::createGet($URL, $header, $body);
 
-        $URL = "{$this->lURL}/DB/submission/group/user/{$userid}/course/{$courseid}/selected";
+        $URL = "{$this->lURL}/DB/submission/exercisesheet/{$sheetid}/selected";
         $handler5 = Request_CreateRequest::createGet($URL, $header, $body);
 
         $URL = $this->lURL.'/DB/exercisetype';
