@@ -539,8 +539,11 @@ class LgetSite
         $URL = "{$this->lURL}/DB/group/exercisesheet/{$sheetid}";
         $handler4 = Request_CreateRequest::createGet($URL, $header, $body);
 
-        $URL = $this->lURL.'/DB/exercisetype';
+        $URL = "{$this->lURL}/DB/submission/group/user/{$userid}/course/{$courseid}/selected";
         $handler5 = Request_CreateRequest::createGet($URL, $header, $body);
+
+        $URL = $this->lURL.'/DB/exercisetype';
+        $handler6 = Request_CreateRequest::createGet($URL, $header, $body);
 
         $multiRequestHandle = new Request_MultiRequest();
         $multiRequestHandle->addRequest($handler1);
@@ -548,6 +551,7 @@ class LgetSite
         $multiRequestHandle->addRequest($handler3);
         $multiRequestHandle->addRequest($handler4);
         $multiRequestHandle->addRequest($handler5);
+        $multiRequestHandle->addRequest($handler6);
 
         $answer = $multiRequestHandle->run();
 
@@ -555,7 +559,8 @@ class LgetSite
         $markings = json_decode($answer[1]['content'], true);
         $tutors = json_decode($answer[2]['content'], true);
         $groups = json_decode($answer[3]['content'], true);
-        $possibleExerciseTypes = json_decode($answer[4]['content'], true);
+        $submissions = json_decode($answer[4]['content'], true);
+        $possibleExerciseTypes = json_decode($answer[5]['content'], true);
 
         // order exercise types by id
         $exerciseTypes = array();
@@ -608,6 +613,16 @@ class LgetSite
             }
 
             $group['exercises'] = $exercises;
+        }
+
+        foreach ($submissions as $submission) {
+            $studentId = $submission['studentId'];
+            $exerciseId = $submission['exerciseId'];
+
+            $exerciseIndex = $exerciseIndices[$exerciseId];
+
+            $group = &$userGroups[$studentId];
+            $group['exercises'][$exerciseIndex]['submission'] = $submission;
         }
 
         $filteredGroups = array();
