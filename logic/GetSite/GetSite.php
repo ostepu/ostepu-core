@@ -149,6 +149,8 @@ class LgetSite
         $answer = Request::custom('GET', $URL, $header, $body);
         $tutors = json_decode($answer['content'], true);
 
+        $response['tutorAssignments'] = array();
+
         if (!empty($tutors)) {
 
             foreach ($tutors as &$tutor) {
@@ -259,7 +261,7 @@ class LgetSite
         $multiRequestHandle->addRequest($handler5);
 
         $answer = $multiRequestHandle->run();
-        
+
         //Get neccessary data
         $sheets = json_decode($answer[0]['content'], true);
         $submissions = json_decode($answer[1]['content'], true);
