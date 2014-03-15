@@ -527,25 +527,35 @@ class LgetSite
         $response = array();
 
         //Get neccessary data
-        $URL = "{$this->lURL}/exercisesheet/course/{$courseid}/exercise";
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $sheets = json_decode($answer['content'], true);
+        $URL = "{$this->lURL}/DB/exercisesheet/course/{$courseid}/exercise";
+        $handler1 = Request_CreateRequest::createGet($URL, $header, $body);
 
         $URL = "{$this->lURL}/DB/marking/exercisesheet/{$sheetid}";
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $markings = json_decode($answer['content'], true);
+        $handler2 = Request_CreateRequest::createGet($URL, $header, $body);
 
         $URL = "{$this->lURL}/DB/user/course/{$courseid}/status/1";
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $tutors = json_decode($answer['content'], true);
+        $handler3 = Request_CreateRequest::createGet($URL, $header, $body);
 
         $URL = "{$this->lURL}/DB/group/exercisesheet/{$sheetid}";
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $groups = json_decode($answer['content'], true);
+        $handler4 = Request_CreateRequest::createGet($URL, $header, $body);
 
         $URL = $this->lURL.'/DB/exercisetype';
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $possibleExerciseTypes = json_decode($answer['content'], true);
+        $handler5 = Request_CreateRequest::createGet($URL, $header, $body);
+
+        $multiRequestHandle = new Request_MultiRequest();
+        $multiRequestHandle->addRequest($handler1);
+        $multiRequestHandle->addRequest($handler2);
+        $multiRequestHandle->addRequest($handler3);
+        $multiRequestHandle->addRequest($handler4);
+        $multiRequestHandle->addRequest($handler5);
+
+        $answer = $multiRequestHandle->run();
+
+        $sheets = json_decode($answer[0]['content'], true);
+        $markings = json_decode($answer[1]['content'], true);
+        $tutors = json_decode($answer[2]['content'], true);
+        $groups = json_decode($answer[3]['content'], true);
+        $possibleExerciseTypes = json_decode($answer[4]['content'], true);
 
         // order exercise types by id
         $exerciseTypes = array();
