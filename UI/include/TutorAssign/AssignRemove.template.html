@@ -1,16 +1,14 @@
-<form action="TutorAssign.php" method="POST">
-    <input type="hidden" name="action" value="assignRemove">
-    <div class="content-element">
-        <div class="content-header">
-            <div class="content-title left uppercase">Zuweisung aufheben</div>
-            <button class="text-button critical-color bold right">Zuweisung aufheben</button>
-        </div>
+<input type="hidden" name="action" value="AssignRemove">
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left uppercase">Zuweisung aufheben</div>
+        <button class="text-button right bold critical-color">Zuweisung aufheben</button>
+    </div>
 
-        <div class="content-body-wrapper">
-            <div class="content-body left">
-                Achtung: Alle Gruppen werden zu "Unzugeordnet" zugeteilt. Bereits kontrollierte Aufgaben
-                und Punkte werden überschrieben!
-            </div>
-        </div> <!-- end: content-body-wrapper -->
-    </div> <!-- end: content-element -->
-</form>
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            Achtung: Alle Gruppen werden zu "Unzugeordnet" zugeteilt. Alle bereits kontrollierten Aufgaben
+            und Punkte des Übungsblatts werden gelöscht!
+        </div>
+    </div> <!-- end: content-body-wrapper -->
+</div> <!-- end: content-element -->
