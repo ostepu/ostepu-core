@@ -19,7 +19,7 @@ if (isset($_POST['action'])) {
             // loads the upload history of the selected user (uploadUserID) in the 
             // selected course from GetSite
             $URL = $getSiteURI . "/uploadhistory/user/{$uid}/course/{$cid}/exercisesheet/{$sheetID}/uploaduser/{$uploadUserID}";
-            $uploadHistory_data = http_get($URL, false);
+            $uploadHistory_data = http_get($URL, true);
             $uploadHistory_data = json_decode($uploadHistory_data, true);
             $uploadHistory_data['filesystemURI'] = $filesystemURI;
         }
@@ -28,7 +28,7 @@ if (isset($_POST['action'])) {
 
 // loads data for the settings element
 $URL = $getSiteURI . "/uploadhistoryoptions/user/{$uid}/course/{$cid}";
-$uploadHistoryOptions_data = http_get($URL, false);
+$uploadHistoryOptions_data = http_get($URL, true);
 $uploadHistoryOptions_data = json_decode($uploadHistoryOptions_data, true);
 
 // adds the selected uploadUserID and sheetID

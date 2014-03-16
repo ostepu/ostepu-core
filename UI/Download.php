@@ -34,7 +34,7 @@ if ($options['download'] == 'attachments') {
         $sid = $options['sid'];
 
         $URL = "{$serverURI}/logic/Controller/DB/attachment/exercisesheet/{sid}";
-        $attachments = http_get($URL);
+        $attachments = http_get($URL, true);
         $attachments = json_decode($attachments, true);
 
         $files = array();
@@ -44,7 +44,7 @@ if ($options['download'] == 'attachments') {
 
         $fileString = json_encode($files);
 
-        $zipfile = http_post_data($filesystemURI . '/zip',  $fileString);
+        $zipfile = http_post_data($filesystemURI . '/zip',  $fileString, true);
         $zipfile = json_decode($zipfile, true);
 
         $location = "{$filesystemURI}/{$zipfile['address']}/attachments.zip";
@@ -61,7 +61,7 @@ if ($options['download'] == 'attachments') {
         $uid = $options['uid'];
 
         $URL = "{$serverURI}/logic/Controller/DB/marking/exercisesheet/{$sid}/user/{$uid}";
-        $markings = http_get($URL);
+        $markings = http_get($URL, true);
         $markings = json_decode($markings, true);
 
         $files = array();
@@ -71,7 +71,7 @@ if ($options['download'] == 'attachments') {
 
         $fileString = json_encode($files);
 
-        $zipfile = http_post_data($filesystemURI . '/zip',  $fileString);
+        $zipfile = http_post_data($filesystemURI . '/zip',  $fileString, true);
         $zipfile = json_decode($zipfile, true);
 
         $location = "{$filesystemURI}/{$zipfile['address']}/markings.zip";

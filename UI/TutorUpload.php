@@ -59,7 +59,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'TutorUpload') {
 
 // load tutorUpload data from GetSite
 $URL = $getSiteURI . "/tutorupload/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
-$tutorUpload_data = http_get($URL, false);
+$tutorUpload_data = http_get($URL, true);
 $tutorUpload_data = json_decode($tutorUpload_data, true);
 $tutorUpload_data['filesystemURI'] = $filesystemURI;
 $tutorUpload_data['cid'] = $cid;
