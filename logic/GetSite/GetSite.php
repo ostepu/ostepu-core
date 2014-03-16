@@ -1103,6 +1103,9 @@ class LgetSite
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
 
+        /**
+         * @todo maybe use multirequestes?
+         */
         // load all the data
         $URL = $this->lURL.'/DB/exercisetype';
         $answer = Request::custom('GET', $URL, $header, $body);
@@ -1146,7 +1149,6 @@ class LgetSite
         foreach ($exercisesByType as $type => $exercises) {
             $maxPointsByType[$type] = array_reduce($exercises,
                                                    function ($value, $exercise) {
-
                 if ($exercise['bonus'] == 0) {
                     // only count the
                     $value += $exercise['maxPoints'];
@@ -1173,7 +1175,13 @@ class LgetSite
               * condition per exercise type!
               */
             $exerciseTypeID = $condition['exerciseTypeId'];
-            $condition['maxPoints'] = $maxPointsByType[$exerciseTypeID];
+
+            if (isset($maxPointsByType[$exerciseTypeID])) {
+                $condition['maxPoints'] = $maxPointsByType[$exerciseTypeID];
+            } else {
+                $condition['maxPoints'] = 0;
+            }
+
             $approvalconditionsByType[$exerciseTypeID] = $condition;
 
         }
