@@ -61,6 +61,17 @@ class DBFileTest extends PHPUnit_Framework_TestCase
                               '{"fileId":"1","displayName":"a.pdf","address":"file\/abcdef","timeStamp":"1389643115","fileSize":"100","hash":"abcdef"}',
                               $result['content']
                               );
+
+        $result = Request::get( 
+                               $this->url . 'DBFile/file',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetAllFiles call'
+                            );
     }
 
     public function GetFileByHash( )
@@ -83,6 +94,17 @@ class DBFileTest extends PHPUnit_Framework_TestCase
                               '{"fileId":"1","displayName":"a.pdf","address":"file\/abcdef","timeStamp":"1389643115","fileSize":"100","hash":"abcdef"}',
                               $result['content']
                               );
+
+        $result = Request::get( 
+                               $this->url . 'DBFile/file/hash/abcdef',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetFileByHash call'
+                            );
     }
 
     public function GetFile( )
@@ -105,6 +127,17 @@ class DBFileTest extends PHPUnit_Framework_TestCase
                               '{"fileId":"1","displayName":"a.pdf","address":"file\/abcdef","timeStamp":"1389643115","fileSize":"100","hash":"abcdef"}',
                               $result['content']
                               );
+
+        $result = Request::get( 
+                               $this->url . 'DBFile/file/1',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetFile call'
+                            );
 
         $result = Request::get( 
                                $this->url . 'DBFile/file/AAA',
@@ -159,9 +192,20 @@ class DBFileTest extends PHPUnit_Framework_TestCase
                             'Unexpected HTTP status code for AddFile call'
                             );
         $this->assertContains( 
-                              '{"fileId":100}',
+                              '{"fileId":100',
                               $result['content']
                               );
+
+        $result = Request::post( 
+                                $this->url . 'DBFile/file',
+                                array( ),
+                                File::encodeFile( $obj )
+                                );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for AddFile call'
+                            );
     }
 
     public function RemoveFile( )

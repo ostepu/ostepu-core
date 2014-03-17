@@ -61,6 +61,17 @@ class DBExternalIdTest extends PHPUnit_Framework_TestCase
                               '"name":"Fachschaftsseminar fuer Mathematik"',
                               $result['content']
                               );
+
+        $result = Request::get( 
+                               $this->url . 'DBExternalId/externalid',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetAllExternalIds call'
+                            );
     }
 
     public function GetCourseExternalIds( )
@@ -83,6 +94,17 @@ class DBExternalIdTest extends PHPUnit_Framework_TestCase
                               '"name":"Fachschaftsseminar fuer Mathematik"',
                               $result['content']
                               );
+
+        $result = Request::get( 
+                               $this->url . 'DBExternalId/externalid/course/2',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetCourseExternalIds call'
+                            );
 
         $result = Request::get( 
                                $this->url . 'DBExternalId/externalid/course/AAA',
@@ -120,6 +142,17 @@ class DBExternalIdTest extends PHPUnit_Framework_TestCase
                               '"name":"Fachschaftsseminar fuer Mathematik"',
                               $result['content']
                               );
+
+        $result = Request::get( 
+                               $this->url . 'DBExternalId/externalid/Ver2',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetExternalId call'
+                            );
     }
 
     public function AddExternalId( )
@@ -171,6 +204,17 @@ class DBExternalIdTest extends PHPUnit_Framework_TestCase
                                 );
         $this->assertEquals( 
                             201,
+                            $result['status'],
+                            'Unexpected HTTP status code for SetExternalId call'
+                            );
+
+        $result = Request::post( 
+                                $this->url . 'DBExternalId/externalid',
+                                array( ),
+                                ExternalId::encodeExternalId( $obj )
+                                );
+        $this->assertEquals( 
+                            401,
                             $result['status'],
                             'Unexpected HTTP status code for SetExternalId call'
                             );

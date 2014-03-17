@@ -1,4 +1,6 @@
-<?php
+<?php 
+
+
 /**
  * @file Marking.php contains the Marking class
  */
@@ -10,6 +12,7 @@
  */
 class Marking extends Object implements JsonSerializable
 {
+
     /**
      * @var string $id The identifier of this marking.
      *
@@ -22,7 +25,7 @@ class Marking extends Object implements JsonSerializable
      *
      * @return the value of $id
      */
-    public function getId()
+    public function getId( )
     {
         return $this->id;
     }
@@ -32,7 +35,7 @@ class Marking extends Object implements JsonSerializable
      *
      * @param string $value the new value for $id
      */
-    public function setId($value)
+    public function setId( $value )
     {
         $this->id = $value;
     }
@@ -47,7 +50,7 @@ class Marking extends Object implements JsonSerializable
      *
      * @return the value of $submission
      */
-    public function getSubmission()
+    public function getSubmission( )
     {
         return $submission;
     }
@@ -57,7 +60,7 @@ class Marking extends Object implements JsonSerializable
      *
      * @param Submission $value the new value for $submission
      */
-    public function setSubmission($value)
+    public function setSubmission( $value )
     {
         $submission = $value;
     }
@@ -72,7 +75,7 @@ class Marking extends Object implements JsonSerializable
      *
      * @return the value of $tutorId
      */
-    public function getTutorId()
+    public function getTutorId( )
     {
         return $this->tutorId;
     }
@@ -82,7 +85,7 @@ class Marking extends Object implements JsonSerializable
      *
      * @param string $value the new value for $tutorId
      */
-    public function setTutorId($value)
+    public function setTutorId( $value )
     {
         $this->tutorId = $value;
     }
@@ -97,7 +100,7 @@ class Marking extends Object implements JsonSerializable
      *
      * @return the value of $tutorComment
      */
-    public function getTutorComment()
+    public function getTutorComment( )
     {
         return $this->tutorComment;
     }
@@ -107,7 +110,7 @@ class Marking extends Object implements JsonSerializable
      *
      * @param string $value the new value for $tutorComment
      */
-    public function setTutorComment($value)
+    public function setTutorComment( $value )
     {
         $this->tutorComment = $value;
     }
@@ -122,7 +125,7 @@ class Marking extends Object implements JsonSerializable
      *
      * @return the value of $file
      */
-    public function getFile()
+    public function getFile( )
     {
         return $this->file;
     }
@@ -132,7 +135,7 @@ class Marking extends Object implements JsonSerializable
      *
      * @param file $value the new value for $file
      */
-    public function setFile($value)
+    public function setFile( $value )
     {
         $this->file = $value;
     }
@@ -149,7 +152,7 @@ class Marking extends Object implements JsonSerializable
      *
      * @return the value of $points
      */
-    public function getPoints()
+    public function getPoints( )
     {
         return $this->points;
     }
@@ -159,7 +162,7 @@ class Marking extends Object implements JsonSerializable
      *
      * @param int $value the new value for $points
      */
-    public function setPoints($value)
+    public function setPoints( $value )
     {
         $this->points = $value;
     }
@@ -174,7 +177,7 @@ class Marking extends Object implements JsonSerializable
      *
      * @return the value of $outstanding
      */
-    public function getOutstanding()
+    public function getOutstanding( )
     {
         return $this->outstanding;
     }
@@ -184,7 +187,7 @@ class Marking extends Object implements JsonSerializable
      *
      * @param bool $value the new value for $outstanding
      */
-    public function setOutstanding($value)
+    public function setOutstanding( $value )
     {
         $this->outstanding = $value;
     }
@@ -199,7 +202,7 @@ class Marking extends Object implements JsonSerializable
      *
      * @return the value of $status
      */
-    public function getStatus()
+    public function getStatus( )
     {
         return $this->status;
     }
@@ -209,7 +212,7 @@ class Marking extends Object implements JsonSerializable
      *
      * @param string $value the new value for $status
      */
-    public function setStatus($value)
+    public function setStatus( $value )
     {
         $this->status = $value;
     }
@@ -224,7 +227,7 @@ class Marking extends Object implements JsonSerializable
      *
      * @return the value of $date
      */
-    public function getDate()
+    public function getDate( )
     {
         return $this->date;
     }
@@ -234,7 +237,7 @@ class Marking extends Object implements JsonSerializable
      *
      * @param date $value the new value for $date
      */
-    public function setDate($value)
+    public function setDate( $value )
     {
         $this->date = $value;
     }
@@ -243,27 +246,27 @@ class Marking extends Object implements JsonSerializable
      * @var int $hideFile Determines whether a marking file is displayed.
      */
     private $hideFile = null;
-    
+
     /**
      * the $hideFile getter
      *
      * @return the value of $hideFile
-     */ 
-    public function getHideFile()
+     */
+    public function getHideFile( )
     {
         return $this->hideFile;
     }
-    
+
     /**
      * the $hideFile setter
      *
      * @param hideFile $value the new value for $hideFile
-     */ 
-    public function setHideFile($value)
+     */
+    public function setHideFile( $value )
     {
         $this->hideFile = $value;
     }
-    
+
     /**
      * Creates an Marking object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -281,19 +284,31 @@ class Marking extends Object implements JsonSerializable
      *
      * @return an marking object
      */
-    public static function createMarking($markingId,$tutorId,$fileId,$submissionId,$tutorComment,
-                                $outstanding,$status,$points,$date, $hideFile=null)
+    public static function createMarking( 
+                                         $markingId,
+                                         $tutorId,
+                                         $fileId,
+                                         $submissionId,
+                                         $tutorComment,
+                                         $outstanding,
+                                         $status,
+                                         $points,
+                                         $date,
+                                         $hideFile = null
+                                         )
     {
-        return new Marking(array('id' => $markingId,
-        'tutorId' => $tutorId,
-        'file' => new File(array('fileId' => $fileId)),
-        'submission' => new Submission(array('id' => $submissionId)),
-        'tutorComment' => $tutorComment,
-        'outstanding' => $outstanding,
-        'status' => $status,
-        'points' => $points,
-        'hideFile' => $hideFile,
-        'date' => $date));
+        return new Marking( array( 
+                                  'id' => $markingId,
+                                  'tutorId' => $tutorId,
+                                  'file' => new File( array( 'fileId' => $fileId ) ),
+                                  'submission' => new Submission( array( 'id' => $submissionId ) ),
+                                  'tutorComment' => $tutorComment,
+                                  'outstanding' => $outstanding,
+                                  'status' => $status,
+                                  'points' => $points,
+                                  'hideFile' => $hideFile,
+                                  'date' => $date
+                                  ) );
     }
 
     /**
@@ -301,20 +316,20 @@ class Marking extends Object implements JsonSerializable
      *
      * @return the mapping array
      */
-    public static function getDbConvert()
+    public static function getDbConvert( )
     {
-        return array(
-           'M_id' => 'id',
-           'U_id_tutor' => 'tutorId',
-           'M_file' => 'file',
-           'M_submission' => 'submission',
-           'M_tutorComment' => 'tutorComment',
-           'M_outstanding' => 'outstanding',
-           'M_status' => 'status',
-           'M_points' => 'points',
-           'M_hideFile' => 'hideFile',
-           'M_date' => 'date'
-        );
+        return array( 
+                     'M_id' => 'id',
+                     'U_id_tutor' => 'tutorId',
+                     'M_file' => 'file',
+                     'M_submission' => 'submission',
+                     'M_tutorComment' => 'tutorComment',
+                     'M_outstanding' => 'outstanding',
+                     'M_status' => 'status',
+                     'M_points' => 'points',
+                     'M_hideFile' => 'hideFile',
+                     'M_date' => 'date'
+                     );
     }
 
     /**
@@ -322,23 +337,78 @@ class Marking extends Object implements JsonSerializable
      *
      * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData()
+    public function getInsertData( )
     {
-        $values = "";
+        $values = '';
 
-        if ($this->id != null) $this->addInsertData($values, 'M_id', DBJson::mysql_real_escape_string($this->id));
-        if ($this->tutorId != null) $this->addInsertData($values, 'U_id_tutor', DBJson::mysql_real_escape_string($this->tutorId));
-        if ($this->file != null && $this->file->getFileId() != null) $this->addInsertData($values, 'F_id_file', DBJson::mysql_real_escape_string($this->file->getFileId()));
-        if ($this->submission != null && $this->submission->getId() !== null) $this->addInsertData($values, 'S_id', DBJson::mysql_real_escape_string($this->submission->getId()));
-        if ($this->tutorComment != null) $this->addInsertData($values, 'M_tutorComment', DBJson::mysql_real_escape_string($this->tutorComment));
-        if ($this->outstanding != null) $this->addInsertData($values, 'M_outstanding', DBJson::mysql_real_escape_string($this->outstanding));
-        if ($this->status != null) $this->addInsertData($values, 'M_status', DBJson::mysql_real_escape_string($this->status));
-        if ($this->points != null) $this->addInsertData($values, 'M_points', DBJson::mysql_real_escape_string($this->points));
-        if ($this->date != null) $this->addInsertData($values, 'M_date', DBJson::mysql_real_escape_string($this->date));
-        if ($this->hideFile != null) $this->addInsertData($values, 'M_hideFile', DBJson::mysql_real_escape_string($this->hideFile));
+        if ( $this->id != null )
+            $this->addInsertData( 
+                                 $values,
+                                 'M_id',
+                                 DBJson::mysql_real_escape_string( $this->id )
+                                 );
+        if ( $this->tutorId != null )
+            $this->addInsertData( 
+                                 $values,
+                                 'U_id_tutor',
+                                 DBJson::mysql_real_escape_string( $this->tutorId )
+                                 );
+        if ( $this->file != null && 
+             $this->file->getFileId( ) != null )
+            $this->addInsertData( 
+                                 $values,
+                                 'F_id_file',
+                                 DBJson::mysql_real_escape_string( $this->file->getFileId( ) )
+                                 );
+        if ( $this->submission != null && 
+             $this->submission->getId( ) !== null )
+            $this->addInsertData( 
+                                 $values,
+                                 'S_id',
+                                 DBJson::mysql_real_escape_string( $this->submission->getId( ) )
+                                 );
+        if ( $this->tutorComment != null )
+            $this->addInsertData( 
+                                 $values,
+                                 'M_tutorComment',
+                                 DBJson::mysql_real_escape_string( $this->tutorComment )
+                                 );
+        if ( $this->outstanding != null )
+            $this->addInsertData( 
+                                 $values,
+                                 'M_outstanding',
+                                 DBJson::mysql_real_escape_string( $this->outstanding )
+                                 );
+        if ( $this->status != null )
+            $this->addInsertData( 
+                                 $values,
+                                 'M_status',
+                                 DBJson::mysql_real_escape_string( $this->status )
+                                 );
+        if ( $this->points != null )
+            $this->addInsertData( 
+                                 $values,
+                                 'M_points',
+                                 DBJson::mysql_real_escape_string( $this->points )
+                                 );
+        if ( $this->date != null )
+            $this->addInsertData( 
+                                 $values,
+                                 'M_date',
+                                 DBJson::mysql_real_escape_string( $this->date )
+                                 );
+        if ( $this->hideFile != null )
+            $this->addInsertData( 
+                                 $values,
+                                 'M_hideFile',
+                                 DBJson::mysql_real_escape_string( $this->hideFile )
+                                 );
 
-        if ($values != ""){
-            $values=substr($values,1);
+        if ( $values != '' ){
+            $values = substr( 
+                             $values,
+                             1
+                             );
         }
         return $values;
     }
@@ -348,9 +418,9 @@ class Marking extends Object implements JsonSerializable
      *
      * @return the primary key/keys
      */
-    public static function getDbPrimaryKey()
+    public static function getDbPrimaryKey( )
     {
-        return 'M_id';
+        return'M_id';
     }
 
     /**
@@ -358,14 +428,30 @@ class Marking extends Object implements JsonSerializable
      *
      * @return returns an mapping array
      */
-    public static function getStatusDefinition()
+    public static function getStatusDefinition( )
     {
-        return array(
-            array('id' => 0, 'shortName' => 'ne','longName' => 'nicht eingereicht'),
-            array('id' => 1, 'shortName' => 'uk','longName' => 'unkorrigiert'),
-            array('id' => 2, 'shortName' => 'vl','longName' => 'vorläufig'),
-            array('id' => 3, 'shortName' => 'k','longName' => 'korrigiert')
-        );
+        return array( 
+                     array( 
+                           'id' => 0,
+                           'shortName' => 'ne',
+                           'longName' => 'nicht eingesendet'
+                           ),
+                     array( 
+                           'id' => 1,
+                           'shortName' => 'uk',
+                           'longName' => 'unkorrigiert'
+                           ),
+                     array( 
+                           'id' => 2,
+                           'shortName' => 'vl',
+                           'longName' => 'vorläufig'
+                           ),
+                     array( 
+                           'id' => 3,
+                           'shortName' => 'k',
+                           'longName' => 'korrigiert'
+                           )
+                     );
     }
 
     /**
@@ -373,22 +459,37 @@ class Marking extends Object implements JsonSerializable
      *
      * @param $data an assoc array with the object informations
      */
-    public function __construct($data=array())
+    public function __construct( $data = array( ) )
     {
-        if ($data==null)
-            $data = array();
+        if ( $data == null )
+            $data = array( );
 
-        foreach ($data AS $key => $value) {
-             if (isset($key)){
-                if ($key == 'file'){
-                    $this->{$key} = File::decodeFile($value, false);
-                }
-                else
-                if ($key == 'submission'){
-                    $this->{$key} = Submission::decodeSubmission($value, false);
-                }
-                else
-                    $this->{$key} = $value;
+        foreach ( $data AS $key => $value ){
+            if ( isset( $key ) ){
+                if ( $key == 'file' ){
+                    $this->{
+                        $key
+                        
+                    } = File::decodeFile( 
+                                         $value,
+                                         false
+                                         );
+                    
+                } else 
+                    if ( $key == 'submission' ){
+                    $this->{
+                        $key
+                        
+                    } = Submission::decodeSubmission( 
+                                                     $value,
+                                                     false
+                                                     );
+                    
+                } else 
+                    $this->{
+                    $key
+                    
+                } = $value;
             }
         }
     }
@@ -400,9 +501,9 @@ class Marking extends Object implements JsonSerializable
      *
      * @return the json encoded object
      */
-    public static function encodeMarking($data)
+    public static function encodeMarking( $data )
     {
-        return json_encode($data);
+        return json_encode( $data );
     }
 
     /**
@@ -414,117 +515,155 @@ class Marking extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeMarking($data, $decode=true)
+    public static function decodeMarking( 
+                                         $data,
+                                         $decode = true
+                                         )
     {
-        if ($decode && $data==null)
-            $data = "{}";
+        if ( $decode && 
+             $data == null )
+            $data = '{}';
 
-        if ($decode)
-            $data = json_decode($data);
+        if ( $decode )
+            $data = json_decode( $data );
 
-        if (is_array($data)){
-            $result = array();
-            foreach ($data AS $key => $value) {
-                array_push($result, new Marking($value));
+        if ( is_array( $data ) ){
+            $result = array( );
+            foreach ( $data AS $key => $value ){
+                $result[] = new Marking( $value );
             }
             return $result;
-        }
-        else
-            return new Marking($data);
+            
+        } else 
+            return new Marking( $data );
     }
 
     /**
      * the json serialize function
      */
-    public function jsonSerialize()
+    public function jsonSerialize( )
     {
-        $list = array();
-        if ($this->id!==null) $list['id'] = $this->id;
-        if ($this->submission!==null) $list['submission'] = $this->submission;
-        if ($this->tutorId!==null) $list['tutorId'] = $this->tutorId;
-        if ($this->tutorComment!==null) $list['tutorComment'] = $this->tutorComment;
-        if ($this->file!==null) $list['file'] = $this->file;
-        if ($this->points!==null) $list['points'] = $this->points;
-        if ($this->outstanding!==null) $list['outstanding'] = $this->outstanding;
-        if ($this->status!==null) $list['status'] = $this->status;
-        if ($this->date!==null) $list['date'] = $this->date;
-        if ($this->hideFile!==null) $list['hideFile'] = $this->hideFile;
+        $list = array( );
+        if ( $this->id !== null )
+            $list['id'] = $this->id;
+        if ( $this->submission !== null )
+            $list['submission'] = $this->submission;
+        if ( $this->tutorId !== null )
+            $list['tutorId'] = $this->tutorId;
+        if ( $this->tutorComment !== null )
+            $list['tutorComment'] = $this->tutorComment;
+        if ( $this->file !== null )
+            $list['file'] = $this->file;
+        if ( $this->points !== null )
+            $list['points'] = $this->points;
+        if ( $this->outstanding !== null )
+            $list['outstanding'] = $this->outstanding;
+        if ( $this->status !== null )
+            $list['status'] = $this->status;
+        if ( $this->date !== null )
+            $list['date'] = $this->date;
+        if ( $this->hideFile !== null )
+            $list['hideFile'] = $this->hideFile;
         return $list;
     }
 
-    public static function ExtractMarking($data, $singleResult = false)
+    public static function ExtractMarking( 
+                                          $data,
+                                          $singleResult = false
+                                          )
     {
-            // generates an assoc array of files by using a defined list of
-            // its attributes
-            $files = DBJson::getObjectsByAttributes($data,
-                                            File::getDBPrimaryKey(),
-                                            File::getDBConvert());
 
-            // generates an assoc array of files by using a defined list of
-            // its attributes
-            $files2 = DBJson::getObjectsByAttributes($data,
-                                            File::getDBPrimaryKey(),
-                                            File::getDBConvert(),
-                                            '2');
+        // generates an assoc array of files by using a defined list of
+        // its attributes
+        $files = DBJson::getObjectsByAttributes( 
+                                                $data,
+                                                File::getDBPrimaryKey( ),
+                                                File::getDBConvert( )
+                                                );
 
-            // generates an assoc array of a submission by using a defined
-            // list of its attributes
-            $submissions = DBJson::getObjectsByAttributes($data,
-                                    Submission::getDBPrimaryKey(),
-                                    Submission::getDBConvert(),
-                                    '2');
+        // generates an assoc array of files by using a defined list of
+        // its attributes
+        $files2 = DBJson::getObjectsByAttributes( 
+                                                 $data,
+                                                 File::getDBPrimaryKey( ),
+                                                 File::getDBConvert( ),
+                                                 '2'
+                                                 );
 
-            // concatenates the submissions and the associated files
-            $submissions = DBJson::concatObjectListsSingleResult($data,
-                            $submissions,
-                            Submission::getDBPrimaryKey(),
-                            Submission::getDBConvert()['S_file'] ,
-                            $files2,
-                            File::getDBPrimaryKey(),
-                            '2');
+        // generates an assoc array of a submission by using a defined
+        // list of its attributes
+        $submissions = DBJson::getObjectsByAttributes( 
+                                                      $data,
+                                                      Submission::getDBPrimaryKey( ),
+                                                      Submission::getDBConvert( ),
+                                                      '2'
+                                                      );
 
-            // sets the selectedForGroup attribute
-            foreach ($submissions as &$submission){
-                if (isset($submission['selectedForGroup'])){
-                    if (isset($submission['id']) && $submission['id'] == $submission['selectedForGroup']) {
-                        $submission['selectedForGroup'] = (string) 1;
-                    } else
-                        unset($submission['selectedForGroup']);
-                }
+        // concatenates the submissions and the associated files
+        $submissions = DBJson::concatObjectListsSingleResult( 
+                                                             $data,
+                                                             $submissions,
+                                                             Submission::getDBPrimaryKey( ),
+                                                             Submission::getDBConvert( )['S_file'],
+                                                             $files2,
+                                                             File::getDBPrimaryKey( ),
+                                                             '2'
+                                                             );
+
+        // sets the selectedForGroup attribute
+        foreach ( $submissions as & $submission ){
+            if ( isset( $submission['selectedForGroup'] ) ){
+                if ( isset( $submission['id'] ) && 
+                     $submission['id'] == $submission['selectedForGroup'] ){
+                    $submission['selectedForGroup'] = ( string )1;
+                    
+                } else 
+                    unset( $submission['selectedForGroup'] );
             }
+        }
 
-            // generates an assoc array of markings by using a defined list of
-            // its attributes
-            $markings = DBJson::getObjectsByAttributes($data,
-                                    Marking::getDBPrimaryKey(),
-                                    Marking::getDBConvert());
+        // generates an assoc array of markings by using a defined list of
+        // its attributes
+        $markings = DBJson::getObjectsByAttributes( 
+                                                   $data,
+                                                   Marking::getDBPrimaryKey( ),
+                                                   Marking::getDBConvert( )
+                                                   );
 
-            // concatenates the markings and the associated files
-            $res = DBJson::concatObjectListsSingleResult($data,
-                            $markings,
-                            Marking::getDBPrimaryKey(),
-                            Marking::getDBConvert()['M_file'] ,
-                            $files,
-                            File::getDBPrimaryKey());
+        // concatenates the markings and the associated files
+        $res = DBJson::concatObjectListsSingleResult( 
+                                                     $data,
+                                                     $markings,
+                                                     Marking::getDBPrimaryKey( ),
+                                                     Marking::getDBConvert( )['M_file'],
+                                                     $files,
+                                                     File::getDBPrimaryKey( )
+                                                     );
 
-            // concatenates the markings and the associated submissions
-            $res = DBJson::concatObjectListsSingleResult($data,
-                            $res,
-                            Marking::getDBPrimaryKey(),
-                            Marking::getDBConvert()['M_submission'] ,
-                            $submissions,
-                            Submission::getDBPrimaryKey());
+        // concatenates the markings and the associated submissions
+        $res = DBJson::concatObjectListsSingleResult( 
+                                                     $data,
+                                                     $res,
+                                                     Marking::getDBPrimaryKey( ),
+                                                     Marking::getDBConvert( )['M_submission'],
+                                                     $submissions,
+                                                     Submission::getDBPrimaryKey( )
+                                                     );
 
-            // to reindex
-            $res = array_values($res);
+        // to reindex
+        $res = array_values( $res );
 
-            if ($singleResult==true){
-                // only one object as result
-                if (count($res)>0)
-                    $res = $res[0];
-            }
+        if ( $singleResult == true ){
 
-            return $res;
+            // only one object as result
+            if ( count( $res ) > 0 )
+                $res = $res[0];
+        }
+
+        return $res;
     }
 }
+
+ 
 ?>
+

@@ -63,6 +63,17 @@ class DBApprovalConditionTest extends PHPUnit_Framework_TestCase
                               );
 
         $result = Request::get( 
+                               $this->url . 'DBApprovalCondition/approvalcondition/course/1',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetCourseApprovalConditions call'
+                            );
+
+        $result = Request::get( 
                                $this->url . 'DBApprovalCondition/approvalcondition/course/AAA',
                                array( 
                                      'SESSION: abc',
@@ -98,6 +109,17 @@ class DBApprovalConditionTest extends PHPUnit_Framework_TestCase
                               '{"id":"1","courseId":"1","exerciseTypeId":"1","percentage":"0.5"}',
                               $result['content']
                               );
+
+        $result = Request::get( 
+                               $this->url . 'DBApprovalCondition/approvalcondition',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetAllApprovalConditions call'
+                            );
     }
 
     public function GetApprovalCondition( )
@@ -132,6 +154,17 @@ class DBApprovalConditionTest extends PHPUnit_Framework_TestCase
                                );
         $this->assertEquals( 
                             412,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetApprovalCondition call'
+                            );
+
+        $result = Request::get( 
+                               $this->url . 'DBApprovalCondition/approvalcondition/1',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
                             $result['status'],
                             'Unexpected HTTP status code for GetApprovalCondition call'
                             );

@@ -66,7 +66,7 @@ class DBSubmissionTest extends PHPUnit_Framework_TestCase
                             'Unexpected HTTP status code for GetSelectedSheetSubmissions call'
                             );
         $this->assertContains( 
-                              '{"id":"2","studentId":"1","exerciseId":"1","comment":"zwei","accepted":"1","date":"1389643115","flag":"1","selectedForGroup":"1"',
+                              '{"id":"2","studentId":"1","exerciseId":"1","comment":"zwei","accepted":"1","date":"1389643115","flag":"1"',
                               $result['content']
                               );
 
@@ -81,6 +81,17 @@ class DBSubmissionTest extends PHPUnit_Framework_TestCase
                                );
         $this->assertEquals( 
                             412,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetSelectedSheetSubmissions call'
+                            );
+
+        $result = Request::get( 
+                               $this->url . 'DBSubmission/submission/exercisesheet/1/selected',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
                             $result['status'],
                             'Unexpected HTTP status code for GetSelectedSheetSubmissions call'
                             );
@@ -103,7 +114,7 @@ class DBSubmissionTest extends PHPUnit_Framework_TestCase
                             'Unexpected HTTP status code for GetSheetSubmissions call'
                             );
         $this->assertContains( 
-                              '{"id":"2","studentId":"1","exerciseId":"1","comment":"zwei","accepted":"1","date":"1389643115","flag":"1","selectedForGroup":"1"',
+                              '{"id":"2","studentId":"1","exerciseId":"1","comment":"zwei","accepted":"1","date":"1389643115","flag":"1"',
                               $result['content']
                               );
 
@@ -118,6 +129,17 @@ class DBSubmissionTest extends PHPUnit_Framework_TestCase
                                );
         $this->assertEquals( 
                             412,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetSheetSubmissions call'
+                            );
+
+        $result = Request::get( 
+                               $this->url . 'DBSubmission/submission/exercisesheet/1',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
                             $result['status'],
                             'Unexpected HTTP status code for GetSheetSubmissions call'
                             );
@@ -140,7 +162,7 @@ class DBSubmissionTest extends PHPUnit_Framework_TestCase
                             'Unexpected HTTP status code for GetSelectedExerciseSubmissions call'
                             );
         $this->assertContains( 
-                              '{"id":"2","studentId":"1","exerciseId":"1","comment":"zwei","accepted":"1","date":"1389643115","flag":"1","selectedForGroup":"1"',
+                              '{"id":"2","studentId":"1","exerciseId":"1","comment":"zwei","accepted":"1","date":"1389643115","flag":"1"',
                               $result['content']
                               );
 
@@ -155,6 +177,17 @@ class DBSubmissionTest extends PHPUnit_Framework_TestCase
                                );
         $this->assertEquals( 
                             412,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetSelectedExerciseSubmissions call'
+                            );
+
+        $result = Request::get( 
+                               $this->url . 'DBSubmission/submission/exercise/1/selected',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
                             $result['status'],
                             'Unexpected HTTP status code for GetSelectedExerciseSubmissions call'
                             );
@@ -180,6 +213,17 @@ class DBSubmissionTest extends PHPUnit_Framework_TestCase
                               '{"id":"1","studentId":"1","exerciseId":"1","comment":"eins","accepted":"1","date":"1389643115","flag":"1"',
                               $result['content']
                               );
+
+        $result = Request::get( 
+                               $this->url . 'DBSubmission/submission',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetAllSubmissions call'
+                            );
     }
 
     public function GetExerciseSubmissions( )
@@ -217,6 +261,17 @@ class DBSubmissionTest extends PHPUnit_Framework_TestCase
                             $result['status'],
                             'Unexpected HTTP status code for GetExerciseSubmissions call'
                             );
+
+        $result = Request::get( 
+                               $this->url . 'DBSubmission/submission/exercise/1',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetExerciseSubmissions call'
+                            );
     }
 
     public function GetSubmission( )
@@ -251,6 +306,17 @@ class DBSubmissionTest extends PHPUnit_Framework_TestCase
                                );
         $this->assertEquals( 
                             412,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetSubmission call'
+                            );
+
+        $result = Request::get( 
+                               $this->url . 'DBSubmission/submission/1',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
                             $result['status'],
                             'Unexpected HTTP status code for GetSubmission call'
                             );
@@ -306,6 +372,17 @@ class DBSubmissionTest extends PHPUnit_Framework_TestCase
                             $result['status'],
                             'Unexpected HTTP status code for GetGroupSelectedExerciseSubmissions call'
                             );
+
+        $result = Request::get( 
+                               $this->url . 'DBSubmission/submission/group/user/2/exercise/1/selected',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetGroupSelectedExerciseSubmissions call'
+                            );
     }
 
     public function GetGroupExerciseSubmissions( )
@@ -355,6 +432,17 @@ class DBSubmissionTest extends PHPUnit_Framework_TestCase
                                );
         $this->assertEquals( 
                             412,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetGroupExerciseSubmissions call'
+                            );
+
+        $result = Request::get( 
+                               $this->url . 'DBSubmission/submission/group/user/2/exercise/1',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
                             $result['status'],
                             'Unexpected HTTP status code for GetGroupExerciseSubmissions call'
                             );
@@ -410,6 +498,17 @@ class DBSubmissionTest extends PHPUnit_Framework_TestCase
                             $result['status'],
                             'Unexpected HTTP status code for GetGroupSelectedSubmissions call'
                             );
+
+        $result = Request::get( 
+                               $this->url . 'DBSubmission/submission/group/user/2/exercisesheet/1/selected',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetGroupSelectedSubmissions call'
+                            );
     }
 
     public function GetGroupSubmissions( )
@@ -459,6 +558,17 @@ class DBSubmissionTest extends PHPUnit_Framework_TestCase
                                );
         $this->assertEquals( 
                             412,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetGroupSubmissions call'
+                            );
+
+        $result = Request::get( 
+                               $this->url . 'DBSubmission/submission/group/user/2/exercisesheet/1',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
                             $result['status'],
                             'Unexpected HTTP status code for GetGroupSubmissions call'
                             );
@@ -514,6 +624,17 @@ class DBSubmissionTest extends PHPUnit_Framework_TestCase
                             $result['status'],
                             'Unexpected HTTP status code for GetUserExerciseSubmissions call'
                             );
+
+        $result = Request::get( 
+                               $this->url . 'DBSubmission/submission/user/1/exercise/1',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetUserExerciseSubmissions call'
+                            );
     }
 
     public function AddSubmission( )
@@ -536,7 +657,7 @@ class DBSubmissionTest extends PHPUnit_Framework_TestCase
         // createSubmission($submissionId,$studentId,$fileId,$exerciseId,$comment,$accepted,$date)
         $obj = Submission::createSubmission( 
                                             '100',
-                                            '1',
+                                            '2',
                                             '1',
                                             '1',
                                             null,
@@ -618,7 +739,7 @@ class DBSubmissionTest extends PHPUnit_Framework_TestCase
         // createSubmission($submissionId,$studentId,$fileId,$exerciseId,$comment,$accepted,$date,$flag)
         $obj = Submission::createSubmission( 
                                             '100',
-                                            '1',
+                                            '2',
                                             '1',
                                             '1',
                                             'Neu',

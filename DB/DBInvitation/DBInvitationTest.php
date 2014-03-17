@@ -66,6 +66,17 @@ class DBInvitationTest extends PHPUnit_Framework_TestCase
                               );
 
         $result = Request::get( 
+                               $this->url . 'DBInvitation/invitation/exercisesheet/1',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetSheetInvitations call'
+                            );
+
+        $result = Request::get( 
                                $this->url . 'DBInvitation/invitation/exercisesheet/AAA',
                                array( 
                                      'SESSION: abc',
@@ -101,6 +112,17 @@ class DBInvitationTest extends PHPUnit_Framework_TestCase
                               '{"sheet":"1","leader":{"id":"2","userName":"lisa","email":"lisa@email.de","firstName":"Lisa","lastName":"Dietrich","flag":"1"',
                               $result['content']
                               );
+
+        $result = Request::get( 
+                               $this->url . 'DBInvitation/invitation/member/exercisesheet/1/user/1',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetSheetMemberInvitations call'
+                            );
 
         $result = Request::get( 
                                $this->url . 'DBInvitation/invitation/member/exercisesheet/1/user/AAA',
@@ -155,6 +177,17 @@ class DBInvitationTest extends PHPUnit_Framework_TestCase
                               );
 
         $result = Request::get( 
+                               $this->url . 'DBInvitation/invitation/leader/exercisesheet/1/user/2',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetSheetLeaderInvitations call'
+                            );
+
+        $result = Request::get( 
                                $this->url . 'DBInvitation/invitation/leader/exercisesheet/1/user/AAA',
                                array( 
                                      'SESSION: abc',
@@ -205,6 +238,17 @@ class DBInvitationTest extends PHPUnit_Framework_TestCase
                               '{"sheet":"1","leader":{"id":"2","userName":"lisa","email":"lisa@email.de","firstName":"Lisa","lastName":"Dietrich","flag":"1"',
                               $result['content']
                               );
+
+        $result = Request::get( 
+                               $this->url . 'DBInvitation/invitation',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetAllInvitation call'
+                            );
     }
 
     public function GetMemberInvitations( )
@@ -242,6 +286,17 @@ class DBInvitationTest extends PHPUnit_Framework_TestCase
                             $result['status'],
                             'Unexpected HTTP status code for GetMemberInvitations call'
                             );
+
+        $result = Request::get( 
+                               $this->url . 'DBInvitation/invitation/member/user/1',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetMemberInvitations call'
+                            );
     }
 
     public function GetLeaderInvitations( )
@@ -276,6 +331,17 @@ class DBInvitationTest extends PHPUnit_Framework_TestCase
                                );
         $this->assertEquals( 
                             412,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetLeaderInvitations call'
+                            );
+
+        $result = Request::get( 
+                               $this->url . 'DBInvitation/invitation/leader/user/2',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
                             $result['status'],
                             'Unexpected HTTP status code for GetLeaderInvitations call'
                             );

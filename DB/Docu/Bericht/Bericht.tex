@@ -102,6 +102,41 @@ Die Beispielverknüpfungen der \blau{DB/Components.sql} sind für die Komponente
 \input{Datenstrukturen}
  
 \input{Komponenten}
+
+\section{DB Komponenten}
+
+
+\subsection{DBControl}
+Diese Komponente nutzt die $Controller$ Klasse der \blau{Assistants/Controller.php} und verteilt eingehende Anfragen an Tabellenkomponenten des Datenbankbereichs.
+
+\subsection{Tabellenkomponenten}
+Davon sind die Komponenten \blau{DBApprovalCondition}, \blau{DBAttachment}, \blau{DBCourse}, \blau{DBCourseStatus}, \blau{DBExercise}, \blau{DBExerciseFileType}, \blau{DBExerciseSheet}, \blau{DBExerciseType}, \blau{DBExternalId}, \blau{DBFile}, \blau{DBGroup}, \blau{DBInvitation}, \blau{DBMarking}, \blau{DBSelectedSubmission}, \blau{DBSession}, \blau{DBSubmission} und \blau{DBUser} betroffen. Diese sollen Funktionen für den Zugriff auf Tabellen der Datenbank bereitstellen, dabei eingehende Daten möglichst auf Sicherheitskriterien und Korrektheit prüfen um daraus eine SQL Anfrage für die \blau{DBQuery} zu erstellen und die Anfrage auszuführen.
+
+Dabei wird von jeder Komponenten mindestens das löschen, einfügen und ändern von Einträgen in der jeweiligen Tabelle ermöglicht. Zudem das anzeigen eines einzelnes Datensatzes und aller Datensätze der Tabelle.
+
+Um möglichst exakte Abfragen stellen zu können, werden meist noch eine Reihe weitere Abfragen zu unterschiedlichsten Kriterien angeboten. Beispielsweise das Abfragen von Einsendungen anhand der Veranstaltung oder einer Übungsnummer.
+
+\subsection{DBQuery}
+Diese Komponenten führt lediglich eingehende SQL Anfragen aus, dabei kann ihr mitgeteilt werden, ob sie vor dem Ausführen der Anfrage die Korrektheit der Sessiondaten im Header der Request mit den in der Datenbank gespeicherten Sessiondaten abgleichen soll. Schlägt diese Prüfung fehl, so wird eine 401 zurückgegeben und die Anfrage abgebrochen. 
+
+Ob der Inhalt der SQL Anfrage berechtigt ist oder zu Fehlern führen kann, kann die Komponente nicht Prüfen, weil sie den Zweck und die Herkunft nicht kennt.
+
+\subsection{CControl}
+Diese Komponente soll den Zugriff auf die Tabellen $Component$ und $ComponentLinkage$ der Datenbank ermöglichen. Zudem soll sie das Verteilen der Verknüpfungen der Komponenten über \blau{CControl/send} bereitstellen. Diese Komponente kann nur direkt angesprochen werden, sie ist mit keiner anderen verbunden. Der Datenbankzugriff der $CControl$ muss gesondert in der \blau{CControl/config.ini} konfiguriert werden.
+
+\section{FS Komponenten}
+\subsection{FSControl}
+Diese Komponente nutzt die $Controller$ Klasse der \blau{Assistants/Controller.php} und verteilt eingehende Anfragen an die Komponenten \blau{FSFile} und \blau{FSZip} der Dateiverwaltung.
+
+\subsection{FSFile, FSZip}
+\subsubsection{FSFile}
+Diese Komponente dient dem generellen Speichern von Dateiinhalten, dabei entscheidet sie anhand des Hashwertes, den sie vom Dateiinhalt bildet, wo und unter welchem Namen die Datei später abgelegt werden soll. Weiterhin werden auch Befehle zum löschen und abrufen der Dateien bereitgestellt.
+
+\subsubsection{FSZip}
+Hiermit können ZIP-Archive erstellt und abgerufen werden. Dabei nutzt die Komponente den Hash der Anfrage als Dateinamen für die ZIP Dateien. Es ist möglich, ihr $File$ Objekte mit einer gütigen Adresse innerhalb der Dateiverwaltung zu übergeben, sodass sich die FSZip diese über den FSControl besorgen kann. Die Ordnerstrukturen des $DisplayName$ der einzufügenden Datei werden in das Archiv übernommen. Desweiteren können auch $File$ Objekte ohne Adresse, dafür aber mit gültigem Base64 kodiertem Dateiinhalt im $body$ des $File$ Objekts zur Erstellung genutzt werden.
+
+\subsection{FSBinder}
+Diese Komponente übernimmt das endgültige abspeichern der Dateien in ihrem Verzeichnis. Dabei arbeitet sie nur noch mit Speicherorten. Ein \blau{POST FSBinder/a/b/c/abc} führt zu einem Abspeichern der Datei $abc$ im Verzeichnis $a/b/c/$. Dabei benötigt diese Komponente Schreibrechte in ihrem Verzeichnis.
   
 \input{Request}
 

@@ -63,6 +63,17 @@ class DBCourseTest extends PHPUnit_Framework_TestCase
                               );
 
         $result = Request::get( 
+                               $this->url . 'DBCourse/course/2',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetCourse call'
+                            );
+
+        $result = Request::get( 
                                $this->url . 'DBCourse/course/AAA',
                                array( 
                                      'SESSION: abc',
@@ -98,6 +109,17 @@ class DBCourseTest extends PHPUnit_Framework_TestCase
                               '"name":"Fachschaftsseminar fuer Mathematik',
                               $result['content']
                               );
+
+        $result = Request::get( 
+                               $this->url . 'DBCourse/course',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for Courses call'
+                            );
     }
 
     public function GetUserCourses( )
@@ -120,6 +142,17 @@ class DBCourseTest extends PHPUnit_Framework_TestCase
                               '"name":"Fachschaftsseminar fuer Mathematik',
                               $result['content']
                               );
+
+        $result = Request::get( 
+                               $this->url . 'DBCourse/course/user/2',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for UserCourses call'
+                            );
 
         $result = Request::get( 
                                $this->url . 'DBCourse/course/user/AAA',
@@ -180,6 +213,17 @@ class DBCourseTest extends PHPUnit_Framework_TestCase
                               '{"id":100}',
                               $result['content']
                               );
+
+        $result = Request::post( 
+                                $this->url . 'DBCourse/course',
+                                array( ),
+                                Course::encodeCourse( $obj )
+                                );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for AddCourse call'
+                            );
     }
 
     public function DeleteCourse( )

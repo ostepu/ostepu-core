@@ -63,6 +63,17 @@ class DBSessionTest extends PHPUnit_Framework_TestCase
                               '{"user":"1","session":"abcd"}',
                               $result['content']
                               );
+
+        $result = Request::get( 
+                               $this->url . 'DBSession/session',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetAllSessions call'
+                            );
     }
 
     public function GetSessionUser( )
@@ -85,6 +96,17 @@ class DBSessionTest extends PHPUnit_Framework_TestCase
                               '{"user":"1","session":"abcd"}',
                               $result['content']
                               );
+
+        $result = Request::get( 
+                               $this->url . 'DBSession/session/abcd',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetSessionUser call'
+                            );
     }
 
     public function GetUserSession( )
@@ -180,6 +202,17 @@ class DBSessionTest extends PHPUnit_Framework_TestCase
                                 );
         $this->assertEquals( 
                             201,
+                            $result['status'],
+                            'Unexpected HTTP status code for AddSession call'
+                            );
+
+        $result = Request::delete( 
+                                  $this->url . 'DBSession/session/user/2',
+                                  array( ),
+                                  ''
+                                  );
+        $this->assertEquals( 
+                            401,
                             $result['status'],
                             'Unexpected HTTP status code for AddSession call'
                             );

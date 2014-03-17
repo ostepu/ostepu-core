@@ -62,6 +62,17 @@ class DBSelectedSubmissionTest extends PHPUnit_Framework_TestCase
                               );
 
         $result = Request::get( 
+                               $this->url . 'DBSelectedSubmission/selectedsubmission/exercisesheet/1',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetSheetSelected call'
+                            );
+
+        $result = Request::get( 
                                $this->url . 'DBSelectedSubmission/selectedsubmission/exercisesheet/AAA',
                                array( 
                                      'SESSION: abc',
@@ -99,6 +110,17 @@ class DBSelectedSubmissionTest extends PHPUnit_Framework_TestCase
                               );
 
         $result = Request::get( 
+                               $this->url . 'DBSelectedSubmission/selectedsubmission/exercise/1',
+                               array( ),
+                               ''
+                               );
+        $this->assertEquals( 
+                            401,
+                            $result['status'],
+                            'Unexpected HTTP status code for GetExerciseSelected call'
+                            );
+
+        $result = Request::get( 
                                $this->url . 'DBSelectedSubmission/selectedsubmission/exercise/AAA',
                                array( 
                                      'SESSION: abc',
@@ -117,7 +139,7 @@ class DBSelectedSubmissionTest extends PHPUnit_Framework_TestCase
     public function AddSelectedSubmission( )
     {
         $result = Request::delete( 
-                                  $this->url . 'DBSelectedSubmission/selectedsubmission/leader/4/exercise/1',
+                                  $this->url . 'DBSelectedSubmission/selectedsubmission/leader/2/exercise/2',
                                   array( 
                                         'SESSION: abc',
                                         'USER: 3',
@@ -134,8 +156,8 @@ class DBSelectedSubmissionTest extends PHPUnit_Framework_TestCase
         // createSelectedSubmission($leaderId,$submissionId,$exerciseId)
         $obj = SelectedSubmission::createSelectedSubmission( 
                                                             '4',
-                                                            '1',
-                                                            '1'
+                                                            '4',
+                                                            '2'
                                                             );
 
         $result = Request::post( 
@@ -168,7 +190,7 @@ class DBSelectedSubmissionTest extends PHPUnit_Framework_TestCase
     public function DeleteSelectedSubmission( )
     {
         $result = Request::delete( 
-                                  $this->url . 'DBSelectedSubmission/selectedsubmission/leader/4/exercise/1',
+                                  $this->url . 'DBSelectedSubmission/selectedsubmission/leader/2/exercise/2',
                                   array( 
                                         'SESSION: abc',
                                         'USER: 3',
@@ -183,7 +205,7 @@ class DBSelectedSubmissionTest extends PHPUnit_Framework_TestCase
                             );
 
         $result = Request::delete( 
-                                  $this->url . 'DBSelectedSubmission/selectedsubmission/leader/AAA/exercise/1',
+                                  $this->url . 'DBSelectedSubmission/selectedsubmission/leader/AAA/exercise/2',
                                   array( ),
                                   ''
                                   );
@@ -194,7 +216,7 @@ class DBSelectedSubmissionTest extends PHPUnit_Framework_TestCase
                             );
 
         $result = Request::delete( 
-                                  $this->url . 'DBSelectedSubmission/selectedsubmission/leader/4/exercise/AAA',
+                                  $this->url . 'DBSelectedSubmission/selectedsubmission/leader/2/exercise/AAA',
                                   array( ),
                                   ''
                                   );
@@ -205,7 +227,7 @@ class DBSelectedSubmissionTest extends PHPUnit_Framework_TestCase
                             );
 
         $result = Request::delete( 
-                                  $this->url . 'DBSelectedSubmission/selectedsubmission/leader/4/exercise/1',
+                                  $this->url . 'DBSelectedSubmission/selectedsubmission/leader/2/exercise/2',
                                   array( ),
                                   ''
                                   );
