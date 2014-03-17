@@ -238,24 +238,50 @@ fi
 
 find . -name '*.bak' -delete
 
+# create CConfig files to store the component configurations
+echo "Creating CConfig files... "
+find . -name 'CConfig.json' -delete
+echo -n "   for database... "
+find DB \( -name 'DB*' -or -name 'CC*' \) -type d -d 1 -exec touch {}/CConfig.json \;
+echo "done"
+echo -n "   for filesystem... "
+find FS -name 'FS*' -type d -d 1 -exec touch {}/CConfig.json \;
+echo "done"
+echo -n "   for logic... "
+find logic \! -name 'Include' -type d -d 1 -exec touch {}/CConfig.json \;
+echo "done"
+
 # make CConfig.json readable and writable for everyone
+echo -n "Making files writable... "
 find . -name 'CConfig.json' -exec chmod 777 {} \;
+echo "done"
+
 
 # set up database
 echo "Setting up database..."
 echo -n "    Creating schema... "
-find . -name 'Database.sql' -print0 | xargs cat | mysql -u$username -p$password -h$sqlserver 2&>/dev/null
+find . -name 'Database.sql' -print0 | xargs -0 cat | mysql -u$username -p$password -h$sqlserver 2&>/dev/null
 echo "done"
 
 if [[ $testData == true ]]; then
     echo -n "    Inserting test data ... "
-    find . -name 'Sample.sql' -print0 | xargs cat | mysql -u$username -p$password -h$sqlserver -f 2&>/dev/null
+    find . -name 'Sample.sql' -print0 | xargs -0 cat | mysql -u$username -p$password -h$sqlserver -f 2&>/dev/null
     echo "done"
 else
     echo -n "    Setting up components ... "
-    find . -name 'Components.sql' -print0 | xargs cat | mysql -u$username -p$password -h$sqlserver 2&>/dev/null
+    find . -name 'Components.sql' -print0 | xargs -0 cat | mysql -u$username -p$password -h$sqlserver 2&>/dev/null
     echo "done"
 fi
 
+echo "Sending component configuration to all components"
+curl -X GET "localhost/$webdir/DB/CControl/send"
+
+echo "Configuring UI"
+find . -name 'Boilerplate.php' -exec sed -i.bak\
+    -e "s#http://141.48.9.92/uebungsplattform#http://localhost/$webdir#g" {} \;
+
 echo "All done."
+
+find . -name '*.bak' -delete
+
 echo "We created a user 'super-admin' with password 'test' for you. We highly recommend changing the password!"
