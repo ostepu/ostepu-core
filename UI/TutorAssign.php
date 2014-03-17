@@ -10,11 +10,6 @@
 
 include_once 'include/Boilerplate.php';
 
-/**
- * @todo Remove $sid.
- */
-$sid = 40;
-
 // load user data from the database
 $URL = $getSiteURI . "/tutorassign/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
 $tutorAssign_data = http_get($URL, true);

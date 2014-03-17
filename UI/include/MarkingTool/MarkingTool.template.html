@@ -83,35 +83,39 @@
                     <div class="exercise-sheet-images">
                         <?php
                             // creates a download icon for the submission (if it exists)
-                            if(isset($exercise['submission'])) {
-                                $displayName = $exercise['submission']['file']['displayName'];
-                                $fileAddress = $exercise['submission']['file']['address'];
-                                $fileURL = $filesystemURI . '/' . $fileAddress . '/' . $displayName;
+                            if (isset($exercise['submission'])) {
+                                if ($exercise['submission']['file']['hideFile'] == "0") {
+                                    $displayName = $exercise['submission']['file']['displayName'];
+                                    $fileAddress = $exercise['submission']['file']['address'];
+                                    $fileURL = $filesystemURI . '/' . $fileAddress . '/' . $displayName;
 
-                                print '<a href="';
-                                print $fileURL;
-                                print '" title="';
-                                print $displayName;
-                                print '" class="plain" target="_blank">';
-                                print '<img src="Images/Download.png" />';
-                                print '</a>';
+                                    print '<a href="';
+                                    print $fileURL;
+                                    print '" title="';
+                                    print $displayName;
+                                    print '" class="plain" target="_blank">';
+                                    print '<img src="Images/Download.png" />';
+                                    print '</a>';
+                                }
                             }
                         ?>
 
                         <?php
                             // creates a downloadCorrection icon for the marking (if it exists)
-                            if(isset($exercise['submission']['marking'])) {
-                                $displayName = $exercise['submission']['marking']['file']['displayName'];
-                                $fileAddress = $exercise['submission']['marking']['file']['address'];
-                                $fileURL = $filesystemURI . '/' . $fileAddress . '/' . $displayName;
+                            if (isset($exercise['submission']['marking'])) {
+                                if ($exercise['submission']['markng']['file']['hideFile'] == "0") {
+                                    $displayName = $exercise['submission']['marking']['file']['displayName'];
+                                    $fileAddress = $exercise['submission']['marking']['file']['address'];
+                                    $fileURL = $filesystemURI . '/' . $fileAddress . '/' . $displayName;
 
-                                print '<a href="';
-                                print $fileURL;
-                                print '" title="';
-                                print $displayName;
-                                print '" class="plain" target="_blank">';
-                                print '<img src="Images/DownloadCorrection.png" />';
-                                print '</a>';
+                                    print '<a href="';
+                                    print $fileURL;
+                                    print '" title="';
+                                    print $displayName;
+                                    print '" class="plain" target="_blank">';
+                                    print '<img src="Images/DownloadCorrection.png" />';
+                                    print '</a>';
+                                }
                             }
                         ?>
 

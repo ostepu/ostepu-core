@@ -35,7 +35,8 @@
 
                         <div class="exercise-points">
                             <?php // prints the achieved and the maximum points ?>
-                            <?php if(isset($exercise['submission']['marking'])): ?>
+                            <?php if (isset($exercise['submission']['marking'])
+                                     && $exercise['submission']['marking']['statusId'] >= 2): ?>
                                 <?= $exercise['submission']['marking']['points'] ?>
                             <?php else: ?>
                                 -
@@ -66,7 +67,7 @@
                             <?php endif; ?>
 
                             <?php // creates a download icon for the submission (if it exists) ?>
-                            <?php if(isset($exercise['submission'])): ?>
+                            <?php if(isset($exercise['submission']) && $exercise['submission']['hideFile'] == "0"): ?>
                                 <?php $displayName = $exercise['submission']['file']['displayName']; ?>
                                 <?php $fileAddress = $exercise['submission']['file']['address']; ?>
                                 <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
@@ -91,8 +92,11 @@
                             <?php /**
                                    * @todo add "&& !$isExpired" to if condition after testing.
                                    */ ?>
-                            <?php if (isset($exercise['submission']) && $sheet['group']['leader']['id'] == $uid): ?>
-                                    <input type="image" name="deleteSubmission" value="<?= $exercise['submission']['id'] ?>" class="text-button" src="Images/Delete.png" />
+                            <?php if (isset($exercise['submission']) 
+                                      && $sheet['group']['leader']['id'] == $uid
+                                      && $exercise['submission']['hideFile'] == "0"): ?>
+                                    <input type="image" name="deleteSubmission" value="<?= $exercise['submission']['id'] ?>" 
+                                           class="text-button" src="Images/Delete.png" title="Einsendung löschen" />
                             <?php endif; ?>
                         </div>
 

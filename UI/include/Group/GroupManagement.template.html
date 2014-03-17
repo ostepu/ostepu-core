@@ -27,6 +27,7 @@
             foreach ($exercises as $exercise):
                 $exerciseCounter++;
                 $hasSelectedSubmissions = false;
+                $noSubmission = true;
 
                 // prints exercise title
                 print '<div class="group-exercise-title bold uppercase new-line">';
@@ -39,48 +40,51 @@
                         $submission = $userExerciseSubmission['submission'];
                         $user = $userExerciseSubmission['user'];
 
-                        if ($isLeader || isset($submission['selectedForGroup'])):
-                            print '<div class="left radio new-line">';
-                            if ($isLeader):
-                                // prints a radio button for setting the submission as selected
-                                // (group leaders only)
-                                print '<input type="radio" name="';
-                                print 'exercises[' . $exerciseID . ']';
-                                print '" id="';
-                                print $exerciseID;
-                                print '"';
-                                print isset($submission['selectedForGroup']) ? ' checked="checked"' : NULL;
-                                print '" value="';
-                                print $submission['id'];
-                                print '" />';
-                            else:
-                                $hasSelectedSubmissions = true;
+                        if ($submission['hideFile'] == "0"):
+                            if ($isLeader || isset($submission['selectedForGroup'])):
+                                $noSubmission = false;
+                                print '<div class="left radio new-line">';
+                                if ($isLeader):
+                                    // prints a radio button for setting the submission as selected
+                                    // (group leaders only)
+                                    print '<input type="radio" name="';
+                                    print 'exercises[' . $exerciseID . ']';
+                                    print '" id="';
+                                    print $exerciseID;
+                                    print '"';
+                                    print isset($submission['selectedForGroup']) ? ' checked="checked"' : NULL;
+                                    print '" value="';
+                                    print $submission['id'];
+                                    print '" />';
+                                else:
+                                    $hasSelectedSubmissions = true;
+                                endif;
+                                print '</div>';
+
+                                // prints the name of the member
+                                print '<div class="group-member-name left">';
+                                print $user['firstName'] . ' ' . $user['lastName'] . ' ';
+                                print '</div>';
+
+                                $displayName = $submission['file']['displayName'];
+                                $fileAddress = $submission['file']['address'];
+
+                                // prints a link for downloading the submission
+                                print '<a class="left body-option-color" href="';
+                                print $filesystemURI . '/' . $fileAddress . '/' . $displayName;
+                                print '" title="';
+                                print $displayName;
+                                print '" target="_blank">Einsendung ansehen</a>';
                             endif;
-                            print '</div>';
-
-                            // prints the name of the member
-                            print '<div class="group-member-name left">';
-                            print $user['firstName'] . ' ' . $user['lastName'] . ' ';
-                            print '</div>';
-
-                            $displayName = $submission['file']['displayName'];
-                            $fileAddress = $submission['file']['address'];
-
-                            // prints a link for downloading the submission
-                            print '<a class="left body-option-color" href="';
-                            print $filesystemURI . '/' . $fileAddress . '/' . $displayName;
-                            print '" title="';
-                            print $displayName;
-                            print '" target="_blank">Einsendung ansehen</a>';
                         endif;
                     endforeach;
                 endif;
 
-                if (!$hasSelectedSubmissions && !$isLeader):
+                if ((!$hasSelectedSubmissions && !$isLeader) || $noSubmission):
                     print '<div class="left radio new-line">';
                     print 'Keine ausgewählten Einsendungen vorhanden.';
                     print '</div>';
-                elseif (empty($exercise['groupSubmissions'])):
+                elseif (empty($exercise['groupSubmissions']) || $noSubmission):
                     print '<div class="left radio new-line">';
                     print 'Keine Einsendungen vorhanden.';
                     print '</div>';
