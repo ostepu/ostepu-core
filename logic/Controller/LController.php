@@ -1,7 +1,7 @@
 <?php
 /**
  * @file LController.php Contains the LController class
- * 
+ *
  * @author Martin Daute
  * @author Christian Elze
  * @author Peter Koenig
@@ -59,7 +59,7 @@ class LController
      */
     public function __construct($conf)
     {
-        // initialize slim    
+        // initialize slim
         $this->app = new \Slim\Slim();
         $this->app->response->headers->set('Content-Type', 'application/json');
 
@@ -78,7 +78,7 @@ class LController
     /**
      * Chooses the destination for a request.
      *
-     * Called always when this component receives a 
+     * Called always when this component receives a
      * HTTP POST, GET, PUT or DELETE
      *
      * @param array $string An array of strings that contains the URL
@@ -133,18 +133,14 @@ class LController
         foreach ($string as $str) {
             $URI = $URI.'/'.$str;
         }
-        // check if method is get, then only redirect request to save a lot of time,bandwith
-        if ($method == 'GET') {
-            $this->app->redirect('http://'.$URI);
-        } else {
-            // send the new request and set the response
-            $answer = Request::custom($method, $URI, $header, $body);
-            $this->app->response->setBody($answer['content']);
-            $this->app->response->setStatus($answer['status']);  
-            $this->app->response->headers->set('Content-Type', $answer['headers']['Content-Type']);
-            if(isset($answer['headers']['Content-Disposition'])){
-                $this->app->response->headers->set('Content-Disposition', $answer['headers']['Content-Disposition']);
-            }
+
+        // send the new request and set the response
+        $answer = Request::custom($method, $URI, $header, $body);
+        $this->app->response->setBody($answer['content']);
+        $this->app->response->setStatus($answer['status']);
+        $this->app->response->headers->set('Content-Type', $answer['headers']['Content-Type']);
+        if(isset($answer['headers']['Content-Disposition'])){
+            $this->app->response->headers->set('Content-Disposition', $answer['headers']['Content-Disposition']);
         }
     }
 }
