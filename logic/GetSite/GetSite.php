@@ -149,6 +149,8 @@ class LgetSite
         $answer = Request::custom('GET', $URL, $header, $body);
         $tutors = json_decode($answer['content'], true);
 
+        $response['tutorAssignments'] = array();
+
         if (!empty($tutors)) {
 
             foreach ($tutors as &$tutor) {
@@ -259,7 +261,7 @@ class LgetSite
         $multiRequestHandle->addRequest($handler5);
 
         $answer = $multiRequestHandle->run();
-        
+
         //Get neccessary data
         $sheets = json_decode($answer[0]['content'], true);
         $submissions = json_decode($answer[1]['content'], true);
@@ -302,8 +304,11 @@ class LgetSite
                     // the student id of the selected submission and the student
                     // id of the marking match
 
-                    // add marking status name to the marking
+                    // add marking status to the marking
                     $status = $marking['status'];
+                    $marking['statusId'] = $status;
+
+                    // add marking status name to the marking
                     $statusName = $markingStatus[$status]['longName'];
                     $marking['status'] = $statusName;
 
@@ -522,25 +527,40 @@ class LgetSite
         $response = array();
 
         //Get neccessary data
-        $URL = "{$this->lURL}/exercisesheet/course/{$courseid}/exercise";
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $sheets = json_decode($answer['content'], true);
+        $URL = "{$this->lURL}/DB/exercisesheet/course/{$courseid}/exercise";
+        $handler1 = Request_CreateRequest::createGet($URL, $header, $body);
 
         $URL = "{$this->lURL}/DB/marking/exercisesheet/{$sheetid}";
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $markings = json_decode($answer['content'], true);
+        $handler2 = Request_CreateRequest::createGet($URL, $header, $body);
 
         $URL = "{$this->lURL}/DB/user/course/{$courseid}/status/1";
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $tutors = json_decode($answer['content'], true);
+        $handler3 = Request_CreateRequest::createGet($URL, $header, $body);
 
         $URL = "{$this->lURL}/DB/group/exercisesheet/{$sheetid}";
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $groups = json_decode($answer['content'], true);
+        $handler4 = Request_CreateRequest::createGet($URL, $header, $body);
+
+        $URL = "{$this->lURL}/DB/submission/exercisesheet/{$sheetid}/selected";
+        $handler5 = Request_CreateRequest::createGet($URL, $header, $body);
 
         $URL = $this->lURL.'/DB/exercisetype';
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $possibleExerciseTypes = json_decode($answer['content'], true);
+        $handler6 = Request_CreateRequest::createGet($URL, $header, $body);
+
+        $multiRequestHandle = new Request_MultiRequest();
+        $multiRequestHandle->addRequest($handler1);
+        $multiRequestHandle->addRequest($handler2);
+        $multiRequestHandle->addRequest($handler3);
+        $multiRequestHandle->addRequest($handler4);
+        $multiRequestHandle->addRequest($handler5);
+        $multiRequestHandle->addRequest($handler6);
+
+        $answer = $multiRequestHandle->run();
+
+        $sheets = json_decode($answer[0]['content'], true);
+        $markings = json_decode($answer[1]['content'], true);
+        $tutors = json_decode($answer[2]['content'], true);
+        $groups = json_decode($answer[3]['content'], true);
+        $submissions = json_decode($answer[4]['content'], true);
+        $possibleExerciseTypes = json_decode($answer[5]['content'], true);
 
         // order exercise types by id
         $exerciseTypes = array();
@@ -593,6 +613,16 @@ class LgetSite
             }
 
             $group['exercises'] = $exercises;
+        }
+
+        foreach ($submissions as $submission) {
+            $studentId = $submission['studentId'];
+            $exerciseId = $submission['exerciseId'];
+
+            $exerciseIndex = $exerciseIndices[$exerciseId];
+
+            $group = &$userGroups[$studentId];
+            $group['exercises'][$exerciseIndex]['submission'] = $submission;
         }
 
         $filteredGroups = array();
@@ -1073,6 +1103,9 @@ class LgetSite
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
 
+        /**
+         * @todo maybe use multirequestes?
+         */
         // load all the data
         $URL = $this->lURL.'/DB/exercisetype';
         $answer = Request::custom('GET', $URL, $header, $body);
@@ -1116,7 +1149,6 @@ class LgetSite
         foreach ($exercisesByType as $type => $exercises) {
             $maxPointsByType[$type] = array_reduce($exercises,
                                                    function ($value, $exercise) {
-
                 if ($exercise['bonus'] == 0) {
                     // only count the
                     $value += $exercise['maxPoints'];
@@ -1143,7 +1175,13 @@ class LgetSite
               * condition per exercise type!
               */
             $exerciseTypeID = $condition['exerciseTypeId'];
-            $condition['maxPoints'] = $maxPointsByType[$exerciseTypeID];
+
+            if (isset($maxPointsByType[$exerciseTypeID])) {
+                $condition['maxPoints'] = $maxPointsByType[$exerciseTypeID];
+            } else {
+                $condition['maxPoints'] = 0;
+            }
+
             $approvalconditionsByType[$exerciseTypeID] = $condition;
 
         }
