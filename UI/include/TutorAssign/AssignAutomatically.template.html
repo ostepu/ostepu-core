@@ -1,19 +1,19 @@
-<form action="TutorAssign.php" method="POST">
-    <input type="hidden" name="action" value="assignAutomatically">
-    <div class="content-element">
-        <div class="content-header">
-            <div class="content-title left uppercase">Automatische Zuweisung</div>
-            <button class="text-button right bold info-color">automatisch zuteilen</button>
-        </div>
+<input type="hidden" name="action" value="AssignAutomatically">
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left uppercase">Automatische Zuweisung</div>
+        <button class="text-button right bold info-color">automatisch zuteilen</button>
+    </div>
 
-        <div class="content-body-wrapper">
-            <div class="content-body left">
-                <div class="tutor-assign-element left">
-                    Unzugeordnete automatisch zuteilen an:
-                </div>
-                <div class="tutor-assign-element left">
-                    <?php foreach ($tutorAssignments as $tutorAssignment):
-                    print '<input type="checkbox" name="tutorIDs[]" value="';
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            <div class="tutor-assign-element left">
+                Unzugeordnete automatisch zuteilen an:
+            </div>
+            <div class="tutor-assign-element left">
+                <?php 
+                foreach ($tutorAssignments as $tutorAssignment):
+                    print '<input type="checkbox" name="tutorID[]" value="';
                     print $tutorAssignment['tutor']['id'] . '" />';
 
                     if ($tutorAssignment['tutor']['userName'] != "unassigned") {
@@ -28,20 +28,9 @@
                         print "(" . count($tutorAssignment['submissions']) . ")";
                     }
 
-                    endforeach;
-                    ?>
-                </div>
-                <div class="tutor-assign-element left">
-                    nach:
-                </div>
-                <div class="tutor-assign-element left">
-                    <select name="selectionMethod">
-                        <option value="random">Zufall</option>
-                        <option value="ascending">Nr. aufsteigend</option>
-                        <option value="descending">Nr. absteigend</option>
-                    </select>
-                </div>
+                endforeach;
+                ?>
             </div>
-        </div> <!-- end: content-body-wrapper -->
-    </div> <!-- end: content-element -->
-</form>
+        </div>
+    </div> <!-- end: content-body-wrapper -->
+</div> <!-- end: content-element -->
