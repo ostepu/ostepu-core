@@ -768,6 +768,7 @@ class LgetSite
 
         if(!empty($exercisesheet)) {
             $exercises = $exercisesheet['exercises'];
+            $response['exercises'] = $exercises;
         }
 
         // load all submissions for every exercise of the exerciseSheet
