@@ -9,6 +9,7 @@
  */
 
 include_once 'include/Boilerplate.php';
+include_once 'include/FormEvaluator.php';
 
 /**
  * @todo Use form evaluator.
@@ -16,47 +17,65 @@ include_once 'include/Boilerplate.php';
 
 if (isset($_POST['action'])) {
     // automatically assigns all unassigned submissions to the selected tutors
-    if ($_POST['action'] == "AssignAutomatically" && isset($_POST['tutorID'])) {
-        // extracts the php POST data
-        $selectedTutorIDs = cleanInput($_POST['tutorID']);
+    if ($_POST['action'] == "AssignAutomatically") {
 
+        $f = new FormEvaluator($_POST);
 
-        $data = array('tutors' => array(),
-                      'unassigned' => array());
+        $f->checkArrayOfIntegersForKey('tutorIds',
+                                       FormEvaluator::REQUIRED,
+                                       'warning',
+                                       'Ungültige Tutoren.');
 
-        // load user data from the database for the first time
-        $URL = $getSiteURI . "/tutorassign/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
-        $tutorAssign_data = http_get($URL, false);
-        $tutorAssign_data = json_decode($tutorAssign_data, true);
+        if ($f->evaluate(true)) {
+            // extracts the php POST data
+            $foundValues = $f->foundValues;
+            $selectedTutorIDs = $foundValues['tutorIds'];
 
-        // adds all tutors that are selected in the form to the request body
-        foreach ($selectedTutorIDs as $tutorID) {
-            $newTutor = array('tutorId' => $tutorID);
-            $data['tutors'][] = $newTutor;
-        }
+            $data = array('tutors' => array(),
+                          'unassigned' => array());
 
-        // adds all unassigned submissions to the request body
-        if (!empty($tutorAssign_data['tutorAssignments'])) {
-            foreach ($tutorAssign_data['tutorAssignments'] as $tutorAssignment) {
-                if ($tutorAssignment['tutor']['userName'] == "unassigned") {
-                    foreach ($tutorAssignment['submissions'] as $submission) {
-                        $data['unassigned'][] = $submission;
+            // load user data from the database for the first time
+            $URL = $getSiteURI . "/tutorassign/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
+            $tutorAssign_data = http_get($URL, false);
+            $tutorAssign_data = json_decode($tutorAssign_data, true);
+
+            // adds all tutors that are selected in the form to the request body
+            foreach ($selectedTutorIDs as $tutorID) {
+                $newTutor = array('tutorId' => $tutorID);
+                $data['tutors'][] = $newTutor;
+            }
+
+            // adds all unassigned submissions to the request body
+            if (!empty($tutorAssign_data['tutorAssignments'])) {
+                foreach ($tutorAssign_data['tutorAssignments'] as $tutorAssignment) {
+                    if ($tutorAssignment['tutor']['userName'] == "unassigned") {
+                        foreach ($tutorAssignment['submissions'] as $submission) {
+                            $submission['id'] = $submission['submissionId'];
+
+                            unset($submission['submissionId']);
+                            unset($submission['unassigned']);
+
+                            $data['unassigned'][] = $submission;
+                        }
                     }
                 }
             }
-        }
 
-        $data = json_encode($data);
+            $data = json_encode($data);
 
-        $URI = $logicURI . "/tutor/auto/exercise/course/{$cid}/exercisesheet/{$sid}";
-        http_post_data($URI, $data, true, $message);
+            $URI = $logicURI . "/tutor/auto/group/course/{$cid}/exercisesheet/{$sid}";
+            http_post_data($URI, $data, true, $message);
 
-        if ($message == "201") {
-            $msg = "Die Zuweisungen wurden erfolgreich geändert.";
-            $notifications[] = MakeNotification("success", $msg);
-        } else {
-            $msg = "Bei der Zuweisung ist ein Fehler aufgetreten.";
-            $notifications[] = MakeNotification("error", $msg);
+
+            if ($message == "201" || $message == "200") {
+                $msg = "Die Zuweisungen wurden erfolgreich geändert.";
+                $notifications[] = MakeNotification("success", $msg);
+            } else {
+                $msg = "Bei der Zuweisung ist ein Fehler aufgetreten.";
+                $notifications[] = MakeNotification("error", $msg);
+            }
+        }  else {
+            $notifications = $notifications + $f->notifications;
         }
     }
 

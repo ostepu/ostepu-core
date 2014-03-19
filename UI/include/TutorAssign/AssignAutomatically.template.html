@@ -13,21 +13,16 @@
             <div class="tutor-assign-element left">
                 <?php 
                 foreach ($tutorAssignments as $tutorAssignment):
-                    print '<input type="checkbox" name="tutorID[]" value="';
-                    print $tutorAssignment['tutor']['id'] . '" />';
-
-                    if ($tutorAssignment['tutor']['userName'] != "unassigned") {
+                    if ($tutorAssignment['tutor']['userName'] != "unassigned"):
+                        print '<input type="checkbox" name="tutorIds[]" value="';
+                        print $tutorAssignment['tutor']['id'] . '" />';
                         print $tutorAssignment['tutor']['firstName'];
                         print " ";
                         print $tutorAssignment['tutor']['lastName'];
                         print " ";
                         print "(" . count($tutorAssignment['submissions']) . ")";
                         print '<br />';
-                    } else {
-                        print "Unzugeordnet ";
-                        print "(" . count($tutorAssignment['submissions']) . ")";
-                    }
-
+                    endif;
                 endforeach;
                 ?>
             </div>
