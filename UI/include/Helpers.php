@@ -251,7 +251,7 @@ EOF;
 function formatBytes($size)
 {
     $base = log($size) / log(1024);
-    $suffixes = array('', 'K', 'M', 'G', 'T');   
+    $suffixes = array('', 'K', 'M', 'G', 'T');
 
     return round(pow(1024, $base - floor($base)), 2) . $suffixes[floor($base)] . "B";
 }
@@ -314,9 +314,9 @@ function MakeNavigationElement($user,
 {
     $courses = $user['courses'];
 
-    $isSuperAdmin = ($user['userName'] == 'super-admin');
+    $isSuperAdmin = ($user['isSuperAdmin'] == 1);
 
-    if (count($courses) > 1 && $isSuperAdmin == false) {
+    if ($forIndex == true && $isSuperAdmin == false) {
         return "";
     }
 
