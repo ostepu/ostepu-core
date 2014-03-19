@@ -1,47 +1,52 @@
-<form action="TutorAssign.php" method="POST">
-    <input type="hidden" name="action" value="assignManually">
-    <div class="content-element">
-        <div class="content-header">
-            <div class="content-title left uppercase">Manuelle Zuweisung</div>
-            <button class="right info-color text-button bold">zu ausgewählter Gruppe hinzufügen</button>
-        </div>
+<input type="hidden" name="action" value="AssignManually">
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left uppercase">Manuelle Zuweisung</div>
+    </div>
 
-        <div class="content-body-wrapper">
-            <div class="content-body left">
-                <?php foreach ($tutorAssignments as $tutorAssignment): ?>
-                    <div class="tutor-assign-element left">
-                        <div class="tutor-assign-element-title bold">
-                            <?php 
-                            print '<input type="radio" name="tutorID" value="';
-                            print $tutorAssignment['tutor']['id'] . '"/>';
-                            if ($tutorAssignment['tutor']['userName'] != "unassigned") {
-                                print $tutorAssignment['tutor']['firstName'];
-                                print " ";
-                                print $tutorAssignment['tutor']['lastName'];
-                                print " ";
-                                print "(" . count($tutorAssignment['submissions']) . ")";
-                                print '<br />';
-                            } else {
-                                print "Unzugeordnet ";
-                                print "(" . count($tutorAssignment['submissions']) . ")";
-                            }
-                            ?>
-                        </div>
-                        <div class="form-field checkbox-container">
-                            <?php 
-                            foreach ($tutorAssignment['submissions'] as $submission):
-                                print '<input type="checkbox" name="';
-                                print $submission['submissionId'];
-                                print '" value="';
-                                print $submission['submissionId'] . '"/>';
-                                print $submission['submissionId'];
-                                print '<br />';
-                            endforeach;
-                            ?>
-                        </div>
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            <?php foreach ($tutorAssignments as $tutorAssignment): ?>
+                <div class="tutor-assign-element left">
+                    <div class="tutor-assign-element-title">
+                        <?php
+                        $tutorId = $tutorAssignment['tutor']['id'];
+
+                        print '<input type="radio" name="tutorID" value="';
+                        print $tutorId . '" for="';
+                        print $tutorId . '" />';
+
+                        print '<label for="';
+                        print $tutorId . '" class="tutor-name">';
+
+                        if ($tutorAssignment['tutor']['userName'] != "unassigned") {
+                            print $tutorAssignment['tutor']['firstName'];
+                            print " ";
+                            print $tutorAssignment['tutor']['lastName'];
+                            print " ";
+                            print "(" . count($tutorAssignment['submissions']) . ")";
+                        } else {
+                            print "Unzugeordnet ";
+                            print "(" . count($tutorAssignment['submissions']) . ")";
+                        }
+
+                        print '</label>';
+                        ?>
                     </div>
-                <?php endforeach; ?>
-            </div>
-        </div> <!-- end: content-body-wrapper -->
-    </div> <!-- end: content-element -->
-</form>
+                    <div class="form-field checkbox-container">
+                        <?php 
+                        foreach ($tutorAssignment['submissions'] as $submission):
+                            print '<input type="checkbox" name="';
+                            print $submission['submissionId'];
+                            print '" value="';
+                            print $submission['submissionId'] . '"/>';
+                            print $submission['submissionId'];
+                            print '<br />';
+                        endforeach;
+                        ?>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div> <!-- end: content-body-wrapper -->
+</div> <!-- end: content-element -->

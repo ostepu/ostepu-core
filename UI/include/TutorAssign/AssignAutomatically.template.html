@@ -2,35 +2,35 @@
 <div class="content-element">
     <div class="content-header">
         <div class="content-title left uppercase">Automatische Zuweisung</div>
-        <button class="text-button right bold info-color">automatisch zuteilen</button>
+        <button class="text-button right bold info-color">zuweisen</button>
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body left">
-            <div class="tutor-assign-element left">
-                Unzugeordnete automatisch zuteilen an:
-            </div>
-            <div class="tutor-assign-element left">
+            <label class="form-field left label bold new-line">
+                Unzugeordnete studentenweise zuteilen an:
+            </label>
                 <?php 
                 foreach ($tutorAssignments as $tutorAssignment):
-                    print '<input type="checkbox" name="tutorID[]" value="';
-                    print $tutorAssignment['tutor']['id'] . '" />';
+                    $tutorId = $tutorAssignment['tutor']['id'];
 
-                    if ($tutorAssignment['tutor']['userName'] != "unassigned") {
+                    if ($tutorAssignment['tutor']['userName'] != "unassigned"):
+                        print '<input type="checkbox" name="tutorIds[]" value="';
+                        print $tutorId . '" id="';
+                        print $tutorId . '" />';
+
+
+                        print '<label for="';
+                        print $tutorId . '" class="tutor-name">';
                         print $tutorAssignment['tutor']['firstName'];
                         print " ";
                         print $tutorAssignment['tutor']['lastName'];
                         print " ";
                         print "(" . count($tutorAssignment['submissions']) . ")";
-                        print '<br />';
-                    } else {
-                        print "Unzugeordnet ";
-                        print "(" . count($tutorAssignment['submissions']) . ")";
-                    }
-
+                        print '</label>';
+                    endif;
                 endforeach;
                 ?>
-            </div>
         </div>
     </div> <!-- end: content-body-wrapper -->
 </div> <!-- end: content-element -->
