@@ -26,7 +26,7 @@ function help () {
     echo -e "\tDisplay this help message."
     echo
     echo -e "    -i"
-    echo -e "\tRead required data interactively. Overrides -d -p -u -w."
+    echo -e "\tRead required data interactively. Overrides -d -p -u -w -t."
     echo
     echo -e "    -p password"
     echo -e "\tUse 'password' as password for the database."
@@ -260,16 +260,19 @@ echo "done"
 # set up database
 echo "Setting up database..."
 echo -n "    Creating schema... "
-find . -name 'Database.sql' -print0 | xargs -0 cat | mysql -u$username -p$password -h$sqlserver 2&>/dev/null
+databaseFile=$(find . -name 'Database.sql' -print0)
+mysql -u$username -p$password -h$sqlserver < $databaseFile 2&>/dev/null
 echo "done"
 
 if [[ $testData -eq 1 ]]; then
     echo -n "    Inserting test data ... "
-    find . -name 'Sample.sql' -print0 | xargs -0 cat | mysql -u$username -p$password -h$sqlserver -f 2&>/dev/null
+    dataFile=$(find . -name 'Sample.sql' -print0)
+    mysql -u$username -p$password -h$sqlserver -f < $dataFile 2&/dev/null
     echo "done"
 else
     echo -n "    Setting up components ... "
-    find . -name 'Components.sql' -print0 | xargs -0 cat | mysql -u$username -p$password -h$sqlserver 2&>/dev/null
+    componentsFile=$(find . -name 'Components.sql' -print0)
+    mysql -u$username -p$password -h$sqlserver < $componentsFile 2&>/dev/null
     echo "done"
 fi
 
