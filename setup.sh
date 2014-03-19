@@ -277,7 +277,7 @@ echo "Sending component configuration to all components"
 curl -X GET "localhost/$webdir/DB/CControl/send"
 
 echo "Configuring UI"
-find . -name 'Boilerplate.php' -exec sed -i.bak\
+find . -name 'Config.php' -exec sed -i.bak\
     -e "s#http://141.48.9.92/uebungsplattform#http://localhost/$webdir#g" {} \;
 
 echo "All done."
