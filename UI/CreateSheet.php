@@ -23,8 +23,15 @@ $URL = $getSiteURI . "/createsheet/user/{$uid}/course/{$cid}";
 $createsheetData = http_get($URL, true);
 $createsheetData = json_decode($createsheetData, true);
 
+$noContent = false;
+
 if (isset($createsheetData['exerciseTypes'])) {
     $_SESSION['JSCACHE'] = json_encode($createsheetData['exerciseTypes']);
+} else {
+    $_SESSION['JSCACHE'] = "";
+    $errormsg = "Bitte weisen Sie der Veranstaltung zugelassene Punktearten zu!";
+    array_push($notifications, MakeNotification('warning', $errormsg));
+    $noContent = true;
 }
 
 $errorInSent = false;
@@ -281,6 +288,11 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
         $w->set_config_file('include/configs/config_createSheet.json');
         $w->show();
     }
+} elseif ($noContent == true) { // show only header and errormessages
+    // wrap all the elements in some HTML and show them on the page
+    $w = new HTMLWrapper($h);
+    $w->set_config_file('include/configs/config_createSheet.json');
+    $w->show();
 } else { // otherwise show normal page
     $sheetSettings->bind($createsheetData['user']);
 
