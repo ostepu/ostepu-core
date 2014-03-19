@@ -23,7 +23,9 @@ $URL = $getSiteURI . "/createsheet/user/{$uid}/course/{$cid}";
 $createsheetData = http_get($URL, true);
 $createsheetData = json_decode($createsheetData, true);
 
-$_SESSION['JSCACHE'] = json_encode($createsheetData['exerciseTypes']);
+if (isset($createsheetData['exerciseTypes'])) {
+    $_SESSION['JSCACHE'] = json_encode($createsheetData['exerciseTypes']);
+}
 
 $errorInSent = false;
 
