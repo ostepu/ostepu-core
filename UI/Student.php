@@ -69,7 +69,7 @@ $t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetStudent.temp
 $t->bind($student_data);
 
 $w = new HTMLWrapper($h, $t);
-$w->defineForm(basename(__FILE__)."?cid=".$cid, $t);
+$w->defineForm(basename(__FILE__)."?cid=".$cid, false, $t);
 $w->set_config_file('include/configs/config_student_tutor.json');
 $w->show();
 
