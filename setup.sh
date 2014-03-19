@@ -129,7 +129,7 @@ function readUserData () {
     inserData=$(echo $inserData | tr [:lower:] [:upper:])
 
     if [[ $inserData = "Y" ]]; then
-        testData=true
+        testData=1
     fi
 }
 
@@ -137,7 +137,7 @@ username=""
 password=""
 webdir=""
 databaseName=""
-testData=false
+testData=0
 
 if [[ $# -eq 0 ]]; then
     # no command line arguments, nothing to do
@@ -163,7 +163,7 @@ while getopts 'd:f:ihp:s:u:t' optname; do
     "f")
         webdir=$OPTARG;;
     "t")
-        testData=true;;
+        testData=1;;
     ?)
         usage; exit 1;;
     *)
@@ -248,7 +248,7 @@ echo -n "   for filesystem... "
 find FS -name 'FS*' -type d -d 1 -exec touch {}/CConfig.json \;
 echo "done"
 echo -n "   for logic... "
-find logic \! -name 'Include' -type d -d 1 -exec touch {}/CConfig.json \;
+find logic \! \( -name 'Include' \) -type d -d 1 -exec touch {}/CConfig.json \;
 echo "done"
 
 # make CConfig.json readable and writable for everyone
@@ -263,7 +263,7 @@ echo -n "    Creating schema... "
 find . -name 'Database.sql' -print0 | xargs -0 cat | mysql -u$username -p$password -h$sqlserver 2&>/dev/null
 echo "done"
 
-if [[ $testData == true ]]; then
+if [[ $testData -eq 1 ]]; then
     echo -n "    Inserting test data ... "
     find . -name 'Sample.sql' -print0 | xargs -0 cat | mysql -u$username -p$password -h$sqlserver -f 2&>/dev/null
     echo "done"
