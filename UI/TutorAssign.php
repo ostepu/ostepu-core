@@ -11,10 +11,6 @@
 include_once 'include/Boilerplate.php';
 include_once 'include/FormEvaluator.php';
 
-/**
- * @todo Use form evaluator.
- */
-
 if (isset($_POST['action'])) {
     // automatically assigns all unassigned submissions to the selected tutors
     if ($_POST['action'] == "AssignAutomatically") {
@@ -65,7 +61,6 @@ if (isset($_POST['action'])) {
 
             $URI = $logicURI . "/tutor/auto/group/course/{$cid}/exercisesheet/{$sid}";
             http_post_data($URI, $data, true, $message);
-
 
             if ($message == "201" || $message == "200") {
                 $msg = "Die Zuweisungen wurden erfolgreich geändert.";
