@@ -174,6 +174,10 @@ table td {
     width: 880px;
 }
 
+.tutor-name {
+    margin-left: 10px;
+}
+
 .lower-alpha li:before {
     content: counter(item, lower-alpha);
     counter-increment: item;
@@ -228,7 +232,7 @@ ol.full-width-exercise-list .secondLevel li:before {
 }
 
 .tutor-assign-element {
-    width: 280px;
+    width: 270px;
     margin-right: 10px;
 }
 
