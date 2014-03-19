@@ -8,6 +8,7 @@
 
 include_once 'include/Helpers.php';
 include_once 'include/AbstractAuthentication.php';
+include_once 'include/Config.php';
 
 /**
  * Authentication class.
@@ -60,8 +61,9 @@ class Authentication extends AbstractAuthentication
      */
     public function loginUser($username, $password)
     {
-        $databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/user/user/{$username}";
-        $user = http_get($databaseURI, false, $message);
+        global $databaseURI;
+        $databaseURL = "{$databaseURI}/user/user/{$username}";
+        $user = http_get($databaseURL, false, $message);
         $user = json_decode($user, true);
 
         // check if user exists
@@ -77,8 +79,8 @@ class Authentication extends AbstractAuthentication
                 return $refresh;
             } else {
                 $userid = $user['id'];
-                $databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/user/user/{$userid}/IncFailedLogin";
-                $user = http_get($databaseURI, false, $message);
+                $databaseURL = "{$databaseURI}/user/user/{$userid}/IncFailedLogin";
+                $user = http_get($databaseURL, false, $message);
             }
         }
         return false;

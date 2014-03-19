@@ -7,6 +7,7 @@
  */
 
 include_once 'include/Helpers.php';
+include_once 'include/Config.php';
 
 /**
  * AbstractAuthentication class.
@@ -55,6 +56,7 @@ abstract class AbstractAuthentication
      */
     protected function refreshSession()
     {
+        global $databaseURI;
         $_SESSION['SESSION'] = $this->hashData("md5", session_id() . $_SERVER['HTTP_USER_AGENT'] . $_SERVER['REMOTE_ADDR']);
         /**
          * @todo Workaround for the not implemented session redirection in logic
@@ -66,7 +68,7 @@ abstract class AbstractAuthentication
         $sessionbody = array('user' => $_SESSION['UID'],
                              'session' => $_SESSION['SESSION']);
         $sessionbody = json_encode($sessionbody);
-        $url = "http://141.48.9.92/uebungsplattform/DB/DBControl/session";
+        $url = "{$databaseURI}/session";
         http_post_data($url, $sessionbody, false, $message);
 
         // only true if session is created in DB
@@ -125,10 +127,11 @@ abstract class AbstractAuthentication
      */
     public static function logoutUser($noback = false)
     {
+        global $databaseURI;
         if($_GET['action'] == "logout" || $noback == true) {
             // delete session in DB
             $session = $_SESSION['SESSION'];
-            http_delete("http://141.48.9.92/uebungsplattform/DB/DBControl/session/{$session}",true,$message,true);
+            http_delete("{$databaseURI}/session/{$session}",true,$message,true);
 
             // delete session in UI
             session_destroy();
@@ -138,7 +141,7 @@ abstract class AbstractAuthentication
         } else {
             // delete session in DB
             $session = $_SESSION['SESSION'];
-            http_delete("http://141.48.9.92/uebungsplattform/DB/DBControl/session/{$session}",true,$message,true);
+            http_delete("{$databaseURI}/session/{$session}",true,$message,true);
 
             // delete session in UI
             session_destroy();
