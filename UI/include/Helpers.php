@@ -314,7 +314,7 @@ function MakeNavigationElement($user,
 {
     $courses = $user['courses'];
 
-    $isSuperAdmin = ($user['userName'] == 'super-admin');
+    $isSuperAdmin = ($user['isSuperAdmin'] == 1);
 
     if ($forIndex == true && $isSuperAdmin == false) {
         return "";
