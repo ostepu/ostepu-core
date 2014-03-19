@@ -527,7 +527,7 @@ class LgetSite
         $response = array();
 
         //Get neccessary data
-        $URL = "{$this->lURL}/DB/exercisesheet/course/{$courseid}/exercise";
+        $URL = "{$this->lURL}/exercisesheet/course/{$courseid}/exercise";
         $handler1 = Request_CreateRequest::createGet($URL, $header, $body);
 
         $URL = "{$this->lURL}/DB/marking/exercisesheet/{$sheetid}";
