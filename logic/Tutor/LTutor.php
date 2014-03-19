@@ -112,8 +112,10 @@ class LTutor
      */
     public function autoAllocateByExercise($courseid, $sheetid){
         $header = $this->app->request->headers->all();
-        $body = json_decode($this->app->request->getBody());
+        $body = json_decode($this->app->request->getBody(), true);
         $URL = $this->lURL.'/DB/marking';
+        
+        $error = false;
 
         $tutors = $body['tutors'];
         $submissions = array();
@@ -151,13 +153,24 @@ class LTutor
         foreach($markings as $marking){
             $answer = Request::custom('POST', $URL, $header,
                     json_encode($marking));
+            if ($answer['status'] >= 300){
+                $error = true;
+                $errorstatus = $answer['status'];
+            }
         }
-
-        $URL = $this->lURL.'/getsite/tutorassignment/course/'
-                        .$courseid.'/exercisesheet/'.$sheetid;
-        $answer = Request::custom('GET', $URL, $header, "");
-
-        $this->app->response->setBody($answer['content']);
+        // response
+        if ($error == false){
+            $this->app->response->setStatus(201);
+            $this->app->response->setBody("");
+        } else {
+            $this->app->response->setStatus($errorstatus);
+            $this->app->response->setBody("Warning: At least one exercise was not being allocated!");
+        }
+        
+      //  $URL = $this->lURL.'/getSite/tutorassign/user/3/course/'
+      //                  .$courseid.'/exercisesheet/'.$sheetid;
+      //  $answer = Request::custom('GET', $URL, $header, "");
+      //  $this->app->response->setBody($answer['content']);
     }
 
     /**
@@ -173,6 +186,8 @@ class LTutor
         $header = $this->app->request->headers->all();
         $body = json_decode($this->app->request->getBody(), true);
         $URL = $this->lURL.'/DB/marking';
+        
+        $error = false;
 
         $tutors = $body['tutors'];
         $submissions = array();
@@ -209,13 +224,26 @@ class LTutor
         foreach($markings as $marking){
             $answer = Request::custom('POST', $URL, $header,
                     json_encode($marking));
+            if ($answer['status'] >= 300){
+                $error = true;
+                $errorstatus = $answer['status'];
+            }                    
         }
-
-        $URL = $this->lURL.'/getsite/tutorassignment/course/'
-                    .$courseid.'/exercisesheet/'.$sheetid;
-        $answer = Request::custom('GET', $URL, $header, "");
-
-        $this->app->response->setBody($answer['content']);
+        // response
+        if ($error == false){
+            $this->app->response->setStatus(201);
+            $this->app->response->setBody("");
+        } else {
+            $this->app->response->setStatus($errorstatus);
+            $this->app->response->setBody("Warning: At least one group was not being allocated!");
+        }   
+        
+        
+       // $URL = $this->lURL.'/getsite/tutorassignment/course/'
+       //             .$courseid.'/exercisesheet/'.$sheetid;
+       // $answer = Request::custom('GET', $URL, $header, "");
+       //
+       // $this->app->response->setBody($answer['content']);
     }
 
     /**
