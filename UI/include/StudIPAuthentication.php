@@ -9,6 +9,7 @@
 include_once 'include/Helpers.php';
 include_once 'include/AbstractAuthentication.php';
 include_once '../Assistants/Structures.php';
+include_once 'include/Config.php';
 
 /**
  * StudIPAuthentication class.
@@ -146,9 +147,10 @@ class StudIPAuthentication extends AbstractAuthentication
      */
     public function createUser($data)
     {
+        global $databaseURI;
         $data = User::encodeUser($data);
 
-        $url = "http://141.48.9.92/uebungsplattform/DB/DBControl/user";
+        $url = "{$databaseURI}/user";
         http_post_data($url, $data, false, $message);
 
         return $message == "201";
@@ -164,9 +166,10 @@ class StudIPAuthentication extends AbstractAuthentication
      */
     public function createCourseStatus($userId,$courseId,$status)
     {
+        global $databaseURI;
         $data = User::encodeUser(User::createCourseStatus($userId,$courseId,$status));
 
-        $url = "http://141.48.9.92/uebungsplattform/DB/DBControl/coursestatus";
+        $url = "{$databaseURI}/coursestatus";
         http_post_data($url, $data, true, $message);
 
         return $message == "201";
@@ -181,12 +184,13 @@ class StudIPAuthentication extends AbstractAuthentication
      */
     public function loginUser($username, $password)
     {
+        global $databaseURI;
         // check if logged in in studip
         $studip = $this->checkUserInStudip($this->uid,$this->sid);
 
         if ($studip == true) {
 
-            $databaseURI = "http://141.48.9.92/uebungsplattform/DB/DBControl/user/user/{$username}";
+            $databaseURI = "{$databaseURI}/user/user/{$username}";
             $this->userData = http_get($databaseURI, false, $message);
             $this->userData = json_decode($this->userData, true);
 

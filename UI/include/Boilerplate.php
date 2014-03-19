@@ -11,6 +11,7 @@ include_once 'include/HTMLWrapper.php';
 include_once 'include/Template.php';
 include_once '../Assistants/Logger.php';
 include_once 'include/Helpers.php';
+include_once 'include/Config.php';
 
 $notifications = array();
 
@@ -38,10 +39,10 @@ if (isset($_GET['suid'])) {
     Logger::Log('no submission id!\n');
 }
 
-$serverURI = "http://141.48.9.92/uebungsplattform";
-$databaseURI = $serverURI . "/DB/DBControl";
-$logicURI = $serverURI . "/logic/Controller";
-$filesystemURI = $serverURI . "/FS/FSControl";
-$getSiteURI = $serverURI . "/logic/GetSite";
+// global $serverURI;
+// global $databaseURI;
+// global $logicURI;
+// global $filesystemURI;
+// global $getSiteURI;
 
 ?>
