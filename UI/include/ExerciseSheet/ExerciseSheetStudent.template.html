@@ -25,9 +25,19 @@
         <div class="content-body-wrapper">
             <div class="content-body left">
                 <ol class="exercise-list">
-                    <?php foreach ($sheet['exercises'] as $exercise): ?>
+                    <?php 
+                    // bool if subtasks are printed
+                    $isSubtask = false;
+                    foreach ($sheet['exercises'] as $key => $exercise): 
+                    ?>
+                    <?php
+                    // make a sublist if next exercise is not a main exercise
+                    if (isset($sheet['exercises'][$key+1]) && $sheet['exercises'][$key+1]['linkName'] != 1 && $isSubtask == false) {
+                        $isSubtask = true;
+                        print "<li class=\"subexercise-list\"><ol>";
+                    }
+                    ?>
                     <li>
-
                         <div class="exercise-type">
                             <?= $exercise['typeName'] ?>
                             <?= $exercise['bonus'] ? ' (*)' : '' ?>
@@ -99,8 +109,17 @@
                                            class="text-button" src="Images/Delete.png" title="Einsendung löschen" />
                             <?php endif; ?>
                         </div>
-
                     </li>
+                    <?php
+                    // close subexerciselist if next exercise is a new mainexercise or end of exercises is reached
+                    if (isset($sheet['exercises'][$key+1]) && $sheet['exercises'][$key+1]['linkName'] == 1 && $isSubtask == true) {
+                        $isSubtask = false;
+                        print "</ol></li>";
+                    } elseif (isset($sheet['exercises'][$key+1]) == false && $isSubtask == true) {
+                        $isSubtask = false;
+                        print "</ol></li>";
+                    }
+                    ?>
                     <?php endforeach; ?>
                 </ol>
             </div>
