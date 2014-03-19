@@ -22,16 +22,24 @@
             /**
              * @todo Include sub-exercises
              */
-            $exerciseCounter = 0;
+            // bool if subtasks are printed
+            $isSubtask = false;
 
-            foreach ($exercises as $exercise):
-                $exerciseCounter++;
+            foreach ($exercises as $key => $exercise):
                 $hasSelectedSubmissions = false;
                 $noSubmission = true;
 
                 // prints exercise title
-                print '<div class="group-exercise-title bold uppercase new-line">';
-                print 'Aufgabe ' . $exerciseCounter;
+                print '<div class="group-exercise-title bold new-line">';
+                print 'AUFGABE ' . $exercise['link'];
+                // if next exercise is not main or is main but current one is subexercise or end is reached but current one is subex.
+                if ((isset($exercises[$key+1]) && $exercises[$key+1]['linkName'] != 1) ||
+                    (isset($exercises[$key+1]) && $exercises[$key+1]['linkName'] == 1 && $isSubtask == true) ||
+                    (isset($exercises[$key+1]) == false && $isSubtask == true)):
+                    // print subtask letter
+                    print chr(96+$exercise['linkName']);
+                    $isSubtask = true;
+                endif;
                 print '</div>';
 
                 if (!empty($exercise['groupSubmissions'])):
@@ -88,6 +96,11 @@
                     print '<div class="left radio new-line">';
                     print 'Keine Einsendungen vorhanden.';
                     print '</div>';
+                endif;
+                // set isSubtask to false if next exercise is a new mainexercise or end of exercises is reached
+                if ((isset($exercises[$key+1]) && $exercises[$key+1]['linkName'] == 1 && $isSubtask == true) ||
+                    (isset($exercises[$key+1]) == false && $isSubtask == true)):
+                    $isSubtask = false;
                 endif;
             endforeach; 
             ?>
