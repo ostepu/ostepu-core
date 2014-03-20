@@ -119,7 +119,7 @@ class Request_MultiRequest
                 } else {
                     // on all other status messages simply return an empty result with status 409
                     $result = array();
-                    $result['content'] = array();
+                    $result['content'] = json_encode(array());
                     $result['status'] = 409;
                     $res[array_search($done['handle'], $this->handles)] = $result;
                 }
