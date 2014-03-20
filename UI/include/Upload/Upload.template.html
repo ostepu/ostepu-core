@@ -15,11 +15,23 @@
         </div> <!-- end: content-wrapper -->
     </button>
 
-    <?php foreach($exercises as $key => $exercise): ?>
+    <?php 
+    // bool if subtasks are printed
+    $isSubtask = false;
+    foreach($exercises as $key => $exercise): 
+    ?>
         <div class="content-element">
             <div class="content-header">
-                <div class="content-title left uppercase">
-                    Aufgabe <?= $key + 1 ?>
+                <div class="content-title left">
+                    AUFGABE <?= $exercise['link'] ?><?php
+                    // if next exercise is not main or is main but current one is subexercise or end is reached but current one is subex.
+                    if ((isset($exercises[$key+1]) && $exercises[$key+1]['linkName'] != 1) ||
+                        (isset($exercises[$key+1]) && $exercises[$key+1]['linkName'] == 1 && $isSubtask == true) ||
+                        (isset($exercises[$key+1]) == false && $isSubtask == true)) {
+                        print chr(96+$exercise['linkName']);
+                        $isSubtask = true;
+                    }
+                    ?>
                 </div>
                 <button class="text-button info-color bold right">
                   alle absenden
@@ -78,6 +90,13 @@
                 </div>
             </div>
         </div>
+        <?php
+        // set isSubtask to false if next exercise is a new mainexercise or end of exercises is reached
+        if ((isset($exercises[$key+1]) && $exercises[$key+1]['linkName'] == 1 && $isSubtask == true) ||
+            (isset($exercises[$key+1]) == false && $isSubtask == true)) {
+            $isSubtask = false;
+        }
+        ?>
     <?php endforeach; ?>
 
 </form>

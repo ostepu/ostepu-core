@@ -74,3 +74,23 @@
     font-weight: bold;
     color: #6f6f6f;
 }
+
+.subexercise-list {
+    height: auto !important;
+    counter-reset: subitem !important;
+    counter-increment: item;
+    padding-bottom: 0;
+}
+
+.subexercise-list:before {
+    display: none !important;
+
+}
+
+.subexercise-list ol > li:before {
+    content: counter(item, decimal) counter(subitem, lower-alpha);
+    counter-increment: subitem !important;
+    padding-right: 25px;
+    font-weight: bold;
+    color: #6f6f6f;
+}

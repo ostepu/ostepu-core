@@ -9,11 +9,8 @@
  *
  * @todo choose correct groupsize for no Group (0 or 1)
  * @todo evaluate correct exercisetype in $subeval
- * @todo dont reset form if an error exists
  */
-ini_set('error_reporting', -1);
-ini_set('display_errors', 1);
-ini_set('html_errors', 1);
+
 include_once 'include/Boilerplate.php';
 include_once '../Assistants/Structures.php';
 include_once 'include/FormEvaluator.php';
@@ -23,8 +20,15 @@ $URL = $getSiteURI . "/createsheet/user/{$uid}/course/{$cid}";
 $createsheetData = http_get($URL, true);
 $createsheetData = json_decode($createsheetData, true);
 
+$noContent = false;
+
 if (isset($createsheetData['exerciseTypes'])) {
     $_SESSION['JSCACHE'] = json_encode($createsheetData['exerciseTypes']);
+} else {
+    $_SESSION['JSCACHE'] = "";
+    $errormsg = "Bitte weisen Sie der Veranstaltung zugelassene Punktearten zu!";
+    array_push($notifications, MakeNotification('warning', $errormsg));
+    $noContent = true;
 }
 
 $errorInSent = false;
@@ -112,15 +116,16 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                     }
 
                     // evaluate mime-types
-                    $mimeTypes = explode(",", $subexercise['mime-type']);
-                    foreach ($mimeTypes as &$mimeType) {
+                    $mimeTypesForm = explode(",", $subexercise['mime-type']);
+                    $mimeTypes = array();
+                    foreach ($mimeTypesForm as &$mimeType) {
                         if (FILE_TYPE::checkSupportedFileType(trim(strtolower($mimeType))) == false) {
                             $errormsg = "Sie haben eine nicht unterstützte Dateiendung verwendet.";
                             array_push($notifications, MakeNotification('warning', $errormsg));
                             $correctExercise = false;
                             break;
-                        } else { // if mime-type is supported replace fileending with mimetype
-                            $mimeType = FILE_TYPE::getMimeTypeByFileEnding(trim(strtolower($mimeType)));
+                        } else { // if mime-type is supported add mimeTypes
+                            $mimeTypes = array_merge($mimeTypes, FILE_TYPE::getMimeTypeByFileEnding(trim(strtolower($mimeType))));
                         }
                     }
                     // save mimeTypes in validated Exercises
@@ -171,7 +176,7 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
         $myExerciseSheetJSON = ExerciseSheet::encodeExerciseSheet($myExerciseSheet);
 
         // Post ExcercisSheet to logic Controllers to create it and get saved data
-        $output= http_post_data($logicURI."/exercisesheet", $myExerciseSheetJSON, true, $message);
+        $output = http_post_data($logicURI."/exercisesheet", $myExerciseSheetJSON, true, $message);
         $output = json_decode($output, true);
 
         // create subtasks as exercise
@@ -190,6 +195,8 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                     // set bonus
                     if (preg_match("#[0-9]+b$#", $subexercise['exerciseType']) == true) {
                         $bonus = "1";
+                        // delete ending b from exerciseType if its bonus
+                        $subexercise['exerciseType'] = rtrim($subexercise['exerciseType'], "b");
                     } else {
                         $bonus = "0";
                     }
@@ -216,7 +223,8 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
 
                 // Post Excercise to logic Controller to create it
                 $exercisesJSON = Exercise::encodeExercise($exercises);
-                $output= http_post_data($logicURI."/exercise", $exercisesJSON, true, $message);
+
+                $output2 = http_post_data($logicURI."/exercise", $exercisesJSON, true, $message);
 
                 if ($message != 201) {
                     $errorInSent = true;
@@ -229,6 +237,9 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
             } else {
                 $errormsg = "Beim Erstellen ist ein Fehler aufgetreten.";
                 array_push($notifications, MakeNotification('error', $errormsg));
+
+                // delete exercisesheet if exercises are going wrong
+                http_delete($logicURI.'/DB/exercisesheet/exercisesheet/'.$output['id'], true, $message);
             }
         } else {
             $errormsg = "Beim Erstellen ist ein Fehler aufgetreten.";
@@ -281,6 +292,11 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
         $w->set_config_file('include/configs/config_createSheet.json');
         $w->show();
     }
+} elseif ($noContent == true) { // show only header and errormessages
+    // wrap all the elements in some HTML and show them on the page
+    $w = new HTMLWrapper($h);
+    $w->set_config_file('include/configs/config_createSheet.json');
+    $w->show();
 } else { // otherwise show normal page
     $sheetSettings->bind($createsheetData['user']);
 

@@ -204,15 +204,16 @@ table td {
 }
 
 ol.full-width-exercise-list {
-    counter-reset: firstLevel;
+    counter-reset: item;
     width: 880px;
 }
 
 ol.full-width-exercise-list li:before {
-    content: counter(firstLevel);
-    counter-increment: firstLevel;
-    display: inline-block;
-    width: 42px;
+    content: counter(item, decimal);
+    counter-increment: item;
+    padding-right: 25px;
+    font-weight: bold;
+    color: #6f6f6f;
 }
 
 ol.full-width-exercise-list .secondLevel {
