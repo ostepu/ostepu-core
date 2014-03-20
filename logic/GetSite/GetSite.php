@@ -144,10 +144,38 @@ class LgetSite
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
 
-        // get all users with status 1 (tutor)
+        // get all users with status 1,2,3 (tutor,lecturer,admin)
         $URL = $this->lURL.'/DB/user/course/'.$courseid.'/status/1';
-        $answer = Request::custom('GET', $URL, $header, $body);
-        $tutors = json_decode($answer['content'], true);
+        $handler1 = Request_CreateRequest::createGet($URL, $header, $body);
+
+        $URL = $this->lURL.'/DB/user/course/'.$courseid.'/status/2';
+        $handler2 = Request_CreateRequest::createGet($URL, $header, $body);
+
+        $URL = $this->lURL.'/DB/user/course/'.$courseid.'/status/3';
+        $handler3 = Request_CreateRequest::createGet($URL, $header, $body);
+
+        $multiRequestHandle = new Request_MultiRequest();
+        $multiRequestHandle->addRequest($handler1);
+        $multiRequestHandle->addRequest($handler2);
+        $multiRequestHandle->addRequest($handler3);
+
+        $answer = $multiRequestHandle->run();
+
+        $tutors = json_decode($answer[0]['content'], true);
+        $lecturers = json_decode($answer[1]['content'], true);
+        $admins = json_decode($answer[2]['content'], true);
+
+        // delete all super-admins from admin list
+        if (!empty($admins)) {
+            foreach ($admins as $key => $value) {
+                if ($value['isSuperAdmin'] == 1) {
+                    unset($admins[$key]);
+                    break;
+                }
+            }
+        }
+
+        $tutors = array_merge($tutors, $lecturers, $admins);
 
         $response['tutorAssignments'] = array();
 
@@ -768,6 +796,7 @@ class LgetSite
 
         if(!empty($exercisesheet)) {
             $exercises = $exercisesheet['exercises'];
+            $response['exercises'] = $exercises;
         }
 
         // load all submissions for every exercise of the exerciseSheet
