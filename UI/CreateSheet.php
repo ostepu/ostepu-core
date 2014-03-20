@@ -50,15 +50,24 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                           FormEvaluator::REQUIRED,
                           'warning',
                           'Leerer Bearbeitungsende.');
+
+    // check if defaultGroupSize is bigger than standard groupsize 10
+    if ($createsheetData['user']['courses'][0]['course']['defaultGroupSize'] < 10) {
+        $maxgroup = 10;
+    } else {
+        $maxgroup = $createsheetData['user']['courses'][0]['course']['defaultGroupSize'];
+    }
+
     $f->checkIntegerForKey('groupSize',
                            FormEvaluator::REQUIRED,
                            'warning',
                            'Ungültige Gruppenstärke.',
-                           array('min' => 0,'max' => $createsheetData['user']['courses'][0]['course']['defaultGroupSize']));
+                           array('min' => 0,'max' => $maxgroup));
     $f->checkArrayOfArraysForKey('exercises',
                                  FormEvaluator::REQUIRED,
                                  'warning',
                                  'Bitte erstellen Sie mindestens eine Aufgabe.');
+
     // check if startDate is not later than endDate and if it matches format
     $correctDates = true;
     if (strtotime(str_replace(" - ", " ", $_POST['startDate'])) > strtotime(str_replace(" - ", " ", $_POST['endDate']))
@@ -68,6 +77,7 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
         $errormsg = "Überprüfen Sie Bearbeitungsanfang sowie Bearbeitungsende!";
         array_push($notifications, MakeNotification('warning', $errormsg));
     }
+
     // check if sheetPDF is given
     $noFile = false;
     if ($_FILES['sheetPDF']['error'] == 4) {
@@ -75,6 +85,7 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
         $errormsg = "Bitte laden Sie ein Übungsblatt (PDF) hoch.";
         array_push($notifications, MakeNotification('warning', $errormsg));
     }
+    
     // validate subtasks
     $correctExercise = true;
     $validatedExercises = array();
