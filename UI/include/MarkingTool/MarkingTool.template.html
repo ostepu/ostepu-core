@@ -25,10 +25,19 @@
         <div class="content-body left">
             <ol class="full-width-exercise-list">
                 <?php
-                    foreach ($group['exercises'] as $exercise) {
+                    // bool if subtasks are printed
+                    $isSubtask = false;
+                    foreach ($group['exercises'] as $key => $exercise):
                     $eid = $exercise['id'];
                 ?>
-
+                <?php
+                // make a sublist if next exercise is not a main exercise
+                if (isset($group['exercises'][$key+1]) && $group['exercises'][$key+1]['linkName'] != 1 && $isSubtask == false) {
+                    $isSubtask = true;
+                    print "<li class=\"subexercise-list\"><ol>";
+                }
+                ?>
+                <li>
                 <input type="hidden" 
                        name="exercises[<?= $leaderID ?>][<?= $eid ?>][maxPoints]" 
                        value="<?= $exercise['maxPoints'] ?>" />
@@ -41,7 +50,6 @@
                        name="exercises[<?= $leaderID ?>][<?= $eid ?>][markingID]" 
                        value="<?= isset($exercise['submission']['marking']) ? $exercise['submission']['marking']['id'] : -1 ?>" />
 
-                <li>
                     <?php
                         print '<input class="form-field text-input very-short" name="';
                         print 'exercises[' . $leaderID . '][' . $eid . '][points]" value="';
@@ -132,8 +140,16 @@
                         ?>
                 </li>
                 <?php
-                    }
+                // close subexerciselist if next exercise is a new mainexercise or end of exercises is reached
+                if (isset($group['exercises'][$key+1]) && $group['exercises'][$key+1]['linkName'] == 1 && $isSubtask == true) {
+                    $isSubtask = false;
+                    print "</ol></li>";
+                } elseif (isset($group['exercises'][$key+1]) == false && $isSubtask == true) {
+                    $isSubtask = false;
+                    print "</ol></li>";
+                }
                 ?>
+                <?php endforeach; ?>
             </ol>
         </div>
     </div> <!-- end: content-body -->
