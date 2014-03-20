@@ -9,11 +9,8 @@
  *
  * @todo choose correct groupsize for no Group (0 or 1)
  * @todo evaluate correct exercisetype in $subeval
- * @todo dont reset form if an error exists
  */
-ini_set('error_reporting', -1);
-ini_set('display_errors', 1);
-ini_set('html_errors', 1);
+
 include_once 'include/Boilerplate.php';
 include_once '../Assistants/Structures.php';
 include_once 'include/FormEvaluator.php';
@@ -119,15 +116,16 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                     }
 
                     // evaluate mime-types
-                    $mimeTypes = explode(",", $subexercise['mime-type']);
-                    foreach ($mimeTypes as &$mimeType) {
+                    $mimeTypesForm = explode(",", $subexercise['mime-type']);
+                    $mimeTypes = array();
+                    foreach ($mimeTypesForm as &$mimeType) {
                         if (FILE_TYPE::checkSupportedFileType(trim(strtolower($mimeType))) == false) {
                             $errormsg = "Sie haben eine nicht unterstützte Dateiendung verwendet.";
                             array_push($notifications, MakeNotification('warning', $errormsg));
                             $correctExercise = false;
                             break;
-                        } else { // if mime-type is supported replace fileending with mimetype
-                            $mimeType = FILE_TYPE::getMimeTypeByFileEnding(trim(strtolower($mimeType)));
+                        } else { // if mime-type is supported add mimeTypes
+                            $mimeTypes = array_merge($mimeTypes, FILE_TYPE::getMimeTypeByFileEnding(trim(strtolower($mimeType))));
                         }
                     }
                     // save mimeTypes in validated Exercises
@@ -234,7 +232,7 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                 $errormsg = "Die Serie wurde erstellt.";
                 array_push($notifications, MakeNotification('success', $errormsg));
             } else {
-                $errormsg = "Beim Erstellen ist ein Fehler aufgetreten.";
+                $errormsg = "Beim Erstellen ist ein Fehler aufgetreten. 2";
                 array_push($notifications, MakeNotification('error', $errormsg));
             }
         } else {
