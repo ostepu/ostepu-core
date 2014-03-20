@@ -88,7 +88,7 @@
                             <?php endif; ?>
 
                             <?php // creates a downloadCorrection icon for the marking (if it exists) ?>
-                            <?php if(isset($exercise['attachment'])): ?>
+                            <?php if(isset($exercise['submission']['marking']) && $exercise['submission']['marking']['hideFile'] == "0"): ?>
                                 <?php $displayName = $exercise['submission']['marking']['file']['displayName']; ?>
                                 <?php $fileAddress = $exercise['submission']['marking']['file']['address']; ?>
                                 <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
