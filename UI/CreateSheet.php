@@ -195,6 +195,8 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                     // set bonus
                     if (preg_match("#[0-9]+b$#", $subexercise['exerciseType']) == true) {
                         $bonus = "1";
+                        // delete ending b from exerciseType if its bonus
+                        $subexercise['exerciseType'] = rtrim($subexercise['exerciseType'], "b");
                     } else {
                         $bonus = "0";
                     }
@@ -221,6 +223,7 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
 
                 // Post Excercise to logic Controller to create it
                 $exercisesJSON = Exercise::encodeExercise($exercises);
+
                 $output= http_post_data($logicURI."/exercise", $exercisesJSON, true, $message);
 
                 if ($message != 201) {
