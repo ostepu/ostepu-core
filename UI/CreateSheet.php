@@ -176,7 +176,7 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
         $myExerciseSheetJSON = ExerciseSheet::encodeExerciseSheet($myExerciseSheet);
 
         // Post ExcercisSheet to logic Controllers to create it and get saved data
-        $output= http_post_data($logicURI."/exercisesheet", $myExerciseSheetJSON, true, $message);
+        $output = http_post_data($logicURI."/exercisesheet", $myExerciseSheetJSON, true, $message);
         $output = json_decode($output, true);
 
         // create subtasks as exercise
@@ -224,7 +224,7 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                 // Post Excercise to logic Controller to create it
                 $exercisesJSON = Exercise::encodeExercise($exercises);
 
-                $output= http_post_data($logicURI."/exercise", $exercisesJSON, true, $message);
+                $output2 = http_post_data($logicURI."/exercise", $exercisesJSON, true, $message);
 
                 if ($message != 201) {
                     $errorInSent = true;
@@ -235,8 +235,11 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                 $errormsg = "Die Serie wurde erstellt.";
                 array_push($notifications, MakeNotification('success', $errormsg));
             } else {
-                $errormsg = "Beim Erstellen ist ein Fehler aufgetreten. 2";
+                $errormsg = "Beim Erstellen ist ein Fehler aufgetreten.";
                 array_push($notifications, MakeNotification('error', $errormsg));
+
+                // delete exercisesheet if exercises are going wrong
+                http_delete($logicURI.'/DB/exercisesheet/exercisesheet/'.$output['id'], true, $message);
             }
         } else {
             $errormsg = "Beim Erstellen ist ein Fehler aufgetreten.";
