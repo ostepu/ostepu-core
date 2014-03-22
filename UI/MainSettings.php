@@ -10,8 +10,6 @@
  *
  * @todo POST Request to logic instead of DB
  * @todo check rights for whole page
- * @todo add function for creating users
- * @todo add function for deleting users
  * @todo create a navigation bar for super admins
  * @todo unset $_POST on success
  */
