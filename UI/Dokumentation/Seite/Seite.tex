@@ -1,0 +1,16 @@
+\section{Anlegen einer neuen Seite}
+\label{sec:Anlegen_einer_neuen_Seite}
+
+Um das Anlegen einer neuen Seite weiter zu vereinfachen fasst die Datei
+``Boilerplate.php'' häufige \texttt{include} Anweisungen zusammen. Die Datei
+führt außerdem eine Sessionprüfung durch und macht die id des Benutzers, die id
+der zur Seite gehörigen Serie und die id des zur Seite gehörigen Kursesals
+Variabeln verfügbar. Die Namen dieser Variablen lauten \texttt{\$uid},
+\texttt{\$sid} und \texttt{\$cid}.
+
+Eine neue Seite wird angelegt, indem wie in ein neues PHP Script angelegt wird.
+Passwortgeschützte Dateien sollten ``Boilerplate.php'' importieren. Das Script
+sollte dann die für die Anzeige benötigten Daten laden und wie in
+Abschnitt~\ref{sub:Die-Klasse-HTMLWrapper} mit einem Template darstellen. Das
+Erstellen von Templates ist in Abschnitt~\ref{sub:Templates} erklärt.
+

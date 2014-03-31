@@ -1,0 +1,6 @@
+PWD /Users/florianluecke/Documents/Uni/WS 2013/Projektpraktikum/Dokumentation/HTMLWrapper
+INPUT /usr/local/texlive/2013/texmf.cnf
+INPUT /usr/local/texlive/2013/texmf-dist/web2c/texmf.cnf
+INPUT /usr/local/texlive/2013/texmf-var/web2c/pdftex/pdflatex.fmt
+INPUT HTMLWrapper.tex
+OUTPUT HTMLWrapper.log

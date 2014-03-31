@@ -1,0 +1,87 @@
+%        File: Dokumentation.tex
+%     Created: Mi Mär 26 12:00 am 2014 C
+%
+\documentclass[a4paper]{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[ngerman]{babel}
+
+\usepackage{xcolor}
+
+\colorlet{punct}{red!60!black}
+\definecolor{delim}{RGB}{20,105,176}
+\colorlet{numb}{magenta!60!black}
+
+\usepackage{listings}
+\lstdefinelanguage{json}{%
+    showstringspaces=false,
+    breaklines=true,
+    literate=
+     *{0}{{{\color{numb}0}}}{1}
+      {1}{{{\color{numb}1}}}{1}
+      {2}{{{\color{numb}2}}}{1}
+      {3}{{{\color{numb}3}}}{1}
+      {4}{{{\color{numb}4}}}{1}
+      {5}{{{\color{numb}5}}}{1}
+      {6}{{{\color{numb}6}}}{1}
+      {7}{{{\color{numb}7}}}{1}
+      {8}{{{\color{numb}8}}}{1}
+      {9}{{{\color{numb}9}}}{1}
+      {:}{{{\color{punct}{:}}}}{1}
+      {,}{{{\color{punct}{,}}}}{1}
+      {\{}{{{\color{delim}{\{}}}}{1}
+      {\}}{{{\color{delim}{\}}}}}{1}
+      {[}{{{\color{delim}{[}}}}{1}
+      {]}{{{\color{delim}{]}}}}{1}
+      {Ü}{{\"U}}{1}
+}
+
+\lstdefinelanguage{myhtml}{%
+    language=HTML,
+    literate=
+     *{Ü}{{\"U}}{1}
+ }
+
+\lstdefinelanguage{myphp}{%
+    language=php,
+    morekeywords={endforeach,endif,as,json_decode,include_once,include,require,require_once,new},
+    moreemph={<?php,<?=,?>},
+    emphstyle=\color{delim},
+    alsoletter={<,?,>,=,\$},
+    %moredelim=[s][\color{numb}]{\$}{)},
+    %moredelim=[s][\color{numb}]{\$}{\ },
+}
+
+\lstset{%
+    basicstyle=\normalfont\ttfamily,
+    numbers=left,
+    numberstyle=\scriptsize,
+    numbersep=8pt,
+    frame = lines,
+    stepnumber = 1,
+    commentstyle = \color{delim},
+    keywordstyle = \color{punct},
+    stringstyle = \color{gray}
+}
+
+\newcommand{\mylisting}[2][]{%
+    \lstinputlisting[caption={\texttt{\detokenize{#2}}},#1]{#2}%
+}
+
+\subject{Entwicklerdokumentation Übungsplattform 2.0}
+\title{Dokumentation UI}
+\author{Felix Schmidt\\Florian Lücke\\Ralf Busch}
+
+\begin{document}
+
+\maketitle
+\clearpage
+
+\include{Templates/Templates}
+\include{HTMLWrapper/HTMLWrapper}
+\include{Seite/Seite}
+\include{Helpers/Helpers}
+
+\end{document}
+
+

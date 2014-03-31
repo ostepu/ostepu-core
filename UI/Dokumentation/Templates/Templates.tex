@@ -1,0 +1,19 @@
+\section{Templates}
+\label{sub:Templates}
+Die Seiten der Übungsplattform sind aus (eventuell mehreren) Templates
+aufgebaut. Ein Template ist ein php-Skript, das abhängig von den durch das
+Template dargestellten Daten vordefinierte Variablen kennt. Daten die an ein
+Template übergeben werden sind assoziative Arrays, die Schlüssel des Arrays sind
+im Template als Variablen verfügbar. Die folgenden listings zeigen ein
+JSON-codiertes assoziatives Array und ein mögliches Template zur Darstellung der
+Daten in dem Array.
+
+\mylisting[language=json]{Listings/template-json.json}
+\mylisting[language=myphp]{Listings/template-html.html}
+
+Mit dem Code in folgendem Listing könnte schon eine Seite dargestellt
+werden
+
+\mylisting[language=myphp]{Listings/template-usage.php}
+
+
