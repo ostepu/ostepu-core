@@ -91,7 +91,7 @@ if (isset($_POST['action'])) {
 
 // load user data from the database
 $URL = $getSiteURI . "/tutorassign/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
-$tutorAssign_data = http_get($URL, false);
+$tutorAssign_data = http_get($URL, true);
 $tutorAssign_data = json_decode($tutorAssign_data, true);
 
 $user_course_data = $tutorAssign_data['user'];

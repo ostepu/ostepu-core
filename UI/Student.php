@@ -61,15 +61,12 @@ $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
                "backURL" => "index.php",
                "notificationElements" => $notifications,
                "navigationElement" => $menu));
-/**
- * @todo also display the group leader
- * @todo fix attachment downloads
- */
+
 $t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetStudent.template.html');
 $t->bind($student_data);
 
 $w = new HTMLWrapper($h, $t);
-$w->defineForm(basename(__FILE__)."?cid=".$cid, $t);
+$w->defineForm(basename(__FILE__)."?cid=".$cid, false, $t);
 $w->set_config_file('include/configs/config_student_tutor.json');
 $w->show();
 

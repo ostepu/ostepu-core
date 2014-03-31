@@ -54,7 +54,7 @@ $t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetLecturer.tem
 $t->bind($lecturer_data);
 
 $w = new HTMLWrapper($h, $t);
-$w->defineForm(basename(__FILE__)."?cid=".$cid, $t);
+$w->defineForm(basename(__FILE__)."?cid=".$cid, false, $t);
 $w->set_config_file('include/configs/config_admin_lecturer.json');
 $w->show();
 

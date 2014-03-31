@@ -58,12 +58,7 @@ abstract class AbstractAuthentication
     {
         global $databaseURI;
         $_SESSION['SESSION'] = $this->hashData("md5", session_id() . $_SERVER['HTTP_USER_AGENT'] . $_SERVER['REMOTE_ADDR']);
-        /**
-         * @todo Workaround for the not implemented session redirection in logic
-         */
-        if ($_SESSION['UID'] == 3) {
-            $_SESSION['SESSION'] = "abc";
-        }
+
         // create Session in DB
         $sessionbody = array('user' => $_SESSION['UID'],
                              'session' => $_SESSION['SESSION']);
