@@ -1,0 +1,23 @@
+\section{Die Klasse HTMLWrapper}
+\label{sub:Die-Klasse-HTMLWrapper}
+Damit nicht jedes Template sein eigenes HTML Grundgerüst bieten muss kann die
+Klasse HTMLWrapper mehrere Elemente die auf einer Seite angezeigt werden sollen
+in ein HTML Gerüst einbetten. Außerdem bietet sie die Möglichkeit Elemente in
+Formulare einzubetten.
+
+Es ist möglich Scripte und Stylesheets die eine Seite
+beeinhalten soll in einer Konfigutrationsdatei einzutragen und diese automatisch
+einbinden lassen. Eine solche Konfigurationsdatei ist in folgendem Listing zu
+sehen.
+
+\mylisting[language=json]{Listings/HTMLWrapper-config.json}
+
+Die Benutzung der Klasse ist wie folgt:
+
+\mylisting[language=myhtml]{Listings/HTMLWrapper-template1.html}
+\mylisting[language=myhtml]{Listings/HTMLWrapper-template2.html}
+\mylisting[language=php]{Listings/HTMLWrapper-usage.php}
+
+Dieser Code erzeugt folgende Ausgabe:
+
+\mylisting[language=myhtml]{Listings/HTMLWrapper-result.html}

@@ -18,6 +18,12 @@
                 <?= date('d.m.Y  -  H:i', $sheet['endDate']); ?>
             </div>
             <div class="exercise-sheet-info info-color bold right">
+                <?php 
+                    /**
+                     * @todo Number of submissions without markings still needs to be 
+                     *       calculated in GetSite.
+                     */
+                ?>
                 <?= $sheet['exerciseSheetInfo'], ' unkorrigiert' ?>
             </div>
         </div>
@@ -126,6 +132,12 @@
         </div>
 
         <div class="content-footer">
+            <?php 
+                /**
+                 * @todo The way how courseUserCount is calculated needs to be changed in GetSite because
+                 *       it does not show the possible number of submissions. 
+                 */
+            ?>
             <ol>
                 <li class="footer-text bold">Einsendungen:</li>
                 <li class="footer-text"><?=$sheet['courseUserCount'] ?> Studenten</li>

@@ -1,0 +1,18 @@
+<html>
+    <head>
+        <title>Person</title>
+    </head>
+    <body>
+    Bestellungen von <?= $firstName ?> <?= $lastName ?> (<?= $userName ?>):
+    <br />
+    <?php if (count($orderIDs) != 0): ?>
+    <ol>
+        <?php foreach ($orderIDs as $id): ?>
+        <li> <?= $id ?> </li>
+        <?php endforeach; ?>
+    </ol>
+    <?php else: ?>
+    Keine Bestellungen Vorhanden
+    <?php endif; ?>
+    </body>
+</html>
