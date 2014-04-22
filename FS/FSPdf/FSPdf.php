@@ -10,9 +10,8 @@
 
 require_once ( '../../Assistants/Slim/Slim.php' );
 include_once ( '../../Assistants/CConfig.php' );
-include_once ( '../../Assistants/CConfig.php' );
 include_once ( '../../Assistants/Structures.php' );
-include_once ( '../../Assistants/Pdf/PdfTable.php' );
+include_once ( '../../Assistants/Pdf/tfpdf/html2pdf.php' );
 
 \Slim\Slim::registerAutoloader( );
 
@@ -92,7 +91,7 @@ class FSPdf
 
         // POST PostPdfPermanent
         $this->_app->post( 
-                          '/' . FSPdf::$_baseDir . '/:orientation(/)',
+                          '/' . FSPdf::$_baseDir . '(/)',
                           array( 
                                 $this,
                                 'postPdfPermanent'
@@ -101,7 +100,7 @@ class FSPdf
 
         // POST PostPdfTemporary
         $this->_app->post( 
-                          '/' . FSPdf::$_baseDir . '/:orientation/:filename(/)',
+                          '/' . FSPdf::$_baseDir . '/:filename(/)',
                           array( 
                                 $this,
                                 'postPdfTemporary'
@@ -149,43 +148,42 @@ class FSPdf
      *
      * @param string $orientation The orientation of the PDF, e.g. portrait or landscape.
      */
-    public function postPdfPermanent( $orientation )
+    public function postPdfPermanent( )
     {
         $body = $this->_app->request->getBody( );
-        $data = json_decode( 
-                            $body,
-                            true
-                            );
-        if ( count( $data ) == 0 ){
-            $this->_app->response->setStatus( 409 );
-            return;
-        }
+        $data = Pdf::decodePdf($body);
 
-        $pdf = new PDF( 
-                       $orientation,
+        $form = new Formatierung();
+        $form->Font = ($data->getFont()!==null ? $data->getFont() : 'times');
+        $form->FontSize = ($data->getFontSize()!==null ? $data->getFontSize() : '12');
+        $form->TextColor = ($data->getTextColor()!=null ? $data->getTextColor() : 'black');
+        
+        $pdf = new PDF_HTML( 
+                       ($data->getOrientation()!==null ? $data->getOrientation() : 'P'),
                        'mm',
-                       'A4'
+                       ($data->getFormat()!==null ? $data->getFormat() : 'A4'),
+                       $form
                        );
+                       
         $pdf->SetAutoPageBreak( true );
 
-        $pdf->SetFont( 
-                      'Courier',
-                      '',
-                      10
-                      );
+        $pdf->SetTitle($data->getTitle()!==null ? $data->getTitle() : '');
+        $pdf->SetSubject($data->getSubject()!==null ? $data->getSubject() : '');
+        $pdf->SetAuthor($data->getAuthor()!==null ? $data->getAuthor() : '');
+        $pdf->SetCreator($data->getCreator()!==null ? $data->getCreator() : '');
+        
         $pdf->AddPage( );
-        $pdf->Table( 
-                    $data,
-                    $orientation
-                    );
+
+        $pdf->WriteHTML($data->getText());
 
         // stores the pdf binary data to $result
         $result = $pdf->Output( 
                                '',
                                'S'
                                );
+                               
         $fileObject = new File( );
-        $fileObject->setHash( sha1( $body ) );
+        $fileObject->setHash( sha1( $result ) );
         $filePath = FSPdf::generateFilePath( 
                                             FSPdf::getBaseDir( ),
                                             $fileObject->getHash( )
@@ -211,7 +209,7 @@ class FSPdf
             $tempObject = File::decodeFile( $result['content'] );
             $fileObject->setFileSize( $tempObject->getFileSize( ) );
             $fileObject->setBody( null );
-            $this->_app->response->setStatus( $result['status'] );
+            $this->_app->response->setStatus( 201 );
             $this->_app->response->setBody( File::encodeFile( $fileObject ) );
             
         } else {
@@ -232,45 +230,43 @@ class FSPdf
      * @param string $orientation The orientation of the PDF file, e.g. portrait or landscape.
      * @param string $filename A freely chosen filename of the PDF file which should be stored.
      */
-    public function postPdfTemporary( 
-                                     $orientation,
+    public function postPdfTemporary(
                                      $filename = ''
                                      )
     {
         $body = $this->_app->request->getBody( );
-        $data = json_decode( 
-                            $body,
-                            true
-                            );
-        if ( count( $data ) == 0 ){
-            $this->_app->response->setStatus( 409 );
-            return;
-        }
+        $data = Pdf::decodePdf($body);
 
-        $pdf = new PDF( 
-                       $orientation,
+        $form = new Formatierung();
+        $form->Font = ($data->getFont()!==null ? $data->getFont() : 'times');
+        $form->FontSize = ($data->getFontSize()!==null ? $data->getFontSize() : '12');
+        $form->TextColor = ($data->getTextColor()!=null ? $data->getTextColor() : 'black');
+        
+        $pdf = new PDF_HTML( 
+                       ($data->getOrientation()!==null ? $data->getOrientation() : 'P'),
                        'mm',
-                       'A4'
+                       ($data->getFormat()!==null ? $data->getFormat() : 'A4'),
+                       $form
                        );
+                       
         $pdf->SetAutoPageBreak( true );
 
-        $pdf->SetFont( 
-                      'Courier',
-                      '',
-                      10
-                      );
+        $pdf->SetTitle($data->getTitle()!==null ? $data->getTitle() : '');
+        $pdf->SetSubject($data->getSubject()!==null ? $data->getSubject() : '');
+        $pdf->SetAuthor($data->getAuthor()!==null ? $data->getAuthor() : '');
+        $pdf->SetCreator($data->getCreator()!==null ? $data->getCreator() : '');
+        
         $pdf->AddPage( );
-        $pdf->Table( 
-                    $data,
-                    $orientation
-                    );
+
+        $pdf->WriteHTML($data->getText());
 
         // stores the pdf binary data to $result
         $result = $pdf->Output( 
                                '',
                                'S'
                                );
-        $this->_app->response->setStatus( 200 );
+                               
+        $this->_app->response->setStatus( 201 );
         $this->_app->response->headers->set( 
                                             'Content-Type',
                                             'application/octet-stream'
