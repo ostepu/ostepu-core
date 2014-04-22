@@ -187,6 +187,17 @@ class Link extends Object implements JsonSerializable
     {
         $this->prefix = $value;
     }
+    
+
+    private $targetName = null;
+    public function getTargetName( )
+    {
+        return $this->targetName;
+    }
+    public function setTargetName( $value )
+    {
+        $this->targetName = $value;
+    }
 
     /**
      * Creates an Link object, for database post(insert) and put(update).
@@ -251,7 +262,8 @@ class Link extends Object implements JsonSerializable
                      'CL_prefix' => 'prefix',
                      'CO_id_owner' => 'owner',
                      'CO_id_target' => 'target',
-                     'CL_relevanz' => 'relevanz'
+                     'CL_relevanz' => 'relevanz',
+                     'CL_targetName' => 'targetName'
                      );
     }
 
@@ -378,6 +390,8 @@ class Link extends Object implements JsonSerializable
             $list['owner'] = $this->owner;
         if ( $this->relevanz !== null )
             $list['relevanz'] = $this->relevanz;
+        if ( $this->targetName !== null )
+            $list['targetName'] = $this->targetName;
         return $list;
     }
 }
