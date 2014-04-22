@@ -80,11 +80,11 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
 
     // check if sheetPDF is given
     $noFile = false;
-    if ($_FILES['sheetPDF']['error'] == 4) {
+    /*if ($_FILES['sheetPDF']['error'] == 4) {
         $noFile = true;
         $errormsg = "Bitte laden Sie ein Übungsblatt (PDF) hoch.";
         array_push($notifications, MakeNotification('warning', $errormsg));
-    }
+    }*/
     
     // validate subtasks
     $correctExercise = true;
@@ -128,17 +128,22 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
 
                     // evaluate mime-types
                     $mimeTypesForm = explode(",", $subexercise['mime-type']);
-                    $mimeTypes = array();
-                    foreach ($mimeTypesForm as &$mimeType) {
-                        if (FILE_TYPE::checkSupportedFileType(trim(strtolower($mimeType))) == false) {
-                            $errormsg = "Sie haben eine nicht unterstützte Dateiendung verwendet.";
-                            array_push($notifications, MakeNotification('warning', $errormsg));
-                            $correctExercise = false;
-                            break;
-                        } else { // if mime-type is supported add mimeTypes
-                            $mimeTypes = array_merge($mimeTypes, FILE_TYPE::getMimeTypeByFileEnding(trim(strtolower($mimeType))));
+                    
+
+                        $mimeTypes = array();
+                    if (!isset($subexercise['type'])){    
+                        foreach ($mimeTypesForm as &$mimeType) {
+                            if (FILE_TYPE::checkSupportedFileType(trim(strtolower($mimeType))) == false) {
+                                $errormsg = "Sie haben eine nicht unterstützte Dateiendung verwendet.";
+                                array_push($notifications, MakeNotification('warning', $errormsg));
+                                $correctExercise = false;
+                                break;
+                            } else { // if mime-type is supported add mimeTypes
+                                $mimeTypes = array_merge($mimeTypes, FILE_TYPE::getMimeTypeByFileEnding(trim(strtolower($mimeType))));
+                            }
                         }
                     }
+                    
                     // save mimeTypes in validated Exercises
                     $validatedExercises[$key1][$key2]['mime-type'] = $mimeTypes;
                 }
@@ -154,9 +159,16 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
     $ready = $f->evaluate(true);
     if ($ready == true && $noFile == false && $correctExercise == true && $correctDates == true) {
         // get sheetPDF
+        if (!$_FILES['sheetPDF']['error'] == 4){
         $filePath = $_FILES['sheetPDF']['tmp_name'];
         $displayName = $_FILES['sheetPDF']['name'];
         $data = file_get_contents($filePath);
+        }
+        else{
+        $displayName="no.txt";
+        $data="";
+        }
+        
         $data = base64_encode($data);
         $sheetPDFFile = File::createFile(NULL,$displayName,NULL,$timestamp,NULL,NULL,NULL);
         $sheetPDFFile->setBody($data);
@@ -211,10 +223,11 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                     } else {
                         $bonus = "0";
                     }
-
+                    
                     // create exercise
                     $subexerciseObj = Exercise::createExercise(NULL,$cid,$id, $subexercise['maxPoints'],
                                                                $subexercise['exerciseType'],$key1+1,$bonus,$key2+1);
+                    
                     // add attachement if given
                     if ($_FILES['exercises']['error'][$key1]['subexercises'][$key2]['attachment'] != 4) {
                         $filePath = $_FILES['exercises']['tmp_name'][$key1]['subexercises'][$key2]['attachment'];
@@ -241,6 +254,58 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                     $errorInSent = true;
                     break;
                 }
+                
+                ##########################
+                ### begin create_forms ###
+                ##########################
+                $exercises = Exercise::decodeExercise($output2);
+                
+                // create form data
+                $forms = array();
+                $i=0;
+                foreach ($exercise as $key2 => $subexercise) {
+                    if (isset($subexercise['type'])){
+                        $form = Form::createForm(
+                                           null,
+                                           $exercises[$i]->getId(),
+                                           isset($subexercise['solution']) ? $subexercise['solution'] : null,
+                                           isset($subexercise['task']) ? $subexercise['task'] : null,
+                                           isset($subexercise['type']) ? $subexercise['type'] : null
+                                          );
+                                          
+                        $choiceText = $subexercise['choice'];
+                        $choices = array();
+                        foreach ($choiceText as $tempKey => $choiceData) {
+                            $choice = new Choice();
+                            $choice->SetText($choiceData); 
+                            $choices[] = $choice;
+                        }
+                        
+                        $choiceCorrect = $subexercise['correct'];
+                        $b=0;
+                        foreach ($choiceCorrect as $tempKey => $choiceData) {
+                            $choices[$b]->setCorrect($choiceData);                   
+                        }
+                        
+                        $form->setChoices($choices);
+                        $forms[] = $form;
+                    }
+                    $i++;
+                }
+
+                // upload forms
+               // $URL = "http://localhost/uebungsplattform/logic/LForm/form";
+                $URL = $logicURI."/form";
+                http_post_data($URL, Form::encodeForm($forms), true, $message);
+                
+                if ($message != 201) {
+                    $errorInSent = true;
+                    break;
+                }
+                
+                ########################
+                ### end create_forms ###
+                ########################
             }
             if ($errorInSent == false) {
                 $errormsg = "Die Serie wurde erstellt.";
