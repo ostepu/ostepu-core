@@ -15,7 +15,7 @@
         </div> <!-- end: content-wrapper -->
     </button>
 
-    <?php 
+    <?php     
     // bool if subtasks are printed
     $isSubtask = false;
     foreach($exercises as $key => $exercise): 
@@ -24,14 +24,19 @@
             <div class="content-header">
                 <div class="content-title left">
                     AUFGABE <?= $exercise['link'] ?><?php
+                    $add="";
                     // if next exercise is not main or is main but current one is subexercise or end is reached but current one is subex.
                     if ((isset($exercises[$key+1]) && $exercises[$key+1]['linkName'] != 1) ||
                         (isset($exercises[$key+1]) && $exercises[$key+1]['linkName'] == 1 && $isSubtask == true) ||
                         (isset($exercises[$key+1]) == false && $isSubtask == true)) {
                         print chr(96+$exercise['linkName']);
+                        $add=chr(96+$exercise['linkName']);
                         $isSubtask = true;
                     }
                     ?>
+                    <input type="hidden"
+                           name="exercises[<?= $key ?>][name]"
+                           value="<?= $exercise['link'].$add?>">
                 </div>
                 <button class="text-button info-color bold right">
                   alle absenden
@@ -39,7 +44,7 @@
             </div>
             <div class="content-body-wrapper">
                 <div class="content-body left">
-                    <?php if (isset($exercise['selectedSubmission']) && $exercise['selectedSubmission']['hideFile'] == "0"): ?>
+                <?php if (isset($exercise['selectedSubmission']) && $exercise['selectedSubmission']['hideFile'] == "0"): ?>
                             <div class="form-field wider left bold new-line">
                                 bisherige Einsendung:
                             </div>
@@ -70,7 +75,76 @@
                                         value="<?= $sub['comment'] ?>"
                                         disabled/>
                             <?php endif; ?>
+                            <br><br>
                     <?php endif; ?>
+                    
+                    <?php
+                    if (isset($exercise['form'])){
+                        $form = $exercise['form'];
+                    ?>
+                    
+                    <?php if ($form->getTask()!==null){?>
+                    <!--<br><br>-->
+                    <label class="short label bold" for="task">Aufgabenstellung:</label>
+
+            <div class="content-description left new-line" style="width:748px">
+                <?php
+                echo $form->getTask();
+                ?>
+            </div>
+            <?php }?>
+            
+                    <?php
+                    if ($form->getType()==0){
+                    ?>
+                    
+            <label class="short left label bold" for="answer">Antwort:</label>
+            <input type="text" class="form-field text-input new-line" style="width:748px" name="<?php echo "exercises[".$key."][choices]" ?>" placeholder="Antwort"/>    
+            <br><br>
+            
+                    <?php
+                    } elseif ($form->getType()==1){
+                    ?>
+            
+            <label class="short left label bold" for="answer">Antwort:</label><br>
+                <?php
+                    $i=0;
+                    foreach ($form->getChoices() as $choice){
+                        ?>
+                        <div class="form-input-radio new-line" style="width:748px; margin:5px 0px;">
+                        <input type="radio" name="<?php echo "exercises[".$key."][choices]" ?>" value="<?= $i ?>"/> <?php echo $choice->getText(); ?>
+                        </div>                        
+                        <?php
+                        $i++;
+                    }
+                ?>                              
+<br><br>
+                    <?php
+                    } elseif ($form->getType()==2){       
+                    ?>                    
+            
+            <label class="short left label bold" for="answer">Antwort:</label><br>
+                <?php
+                    $i=0;
+                    foreach ($form->getChoices() as $choice){
+                        ?>
+                        <div class="form-input-checkbox new-line" style="width:748px; margin:5px 0px;">
+                        <input type="checkbox" name="<?php echo "exercises[".$key."][choices][".$i."]" ?>" value="<?= $i ?>"/> <?php echo $choice->getText(); ?>
+                        </div>                        
+                        <?php
+                        $i++;
+                    }
+                ?>                              
+<br><br>
+                    <?php
+
+                    }                    
+                    }
+                    
+                    ?>
+                    
+                    
+                    
 
                     <label class="short left label bold new-line"
                            for="studentComment">Kommentar:</label>
@@ -79,11 +153,15 @@
                               rows="5"
                               maxlength="255"></textarea>
 
+                    <?php
+                    if (!isset($exercise['form'])){
+                    ?>
                     <label class="short left label bold new-line"
                            for="studentComment">Datei:</label>
                     <input type="file"
                            class="button left"
                            name="file<?= $exercise['id'] ?>">
+                    <?php } ?>
                     <input type="hidden"
                            name="exercises[<?= $key ?>][exerciseID]"
                            value="<?= $exercise['id'] ?>">
