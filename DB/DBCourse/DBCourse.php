@@ -22,7 +22,7 @@ include_once ( '../../Assistants/Logger.php' );
 // runs the CConfig
 $com = new CConfig( DBCourse::getPrefix( ) );
 
-// runs the DBExerciseSheet
+// runs the DBCourse
 if ( !$com->used( ) )
     new DBCourse( $com->loadConfig( ) );
 
