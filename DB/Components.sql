@@ -49,7 +49,7 @@ INSERT INTO `Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (
 INSERT INTO `Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (46, 'LFormProcessor', 'localhost/uebungsplattform/logic/LFormProcessor', '');
 INSERT INTO `Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (47, 'LForm', 'localhost/uebungsplattform/logic/LForm', '');
 INSERT INTO `Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (48, 'LProcessor', 'localhost/uebungsplattform/logic/LProcessor', '');
-INSERT INTO `Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (50, 'DBProcessor', 'localhost/uebungsplattform/DB/DBProcessor', '');
+INSERT INTO `Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (50, 'DBProcess', 'localhost/uebungsplattform/DB/DBProcess', '');
 COMMIT;
 
 
