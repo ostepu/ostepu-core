@@ -148,6 +148,11 @@ class LFile
      */
     public function postPathFile( $path)
     {
+        Logger::Log( 
+                'starts POST postFile',
+                LogLevel::DEBUG
+                );
+                    
         $body = $this->_app->request->getBody( );
         $fileObjects = File::decodeFile( $body );
         
@@ -201,6 +206,11 @@ class LFile
      */
     public function deletePathFile( )
     {
+        Logger::Log( 
+                'starts Delete deleteFile',
+                LogLevel::DEBUG
+                );
+                
         $body = $this->_app->request->getBody( );
         $fileObjects = File::decodeFile( $body );
 
