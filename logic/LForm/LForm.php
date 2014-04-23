@@ -181,9 +181,18 @@ class LForm
                 $res[] = $forms;
                 
             } else{
-                // form wieder löschen
-                // form wieder löschen
-                // form wieder löschen
+                // remove forms on failure
+                foreach ($forms as $form){
+                    $result = Request::routeRequest( 
+                                    'DELETE',
+                                    '/form/'.$form->getFormId(),
+                                    $this->app->request->headers->all( ),
+                                    '',
+                                    $this->_form,
+                                    'form'
+                                    );
+                }
+                
                 $res[] = null;
                 $this->app->response->setStatus( 409 );
             }
