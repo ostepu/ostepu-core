@@ -204,7 +204,7 @@ class LFile
      *
      * @param string $hash The hash of the file which should be deleted.
      */
-    public function deletePathFile( )
+    public function deleteFile( )
     {
         Logger::Log( 
                 'starts Delete deleteFile',
