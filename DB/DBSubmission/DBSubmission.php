@@ -141,6 +141,15 @@ class DBSubmission
                                'getUserExerciseSubmissions'
                                )
                          );
+                         
+        // GET GetUserSheetSubmissions
+        $this->_app->get( 
+                         '/' . $this->getPrefix( ) . '/user/:userid/exercisesheet/:esid(/)',
+                         array( 
+                               $this,
+                               'getUserSheetSubmissions'
+                               )
+                         );
 
         // GET GetGroupSubmissions
         $this->_app->get( 
@@ -829,7 +838,7 @@ class DBSubmission
      * of a specific exercise.
      *
      * Called when this component receives an HTTP GET request to
-     * /submission/exercise/$eid/selected(/).
+     * /submission/user/$userid/exercise/$eid(/).
      *
      * @param int $userid The id of the user.
      * @param int $eid The id of the exercise.
@@ -842,6 +851,33 @@ class DBSubmission
         $this->get( 
                    'GetUserExerciseSubmissions',
                    'Sql/GetUserExerciseSubmissions.sql',
+                   isset( $userid ) ? $userid : '',
+                   isset( $courseid ) ? $courseid : '',
+                   isset( $esid ) ? $esid : '',
+                   isset( $eid ) ? $eid : '',
+                   isset( $suid ) ? $suid : '',
+                   isset( $mid ) ? $mid : ''
+                   );
+    }
+    
+    /**
+     * Returns all submissions (including overwritten ones) of a given user
+     * of a specific exercisesheet.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /submission/user/$userid/exercisesheet/$esid(/).
+     *
+     * @param int $userid The id of the user.
+     * @param int $esid The id of the exercisesheet.
+     */
+    public function getUserSheetSubmissions( 
+                                               $userid,
+                                               $esid
+                                               )
+    {
+        $this->get( 
+                   'GetUserSheetSubmissions',
+                   'Sql/GetUserSheetSubmissions.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
