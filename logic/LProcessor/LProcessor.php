@@ -17,6 +17,11 @@ include_once '../../Assistants/CConfig.php';
 class LProcessor
 {
     /**
+     * @var Slim $_app the slim object
+     */
+    private $app = null;
+    
+    /**
      * @var Component $_conf the component data object
      */
     private $_conf=null;
@@ -91,11 +96,11 @@ class LProcessor
         $this->app->map('/submission(/)',
                         array($this, 'postSubmission'))->via('POST');
                         
-        // POST AddProcessor
+        // POST AddProcess
         $this->app->map('/'.$this->getPrefix().'(/)',
                         array($this, 'addProcess'))->via('POST');
                         
-        // PUT EditProcessor
+        // PUT EditProcess
         $this->app->map('/'.$this->getPrefix().'(/)',
                         array($this, 'editProcess'))->via('PUT');
 
@@ -103,17 +108,65 @@ class LProcessor
         $this->app->run();
     }
 
-    public function AddProcess(){
+    public function AddProcess()
+    {
+        $this->app->response->setStatus( 201 );
+        $header = $this->app->request->headers->all();
+        $body = $this->app->request->getBody();
+        
+        $processes = Process::decodeProcess($body);
+        
+        // always been an array
+        $arr = true;
+        if ( !is_array( $processes ) ){
+            $processes = array( $processes );
+            $arr = false;
+        }
+        
+        $res = array( );
+        foreach ( $processes as $process ){
+
+            $result = Request::routeRequest( 
+                                            'POST',
+                                            '/process',
+                                            array(),
+                                            Process::encodeProcess($process),
+                                            $this->_processorDb,
+                                            'process'
+                                            );
+                                            
+            if ( $result['status'] >= 200 && 
+                 $result['status'] <= 299 ){
+                 
+                $queryResult = Process::decodeProcess($result['content']);
+                $process->setProcessId($queryResult->getProcessId());
+                $res[] = $process;
+            }
+            else{
+                $res[] = null;
+                $this->app->response->setStatus( 409 );
+                continue;
+            }
+                    
+        }
+ 
+        if ( !$arr && 
+             count( $res ) == 1 ){
+            $this->app->response->setBody( Process::encodeProcess( $res[0] ) );
+            
+        } else 
+            $this->app->response->setBody( Process::encodeProcess( $res ) );
+    }
+    
+    public function EditProcess()
+    {
     
     
     }
     
-    public function EditProcess(){
-    
-    
-    }
-    
-    public function postSubmission(){
+    public function postSubmission()
+    {
+        $this->app->response->setStatus( 201 );
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
         
@@ -129,47 +182,95 @@ class LProcessor
 
         $res = array( );
         foreach ( $submissions as $submission ){
+            $fail = false;
+        
             $process = new Process();
-            $process->setExerciseId($submission->getExerciseId());
             $process->setRawSubmission($submission);
+
+            $eid = $submission->getExerciseId();
+            // load processor data from database
+            $result = Request::routeRequest( 
+                                'GET',
+                                '/process/exercise/'.$eid,
+                                $this->app->request->headers->all( ),
+                                '',
+                                $this->_processorDb,
+                                'process'
+                                );
+            $processors = null;
+            
+            if ( $result['status'] >= 200 && 
+                 $result['status'] <= 299 ){
+                $processors = Process::decodeProcess( $result['content'] );
+            } else {
+               $res[] = null;
+               continue;
+            }
             
             // process submission
+            if ($processors !== null){
+                foreach($processors as $pro){
+                    $component = $pro->getTarget();
+                    
+                    if ($process->getExercise()===null)
+                        $process->setExercise($pro->getExercise());
+                                
+//echo Process::encodeProcess($process);
+//break;
+                    $result = Request::post($component->getAddress().'/process', array(),  Process::encodeProcess($process));
+                    
+                    if ( $result['status'] >= 200 && 
+                         $result['status'] <= 299 ){
+                        $process = Process::decodeProcess( $result['content'] );
+                       // var_dump($result);
+                    } else {
+                       $fail = true;
+                       break;
+                    }
+                }
+            }
             
+            if ($fail){
+                $res[] = null;
+                continue;
+            }
 
             // upload submission
             $uploadSubmission = $process->getSubmission();
             if ($uploadSubmission===null)$uploadSubmission = $process->getRawSubmission();
             
+            if ($uploadSubmission===null){
+                // create empty submission? failure?
+            }
+
             $result = Request::routeRequest( 
-                                'POST',
-                                '/submission',
-                                $this->app->request->headers->all( ),
-                                Submission::encodeSubmission($uploadSubmission),
-                                $this->_submission,
-                                'submission'
-                                );
-            
+                                            'POST',
+                                            '/submission',
+                                            array(),
+                                            Submission::encodeSubmission($uploadSubmission),
+                                            $this->_submission,
+                                            'submission'
+                                           );
+
             // checks the correctness of the query
             if ( $result['status'] >= 200 && 
                  $result['status'] <= 299 ){
                 $queryResult = Submission::decodeSubmission( $result['content'] );
-
-                $res[] = $queryResult;
-                $this->app->response->setStatus( 201 );
-                if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->app->response->headers->set( 
-                                                        'Content-Type',
-                                                        $result['headers']['Content-Type']
-                                                        );
-                
+          // var_dump($queryResult);
             } else {
                $res[] = null;
+               continue;
             }
             
             // upload marking
             
             
         }
+        
+      /*  if ( !$arr && count( $res ) == 1 ){
+            $this->app->response->setBody( Process::encodeProcess( $res[0] ) );
+        } else 
+            $this->app->response->setBody( Process::encodeProcess( $res ) );*/
     }
 }
 
