@@ -8,6 +8,7 @@
 require_once '../../Assistants/Slim/Slim.php';
 include_once '../../Assistants/Request.php';
 include_once '../../Assistants/CConfig.php';
+include_once '../../Assistants/DBJson.php';
 
 \Slim\Slim::registerAutoloader();
 
@@ -16,6 +17,11 @@ include_once '../../Assistants/CConfig.php';
  */
 class LFormPredecessor
 {
+    /**
+     * @var Slim $_app the slim object
+     */
+    private $app = null;
+    
     /**
      * @var Component $_conf the component data object
      */
@@ -75,9 +81,6 @@ class LFormPredecessor
         $this->_pdf = CConfig::getLinks($conf->getLinks(),"pdf");
         $this->_formDb = CConfig::getLinks($conf->getLinks(),"formDb");
 
-        // initialize lURL
-        $this->lURL = $this->query->getAddress();
-
         // POST PostProcess
         $this->app->map('/'.$this->getPrefix().'(/)',
                         array($this, 'postProcess'))->via('POST');
@@ -87,11 +90,11 @@ class LFormPredecessor
     }
 
     public function postProcess(){
+        $this->app->response->setStatus( 201 );
+           
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
-        
         $process = Process::decodeProcess($body);
-        
         // always been an array
         $arr = true;
         if ( !is_array( $process ) ){
@@ -102,17 +105,17 @@ class LFormPredecessor
         // this array contains the indices of the inserted objects
         $res = array( );
         foreach ( $process as $pro ){
-            $eid = $pro->getExerciseId();
+            $eid = $pro->getExercise()->getId();
         
             // loads the form from database
             $result = Request::routeRequest( 
-                                'GET',
-                                '/form/exercise/'.$eid,
-                                $this->app->request->headers->all( ),
-                                '',
-                                $this->_formDb,
-                                'form'
-                                );
+                                            'GET',
+                                            '/form/exercise/'.$eid,
+                                            $this->app->request->headers->all( ),
+                                            '',
+                                            $this->_formDb,
+                                            'form'
+                                            );
                                 
             // checks the correctness of the query
             if ( $result['status'] >= 200 && 
@@ -120,18 +123,24 @@ class LFormPredecessor
                  
                 // only one form as result
                 $forms = Form::decodeForm($result['content']);
+                $forms = $forms[0];
 
                 $formdata = $pro->getRawSubmission()->getFile();
+                $timestamp = $formdata->getTimeStamp();
+                if ($timestamp === null) 
+                    $timestamp = time();
                 
-                if ($formdata !== null){
+                if ($formdata !== null && $forms !== null){
                     $formdata = Form::decodeForm(base64_decode($formdata->getBody()));
-                    
+                    if (is_array($formdata)) $formdata = $formdata[0];
+
                     if ($formdata !== null){
                         // check the submission
-                        $parameter = explode(' ',strtolower($pro->getParameter()));
-                        
-                        $choices = $formdata->getChoices();
                         $fail = false;
+                        $parameter = explode(' ',strtolower($pro->getParameter()));
+
+                        $choices = $formdata->getChoices();
+                        
                         foreach ($choices as &$choice){
                             foreach ($parameter as $param){
                                 switch($param){
@@ -163,20 +172,29 @@ class LFormPredecessor
                         
                         if ($fail){
                             // received submission isn't correct
-                        
-                        } else {
-                        
-                            // save the submission
-                            #region Form to PDF
+                            $res[] = null;
+                            $this->app->response->setStatus( 409 );
+                            continue;
+                        } 
+
+                        // save the submission
+                        #region Form to PDF
+                        if ($pro->getSubmission() === null){
+                            $raw = $pro->getRawSubmission();
+                            $exerciseName = '';
+                            
+                            if ( $raw !== null )
+                                $exerciseName = $raw->getExerciseName();
                             
                             $answer="";
-                            if ($forms->getType()==0) $answer = cleanInput($formdata->getChoices()[0]->getText());
-                            if ($forms->getType()==1) $answer = cleanInput($forms->getChoices()[$formdata->getChoices()[0]->getText()]->getText());
+                            
+                            if ($forms->getType()==0) $answer = DBJson::mysql_real_escape_string($formdata->getChoices()[0]->getText());
+                            if ($forms->getType()==1) $answer = DBJson::mysql_real_escape_string($forms->getChoices()[$formdata->getChoices()[0]->getText()]->getText());
                             if ($forms->getType()==2)
                                 foreach($formdata->getChoices() as $chosen)
-                                    $answer.=cleanInput($forms->getChoices()[intval($chosen->getText())]->getText())."<br>";
-                            
-                            $Text=    "<h1>AUFGABE </h1>".
+                                    $answer.=DBJson::mysql_real_escape_string($forms->getChoices()[$chosen->getText()]->getText())."<br>";
+                        
+                            $Text=  "<h1>AUFGABE {$exerciseName}</h1>".
                                     "<hr>".
                                     "<p>".
                                     "<h2>Aufgabenstellung:</h2>".
@@ -188,59 +206,73 @@ class LFormPredecessor
                                     "</p>";
                                     
                             $pdf = Pdf::createPdf($Text);
-                            /*$URL = $filesystemURI."/pdf";
-                            $pdf = File::decodeFile(http_post_data($URL, Pdf::encodePdf($pdf), false, $message));
-                            $pdf->setDisplayName($exercise['name'].".pdf");
-                            $pdf->setTimeStamp($timestamp);
-                            $pdf->setBody(null);*/
-                            $submission = new Submission();
-                            $submission->setFile($pdf);
-                            $pro->setSubmission($submission);
+                            $result = Request::routeRequest( 
+                                                            'POST',
+                                                            '/pdf',
+                                                            array(),
+                                                            Pdf::encodePdf($pdf),
+                                                            $this->_pdf,
+                                                            'pdf'
+                                                            );
+                            // checks the correctness of the query
+                            if ( $result['status'] >= 200 && 
+                                 $result['status'] <= 299 ){
+                                 
+                                $pdf = File::decodeFile($result['content']);
+                                
+                                $pdf->setDisplayName($exerciseName.'.pdf');
+                                $pdf->setTimeStamp($timestamp);
+                                $pdf->setBody(null);
+                                
+                                $submission = $raw;
+                                $submission->setFile($pdf);
+                                //$submission->setExerciseId($eid);
+                                //$submission->setExerciseName($exerciseName);
+                                $pro->setSubmission($submission);
+                            } else {
+                                $res[] = null;
+                                $this->app->response->setStatus( 409 );
+                                continue;
+                            }
+                        }
+                        #endregion
 
-                            #endregion
-                            
-                            
-                            // preprocess the submission
-                            $choices = $formdata->getChoices();
-                            foreach ($choices as &$choice){
-                                foreach ($parameter as $param){
-                                    switch($param){
-                                        case('lowercase'):
-                                            $choice->setText(strtolower($choice->getText()));
-                                            break;
-                                        case('uppercase'):
-                                            $choice->setText(strtoupper($choice->getText()));
-                                            break;
-                                        case('trim'):
-                                            $choice->setText(trim($choice->getText()));
-                                            break;
-                                    }
+                        // preprocess the submission
+                        $choices = $formdata->getChoices();
+                        foreach ($choices as &$choice){
+                            foreach ($parameter as $param){
+                                switch($param){
+                                    case('lowercase'):
+                                        $choice->setText(strtolower($choice->getText()));
+                                        break;
+                                    case('uppercase'):
+                                        $choice->setText(strtoupper($choice->getText()));
+                                        break;
+                                    case('trim'):
+                                        $choice->setText(trim($choice->getText()));
+                                        break;
                                 }
                             }
-                            $formdata->setChoices($choices);
-                            
-                            /*$res[] = $obj;
-                            $this->app->response->setStatus( 201 );
-                            if ( isset( $result['headers']['Content-Type'] ) )
-                                $this->app->response->headers->set( 
-                                                                    'Content-Type',
-                                                                    $result['headers']['Content-Type']
-                                                                    );
-                            $this->app->stop( );
-                                                                    */
                         }
+                        $formdata->setChoices($choices);
+                        
+                        $rawSubmission = $pro->getRawSubmission();
+                        $rawFile = $rawSubmission->getFile();
+                        $rawFile->setBody(base64_encode(Form::encodeForm($formdata)));
+                        $rawSubmission->setFile($rawFile);
+                        $rawSubmission->setExerciseId($eid);
+                        $pro->setRawSubmission($rawSubmission);
+                        
+                        $res[] = $pro;          
+                        continue;
                     }
-                }
+                }                             
             }
-                Logger::Log( 
-                            'POST AddProcess failed',
-                            LogLevel::ERROR
-                            );
-                $this->app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-                $this->app->response->setBody( Process::encodeProcess( $res ) );
-                $this->app->stop( );    
+            $this->app->response->setStatus( 409 );
+            $res[] = null;
         }
 
+ 
         if ( !$arr && 
              count( $res ) == 1 ){
             $this->app->response->setBody( Process::encodeProcess( $res[0] ) );
