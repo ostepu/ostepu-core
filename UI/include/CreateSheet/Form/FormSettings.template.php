@@ -8,7 +8,7 @@
         </div>
         
 
-        <div class="content-body-wrapper"">
+        <div class="content-body-wrapper">
         
             <div class="content-body left">
             

@@ -3,7 +3,7 @@ function deleteForm(event) {
     var container = trig.parents('.form');
     trig.parents('.form').parent().find('.use-form').hide().fadeIn('fast');
     
-    trig.parents('.form').parents('.content-body').find('.mime-field').removeAttr("disabled");    
+    trig.parents('li').find('.mime-field').removeAttr("disabled");    
     
     container.slideToggle('fast', function() {
     container[0].parentNode.removeChild(container[0]);
@@ -12,12 +12,12 @@ function deleteForm(event) {
 }
 
 function useForm(event) {
-var trig = $(this);
+    var trig = $(this);
 
     // append content to last exercise
     $.get("include/CreateSheet/Form/FormSettings.template.php", function (data) {
     
-        trig.parents('.content-body').find('.mime-field').first().attr("disabled", "disabled");   
+        trig.parents('li').find('.mime-field').last().attr("disabled", "disabled");   
 
         trig.after(data);
         trig.hide().fadeOut('fast');
@@ -32,6 +32,7 @@ var trig = $(this);
         trig.parent().find('.form').first().find('.use-input').first().on("click",useInput);
         trig.parent().find('.form').first().find('.use-radio').first().on("click",useRadio);
         trig.parent().find('.form').first().find('.use-checkbox').first().on("click",useCheckbox);
+        renumberExercises();
     });
 }
 
@@ -49,12 +50,11 @@ trig.parents('.form').last().find('.content-title').first().text("Eingabezeile")
         trig.parent().find('.use-input').first().remove();
         parent.after(data);
         renameInput(parent.parent());
-        
     });
 }
 
 function rename(){
-    var all = $('.input-choice');
+    var all = $('.choice-input');
 
     for (var i = 0; i < all.length; i++) {
         // add a new header text
@@ -99,7 +99,7 @@ var trig = $(this);
 trig.parents('.form').last().find('.content-title').first().text("Einfachauswahl");
     // append content
     $.get("include/CreateSheet/Form/FormRadio.template.php", function (data) {
-
+        
         var parent = trig.parent();
         
         trig.parent().find('.use-input').first().remove();
@@ -109,6 +109,7 @@ trig.parents('.form').last().find('.content-title').first().text("Einfachauswahl
 
         parent.parent().find('.add-choice').first().on("click",addRadio);
         parent.parent().find('.add-choice').first().click();
+        renameInput(parent.parent());
     });
 }
 
@@ -127,7 +128,7 @@ var trig = $(this);
         }
         
         trig.parent().find('.delete-choice').last().on("click",removeRadio);
-
+        renameRadio(parent.parent());
     });
 }
 
@@ -163,6 +164,7 @@ trig.parents('.form').last().find('.content-title').first().text("Mehrfachauswah
 
         parent.parent().find('.add-choice').first().on("click",addCheckbox);
         parent.parent().find('.add-choice').first().click();
+        renameCheckbox(parent.parent());
     });
 }
 
@@ -171,7 +173,7 @@ var trig = $(this);
     $.get("include/CreateSheet/Form/FormAddCheckbox.template.php", function (data) {
     
         trig.before(data);
-        renameRadio(trig.parent());
+        renameCheckbox(trig.parent());
         
         if (trig.parent().find('.delete-choice').length >= 2) {
             trig.parent().find('.delete-choice').first().fadeIn('fast');
@@ -181,8 +183,19 @@ var trig = $(this);
         }
         
         trig.parent().find('.delete-choice').last().on("click",removeCheckbox);
-
     });
+}
+
+function removeCheckbox(event){
+var trig = $(this);
+    
+trig.parent().slideToggle('fast', function() {
+        trig.parent().remove();
+    });
+
+if (trig.parent().parent().find('.form-input-checkbox').length == 2) {
+            trig.parent().parent().find('.form-input-checkbox').not(trig.parent()).first().find('.delete-choice').fadeOut('fast');
+        }
 }
 
 function renameCheckbox(trig) {

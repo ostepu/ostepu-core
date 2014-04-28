@@ -3,9 +3,10 @@
  * Contains Javascript code that is needed on the CreateSheet page.
  */
  
-$(document).ready( function() {
+$(document).ready( function() 
+{
 
-    // set mouse curser on mouse-over to pointer
+    // set mouse cursor on mouse-over to pointer
     $('.collapsible').children('.content-header').css('cursor','pointer');
 
     // map click events
@@ -46,13 +47,38 @@ $(document).ready( function() {
     $('#submitSheet').on("click", function(event) {
         $('#submitSheetButton').click();
     });
+    
     $('.body-option-color.right.deny-button.skip-list-item').on("click",addSubtask);
+
+    
+    $('.form').children('.content-header').on("click",collapseForm);     
+    $('.form').children('.content-header').css('cursor','pointer');   
+    $('.form').children('.content-header').find('.delete-form').on("click",deleteForm);
+    
+    $('.form-input-radio').parent().find('.add-choice').on("click",addRadio);
+    $('.form-input-radio').find('.delete-choice').on("click",removeRadio);
+    
+    $('.form-input-checkbox').parent().find('.add-choice').on("click",addCheckbox);
+    $('.form-input-checkbox').find('.delete-choice').on("click",removeCheckbox);
+    
+    $('.use-form').hide().fadeOut('fast');
+    $('.use-form').on("click",useForm);
+    $('.use-processor').on("click",useProcessor);
+    
+    $('.processor').children('.content-header').on("click",collapseProcessor);     
+    $('.processor').children('.content-header').css('cursor','pointer');   
+    $('.processor').children('.content-header').find('.delete-processor').on("click",deleteProcessor);
+    
+    if ($('.delete-exercise').length==0){
+        $('.add-exercise').click();
+    }
 });
 
 /**
  * sets the current time
  */
-function setCurrentTimeData() {
+function setCurrentTimeData() 
+{
     var picker = $('#datetimepicker1').data('datetimepicker');
     var localDate = picker.getLocalDate();
 
@@ -74,7 +100,8 @@ function setCurrentTimeData() {
  * Renames exercise headers with correct enumeration.
  * Renames input elements.
  */
-function renumberExercises() {
+function renumberExercises() 
+{
     var allCollapsible = $('.collapsible');
 
     for (var i = 1; i < allCollapsible.length; i++) {
@@ -82,9 +109,8 @@ function renumberExercises() {
         var current = $(allCollapsible[i]);
         //current.children('.content-header').children('.content-title').first().innerText = "Aufgabe " + i;
         current.children('.content-header').children('.content-title').first().text( "Aufgabe " + i);
-
         
-        //ename the input element
+        //rename the input element
         var listElements = current.find('li');
         listElements.each(renameSubtask(i));
 
@@ -94,7 +120,8 @@ function renumberExercises() {
 /**
  * Return a closure that can replace numbers in names of form elements.
  */
-function renameSubtask(i) {
+function renameSubtask(i) 
+{
     // return a closure to rename inputs in subtasks
     return function (index, listElement) {
         var element = $(listElement);
@@ -119,7 +146,8 @@ function renameSubtask(i) {
 /**
  * prevent that an event is propagated up the responder chain.
  */
-function suppressPropagation(event) {
+function suppressPropagation(event)
+{
     event.stopPropagation();
 
     return false;
@@ -132,7 +160,8 @@ function suppressPropagation(event) {
  * Deletes the exercise and its related content-element when clicking on
  * a link with the class 'delete-exercise'.
  */
-function deleteExercise(event) {
+function deleteExercise(event) 
+{
 
     var trig = $(this);
     var container = trig.parents('.collapsible');
@@ -150,7 +179,8 @@ function deleteExercise(event) {
  * Deletes the subtask and its related list-element when clicking on
  * a link with the class 'delete-subtask'.
  */
-function deleteSubtask(event) {
+function deleteSubtask(event) 
+{
     var trig = $(this);
 
     trig.parent().slideToggle('fast', function() {
@@ -175,7 +205,8 @@ function deleteSubtask(event) {
  * adds a new exercise when clicking on a link with the class 'add-exercise'
  * at the end of the page.
  */
-function addExercise(event) {
+function addExercise(event) 
+{
 
     // append content to last exercise
     $.get("include/CreateSheet/ExerciseSettings.template.php", function (data) {
@@ -204,9 +235,9 @@ function addExercise(event) {
 
         // set mouse curser on mouse-over to pointer
         $('.collapsible').last().children('.content-header').css('cursor','pointer');
-
+        renumberExercises();
     });
-    renumberExercises();
+    
 }
 
 /**
@@ -215,7 +246,8 @@ function addExercise(event) {
  * Adds new subtask when clicking on a link with the class
  * '.body-option-color.right.deny-button.skip-list-item'
  */
-function addSubtask(event) {
+function addSubtask(event) 
+{
     var trig = $(this);
 
     // insert subtask
@@ -236,21 +268,22 @@ function addSubtask(event) {
         else{
             var firstSubtask = trig.parent().parent().find('li').not( ".skip-item" ).first();
             firstSubtask.find('.delete-subtask').fadeOut('fast');
-            }
+        }
             
         // map click events on new subtask
         insertedSubtask.find('.delete-subtask').on("click",deleteSubtask);
         insertedSubtask.find('.use-form').on("click",useForm);
         insertedSubtask.find('.use-processor').on("click",useProcessor);
-        insertedSubtask.find('.use-correction').on("click",useCorrection);
+        
+        renumberExercises();
     });
-    renumberExercises();
 }
 
 /**
  * toggle function on click to hide/show .content-header elements
  */
-function collapseElement(event) {
+function collapseElement(event) 
+{
     // trig = event sender
     var trig = $(this);
     // toggle the next available element of .content-body-wrapper near the "trig" with duration "fast"

@@ -22,6 +22,10 @@ $createsheetData = json_decode($createsheetData, true);
 
 $noContent = false;
 
+$result = http_get($databaseURI.'/definition/LProcessor',true);
+$processorModules = array('processors' => Component::decodeComponent($result));
+
+        
 if (isset($createsheetData['exerciseTypes'])) {
     $_SESSION['JSCACHE'] = json_encode($createsheetData['exerciseTypes']);
 } else {
@@ -255,6 +259,7 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                     break;
                 }
                 
+                #region create_forms
                 ##########################
                 ### begin create_forms ###
                 ##########################
@@ -278,14 +283,19 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                         foreach ($choiceText as $tempKey => $choiceData) {
                             $choice = new Choice();
                             $choice->SetText($choiceData); 
-                            $choices[] = $choice;
+                            $choices[$tempKey] = $choice;
                         }
                         
+                        //var_dump($choices);
+                        
+                       // var_dump($subexercise['correct']);
                         $choiceCorrect = $subexercise['correct'];
-                        $b=0;
                         foreach ($choiceCorrect as $tempKey => $choiceData) {
-                            $choices[$b]->setCorrect($choiceData);                   
+                            if (isset($choices[$tempKey]))                          
+                                $choices[$tempKey]->setCorrect($choiceData);                   
                         }
+                        
+                        $choices = array_values( $choices );
                         
                         $form->setChoices($choices);
                         $forms[] = $form;
@@ -294,7 +304,6 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                 }
 
                 // upload forms
-               // $URL = "http://localhost/uebungsplattform/logic/LForm/form";
                 $URL = $logicURI."/form";
                 http_post_data($URL, Form::encodeForm($forms), true, $message);
                 
@@ -306,6 +315,57 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                 ########################
                 ### end create_forms ###
                 ########################
+                #endregion
+                
+                #region create_processors
+                ###############################
+                ### begin create_processors ###
+                ###############################
+                
+                // create processor data
+                $processors = array();
+                $i=0;
+                foreach ($exercise as $key2 => $subexercise) {
+                    if (isset($subexercise['processorId'])){                                        
+                        
+                        $tempProcessors = array();
+                        
+                        $processorId = $subexercise['processorId'];
+                        
+                        foreach ($processorId as $tempKey => $Data) {
+                            $processor = new Process();
+                            $processor->setExerciseid($exercises[$i]->getId());
+                            $component = new Component();
+                            $component->setId($Data);
+                            $processor->SetTarget($component); 
+                            $tempProcessors[] = $processor;
+                        }
+                        
+                        $processorParameter = $subexercise['processorParameter'];
+                        $b=0;
+                        foreach ($processorParameter as $tempKey => $Data) {
+                            $tempProcessors[$b]->setParameter($Data);                   
+                        }
+                        
+                        $processors = array_merge($processors,$tempProcessors);
+                    }
+                    $i++;
+                }
+
+                // upload processors
+                $URL = $serverURI."/logic/LProcessor/process";
+                http_post_data($URL, Process::encodeProcess($processors), true, $message);
+                
+                if ($message != 201) {
+                    $errorInSent = true;
+                    break;
+                }
+                
+                #############################
+                ### end create_processors ###
+                #############################
+                #endregion
+                
             }
             if ($errorInSent == false) {
                 $errormsg = "Die Serie wurde erstellt.";
@@ -346,10 +406,11 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
         if (isset($_POST['exercises'])) {
             $exerciseSettings = Template::WithTemplateFile('include/CreateSheet/ExerciseSettings.template.php');
             $exerciseSettings->bind(cleanInput($_POST));
+            $exerciseSettings->bind($processorModules);
 
             // wrap all the elements in some HTML and show them on the page
-            $w = new HTMLWrapper($h, $sheetSettings, $createExercise, $exerciseSettings);
-            $w->defineForm(basename(__FILE__)."?cid=".$cid, true, $sheetSettings, $createExercise, $exerciseSettings);
+            $w = new HTMLWrapper($h, $sheetSettings, $createExercise, $exerciseSettings);//, $exerciseSettings
+            $w->defineForm(basename(__FILE__)."?cid=".$cid, true, $sheetSettings, $createExercise, $exerciseSettings);//, $exerciseSettings
             $w->set_config_file('include/configs/config_createSheet.json');
             $w->show();
         } else {

@@ -18,8 +18,9 @@
                         <a href="javascript:void(0);" class="body-option-color deny-button delete-subtask right">Teilaufgabe löschen</a>
         <div class="content-body-wrapper">
                     <table border="0" style="width:100%">
-                    <tr><td><a href="javascript:void(0);" class="body-option-color very-short use-form">Eingabemaske</a></td></tr>                
-                    <tr><td><a href="javascript:void(0);" class="body-option-color very-short use-processor">Verarbeitung</a></td></tr>                        
+                    <tr><td><a href="javascript:void(0);" class="body-option-color very-short use-form">Eingabemaske verwenden</a></td></tr> 
+                    
+                    <tr><td><a href="javascript:void(0);" class="body-option-color very-short use-processor">Verarbeitung hinzufügen</a></td></tr>                        
                     </table>
                         </div>
     
