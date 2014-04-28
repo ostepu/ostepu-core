@@ -287,7 +287,7 @@ class Exercise extends Object implements JsonSerializable
     {
         $this->fileTypes = $value;
     }
-
+    
     /**
      * Creates an Exercise object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -416,7 +416,7 @@ class Exercise extends Object implements JsonSerializable
      */
     public static function getDbPrimaryKey( )
     {
-        return'E_id';
+        return 'E_id';
     }
 
     /**
@@ -540,7 +540,6 @@ class Exercise extends Object implements JsonSerializable
             $list['fileTypes'] = $this->fileTypes;
         if ( $this->linkName !== null )
             $list['linkName'] = $this->linkName;
-
         return $list;
     }
 

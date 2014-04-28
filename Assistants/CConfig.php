@@ -72,6 +72,33 @@ class CConfig
                                             'Content-Type',
                                             'application/json'
                                             );
+                                            
+        // GET Commands
+        $this->_app->get( 
+                          '/info/commands(/)',
+                          array( 
+                                $this,
+                                'commands'
+                                )
+                          );
+                          
+        // GET Info
+        $this->_app->get( 
+                          '/info/:language(/)',
+                          array( 
+                                $this,
+                                'info'
+                                )
+                          );
+                          
+        // GET Instruction
+        $this->_app->get( 
+                          '/info/instruction/:language(/)',
+                          array( 
+                                $this,
+                                'instruction'
+                                )
+                          );                         
 
         // POST Config
         $this->_app->post( 
@@ -92,7 +119,10 @@ class CConfig
                          );
 
         // starts slim only if the right prefix was received
-        if ( $this->_app->request->getResourceUri( ) == '/component' ){
+        if ( $this->_app->request->getResourceUri( ) == '/component' ||  strpos( 
+                    $this->_app->request->getResourceUri( ),
+                    '/info'
+                    ) === 0 ){
 
             // run Slim
             $this->_used = true;
@@ -137,6 +167,39 @@ class CConfig
                 $conf->setLinks( $links );
                 $this->saveConfig( Component::encodeComponent( $conf ) );
             }
+        }
+    }
+    
+    public function info( $language)
+    {
+        if (file_exists('info/'.$language)){
+            $this->_app->response->setStatus( 200 );
+            $this->_app->response->setBody( file_get_contents('info/'.$language) );
+        }else{
+            $this->_app->response->setStatus( 404 );
+            $this->_app->response->setBody( '' );
+        }
+    }
+    
+    public function instruction( $language)
+    {
+        if (file_exists('instruction/'.$language)){
+            $this->_app->response->setStatus( 200 );
+            $this->_app->response->setBody( file_get_contents('instruction/'.$language) );
+        }else{
+            $this->_app->response->setStatus( 404 );
+            $this->_app->response->setBody( '' );
+        }
+    }
+    
+    public function commands()
+    {
+        if (file_exists('Commands.json')){
+            $this->_app->response->setStatus( 200 );
+            $this->_app->response->setBody( file_get_contents('Commands.json') );
+        }else{
+            $this->_app->response->setStatus( 404 );
+            $this->_app->response->setBody( '' );
         }
     }
 

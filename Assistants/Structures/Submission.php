@@ -312,7 +312,17 @@ class Submission extends Object implements JsonSerializable
     {
         $this->leaderId = $value;
     }
-
+    
+    private $exerciseName = null;
+    public function getExerciseName( )
+    {
+        return $this->exerciseName;
+    }
+    public function setExerciseName( $value )
+    {
+        $this->exerciseName = $value;
+    }
+    
     /**
      * Creates an Submission object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -572,6 +582,8 @@ class Submission extends Object implements JsonSerializable
             $list['leaderId'] = $this->leaderId;
         if ( $this->hideFile !== null )
             $list['hideFile'] = $this->hideFile;
+        if ( $this->exerciseName !== null )
+            $list['exerciseName'] = $this->exerciseName;
         return $list;
     }
 

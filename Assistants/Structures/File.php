@@ -109,7 +109,7 @@ class File extends Object implements JsonSerializable
      *
      * @param date $value the new value for $timeStamp
      */
-    public function seTimeStamp( $value )
+    public function setTimeStamp( $value )
     {
         $this->timeStamp = $value;
     }
@@ -236,7 +236,7 @@ class File extends Object implements JsonSerializable
                                       $timeStamp,
                                       $fileSize,
                                       $hash,
-                                      $comment = ''
+                                      $comment = null
                                       )
     {
         return new File( array( 
