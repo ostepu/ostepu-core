@@ -7,9 +7,11 @@
  * @author Martin Daute
  */
 
-require '../../Assistants/Slim/Slim.php';
-include '../../Assistants/Request.php';
+require_once '../../Assistants/Slim/Slim.php';
+include_once '../../Assistants/Request.php';
 include_once '../../Assistants/CConfig.php';
+include_once ( '../../Assistants/Logger.php' );
+include_once ( '../../Assistants/Structures.php' );
 
 \Slim\Slim::registerAutoloader();
 
@@ -52,6 +54,11 @@ class LCourse
      * @var string $lURL the URL of the logic-controller
      */
     private $lURL = ""; // readed out from config below
+    
+    /**
+     * @var Link[] $_out a list of links
+     */
+    private $_out = array( );
 
     /**
      * REST actions
@@ -70,6 +77,7 @@ class LCourse
         // initialize component
         $this->_conf = $conf;
         $this->query = CConfig::getLink($conf->getLinks(),"controller");
+        $this->_out = CConfig::getLinks($conf->getLinks(),"out");
 
         // initialize lURL
         $this->lURL = $this->query->getAddress();
@@ -104,12 +112,60 @@ class LCourse
      * The request body should contain a JSON object representing the course's
      * attributes.
      */
-    public function AddCourse(){
-        $body = $this->app->request->getBody();
+    public function AddCourse()
+    {
+         Logger::Log( 
+                    'starts POST AddCourse',
+                    LogLevel::DEBUG
+                    );
+                    
         $header = $this->app->request->headers->all();
-        $URL = $this->lURL.'/DB/course';
-        $answer = Request::custom('POST', $URL, $header, $body);
-        $this->app->response->setStatus($answer['status']);
+        $body = $this->app->request->getBody();
+        
+        $course = Course::decodeCourse($body);
+    
+        foreach ( $this->_out as $_link ){
+            $result = Request::routeRequest( 
+                                            'POST',
+                                            '/course',
+                                            $header,
+                                            Course::encodeCourse($course),
+                                            $_link,
+                                            'course'
+                                            );
+
+            // checks the correctness of the query
+            if ( $result['status'] >= 200 && 
+                 $result['status'] <= 299 ){
+                $queryResult = Course::decodeCourse( $result['content'] );
+
+                // sets the new auto-increment id
+                $course->setId( $queryResult->getId( ) );
+
+                $this->app->response->setStatus( 201 );
+                if ( isset( $result['headers']['Content-Type'] ) )
+                    $this->app->response->headers->set( 
+                                                        'Content-Type',
+                                                        $result['headers']['Content-Type']
+                                                        );
+                
+            } else {
+            
+                if ($course->getId()!==null){
+                    $this->deleteCourse($course->getId());
+                }
+            
+                Logger::Log( 
+                            'POST AddCourse failed',
+                            LogLevel::ERROR
+                            );
+                $this->app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+                $this->app->response->setBody( Course::encodeCourse( $course ) );
+                $this->app->stop( );
+            }
+        }
+        
+        $this->app->response->setBody( Course::encodeCourse( $course ) );
     }
 
     /**
@@ -122,7 +178,8 @@ class LCourse
      *
      * @param int $courseid The id of the course that is being updated.
      */
-    public function editCourse($courseid){
+    public function editCourse($courseid)
+    {
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
         $URL = $this->lURL.'/DB/course/course/'.$courseid;
@@ -139,11 +196,44 @@ class LCourse
      * @param int $courseid The id of the course that is being deleted.
      */
     public function deleteCourse($courseid){
-        $body = $this->app->request->getBody();
+        Logger::Log( 
+                    'starts DELETE DeleteCourse',
+                    LogLevel::DEBUG
+                    );
+                    
         $header = $this->app->request->headers->all();
-        $URL = $this->lURL.'/DB/course/course/'.$courseid;
-        $answer = Request::custom('DELETE', $URL, $header, $body);
-        $this->app->response->setStatus($answer['status']);
+        $courseid = DBJson::mysql_real_escape_string( $courseid ); 
+        
+        foreach ( $this->_out as $_link ){
+            $result = Request::routeRequest( 
+                                            'DELETE',
+                                            '/course/'.$courseid,
+                                            $header,
+                                            '',
+                                            $_link,
+                                            'course'
+                                            );
+
+            // checks the correctness of the query
+            if ( $result['status'] >= 200 && 
+                 $result['status'] <= 299 ){
+
+                $this->_app->response->setStatus( 201 );
+                if ( isset( $result['headers']['Content-Type'] ) )
+                    $this->_app->response->headers->set( 
+                                                        'Content-Type',
+                                                        $result['headers']['Content-Type']
+                                                        );
+                
+            } else {
+                Logger::Log( 
+                            'POST DeleteCourse failed',
+                            LogLevel::ERROR
+                            );
+                $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+                $this->_app->stop( );
+            }
+        }
     }
 
     /**
@@ -156,7 +246,8 @@ class LCourse
      * @param int $userid The id of the user that is being added.
      * @param int $status The status this user should have in this course.
      */
-    public function addCourseMember($courseid, $userid, $status){
+    public function addCourseMember($courseid, $userid, $status)
+    {
         $header = $this->app->request->headers->all();
         $body = array('id' => $userid,
                       'courses' => array(array('status' => $status,
@@ -178,7 +269,8 @@ class LCourse
      *
      * @param int $courseid The id of the course whose users should be returned
      */
-    public function getCourseMember($courseid){
+    public function getCourseMember($courseid)
+    {
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
         $URL = $this->lURL.'/DB/user/course/'.$courseid;
@@ -195,7 +287,8 @@ class LCourse
      *
      * @param int $userid The id of the user.
      */
-    public function getCourses($userid){
+    public function getCourses($userid)
+    {
         $body = $this->app->request->getBody();
         $header = $this->app->request->headers->all();
         $URL = $this->lURL.'/DB/course/user/'.$userid;
