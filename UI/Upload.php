@@ -37,44 +37,33 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
             $fileName = "file{$exerciseId}";
             
             #region Form to PDF
-            if(isset($exercise['choices']) && $exercise['choices']!==''){
-                $formdata = file_get_contents('FormSample.json');
-                $formdata = Form::decodeForm($formdata);
-                
-                if (!is_array($formdata))$formdata=array($formdata);
-                $data = array();
-                foreach ($formdata as $value){
-                    $data[$value->getExerciseId()] = $value;
+            $formdata = array();
+            if(isset($exercise['choices'])){
+                $formtext = $exercise['choices'];
+                foreach ($formtext as $formId => $choiceData2) {
+                    $form = new Form();
+                    $form->setFormId($formId);
+                    $form->setExerciseId($exerciseId);
+                    
+                    $choiceText = $choiceData2;
+                    $choices = array();
+                    foreach ($choiceText as $tempKey => $choiceData) {
+                        if ($choiceData === '') continue;
+                        $choice = new Choice();
+                        $choice->SetText($choiceData); 
+                        $choice->SetFormId($formId);
+                        $choices[] = $choice;
+                    }
+                    
+                    if ($choices !== null && $choices !== array()){
+                        $form->setChoices($choices);
+                        $formdata[] = $form;
+                    }
                 }
-                
-                $answer="";
-                if ($data[$exerciseId]->getType()==0) $answer = cleanInput($exercise['choices']);
-                if ($data[$exerciseId]->getType()==1) $answer = cleanInput($data[$exerciseId]->getChoices()[$exercise['choices']]->getText());
-                if ($data[$exerciseId]->getType()==2)
-                    foreach($exercise['choices'] as $chosen)
-                        $answer.=cleanInput($data[$exerciseId]->getChoices()[intval($chosen)]->getText())."<br>";
-                
-                //$exerciseId
-                $Text=    "<h1>AUFGABE ".$exercise['name']."</h1>".
-                        "<hr>".
-                        "<p>".
-                        "<h2>Aufgabenstellung:</h2>".
-                        $data[$exerciseId]->getTask().
-                        "</p>".
-                        "<p>".
-                        "<h2>Antwort:</h2>".
-                        $answer.
-                        "</p>";
-                        
-                $pdf = Pdf::createPdf($Text);
-                $URL = $filesystemURI."/pdf";
-                $pdf = File::decodeFile(http_post_data($URL, Pdf::encodePdf($pdf), false, $message));
-                $pdf->setDisplayName($exercise['name'].".pdf");
-                $pdf->setTimeStamp($timestamp);
             }
             #endregion
 
-            if (isset($_FILES[$fileName]) || (isset($exercise['choices']) && $exercise['choices']!=='')) {
+            if (isset($_FILES[$fileName]) || $formdata !== array()) {
                 if (isset($_FILES[$fileName])){
                     $file = $_FILES[$fileName];
                     $error = $file['error'];
@@ -90,15 +79,18 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
                         $filePath = $file['tmp_name'];
                         $uploadFile = File::createFile(null,$file['name'],null,$timestamp,null,null);
                         $uploadFile->setBody(base64_encode(file_get_contents($file['tmp_name'])));
+                    } else {
+                        $uploadFile = File::createFile(null,null,null,$timestamp,null,null);
+                        $uploadFile->setBody(base64_encode(Form::encodeForm($formdata)));
                     }
-                    else
-                        $uploadFile=$pdf;
 
                     $uploadSubmission = Submission::createSubmission(null,$uid,null,$exerciseId,$exercise['comment'],1,$timestamp,null,$leaderId);
                     $uploadSubmission->setFile($uploadFile);
+                    $uploadSubmission->setExerciseName(isset($exercise['name']) ? $exercise['name'] : null);
                     $uploadSubmission->setSelectedForGroup('1');
 
-                    $URL = "http://localhost/uebungsplattform/logic/LProcessor/submission";
+                    $URL = $serverURI.'/logic/LProcessor/submission';
+              //     echo Submission::encodeSubmission($uploadSubmission);
                     $result = http_post_data($URL, Submission::encodeSubmission($uploadSubmission), true, $message);
 
                     if ($message != "201") {
@@ -127,7 +119,7 @@ $upload_data['cid'] = $cid;
 $upload_data['sid'] = $sid;
 
 //$formdata = file_get_contents('FormSample.json');
-$URL = "http://localhost/uebungsplattform/DB/DBForm/form/exercisesheet/{$sid}";
+$URL = $serverURI."/DB/DBForm/form/exercisesheet/{$sid}";
 $formdata = http_get($URL, true);
 
 $formdata = Form::decodeForm($formdata);
