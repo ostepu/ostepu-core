@@ -18,6 +18,8 @@
         "javascript/bootstrap.min.js",
         "javascript/bootstrap-datetimepicker.min.js",
         "javascript/interactive.js",
-        "javascript/createSheet.js"
+        "javascript/form.js",
+        "javascript/createSheet.js",
+        "javascript/processor.js"
     ]
 }

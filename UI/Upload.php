@@ -21,6 +21,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
     $URL = $databaseURI . '/group/user/' . $uid . '/exercisesheet/' . $sid;
     $group = http_get($URL, true);
     $group = json_decode($group, true);
+    
 
     if (!isset($group['leader'])) {
         $errormsg = "500: Internal Server Error. <br />Zur Zeit können keine Aufgaben eingesendet werden.";
@@ -34,75 +35,73 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
         foreach ($_POST['exercises'] as $key => $exercise) {
             $exerciseId = cleanInput($exercise['exerciseID']);
             $fileName = "file{$exerciseId}";
+            
+            #region Form to PDF
+            $formdata = array();
+            if(isset($exercise['choices'])){
+                $formtext = $exercise['choices'];
+                foreach ($formtext as $formId => $choiceData2) {
+                    $form = new Form();
+                    $form->setFormId($formId);
+                    $form->setExerciseId($exerciseId);
+                    
+                    $choiceText = $choiceData2;
+                    $choices = array();
+                    foreach ($choiceText as $tempKey => $choiceData) {
+                        if ($choiceData === '') continue;
+                        $choice = new Choice();
+                        $choice->SetText($choiceData); 
+                        $choice->SetFormId($formId);
+                        $choices[] = $choice;
+                    }
+                    
+                    if ($choices !== null && $choices !== array()){
+                        $form->setChoices($choices);
+                        $formdata[] = $form;
+                    }
+                }
+            }
+            #endregion
 
-            if (isset($_FILES[$fileName])) {
-                $file = $_FILES[$fileName];
-                $error = $file['error'];
+            if (isset($_FILES[$fileName]) || $formdata !== array()) {
+                if (isset($_FILES[$fileName])){
+                    $file = $_FILES[$fileName];
+                    $error = $file['error'];
+                }
+                else
+                {    
+                    $file = null;
+                    $error = 0;
+                }
 
                 if ($error === 0) {
-                    $filePath = $file['tmp_name'];
-                    $displayName = $file['name'];
-
-                    // upload the file to the filesystem
-                    $jsonFile = fullUpload($filesystemURI,
-                                           $databaseURI,
-                                           $filePath,
-                                           $displayName,
-                                           $timestamp,
-                                           $message);
-
-                    if (($message != "201") && ($message != "200")) {
-                        // saving failed
-                        $exercise = $key + 1;
-                        $errormsg = "{$message}: Aufgabe {$exercise} konnte nicht hochgeladen werden.";
-                        $notifications[] = MakeNotification('error',
-                                                            $errormsg);
-                        continue;
+                    if (isset($_FILES[$fileName])){
+                        $filePath = $file['tmp_name'];
+                        $uploadFile = File::createFile(null,$file['name'],null,$timestamp,null,null);
+                        $uploadFile->setBody(base64_encode(file_get_contents($file['tmp_name'])));
                     } else {
-                        // saving succeeded
-                        $fileObj = json_decode($jsonFile, true);
+                        $uploadFile = File::createFile(null,null,null,$timestamp,null,null);
+                        $uploadFile->setBody(base64_encode(Form::encodeForm($formdata)));
                     }
 
-                    $fileId = $fileObj['fileId'];
+                    $uploadSubmission = Submission::createSubmission(null,$uid,null,$exerciseId,$exercise['comment'],1,$timestamp,null,$leaderId);
+                    $uploadSubmission->setFile($uploadFile);
+                    $uploadSubmission->setExerciseName(isset($exercise['name']) ? $exercise['name'] : null);
+                    $uploadSubmission->setSelectedForGroup('1');
 
-                    // create a new submission with the file
-                    $comment = cleanInput($exercise['comment']);
-                    $returnedSubmission = submitFile($databaseURI,
-                                                     $uid,
-                                                     $fileId,
-                                                     $exerciseId,
-                                                     $comment,
-                                                     $timestamp,
-                                                     $message);
+                    $URL = $serverURI.'/logic/LProcessor/submission';
+              //     echo Submission::encodeSubmission($uploadSubmission);
+                    $result = http_post_data($URL, Submission::encodeSubmission($uploadSubmission), true, $message);
 
                     if ($message != "201") {
                         $exercise = $key + 1;
-                        $errormsg = "{$message}: Aufgabe {$exercise} konnte nicht hochgeladen werden.";
+                        $errormsg = "{$message}: Aufgabe ".$exercise['name']." konnte nicht hochgeladen werden.";
                         $notifications[] = MakeNotification('error',
                                                             $errormsg);
                         continue;
                     }
 
-                    $returnedSubmission = json_decode($returnedSubmission, true);
-
-                    // make the submission selected
-                    $submissionId = $returnedSubmission['id'];
-                    $returnedSubmission = updateSelectedSubmission($databaseURI,
-                                                                   $leaderId,
-                                                                   $submissionId,
-                                                                   $exerciseId,
-                                                                   $message);
-
-                    if ($message != "201") {
-                        $exercise = $key + 1;
-                        $errormsg = "{$message}: Aufgabe {$exercise} konnte nicht ausgewählt werden.";
-                        $notifications[] = MakeNotification('error',
-                                                            $errormsg);
-                        continue;
-                    }
-
-                    $exercise = $key + 1;
-                    $msg = "Aufgabe {$exercise} wurde erfolgreich eingesendet.";
+                    $msg = "Aufgabe ".$exercise['name']." wurde erfolgreich eingesendet.";
                     $notifications[] = MakeNotification('success',
                                                         $msg);
                 }
@@ -118,6 +117,21 @@ $upload_data = json_decode($upload_data, true);
 $upload_data['filesystemURI'] = $filesystemURI;
 $upload_data['cid'] = $cid;
 $upload_data['sid'] = $sid;
+
+//$formdata = file_get_contents('FormSample.json');
+$URL = $serverURI."/DB/DBForm/form/exercisesheet/{$sid}";
+$formdata = http_get($URL, true);
+
+$formdata = Form::decodeForm($formdata);
+if (!is_array($formdata))$formdata=array($formdata);
+foreach ($formdata as $value){
+    foreach ($upload_data['exercises'] as &$key){
+        if ($value->getExerciseId() == $key['id']){
+            $key['form'] = $value;
+            break;
+        }
+    }
+}
 
 $user_course_data = $upload_data['user'];
 
