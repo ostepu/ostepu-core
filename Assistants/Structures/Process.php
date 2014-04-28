@@ -16,14 +16,14 @@ class Process extends Object implements JsonSerializable
     /**
      * @var string $id  a string that identifies the exercise
      */
-    private $exerciseId = null;
-    public function getExerciseId( )
+    private $exercise = null;
+    public function getExercise( )
     {
-        return $this->exerciseId;
+        return $this->exercise;
     }
-    public function setExerciseId( $value )
+    public function setExercise( $value )
     {
-        $this->exerciseId = $value;
+        $this->exercise = $value;
     }
 
     private $processId = null;
@@ -38,7 +38,7 @@ class Process extends Object implements JsonSerializable
     
     public static function getCourseFromProcessId($id)
     {
-        $arr = explode('_',$processId);
+        $arr = explode('_',$id);
         if (count($arr)==2){
             return $arr[0];
         }
@@ -48,7 +48,7 @@ class Process extends Object implements JsonSerializable
     
     public static function getIdFromProcessId($id)
     {
-        $arr = explode('_',$processId);
+        $arr = explode('_',$id);
         if (count($arr)==2){
             return $arr[1];
         }
@@ -58,12 +58,12 @@ class Process extends Object implements JsonSerializable
     
     public function getObjectCourseFromProcessIdId()
     {
-        return Form::getCourseFromProcessId($this->formId);
+        return Process::getCourseFromProcessId($this->processId);
     }
     
     public function getObjectIdFromProcessId()
     {
-        return Form::getIdFromProcessId($this->formId);
+        return Process::getIdFromProcessId($this->processId);
     }
     
     private $target = null;
@@ -150,14 +150,14 @@ class Process extends Object implements JsonSerializable
     public static function createProcess( 
                                         $processId,
                                         $exerciseId,
-                                        $target,
+                                        $targetId,
                                         $parameter
                                         )
     {
         return new Process( array( 
                                  'processId' => $processId,
-                                 'exerciseId' => $exerciseId,
-                                 'target' => $target,
+                                 'exercise' => new Exercise( array( 'id' => $exerciseId ) ),
+                                 'target' => new Component( array( 'id' => $targetId ) ),
                                  'parameter' => $parameter
                                  ) );
     }
@@ -171,8 +171,8 @@ class Process extends Object implements JsonSerializable
     {
         return array( 
                      'PRO_id' => 'processId',
-                     'E_id' => 'exerciseId',
-                     'CO_id_target' => 'target',
+                     'E_exercise' => 'exercise',
+                     'CO_target' => 'target',
                      'PRO_parameter' => 'parameter'
                      );
     }
@@ -192,17 +192,17 @@ class Process extends Object implements JsonSerializable
                                  'PRO_id',
                                  DBJson::mysql_real_escape_string( $this->processId )
                                  );
-        if ( $this->exerciseId != null )
+        if ( $this->exercise != null )
             $this->addInsertData( 
                                  $values,
                                  'E_id',
-                                 DBJson::mysql_real_escape_string( $this->exerciseId )
+                                 DBJson::mysql_real_escape_string( $this->exercise->getId() )
                                  );
         if ( $this->target != null )
             $this->addInsertData( 
                                  $values,
                                  'CO_id_target',
-                                 DBJson::mysql_real_escape_string( $this->target )
+                                 DBJson::mysql_real_escape_string( $this->target->getId() )
                                  );
         if ( $this->parameter != null )
             $this->addInsertData( 
@@ -302,6 +302,16 @@ class Process extends Object implements JsonSerializable
                                                            );
                     
                 } else
+                if ( $key == 'exercise' ){
+                    $this->{
+                        $key
+                        
+                    } = Exercise::decodeExercise( 
+                                                           $value,
+                                                           false
+                                                           );
+                    
+                } else
                     $this->{
                     $key
                     
@@ -361,8 +371,8 @@ class Process extends Object implements JsonSerializable
         $list = array( );
         if ( $this->processId !== null )
             $list['processId'] = $this->processId;
-        if ( $this->exerciseId !== null )
-            $list['exercieId'] = $this->exerciseId;
+        if ( $this->exercise !== null )
+            $list['exercise'] = $this->exercise;
         if ( $this->target !== null )
             $list['target'] = $this->target;
         if ( $this->parameter !== null )
@@ -373,7 +383,7 @@ class Process extends Object implements JsonSerializable
             $list['workFiles'] = $this->workFiles;    
         if ( $this->submission !== null )
             $list['submission'] = $this->submission;
-        if ( $this->workingSubmission !== null )
+        if ( $this->rawSubmission !== null )
             $list['rawSubmission'] = $this->rawSubmission;
         if ( $this->marking !== null )
             $list['marking'] = $this->marking;    
@@ -386,32 +396,51 @@ class Process extends Object implements JsonSerializable
                                          )
     {
 
-        /*// generates an assoc array of courses by using a defined list of
+        // generates an assoc array of processes by using a defined list of
         // its attributes
-        $courses = DBJson::getObjectsByAttributes( 
+        $process = DBJson::getObjectsByAttributes( 
                                                   $data,
-                                                  Course::getDBPrimaryKey( ),
-                                                  Course::getDBConvert( )
+                                                  Process::getDBPrimaryKey( ),
+                                                  Process::getDBConvert( )
                                                   );
 
-        // generates an assoc array of exercise sheets by using a defined list of
-        // its attributes
-        $exerciseSheets = DBJson::getObjectsByAttributes( 
-                                                         $data,
-                                                         ExerciseSheet::getDBPrimaryKey( ),
-                                                         array( ExerciseSheet::getDBPrimaryKey( ) => ExerciseSheet::getDBConvert( )[ExerciseSheet::getDBPrimaryKey( )] )
-                                                         );
+        // generates an assoc array of components by using a defined
+        // list of its attributes
+        $component = DBJson::getObjectsByAttributes(
+                                                      $data,
+                                                      Component::getDBPrimaryKey( ),
+                                                      Component::getDBConvert( )
+                                                      );
 
-        // concatenates the courses and the associated exercise sheet IDs
-        $res = DBJson::concatResultObjectListAsArray( 
-                                                     $data,
-                                                     $courses,
-                                                     Course::getDBPrimaryKey( ),
-                                                     Course::getDBConvert( )['C_exerciseSheets'],
-                                                     $exerciseSheets,
-                                                     ExerciseSheet::getDBPrimaryKey( )
-                                                     );
-
+        // generates an assoc array of exercises by using a defined
+        // list of its attributes
+        $exercise = DBJson::getObjectsByAttributes(
+                                                      $data,
+                                                      Exercise::getDBPrimaryKey( ),
+                                                      Exercise::getDBConvert( )
+                                                      );
+                                                      
+        // concatenates the processes and the associated components
+        $process =         DBJson::concatObjectListsSingleResult(
+                                                   $data,
+                                                   $process,
+                                                   Process::getDBPrimaryKey( ),
+                                                   Process::getDBConvert( )['E_exercise'],
+                                                   $exercise,
+                                                   Exercise::getDBPrimaryKey( )
+                                                   );
+                                                   
+        $res =         DBJson::concatObjectListsSingleResult(
+                                                   $data,
+                                                   $process,
+                                                   Process::getDBPrimaryKey( ),
+                                                   Process::getDBConvert( )['CO_target'],
+                                                   $component,
+                                                   Component::getDBPrimaryKey( )
+                                                   );
+        // to reindex
+        $res = array_values( $res );
+        
         if ( $singleResult == true ){
 
             // only one object as result
@@ -419,7 +448,7 @@ class Process extends Object implements JsonSerializable
                 $res = $res[0];
         }
 
-        return $res;*/
+        return $res;
     }
 }
 

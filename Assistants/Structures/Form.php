@@ -426,7 +426,7 @@ class Form extends Object implements JsonSerializable
                                                    Form::getDBConvert( )
                                                    );
 
-                                                  // var_dump($forms);
+
         // generates an assoc array of choices by using a defined
         // list of its attributes
         $choices = DBJson::getObjectsByAttributes(

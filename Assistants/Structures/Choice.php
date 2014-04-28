@@ -334,6 +334,10 @@ class Choice extends Object implements JsonSerializable
                                                     Choice::getDBPrimaryKey( ),
                                                     Choice::getDBConvert( )
                                                     );
+                                                    
+                                                    
+        // to reindex
+        $res = array_values( $res );
 
         if ( $singleResult == true ){
 
