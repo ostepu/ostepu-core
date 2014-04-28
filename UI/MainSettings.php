@@ -62,7 +62,7 @@ if (isset($_POST['action'])) {
             // creates a new course
             $newCourse = Course::createCourse(null, $courseName, $semester, $defaultGroupSize);
             $newCourseSettings = Course::encodeCourse($newCourse);
-            $URI = $databaseURI . "/course";
+            $URI = $logicURI . "/course";
             $newCourse = http_post_data($URI, $newCourseSettings, true, $messageNewCourse);
 
             // extracts the id of the new course
