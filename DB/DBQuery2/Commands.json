@@ -1,0 +1,7 @@
+[
+    {    "method":"get", "path":"/info/:language(/)" },
+    {    "method":"get", "path":"/info/instruction/:language(/)" },
+    {    "method":"get", "path":"/query(/)" },
+    {    "method":"put", "path":"/query(/)" },
+    {    "method":"post", "path":"/query(/)" }
+]

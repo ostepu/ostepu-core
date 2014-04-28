@@ -1,0 +1,11 @@
+[
+    {    "method":"post", "path":"/course" }
+    {    "method":"put", "path":"/choice(/choice)/:choiceid(/)" },
+    {    "method":"delete", "path":"/choice(/choice)/:choiceid(/)" },
+    {    "method":"post", "path":"/choice(/)" },
+    {    "method":"get", "path":"/choice(/choice)/:choiceid(/)" },
+    {    "method":"get", "path":"/choice/course/:courseid(/)" },
+    {    "method":"get", "path":"/choice/exercisesheet/:esid(/)" },
+    {    "method":"get", "path":"/choice/exercise/:eid(/)" },
+    {    "method":"get", "path":"/choice/form/:formid(/)" }
+]

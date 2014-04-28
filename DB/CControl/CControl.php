@@ -14,12 +14,17 @@ include_once ( '../../Assistants/Structures.php' );
 include_once ( '../../Assistants/Request.php' );
 include_once ( '../../Assistants/DBRequest.php' );
 include_once ( '../../Assistants/DBJson.php' );
+include_once ( '../../Assistants/CConfig.php' );
 include_once ( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
 
+// runs the CConfig
+$com = new CConfig( CControl::getPrefix( ) . ',link,definition' );
+
 // runs the CControl
-new CControl( );
+if ( !$com->used( ) )
+    new CControl( $com->loadConfig( ) );
 
 /**
  * A class, to abstract the "Component" and "ComponentLinkage" table from database
@@ -33,6 +38,32 @@ class CControl
      * @var Slim $_app the slim object
      */
     private $_app = null;
+    
+    
+    /**
+     * @var string $_prefix the prefixes, the class works with (comma separated)
+     */
+    private static $_prefix = 'component';
+
+    /**
+     * the $_prefix getter
+     *
+     * @return the value of $_prefix
+     */
+    public static function getPrefix( )
+    {
+        return CControl::$_prefix;
+    }
+
+    /**
+     * the $_prefix getter
+     *
+     * @return the value of $_prefix
+     */
+    public static function setPrefix( $value )
+    {
+        CControl::$_prefix = $value;
+    }
 
     /**
      * the component constructor
@@ -533,13 +564,8 @@ class CControl
      */
     public function getComponentDefinition( $componentid )
     {
-
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput( 
-                           $this->_app,
-                           ctype_digit( $componentid )
-                           );
-
+        $componentid = DBJson::mysql_real_escape_string( $componentid );
+        
         // starts a query
         eval( "\$sql = \"" . file_get_contents( 'Sql/GetComponentDefinition.sql' ) . "\";" );
         $result = DBRequest::request( 
@@ -620,6 +646,7 @@ class CControl
                                                       Link::getDBPrimaryKey( )
                                                       );
 
+            $res = array();
             foreach ( $result as $object ){
                 $object = Component::decodeComponent( Component::encodeComponent( $object ) );
 
@@ -628,7 +655,12 @@ class CControl
                                         array( ),
                                         Component::encodeComponent( $object )
                                         );
-                echo $result['status'] . '--' . $object->getName( ) . '--' . $object->getAddress( ) . "\n";
+                                        
+                $newObject = new Component();
+                $newObject->setName($object->getName());
+                $newObject->setAddress($object->getAddress());
+                $newObject->setStatus($result['status']);
+                $res[] = $newObject;
 
                 if ( $result['status'] != 201 ){
                     $add = '';
@@ -641,6 +673,8 @@ class CControl
                                 );
                 }
             }
+            
+            $this->_app->response->setBody( json_encode($res) );
             $this->_app->response->setStatus( 200 );
             
         } else {

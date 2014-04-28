@@ -2,11 +2,9 @@
 
 
 /**
- * @file DBCourse.php contains the DBCourse class
+ * @file DBForm.php contains the DBForm class
  *
  * @author Till Uhlig
- * @author Felix Schmidt
- * @example DB/DBCourse/CourseSample.json
  */
 
 require_once ( '../../Assistants/Slim/Slim.php' );
@@ -20,16 +18,16 @@ include_once ( '../../Assistants/Logger.php' );
 \Slim\Slim::registerAutoloader( );
 
 // runs the CConfig
-$com = new CConfig( DBCourse::getPrefix( ) );
+$com = new CConfig( DBForm::getPrefix( ) . ',course' );
 
-// runs the DBCourse
+// runs the DBForm
 if ( !$com->used( ) )
-    new DBCourse( $com->loadConfig( ) );
+    new DBForm( $com->loadConfig( ) );
 
 /**
- * A class, to abstract the "DBCourse" table from database
+ * A class, to abstract the "DBForm" table from database
  */
-class DBCourse
+class DBForm
 {
 
     /**
@@ -50,7 +48,7 @@ class DBCourse
     /**
      * @var string $_prefix the prefixes, the class works with (comma separated)
      */
-    private static $_prefix = 'course';
+    private static $_prefix = 'form';
 
     /**
      * the $_prefix getter
@@ -59,7 +57,7 @@ class DBCourse
      */
     public static function getPrefix( )
     {
-        return DBCourse::$_prefix;
+        return DBForm::$_prefix;
     }
 
     /**
@@ -69,7 +67,7 @@ class DBCourse
      */
     public static function setPrefix( $value )
     {
-        DBCourse::$_prefix = $value;
+        DBForm::$_prefix = $value;
     }
 
     /**
@@ -96,97 +94,113 @@ class DBCourse
                                             'Content-Type',
                                             'application/json'
                                             );
-
-        // PUT EditCourse
-        $this->_app->put( 
-                         '/' . $this->getPrefix( ) . '(/course)/:courseid(/)',
+                                                                  
+        // POST AddCourse
+        $this->_app->post( 
+                         '/course',
                          array( 
                                $this,
-                               'editCourse'
+                               'addCourse'
+                               )
+                         );
+                         
+        // POST DeleteCourse
+        $this->_app->delete( 
+                         '/course/:courseid',
+                         array( 
+                               $this,
+                               'deleteCourse'
                                )
                          );
 
-        // DELETE DeleteCourse
+        // PUT EditForm
+        $this->_app->put( 
+                         '/' . $this->getPrefix( ) . '(/form)/:formid(/)',
+                         array( 
+                               $this,
+                               'editForm'
+                               )
+                         );
+
+        // DELETE DeleteForm
         $this->_app->delete( 
-                            '/' . $this->getPrefix( ) . '(/course)/:courseid(/)',
+                            '/' . $this->getPrefix( ) . '(/form)/:formid(/)',
                             array( 
                                   $this,
-                                  'deleteCourse'
+                                  'deleteForm'
                                   )
                             );
 
-        // POST AddCourse
+        // POST AddForm
         $this->_app->post( 
                           '/' . $this->getPrefix( ) . '(/)',
                           array( 
                                 $this,
-                                'addCourse'
+                                'addForm'
                                 )
                           );
 
-        // GET GetCourse
+        // GET GetForm
         $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '(/course)/:courseid(/)',
+                         '/' . $this->getPrefix( ) . '(/form)/:formid(/)',
                          array( 
                                $this,
-                               'getCourse'
+                               'getForm'
                                )
                          );
 
-        // GET GetAllCourses
+        // GET GetCourseForms
         $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '(/course)(/)',
+                         '/' . $this->getPrefix( ) . '/course/:courseid(/)',
                          array( 
                                $this,
-                               'getAllCourses'
+                               'getCourseForms'
                                )
                          );
 
-        // GET GetUserCourses
+        // GET GetSheetForms
         $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/user/:userid(/)',
+                         '/' . $this->getPrefix( ) . '/exercisesheet/:esid(/)',
                          array( 
                                $this,
-                               'getUserCourses'
+                               'getSheetForms'
                                )
                          );
-
+                         
+        // GET GetExerciseForms
+        $this->_app->get( 
+                         '/' . $this->getPrefix( ) . '/exercise/:eid(/)',
+                         array( 
+                               $this,
+                               'getExerciseForms'
+                               )
+                         );
+                         
         // starts slim only if the right prefix was received
         if ( strpos( 
                     $this->_app->request->getResourceUri( ),
                     '/' . $this->getPrefix( )
-                    ) === 0 ){
+                    ) === 0 || strpos( 
+                    $this->_app->request->getResourceUri( ),
+                    '/course'
+                    ) === 0){
 
             // run Slim
             $this->_app->run( );
         }
     }
-
-    /**
-     * Edits a course.
-     *
-     * Called when this component receives an HTTP PUT request to
-     * /course/course/$courseid(/) or /course/$courseid(/).
-     * The request body should contain a JSON object representing the course's new
-     * attributes.
-     *
-     * @param int $courseid The id of the course that is being updated.
-     */
-    public function editCourse( $courseid )
+    
+    public function editForm( $formid )
     {
         Logger::Log( 
-                    'starts PUT EditCourse',
+                    'starts PUT EditForm',
                     LogLevel::DEBUG
                     );
 
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput( 
-                           $this->_app,
-                           ctype_digit( $courseid )
-                           );
+        $formid = DBJson::mysql_real_escape_string( $formid );
 
-        // decode the received course data, as an object
-        $insert = Course::decodeCourse( $this->_app->request->getBody( ) );
+        // decode the received choice data, as an object
+        $insert = Form::decodeForm( $this->_app->request->getBody( ) );
 
         // always been an array
         $arr = true;
@@ -197,16 +211,13 @@ class DBCourse
 
         foreach ( $insert as $in ){
 
-            // generates the update data for the object
-            $data = $in->getInsertData( );
-
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/EditCourse.sql',
+                                                  'Sql/EditForm.sql',
                                                   array( 
-                                                        'courseid' => $courseid,
-                                                        'values' => $data
+                                                        'formid' => $formid,
+                                                        'object' => $in
                                                         )
                                                   );
 
@@ -222,7 +233,7 @@ class DBCourse
                 
             } else {
                 Logger::Log( 
-                            'PUT EditCourse failed',
+                            'PUT EditForm failed',
                             LogLevel::ERROR
                             );
                 $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
@@ -230,28 +241,251 @@ class DBCourse
             }
         }
     }
+    
+    public function deleteForm( $formid )
+    {
+        Logger::Log( 
+                    'starts DELETE DeleteForm',
+                    LogLevel::DEBUG
+                    );
 
-    /**
-     * Deletes a course.
-     *
-     * Called when this component receives an HTTP DELETE request to
-     * /course/course/$courseid(/) or /course/$courseid(/).
-     *
-     * @param int $courseid The id of the course that is being deleted.
-     */
+        $formid = DBJson::mysql_real_escape_string( $formid );
+
+        // starts a query, by using a given file
+        $result = DBRequest::getRoutedSqlFile( 
+                                              $this->query,
+                                              'Sql/DeleteForm.sql',
+                                              array( 'formid' => $formid )
+                                              );
+
+        // checks the correctness of the query
+        if ( $result['status'] >= 200 && 
+             $result['status'] <= 299 ){
+
+            if ( isset( $result['headers']['Content-Type'] ) )
+                $this->_app->response->headers->set( 
+                                                    'Content-Type',
+                                                    $result['headers']['Content-Type']
+                                                    );
+
+            $this->_app->response->setStatus( 201 );
+            $this->_app->stop( );
+            
+        } else {
+            Logger::Log( 
+                        'DELETE DeleteForm failed',
+                        LogLevel::ERROR
+                        );
+
+            $this->_app->response->setBody( Form::encodeForm( new Form( ) ) );
+            $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+            $this->_app->stop( );
+        }
+    }
+    
+    public function addForm( )
+    {
+        Logger::Log( 
+                    'starts POST AddForm',
+                    LogLevel::DEBUG
+                    );
+
+        // decode the received choice data, as an object
+        $insert = Form::decodeForm( $this->_app->request->getBody( ) );
+
+        // always been an array
+        $arr = true;
+        if ( !is_array( $insert ) ){
+            $insert = array( $insert );
+            $arr = false;
+        }
+
+        // this array contains the indices of the inserted objects
+        $res = array( );
+        foreach ( $insert as $in ){
+
+            // starts a query, by using a given file
+            $result = DBRequest::getRoutedSqlFile( 
+                                                  $this->query,
+                                                  'Sql/AddForm.sql',
+                                                  array( 'object' => $in)
+                                                  );
+
+            // checks the correctness of the query
+            if ( $result['status'] >= 200 && 
+                 $result['status'] <= 299 ){
+                $queryResult = Query::decodeQuery( $result['content'] );
+
+                // sets the new auto-increment id
+                $obj = new Form( );
+                $course = Course::ExtractCourse($queryResult[count($queryResult)-1]->getResponse(),true);
+
+                $obj->setFormId( $course['id'] . '_' . $queryResult[count($queryResult)-2]->getInsertId( ) );
+
+                $res[] = $obj;
+                $this->_app->response->setStatus( 201 );
+                if ( isset( $result['headers']['Content-Type'] ) )
+                    $this->_app->response->headers->set( 
+                                                        'Content-Type',
+                                                        $result['headers']['Content-Type']
+                                                        );
+                
+            } else {
+                Logger::Log( 
+                            'POST AddForm failed',
+                            LogLevel::ERROR
+                            );
+                $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+                $this->_app->response->setBody( Form::encodeForm( $res ) );
+                $this->_app->stop( );
+            }
+        }
+
+        if ( !$arr && 
+             count( $res ) == 1 ){
+            $this->_app->response->setBody( Form::encodeForm( $res[0] ) );
+            
+        } else 
+            $this->_app->response->setBody( Form::encodeForm( $res ) );
+    }
+    
+    public function get( 
+                        $functionName,
+                        $sqlFile,
+                        $formid,
+                        $courseid,
+                        $esid,
+                        $eid,
+                        $singleResult = false,
+                        $checkSession = true
+                        )
+    {
+        Logger::Log( 
+                    'starts GET ' . $functionName,
+                    LogLevel::DEBUG
+                    );
+
+        // checks whether incoming data has the correct data type
+        $formid = DBJson::mysql_real_escape_string( $formid );
+
+        DBJson::checkInput( 
+                           $this->_app,
+                           $courseid == '' ? true : ctype_digit( $courseid ),
+                           $esid == '' ? true : ctype_digit( $esid ),
+                           $eid == '' ? true : ctype_digit( $eid )
+                           );
+
+        // starts a query, by using a given file
+        $result = DBRequest::getRoutedSqlFile( 
+                                              $this->query,
+                                              $sqlFile,
+                                              array( 
+                                                    'formid' => $formid,
+                                                    'courseid' => $courseid,
+                                                    'esid' => $esid,
+                                                    'eid' => $eid
+                                                    ),
+                                              $checkSession
+                                              );
+
+        // checks the correctness of the query
+        if ( $result['status'] >= 200 && 
+             $result['status'] <= 299 ){
+            $query = Query::decodeQuery( $result['content'] );
+
+            if (is_array($query))
+            $query = $query[count($query)-1];
+            
+            if ( $query->getNumRows( ) > 0 ){
+                $res = Form::ExtractForm( 
+                                         $query->getResponse( ),
+                                         $singleResult
+                                         );
+                $this->_app->response->setBody( Form::encodeForm( $res ) );
+
+                $this->_app->response->setStatus( 200 );
+                if ( isset( $result['headers']['Content-Type'] ) )
+                    $this->_app->response->headers->set( 
+                                                        'Content-Type',
+                                                        $result['headers']['Content-Type']
+                                                        );
+
+                $this->_app->stop( );
+                
+            } else 
+                $result['status'] = 404;
+        }
+
+        Logger::Log( 
+                    'GET ' . $functionName . ' failed',
+                    LogLevel::ERROR
+                    );
+        $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+        $this->_app->response->setBody( Form::encodeForm( new Form( ) ) );
+        $this->_app->stop( );
+    }
+    
+    public function getForm( $formid )
+    {
+        $this->get( 
+                   'GetForm',
+                   'Sql/GetForm.sql',
+                   isset( $formid ) ? $formid : '',
+                   isset( $courseid ) ? $courseid : '',
+                   isset( $esid ) ? $esid : '',
+                   isset( $eid ) ? $eid : '',
+                   true
+                   );
+    }
+    
+    public function getCourseForms( $courseid )
+    {
+        $this->get( 
+                   'GetCourseForms',
+                   'Sql/GetCourseForms.sql',
+                   isset( $formid ) ? $formid : '',
+                   isset( $courseid ) ? $courseid : '',
+                   isset( $esid ) ? $esid : '',
+                   isset( $eid ) ? $eid : '',
+                   false
+                   );
+    }
+    
+    public function getSheetForms( $esid )
+    {
+        $this->get( 
+                   'GetSheetForms',
+                   'Sql/GetSheetForms.sql',
+                   isset( $formid ) ? $formid : '',
+                   isset( $courseid ) ? $courseid : '',
+                   isset( $esid ) ? $esid : '',
+                   isset( $eid ) ? $eid : '',
+                   false
+                   );
+    }
+    
+    public function getExerciseForms( $eid )
+    {
+        $this->get( 
+                   'GetExerciseForms',
+                   'Sql/GetExerciseForms.sql',
+                   isset( $formid ) ? $formid : '',
+                   isset( $courseid ) ? $courseid : '',
+                   isset( $esid ) ? $esid : '',
+                   isset( $eid ) ? $eid : '',
+                   false
+                   );
+    }
+    
     public function deleteCourse( $courseid )
     {
         Logger::Log( 
                     'starts DELETE DeleteCourse',
                     LogLevel::DEBUG
                     );
-
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput( 
-                           $this->_app,
-                           ctype_digit( $courseid )
-                           );
-
+                    
+        $courseid = DBJson::mysql_real_escape_string( $courseid ); 
+        
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
@@ -264,6 +498,7 @@ class DBCourse
              $result['status'] <= 299 ){
 
             $this->_app->response->setStatus( 201 );
+            $this->_app->response->setBody( '' );
             if ( isset( $result['headers']['Content-Type'] ) )
                 $this->_app->response->headers->set( 
                                                     'Content-Type',
@@ -276,18 +511,11 @@ class DBCourse
                         LogLevel::ERROR
                         );
             $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+            $this->_app->response->setBody( '' );
             $this->_app->stop( );
         }
     }
-
-    /**
-     * Adds a course.
-     *
-     * Called when this component receives an HTTP POST request to
-     * /course(/).
-     * The request body should contain a JSON object representing the course's
-     * attributes.
-     */
+    
     public function addCourse( )
     {
         Logger::Log( 
@@ -308,15 +536,12 @@ class DBCourse
         // this array contains the indices of the inserted objects
         $res = array( );
         foreach ( $insert as $in ){
-
-            // generates the insert data for the object
-            $data = $in->getInsertData( );
-
+        
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
                                                   'Sql/AddCourse.sql',
-                                                  array( 'values' => $data )
+                                                  array( 'object' => $in )
                                                   );
 
             // checks the correctness of the query
@@ -324,11 +549,7 @@ class DBCourse
                  $result['status'] <= 299 ){
                 $queryResult = Query::decodeQuery( $result['content'] );
 
-                // sets the new auto-increment id
-                $obj = new Course( );
-                $obj->setId( $queryResult->getInsertId( ) );
-
-                $res[] = $obj;
+                $res[] = $in;
                 $this->_app->response->setStatus( 201 );
                 if ( isset( $result['headers']['Content-Type'] ) )
                     $this->_app->response->headers->set( 
@@ -353,147 +574,6 @@ class DBCourse
             
         } else 
             $this->_app->response->setBody( Course::encodeCourse( $res ) );
-    }
-
-    public function get( 
-                        $functionName,
-                        $sqlFile,
-                        $userid,
-                        $courseid,
-                        $esid,
-                        $eid,
-                        $suid,
-                        $mid,
-                        $singleResult = false
-                        )
-    {
-        Logger::Log( 
-                    'starts GET ' . $functionName,
-                    LogLevel::DEBUG
-                    );
-
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput( 
-                           $this->_app,
-                           $userid == '' ? true : ctype_digit( $userid ),
-                           $courseid == '' ? true : ctype_digit( $courseid ),
-                           $esid == '' ? true : ctype_digit( $esid ),
-                           $eid == '' ? true : ctype_digit( $eid ),
-                           $suid == '' ? true : ctype_digit( $suid ),
-                           $mid == '' ? true : ctype_digit( $mid )
-                           );
-
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
-                                              $this->query,
-                                              $sqlFile,
-                                              array( 
-                                                    'userid' => $userid,
-                                                    'courseid' => $courseid,
-                                                    'esid' => $esid,
-                                                    'eid' => $eid,
-                                                    'suid' => $suid,
-                                                    'mid' => $mid
-                                                    )
-                                              );
-
-        // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
-             $result['status'] <= 299 ){
-            $query = Query::decodeQuery( $result['content'] );
-
-            if ( $query->getNumRows( ) > 0 ){
-                $res = Course::ExtractCourse( 
-                                             $query->getResponse( ),
-                                             $singleResult
-                                             );
-                $this->_app->response->setBody( Course::encodeCourse( $res ) );
-
-                $this->_app->response->setStatus( 200 );
-                if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
-                                                        'Content-Type',
-                                                        $result['headers']['Content-Type']
-                                                        );
-
-                $this->_app->stop( );
-                
-            } else 
-                $result['status'] = 404;
-        }
-
-        Logger::Log( 
-                    'GET ' . $functionName . ' failed',
-                    LogLevel::ERROR
-                    );
-        $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-        $this->_app->response->setBody( Course::encodeCourse( new Course( ) ) );
-        $this->_app->stop( );
-    }
-
-    /**
-     * Returns a course.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /course/course/$courseid(/) or /course/$courseid(/).
-     *
-     * @param int $courseid The id of the course that should be returned.
-     */
-    public function getCourse( $courseid )
-    {
-        $this->get( 
-                   'GetCourse',
-                   'Sql/GetCourse.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $mid ) ? $mid : '',
-                   true
-                   );
-    }
-
-    /**
-     * Returns all courses.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /course/course(/) or /course(/).
-     */
-    public function getAllCourses( )
-    {
-        $this->get( 
-                   'GetAllCourses',
-                   'Sql/GetAllCourses.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $mid ) ? $mid : ''
-                   );
-    }
-
-    /**
-     * Returns all courses a given user belongs to.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /course/user/$userid(/).
-     *
-     * @param int $userid The id of the user.
-     */
-    public function getUserCourses( $userid )
-    {
-        $this->get( 
-                   'GetUserCourses',
-                   'Sql/GetUserCourses.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $mid ) ? $mid : ''
-                   );
     }
 }
 
