@@ -99,7 +99,7 @@
                     ?>
                     
             <label class="short left label bold" for="answer">Antwort:</label>
-            <input type="text" class="form-field text-input new-line" style="width:748px" name="<?php echo "exercises[".$key."][choices]" ?>" placeholder="Antwort"/>    
+            <input type="text" class="form-field text-input new-line" style="width:748px" name="<?php echo "exercises[".$key."][choices][{$form->getFormId()}][0]" ?>" placeholder="Antwort"/>    
             <br><br>
             
                     <?php
@@ -112,7 +112,7 @@
                     foreach ($form->getChoices() as $choice){
                         ?>
                         <div class="form-input-radio new-line" style="width:748px; margin:5px 0px;">
-                        <input type="radio" name="<?php echo "exercises[".$key."][choices]" ?>" value="<?= $i ?>"/> <?php echo $choice->getText(); ?>
+                        <input type="radio" name="<?php echo "exercises[".$key."][choices][{$form->getFormId()}][0]" ?>" value="<?= $i ?>"/> <?php echo $choice->getText(); ?>
                         </div>                        
                         <?php
                         $i++;
@@ -129,7 +129,7 @@
                     foreach ($form->getChoices() as $choice){
                         ?>
                         <div class="form-input-checkbox new-line" style="width:748px; margin:5px 0px;">
-                        <input type="checkbox" name="<?php echo "exercises[".$key."][choices][".$i."]" ?>" value="<?= $i ?>"/> <?php echo $choice->getText(); ?>
+                        <input type="checkbox" name="<?php echo "exercises[".$key."][choices][{$form->getFormId()}][".$i."]" ?>" value="<?= $i ?>"/> <?php echo $choice->getText(); ?>
                         </div>                        
                         <?php
                         $i++;
