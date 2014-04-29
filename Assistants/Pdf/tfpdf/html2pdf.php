@@ -153,7 +153,7 @@ function PDF_HTML($orientation='P', $unit='mm', $format='A4', $formate=null)
     //Call parent constructor
     $this->tFPDF($orientation,$unit,$format);
     
-    //$this->AddFont('arial','','arial.ttf',true);
+   // $this->AddFont('arial','','arial.ttf',true);
    // $this->AddFont('times','','times.ttf',true);
     
     //Initialization
@@ -242,7 +242,7 @@ function WriteHTML($html)
             elseif($this->ALIGN=='right')
                 $this->Cell(0,5,$e,0,1,'R');
             else
-                $this->Write(5,stripslashes(txtentities($e)));
+                $this->Write(5,stripslashes(txtentities($e))); //stripslashes()
         }
         else
         {
