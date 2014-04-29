@@ -135,7 +135,7 @@ class LSubmission
                                 $this->_file,
                                 'file'
                                 );        
-                                
+                
         if ( $result['status'] >= 200 && 
              $result['status'] <= 299 ){
             // file is uploaded

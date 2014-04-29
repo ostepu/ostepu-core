@@ -79,6 +79,7 @@ class LFormProcessor
         // initialize component
         $this->_conf = $conf;
         $this->_formDb = CConfig::getLinks($conf->getLinks(),"formDb");
+        $this->_pdf = CConfig::getLinks($conf->getLinks(),"pdf");
 
         // POST PostProcess
         $this->app->map('/'.$this->getPrefix().'(/)',
@@ -88,15 +89,23 @@ class LFormProcessor
         $this->app->run();
     }
 
+    public function ChoiceIdToText($choiceId, $Choices)
+    {
+        foreach ($Choices as $choice){
+            if ($choiceId === $choice->getChoiceId())
+                return $choice->getText();
+        }
+        
+        return null;
+    }
+    
     public function postProcess(){
+          
         $this->app->response->setStatus( 201 );
            
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
-         $this->app->response->setBody($body);
-         return;
-        
-        /*$process = Process::decodeProcess($body);
+        $process = Process::decodeProcess($body);
         // always been an array
         $arr = true;
         if ( !is_array( $process ) ){
@@ -118,11 +127,11 @@ class LFormProcessor
                                             $this->_formDb,
                                             'form'
                                             );
-                                
+
             // checks the correctness of the query
             if ( $result['status'] >= 200 && 
                  $result['status'] <= 299 ){
-                 
+
                 // only one form as result
                 $forms = Form::decodeForm($result['content']);
                 $forms = $forms[0];
@@ -143,33 +152,35 @@ class LFormProcessor
 
                         $choices = $formdata->getChoices();
                         
-                        foreach ($choices as &$choice){
-                            foreach ($parameter as $param){
-                                switch($param){
-                                    case('isnumeric'):
-                                        if (!is_numeric($choice->getText()))
-                                            $fail = true;
-                                        break;
-                                    case('isdigit'):
-                                        if (!ctype_digit($choice->getText()))
-                                            $fail = true;
-                                        break;
-                                    case('isprintable'):
-                                        if (!ctype_print($choice->getText()))
-                                            $fail = true;
-                                        break;
-                                    case('isalpha'):
-                                        if (!ctype_alpha($choice->getText()))
-                                            $fail = true;
-                                        break;
-                                    case('isalphanum'):
-                                        if (!ctype_alnum($choice->getText()))
-                                            $fail = true;
-                                        break;
+                        if ($forms->getType()==0){
+                            foreach ($choices as &$choice){
+                                foreach ($parameter as $param){
+                                    switch($param){
+                                        case('isnumeric'):
+                                            if (!is_numeric($choice->getText()))
+                                                $fail = true;
+                                            break;
+                                        case('isdigit'):
+                                            if (!ctype_digit($choice->getText()))
+                                                $fail = true;
+                                            break;
+                                        case('isprintable'):
+                                            if (!ctype_print($choice->getText()))
+                                                $fail = true;
+                                            break;
+                                        case('isalpha'):
+                                            if (!ctype_alpha($choice->getText()))
+                                                $fail = true;
+                                            break;
+                                        case('isalphanum'):
+                                            if (!ctype_alnum($choice->getText()))
+                                                $fail = true;
+                                            break;
+                                    }
+                                    if ($fail) break;
                                 }
                                 if ($fail) break;
                             }
-                            if ($fail) break;
                         }
                         
                         if ($fail){
@@ -179,19 +190,101 @@ class LFormProcessor
                             continue;
                         } 
 
-                        // save the submission
+                        // preprocess the submission
+                        if ($forms->getType()==0){
+                            $choices = $formdata->getChoices();
+                            foreach ($choices as &$choice){
+                                foreach ($parameter as $param){
+                                    switch($param){
+                                        case('lowercase'):
+                                            $choice->setText(strtolower($choice->getText()));
+                                            break;
+                                        case('uppercase'):
+                                            $choice->setText(strtoupper($choice->getText()));
+                                            break;
+                                        case('trim'):
+                                            $choice->setText(trim($choice->getText()));
+                                            break;
+                                    }
+                                }
+                            }
+                            $formdata->setChoices($choices);
+                        }
+                        
+                        // evaluate the formdata
+                        $points = 0;
+                        $answers = $formdata->getChoices();
+                        $correctAnswers = $forms->getChoices();
+                        $allcorrect = true;
+                        
+                        if ($forms->getType()==0){
+                            if ($correctAnswers[0]->getText() !== $answers[0]->getText)
+                                $allcorrect = false;
+                        
+                        }elseif ($forms->getType()==1){
+                            foreach ($correctAnswers as $mask){
+                            
+                                $foundInStudentsAnswer = false;
+                                foreach($answers as $answer){
+                                    if ($answer->getText() === $mask->getChoiceId()){
+                                        $foundInStudentsAnswer = true;
+                                        break;
+                                    }
+                                }
+                            
+                                if ($mask->getCorrect()==='1' && !$foundInStudentsAnswer){
+                                    $allcorrect = false;
+                                    break;
+                                } elseif ($mask->getCorrect()==='0' && $foundInStudentsAnswer) {
+                                    $allcorrect = false;
+                                    break;
+                                }
+                            }
+                        
+                        }elseif ($forms->getType()==2){
+                            foreach ($correctAnswers as $mask){
+                            
+                                $foundInStudentsAnswer = false;
+                                foreach($answers as $answer){
+                                    if ($answer->getText() === $mask->getChoiceId()){
+                                        $foundInStudentsAnswer = true;
+                                        break;
+                                    }
+                                }
+                            
+                                if ($mask->getCorrect()==='1' && !$foundInStudentsAnswer){
+                                    $allcorrect = false;
+                                    break;
+                                } elseif ($mask->getCorrect()==='0' && $foundInStudentsAnswer) {
+                                    $allcorrect = false;
+                                    break;
+                                }
+                            }
+                        }
+                        
+                        if ($allcorrect)
+                            $points = $pro->getExercise()->getMaxPoints();
+                        
+                        // save the marking
                         #region Form to PDF
-                        if ($pro->getSubmission() === null){
+                        if ($pro->getMarking() === null){
                             $raw = $pro->getRawSubmission();
                             $exerciseName = '';
                             
                             if ( $raw !== null )
                                 $exerciseName = $raw->getExerciseName();
                             
-                            $answer="";
-                            
-                            foreach($formdata->getChoices() as $chosen)
-                                $answer.=DBJson::mysql_real_escape_string($chosen->getText())."<br>";
+                            $answer=""; 
+                            if ($forms->getType()==0) $answer = DBJson::mysql_real_escape_string($formdata->getChoices()[0]->getText());
+                            if ($forms->getType()==1) $answer = $this->ChoiceIdToText(DBJson::mysql_real_escape_string($formdata->getChoices()[0]->getText()), $forms->getChoices());
+                            if ($forms->getType()==2)
+                                foreach($formdata->getChoices() as $chosen)
+                                    $answer.= $this->ChoiceIdToText(DBJson::mysql_real_escape_string($chosen->getText()), $forms->getChoices()).'<br>';
+                                 
+                            $answer2="";
+                                foreach($forms->getChoices() as $chosen)
+                                    if ($chosen->getCorrect()==='1')
+                                    $answer2.= $chosen->getText().'<br>';
                         
                             $Text=  "<h1>AUFGABE {$exerciseName}</h1>".
                                     "<hr>".
@@ -201,7 +294,22 @@ class LFormProcessor
                                     "</p>".
                                     "<p>".
                                     "<h2>Antwort:</h2>".
+                                    "<font color='".($points===0 ? 'red' : 'green')."'>".
                                     $answer.
+                                    "</font></p>";
+                            if ($points===0){
+                                $Text.= "<p>".
+                                        "<h2>Lösung:</h2><font color='green'>".
+                                        $answer2.
+                                        "</font></p>";
+                            }
+                                    
+                            $Text.= "<p>".
+                                    "<h2>Lösungsbegründung:</h2>".
+                                    $forms->getSolution().
+                                    "</p>".
+                                    "<p align='right'>".
+                                    "<h2><font color='red'>{$points}P</font></h2>".
                                     "</p>";
                                     
                             $pdf = Pdf::createPdf($Text);
@@ -222,11 +330,32 @@ class LFormProcessor
                                 $pdf->setDisplayName($exerciseName.'.pdf');
                                 $pdf->setTimeStamp($timestamp);
                                 $pdf->setBody(null);
-                                $submission = new Submission();
-                                $submission->setFile($pdf);
-                                $submission->setExerciseId($eid);
-                                $submission->setExerciseName($exerciseName);
-                                $pro->setSubmission($submission);
+                                
+                                $submission = $pro->getSubmission();
+                                if ($submission === null) $submission = $pro->getRawSubmission();
+                                
+                                $studentId = ($pro->getRawSubmission()!==null ? $pro->getRawSubmission()->getStudentId() : null);
+                                
+                                if ($studentId===null)
+                                    $studentId = ($pro->getSubmission()!==null ? $pro->getSubmission()->getStudentId() : null);
+                                
+                                $marking = Marking::createMarking( 
+                                                                 null,
+                                                                 $studentId,
+                                                                 null,
+                                                                 null,
+                                                                 null,
+                                                                 null,
+                                                                 Marking::getStatusDefinition()[3]['id'],
+                                                                 $points,
+                                                                 ($submission->getDate()!==null ? $submission->getDate() : time())
+                                                                 );
+                                if (is_object($submission))
+                                    $marking->setSubmission(clone $submission);
+                                    
+                                $marking->setFile($pdf);
+                                $pro->setMarking($marking);
+                                
                             } else {
                                 $res[] = null;
                                 $this->app->response->setStatus( 409 );
@@ -235,25 +364,6 @@ class LFormProcessor
                         }
                         #endregion
 
-                        // preprocess the submission
-                        $choices = $formdata->getChoices();
-                        foreach ($choices as &$choice){
-                            foreach ($parameter as $param){
-                                switch($param){
-                                    case('lowercase'):
-                                        $choice->setText(strtolower($choice->getText()));
-                                        break;
-                                    case('uppercase'):
-                                        $choice->setText(strtoupper($choice->getText()));
-                                        break;
-                                    case('trim'):
-                                        $choice->setText(trim($choice->getText()));
-                                        break;
-                                }
-                            }
-                        }
-                        $formdata->setChoices($choices);
-                        
                         $rawSubmission = $pro->getRawSubmission();
                         $rawFile = $rawSubmission->getFile();
                         $rawFile->setBody(base64_encode(Form::encodeForm($formdata)));
@@ -276,7 +386,7 @@ class LFormProcessor
             $this->app->response->setBody( Process::encodeProcess( $res[0] ) );
             
         } else 
-            $this->app->response->setBody( Process::encodeProcess( $res ) );*/
+            $this->app->response->setBody( Process::encodeProcess( $res ) );
     }
 }
 

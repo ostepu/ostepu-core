@@ -198,13 +198,15 @@ class LProcessor
                                 'process'
                                 );
             $processors = null;
-            
             if ( $result['status'] >= 200 && 
                  $result['status'] <= 299 ){
                 $processors = Process::decodeProcess( $result['content'] );
             } else {
-               $res[] = null;
-               continue;
+               if ($result['status'] != 404){
+                   $res[] = null;
+                   $this->app->response->setStatus( 409 );
+                   continue;
+               }
             }
             
             // process submission
@@ -215,8 +217,6 @@ class LProcessor
                     if ($process->getExercise()===null)
                         $process->setExercise($pro->getExercise());
                                 
-//echo Process::encodeProcess($process);
-//break;
                     $result = Request::post($component->getAddress().'/process', array(),  Process::encodeProcess($process));
                     
                     if ( $result['status'] >= 200 && 
@@ -232,6 +232,7 @@ class LProcessor
             
             if ($fail){
                 $res[] = null;
+                $this->app->response->setStatus( 409 );
                 continue;
             }
 
@@ -239,38 +240,66 @@ class LProcessor
             $uploadSubmission = $process->getSubmission();
             if ($uploadSubmission===null)$uploadSubmission = $process->getRawSubmission();
             
-            if ($uploadSubmission===null){
-                // create empty submission? failure?
-            }
+            if ($uploadSubmission!==null){
+    //echo Submission::encodeSubmission($uploadSubmission);
+                $result = Request::routeRequest( 
+                                                'POST',
+                                                '/submission',
+                                                array(),
+                                                Submission::encodeSubmission($uploadSubmission),
+                                                $this->_submission,
+                                                'submission'
+                                               );
 
-            $result = Request::routeRequest( 
-                                            'POST',
-                                            '/submission',
-                                            array(),
-                                            Submission::encodeSubmission($uploadSubmission),
-                                            $this->_submission,
-                                            'submission'
-                                           );
-
-            // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
-                 $result['status'] <= 299 ){
-                $queryResult = Submission::decodeSubmission( $result['content'] );
-          // var_dump($queryResult);
-            } else {
-               $res[] = null;
-               continue;
+                // checks the correctness of the query
+                if ( $result['status'] >= 200 && 
+                     $result['status'] <= 299 ){
+                    $queryResult = Submission::decodeSubmission( $result['content'] );
+                    if ($process->getMarking()!==null){
+                        $process->getMarking()->setSubmission($queryResult);
+                    }
+                    
+              // var_dump($queryResult);
+                } else {
+                   $res[] = null;
+                   $this->app->response->setStatus( 409 );
+                   continue;
+                }
             }
             
             // upload marking
+            if ($process->getMarking()!==null){
+                $result = Request::routeRequest( 
+                                                'POST',
+                                                '/marking',
+                                                array(),
+                                                Marking::encodeMarking($process->getMarking()),
+                                                $this->_marking,
+                                                'marking'
+                                               );
+
+                // checks the correctness of the query
+                if ( $result['status'] >= 200 && 
+                     $result['status'] <= 299 ){
+                    $queryResult = Marking::decodeMarking( $result['content'] );
+            //  var_dump($queryResult);
+                } else {
+                   $res[] = null;
+                   $this->app->response->setStatus( 409 );
+                   continue;
+                }
+            }
             
+            $rr = $process->getSubmission();
+            if ($rr===null)$rr = $process->getRawSubmission();
+            $res[] = $rr;
             
         }
         
-      /*  if ( !$arr && count( $res ) == 1 ){
-            $this->app->response->setBody( Process::encodeProcess( $res[0] ) );
+        if ( !$arr && count( $res ) == 1 ){
+            $this->app->response->setBody( Submission::encodeSubmission( $res[0] ) );
         } else 
-            $this->app->response->setBody( Process::encodeProcess( $res ) );*/
+            $this->app->response->setBody( Submission::encodeSubmission( $res ) );
     }
 }
 
