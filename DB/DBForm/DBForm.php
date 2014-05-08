@@ -157,6 +157,15 @@ class DBForm
                                'getCourseForms'
                                )
                          );
+                         
+        // GET GetExistsCourseForms
+        $this->_app->get( 
+                         '/' . $this->getPrefix( ) . '/exists/course/:courseid(/)',
+                         array( 
+                               $this,
+                               'getExistsCourseForms'
+                               )
+                         );
 
         // GET GetSheetForms
         $this->_app->get( 
@@ -448,6 +457,19 @@ class DBForm
                    isset( $esid ) ? $esid : '',
                    isset( $eid ) ? $eid : '',
                    false
+                   );
+    }
+    
+    public function getExistsCourseForms( $courseid )
+    {
+        $this->get( 
+                   'GetExistsCourseForms',
+                   'Sql/GetExistsCourseForms.sql',
+                   isset( $formid ) ? $formid : '',
+                   isset( $courseid ) ? $courseid : '',
+                   isset( $esid ) ? $esid : '',
+                   isset( $eid ) ? $eid : '',
+                   true
                    );
     }
     

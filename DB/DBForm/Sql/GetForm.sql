@@ -17,7 +17,7 @@ concat(
     FO.FO_solution,
     FO.FO_task,
     FO.E_id,
-    CH.CH_id,
+    concat('\", @course ,\"','_',CH.CH_id) as CH_id,
     CH.CH_text,
     CH.CH_correct
 from
