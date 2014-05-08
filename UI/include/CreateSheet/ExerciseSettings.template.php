@@ -1,7 +1,7 @@
 <?php if (!empty($exercises)):
 
     $choiceId = 0;
-    
+    //var_dump($exercises);
     foreach ($exercises as $key1 => $exercise):?>
     <div class="content-element collapsible">
         <div class="content-header">
@@ -50,17 +50,16 @@
                     <div class="content-element form" style="outline:2px solid #b9b8b8;border-radius: 0px;margin: 0px;">
                                     
                     <div class="content-header">
-                        <div class="content-title left uppercase"><?= array('Eingabezeil','Einfachauswahl','Mehrfachauswahl')[$subexercise['type']] ?></div>
-                    <div class="critical-color right">
+                        <div class="content-title left uppercase"><?php $arr = array("Eingabezeile","Einfachauswahl","Mehrfachauswahl");echo $arr[$subexercise['type']]; ?></div>
+                        <div class="critical-color right">
                             <a href="javascript:void(0);" class="delete-form">Eingabemaske löschen</a>
                         </div>
                     </div>
                     
-
                     <div class="content-body-wrapper">
                     
                         <div class="content-body left">
-             </div>
+                    </div>
                         <input type="hidden" class="input-choice" name="exercises[<?= $key1 ?>][subexercises][<?= $key2 ?>][type]" value="<?= $subexercise['type'] ?>">
                         
                         <label class="short label bold" for="task">Aufgabenstellung:</label>
@@ -106,6 +105,7 @@
                                                       style="width:100%"
                                                       maxlength="255"><?= (isset($subexercise['solution']) ? $subexercise['solution'] : '') ?></textarea>
                        </div> 
+
                     <?php }?>
                     </td></tr> 
                     

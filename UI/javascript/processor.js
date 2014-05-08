@@ -53,7 +53,7 @@ var trig = $(this);
 
     $.get("include/CreateSheet/Processor/"+trig.find('option:selected').text()+".template.php", function (data) {
     
-        trig.parent().find('.processor-parameter').first().after(data);
+        trig.parent().find('.processor-parameter-area').first().after(data);
 
     });
 }
