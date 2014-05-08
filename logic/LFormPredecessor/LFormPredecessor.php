@@ -88,8 +88,19 @@ class LFormPredecessor
         // run Slim
         $this->app->run();
     }
+    
+    public function ChoiceIdToText($choiceId, $Choices)
+    {
+        foreach ($Choices as $choice){
+            if ($choiceId === $choice->getChoiceId())
+                return $choice->getText();
+        }
+        
+        return null;
+    }
 
-    public function postProcess(){
+    public function postProcess()
+    {
         $this->app->response->setStatus( 201 );
            
         $header = $this->app->request->headers->all();
@@ -137,45 +148,7 @@ class LFormPredecessor
                     if ($formdata !== null){
                         // check the submission
                         $fail = false;
-                        $parameter = explode(' ',strtolower($pro->getParameter()));
-
-                        $choices = $formdata->getChoices();
-                        
-                        foreach ($choices as &$choice){
-                            foreach ($parameter as $param){
-                                switch($param){
-                                    case('isnumeric'):
-                                        if (!is_numeric($choice->getText()))
-                                            $fail = true;
-                                        break;
-                                    case('isdigit'):
-                                        if (!ctype_digit($choice->getText()))
-                                            $fail = true;
-                                        break;
-                                    case('isprintable'):
-                                        if (!ctype_print($choice->getText()))
-                                            $fail = true;
-                                        break;
-                                    case('isalpha'):
-                                        if (!ctype_alpha($choice->getText()))
-                                            $fail = true;
-                                        break;
-                                    case('isalphanum'):
-                                        if (!ctype_alnum($choice->getText()))
-                                            $fail = true;
-                                        break;
-                                }
-                                if ($fail) break;
-                            }
-                            if ($fail) break;
-                        }
-                        
-                        if ($fail){
-                            // received submission isn't correct
-                            $res[] = null;
-                            $this->app->response->setStatus( 409 );
-                            continue;
-                        } 
+ 
 
                         // save the submission
                         #region Form to PDF
@@ -189,10 +162,10 @@ class LFormPredecessor
                             $answer="";
                             
                             if ($forms->getType()==0) $answer = DBJson::mysql_real_escape_string($formdata->getChoices()[0]->getText());
-                            if ($forms->getType()==1) $answer = DBJson::mysql_real_escape_string($forms->getChoices()[$formdata->getChoices()[0]->getText()]->getText());
+                            if ($forms->getType()==1) $answer = $this->ChoiceIdToText(DBJson::mysql_real_escape_string($formdata->getChoices()[0]->getText()), $forms->getChoices());
                             if ($forms->getType()==2)
                                 foreach($formdata->getChoices() as $chosen)
-                                    $answer.=DBJson::mysql_real_escape_string($forms->getChoices()[$chosen->getText()]->getText())."<br>";
+                                    $answer.= $this->ChoiceIdToText(DBJson::mysql_real_escape_string($chosen->getText()), $forms->getChoices()).'<br>';
                         
                             $Text=  "<h1>AUFGABE {$exerciseName}</h1>".
                                     "<hr>".
@@ -204,8 +177,9 @@ class LFormPredecessor
                                     "<h2>Antwort:</h2>".
                                     $answer.
                                     "</p>";
-                                    
+
                             $pdf = Pdf::createPdf($Text);
+                            $pdf->setText($Text);
                             $result = Request::routeRequest( 
                                                             'POST',
                                                             '/pdf',
@@ -214,6 +188,7 @@ class LFormPredecessor
                                                             $this->_pdf,
                                                             'pdf'
                                                             );
+                                                            
                             // checks the correctness of the query
                             if ( $result['status'] >= 200 && 
                                  $result['status'] <= 299 ){
@@ -224,10 +199,13 @@ class LFormPredecessor
                                 $pdf->setTimeStamp($timestamp);
                                 $pdf->setBody(null);
                                 
-                                $submission = $raw;
+                                if (is_object($pro->getRawSubmission())){
+                                    $submission = clone $pro->getRawSubmission();
+                                } else 
+                                    $submission = new Submission();
+                                
                                 $submission->setFile($pdf);
-                                //$submission->setExerciseId($eid);
-                                //$submission->setExerciseName($exerciseName);
+                                $submission->setExerciseId($eid);
                                 $pro->setSubmission($submission);
                             } else {
                                 $res[] = null;
@@ -236,25 +214,6 @@ class LFormPredecessor
                             }
                         }
                         #endregion
-
-                        // preprocess the submission
-                        $choices = $formdata->getChoices();
-                        foreach ($choices as &$choice){
-                            foreach ($parameter as $param){
-                                switch($param){
-                                    case('lowercase'):
-                                        $choice->setText(strtolower($choice->getText()));
-                                        break;
-                                    case('uppercase'):
-                                        $choice->setText(strtoupper($choice->getText()));
-                                        break;
-                                    case('trim'):
-                                        $choice->setText(trim($choice->getText()));
-                                        break;
-                                }
-                            }
-                        }
-                        $formdata->setChoices($choices);
                         
                         $rawSubmission = $pro->getRawSubmission();
                         $rawFile = $rawSubmission->getFile();
