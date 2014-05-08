@@ -37,8 +37,8 @@ $result = Request::get($databaseURI.'/definition/LProcessor',array(),'');
         ?>
           
     </select>
-    
-    <input class="form-field text-input processor-parameter" style="width:100%" name="exercises[0][subexercises][0][processorParameter][0]" value="" placeholder="Parameter"/>
+    <div class="form-field processor-parameter-area" style="width:100%"></div>
+
     <!--<br><br>
     <label class="short left label bold new-line" for="attachment">Anhang:</label><br><br>
     
