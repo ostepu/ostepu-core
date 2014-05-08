@@ -45,6 +45,7 @@ if (isset($_POST['action'])) {
 
             // exercise types which already exist in the database and need to be deleted
             if (!empty($selectedExerciseTypes)) {
+                if (!is_array($currentExerciseTypes)) $currentExerciseTypes = array($currentExerciseTypes);
                 $etDelete = array_diff($currentExerciseTypes, $selectedExerciseTypes);
             } else {
                 $etDelete = $currentExerciseTypes;
@@ -52,11 +53,14 @@ if (isset($_POST['action'])) {
 
             // exercises types which don't exist in the database and need to be created
             if (!empty($currentExerciseTypes)) {
+                if (!is_array($selectedExerciseTypes)) $selectedExerciseTypes = array($selectedExerciseTypes);
                 $etCreate = array_diff($selectedExerciseTypes, $currentExerciseTypes);
             } else {
                 $etCreate = $selectedExerciseTypes;
             }
 
+            if ($etDelete == null) $etDelete = array();
+            if (!is_array($etDelete)) $etDelete = array($etDelete);
             // deletes approvalConditions
             foreach($etDelete as $exerciseType) {
                 $URI = $databaseURI . "/approvalcondition/" . $currentExerciseTypesByApprovalId[$exerciseType];
@@ -67,6 +71,8 @@ if (isset($_POST['action'])) {
                 }
             }
 
+            if ($etCreate == null) $etCreate = array();
+            if (!is_array($etCreate)) $etCreate = array($etCreate);
             // adds approvalConditions
             foreach($etCreate as $exerciseType) {
                 $newApprovalConditionSettings = ApprovalCondition::encodeApprovalCondition(
