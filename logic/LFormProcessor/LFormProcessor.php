@@ -218,7 +218,7 @@ class LFormProcessor
                         $allcorrect = true;
                         
                         if ($forms->getType()==0){
-                            if ($correctAnswers[0]->getText() !== $answers[0]->getText)
+                            if ($correctAnswers[0]->getText() != $answers[0]->getText())
                                 $allcorrect = false;
                         
                         }elseif ($forms->getType()==1){
@@ -294,7 +294,7 @@ class LFormProcessor
                                     "</p>".
                                     "<p>".
                                     "<h2>Antwort:</h2>".
-                                    "<font color='".($points===0 ? 'red' : 'green')."'>".
+                                    "<font color='".($points===0 ? 'red' : '')."'>".
                                     $answer.
                                     "</font></p>";
                             if ($points===0){
