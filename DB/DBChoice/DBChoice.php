@@ -199,7 +199,7 @@ class DBChoice
         }
     }
     
-        public function editChoice( $choiceid )
+    public function editChoice( $choiceid )
     {
         Logger::Log( 
                     'starts PUT EditChoice',
