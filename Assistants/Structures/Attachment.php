@@ -37,6 +37,36 @@ class Attachment extends Object implements JsonSerializable
     {
         $this->id = $value;
     }
+    
+    public static function getCourseFromAttachmentId($id)
+    {
+        $arr = explode('_',$id);
+        if (count($arr)==2){
+            return $arr[0];
+        }
+        else
+        return '';
+    }
+    
+    public static function getIdFromAttachmentId($id)
+    {
+        $arr = explode('_',$id);
+        if (count($arr)==2){
+            return $arr[1];
+        }
+        else
+        return $id;
+    }
+    
+    public function getObjectCourseFromAttachmentId()
+    {
+        return Attachment::getCourseFromAttachmentId($this->id);
+    }
+    
+    public function getObjectIdFromAttachmentId()
+    {
+        return Attachment::getIdFromAttachmentId($this->id);
+    }
 
     /**
      
@@ -301,7 +331,7 @@ class Attachment extends Object implements JsonSerializable
                                                      );
 
         // to reindex
-        $res = array_merge( $res );
+        $res = array_values( $res );
 
         if ( $singleResult == true ){
 
