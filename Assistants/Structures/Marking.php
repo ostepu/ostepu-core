@@ -62,7 +62,7 @@ class Marking extends Object implements JsonSerializable
      */
     public function setSubmission( $value )
     {
-        $submission = $value;
+        $this->submission = $value;
     }
 
     /**
@@ -546,7 +546,7 @@ class Marking extends Object implements JsonSerializable
         $list = array( );
         if ( $this->id !== null )
             $list['id'] = $this->id;
-        if ( $this->submission !== null )
+        if ( $this->submission !== null && $this->submission !== array())
             $list['submission'] = $this->submission;
         if ( $this->tutorId !== null )
             $list['tutorId'] = $this->tutorId;

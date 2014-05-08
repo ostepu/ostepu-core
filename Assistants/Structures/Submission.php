@@ -566,7 +566,7 @@ class Submission extends Object implements JsonSerializable
             $list['exerciseId'] = $this->exerciseId;
         if ( $this->comment !== null )
             $list['comment'] = $this->comment;
-        if ( $this->file !== null )
+        if ( $this->file !== null && $this->file !== array() )
             $list['file'] = $this->file;
         if ( $this->accepted !== null )
             $list['accepted'] = $this->accepted;

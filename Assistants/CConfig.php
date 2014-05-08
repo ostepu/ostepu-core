@@ -66,7 +66,7 @@ class CConfig
 
         // initialize slim
         $this->setPrefix( $prefix );
-        $this->_app = new \Slim\Slim( );
+        $this->_app = new \Slim\Slim( array('debug' => true) );
 
         $this->_app->response->headers->set( 
                                             'Content-Type',
@@ -102,7 +102,7 @@ class CConfig
 
         // POST Config
         $this->_app->post( 
-                          '/component',
+                          '(/:pre)/component',
                           array( 
                                 $this,
                                 'postConfig'
@@ -111,7 +111,7 @@ class CConfig
 
         // GET Config
         $this->_app->get( 
-                         '/component',
+                         '(/:pre)/component',
                          array( 
                                $this,
                                'getConfig'
@@ -119,7 +119,7 @@ class CConfig
                          );
 
         // starts slim only if the right prefix was received
-        if ( $this->_app->request->getResourceUri( ) == '/component' ||  strpos( 
+        if ( strpos($this->_app->request->getResourceUri( ),'/component') !== false  ||  strpos( 
                     $this->_app->request->getResourceUri( ),
                     '/info'
                     ) === 0 ){
@@ -128,7 +128,8 @@ class CConfig
             $this->_used = true;
             $this->_app->run( );
             
-        } else {
+        } 
+        /*else {
 
             // if the "component" was not started, check if the links
             // existing know their prefixes
@@ -167,7 +168,7 @@ class CConfig
                 $conf->setLinks( $links );
                 $this->saveConfig( Component::encodeComponent( $conf ) );
             }
-        }
+        }*/
     }
     
     public function info( $language)
@@ -217,13 +218,13 @@ class CConfig
      * POST Config
      * - to store new component data
      */
-    public function postConfig( )
+    public function postConfig( $pre='' )
     {
         $this->_app->response->setStatus( 451 );
         $body = $this->_app->request->getBody( );
         $Component = Component::decodeComponent( $body );
         $Component->setPrefix( $this->getPrefix( ) );
-        $this->saveConfig( json_encode( $Component ) );
+        $this->saveConfig( $pre, Component::encodeComponent( $Component ) );
         $this->_app->response->setStatus( 201 );
     }
 
@@ -231,10 +232,10 @@ class CConfig
      * GET Config
      * - to ask this component for his component data
      */
-    public function getConfig( )
+    public function getConfig( $pre=''  )
     {
-        if ( file_exists( $this->CONF_FILE ) ){
-            $com = Component::decodeComponent( file_get_contents( $this->CONF_FILE ) );
+        if ( file_exists( $pre . ($pre === '' ? '' : '_') . $this->CONF_FILE ) ){
+            $com = Component::decodeComponent( file_get_contents( $pre . ($pre === '' ? '' : '_') . $this->CONF_FILE ) );
             $com->setPrefix( $this->getPrefix( ) );
             $this->_app->response->setBody( Component::encodeComponent( $com ) );
             $this->_app->response->setStatus( 200 );
@@ -252,10 +253,10 @@ class CConfig
      *
      * @param $content the json encode Component object
      */
-    public function saveConfig( $content )
+    public function saveConfig( $pre='', $content )
     {
         $file = fopen( 
-                      $this->CONF_FILE,
+                      $pre . ($pre === '' ? '' : '_') . $this->CONF_FILE,
                       'w'
                       );
         fwrite( 
@@ -270,13 +271,53 @@ class CConfig
      *
      * @return a Component object
      */
-    public function loadConfig( )
+    public function loadConfig( $pre='' )
     {
-        if ( file_exists( $this->CONF_FILE ) ){
+        if ( file_exists( $pre . ($pre === '' ? '' : '_') . $this->CONF_FILE ) ){
 
             // file was found, create a Component object from file content
-            $com = Component::decodeComponent( file_get_contents( $this->CONF_FILE ) );
+            $com = Component::decodeComponent( file_get_contents( $pre . ($pre === '' ? '' : '_') . $this->CONF_FILE ) );
             $com->setPrefix( $this->getPrefix( ) );
+            
+            // check if the links
+            // know their prefixes
+            $conf = $com;
+            $links = $conf->getLinks( );
+
+            // always been an array
+            if ( !is_array( $links ) )
+                $links = array( $links );
+
+            $changed = false;
+            foreach ( $links as & $link ){
+
+                // if a link has no prefix, we have to ask the link target
+                // for the prefix list
+                if ( $link->getPrefix( ) === null ){
+                    $result = Request::get( 
+                                           $link->getAddress( ) . '/component',
+                                           array( ),
+                                           ''
+                                           );
+
+                    if ( $result['status'] == 200 ){
+
+                        // the link target has send its component definition,
+                        // so that we can remember this
+                        $changed = true;
+                        $obj = Component::decodeComponent( $result['content'] );
+                        $link->setPrefix( $obj->getPrefix( ) );
+                    }
+                }
+            }
+
+            // if any new prefix was found, we have to store the link definitions
+            if ( $changed ){
+                $conf->setLinks( $links );
+                $this->saveConfig( $pre, Component::encodeComponent( $conf ) );
+                $com = $conf;
+            }
+            
             return $com;
             
         } else {
