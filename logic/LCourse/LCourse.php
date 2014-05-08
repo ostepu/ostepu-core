@@ -21,6 +21,11 @@ include_once ( '../../Assistants/Structures.php' );
 class LCourse
 {
     /**
+     * @var Slim $_app the slim object
+     */
+    private $app = null;
+    
+    /**
      * @var Component $_conf the component data object
      */
     private $_conf=null;
@@ -218,9 +223,9 @@ class LCourse
             if ( $result['status'] >= 200 && 
                  $result['status'] <= 299 ){
 
-                $this->_app->response->setStatus( 201 );
+                $this->app->response->setStatus( 201 );
                 if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
+                    $this->app->response->headers->set( 
                                                         'Content-Type',
                                                         $result['headers']['Content-Type']
                                                         );
@@ -230,8 +235,8 @@ class LCourse
                             'POST DeleteCourse failed',
                             LogLevel::ERROR
                             );
-                $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-                $this->_app->stop( );
+                $this->app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+                $this->app->stop( );
             }
         }
     }
