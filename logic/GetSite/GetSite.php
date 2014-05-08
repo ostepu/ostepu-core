@@ -180,7 +180,6 @@ class LgetSite
         $response['tutorAssignments'] = array();
 
         if (!empty($tutors)) {
-
             foreach ($tutors as &$tutor) {
                 unset($tutor['salt']);
                 unset($tutor['password']);
@@ -802,10 +801,21 @@ class LgetSite
         // load all submissions for every exercise of the exerciseSheet
         if(!empty($exercises)) {
             //$exercises = $exercisesheet['exercises'];
-            foreach ($exercises as $exercise) {
+            /*foreach ($exercises as $exercise) {
                 $URL = $this->lURL.'/DB/submission/user/'.$uploaduserid.'/exercise/'.$exercise['id'];
                 $answer = Request::custom('GET', $URL, $header, $body);
                 $submissions[] = json_decode($answer['content'], true);
+            }*/
+            $URL = $this->lURL.'/DB/submission/user/'.$uploaduserid.'/exercisesheet/'.$sheetid;
+            $answer = Request::custom('GET', $URL, $header, $body);
+            $answer = json_decode($answer['content'], true);
+            $submissions = array();
+            if(!empty($answer)) {
+                foreach ($answer as $submission){
+                    if (isset($submission['exerciseId'])){
+                        $submissions[$submission['exerciseId']][] = $submission;
+                    }
+                }
             }
         }
 
