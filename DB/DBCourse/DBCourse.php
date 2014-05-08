@@ -312,6 +312,12 @@ class DBCourse
             // generates the insert data for the object
             $data = $in->getInsertData( );
 
+            if ($in->getId()!==null){
+                $res[] = $in;
+                $this->_app->response->setStatus( 201 );
+                continue;
+            }
+            
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,

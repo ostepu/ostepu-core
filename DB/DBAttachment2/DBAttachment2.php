@@ -2,7 +2,7 @@
 
 
 /**
- * @file DBForm.php contains the DBForm class
+ * @file DBAttachment2.php contains the DBAttachment2 class
  *
  * @author Till Uhlig
  */
@@ -18,16 +18,16 @@ include_once ( '../../Assistants/Logger.php' );
 \Slim\Slim::registerAutoloader( );
 
 // runs the CConfig
-$com = new CConfig( DBForm::getPrefix( ) . ',course' );
+$com = new CConfig( DBAttachment2::getPrefix( ) . ',course' );
 
-// runs the DBForm
+// runs the DBAttachment2
 if ( !$com->used( ) )
-    new DBForm( $com->loadConfig( ) );
+    new DBAttachment2( $com );
 
 /**
- * A class, to abstract the "DBForm" table from database
+ * A class, to abstract the "Attachment" table from database
  */
-class DBForm
+class DBAttachment2
 {
 
     /**
@@ -48,7 +48,7 @@ class DBForm
     /**
      * @var string $_prefix the prefixes, the class works with (comma separated)
      */
-    private static $_prefix = 'form';
+    private static $_prefix = 'attachment';
 
     /**
      * the $_prefix getter
@@ -57,17 +57,17 @@ class DBForm
      */
     public static function getPrefix( )
     {
-        return DBForm::$_prefix;
+        return DBAttachment2::$_prefix;
     }
 
     /**
-     * the $_prefix getter
+     * the $_prefix setter
      *
-     * @return the value of $_prefix
+     * @param string $value the new value for $_prefix
      */
     public static function setPrefix( $value )
     {
-        DBForm::$_prefix = $value;
+        DBAttachment2::$_prefix = $value;
     }
 
     /**
@@ -80,24 +80,18 @@ class DBForm
      */
     public function __construct( $conf )
     {
-
-        // initialize component
         $this->_conf = $conf;
-        $this->query = array( CConfig::getLink( 
-                                               $conf->getLinks( ),
-                                               'out'
-                                               ) );
-
+        
         // initialize slim
-        $this->_app = new \Slim\Slim( );
+        $this->_app = new \Slim\Slim(array('debug' => true));
         $this->_app->response->headers->set( 
                                             'Content-Type',
                                             'application/json'
                                             );
-                                                                  
+                                            
         // POST AddCourse
         $this->_app->post( 
-                         '/course',
+                         '(/:pre)/course',
                          array( 
                                $this,
                                'addCourse'
@@ -106,110 +100,112 @@ class DBForm
                          
         // POST DeleteCourse
         $this->_app->delete( 
-                         '/course/:courseid',
+                         '(/:pre)/course/:courseid',
                          array( 
                                $this,
                                'deleteCourse'
                                )
                          );
 
-        // PUT EditForm
+        // PUT EditAttachment
         $this->_app->put( 
-                         '/' . $this->getPrefix( ) . '(/form)/:formid(/)',
+                         '(/:pre)/' . $this->getPrefix( ) . '(/attachment)/:aid(/)',
                          array( 
                                $this,
-                               'editForm'
+                               'editAttachment'
                                )
                          );
 
-        // DELETE DeleteForm
+        // DELETE DeleteAttachment
         $this->_app->delete( 
-                            '/' . $this->getPrefix( ) . '(/form)/:formid(/)',
+                            '(/:pre)/' . $this->getPrefix( ) . '(/attachment)/:aid(/)',
                             array( 
                                   $this,
-                                  'deleteForm'
+                                  'deleteAttachment'
                                   )
                             );
 
-        // POST AddForm
+        // POST AddAttachment
         $this->_app->post( 
-                          '/' . $this->getPrefix( ) . '(/)',
+                          '(/:pre)/' . $this->getPrefix( ),
                           array( 
                                 $this,
-                                'addForm'
+                                'addAttachment'
                                 )
                           );
 
-        // GET GetForm
+        // GET GetAttachment
         $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '(/form)/:formid(/)',
+                         '(/:pre)/' . $this->getPrefix( ) . '(/attachment)/:aid(/)',
                          array( 
                                $this,
-                               'getForm'
+                               'getAttachment'
                                )
                          );
 
-        // GET GetCourseForms
+        // GET GetExerciseAttachments
         $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/course/:courseid(/)',
+                         '(/:pre)/' . $this->getPrefix( ) . '/exercise/:eid(/)',
                          array( 
                                $this,
-                               'getCourseForms'
-                               )
-                         );
-                         
-        // GET GetExistsCourseForms
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/exists/course/:courseid(/)',
-                         array( 
-                               $this,
-                               'getExistsCourseForms'
+                               'getExerciseAttachments'
                                )
                          );
 
-        // GET GetSheetForms
+        // GET GetSheetAttachments
         $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/exercisesheet/:esid(/)',
+                         '(/:pre)/' . $this->getPrefix( ) . '/exercisesheet/:esid(/)',
                          array( 
                                $this,
-                               'getSheetForms'
+                               'getSheetAttachments'
                                )
                          );
                          
-        // GET GetExerciseForms
+        // GET GetCourseAttachments
         $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/exercise/:eid(/)',
+                         '(/:pre)/' . $this->getPrefix( ) . '/course/:courseid(/)',
                          array( 
                                $this,
-                               'getExerciseForms'
+                               'getCourseAttachments'
                                )
                          );
                          
-        // starts slim only if the right prefix was received
-        if ( strpos( 
-                    $this->_app->request->getResourceUri( ),
-                    '/' . $this->getPrefix( )
-                    ) === 0 || strpos( 
-                    $this->_app->request->getResourceUri( ),
-                    '/course'
-                    ) === 0){
-
-            // run Slim
-            $this->_app->run( );
-        }
+        // run Slim
+        $this->_app->run( );
     }
     
-    public function editForm( $formid )
+    public function loadConfig( $pre='' ){
+        // initialize component
+        $this->_conf = $this->_conf->loadConfig( $pre );
+        $this->query = array( CConfig::getLink( 
+                                               $this->_conf->getLinks( ),
+                                               'out'
+                                               ) );
+    }
+
+    /**
+     * Edits an attachment.
+     *
+     * Called when this component receives an HTTP PUT request to
+     * /attachment/$aid(/) or /attachment/attachment/$aid(/).
+     * The request body should contain a JSON object representing the
+     * attachment's new attributes.
+     *
+     * @param string $aid The id of the attachment that is being updated.
+     */
+    public function editAttachment( $pre='' ,$aid )
     {
+        $this->loadConfig($pre);
         Logger::Log( 
-                    'starts PUT EditForm',
+                    'starts PUT EditAttachment',
                     LogLevel::DEBUG
                     );
 
-        $formid = DBJson::mysql_real_escape_string( $formid );
+        $aid = DBJson::mysql_real_escape_string( $aid );
+        $pre = DBJson::mysql_real_escape_string( $pre );
 
-        // decode the received choice data, as an object
-        $insert = Form::decodeForm( $this->_app->request->getBody( ) );
+        // decode the received attachment data, as an object
+        $insert = Attachment::decodeAttachment( $this->_app->request->getBody( ) );
 
         // always been an array
         $arr = true;
@@ -223,10 +219,11 @@ class DBForm
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/EditForm.sql',
+                                                  'Sql/EditAttachment.sql',
                                                   array( 
-                                                        'formid' => $formid,
-                                                        'object' => $in
+                                                        'aid' => $aid,
+                                                        'object' => $in,
+                                                        'pre' => $pre
                                                         )
                                                   );
 
@@ -242,7 +239,7 @@ class DBForm
                 
             } else {
                 Logger::Log( 
-                            'PUT EditForm failed',
+                            'PUT EditAttachment failed',
                             LogLevel::ERROR
                             );
                 $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
@@ -250,57 +247,71 @@ class DBForm
             }
         }
     }
-    
-    public function deleteForm( $formid )
+
+    /**
+     * Deletes an attachment.
+     *
+     * Called when this component receives an HTTP DELETE request to
+     * /attachment/$aid(/) or /attachment/attachment/$aid(/).
+     *
+     * @param string $aid The id of the attachment that is being deleted.
+     */
+    public function deleteAttachment( $pre='' ,$aid )
     {
+        $this->loadConfig($pre);
         Logger::Log( 
-                    'starts DELETE DeleteForm',
+                    'starts DELETE DeleteAttachment',
                     LogLevel::DEBUG
                     );
 
-        $formid = DBJson::mysql_real_escape_string( $formid );
+        $aid = DBJson::mysql_real_escape_string( $aid );
+        $pre = DBJson::mysql_real_escape_string( $pre );
 
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
-                                              'Sql/DeleteForm.sql',
-                                              array( 'formid' => $formid )
+                                              'Sql/DeleteAttachment.sql',
+                                              array( 'aid' => $aid,'pre' => $pre )
                                               );
 
         // checks the correctness of the query
         if ( $result['status'] >= 200 && 
              $result['status'] <= 299 ){
-
+            $this->_app->response->setStatus( 201 );
             if ( isset( $result['headers']['Content-Type'] ) )
                 $this->_app->response->headers->set( 
                                                     'Content-Type',
                                                     $result['headers']['Content-Type']
                                                     );
-
-            $this->_app->response->setStatus( 201 );
-            $this->_app->stop( );
             
         } else {
             Logger::Log( 
-                        'DELETE DeleteForm failed',
+                        'DELETE DeleteAttachment failed',
                         LogLevel::ERROR
                         );
-
-            $this->_app->response->setBody( Form::encodeForm( new Form( ) ) );
             $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
             $this->_app->stop( );
         }
     }
-    
-    public function addForm( )
+
+    /**
+     * Adds an attachment.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /attachment(/).
+     * The request body should contain a JSON object representing the
+     * attachment's attributes.
+     */
+    public function addAttachment( $pre='' )
     {
+        $this->loadConfig($pre);
         Logger::Log( 
-                    'starts POST AddForm',
+                    'starts POST AddAttachment',
                     LogLevel::DEBUG
                     );
 
-        // decode the received choice data, as an object
-        $insert = Form::decodeForm( $this->_app->request->getBody( ) );
+        // decode the received attachment data, as an object
+        $insert = Attachment::decodeAttachment( $this->_app->request->getBody( ) );
 
         // always been an array
         $arr = true;
@@ -308,16 +319,21 @@ class DBForm
             $insert = array( $insert );
             $arr = false;
         }
+        
+        $pre = DBJson::mysql_real_escape_string( $pre );
 
         // this array contains the indices of the inserted objects
         $res = array( );
         foreach ( $insert as $in ){
 
+            // generates the insert data for the object
+            $data = $in->getInsertData( );
+
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/AddForm.sql',
-                                                  array( 'object' => $in)
+                                                  'Sql/AddAttachment.sql',
+                                                  array( 'object' => $in,'pre' => $pre )
                                                   );
 
             // checks the correctness of the query
@@ -326,10 +342,11 @@ class DBForm
                 $queryResult = Query::decodeQuery( $result['content'] );
 
                 // sets the new auto-increment id
-                $obj = new Form( );
+                $obj = new Attachment( );
                 $course = Course::ExtractCourse($queryResult[count($queryResult)-1]->getResponse(),true);
 
-                $obj->setFormId( $course['id'] . '_' . $queryResult[count($queryResult)-2]->getInsertId( ) );
+                $obj->setId( $course['id'] . '_' . $queryResult[count($queryResult)-2]->getInsertId( ) );
+                
 
                 $res[] = $obj;
                 $this->_app->response->setStatus( 201 );
@@ -341,76 +358,79 @@ class DBForm
                 
             } else {
                 Logger::Log( 
-                            'POST AddForm failed',
+                            'POST AddAttachment failed',
                             LogLevel::ERROR
                             );
                 $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-                $this->_app->response->setBody( Form::encodeForm( $res ) );
+                $this->_app->response->setBody( Attachment::encodeAttachment( $res ) );
                 $this->_app->stop( );
             }
         }
 
         if ( !$arr && 
              count( $res ) == 1 ){
-            $this->_app->response->setBody( Form::encodeForm( $res[0] ) );
+            $this->_app->response->setBody( Attachment::encodeAttachment( $res[0] ) );
             
         } else 
-            $this->_app->response->setBody( Form::encodeForm( $res ) );
+            $this->_app->response->setBody( Attachment::encodeAttachment( $res ) );
     }
-    
+
     public function get( 
                         $functionName,
                         $sqlFile,
-                        $formid,
+                        $pre='' ,
+                        $userid,
                         $courseid,
                         $esid,
                         $eid,
-                        $singleResult = false,
-                        $checkSession = true
+                        $suid,
+                        $aid,
+                        $singleResult = false
                         )
     {
+        $this->loadConfig($pre);
         Logger::Log( 
                     'starts GET ' . $functionName,
                     LogLevel::DEBUG
                     );
 
-        // checks whether incoming data has the correct data type
-        $formid = DBJson::mysql_real_escape_string( $formid );
-
-        DBJson::checkInput( 
-                           $this->_app,
-                           $courseid == '' ? true : ctype_digit( $courseid ),
-                           $esid == '' ? true : ctype_digit( $esid ),
-                           $eid == '' ? true : ctype_digit( $eid )
-                           );
+        $pre = DBJson::mysql_real_escape_string( $pre );
+        $userid = DBJson::mysql_real_escape_string( $userid );
+        $courseid = DBJson::mysql_real_escape_string( $courseid );
+        $esid = DBJson::mysql_real_escape_string( $esid );
+        $eid = DBJson::mysql_real_escape_string( $eid );
+        $suid = DBJson::mysql_real_escape_string( $suid );
+        $aid = DBJson::mysql_real_escape_string( $aid );
 
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
                                               $sqlFile,
                                               array( 
-                                                    'formid' => $formid,
+                                                    'pre' => $pre,
+                                                    'userid' => $userid,
                                                     'courseid' => $courseid,
                                                     'esid' => $esid,
-                                                    'eid' => $eid
-                                                    ),
-                                              $checkSession
+                                                    'eid' => $eid,
+                                                    'suid' => $suid,
+                                                    'aid' => $aid
+                                                    )
                                               );
 
         // checks the correctness of the query
         if ( $result['status'] >= 200 && 
              $result['status'] <= 299 ){
             $query = Query::decodeQuery( $result['content'] );
-
+            
             if (is_array($query))
             $query = $query[count($query)-1];
-            
+
             if ( $query->getNumRows( ) > 0 ){
-                $res = Form::ExtractForm( 
-                                         $query->getResponse( ),
-                                         $singleResult
-                                         );
-                $this->_app->response->setBody( Form::encodeForm( $res ) );
+                $res = Attachment::ExtractAttachment( 
+                                                     $query->getResponse( ),
+                                                     $singleResult
+                                                     );
+                $this->_app->response->setBody( Attachment::encodeAttachment( $res ) );
 
                 $this->_app->response->setStatus( 200 );
                 if ( isset( $result['headers']['Content-Type'] ) )
@@ -429,78 +449,100 @@ class DBForm
                     'GET ' . $functionName . ' failed',
                     LogLevel::ERROR
                     );
+                    
         $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-        $this->_app->response->setBody( Form::encodeForm( new Form( ) ) );
+        $this->_app->response->setBody( Attachment::encodeAttachment( new Attachment( ) ) );
         $this->_app->stop( );
     }
-    
-    public function getForm( $formid )
+
+    /**
+     * Returns an attachment.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /attachment/$aid(/) or /attachment/attachment/$aid(/).
+     *
+     * @param string $aid The id of the attachment that should be returned.
+     */
+    public function getAttachment( $pre='' ,$aid )
     {
         $this->get( 
-                   'GetForm',
-                   'Sql/GetForm.sql',
-                   isset( $formid ) ? $formid : '',
+                   'GetAttachment',
+                   'Sql/GetAttachment.sql',
+                   isset( $pre ) ? $pre : '',
+                   isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
                    isset( $eid ) ? $eid : '',
+                   isset( $suid ) ? $suid : '',
+                   isset( $aid ) ? $aid : '',
                    true
                    );
     }
-    
-    public function getCourseForms( $courseid )
+
+    /**
+     * Returns the attachments to a given exercise.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /attachment/exercise/$eid(/).
+     *
+     * @param string $eid The id of the exercise.
+     */
+    public function getExerciseAttachments( $pre='' ,$eid )
     {
         $this->get( 
-                   'GetCourseForms',
-                   'Sql/GetCourseForms.sql',
-                   isset( $formid ) ? $formid : '',
+                   'GetExerciseAttachments',
+                   'Sql/GetExerciseAttachments.sql',
+                   isset( $pre ) ? $pre : '',
+                   isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
                    isset( $eid ) ? $eid : '',
-                   false
+                   isset( $suid ) ? $suid : '',
+                   isset( $aid ) ? $aid : ''
                    );
     }
-    
-    public function getExistsCourseForms( $courseid )
+
+    /**
+     * Returns the attachments to a given exercise sheet.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /attachment/exercisesheet/$esid(/).
+     *
+     * @param string $esid The id of the exercise sheet.
+     */
+    public function getSheetAttachments($pre='' , $esid )
     {
         $this->get( 
-                   'GetExistsCourseForms',
-                   'Sql/GetExistsCourseForms.sql',
-                   isset( $formid ) ? $formid : '',
+                   'GetSheetAttachments',
+                   'Sql/GetSheetAttachments.sql',
+                   isset( $pre ) ? $pre : '',
+                   isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
                    isset( $eid ) ? $eid : '',
-                   true
+                   isset( $suid ) ? $suid : '',
+                   isset( $aid ) ? $aid : ''
                    );
     }
     
-    public function getSheetForms( $esid )
+    public function getCourseAttachments($pre='' , $courseid )
     {
         $this->get( 
-                   'GetSheetForms',
-                   'Sql/GetSheetForms.sql',
-                   isset( $formid ) ? $formid : '',
+                   'GetCourseAttachments',
+                   'Sql/GetCourseAttachments.sql',
+                   isset( $pre ) ? $pre : '',
+                   isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
                    isset( $eid ) ? $eid : '',
-                   false
+                   isset( $suid ) ? $suid : '',
+                   isset( $aid ) ? $aid : ''
                    );
     }
     
-    public function getExerciseForms( $eid )
+    public function deleteCourse( $pre='' , $courseid )
     {
-        $this->get( 
-                   'GetExerciseForms',
-                   'Sql/GetExerciseForms.sql',
-                   isset( $formid ) ? $formid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   false
-                   );
-    }
-    
-    public function deleteCourse( $courseid )
-    {
+        $this->loadConfig($pre);
         Logger::Log( 
                     'starts DELETE DeleteCourse',
                     LogLevel::DEBUG
@@ -512,7 +554,7 @@ class DBForm
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
                                               'Sql/DeleteCourse.sql',
-                                              array( 'courseid' => $courseid )
+                                              array( 'courseid' => $courseid,'pre' => $pre )
                                               );
 
         // checks the correctness of the query
@@ -538,8 +580,9 @@ class DBForm
         }
     }
     
-    public function addCourse( )
+    public function addCourse( $pre='' )
     {
+        $this->loadConfig($pre);
         Logger::Log( 
                     'starts POST AddCourse',
                     LogLevel::DEBUG
@@ -563,7 +606,7 @@ class DBForm
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
                                                   'Sql/AddCourse.sql',
-                                                  array( 'object' => $in )
+                                                  array( 'object' => $in,'pre' => $pre )
                                                   );
 
             // checks the correctness of the query

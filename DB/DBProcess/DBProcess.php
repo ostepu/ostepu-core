@@ -157,6 +157,15 @@ class DBProcess
                                'getCourseProcesses'
                                )
                          );
+                         
+        // GET GetExistsCourseProcesses
+        $this->_app->get( 
+                         '/' . $this->getPrefix( ) . '/exists/course/:courseid(/)',
+                         array( 
+                               $this,
+                               'getExistsCourseProcesses'
+                               )
+                         );
 
         // GET GetSheetProcesses
         $this->_app->get( 
@@ -449,6 +458,19 @@ class DBProcess
                    isset( $esid ) ? $esid : '',
                    isset( $eid ) ? $eid : '',
                    false
+                   );
+    }
+    
+    public function getExistsCourseProcesses( $courseid )
+    {
+        $this->get( 
+                   'GetExistsCourseProcesses',
+                   'Sql/GetExistsCourseProcesses.sql',
+                   isset( $processid ) ? $processid : '',
+                   isset( $courseid ) ? $courseid : '',
+                   isset( $esid ) ? $esid : '',
+                   isset( $eid ) ? $eid : '',
+                   true
                    );
     }
     
