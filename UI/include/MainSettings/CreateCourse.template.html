@@ -74,25 +74,29 @@
                     <br />
                 <?php endforeach; ?>
             </div>
-        </div>
-        
-          
-
-            <label class="form-field left label bold new-line" for="defaultExerciseTypes">
+            
+            <?php if (isset($plugins) && !empty($plugins)){ ?>
+            <label class="form-field left label bold new-line" for="defaultPlugins">
                 Erweiterungen:
             </label>
             <div class="form-field left checkbox-container">
                 <?php 
                     foreach ($plugins as $plugin):
                         print '<input type="checkbox" name="plugins[]" value="';
-                        print $plugin['id'];
+                        print $plugin['target'];
                         print '"';
                         print isset($plugin['isInstalled'])?' checked="true"':NULL;
                         print ' />';
-                        print $plugin['name'];
+                        print $plugin['targetName'];
                         print '<br />';
                     endforeach;
                 ?>
             </div>
+            <?php } ?>
+        </div>
+        
+          
+
+
     </div> <!-- end: content-body -->
 </div> <!-- end: content-wrapper -->

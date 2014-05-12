@@ -19,26 +19,105 @@ include_once '../Assistants/Structures.php';
 include_once 'include/FormEvaluator.php';
 
 // load Plugins data from LogicController
-$URI = $serverURI . "/logic/LCourse/extension/extension";
+$URI = $serverURI . "/logic/LExtension/link/extension";
 $temp = http_get($URI, true);
+$plugins_data=array();
 $plugins_data['plugins'] = json_decode($temp, true);
 
-$URI = $serverURI . "/logic/LCourse/extension/course/{$cid}/extension";
+$URI = $serverURI . "/logic/LExtension/link/course/{$cid}/extension";
 $temp = http_get($URI, true);
 $temp = json_decode($temp, true);
-
+$installedPlugins = array();
 foreach ($plugins_data['plugins'] as &$plugin){
     foreach ($temp as &$installed){
-        if ($plugin['id'] === $installed['id']){
+        if ($plugin['target'] === $installed['target']){
+            $installedPlugins[] = $installed['target'];
             unset($installed);
             $plugin['isInstalled'] = 1;
             break;
         }
-    }
+    }  
 }
 
 if (isset($_POST['action'])) {
-    if ($_POST['action'] == "CourseSettings") {
+    if ($_POST['action'] == "Plugins") {
+        
+        $plugins = cleanInput($_POST['plugins']);
+        
+        // bool which is true if any error occured
+        $RequestError=false;
+        
+        // which need to be deleted
+        if (!empty($plugins)) {
+            $etDelete = array_diff($installedPlugins, $plugins);
+        } else {
+            $etDelete = $installedPlugins;
+        }
+        
+        // which need to be installed
+        if (!empty($installedPlugins)) {
+            if (!is_array($plugins)) $plugins = array($plugins);
+            $etCreate = array_diff($plugins, $installedPlugins);
+        } else {
+            $etCreate = $plugins;
+        }
+
+        // install Plugins
+        if (isset($etCreate) && !empty($etCreate)){
+            foreach ($etCreate as $plugin2) {
+                if ($plugin2 === '') continue;
+                $URI = $serverURI . "/logic/LExtension/link/course/{$cid}/extension/{$plugin2}";
+                http_post_data($URI, '', true, $messageNewAc);
+                if ($messageNewAc != "201") {
+                    $RequestError = true;
+                    break;
+                }
+            }
+        }
+     
+        // uninstall Plugins
+        if (isset($etDelete) && !empty($etDelete)){
+            foreach ($etDelete as $plugin3) {
+                if ($plugin3 === '') continue;
+                $URI = $serverURI . "/logic/LExtension/link/course/{$cid}/extension/{$plugin3}";
+                http_delete($URI, true, $messageNewAc);
+                if ($messageNewAc != "201") {
+                    $RequestError = true;
+                    break;
+                }
+            }
+        }
+        
+        // load Plugins data from LogicController
+        $URI = $serverURI . "/logic/LExtension/link/extension";
+        $temp = http_get($URI, true);
+        $plugins_data=array();
+        $plugins_data['plugins'] = json_decode($temp, true);
+
+        $URI = $serverURI . "/logic/LExtension/link/course/{$cid}/extension";
+        $temp = http_get($URI, true);
+        $temp = json_decode($temp, true);
+        $installedPlugins = array();
+        foreach ($plugins_data['plugins'] as &$plugin){
+            foreach ($temp as &$installed){
+                if ($plugin['target'] === $installed['target']){
+                    $installedPlugins[] = $installed['target'];
+                    unset($installed);
+                    $plugin['isInstalled'] = 1;
+                    break;
+                }
+            }  
+        }
+
+        // show notification
+        if ($RequestError == false) {
+            $notifications[] = MakeNotification("success", "Die Veranstaltung wurde bearbeitet!");
+        }
+        else {
+            $notifications[] = MakeNotification("error", "Beim Speichern ist ein Fehler aufgetreten!");
+        }
+    
+    } elseif ($_POST['action'] == "CourseSettings") {
         // check if POST data is send
         if(isset($_POST['courseName']) && isset($_POST['semester']) && isset($_POST['defaultGroupSize'])) {
 
@@ -81,8 +160,9 @@ if (isset($_POST['action'])) {
             if ($etDelete == null) $etDelete = array();
             if (!is_array($etDelete)) $etDelete = array($etDelete);
             // deletes approvalConditions
-            foreach($etDelete as $exerciseType) {
-                $URI = $databaseURI . "/approvalcondition/" . $currentExerciseTypesByApprovalId[$exerciseType];
+            foreach($etDelete as $exerciseType2) {
+                if ($exerciseType2==='')continue;
+                $URI = $databaseURI . "/approvalcondition/" . $currentExerciseTypesByApprovalId[$exerciseType2];
                 http_delete($URI, true, $message);
 
                 if ($message != "201") {
@@ -93,9 +173,10 @@ if (isset($_POST['action'])) {
             if ($etCreate == null) $etCreate = array();
             if (!is_array($etCreate)) $etCreate = array($etCreate);
             // adds approvalConditions
-            foreach($etCreate as $exerciseType) {
+            foreach($etCreate as $exerciseType3) {
+                if ($exerciseType3==='')continue;
                 $newApprovalConditionSettings = ApprovalCondition::encodeApprovalCondition(
-                    ApprovalCondition::createApprovalCondition(null, $cid, $exerciseType, 0));
+                    ApprovalCondition::createApprovalCondition(null, $cid, $exerciseType3, 0));
                 $URI = $databaseURI . "/approvalcondition";
                 http_post_data($URI, $newApprovalConditionSettings, true, $message);
 
