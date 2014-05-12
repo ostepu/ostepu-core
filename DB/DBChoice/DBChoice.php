@@ -18,7 +18,7 @@ include_once ( '../../Assistants/Logger.php' );
 \Slim\Slim::registerAutoloader( );
 
 // runs the CConfig
-$com = new CConfig( DBChoice::getPrefix( ) . ',course' );
+$com = new CConfig( DBChoice::getPrefix( ) . ',course,link' );
 
 // runs the DBChoice
 if ( !$com->used( ) )
@@ -157,7 +157,16 @@ class DBChoice
                                'getCourseChoices'
                                )
                          );
-
+                         
+        // GET GetExistsCourseChoices
+        $this->_app->get( 
+                         '/link/exists/course/:courseid(/)',
+                         array( 
+                               $this,
+                               'getExistsCourseChoices'
+                               )
+                         );
+                         
         // GET GetSheetChoices
         $this->_app->get( 
                          '/' . $this->getPrefix( ) . '/exercisesheet/:esid(/)',
@@ -185,18 +194,8 @@ class DBChoice
                                )
                          );
                          
-        // starts slim only if the right prefix was received
-        if ( strpos( 
-                    $this->_app->request->getResourceUri( ),
-                    '/' . $this->getPrefix( )
-                    ) === 0 || strpos( 
-                    $this->_app->request->getResourceUri( ),
-                    '/course'
-                    ) === 0){
-
             // run Slim
             $this->_app->run( );
-        }
     }
     
     public function editChoice( $choiceid )
@@ -413,6 +412,7 @@ class DBChoice
                                          $query->getResponse( ),
                                          $singleResult
                                          );
+                                         
                 $this->_app->response->setBody( Choice::encodeChoice( $res ) );
 
                 $this->_app->response->setStatus( 200 );
@@ -462,6 +462,20 @@ class DBChoice
                    isset( $esid ) ? $esid : '',
                    isset( $eid ) ? $eid : '',
                    false
+                   );
+    }
+    
+    public function getExistsCourseChoices( $courseid )
+    {
+        $this->get( 
+                   'GetExistsCourseChoices',
+                   'Sql/GetExistsCourseChoices.sql',
+                   isset( $formid ) ? $formid : '',
+                   isset( $choiceid ) ? $choiceid : '',
+                   isset( $courseid ) ? $courseid : '',
+                   isset( $esid ) ? $esid : '',
+                   isset( $eid ) ? $eid : '',
+                   true
                    );
     }
     
