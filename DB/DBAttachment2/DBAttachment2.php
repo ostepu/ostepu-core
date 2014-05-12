@@ -18,7 +18,7 @@ include_once ( '../../Assistants/Logger.php' );
 \Slim\Slim::registerAutoloader( );
 
 // runs the CConfig
-$com = new CConfig( DBAttachment2::getPrefix( ) . ',course' );
+$com = new CConfig( DBAttachment2::getPrefix( ) . ',course,link' );
 
 // runs the DBAttachment2
 if ( !$com->used( ) )
@@ -133,7 +133,16 @@ class DBAttachment2
                                 'addAttachment'
                                 )
                           );
-
+                          
+        // GET GetExistsCourseAttachments
+        $this->_app->get( 
+                         '(/:pre)/link/exists/course/:courseid(/)',
+                         array( 
+                               $this,
+                               'getExistsCourseAttachments'
+                               )
+                        );
+                        
         // GET GetAttachment
         $this->_app->get( 
                          '(/:pre)/' . $this->getPrefix( ) . '(/attachment)/:aid(/)',
@@ -160,7 +169,7 @@ class DBAttachment2
                                'getSheetAttachments'
                                )
                          );
-                         
+                                             
         // GET GetCourseAttachments
         $this->_app->get( 
                          '(/:pre)/' . $this->getPrefix( ) . '/course/:courseid(/)',
@@ -430,6 +439,7 @@ class DBAttachment2
                                                      $query->getResponse( ),
                                                      $singleResult
                                                      );
+
                 $this->_app->response->setBody( Attachment::encodeAttachment( $res ) );
 
                 $this->_app->response->setStatus( 200 );
@@ -441,7 +451,7 @@ class DBAttachment2
 
                 $this->_app->stop( );
                 
-            } else 
+            } else
                 $result['status'] = 404;
         }
 
@@ -537,6 +547,22 @@ class DBAttachment2
                    isset( $eid ) ? $eid : '',
                    isset( $suid ) ? $suid : '',
                    isset( $aid ) ? $aid : ''
+                   );
+    }
+    
+    public function getExistsCourseAttachments( $pre='' , $courseid )
+    {
+        $this->get( 
+                   'GetExistsCourseAttachments',
+                   'Sql/GetExistsCourseAttachments.sql',
+                   isset( $pre ) ? $pre : '',
+                   isset( $userid ) ? $userid : '',
+                   isset( $courseid ) ? $courseid : '',
+                   isset( $esid ) ? $esid : '',
+                   isset( $eid ) ? $eid : '',
+                   isset( $suid ) ? $suid : '',
+                   isset( $aid ) ? $aid : '',
+                   true
                    );
     }
     

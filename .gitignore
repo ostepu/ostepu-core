@@ -216,3 +216,5 @@ logic/
 UI/
 DB/CControl/CConfig.json
 DB/DBProcess/CConfig.json
+DB/DBAttachment2/processAttachment_CConfig.json
+DB/DBAttachment2/processWorkFiles_CConfig.json
