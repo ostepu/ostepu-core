@@ -18,6 +18,25 @@ include_once 'include/Boilerplate.php';
 include_once '../Assistants/Structures.php';
 include_once 'include/FormEvaluator.php';
 
+// load Plugins data from LogicController
+$URI = $serverURI . "/logic/LCourse/extension/extension";
+$temp = http_get($URI, true);
+$plugins_data['plugins'] = json_decode($temp, true);
+
+$URI = $serverURI . "/logic/LCourse/extension/course/{$cid}/extension";
+$temp = http_get($URI, true);
+$temp = json_decode($temp, true);
+
+foreach ($plugins_data['plugins'] as &$plugin){
+    foreach ($temp as &$installed){
+        if ($plugin['id'] === $installed['id']){
+            unset($installed);
+            $plugin['isInstalled'] = 1;
+            break;
+        }
+    }
+}
+
 if (isset($_POST['action'])) {
     if ($_POST['action'] == "CourseSettings") {
         // check if POST data is send
@@ -270,6 +289,10 @@ $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
 $courseSettings = Template::WithTemplateFile('include/CourseManagement/CourseSettings.template.html');
 $courseSettings->bind($courseManagement_data);
 
+// construct a content element for plugins
+$plugins = Template::WithTemplateFile('include/CourseManagement/Plugins.template.html');
+$plugins->bind($plugins_data);
+
 // construct a content element for adding exercise types
 $addExerciseType = Template::WithTemplateFile('include/CourseManagement/AddExerciseType.template.html');
 
@@ -293,8 +316,9 @@ $addUser = Template::WithTemplateFile('include/CourseManagement/AddUser.template
  */
 
 // wrap all the elements in some HTML and show them on the page
-$w = new HTMLWrapper($h, $courseSettings, $addExerciseType, $editExerciseType, $grantRights, $revokeRights, $addUser);
+$w = new HTMLWrapper($h, $courseSettings, $plugins, $addExerciseType, $editExerciseType, $grantRights, $revokeRights, $addUser);
 $w->defineForm(basename(__FILE__)."?cid=".$cid, false, $courseSettings);
+$w->defineForm(basename(__FILE__)."?cid=".$cid, false, $plugins);
 $w->defineForm(basename(__FILE__)."?cid=".$cid, false, $addExerciseType);
 $w->defineForm(basename(__FILE__)."?cid=".$cid, false, $editExerciseType);
 $w->defineForm(basename(__FILE__)."?cid=".$cid, false, $grantRights);

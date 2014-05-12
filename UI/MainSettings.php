@@ -18,6 +18,11 @@ include_once 'include/Boilerplate.php';
 include_once '../Assistants/Structures.php';
 include_once 'include/FormEvaluator.php';
 
+// load Plugins data from LogicController
+$URI = $serverURI . "/logic/LCourse/extension/extension";
+$temp = http_get($URI, true);
+$plugins_data = json_decode($temp, true);
+
 if (isset($_POST['action'])) {
     // creates a new course
     if ($_POST['action'] == "CreateCourse") {
@@ -260,6 +265,8 @@ if (isset($_POST['action'])) {
 $databaseURI = $getSiteURI . "/mainsettings/user/{$uid}";
 $mainSettings_data = http_get($databaseURI, true);
 $mainSettings_data = json_decode($mainSettings_data, true);
+
+$mainSettings_data['plugins'] = $plugins_data;
 
 $user_course_data = $mainSettings_data['user'];
 

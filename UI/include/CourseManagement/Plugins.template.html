@@ -1,0 +1,35 @@
+<input type="hidden" name="action" value="Plugins">
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left uppercase">Erweiterungen</div>
+        <div class="info-color bold right">
+            <button class="text-button info-color bold right">speichern</button>
+        </div>
+    </div>
+
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            <div class="content-description">
+                Hier können Erweiterungen zugeschalten werden.
+            </div>
+           
+
+            <label class="form-field left label bold new-line" for="defaultExerciseTypes">
+                Erweiterungen:
+            </label>
+            <div class="form-field left checkbox-container">
+                <?php 
+                    foreach ($plugins as $plugin):
+                        print '<input type="checkbox" name="plugins[]" value="';
+                        print $plugin['id'];
+                        print '"';
+                        print isset($plugin['isInstalled'])?' checked="true"':NULL;
+                        print ' />';
+                        print $plugin['name'];
+                        print '<br />';
+                    endforeach;
+                ?>
+            </div>
+        </div>
+    </div> <!-- end: content-body -->
+</div> <!-- end: content-wrapper -->
