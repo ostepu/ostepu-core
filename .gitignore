@@ -211,3 +211,8 @@ FS/FSFile/CConfig.json
 FS/FSFile2/CConfig.json
 FS/FSPdf/CConfig.json
 FS/FSZip/CConfig.json
+Assistants/
+logic/
+UI/
+DB/CControl/CConfig.json
+DB/DBProcess/CConfig.json
