@@ -7,7 +7,6 @@ select
     CL.CL_id,
     CL.CL_name,
     CL.CO_id_target,
-    CL.CO_id_target,
     CL.CO_id_owner,
     CL.CL_relevanz,
     CO2.CO_name as CL_targetName,
