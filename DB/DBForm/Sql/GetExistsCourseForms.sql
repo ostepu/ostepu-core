@@ -4,6 +4,6 @@
  */
 
 select 
-    1
+    count(1)
 from
-    `Form_{$courseid}` FO
+    `Form_{$courseid}` FO limit 1;
