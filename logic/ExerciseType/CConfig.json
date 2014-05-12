@@ -1,1 +1,0 @@
-{"id":"35","name":"LExerciseType","address":"localhost\/uebungsplattform\/logic\/ExerciseType","option":"","prefix":"exercisetype","links":[{"id":"72","name":"controller","address":"localhost\/uebungsplattform\/logic\/Controller","prefix":null,"target":"14","owner":"35","relevanz":""}]}
