@@ -276,7 +276,6 @@ class LProcessor
         $this->app->response->setStatus( 201 );
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
-        
         $processes = Process::decodeProcess($body);
         
         // always been an array
@@ -288,7 +287,6 @@ class LProcessor
         
         $res = array( );
         foreach ( $processes as $process ){
-        
             // create process
             if ($process->getProcessId() === null){
                 $result = Request::routeRequest( 
@@ -315,8 +313,8 @@ class LProcessor
             }
             
             // create attachment
-            $attachments = $process->getAttachments();
-            $process->setAttachments(array());
+            $attachments = $process->getAttachment();
+            $process->setAttachment(array());
             foreach ( $attachments as $attachment ){
                 if ($attachment->getId() === null){
                 
@@ -357,10 +355,10 @@ class LProcessor
                          
                         $queryResult = Attachment::decodeAttachment($result['content']);
                         $attachment->setId($queryResult->getId());
-                        $process->getAttachments()[] = $attachment;
+                        $process->getAttachment()[] = $attachment;
                     }
                     else{
-                        $process->getAttachments()[] = null;
+                        $process->getAttachment()[] = null;
                         $this->app->response->setStatus( 409 );
                         continue;
                     }
@@ -410,10 +408,10 @@ class LProcessor
                          
                         $queryResult = Attachment::decodeAttachment($result['content']);
                         $workFile->setId($queryResult->getId());
-                        $process->getAttachments()[] = $workFile;
+                        $process->getWorkFiles()[] = $workFile;
                     }
                     else{
-                        $process->getAttachments()[] = null;
+                        $process->getWorkFiles()[] = null;
                         $this->app->response->setStatus( 409 );
                         continue;
                     }
