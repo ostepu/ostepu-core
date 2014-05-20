@@ -174,11 +174,11 @@ class FSPdf
         
         $pdf->AddPage( );
 
-        $pdf->WriteHTML($data->getText());
+        $pdf->WriteHTML(utf8_decode($data->getText()));
 
         // stores the pdf binary data to $result
         $result = $pdf->Output( 
-                               '',
+                               'name.pdf',
                                'S'
                                );
                                
