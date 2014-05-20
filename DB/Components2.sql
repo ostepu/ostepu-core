@@ -54,10 +54,7 @@ INSERT IGNORE INTO `Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) V
 INSERT IGNORE INTO `Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (51, 'DBAttachment2', 'localhost/uebungsplattform/DB/DBAttachment2/processAttachment', '');
 INSERT IGNORE INTO `Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (52, 'DBAttachment2', 'localhost/uebungsplattform/DB/DBAttachment2/processWorkFiles', '');
 INSERT IGNORE INTO `Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (53, 'LExtension', 'localhost/uebungsplattform/logic/LExtension', '');
-INSERT IGNORE INTO `Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (54, 'DBFormResult', 'localhost/uebungsplattform/DB/DBFormResult', '');
 INSERT IGNORE INTO `Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (55, 'DBProcessList', 'localhost/uebungsplattform/DB/DBProcess/processList', '');
-
-INSERT IGNORE INTO `Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (56, 'DBChoiceAB', 'localhost/uebungsplattform/DB/DBChoice/A/B', '');
 COMMIT;
 
 
@@ -187,5 +184,5 @@ INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_
 #INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (00, '', '', 00);
 #INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (00, '', '', 00);
 #INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (00, '', '', 00);
-INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (56, 'out', '', 39);
+#INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (00, '', '', 00);
 COMMIT;
