@@ -19,5 +19,5 @@ select
     F.F_comment,
     F.F_hash
 from
-    `Attachment_{$pre}_{$courseid}` A
+    `Attachment{$pre}_{$courseid}` A
     left join `File` F ON F.F_id = A.F_id
