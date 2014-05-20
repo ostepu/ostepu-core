@@ -6,7 +6,7 @@
  * @result -
  */
 
-SET @course = (select E.C_id from `Exercise` E where E.E_id = {$object->getExerciseId()} limit 1);
+SET @course = (select E.C_id from `Exercise` E where E.E_id = {$object->getExercise()->getId()} limit 1);
 SET @statement = 
 concat(\"INSERT INTO `Process_\", @course, \"` SET {$object->getInsertData()};\");
 PREPARE stmt1 FROM @statement;

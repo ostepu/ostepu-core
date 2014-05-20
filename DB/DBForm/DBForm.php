@@ -18,7 +18,7 @@ include_once ( '../../Assistants/Logger.php' );
 \Slim\Slim::registerAutoloader( );
 
 // runs the CConfig
-$com = new CConfig( DBForm::getPrefix( ) . ',course' );
+$com = new CConfig( DBForm::getPrefix( ) . ',course,link' );
 
 // runs the DBForm
 if ( !$com->used( ) )
@@ -160,7 +160,7 @@ class DBForm
                          
         // GET GetExistsCourseForms
         $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/exists/course/:courseid(/)',
+                         '/link/exists/course/:courseid(/)',
                          array( 
                                $this,
                                'getExistsCourseForms'
@@ -184,19 +184,9 @@ class DBForm
                                'getExerciseForms'
                                )
                          );
-                         
-        // starts slim only if the right prefix was received
-        if ( strpos( 
-                    $this->_app->request->getResourceUri( ),
-                    '/' . $this->getPrefix( )
-                    ) === 0 || strpos( 
-                    $this->_app->request->getResourceUri( ),
-                    '/course'
-                    ) === 0){
 
             // run Slim
             $this->_app->run( );
-        }
     }
     
     public function editForm( $formid )

@@ -614,7 +614,7 @@ class CControl
      */
     public function sendComponentDefinitions( )
     {
-
+        $this->_app->response->setStatus( 200 );
         // starts a query
         eval( "\$sql = \"" . file_get_contents( 'Sql/GetComponentDefinitions.sql' ) . "\";" );
         $result = DBRequest::request( 
@@ -664,6 +664,7 @@ class CControl
 
                 if ( $result['status'] != 201 ){
                     $add = '';
+                    $this->_app->response->setStatus( 409 );
                     if ( isset( $result['content'] ) )
                         $add = $result['content'];
 
@@ -675,7 +676,6 @@ class CControl
             }
             
             $this->_app->response->setBody( json_encode($res) );
-            $this->_app->response->setStatus( 200 );
             
         } else {
             Logger::Log( 

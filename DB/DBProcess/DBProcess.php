@@ -18,7 +18,7 @@ include_once ( '../../Assistants/Logger.php' );
 \Slim\Slim::registerAutoloader( );
 
 // runs the CConfig
-$com = new CConfig( DBProcess::getPrefix( ) . ',course' );
+$com = new CConfig( DBProcess::getPrefix( ) . ',course,link' );
 
 // runs the DBProcess
 if ( !$com->used( ) )
@@ -160,7 +160,7 @@ class DBProcess
                          
         // GET GetExistsCourseProcesses
         $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/exists/course/:courseid(/)',
+                         '/link/exists/course/:courseid(/)',
                          array( 
                                $this,
                                'getExistsCourseProcesses'
@@ -185,18 +185,8 @@ class DBProcess
                                )
                          );
                          
-        // starts slim only if the right prefix was received
-        if ( strpos( 
-                    $this->_app->request->getResourceUri( ),
-                    '/' . $this->getPrefix( )
-                    ) === 0 || strpos( 
-                    $this->_app->request->getResourceUri( ),
-                    '/course'
-                    ) === 0){
-
             // run Slim
             $this->_app->run( );
-        }
     }
     
     public function editProcess( $processid )
