@@ -374,7 +374,7 @@ class Installer
            
            // inits all components
            $result = Request::get($data['PL']['url'].'/'.$url. '/definition/send',array(),'');
-           if (isset($result['content']) && isset($result['status']) && $result['status'] === 200){
+           if (isset($result['content']) && isset($result['status'])){
                 $results = Component::decodeComponent($result['content']);
                 $results = $this->orderBy(json_decode(Component::encodeComponent($results),true),'name',SORT_ASC);
                 $results = Component::decodeComponent(Component::encodeComponent($results));
@@ -424,6 +424,10 @@ class Installer
                 }
            }else
             $fail = true;
+            
+            if ($result['status'] !== 200){
+                $fail = true;
+            }
             
            if ($fail === true){
             $installFail = true;
