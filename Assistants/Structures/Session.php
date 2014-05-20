@@ -221,7 +221,9 @@ class Session extends Object implements JsonSerializable
 
     public static function ExtractSession( 
                                           $data,
-                                          $singleResult = false
+                                          $singleResult = false,
+                                          $SessionExtension = '',
+                                          $isResult = true
                                           )
     {
 
@@ -230,14 +232,16 @@ class Session extends Object implements JsonSerializable
         $res = DBJson::getResultObjectsByAttributes( 
                                                     $data,
                                                     Session::getDBPrimaryKey( ),
-                                                    Session::getDBConvert( )
+                                                    Session::getDBConvert( ),
+                                                    $SessionExtension
                                                     );
+        if ($isResult){ 
+            if ( $singleResult == true ){
 
-        if ( $singleResult == true ){
-
-            // only one object as result
-            if ( count( $res ) > 0 )
-                $res = $res[0];
+                // only one object as result
+                if ( count( $res ) > 0 )
+                    $res = $res[0];
+            }
         }
 
         return $res;
