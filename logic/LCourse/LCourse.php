@@ -64,7 +64,7 @@ class LCourse
      * @var Link[] $_out a list of links
      */
     private $_out = array( );
-
+    
     /**
      * REST actions
      *
@@ -76,7 +76,7 @@ class LCourse
     public function __construct($conf)
     {
         // initialize slim
-        $this->app = new \Slim\Slim();
+        $this->app = new \Slim\Slim(array('debug' => true));
         $this->app->response->headers->set('Content-Type', 'application/json');
 
         // initialize component
@@ -108,7 +108,7 @@ class LCourse
         //run Slim
         $this->app->run();
     }
-
+    
     /**
      * Adds a course.
      *

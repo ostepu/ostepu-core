@@ -61,6 +61,9 @@ class LFormProcessor
      * @var Link[] $_formDb a list of links
      */
     private $_formDb = array( );
+    private $_postProcess = array( );
+    private $_deleteProcess = array( );
+    private $_getProcess = array( );
     
     /**
      * REST actions
@@ -73,22 +76,179 @@ class LFormProcessor
     public function __construct($conf)
     {
         // initialize slim    
-        $this->app = new \Slim\Slim();
+        $this->app = new \Slim\Slim(array('debug' => true));
         $this->app->response->headers->set('Content-Type', 'application/json');
 
         // initialize component
         $this->_conf = $conf;
         $this->_formDb = CConfig::getLinks($conf->getLinks(),"formDb");
         $this->_pdf = CConfig::getLinks($conf->getLinks(),"pdf");
+        $this->_postProcess = CConfig::getLinks($conf->getLinks(),"postProcess");
+        $this->_deleteProcess = CConfig::getLinks($conf->getLinks(),"deleteProcess");
+        $this->_getProcess = CConfig::getLinks($conf->getLinks(),"getProcess");
 
         // POST PostProcess
         $this->app->map('/'.$this->getPrefix().'(/)',
                         array($this, 'postProcess'))->via('POST');
+                        
+        // POST AddCourse
+        $this->app->post( 
+                         '/course(/)',
+                         array( 
+                               $this,
+                               'addCourse'
+                               )
+                         );
+                         
+        // POST DeleteCourse
+        $this->app->delete( 
+                         '/course/:courseid(/)',
+                         array( 
+                               $this,
+                               'deleteCourse'
+                               )
+                         );
+                         
+        // GET GetExistsCourse
+        $this->app->get( 
+                         '/link/exists/course/:courseid(/)',
+                         array( 
+                               $this,
+                               'getExistsCourse'
+                               )
+                        );
 
         // run Slim
         $this->app->run();
     }
+    
+    public function deleteCourse( $courseid )
+    {
+        $result = Request::routeRequest( 
+                                        'GET',
+                                        '/process/course/'.$courseid.'/component/'.$this->_conf->getId(),
+                                        $this->app->request->headers->all( ),
+                                        '',
+                                        $this->_getProcess,
+                                        'process'
+                                        );
+                                        
+        if (isset($result['status']) && $result['status'] >= 200 && $result['status'] <= 299 && isset($result['content']) && $this->_conf !== null){
+        
+            $process = Process::decodeProcess($result['content']);
+            if (is_array($process)) $process = $process[0];
+            $deleteId = $process->getProcessId();
+            
+            $result = Request::routeRequest( 
+                                            'DELETE',
+                                            '/process/process/' . $deleteId,
+                                            $this->app->request->headers->all( ),
+                                            '',
+                                            $this->_deleteProcess,
+                                            'process'
+                                            );
+                                            
+            if (isset($result['status']) && $result['status'] === 201 && isset($result['content']) && $this->_conf !== null){
+                $this->app->response->setStatus( 201 );
+                $this->app->stop();
+            }
+            
+            $this->app->response->setStatus( 409 );
+            $this->app->stop();
+        }
+                                        
+        $this->app->response->setStatus( 404 );
+    }
+    
+    public function addCourse( )
+    {
+         Logger::Log( 
+                    'starts POST AddCourse',
+                    LogLevel::DEBUG
+                    );
+                    
+        $header = $this->app->request->headers->all();
+        $body = $this->app->request->getBody();
+        
+        $courses = Course::decodeCourse($body);
+        $processes = array();
+        if (!is_array($courses)) $courses = array($courses);
+        
+        foreach ($courses as $course){
+            $process = new Process();
+            
+            $exercise = new Exercise();
+            $exercise->setCourseId($course->getId());
+            
+            $process->setExercise($exercise);
+            
+            $component = new Component();
+            $component->setId($this->_conf->getId());
+            
+            $process->setTarget($component);
+            
+            $processes[] = $process;
+        }
+    
+        foreach ( $this->_postProcess as $_link ){
+            $result = Request::routeRequest( 
+                                            'POST',
+                                            '/process',
+                                            $header,
+                                            Process::encodeProcess($processes),
+                                            $_link,
+                                            'process'
+                                            );
 
+            // checks the correctness of the query
+            if ( $result['status'] >= 200 && 
+                 $result['status'] <= 299 ){
+
+                $this->app->response->setStatus( 201 );
+                if ( isset( $result['headers']['Content-Type'] ) )
+                    $this->app->response->headers->set( 
+                                                        'Content-Type',
+                                                        $result['headers']['Content-Type']
+                                                        );
+                
+            } else {
+            
+               /* if ($courses->getId()!==null){
+                    $this->deleteCourse($courses->getId());
+                }*/
+            
+                Logger::Log( 
+                            'POST AddCourse failed',
+                            LogLevel::ERROR
+                            );
+                $this->app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+                $this->app->response->setBody( Course::encodeCourse( $courses ) );
+                $this->app->stop( );
+            }
+        }
+        
+        $this->app->response->setBody( Course::encodeCourse( $courses ) );
+    }
+    
+    public function getExistsCourse($courseid)
+    {
+        $result = Request::routeRequest( 
+                                        'GET',
+                                        '/process/course/'.$courseid.'/component/'.$this->_conf->getId(),
+                                        $this->app->request->headers->all( ),
+                                        '',
+                                        $this->_getProcess,
+                                        'process'
+                                        );
+                                        
+        if (isset($result['status']) && $result['status'] >= 200 && $result['status'] <= 299 && isset($result['content']) && $this->_conf !== null && $this->_conf->getId() !== null){
+            $this->app->response->setStatus( 200 );
+            $this->app->stop();
+        }
+                                        
+        $this->app->response->setStatus( 409 );
+    }
+    
     public function ChoiceIdToText($choiceId, $Choices)
     {
         foreach ($Choices as $choice){
@@ -99,7 +259,8 @@ class LFormProcessor
         return null;
     }
     
-    public function postProcess(){
+    public function postProcess()
+    {
           
         $this->app->response->setStatus( 201 );
            
@@ -391,7 +552,7 @@ class LFormProcessor
 }
 
 // get new config data from DB
-$com = new CConfig(LFormProcessor::getPrefix());
+$com = new CConfig(LFormProcessor::getPrefix() . ',link,course');
 
 // create a new instance of LFormProcessor class with the config data
 if (!$com->used())

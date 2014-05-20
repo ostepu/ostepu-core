@@ -1,3 +1,5 @@
 [
-    {    "method":"post", "path":"/process(/)" }
+    {    "method":"post", "path":"/process(/)" },
+    {    "method":"post", "path":"/course(/)" },
+    {    "method":"delete", "path":"/course/:courseid(/)" }
 ]

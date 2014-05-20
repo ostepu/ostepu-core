@@ -117,7 +117,7 @@ class LProcessor
                         
         // POST AddCourse
         $this->app->post( 
-                         '/course',
+                         '/course(/)',
                          array( 
                                $this,
                                'addCourse'
@@ -126,7 +126,7 @@ class LProcessor
                          
         // POST DeleteCourse
         $this->app->delete( 
-                         '/course/:courseid',
+                         '/course/:courseid(/)',
                          array( 
                                $this,
                                'deleteCourse'
