@@ -14,4 +14,4 @@ select
     CH.CH_text,
     CH.CH_correct
 from
-    `Choice_{$courseid}` CH
+    `Choice{$preChoice}_{$courseid}` CH

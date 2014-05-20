@@ -6,4 +6,4 @@
 select 
     count(1)
 from
-    `Choice_{$courseid}` FO limit 1;
+    `Choice{$preChoice}_{$courseid}` FO limit 1;

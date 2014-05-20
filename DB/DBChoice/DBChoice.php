@@ -83,13 +83,9 @@ class DBChoice
 
         // initialize component
         $this->_conf = $conf;
-        $this->query = array( CConfig::getLink( 
-                                               $conf->getLinks( ),
-                                               'out'
-                                               ) );
 
         // initialize slim
-        $this->_app = new \Slim\Slim( );
+        $this->_app = new \Slim\Slim( array('debug' => true) );
         $this->_app->response->headers->set( 
                                             'Content-Type',
                                             'application/json'
@@ -97,7 +93,7 @@ class DBChoice
                                                                   
         // POST AddCourse
         $this->_app->post( 
-                         '/course',
+                         '(/:preChoice(/:preForm(/:preExercise)))/course',
                          array( 
                                $this,
                                'addCourse'
@@ -106,7 +102,7 @@ class DBChoice
                          
         // DELETE DeleteCourse
         $this->_app->delete( 
-                         '/course(/course)/:courseid',
+                         '(/:preChoice(/:preForm(/:preExercise)))/course(/course)/:courseid',
                          array( 
                                $this,
                                'deleteCourse'
@@ -115,7 +111,7 @@ class DBChoice
 
         // PUT EditChoice
         $this->_app->put( 
-                         '/' . $this->getPrefix( ) . '(/choice)/:choiceid(/)',
+                         '(/:preChoice(/:preForm(/:preExercise)))/' . $this->getPrefix( ) . '(/choice)/:choiceid(/)',
                          array( 
                                $this,
                                'editChoice'
@@ -124,7 +120,7 @@ class DBChoice
 
         // DELETE DeleteChoice
         $this->_app->delete( 
-                            '/' . $this->getPrefix( ) . '(/choice)/:choiceid(/)',
+                            '(/:preChoice(/:preForm(/:preExercise)))/' . $this->getPrefix( ) . '(/choice)/:choiceid(/)',
                             array( 
                                   $this,
                                   'deleteChoice'
@@ -133,7 +129,7 @@ class DBChoice
 
         // POST AddChoice
         $this->_app->post( 
-                          '/' . $this->getPrefix( ) . '(/)',
+                          '(/:preChoice(/:preForm(/:preExercise)))/' . $this->getPrefix( ) . '(/)',
                           array( 
                                 $this,
                                 'addChoice'
@@ -142,7 +138,7 @@ class DBChoice
 
         // GET GetChoice
         $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '(/choice)/:choiceid(/)',
+                         '(/:preChoice(/:preForm(/:preExercise)))/' . $this->getPrefix( ) . '(/choice)/:choiceid(/)',
                          array( 
                                $this,
                                'getChoice'
@@ -151,7 +147,7 @@ class DBChoice
 
         // GET GetCourseChoices
         $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/course/:courseid(/)',
+                         '(/:preChoice(/:preForm(/:preExercise)))/' . $this->getPrefix( ) . '/course/:courseid(/)',
                          array( 
                                $this,
                                'getCourseChoices'
@@ -160,7 +156,7 @@ class DBChoice
                          
         // GET GetExistsCourseChoices
         $this->_app->get( 
-                         '/link/exists/course/:courseid(/)',
+                         '(/:preChoice(/:preForm(/:preExercise)))/link/exists/course/:courseid(/)',
                          array( 
                                $this,
                                'getExistsCourseChoices'
@@ -169,7 +165,7 @@ class DBChoice
                          
         // GET GetSheetChoices
         $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/exercisesheet/:esid(/)',
+                         '(/:preChoice(/:preForm(/:preExercise)))/' . $this->getPrefix( ) . '/exercisesheet/:esid(/)',
                          array( 
                                $this,
                                'getSheetChoices'
@@ -178,7 +174,7 @@ class DBChoice
                          
         // GET GetExerciseChoices
         $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/exercise/:eid(/)',
+                         '(/:preChoice(/:preForm(/:preExercise)))/' . $this->getPrefix( ) . '/exercise/:eid(/)',
                          array( 
                                $this,
                                'getExerciseChoices'
@@ -187,7 +183,7 @@ class DBChoice
                          
         // GET GetFormChoices
         $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/form/:formid(/)',
+                         '(/:preChoice(/:preForm(/:preExercise)))/' . $this->getPrefix( ) . '/form/:formid(/)',
                          array( 
                                $this,
                                'getFormChoices'
@@ -198,15 +194,34 @@ class DBChoice
             $this->_app->run( );
     }
     
-    public function editChoice( $choiceid )
+    public function loadConfig( $preChoice='',  $preForm='',  $preExercise='')
     {
+        // initialize component
+        $this->_conf = $this->_conf->loadConfig( $preChoice, $preForm );
+        $this->query = array( CConfig::getLink( 
+                                               $this->_conf->getLinks( ),
+                                               'out'
+                                               ) );
+    }
+    
+    public function editChoice( $preChoice='',  $preForm='',  $preExercise='', $choiceid )
+    {
+        $this->loadConfig($preChoice, $preForm);
+        $preChoice = ($preChoice === '' ? '' : '_') . $preChoice;
+        $preForm = ($preForm === '' ? '' : '_') . $preForm;
+        $preExercise = ($preExercise === '' ? '' : '_') . $preExercise;
+        
         Logger::Log( 
                     'starts PUT EditChoice',
                     LogLevel::DEBUG
                     );
 
         $choiceid = DBJson::mysql_real_escape_string( $choiceid );
-
+        $formid = DBJson::mysql_real_escape_string( $formid );
+        $preChoice = DBJson::mysql_real_escape_string( $preChoice );
+        $preForm = DBJson::mysql_real_escape_string( $preForm );
+        $preExercise = DBJson::mysql_real_escape_string( $preExercise );
+        
         // decode the received user data, as an object
         $insert = Choice::decodeChoice( $this->_app->request->getBody( ) );
 
@@ -225,7 +240,10 @@ class DBChoice
                                                   'Sql/EditChoice.sql',
                                                   array( 
                                                         'choiceid' => $choiceid,
-                                                        'object' => $in
+                                                        'object' => $in,
+                                                         'preChoice' => $preChoice,
+                                                         'preForm' => $preForm,
+                                                         'preExercise' => $preExercise
                                                         )
                                                   );
 
@@ -250,20 +268,32 @@ class DBChoice
         }
     }
     
-    public function deleteChoice( $choiceid )
+    public function deleteChoice( $preChoice='',  $preForm='',  $preExercise='', $choiceid )
     {
+        $this->loadConfig($preChoice, $preForm);
+        $preChoice = ($preChoice === '' ? '' : '_') . $preChoice;
+        $preForm = ($preForm === '' ? '' : '_') . $preForm;
+        $preExercise = ($preExercise === '' ? '' : '_') . $preExercise;
+        
         Logger::Log( 
                     'starts DELETE DeleteForm',
                     LogLevel::DEBUG
                     );
 
         $choiceid = DBJson::mysql_real_escape_string( $choiceid );
-
+        $formid = DBJson::mysql_real_escape_string( $formid );
+        $preChoice = DBJson::mysql_real_escape_string( $preChoice );
+        $preForm = DBJson::mysql_real_escape_string( $preForm );
+        $preExercise = DBJson::mysql_real_escape_string( $preExercise );
+        
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
                                               'Sql/DeleteChoice.sql',
-                                              array( 'choiceid' => $choiceid )
+                                              array( 'choiceid' => $choiceid,
+                                                     'preChoice' => $preChoice,
+                                                     'preForm' => $preForm,
+                                                     'preExercise' => $preExercise )
                                               );
 
         // checks the correctness of the query
@@ -291,12 +321,22 @@ class DBChoice
         }
     }
     
-    public function addChoice( )
+    public function addChoice( $preChoice='',  $preForm='',  $preExercise='' )
     {
+        $this->loadConfig($preChoice, $preForm);
+        $preChoice = ($preChoice === '' ? '' : '_') . $preChoice;
+        $preForm = ($preForm === '' ? '' : '_') . $preForm;
+        $preExercise = ($preExercise === '' ? '' : '_') . $preExercise;
+        
         Logger::Log( 
                     'starts POST AddChoice',
                     LogLevel::DEBUG
                     );
+                    
+        $formid = DBJson::mysql_real_escape_string( $formid );
+        $preChoice = DBJson::mysql_real_escape_string( $preChoice );
+        $preForm = DBJson::mysql_real_escape_string( $preForm );
+        $preExercise = DBJson::mysql_real_escape_string( $preExercise );
 
         // decode the received choice data, as an object
         $insert = Choice::decodeChoice( $this->_app->request->getBody( ) );
@@ -316,7 +356,10 @@ class DBChoice
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
                                                   'Sql/AddChoice.sql',
-                                                  array( 'object' => $in)
+                                                  array( 'object' => $in,
+                                                         'preChoice' => $preChoice,
+                                                         'preForm' => $preForm,
+                                                         'preExercise' => $preExercise)
                                                   );
 
             // checks the correctness of the query
@@ -360,6 +403,9 @@ class DBChoice
     public function get( 
                         $functionName,
                         $sqlFile,
+                        $preChoice,
+                        $preForm,
+                        $preExercise,
                         $formid,
                         $choiceid,
                         $courseid,
@@ -369,6 +415,11 @@ class DBChoice
                         $checkSession = true
                         )
     {
+        $this->loadConfig($preChoice, $preForm);
+        $preChoice = ($preChoice === '' ? '' : '_') . $preChoice;
+        $preForm = ($preForm === '' ? '' : '_') . $preForm;
+        $preExercise = ($preExercise === '' ? '' : '_') . $preExercise;
+        
         Logger::Log( 
                     'starts GET ' . $functionName,
                     LogLevel::DEBUG
@@ -377,13 +428,9 @@ class DBChoice
         // checks whether incoming data has the correct data type
         $choiceid = DBJson::mysql_real_escape_string( $choiceid );
         $formid = DBJson::mysql_real_escape_string( $formid );
-
-        DBJson::checkInput( 
-                           $this->_app,
-                           $courseid == '' ? true : ctype_digit( $courseid ),
-                           $esid == '' ? true : ctype_digit( $esid ),
-                           $eid == '' ? true : ctype_digit( $eid )
-                           );
+        $preChoice = DBJson::mysql_real_escape_string( $preChoice );
+        $preForm = DBJson::mysql_real_escape_string( $preForm );
+        $preExercise = DBJson::mysql_real_escape_string( $preExercise );
 
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
@@ -394,7 +441,10 @@ class DBChoice
                                                     'choiceid' => $choiceid,
                                                     'courseid' => $courseid,
                                                     'esid' => $esid,
-                                                    'eid' => $eid
+                                                    'eid' => $eid,
+                                                     'preChoice' => $preChoice,
+                                                     'preForm' => $preForm,
+                                                     'preExercise' => $preExercise
                                                     ),
                                               $checkSession
                                               );
@@ -437,11 +487,14 @@ class DBChoice
         $this->_app->stop( );
     }
     
-    public function getChoice( $choiceid )
+    public function getChoice( $preChoice='',  $preForm='',  $preExercise='', $choiceid )
     {
         $this->get( 
                    'GetChoice',
                    'Sql/GetChoice.sql',
+                   $preChoice,
+                   $preForm,
+                   $preExercise,
                    isset( $formid ) ? $formid : '',
                    isset( $choiceid ) ? $choiceid : '',
                    isset( $courseid ) ? $courseid : '',
@@ -451,11 +504,14 @@ class DBChoice
                    );
     }
     
-    public function getCourseChoices( $courseid )
+    public function getCourseChoices( $preChoice='',  $preForm='',  $preExercise='', $courseid )
     {
         $this->get( 
                    'GetCourseChoices',
                    'Sql/GetCourseChoices.sql',
+                   $preChoice,
+                   $preForm,
+                   $preExercise,
                    isset( $formid ) ? $formid : '',
                    isset( $choiceid ) ? $choiceid : '',
                    isset( $courseid ) ? $courseid : '',
@@ -465,11 +521,14 @@ class DBChoice
                    );
     }
     
-    public function getExistsCourseChoices( $courseid )
+    public function getExistsCourseChoices( $preChoice='',  $preForm='',  $preExercise='', $courseid )
     {
         $this->get( 
                    'GetExistsCourseChoices',
                    'Sql/GetExistsCourseChoices.sql',
+                   $preChoice,
+                   $preForm,
+                   $preExercise,
                    isset( $formid ) ? $formid : '',
                    isset( $choiceid ) ? $choiceid : '',
                    isset( $courseid ) ? $courseid : '',
@@ -479,11 +538,14 @@ class DBChoice
                    );
     }
     
-    public function getSheetChoices( $esid )
+    public function getSheetChoices( $preChoice='',  $preForm='',  $preExercise='', $esid )
     {
         $this->get( 
                    'GetSheetChoices',
                    'Sql/GetSheetChoices.sql',
+                   $preChoice,
+                   $preForm,
+                   $preExercise,
                    isset( $formid ) ? $formid : '',
                    isset( $choiceid ) ? $choiceid : '',
                    isset( $courseid ) ? $courseid : '',
@@ -493,11 +555,14 @@ class DBChoice
                    );
     }
     
-    public function getExerciseChoices( $eid )
+    public function getExerciseChoices( $preChoice='',  $preForm='',  $preExercise='', $eid )
     {
         $this->get( 
                    'GetExerciseChoices',
                    'Sql/GetExerciseChoices.sql',
+                   $preChoice,
+                   $preForm,
+                   $preExercise,
                    isset( $formid ) ? $formid : '',
                    isset( $choiceid ) ? $choiceid : '',
                    isset( $courseid ) ? $courseid : '',
@@ -507,11 +572,14 @@ class DBChoice
                    );
     }
     
-    public function getFormChoices( $formid )
+    public function getFormChoices( $preChoice='',  $preForm='',  $preExercise='', $formid )
     {
         $this->get( 
                    'GetFormChoices',
                    'Sql/GetFormChoices.sql',
+                   $preChoice,
+                   $preForm,
+                   $preExercise,
                    isset( $formid ) ? $formid : '',
                    isset( $choiceid ) ? $choiceid : '',
                    isset( $courseid ) ? $courseid : '',
@@ -521,20 +589,32 @@ class DBChoice
                    );
     }
     
-    public function deleteCourse( $courseid )
+    public function deleteCourse( $preChoice='',  $preForm='',  $preExercise='', $courseid )
     {
+        $this->loadConfig($preChoice, $preForm);
+        $preChoice = ($preChoice === '' ? '' : '_') . $preChoice;
+        $preForm = ($preForm === '' ? '' : '_') . $preForm;
+        $preExercise = ($preExercise === '' ? '' : '_') . $preExercise;
+        
         Logger::Log( 
                     'starts DELETE DeleteCourse',
                     LogLevel::DEBUG
                     );
                     
         $courseid = DBJson::mysql_real_escape_string( $courseid ); 
+        $formid = DBJson::mysql_real_escape_string( $formid );
+        $preChoice = DBJson::mysql_real_escape_string( $preChoice );
+        $preForm = DBJson::mysql_real_escape_string( $preForm );
+        $preExercise = DBJson::mysql_real_escape_string( $preExercise );
         
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
                                               'Sql/DeleteCourse.sql',
-                                              array( 'courseid' => $courseid )
+                                              array( 'courseid' => $courseid,
+                                                     'preChoice' => $preChoice,
+                                                     'preForm' => $preForm,
+                                                     'preExercise' => $preExercise )
                                               );
 
         // checks the correctness of the query
@@ -560,8 +640,13 @@ class DBChoice
         }
     }
     
-    public function addCourse( )
+    public function addCourse( $preChoice='',  $preForm='',  $preExercise='' )
     {
+        $this->loadConfig($preChoice, $preForm);
+        $preChoice = ($preChoice === '' ? '' : '_') . $preChoice;
+        $preForm = ($preForm === '' ? '' : '_') . $preForm;
+        $preExercise = ($preExercise === '' ? '' : '_') . $preExercise;
+        
         Logger::Log( 
                     'starts POST AddCourse',
                     LogLevel::DEBUG
@@ -569,7 +654,11 @@ class DBChoice
 
         // decode the received course data, as an object
         $insert = Course::decodeCourse( $this->_app->request->getBody( ) );
-
+        $formid = DBJson::mysql_real_escape_string( $formid );
+        $preChoice = DBJson::mysql_real_escape_string( $preChoice );
+        $preForm = DBJson::mysql_real_escape_string( $preForm );
+        $preExercise = DBJson::mysql_real_escape_string( $preExercise );
+        
         // always been an array
         $arr = true;
         if ( !is_array( $insert ) ){
@@ -585,7 +674,10 @@ class DBChoice
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
                                                   'Sql/AddCourse.sql',
-                                                  array( 'object' => $in )
+                                                  array( 'object' => $in,
+                                                         'preChoice' => $preChoice,
+                                                         'preForm' => $preForm,
+                                                         'preExercise' => $preExercise )
                                                   );
 
             // checks the correctness of the query
