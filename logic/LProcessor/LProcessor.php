@@ -80,6 +80,7 @@ class LProcessor
      * @var Link[] $_workFiles a list of links
      */
     private $_workFiles = array( );
+    private $_createCourse = array( );
     
     /**
      * REST actions
@@ -104,6 +105,7 @@ class LProcessor
         $this->_attachment = CConfig::getLinks($conf->getLinks(),"attachment");
         $this->_workFiles = CConfig::getLinks($conf->getLinks(),"workFiles");
         $this->_file = CConfig::getLinks($conf->getLinks(),"file");
+        $this->_createCourse = CConfig::getLinks($conf->getLinks(),"postCourse");
         
         // POST PostSubmission
         $this->app->map('/submission(/)',
@@ -112,17 +114,168 @@ class LProcessor
         // POST AddProcess
         $this->app->map('/'.$this->getPrefix().'(/)',
                         array($this, 'addProcess'))->via('POST');
+                        
+        // POST AddCourse
+        $this->app->post( 
+                         '/course',
+                         array( 
+                               $this,
+                               'addCourse'
+                               )
+                         );
+                         
+        // POST DeleteCourse
+        $this->app->delete( 
+                         '/course/:courseid',
+                         array( 
+                               $this,
+                               'deleteCourse'
+                               )
+                         );
+                         
+        // GET GetExistsCourse
+        $this->app->get( 
+                         '/link/exists/course/:courseid(/)',
+                         array( 
+                               $this,
+                               'getExistsCourse'
+                               )
+                        );
 
         // run Slim
         $this->app->run();
     }
+    
+    public function getExistsCourse($courseid)
+    {
+         Logger::Log( 
+                    'starts GET GetExistsCourse',
+                    LogLevel::DEBUG
+                    );
 
+        foreach ( $this->_createCourse as $_link ){
+            $result = Request::routeRequest( 
+                                            'GET',
+                                            '/link/exists/course/'.$courseid,
+                                            $this->app->request->headers->all(),
+                                            '',
+                                            $_link,
+                                            'link'
+                                            );
+
+            // checks the correctness of the query
+            if ( $result['status'] >= 200 && 
+                 $result['status'] <= 299 ){
+                // nothing
+            } else {
+                $this->app->response->setStatus( 409 );
+                $this->app->response->setBody( null );
+                $this->app->stop( );
+            }
+        }
+        
+        $this->app->response->setStatus( 200 );
+        $this->app->response->setBody( null );
+    }
+
+    public function addCourse()
+    {
+         Logger::Log( 
+                    'starts POST AddCourse',
+                    LogLevel::DEBUG
+                    );
+                    
+        $header = $this->app->request->headers->all();
+        $body = $this->app->request->getBody();
+        
+        $course = Course::decodeCourse($body);
+    
+        foreach ( $this->_createCourse as $_link ){
+            $result = Request::routeRequest( 
+                                            'POST',
+                                            '/course',
+                                            $header,
+                                            Course::encodeCourse($course),
+                                            $_link,
+                                            'course'
+                                            );
+
+            // checks the correctness of the query
+            if ( $result['status'] >= 200 && 
+                 $result['status'] <= 299 ){
+
+                $this->app->response->setStatus( 201 );
+                if ( isset( $result['headers']['Content-Type'] ) )
+                    $this->app->response->headers->set( 
+                                                        'Content-Type',
+                                                        $result['headers']['Content-Type']
+                                                        );
+                
+            } else {
+            
+               /* if ($course->getId()!==null){
+                    $this->deleteCourse($course->getId());
+                }*/
+            
+                Logger::Log( 
+                            'POST AddCourse failed',
+                            LogLevel::ERROR
+                            );
+                $this->app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+                $this->app->response->setBody( Course::encodeCourse( $course ) );
+                $this->app->stop( );
+            }
+        }
+        
+        $this->app->response->setBody( Course::encodeCourse( $course ) );
+    }
+
+    public function deleteCourse($courseid){
+        Logger::Log( 
+                    'starts DELETE DeleteCourse',
+                    LogLevel::DEBUG
+                    );
+                    
+        $header = $this->app->request->headers->all();
+        $courseid = DBJson::mysql_real_escape_string( $courseid ); 
+        
+        foreach ( $this->_createCourse as $_link ){
+            $result = Request::routeRequest( 
+                                            'DELETE',
+                                            '/course/'.$courseid,
+                                            $header,
+                                            '',
+                                            $_link,
+                                            'course'
+                                            );
+
+            // checks the correctness of the query
+            if ( $result['status'] >= 200 && 
+                 $result['status'] <= 299 ){
+
+                $this->app->response->setStatus( 201 );
+                if ( isset( $result['headers']['Content-Type'] ) )
+                    $this->app->response->headers->set( 
+                                                        'Content-Type',
+                                                        $result['headers']['Content-Type']
+                                                        );
+                
+            } else {
+                Logger::Log( 
+                            'POST DeleteCourse failed',
+                            LogLevel::ERROR
+                            );
+                $this->app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+                $this->app->stop( );
+            }
+        }
+    }
+    
     public function AddProcess()
     {
         $this->app->response->setStatus( 201 );
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
-        
         $processes = Process::decodeProcess($body);
         
         // always been an array
@@ -134,7 +287,6 @@ class LProcessor
         
         $res = array( );
         foreach ( $processes as $process ){
-        
             // create process
             if ($process->getProcessId() === null){
                 $result = Request::routeRequest( 
@@ -161,8 +313,8 @@ class LProcessor
             }
             
             // create attachment
-            $attachments = $process->getAttachments();
-            $process->setAttachments(array());
+            $attachments = $process->getAttachment();
+            $process->setAttachment(array());
             foreach ( $attachments as $attachment ){
                 if ($attachment->getId() === null){
                 
@@ -203,10 +355,10 @@ class LProcessor
                          
                         $queryResult = Attachment::decodeAttachment($result['content']);
                         $attachment->setId($queryResult->getId());
-                        $process->getAttachments()[] = $attachment;
+                        $process->getAttachment()[] = $attachment;
                     }
                     else{
-                        $process->getAttachments()[] = null;
+                        $process->getAttachment()[] = null;
                         $this->app->response->setStatus( 409 );
                         continue;
                     }
@@ -256,10 +408,10 @@ class LProcessor
                          
                         $queryResult = Attachment::decodeAttachment($result['content']);
                         $workFile->setId($queryResult->getId());
-                        $process->getAttachments()[] = $workFile;
+                        $process->getWorkFiles()[] = $workFile;
                     }
                     else{
-                        $process->getAttachments()[] = null;
+                        $process->getWorkFiles()[] = null;
                         $this->app->response->setStatus( 409 );
                         continue;
                     }
@@ -416,7 +568,7 @@ class LProcessor
 }
 
 // get new config data from DB
-$com = new CConfig(LProcessor::getPrefix() . ',submission');
+$com = new CConfig(LProcessor::getPrefix() . ',submission,course,link');
 
 // create a new instance of LProcessor class with the config data
 if (!$com->used())
