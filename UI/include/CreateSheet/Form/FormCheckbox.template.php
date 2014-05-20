@@ -1,3 +1,9 @@
+<?php
+/**
+ * @file FormCheckbox.template.php
+ * @author  Till Uhlig
+ */
+ ?>
 <input type="hidden" class="input-choice" name="exercises[0][subexercises][0][type]" value="2">
 <label class="short label bold" for="studentComment">Aufgabenstellung:</label>
 <textarea id="task" name="exercises[0][subexercises][0][task]"
