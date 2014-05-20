@@ -68,7 +68,7 @@ class LForm
     public function __construct($conf)
     {
         // initialize slim    
-        $this->app = new \Slim\Slim();
+        $this->app = new \Slim\Slim(array('debug' => true));
         $this->app->response->headers->set('Content-Type', 'application/json');
 
         // initialize component
@@ -82,25 +82,25 @@ class LForm
                         array($this, 'addForm'));
                         
         // PUT EditForm
-        $this->app->post('/'.$this->getPrefix().'/:formId(/)',
+        $this->app->put('/'.$this->getPrefix().'/:formId(/)',
                         array($this, 'editForm'));
                         
         // PUT EditFormObject
-        $this->app->post('/'.$this->getPrefix().'(/)',
+        $this->app->put('/'.$this->getPrefix().'(/)',
                         array($this, 'editFormObject'));
                         
         // POST AddCourse
         $this->app->post( 
-                         '/course',
+                         '/course(/)',
                          array( 
                                $this,
                                'addCourse'
                                )
                          );
                          
-        // POST DeleteCourse
+        // DELETE DeleteCourse
         $this->app->delete( 
-                         '/course/:courseid',
+                         '/course/:courseid(/)',
                          array( 
                                $this,
                                'deleteCourse'
@@ -269,7 +269,7 @@ class LForm
             $choices[] = $form->getChoices();
             $form->setChoices(null);
         }
- 
+
         $result = Request::routeRequest( 
                                         'POST',
                                         '/form',

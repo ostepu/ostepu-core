@@ -116,7 +116,7 @@ class LFile
                             
         // DELETE File
         $this->_app->delete( 
-                            '/' . LFile::$_baseDir,
+                            '/' . LFile::$_baseDir. '(/)',
                             array( 
                                   $this,
                                   'deleteFile'
