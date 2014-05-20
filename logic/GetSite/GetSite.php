@@ -1281,7 +1281,7 @@ class LgetSite
                         Logger::Log("Unmatchable condition: "
                                     . $condition['approvalConditionId']
                                     . "in course: "
-                                    . $courseid, LogLeve::WARNING);
+                                    . $courseid, LogLevel::WARNING);
 
                         $maxPointsByType[$typeID] = 0;
                     }
