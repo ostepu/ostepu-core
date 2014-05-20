@@ -18,6 +18,11 @@ include_once 'include/Boilerplate.php';
 include_once '../Assistants/Structures.php';
 include_once 'include/FormEvaluator.php';
 
+// load Plugins data from LogicController
+$URI = $serverURI . "/logic/LExtension/link/extension";
+$temp = http_get($URI, true);
+$plugins_data = json_decode($temp, true);
+
 if (isset($_POST['action'])) {
     // creates a new course
     if ($_POST['action'] == "CreateCourse") {
@@ -45,9 +50,13 @@ if (isset($_POST['action'])) {
                                        FormEvaluator::OPTIONAL,
                                        'warning',
                                        'Ungültige Aufgabentypen.');
+                                       
+        $f->checkArrayOfIntegersForKey('plugins',
+                               FormEvaluator::OPTIONAL,
+                               'warning',
+                               'keine Erweiterungen gewählt.');
 
         if($f->evaluate(true)) {
-
             // bool which is true if any error occured
             $RequestError = false;
 
@@ -57,6 +66,7 @@ if (isset($_POST['action'])) {
             $courseName = $foundValues['courseName'];
             $semester = $foundValues['semester'];
             $defaultGroupSize = $foundValues['defaultGroupSize'];
+            $plugins = $foundValues['plugins'];
             $exerciseTypes = $foundValues['exerciseTypes'];
 
             // creates a new course
@@ -70,19 +80,34 @@ if (isset($_POST['action'])) {
             $newCourseId = $newCourse['id'];
 
             // creates a new approvalCondition for every selected exerciseType
-            foreach ($exerciseTypes as $exerciseType) {
-                $newApprovalCondition = ApprovalCondition::createApprovalCondition(null,
-                                                                                   $newCourseId,
-                                                                                   $exerciseType,
-                                                                                   0);
-                $newApprovalConditionSettings = ApprovalCondition::encodeApprovalCondition($newApprovalCondition);
-                $URI = $databaseURI . "/approvalcondition";
-                http_post_data($URI, $newApprovalConditionSettings, true, $messageNewAc);
+            if (isset($exerciseTypes) && !empty($exerciseTypes)){
+                foreach ($exerciseTypes as $exerciseType) {
+                    $newApprovalCondition = ApprovalCondition::createApprovalCondition(null,
+                                                                                       $newCourseId,
+                                                                                       $exerciseType,
+                                                                                       0);
+                    $newApprovalConditionSettings = ApprovalCondition::encodeApprovalCondition($newApprovalCondition);
+                    $URI = $databaseURI . "/approvalcondition";
+                    http_post_data($URI, $newApprovalConditionSettings, true, $messageNewAc);
 
-                if ($messageNewAc != "201") {
-                    $RequestError = true;
+                    if ($messageNewAc != "201") {
+                        $RequestError = true;
+                        break;
+                    }
+
                 }
+            }
 
+            // create Plugins
+            if (isset($plugins) && !empty($plugins)){
+                foreach ($plugins as $plugin) {
+                    $URI = $serverURI . "/logic/LExtension/link/course/{$newCourseId}/extension/{$plugin}";
+                    http_post_data($URI, '', true, $messageNewAc);
+                    if ($messageNewAc != "201") {
+                        $RequestError = true;
+                        break;
+                    }
+                }
             }
 
             // creates a notification depending on RequestError
@@ -260,6 +285,8 @@ if (isset($_POST['action'])) {
 $databaseURI = $getSiteURI . "/mainsettings/user/{$uid}";
 $mainSettings_data = http_get($databaseURI, true);
 $mainSettings_data = json_decode($mainSettings_data, true);
+
+$mainSettings_data['plugins'] = $plugins_data;
 
 $user_course_data = $mainSettings_data['user'];
 

@@ -61,7 +61,9 @@ $(document).ready( function()
     $('.form-input-checkbox').parent().find('.add-choice').on("click",addCheckbox);
     $('.form-input-checkbox').find('.delete-choice').on("click",removeCheckbox);
     
-    $('.use-form').hide().fadeOut('fast');
+    if ($('.delete-form').length>0)
+        $('.use-form').hide().fadeOut('fast');
+    
     $('.use-form').on("click",useForm);
     $('.use-processor').on("click",useProcessor);
     
@@ -69,9 +71,9 @@ $(document).ready( function()
     $('.processor').children('.content-header').css('cursor','pointer');   
     $('.processor').children('.content-header').find('.delete-processor').on("click",deleteProcessor);
     
-    if ($('.delete-exercise').length==0){
+    if ($('.delete-exercise').length==0)
         $('.add-exercise').click();
-    }
+    
 });
 
 /**

@@ -3,7 +3,6 @@ include_once '../../../Assistants/Structures.php';
 include_once '../../../Assistants/Request.php';
 include_once '../Config.php';
 ?>
-
 <li>
     <input class="form-field text-input very-short" name="exercises[0][subexercises][0][maxPoints]" placeholder="Punkte" id="exerciseMaxPoints" />
     <select class="form-field text-input short" name="exercises[0][subexercises][0][exerciseType]" id="exerciseType">
@@ -23,12 +22,12 @@ include_once '../Config.php';
         $forms = false;
         $processes = false;
         if ($courseid !== null){
-            $result = Request::get($databaseURI.'/form/exists/course/' . $courseid,array(),'');
-            echo $databaseURI.'/exists/form/course/' . $courseid;
+            $result = Request::get($serverURI.'/DB/DBForm/link/exists/course/' . $courseid,array(),'');
+
             if ( $result['status'] === 200 )
                 $forms = true;
                 
-            $result = Request::get($databaseURI.'/process/exists/course/' . $courseid,array(),'');         
+            $result = Request::get($serverURI.'/DB/DBProcess/link/exists/course/' . $courseid,array(),'');         
             if ( $result['status'] === 200 )
                 $processes = true;
         }

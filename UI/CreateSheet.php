@@ -206,6 +206,7 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
         $output = http_post_data($logicURI."/exercisesheet", $myExerciseSheetJSON, true, $message);
         $output = json_decode($output, true);
 
+
         // create subtasks as exercise
         if ($message == 201) {
             foreach ($validatedExercises as $key1 => $exercise) {
@@ -253,17 +254,17 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                 $exercisesJSON = Exercise::encodeExercise($exercises);
 
                 $output2 = http_post_data($logicURI."/exercise", $exercisesJSON, true, $message);
-
-                if ($message != 201) {
+                $exercises = Exercise::decodeExercise($output2);
+                if ($message != 201) {echo "fail"; return;
                     $errorInSent = true;
                     break;
                 }
-                
+                                
+
                 #region create_forms
                 ##########################
                 ### begin create_forms ###
                 ##########################
-                $exercises = Exercise::decodeExercise($output2);
                 
                 // create form data
                 $forms = array();
@@ -286,9 +287,6 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                             $choices[$tempKey] = $choice;
                         }
                         
-                        //var_dump($choices);
-                        
-                       // var_dump($subexercise['correct']);
                         $choiceCorrect = $subexercise['correct'];
                         foreach ($choiceCorrect as $tempKey => $choiceData) {
                             if (isset($choices[$tempKey]))                          
@@ -303,15 +301,17 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                     $i++;
                 }
 
-                // upload forms
-                $URL = $logicURI."/form";
-                http_post_data($URL, Form::encodeForm($forms), true, $message);
-                
-                if ($message != 201) {
-                    $errorInSent = true;
-                    break;
+                if (!empty($forms)){
+                    // upload forms
+                    $URL = $serverURI."/logic/LForm/form";
+                    http_post_data($URL, Form::encodeForm($forms), true, $message);
+                    if ($message != 201) {
+                        $errorInSent = true;
+                        break;
+                    }
                 }
                 
+               // return;return;return;
                 ########################
                 ### end create_forms ###
                 ########################
@@ -334,31 +334,35 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                         
                         foreach ($processorId as $tempKey => $Data) {
                             $processor = new Process();
-                            $processor->setExerciseid($exercises[$i]->getId());
+                            $processor->setExercise($exercises[$i]);
                             $component = new Component();
                             $component->setId($Data);
                             $processor->SetTarget($component); 
                             $tempProcessors[] = $processor;
                         }
                         
-                        $processorParameter = $subexercise['processorParameter'];
-                        $b=0;
-                        foreach ($processorParameter as $tempKey => $Data) {
-                            $tempProcessors[$b]->setParameter($Data);                   
+                        if (isset($subexercise['processorParameterList']) && !empty($subexercise['processorParameterList']) && $subexercise['processorParameterList'] !== ''){
+                            $processorParameter = $subexercise['processorParameterList'];
+                            $b=0;
+                            foreach ($processorParameter as $tempKey => $Data) {
+                                $tempProcessors[$b]->setParameter(implode(' ',array_values($Data)));                   
+                            }
                         }
-                        
+
                         $processors = array_merge($processors,$tempProcessors);
                     }
                     $i++;
                 }
 
-                // upload processors
-                $URL = $serverURI."/logic/LProcessor/process";
-                http_post_data($URL, Process::encodeProcess($processors), true, $message);
-                
-                if ($message != 201) {
-                    $errorInSent = true;
-                    break;
+                if (!empty($processors)){
+                    // upload processors
+                    $URL = $serverURI."/logic/LProcessor/process";
+                    http_post_data($URL, Process::encodeProcess($processors), true, $message);
+
+                    if ($message != 201) {
+                        $errorInSent = true;
+                        break;
+                    }
                 }
                 
                 #############################
