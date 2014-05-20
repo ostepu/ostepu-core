@@ -327,7 +327,10 @@ class Course extends Object implements JsonSerializable
 
     public static function ExtractCourse( 
                                          $data,
-                                         $singleResult = false
+                                         $singleResult = false,
+                                         $CourseExtension = '',
+                                         $SheetExtension = '',
+                                         $isResult = true
                                          )
     {
 
@@ -336,7 +339,8 @@ class Course extends Object implements JsonSerializable
         $courses = DBJson::getObjectsByAttributes( 
                                                   $data,
                                                   Course::getDBPrimaryKey( ),
-                                                  Course::getDBConvert( )
+                                                  Course::getDBConvert( ),
+                                                  $CourseExtension
                                                   );
 
         // generates an assoc array of exercise sheets by using a defined list of
@@ -344,7 +348,8 @@ class Course extends Object implements JsonSerializable
         $exerciseSheets = DBJson::getObjectsByAttributes( 
                                                          $data,
                                                          ExerciseSheet::getDBPrimaryKey( ),
-                                                         array( ExerciseSheet::getDBPrimaryKey( ) => ExerciseSheet::getDBConvert( )[ExerciseSheet::getDBPrimaryKey( )] )
+                                                         array( ExerciseSheet::getDBPrimaryKey( ) => ExerciseSheet::getDBConvert( )[ExerciseSheet::getDBPrimaryKey( )] ),
+                                                         $SheetExtension
                                                          );
 
         // concatenates the courses and the associated exercise sheet IDs
@@ -354,14 +359,17 @@ class Course extends Object implements JsonSerializable
                                                      Course::getDBPrimaryKey( ),
                                                      Course::getDBConvert( )['C_exerciseSheets'],
                                                      $exerciseSheets,
-                                                     ExerciseSheet::getDBPrimaryKey( )
+                                                     ExerciseSheet::getDBPrimaryKey( ),
+                                                     $SheetExtension,
+                                                     $CourseExtension
                                                      );
+        if ($isResult){ 
+            if ( $singleResult == true ){
 
-        if ( $singleResult == true ){
-
-            // only one object as result
-            if ( count( $res ) > 0 )
-                $res = $res[0];
+                // only one object as result
+                if ( count( $res ) > 0 )
+                    $res = $res[0];
+            }
         }
 
         return $res;

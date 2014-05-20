@@ -323,7 +323,9 @@ class Choice extends Object implements JsonSerializable
 
     public static function ExtractChoice(
                                            $data,
-                                           $singleResult = false
+                                           $singleResult = false,
+                                           $ChoiceExtension = '',
+                                           $isResult = true
                                            )
     {
 
@@ -332,18 +334,20 @@ class Choice extends Object implements JsonSerializable
         $res = DBJson::getResultObjectsByAttributes( 
                                                     $data,
                                                     Choice::getDBPrimaryKey( ),
-                                                    Choice::getDBConvert( )
+                                                    Choice::getDBConvert( ),
+                                                    $ChoiceExtension
                                                     );
                                                     
-                                                    
-        // to reindex
-        $res = array_values( $res );
+        if ($isResult){                                             
+            // to reindex
+            $res = array_values( $res );
 
-        if ( $singleResult == true ){
+            if ( $singleResult == true ){
 
-            // only one object as result
-            if ( count( $res ) > 0 )
-                $res = $res[0];
+                // only one object as result
+                if ( count( $res ) > 0 )
+                    $res = $res[0];
+            }
         }
 
         return $res;

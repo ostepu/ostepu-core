@@ -270,7 +270,11 @@ class Group extends Object implements JsonSerializable
 
     public static function ExtractGroup( 
                                         $data,
-                                        $singleResult = false
+                                        $singleResult = false,
+                                        $LeaderExtension = '',
+                                        $MemberExtension = '',
+                                        $GroupExtension = '',
+                                        $isResult = true
                                         )
     {
 
@@ -279,7 +283,8 @@ class Group extends Object implements JsonSerializable
         $leader = DBJson::getObjectsByAttributes( 
                                                  $data,
                                                  User::getDBPrimaryKey( ),
-                                                 User::getDBConvert( )
+                                                 User::getDBConvert( ),
+                                                 $LeaderExtension
                                                  );
 
         // generates an assoc array of users by using a defined list of
@@ -288,7 +293,7 @@ class Group extends Object implements JsonSerializable
                                                  $data,
                                                  User::getDBPrimaryKey( ),
                                                  User::getDBConvert( ),
-                                                 '2'
+                                                 $MemberExtension.'2'
                                                  );
 
         // generates an assoc array of groups by using a defined list of
@@ -296,7 +301,8 @@ class Group extends Object implements JsonSerializable
         $groups = DBJson::getObjectsByAttributes( 
                                                  $data,
                                                  Group::getDBPrimaryKey( ),
-                                                 Group::getDBConvert( )
+                                                 Group::getDBConvert( ),
+                                                 $GroupExtension
                                                  );
 
         // concatenates the groups and the associated group leader
@@ -306,7 +312,9 @@ class Group extends Object implements JsonSerializable
                                                      Group::getDBPrimaryKey( ),
                                                      Group::getDBConvert( )['U_leader'],
                                                      $leader,
-                                                     User::getDBPrimaryKey( )
+                                                     User::getDBPrimaryKey( ),
+                                                     $LeaderExtension,
+                                                     $GroupExtension
                                                      );
 
         // concatenates the groups and the associated group member
@@ -317,17 +325,19 @@ class Group extends Object implements JsonSerializable
                                                Group::getDBConvert( )['U_member'],
                                                $member,
                                                User::getDBPrimaryKey( ),
-                                               '2'
+                                               $MemberExtension.'2',
+                                               $GroupExtension
                                                );
+        if ($isResult){ 
+            // to reindex
+            $res = array_merge( $res );
 
-        // to reindex
-        $res = array_merge( $res );
+            if ( $singleResult == true ){
 
-        if ( $singleResult == true ){
-
-            // only one object as result
-            if ( count( $res ) > 0 )
-                $res = $res[0];
+                // only one object as result
+                if ( count( $res ) > 0 )
+                    $res = $res[0];
+            }
         }
 
         return $res;

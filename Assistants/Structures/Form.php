@@ -414,7 +414,10 @@ class Form extends Object implements JsonSerializable
 
     public static function ExtractForm(
                                            $data,
-                                           $singleResult = false
+                                           $singleResult = false,
+                                           $FormsExtension = '',
+                                           $ChoiceExtension = '',
+                                           $isResult = true
                                            )
     {
 
@@ -423,7 +426,8 @@ class Form extends Object implements JsonSerializable
         $forms = DBJson::getObjectsByAttributes(
                                                    $data,
                                                    Form::getDBPrimaryKey( ),
-                                                   Form::getDBConvert( )
+                                                   Form::getDBConvert( ),
+                                                   $FormsExtension
                                                    );
 
 
@@ -432,7 +436,8 @@ class Form extends Object implements JsonSerializable
         $choices = DBJson::getObjectsByAttributes(
                                                       $data,
                                                       Choice::getDBPrimaryKey( ),
-                                                      Choice::getDBConvert( )
+                                                      Choice::getDBConvert( ),
+                                                      $ChoiceExtension
                                                       );
 
         // concatenates the forms and the associated choices
@@ -442,17 +447,20 @@ class Form extends Object implements JsonSerializable
                                                    Form::getDBPrimaryKey( ),
                                                    Form::getDBConvert( )['FO_choices'],
                                                    $choices,
-                                                   Choice::getDBPrimaryKey( )
+                                                   Choice::getDBPrimaryKey( ),
+                                                   $ChoiceExtension,
+                                                   $FormsExtension
                                                    );
+        if ($isResult){ 
+            // to reindex
+            $res = array_values( $res );
 
-        // to reindex
-        $res = array_values( $res );
+            if ( $singleResult ){
 
-        if ( $singleResult ){
-
-            // only one object as result
-            if ( count( $res ) > 0 )
-                $res = $res[0];
+                // only one object as result
+                if ( count( $res ) > 0 )
+                    $res = $res[0];
+            }
         }
 
         return $res;
