@@ -17,7 +17,7 @@ class DBRequest
     /**
      * performs a database query
      *
-     * @param string $sql_statement the sql statement you want send
+     * @param string $sql_statement the sql statement you want to send
      *
      * @return  assoc array with multiple query result informations (String[])
      * - ['content'] = the content/table you received from database
@@ -30,25 +30,34 @@ class DBRequest
      */
     public static function request( 
                                    $sqlStatement,
-                                   $checkSession
+                                   $checkSession,
+                                   $config = null
                                    )
     {
 
-        // loads the mysql server config from file
-        $config = parse_ini_file( 
-                                 'config.ini',
-                                 TRUE
-                                 );
+        if ($config===null){
+            // loads the mysql server config from file
+            $config = parse_ini_file( 
+                                     'config.ini',
+                                     TRUE
+                                     );
+        }
 
         // creates a new connection to database
-        $dbconn = mysql_connect( 
+        $dbconn = @mysql_connect( 
                                 $config['DB']['db_path'],
                                 $config['DB']['db_user'],
                                 $config['DB']['db_passwd']
                                 );
-
+        if (!$dbconn){
+            $query_result['errno'] = mysql_errno( );
+            $query_result['error'] = mysql_error( );
+            return $query_result;
+        }
+        
         // selects the database
-        mysql_select_db( $config['DB']['db_name'] );
+        if ($config['DB']['db_name'] !== null)
+            mysql_select_db( $config['DB']['db_name'] );
 
         $currentTime = $_SERVER['REQUEST_TIME'];
 
@@ -125,23 +134,31 @@ class DBRequest
     
     public static function request2( 
                                    $sqlStatement,
-                                   $checkSession
+                                   $checkSession,
+                                   $config = null
                                    )
     {
 
-        // loads the mysql server config from file
-        $config = parse_ini_file( 
-                                 'config.ini',
-                                 TRUE
-                                 );
+        if ($config===null){
+            // loads the mysql server config from file
+            $config = parse_ini_file( 
+                                     'config.ini',
+                                     TRUE
+                                     );
+        }
 
         // creates a new connection to database
-        $dbconn = mysqli_connect( 
+        $dbconn = @mysqli_connect( 
                                 $config['DB']['db_path'],
                                 $config['DB']['db_user'],
                                 $config['DB']['db_passwd'],
                                 $config['DB']['db_name'] 
                                 );
+                                
+        if (!$dbconn){
+            $query_result['errno'] = 10;
+            return $query_result;
+        }
 
         // selects the database
        // mysql_select_db( $config['DB']['db_name'] );
