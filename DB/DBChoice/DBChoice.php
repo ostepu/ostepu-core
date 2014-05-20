@@ -22,7 +22,7 @@ $com = new CConfig( DBChoice::getPrefix( ) . ',course,link' );
 
 // runs the DBChoice
 if ( !$com->used( ) )
-    new DBChoice( $com->loadConfig( ) );
+    new DBChoice( $com );
 
 /**
  * A class, to abstract the "DBChoice" table from database
@@ -197,7 +197,7 @@ class DBChoice
     public function loadConfig( $preChoice='',  $preForm='',  $preExercise='')
     {
         // initialize component
-        $this->_conf = $this->_conf->loadConfig( $preChoice, $preForm );
+        $this->_conf = $this->_conf->loadConfig( $preChoice, $preForm,  $preExercise );
         $this->query = array( CConfig::getLink( 
                                                $this->_conf->getLinks( ),
                                                'out'
@@ -206,7 +206,7 @@ class DBChoice
     
     public function editChoice( $preChoice='',  $preForm='',  $preExercise='', $choiceid )
     {
-        $this->loadConfig($preChoice, $preForm);
+        $this->loadConfig($preChoice, $preForm,  $preExercise);
         $preChoice = ($preChoice === '' ? '' : '_') . $preChoice;
         $preForm = ($preForm === '' ? '' : '_') . $preForm;
         $preExercise = ($preExercise === '' ? '' : '_') . $preExercise;
@@ -270,7 +270,7 @@ class DBChoice
     
     public function deleteChoice( $preChoice='',  $preForm='',  $preExercise='', $choiceid )
     {
-        $this->loadConfig($preChoice, $preForm);
+        $this->loadConfig($preChoice, $preForm,  $preExercise);
         $preChoice = ($preChoice === '' ? '' : '_') . $preChoice;
         $preForm = ($preForm === '' ? '' : '_') . $preForm;
         $preExercise = ($preExercise === '' ? '' : '_') . $preExercise;
@@ -323,7 +323,7 @@ class DBChoice
     
     public function addChoice( $preChoice='',  $preForm='',  $preExercise='' )
     {
-        $this->loadConfig($preChoice, $preForm);
+        $this->loadConfig($preChoice, $preForm,  $preExercise);
         $preChoice = ($preChoice === '' ? '' : '_') . $preChoice;
         $preForm = ($preForm === '' ? '' : '_') . $preForm;
         $preExercise = ($preExercise === '' ? '' : '_') . $preExercise;
@@ -415,7 +415,7 @@ class DBChoice
                         $checkSession = true
                         )
     {
-        $this->loadConfig($preChoice, $preForm);
+        $this->loadConfig($preChoice, $preForm,  $preExercise);
         $preChoice = ($preChoice === '' ? '' : '_') . $preChoice;
         $preForm = ($preForm === '' ? '' : '_') . $preForm;
         $preExercise = ($preExercise === '' ? '' : '_') . $preExercise;
@@ -591,7 +591,7 @@ class DBChoice
     
     public function deleteCourse( $preChoice='',  $preForm='',  $preExercise='', $courseid )
     {
-        $this->loadConfig($preChoice, $preForm);
+        $this->loadConfig($preChoice, $preForm,  $preExercise);
         $preChoice = ($preChoice === '' ? '' : '_') . $preChoice;
         $preForm = ($preForm === '' ? '' : '_') . $preForm;
         $preExercise = ($preExercise === '' ? '' : '_') . $preExercise;
@@ -642,7 +642,7 @@ class DBChoice
     
     public function addCourse( $preChoice='',  $preForm='',  $preExercise='' )
     {
-        $this->loadConfig($preChoice, $preForm);
+        $this->loadConfig($preChoice, $preForm,  $preExercise);
         $preChoice = ($preChoice === '' ? '' : '_') . $preChoice;
         $preForm = ($preForm === '' ? '' : '_') . $preForm;
         $preExercise = ($preExercise === '' ? '' : '_') . $preExercise;
