@@ -1,18 +1,16 @@
 /**
- * @file GetSheetProcesses.sql
- * gets processes from %Process table
+ * @file GetCourseComponentProcesses.sql
+ * gets all processes of a course and a component from %Process table
  * @author Till Uhlig
- * @param int \$esid an %Sheet identifier
+ * @param int \$courseid a %Course identifier
+ * @param int \$comid a %Component identifier
  * @result 
  * - PRO, the process data
  * - CO, the component data
  */
  
-SET @course = (select E.C_id from `Exercise` E where E.ES_id = {$esid} limit 1);
-SET @statement = 
-concat(
-\"select 
-    concat('\", @course ,\"','_',PRO.PRO_id) as PRO_id,
+select 
+    concat('{$courseid}','_',PRO.PRO_id) as PRO_id,
     PRO.E_id,
     PRO.E_id as E_id2,
     PRO.PRO_parameter,
@@ -26,7 +24,7 @@ concat(
     CO.CO_id,
     CO.CO_name,
     CO.CO_address,
-    concat('\", @course ,\"','_',A.A_id) as A_id_PRO1,
+    concat('{$courseid}','_',A.A_id) as A_id_PRO1,
     A.E_id as E_id_PRO1,
     F.F_id as F_id_PRO1,
     F.F_displayName as F_displayName_PRO1,
@@ -35,7 +33,7 @@ concat(
     F.F_fileSize as F_fileSize_PRO1,
     F.F_comment as F_comment_PRO1,
     F.F_hash as F_hash_PRO1,
-    concat('\", @course ,\"','_',A2.A_id) as A_id_PRO2,
+    concat('{$courseid}','_',A2.A_id) as A_id_PRO2,
     A2.E_id as E_id_PRO2,
     F2.F_id as F_id_PRO2,
     F2.F_displayName as F_displayName_PRO2,
@@ -45,21 +43,18 @@ concat(
     F2.F_comment as F_comment_PRO2,
     F2.F_hash as F_hash_PRO2
 from
-    `Process{$pre}_\", @course, \"` PRO
+    `Process{$pre}_{$courseid}` PRO
         left join
     `Component` CO ON (PRO.CO_id_target = CO.CO_id)
-            left join
+        left join
     `Exercise` E ON (E.E_id = PRO.E_id)
-            left join
-    `Attachment_processAttachment_\", @course, \"` A ON (PRO.E_id = A.E_id)
-            left join
+        left join
+    `Attachment_processAttachment_{$courseid}` A ON (PRO.E_id = A.E_id)
+        left join
     `File` F ON F.F_id = A.F_id
-            left join
-    `Attachment_processWorkFiles_\", @course, \"` A2 ON (PRO.E_id = A2.E_id)
-            left join
+        left join
+    `Attachment_processWorkFiles_{$courseid}` A2 ON (PRO.E_id = A2.E_id)
+        left join
     `File` F2 ON F2.F_id = A2.F_id
 where
-    PRO.ES_id = '{$esid}'\");
-
-PREPARE stmt1 FROM @statement;
-EXECUTE stmt1;
+    PRO.CO_id_target = '{$comid}'

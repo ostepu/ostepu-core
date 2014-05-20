@@ -6,4 +6,4 @@
 select 
     count(1)
 from
-    `Process_{$courseid}` PRO limit 1;
+    `Process{$pre}_{$courseid}` PRO limit 1;

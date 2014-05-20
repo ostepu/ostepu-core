@@ -1,0 +1,9 @@
+[
+    {    "method":"put", "path":"/attachment(/attachment)/:aid(/)" },
+    {    "method":"delete", "path":"/attachment(/attachment)/:aid(/)" },
+    {    "method":"post", "path":"/attachment(/)" },
+    {    "method":"get", "path":"/attachment(/attachment)/:aid(/)" },
+    {    "method":"get", "path":"/attachment(/attachment)(/)" },
+    {    "method":"get", "path":"/attachment/exercise/:eid(/)" },
+    {    "method":"get", "path":"/attachment/exercisesheet/:esid(/)" }
+]

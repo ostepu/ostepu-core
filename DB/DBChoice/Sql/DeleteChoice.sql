@@ -6,6 +6,6 @@
  * @result -
  */
  
-DELETE FROM `Choice_".Choice::getCourseFromChoiceId($choiceid)."`
+DELETE FROM `Choice{$preChoice}_".Choice::getCourseFromChoiceId($choiceid)."`
 WHERE
     CH_id = '".Choice::getIdFromChoiceId($choiceid)."'

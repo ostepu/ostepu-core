@@ -159,21 +159,21 @@ class CControl
                                )
                          );
 
+        // GET SendComponentDefinitions
+        $this->_app->get( 
+                         '(/definition)/send(/)',
+                         array( 
+                               $this,
+                               'sendComponentDefinitions'
+                               )
+                         );
+
         // GET GetComponentDefinition
         $this->_app->get( 
                          '/definition/:componentid(/)',
                          array( 
                                $this,
                                'getComponentDefinition'
-                               )
-                         );
-
-        // GET SendComponentDefinitions
-        $this->_app->get( 
-                         '/send(/)',
-                         array( 
-                               $this,
-                               'sendComponentDefinitions'
                                )
                          );
 
@@ -651,12 +651,13 @@ class CControl
                 $object = Component::decodeComponent( Component::encodeComponent( $object ) );
 
                 $result = Request::post( 
-                                        $object->getAddress( ) . '/component',
+                                        $object->getAddress( ) . '/control',
                                         array( ),
                                         Component::encodeComponent( $object )
                                         );
                                         
                 $newObject = new Component();
+                $newObject->setId($object->getId());
                 $newObject->setName($object->getName());
                 $newObject->setAddress($object->getAddress());
                 $newObject->setStatus($result['status']);

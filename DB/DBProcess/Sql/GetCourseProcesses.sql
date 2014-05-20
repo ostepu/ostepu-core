@@ -42,10 +42,10 @@ select
     F2.F_comment as F_comment_PRO2,
     F2.F_hash as F_hash_PRO2
 from
-    `Process_{$courseid}` PRO
+    `Process{$pre}_{$courseid}` PRO
         left join
     `Component` CO ON (PRO.CO_id_target = CO.CO_id)
-        join
+        left join
     `Exercise` E ON (E.E_id = PRO.E_id)
         left join
     `Attachment_processAttachment_{$courseid}` A ON (PRO.E_id = A.E_id)

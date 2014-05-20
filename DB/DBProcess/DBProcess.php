@@ -22,7 +22,7 @@ $com = new CConfig( DBProcess::getPrefix( ) . ',course,link' );
 
 // runs the DBProcess
 if ( !$com->used( ) )
-    new DBProcess( $com->loadConfig( ) );
+    new DBProcess( $com );
 
 /**
  * A class, to abstract the "DBProcess" table from database
@@ -83,13 +83,9 @@ class DBProcess
 
         // initialize component
         $this->_conf = $conf;
-        $this->query = array( CConfig::getLink( 
-                                               $conf->getLinks( ),
-                                               'out'
-                                               ) );
 
         // initialize slim
-        $this->_app = new \Slim\Slim( );
+        $this->_app = new \Slim\Slim( array('debug' => true) );
         $this->_app->response->headers->set( 
                                             'Content-Type',
                                             'application/json'
@@ -97,7 +93,7 @@ class DBProcess
                                                                   
         // POST AddCourse
         $this->_app->post( 
-                         '/course',
+                         '(/:pre)/course(/)',
                          array( 
                                $this,
                                'addCourse'
@@ -106,7 +102,7 @@ class DBProcess
                          
         // DELETE DeleteCourse
         $this->_app->delete( 
-                         '/course(/course)/:courseid',
+                         '(/:pre)/course(/course)/:courseid(/)',
                          array( 
                                $this,
                                'deleteCourse'
@@ -115,7 +111,7 @@ class DBProcess
                          
         // PUT EditProcess
         $this->_app->put( 
-                         '/' . $this->getPrefix( ) . '(/process)/:processid(/)',
+                         '(/:pre)/' . $this->getPrefix( ) . '(/process)/:processid(/)',
                          array( 
                                $this,
                                'editProcess'
@@ -124,7 +120,7 @@ class DBProcess
 
         // DELETE DeleteProcess
         $this->_app->delete( 
-                            '/' . $this->getPrefix( ) . '(/process)/:processid(/)',
+                            '(/:pre)/' . $this->getPrefix( ) . '(/process)/:processid(/)',
                             array( 
                                   $this,
                                   'deleteProcess'
@@ -133,7 +129,7 @@ class DBProcess
                             
         // POST AddProcess
         $this->_app->post( 
-                          '/' . $this->getPrefix( ) . '(/)',
+                          '(/:pre)/' . $this->getPrefix( ) . '(/)',
                           array( 
                                 $this,
                                 'addProcess'
@@ -142,7 +138,7 @@ class DBProcess
 
         // GET GetProcess
         $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '(/process)/:processid(/)',
+                         '(/:pre)/' . $this->getPrefix( ) . '(/process)/:processid(/)',
                          array( 
                                $this,
                                'getProcess'
@@ -151,7 +147,7 @@ class DBProcess
 
         // GET GetCourseProcesses
         $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/course/:courseid(/)',
+                         '(/:pre)/' . $this->getPrefix( ) . '/course/:courseid(/)',
                          array( 
                                $this,
                                'getCourseProcesses'
@@ -160,7 +156,7 @@ class DBProcess
                          
         // GET GetExistsCourseProcesses
         $this->_app->get( 
-                         '/link/exists/course/:courseid(/)',
+                         '(/:pre)/link/exists/course/:courseid(/)',
                          array( 
                                $this,
                                'getExistsCourseProcesses'
@@ -169,7 +165,7 @@ class DBProcess
 
         // GET GetSheetProcesses
         $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/exercisesheet/:esid(/)',
+                         '(/:pre)/' . $this->getPrefix( ) . '/exercisesheet/:esid(/)',
                          array( 
                                $this,
                                'getSheetProcesses'
@@ -178,10 +174,19 @@ class DBProcess
                          
         // GET GetExerciseProcesses
         $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/exercise/:eid(/)',
+                         '(/:pre)/' . $this->getPrefix( ) . '/exercise/:eid(/)',
                          array( 
                                $this,
                                'getExerciseProcesses'
+                               )
+                         );
+                         
+        // GET GetCourseComponentProcesses
+        $this->_app->get( 
+                         '(/:pre)/' . $this->getPrefix( ) . '/course/:courseid/component/:comid(/)',
+                         array( 
+                               $this,
+                               'getCourseComponentProcesses'
                                )
                          );
                          
@@ -189,8 +194,21 @@ class DBProcess
             $this->_app->run( );
     }
     
-    public function editProcess( $processid )
+    public function loadConfig( $pre='' )
     {
+        // initialize component
+        $this->_conf = $this->_conf->loadConfig( $pre );
+        $this->query = array( CConfig::getLink( 
+                                               $this->_conf->getLinks( ),
+                                               'out'
+                                               ) );
+    }
+    
+    public function editProcess( $pre='' , $processid )
+    {
+        $this->loadConfig($pre);
+        $pre = ($pre === '' ? '' : '_') . $pre;
+        
         Logger::Log( 
                     'starts PUT EditProcess',
                     LogLevel::DEBUG
@@ -216,7 +234,7 @@ class DBProcess
                                                   'Sql/EditProcess.sql',
                                                   array( 
                                                         'processid' => $processid,
-                                                        'object' => $in
+                                                        'object' => $in,'pre' => $pre 
                                                         )
                                                   );
 
@@ -241,8 +259,11 @@ class DBProcess
         }
     }
     
-    public function deleteProcess( $processid )
+    public function deleteProcess( $pre='' , $processid )
     {
+        $this->loadConfig($pre);
+        $pre = ($pre === '' ? '' : '_') . $pre;
+        
         Logger::Log( 
                     'starts DELETE DeleteProcess',
                     LogLevel::DEBUG
@@ -254,7 +275,7 @@ class DBProcess
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
                                               'Sql/DeleteProcess.sql',
-                                              array( 'processid' => $processid )
+                                              array( 'processid' => $processid,'pre' => $pre  )
                                               );
 
         // checks the correctness of the query
@@ -282,8 +303,11 @@ class DBProcess
         }
     }
     
-    public function addProcess( )
+    public function addProcess( $pre='' )
     {
+        $this->loadConfig($pre);
+        $pre = ($pre === '' ? '' : '_') . $pre;
+        
         Logger::Log( 
                     'starts POST AddProcess',
                     LogLevel::DEBUG
@@ -307,7 +331,7 @@ class DBProcess
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
                                                   'Sql/AddProcess.sql',
-                                                  array( 'object' => $in)
+                                                  array( 'object' => $in,'pre' => $pre )
                                                   );
 
             // checks the correctness of the query
@@ -347,18 +371,23 @@ class DBProcess
         } else 
             $this->_app->response->setBody( Form::encodeForm( $res ) );
     }
-    
+
     public function get( 
                         $functionName,
                         $sqlFile,
+                        $pre='' , 
                         $processid,
                         $courseid,
                         $esid,
                         $eid,
+                        $comid,
                         $singleResult = false,
                         $checkSession = true
                         )
     {
+        $this->loadConfig($pre);
+        $pre = ($pre === '' ? '' : '_') . $pre;
+        
         Logger::Log( 
                     'starts GET ' . $functionName,
                     LogLevel::DEBUG
@@ -367,22 +396,25 @@ class DBProcess
         // checks whether incoming data has the correct data type
         $processid = DBJson::mysql_real_escape_string( $processid );
 
-        DBJson::checkInput( 
-                           $this->_app,
-                           $courseid == '' ? true : ctype_digit( $courseid ),
-                           $esid == '' ? true : ctype_digit( $esid ),
-                           $eid == '' ? true : ctype_digit( $eid )
-                           );
+        $pre = DBJson::mysql_real_escape_string( $pre );
+        $userid = DBJson::mysql_real_escape_string( $userid );
+        $courseid = DBJson::mysql_real_escape_string( $courseid );
+        $esid = DBJson::mysql_real_escape_string( $esid );
+        $eid = DBJson::mysql_real_escape_string( $eid );
+        $processid = DBJson::mysql_real_escape_string( $processid );
+        $comid = DBJson::mysql_real_escape_string( $comid );
 
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
                                               $sqlFile,
                                               array( 
+                                                    'pre' => $pre,
                                                     'processid' => $processid,
                                                     'courseid' => $courseid,
                                                     'esid' => $esid,
-                                                    'eid' => $eid
+                                                    'eid' => $eid,
+                                                    'comid' => $comid
                                                     ),
                                               $checkSession
                                               );
@@ -425,73 +457,101 @@ class DBProcess
         $this->_app->stop( );
     }
 
-    public function getProcess( $processid )
+    public function getProcess( $pre='' , $processid )
     {
         $this->get( 
                    'GetProcess',
                    'Sql/GetProcess.sql',
+                   isset( $pre ) ? $pre : '',
                    isset( $processid ) ? $processid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
                    isset( $eid ) ? $eid : '',
+                   isset( $comid ) ? $comid : '',
                    true
                    );
     }
    
-    public function getCourseProcesses( $courseid )
+    public function getCourseProcesses( $pre='' , $courseid )
     {
         $this->get( 
                    'GetCourseProcesses',
                    'Sql/GetCourseProcesses.sql',
+                   isset( $pre ) ? $pre : '',
                    isset( $processid ) ? $processid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
                    isset( $eid ) ? $eid : '',
+                   isset( $comid ) ? $comid : '',
                    false
                    );
     }
     
-    public function getExistsCourseProcesses( $courseid )
+    public function getExistsCourseProcesses( $pre='' , $courseid )
     {
         $this->get( 
                    'GetExistsCourseProcesses',
                    'Sql/GetExistsCourseProcesses.sql',
+                   isset( $pre ) ? $pre : '',
                    isset( $processid ) ? $processid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
                    isset( $eid ) ? $eid : '',
+                   isset( $comid ) ? $comid : '',
                    true
                    );
     }
     
-    public function getSheetProcesses( $esid )
+    public function getSheetProcesses( $pre='' , $esid )
     {
         $this->get( 
                    'GetSheetProcesses',
                    'Sql/GetSheetProcesses.sql',
+                   isset( $pre ) ? $pre : '',
                    isset( $processid ) ? $processid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
                    isset( $eid ) ? $eid : '',
+                   isset( $comid ) ? $comid : '',
                    false
                    );
     }
     
-    public function getExerciseProcesses( $eid )
+    public function getExerciseProcesses( $pre='' , $eid )
     {
         $this->get( 
                    'GetExerciseProcesses',
                    'Sql/GetExerciseProcesses.sql',
+                   isset( $pre ) ? $pre : '',
                    isset( $processid ) ? $processid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
                    isset( $eid ) ? $eid : '',
+                   isset( $comid ) ? $comid : '',
                    false
                    );
     }
     
-    public function deleteCourse( $courseid )
+    public function getCourseComponentProcesses( $pre='' , $courseid, $comid )
     {
+        $this->get( 
+                   'GetCourseComponentProcesses',
+                   'Sql/GetCourseComponentProcesses.sql',
+                   isset( $pre ) ? $pre : '',
+                   isset( $processid ) ? $processid : '',
+                   isset( $courseid ) ? $courseid : '',
+                   isset( $esid ) ? $esid : '',
+                   isset( $eid ) ? $eid : '',
+                   isset( $comid ) ? $comid : '',
+                   false
+                   );
+    }
+    
+    public function deleteCourse( $pre='' , $courseid )
+    {
+        $this->loadConfig($pre);
+        $pre = ($pre === '' ? '' : '_') . $pre;
+        
         Logger::Log( 
                     'starts DELETE DeleteCourse',
                     LogLevel::DEBUG
@@ -503,7 +563,7 @@ class DBProcess
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
                                               'Sql/DeleteCourse.sql',
-                                              array( 'courseid' => $courseid )
+                                              array( 'courseid' => $courseid ,'pre' => $pre )
                                               );
 
         // checks the correctness of the query
@@ -529,8 +589,11 @@ class DBProcess
         }
     }
     
-    public function addCourse( )
+    public function addCourse($pre='' )
     {
+        $this->loadConfig($pre);
+        $pre = ($pre === '' ? '' : '_') . $pre;
+        
         Logger::Log( 
                     'starts POST AddCourse',
                     LogLevel::DEBUG
@@ -554,7 +617,7 @@ class DBProcess
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
                                                   'Sql/AddCourse.sql',
-                                                  array( 'object' => $in )
+                                                  array( 'object' => $in ,'pre' => $pre )
                                                   );
 
             // checks the correctness of the query
