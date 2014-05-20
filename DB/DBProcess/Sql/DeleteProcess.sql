@@ -6,6 +6,6 @@
  * @result -
  */
 
-DELETE FROM `Process_".Process::getCourseFromProcessId($processid)."`
+DELETE FROM `Process{$pre}_".Process::getCourseFromProcessId($processid)."`
 WHERE
     PRO_id = '".Process::getIdFromProcessId($processid)."'
