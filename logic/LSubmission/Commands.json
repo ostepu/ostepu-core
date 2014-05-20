@@ -1,0 +1,8 @@
+[
+    {    "method":"post", "path":"/submission(/)" },
+    {    "method":"put", "path":"/submission/submission/:submissionid(/)" },
+    {    "method":"delete", "path":"/submission/submission/:submissionid(/)" },
+    {    "method":"get", "path":"/submission/exercisesheet/:sheetid/user/:userid(/)" },
+    {    "method":"get", "path":"/submission/exercisesheet/:sheetid/user/:userid/history(/)" },
+    {    "method":"get", "path":"/submission/submission/:submissionid(/)" }
+]
