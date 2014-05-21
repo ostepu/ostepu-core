@@ -310,7 +310,6 @@ class DBUser
         if ( $result['status'] >= 200 && 
              $result['status'] <= 299 ){
 
-            // $this->_app->response->setBody(User::encodeUser(new User()));
             if ( isset( $result['headers']['Content-Type'] ) )
                 $this->_app->response->headers->set( 
                                                     'Content-Type',
@@ -330,7 +329,6 @@ class DBUser
                         LogLevel::ERROR
                         );
 
-            // $this->_app->response->headers->set("Connection", "Close");
             $this->_app->response->setBody( User::encodeUser( new User( ) ) );
             $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
             $this->_app->stop( );
@@ -365,7 +363,6 @@ class DBUser
         if ( $result['status'] >= 200 && 
              $result['status'] <= 299 ){
 
-            // $this->_app->response->setBody(User::encodeUser(new User()));
             if ( isset( $result['headers']['Content-Type'] ) )
                 $this->_app->response->headers->set( 
                                                     'Content-Type',
@@ -385,7 +382,6 @@ class DBUser
                         LogLevel::ERROR
                         );
 
-            // $this->_app->response->headers->set("Connection", "Close");
             $this->_app->response->setBody( User::encodeUser( new User( ) ) );
             $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
             $this->_app->stop( );

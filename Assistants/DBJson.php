@@ -20,7 +20,7 @@ class DBJson
      *
      * @return the masked text
      */
-    function mysql_real_escape_string( $inp )
+    public static function mysql_real_escape_string( $inp )
     {
         if ( is_array( $inp ) )
             return array_map( 
@@ -124,6 +124,16 @@ class DBJson
         $res = array( );
 
         while ( $row = mysql_fetch_assoc( $data ) ){
+            $res[] = $row;
+        }
+        return $res;
+    }
+    
+    public static function getRows2( $data )
+    {
+        $res = array( );
+
+        while ( $row = mysqli_fetch_assoc( $data ) ){
             $res[] = $row;
         }
         return $res;

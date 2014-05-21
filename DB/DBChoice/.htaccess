@@ -1,0 +1,2 @@
+RewriteEngine On
+RewriteRule ^ DBChoice.php [QSA,L]

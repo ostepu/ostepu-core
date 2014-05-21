@@ -107,6 +107,7 @@ class LExercise
         $body = json_decode($this->app->request->getBody(), true);
 
         $allright = true;
+        $result = array();
 
         if (isset($body) == true && empty($body) == false) {
             foreach ($body as $subexercise) {
@@ -154,7 +155,8 @@ class LExercise
 
                 if ($subexerciseAnswer['status'] == 201) {
                     $subexerciseOutput = json_decode($subexerciseAnswer['content'], true);
-
+                    $result[] = Exercise::decodeExercise($subexerciseAnswer['content']);
+                    
                     if (isset($subexerciseOutput['id'])) {
                         $linkid = $subexerciseOutput['id'];
                     }
@@ -172,17 +174,20 @@ class LExercise
                     }
 
                     // create ExerciseFileTypes
-                    foreach ($FileTypesArrayTemp as $fileType) {
-                        $myExerciseFileType = ExerciseFileType::createExerciseFileType(NULL,$fileType,$linkid);
-                        $myExerciseFileTypeJSON = ExerciseFileType::encodeExerciseFileType($myExerciseFileType);
-                        $URL = $this->lURL."/DB/exercisefiletype";
-                        $AttachmentAnswer = Request::custom('POST', $URL, $header, $myExerciseFileTypeJSON);
+                    if (isset($FileTypesArrayTemp) && !empty($FileTypesArrayTemp)){
+                        foreach ($FileTypesArrayTemp as $fileType) {
+                            $myExerciseFileType = ExerciseFileType::createExerciseFileType(NULL,$fileType,$linkid);
+                            $myExerciseFileTypeJSON = ExerciseFileType::encodeExerciseFileType($myExerciseFileType);
+                            $URL = $this->lURL."/DB/exercisefiletype";
+                            $AttachmentAnswer = Request::custom('POST', $URL, $header, $myExerciseFileTypeJSON);
 
-                        if ($AttachmentAnswer['status'] != 201) {
-                            $allright = false;
-                            break;
+                            if ($AttachmentAnswer['status'] != 201) {
+                                $allright = false;
+                                break;
+                            }
                         }
                     }
+                    
                     if ($allright == false) {
                         break;
                     }
@@ -194,6 +199,7 @@ class LExercise
             }
         }
         if ($allright == true) {
+             $this->app->response->setBody(Exercise::encodeExercise($result));
              $this->app->response->setStatus(201);
         } else {
             $this->app->response->setStatus(409);

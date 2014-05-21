@@ -13,7 +13,8 @@
             */
 
            // bool if startDate of sheet is greater than the actual date
-           $hasStarted = date('U') > date('U', $sheet['startDate']); ?>
+           $hasStarted = date('U') > date('U', $sheet['startDate']);
+           ?>
     <div class="content-element collapsible">
         <div class="content-header">
             <div class="content-title left uppercase">
@@ -54,6 +55,7 @@
                         <div class="exercise-points">
                             <?php // prints the achieved and the maximum points ?>
                             <?php if (isset($exercise['submission']['marking'])
+                                     && $isExpired
                                      && $exercise['submission']['marking']['statusId'] >= 2): ?>
                                 <?= $exercise['submission']['marking']['points'] ?>
                             <?php else: ?>
@@ -96,7 +98,7 @@
                             <?php endif; ?>
 
                             <?php // creates a downloadCorrection icon for the marking (if it exists) ?>
-                            <?php if(isset($exercise['submission']['marking']) && $exercise['submission']['marking']['hideFile'] == "0"): ?>
+                            <?php if(isset($exercise['submission']['marking']) && $exercise['submission']['marking']['hideFile'] == "0" && $isExpired): ?>
                                 <?php $displayName = $exercise['submission']['marking']['file']['displayName']; ?>
                                 <?php $fileAddress = $exercise['submission']['marking']['file']['address']; ?>
                                 <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
@@ -157,6 +159,7 @@
                             Gruppe verwalten
                         </a>
                     </li>
+
                     <li>
                         <a href="Upload.php?cid=<?= $cid ?>&sid=<?= $sheet['id'] ?>" title="Upload">
                             Aufgaben hochladen

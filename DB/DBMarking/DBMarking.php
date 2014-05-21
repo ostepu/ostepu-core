@@ -114,7 +114,7 @@ class DBMarking
                                   'deleteMarking'
                                   )
                             );
-							
+                            
         // DELETE DeleteSheetMarkings
         $this->_app->delete( 
                             '/' . $this->getPrefix( ) . '(/marking)/exercisesheet/:esid(/)',
@@ -423,7 +423,7 @@ class DBMarking
             $this->_app->stop( );
         }
     }
-	
+    
     /**
      * Deletes markings.
      *

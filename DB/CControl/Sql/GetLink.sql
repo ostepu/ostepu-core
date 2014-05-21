@@ -2,8 +2,9 @@ select
     CL.CL_id,
     CL.CL_name,
     CL.CL_relevanz,
-        CL.CO_id_target,
-            CL.CO_id_owner,
+    CL.CO_id_target,
+    CL.CO_id_owner,
+    CO.CO_name as CL_targetName,
     CO.CO_address as CL_address,
     CL.CO_id_target
 from

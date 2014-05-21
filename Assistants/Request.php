@@ -77,7 +77,7 @@ class Request
         $result['status'] = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         
         curl_close($ch);
-        Logger::Log($target . ' ' . (round((microtime(true) - $begin),2)). 's', LogLevel::DEBUG, "/var/www/uebungsplattform/laufzeit.log");
+       // Logger::Log($target . ' ' . (round((microtime(true) - $begin),2)). 's', LogLevel::DEBUG, "/var/www/uebungsplattform/laufzeit.log");
         return $result; 
     }
        
@@ -156,10 +156,12 @@ class Request
      */
     public static function routeRequest($method , $resourceUri , $header ,  $content , $linkedComponents , $prefix, $linkName=NULL)
     {
+        if (!is_array($linkedComponents)) $linkedComponents = array($linkedComponents);
+    
         // get possible links
         $else = array();
         foreach ($linkedComponents as $links){
-        
+ 
             // if $linkName is set, only use links with correct names
             if ($linkName!=NULL && $linkName!=$links->getName())
                 continue;
@@ -179,13 +181,13 @@ class Request
                 if ($ch['status']>=200 && $ch['status']<=299){
                 
                     // finished
-                     Logger::Log("routeRequest prefix search done:".$links->getAddress(),LogLevel::DEBUG);
+                   //  Logger::Log("routeRequest prefix search done:".$links->getAddress(),LogLevel::DEBUG);
                     return $ch;
-                } elseif ($ch['status'] == 401){
-                    Logger::Log("routeRequest prefix search access denied:".$links->getAddress(),LogLevel::DEBUG);
+                } elseif ($ch['status'] == 401 || $ch['status'] == 404){
+                   // Logger::Log("routeRequest prefix search access denied:".$links->getAddress(),LogLevel::DEBUG);
                     return $ch;
-                } else
-                    Logger::Log("routeRequest prefix search failed:".$links->getAddress(),LogLevel::DEBUG);
+                } //else
+                  //  Logger::Log("routeRequest prefix search failed:".$links->getAddress(),LogLevel::DEBUG);
                                      
             } elseif(in_array("",$possible)){
                 
@@ -209,13 +211,13 @@ class Request
             // checks the answered status code                 
             if ($ch['status']>=200 && $ch['status']<=299){
                 // finished
-                Logger::Log("routeRequest blank search done:".$links->getAddress(),LogLevel::DEBUG);
+               // Logger::Log("routeRequest blank search done:".$links->getAddress(),LogLevel::DEBUG);
                 return $ch;
-            } elseif ($ch['status'] == 401) {
-                Logger::Log("routeRequest blank search access denied:".$links->getAddress(),LogLevel::DEBUG);
+            } elseif ($ch['status'] == 401 || $ch['status'] == 404) {
+              //  Logger::Log("routeRequest blank search access denied:".$links->getAddress(),LogLevel::DEBUG);
                 return $ch;
-            } else
-                Logger::Log("routeRequest blank search failed:".$links->getAddress(),LogLevel::DEBUG);
+            }// else
+              //  Logger::Log("routeRequest blank search failed:".$links->getAddress(),LogLevel::DEBUG);
         }
         
         // no positive response or no operative link

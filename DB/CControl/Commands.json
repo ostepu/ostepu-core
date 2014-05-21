@@ -1,0 +1,13 @@
+[
+    {    "method":"put", "path":"/link/:linkid(/)" },
+    {    "method":"delete", "path":"/link/:linkid(/)" },
+    {    "method":"post", "path":"/link(/)" },
+    {    "method":"get", "path":"/link/:linkid(/)" },
+    {    "method":"put", "path":"/component/:componentid(/)" },
+    {    "method":"delete", "path":"/component/:componentid(/)" },
+    {    "method":"post", "path":"/component(/)" },
+    {    "method":"get", "path":"/component/:componentid(/)" },
+    {    "method":"get", "path":"/definition(/)" },
+    {    "method":"get", "path":"/definition/:componentid(/)" },
+    {    "method":"get", "path":"(/definition)/send(/)" }
+]

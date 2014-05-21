@@ -54,7 +54,7 @@ from
     ExerciseSheet ES
     join
     Marking M ON (ES.ES_id = M.ES_id)
-	    join
+        join
     Submission S ON (M.S_id = S.S_id)
         left join
     SelectedSubmission SS ON (M.S_id = SS.S_id_selected)

@@ -356,11 +356,12 @@ class Route
         if (substr($this->pattern, -1) === '/') {
             $patternAsRegex .= '?';
         }
-
+ 
         //Cache URL params' names and values if this route matches the current HTTP request
         if (!preg_match('#^' . $patternAsRegex . '$#', $resourceUri, $paramValues)) {
             return false;
         }
+
         foreach ($this->paramNames as $name) {
             if (isset($paramValues[$name])) {
                 if (isset($this->paramNamesPath[ $name ])) {
@@ -391,7 +392,7 @@ class Route
             return '(?P<' . $m[1] . '>.+)';
         }
 
-        return '(?P<' . $m[1] . '>[^/]+)';
+        return '(?P<' . $m[1] . '>[^/]*)';
     }
 
     /**
