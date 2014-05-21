@@ -320,13 +320,18 @@ function MakeNavigationElement($user,
         return "";
     }
 
-    $courseStatus = $courses[0]['status'];
-    $course = $courses[0]['course'];
+    $courseStatus = null;
+    if (isset($courses[0]['status']))
+        $courseStatus = $courses[0]['status'];
+      
+    $course = null;    
+    if (isset($courses[0]['course']))
+        $course = $courses[0]['course'];
 
     $file = 'include/Navigation/Navigation.template.html';
     $navigationElement = Template::WithTemplateFile($file);
 
-    $navigationElement->bind(array('cid' => $course['id'],
+    $navigationElement->bind(array('cid' => (isset($course['id']) ? $course['id'] : null),
                                    'requiredPrivilege' => $requiredPrivilege,
                                    'courseStatus' => $courseStatus,
                                    'switchDisabled' => $switchDisabled,
