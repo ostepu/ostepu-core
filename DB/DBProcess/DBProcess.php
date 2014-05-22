@@ -394,10 +394,7 @@ class DBProcess
                     );
 
         // checks whether incoming data has the correct data type
-        $processid = DBJson::mysql_real_escape_string( $processid );
-
         $pre = DBJson::mysql_real_escape_string( $pre );
-        $userid = DBJson::mysql_real_escape_string( $userid );
         $courseid = DBJson::mysql_real_escape_string( $courseid );
         $esid = DBJson::mysql_real_escape_string( $esid );
         $eid = DBJson::mysql_real_escape_string( $eid );

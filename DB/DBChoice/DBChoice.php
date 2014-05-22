@@ -217,7 +217,6 @@ class DBChoice
                     );
 
         $choiceid = DBJson::mysql_real_escape_string( $choiceid );
-        $formid = DBJson::mysql_real_escape_string( $formid );
         $preChoice = DBJson::mysql_real_escape_string( $preChoice );
         $preForm = DBJson::mysql_real_escape_string( $preForm );
         $preExercise = DBJson::mysql_real_escape_string( $preExercise );
@@ -281,7 +280,6 @@ class DBChoice
                     );
 
         $choiceid = DBJson::mysql_real_escape_string( $choiceid );
-        $formid = DBJson::mysql_real_escape_string( $formid );
         $preChoice = DBJson::mysql_real_escape_string( $preChoice );
         $preForm = DBJson::mysql_real_escape_string( $preForm );
         $preExercise = DBJson::mysql_real_escape_string( $preExercise );
@@ -333,7 +331,6 @@ class DBChoice
                     LogLevel::DEBUG
                     );
                     
-        $formid = DBJson::mysql_real_escape_string( $formid );
         $preChoice = DBJson::mysql_real_escape_string( $preChoice );
         $preForm = DBJson::mysql_real_escape_string( $preForm );
         $preExercise = DBJson::mysql_real_escape_string( $preExercise );
@@ -602,7 +599,6 @@ class DBChoice
                     );
                     
         $courseid = DBJson::mysql_real_escape_string( $courseid ); 
-        $formid = DBJson::mysql_real_escape_string( $formid );
         $preChoice = DBJson::mysql_real_escape_string( $preChoice );
         $preForm = DBJson::mysql_real_escape_string( $preForm );
         $preExercise = DBJson::mysql_real_escape_string( $preExercise );
@@ -654,7 +650,6 @@ class DBChoice
 
         // decode the received course data, as an object
         $insert = Course::decodeCourse( $this->_app->request->getBody( ) );
-        $formid = DBJson::mysql_real_escape_string( $formid );
         $preChoice = DBJson::mysql_real_escape_string( $preChoice );
         $preForm = DBJson::mysql_real_escape_string( $preForm );
         $preExercise = DBJson::mysql_real_escape_string( $preExercise );
