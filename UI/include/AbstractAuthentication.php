@@ -123,7 +123,7 @@ abstract class AbstractAuthentication
     public static function logoutUser($noback = false)
     {
         global $databaseURI;
-        if($_GET['action'] == "logout" || $noback == true) {
+        if($noback == true || (isset($_GET['action']) && $_GET['action'] == "logout")) {
             // delete session in DB
             $session = $_SESSION['SESSION'];
             http_delete("{$databaseURI}/session/{$session}",true,$message,true);
@@ -135,8 +135,10 @@ abstract class AbstractAuthentication
             exit();
         } else {
             // delete session in DB
-            $session = $_SESSION['SESSION'];
-            http_delete("{$databaseURI}/session/{$session}",true,$message,true);
+            if (isset($_SESSION['SESSION'])) {
+                $session = $_SESSION['SESSION'];
+                http_delete("{$databaseURI}/session/{$session}",true,$message,true);
+            }
 
             // delete session in UI
             session_destroy();
