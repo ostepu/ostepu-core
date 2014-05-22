@@ -312,20 +312,20 @@ function MakeNavigationElement($user,
                                $switchDisabled = false,
                                $forIndex = false)
 {
-    $courses = $user['courses'];
+    $courses = isset($user['courses']) ? $user['courses'] : null;
 
-    $isSuperAdmin = ($user['isSuperAdmin'] == 1);
+    $isSuperAdmin = isset($user['isSuperAdmin']) ? ($user['isSuperAdmin'] == 1) : null;
 
     if ($forIndex == true && $isSuperAdmin == false) {
         return "";
     }
 
     $courseStatus = null;
-    if (isset($courses[0]['status']))
+    if (isset($courses[0]) && isset($courses[0]['status']))
         $courseStatus = $courses[0]['status'];
       
     $course = null;    
-    if (isset($courses[0]['course']))
+    if (isset($courses[0]) && isset($courses[0]['course']))
         $course = $courses[0]['course'];
 
     $file = 'include/Navigation/Navigation.template.html';
