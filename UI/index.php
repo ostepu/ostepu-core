@@ -32,8 +32,8 @@ $h->bind(array("name" => "Übungsplattform",
                "notificationElements" => $notifications,
                "navigationElement" => $menu));
 
-$pageData = array('uid' => $user['id'],
-                  'courses' => $user['courses'],
+$pageData = array('uid' => isset($user['id']) ? $user['id'] : null,
+                  'courses' => isset($user['courses']) ? $user['courses'] : null,
                   'sites' => PRIVILEGE_LEVEL::$SITES,
                   'statusName' => PRIVILEGE_LEVEL::$NAMES);
 
