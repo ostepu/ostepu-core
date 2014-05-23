@@ -250,9 +250,12 @@ class Choice extends Object implements JsonSerializable
     {
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
-                $key = strtoupper($key[0]).substr($key,1);
-                $func = "set".$key;
-                $this->$func($value);
+                $func = strtoupper($key[0]).substr($key,1);
+                $func = "set".$func;
+                if (function_exists($this->$func)){
+                    $this->$func($value);
+                } else
+                    $this->{$key} = $value;
             }
         }
     }
@@ -292,7 +295,7 @@ class Choice extends Object implements JsonSerializable
         if ( is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
-                $result[] = new Choice( $value = null );
+                $result[] = new Choice( $value );
             }
             return $result;
 

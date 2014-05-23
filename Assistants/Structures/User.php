@@ -693,9 +693,12 @@ class User extends Object implements JsonSerializable
                                                          );
                     
                 } else {
-                    $key = strtoupper($key[0]).substr($key,1);
-                    $func = "set".$key;
-                    $this->$func($value);
+                    $func = strtoupper($key[0]).substr($key,1);
+                    $func = "set".$func;
+                    if (function_exists($this->$func)){
+                        $this->$func($value);
+                    } else
+                        $this->{$key} = $value;
                 }
             }
         }
@@ -737,7 +740,7 @@ class User extends Object implements JsonSerializable
         if ( is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
-                $result[] = new User( $value = null );
+                $result[] = new User( $value );
             }
             return $result;
             
