@@ -68,7 +68,7 @@ class FSBinder
     {
 
         // initialize slim
-        $this->_app = new \Slim\Slim( );
+        $this->_app = new \Slim\Slim( array( 'debug' => true ) );
         $this->_app->response->headers->set( 
                                             'Content-Type',
                                             'application/json'
@@ -191,7 +191,7 @@ class FSBinder
         }
 
         $filePath = FSBinder::$_baseDir . $this->_app->request->getResourceUri( );
-
+        
         if ( strlen( $filePath ) > 0 && 
              file_exists( $filePath ) ){
 
@@ -317,22 +317,9 @@ class FSBinder
      */
     public static function generatepath( $path )
     {
-        $parts = explode( 
-                         '/',
-                         $path
-                         );
-        if ( count( $parts ) > 0 ){
-            $path = $parts[0];
-            for ( $i = 1;$i <= count( $parts );$i++ ){
-                if ( !is_dir( $path ) )
-                    mkdir( 
-                          $path,
-                          0755
-                          );
-                if ( $i < count( $parts ) )
-                    $path .= '/' . $parts[$i];
-            }
-        }
+        if (!is_dir($path))          
+            mkdir( $path , 0777, true);
+        chmod( $path, 0777);
     }
 }
 
