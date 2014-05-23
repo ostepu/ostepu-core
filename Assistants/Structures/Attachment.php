@@ -295,7 +295,7 @@ class Attachment extends Object implements JsonSerializable
             $list['exerciseId'] = $this->exerciseId;
         if ( $this->file !== null )
             $list['file'] = $this->file;
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 
     public static function ExtractAttachment( 

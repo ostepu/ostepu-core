@@ -318,7 +318,7 @@ class Choice extends Object implements JsonSerializable
         if ( $this->correct !== null )
             $list['correct'] = $this->correct;
 
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 
     public static function ExtractChoice(

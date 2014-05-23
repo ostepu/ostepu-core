@@ -68,6 +68,53 @@ abstract class Object
     {
         $this->sender = $_value;
     }
+    
+    private $status;
+    public function getStatus( )
+    {
+        return $this->status;
+    }
+    public function setStatus( $_value )
+    {
+        $this->status = $_value;
+    }
+    
+    private $statusText;
+    public function getStatusText( )
+    {
+        return $this->statusText;
+    }
+    public function setStatusText( $_value )
+    {
+        $this->statusText = $_value;
+    }
+    
+    private $structure;
+    public function getStructure( )
+    {
+        return $this->structure;
+    }
+    public function setStructure( $_value )
+    {
+        $this->structure = $_value;
+    }
+    
+    /**
+     * the json serialize function
+     */
+    public function jsonSerialize( )
+    {
+        $list = array( );
+        if ( $this->sender !== null )
+            $list['sender'] = $this->sender;
+        if ( $this->status !== null )
+            $list['status'] = $this->status;
+        if ( $this->statusText !== null )
+            $list['statusText'] = $this->statusText;
+        if ( $this->structure !== null )
+            $list['structure'] = $this->structure;
+        return $list;
+    }
 
     /**
      * adds a string comma seperated to another

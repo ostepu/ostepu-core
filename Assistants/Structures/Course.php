@@ -322,7 +322,8 @@ class Course extends Object implements JsonSerializable
             $list['exerciseSheets'] = $this->exerciseSheets;
         if ( $this->defaultGroupSize !== null )
             $list['defaultGroupSize'] = $this->defaultGroupSize;
-        return $list;
+            
+        return array_merge($list,parent::jsonSerialize( ));
     }
 
     public static function ExtractCourse( 

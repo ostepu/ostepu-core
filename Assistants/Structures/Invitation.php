@@ -288,7 +288,7 @@ class Invitation extends Object implements JsonSerializable
             $list['leader'] = $this->leader;
         if ( $this->sheet !== null )
             $list['sheet'] = $this->sheet;
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 
     public static function ExtractInvitation( 

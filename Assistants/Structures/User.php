@@ -782,7 +782,7 @@ class User extends Object implements JsonSerializable
             $list['isSuperAdmin'] = $this->isSuperAdmin;
         if ( $this->comment !== null )
             $list['comment'] = $this->comment;
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 
     public static function ExtractUser( 

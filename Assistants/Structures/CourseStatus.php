@@ -220,7 +220,7 @@ class CourseStatus extends Object implements JsonSerializable
             $list['course'] = $this->course;
         if ( $this->status !== null )
             $list['status'] = $this->status;
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 }
 

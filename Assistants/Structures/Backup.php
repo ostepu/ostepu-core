@@ -208,7 +208,7 @@ class Backup extends Object implements JsonSerializable
             $list['date'] = $this->date;
         if ( $this->file !== null )
             $list['file'] = $this->file;
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 }
 

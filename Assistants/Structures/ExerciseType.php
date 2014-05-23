@@ -213,7 +213,7 @@ class ExerciseType extends Object implements JsonSerializable
             $list['id'] = $this->id;
         if ( $this->name !== null )
             $list['name'] = $this->name;
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 
     public static function ExtractExerciseType( 

@@ -320,7 +320,7 @@ class Query extends Object implements JsonSerializable
             $list['numRows'] = $this->numRows;
         if ( $this->checkSession !== null )
             $list['checkSession'] = $this->checkSession;
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 }
 

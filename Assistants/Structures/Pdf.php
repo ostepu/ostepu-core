@@ -253,7 +253,7 @@ class Pdf extends Object implements JsonSerializable
             $list['format'] = $this->format;
         if ( $this->creator !== null )
             $list['creator'] = $this->creator;
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 }
 

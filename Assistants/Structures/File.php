@@ -426,7 +426,7 @@ class File extends Object implements JsonSerializable
             $list['body'] = $this->body;
         if ( $this->comment !== null )
             $list['comment'] = $this->comment;
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 
     public static function ExtractFile( 

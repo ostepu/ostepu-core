@@ -286,7 +286,7 @@ class ApprovalCondition extends Object implements JsonSerializable
             $list['exerciseTypeId'] = $this->exerciseTypeId;
         if ( $this->percentage !== null )
             $list['percentage'] = $this->percentage;
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 
     public static function ExtractApprovalCondition( 

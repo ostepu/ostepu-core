@@ -216,7 +216,7 @@ class Session extends Object implements JsonSerializable
             $list['user'] = $this->user;
         if ( $this->session !== null )
             $list['session'] = $this->session;
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 
     public static function ExtractSession( 

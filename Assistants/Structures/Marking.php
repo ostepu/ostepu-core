@@ -564,7 +564,7 @@ class Marking extends Object implements JsonSerializable
             $list['date'] = $this->date;
         if ( $this->hideFile !== null )
             $list['hideFile'] = $this->hideFile;
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 
     public static function ExtractMarking( 

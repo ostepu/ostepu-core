@@ -225,7 +225,7 @@ class ExternalId extends Object implements JsonSerializable
             $list['id'] = $this->id;
         if ( $this->course !== null )
             $list['course'] = $this->course;
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 
     public static function ExtractExternalId( 

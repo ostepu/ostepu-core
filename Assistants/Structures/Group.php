@@ -265,7 +265,7 @@ class Group extends Object implements JsonSerializable
             $list['leader'] = $this->leader;
         if ( $this->sheetId !== null )
             $list['sheetId'] = $this->sheetId;
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 
     public static function ExtractGroup( 

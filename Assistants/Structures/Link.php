@@ -392,7 +392,7 @@ class Link extends Object implements JsonSerializable
             $list['relevanz'] = $this->relevanz;
         if ( $this->targetName !== null )
             $list['targetName'] = $this->targetName;
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 }
 

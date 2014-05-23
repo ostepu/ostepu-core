@@ -389,7 +389,7 @@ class Process extends Object implements JsonSerializable
             $list['rawSubmission'] = $this->rawSubmission;
         if ( $this->marking !== null )
             $list['marking'] = $this->marking;    
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 
     public static function ExtractProcess( 

@@ -540,7 +540,7 @@ class Exercise extends Object implements JsonSerializable
             $list['fileTypes'] = $this->fileTypes;
         if ( $this->linkName !== null )
             $list['linkName'] = $this->linkName;
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 
     public static function ExtractExercise(

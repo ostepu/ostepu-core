@@ -363,7 +363,7 @@ class Component extends Object implements JsonSerializable
             $list['links'] = $this->links;
          if ( $this->status !== null )
             $list['status'] = $this->status;
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 }
 

@@ -527,7 +527,7 @@ class ExerciseSheet extends Object implements JsonSerializable
             $list['groupSize'] = $this->groupSize;
         if ( $this->sheetName !== null )
             $list['sheetName'] = $this->sheetName;
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 }
 

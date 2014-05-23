@@ -409,7 +409,7 @@ class Form extends Object implements JsonSerializable
              $this->choices !== null )
              $list['choices'] = $this->choices;
 
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 
     public static function ExtractForm(

@@ -584,7 +584,7 @@ class Submission extends Object implements JsonSerializable
             $list['hideFile'] = $this->hideFile;
         if ( $this->exerciseName !== null )
             $list['exerciseName'] = $this->exerciseName;
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 
     public static function ExtractSubmission( 

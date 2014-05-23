@@ -252,7 +252,7 @@ class ExerciseFileType extends Object implements JsonSerializable
             $list['text'] = $this->text;
         if ( $this->exerciseId !== null )
             $list['exerciseId'] = $this->exerciseId;
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 
     public static function ExtractExerciseFileType( 
