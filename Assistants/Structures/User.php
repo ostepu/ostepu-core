@@ -34,7 +34,7 @@ class User extends Object implements JsonSerializable
      *
      * @param string $value the new value for $id
      */
-    public function setId( $value )
+    public function setId( $value = null )
     {
         $this->id = $value;
     }
@@ -59,7 +59,7 @@ class User extends Object implements JsonSerializable
      *
      * @param string $value the new value for $userName
      */
-    public function setUserName( $value )
+    public function setUserName( $value = null )
     {
         $this->userName = $value;
     }
@@ -84,7 +84,7 @@ class User extends Object implements JsonSerializable
      *
      * @param string $value the new value for $email
      */
-    public function setEmail( $value )
+    public function setEmail( $value = null )
     {
         $this->email = $value;
     }
@@ -109,7 +109,7 @@ class User extends Object implements JsonSerializable
      *
      * @param string $value the new value for $firstName
      */
-    public function setFirstName( $value )
+    public function setFirstName( $value = null )
     {
         $this->firstName = $value;
     }
@@ -134,7 +134,7 @@ class User extends Object implements JsonSerializable
      *
      * @param string $value the new value for $lastName
      */
-    public function setLastName( $value )
+    public function setLastName( $value = null )
     {
         $this->lastName = $value;
     }
@@ -159,7 +159,7 @@ class User extends Object implements JsonSerializable
      *
      * @param string $value the new value for $title
      */
-    public function setTitle( $value )
+    public function setTitle( $value = null )
     {
         $this->title = $value;
     }
@@ -185,7 +185,7 @@ class User extends Object implements JsonSerializable
      *
      * @param CourseStatus[] $value the new value for $courses
      */
-    public function setCourses( $value )
+    public function setCourses( $value = null )
     {
         $this->courses = $value;
     }
@@ -212,7 +212,7 @@ class User extends Object implements JsonSerializable
      *
      * @param short $value the new value for $flag
      */
-    public function setFlag( $value )
+    public function setFlag( $value = null )
     {
         $this->flag = $value;
     }
@@ -237,7 +237,7 @@ class User extends Object implements JsonSerializable
      *
      * @param string $value the new value for $password
      */
-    public function setPassword( $value )
+    public function setPassword( $value = null )
     {
         $this->password = $value;
     }
@@ -262,7 +262,7 @@ class User extends Object implements JsonSerializable
      *
      * @param string $value the new value for $salt
      */
-    public function setSalt( $value )
+    public function setSalt( $value = null )
     {
         $this->salt = $value;
     }
@@ -287,7 +287,7 @@ class User extends Object implements JsonSerializable
      *
      * @param int $value the new value for $failedLogins
      */
-    public function setFailedLogins( $value )
+    public function setFailedLogins( $value = null )
     {
         $this->failedLogins = $value;
     }
@@ -312,7 +312,7 @@ class User extends Object implements JsonSerializable
      *
      * @param string $value the new value for $externalId
      */
-    public function setExternalId( $value )
+    public function setExternalId( $value = null )
     {
         $this->externalId = $value;
     }
@@ -337,7 +337,7 @@ class User extends Object implements JsonSerializable
      *
      * @param string $value the new value for $studentNumber
      */
-    public function setStudentNumber( $value )
+    public function setStudentNumber( $value = null )
     {
         $this->studentNumber = $value;
     }
@@ -362,7 +362,7 @@ class User extends Object implements JsonSerializable
      *
      * @param string $value the new value for $isSuperAdmin
      */
-    public function setIsSuperAdmin( $value )
+    public function setIsSuperAdmin( $value = null )
     {
         $this->isSuperAdmin = $value;
     }
@@ -387,7 +387,7 @@ class User extends Object implements JsonSerializable
      *
      * @param string $value the new value for $comment
      */
-    public function setComment( $value )
+    public function setComment( $value = null )
     {
         $this->comment = $value;
     }
@@ -692,11 +692,11 @@ class User extends Object implements JsonSerializable
                                                          false
                                                          );
                     
-                } else 
-                    $this->{
-                    $key
-                    
-                } = $value;
+                } else {
+                    $key = strtoupper($key[0]).substr($key,1);
+                    $func = "set".$key;
+                    $this->$func($value);
+                }
             }
         }
     }
@@ -737,7 +737,7 @@ class User extends Object implements JsonSerializable
         if ( is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
-                $result[] = new User( $value );
+                $result[] = new User( $value = null );
             }
             return $result;
             

@@ -34,7 +34,7 @@ class Invitation extends Object implements JsonSerializable
      *
      * @param string $value the new value for $member
      */
-    public function setMember( $value )
+    public function setMember( $value = null )
     {
         $this->member = $value;
     }
@@ -59,7 +59,7 @@ class Invitation extends Object implements JsonSerializable
      *
      * @param string $value the new value for $leader
      */
-    public function setLeader( $value )
+    public function setLeader( $value = null )
     {
         $this->leader = $value;
     }
@@ -84,7 +84,7 @@ class Invitation extends Object implements JsonSerializable
      *
      * @param string $value the new value for $sheet
      */
-    public function setSheet( $value )
+    public function setSheet( $value = null )
     {
         $this->sheet = $value;
     }
@@ -224,10 +224,9 @@ class Invitation extends Object implements JsonSerializable
                                          );
                     
                 } else {
-                    $this->{
-                        $key
-                        
-                    } = $value;
+                    $key = strtoupper($key[0]).substr($key,1);
+                    $func = "set".$key;
+                    $this->$func($value);
                 }
             }
         }
@@ -268,7 +267,7 @@ class Invitation extends Object implements JsonSerializable
         if ( is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
-                $result[] = new Invitation( $value );
+                $result[] = new Invitation( $value = null );
             }
             return $result;
             

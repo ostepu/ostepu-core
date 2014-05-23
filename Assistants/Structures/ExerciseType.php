@@ -35,7 +35,7 @@ class ExerciseType extends Object implements JsonSerializable
      *
      * @param string $value the new value for $id
      */
-    public function setId( $value )
+    public function setId( $value = null )
     {
         $this->id = $value;
     }
@@ -62,7 +62,7 @@ class ExerciseType extends Object implements JsonSerializable
      *
      * @param string $value the new value for $name
      */
-    public function setName( $value )
+    public function setName( $value = null )
     {
         $this->name = $value;
     }
@@ -96,10 +96,9 @@ class ExerciseType extends Object implements JsonSerializable
     {
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
-                $this->{
-                    $key
-                    
-                } = $value;
+                $key = strtoupper($key[0]).substr($key,1);
+                $func = "set".$key;
+                $this->$func($value);
             }
         }
     }
@@ -193,7 +192,7 @@ class ExerciseType extends Object implements JsonSerializable
         if ( is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
-                $result[] = new ExerciseType( $value );
+                $result[] = new ExerciseType( $value = null );
             }
             return $result;
             

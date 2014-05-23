@@ -33,7 +33,7 @@ class SelectedSubmission extends Object implements JsonSerializable
      *
      * @param string $value the new value for $leaderId
      */
-    public function setLeaderId( $value )
+    public function setLeaderId( $value = null )
     {
         $this->leaderId = $value;
     }
@@ -58,7 +58,7 @@ class SelectedSubmission extends Object implements JsonSerializable
      *
      * @param string $value the new value for $submissionId
      */
-    public function setSubmissionId( $value )
+    public function setSubmissionId( $value = null )
     {
         $this->submissionId = $value;
     }
@@ -83,7 +83,7 @@ class SelectedSubmission extends Object implements JsonSerializable
      *
      * @param string $value the new value for $exerciseId
      */
-    public function setExerciseId( $value )
+    public function setExerciseId( $value = null )
     {
         $this->exerciseId = $value;
     }
@@ -184,10 +184,9 @@ class SelectedSubmission extends Object implements JsonSerializable
     {
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
-                $this->{
-                    $key
-                    
-                } = $value;
+                $key = strtoupper($key[0]).substr($key,1);
+                $func = "set".$key;
+                $this->$func($value);
             }
         }
     }
@@ -228,7 +227,7 @@ class SelectedSubmission extends Object implements JsonSerializable
         if ( is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
-                $result[] = new SelectedSubmission( $value );
+                $result[] = new SelectedSubmission( $value = null );
             }
             return $result;
             

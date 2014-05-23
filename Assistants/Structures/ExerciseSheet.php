@@ -36,7 +36,7 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * @param string $value the new value for $id
      */
-    public function setId( $value )
+    public function setId( $value = null )
     {
         $this->id = $value;
     }
@@ -63,7 +63,7 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * @param string $value the new value for $courseId
      */
-    public function setCourseId( $value )
+    public function setCourseId( $value = null )
     {
         $this->courseId = $value;
     }
@@ -90,7 +90,7 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * @param date $value the new value for $endDate
      */
-    public function setEndDate( $value )
+    public function setEndDate( $value = null )
     {
         $this->endDate = $value;
     }
@@ -117,7 +117,7 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * @param date $value the new value for $startDate
      */
-    public function setStartDate( $value )
+    public function setStartDate( $value = null )
     {
         $this->startDate = $value;
     }
@@ -145,7 +145,7 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * @param file $value the new value for $zipFile
      */
-    public function setZipFile( $value )
+    public function setZipFile( $value = null )
     {
         $this->zipFile = $value;
     }
@@ -172,7 +172,7 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * @param file $value the new value for $sampleSolution
      */
-    public function setSampleSolution( $value )
+    public function setSampleSolution( $value = null )
     {
         $this->sampleSolution = $value;
     }
@@ -199,7 +199,7 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * @param file $value the new value for $sheetFile
      */
-    public function setSheetFile( $value )
+    public function setSheetFile( $value = null )
     {
         $this->sheetFile = $value;
     }
@@ -226,7 +226,7 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * @param Exercise[] $value the new value for $exercises
      */
-    public function setExercises( $value )
+    public function setExercises( $value = null )
     {
         $this->exercises = $value;
     }
@@ -253,7 +253,7 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * @param int $value the new value for $groupSize
      */
-    public function setGroupSize( $value )
+    public function setGroupSize( $value = null )
     {
         $this->groupSize = $value;
     }
@@ -275,7 +275,7 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * @param string $value the new value for $sheetName
      */
-    public function setSheetName( $value )
+    public function setSheetName( $value = null )
     {
         $this->sheetName = $value;
     }
@@ -447,10 +447,9 @@ class ExerciseSheet extends Object implements JsonSerializable
                                          );
                     
                 } else {
-                    $this->{
-                        $key
-                        
-                    } = $value;
+                    $key = strtoupper($key[0]).substr($key,1);
+                    $func = "set".$key;
+                    $this->$func($value);
                 }
             }
         }
@@ -491,7 +490,7 @@ class ExerciseSheet extends Object implements JsonSerializable
         if ( is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
-                $result[] = new ExerciseSheet( $value );
+                $result[] = new ExerciseSheet( $value = null );
             }
             return $result;
             

@@ -33,7 +33,7 @@ class Course extends Object implements JsonSerializable
      *
      * @param string $value the new value for $id
      */
-    public function setId( $value )
+    public function setId( $value = null )
     {
         $this->id = $value;
     }
@@ -58,7 +58,7 @@ class Course extends Object implements JsonSerializable
      *
      * @param $conf (description)
      */
-    public function setName( $value )
+    public function setName( $value = null )
     {
         $this->name = $value;
     }
@@ -83,7 +83,7 @@ class Course extends Object implements JsonSerializable
      *
      * @param string $value the new value for $semester
      */
-    public function setSemester( $value )
+    public function setSemester( $value = null )
     {
         $this->semester = $value;
     }
@@ -108,7 +108,7 @@ class Course extends Object implements JsonSerializable
      *
      * @param string $value the new value for $exerciseSheets
      */
-    public function setExerciseSheets( $value )
+    public function setExerciseSheets( $value = null )
     {
         $this->exerciseSheets = $value;
     }
@@ -133,7 +133,7 @@ class Course extends Object implements JsonSerializable
      *
      * @param int $value the new value for $defaultGroupSize
      */
-    public function setDefaultGroupSize( $value )
+    public function setDefaultGroupSize( $value = null )
     {
         $this->defaultGroupSize = $value;
     }
@@ -254,11 +254,11 @@ class Course extends Object implements JsonSerializable
                                                            false
                                                            );
                     
-                } else 
-                    $this->{
-                    $key
-                    
-                } = $value;
+                } else {
+                    $key = strtoupper($key[0]).substr($key,1);
+                    $func = "set".$key;
+                    $this->$func($value);
+                }
             }
         }
     }
@@ -298,7 +298,7 @@ class Course extends Object implements JsonSerializable
         if ( is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
-                $result[] = new Course( $value );
+                $result[] = new Course( $value = null );
             }
             return $result;
             

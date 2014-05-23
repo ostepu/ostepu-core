@@ -35,7 +35,7 @@ class ExternalId extends Object implements JsonSerializable
      *
      * @param string $value the new value for $id
      */
-    public function setId( $value )
+    public function setId( $value = null )
     {
         $this->id = $value;
     }
@@ -62,7 +62,7 @@ class ExternalId extends Object implements JsonSerializable
      *
      * @param Course $value the new value for $course
      */
-    public function setCourse( $value )
+    public function setCourse( $value = null )
     {
         $this->course = $value;
     }
@@ -105,11 +105,11 @@ class ExternalId extends Object implements JsonSerializable
                                    false
                                    );
                     
-                } else 
-                    $this->{
-                    $key
-                    
-                } = $value;
+                } else {
+                    $key = strtoupper($key[0]).substr($key,1);
+                    $func = "set".$key;
+                    $this->$func($value);
+                }
             }
         }
     }
@@ -205,7 +205,7 @@ class ExternalId extends Object implements JsonSerializable
         if ( is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
-                $result[] = new ExternalId( $value );
+                $result[] = new ExternalId( $value = null );
             }
             return $result;
             

@@ -33,7 +33,7 @@ class Link extends Object implements JsonSerializable
      *
      * @param string $value the new value for $id
      */
-    public function setId( $value )
+    public function setId( $value = null )
     {
         $this->id = $value;
     }
@@ -58,7 +58,7 @@ class Link extends Object implements JsonSerializable
      *
      * @param string $value the new value for $target
      */
-    public function setTarget( $value )
+    public function setTarget( $value = null )
     {
         $this->target = $value;
     }
@@ -83,7 +83,7 @@ class Link extends Object implements JsonSerializable
      *
      * @param string $value the new value for $owner
      */
-    public function setOwner( $value )
+    public function setOwner( $value = null )
     {
         $this->owner = $value;
     }
@@ -108,7 +108,7 @@ class Link extends Object implements JsonSerializable
      *
      * @param $conf (description)
      */
-    public function setName( $value )
+    public function setName( $value = null )
     {
         $this->name = $value;
     }
@@ -133,7 +133,7 @@ class Link extends Object implements JsonSerializable
      *
      * @param string $value the new value for $address
      */
-    public function setAddress( $value )
+    public function setAddress( $value = null )
     {
         $this->address = $value;
     }
@@ -158,7 +158,7 @@ class Link extends Object implements JsonSerializable
      *
      * @param string $value the new value for $relevanz
      */
-    public function setRelevanz( $value )
+    public function setRelevanz( $value = null )
     {
         $this->relevanz = $value;
     }
@@ -183,7 +183,7 @@ class Link extends Object implements JsonSerializable
      *
      * @param string $value the new value for $prefix
      */
-    public function setPrefix( $value )
+    public function setPrefix( $value = null )
     {
         $this->prefix = $value;
     }
@@ -194,7 +194,7 @@ class Link extends Object implements JsonSerializable
     {
         return $this->targetName;
     }
-    public function setTargetName( $value )
+    public function setTargetName( $value = null )
     {
         $this->targetName = $value;
     }
@@ -240,10 +240,9 @@ class Link extends Object implements JsonSerializable
 
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
-                $this->{
-                    $key
-                    
-                } = $value;
+                $key = strtoupper($key[0]).substr($key,1);
+                $func = "set".$key;
+                $this->$func($value);
             }
         }
     }
@@ -362,7 +361,7 @@ class Link extends Object implements JsonSerializable
         if ( is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
-                $result[] = new Link( $value );
+                $result[] = new Link( $value = null );
             }
             return $result;
             

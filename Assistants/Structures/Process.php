@@ -21,7 +21,7 @@ class Process extends Object implements JsonSerializable
     {
         return $this->exercise;
     }
-    public function setExercise( $value )
+    public function setExercise( $value = null )
     {
         $this->exercise = $value;
     }
@@ -31,7 +31,7 @@ class Process extends Object implements JsonSerializable
     {
         return $this->processId;
     }
-    public function setProcessId( $value )
+    public function setProcessId( $value = null )
     {
         $this->processId = $value;
     }
@@ -71,7 +71,7 @@ class Process extends Object implements JsonSerializable
     {
         return $this->target;
     }
-    public function setTarget( $value )
+    public function setTarget( $value = null )
     {
         $this->target = $value;
     }
@@ -81,7 +81,7 @@ class Process extends Object implements JsonSerializable
     {
         return $this->parameter;
     }
-    public function setParameter( $value )
+    public function setParameter( $value = null )
     {
         $this->parameter = $value;
     }
@@ -91,7 +91,7 @@ class Process extends Object implements JsonSerializable
     {
         return $this->attachment;
     }
-    public function setAttachment( $value )
+    public function setAttachment( $value = null )
     {
         $this->attachment = $value;
     } 
@@ -101,7 +101,7 @@ class Process extends Object implements JsonSerializable
     {
         return $this->workFiles;
     }
-    public function setWorkFiles( $value )
+    public function setWorkFiles( $value = null )
     {
         $this->workFiles = $value;
     } 
@@ -111,7 +111,7 @@ class Process extends Object implements JsonSerializable
     {
         return $this->rawSubmission;
     }
-    public function setRawSubmission( $value )
+    public function setRawSubmission( $value = null )
     {
         $this->rawSubmission = $value;
     } 
@@ -121,7 +121,7 @@ class Process extends Object implements JsonSerializable
     {
         return $this->submission;
     }
-    public function setSubmission( $value )
+    public function setSubmission( $value = null )
     {
         $this->submission = $value;
     } 
@@ -131,7 +131,7 @@ class Process extends Object implements JsonSerializable
     {
         return $this->marking;
     }
-    public function setMarking( $value )
+    public function setMarking( $value = null )
     {
         $this->marking = $value;
     }
@@ -313,11 +313,11 @@ class Process extends Object implements JsonSerializable
                                                            false
                                                            );
                     
-                } else
-                    $this->{
-                    $key
-                    
-                } = $value;
+                } else{
+                    $key = strtoupper($key[0]).substr($key,1);
+                    $func = "set".$key;
+                    $this->$func($value);
+                }
             }
         }
     }
@@ -357,7 +357,7 @@ class Process extends Object implements JsonSerializable
         if ( is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
-                $result[] = new Process( $value );
+                $result[] = new Process( $value = null );
             }
             return $result;
             

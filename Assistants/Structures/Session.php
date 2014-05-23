@@ -33,7 +33,7 @@ class Session extends Object implements JsonSerializable
      *
      * @param string $value the new value for $user
      */
-    public function setUser( $value )
+    public function setUser( $value = null )
     {
         $this->user = $value;
     }
@@ -58,7 +58,7 @@ class Session extends Object implements JsonSerializable
      *
      * @param string $value the new value for $session
      */
-    public function setSession( $value )
+    public function setSession( $value = null )
     {
         $this->session = $value;
     }
@@ -154,10 +154,9 @@ class Session extends Object implements JsonSerializable
                  $this->{$key} = new User($value,false);
                  }
                 else */
-                $this->{
-                    $key
-                    
-                } = $value;
+                $key = strtoupper($key[0]).substr($key,1);
+                $func = "set".$key;
+                $this->$func($value);
             }
         }
     }
@@ -198,7 +197,7 @@ class Session extends Object implements JsonSerializable
         if ( is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
-                $result[] = new Session( $value );
+                $result[] = new Session( $value = null );
             }
             return $result;
             

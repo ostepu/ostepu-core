@@ -33,7 +33,7 @@ class Backup extends Object implements JsonSerializable
      *
      * @param string $value the new value for $id
      */
-    public function setId( $value )
+    public function setId( $value = null )
     {
         $this->id = $value;
     }
@@ -58,7 +58,7 @@ class Backup extends Object implements JsonSerializable
      *
      * @param date $value the new value for $date
      */
-    public function setDate( $value )
+    public function setDate( $value = null )
     {
         $this->date = $value;
     }
@@ -83,7 +83,7 @@ class Backup extends Object implements JsonSerializable
      *
      * @param file $value the new value for $file
      */
-    public function setFile( $value )
+    public function setFile( $value = null )
     {
         $this->file = $value;
     }
@@ -145,10 +145,9 @@ class Backup extends Object implements JsonSerializable
     {
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
-                $this->{
-                    $key
-                    
-                } = $value;
+                $key = strtoupper($key[0]).substr($key,1);
+                $func = "set".$key;
+                $this->$func($value);
             }
         }
     }
@@ -188,7 +187,7 @@ class Backup extends Object implements JsonSerializable
         if ( is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
-                $result[] = new Backup( $value );
+                $result[] = new Backup( $value = null );
             }
             return $result;
             

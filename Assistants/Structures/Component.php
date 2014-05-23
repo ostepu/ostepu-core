@@ -33,7 +33,7 @@ class Component extends Object implements JsonSerializable
      *
      * @param string $value the new value for $id
      */
-    public function setId( $value )
+    public function setId( $value = null )
     {
         $this->id = $value;
     }
@@ -58,7 +58,7 @@ class Component extends Object implements JsonSerializable
      *
      * @param string $value the new value for $name
      */
-    public function setName( $value )
+    public function setName( $value = null )
     {
         $this->name = $value;
     }
@@ -83,7 +83,7 @@ class Component extends Object implements JsonSerializable
      *
      * @param string $value the new value for $address
      */
-    public function setAddress( $value )
+    public function setAddress( $value = null )
     {
         $this->address = $value;
     }
@@ -108,7 +108,7 @@ class Component extends Object implements JsonSerializable
      *
      * @param string $value the new value for $option
      */
-    public function setOption( $value )
+    public function setOption( $value = null )
     {
         $this->option = $value;
     }
@@ -133,7 +133,7 @@ class Component extends Object implements JsonSerializable
      *
      * @param string $value the new value for $prefix
      */
-    public function setPrefix( $value )
+    public function setPrefix( $value = null )
     {
         $this->prefix = $value;
     }
@@ -158,7 +158,7 @@ class Component extends Object implements JsonSerializable
      *
      * @param Link[] $value the new value for $links
      */
-    public function setLinks( $value )
+    public function setLinks( $value = null )
     {
         $this->links = $value;
     }
@@ -168,7 +168,7 @@ class Component extends Object implements JsonSerializable
     {
         return $this->status;
     }
-    public function setStatus( $value )
+    public function setStatus( $value = null )
     {
         $this->status = $value;
     }
@@ -290,11 +290,11 @@ class Component extends Object implements JsonSerializable
                                          false
                                          );
                     
-                } else 
-                    $this->{
-                    $key
-                    
-                } = $value;
+                } else {
+                    $key = strtoupper($key[0]).substr($key,1);
+                    $func = "set".$key;
+                    $this->$func($value);
+                }
             }
         }
     }
@@ -335,7 +335,7 @@ class Component extends Object implements JsonSerializable
         if ( is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
-                $result[] = new Component( $value );
+                $result[] = new Component( $value = null );
             }
             return $result;
             

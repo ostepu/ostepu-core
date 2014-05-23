@@ -33,7 +33,7 @@ class File extends Object implements JsonSerializable
      *
      * @param string $value the new value for $fileId
      */
-    public function setFileId( $value )
+    public function setFileId( $value = null )
     {
         $this->fileId = $value;
     }
@@ -58,7 +58,7 @@ class File extends Object implements JsonSerializable
      *
      * @param string $value the new value for $displayName
      */
-    public function setDisplayName( $value )
+    public function setDisplayName( $value = null )
     {
         $this->displayName = $value;
     }
@@ -83,7 +83,7 @@ class File extends Object implements JsonSerializable
      *
      * @param string $value the new value for $address
      */
-    public function setAddress( $value )
+    public function setAddress( $value = null )
     {
         $this->address = $value;
     }
@@ -109,7 +109,7 @@ class File extends Object implements JsonSerializable
      *
      * @param date $value the new value for $timeStamp
      */
-    public function setTimeStamp( $value )
+    public function setTimeStamp( $value = null )
     {
         $this->timeStamp = $value;
     }
@@ -134,7 +134,7 @@ class File extends Object implements JsonSerializable
      *
      * @param int $value the new value for $fileSize
      */
-    public function setFileSize( $value )
+    public function setFileSize( $value = null )
     {
         $this->fileSize = $value;
     }
@@ -160,7 +160,7 @@ class File extends Object implements JsonSerializable
      *
      * @param string $value the new value for $hash
      */
-    public function setHash( $value )
+    public function setHash( $value = null )
     {
         $this->hash = $value;
     }
@@ -185,7 +185,7 @@ class File extends Object implements JsonSerializable
      *
      * @param string $value the new value for $body
      */
-    public function setBody( $value )
+    public function setBody( $value = null )
     {
         $this->body = $value;
     }
@@ -210,7 +210,7 @@ class File extends Object implements JsonSerializable
      *
      * @param string $value the new value for $comment
      */
-    public function setComment( $value )
+    public function setComment( $value = null )
     {
         $this->comment = $value;
     }
@@ -352,10 +352,9 @@ class File extends Object implements JsonSerializable
 
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
-                $this->{
-                    $key
-                    
-                } = $value;
+                $key = strtoupper($key[0]).substr($key,1);
+                $func = "set".$key;
+                $this->$func($value);
             }
         }
     }
@@ -396,7 +395,7 @@ class File extends Object implements JsonSerializable
         if ( is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
-                $result[] = new File( $value );
+                $result[] = new File( $value = null );
             }
             return $result;
             

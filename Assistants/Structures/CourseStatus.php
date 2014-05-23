@@ -33,7 +33,7 @@ class CourseStatus extends Object implements JsonSerializable
      *
      * @param string $value the new value for $course
      */
-    public function setCourse( $value )
+    public function setCourse( $value = null )
     {
         $this->course = $value;
     }
@@ -58,7 +58,7 @@ class CourseStatus extends Object implements JsonSerializable
      *
      * @param string $value the new value for $status
      */
-    public function setStatus( $value )
+    public function setStatus( $value = null )
     {
         $this->status = $value;
     }
@@ -157,10 +157,9 @@ class CourseStatus extends Object implements JsonSerializable
                                              );
                     
                 } else {
-                    $this->{
-                        $key
-                        
-                    } = $value;
+                    $key = strtoupper($key[0]).substr($key,1);
+                    $func = "set".$key;
+                    $this->$func($value);
                 }
             }
         }
@@ -202,7 +201,7 @@ class CourseStatus extends Object implements JsonSerializable
         if ( is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
-                $result[] = new CourseStatus( $value );
+                $result[] = new CourseStatus( $value = null );
             }
             return $result;
             

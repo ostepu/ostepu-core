@@ -33,7 +33,7 @@ class Form extends Object implements JsonSerializable
      *
      * @param string $value the new value for $formId
      */
-    public function setFormId( $value )
+    public function setFormId( $value = null )
     {
         $this->formId = $value;
     }
@@ -88,7 +88,7 @@ class Form extends Object implements JsonSerializable
      *
      * @param string $value the new value for $exerciseId
      */
-    public function setExerciseId( $value )
+    public function setExerciseId( $value = null )
     {
         $this->exerciseId = $value;
     }
@@ -113,7 +113,7 @@ class Form extends Object implements JsonSerializable
      *
      * @param string $value the new value for $type
      */
-    public function setType( $value )
+    public function setType( $value = null )
     {
         $this->type = $value;
     }
@@ -138,7 +138,7 @@ class Form extends Object implements JsonSerializable
      *
      * @param string $value the new value for $solution
      */
-    public function setSolution( $value )
+    public function setSolution( $value = null )
     {
         $this->solution = $value;
     }
@@ -163,7 +163,7 @@ class Form extends Object implements JsonSerializable
      *
      * @param int $value the new value for $task
      */
-    public function setTask( $value )
+    public function setTask( $value = null )
     {
         $this->task = $value;
     }
@@ -188,7 +188,7 @@ class Form extends Object implements JsonSerializable
      *
      * @param string $value the new value for $choices
      */
-    public function setChoices( $value )
+    public function setChoices( $value = null )
     {
         $this->choices = $value;
     }
@@ -335,11 +335,11 @@ class Form extends Object implements JsonSerializable
                                                      false
                                                      );
 
-                } else
-                    $this->{
-                    $key
-
-                } = $value;
+                } else {
+                    $key = strtoupper($key[0]).substr($key,1);
+                    $func = "set".$key;
+                    $this->$func($value);
+                }
             }
         }
     }
@@ -379,7 +379,7 @@ class Form extends Object implements JsonSerializable
         if ( is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
-                $result[] = new Form( $value );
+                $result[] = new Form( $value = null );
             }
             return $result;
 

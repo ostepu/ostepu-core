@@ -33,7 +33,7 @@ class Attachment extends Object implements JsonSerializable
      *
      * @param string $value the new value for $id
      */
-    public function setId( $value )
+    public function setId( $value = null )
     {
         $this->id = $value;
     }
@@ -89,7 +89,7 @@ class Attachment extends Object implements JsonSerializable
      *
      * @param string $value the new value for $exerciseId
      */
-    public function setExerciseId( $value )
+    public function setExerciseId( $value = null )
     {
         $this->exerciseId = $value;
     }
@@ -114,7 +114,7 @@ class Attachment extends Object implements JsonSerializable
      *
      * @param file $value the new value for $file
      */
-    public function setFile( $value )
+    public function setFile( $value = null )
     {
         $this->file = $value;
     }
@@ -229,11 +229,11 @@ class Attachment extends Object implements JsonSerializable
                                          false
                                          );
                     
-                } else 
-                    $this->{
-                    $key
-                    
-                } = $value;
+                } else {
+                    $key = strtoupper($key[0]).substr($key,1);
+                    $func = "set".$key;
+                    $this->$func($value);
+                }
             }
         }
     }
@@ -273,7 +273,7 @@ class Attachment extends Object implements JsonSerializable
         if ( is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
-                $result[] = new Attachment( $value );
+                $result[] = new Attachment( $value = null );
             }
             return $result;
             

@@ -33,7 +33,7 @@ class Group extends Object implements JsonSerializable
      *
      * @param User[] $value the new value for $members
      */
-    public function setMembers( $value )
+    public function setMembers( $value = null )
     {
         $this->members = $value;
     }
@@ -58,7 +58,7 @@ class Group extends Object implements JsonSerializable
      *
      * @param User $value the new value for $leader
      */
-    public function setLeader( $value )
+    public function setLeader( $value = null )
     {
         $this->leader = $value;
     }
@@ -83,7 +83,7 @@ class Group extends Object implements JsonSerializable
      *
      * @param string $value the new value for $sheetId
      */
-    public function setSheetId( $value )
+    public function setSheetId( $value = null )
     {
         $this->sheetId = $value;
     }
@@ -201,11 +201,11 @@ class Group extends Object implements JsonSerializable
                                          false
                                          );
                     
-                } else 
-                    $this->{
-                    $key
-                    
-                } = $value;
+                } else {
+                    $key = strtoupper($key[0]).substr($key,1);
+                    $func = "set".$key;
+                    $this->$func($value);
+                }
             }
         }
     }
@@ -245,7 +245,7 @@ class Group extends Object implements JsonSerializable
         if ( is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
-                $result[] = new Group( $value );
+                $result[] = new Group( $value = null );
             }
             return $result;
             

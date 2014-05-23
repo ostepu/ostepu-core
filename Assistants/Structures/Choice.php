@@ -32,7 +32,7 @@ class Choice extends Object implements JsonSerializable
      *
      * @param string $value the new value for $choiceId
      */
-    public function setChoiceId( $value )
+    public function setChoiceId( $value = null )
     {
         $this->choiceId = $value;
     }
@@ -87,7 +87,7 @@ class Choice extends Object implements JsonSerializable
      *
      * @param string $value the new value for $formId
      */
-    public function setFormId( $value )
+    public function setFormId( $value = null )
     {
         $this->formId = $value;
     }
@@ -112,7 +112,7 @@ class Choice extends Object implements JsonSerializable
      *
      * @param string $value the new value for $text
      */
-    public function setText( $value )
+    public function setText( $value = null )
     {
         $this->text = $value;
     }
@@ -137,7 +137,7 @@ class Choice extends Object implements JsonSerializable
      *
      * @param string $value the new value for $correct
      */
-    public function setCorrect( $value )
+    public function setCorrect( $value = null )
     {
         $this->correct = $value;
     }
@@ -250,10 +250,9 @@ class Choice extends Object implements JsonSerializable
     {
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
-                $this->{
-                    $key
-
-                } = $value;
+                $key = strtoupper($key[0]).substr($key,1);
+                $func = "set".$key;
+                $this->$func($value);
             }
         }
     }
@@ -293,7 +292,7 @@ class Choice extends Object implements JsonSerializable
         if ( is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
-                $result[] = new Choice( $value );
+                $result[] = new Choice( $value = null );
             }
             return $result;
 

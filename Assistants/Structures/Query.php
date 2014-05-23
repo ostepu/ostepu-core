@@ -33,7 +33,7 @@ class Query extends Object implements JsonSerializable
      *
      * @param string $value the new value for $idrequest
      */
-    public function setRequest( $value )
+    public function setRequest( $value = null )
     {
         $this->request = $value;
     }
@@ -64,7 +64,7 @@ class Query extends Object implements JsonSerializable
      *
      * @param string[] $value the new value for $response
      */
-    public function setResponse( $value )
+    public function setResponse( $value = null )
     {
         $this->response = $value;
     }
@@ -89,7 +89,7 @@ class Query extends Object implements JsonSerializable
      *
      * @param int $value the new value for $errno
      */
-    public function setErrno( $value )
+    public function setErrno( $value = null )
     {
         $this->errno = $value;
     }
@@ -114,7 +114,7 @@ class Query extends Object implements JsonSerializable
      *
      * @param int $value the new value for $insertId
      */
-    public function setInsertId( $value )
+    public function setInsertId( $value = null )
     {
         $this->insertId = $value;
     }
@@ -139,7 +139,7 @@ class Query extends Object implements JsonSerializable
      *
      * @param int $value the new value for $affectedRows
      */
-    public function setAffectedRows( $value )
+    public function setAffectedRows( $value = null )
     {
         $this->affectedRows = $value;
     }
@@ -164,7 +164,7 @@ class Query extends Object implements JsonSerializable
      *
      * @param int $numRows the new value for $numRows
      */
-    public function setNumRows( $value )
+    public function setNumRows( $value = null )
     {
         $this->numRows = $value;
     }
@@ -189,7 +189,7 @@ class Query extends Object implements JsonSerializable
      *
      * @param bool $value the new value for $checkSession
      */
-    public function setCheckSession( $value )
+    public function setCheckSession( $value = null )
     {
         $this->checkSession = $value;
     }
@@ -210,10 +210,9 @@ class Query extends Object implements JsonSerializable
                 } = json_decode(json_encode($value),true);
             }
             else
-                $this->{
-                    $key
-                    
-                } = $value;
+                $key = strtoupper($key[0]).substr($key,1);
+                $func = "set".$key;
+                $this->$func($value);
             }
         }
     }
@@ -255,7 +254,7 @@ class Query extends Object implements JsonSerializable
         if ( is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
-                $result[] = new Query( $value );
+                $result[] = new Query( $value = null );
             }
             return $result;
             
