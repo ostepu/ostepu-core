@@ -35,7 +35,7 @@ class Marking extends Object implements JsonSerializable
      *
      * @param string $value the new value for $id
      */
-    public function setId( $value )
+    public function setId( $value = null )
     {
         $this->id = $value;
     }
@@ -60,7 +60,7 @@ class Marking extends Object implements JsonSerializable
      *
      * @param Submission $value the new value for $submission
      */
-    public function setSubmission( $value )
+    public function setSubmission( $value = null )
     {
         $this->submission = $value;
     }
@@ -85,7 +85,7 @@ class Marking extends Object implements JsonSerializable
      *
      * @param string $value the new value for $tutorId
      */
-    public function setTutorId( $value )
+    public function setTutorId( $value = null )
     {
         $this->tutorId = $value;
     }
@@ -110,7 +110,7 @@ class Marking extends Object implements JsonSerializable
      *
      * @param string $value the new value for $tutorComment
      */
-    public function setTutorComment( $value )
+    public function setTutorComment( $value = null )
     {
         $this->tutorComment = $value;
     }
@@ -135,7 +135,7 @@ class Marking extends Object implements JsonSerializable
      *
      * @param file $value the new value for $file
      */
-    public function setFile( $value )
+    public function setFile( $value = null )
     {
         $this->file = $value;
     }
@@ -162,7 +162,7 @@ class Marking extends Object implements JsonSerializable
      *
      * @param int $value the new value for $points
      */
-    public function setPoints( $value )
+    public function setPoints( $value = null )
     {
         $this->points = $value;
     }
@@ -187,7 +187,7 @@ class Marking extends Object implements JsonSerializable
      *
      * @param bool $value the new value for $outstanding
      */
-    public function setOutstanding( $value )
+    public function setOutstanding( $value = null )
     {
         $this->outstanding = $value;
     }
@@ -212,7 +212,7 @@ class Marking extends Object implements JsonSerializable
      *
      * @param string $value the new value for $status
      */
-    public function setStatus( $value )
+    public function setStatus( $value = null )
     {
         $this->status = $value;
     }
@@ -237,7 +237,7 @@ class Marking extends Object implements JsonSerializable
      *
      * @param date $value the new value for $date
      */
-    public function setDate( $value )
+    public function setDate( $value = null )
     {
         $this->date = $value;
     }
@@ -262,7 +262,7 @@ class Marking extends Object implements JsonSerializable
      *
      * @param hideFile $value the new value for $hideFile
      */
-    public function setHideFile( $value )
+    public function setHideFile( $value = null )
     {
         $this->hideFile = $value;
     }
@@ -485,11 +485,14 @@ class Marking extends Object implements JsonSerializable
                                                      false
                                                      );
                     
-                } else 
-                    $this->{
-                    $key
-                    
-                } = $value;
+                } else {
+                    $func = 'set' . strtoupper($key[0]).substr($key,1);
+                    $methodVariable = array($this, $func);
+                    if (is_callable($methodVariable)){
+                        $this->$func($value);
+                    } else
+                        $this->{$key} = $value;
+                }
             }
         }
     }
@@ -564,7 +567,7 @@ class Marking extends Object implements JsonSerializable
             $list['date'] = $this->date;
         if ( $this->hideFile !== null )
             $list['hideFile'] = $this->hideFile;
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 
     public static function ExtractMarking( 

@@ -18,7 +18,7 @@ class Pdf extends Object implements JsonSerializable
     {
         return $this->text;
     }
-    public function setText( $value )
+    public function setText( $value = null )
     {
         $this->text = $value;
     }
@@ -28,7 +28,7 @@ class Pdf extends Object implements JsonSerializable
     {
         return $this->orientation;
     }
-    public function setOrientation( $value )
+    public function setOrientation( $value = null )
     {
         $this->orientation = $value;
     }
@@ -38,7 +38,7 @@ class Pdf extends Object implements JsonSerializable
     {
         return $this->font;
     }
-    public function setFont( $value )
+    public function setFont( $value = null )
     {
         $this->font = $value;
     }
@@ -48,7 +48,7 @@ class Pdf extends Object implements JsonSerializable
     {
         return $this->fontSize;
     }
-    public function setFontSize( $value )
+    public function setFontSize( $value = null )
     {
         $this->fontSize = $value;
     }
@@ -58,7 +58,7 @@ class Pdf extends Object implements JsonSerializable
     {
         return $this->textColor;
     }
-    public function setTextColor( $value )
+    public function setTextColor( $value = null )
     {
         $this->textColor = $value;
     }
@@ -68,7 +68,7 @@ class Pdf extends Object implements JsonSerializable
     {
         return $this->subject;
     }
-    public function setSubject( $value )
+    public function setSubject( $value = null )
     {
         $this->subject = $value;
     }
@@ -78,7 +78,7 @@ class Pdf extends Object implements JsonSerializable
     {
         return $this->title;
     }
-    public function setTitle( $value )
+    public function setTitle( $value = null )
     {
         $this->title = $value;
     }
@@ -88,7 +88,7 @@ class Pdf extends Object implements JsonSerializable
     {
         return $this->author;
     }
-    public function setAuthor( $value )
+    public function setAuthor( $value = null )
     {
         $this->author = $value;
     }
@@ -98,7 +98,7 @@ class Pdf extends Object implements JsonSerializable
     {
         return $this->format;
     }
-    public function setFormat( $value )
+    public function setFormat( $value = null )
     {
         $this->format = $value;
     }
@@ -108,7 +108,7 @@ class Pdf extends Object implements JsonSerializable
     {
         return $this->creator;
     }
-    public function setCreator( $value )
+    public function setCreator( $value = null )
     {
         $this->creator = $value;
     }
@@ -174,10 +174,12 @@ class Pdf extends Object implements JsonSerializable
     {
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
-                    $this->{
-                    $key
-
-                } = $value;
+                $func = 'set' . strtoupper($key[0]).substr($key,1);
+                $methodVariable = array($this, $func);
+                if (is_callable($methodVariable)){
+                    $this->$func($value);
+                } else
+                    $this->{$key} = $value;
             }
         }
     }
@@ -253,7 +255,7 @@ class Pdf extends Object implements JsonSerializable
             $list['format'] = $this->format;
         if ( $this->creator !== null )
             $list['creator'] = $this->creator;
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 }
 

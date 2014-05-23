@@ -35,7 +35,7 @@ class ExerciseFileType extends Object implements JsonSerializable
      *
      * @param string $value the new value for $id
      */
-    public function setId( $value )
+    public function setId( $value = null )
     {
         $this->id = $value;
     }
@@ -62,7 +62,7 @@ class ExerciseFileType extends Object implements JsonSerializable
      *
      * @param string $value the new value for $text
      */
-    public function setText( $value )
+    public function setText( $value = null )
     {
         $this->text = $value;
     }
@@ -89,7 +89,7 @@ class ExerciseFileType extends Object implements JsonSerializable
      *
      * @param string $value the new value for $exerciseId
      */
-    public function setExerciseId( $value )
+    public function setExerciseId( $value = null )
     {
         $this->exerciseId = $value;
     }
@@ -126,10 +126,12 @@ class ExerciseFileType extends Object implements JsonSerializable
     {
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
-                $this->{
-                    $key
-                    
-                } = $value;
+                $func = 'set' . strtoupper($key[0]).substr($key,1);
+                $methodVariable = array($this, $func);
+                if (is_callable($methodVariable)){
+                    $this->$func($value);
+                } else
+                    $this->{$key} = $value;
             }
         }
     }
@@ -252,7 +254,7 @@ class ExerciseFileType extends Object implements JsonSerializable
             $list['text'] = $this->text;
         if ( $this->exerciseId !== null )
             $list['exerciseId'] = $this->exerciseId;
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 
     public static function ExtractExerciseFileType( 

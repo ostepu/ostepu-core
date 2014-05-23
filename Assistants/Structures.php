@@ -47,7 +47,7 @@ abstract class Object
      *
      * type: string
      */
-    private $sender;
+    private $sender = null;
 
     /**
      * the $sender getter
@@ -64,9 +64,56 @@ abstract class Object
      *
      * @param string $value the new value for $sender
      */
-    public function setSender( $_value )
+    public function setSender( $_value = null )
     {
         $this->sender = $_value;
+    }
+    
+    private $status = null;
+    public function getStatus( )
+    {
+        return $this->status;
+    }
+    public function setStatus( $_value = null )
+    {
+        $this->status = $_value;
+    }
+    
+    private $statusText = null;
+    public function getStatusText( )
+    {
+        return $this->statusText;
+    }
+    public function setStatusText( $_value = null )
+    {
+        $this->statusText = $_value;
+    }
+    
+    private $structure = null;
+    public function getStructure( )
+    {
+        return $this->structure;
+    }
+    public function setStructure( $_value = null )
+    {
+        $this->structure = $_value;
+    }
+    
+    /**
+     * the json serialize function
+     */
+    public function jsonSerialize( )
+    {
+        $list = array( );
+        if ( $this->sender !== null )
+            $list['sender'] = $this->sender;
+        if ( $this->status !== null )
+            $list['status'] = $this->status;
+        if ( $this->statusText !== null )
+            $list['statusText'] = $this->statusText;
+        if ( $this->structure !== null )
+            $list['structure'] = $this->structure;
+        return $list;
     }
 
     /**

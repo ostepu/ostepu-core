@@ -33,7 +33,7 @@ class TutorAssignment extends Object implements JsonSerializable
      *
      * @param User $value the new value for $tutor
      */
-    public function setTutor( $value )
+    public function setTutor( $value = null )
     {
         $this->tutor = $value;
     }
@@ -58,7 +58,7 @@ class TutorAssignment extends Object implements JsonSerializable
      *
      * @param string[] $value the new value for $submissionIds
      */
-    public function setSubmissionIds( $value )
+    public function setSubmissionIds( $value = null )
     {
         $submissionIds = $value;
     }

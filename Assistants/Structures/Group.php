@@ -33,7 +33,7 @@ class Group extends Object implements JsonSerializable
      *
      * @param User[] $value the new value for $members
      */
-    public function setMembers( $value )
+    public function setMembers( $value = null )
     {
         $this->members = $value;
     }
@@ -58,7 +58,7 @@ class Group extends Object implements JsonSerializable
      *
      * @param User $value the new value for $leader
      */
-    public function setLeader( $value )
+    public function setLeader( $value = null )
     {
         $this->leader = $value;
     }
@@ -83,7 +83,7 @@ class Group extends Object implements JsonSerializable
      *
      * @param string $value the new value for $sheetId
      */
-    public function setSheetId( $value )
+    public function setSheetId( $value = null )
     {
         $this->sheetId = $value;
     }
@@ -201,11 +201,14 @@ class Group extends Object implements JsonSerializable
                                          false
                                          );
                     
-                } else 
-                    $this->{
-                    $key
-                    
-                } = $value;
+                } else {
+                    $func = 'set' . strtoupper($key[0]).substr($key,1);
+                    $methodVariable = array($this, $func);
+                    if (is_callable($methodVariable)){
+                        $this->$func($value);
+                    } else
+                        $this->{$key} = $value;
+                }
             }
         }
     }
@@ -265,7 +268,7 @@ class Group extends Object implements JsonSerializable
             $list['leader'] = $this->leader;
         if ( $this->sheetId !== null )
             $list['sheetId'] = $this->sheetId;
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 
     public static function ExtractGroup( 

@@ -33,7 +33,7 @@ class SelectedSubmission extends Object implements JsonSerializable
      *
      * @param string $value the new value for $leaderId
      */
-    public function setLeaderId( $value )
+    public function setLeaderId( $value = null )
     {
         $this->leaderId = $value;
     }
@@ -58,7 +58,7 @@ class SelectedSubmission extends Object implements JsonSerializable
      *
      * @param string $value the new value for $submissionId
      */
-    public function setSubmissionId( $value )
+    public function setSubmissionId( $value = null )
     {
         $this->submissionId = $value;
     }
@@ -83,7 +83,7 @@ class SelectedSubmission extends Object implements JsonSerializable
      *
      * @param string $value the new value for $exerciseId
      */
-    public function setExerciseId( $value )
+    public function setExerciseId( $value = null )
     {
         $this->exerciseId = $value;
     }
@@ -184,10 +184,12 @@ class SelectedSubmission extends Object implements JsonSerializable
     {
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
-                $this->{
-                    $key
-                    
-                } = $value;
+                $func = 'set' . strtoupper($key[0]).substr($key,1);
+                $methodVariable = array($this, $func);
+                if (is_callable($methodVariable)){
+                    $this->$func($value);
+                } else
+                    $this->{$key} = $value;
             }
         }
     }
@@ -248,7 +250,7 @@ class SelectedSubmission extends Object implements JsonSerializable
             $list['submissionId'] = $this->submissionId;
         if ( $this->exerciseId !== null )
             $list['exerciseId'] = $this->exerciseId;
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 
     public static function ExtractSelectedSubmission( 
