@@ -265,49 +265,53 @@ class LOOP
         $res = array( );
         foreach ( $process as $pro ){
             $eid = $pro->getExercise()->getId();
-                                
-            // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
-                 $result['status'] <= 299 ){
 
-                $file = $pro->getRawSubmission()->getFile();
-                $timestamp = $file->getTimeStamp();
-                if ($timestamp === null) 
-                    $timestamp = time();
-                
+            $file = $pro->getRawSubmission()->getFile();
+            $timestamp = $file->getTimeStamp();
+            if ($timestamp === null) 
+                $timestamp = time();
+            
+            if ($file !== null){
+                $fileName = $file->getDisplayName();
+                $file = base64_decode($file->getBody());
+              
                 if ($file !== null){
-                    $fileName = $file->getDisplayName();
-                    $file = base64_decode($file->getBody());
-                  
-                    if ($file !== null){
-                        $fail = false;
-                        
-                        $fileHash = sha1($file);
+                    $fail = false;
                     
-                        $filePath = '/tmp/'.$fileHash;
-                        LOOP::generatepath($filePath);
-                        file_put_contents($filePath . '/' . $fileName);  
+                    $fileHash = sha1($file);
+                
+                    $filePath = '/tmp/'.$fileHash;
+                    LOOP::generatepath($filePath);
+                    file_put_contents($filePath . '/' . $fileName, $file);  
 
-                        $output = array();
-                        $return = '';
-                        exec('(./start_cx '.$filePath . '/' . $fileName.') 2>&1', $output, $return);
-                        
-                        if (count($output)>0 && $output[count($output)-1] === '201'){
-                         // nothing
-                        }
-                        else{
-                            $pro = null;
-                            $this->app->response->setStatus( 409 );
-                        }
-                        
-                        
-                        $res[] = $pro;          
-                        continue;
+                    $output = array();
+                    $return = '';
+                    exec('(./start_cx '.$filePath . '/' . $fileName.') 2>&1', $output, $return);
+                   // $output = array("Fehlertext",'409');
+                    
+                    if (count($output)>0 && $output[count($output)-1] === '201'){
+                        // nothing
+                        $pro->setStatus(201);
                     }
-                }                             
-            }
-            $this->app->response->setStatus( 409 );
-            $res[] = null;
+                    else{
+                        $pro->setStatus(409);
+                        if (count($output)>0){
+                        $text = '';
+                            unset($output[count($output)-1]);
+                            foreach($output as $out){
+                                $pos = strpos($out, ':');
+                                $text.=substr($out,$pos+1)."\n";
+                            }
+                            $pro->setStatusText($text);
+                        }
+                        $this->app->response->setStatus( 409 );
+                    }
+                    
+                    
+                    $res[] = $pro;          
+                    continue;
+                }
+            }                             
         }
 
  
@@ -326,22 +330,9 @@ class LOOP
      */
     public static function generatepath( $path )
     {
-        $parts = explode( 
-                         '/',
-                         $path
-                         );
-        if ( count( $parts ) > 0 ){
-            $path = $parts[0];
-            for ( $i = 1;$i <= count( $parts );$i++ ){
-                if ( !is_dir( $path ) )
-                    mkdir( 
-                          $path,
-                          0755
-                          );
-                if ( $i < count( $parts ) )
-                    $path .= '/' . $parts[$i];
-            }
-        }
+        if (!is_dir($path))          
+            mkdir( $path , 0777, true);
+        chmod( $path, 0777);
     }
 }
 

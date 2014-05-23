@@ -480,22 +480,32 @@ class LProcessor
                     
                     if ($process->getExercise()===null)
                         $process->setExercise($pro->getExercise());
-                                
+
                     $result = Request::post($component->getAddress().'/process', array(),  Process::encodeProcess($process));
                     
                     if ( $result['status'] >= 200 && 
                          $result['status'] <= 299 ){
-                        $process = Process::decodeProcess( $result['content'] );
-                       // var_dump($result);
+                         $process = Process::decodeProcess( $result['content'] ); 
+            
                     } else {
-                       $fail = true;
+                        $fail = true;
+                        $submission->setStatusText("Beim Verarbeiten der Einsendung ist ein Fehler aufgetreten\n\n".$submission->getStatusText());
+                        
+                        if (isset($result['content'])){
+                            $content = Process::decodeProcess($result['content']); 
+                            $submission->setStatus($content->getStatus());  
+                            $submission->setStatusText($submission->getStatusText().$content->getStatusText());
+                        }
                        break;
                     }
                 }
             }
             
             if ($fail){
-                $res[] = null;
+                if (isset($submission))
+                $submission->setFile(null);
+
+                $res[] = $submission;
                 $this->app->response->setStatus( 409 );
                 continue;
             }
@@ -525,7 +535,13 @@ class LProcessor
                     
               // var_dump($queryResult);
                 } else {
-                   $res[] = null;
+                    if (isset($result['content'])){
+                        $content = Submission::decodeSubmission($result['content']);
+                        $uploadSubmission->setStatus($content->getStatus());  
+                        $uploadSubmission->setStatusText($content->getStatusText()); 
+                   }
+            
+                   $res[] = $uploadSubmission;
                    $this->app->response->setStatus( 409 );
                    continue;
                 }
@@ -546,9 +562,8 @@ class LProcessor
                 if ( $result['status'] >= 200 && 
                      $result['status'] <= 299 ){
                     $queryResult = Marking::decodeMarking( $result['content'] );
-            //  var_dump($queryResult);
                 } else {
-                   $res[] = null;
+                   $res[] = $uploadSubmission;
                    $this->app->response->setStatus( 409 );
                    continue;
                 }
