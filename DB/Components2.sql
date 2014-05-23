@@ -54,6 +54,7 @@ INSERT IGNORE INTO `Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) V
 INSERT IGNORE INTO `Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (51, 'DBAttachment2', 'localhost/uebungsplattform/DB/DBAttachment2/processAttachment', '');
 INSERT IGNORE INTO `Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (52, 'DBAttachment2', 'localhost/uebungsplattform/DB/DBAttachment2/processWorkFiles', '');
 INSERT IGNORE INTO `Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (53, 'LExtension', 'localhost/uebungsplattform/logic/LExtension', '');
+INSERT IGNORE INTO `Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (54, 'LOOP', 'localhost/uebungsplattform/logic/LOOP', '');
 INSERT IGNORE INTO `Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (55, 'DBProcessList', 'localhost/uebungsplattform/DB/DBProcess/processList', '');
 COMMIT;
 
@@ -143,11 +144,13 @@ INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (48, 'processorDb', '', 50);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (48, 'process', '', 45);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (48, 'process', '', 46);
+INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (48, 'process', '', 54);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (50, 'out', '', 39);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (45, 'formDb', '', 43);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (46, 'formDb', '', 43);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (45, 'pdf', '', 19);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (46, 'pdf', '', 19);
+INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (54, 'pdf', '', 19);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (15, 'out', '', 6);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (53, 'extension', '', 47);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (43, 'postCourse', '', 44);
@@ -172,14 +175,19 @@ INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (48, 'postCourse', '', 55);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (53, 'extension', '', 45);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (53, 'extension', '', 46);
+INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (53, 'extension', '', 54);
+INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (53, 'extension', '', 48);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (55, 'out', '', 39);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (45, 'postProcess', '', 55);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (46, 'postProcess', '', 55);
+INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (54, 'postProcess', '', 55);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (45, 'deleteProcess', '', 55);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (46, 'deleteProcess', '', 55);
+INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (54, 'deleteProcess', '', 55);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (45, 'getProcess', '', 55);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (46, 'getProcess', '', 55);
-#INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (00, '', '', 00);
+INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (54, 'getProcess', '', 55);
+INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (15, 'out', '', 48);
 #INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (00, '', '', 00);
 #INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (00, '', '', 00);
 #INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (00, '', '', 00);

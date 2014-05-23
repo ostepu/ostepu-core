@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS `Choice{$preChoice}_{$object->getId()}` (
   `FO_id` INT NOT NULL,
   `CH_text` VARCHAR(255) NULL DEFAULT '',
   `CH_correct` INT NULL DEFAULT 0,
+  `S_id` INT NULL,
   PRIMARY KEY (`CH_id`),
   UNIQUE INDEX `CH_id_UNIQUE` (`CH_id` ASC),
   INDEX `redundanz16{$preChoice}_{$object->getId()}` (`E_id` ASC, `FO_id` ASC),
@@ -28,7 +29,12 @@ CREATE TABLE IF NOT EXISTS `Choice{$preChoice}_{$object->getId()}` (
     FOREIGN KEY (`E_id` , `FO_id`)
     REFERENCES `Form{$preForm}_{$object->getId()}` (`E_id` , `FO_id`)
     ON DELETE NO ACTION
-    ON UPDATE CASCADE)
+    ON UPDATE CASCADE,
+  CONSTRAINT `fk_Choice_Submission1`
+    FOREIGN KEY (`S_id`)
+    REFERENCES `uebungsplattform`.`Submission` (`S_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
 AUTO_INCREMENT = 1;
 
