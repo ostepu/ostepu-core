@@ -314,9 +314,9 @@ class Process extends Object implements JsonSerializable
                                                            );
                     
                 } else{
-                    $func = strtoupper($key[0]).substr($key,1);
-                    $func = "set".$func;
-                    if (function_exists($this->$func)){
+                    $func = 'set' . strtoupper($key[0]).substr($key,1);
+                    $methodVariable = array($this, $func);
+                    if (is_callable($methodVariable)){
                         $this->$func($value);
                     } else
                         $this->{$key} = $value;
