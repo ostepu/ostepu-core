@@ -340,7 +340,7 @@ if (isset($_POST['action'])) {
 
             if ($message == "201") {
                 $notifications[] = MakeNotification('success',
-                                                    'Der Beutzer wurde'
+                                                    'Der Nutzer wurde'
                                                     .' erfolgreich in die'
                                                     .' Veranstaltung eingetragem.');
             } else {
