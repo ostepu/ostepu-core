@@ -131,11 +131,9 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                     }
 
                     // evaluate mime-types
-                    $mimeTypesForm = explode(",", $subexercise['mime-type']);
-                    
-
-                        $mimeTypes = array();
+                    $mimeTypes = array();
                     if (!isset($subexercise['type'])){    
+                        $mimeTypesForm = explode(",", $subexercise['mime-type']);
                         foreach ($mimeTypesForm as &$mimeType) {
                             if (FILE_TYPE::checkSupportedFileType(trim(strtolower($mimeType))) == false) {
                                 $errormsg = "Sie haben eine nicht unterstützte Dateiendung verwendet.";
@@ -255,7 +253,7 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
 
                 $output2 = http_post_data($logicURI."/exercise", $exercisesJSON, true, $message);
                 $exercises = Exercise::decodeExercise($output2);
-                if ($message != 201) {echo "fail"; return;
+                if ($message != 201) {
                     $errorInSent = true;
                     break;
                 }
