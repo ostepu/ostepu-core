@@ -11,6 +11,7 @@
 require_once ( '../../Assistants/Slim/Slim.php' );
 include_once ( '../../Assistants/CConfig.php' );
 include_once ( '../../Assistants/Structures.php' );
+include_once ( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
 
@@ -149,15 +150,29 @@ class FSBinder
             FSBinder::generatepath( dirname( $filePath ) );
 
             // writes the file to filesystem
-            $file = fopen( 
+            $file = fopen(
                           $filePath,
                           'w'
                           );
-            fwrite( 
-                   $file,
-                   base64_decode( $fileobject->getBody( ) )
-                   );
-            fclose( $file );
+            if ($file){
+                fwrite( 
+                       $file,
+                       base64_decode( $fileobject->getBody( ) )
+                       );
+                fclose( $file );
+                
+            }else{
+            $fileobject->setBody( null );
+            $fileobject->addMessage("Datei konnte nicht im Dateisystem angelegt werden.");
+            Logger::Log( 
+                    'POST postFile failed',
+                    LogLevel::ERROR
+                    );
+                    
+            $this->_app->response->setBody( File::encodeFile( $fileobject ) );
+            $this->_app->response->setStatus( 409 );
+            $this->_app->stop();
+            }
         }
 
         // resets the file content
