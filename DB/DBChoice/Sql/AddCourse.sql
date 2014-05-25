@@ -30,9 +30,9 @@ CREATE TABLE IF NOT EXISTS `Choice{$preChoice}_{$object->getId()}` (
     REFERENCES `Form{$preForm}_{$object->getId()}` (`E_id` , `FO_id`)
     ON DELETE NO ACTION
     ON UPDATE CASCADE,
-  CONSTRAINT `fk_Choice_Submission1`
+  CONSTRAINT `fk_Choice_Submission1{$preChoice}_{$object->getId()}`
     FOREIGN KEY (`S_id`)
-    REFERENCES `uebungsplattform`.`Submission` (`S_id`)
+    REFERENCES `Submission` (`S_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
