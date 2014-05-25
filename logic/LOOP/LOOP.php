@@ -299,10 +299,10 @@ class LOOP
                         $text = '';
                             unset($output[count($output)-1]);
                             foreach($output as $out){
-                                $pos = strpos($out, ':');
-                                $text.=substr($out,$pos+1)."\n";
+                                $pos = strpos($out, ',');
+                                $text.=$fileName.': '.substr($out,$pos+1)."\n";
                             }
-                            $pro->setStatusText($text);
+                            $pro->addMessage($text);
                         }
                         $this->app->response->setStatus( 409 );
                     }
