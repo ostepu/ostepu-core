@@ -90,19 +90,38 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
                     $uploadSubmission->setSelectedForGroup('1');
 
                     $URL = $serverURI.'/logic/LProcessor/submission';
-              //    echo Submission::encodeSubmission($uploadSubmission);
+//echo Submission::encodeSubmission($uploadSubmission);return;
 
                     $result = http_post_data($URL, Submission::encodeSubmission($uploadSubmission), true, $message);
+//var_dump($result);   return;  
 
                     if ($message != "201") {
+                        $result = Submission::decodeSubmission($result);
                         $exercise = $key + 1;
-                        $errormsg = "{$message}: Aufgabe ".$exercise['name']." konnte nicht hochgeladen werden.";
+                        $errormsg = "{$message}: Aufgabe ".$exercise['name']." konnte nicht hochgeladen werden.<br><br>";
+                        
+                        $messages = $result->getMessages();
+                        foreach ($messages as $message){
+                            $errormsg.=str_replace("\n",'<br>',$message).'<br>';
+                        }
+                        
                         $notifications[] = MakeNotification('error',
                                                             $errormsg);
                         continue;
                     }
+                    else{
+                        $result = Submission::decodeSubmission($result);
+                        $messages = $result->getMessages();
+                        
+                        if ($messages !== null){
+                            foreach ($messages as $message){
+                                $errormsg.=str_replace("\n",'<br>',$message).'<br>';
+                            }
+                        }
+                    }
+                  
 
-                    $msg = "Aufgabe ".$exercise['name']." wurde erfolgreich eingesendet.";
+                    $msg = "Aufgabe ".$exercise['name']." wurde erfolgreich eingesendet.<br>".$errormsg;
                     $notifications[] = MakeNotification('success',
                                                         $msg);
                 }
