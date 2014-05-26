@@ -6,6 +6,7 @@ function deleteProcessor(event) {
     container.slideToggle('fast', function() {
     container[0].parentNode.removeChild(container[0]);
     container2[0].parentNode.removeChild(container2[0]);
+    renameProcessor();
     });
     
 }
@@ -17,9 +18,7 @@ trig = trig.parent().parent();
     // append content to last exercise
     $.get("include/CreateSheet/Processor/Processor.template.php", function (data) {
 
-        trig.before(data);
-       // trig.hide().fadeOut('fast');
-       // trig.parent().parent().find('.mime-field').first().attr("disabled", "disabled");   
+        trig.before(data);  
 
         // animate new element
         trig.parent().find('.processor').last().hide().fadeIn('fast');
