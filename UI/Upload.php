@@ -36,7 +36,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
             $exerciseId = cleanInput($exercise['exerciseID']);
             $fileName = "file{$exerciseId}";
             
-            #region Form to PDF
+            #region generate form-data
             $formdata = array();
             if(isset($exercise['choices'])){
                 $formtext = $exercise['choices'];
@@ -100,9 +100,11 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
                         $exercise = $key + 1;
                         $errormsg = "{$message}: Aufgabe ".$exercise['name']." konnte nicht hochgeladen werden.<br><br>";
                         
-                        $messages = $result->getMessages();
-                        foreach ($messages as $message){
-                            $errormsg.=str_replace("\n",'<br>',$message).'<br>';
+                        if ($result!==null){
+                            $messages = $result->getMessages();
+                            foreach ($messages as $message){
+                                $errormsg.=str_replace("\n",'<br>',$message).'<br>';
+                            }
                         }
                         
                         $notifications[] = MakeNotification('error',
@@ -111,6 +113,43 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
                     }
                     else{
                         $result = Submission::decodeSubmission($result);
+                        
+                        // if using forms, upload user input
+                        if(isset($exercise['choices'])){
+                            if (!is_array($submissionIds))
+                                $submissionIds = array($submissionIds);
+
+                            $i=0;    
+                            foreach($formdata as &$form){
+                                $choices = $form->getChoices();
+                                foreach($choices as &$choice){
+                                    $choice->setSubmissionId($result->getId());
+                                }
+                                
+                                $URL = $serverURI.'/DB/DBChoice/formResult/choice';
+                                $result2 = http_post_data($URL, Choice::encodeChoice($choices), true, $message);
+                                
+                                    if ($message != "201") {
+                                        $result2 = Choice::decodeChoice($result2);
+                                        $exercise = $key + 1;
+                                        $errormsg = "{$message}: Aufgabe ".$exercise['name']." konnte nicht hochgeladen werden.<br><br>";
+                                        
+                                        if ($result2!==null){
+                                            $messages2 = $result2->getMessages();
+                                            foreach ($messages2 as $message){
+                                                $errormsg.=str_replace("\n",'<br>',$message).'<br>';
+                                            }
+                                        }
+                                        
+                                        $notifications[] = MakeNotification('error',
+                                                                            $errormsg);
+                                        continue;
+                                    }
+                                $i++;
+                            }
+                        
+                        }
+                        
                         $messages = $result->getMessages();
                         
                         if ($messages !== null){
