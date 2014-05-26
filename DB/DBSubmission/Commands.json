@@ -1,0 +1,20 @@
+[
+    {"method":"PUT", "path":"/submission(/submission)/:suid(/)"},
+    {"method":"DELETE", "path":"/submission(/submission)/:suid(/)"},
+    {"method":"POST", "path":"/submission(/)"},
+    {"method":"GET", "path":"/submission/exercise/:eid(/)"},
+    {"method":"GET", "path":"/submission/user/:userid/exercise/:eid(/)"},
+    {"method":"GET", "path":"/submission/user/:userid/exercisesheet/:esid(/)"},
+    {"method":"GET", "path":"/submission/group/user/:userid/exercisesheet/:esid(/)"},
+    {"method":"GET", "path":"/submission/group/user/:userid/exercisesheet/:esid/selected(/)"},
+    {"method":"GET", "path":"/submission/group/user/:userid/exercise/:eid(/)"},
+    {"method":"GET", "path":"/submission/group/user/:userid/exercise/:eid/selected(/)"},
+    {"method":"GET", "path":"/submission/group/user/:userid/course/:courseid/selected(/)"},
+    {"method":"GET", "path":"/submission/group/user/:userid/course/:courseid(/)"},
+    {"method":"GET", "path":"/submission/exercisesheet/:esid/selected(/)"},
+    {"method":"GET", "path":"/submission(/submission)(/)"},
+    {"method":"GET", "path":"/submission/exercise/:eid/selected(/)"},
+    {"method":"GET", "path":"/submission/exercisesheet/:esid(/)"},
+    {"method":"GET", "path":"/submission(/submission)/:suid(/)"},
+    {"method":"GET", "path":"/submission/course/:courseid(/)"}
+]

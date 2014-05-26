@@ -1,0 +1,9 @@
+[
+    {"method":"PUT", "path":"/exercisefiletype(/exercisefiletype)/:eftid(/)"},
+    {"method":"DELETE", "path":"/exercisefiletype(/exercisefiletype)/:eftid(/)"},
+    {"method":"POST", "path":"/exercisefiletype(/)"},
+    {"method":"GET", "path":"/exercisefiletype(/exercisefiletype)/:eftid(/)"},
+    {"method":"GET", "path":"/exercisefiletype/exercise/:eid(/)"},
+    {"method":"GET", "path":"/exercisefiletype(/exercisefiletype)(/)"}
+    
+]

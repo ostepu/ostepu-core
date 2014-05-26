@@ -1,0 +1,10 @@
+[
+    {"method":"PUT", "path":"/session(/session)/:seid(/)"},
+    {"method":"DELETE", "path":"/session(/session)/:seid(/)"},
+    {"method":"PUT", "path":"/session/user/:userid(/)"},
+    {"method":"DELETE", "path":"/session/user/:userid(/)"},
+    {"method":"POST", "path":"/session(/)"},
+    {"method":"", "path":"/session/user/:userid(/)"},
+    {"method":"", "path":"/session(/session)/:seid(/)"},
+    {"method":"", "path":"/session(/session)(/)"}
+]

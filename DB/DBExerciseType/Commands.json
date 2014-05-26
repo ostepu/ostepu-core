@@ -1,0 +1,8 @@
+[
+    {"method":"PUT", "path":"/exercisetype(/exercisetype)/:etid(/)"},
+    {"method":"DELETE", "path":"/exercisetype(/exercisetype)/:etid(/)"},
+    {"method":"POST", "path":"/exercisetype(/)"},
+    {"method":"GET", "path":"/exercisetype(/exercisetype)/:etid(/)"},
+    {"method":"GET", "path":"/exercisetype(/exercisetype)(/)"}
+    
+]
