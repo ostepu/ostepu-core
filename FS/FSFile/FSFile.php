@@ -13,6 +13,7 @@ require_once ( '../../Assistants/Slim/Slim.php' );
 include_once ( '../../Assistants/CConfig.php' );
 include_once ( '../../Assistants/Request.php' );
 include_once ( '../../Assistants/Structures.php' );
+include_once ( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
 
@@ -189,10 +190,15 @@ class FSFile
                 $fileObject->setFileSize( $tempObject->getFileSize( ) );
                 $fileObject->setBody( null );
                 $res[] = $fileObject;
+                
+                Logger::Log( 
+                    'POST postFile, file exists',
+                    LogLevel::DEBUG
+                    );
 
-                // $this->_app->response->setStatus(201);
-                // $this->_app->response->setBody(File::encodeFile($fileObject));
-                // $this->_app->stop();
+               // $this->_app->response->setStatus(201);
+               // $this->_app->response->setBody(File::encodeFile($fileObject));
+               // $this->_app->stop();
                 continue;
             }
 
@@ -216,6 +222,13 @@ class FSFile
                 // $this->_app->response->setBody(File::encodeFile($fileObject));
                 
             } else {
+                $fileObject->getMessages()[] = ("Datei konnte nicht gespeichert werden.");
+                Logger::Log( 
+                    'POST postFile failed',
+                    LogLevel::ERROR
+                    );
+                    
+                $res[] = $fileObject;
                 $this->_app->response->setStatus( 409 );
 
                 // $fileObject->setBody(null);

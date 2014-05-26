@@ -1,0 +1,8 @@
+[
+    {    "method":"post", "path":"/zip/:filename(/)" },
+    {    "method":"post", "path":"/zip(/)" },
+    {    "method":"delete", "path":"/zip/:hash(/)" },
+    {    "method":"get", "path":"/zip/:hash(/)" },
+    {    "method":"get", "path":"/zip/:hash/:filename(/)" }
+    
+]
