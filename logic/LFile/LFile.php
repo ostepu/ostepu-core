@@ -11,8 +11,9 @@ require_once ( '../../Assistants/Slim/Slim.php' );
 include_once ( '../../Assistants/CConfig.php' );
 include_once ( '../../Assistants/Request.php' );
 include_once ( '../../Assistants/Structures.php' );
+include_once ( '../../Assistants/Logger.php' );
 
-include_once ( '/LFileHandler.php' );
+include_once ( './LFileHandler.php' );
 
 \Slim\Slim::registerAutoloader( );
 
@@ -88,7 +89,7 @@ class LFile
         $this->_fs = CConfig::getLinks($this->_conf->getLinks( ),'file');
         $this->_db = CConfig::getLinks($this->_conf->getLinks( ),'fileDb');
 
-        $this->_app = new \Slim\Slim( array( 'debug' => true ));
+        $this->_app = new \Slim\Slim( array( 'debug' => true ) );
         $this->_app->response->setStatus( 404 );
 
         $this->_app->response->headers->set( 
@@ -177,6 +178,14 @@ class LFile
             if ( $result !== null){
                 $res[] = $result; 
             } else {
+                $fileObject->addMessage("Die Datei konnte nicht gespeichert werden.");
+                $res[] = $fileObject;
+                
+                Logger::Log( 
+                    'POST postPathFile failed',
+                    LogLevel::ERROR
+                    );
+                
                 $this->_app->response->setStatus( 409 );
                 $this->_app->response->setBody( File::encodeFile( $res ) );
                 $this->_app->stop( );
@@ -231,6 +240,9 @@ class LFile
             if ( $result !== null){
                 $res[] = $result; 
             } else {
+                $uploadSubmission->getMessages()[] = ("Die Datei konnte nicht gelöscht werden.");
+                $res[] = $fileObject;
+                
                 $this->_app->response->setStatus( 409 );
                 $this->_app->response->setBody( File::encodeFile( $res ) );
                 $this->_app->stop( );

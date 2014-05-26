@@ -1,0 +1,6 @@
+[
+    {"name":"file", "links":[{"method":"POST", "path":"/file" }] },
+    {"name":"submission", "links":[{"method":"GET", "path":"/submission/group/user/:userid/exercisesheet/:sheetid/selected" },{"method":"DELETE", "path":"/submission/:submissionid" },{"method":"POST", "path":"/submission" }] },
+    {"name":"selectedSubmission", "links":[{"method":"PUT", "path":"/selectedsubmission/leader/:leaderid/exercise/:exerciseid" },{"method":"POST", "path":"/selectedsubmission" }] },
+    {"name":"zip", "links":[{"method":"POST", "path":"/zip/:zipname" }] }
+]

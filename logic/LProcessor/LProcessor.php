@@ -62,11 +62,6 @@ class LProcessor
     private $_marking = array( );
     
     /**
-     * @var Link[] $_process a list of links
-     */
-    private $_process = array( );
-    
-    /**
      * @var Link[] $_processorDb a list of links
      */
     private $_processorDb = array( );
@@ -81,6 +76,7 @@ class LProcessor
      */
     private $_workFiles = array( );
     private $_createCourse = array( );
+    private $_file = array( );
     
     /**
      * REST actions
@@ -100,7 +96,6 @@ class LProcessor
         $this->_conf = $conf;
         $this->_submission = CConfig::getLinks($conf->getLinks(),"submission");
         $this->_marking = CConfig::getLinks($conf->getLinks(),"marking");
-        $this->_process = CConfig::getLinks($conf->getLinks(),"process");
         $this->_processorDb = CConfig::getLinks($conf->getLinks(),"processorDb");
         $this->_attachment = CConfig::getLinks($conf->getLinks(),"attachment");
         $this->_workFiles = CConfig::getLinks($conf->getLinks(),"workFiles");
@@ -467,9 +462,10 @@ class LProcessor
                 $processors = Process::decodeProcess( $result['content'] );
             } else {
                if ($result['status'] != 404){
-                   $res[] = null;
-                   $this->app->response->setStatus( 409 );
-                   continue;
+                    $submission->addMessage("Interner Fehler");
+                    $res[] = $submission;
+                    $this->app->response->setStatus( 409 );
+                    continue;
                }
             }
             
@@ -489,12 +485,12 @@ class LProcessor
             
                     } else {
                         $fail = true;
-                        $submission->setStatusText("Beim Verarbeiten der Einsendung ist ein Fehler aufgetreten\n\n".$submission->getStatusText());
+                        $submission->addMessage("Beim Verarbeiten der Einsendung ist ein Fehler aufgetreten");
                         
                         if (isset($result['content'])){
                             $content = Process::decodeProcess($result['content']); 
                             $submission->setStatus($content->getStatus());  
-                            $submission->setStatusText($submission->getStatusText().$content->getStatusText());
+                            $submission->addMessages($content->getMessages());
                         }
                        break;
                     }
@@ -515,7 +511,7 @@ class LProcessor
             if ($uploadSubmission===null)$uploadSubmission = $process->getRawSubmission();
             
             if ($uploadSubmission!==null){
-    //echo Submission::encodeSubmission($uploadSubmission);
+    //echo Submission::encodeSubmission($uploadSubmission);return;
                 $result = Request::routeRequest( 
                                                 'POST',
                                                 '/submission',
@@ -529,19 +525,22 @@ class LProcessor
                 if ( $result['status'] >= 200 && 
                      $result['status'] <= 299 ){
                     $queryResult = Submission::decodeSubmission( $result['content'] );
+                    $uploadSubmission->setId($queryResult->getId());
                     if ($process->getMarking()!==null){
                         $process->getMarking()->setSubmission($queryResult);
                     }
-                    
+                   
               // var_dump($queryResult);
                 } else {
+                    $uploadSubmission->addMessage("Beim Speichern der Einsendung ist ein Fehler aufgetreten");
+                
                     if (isset($result['content'])){
                         $content = Submission::decodeSubmission($result['content']);
                         $uploadSubmission->setStatus($content->getStatus());  
-                        $uploadSubmission->setStatusText($content->getStatusText()); 
+                        $uploadSubmission->addMessages($content->getMessages()); 
                    }
             
-                   $res[] = $uploadSubmission;
+                   //$res[] = $uploadSubmission;
                    $this->app->response->setStatus( 409 );
                    continue;
                 }
@@ -563,12 +562,17 @@ class LProcessor
                      $result['status'] <= 299 ){
                     $queryResult = Marking::decodeMarking( $result['content'] );
                 } else {
-                   $res[] = $uploadSubmission;
+                    $uploadSubmission->addMessage("Beim Speichern der Korrektur ist ein Fehler aufgetreten");
+                    if (isset($result['content'])){
+                        $content = Marking::decodeMarking($result['content']); 
+                        $uploadSubmission->addMessages($content->getMessages()); 
+                   }
+                    
                    $this->app->response->setStatus( 409 );
                    continue;
                 }
             }
-            
+
             $rr = $process->getSubmission();
             if ($rr===null)$rr = $process->getRawSubmission();
             $res[] = $rr;

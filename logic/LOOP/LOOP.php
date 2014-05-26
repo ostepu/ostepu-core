@@ -254,6 +254,7 @@ class LOOP
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
         $process = Process::decodeProcess($body);
+        
         // always been an array
         $arr = true;
         if ( !is_array( $process ) ){
@@ -261,7 +262,6 @@ class LOOP
             $arr = false;
         }
 
-        // this array contains the indices of the inserted objects
         $res = array( );
         foreach ( $process as $pro ){
             $eid = $pro->getExercise()->getId();
@@ -287,7 +287,6 @@ class LOOP
                     $output = array();
                     $return = '';
                     exec('(./start_cx '.$filePath . '/' . $fileName.') 2>&1', $output, $return);
-                   // $output = array("Fehlertext",'409');
                     
                     if (count($output)>0 && $output[count($output)-1] === '201'){
                         // nothing
@@ -299,10 +298,11 @@ class LOOP
                         $text = '';
                             unset($output[count($output)-1]);
                             foreach($output as $out){
-                                $pos = strpos($out, ':');
-                                $text.=substr($out,$pos+1)."\n";
+                                $pos = strpos($out, ',');
+                                //$text.=$fileName.': '.substr($out,$pos+1)."\n";
+                                $text.=$out."\n";
                             }
-                            $pro->setStatusText($text);
+                            $pro->addMessage($text);
                         }
                         $this->app->response->setStatus( 409 );
                     }
