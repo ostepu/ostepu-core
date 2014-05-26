@@ -79,14 +79,26 @@ abstract class Object
         $this->status = $_value;
     }
     
-    private $statusText = null;
-    public function getStatusText( )
+    private $messages = array();
+    public function getMessages( )
     {
-        return $this->statusText;
+        return $this->messages;
     }
-    public function setStatusText( $_value = null )
+    public function setMessages( $_value = array() )
     {
-        $this->statusText = $_value;
+        $this->messages = $_value;
+    }
+    public function addMessage($_value = null)
+    {
+        if (is_string($_value))
+            $this->messages[] = $_value;
+    }
+    
+    public function addMessages($_values = array())
+    {
+        foreach($_values as $val){
+            $this->addMessage($val);
+        }
     }
     
     private $structure = null;
@@ -99,6 +111,15 @@ abstract class Object
         $this->structure = $_value;
     }
     
+    private $language = null;
+    public function getLanguage( )
+    {
+        return $this->language;
+    }
+    public function setLanguage( $_value = null )
+    {
+        $this->language = $_value;
+    }
     /**
      * the json serialize function
      */
@@ -109,10 +130,12 @@ abstract class Object
             $list['sender'] = $this->sender;
         if ( $this->status !== null )
             $list['status'] = $this->status;
-        if ( $this->statusText !== null )
-            $list['statusText'] = $this->statusText;
+        if ( $this->messages !== null && $this->messages !== array())
+            $list['messages'] = $this->messages;
         if ( $this->structure !== null )
             $list['structure'] = $this->structure;
+         if ( $this->language !== null )
+            $list['language'] = $this->language;
         return $list;
     }
 

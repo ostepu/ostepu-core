@@ -75,30 +75,30 @@ class CConfig
                                             
         // GET Commands
         $this->_app->get( 
-                          '/info/commands(/)',
+                          '(/:pre+)/info/commands(/)',
                           array( 
                                 $this,
                                 'commands'
                                 )
                           );
-                          
-        // GET Info
-        $this->_app->get( 
-                          '/info/:language(/)',
-                          array( 
-                                $this,
-                                'info'
-                                )
-                          );
-                          
+
         // GET Instruction
         $this->_app->get( 
-                          '/info/instruction/:language(/)',
+                          '(/:pre+)/info/links(/)',
                           array( 
                                 $this,
                                 'instruction'
                                 )
-                          );                         
+                          );   
+
+        // GET Info
+        $this->_app->get( 
+                          '(/:pre+)/info/:language(/)',
+                          array( 
+                                $this,
+                                'info'
+                                )
+                          );                                              
 
         // POST Config
         $this->_app->post( 
@@ -122,7 +122,7 @@ class CConfig
         if ( strpos($this->_app->request->getResourceUri( ),'/control') !== false  ||  strpos( 
                     $this->_app->request->getResourceUri( ),
                     '/info'
-                    ) === 0 ){
+                    ) !== false ){
 
             // run Slim
             $this->_used = true;
@@ -131,7 +131,7 @@ class CConfig
         }
     }
     
-    public function info( $language)
+    public function info( $pre = array(), $language = 'de')
     {
         if (file_exists('info/'.$language)){
             $this->_app->response->setStatus( 200 );
@@ -142,18 +142,25 @@ class CConfig
         }
     }
     
-    public function instruction( $language)
+    public function instruction( $pre = array())
     {
-        if (file_exists('instruction/'.$language)){
+        if (file_exists('Links.json')){
             $this->_app->response->setStatus( 200 );
-            $this->_app->response->setBody( file_get_contents('instruction/'.$language) );
+            $links = json_decode(file_get_contents('Links.json'), true);
+            $links[] = array('method' => 'get', 'path' => '(/:pre+)/info/commands(/)');
+            $links[] = array('method' => 'get', 'path' => '(/:pre+)/info/links(/)');
+            $links[] = array('method' => 'get', 'path' => '(/:pre+)/info/:language(/)');
+            $links[] = array('method' => 'post', 'path' => '(/:pre+)/control');
+            $links[] = array('method' => 'get', 'path' => '(/:pre+)/control');
+    
+            $this->_app->response->setBody( json_encode($links) );
         }else{
             $this->_app->response->setStatus( 404 );
             $this->_app->response->setBody( '' );
         }
     }
     
-    public function commands()
+    public function commands( $pre = array() )
     {
         if (file_exists('Commands.json')){
             $this->_app->response->setStatus( 200 );

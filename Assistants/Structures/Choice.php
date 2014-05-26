@@ -141,6 +141,16 @@ class Choice extends Object implements JsonSerializable
     {
         $this->correct = $value;
     }
+    
+    private $submissionId = null;
+    public function getSubmissionId( )
+    {
+        return $this->submissionId;
+    }
+    public function setSubmissionId( $value = null )
+    {
+        $this->submissionId = $value;
+    }
 
     
     /**
@@ -162,14 +172,16 @@ class Choice extends Object implements JsonSerializable
                                           $formId,
                                           $choiceId,
                                           $text,
-                                          $correct
+                                          $correct,
+                                          $submissionId = null
                                           )
     {
         return new Choice( array(
                                    'formId' => $formId,
                                    'choiceId' => $choiceId,
                                    'text' => $text,
-                                   'correct' => $correct
+                                   'correct' => $correct,
+                                   'submissionId' => $submissionId
                                    ) );
     }
 
@@ -184,7 +196,8 @@ class Choice extends Object implements JsonSerializable
                      'FO_id' => 'formId',
                      'CH_id' => 'choiceId',
                      'CH_text' => 'text',
-                     'CH_correct' => 'correct'
+                     'CH_correct' => 'correct',
+                     'S_id' => 'submissionId'
                      );
     }
 
@@ -220,6 +233,12 @@ class Choice extends Object implements JsonSerializable
                                  $values,
                                  'CH_correct',
                                  DBJson::mysql_real_escape_string( $this->correct )
+                                 );
+        if ( $this->submissionId != null )
+            $this->addInsertData(
+                                 $values,
+                                 'S_id',
+                                 DBJson::mysql_real_escape_string( $this->submissionId )
                                  );
 
         if ( $values != '' ){
@@ -319,7 +338,9 @@ class Choice extends Object implements JsonSerializable
             $list['text'] = $this->text;
         if ( $this->correct !== null )
             $list['correct'] = $this->correct;
-
+        if ( $this->submissionId !== null )
+            $list['submissionId'] = $this->submissionId;
+            
         return array_merge($list,parent::jsonSerialize( ));
     }
 
