@@ -24,6 +24,13 @@ fi
 endung=`echo $1 | cut -d. -f2`
 compiler=$endung
 
+if ([ "$endung" != "c0" ] && [ "$endung" != "c1" ] && [ "$endung" != "c2" ] && [ "$endung" != "c3" ] && [ "$endung" != "c4" ]);
+then
+   echo "Falsche Dateiendung"
+   echo "412";
+   exit
+fi
+
 if [ ! -f $1 ]
 then
    echo "Datei $1 existiert nicht"
