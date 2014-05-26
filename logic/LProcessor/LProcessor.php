@@ -62,11 +62,6 @@ class LProcessor
     private $_marking = array( );
     
     /**
-     * @var Link[] $_process a list of links
-     */
-    private $_process = array( );
-    
-    /**
      * @var Link[] $_processorDb a list of links
      */
     private $_processorDb = array( );
@@ -81,6 +76,7 @@ class LProcessor
      */
     private $_workFiles = array( );
     private $_createCourse = array( );
+    private $_file = array( );
     
     /**
      * REST actions
@@ -100,7 +96,6 @@ class LProcessor
         $this->_conf = $conf;
         $this->_submission = CConfig::getLinks($conf->getLinks(),"submission");
         $this->_marking = CConfig::getLinks($conf->getLinks(),"marking");
-        $this->_process = CConfig::getLinks($conf->getLinks(),"process");
         $this->_processorDb = CConfig::getLinks($conf->getLinks(),"processorDb");
         $this->_attachment = CConfig::getLinks($conf->getLinks(),"attachment");
         $this->_workFiles = CConfig::getLinks($conf->getLinks(),"workFiles");
@@ -467,8 +462,10 @@ class LProcessor
                 $processors = Process::decodeProcess( $result['content'] );
             } else {
                if ($result['status'] != 404){
-                   $this->app->response->setStatus( 409 );
-                   continue;
+                    $submission->addMessage("Interner Fehler");
+                    $res[] = $submission;
+                    $this->app->response->setStatus( 409 );
+                    continue;
                }
             }
             
@@ -528,6 +525,7 @@ class LProcessor
                 if ( $result['status'] >= 200 && 
                      $result['status'] <= 299 ){
                     $queryResult = Submission::decodeSubmission( $result['content'] );
+                    $uploadSubmission->setId($queryResult->getId());
                     if ($process->getMarking()!==null){
                         $process->getMarking()->setSubmission($queryResult);
                     }
