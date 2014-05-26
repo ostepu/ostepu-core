@@ -108,7 +108,6 @@ class Installer
             $data = $_POST['data'];
             
         if (isset($_POST['actionInstall'])) $_POST['action'] = 'install';
-        //if (isset($_POST['action'])) unset($_POST['action']);
         
         if ($simple)
             $this->app->response->headers->set('Content-Type', 'application/json');
@@ -300,62 +299,27 @@ class Installer
         <table border='0' cellpadding='3' width='600'>
         ";
         
-        echo "<tr><td class='e'>Konfigurationsdatei (mit Schreibrechten)</td><td class='v'><input style='width:100%' type='text' name='data[DB][config][]' value='".(isset($data['DB']['config'][0]) ? $data['DB']['config'][0] : '../DB/CControl/config.ini')."'></td><td class='h'><input type='submit' name='actionInstallDatabaseConf0' value=' Installieren '></td></tr>";
-        if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInstallDatabaseConf0'])) && !$installFail && isset($data['DB']['config'][0]) && $data['DB']['config'][0]!==''){
-           $fail = false;
-           $file = $data['DB']['config'][0];
-           $text = "[DB]\n".
-                   "db_path = {$data['DB']['db_path']}\n".
-                   "db_user = {$data['DB']['db_user']}\n".
-                   "db_passwd = {$data['DB']['db_passwd']}\n".
-                   "db_name = {$data['DB']['db_name']}";
-           if (!@file_put_contents($file,$text)) $fail = true;
+        for ($confCount = 0; $confCount <= 2 ; $confCount++){
+            echo "<tr><td class='e'>Konfigurationsdatei (mit Schreibrechten)</td><td class='v'><input style='width:100%' type='text' name='data[DB][config][]' value='".(isset($data['DB']['config'][$confCount]) ? $data['DB']['config'][$confCount] : '../DB/CControl/config.ini')."'></td><td class='h'><input type='submit' name='actionInstallDatabaseConf{$confCount}' value=' Installieren '></td></tr>";
+            if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInstallDatabaseConf'.$confCount])) && !$installFail && isset($data['DB']['config'][$confCount]) && $data['DB']['config'][$confCount]!==''){
+               $fail = false;
+               $file = $data['DB']['config'][$confCount];
+               $text = "[DB]\n".
+                       "db_path = {$data['DB']['db_path']}\n".
+                       "db_user = {$data['DB']['db_user']}\n".
+                       "db_passwd = {$data['DB']['db_passwd']}\n".
+                       "db_name = {$data['DB']['db_name']}";
+               if (!@file_put_contents($file,$text)) $fail = true;
+                
+               if ($fail === true){
+                $installFail = true;
+                echo "<tr><td class='e'>Installation</td><td class='v'><font color='red'>Fehler ({$errno}) <br> {$error}</font></td></tr>";
+               } else
+                 echo "<tr><td class='e'>Installation</td><td class='v'>OK</td></tr>";
             
-           if ($fail === true){
-            $installFail = true;
-            echo "<tr><td class='e'>Installation</td><td class='v'><font color='red'>Fehler ({$errno}) <br> {$error}</font></td></tr>";
-           } else
-             echo "<tr><td class='e'>Installation</td><td class='v'>OK</td></tr>";
-        
-        }
-        
-        echo "<tr><td class='e'>Konfigurationsdatei (mit Schreibrechten)</td><td class='v'><input style='width:100%' type='text' name='data[DB][config][]' value='".(isset($data['DB']['config'][1]) ? $data['DB']['config'][1] : '../DB/DBQuery/config.ini')."'></td><td class='h'><input type='submit' name='actionInstallDatabaseConf1' value=' Installieren '></td></tr>";
-        if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInstallDatabaseConf1'])) && !$installFail && isset($data['DB']['config'][1]) && $data['DB']['config'][1]!==''){
-           $fail = false;
-           $file = $data['DB']['config'][1];
-           $text = "[DB]\n".
-                   "db_path = {$data['DB']['db_path']}\n".
-                   "db_user = {$data['DB']['db_user']}\n".
-                   "db_passwd = {$data['DB']['db_passwd']}\n".
-                   "db_name = {$data['DB']['db_name']}";
-           if (!@file_put_contents($file,$text)) $fail = true;
-            
-           if ($fail === true){
-            $installFail = true;
-            echo "<tr><td class='e'>Installation</td><td class='v'><font color='red'>Fehler ({$errno}) <br> {$error}</font></td></tr>";
-           } else
-             echo "<tr><td class='e'>Installation</td><td class='v'>OK</td></tr>";
-        
+            }
         }
 
-        echo "<tr><td class='e'>Konfigurationsdatei (mit Schreibrechten)</td><td class='v'><input style='width:100%' type='text' name='data[DB][config][]' value='".(isset($data['DB']['config'][2]) ? $data['DB']['config'][2] : '../DB/DBQuery2/config.ini')."'></td><td class='h'><input type='submit' name='actionInstallDatabaseConf2' value=' Installieren '></td></tr>";
-        if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInstallDatabaseConf2'])) && !$installFail && isset($data['DB']['config'][2]) && $data['DB']['config'][2]!==''){
-           $fail = false;
-           $file = $data['DB']['config'][2];
-           $text = "[DB]\n".
-                   "db_path = {$data['DB']['db_path']}\n".
-                   "db_user = {$data['DB']['db_user']}\n".
-                   "db_passwd = {$data['DB']['db_passwd']}\n".
-                   "db_name = {$data['DB']['db_name']}";
-           if (!@file_put_contents($file,$text)) $fail = true;
-            
-           if ($fail === true){
-            $installFail = true;
-            echo "<tr><td class='e'>Installation</td><td class='v'><font color='red'>Fehler ({$errno}) <br> {$error}</font></td></tr>";
-           } else
-             echo "<tr><td class='e'>Installation</td><td class='v'>OK</td></tr>";
-        
-        }
         
         echo "</table><br />";
         
@@ -375,6 +339,13 @@ class Installer
            // inits all components
            $result = Request::get($data['PL']['url'].'/'.$url. '/definition/send',array(),'');
            if (isset($result['content']) && isset($result['status'])){
+           
+                // counts installed commands
+                $installedCommands = 0;
+                
+                // counts installed components
+                $installedComponents = 0;
+           
                 $results = Component::decodeComponent($result['content']);
                 $results = $this->orderBy(json_decode(Component::encodeComponent($results),true),'name',SORT_ASC);
                 $results = Component::decodeComponent(Component::encodeComponent($results));
@@ -398,12 +369,22 @@ class Installer
                         $countLinks = 0;
                         foreach ($definitions as $definition){
                             if ($definition->getId() === $res->getId()){
+                            
                                 $links = $definition->getLinks();
                                 $links = $this->orderBy(json_decode(Link::encodeLink($links),true),'name',SORT_ASC);
                                 $links = Link::decodeLink(Link::encodeLink($links));
                                 if (!is_array($links)) $links = array($links);
-                                
                                 $countLinks = count($links);
+                                
+                                $result2 = Request::get($definition->getAddress().'/info/commands',array(),'');
+                                if (isset($result2['content']) && isset($result2['status']) && $result2['status'] === 200){
+                                    $commands = json_decode($result2['content'], true);
+                                    $countCommands = count($commands);
+                                    $linkText .= "<tr><td class='e' colspan='2'>installierte Befehle: {$countCommands}</td></tr>"; 
+                                    $installedCommands+=$countCommands;
+                                    $countLinks++;
+                                }
+                                
                                 foreach($links as $link){
                                     $linkText .= "<tr><td class='v'>{$link->getName()}</td><td class='v'>{$link->getTargetName()}</td></tr>"; 
                                 }
@@ -418,8 +399,10 @@ class Installer
                         echo $componentText;
                         echo $linkText;
                        
-                        if ($res->getStatus() !== 201)
+                        if ($res->getStatus() !== 201){
                             $fail = true;
+                        } else
+                            $installedComponents++;
                     }
                 }
            }else
@@ -428,6 +411,10 @@ class Installer
             if ($result['status'] !== 200){
                 $fail = true;
             }
+            
+            echo "<tr><td></td><td></td><td></td></tr>";
+            echo "<tr><td class='e'>installierte Komponenten</td><td class='v'></td><td class='v'>{$installedComponents}</td></tr>";
+            echo "<tr><td class='e'>installierte Befehle</td><td class='v'></td><td class='v'>{$installedCommands}</td></tr>";
             
            if ($fail === true){
             $installFail = true;
