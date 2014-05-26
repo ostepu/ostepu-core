@@ -71,8 +71,6 @@ class LExtension
 
         // initialize component
         $this->_conf = $conf;
-        $this->query = CConfig::getLink($conf->getLinks(),"controller");
-        $this->_out = CConfig::getLinks($conf->getLinks(),"out");
         $this->_extension = CConfig::getLinks($conf->getLinks(),"extension");
         
         //POST AddCourseExtension
