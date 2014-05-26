@@ -1,0 +1,6 @@
+[
+    {    "method":"post", "path":"/:path+" },
+    {    "method":"delete", "path":"/:path+" },
+    {    "method":"get", "path":"/:path+" },
+    {    "method":"info", "path":"/:path+" }    
+]
