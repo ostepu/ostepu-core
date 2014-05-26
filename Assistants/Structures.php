@@ -111,6 +111,15 @@ abstract class Object
         $this->structure = $_value;
     }
     
+    private $language = null;
+    public function getLanguage( )
+    {
+        return $this->language;
+    }
+    public function setLanguage( $_value = null )
+    {
+        $this->language = $_value;
+    }
     /**
      * the json serialize function
      */
@@ -125,6 +134,8 @@ abstract class Object
             $list['messages'] = $this->messages;
         if ( $this->structure !== null )
             $list['structure'] = $this->structure;
+         if ( $this->language !== null )
+            $list['language'] = $this->language;
         return $list;
     }
 
