@@ -248,7 +248,7 @@ class Process extends Object implements JsonSerializable
                     $this->{
                         $key
                         
-                    } = File::decodeFile( 
+                    } = Attachment::decodeAttachment( 
                                                            $value,
                                                            false
                                                            );
@@ -258,7 +258,7 @@ class Process extends Object implements JsonSerializable
                     $this->{
                         $key
                         
-                    } = File::decodeFile( 
+                    } = Attachment::decodeAttachment( 
                                                            $value,
                                                            false
                                                            );
