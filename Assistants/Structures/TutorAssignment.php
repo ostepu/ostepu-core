@@ -58,7 +58,7 @@ class TutorAssignment extends Object implements JsonSerializable
      *
      * @param string[] $value the new value for $submissionIds
      */
-    public function setSubmissionIds( $value = null )
+    public function setSubmissionIds( $value = array( ) )
     {
         $submissionIds = $value;
     }

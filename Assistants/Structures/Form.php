@@ -188,7 +188,7 @@ class Form extends Object implements JsonSerializable
      *
      * @param string $value the new value for $choices
      */
-    public function setChoices( $value = null )
+    public function setChoices( $value = array( ) )
     {
         $this->choices = $value;
     }

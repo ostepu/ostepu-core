@@ -208,7 +208,7 @@ class Exercise extends Object implements JsonSerializable
      *
      * @param Submission[] $value the new value for $submissions
      */
-    public function setSubmissions( $value = null )
+    public function setSubmissions( $value = array( ) )
     {
         $submissions = $value;
     }
@@ -233,7 +233,7 @@ class Exercise extends Object implements JsonSerializable
      *
      * @param File[] $value the new value for $attachments
      */
-    public function setAttachments( $value = null )
+    public function setAttachments( $value = array( ) )
     {
         $this->attachments = $value;
     }
@@ -283,7 +283,7 @@ class Exercise extends Object implements JsonSerializable
      *
      * @param ExerciseFileType[] $value the new value for $fileTypes
      */
-    public function setFileTypes( $value = null )
+    public function setFileTypes( $value = array( ) )
     {
         $this->fileTypes = $value;
     }

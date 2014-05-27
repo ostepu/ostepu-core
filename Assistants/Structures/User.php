@@ -185,7 +185,7 @@ class User extends Object implements JsonSerializable
      *
      * @param CourseStatus[] $value the new value for $courses
      */
-    public function setCourses( $value = null )
+    public function setCourses( $value = array( ) )
     {
         $this->courses = $value;
     }

@@ -158,7 +158,7 @@ class Component extends Object implements JsonSerializable
      *
      * @param Link[] $value the new value for $links
      */
-    public function setLinks( $value = null )
+    public function setLinks( $value = array( ) )
     {
         $this->links = $value;
     }

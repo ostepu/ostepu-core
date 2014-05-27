@@ -91,7 +91,7 @@ class Process extends Object implements JsonSerializable
     {
         return $this->attachment;
     }
-    public function setAttachment( $value = null )
+    public function setAttachment( $value = array( ) )
     {
         $this->attachment = $value;
     } 
@@ -101,7 +101,7 @@ class Process extends Object implements JsonSerializable
     {
         return $this->workFiles;
     }
-    public function setWorkFiles( $value = null )
+    public function setWorkFiles( $value = array( ) )
     {
         $this->workFiles = $value;
     } 
