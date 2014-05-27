@@ -312,7 +312,9 @@ class LProcessor
             $process->setAttachment(array());
             foreach ( $attachments as $attachment ){
                 if ($attachment->getId() === null){
-                
+                    $attachment->setExerciseId($process->getExercise()->getId());
+                    $attachment->setProcessId($process->getProcessId());
+                    
                     // upload file
                     $result = Request::routeRequest( 
                                                 'POST',
@@ -325,7 +327,6 @@ class LProcessor
                                                 
                     if ( $result['status'] >= 200 && 
                          $result['status'] <= 299 ){
-                         
                         $queryResult = File::decodeFile($result['content']);
                         $attachment->setFile($queryResult);
                     }
@@ -334,8 +335,9 @@ class LProcessor
                         $this->app->response->setStatus( 409 );
                         continue;
                     }
-                         
-                    // upload attachment     
+
+                    // upload attachment   
+                    $attachment->setProcessId($process->getProcessId());   
                     $result = Request::routeRequest( 
                                                 'POST',
                                                 '/attachment',
@@ -365,6 +367,8 @@ class LProcessor
             $process->setWorkFiles(array());
             foreach ( $workFiles as $workFile ){
                 if ($workFile->getId() === null){
+                $workFile->setExerciseId($process->getExercise()->getId());
+                $workFile->setProcessId($process->getProcessId());
                 
                     // upload file
                     $result = Request::routeRequest( 
@@ -389,6 +393,7 @@ class LProcessor
                     }
                     
                     // upload attachment
+                    $workFile->setProcessId($process->getProcessId()); 
                     $result = Request::routeRequest( 
                                                 'POST',
                                                 '/attachment',
