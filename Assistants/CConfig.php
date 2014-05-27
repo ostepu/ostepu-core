@@ -146,14 +146,7 @@ class CConfig
     {
         if (file_exists('Links.json')){
             $this->_app->response->setStatus( 200 );
-            $links = json_decode(file_get_contents('Links.json'), true);
-            $links[] = array('method' => 'get', 'path' => '(/:pre+)/info/commands(/)');
-            $links[] = array('method' => 'get', 'path' => '(/:pre+)/info/links(/)');
-            $links[] = array('method' => 'get', 'path' => '(/:pre+)/info/:language(/)');
-            $links[] = array('method' => 'post', 'path' => '(/:pre+)/control');
-            $links[] = array('method' => 'get', 'path' => '(/:pre+)/control');
-    
-            $this->_app->response->setBody( json_encode($links) );
+            $this->_app->response->setBody( file_get_contents('Links.json') );
         }else{
             $this->_app->response->setStatus( 404 );
             $this->_app->response->setBody( '' );
@@ -164,7 +157,14 @@ class CConfig
     {
         if (file_exists('Commands.json')){
             $this->_app->response->setStatus( 200 );
-            $this->_app->response->setBody( file_get_contents('Commands.json') );
+            $commands = json_decode(file_get_contents('Commands.json'), true);
+            $commands[] = array('method' => 'get', 'path' => '(/:pre+)/info/commands(/)');
+            $commands[] = array('method' => 'get', 'path' => '(/:pre+)/info/links(/)');
+            $commands[] = array('method' => 'get', 'path' => '(/:pre+)/info/:language(/)');
+            $commands[] = array('method' => 'post', 'path' => '(/:pre+)/control');
+            $commands[] = array('method' => 'get', 'path' => '(/:pre+)/control');
+            $this->_app->response->setBody( json_encode($commands) );
+
         }else{
             $this->_app->response->setStatus( 404 );
             $this->_app->response->setBody( '' );
