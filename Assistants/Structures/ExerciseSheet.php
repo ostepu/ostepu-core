@@ -226,7 +226,7 @@ class ExerciseSheet extends Object implements JsonSerializable
      *
      * @param Exercise[] $value the new value for $exercises
      */
-    public function setExercises( $value = null )
+    public function setExercises( $value = array( ) )
     {
         $this->exercises = $value;
     }

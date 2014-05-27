@@ -108,7 +108,7 @@ class Course extends Object implements JsonSerializable
      *
      * @param string $value the new value for $exerciseSheets
      */
-    public function setExerciseSheets( $value = null )
+    public function setExerciseSheets( $value = array( ) )
     {
         $this->exerciseSheets = $value;
     }

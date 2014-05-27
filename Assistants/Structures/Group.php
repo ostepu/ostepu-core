@@ -33,7 +33,7 @@ class Group extends Object implements JsonSerializable
      *
      * @param User[] $value the new value for $members
      */
-    public function setMembers( $value = null )
+    public function setMembers( $value = array( ) )
     {
         $this->members = $value;
     }

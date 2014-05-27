@@ -64,7 +64,7 @@ class Query extends Object implements JsonSerializable
      *
      * @param string[] $value the new value for $response
      */
-    public function setResponse( $value = null )
+    public function setResponse( $value = array( ) )
     {
         $this->response = $value;
     }
