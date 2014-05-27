@@ -31,8 +31,8 @@ trig = trig.parent().parent();
         trig.parent().find('.processor-type').last().on("change",loadProcessorTemplate);
         trig.parent().find('.processor-type').last().change();
         
-        //trig.parent().find('.processor').first().find('.add-attachment').first().on("click",addProcessorAttachment);
-        //trig.parent().find('.processor').first().find('.add-attachment').first().click();
+        trig.parent().find('.processor').last().find('.add-attachment').first().on("click",addProcessorAttachment);
+        trig.parent().find('.processor').last().find('.add-attachment').first().click();
         renameProcessor();
     });
 
@@ -63,7 +63,6 @@ var trig = $(this);
     $.get("include/CreateSheet/Processor/ProcessorAddAttachment.template.php", function (data) {
     
         trig.before(data);
-        renameAttachment(trig.parent());
         
         if (trig.parent().find('.delete-attachment').length >= 2) {
             trig.parent().find('.delete-attachment').first().fadeIn('fast');
@@ -87,14 +86,27 @@ function renameProcessor(){
         var elem = $(all[i]);
         var oldName = elem.attr('name');
 
+        var regex = /exercises\[(.+?)]\[.+?\]\[(.+?)]\[(.+?)]\[[0-9]+\]/gm;
+        var nameString = "exercises[$1][subexercises][$2][$3]["+ (i) +"]";
+
+        // match the regex and replace the numbers
+        var newName = oldName.replace(regex, nameString);
+
+        // set the new name
+        elem.attr('name', newName);
+            
+        var allAttachment = elem.parent().find('.processor-attachment-file');
+        for (var b = 0; b < allAttachment.length; b++) {
+            var elem = $(allAttachment[b]);
             var regex = /exercises\[(.+?)]\[.+?\]\[(.+?)]\[(.+?)]\[[0-9]+\]/gm;
-            var nameString = "exercises[$1][subexercises][$2][$3]["+ (i) +"]";
+            var nameString = "exercises[$1][subexercises][$2][processAttachment]["+ (i) +"][]";
 
             // match the regex and replace the numbers
             var newName = oldName.replace(regex, nameString);
 
             // set the new name
             elem.attr('name', newName);
+        }
     }
     
     var all2 = $('.processor-parameter');
@@ -113,6 +125,7 @@ function renameProcessor(){
             // set the new name
             elem.attr('name', newName);
     }
+
 }
 
 function removeAttachment(event){
@@ -125,20 +138,7 @@ trig.parent().slideToggle('fast', function() {
 if (trig.parent().parent().find('.processor-attachment').length == 2) {
             trig.parent().parent().find('.processor-attachment').not(trig.parent()).first().find('.delete-attachment').fadeOut('fast');
         }
-}
-
-function renameAttachment(trig) {
-/*var oldName = trig.parent('.form').parent().parent().find('.text-input').first().attr('name');
-var regex = /exercises\[([0-9]+)\]\[.+?\]\[([0-9]+)\]\[(.+?)]/gm;
-var nameString = "exercises[$1][subexercises][$2][correct]";
-var nameString2 = "exercises[$1][subexercises][$2][choice]";
-
-// match the regex and replace the numbers
-var newName = oldName.replace(regex, nameString);
-var newName2 = oldName.replace(regex, nameString2);
-
-trig.find('.input-radio').attr('name', newName);
-trig.find('.text-input').attr('name', newName2);*/
+renameProcessor();
 }
 
 /**
