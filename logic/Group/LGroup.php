@@ -156,6 +156,7 @@ class LGroup
     public function ejectFromGroup($userid){
         $body = $this->app->request()->getBody();
         $header = $this->app->request()->headers->all();
+        // ??? deletMember ???
         $URL = $this->lURL.'/DB/user/'.$userid.'/deletMember';
         $answer = Request::custom('PUT', $URL, $header, $body);
         $this->app->response->setStatus($answer['status']);
