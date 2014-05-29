@@ -1,0 +1,5 @@
+[
+    {"name":"out", "links":[] },
+	{"name":"database", "links":[{"method":"POST", "path":"/path+" },{"method":"GET", "path":"/path+" },{"method":"PUT", "path":"/path+" },{"method":"DELETE", "path":"/path+" }] },
+	{"name":"filesystem", "links":[{"method":"POST", "path":"/path+" },{"method":"GET", "path":"/path+" },{"method":"PUT", "path":"/path+" },{"method":"DELETE", "path":"/path+" }] }
+]
