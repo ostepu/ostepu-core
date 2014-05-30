@@ -58,53 +58,53 @@ class Installer
         return extension_loaded($extension);
     }
     
-	public static function checkModules()
-	{
-		$result = array();
-		
-		// check if apache modules are existing
+    public static function checkModules()
+    {
+        $result = array();
+        
+        // check if apache modules are existing
         $result['mod_php5'] = Installer::apache_module_exists('mod_php5');
         $result['mod_rewrite'] = Installer::apache_module_exists('mod_rewrite');
-		return $result;
-	}
-	
-	public static function checkExtensions()
-	{
-		$result = array();
-		
+        return $result;
+    }
+    
+    public static function checkExtensions()
+    {
+        $result = array();
+        
         // check if php extensions are existing
         $result['curl'] = Installer::apache_extension_exists('curl');
         $result['mysql'] = Installer::apache_extension_exists('mysql');
         $result['mysqli'] = Installer::apache_extension_exists('mysqli');
         $result['json'] = Installer::apache_extension_exists('json');
-		return $result;
-	}
-	
-	public static function checkRequirements()
-	{
-		$result = array();
+        return $result;
+    }
+    
+    public static function checkRequirements()
+    {
+        $result = array();
 
-		$result = array_merge($result,Installer::checkModules());
-		$result = array_merge($result,Installer::checkExtensions());
-		
-		return $result;
-	}
+        $result = array_merge($result,Installer::checkModules());
+        $result = array_merge($result,Installer::checkExtensions());
+        
+        return $result;
+    }
         
     public function CallCheckRequirements()
     {
         $requirements = Installer::checkRequirements();
-		$returnStatus = 200;
-		foreach($requirements as $requirement => $status){
-			if (!$status){
-				$returnStatus = 409;
-				break;
-			}
-		}
-		
-		$this->app->response->setBody( json_encode($requirements) );
+        $returnStatus = 200;
+        foreach($requirements as $requirement => $status){
+            if (!$status){
+                $returnStatus = 409;
+                break;
+            }
+        }
+        
+        $this->app->response->setBody( json_encode($requirements) );
         $this->app->response->setStatus( $returnStatus );
     }
-	
+    
     public function CallInstall($simple = false)
     {
         $installFail = false;
@@ -122,51 +122,51 @@ class Installer
         
         // check if php extensions are existing
         $extensions = Installer::checkExtensions();
-		
-		$fail = false;
-		$errno = null;
-		$error = null;
-		if (isset($data['PL']['url'])) $data['PL']['url'] = rtrim($data['PL']['url'], '/');
-		if (isset($data['PL']['init'])) $data['PL']['init'] = rtrim($data['PL']['init'], '/');
-						
-		// install database file
-		$installDatabaseFile = false;
-		if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInstallDatabase'])) && !$installFail){
-			$installDatabaseFile = true;
-			Installation::installiereDatenbankdatei($data, $fail, $errno, $error);
-		}
-		
-		// install components file
-		$installComponentFile = false;
-		if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInstallComponents'])) && !$installFail){
-			$installComponentFile = true;
-			Installation::installiereKomponentendatei($data, $fail, $errno, $error);
-		}
-		
-		// install UI conf file
-		$installUiFile = false;
-		if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInstallUIConf'])) && !$installFail && isset($data['UI']['conf']) && $data['UI']['conf']!==''){
-            $installUiFile = true;
-			Installation::installiereUIKonfigurationsdatei($data, $fail, $errno, $error);
-		}
-		
-		// install DB conf files
-		$installDBFiles = array(false,false,false);
-		for($confCount=0;$confCount<=2;$confCount++){
-			if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInstallDatabaseConf'.$confCount])) && !$installFail && isset($data['DB']['config'][$confCount]) && $data['DB']['config'][$confCount]!==''){
-				$installDBFiles[$confCount] = true;
-				Installation::installiereDBKonfigurationsdatei($data, $confCount, $fail, $errno, $error);
-			}
-		}
-		
-		// init components
-		$initComponents = false;
-		$components = array();
-		if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInitComponents'])) && !$installFail && isset($data['PL']['init']) && $data['PL']['init']!==''){
-            $initComponents = true;
-			$components = Installation::initialisiereKomponenten($data, $fail, $errno, $error);
+        
+        $fail = false;
+        $errno = null;
+        $error = null;
+        if (isset($data['PL']['url'])) $data['PL']['url'] = rtrim($data['PL']['url'], '/');
+        if (isset($data['PL']['init'])) $data['PL']['init'] = rtrim($data['PL']['init'], '/');
+                        
+        // install database file
+        $installDatabaseFile = false;
+        if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInstallDatabase'])) && !$installFail){
+            $installDatabaseFile = true;
+            Installation::installiereDatenbankdatei($data, $fail, $errno, $error);
         }
-		
+        
+        // install components file
+        $installComponentFile = false;
+        if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInstallComponents'])) && !$installFail){
+            $installComponentFile = true;
+            Installation::installiereKomponentendatei($data, $fail, $errno, $error);
+        }
+        
+        // install UI conf file
+        $installUiFile = false;
+        if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInstallUIConf'])) && !$installFail && isset($data['UI']['conf']) && $data['UI']['conf']!==''){
+            $installUiFile = true;
+            Installation::installiereUIKonfigurationsdatei($data, $fail, $errno, $error);
+        }
+        
+        // install DB conf files
+        $installDBFiles = array(false,false,false);
+        for($confCount=0;$confCount<=2;$confCount++){
+            if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInstallDatabaseConf'.$confCount])) && !$installFail && isset($data['DB']['config'][$confCount]) && $data['DB']['config'][$confCount]!==''){
+                $installDBFiles[$confCount] = true;
+                Installation::installiereDBKonfigurationsdatei($data, $confCount, $fail, $errno, $error);
+            }
+        }
+        
+        // init components
+        $initComponents = false;
+        $components = array();
+        if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInitComponents'])) && !$installFail && isset($data['PL']['init']) && $data['PL']['init']!==''){
+            $initComponents = true;
+            $components = Installation::initialisiereKomponenten($data, $fail, $errno, $error);
+        }
+        
         echo "
             <html><head><style type='text/css'>
             body {background-color: #ffffff; color: #000000;}
@@ -195,189 +195,189 @@ class Installer
 
         echo "<form action='' method='post'>";
 
-		#region Modulprüfung_ausgeben
-		$text = '';
-		foreach ($modules as $moduleName => $status){
-			$text .= Design::erstelleZeile($simple, $moduleName, 'e', ($status ? "OK" : "<font color='red'>Fehler</font>"), 'v');
-		}
-		echo Design::erstelleBlock($simple, 'Apache Module', $text);
-        #endregion Modulprüfung_ausgeben
-		
-		#region Prüfung_der_Erweiterungen_ausgeben
+        #region Modulprüfung_ausgeben
         $text = '';
-		foreach ($extensions as $extensionName => $status){
-			$text .= Design::erstelleZeile($simple, $extensionName, 'e', ($status ? "OK" : "<font color='red'>Fehler</font>"), 'v');
-		}
-		echo Design::erstelleBlock($simple, 'PHP Erweiterungen', $text);
+        foreach ($modules as $moduleName => $status){
+            $text .= Design::erstelleZeile($simple, $moduleName, 'e', ($status ? "OK" : "<font color='red'>Fehler</font>"), 'v');
+        }
+        echo Design::erstelleBlock($simple, 'Apache Module', $text);
+        #endregion Modulprüfung_ausgeben
+        
+        #region Prüfung_der_Erweiterungen_ausgeben
+        $text = '';
+        foreach ($extensions as $extensionName => $status){
+            $text .= Design::erstelleZeile($simple, $extensionName, 'e', ($status ? "OK" : "<font color='red'>Fehler</font>"), 'v');
+        }
+        echo Design::erstelleBlock($simple, 'PHP Erweiterungen', $text);
         #endregion Prüfung_der_Erweiterungen_ausgeben
-		
-		#region Grundeinstellungen_ausgeben
+        
+        #region Grundeinstellungen_ausgeben
         $text=Design::erstelleZeile($simple, 'URL', 'e', Design::erstelleEingabezeile($simple, $data['PL']['url'], 'data[PL][url]', 'http://localhost/uebungsplattform'), 'v');
         echo Design::erstelleBlock($simple, 'Grundeinstellungen', $text);
-		#endregion Grundeinstellungen_ausgeben
+        #endregion Grundeinstellungen_ausgeben
  
-		#region Datenbank_einrichten
-		$text='';
-		$text .= Design::erstelleZeile($simple, 'Adresse', 'e', Design::erstelleEingabezeile($simple, $data['DB']['db_path'], 'data[DB][db_path]', 'localhost'), 'v');
-		$text .= Design::erstelleZeile($simple, 'Datenbank', 'e', Design::erstelleEingabezeile($simple, $data['DB']['db_name'], 'data[DB][db_name]', 'uebungsplattform'), 'v');
-		$text .= Design::erstelleZeile($simple, 'Benutzername', 'e', Design::erstelleEingabezeile($simple, $data['DB']['db_user'], 'data[DB][db_user]', 'root'), 'v');
+        #region Datenbank_einrichten
+        $text='';
+        $text .= Design::erstelleZeile($simple, 'Adresse', 'e', Design::erstelleEingabezeile($simple, $data['DB']['db_path'], 'data[DB][db_path]', 'localhost'), 'v');
+        $text .= Design::erstelleZeile($simple, 'Datenbank', 'e', Design::erstelleEingabezeile($simple, $data['DB']['db_name'], 'data[DB][db_name]', 'uebungsplattform'), 'v');
+        $text .= Design::erstelleZeile($simple, 'Benutzername', 'e', Design::erstelleEingabezeile($simple, $data['DB']['db_user'], 'data[DB][db_user]', 'root'), 'v');
         $text .= Design::erstelleZeile($simple, 'Passwort', 'e', Design::erstellePasswortzeile($simple, $data['DB']['db_passwd'], 'data[DB][db_passwd]', ''), 'v');
         
-		$text .= Design::erstelleZeile($simple, 'Datenbankdatei', 'e', Design::erstelleEingabezeile($simple, $data['DB']['databaseSql'], 'data[DB][databaseSql]', '../DB/Database2.sql'), 'v', Design::erstelleSubmitButton('actionInstallDatabase'), 'h');
-		if ($installDatabaseFile)
-			$text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error);
+        $text .= Design::erstelleZeile($simple, 'Datenbankdatei', 'e', Design::erstelleEingabezeile($simple, $data['DB']['databaseSql'], 'data[DB][databaseSql]', '../DB/Database2.sql'), 'v', Design::erstelleSubmitButton('actionInstallDatabase'), 'h');
+        if ($installDatabaseFile)
+            $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error);
         
-		$text .= Design::erstelleZeile($simple, 'Komponentendefinition', 'e', Design::erstelleEingabezeile($simple, $data['DB']['componentsSql'], 'data[DB][componentsSql]', '../DB/Components2.sql'), 'v', Design::erstelleSubmitButton('actionInstallComponents'), 'h');
-		if ($installComponentFile)
-			$text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error); 
+        $text .= Design::erstelleZeile($simple, 'Komponentendefinition', 'e', Design::erstelleEingabezeile($simple, $data['DB']['componentsSql'], 'data[DB][componentsSql]', '../DB/Components2.sql'), 'v', Design::erstelleSubmitButton('actionInstallComponents'), 'h');
+        if ($installComponentFile)
+            $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error); 
 
-		echo Design::erstelleBlock($simple, 'Datenbank einrichten', $text);
-		#endregion Datenbank_einrichten
+        echo Design::erstelleBlock($simple, 'Datenbank einrichten', $text);
+        #endregion Datenbank_einrichten
         
-		#region Benutzerschnittstelle_einrichten
-		$text='';
-		$text .= Design::erstelleZeile($simple, 'Konfigurationsdatei (mit Schreibrechten)', 'e', Design::erstelleEingabezeile($simple, $data['UI']['conf'], 'data[UI][conf]', '../UI/include/Config.php'), 'v', Design::erstelleSubmitButton('actionInstallUIConf'), 'h');
+        #region Benutzerschnittstelle_einrichten
+        $text='';
+        $text .= Design::erstelleZeile($simple, 'Konfigurationsdatei (mit Schreibrechten)', 'e', Design::erstelleEingabezeile($simple, $data['UI']['conf'], 'data[UI][conf]', '../UI/include/Config.php'), 'v', Design::erstelleSubmitButton('actionInstallUIConf'), 'h');
 
         if ($installUiFile) 
             $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error); 
-		echo Design::erstelleBlock($simple, 'Benutzerschnittstelle einrichten', $text);
+        echo Design::erstelleBlock($simple, 'Benutzerschnittstelle einrichten', $text);
         #endregion Benutzerschnittstelle_einrichten
 
-		#region Datenbankschnittstelle_einrichten
+        #region Datenbankschnittstelle_einrichten
         $text='';
-		$defaultFiles = array('../DB/CControl/config.ini','../DB/DBQuery/config.ini','../DB/DBQuery2/config.ini');
+        $defaultFiles = array('../DB/CControl/config.ini','../DB/DBQuery/config.ini','../DB/DBQuery2/config.ini');
         for ($confCount = 0; $confCount <= 2 ; $confCount++){
-			$text .= Design::erstelleZeile($simple, 'Konfigurationsdatei (mit Schreibrechten)', 'e', Design::erstelleEingabezeile($simple, $data['DB']['config'][$confCount], 'data[DB][config][]', $defaultFiles[$confCount]), 'v', Design::erstelleSubmitButton("actionInstallDatabaseConf{$confCount}"), 'h');
+            $text .= Design::erstelleZeile($simple, 'Konfigurationsdatei (mit Schreibrechten)', 'e', Design::erstelleEingabezeile($simple, $data['DB']['config'][$confCount], 'data[DB][config][]', $defaultFiles[$confCount]), 'v', Design::erstelleSubmitButton("actionInstallDatabaseConf{$confCount}"), 'h');
 
-			if ($installDBFiles[$confCount])
+            if ($installDBFiles[$confCount])
                $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error); 
         }
 
-		echo Design::erstelleBlock($simple, 'Datenbankschnittstelle einrichten', $text);
-		#endregion Datenbankschnittstelle_einrichten
+        echo Design::erstelleBlock($simple, 'Datenbankschnittstelle einrichten', $text);
+        #endregion Datenbankschnittstelle_einrichten
         
-		#region Komponenten
+        #region Komponenten
         $text='';
         $text .= "<tr><td colspan='2'>Zur Initialisierung der Komponenten werden in deren Ordnern Schreibrechte benoetigt. (zum Schreiben der CConfig.json Dateien)</td></tr>";
         $text .= Design::erstelleZeile($simple, 'Initialisierung (Komponenten)', 'e', Design::erstelleEingabezeile($simple, $data['PL']['init'], 'data[PL][init]', 'DB/CControl'), 'v', Design::erstelleSubmitButton("actionInitComponents"), 'h');
-		
-		if ($initComponents){
-		   	// counts installed commands
-			$installedCommands = 0;
-			
-			// counts installed components
-			$installedComponents = 0;
-			
-			// counts installed links
-			$installedLinks = 0;
-			
-			foreach($components as $componentName => $component)
-			{
-				$linkNames = array();
-				$linkNamesUnique = array();
-				$callNames = array();
-				$links = $component['links'];
-				foreach($links as $link){
-					$linkNames[] = $link->getName();
-					$linkNamesUnique[$link->getName()] = $link->getName();
-				}
-				$calls = $component['call'];
-				if ($calls!==null){
-					foreach($calls as $pos => $callList){
-						$callNames[$callList['name']] = $callList['name'];
-					}
-				}
-				
-						
-				$countLinks = 1;
-				if ($component['init']->getStatus() === 201){
-					$countLinks+=count($linkNames) + count(array_diff($callNames,$linkNamesUnique)) + count($linkNamesUnique) - count(array_diff($linkNamesUnique,$callNames));
-					$countLinks++;
-				}
-				
-				$countCommands = count($component['commands']);
-				$text .= "<tr><td class='e' rowspan='{$countLinks}'>{$componentName}</td><td class='v'>{$component['init']->getAddress()}</td><td class='e'>".($component['init']->getStatus() === 201 ? "OK" : "<font color='red'>Fehler ({$component['init']->getStatus()})</font>")."</td></tr>";
-				
-				if ($component['init']->getStatus() === 201){
-					$installedComponents++;
-					$installedLinks+=count($component['links']);
-					$installedCommands+=$countCommands;
-					
-					$text .= "<tr><td class='v' colspan='2'>installierte Befehle: {$countCommands}</td></tr>";
-				
-					$links = $component['links'];
-					$lastLink = null;
-					foreach($links as $link){
-						$calls = $component['call'];
-						$linkFound=false;
-						if ($calls!==null){
-							foreach($calls as $pos => $callList){
-								if ($callList['name'] === $link->getName()){
-									$linkFound=true;
-									break;
-								}
-							}
-						}
-
-						if ($lastLink!=$link->getName() && $linkFound){
-							$calls = $component['call'];
-
-							$notRoutable = false;
-							if ($calls!==null){
-								foreach($calls as $pos => $callList){				
-									if ($link->getName() !== $callList['name']) continue;
-									foreach($callList['links'] as $pos2 => $call){
-										if ($components[$link->getTargetName()]['router']==null) continue;
-										if ($call===null) continue;
-										if (!isset($call['method'])) continue;
-										if (!isset($call['path'])) continue;
-										
-										$routes = count($components[$link->getTargetName()]['router']->getMatchedRoutes(strtoupper($call['method']), $call['path']),true);
-										if ($routes===0){
-											$notRoutable=true;
-											break;
-										}
-									}
-									if ($notRoutable) break;
-								}
-								$text .= "<tr><td class='v'>{$link->getName()}</td><td class='e'>".(!$notRoutable ? 'OK' : '<font color="red">Fehler</font>')."</td></tr>";
-							}
-						}
-						
-						$text .= "<tr><td class='v'>{$link->getName()}".(!$linkFound ? " (<font color='red'>unbekannt</font>)" : '')."</td><td class='v'>{$link->getTargetName()}</td></tr>"; 
-					
-						$lastLink = $link->getName();
-					}
-					
-					// fehlende links
-					$calls = $component['call'];
-					if ($calls!==null){
-						foreach($calls as $pos => $callList){	
-							$found = false;
-							foreach($links as $link){					
-								if ($link->getName() == $callList['name']){
-									$found=true;
-									break;
-								}
-							}
-							if (!$found){
-								$text .= "<tr><td class='v'>{$callList['name']}</td><td class='e'><font color='red'>nicht belegt</font></td></tr>";
-							}
-						}
-					}
-				}
-			}
+        
+        if ($initComponents){
+               // counts installed commands
+            $installedCommands = 0;
             
-			$text .= Design::erstelleZeile($simple, '', '', '', '', '' , '');
-			$text .= Design::erstelleZeile($simple, 'installierte Komponenten', 'e', '', 'v', $installedComponents, 'v');
-			$text .= Design::erstelleZeile($simple, 'installierte Verbindungen', 'e', '', 'v', $installedLinks, 'v');
-			$text .= Design::erstelleZeile($simple, 'installierte Befehle', 'e', '', 'v', $installedCommands, 'v');
+            // counts installed components
+            $installedComponents = 0;
+            
+            // counts installed links
+            $installedLinks = 0;
+            
+            foreach($components as $componentName => $component)
+            {
+                $linkNames = array();
+                $linkNamesUnique = array();
+                $callNames = array();
+                $links = $component['links'];
+                foreach($links as $link){
+                    $linkNames[] = $link->getName();
+                    $linkNamesUnique[$link->getName()] = $link->getName();
+                }
+                $calls = $component['call'];
+                if ($calls!==null){
+                    foreach($calls as $pos => $callList){
+                        $callNames[$callList['name']] = $callList['name'];
+                    }
+                }
+                
+                        
+                $countLinks = 1;
+                if ($component['init']->getStatus() === 201){
+                    $countLinks+=count($linkNames) + count(array_diff($callNames,$linkNamesUnique)) + count($linkNamesUnique) - count(array_diff($linkNamesUnique,$callNames));
+                    $countLinks++;
+                }
+                
+                $countCommands = count($component['commands']);
+                $text .= "<tr><td class='e' rowspan='{$countLinks}'>{$componentName}</td><td class='v'>{$component['init']->getAddress()}</td><td class='e'>".($component['init']->getStatus() === 201 ? "OK" : "<font color='red'>Fehler ({$component['init']->getStatus()})</font>")."</td></tr>";
+                
+                if ($component['init']->getStatus() === 201){
+                    $installedComponents++;
+                    $installedLinks+=count($component['links']);
+                    $installedCommands+=$countCommands;
+                    
+                    $text .= "<tr><td class='v' colspan='2'>installierte Befehle: {$countCommands}</td></tr>";
+                
+                    $links = $component['links'];
+                    $lastLink = null;
+                    foreach($links as $link){
+                        $calls = $component['call'];
+                        $linkFound=false;
+                        if ($calls!==null){
+                            foreach($calls as $pos => $callList){
+                                if ($callList['name'] === $link->getName()){
+                                    $linkFound=true;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if ($lastLink!=$link->getName() && $linkFound){
+                            $calls = $component['call'];
+
+                            $notRoutable = false;
+                            if ($calls!==null){
+                                foreach($calls as $pos => $callList){                
+                                    if ($link->getName() !== $callList['name']) continue;
+                                    foreach($callList['links'] as $pos2 => $call){
+                                        if ($components[$link->getTargetName()]['router']==null) continue;
+                                        if ($call===null) continue;
+                                        if (!isset($call['method'])) continue;
+                                        if (!isset($call['path'])) continue;
+                                        
+                                        $routes = count($components[$link->getTargetName()]['router']->getMatchedRoutes(strtoupper($call['method']), $call['path']),true);
+                                        if ($routes===0){
+                                            $notRoutable=true;
+                                            break;
+                                        }
+                                    }
+                                    if ($notRoutable) break;
+                                }
+                                $text .= "<tr><td class='v'>{$link->getName()}</td><td class='e'>".(!$notRoutable ? 'OK' : '<font color="red">Fehler</font>')."</td></tr>";
+                            }
+                        }
+                        
+                        $text .= "<tr><td class='v'>{$link->getName()}".(!$linkFound ? " (<font color='red'>unbekannt</font>)" : '')."</td><td class='v'>{$link->getTargetName()}</td></tr>"; 
+                    
+                        $lastLink = $link->getName();
+                    }
+                    
+                    // fehlende links
+                    $calls = $component['call'];
+                    if ($calls!==null){
+                        foreach($calls as $pos => $callList){    
+                            $found = false;
+                            foreach($links as $link){                    
+                                if ($link->getName() == $callList['name']){
+                                    $found=true;
+                                    break;
+                                }
+                            }
+                            if (!$found){
+                                $text .= "<tr><td class='v'>{$callList['name']}</td><td class='e'><font color='red'>nicht belegt</font></td></tr>";
+                            }
+                        }
+                    }
+                }
+            }
+            
+            $text .= Design::erstelleZeile($simple, '', '', '', '', '' , '');
+            $text .= Design::erstelleZeile($simple, 'installierte Komponenten', 'e', '', 'v', $installedComponents, 'v');
+            $text .= Design::erstelleZeile($simple, 'installierte Verbindungen', 'e', '', 'v', $installedLinks, 'v');
+            $text .= Design::erstelleZeile($simple, 'installierte Befehle', 'e', '', 'v', $installedCommands, 'v');
 
             $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error); 
         }
         
         echo Design::erstelleBlock($simple, 'Komponenten', $text);
-		#endregion Komponenten
+        #endregion Komponenten
         
         echo "<table border='0' cellpadding='3' width='600'>";
         echo "<tr><td class='h'><div align='center'><input type='submit' name='actionInstall' value=' Alles Installieren '></div></td></tr>";
