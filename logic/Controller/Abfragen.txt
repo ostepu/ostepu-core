@@ -1,2 +1,0 @@
-http://localhost/logic/Controller/LController.php/component  <- liefert die Konfiguration dieser Komponente, zum nachschauen
-http://localhost/logic/Controller/LController.php
