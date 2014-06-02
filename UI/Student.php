@@ -7,20 +7,18 @@
  * @author Florian Lücke
  * @author Ralf Busch
  */
-
 include_once 'include/Boilerplate.php';
-
 if (isset($_POST['downloadAttachments'])) {
     downloadAttachmentsOfSheet($_POST['downloadAttachments']);
 
 } elseif (isset($_POST['deleteSubmission'])) {
     $suid = cleanInput($_POST['deleteSubmission']);
-
+    
     // extractes the studentId of the submission
     $URI = $databaseURI . "/submission/" . $suid;
-    $submission = http_get($URI, true);
+    $submission = http_get($URI, true);                  
     $submission = json_decode($submission, true);
-
+                    
     // only deletes the submission if it belongs to the user
     if ($submission['studentId'] == $uid) {
         $URI = $databaseURI . "/selectedsubmission/submission/" . $suid;

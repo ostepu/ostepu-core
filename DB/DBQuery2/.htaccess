@@ -1,0 +1,2 @@
+RewriteEngine On
+RewriteRule ^ DBQuery2.php [QSA,L]

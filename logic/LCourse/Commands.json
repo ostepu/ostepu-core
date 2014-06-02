@@ -1,0 +1,8 @@
+[
+    {    "method":"post", "path":"/course(/)" },
+    {    "method":"put", "path":"/course/course/:courseid(/)" },
+    {    "method":"delete", "path":"/course/course/:courseid(/)" },
+    {    "method":"post", "path":"/course/course/:courseid/user/:userid/status/:status(/)" },
+    {    "method":"get", "path":"/course/course/:courseid/user(/)" },
+    {    "method":"get", "path":"/course/user/:userid(/)" }
+]

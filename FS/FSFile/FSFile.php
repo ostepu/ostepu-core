@@ -99,13 +99,16 @@ class FSFile
                           );
 
         // GET Filedata
-        $this->_app->get( 
+        $this->_app->map( 
                          '/' . FSFile::$_baseDir . '/:hash(/)',
                          array( 
                                $this,
                                'getFileData'
                                )
-                         );
+                         )->via( 
+                                'GET',
+                                'INFO'
+                                );;
 
         // GET GetFileDocument
         $this->_app->get( 
