@@ -246,8 +246,9 @@ class Installer
         #region Datenbankschnittstelle_einrichten
         $text='';
         $defaultFiles = array('../DB/CControl/config.ini','../DB/DBQuery/config.ini','../DB/DBQuery2/config.ini');
+        if (!isset($data['DB']['config'])) $data['DB']['config']=array(null,null,null);
         for ($confCount = 0; $confCount <= 2 ; $confCount++){
-            $text .= Design::erstelleZeile($simple, 'Konfigurationsdatei (mit Schreibrechten)', 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['config'][$confCount]) ? $data['UI']['config'][$confCount] : null), 'data[DB][config][]', $defaultFiles[$confCount]), 'v', Design::erstelleSubmitButton("actionInstallDatabaseConf{$confCount}"), 'h');
+            $text .= Design::erstelleZeile($simple, 'Konfigurationsdatei (mit Schreibrechten)', 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['config'][$confCount]) ? $data['DB']['config'][$confCount] : null), 'data[DB][config][]', $defaultFiles[$confCount]), 'v', Design::erstelleSubmitButton("actionInstallDatabaseConf{$confCount}"), 'h');
 
             if ($installDBFiles[$confCount])
                $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error); 
@@ -276,12 +277,18 @@ class Installer
                 $linkNames = array();
                 $linkNamesUnique = array();
                 $callNames = array();
-                $links = $component['links'];
+                
+                $links = array();
+                if (isset($component['links']))
+                    $links = $component['links'];
                 foreach($links as $link){
                     $linkNames[] = $link->getName();
                     $linkNamesUnique[$link->getName()] = $link->getName();
                 }
-                $calls = $component['call'];
+                
+                $calls=null;
+                if (isset($component['call']))
+                    $calls = $component['call'];
                 if ($calls!==null){
                     foreach($calls as $pos => $callList){
                         $callNames[$callList['name']] = $callList['name'];
@@ -350,7 +357,9 @@ class Installer
                     }
                     
                     // fehlende links
-                    $calls = $component['call'];
+                    $calls = null;
+                    if (isset($component['call']))
+                        $calls = $component['call'];
                     if ($calls!==null){
                         foreach($calls as $pos => $callList){    
                             $found = false;
