@@ -30,7 +30,7 @@ class Design
     
     public static function erstelleEingabezeile($simple, $variable, $variablenName, $default)
     {
-        $result = "<input style='width:100%' type='text' name='{$variablenName}' value='".(isset($variable) ? $variable : $default)."'>";
+        $result = "<input style='width:100%' type='text' name='{$variablenName}' value='".($variable!==null ? $variable : $default)."'>";
         return $result;
     }
     

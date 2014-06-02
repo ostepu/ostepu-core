@@ -212,22 +212,22 @@ class Installer
         #endregion Prüfung_der_Erweiterungen_ausgeben
         
         #region Grundeinstellungen_ausgeben
-        $text=Design::erstelleZeile($simple, 'URL', 'e', Design::erstelleEingabezeile($simple, $data['PL']['url'], 'data[PL][url]', 'http://localhost/uebungsplattform'), 'v');
+        $text=Design::erstelleZeile($simple, 'URL', 'e', Design::erstelleEingabezeile($simple, (isset($data['PL']['url']) ? $data['PL']['url'] : null), 'data[PL][url]', 'http://localhost/uebungsplattform'), 'v');
         echo Design::erstelleBlock($simple, 'Grundeinstellungen', $text);
         #endregion Grundeinstellungen_ausgeben
  
         #region Datenbank_einrichten
         $text='';
-        $text .= Design::erstelleZeile($simple, 'Adresse', 'e', Design::erstelleEingabezeile($simple, $data['DB']['db_path'], 'data[DB][db_path]', 'localhost'), 'v');
-        $text .= Design::erstelleZeile($simple, 'Datenbank', 'e', Design::erstelleEingabezeile($simple, $data['DB']['db_name'], 'data[DB][db_name]', 'uebungsplattform'), 'v');
-        $text .= Design::erstelleZeile($simple, 'Benutzername', 'e', Design::erstelleEingabezeile($simple, $data['DB']['db_user'], 'data[DB][db_user]', 'root'), 'v');
-        $text .= Design::erstelleZeile($simple, 'Passwort', 'e', Design::erstellePasswortzeile($simple, $data['DB']['db_passwd'], 'data[DB][db_passwd]', ''), 'v');
+        $text .= Design::erstelleZeile($simple, 'Adresse', 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['db_path']) ? $data['DB']['db_path'] : null), 'data[DB][db_path]', 'localhost'), 'v');
+        $text .= Design::erstelleZeile($simple, 'Datenbank', 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['db_name']) ? $data['DB']['db_name'] : null), 'data[DB][db_name]', 'uebungsplattform'), 'v');
+        $text .= Design::erstelleZeile($simple, 'Benutzername', 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['db_user']) ? $data['DB']['db_user'] : null), 'data[DB][db_user]', 'root'), 'v');
+        $text .= Design::erstelleZeile($simple, 'Passwort', 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_passwd']) ? $data['DB']['db_passwd'] : null), 'data[DB][db_passwd]', ''), 'v');
         
-        $text .= Design::erstelleZeile($simple, 'Datenbankdatei', 'e', Design::erstelleEingabezeile($simple, $data['DB']['databaseSql'], 'data[DB][databaseSql]', '../DB/Database2.sql'), 'v', Design::erstelleSubmitButton('actionInstallDatabase'), 'h');
+        $text .= Design::erstelleZeile($simple, 'Datenbankdatei', 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['databaseSql']) ? $data['DB']['databaseSql'] : null), 'data[DB][databaseSql]', '../DB/Database2.sql'), 'v', Design::erstelleSubmitButton('actionInstallDatabase'), 'h');
         if ($installDatabaseFile)
             $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error);
         
-        $text .= Design::erstelleZeile($simple, 'Komponentendefinition', 'e', Design::erstelleEingabezeile($simple, $data['DB']['componentsSql'], 'data[DB][componentsSql]', '../DB/Components2.sql'), 'v', Design::erstelleSubmitButton('actionInstallComponents'), 'h');
+        $text .= Design::erstelleZeile($simple, 'Komponentendefinition', 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['componentsSql']) ? $data['DB']['componentsSql'] : null), 'data[DB][componentsSql]', '../DB/Components2.sql'), 'v', Design::erstelleSubmitButton('actionInstallComponents'), 'h');
         if ($installComponentFile)
             $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error); 
 
@@ -236,7 +236,7 @@ class Installer
         
         #region Benutzerschnittstelle_einrichten
         $text='';
-        $text .= Design::erstelleZeile($simple, 'Konfigurationsdatei (mit Schreibrechten)', 'e', Design::erstelleEingabezeile($simple, $data['UI']['conf'], 'data[UI][conf]', '../UI/include/Config.php'), 'v', Design::erstelleSubmitButton('actionInstallUIConf'), 'h');
+        $text .= Design::erstelleZeile($simple, 'Konfigurationsdatei (mit Schreibrechten)', 'e', Design::erstelleEingabezeile($simple, (isset($data['UI']['conf']) ? $data['UI']['conf'] : null), 'data[UI][conf]', '../UI/include/Config.php'), 'v', Design::erstelleSubmitButton('actionInstallUIConf'), 'h');
 
         if ($installUiFile) 
             $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error); 
@@ -246,8 +246,9 @@ class Installer
         #region Datenbankschnittstelle_einrichten
         $text='';
         $defaultFiles = array('../DB/CControl/config.ini','../DB/DBQuery/config.ini','../DB/DBQuery2/config.ini');
+        if (!isset($data['DB']['config'])) $data['DB']['config']=array(null,null,null);
         for ($confCount = 0; $confCount <= 2 ; $confCount++){
-            $text .= Design::erstelleZeile($simple, 'Konfigurationsdatei (mit Schreibrechten)', 'e', Design::erstelleEingabezeile($simple, $data['DB']['config'][$confCount], 'data[DB][config][]', $defaultFiles[$confCount]), 'v', Design::erstelleSubmitButton("actionInstallDatabaseConf{$confCount}"), 'h');
+            $text .= Design::erstelleZeile($simple, 'Konfigurationsdatei (mit Schreibrechten)', 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['config'][$confCount]) ? $data['DB']['config'][$confCount] : null), 'data[DB][config][]', $defaultFiles[$confCount]), 'v', Design::erstelleSubmitButton("actionInstallDatabaseConf{$confCount}"), 'h');
 
             if ($installDBFiles[$confCount])
                $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error); 
@@ -259,7 +260,7 @@ class Installer
         #region Komponenten
         $text='';
         $text .= "<tr><td colspan='2'>Zur Initialisierung der Komponenten werden in deren Ordnern Schreibrechte benoetigt. (zum Schreiben der CConfig.json Dateien)</td></tr>";
-        $text .= Design::erstelleZeile($simple, 'Initialisierung (Komponenten)', 'e', Design::erstelleEingabezeile($simple, $data['PL']['init'], 'data[PL][init]', 'DB/CControl'), 'v', Design::erstelleSubmitButton("actionInitComponents"), 'h');
+        $text .= Design::erstelleZeile($simple, 'Initialisierung (Komponenten)', 'e', Design::erstelleEingabezeile($simple, (isset($data['PL']['init']) ? $data['PL']['init'] : null), 'data[PL][init]', 'DB/CControl'), 'v', Design::erstelleSubmitButton("actionInitComponents"), 'h');
         
         if ($initComponents){
                // counts installed commands
@@ -276,12 +277,18 @@ class Installer
                 $linkNames = array();
                 $linkNamesUnique = array();
                 $callNames = array();
-                $links = $component['links'];
+                
+                $links = array();
+                if (isset($component['links']))
+                    $links = $component['links'];
                 foreach($links as $link){
                     $linkNames[] = $link->getName();
                     $linkNamesUnique[$link->getName()] = $link->getName();
                 }
-                $calls = $component['call'];
+                
+                $calls=null;
+                if (isset($component['call']))
+                    $calls = $component['call'];
                 if ($calls!==null){
                     foreach($calls as $pos => $callList){
                         $callNames[$callList['name']] = $callList['name'];
@@ -350,7 +357,9 @@ class Installer
                     }
                     
                     // fehlende links
-                    $calls = $component['call'];
+                    $calls = null;
+                    if (isset($component['call']))
+                        $calls = $component['call'];
                     if ($calls!==null){
                         foreach($calls as $pos => $callList){    
                             $found = false;
