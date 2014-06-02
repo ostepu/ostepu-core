@@ -51,8 +51,8 @@ INSERT IGNORE INTO `Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) V
 INSERT IGNORE INTO `Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (47, 'LForm', 'localhost/uebungsplattform/logic/LForm', '');
 INSERT IGNORE INTO `Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (48, 'LProcessor', 'localhost/uebungsplattform/logic/LProcessor', '');
 INSERT IGNORE INTO `Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (50, 'DBProcess', 'localhost/uebungsplattform/DB/DBProcess', '');
-INSERT IGNORE INTO `Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (51, 'DBAttachment2', 'localhost/uebungsplattform/DB/DBAttachment2/processAttachment', '');
-INSERT IGNORE INTO `Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (52, 'DBAttachment2', 'localhost/uebungsplattform/DB/DBAttachment2/processWorkFiles', '');
+INSERT IGNORE INTO `Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (51, 'DBProcessAttachment', 'localhost/uebungsplattform/DB/DBAttachment2/processAttachment', '');
+INSERT IGNORE INTO `Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (52, 'DBProcessWorkFiles', 'localhost/uebungsplattform/DB/DBAttachment2/processWorkFiles', '');
 INSERT IGNORE INTO `Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (53, 'LExtension', 'localhost/uebungsplattform/logic/LExtension', '');
 INSERT IGNORE INTO `Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (54, 'LOOP', 'localhost/uebungsplattform/logic/LOOP', '');
 INSERT IGNORE INTO `Component` (`CO_id`, `CO_name`, `CO_address`, `CO_option`) VALUES (55, 'DBProcessList', 'localhost/uebungsplattform/DB/DBProcess/processList', '');
@@ -143,9 +143,6 @@ INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (48, 'marking', '', 30);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (48, 'submission', '', 29);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (48, 'processorDb', '', 50);
-INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (48, 'process', '', 45);
-INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (48, 'process', '', 46);
-INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (48, 'process', '', 54);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (50, 'out', '', 39);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (45, 'formDb', '', 43);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (46, 'formDb', '', 43);
