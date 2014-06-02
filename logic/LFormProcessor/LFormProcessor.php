@@ -56,7 +56,7 @@ class LFormProcessor
      * @var Link[] $_pdf a list of links
      */
     private $_pdf = array( );
-    
+
     /**
      * @var Link[] $_formDb a list of links
      */
@@ -64,7 +64,7 @@ class LFormProcessor
     private $_postProcess = array( );
     private $_deleteProcess = array( );
     private $_getProcess = array( );
-    
+
     /**
      * REST actions
      *
