@@ -62,7 +62,7 @@ class Marking extends Object implements JsonSerializable
      */
     public function setSubmission( $value )
     {
-        $submission = $value;
+        $this->submission = $value;
     }
 
     /**
@@ -546,7 +546,7 @@ class Marking extends Object implements JsonSerializable
         $list = array( );
         if ( $this->id !== null )
             $list['id'] = $this->id;
-        if ( $this->submission !== null )
+        if ( $this->submission !== null && $this->submission !== array())
             $list['submission'] = $this->submission;
         if ( $this->tutorId !== null )
             $list['tutorId'] = $this->tutorId;
@@ -569,7 +569,12 @@ class Marking extends Object implements JsonSerializable
 
     public static function ExtractMarking( 
                                           $data,
-                                          $singleResult = false
+                                          $singleResult = false,
+                                          $FileExtension = '',
+                                          $File2Extension = '',
+                                          $SubmissionExtension = '',
+                                          $MarkingExtension = '',
+                                          $isResult = true
                                           )
     {
 
@@ -578,7 +583,8 @@ class Marking extends Object implements JsonSerializable
         $files = DBJson::getObjectsByAttributes( 
                                                 $data,
                                                 File::getDBPrimaryKey( ),
-                                                File::getDBConvert( )
+                                                File::getDBConvert( ),
+                                                $FileExtension
                                                 );
 
         // generates an assoc array of files by using a defined list of
@@ -587,7 +593,7 @@ class Marking extends Object implements JsonSerializable
                                                  $data,
                                                  File::getDBPrimaryKey( ),
                                                  File::getDBConvert( ),
-                                                 '2'
+                                                 $File2Extension.'2'
                                                  );
 
         // generates an assoc array of a submission by using a defined
@@ -596,7 +602,7 @@ class Marking extends Object implements JsonSerializable
                                                       $data,
                                                       Submission::getDBPrimaryKey( ),
                                                       Submission::getDBConvert( ),
-                                                      '2'
+                                                      $SubmissionExtension.'2'
                                                       );
 
         // concatenates the submissions and the associated files
@@ -607,7 +613,8 @@ class Marking extends Object implements JsonSerializable
                                                              Submission::getDBConvert( )['S_file'],
                                                              $files2,
                                                              File::getDBPrimaryKey( ),
-                                                             '2'
+                                                             $File2Extension.'2',
+                                                             $SubmissionExtension.'2'
                                                              );
 
         // sets the selectedForGroup attribute
@@ -627,7 +634,8 @@ class Marking extends Object implements JsonSerializable
         $markings = DBJson::getObjectsByAttributes( 
                                                    $data,
                                                    Marking::getDBPrimaryKey( ),
-                                                   Marking::getDBConvert( )
+                                                   Marking::getDBConvert( ),
+                                                   $MarkingExtension
                                                    );
 
         // concatenates the markings and the associated files
@@ -637,7 +645,9 @@ class Marking extends Object implements JsonSerializable
                                                      Marking::getDBPrimaryKey( ),
                                                      Marking::getDBConvert( )['M_file'],
                                                      $files,
-                                                     File::getDBPrimaryKey( )
+                                                     File::getDBPrimaryKey( ),
+                                                     $FileExtension,
+                                                     $MarkingExtension       
                                                      );
 
         // concatenates the markings and the associated submissions
@@ -647,17 +657,21 @@ class Marking extends Object implements JsonSerializable
                                                      Marking::getDBPrimaryKey( ),
                                                      Marking::getDBConvert( )['M_submission'],
                                                      $submissions,
-                                                     Submission::getDBPrimaryKey( )
+                                                     Submission::getDBPrimaryKey( ),
+                                                     $SubmissionExtension.'2',
+                                                     $MarkingExtension                                                     
                                                      );
 
-        // to reindex
-        $res = array_values( $res );
+        if ($isResult){ 
+            // to reindex
+            $res = array_values( $res );
 
-        if ( $singleResult == true ){
+            if ( $singleResult == true ){
 
-            // only one object as result
-            if ( count( $res ) > 0 )
-                $res = $res[0];
+                // only one object as result
+                if ( count( $res ) > 0 )
+                    $res = $res[0];
+            }
         }
 
         return $res;

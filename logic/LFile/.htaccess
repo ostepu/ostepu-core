@@ -1,0 +1,2 @@
+RewriteEngine On
+RewriteRule ^ LFile.php [QSA,L]

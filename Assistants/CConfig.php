@@ -66,16 +66,43 @@ class CConfig
 
         // initialize slim
         $this->setPrefix( $prefix );
-        $this->_app = new \Slim\Slim( );
+        $this->_app = new \Slim\Slim( array('debug' => true) );
 
         $this->_app->response->headers->set( 
                                             'Content-Type',
                                             'application/json'
                                             );
+                                            
+        // GET Commands
+        $this->_app->get( 
+                          '/info/commands(/)',
+                          array( 
+                                $this,
+                                'commands'
+                                )
+                          );
+                          
+        // GET Info
+        $this->_app->get( 
+                          '/info/:language(/)',
+                          array( 
+                                $this,
+                                'info'
+                                )
+                          );
+                          
+        // GET Instruction
+        $this->_app->get( 
+                          '/info/instruction/:language(/)',
+                          array( 
+                                $this,
+                                'instruction'
+                                )
+                          );                         
 
         // POST Config
         $this->_app->post( 
-                          '/component',
+                          '(/:pre+)/control',
                           array( 
                                 $this,
                                 'postConfig'
@@ -84,7 +111,7 @@ class CConfig
 
         // GET Config
         $this->_app->get( 
-                         '/component',
+                         '(/:pre+)/control',
                          array( 
                                $this,
                                'getConfig'
@@ -92,17 +119,151 @@ class CConfig
                          );
 
         // starts slim only if the right prefix was received
-        if ( $this->_app->request->getResourceUri( ) == '/component' ){
+        if ( strpos($this->_app->request->getResourceUri( ),'/control') !== false  ||  strpos( 
+                    $this->_app->request->getResourceUri( ),
+                    '/info'
+                    ) === 0 ){
 
             // run Slim
             $this->_used = true;
             $this->_app->run( );
             
-        } else {
+        }
+    }
+    
+    public function info( $language)
+    {
+        if (file_exists('info/'.$language)){
+            $this->_app->response->setStatus( 200 );
+            $this->_app->response->setBody( file_get_contents('info/'.$language) );
+        }else{
+            $this->_app->response->setStatus( 404 );
+            $this->_app->response->setBody( '' );
+        }
+    }
+    
+    public function instruction( $language)
+    {
+        if (file_exists('instruction/'.$language)){
+            $this->_app->response->setStatus( 200 );
+            $this->_app->response->setBody( file_get_contents('instruction/'.$language) );
+        }else{
+            $this->_app->response->setStatus( 404 );
+            $this->_app->response->setBody( '' );
+        }
+    }
+    
+    public function commands()
+    {
+        if (file_exists('Commands.json')){
+            $this->_app->response->setStatus( 200 );
+            $this->_app->response->setBody( file_get_contents('Commands.json') );
+        }else{
+            $this->_app->response->setStatus( 404 );
+            $this->_app->response->setBody( '' );
+        }
+    }
 
-            // if the "component" was not started, check if the links
-            // existing know their prefixes
-            $conf = $this->loadConfig( );
+    /**
+     * returns the value of $_used
+     *
+     * @return the value of $_used
+     */
+    public function used( )
+    {
+        return $this->_used;
+    }
+
+    /**
+     * POST Config
+     * - to store new component data
+     */
+    public function postConfig( $pre = array() )
+    {
+        $tempPre = '';
+        foreach($pre as $pr){
+            if ($pr !== '')
+                $tempPre .= $pr . '_';
+        }
+        $pre = $tempPre;
+        
+        $this->_app->response->setStatus( 451 );
+        $body = $this->_app->request->getBody( );
+        $Component = Component::decodeComponent( $body );
+        $Component->setPrefix( $this->getPrefix( ) );
+        $this->saveConfig( $pre, Component::encodeComponent( $Component ) );
+        $this->_app->response->setStatus( 201 );
+    }
+
+    /**
+     * GET Config
+     * - to ask this component for his component data
+     */
+    public function getConfig( $pre = array()  )
+    {
+        $tempPre = '';
+        foreach($pre as $pr){
+            if ($pr !== '')
+                $tempPre .= $pr . '_';
+        }
+        $pre = $tempPre;
+        
+        if ( file_exists( $pre . $this->CONF_FILE ) ){
+            $com = Component::decodeComponent( file_get_contents( $pre . $this->CONF_FILE ) );
+            $com->setPrefix( $this->getPrefix( ) );
+            $this->_app->response->setBody( Component::encodeComponent( $com ) );
+            $this->_app->response->setStatus( 200 );
+            
+        } else {
+            $this->_app->response->setStatus( 409 );
+            $com = new Component( );
+            $com->setPrefix( $this->getPrefix( ) );
+            $this->_app->response->setBody( Component::encodeComponent( $com ) );
+        }
+    }
+
+    /**
+     * stores a Component object (json encoded) to the $CONF_FILE file
+     *
+     * @param $content the json encode Component object
+     */
+    public function saveConfig( $pre='', $content )
+    {
+        $file = fopen( 
+                      $pre . $this->CONF_FILE,
+                      'w'
+                      );
+        fwrite( 
+               $file,
+               $content
+               );
+        fclose( $file );
+    }
+
+    /**
+     * the function loads the $CONF_FILE file
+     *
+     * @return a Component object
+     */
+    public function loadConfig( )
+    {
+        $tempPre = '';
+        $args = func_get_args();
+        foreach($args as $n => $field){
+            if ($field !== '')
+                $tempPre .= $field. '_' ;
+        }
+        $pre = $tempPre;
+        
+        if ( file_exists( $pre . $this->CONF_FILE ) ){
+
+            // file was found, create a Component object from file content
+            $com = Component::decodeComponent( file_get_contents( $pre . $this->CONF_FILE ) );
+            $com->setPrefix( $this->getPrefix( ) );
+            
+            // check if the links
+            // know their prefixes
+            $conf = $com;
             $links = $conf->getLinks( );
 
             // always been an array
@@ -116,7 +277,7 @@ class CConfig
                 // for the prefix list
                 if ( $link->getPrefix( ) === null ){
                     $result = Request::get( 
-                                           $link->getAddress( ) . '/component',
+                                           $link->getAddress( ) . '/control',
                                            array( ),
                                            ''
                                            );
@@ -135,85 +296,10 @@ class CConfig
             // if any new prefix was found, we have to store the link definitions
             if ( $changed ){
                 $conf->setLinks( $links );
-                $this->saveConfig( Component::encodeComponent( $conf ) );
+                $this->saveConfig( $pre, Component::encodeComponent( $conf ) );
+                $com = $conf;
             }
-        }
-    }
-
-    /**
-     * returns the value of $_used
-     *
-     * @return the value of $_used
-     */
-    public function used( )
-    {
-        return $this->_used;
-    }
-
-    /**
-     * POST Config
-     * - to store new component data
-     */
-    public function postConfig( )
-    {
-        $this->_app->response->setStatus( 451 );
-        $body = $this->_app->request->getBody( );
-        $Component = Component::decodeComponent( $body );
-        $Component->setPrefix( $this->getPrefix( ) );
-        $this->saveConfig( json_encode( $Component ) );
-        $this->_app->response->setStatus( 201 );
-    }
-
-    /**
-     * GET Config
-     * - to ask this component for his component data
-     */
-    public function getConfig( )
-    {
-        if ( file_exists( $this->CONF_FILE ) ){
-            $com = Component::decodeComponent( file_get_contents( $this->CONF_FILE ) );
-            $com->setPrefix( $this->getPrefix( ) );
-            $this->_app->response->setBody( Component::encodeComponent( $com ) );
-            $this->_app->response->setStatus( 200 );
             
-        } else {
-            $this->_app->response->setStatus( 409 );
-            $com = new Component( );
-            $com->setPrefix( $this->getPrefix( ) );
-            $this->_app->response->setBody( Component::encodeComponent( $com ) );
-        }
-    }
-
-    /**
-     * stores a Component object (json encoded) to the $CONF_FILE file
-     *
-     * @param $content the json encode Component object
-     */
-    public function saveConfig( $content )
-    {
-        $file = fopen( 
-                      $this->CONF_FILE,
-                      'w'
-                      );
-        fwrite( 
-               $file,
-               $content
-               );
-        fclose( $file );
-    }
-
-    /**
-     * the function loads the $CONF_FILE file
-     *
-     * @return a Component object
-     */
-    public function loadConfig( )
-    {
-        if ( file_exists( $this->CONF_FILE ) ){
-
-            // file was found, create a Component object from file content
-            $com = Component::decodeComponent( file_get_contents( $this->CONF_FILE ) );
-            $com->setPrefix( $this->getPrefix( ) );
             return $com;
             
         } else {

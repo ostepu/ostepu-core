@@ -8,7 +8,8 @@
 /**
  * the exercise sheet structure
  *
- * @author Till Uhlig, Florian Lücke
+ * @author Till Uhlig
+ * @author Florian Lücke
  */
 class ExerciseSheet extends Object implements JsonSerializable
 {

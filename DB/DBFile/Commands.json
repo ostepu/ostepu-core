@@ -1,0 +1,8 @@
+[
+    {    "method":"put", "path":"/file(/file)/:fileid(/)" },
+    {    "method":"delete", "path":"/file(/file)/:fileid(/)" },
+    {    "method":"post", "path":"/file(/)" },
+    {    "method":"get", "path":"/file(/file)/:fileid(/)" },
+    {    "method":"get", "path":"/file/hash/:hash(/)" },
+    {    "method":"get", "path":"/file(/file)(/)" }
+]

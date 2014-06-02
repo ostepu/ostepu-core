@@ -253,7 +253,9 @@ class SelectedSubmission extends Object implements JsonSerializable
 
     public static function ExtractSelectedSubmission( 
                                                      $data,
-                                                     $singleResult = false
+                                                     $singleResult = false,
+                                                     $SelectedSubmissionExtension = '',
+                                                     $isResult = true
                                                      )
     {
 
@@ -262,14 +264,16 @@ class SelectedSubmission extends Object implements JsonSerializable
         $res = DBJson::getResultObjectsByAttributes( 
                                                     $data,
                                                     SelectedSubmission::getDBPrimaryKey( ),
-                                                    SelectedSubmission::getDBConvert( )
+                                                    SelectedSubmission::getDBConvert( ),
+                                                    $SelectedSubmissionExtension
                                                     );
+        if ($isResult){ 
+            if ( $singleResult == true ){
 
-        if ( $singleResult == true ){
-
-            // only one object as result
-            if ( count( $res ) > 0 )
-                $res = $res[0];
+                // only one object as result
+                if ( count( $res ) > 0 )
+                    $res = $res[0];
+            }
         }
 
         return $res;

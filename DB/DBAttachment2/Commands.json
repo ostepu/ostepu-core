@@ -1,0 +1,12 @@
+[
+    {    "method":"put", "path":"(/:pre)/attachment(/attachment)/:aid(/)" },
+    {    "method":"delete", "path":"(/:pre)/attachment(/attachment)/:aid(/)" },
+    {    "method":"post", "path":"(/:pre)/attachment(/)" },
+    {    "method":"get", "path":"(/:pre)/link/exists/course/:courseid(/)" },
+    {    "method":"get", "path":"(/:pre)/attachment(/attachment)/:aid(/)" },
+    {    "method":"get", "path":"(/:pre)/attachment/exercise/:eid(/)" },
+    {    "method":"get", "path":"(/:pre)/attachment/course/:courseid(/)" },
+    {    "method":"get", "path":"(/:pre)/attachment/exercisesheet/:esid(/)" },
+    {    "method":"delete", "path":"(/:pre)/course(/)" },
+    {    "method":"post", "path":"(/:pre)/course/:courseid(/)" }
+]
