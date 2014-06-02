@@ -50,7 +50,7 @@ SELECT
     "
 from
     Marking M
-	    join
+        join
     Submission S ON (M.S_id = S.S_id)
         left join
     SelectedSubmission SS ON (M.S_id = SS.S_id_selected)

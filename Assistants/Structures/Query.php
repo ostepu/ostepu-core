@@ -203,6 +203,13 @@ class Query extends Object implements JsonSerializable
     {
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
+            if ($key=='response'){
+                $this->{
+                    $key
+                    
+                } = json_decode(json_encode($value),true);
+            }
+            else
                 $this->{
                     $key
                     
@@ -238,7 +245,24 @@ class Query extends Object implements JsonSerializable
                                        $decode = true
                                        )
     {
-        if ( $decode && 
+    
+            if ( $decode && 
+             $data == null )
+            $data = '{}';
+
+        if ( $decode )
+            $data = json_decode( $data );
+        if ( is_array( $data ) ){
+            $result = array( );
+            foreach ( $data AS $key => $value ){
+                $result[] = new Query( $value );
+            }
+            return $result;
+            
+        } else 
+            return new Query( $data );
+            
+        /*if ( $decode && 
              $data == null )
             $data = '{}';
 
@@ -270,7 +294,7 @@ class Query extends Object implements JsonSerializable
                 $obj->setNumRows( $data['numRows'] );
             if ( isset( $data['checkSession'] ) )
                 $obj->setCheckSession( $data['checkSession'] );
-        }
+        }*/
         return $obj;
     }
 

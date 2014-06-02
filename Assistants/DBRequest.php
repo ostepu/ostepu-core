@@ -17,7 +17,7 @@ class DBRequest
     /**
      * performs a database query
      *
-     * @param string $sql_statement the sql statement you want send
+     * @param string $sql_statement the sql statement you want to send
      *
      * @return  assoc array with multiple query result informations (String[])
      * - ['content'] = the content/table you received from database
@@ -30,30 +30,39 @@ class DBRequest
      */
     public static function request( 
                                    $sqlStatement,
-                                   $checkSession
+                                   $checkSession,
+                                   $config = null
                                    )
     {
 
-        // loads the mysql server config from file
-        $config = parse_ini_file( 
-                                 'config.ini',
-                                 TRUE
-                                 );
+        if ($config===null){
+            // loads the mysql server config from file
+            $config = parse_ini_file( 
+                                     'config.ini',
+                                     TRUE
+                                     );
+        }
 
         // creates a new connection to database
-        $dbconn = mysql_connect( 
+        $dbconn = @mysql_connect( 
                                 $config['DB']['db_path'],
                                 $config['DB']['db_user'],
                                 $config['DB']['db_passwd']
                                 );
-
+        if (!$dbconn){
+            $query_result['errno'] = mysql_errno( );
+            $query_result['error'] = mysql_error( );
+            return $query_result;
+        }
+        
         // selects the database
-        mysql_select_db( $config['DB']['db_name'] );
+        if ($config['DB']['db_name'] !== null)
+            mysql_select_db( $config['DB']['db_name'] );
 
         $currentTime = $_SERVER['REQUEST_TIME'];
 
         // check session
-        // $checkSession = false; // remove the comment this line to disable the session examination
+         $checkSession = false; // remove the comment this line to disable the session examination
         // Storing whether or not a session condition is not satisfied
         $sessionFail = false;
         if ( $checkSession === true ){
@@ -122,6 +131,141 @@ class DBRequest
         $dbconn = null;
         return $query_result;
     }
+    
+    public static function request2( 
+                                   $sqlStatement,
+                                   $checkSession,
+                                   $config = null
+                                   )
+    {
+
+        if ($config===null){
+            // loads the mysql server config from file
+            $config = parse_ini_file( 
+                                     'config.ini',
+                                     TRUE
+                                     );
+        }
+
+        // creates a new connection to database
+        $dbconn = @mysqli_connect( 
+                                $config['DB']['db_path'],
+                                $config['DB']['db_user'],
+                                $config['DB']['db_passwd'],
+                                $config['DB']['db_name'] 
+                                );
+                                
+        if (!$dbconn){
+            $query_result['errno'] = 10;
+            return $query_result;
+        }
+
+        // selects the database
+       // mysql_select_db( $config['DB']['db_name'] );
+
+        $currentTime = $_SERVER['REQUEST_TIME'];
+
+        // check session
+        $checkSession = false; // remove the comment this line to disable the session examination
+        // Storing whether or not a session condition is not satisfied
+        $sessionFail = false;
+        if ( $checkSession === true ){
+            Logger::Log( 
+                        'starts session validation',
+                        LogLevel::DEBUG
+                        );
+            if ( isset( $_SERVER['HTTP_SESSION'] ) && 
+                 isset( $_SERVER['HTTP_USER'] ) && 
+                 isset( $_SERVER['HTTP_DATE'] ) && 
+                 ctype_digit( $_SERVER['HTTP_USER'] ) && 
+                 ( int )$_SERVER['REQUEST_TIME'] <= ( int )$_SERVER['HTTP_DATE'] + 10 * 60 ){
+                $content = mysqli_query( 
+                                        $dbconn,
+                                       'select SE_sessionID from Session where U_id = ' . $_SERVER['HTTP_USER']
+                                       );
+
+                // evaluates the session
+                $errno = mysqli_errno( );
+                if ( $errno == 0 && 
+                     gettype( $content ) != 'boolean' ){
+                    $data = DBJson::getRows2( $content );
+                    if ( $data != null && 
+                         $data[0]['SE_sessionID'] == $_SERVER['HTTP_SESSION'] ){
+                        $sessionFail = false;
+                        
+                    } else 
+                        $sessionFail = true;
+                    
+                } else 
+                    $sessionFail = true;
+                
+            } else 
+                $sessionFail = true;
+        }
+
+        // if a condition is not met, the request is invalid
+        if ( $sessionFail == true ){
+            $query_result['content'] = '';
+            $query_result['errno'] = 401;
+            $query_result['error'] = 'access denied';
+            $query_result['numRows'] = 0;
+            mysqli_close( $dbconn );
+            $dbconn = null;
+            return array($query_result);
+        }
+
+        // performs the request
+        $answ = mysqli_multi_query(
+                                                $dbconn,
+                                                $sqlStatement
+                                               );
+        $query_result=array();    
+
+if ($answ===false){    
+        $result=array();    
+        $result['affectedRows'] = mysqli_affected_rows( $dbconn);
+        $result['insertId'] = mysqli_insert_id( $dbconn);
+        $result['errno'] = mysqli_errno( $dbconn );
+        $result['error'] =mysqli_error( $dbconn );
+        $query_result[] = $result;
+    }
+    else{
+    do {
+        $result=array();
+         mysqli_next_result($dbconn);
+    if ($res = mysqli_store_result($dbconn)) {
+    //$res = mysqli_store_result($dbconn);
+       $result['content']  = $res;
+
+        // evaluates the request
+        $result['affectedRows'] = mysqli_affected_rows($dbconn );
+        $result['insertId'] = mysqli_insert_id( $dbconn);
+        $result['errno'] = mysqli_errno( $dbconn );
+        $result['error'] = mysqli_error($dbconn );
+
+        if ( gettype( $result['content'] ) != 'boolean' ){
+            $result['numRows'] = mysqli_num_rows( $result['content'] );
+        }
+        //mysqli_free_result($res);
+         }
+         else
+         {
+         $result['content']  = $res;
+                 $result['affectedRows'] = mysqli_affected_rows($dbconn );
+        $result['insertId'] = mysqli_insert_id( $dbconn);
+        $result['errno'] = mysqli_errno( $dbconn );
+        $result['error'] = mysqli_error($dbconn );
+         }
+        // echo mysqli_sqlstate($dbconn);
+        $query_result[] = $result;
+        //mysqli_more_results($dbconn) && 
+} while (mysqli_more_results($dbconn));
+}
+        // closes the connection and returns the result
+        mysqli_close( $dbconn );
+        $dbconn = null;
+        return $query_result;
+    }
 
     /**
      * performs a database query by using a given file
@@ -157,9 +301,11 @@ class DBRequest
         // loads the given sql file and creates the Query object
         $obj = new Query( );
         eval( "\$sql = \"" . file_get_contents( $sqlFile ) . "\";" );
+//echo $sql;
         $obj->setRequest( $sql );
         $obj->setCheckSession( $checkSession );
 
+//echo Query::encodeQuery( $obj );
         // perform the route process
         return Request::routeRequest( 
                                      'POST',
