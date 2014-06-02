@@ -22,7 +22,7 @@ concat(
     F.F_comment,
     F.F_hash
 from
-    Attachment_{$pre}_\", @course ,\" A
+    Attachment{$pre}_\", @course ,\" A
     left join File F ON F.F_id = A.F_id
 where
     A.ES_id = '{$esid}'\");

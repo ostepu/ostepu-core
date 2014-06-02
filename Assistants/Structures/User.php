@@ -8,7 +8,8 @@
 /**
  * the user structure
  *
- * @author Till Uhlig, Florian Lücke
+ * @author Till Uhlig
+ * @author Florian Lücke
  */
 class User extends Object implements JsonSerializable
 {
@@ -786,7 +787,11 @@ class User extends Object implements JsonSerializable
 
     public static function ExtractUser( 
                                        $data,
-                                       $singleResult = false
+                                       $singleResult = false,
+                                       $UserExtension = '',
+                                       $CourseStatusExtension = '',
+                                       $CourseExtension = '',
+                                       $isResult = true
                                        )
     {
 
@@ -795,7 +800,8 @@ class User extends Object implements JsonSerializable
         $users = DBJson::getObjectsByAttributes( 
                                                 $data,
                                                 User::getDBPrimaryKey( ),
-                                                User::getDBConvert( )
+                                                User::getDBConvert( ),
+                                                $UserExtension
                                                 );
 
         // generates an assoc array of course stats by using a defined list of
@@ -803,7 +809,8 @@ class User extends Object implements JsonSerializable
         $courseStatus = DBJson::getObjectsByAttributes( 
                                                        $data,
                                                        CourseStatus::getDBPrimaryKey( ),
-                                                       CourseStatus::getDBConvert( )
+                                                       CourseStatus::getDBConvert( ),
+                                                       $CourseStatusExtension
                                                        );
 
         // generates an assoc array of courses by using a defined list of
@@ -811,7 +818,8 @@ class User extends Object implements JsonSerializable
         $courses = DBJson::getObjectsByAttributes( 
                                                   $data,
                                                   Course::getDBPrimaryKey( ),
-                                                  Course::getDBConvert( )
+                                                  Course::getDBConvert( ),
+                                                  $CourseExtension
                                                   );
 
         // concatenates the course stats and the associated courses
@@ -821,7 +829,9 @@ class User extends Object implements JsonSerializable
                                                      CourseStatus::getDBPrimaryKey( ),
                                                      CourseStatus::getDBConvert( )['CS_course'],
                                                      $courses,
-                                                     Course::getDBPrimaryKey( )
+                                                     Course::getDBPrimaryKey( ),
+                                                     $CourseExtension,
+                                                     $CourseStatusExtension
                                                      );
 
         // concatenates the users and the associated course stats
@@ -831,16 +841,20 @@ class User extends Object implements JsonSerializable
                                                User::getDBPrimaryKey( ),
                                                User::getDBConvert( )['U_courses'],
                                                $res,
-                                               CourseStatus::getDBPrimaryKey( )
+                                               CourseStatus::getDBPrimaryKey( ),
+                                               $CourseStatusExtension,
+                                               $UserExtension
                                                );
 
-        // to reindex
-        // $res = array_merge($res);
-        if ( $singleResult ){
+        if ($isResult){ 
+            // to reindex
+            // $res = array_merge($res);
+            if ( $singleResult ){
 
-            // only one object as result
-            if ( count( $res ) > 0 )
-                $res = $res[0];
+                // only one object as result
+                if ( count( $res ) > 0 )
+                    $res = $res[0];
+            }
         }
 
         return $res;
@@ -848,7 +862,11 @@ class User extends Object implements JsonSerializable
 
     public static function ExtractCourseStatus( 
                                                $data,
-                                               $singleResult = false
+                                               $singleResult = false,
+                                               $UserExtension = '',
+                                               $CourseStatusExtension = '',
+                                               $CourseExtension = '',
+                                               $isResult = true
                                                )
     {
 
@@ -857,7 +875,8 @@ class User extends Object implements JsonSerializable
         $user = DBJson::getObjectsByAttributes( 
                                                $data,
                                                User::getDBPrimaryKey( ),
-                                               User::getDBConvert( )
+                                               User::getDBConvert( ),
+                                               $UserExtension
                                                );
 
         // generates an assoc array of course stats by using a defined list of
@@ -865,7 +884,8 @@ class User extends Object implements JsonSerializable
         $courseStatus = DBJson::getObjectsByAttributes( 
                                                        $data,
                                                        CourseStatus::getDBPrimaryKey( ),
-                                                       CourseStatus::getDBConvert( )
+                                                       CourseStatus::getDBConvert( ),
+                                                       $CourseStatusExtension
                                                        );
 
         // generates an assoc array of courses by using a defined list of
@@ -873,7 +893,8 @@ class User extends Object implements JsonSerializable
         $courses = DBJson::getObjectsByAttributes( 
                                                   $data,
                                                   Course::getDBPrimaryKey( ),
-                                                  Course::getDBConvert( )
+                                                  Course::getDBConvert( ),
+                                                  $CourseExtension
                                                   );
 
         // concatenates the course stats and the associated courses
@@ -883,7 +904,9 @@ class User extends Object implements JsonSerializable
                                                      CourseStatus::getDBPrimaryKey( ),
                                                      CourseStatus::getDBConvert( )['CS_course'],
                                                      $courses,
-                                                     Course::getDBPrimaryKey( )
+                                                     Course::getDBPrimaryKey( ),
+                                                     $CourseExtension,
+                                                     $CourseStatusExtension
                                                      );
 
         // concatenates the users and the associated course stats
@@ -893,16 +916,20 @@ class User extends Object implements JsonSerializable
                                                User::getDBPrimaryKey( ),
                                                User::getDBConvert( )['U_courses'],
                                                $res,
-                                               CourseStatus::getDBPrimaryKey( )
+                                               CourseStatus::getDBPrimaryKey( ),
+                                               $CourseStatusExtension,
+                                               $UserExtension
                                                );
 
-        // to reindex
-        // $res = array_merge($res);
-        if ( $singleResult == true ){
+        if ($isResult){                    
+            // to reindex
+            // $res = array_merge($res);
+            if ( $singleResult == true ){
 
-            // only one object as result
-            if ( count( $res ) > 0 )
-                $res = $res[0];
+                // only one object as result
+                if ( count( $res ) > 0 )
+                    $res = $res[0];
+            }
         }
 
         return $res;

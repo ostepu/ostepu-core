@@ -91,7 +91,7 @@ class DBAttachment2
                                             
         // POST AddCourse
         $this->_app->post( 
-                         '(/:pre)/course',
+                         '(/:pre)/course(/)',
                          array( 
                                $this,
                                'addCourse'
@@ -100,7 +100,7 @@ class DBAttachment2
                          
         // POST DeleteCourse
         $this->_app->delete( 
-                         '(/:pre)/course/:courseid',
+                         '(/:pre)/course/:courseid(/)',
                          array( 
                                $this,
                                'deleteCourse'
@@ -205,6 +205,8 @@ class DBAttachment2
     public function editAttachment( $pre='' ,$aid )
     {
         $this->loadConfig($pre);
+        $pre = ($pre === '' ? '' : '_') . $pre;
+        
         Logger::Log( 
                     'starts PUT EditAttachment',
                     LogLevel::DEBUG
@@ -268,6 +270,8 @@ class DBAttachment2
     public function deleteAttachment( $pre='' ,$aid )
     {
         $this->loadConfig($pre);
+        $pre = ($pre === '' ? '' : '_') . $pre;
+        
         Logger::Log( 
                     'starts DELETE DeleteAttachment',
                     LogLevel::DEBUG
@@ -314,6 +318,8 @@ class DBAttachment2
     public function addAttachment( $pre='' )
     {
         $this->loadConfig($pre);
+        $pre = ($pre === '' ? '' : '_') . $pre;
+        
         Logger::Log( 
                     'starts POST AddAttachment',
                     LogLevel::DEBUG
@@ -398,6 +404,8 @@ class DBAttachment2
                         )
     {
         $this->loadConfig($pre);
+        $pre = ($pre === '' ? '' : '_') . $pre;
+        
         Logger::Log( 
                     'starts GET ' . $functionName,
                     LogLevel::DEBUG
@@ -569,6 +577,8 @@ class DBAttachment2
     public function deleteCourse( $pre='' , $courseid )
     {
         $this->loadConfig($pre);
+        $pre = ($pre === '' ? '' : '_') . $pre;
+        
         Logger::Log( 
                     'starts DELETE DeleteCourse',
                     LogLevel::DEBUG
@@ -609,6 +619,8 @@ class DBAttachment2
     public function addCourse( $pre='' )
     {
         $this->loadConfig($pre);
+        $pre = ($pre === '' ? '' : '_') . $pre;
+        
         Logger::Log( 
                     'starts POST AddCourse',
                     LogLevel::DEBUG

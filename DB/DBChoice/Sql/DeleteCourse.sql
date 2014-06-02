@@ -5,7 +5,7 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 -- -----------------------------------------------------
 -- Table `Choice`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `Choice_{$courseid}`;
+DROP TABLE IF EXISTS `Choice{$preChoice}_{$courseid}`;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

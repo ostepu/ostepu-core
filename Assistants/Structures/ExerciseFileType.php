@@ -257,7 +257,9 @@ class ExerciseFileType extends Object implements JsonSerializable
 
     public static function ExtractExerciseFileType( 
                                                    $data,
-                                                   $singleResult = false
+                                                   $singleResult = false,
+                                                   $FileTypeExtension = '',
+                                                   $isResult = true
                                                    )
     {
 
@@ -266,17 +268,19 @@ class ExerciseFileType extends Object implements JsonSerializable
         $res = DBJson::getResultObjectsByAttributes( 
                                                     $data,
                                                     ExerciseFileType::getDBPrimaryKey( ),
-                                                    ExerciseFileType::getDBConvert( )
+                                                    ExerciseFileType::getDBConvert( ),
+                                                    $FileTypeExtension
                                                     );
+        if ($isResult){ 
+            // to reindex
+            $res = array_merge( $res );
 
-        // to reindex
-        $res = array_merge( $res );
+            if ( $singleResult == true ){
 
-        if ( $singleResult == true ){
-
-            // only one object as result
-            if ( count( $res ) > 0 )
-                $res = $res[0];
+                // only one object as result
+                if ( count( $res ) > 0 )
+                    $res = $res[0];
+            }
         }
 
         return $res;

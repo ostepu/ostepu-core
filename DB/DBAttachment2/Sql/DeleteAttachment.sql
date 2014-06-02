@@ -6,7 +6,7 @@
  * @result -
  */
  
-DELETE FROM `Attachment_{pre}_".Attachment::getCourseFromAttachmentId($aid)."`
+DELETE FROM `Attachment{pre}_".Attachment::getCourseFromAttachmentId($aid)."`
 WHERE
     A_id = '".Attachment::getIdFromAttachmentId($aid)."'
 

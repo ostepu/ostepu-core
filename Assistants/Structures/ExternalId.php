@@ -230,7 +230,10 @@ class ExternalId extends Object implements JsonSerializable
 
     public static function ExtractExternalId( 
                                              $data,
-                                             $singleResult = false
+                                             $singleResult = false,
+                                             $CourseExtension = '',
+                                             $ExternalIdExtension = '',
+                                             $isResult = true
                                              )
     {
 
@@ -239,7 +242,8 @@ class ExternalId extends Object implements JsonSerializable
         $course = DBJson::getObjectsByAttributes( 
                                                  $data,
                                                  Course::getDBPrimaryKey( ),
-                                                 Course::getDBConvert( )
+                                                 Course::getDBConvert( ),
+                                                 $CourseExtension
                                                  );
 
         // generates an assoc array of external IDs by using a defined list of
@@ -247,7 +251,8 @@ class ExternalId extends Object implements JsonSerializable
         $externalIds = DBJson::getObjectsByAttributes( 
                                                       $data,
                                                       ExternalId::getDBPrimaryKey( ),
-                                                      ExternalId::getDBConvert( )
+                                                      ExternalId::getDBConvert( ),
+                                                      $ExternalIdExtension
                                                       );
 
         // concatenates the external IDs and the associated courses
@@ -257,17 +262,20 @@ class ExternalId extends Object implements JsonSerializable
                                                      ExternalId::getDBPrimaryKey( ),
                                                      ExternalId::getDBConvert( )['EX_course'],
                                                      $course,
-                                                     Course::getDBPrimaryKey( )
+                                                     Course::getDBPrimaryKey( ),
+                                                     $CourseExtension,
+                                                     $ExternalIdExtension
                                                      );
+        if ($isResult){ 
+            // to reindex
+            $res = array_values( $res );
 
-        // to reindex
-        $res = array_values( $res );
+            if ( $singleResult == true ){
 
-        if ( $singleResult == true ){
-
-            // only one object as result
-            if ( count( $res ) > 0 )
-                $res = $res[0];
+                // only one object as result
+                if ( count( $res ) > 0 )
+                    $res = $res[0];
+            }
         }
 
         return $res;

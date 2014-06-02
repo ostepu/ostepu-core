@@ -17,7 +17,7 @@ concat(
     CH.CH_text,
     CH.CH_correct
 from
-    `Choice_\", @course, \"` CH
+    `Choice{$preChoice}_\", @course, \"` CH
 where
     CH.CH_id = '".Choice::getIdFromChoiceId($choiceid)."'\");
     

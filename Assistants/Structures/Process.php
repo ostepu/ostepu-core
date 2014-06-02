@@ -173,7 +173,9 @@ class Process extends Object implements JsonSerializable
                      'PRO_id' => 'processId',
                      'E_exercise' => 'exercise',
                      'CO_target' => 'target',
-                     'PRO_parameter' => 'parameter'
+                     'PRO_parameter' => 'parameter',
+                     'A_attachment' => 'attachment',
+                     'A_workFiles' => 'workFiles'
                      );
     }
 
@@ -192,7 +194,7 @@ class Process extends Object implements JsonSerializable
                                  'PRO_id',
                                  DBJson::mysql_real_escape_string( $this->processId )
                                  );
-        if ( $this->exercise != null )
+        if ( $this->exercise !== null && $this->exercise->getId() !== null )
             $this->addInsertData( 
                                  $values,
                                  'E_id',
@@ -242,7 +244,7 @@ class Process extends Object implements JsonSerializable
 
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
-                if ( $key == 'attachments' ){
+                if ( $key == 'attachment' ){
                     $this->{
                         $key
                         
@@ -377,8 +379,8 @@ class Process extends Object implements JsonSerializable
             $list['target'] = $this->target;
         if ( $this->parameter !== null )
             $list['parameter'] = $this->parameter;
-        if ( $this->attachments !== null && $this->attachments !== array( ) )
-            $list['attachments'] = $this->attachments;
+        if ( $this->attachment !== null && $this->attachment !== array( ) )
+            $list['attachment'] = $this->attachment;
         if ( $this->workFiles !== null && $this->workFiles !== array( ) )
             $list['workFiles'] = $this->workFiles;    
         if ( $this->submission !== null )
@@ -392,7 +394,11 @@ class Process extends Object implements JsonSerializable
 
     public static function ExtractProcess( 
                                          $data,
-                                         $singleResult = false
+                                         $singleResult = false,
+                                         $ProcessExtension = '',
+                                         $ComponentExtension = '',
+                                         $ExerciseExtension = '',
+                                         $isResult = true
                                          )
     {
 
@@ -401,7 +407,8 @@ class Process extends Object implements JsonSerializable
         $process = DBJson::getObjectsByAttributes( 
                                                   $data,
                                                   Process::getDBPrimaryKey( ),
-                                                  Process::getDBConvert( )
+                                                  Process::getDBConvert( ),
+                                                  $ProcessExtension
                                                   );
 
         // generates an assoc array of components by using a defined
@@ -409,7 +416,8 @@ class Process extends Object implements JsonSerializable
         $component = DBJson::getObjectsByAttributes(
                                                       $data,
                                                       Component::getDBPrimaryKey( ),
-                                                      Component::getDBConvert( )
+                                                      Component::getDBConvert( ),
+                                                      $ComponentExtension
                                                       );
 
         // generates an assoc array of exercises by using a defined
@@ -417,8 +425,36 @@ class Process extends Object implements JsonSerializable
         $exercise = DBJson::getObjectsByAttributes(
                                                       $data,
                                                       Exercise::getDBPrimaryKey( ),
-                                                      Exercise::getDBConvert( )
+                                                      Exercise::getDBConvert( ),
+                                                      $ExerciseExtension
                                                       );
+                                                      
+        $attachment = Attachment::extractAttachment($data, false, '_PRO1', '_PRO1',false );
+        $workFiles = Attachment::extractAttachment($data, false, '_PRO2', '_PRO2',false );
+        
+        // concatenates the processes and the associated attachments
+        $process =         DBJson::concatObjectListResult(
+                                                   $data,
+                                                   $process,
+                                                   Process::getDBPrimaryKey( ),
+                                                   Process::getDBConvert( )['A_attachment'],
+                                                   $attachment,
+                                                   Attachment::getDBPrimaryKey( ),
+                                                   '_PRO1',
+                                                   $ProcessExtension
+                                                   );
+                                                   
+                // concatenates the processes and the associated attachments
+        $process =         DBJson::concatObjectListResult(
+                                                   $data,
+                                                   $process,
+                                                   Process::getDBPrimaryKey( ),
+                                                   Process::getDBConvert( )['A_workFiles'],
+                                                   $workFiles,
+                                                   Attachment::getDBPrimaryKey( ),
+                                                   '_PRO2',
+                                                   $ProcessExtension
+                                                   );
                                                       
         // concatenates the processes and the associated components
         $process =         DBJson::concatObjectListsSingleResult(
@@ -427,7 +463,9 @@ class Process extends Object implements JsonSerializable
                                                    Process::getDBPrimaryKey( ),
                                                    Process::getDBConvert( )['E_exercise'],
                                                    $exercise,
-                                                   Exercise::getDBPrimaryKey( )
+                                                   Exercise::getDBPrimaryKey( ),
+                                                   $ExerciseExtension,
+                                                   $ProcessExtension
                                                    );
                                                    
         $res =         DBJson::concatObjectListsSingleResult(
@@ -436,19 +474,24 @@ class Process extends Object implements JsonSerializable
                                                    Process::getDBPrimaryKey( ),
                                                    Process::getDBConvert( )['CO_target'],
                                                    $component,
-                                                   Component::getDBPrimaryKey( )
+                                                   Component::getDBPrimaryKey( ),
+                                                   $ComponentExtension,
+                                                   $ProcessExtension
                                                    );
-        // to reindex
-        $res = array_values( $res );
-        
-        if ( $singleResult == true ){
+        if ($isResult){                                           
+            // to reindex
+            $res = array_values( $res );
+            
+            if ( $singleResult == true ){
 
-            // only one object as result
-            if ( count( $res ) > 0 )
-                $res = $res[0];
+                // only one object as result
+                if ( count( $res ) > 0 )
+                    $res = $res[0];
+            }
         }
 
         return $res;
+      
     }
 }
 

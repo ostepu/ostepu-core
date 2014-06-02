@@ -73,6 +73,13 @@ $(document).ready( function()
     
     if ($('.delete-exercise').length==0)
         $('.add-exercise').click();
+        
+    $('.processor').last().children('.content-header').on("click",collapseProcessor);     
+    $('.processor').last().children('.content-header').css('cursor','pointer');   
+    $('.processor').last().children('.content-header').find('.delete-processor').on("click",deleteProcessor);
+        
+    $('.processor-type').last().on("change",loadProcessorTemplate);
+    $('.processor-type').last().change();
     
 });
 

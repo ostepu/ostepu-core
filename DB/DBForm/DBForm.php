@@ -97,7 +97,7 @@ class DBForm
                                                                   
         // POST AddCourse
         $this->_app->post( 
-                         '/course',
+                         '/course(/)',
                          array( 
                                $this,
                                'addCourse'
@@ -106,7 +106,7 @@ class DBForm
                          
         // POST DeleteCourse
         $this->_app->delete( 
-                         '/course/:courseid',
+                         '/course/:courseid(/)',
                          array( 
                                $this,
                                'deleteCourse'

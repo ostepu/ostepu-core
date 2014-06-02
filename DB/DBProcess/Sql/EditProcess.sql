@@ -7,6 +7,6 @@
  * @result -
  */
  
-UPDATE `Process_".Process::getCourseFromProcessId($processid)."`
+UPDATE `Process{$pre}_".Process::getCourseFromProcessId($processid)."`
 SET {$object->getInsertData()}
 WHERE PRO_id = '".Process::getIdFromProcessId($processid)."'

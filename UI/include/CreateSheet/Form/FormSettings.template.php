@@ -1,3 +1,9 @@
+<?php
+/**
+ * @file FormSettings.template.php
+ * @author  Till Uhlig
+ */
+ ?>
         <div class="content-element form" style="outline:2px solid #b9b8b8;border-radius: 0px;margin: 0px;">
                         
         <div class="content-header">

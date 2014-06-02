@@ -1,3 +1,9 @@
+<?php
+/**
+ * @file FormInput.template.php
+ * @author  Till Uhlig
+ */
+ ?>
 <input type="hidden" class="input-choice" name="exercises[0][subexercises][0][type]" value="0">
 <label class="short label bold" for="task">Aufgabenstellung:</label>
 <textarea id="task" name="exercises[0][subexercises][0][task]"

@@ -7,7 +7,7 @@
  * - CH, the choice data
  */
  
-SET @course = (select E.C_id from `Exercise` E where E.E_id = {$eid} limit 1);
+SET @course = (select E.C_id from `Exercise{$preExercise}` E where E.E_id = {$eid} limit 1);
 SET @statement = 
 concat(
 \"select 
@@ -17,7 +17,7 @@ concat(
     CH.CH_text,
     CH.CH_correct
 from
-    `Choice_\", @course, \"` CH
+    `Choice{$preChoice}_\", @course, \"` CH
 where
     CH.E_id = '{$eid}'\");
     

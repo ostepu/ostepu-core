@@ -1,3 +1,12 @@
 [
-    {    "method":"post", "path":"/course(/course)/:courseid(/))" }
+    {    "method":"post", "path":"/course" },
+    {    "method":"delete", "path":"/course(/course)/:courseid" },
+    {    "method":"put", "path":"/process(/process)/:processid(/)" },
+    {    "method":"delete", "path":"/process(/process)/:processid(/)" },
+    {    "method":"post", "path":"/process(/)" },
+    {    "method":"get", "path":"/process(/process)/:processid(/)" },
+    {    "method":"get", "path":"/process/course/:courseid(/)" },
+    {    "method":"get", "path":"/link/exists/course/:courseid(/)" },
+    {    "method":"get", "path":"/process/exercisesheet/:esid(/)" },
+    {    "method":"get", "path":"/process/exercise/:eid(/)" }
 ]

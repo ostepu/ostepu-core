@@ -129,7 +129,7 @@
 
                         <div class="content-body-wrapper">
                         
-                            <div class="content-body left">
+                            <div class="content-body left"></div>
                             <label class="short left label bold" for="exerciseType">Modul:</label>
                                <select class="form-field text-input processor-type" style="width:auto" name="exercises[<?= $key1 ?>][subexercises][<?= $key2 ?>][processorId][<?= $choiceId ?>]" value="Modul">
                         <?php                   
@@ -144,12 +144,11 @@
                         ?>
                           
                     </select>
-                    
-                    <input class="form-field text-input processor-parameter" style="width:100%" name="exercises[<?= $key1 ?>][subexercises][<?= $key2 ?>][processorParameter][<?= $choiceId ?>]" value="<?= (isset($subexercise['processorParameter'][$key4]) ? $subexercise['processorParameter'][$key4] : '' ) ?>" placeholder="Parameter"/>
+                    <div class="form-field processor-parameter-area" style="width:100%"></div>
+
                     <!--anhang-->
                     <!--anhang-->
                     <!--anhang-->
-                            </div>
                             </div>
                     </td></tr>
                     <?php } else { ?>

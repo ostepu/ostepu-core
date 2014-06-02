@@ -1,12 +1,38 @@
 <?php
+/**
+ * @file Processor.template.php
+ * @author  Till Uhlig
+ */
+
 include_once '../../../../Assistants/Structures.php';
 include_once '../../../../Assistants/Request.php';
 include_once '../../Config.php';
-$result = Request::get($databaseURI.'/definition/LProcessor',array(),'');
+
+        session_start();
+        $courseid = null;
+        if (isset($_SESSION['JSCACHE'])) {
+            $cache = json_decode($_SESSION['JSCACHE'], true);
+
+            foreach ($cache as $excercisetype) {
+                $courseid = $excercisetype['courseId'];
+                break;
+            }
+        }
+
+if ($courseid!==null){           
+    $result = Request::get($serverURI.'/DB/DBProcess/processList/process/course/' . $courseid,array(),'');
+} else 
+    $result['status'] = 409;
+    
     if ( $result['status'] >= 200 && 
          $result['status'] <= 299 ){
          
-        $processors = Component::decodeComponent($result['content']);
+        $processors = Process::decodeProcess($result['content']);
+        if (!is_array($processors)) $processors = array($processors);
+        $components = array();
+        foreach ($processors as $processor){
+            $components[] = $processor->getTarget();
+        }
 ?>
 
 <tr><td>
@@ -26,12 +52,10 @@ $result = Request::get($databaseURI.'/definition/LProcessor',array(),'');
             <label class="short left label bold" for="exerciseType">Modul:</label>
                <select class="form-field text-input processor-type" style="width:auto" name="exercises[0][subexercises][0][processorId][0]" value="Modul">
         <?php                   
-                $links = $processors->getLinks();
-                foreach ($links as $link){
-                    if ($link->getName()!=='process') continue;
-                    if ($link->getTarget() === null || $link->getTargetName() === null) continue;
+                foreach ($components as $link){
+                    if ($link->getId() === null || $link->getName() === null) continue;
         ?>
-           <option value="<?php echo $link->getTarget(); ?>"><?php echo $link->getTargetName(); ?></option>
+           <option value="<?php echo $link->getId(); ?>"><?php echo $link->getName(); ?></option>
         <?php
                }
         ?>
@@ -45,12 +69,13 @@ $result = Request::get($databaseURI.'/definition/LProcessor',array(),'');
     
             <a href="javascript:void(0);" class="body-option-color add-attachment left">Anhang hinzufügen</a>-->
           
-            </div>
+            </div></div>
 </td></tr>
 
 <?php
 } else {
 ?>
+<tr><td>
         <div class="content-element processor" style="outline:2px solid #b9b8b8;border-radius: 0px;margin: 0px;">
                         
         <div class="content-header">
@@ -59,10 +84,14 @@ $result = Request::get($databaseURI.'/definition/LProcessor',array(),'');
                 <a href="javascript:void(0);" class="delete-processor">Verarbeitung löschen</a>
             </div>
         </div>
-        <tr><td>
+                <div class="content-body-wrapper">
+        
+            <div class="content-body left"> </div>
+            
         keine Module
-        </td></tr>
-        </div>
+      
+        </div></div>
+          </td></tr>
 <?php
 }
 ?>

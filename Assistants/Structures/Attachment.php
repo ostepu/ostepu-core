@@ -300,7 +300,10 @@ class Attachment extends Object implements JsonSerializable
 
     public static function ExtractAttachment( 
                                              $data,
-                                             $singleResult = false
+                                             $singleResult = false,
+                                             $FileExtension = '',
+                                             $AttachmentExtension = '',
+                                             $isResult = true
                                              )
     {
 
@@ -309,7 +312,8 @@ class Attachment extends Object implements JsonSerializable
         $files = DBJson::getObjectsByAttributes( 
                                                 $data,
                                                 File::getDBPrimaryKey( ),
-                                                File::getDBConvert( )
+                                                File::getDBConvert( ),
+                                                $FileExtension
                                                 );
 
         // generates an assoc array of attachments by using a defined list of
@@ -317,7 +321,8 @@ class Attachment extends Object implements JsonSerializable
         $attachments = DBJson::getObjectsByAttributes( 
                                                       $data,
                                                       Attachment::getDBPrimaryKey( ),
-                                                      Attachment::getDBConvert( )
+                                                      Attachment::getDBConvert( ),
+                                                      $AttachmentExtension
                                                       );
 
         // concatenates the attachments and the associated files
@@ -327,17 +332,21 @@ class Attachment extends Object implements JsonSerializable
                                                      Attachment::getDBPrimaryKey( ),
                                                      Attachment::getDBConvert( )['F_file'],
                                                      $files,
-                                                     File::getDBPrimaryKey( )
+                                                     File::getDBPrimaryKey( ),
+                                                     $FileExtension,
+                                                     $AttachmentExtension
                                                      );
 
-        // to reindex
-        $res = array_values( $res );
+        if ($isResult){
+            // to reindex
+            $res = array_values( $res );
 
-        if ( $singleResult == true ){
+            if ( $singleResult == true ){
 
-            // only one object as result
-            if ( count( $res ) > 0 )
-                $res = $res[0];
+                // only one object as result
+                if ( count( $res ) > 0 )
+                    $res = $res[0];
+            }
         }
 
         return $res;

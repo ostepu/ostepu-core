@@ -7,6 +7,6 @@
  * @result -
  */
  
-UPDATE `Choice_".Choice::getCourseFromChoiceId($choiceid)."`
+UPDATE `Choice{$preChoice}_".Choice::getCourseFromChoiceId($choiceid)."`
 SET {$object->getInsertData()}
 WHERE CH_id = '".Choice::getIdFromChoiceId($choiceid)."'

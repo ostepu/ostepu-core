@@ -589,7 +589,10 @@ class Submission extends Object implements JsonSerializable
 
     public static function ExtractSubmission( 
                                              $data,
-                                             $singleResult = false
+                                             $singleResult = false,
+                                             $FileExtension = '',
+                                             $SubmissionExtension = '',
+                                             $isResult = true
                                              )
     {
 
@@ -598,7 +601,8 @@ class Submission extends Object implements JsonSerializable
         $files = DBJson::getObjectsByAttributes( 
                                                 $data,
                                                 File::getDBPrimaryKey( ),
-                                                File::getDBConvert( )
+                                                File::getDBConvert( ),
+                                                $FileExtension
                                                 );
 
         // generates an assoc array of submissions by using a defined list of
@@ -606,7 +610,8 @@ class Submission extends Object implements JsonSerializable
         $submissions = DBJson::getObjectsByAttributes( 
                                                       $data,
                                                       Submission::getDBPrimaryKey( ),
-                                                      Submission::getDBConvert( )
+                                                      Submission::getDBConvert( ),
+                                                      $SubmissionExtension
                                                       );
 
         // sets the selectedForGroup attribute
@@ -628,17 +633,21 @@ class Submission extends Object implements JsonSerializable
                                                      Submission::getDBPrimaryKey( ),
                                                      Submission::getDBConvert( )['S_file'],
                                                      $files,
-                                                     File::getDBPrimaryKey( )
+                                                     File::getDBPrimaryKey( ),
+                                                     $FileExtension,
+                                                     $SubmissionExtension
                                                      );
 
-        // to reindex
-        $res = array_values( $res );
+        if ($isResult){ 
+            // to reindex
+            $res = array_values( $res );
 
-        if ( $singleResult == true ){
+            if ( $singleResult == true ){
 
-            // only one object as result
-            if ( count( $res ) > 0 )
-                $res = $res[0];
+                // only one object as result
+                if ( count( $res ) > 0 )
+                    $res = $res[0];
+            }
         }
 
         return $res;

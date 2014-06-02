@@ -8,7 +8,8 @@
 /**
  * the invitation structure
  *
- * @author Till Uhlig, Florian Lücke
+ * @author Till Uhlig
+ * @author Florian Lücke
  */
 class Invitation extends Object implements JsonSerializable
 {
@@ -292,7 +293,11 @@ class Invitation extends Object implements JsonSerializable
 
     public static function ExtractInvitation( 
                                              $data,
-                                             $singleResult = false
+                                             $singleResult = false,
+                                             $LeaderExtension = '',
+                                             $MemberExtension = '',
+                                             $InvitationExtension = '',
+                                             $isResult = true
                                              )
     {
 
@@ -301,7 +306,8 @@ class Invitation extends Object implements JsonSerializable
         $leader = DBJson::getObjectsByAttributes( 
                                                  $data,
                                                  User::getDBPrimaryKey( ),
-                                                 User::getDBConvert( )
+                                                 User::getDBConvert( ),
+                                                 $LeaderExtension
                                                  );
 
         // generates an assoc array of users by using a defined list of
@@ -310,7 +316,7 @@ class Invitation extends Object implements JsonSerializable
                                                  $data,
                                                  User::getDBPrimaryKey( ),
                                                  User::getDBConvert( ),
-                                                 '2'
+                                                 $MemberExtension.'2'
                                                  );
 
         // generates an assoc array of invitations by using a defined list of
@@ -318,7 +324,8 @@ class Invitation extends Object implements JsonSerializable
         $invitations = DBJson::getObjectsByAttributes( 
                                                       $data,
                                                       Invitation::getDBPrimaryKey( ),
-                                                      Invitation::getDBConvert( )
+                                                      Invitation::getDBConvert( ),
+                                                      $InvitationExtension
                                                       );
 
         // concatenates the invitations and the associated invitation leader
@@ -328,7 +335,9 @@ class Invitation extends Object implements JsonSerializable
                                                      Invitation::getDBPrimaryKey( ),
                                                      Invitation::getDBConvert( )['U_leader'],
                                                      $leader,
-                                                     User::getDBPrimaryKey( )
+                                                     User::getDBPrimaryKey( ),
+                                                     $InvitationExtension,
+                                                     $LeaderExtension
                                                      );
 
         // concatenates the invitations and the associated invitation member
@@ -339,17 +348,19 @@ class Invitation extends Object implements JsonSerializable
                                                      Invitation::getDBConvert( )['U_member'],
                                                      $member,
                                                      User::getDBPrimaryKey( ),
-                                                     '2'
+                                                     $MemberExtension.'2',
+                                                     $InvitationExtension
                                                      );
+        if ($isResult){ 
+            // to reindex
+            $res = array_values( $res );
 
-        // to reindex
-        $res = array_values( $res );
+            if ( $singleResult == true ){
 
-        if ( $singleResult == true ){
-
-            // only one object as result
-            if ( count( $res ) > 0 )
-                $res = $res[0];
+                // only one object as result
+                if ( count( $res ) > 0 )
+                    $res = $res[0];
+            }
         }
 
         return $res;
