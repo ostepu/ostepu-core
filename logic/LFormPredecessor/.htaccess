@@ -1,0 +1,2 @@
+RewriteEngine On
+RewriteRule ^ LFormPredecessor.php [QSA,L]

@@ -287,7 +287,7 @@ class Exercise extends Object implements JsonSerializable
     {
         $this->fileTypes = $value;
     }
-
+    
     /**
      * Creates an Exercise object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -416,7 +416,7 @@ class Exercise extends Object implements JsonSerializable
      */
     public static function getDbPrimaryKey( )
     {
-        return'E_id';
+        return 'E_id';
     }
 
     /**
@@ -540,13 +540,17 @@ class Exercise extends Object implements JsonSerializable
             $list['fileTypes'] = $this->fileTypes;
         if ( $this->linkName !== null )
             $list['linkName'] = $this->linkName;
-
         return $list;
     }
 
     public static function ExtractExercise(
                                            $data,
-                                           $singleResult = false
+                                           $singleResult = false,
+                                           $ExerciseExtension = '',
+                                           $AttachmentExtension = '',
+                                           $SubmissionExtension = '',
+                                           $FileTypeExtension = '',
+                                           $isResult = true
                                            )
     {
 
@@ -555,7 +559,8 @@ class Exercise extends Object implements JsonSerializable
         $exercise = DBJson::getObjectsByAttributes(
                                                    $data,
                                                    Exercise::getDBPrimaryKey( ),
-                                                   Exercise::getDBConvert( )
+                                                   Exercise::getDBConvert( ),
+                                                   $ExerciseExtension
                                                    );
 
         // generates an assoc array of files by using a defined
@@ -563,7 +568,8 @@ class Exercise extends Object implements JsonSerializable
         $attachments = DBJson::getObjectsByAttributes(
                                                       $data,
                                                       File::getDBPrimaryKey( ),
-                                                      File::getDBConvert( )
+                                                      File::getDBConvert( ),
+                                                      $AttachmentExtension
                                                       );
 
         // generates an assoc array of submissions by using a defined
@@ -572,7 +578,7 @@ class Exercise extends Object implements JsonSerializable
                                                       $data,
                                                       Submission::getDBPrimaryKey( ),
                                                       Submission::getDBConvert( ),
-                                                      '2'
+                                                      $SubmissionExtension.'2'
                                                       );
 
         // generates an assoc array of exercise file types by using a defined
@@ -580,7 +586,8 @@ class Exercise extends Object implements JsonSerializable
         $fileTypes = DBJson::getObjectsByAttributes(
                                                     $data,
                                                     ExerciseFileType::getDBPrimaryKey( ),
-                                                    ExerciseFileType::getDBConvert( )
+                                                    ExerciseFileType::getDBConvert( ),
+                                                    $FileTypeExtension
                                                     );
 
         // sets the selectedForGroup attribute
@@ -602,7 +609,9 @@ class Exercise extends Object implements JsonSerializable
                                                    Exercise::getDBPrimaryKey( ),
                                                    Exercise::getDBConvert( )['E_fileTypes'],
                                                    $fileTypes,
-                                                   ExerciseFileType::getDBPrimaryKey( )
+                                                   ExerciseFileType::getDBPrimaryKey( ),
+                                                   $FileTypeExtension,
+                                                   $ExerciseExtension
                                                    );
 
         // concatenates the exercise and the associated attachments
@@ -612,7 +621,9 @@ class Exercise extends Object implements JsonSerializable
                                               Exercise::getDBPrimaryKey( ),
                                               Exercise::getDBConvert( )['E_attachments'],
                                               $attachments,
-                                              File::getDBPrimaryKey( )
+                                              File::getDBPrimaryKey( ),
+                                              $AttachmentExtension,
+                                              $ExerciseExtension
                                               );
 
         // concatenates the exercise and the associated submissions
@@ -623,17 +634,19 @@ class Exercise extends Object implements JsonSerializable
                                                Exercise::getDBConvert( )['E_submissions'],
                                                $submissions,
                                                Submission::getDBPrimaryKey( ),
-                                               '2'
+                                               $SubmissionExtension.'2',
+                                               $ExerciseExtension
                                                );
+        if ($isResult){ 
+            // to reindex
+            $res = array_values( $res );
 
-        // to reindex
-        $res = array_values( $res );
+            if ( $singleResult ){
 
-        if ( $singleResult ){
-
-            // only one object as result
-            if ( count( $res ) > 0 )
-                $res = $res[0];
+                // only one object as result
+                if ( count( $res ) > 0 )
+                    $res = $res[0];
+            }
         }
 
         return $res;

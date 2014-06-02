@@ -162,6 +162,16 @@ class Component extends Object implements JsonSerializable
     {
         $this->links = $value;
     }
+    
+    private $status = null;
+    public function getStatus( )
+    {
+        return $this->status;
+    }
+    public function setStatus( $value )
+    {
+        $this->status = $value;
+    }
 
     /**
      * Creates an Component object, for database post(insert) and put(update).
@@ -349,8 +359,10 @@ class Component extends Object implements JsonSerializable
             $list['option'] = $this->option;
         if ( $this->prefix !== null )
             $list['prefix'] = $this->prefix;
-        if ( $this->links !== array( ) )
+        if ( $this->links !== null && $this->links !== array( ) )
             $list['links'] = $this->links;
+         if ( $this->status !== null )
+            $list['status'] = $this->status;
         return $list;
     }
 }

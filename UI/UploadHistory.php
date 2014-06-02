@@ -32,8 +32,8 @@ $uploadHistoryOptions_data = http_get($URL, true);
 $uploadHistoryOptions_data = json_decode($uploadHistoryOptions_data, true);
 
 // adds the selected uploadUserID and sheetID
-$uploadHistoryOptions_data['uploadUserID'] = $uploadUserID;
-$uploadHistoryOptions_data['sheetID'] = $sheetID;
+$uploadHistoryOptions_data['uploadUserID'] = isset($uploadUserID) ? $uploadUserID : '';
+$uploadHistoryOptions_data['sheetID'] = isset($sheetID) ? $sheetID : '';
 
 $user_course_data = $uploadHistoryOptions_data['user'];
 
@@ -54,7 +54,7 @@ $uploadHistorySettings = Template::WithTemplateFile('include/UploadHistory/Uploa
 $uploadHistorySettings->bind($uploadHistoryOptions_data);
 
 $uploadHistory = Template::WithTemplateFile('include/UploadHistory/UploadHistory.template.html');
-$uploadHistory->bind($uploadHistory_data);
+if (isset($uploadHistory_data))$uploadHistory->bind($uploadHistory_data);
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $uploadHistorySettings, $uploadHistory);

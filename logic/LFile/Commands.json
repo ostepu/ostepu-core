@@ -1,0 +1,5 @@
+[
+    {    "method":"post", "path":"/file/:path+(/)" },
+    {    "method":"post", "path":"/file(/)" },
+    {    "method":"delete", "path":"/file(/)" }
+]

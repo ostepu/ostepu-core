@@ -218,7 +218,9 @@ class ExerciseType extends Object implements JsonSerializable
 
     public static function ExtractExerciseType( 
                                                $data,
-                                               $singleResult = false
+                                               $singleResult = false,
+                                               $ExerciseTypeExtension = '',
+                                               $isResult = true
                                                )
     {
 
@@ -227,17 +229,19 @@ class ExerciseType extends Object implements JsonSerializable
         $res = DBJson::getResultObjectsByAttributes( 
                                                     $data,
                                                     ExerciseType::getDBPrimaryKey( ),
-                                                    ExerciseType::getDBConvert( )
+                                                    ExerciseType::getDBConvert( ),
+                                                    $ExerciseTypeExtension
                                                     );
+        if ($isResult){ 
+            // to reindex
+            $res = array_merge( $res );
 
-        // to reindex
-        $res = array_merge( $res );
+            if ( $singleResult == true ){
 
-        if ( $singleResult == true ){
-
-            // only one object as result
-            if ( count( $res ) > 0 )
-                $res = $res[0];
+                // only one object as result
+                if ( count( $res ) > 0 )
+                    $res = $res[0];
+            }
         }
 
         return $res;

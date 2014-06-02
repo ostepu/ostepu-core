@@ -1,1 +1,0 @@
-{"id":"30","name":"LMarking","address":"localhost\/uebungsplattform\/logic\/Marking","option":"","prefix":"marking","links":[{"id":"63","name":"controller","address":"localhost\/uebungsplattform\/logic\/Controller","prefix":null,"target":"14","owner":"30","relevanz":""}]}

@@ -312,7 +312,17 @@ class Submission extends Object implements JsonSerializable
     {
         $this->leaderId = $value;
     }
-
+    
+    private $exerciseName = null;
+    public function getExerciseName( )
+    {
+        return $this->exerciseName;
+    }
+    public function setExerciseName( $value )
+    {
+        $this->exerciseName = $value;
+    }
+    
     /**
      * Creates an Submission object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -556,7 +566,7 @@ class Submission extends Object implements JsonSerializable
             $list['exerciseId'] = $this->exerciseId;
         if ( $this->comment !== null )
             $list['comment'] = $this->comment;
-        if ( $this->file !== null )
+        if ( $this->file !== null && $this->file !== array() )
             $list['file'] = $this->file;
         if ( $this->accepted !== null )
             $list['accepted'] = $this->accepted;
@@ -572,12 +582,17 @@ class Submission extends Object implements JsonSerializable
             $list['leaderId'] = $this->leaderId;
         if ( $this->hideFile !== null )
             $list['hideFile'] = $this->hideFile;
+        if ( $this->exerciseName !== null )
+            $list['exerciseName'] = $this->exerciseName;
         return $list;
     }
 
     public static function ExtractSubmission( 
                                              $data,
-                                             $singleResult = false
+                                             $singleResult = false,
+                                             $FileExtension = '',
+                                             $SubmissionExtension = '',
+                                             $isResult = true
                                              )
     {
 
@@ -586,7 +601,8 @@ class Submission extends Object implements JsonSerializable
         $files = DBJson::getObjectsByAttributes( 
                                                 $data,
                                                 File::getDBPrimaryKey( ),
-                                                File::getDBConvert( )
+                                                File::getDBConvert( ),
+                                                $FileExtension
                                                 );
 
         // generates an assoc array of submissions by using a defined list of
@@ -594,7 +610,8 @@ class Submission extends Object implements JsonSerializable
         $submissions = DBJson::getObjectsByAttributes( 
                                                       $data,
                                                       Submission::getDBPrimaryKey( ),
-                                                      Submission::getDBConvert( )
+                                                      Submission::getDBConvert( ),
+                                                      $SubmissionExtension
                                                       );
 
         // sets the selectedForGroup attribute
@@ -616,17 +633,21 @@ class Submission extends Object implements JsonSerializable
                                                      Submission::getDBPrimaryKey( ),
                                                      Submission::getDBConvert( )['S_file'],
                                                      $files,
-                                                     File::getDBPrimaryKey( )
+                                                     File::getDBPrimaryKey( ),
+                                                     $FileExtension,
+                                                     $SubmissionExtension
                                                      );
 
-        // to reindex
-        $res = array_values( $res );
+        if ($isResult){ 
+            // to reindex
+            $res = array_values( $res );
 
-        if ( $singleResult == true ){
+            if ( $singleResult == true ){
 
-            // only one object as result
-            if ( count( $res ) > 0 )
-                $res = $res[0];
+                // only one object as result
+                if ( count( $res ) > 0 )
+                    $res = $res[0];
+            }
         }
 
         return $res;
