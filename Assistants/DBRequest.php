@@ -160,9 +160,6 @@ class DBRequest
             return $query_result;
         }
 
-        // selects the database
-       // mysql_select_db( $config['DB']['db_name'] );
-
         $currentTime = $_SERVER['REQUEST_TIME'];
 
         // check session
@@ -232,9 +229,7 @@ if ($answ===false){
     else{
     do {
         $result=array();
-         mysqli_next_result($dbconn);
     if ($res = mysqli_store_result($dbconn)) {
-    //$res = mysqli_store_result($dbconn);
        $result['content']  = $res;
 
         // evaluates the request
@@ -246,7 +241,6 @@ if ($answ===false){
         if ( gettype( $result['content'] ) != 'boolean' ){
             $result['numRows'] = mysqli_num_rows( $result['content'] );
         }
-        //mysqli_free_result($res);
          }
          else
          {
@@ -256,10 +250,9 @@ if ($answ===false){
         $result['errno'] = mysqli_errno( $dbconn );
         $result['error'] = mysqli_error($dbconn );
          }
-        // echo mysqli_sqlstate($dbconn);
+
         $query_result[] = $result;
-        //mysqli_more_results($dbconn) && 
-} while (mysqli_more_results($dbconn));
+} while (mysqli_more_results($dbconn) && mysqli_next_result($dbconn));
 }
         // closes the connection and returns the result
         mysqli_close( $dbconn );
