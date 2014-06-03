@@ -302,7 +302,7 @@ class Installer
                     $countLinks++;
                 }
                 
-                $countCommands = count($component['commands']);
+                $countCommands = count(isset($component['commands']) ? $component['commands'] : array());
                 $text .= "<tr><td class='e' rowspan='{$countLinks}'>{$componentName}</td><td class='v'>{$component['init']->getAddress()}</td><td class='e'>".($component['init']->getStatus() === 201 ? "OK" : "<font color='red'>Fehler ({$component['init']->getStatus()})</font>")."</td></tr>";
                 
                 if ($component['init']->getStatus() === 201){
@@ -315,7 +315,9 @@ class Installer
                     $links = $component['links'];
                     $lastLink = null;
                     foreach($links as $link){
-                        $calls = $component['call'];
+                        $calls = null;
+                        if (isset($component['call']))
+                            $calls = $component['call'];
                         $linkFound=false;
                         if ($calls!==null){
                             foreach($calls as $pos => $callList){
@@ -334,6 +336,10 @@ class Installer
                                 foreach($calls as $pos => $callList){                
                                     if ($link->getName() !== $callList['name']) continue;
                                     foreach($callList['links'] as $pos2 => $call){
+                                        if (!isset($components[$link->getTargetName()]['router'])){
+                                            $notRoutable=true;
+                                            break;
+                                        }
                                         if ($components[$link->getTargetName()]['router']==null) continue;
                                         if ($call===null) continue;
                                         if (!isset($call['method'])) continue;
