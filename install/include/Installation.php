@@ -132,7 +132,8 @@ class Installation
                 "db_user = {$data['DB']['db_user']}\n".
                 "db_passwd = {$data['DB']['db_passwd']}\n".
                 "db_name = {$data['DB']['db_name']}";
-        if (@chmod($file, '0777') && !@file_put_contents($file,$text)) $fail = true;
+                
+        if (!@file_put_contents($file,$text)) $fail = true;
     }
     
     public static function installiereUIKonfigurationsdatei($data, &$fail, &$errno, &$error)
@@ -146,8 +147,8 @@ class Installation
             }
         }
         $text = implode("\n",$text);
-        
-        if (@chmod($file, '0777') && !@file_put_contents($file,$text)) $fail = true;
+
+        if (!@file_put_contents($file,$text)) $fail = true;
     }
 
     public static function installiereKomponentendatei($data, &$fail, &$errno, &$error)
