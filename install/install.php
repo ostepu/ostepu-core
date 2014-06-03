@@ -291,13 +291,14 @@ class Installer
                     $calls = $component['call'];
                 if ($calls!==null){
                     foreach($calls as $pos => $callList){
-                        $callNames[$callList['name']] = $callList['name'];
+                        if (isset($callList['name']))
+                            $callNames[$callList['name']] = $callList['name'];
                     }
                 }
                 
                         
                 $countLinks = 1;
-                if ($component['init']->getStatus() === 201){
+                if (isset($component['init']) && $component['init']->getStatus() === 201){
                     $countLinks+=count($linkNames) + count(array_diff($callNames,$linkNamesUnique)) + count($linkNamesUnique) - count(array_diff($linkNamesUnique,$callNames));
                     $countLinks++;
                 }
@@ -305,14 +306,16 @@ class Installer
                 $countCommands = count(isset($component['commands']) ? $component['commands'] : array());
                 $text .= "<tr><td class='e' rowspan='{$countLinks}'>{$componentName}</td><td class='v'>{$component['init']->getAddress()}</td><td class='e'>".($component['init']->getStatus() === 201 ? "OK" : "<font color='red'>Fehler ({$component['init']->getStatus()})</font>")."</td></tr>";
                 
-                if ($component['init']->getStatus() === 201){
+                if (isset($component['init']) && $component['init']->getStatus() === 201){
                     $installedComponents++;
-                    $installedLinks+=count($component['links']);
+                    $installedLinks+=count(isset($component['links']) ? $component['links'] : array());
                     $installedCommands+=$countCommands;
                     
                     $text .= "<tr><td class='v' colspan='2'>installierte Befehle: {$countCommands}</td></tr>";
                 
-                    $links = $component['links'];
+                    $links = array();
+                    if (isset($component['links']))
+                        $links = $component['links'];
                     $lastLink = null;
                     foreach($links as $link){
                         $calls = null;
@@ -321,7 +324,7 @@ class Installer
                         $linkFound=false;
                         if ($calls!==null){
                             foreach($calls as $pos => $callList){
-                                if ($callList['name'] === $link->getName()){
+                                if (isset($callList['name']) && $callList['name'] === $link->getName()){
                                     $linkFound=true;
                                     break;
                                 }
@@ -329,7 +332,9 @@ class Installer
                         }
 
                         if ($lastLink!=$link->getName() && $linkFound){
-                            $calls = $component['call'];
+                            $calls = null;
+                            if (isset($component['call']))
+                                $calls = $component['call'];
 
                             $notRoutable = false;
                             if ($calls!==null){
