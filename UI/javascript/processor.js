@@ -30,9 +30,7 @@ trig = trig.parent().parent();
         
         trig.parent().find('.processor-type').last().on("change",loadProcessorTemplate);
         trig.parent().find('.processor-type').last().change();
-        
-        trig.parent().find('.processor').last().find('.add-attachment').first().on("click",addProcessorAttachment);
-        trig.parent().find('.processor').last().find('.add-attachment').first().click();
+       
         renameProcessor();
     });
 
@@ -53,7 +51,10 @@ var trig = $(this);
     $.get("include/CreateSheet/Processor/"+trig.find('option:selected').text()+".template.php", function (data) {
     
         trig.parent().find('.processor-parameter-area').first().after(data);
-
+        if ($(trig.parents().find('.processor').last().find('.add-attachment')).length>0){
+            trig.parents().find('.processor').last().find('.add-attachment').first().on("click",addProcessorAttachment);
+            trig.parents().find('.processor').last().find('.add-attachment').first().click();
+        }
     });
 }
 

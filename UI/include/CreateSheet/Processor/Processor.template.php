@@ -62,8 +62,8 @@ if ($courseid!==null){
           
     </select>
     <br><br>
-    <label class="short left label bold new-line" for="attachment">Anhang:</label><br><br>
-   <a href="javascript:void(0);" class="body-option-color add-attachment left">Anhang hinzufügen</a>
+  <!--  <label class="short left label bold new-line" for="attachment">Anhang:</label><br><br>
+   <a href="javascript:void(0);" class="body-option-color add-attachment left">Anhang hinzufügen</a>-->
               <div class="form-field processor-parameter-area" style="width:100%"></div>
             </div></div>
 </td></tr>
