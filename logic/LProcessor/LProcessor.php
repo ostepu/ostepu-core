@@ -590,11 +590,4 @@ class LProcessor
             $this->app->response->setBody( Submission::encodeSubmission( $res ) );
     }
 }
-
-// get new config data from DB
-$com = new CConfig(LProcessor::getPrefix() . ',submission,course,link');
-
-// create a new instance of LProcessor class with the config data
-if (!$com->used())
-    new LProcessor($com->loadConfig());
 ?>

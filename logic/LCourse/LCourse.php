@@ -304,14 +304,4 @@ class LCourse
         $this->app->response->setBody($answer['content']);
     }
 }
-/**
- * get new Config-Datas from DB
- */
-$com = new CConfig(LCourse::getPrefix());
-
-/**
- * run a new instance of Course-Class with the Config-Datas
- */
-if (!$com->used())
-    new LCourse($com->loadConfig());
 ?>

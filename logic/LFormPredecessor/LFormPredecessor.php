@@ -400,11 +400,4 @@ class LFormPredecessor
             $this->app->response->setBody( Process::encodeProcess( $res ) );
     }
 }
-
-// get new config data from DB
-$com = new CConfig(LFormPredecessor::getPrefix() . ',link,course');
-
-// create a new instance of LFormPredecessor class with the config data
-if (!$com->used())
-    new LFormPredecessor($com->loadConfig());
 ?>

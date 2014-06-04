@@ -17,13 +17,6 @@ include_once ( './LFileHandler.php' );
 
 \Slim\Slim::registerAutoloader( );
 
-// runs the CConfig
-$com = new CConfig( LFile::getBaseDir( ) );
-
-// runs the LFile
-if ( !$com->used( ) )
-    new LFile( $com->loadConfig( ) );
-
 /**
  * The class for storing and hashing files.
  */

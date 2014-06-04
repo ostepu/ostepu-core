@@ -296,14 +296,4 @@ class LExtension
         $this->app->response->setBody( Component::encodeComponent( $this->_extension ) );
     }
 }
-/**
- * get new Config-Datas from DB
- */
-$com = new CConfig(LExtension::getPrefix());
-
-/**
- * run a new instance of Extension-Class with the Config-Datas
- */
-if (!$com->used())
-    new LExtension($com->loadConfig());
 ?>
