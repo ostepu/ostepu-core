@@ -1,2 +1,2 @@
 RewriteEngine On
-RewriteRule ^ DBUser.php [QSA,L]
+RewriteRule !DBUser.php index.php [QSA,L]

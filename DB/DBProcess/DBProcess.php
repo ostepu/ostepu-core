@@ -17,13 +17,6 @@ include_once ( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
 
-// runs the CConfig
-$com = new CConfig( DBProcess::getPrefix( ) . ',course,link' );
-
-// runs the DBProcess
-if ( !$com->used( ) )
-    new DBProcess( $com );
-
 /**
  * A class, to abstract the "DBProcess" table from database
  */

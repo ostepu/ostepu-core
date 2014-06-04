@@ -17,13 +17,6 @@ include_once ( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
 
-// runs the CConfig
-$com = new CConfig( DBChoice::getPrefix( ) . ',course,link' );
-
-// runs the DBChoice
-if ( !$com->used( ) )
-    new DBChoice( $com );
-
 /**
  * A class, to abstract the "DBChoice" table from database
  */

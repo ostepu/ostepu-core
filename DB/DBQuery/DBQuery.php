@@ -18,13 +18,6 @@ include_once ( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
 
-// runs the CConfig
-$com = new CConfig( DBQuery::getPrefix( ) );
-
-// runs the DBQuery
-if ( !$com->used( ) )
-    new DBQuery( $com->loadConfig( ) );
-
 /**
  * A class, to perform requests to the database
  */

@@ -1,2 +1,2 @@
 RewriteEngine On
-RewriteRule ^ DBControl.php [QSA,L]
+RewriteRule !DBControl.php index.php [QSA,L]

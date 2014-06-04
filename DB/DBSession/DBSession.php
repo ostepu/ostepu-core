@@ -18,13 +18,6 @@ include_once ( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
 
-// runs the CConfig
-$com = new CConfig( DBSession::getPrefix( ) );
-
-// runs the DBSession
-if ( !$com->used( ) )
-    new DBSession( $com->loadConfig( ) );
-
 /**
  * A class, to abstract the "Session" table from database
  */

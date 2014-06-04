@@ -19,13 +19,6 @@ include_once ( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
 
-// runs the CConfig
-$com = new CConfig( DBExternalId::getPrefix( ) );
-
-// runs the DBExternalId
-if ( !$com->used( ) )
-    new DBExternalId( $com->loadConfig( ) );
-
 /**
  * A class, to abstract the "ExternalId" table from database
  */

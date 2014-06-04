@@ -19,13 +19,6 @@ include_once ( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
 
-// runs the CConfig
-$com = new CConfig( DBSelectedSubmission::getPrefix( ) );
-
-// runs the DBSelectedSubmission
-if ( !$com->used( ) )
-    new DBSelectedSubmission( $com->loadConfig( ) );
-
 /**
  * A class, to abstract the "SelectedSubmission" table from database
  */

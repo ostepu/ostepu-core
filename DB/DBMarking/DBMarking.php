@@ -19,13 +19,6 @@ include_once ( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
 
-// runs the CConfig
-$com = new CConfig( DBMarking::getPrefix( ) );
-
-// runs the DBMarking
-if ( !$com->used( ) )
-    new DBMarking( $com->loadConfig( ) );
-
 /**
  * A class, to abstract the "Marking" table from database
  */

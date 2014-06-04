@@ -19,23 +19,6 @@ include_once ( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
 
-Logger::Log( 
-            'begin DBUser',
-            LogLevel::DEBUG
-            );
-
-// runs the CConfig
-$com = new CConfig( DBUser::getPrefix( ) );
-
-// runs the DBUser
-if ( !$com->used( ) )
-    new DBUser( $com->loadConfig( ) );
-
-Logger::Log( 
-            'end DBUser',
-            LogLevel::DEBUG
-            );
-
 /**
  * A class, to abstract the "User" table from database
  */

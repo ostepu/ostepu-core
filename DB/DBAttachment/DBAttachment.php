@@ -19,13 +19,6 @@ include_once ( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
 
-// runs the CConfig
-$com = new CConfig( DBAttachment::getPrefix( ) );
-
-// runs the DBAttachment
-if ( !$com->used( ) )
-    new DBAttachment( $com->loadConfig( ) );
-
 /**
  * A class, to abstract the "Attachment" table from database
  */

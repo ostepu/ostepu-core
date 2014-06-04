@@ -2,7 +2,7 @@
 
 
 /**
- * @file DBQuery.php contains the DBQuery class
+ * @file DBQuery2.php contains the DBQuery2 class
  *
  * @author Till Uhlig
  */
@@ -16,17 +16,10 @@ include_once ( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
 
-// runs the CConfig
-$com = new CConfig( DBQuery::getPrefix( ) );
-
-// runs the DBQuery
-if ( !$com->used( ) )
-    new DBQuery( $com->loadConfig( ) );
-
 /**
  * A class, to perform requests to the database
  */
-class DBQuery
+class DBQuery2
 {
 
     /**
@@ -51,7 +44,7 @@ class DBQuery
      */
     public static function getPrefix( )
     {
-        return DBQuery::$_prefix;
+        return DBQuery2::$_prefix;
     }
 
     /**
@@ -61,7 +54,7 @@ class DBQuery
      */
     public static function setPrefix( $value )
     {
-        DBQuery::$_prefix = $value;
+        DBQuery2::$_prefix = $value;
     }
 
     /**

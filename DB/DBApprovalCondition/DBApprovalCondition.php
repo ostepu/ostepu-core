@@ -18,13 +18,6 @@ include_once ( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
 
-// runs the CConfig
-$com = new CConfig( DBApprovalCondition::getPrefix( ) );
-
-// runs the DBExerciseSheet
-if ( !$com->used( ) )
-    new DBApprovalCondition( $com->loadConfig( ) );
-
 /**
  * A class, to abstract the "ApprovalCondition" table from database
  */

@@ -19,13 +19,6 @@ include_once ( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
 
-// runs the CConfig
-$com = new CConfig( DBCourse::getPrefix( ) );
-
-// runs the DBCourse
-if ( !$com->used( ) )
-    new DBCourse( $com->loadConfig( ) );
-
 /**
  * A class, to abstract the "DBCourse" table from database
  */

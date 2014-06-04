@@ -19,13 +19,6 @@ include_once ( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
 
-// runs the CConfig
-$com = new CConfig( DBGroup::getPrefix( ) );
-
-// runs the DBUser
-if ( !$com->used( ) )
-    new DBGroup( $com->loadConfig( ) );
-
 /**
  * A class, to abstract the "Group" table from database
  */
