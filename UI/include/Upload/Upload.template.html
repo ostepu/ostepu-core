@@ -54,7 +54,7 @@
                             <?php $displayName = $file['displayName']; ?>
                             <?php $fileAddress = $file['address']; ?>
                             <?php $date = $sub['date']; ?>
-                            <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
+                            <?php $fileURL = "../FS/FSControl/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
 
                             <a href="<?= $fileURL ?>"
                                title="<?= $displayName ?>"
