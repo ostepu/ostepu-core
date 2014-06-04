@@ -71,8 +71,15 @@ class DBAttachment2
      *
      * @param Component $conf component data
      */
-    public function __construct( $conf )
+    public function __construct( )
     {
+        // runs the CConfig
+        $com = new CConfig( DBAttachment2::getPrefix( ) . ',course,link' );
+
+        // runs the DBAttachment2
+        if ( $com->used( ) ) return;
+            $conf = $com->loadConfig( );
+            
         $this->_conf = $conf;
         
         // initialize slim

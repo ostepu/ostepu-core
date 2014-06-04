@@ -71,9 +71,15 @@ class DBProcess
      *
      * @param Component $conf component data
      */
-    public function __construct( $conf )
+    public function __construct( )
     {
+        // runs the CConfig
+        $com = new CConfig( DBProcess::getPrefix( ) . ',course,link' );
 
+        // runs the DBProcess
+        if ( $com->used( ) ) return;
+            $conf = $com->loadConfig( );
+            
         // initialize component
         $this->_conf = $conf;
 

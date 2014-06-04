@@ -71,9 +71,15 @@ class DBChoice
      *
      * @param Component $conf component data
      */
-    public function __construct( $conf )
+    public function __construct( )
     {
+        // runs the CConfig
+        $com = new CConfig( DBChoice::getPrefix( ) . ',course,link' );
 
+        // runs the DBChoice
+        if ( $com->used( ) ) return;
+            $conf = $com->loadConfig( );
+            
         // initialize component
         $this->_conf = $conf;
 
