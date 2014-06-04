@@ -152,13 +152,6 @@ class DBQuery
         // decode the received query data, as an object
         $obj = Query::decodeQuery( $body );
         //$obj->setCheckSession(false);
-    /*    $obj->setRequest("SET @statement = 
-concat(concat(
-\"INSERT INTO Form_\", (select E.C_id from `Exercise` E where E.E_id = '4' limit 1)), \" SET E_id='4',FO_type='0';\");
-PREPARE stmt1 FROM @statement;
-EXECUTE stmt1;");*/
-//$obj->setRequest("select * from Component where CO_id = 1;");
-//$obj->setRequest("select * from Component where CO_id = 1;insert into Form_3 set E_id=4, FO_type=0;");
 
         $answer = DBRequest::request2( 
                                            $obj->getRequest( ),
@@ -167,8 +160,8 @@ EXECUTE stmt1;");*/
                                            
         $this->_app->response->setStatus( 200 );
         $result = array();
-                        //var_dump($answer);                
-foreach ($answer as $query_result){
+             
+        foreach ($answer as $query_result){
             $obj = new Query( );
             
         if ( $query_result['errno'] != 0 ){
