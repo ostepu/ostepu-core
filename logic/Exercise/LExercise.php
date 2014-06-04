@@ -147,8 +147,11 @@ class LExercise
                 }
 
                 // create exercise in DB
-                $FileTypesArrayTemp = $subexercise['fileTypes'];
-                unset($subexercise['fileTypes']);
+                if (isset($subexercise['fileTypes'])){
+                    $FileTypesArrayTemp = $subexercise['fileTypes'];
+                    unset($subexercise['fileTypes']);
+                }
+                
                 $subexerciseJSON = json_encode($subexercise);
                 $URL = $this->lURL.'/DB/exercise';
                 $subexerciseAnswer = Request::custom('POST', $URL, $header, $subexerciseJSON);
