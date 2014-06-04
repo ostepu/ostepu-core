@@ -22,9 +22,14 @@ $createsheetData = json_decode($createsheetData, true);
 
 $noContent = false;
 
-$result = http_get($databaseURI.'/definition/LProcessor',true);
-$processorModules = array('processors' => Component::decodeComponent($result));
-
+$result = http_get($serverURI."/DB/DBProcess/processList/process/course/{$cid}",true);
+$processorModules = Process::decodeProcess($result);
+if (!is_array($processorModules)) $processorModules = array($processorModules);
+$components = array();
+foreach ($processorModules as $processor){
+    $components[] = $processor->getTarget();
+}
+$processorModules = array('processors' => $components);
         
 if (isset($createsheetData['exerciseTypes'])) {
     $_SESSION['JSCACHE'] = json_encode($createsheetData['exerciseTypes']);
