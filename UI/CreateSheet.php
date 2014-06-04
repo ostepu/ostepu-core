@@ -277,7 +277,7 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                         $choiceCorrect = $subexercise['correct'];
                         foreach ($choiceCorrect as $tempKey => $choiceData) {
                             if (isset($choices[$tempKey]))                          
-                                $choices[$tempKey]->setCorrect($choiceData);                   
+                                $choices[$tempKey]->setCorrect(1);                   
                         }
                         
                         $choices = array_values( $choices );
