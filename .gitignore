@@ -211,10 +211,6 @@ FS/FSFile/CConfig.json
 FS/FSFile2/CConfig.json
 FS/FSPdf/CConfig.json
 FS/FSZip/CConfig.json
-DB/CControl/CConfig.json
-DB/DBProcess/CConfig.json
-DB/DBAttachment2/processAttachment_CConfig.json
-DB/DBAttachment2/processWorkFiles_CConfig.json
 logic/Attachment/CConfig.json
 logic/Condition/CConfig.json
 logic/Controller/CConfig.json
@@ -236,3 +232,7 @@ logic/Tutor/CConfig.json
 logic/User/CConfig.json
 logic/LOOP/OOP1_3.c0
 logic/LOOP/run.php
+DB/CControl/CConfig.json
+DB/DBProcess/CConfig.json
+DB/DBAttachment2/processAttachment_CConfig.json
+DB/DBAttachment2/processWorkFiles_CConfig.json
