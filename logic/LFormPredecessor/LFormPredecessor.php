@@ -308,6 +308,68 @@ class LFormPredecessor
                     if ($formdata !== null){
                         // check the submission
                         $fail = false;
+                        $parameter = explode(' ',strtolower($pro->getParameter()));
+
+                        $choices = $formdata->getChoices();
+                        
+                        if ($forms->getType()==0){
+                            foreach ($choices as &$choice){
+                                foreach ($parameter as $param){
+                                    switch($param){
+                                        case('isnumeric'):
+                                            if (!eregi("^-?([0-9])+([\.|,]([0-9])+)?$",$text)){
+                                                $fail = true;
+                                                $pro->addMessage('"'.$choice->getText().'" ist keine gültige Zahl.');
+                                            }
+                                            break;
+                                        case('isdigit'):
+                                            if (!ctype_digit($choice->getText())){
+                                                $fail = true;
+                                                $pro->addMessage('"'.$choice->getText().'" ist keine gültige Ziffernfolge.');
+                                            }
+                                            break;
+                                        case('isprintable'):
+                                            if (!ctype_print($choice->getText())){
+                                                $fail = true;
+                                                $pro->addMessage('"' . $choice->getText().'" enthält nicht-druckbare Zeichen.');
+                                            }
+                                            break;
+                                        case('isalpha'):
+                                            if (!ctype_alpha($choice->getText())){
+                                                $fail = true;
+                                                $pro->addMessage('"' . $choice->getText().'" ist keine gültige Buchstabenfolge.');
+                                            }
+                                            break;
+                                        case('isalphanum'):
+                                            if (!ctype_alnum($choice->getText())){
+                                                $fail = true;
+                                                $pro->addMessage('"' . $choice->getText().'" ist nicht alphanumerisch.');
+                                            }
+                                            break;
+                                        case('ishex'):
+                                            if (!ctype_xdigit($choice->getText())){
+                                                $fail = true;
+                                                $pro->addMessage('"' . $choice->getText().'" ist keine gültige Hexadezimalzahl.');
+                                            }
+                                            break;
+                                        default:
+                                            if (!@eregi($param, $choice->getText())){
+                                                $fail = true;
+                                                $pro->addMessage('"' . $choice->getText().'" entspricht nicht dem regulären Ausdruck "'.$param.'".');
+                                            }
+                                            break;
+                                    }
+                                }
+                            }
+                        }
+                        
+                        if ($fail){
+                            // received submission isn't correct
+                            $pro->setStatus(409);
+                            $res[] = $pro;
+                            $this->app->response->setStatus( 409 );
+                            continue;
+                        }
  
 
                         // save the submission
@@ -368,7 +430,8 @@ class LFormPredecessor
                                 $submission->setExerciseId($eid);
                                 $pro->setSubmission($submission);
                             } else {
-                                $res[] = null;
+                                $pro->setStatus(409);
+                                $res[] = $pro;
                                 $this->app->response->setStatus( 409 );
                                 continue;
                             }
@@ -382,13 +445,15 @@ class LFormPredecessor
                         $rawSubmission->setExerciseId($eid);
                         $pro->setRawSubmission($rawSubmission);
                         
+                        $pro->setStatus(409);
                         $res[] = $pro;          
                         continue;
                     }
                 }                             
             }
             $this->app->response->setStatus( 409 );
-            $res[] = null;
+            $pro->setStatus(409);
+            $res[] = $pro;
         }
 
  
