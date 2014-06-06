@@ -55,6 +55,7 @@ var trig = $(this);
             trig.parents().find('.processor').last().find('.add-attachment').first().on("click",addProcessorAttachment);
             trig.parents().find('.processor').last().find('.add-attachment').first().click();
         }
+            renameProcessor();
     });
 }
 
@@ -79,9 +80,24 @@ var trig = $(this);
 
 function renameProcessor(){
     renumberExercises();
+    
+      /*      var allParameter = $('.parameter-choice');
+        for (var b = 0; b < allParameter.length; b++) {
+
+        var elem3 = $(allParameter[b]);
+        var oldName = elem3.attr('name');
+        var regex = /exercises\[(.+?)]\[.+?\]\[(.+?)]\[(.+?)]\[[0-9]+\]/gm;
+        var nameString = "exercises[$1][subexercises][$2][processorParameterList]["+ (5) +"][]";
+
+        // match the regex and replace the numbers
+        var newName = oldName.replace(regex, nameString);
+alert(newName);
+        // set the new name
+        elem3.attr('name', newName);
+        }return;*/
+        
 
     var all = $('.processor-type');
-
     for (var i = 0; i < all.length; i++) {
         // add a new header text
         var elem = $(all[i]);
@@ -95,38 +111,26 @@ function renameProcessor(){
 
         // set the new name
         elem.attr('name', newName);
-            
-        var allAttachment = elem.parent().find('.processor-attachment-file');
-        for (var b = 0; b < allAttachment.length; b++) {
-            var elem = $(allAttachment[b]);
-            var regex = /exercises\[(.+?)]\[.+?\]\[(.+?)]\[(.+?)]\[[0-9]+\]/gm;
-            var nameString = "exercises[$1][subexercises][$2][processAttachment]["+ (i) +"][]";
-
-            // match the regex and replace the numbers
-            var newName = oldName.replace(regex, nameString);
-
-            // set the new name
-            elem.attr('name', newName);
-        }
     }
     
-    var all2 = $('.processor-parameter');
+    var all = $('.processor-type');
+    for (var i = 0; i < all.length; i++) {
+        var elem = $(all[i]);
+        var allChoices = elem.parent().find('.content-body-wrapper').find('.content-body').find('.parameter-choice');
 
-    for (var i = 0; i < all2.length; i++) {
-        // add a new header text
-        var elem = $(all2[i]);
-        var oldName = elem.attr('name');
-
-            var regex = /exercises\[(.+?)]\[.+?\]\[(.+?)]\[(.+?)]\[[0-9]+\]/gm;
-            var nameString = "exercises[$1][subexercises][$2][$3]["+ (i) +"]";
+        for (var c = 0; c < allChoices.length; c++) {
+            var elem3 = $(allChoices[c]);
+            var oldName = elem3.attr('name');
+            var regex = /exercises\[(.+?)]\[.+?\]\[(.+?)]\[(.+?)]\[[0-9]+\]\[]/gm;
+            var nameString = "exercises[$1][subexercises][$2][processorParameterList]["+ (i) +"][]";
 
             // match the regex and replace the numbers
             var newName = oldName.replace(regex, nameString);
 
             // set the new name
-            elem.attr('name', newName);
+            elem3.attr('name', newName);
+        }
     }
-
 }
 
 function removeAttachment(event){
