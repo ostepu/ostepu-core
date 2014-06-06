@@ -335,11 +335,4 @@ class LOOP
         chmod( $path, 0777);
     }
 }
-
-// get new config data from DB
-$com = new CConfig(LOOP::getPrefix() . ',link,course');
-
-// create a new instance of LOOP class with the config data
-if (!$com->used())
-    new LOOP($com->loadConfig());
 ?>

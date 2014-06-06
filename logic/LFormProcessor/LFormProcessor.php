@@ -307,70 +307,6 @@ class LFormProcessor
                     if (is_array($formdata)) $formdata = $formdata[0];
 
                     if ($formdata !== null){
-                        // check the submission
-                        $fail = false;
-                        $parameter = explode(' ',strtolower($pro->getParameter()));
-
-                        $choices = $formdata->getChoices();
-                        
-                        if ($forms->getType()==0){
-                            foreach ($choices as &$choice){
-                                foreach ($parameter as $param){
-                                    switch($param){
-                                        case('isnumeric'):
-                                            if (!is_numeric($choice->getText()))
-                                                $fail = true;
-                                            break;
-                                        case('isdigit'):
-                                            if (!ctype_digit($choice->getText()))
-                                                $fail = true;
-                                            break;
-                                        case('isprintable'):
-                                            if (!ctype_print($choice->getText()))
-                                                $fail = true;
-                                            break;
-                                        case('isalpha'):
-                                            if (!ctype_alpha($choice->getText()))
-                                                $fail = true;
-                                            break;
-                                        case('isalphanum'):
-                                            if (!ctype_alnum($choice->getText()))
-                                                $fail = true;
-                                            break;
-                                    }
-                                    if ($fail) break;
-                                }
-                                if ($fail) break;
-                            }
-                        }
-                        
-                        if ($fail){
-                            // received submission isn't correct
-                            $res[] = null;
-                            $this->app->response->setStatus( 409 );
-                            continue;
-                        } 
-
-                        // preprocess the submission
-                        if ($forms->getType()==0){
-                            $choices = $formdata->getChoices();
-                            foreach ($choices as &$choice){
-                                foreach ($parameter as $param){
-                                    switch($param){
-                                        case('lowercase'):
-                                            $choice->setText(strtolower($choice->getText()));
-                                            break;
-                                        case('uppercase'):
-                                            $choice->setText(strtoupper($choice->getText()));
-                                            break;
-                                        case('trim'):
-                                            $choice->setText(trim($choice->getText()));
-                                            break;
-                                    }
-                                }
-                            }
-                            $formdata->setChoices($choices);
-                        }
                         
                         // evaluate the formdata
                         $points = 0;
@@ -379,8 +315,26 @@ class LFormProcessor
                         $allcorrect = true;
                         
                         if ($forms->getType()==0){
-                            if ($correctAnswers[0]->getText() != $answers[0]->getText())
-                                $allcorrect = false;
+                            
+                            $parameter = explode(' ',strtolower($pro->getParameter()));
+                            if ($parameter===null || count($parameter)===0){      
+                                if ($correctAnswers[0]->getText() != $answers[0]->getText())
+                                    $allcorrect = false;
+                            } elseif($parameter[0] === 'distance1'){
+                                $similarity = 0;
+                                similar_text($answers[0]->getText(),$correctAnswers[0]->getText(),$similarity);
+                                if (isset($parameter[1])){
+                                    if (similar_text<$parameter[1]){
+                                        $allcorrect = false;
+                                    }
+                                }
+                                else{
+                                    if (similar_text<100){
+                                        $allcorrect = false;
+                                    }
+                                }
+                            }
+                            
                         
                         }elseif ($forms->getType()==1){
                             foreach ($correctAnswers as $mask){
@@ -550,11 +504,4 @@ class LFormProcessor
             $this->app->response->setBody( Process::encodeProcess( $res ) );
     }
 }
-
-// get new config data from DB
-$com = new CConfig(LFormProcessor::getPrefix() . ',link,course');
-
-// create a new instance of LFormProcessor class with the config data
-if (!$com->used())
-    new LFormProcessor($com->loadConfig());
 ?>

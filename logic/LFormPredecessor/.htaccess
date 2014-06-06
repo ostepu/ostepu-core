@@ -1,2 +1,2 @@
 RewriteEngine On
-RewriteRule ^ LFormPredecessor.php [QSA,L]
+RewriteRule !LFormPredecessor.php index.php [QSA,L]

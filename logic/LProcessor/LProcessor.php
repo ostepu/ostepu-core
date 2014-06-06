@@ -476,22 +476,30 @@ class LProcessor
             
             // process submission
             if ($processors !== null){
+                if (!is_array($processors)) $processors = array($processors);
+                
                 foreach($processors as $pro){
                     $component = $pro->getTarget();
                     
                     if ($process->getExercise()===null)
                         $process->setExercise($pro->getExercise());
+                     
+                    $process->setParameter($pro->getParameter());
+                    $process->setAttachment($pro->getAttachment());
+                    $process->setTarget($pro->getTarget());
+                    $process->setWorkFiles($pro->getWorkFiles());
+                        
+//echo Process::encodeProcess($process); return;
 
                     $result = Request::post($component->getAddress().'/process', array(),  Process::encodeProcess($process));
                     
                     if ( $result['status'] >= 200 && 
                          $result['status'] <= 299 ){
                          $process = Process::decodeProcess( $result['content'] ); 
-            
                     } else {
                         $fail = true;
                         $submission->addMessage("Beim Verarbeiten der Einsendung ist ein Fehler aufgetreten");
-                        
+
                         if (isset($result['content'])){
                             $content = Process::decodeProcess($result['content']); 
                             $submission->setStatus($content->getStatus());  
@@ -516,7 +524,7 @@ class LProcessor
             if ($uploadSubmission===null)$uploadSubmission = $process->getRawSubmission();
             
             if ($uploadSubmission!==null){
-    //echo Submission::encodeSubmission($uploadSubmission);return;
+//echo Submission::encodeSubmission($uploadSubmission);return;
                 $result = Request::routeRequest( 
                                                 'POST',
                                                 '/submission',
@@ -535,9 +543,8 @@ class LProcessor
                         $process->getMarking()->setSubmission($queryResult);
                     }
                    
-              // var_dump($queryResult);
                 } else {
-                    $uploadSubmission->addMessage("Beim Speichern der Einsendung ist ein Fehler aufgetreten");
+                    $uploadSubmission->addMessage("Beim Speichern der Einsendung ist ein Fehler aufgetreten.");
                 
                     if (isset($result['content'])){
                         $content = Submission::decodeSubmission($result['content']);
@@ -590,11 +597,4 @@ class LProcessor
             $this->app->response->setBody( Submission::encodeSubmission( $res ) );
     }
 }
-
-// get new config data from DB
-$com = new CConfig(LProcessor::getPrefix() . ',submission,course,link');
-
-// create a new instance of LProcessor class with the config data
-if (!$com->used())
-    new LProcessor($com->loadConfig());
 ?>

@@ -1,2 +1,2 @@
 RewriteEngine On
-RewriteRule ^ LMarking.php [QSA,L]
+RewriteRule !LMarking.php index.php [QSA,L]
