@@ -1,6 +1,4 @@
 <?php 
-
-
 /**
  * @file DBForm.php contains the DBForm class
  *
@@ -16,13 +14,6 @@ include_once ( '../../Assistants/CConfig.php' );
 include_once ( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
-
-// runs the CConfig
-$com = new CConfig( DBForm::getPrefix( ) . ',course,link' );
-
-// runs the DBForm
-if ( !$com->used( ) )
-    new DBForm( $com->loadConfig( ) );
 
 /**
  * A class, to abstract the "DBForm" table from database
@@ -78,9 +69,15 @@ class DBForm
      *
      * @param Component $conf component data
      */
-    public function __construct( $conf )
+    public function __construct( )
     {
+        // runs the CConfig
+        $com = new CConfig( DBForm::getPrefix( ). ',course,link' );
 
+        // runs the DBForm
+        if ( $com->used( ) ) return;
+            $conf = $com->loadConfig( );
+            
         // initialize component
         $this->_conf = $conf;
         $this->query = array( CConfig::getLink( 

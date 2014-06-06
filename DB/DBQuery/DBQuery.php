@@ -18,13 +18,6 @@ include_once ( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
 
-// runs the CConfig
-$com = new CConfig( DBQuery::getPrefix( ) );
-
-// runs the DBQuery
-if ( !$com->used( ) )
-    new DBQuery( $com->loadConfig( ) );
-
 /**
  * A class, to perform requests to the database
  */
@@ -74,9 +67,15 @@ class DBQuery
      *
      * @param Component $conf component data
      */
-    public function __construct( $conf )
+    public function __construct( )
     {
+        // runs the CConfig
+        $com = new CConfig( DBQuery::getPrefix( ) );
 
+        // runs the DBQuery
+        if ( $com->used( ) ) return;
+            $conf = $com->loadConfig( );
+            
         // initialize component
         $this->_conf = $conf;
 
@@ -213,7 +212,5 @@ class DBQuery
         }
     }
 }
-
- 
 ?>
 

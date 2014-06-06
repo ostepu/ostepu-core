@@ -18,13 +18,6 @@ include_once ( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
 
-// runs the CConfig
-$com = new CConfig( DBCourseStatus::getPrefix( ) );
-
-// runs the DBUser
-if ( !$com->used( ) )
-    new DBCourseStatus( $com->loadConfig( ) );
-
 /**
  * A class, to abstract the "CourseStatus" table from database
  */
@@ -79,9 +72,15 @@ class DBCourseStatus
      *
      * @param Component $conf component data
      */
-    public function __construct( $conf )
+    public function __construct( )
     {
+        // runs the CConfig
+        $com = new CConfig( DBCourseStatus::getPrefix( ) );
 
+        // runs the DBCourseStatus
+        if ( $com->used( ) ) return;
+            $conf = $com->loadConfig( );
+            
         // initialize component
         $this->_conf = $conf;
         $this->query = array( CConfig::getLink( 

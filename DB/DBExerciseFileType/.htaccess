@@ -1,2 +1,2 @@
 RewriteEngine On
-RewriteRule ^ DBExerciseFileType.php [QSA,L]
+RewriteRule !DBExerciseFileType.php index.php [QSA,L]

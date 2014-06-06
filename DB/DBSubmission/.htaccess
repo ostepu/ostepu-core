@@ -1,2 +1,2 @@
 RewriteEngine On
-RewriteRule ^ DBSubmission.php [QSA,L]
+RewriteRule !DBSubmission.php index.php [QSA,L]

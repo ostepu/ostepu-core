@@ -19,13 +19,6 @@ include_once ( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
 
-// runs the CConfig
-$com = new CConfig( CControl::getPrefix( ) . ',link,definition' );
-
-// runs the CControl
-if ( !$com->used( ) )
-    new CControl( $com->loadConfig( ) );
-
 /**
  * A class, to abstract the "Component" and "ComponentLinkage" table from database
  *
@@ -70,7 +63,12 @@ class CControl
      */
     public function __construct( )
     {
+        // runs the CConfig
+        $com = new CConfig( CControl::getPrefix( ) . ',link,definition'  );
 
+        // runs the DBSubmission
+        if ( $com->used( ) ) return;
+            
         // initialize slim
         $this->_app = new \Slim\Slim( );
         $this->_app->response->headers->set( 
