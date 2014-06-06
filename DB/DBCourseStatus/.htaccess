@@ -1,2 +1,2 @@
 RewriteEngine On
-RewriteRule ^ DBCourseStatus.php [QSA,L]
+RewriteRule !DBCourseStatus.php index.php [QSA,L]

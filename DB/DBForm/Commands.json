@@ -1,6 +1,6 @@
 [
-    {    "method":"post", "path":"/course" }
-    {    "method":"delete", "path":"/course(/course)/:courseid" }
+    {    "method":"post", "path":"/course" },
+    {    "method":"delete", "path":"/course(/course)/:courseid" },
     {    "method":"put", "path":"/form(/form)/:formid(/)" },
     {    "method":"delete", "path":"/form(/form)/:formid(/)" },
     {    "method":"post", "path":"/form(/)" },

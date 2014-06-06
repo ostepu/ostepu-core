@@ -19,13 +19,6 @@ include_once ( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
 
-// runs the CConfig
-$com = new CConfig( CControl::getPrefix( ) . ',link,definition' );
-
-// runs the CControl
-if ( !$com->used( ) )
-    new CControl( $com->loadConfig( ) );
-
 /**
  * A class, to abstract the "Component" and "ComponentLinkage" table from database
  *
@@ -70,7 +63,12 @@ class CControl
      */
     public function __construct( )
     {
+        // runs the CConfig
+        $com = new CConfig( CControl::getPrefix( ) . ',link,definition'  );
 
+        // runs the DBSubmission
+        if ( $com->used( ) ) return;
+            
         // initialize slim
         $this->_app = new \Slim\Slim( );
         $this->_app->response->headers->set( 
@@ -637,7 +635,7 @@ class CControl
                                                     Link::getDBPrimaryKey( ),
                                                     Link::getDBConvert( )
                                                     );
-            $result = DBJson::concatResultObjectLists( 
+            $objects = DBJson::concatResultObjectLists( 
                                                       $data,
                                                       $Components,
                                                       Component::getDBPrimaryKey( ),
@@ -645,17 +643,27 @@ class CControl
                                                       $Links,
                                                       Link::getDBPrimaryKey( )
                                                       );
-
-            $res = array();
-            foreach ( $result as $object ){
+            
+            $request = new Request_MultiRequest();
+            foreach ( $objects as $object ){
                 $object = Component::decodeComponent( Component::encodeComponent( $object ) );
 
-                $result = Request::post( 
-                                        $object->getAddress( ) . '/control',
-                                        array( ),
-                                        Component::encodeComponent( $object )
-                                        );
-                                        
+                $result = Request_CreateRequest::createPost( 
+                                                            $object->getAddress( ) . '/control',
+                                                            array( ),
+                                                            Component::encodeComponent( $object )
+                                                            );
+
+                $request->addRequest($result);
+            }
+            $results = $request->run();
+
+            $i=0;
+            $res = array();
+            foreach ( $objects as $object){
+                $object = Component::decodeComponent( Component::encodeComponent( $object ) );
+                $result = $results[$i++];
+                                   
                 $newObject = new Component();
                 $newObject->setId($object->getId());
                 $newObject->setName($object->getName());

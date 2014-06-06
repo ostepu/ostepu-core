@@ -1,0 +1,6 @@
+[
+    {"method":"POST", "path":"/:string+" },
+    {"method":"PUT", "path":"/:string+" },
+    {"method":"GET", "path":"/:string+" },
+    {"method":"DELETE", "path":"/:string+" }
+]

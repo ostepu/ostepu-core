@@ -125,10 +125,10 @@ if (isset($_POST['action'])) {
             $RequestError = false;
 
             // extracts the php POST data
-            $courseName = cleanInput($_POST['courseName']);
-            $semester = cleanInput($_POST['semester']);
-            $defaultGroupSize = cleanInput($_POST['defaultGroupSize']);
-            $selectedExerciseTypes = cleanInput($_POST['exerciseTypes']);
+            $courseName = cleanInput((isset($_POST['courseName']) ? $_POST['courseName'] : '' ));
+            $semester = cleanInput((isset($_POST['semester']) ? $_POST['semester'] : '' ));
+            $defaultGroupSize = cleanInput((isset($_POST['defaultGroupSize']) ? $_POST['defaultGroupSize'] : '' ));
+            $selectedExerciseTypes = cleanInput((isset($_POST['exerciseTypes']) ? $_POST['exerciseTypes'] : '' ));
 
             // loads ApprovalConditions from database
             $URI = $databaseURI . "/approvalcondition/course/{$cid}";
@@ -142,46 +142,54 @@ if (isset($_POST['action'])) {
             }
 
             // exercise types which already exist in the database and need to be deleted
-            if (!empty($selectedExerciseTypes)) {
-                if (!is_array($currentExerciseTypes)) $currentExerciseTypes = array($currentExerciseTypes);
-                $etDelete = array_diff($currentExerciseTypes, $selectedExerciseTypes);
-            } else {
-                $etDelete = $currentExerciseTypes;
+            if(isset($currentExerciseTypes)){
+                if (!empty($selectedExerciseTypes)) {
+                    if (!is_array($currentExerciseTypes)) $currentExerciseTypes = array($currentExerciseTypes);
+                    $etDelete = array_diff($currentExerciseTypes, $selectedExerciseTypes);
+                } else {
+                    $etDelete = $currentExerciseTypes;
+                }
             }
 
             // exercises types which don't exist in the database and need to be created
-            if (!empty($currentExerciseTypes)) {
+            if (isset($currentExerciseTypes) && !empty($currentExerciseTypes)) {
                 if (!is_array($selectedExerciseTypes)) $selectedExerciseTypes = array($selectedExerciseTypes);
                 $etCreate = array_diff($selectedExerciseTypes, $currentExerciseTypes);
             } else {
                 $etCreate = $selectedExerciseTypes;
             }
 
-            if ($etDelete == null) $etDelete = array();
-            if (!is_array($etDelete)) $etDelete = array($etDelete);
-            // deletes approvalConditions
-            foreach($etDelete as $exerciseType2) {
-                if ($exerciseType2==='')continue;
-                $URI = $databaseURI . "/approvalcondition/" . $currentExerciseTypesByApprovalId[$exerciseType2];
-                http_delete($URI, true, $message);
+            if (isset($etDelete)){
+                if ($etDelete == null) $etDelete = array();
+                if (!is_array($etDelete)) $etDelete = array($etDelete);
+                // deletes approvalConditions
+                if (isset($currentExerciseTypesByApprovalId)){
+                    foreach($etDelete as $exerciseType2) {
+                        if ($exerciseType2==='')continue;
+                        $URI = $databaseURI . "/approvalcondition/" . $currentExerciseTypesByApprovalId[$exerciseType2];
+                        http_delete($URI, true, $message);
 
-                if ($message != "201") {
-                    $RequestError = true;
+                        if ($message != "201") {
+                            $RequestError = true;
+                        }
+                    }
                 }
             }
 
-            if ($etCreate == null) $etCreate = array();
-            if (!is_array($etCreate)) $etCreate = array($etCreate);
-            // adds approvalConditions
-            foreach($etCreate as $exerciseType3) {
-                if ($exerciseType3==='')continue;
-                $newApprovalConditionSettings = ApprovalCondition::encodeApprovalCondition(
-                    ApprovalCondition::createApprovalCondition(null, $cid, $exerciseType3, 0));
-                $URI = $databaseURI . "/approvalcondition";
-                http_post_data($URI, $newApprovalConditionSettings, true, $message);
+            if (isset($etCreate)){
+                if ($etCreate == null) $etCreate = array();
+                if (!is_array($etCreate)) $etCreate = array($etCreate);
+                // adds approvalConditions
+                foreach($etCreate as $exerciseType3) {
+                    if ($exerciseType3==='')continue;
+                    $newApprovalConditionSettings = ApprovalCondition::encodeApprovalCondition(
+                        ApprovalCondition::createApprovalCondition(null, $cid, $exerciseType3, 0));
+                    $URI = $databaseURI . "/approvalcondition";
+                    http_post_data($URI, $newApprovalConditionSettings, true, $message);
 
-                if ($message != "201") {
-                    $RequestError = true;
+                    if ($message != "201") {
+                        $RequestError = true;
+                    }
                 }
             }
 
@@ -332,7 +340,7 @@ if (isset($_POST['action'])) {
 
             if ($message == "201") {
                 $notifications[] = MakeNotification('success',
-                                                    'Der Beutzer wurde'
+                                                    'Der Nutzer wurde'
                                                     .' erfolgreich in die'
                                                     .' Veranstaltung eingetragem.');
             } else {

@@ -10,6 +10,7 @@
  
 select 
     concat('".Attachment::getCourseFromAttachmentId($aid)."','_',A.A_id) as A_id,
+    concat('".Attachment::getCourseFromAttachmentId($aid)."','_',A.PRO_id) as PRO_id,
     A.E_id,
     F.F_id,
     F.F_displayName,

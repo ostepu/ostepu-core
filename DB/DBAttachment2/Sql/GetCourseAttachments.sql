@@ -10,6 +10,7 @@
  
 select 
     concat('{$courseid}','_',A.A_id) as A_id,
+    concat('{$courseid}','_',A.PRO_id) as PRO_id,
     A.E_id,
     F.F_id,
     F.F_displayName,

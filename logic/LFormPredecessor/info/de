@@ -1,1 +1,5 @@
-Beschreibungstext
+{
+"text":"
+Diese Komponente verarbeitet Formular Einsendungen, dabei wandelt sie diese in eine PDF um und speichert diese als Einsendung ab.
+"
+}

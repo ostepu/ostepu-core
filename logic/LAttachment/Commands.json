@@ -1,0 +1,6 @@
+[
+    {"method":"POST", "path":"/attachment(/)" },
+    {"method":"GET", "path":"'/attachment/attachment/:attachmentid(/)" },
+    {"method":"DELETE", "path":"/attachment/attachment/:attachmentid(/)" },
+    {"method":"PUT", "path":"/attachment/attachment/:attachmentid(/)" }
+]

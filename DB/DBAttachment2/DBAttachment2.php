@@ -17,13 +17,6 @@ include_once ( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
 
-// runs the CConfig
-$com = new CConfig( DBAttachment2::getPrefix( ) . ',course,link' );
-
-// runs the DBAttachment2
-if ( !$com->used( ) )
-    new DBAttachment2( $com );
-
 /**
  * A class, to abstract the "Attachment" table from database
  */
@@ -78,9 +71,15 @@ class DBAttachment2
      *
      * @param Component $conf component data
      */
-    public function __construct( $conf )
+    public function __construct( )
     {
-        $this->_conf = $conf;
+        // runs the CConfig
+        $com = new CConfig( DBAttachment2::getPrefix( ) . ',course,link' );
+
+        // runs the DBAttachment2
+        if ( $com->used( ) ) return;
+            
+        $this->_conf = $com;
         
         // initialize slim
         $this->_app = new \Slim\Slim(array('debug' => true));

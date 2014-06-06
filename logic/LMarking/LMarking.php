@@ -5,6 +5,8 @@
  * @author Peter Koenig
  * @author Christian Elze
  * @author Martin Daute 
+ *
+ * @author Till Uhlig
  */
 
 require_once '../../Assistants/Slim/Slim.php';
@@ -303,11 +305,4 @@ class LMarking
         $this->app->response->setStatus($answer['status']);*/
     }
 }
-
-// get new config data from DB
-$com = new CConfig(LMarking::getPrefix());
-
-// create a new instance of LUser class with the config data
-if (!$com->used())
-    new LMarking($com->loadConfig());
 ?>

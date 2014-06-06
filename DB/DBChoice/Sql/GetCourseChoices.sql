@@ -12,6 +12,7 @@ select
     CH.FO_id,
     CH.E_id,
     CH.CH_text,
-    CH.CH_correct
+    CH.CH_correct,
+    CH.S_id
 from
     `Choice{$preChoice}_{$courseid}` CH

@@ -1,2 +1,2 @@
 RewriteEngine On
-RewriteRule ^ LFile.php [QSA,L]
+RewriteRule !LFile.php index.php [QSA,L]

@@ -15,7 +15,8 @@ concat(
     CH.FO_id,
     CH.E_id,
     CH.CH_text,
-    CH.CH_correct
+    CH.CH_correct,
+    CH.S_id
 from
     `Form{$preForm}_\",@course,\"` FO
         left join

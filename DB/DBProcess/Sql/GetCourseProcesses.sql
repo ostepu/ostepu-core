@@ -48,10 +48,10 @@ from
         left join
     `Exercise` E ON (E.E_id = PRO.E_id)
         left join
-    `Attachment_processAttachment_{$courseid}` A ON (PRO.E_id = A.E_id)
+    `Attachment_processAttachment_{$courseid}` A ON (PRO.PRO_id = A.PRO_id)
         left join
     `File` F ON F.F_id = A.F_id
         left join
-    `Attachment_processWorkFiles_{$courseid}` A2 ON (PRO.E_id = A2.E_id)
+    `Attachment_processWorkFiles_{$courseid}` A2 ON (PRO.PRO_id = A2.PRO_id)
         left join
     `File` F2 ON F2.F_id = A2.F_id

@@ -17,13 +17,6 @@ include_once ( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
 
-// runs the CConfig
-$com = new CConfig( DBChoice::getPrefix( ) . ',course,link' );
-
-// runs the DBChoice
-if ( !$com->used( ) )
-    new DBChoice( $com );
-
 /**
  * A class, to abstract the "DBChoice" table from database
  */
@@ -78,11 +71,16 @@ class DBChoice
      *
      * @param Component $conf component data
      */
-    public function __construct( $conf )
+    public function __construct( )
     {
+        // runs the CConfig
+        $com = new CConfig( DBChoice::getPrefix( ) . ',course,link' );
 
+        // runs the DBChoice
+        if ( $com->used( ) ) return;
+            
         // initialize component
-        $this->_conf = $conf;
+        $this->_conf = $com;
 
         // initialize slim
         $this->_app = new \Slim\Slim( array('debug' => true) );
@@ -217,7 +215,6 @@ class DBChoice
                     );
 
         $choiceid = DBJson::mysql_real_escape_string( $choiceid );
-        $formid = DBJson::mysql_real_escape_string( $formid );
         $preChoice = DBJson::mysql_real_escape_string( $preChoice );
         $preForm = DBJson::mysql_real_escape_string( $preForm );
         $preExercise = DBJson::mysql_real_escape_string( $preExercise );
@@ -281,7 +278,6 @@ class DBChoice
                     );
 
         $choiceid = DBJson::mysql_real_escape_string( $choiceid );
-        $formid = DBJson::mysql_real_escape_string( $formid );
         $preChoice = DBJson::mysql_real_escape_string( $preChoice );
         $preForm = DBJson::mysql_real_escape_string( $preForm );
         $preExercise = DBJson::mysql_real_escape_string( $preExercise );
@@ -333,7 +329,6 @@ class DBChoice
                     LogLevel::DEBUG
                     );
                     
-        $formid = DBJson::mysql_real_escape_string( $formid );
         $preChoice = DBJson::mysql_real_escape_string( $preChoice );
         $preForm = DBJson::mysql_real_escape_string( $preForm );
         $preExercise = DBJson::mysql_real_escape_string( $preExercise );
@@ -602,7 +597,6 @@ class DBChoice
                     );
                     
         $courseid = DBJson::mysql_real_escape_string( $courseid ); 
-        $formid = DBJson::mysql_real_escape_string( $formid );
         $preChoice = DBJson::mysql_real_escape_string( $preChoice );
         $preForm = DBJson::mysql_real_escape_string( $preForm );
         $preExercise = DBJson::mysql_real_escape_string( $preExercise );
@@ -654,7 +648,6 @@ class DBChoice
 
         // decode the received course data, as an object
         $insert = Course::decodeCourse( $this->_app->request->getBody( ) );
-        $formid = DBJson::mysql_real_escape_string( $formid );
         $preChoice = DBJson::mysql_real_escape_string( $preChoice );
         $preForm = DBJson::mysql_real_escape_string( $preForm );
         $preExercise = DBJson::mysql_real_escape_string( $preExercise );

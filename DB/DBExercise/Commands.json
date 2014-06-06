@@ -1,0 +1,13 @@
+[
+    {"method":"PUT", "path":"/exercise(/exercise)/:eid(/)"},
+    {"method":"DELETE", "path":"/exercise(/exercise)/:eid(/)"},
+    {"method":"POST", "path":"/exercise(/)"},
+    {"method":"GET", "path":"/exercise(/exercise)(/)"},
+    {"method":"GET", "path":"/exercise(/exercise)/nosubmission(/)"},
+    {"method":"GET", "path":"/exercise(/exercise)/:eid(/)"},
+    {"method":"GET", "path":"/exercise(/exercise)/:eid/nosubmission(/)"},
+    {"method":"GET", "path":"/exercise/exercisesheet/:esid(/)"},
+    {"method":"GET", "path":"/exercise/exercisesheet/:esid/nosubmission(/)"},
+    {"method":"GET", "path":"/exercise/course/:courseid(/)"},
+    {"method":"GET", "path":"/exercise/course/:courseid/nosubmission(/)"}
+]

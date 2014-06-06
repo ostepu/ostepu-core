@@ -1,0 +1,2 @@
+RewriteEngine On
+RewriteRule !LGetSite.php index.php [QSA,L]

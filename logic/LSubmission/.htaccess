@@ -1,2 +1,2 @@
 RewriteEngine On
-RewriteRule ^ LSubmission.php [QSA,L]
+RewriteRule !LSubmission.php index.php [QSA,L]

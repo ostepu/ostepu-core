@@ -17,13 +17,6 @@ include_once ( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
 
-// runs the CConfig
-$com = new CConfig( DBProcess::getPrefix( ) . ',course,link' );
-
-// runs the DBProcess
-if ( !$com->used( ) )
-    new DBProcess( $com );
-
 /**
  * A class, to abstract the "DBProcess" table from database
  */
@@ -78,11 +71,16 @@ class DBProcess
      *
      * @param Component $conf component data
      */
-    public function __construct( $conf )
+    public function __construct( )
     {
+        // runs the CConfig
+        $com = new CConfig( DBProcess::getPrefix( ) . ',course,link' );
 
+        // runs the DBProcess
+        if ( $com->used( ) ) return;
+            
         // initialize component
-        $this->_conf = $conf;
+        $this->_conf = $com;
 
         // initialize slim
         $this->_app = new \Slim\Slim( array('debug' => true) );
@@ -394,10 +392,7 @@ class DBProcess
                     );
 
         // checks whether incoming data has the correct data type
-        $processid = DBJson::mysql_real_escape_string( $processid );
-
         $pre = DBJson::mysql_real_escape_string( $pre );
-        $userid = DBJson::mysql_real_escape_string( $userid );
         $courseid = DBJson::mysql_real_escape_string( $courseid );
         $esid = DBJson::mysql_real_escape_string( $esid );
         $eid = DBJson::mysql_real_escape_string( $eid );

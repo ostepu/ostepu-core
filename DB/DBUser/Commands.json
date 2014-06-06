@@ -1,0 +1,13 @@
+[
+    {"method":"PUT", "path":"/user(/user)/:userid(/)"},
+    {"method":"DELETE", "path":"/user(/user)/:userid(/)"},
+    {"method":"DELETE", "path":"/user(/user)/:userid/permanent(/)"},
+    {"method":"POST", "path":"/user(/)"},
+    {"method":"GET", "path":"/user(/user)(/)"},
+    {"method":"GET", "path":"/user(/user)/:userid/IncFailedLogin(/)"},
+    {"method":"GET", "path":"/user(/user)/:userid(/)"},
+    {"method":"GET", "path":"/user/course/:courseid/status/:statusid(/)"},
+    {"method":"GET", "path":"/user/course/:courseid(/)"},
+    {"method":"GET", "path":"/user/group/user/:userid/exercisesheet/:esid(/)"},
+    {"method":"GET", "path":"/user/status/:statusid(/)"}
+]

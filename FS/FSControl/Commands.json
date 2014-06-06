@@ -1,0 +1,7 @@
+[
+    {"method":"POST", "path":"/:data+" },
+	{"method":"PUT", "path":"/:data+" },
+	{"method":"GET", "path":"/:data+" },
+	{"method":"DELETE", "path":"/:data+" },
+	{"method":"INFO", "path":"/:data+" }
+]

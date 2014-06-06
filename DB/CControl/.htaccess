@@ -1,2 +1,2 @@
 RewriteEngine On
-RewriteRule ^ CControl.php [QSA,L]
+RewriteRule !CControl.php index.php [QSA,L]

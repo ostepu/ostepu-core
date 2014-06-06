@@ -5,6 +5,8 @@
  * @author Peter Koenig
  * @author Christian Elze
  * @author Martin Daute 
+ *
+ * @author Till Uhlig
  */
 
 require '../../Assistants/Slim/Slim.php';
@@ -69,7 +71,7 @@ class LSubmission
     public function __construct($conf)
     {
         // initialize slim 
-        $this->app = new \Slim\Slim();
+        $this->app = new \Slim\Slim( array( 'debug' => true ) );
         $this->app->response->headers->set('Content-Type', 'application/json');
         
         // initialize component
@@ -394,15 +396,4 @@ class LSubmission
         $this->app->response->setStatus($answer['status']);*/
     }
 }
-
-/**
- * get new Config-Datas from DB
- */
-$com = new CConfig(LSubmission::getPrefix());
-
-/**
- * make a new instance of Submission-Class with the Config-Datas
- */
-if (!$com->used())
-    new LSubmission($com->loadConfig());
 ?>
