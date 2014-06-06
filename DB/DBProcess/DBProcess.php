@@ -78,10 +78,9 @@ class DBProcess
 
         // runs the DBProcess
         if ( $com->used( ) ) return;
-            $conf = $com->loadConfig( );
             
         // initialize component
-        $this->_conf = $conf;
+        $this->_conf = $com;
 
         // initialize slim
         $this->_app = new \Slim\Slim( array('debug' => true) );

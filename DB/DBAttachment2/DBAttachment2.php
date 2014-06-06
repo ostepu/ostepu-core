@@ -78,9 +78,8 @@ class DBAttachment2
 
         // runs the DBAttachment2
         if ( $com->used( ) ) return;
-            $conf = $com->loadConfig( );
             
-        $this->_conf = $conf;
+        $this->_conf = $com;
         
         // initialize slim
         $this->_app = new \Slim\Slim(array('debug' => true));
