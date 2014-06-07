@@ -48,7 +48,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
                     $choiceText = $choiceData2;
                     $choices = array();
                     foreach ($choiceText as $tempKey => $choiceData) {
-                        if ($choiceData === '') continue;
+                        if (trim($choiceData) === '') continue;
                         $choice = new Choice();
                         $choice->SetText($choiceData); 
                         $choice->SetFormId($formId);
