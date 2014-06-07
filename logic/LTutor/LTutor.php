@@ -63,8 +63,15 @@ class LTutor
      *
      * @param Component $conf component data
      */
-    public function __construct($conf)
+    public function __construct()
     {
+        // runs the CConfig
+        $com = new CConfig( LTutor::getPrefix( ) );
+
+        // runs the LTutor
+        if ( $com->used( ) ) return;
+            $conf = $com->loadConfig( );
+            
         /**
          *Initialise the Slim-Framework
          */

@@ -62,8 +62,15 @@ class LMarking
      *
      * @param Component $conf component data
      */
-    public function __construct($conf)
+    public function __construct()
     {
+        // runs the CConfig
+        $com = new CConfig( LMarking::getPrefix( ) );
+
+        // runs the LMarking
+        if ( $com->used( ) ) return;
+            $conf = $com->loadConfig( );
+            
         // initialize slim    
         $this->app = new \Slim\Slim();
         $this->app->response->headers->set('Content-Type', 'application/json');

@@ -41,8 +41,15 @@ class LGetSite
 
     private $flag = 0;
 
-    public function __construct($conf)
+    public function __construct()
     {
+        // runs the CConfig
+        $com = new CConfig( LGetSite::getPrefix( ) );
+
+        // runs the LGetSite
+        if ( $com->used( ) ) return;
+            $conf = $com->loadConfig( );
+            
         // Initialize Slim
         $this->app = new \Slim\Slim();
         $this->app->response->headers->set('Content-Type', 'application/json');

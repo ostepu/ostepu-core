@@ -73,12 +73,17 @@ class LFile
      *
      * This function contains the REST actions with the assignments to
      * the functions.
-     *
-     * @param Component $conf component data
      */
-    public function __construct( $_conf )
+    public function __construct()
     {
-        $this->_conf = $_conf;
+        // runs the CConfig
+        $com = new CConfig( LFile::getPrefix( ) );
+
+        // runs the LFile
+        if ( $com->used( ) ) return;
+        $conf = $com->loadConfig( );
+            
+        $this->_conf = $conf;
         $this->_fs = CConfig::getLinks($this->_conf->getLinks( ),'file');
         $this->_db = CConfig::getLinks($this->_conf->getLinks( ),'fileDb');
 
