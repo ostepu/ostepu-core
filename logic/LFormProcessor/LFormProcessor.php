@@ -9,6 +9,7 @@ require_once '../../Assistants/Slim/Slim.php';
 include_once '../../Assistants/Request.php';
 include_once '../../Assistants/CConfig.php';
 include_once '../../Assistants/DBJson.php';
+include_once '../../Assistants/Normalizer.php';
 
 \Slim\Slim::registerAutoloader();
 
@@ -73,8 +74,15 @@ class LFormProcessor
      *
      * @param Component $conf component data
      */
-    public function __construct($conf)
+    public function __construct()
     {
+        // runs the CConfig
+        $com = new CConfig( LFormProcessor::getPrefix( ) . ',course,link' );
+
+        // runs the LFormProcessor
+        if ( $com->used( ) ) return;
+            $conf = $com->loadConfig( );
+            
         // initialize slim    
         $this->app = new \Slim\Slim(array('debug' => true));
         $this->app->response->headers->set('Content-Type', 'application/json');
@@ -318,11 +326,11 @@ class LFormProcessor
                             
                             $parameter = explode(' ',strtolower($pro->getParameter()));
                             if ($parameter===null || count($parameter)===0){      
-                                if ($correctAnswers[0]->getText() != $answers[0]->getText())
+                                if (Normalizer::normalizeText($correctAnswers[0]->getText()) != Normalizer::normalizeText($answers[0]->getText()))
                                     $allcorrect = false;
                             } elseif($parameter[0] === 'distance1'){
                                 $similarity = 0;
-                                similar_text($answers[0]->getText(),$correctAnswers[0]->getText(),$similarity);
+                                similar_text(Normalizer::normalizeText($answers[0]->getText()),Normalizer::normalizeText($correctAnswers[0]->getText()),$similarity);
                                 if (isset($parameter[1])){
                                     if (similar_text<$parameter[1]){
                                         $allcorrect = false;

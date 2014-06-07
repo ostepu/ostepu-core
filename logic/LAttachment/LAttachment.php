@@ -62,8 +62,15 @@ class LAttachment
      *
      * @param Component $conf component data
      */
-    public function __construct($conf)
+    public function __construct()
     {
+        // runs the CConfig
+        $com = new CConfig( LAttachment::getPrefix( ) );
+
+        // runs the LAttachment
+        if ( $com->used( ) ) return;
+            $conf = $com->loadConfig( );
+            
         // initialize slim
         $this->app = new \Slim\Slim();
         $this->app->response->headers->set('Content-Type', 'application/json');

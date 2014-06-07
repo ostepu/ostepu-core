@@ -72,8 +72,15 @@ class LOOP
      *
      * @param Component $conf component data
      */
-    public function __construct($conf)
+    public function __construct()
     {
+        // runs the CConfig
+        $com = new CConfig( LOOP::getPrefix( ) . ',course,link' );
+
+        // runs the LOOP
+        if ( $com->used( ) ) return;
+            $conf = $com->loadConfig( );
+            
         // initialize slim    
         $this->app = new \Slim\Slim(array('debug' => true));
         $this->app->response->headers->set('Content-Type', 'application/json');
@@ -332,7 +339,6 @@ class LOOP
     {
         if (!is_dir($path))          
             mkdir( $path , 0777, true);
-        chmod( $path, 0777);
     }
 }
 ?>
