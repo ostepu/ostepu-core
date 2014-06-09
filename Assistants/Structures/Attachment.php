@@ -9,6 +9,7 @@
  * the attachment structure
  *
  * @author Till Uhlig
+ * @date 2013-2014
  */
 class Attachment extends Object implements JsonSerializable
 {

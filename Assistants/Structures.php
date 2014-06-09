@@ -5,6 +5,7 @@
  * @file Structures.php contains the Object class and includes a lot of existing api structures
  *
  * @author Till Uhlig
+ * @date 2013-2014
  */
 
 include_once ( dirname( __FILE__ ) . '/Structures/ApprovalCondition.php' );

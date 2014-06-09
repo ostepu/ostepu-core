@@ -9,6 +9,7 @@
  * the Process structure
  *
  * @author Till Uhlig
+ * @date 2014
  */
 class Process extends Object implements JsonSerializable
 {

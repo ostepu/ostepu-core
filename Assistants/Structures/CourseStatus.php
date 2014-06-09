@@ -8,7 +8,9 @@
 /**
  * the course status structure
  *
- * @author Till Uhlig, Florian Lücke
+ * @author Till Uhlig
+ * @author Florian Lücke
+ * @date 2013-2014
  */
 class CourseStatus extends Object implements JsonSerializable
 {

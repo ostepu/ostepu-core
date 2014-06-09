@@ -10,6 +10,7 @@
  *
  * @author Till Uhlig
  * @author Florian Lücke
+ * @date 2013-2014
  */
 class User extends Object implements JsonSerializable
 {

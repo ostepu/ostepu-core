@@ -8,6 +8,8 @@
  * requests.
  *
  * @author Till Uhlig
+ * @author Ralf Busch
+ * @date 2013-2014
  */
 class Request_MultiRequest
 {

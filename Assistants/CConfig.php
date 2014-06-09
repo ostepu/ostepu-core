@@ -5,6 +5,7 @@
  * @file CConfig.php contains the CConfig class
  *
  * @author Till Uhlig
+ * @date 2013-2014
  */
 include_once ( dirname( __FILE__ ) . '/Structures.php' );
 

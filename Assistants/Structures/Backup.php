@@ -8,7 +8,9 @@
 /**
  * the backup structure
  *
- * @author Till Uhlig, Florian Lücke
+ * @author Till Uhlig
+ * @author Florian Lücke
+ * @date 2013
  */
 class Backup extends Object implements JsonSerializable
 {

@@ -9,6 +9,7 @@
  * the exercise type structure
  *
  * @author Till Uhlig
+ * @date 2013-2014
  */
 class ExerciseType extends Object implements JsonSerializable
 {

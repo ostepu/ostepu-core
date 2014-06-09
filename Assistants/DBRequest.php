@@ -5,6 +5,7 @@
  * @file DBRequest.php contains the DBRequest class
  *
  * @author Till Uhlig
+ * @date 2013-2014
  */
 include_once ( dirname( __FILE__ ) . '/Structures.php' );
 
