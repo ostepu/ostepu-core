@@ -1,4 +1,13 @@
 <?php
+
+
+/**
+ * @file install.php contains the Installer class
+ *
+ * @author Till Uhlig
+ * @date 2014
+ */
+ 
 require_once '../Assistants/Slim/Slim.php';
 require_once '../Assistants/Request.php';
 require_once '../Assistants/DBRequest.php';

@@ -1,4 +1,13 @@
 <?php
+
+
+/**
+ * @file Design.php contains the Design class
+ *
+ * @author Till Uhlig
+ * @date 2014
+ */
+ 
 class Design
 {
     public static function erstelleZeile()
