@@ -3,13 +3,14 @@
  * @file LFormPredecessor.php Contains the LFormPredecessor class
  * 
  * @author Till Uhlig
+ * @date 2014
  */
 
 require_once '../../Assistants/Slim/Slim.php';
 include_once '../../Assistants/Request.php';
 include_once '../../Assistants/CConfig.php';
 include_once '../../Assistants/DBJson.php';
-include_once '../../Assistants/Normalizer.php';
+include_once '../../Assistants/DefaultNormalizer.php';
 
 \Slim\Slim::registerAutoloader();
 
@@ -71,8 +72,6 @@ class LFormPredecessor
      *
      * This function contains the REST actions with the assignments to
      * the functions.
-     *
-     * @param Component $conf component data
      */
     public function __construct()
     {
@@ -81,7 +80,7 @@ class LFormPredecessor
 
         // runs the LFormPredecessor
         if ( $com->used( ) ) return;
-            $conf = $com->loadConfig( );
+        $conf = $com->loadConfig( );
             
         // initialize slim    
         $this->app = new \Slim\Slim(array('debug' => true));
@@ -130,6 +129,14 @@ class LFormPredecessor
         $this->app->run();
     }
     
+    /**
+     * Removes the component from a given course
+     *
+     * Called when this component receives an HTTP DELETE request to
+     * /course/$courseid(/).
+     *
+     * @param string $courseid The id of the course.
+     */
     public function deleteCourse( $courseid )
     {
         $result = Request::routeRequest( 
@@ -168,6 +175,12 @@ class LFormPredecessor
         $this->app->response->setStatus( 404 );
     }
     
+    /**
+     * Adds the component to a course
+     *
+     * Called when this component receives an HTTP POST request to
+     * /course(/).
+     */
     public function addCourse( )
     {
          Logger::Log( 
@@ -238,6 +251,14 @@ class LFormPredecessor
         $this->app->response->setBody( Course::encodeCourse( $courses ) );
     }
     
+    /**
+     * Returns whether the component is installed for the given course
+     *
+     * Called when this component receives an HTTP GET request to
+     * /link/exists/course/$courseid(/).
+     *
+     * @param int $courseid A course id.
+     */
     public function getExistsCourse($courseid)
     {
         $result = Request::routeRequest( 
@@ -325,43 +346,43 @@ class LFormPredecessor
                                 foreach ($parameter as $param){
                                     switch($param){
                                         case('isnumeric'):
-                                            if (!eregi("^-?([0-9])+([\.|,]([0-9])+)?$",Normalizer::normalizeText($text))){
+                                            if (!eregi("^-?([0-9])+([\.|,]([0-9])+)?$",DefaultNormalizer::normalizeText($text))){
                                                 $fail = true;
                                                 $pro->addMessage('"'.$choice->getText().'" ist keine gültige Zahl.');
                                             }
                                             break;
                                         case('isdigit'):
-                                            if (!ctype_digit(Normalizer::normalizeText($choice->getText()))){
+                                            if (!ctype_digit(DefaultNormalizer::normalizeText($choice->getText()))){
                                                 $fail = true;
                                                 $pro->addMessage('"'.$choice->getText().'" ist keine gültige Ziffernfolge.');
                                             }
                                             break;
                                         case('isprintable'):
-                                            if (!ctype_print(Normalizer::normalizeText($choice->getText()))){
+                                            if (!ctype_print(DefaultNormalizer::normalizeText($choice->getText()))){
                                                 $fail = true;
                                                 $pro->addMessage('"' . $choice->getText().'" enthält nicht-druckbare Zeichen.');
                                             }
                                             break;
                                         case('isalpha'):
-                                            if (!ctype_alpha(Normalizer::normalizeText($choice->getText()))){
+                                            if (!ctype_alpha(DefaultNormalizer::normalizeText($choice->getText()))){
                                                 $fail = true;
                                                 $pro->addMessage('"' . $choice->getText().'" ist keine gültige Buchstabenfolge.');
                                             }
                                             break;
                                         case('isalphanum'):
-                                            if (!ctype_alnum(Normalizer::normalizeText($choice->getText()))){
+                                            if (!ctype_alnum(DefaultNormalizer::normalizeText($choice->getText()))){
                                                 $fail = true;
                                                 $pro->addMessage('"' . $choice->getText().'" ist nicht alphanumerisch.');
                                             }
                                             break;
                                         case('ishex'):
-                                            if (!ctype_xdigit(Normalizer::normalizeText($choice->getText())){
+                                            if (!ctype_xdigit(DefaultNormalizer::normalizeText($choice->getText()))){
                                                 $fail = true;
                                                 $pro->addMessage('"' . $choice->getText().'" ist keine gültige Hexadezimalzahl.');
                                             }
                                             break;
                                         default:
-                                            if (!@eregi($param, Normalizer::normalizeText($choice->getText()))){
+                                            if (!@eregi($param, DefaultNormalizer::normalizeText($choice->getText()))){
                                                 $fail = true;
                                                 $pro->addMessage('"' . $choice->getText().'" entspricht nicht dem regulären Ausdruck "'.$param.'".');
                                             }
@@ -453,7 +474,7 @@ class LFormPredecessor
                         $rawSubmission->setExerciseId($eid);
                         $pro->setRawSubmission($rawSubmission);
                         
-                        $pro->setStatus(409);
+                        $pro->setStatus(201);
                         $res[] = $pro;          
                         continue;
                     }

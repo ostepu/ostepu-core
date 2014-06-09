@@ -3,6 +3,7 @@
  * @file LOOP.php Contains the LOOP class
  * 
  * @author Till Uhlig
+ * @date 2014
  */
 
 require_once '../../Assistants/Slim/Slim.php';
@@ -69,8 +70,6 @@ class LOOP
      *
      * This function contains the REST actions with the assignments to
      * the functions.
-     *
-     * @param Component $conf component data
      */
     public function __construct()
     {
@@ -126,7 +125,15 @@ class LOOP
         // run Slim
         $this->app->run();
     }
-    
+   
+    /**
+     * Removes the component from a given course
+     *
+     * Called when this component receives an HTTP DELETE request to
+     * /course/$courseid(/).
+     *
+     * @param string $courseid The id of the course.
+     */
     public function deleteCourse( $courseid )
     {
         $result = Request::routeRequest( 
@@ -164,7 +171,13 @@ class LOOP
                                         
         $this->app->response->setStatus( 404 );
     }
-    
+   
+    /**
+     * Adds the component to a course
+     *
+     * Called when this component receives an HTTP POST request to
+     * /course(/).
+     */
     public function addCourse( )
     {
          Logger::Log( 
@@ -234,7 +247,15 @@ class LOOP
         
         $this->app->response->setBody( Course::encodeCourse( $courses ) );
     }
-    
+   
+    /**
+     * Returns whether the component is installed for the given course
+     *
+     * Called when this component receives an HTTP GET request to
+     * /link/exists/course/$courseid(/).
+     *
+     * @param int $courseid A course id.
+     */
     public function getExistsCourse($courseid)
     {
         $result = Request::routeRequest( 
