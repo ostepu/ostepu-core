@@ -114,15 +114,8 @@ class DBQuery
                                 )
                           );
 
-        // starts slim only if the right prefix was received
-        if ( strpos( 
-                    $this->_app->request->getResourceUri( ),
-                    '/' . $this->getPrefix( )
-                    ) === 0 ){
-
-            // run Slim
-            $this->_app->run( );
-        }
+        // run Slim
+        $this->_app->run( );
     }
 
     /**

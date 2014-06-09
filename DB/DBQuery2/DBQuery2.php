@@ -114,20 +114,8 @@ class DBQuery2
                                 )
                           );
 
-        // starts slim only if the right prefix was received
-        if ( strpos( 
-                    $this->_app->request->getResourceUri( ),
-                    '/' . $this->getPrefix( )
-                    ) === 0  || strpos( 
-                    $this->_app->request->getResourceUri( ),
-                    '/info'
-                    ) === 0){
-
-            // run Slim
-            $this->_app->run( );
-        }
-        else
-        header("HTTP/1.0 404 Not Found");
+        // run Slim
+        $this->_app->run( );
     }
 
     /**
@@ -151,7 +139,6 @@ class DBQuery2
 
         // decode the received query data, as an object
         $obj = Query::decodeQuery( $body );
-        //$obj->setCheckSession(false);
 
         $answer = DBRequest::request2( 
                                            $obj->getRequest( ),
@@ -177,8 +164,6 @@ class DBQuery2
                             LogLevel::ERROR
                             );
 
-           // $this->_app->response->setBody( Query::encodeQuery( $obj ) );
-
             if ( $query_result['errno'] == 401 ){
                 $this->_app->response->setStatus( 401 );
                 
@@ -196,7 +181,6 @@ class DBQuery2
             if ( isset( $query_result['numRows'] ) )
                 $obj->setNumRows( $query_result['numRows'] );
 
-          //  $this->_app->response->setBody( Query::encodeQuery( $obj ) );
           if ( isset( $query_result['errno'] ) && $query_result['errno']>0 ){
           $this->_app->response->setStatus( 409 );
           }
