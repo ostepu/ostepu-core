@@ -332,12 +332,12 @@ class LFormProcessor
                                 $similarity = 0;
                                 similar_text(DefaultNormalizer::normalizeText($answers[0]->getText()),DefaultNormalizer::normalizeText($correctAnswers[0]->getText()),$similarity);
                                 if (isset($parameter[1])){
-                                    if (similar_text<$parameter[1]){
+                                    if ($similarity <$parameter[1]){
                                         $allcorrect = false;
                                     }
                                 }
                                 else{
-                                    if (similar_text<100){
+                                    if ($similarity <100){
                                         $allcorrect = false;
                                     }
                                 }
