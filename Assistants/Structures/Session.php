@@ -9,6 +9,7 @@
  * the session structure
  *
  * @author Till Uhlig
+ * @date 2013-2014
  */
 class Session extends Object implements JsonSerializable
 {

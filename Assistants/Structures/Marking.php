@@ -8,7 +8,9 @@
 /**
  * the marking structure
  *
- * @author Till Uhlig, Florian Lücke
+ * @author Till Uhlig
+ * @author Florian Lücke
+ * @date 2013-2014
  */
 class Marking extends Object implements JsonSerializable
 {

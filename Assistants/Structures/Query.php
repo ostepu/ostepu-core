@@ -9,6 +9,7 @@
  * this class is for querying SQL statemets
  *
  * @author Till Uhlig
+ * @date 2013-2014
  */
 class Query extends Object implements JsonSerializable
 {

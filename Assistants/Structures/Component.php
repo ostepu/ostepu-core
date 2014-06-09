@@ -9,6 +9,7 @@
  * the component structure
  *
  * @author Till Uhlig
+ * @date 2013-2014
  */
 class Component extends Object implements JsonSerializable
 {

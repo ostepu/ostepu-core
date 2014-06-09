@@ -2,7 +2,14 @@
 
 
 /**
+ * @file ApprovalCondition.php contains the ApprovalCondition class
+ */
+
+/**
+ * the ApprovalCondition structure
  *
+ * @author Till Uhlig
+ * @date 2013-2014
  */
 class ApprovalCondition extends Object implements JsonSerializable
 {

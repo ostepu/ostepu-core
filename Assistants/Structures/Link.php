@@ -9,6 +9,7 @@
  * the link structure
  *
  * @author Till Uhlig
+ * @date 2013-2014
  */
 class Link extends Object implements JsonSerializable
 {

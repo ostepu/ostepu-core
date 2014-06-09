@@ -9,6 +9,7 @@
  * the external id structure
  *
  * @author Till Uhlig
+ * @date 2013-2014
  */
 class ExternalId extends Object implements JsonSerializable
 {

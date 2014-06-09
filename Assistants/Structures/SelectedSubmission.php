@@ -9,6 +9,7 @@
  * the selected submission structure
  *
  * @author Till Uhlig
+ * @date 2013-2014
  */
 class SelectedSubmission extends Object implements JsonSerializable
 {

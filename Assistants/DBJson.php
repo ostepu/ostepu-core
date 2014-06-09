@@ -5,6 +5,7 @@
  * @file DBJson.php contains the DBJson class
  *
  * @author Till Uhlig
+ * @date 2013-2014
  */
 
 /**

@@ -9,6 +9,7 @@
  * the choice structure
  *
  * @author Till Uhlig
+ * @date 2014
  */
 class Choice extends Object implements JsonSerializable
 {
