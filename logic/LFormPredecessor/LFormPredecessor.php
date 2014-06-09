@@ -453,7 +453,7 @@ class LFormPredecessor
                         $rawSubmission->setExerciseId($eid);
                         $pro->setRawSubmission($rawSubmission);
                         
-                        $pro->setStatus(409);
+                        $pro->setStatus(201);
                         $res[] = $pro;          
                         continue;
                     }
