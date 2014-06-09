@@ -126,7 +126,15 @@ class LFile
         // run Slim
         $this->_app->run( );
     }
-
+   
+    /**
+     * Adds a file.
+     *
+     * Called when this component receives an HTTP DELETE request to
+     * /file/$path(/)
+     *
+     * @param String the path, where the file should be stored
+     */
     public function postPathFile( $path)
     {
         Logger::Log( 
@@ -179,7 +187,13 @@ class LFile
         $this->_app->response->setStatus( 201 );
         $this->_app->response->setBody( File::encodeFile( $res ) );
     }
-    
+   
+    /**
+     * Adds a file.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /file(/)
+     */
     public function postFile( )
     {
         $this->postPathFile(array(''));
@@ -190,8 +204,6 @@ class LFile
      *
      * Called when this component receives an HTTP DELETE request to
      * /file(/)
-     *
-     * @param string $hash The hash of the file which should be deleted.
      */
     public function deleteFile( )
     {

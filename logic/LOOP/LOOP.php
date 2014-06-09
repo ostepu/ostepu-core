@@ -274,7 +274,13 @@ class LOOP
                                         
         $this->app->response->setStatus( 409 );
     }
-
+   
+    /**
+     * Processes a process
+     *
+     * Called when this component receives an HTTP POST request to
+     * /process(/).
+     */
     public function postProcess()
     {
         $this->app->response->setStatus( 201 );

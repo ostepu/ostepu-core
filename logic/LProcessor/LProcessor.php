@@ -293,7 +293,13 @@ class LProcessor
             }
         }
     }
-    
+   
+    /**
+     * Adds a process.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /process(/).
+     */
     public function AddProcess()
     {
         $this->app->response->setStatus( 201 );
@@ -456,6 +462,12 @@ class LProcessor
             $this->app->response->setBody( Process::encodeProcess( $res ) );
     }
     
+    /**
+     * Processes a submissions
+     *
+     * Called when this component receives an HTTP POST request to
+     * /submission(/).
+     */
     public function postSubmission()
     {
         $this->app->response->setStatus( 201 );

@@ -274,8 +274,15 @@ class LForm
             }
         }
     }
-
-    public function addForm(){
+   
+    /**
+     * Adds a form.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /form(/).
+     */
+    public function addForm()
+    {
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
         $this->app->response->setStatus( 201 );
@@ -397,13 +404,31 @@ class LForm
         } else 
             $this->app->response->setBody( Form::encodeForm( $res ) );
     }
-    
-    public function editForm($formId){
-    
+  
+    /**
+     * Edits a given form.
+     *
+     * Called when this component receives an HTTP PUT request to
+     * /form/$formId(/).
+     *
+     * @param int $formId A form id.
+     * @todo Implement the functionality.
+     */
+    public function editForm($formId)
+    {
+        // not implemented
     }
     
-    public function editFormObject(){
-    
+    /**
+     * Edits one or more given form objects.
+     *
+     * Called when this component receives an HTTP PUT request to
+     * /form(/).
+     * @todo Implement the functionality.
+     */
+    public function editFormObject()
+    {
+        // not implemented
     }
 }
 ?>

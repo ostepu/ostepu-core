@@ -295,7 +295,13 @@ class LFormProcessor
         
         return null;
     }
-    
+   
+    /**
+     * Processes a process
+     *
+     * Called when this component receives an HTTP POST request to
+     * /process(/).
+     */
     public function postProcess()
     {
           

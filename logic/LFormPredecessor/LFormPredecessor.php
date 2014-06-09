@@ -277,7 +277,15 @@ class LFormPredecessor
                                         
         $this->app->response->setStatus( 409 );
     }
-    
+   
+    /**
+     * Returns the text of a given choice id.
+     *
+     * @param string $choiceId The id of the choice.
+     * @param string[] $Choices An array of choices.
+     *
+     * @return String The text.
+     */
     public function ChoiceIdToText($choiceId, $Choices)
     {
         foreach ($Choices as $choice){
@@ -287,7 +295,13 @@ class LFormPredecessor
         
         return null;
     }
-
+    
+    /**
+     * Processes a process
+     *
+     * Called when this component receives an HTTP POST request to
+     * /process(/).
+     */
     public function postProcess()
     {
         $this->app->response->setStatus( 201 );
