@@ -181,7 +181,7 @@ class CControl
     }
 
     /**
-     * PUT EditLink
+     * Edits a specific link.
      *
      * @param $linkid a database linkage identifier
      */
@@ -229,7 +229,7 @@ class CControl
     }
 
     /**
-     * DELETE DeleteLink
+     * Deletes a specific link.
      *
      * @param $linkid a database linkage identifier
      */
@@ -264,7 +264,7 @@ class CControl
     }
 
     /**
-     * POST SetLink
+     * Adds a link.
      */
     public function setLink( )
     {
@@ -308,7 +308,7 @@ class CControl
     }
 
     /**
-     * GET GetLink
+     * Returns a specific link.
      *
      * @param $linkid a database linkage identifier
      */
@@ -350,7 +350,7 @@ class CControl
     }
 
     /**
-     * PUT EditComponent
+     * Edits a specific component.
      *
      * @param $componentid a database component identifier
      */
@@ -394,7 +394,7 @@ class CControl
     }
 
     /**
-     * DELETE DeleteComponent
+     * Removes a component.
      *
      * @param $componentid a database component identifier
      */
@@ -429,7 +429,7 @@ class CControl
     }
 
     /**
-     * POST SetComponent
+     * Adds a component
      */
     public function setComponent( )
     {
@@ -467,7 +467,7 @@ class CControl
     }
 
     /**
-     * GET GetComponent
+     * Returns a specific component.
      *
      * @param $componentid a database component identifier
      */
@@ -509,7 +509,7 @@ class CControl
     }
 
     /**
-     * GET GetComponentDefinitions
+     * Returns all component definitions.
      */
     public function getComponentDefinitions( )
     {
@@ -557,7 +557,7 @@ class CControl
     }
 
     /**
-     * GET GetComponentDefinition
+     * Returns a specific component definition.
      *
      * @param $componentid a database component identifier
      */
@@ -609,7 +609,7 @@ class CControl
     }
 
     /**
-     * GET SendComponentDefinitions
+     * Initializes all components, with the data, which can be found in database.
      */
     public function sendComponentDefinitions( )
     {

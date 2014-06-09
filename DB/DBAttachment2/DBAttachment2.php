@@ -69,8 +69,6 @@ class DBAttachment2
      *
      * This function contains the REST actions with the assignments to
      * the functions.
-     *
-     * @param Component $conf component data
      */
     public function __construct( )
     {
@@ -609,7 +607,7 @@ class DBAttachment2
     /**
      * Removes the component from a given course
      *
-     * Called when this component receives an HTTP GET request to
+     * Called when this component receives an HTTP DELETE request to
      * (/$pre)/course/$courseid(/).
      *
      * @param string $courseid The id of the course.
@@ -660,10 +658,9 @@ class DBAttachment2
     /**
      * Adds the component to a course
      *
-     * Called when this component receives an HTTP GET request to
+     * Called when this component receives an HTTP POST request to
      * (/$pre)/course(/).
      *
-     * @param string $courseid The id of the course.
      * @param int $pre A optional prefix for the attachment table.
      */
     public function addCourse( $pre='' )
