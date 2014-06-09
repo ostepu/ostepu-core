@@ -1,4 +1,13 @@
 <?php
+
+
+/**
+ * @file Installation.php contains the Installation class
+ *
+ * @author Till Uhlig
+ * @date 2014
+ */
+ 
 class Installation
 {
    /**
@@ -90,14 +99,16 @@ class Installation
                             
                             if (isset($result2[$resultCounter]['content']) && isset($result2[$resultCounter]['status']) && $result2[$resultCounter]['status'] === 200){
                                 $commands = json_decode($result2[$resultCounter]['content'], true);
-                                $router = new \Slim\Router();
-                                foreach($commands as $command){
-                                    $route = new \Slim\Route($command['path'],'is_array');
-                                    $route->via(strtoupper($command['method']));
-                                    $router->map($route);
+                                if ($commands!==null){
+                                    $router = new \Slim\Router();
+                                    foreach($commands as $command){
+                                        $route = new \Slim\Route($command['path'],'is_array');
+                                        $route->via(strtoupper($command['method']));
+                                        $router->map($route);
+                                    }
+                                    $components[$definition->getName()]['router'] = $router;
+                                    $components[$definition->getName()]['commands'] = $commands;
                                 }
-                                $components[$definition->getName()]['router'] = $router;
-                                $components[$definition->getName()]['commands'] = $commands;
                             }
                             
                             if (isset($result3[$resultCounter]['content']) && isset($result3[$resultCounter]['status']) && $result3[$resultCounter]['status'] === 200){
