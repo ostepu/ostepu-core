@@ -3,6 +3,9 @@
 
 /**
  * @file DBControl.php contains the DBControl class
+ *
+ * @author Till Uhlig
+ * @date 2013-2014
  */
 
 require_once ( '../../Assistants/Slim/Slim.php' );
