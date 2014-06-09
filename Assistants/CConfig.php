@@ -8,6 +8,8 @@
  */
 include_once ( dirname( __FILE__ ) . '/Structures.php' );
 
+\Slim\Slim::registerAutoloader( );
+
 /**
  * this class is used to link components, to save new linkage data and to
  * retrieve linkage data
