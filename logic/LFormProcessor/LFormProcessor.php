@@ -9,7 +9,7 @@ require_once '../../Assistants/Slim/Slim.php';
 include_once '../../Assistants/Request.php';
 include_once '../../Assistants/CConfig.php';
 include_once '../../Assistants/DBJson.php';
-include_once '../../Assistants/Normalizer.php';
+include_once '../../Assistants/DefaultNormalizer.php';
 
 \Slim\Slim::registerAutoloader();
 
@@ -326,11 +326,11 @@ class LFormProcessor
                             
                             $parameter = explode(' ',strtolower($pro->getParameter()));
                             if ($parameter===null || count($parameter)===0){      
-                                if (Normalizer::normalizeText($correctAnswers[0]->getText()) != Normalizer::normalizeText($answers[0]->getText()))
+                                if (DefaultNormalizer::normalizeText($correctAnswers[0]->getText()) != DefaultNormalizer::normalizeText($answers[0]->getText()))
                                     $allcorrect = false;
                             } elseif($parameter[0] === 'distance1'){
                                 $similarity = 0;
-                                similar_text(Normalizer::normalizeText($answers[0]->getText()),Normalizer::normalizeText($correctAnswers[0]->getText()),$similarity);
+                                similar_text(DefaultNormalizer::normalizeText($answers[0]->getText()),DefaultNormalizer::normalizeText($correctAnswers[0]->getText()),$similarity);
                                 if (isset($parameter[1])){
                                     if (similar_text<$parameter[1]){
                                         $allcorrect = false;
