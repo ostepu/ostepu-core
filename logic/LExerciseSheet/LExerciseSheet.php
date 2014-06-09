@@ -6,6 +6,7 @@
  * @author Martin Daute
  * @author Peter Koenig
  * @author Ralf Busch
+ * @date 2013-2014
  */
 
 require '../../Assistants/Slim/Slim.php';

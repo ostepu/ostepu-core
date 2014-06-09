@@ -5,8 +5,7 @@
  * @author Christian Elze
  * @author Peter König
  * @author Martin Daute
- *
- * @author Till Uhlig
+ * @date 2013-2014
  */
 
 require_once '../../Assistants/Slim/Slim.php';
@@ -125,6 +124,9 @@ class LCourse
      * /course(/).
      * The request body should contain a JSON object representing the course's
      * attributes.
+     *
+     * @author Till Uhlig
+     * @date 2014
      */
     public function AddCourse()
     {
@@ -208,6 +210,9 @@ class LCourse
      * /course/course/$courseid(/).
      *
      * @param int $courseid The id of the course that is being deleted.
+     *
+     * @author Till Uhlig
+     * @date 2014
      */
     public function deleteCourse($courseid){
         Logger::Log( 

@@ -5,8 +5,7 @@
  * @author Peter Koenig
  * @author Christian Elze
  * @author Martin Daute 
- *
- * @author Till Uhlig
+ * @date 2013-2014
  */
 
 require '../../Assistants/Slim/Slim.php';
@@ -124,6 +123,9 @@ class LSubmission
      * Called then this component receives an HTTP POST request to
      * /submission(/)
      * The request body should contain a JSON object representing a submission.
+     *
+     * @author Till Uhlig
+     * @date 2014
      */
     public function addSubmission()
     {
@@ -260,6 +262,9 @@ class LSubmission
      * @note Files are completely removed from the system. This is not intended
      * behaviour as this prevents lecturers and admins from seeing them in the
      * user's submission history.
+     *
+     * @author Till Uhlig
+     * @date 2014
      */
     public function deleteSubmission($submissionid){
         $result = Request::routeRequest( 
@@ -302,6 +307,9 @@ class LSubmission
      * @param int $sheetid The id of the sheet of which the submissions should
      * be zipped.
      * @param int $userid The id of the user whose submissions should be zipped.
+     *
+     * @author Till Uhlig
+     * @date 2014
      */
     public function loadSubmissionAsZip($sheetid, $userid)
     {       

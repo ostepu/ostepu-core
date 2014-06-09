@@ -3,6 +3,7 @@
  * @file LExtension.php contains the LExtension class
  *
  * @author Till Uhlig
+ * @date 2014
  */
 
 require_once '../../Assistants/Slim/Slim.php';
@@ -60,8 +61,6 @@ class LExtension
      *
      * This function contains the REST actions with the assignments to
      * the functions.
-     *
-     * @param Component $conf component data
      */
     public function __construct()
     {

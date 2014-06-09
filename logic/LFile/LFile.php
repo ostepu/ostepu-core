@@ -4,7 +4,8 @@
 /**
  * @file LFile.php contains the LFile class
  *
- * @author Till Uhlig
+ * @author Till Uhlig 
+ * @date 2014
  */ 
 
 require_once ( '../../Assistants/Slim/Slim.php' );
@@ -122,29 +123,10 @@ class LFile
                                   )
                             );
 
-        if ( strpos( 
-                    $this->_app->request->getResourceUri( ),
-                    '/' . LFile::$_baseDir
-                    ) === 0   || strpos( 
-                    $this->_app->request->getResourceUri( ),
-                    '/info'
-                    ) === 0){
-
-            // run Slim
-            $this->_app->run( );
-        }
-        else
-        header("HTTP/1.0 404 Not Found");
+        // run Slim
+        $this->_app->run( );
     }
 
-    /**
-     * Prepares the saving process by generating the hash and the place where the file is stored.
-     *
-     * Called when this component receives an HTTP POST request to
-     * /file.
-     * The request body should contain a JSON object representing the file's
-     * attributes.
-     */
     public function postPathFile( $path)
     {
         Logger::Log( 
@@ -207,7 +189,7 @@ class LFile
      * Deletes a file.
      *
      * Called when this component receives an HTTP DELETE request to
-     * /file/$hash.
+     * /file(/)
      *
      * @param string $hash The hash of the file which should be deleted.
      */

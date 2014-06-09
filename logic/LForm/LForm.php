@@ -3,6 +3,7 @@
  * @file LForm.php Contains the LForm class
  * 
  * @author Till Uhlig
+ * @date 2014
  */
 
 require_once '../../Assistants/Slim/Slim.php';
@@ -62,8 +63,6 @@ class LForm
      *
      * This function contains the REST actions with the assignments to
      * the functions.
-     *
-     * @param Component $conf component data
      */
     public function __construct()
     {
@@ -127,6 +126,14 @@ class LForm
         $this->app->run();
     }
     
+    /**
+     * Returns whether the component is installed for the given course
+     *
+     * Called when this component receives an HTTP GET request to
+     * /link/exists/course/$courseid(/).
+     *
+     * @param int $courseid A course id.
+     */
     public function getExistsCourse($courseid)
     {
          Logger::Log( 
@@ -158,7 +165,13 @@ class LForm
         $this->app->response->setStatus( 200 );
         $this->app->response->setBody( null );
     }
-    
+   
+   /**
+     * Adds the component to a course
+     *
+     * Called when this component receives an HTTP POST request to
+     * /course(/).
+     */
     public function addCourse()
     {
          Logger::Log( 
@@ -210,7 +223,15 @@ class LForm
         
         $this->app->response->setBody( Course::encodeCourse( $course ) );
     }
-
+   
+    /**
+     * Removes the component from a given course
+     *
+     * Called when this component receives an HTTP DELETE request to
+     * /course/$courseid(/).
+     *
+     * @param string $courseid The id of the course.
+     */
     public function deleteCourse($courseid)
     {
         $this->app->response->setStatus( 201 );
