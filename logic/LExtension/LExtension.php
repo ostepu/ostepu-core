@@ -108,6 +108,15 @@ class LExtension
         $this->app->run();
     }
     
+    /**
+     * Removes the given extension from course.
+     *
+     * Called when this component receives an HTTP DELETE request to
+     * /link/course/$courseid/extension/$name(/).
+     *
+     * @param int $courseid The id of the course.
+     * @param int $name The name of the component
+     */
     public function deleteCourseExtension($courseid, $name)
     {
         foreach($this->_extension as $link){
@@ -149,7 +158,16 @@ class LExtension
         $this->app->response->setStatus( 404 );
         $this->app->response->setBody( null );
     }
-    
+   
+    /**
+     * Install the given component to a course.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /link/course/$courseid/extension/$name(/).
+     *
+     * @param int $courseid The id of the course.
+     * @param int $name The name of the component
+     */
     public function addCourseExtension($courseid, $name)
     {
         foreach($this->_extension as $link){
@@ -199,7 +217,15 @@ class LExtension
         $this->app->response->setStatus( 404 );
         $this->app->response->setBody( null );
     }
-    
+  
+    /**
+     * Returns all installed extensions for the given course.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /link/course/$courseid/extension(/).
+     *
+     * @param int $courseid The id of the course.
+     */
     public function getInstalledExtensions($courseid)
     {
         $extensions = array();
@@ -228,14 +254,23 @@ class LExtension
         
         $this->app->response->setBody( Component::encodeComponent( $extensions ) );
     }
-    
+  
+    /**
+     * Returns whether the component is installed for the given course
+     *
+     * Called when this component receives an HTTP GET request to
+     * /link/exists/course/$courseid/extension/$name(/).
+     *
+     * @param int $courseid The id of the course.
+     * @param int $name The name of the component
+     */
     public function getExtensionInstalled($courseid, $name)
     {
         foreach($this->_extension as $link){
             if ($link->getTargetName() === $name || $link->getTarget() === $name){
                 $result = Request::routeRequest( 
                                                 'GET',
-                                                '/exists/course/'.$courseid,
+                                                '/link/exists/course/'.$courseid,
                                                 $this->app->request->headers->all(),
                                                 '',
                                                 $link,
@@ -267,7 +302,15 @@ class LExtension
         $this->app->response->setStatus( 404 );
         $this->app->response->setBody( null );
     }
-    
+  
+    /**
+     * Returns whether the extension exists (can be installed)
+     *
+     * Called when this component receives an HTTP GET request to
+     * /link/exists/extension/$name(/).
+     *
+     * @param int $name The name of the component
+     */
     public function getExtensionExists($name)
     {
         foreach($this->_extension as $link){
@@ -281,7 +324,15 @@ class LExtension
         $this->app->response->setStatus( 404 );
         $this->app->response->setBody( null );
     }
-    
+   
+    /**
+     * Returns informations about a given extension
+     *
+     * Called when this component receives an HTTP GET request to
+     * /link/extension/$name(/).
+     *
+     * @param int $name The name of the component
+     */
     public function getExtension($name)
     {
         foreach($this->_extension as $link){
@@ -295,7 +346,13 @@ class LExtension
         $this->app->response->setStatus( 404 );
         $this->app->response->setBody( null );
     }
-
+    
+    /**
+     * Returns informations about all existing extensions
+     *
+     * Called when this component receives an HTTP GET request to
+     * /link/extension(/).
+     */
     public function getExtensions()
     {
         $this->app->response->setStatus( 200 );
