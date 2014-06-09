@@ -77,7 +77,7 @@ class LFile
     public function __construct()
     {
         // runs the CConfig
-        $com = new CConfig( LFile::getPrefix( ) );
+        $com = new CConfig( LFile::$_baseDir );
 
         // runs the LFile
         if ( $com->used( ) ) return;
