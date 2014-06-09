@@ -183,6 +183,13 @@ class DBAttachment2
         $this->_app->run( );
     }
     
+    /**
+     * Loads the configuration data for the component from CConfig.json file
+     *
+     * @param int $pre A optional prefix for the attachment table.
+     *
+     * @return an component object, which represents the configuration
+     */
     public function loadConfig( $pre='' ){
         // initialize component
         $this->_conf = $this->_conf->loadConfig( $pre );
@@ -201,6 +208,7 @@ class DBAttachment2
      * attachment's new attributes.
      *
      * @param string $aid The id of the attachment that is being updated.
+     * @param int $pre A optional prefix for the attachment table.
      */
     public function editAttachment( $pre='' ,$aid )
     {
@@ -266,6 +274,7 @@ class DBAttachment2
      * /attachment/$aid(/) or /attachment/attachment/$aid(/).
      *
      * @param string $aid The id of the attachment that is being deleted.
+     * @param int $pre A optional prefix for the attachment table.
      */
     public function deleteAttachment( $pre='' ,$aid )
     {
@@ -314,6 +323,8 @@ class DBAttachment2
      * /attachment(/).
      * The request body should contain a JSON object representing the
      * attachment's attributes.
+     *
+     * @param int $pre A optional prefix for the attachment table.
      */
     public function addAttachment( $pre='' )
     {
@@ -480,6 +491,7 @@ class DBAttachment2
      * /attachment/$aid(/) or /attachment/attachment/$aid(/).
      *
      * @param string $aid The id of the attachment that should be returned.
+     * @param int $pre A optional prefix for the attachment table.
      */
     public function getAttachment( $pre='' ,$aid )
     {
@@ -504,6 +516,7 @@ class DBAttachment2
      * /attachment/exercise/$eid(/).
      *
      * @param string $eid The id of the exercise.
+     * @param int $pre A optional prefix for the attachment table.
      */
     public function getExerciseAttachments( $pre='' ,$eid )
     {
@@ -527,6 +540,7 @@ class DBAttachment2
      * /attachment/exercisesheet/$esid(/).
      *
      * @param string $esid The id of the exercise sheet.
+     * @param int $pre A optional prefix for the attachment table.
      */
     public function getSheetAttachments($pre='' , $esid )
     {
@@ -543,6 +557,15 @@ class DBAttachment2
                    );
     }
     
+    /**
+     * Returns the attachments to a given course.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /attachment/course/$courseid(/).
+     *
+     * @param string $esid The id of the exercise sheet.
+     * @param int $pre A optional prefix for the attachment table.
+     */
     public function getCourseAttachments($pre='' , $courseid )
     {
         $this->get( 
@@ -558,6 +581,15 @@ class DBAttachment2
                    );
     }
     
+    /**
+     * Returns status code 200, if this component is correctly installed for the given course
+     *
+     * Called when this component receives an HTTP GET request to
+     * (/$pre)/link/exists/course/$courseid(/).
+     *
+     * @param string $esid The id of the course.
+     * @param int $pre A optional prefix for the attachment table.
+     */
     public function getExistsCourseAttachments( $pre='' , $courseid )
     {
         $this->get( 
@@ -574,6 +606,15 @@ class DBAttachment2
                    );
     }
     
+    /**
+     * Removes the component from a given course
+     *
+     * Called when this component receives an HTTP GET request to
+     * (/$pre)/course/$courseid(/).
+     *
+     * @param string $courseid The id of the course.
+     * @param int $pre A optional prefix for the attachment table.
+     */
     public function deleteCourse( $pre='' , $courseid )
     {
         $this->loadConfig($pre);
@@ -616,6 +657,15 @@ class DBAttachment2
         }
     }
     
+    /**
+     * Adds the component to a course
+     *
+     * Called when this component receives an HTTP GET request to
+     * (/$pre)/course(/).
+     *
+     * @param string $courseid The id of the course.
+     * @param int $pre A optional prefix for the attachment table.
+     */
     public function addCourse( $pre='' )
     {
         $this->loadConfig($pre);
