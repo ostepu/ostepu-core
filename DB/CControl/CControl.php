@@ -7,6 +7,7 @@
  * @author Till Uhlig
  * @example DB/CControl/LinkSample.json
  * @example DB/CControl/ComponentSample.json
+ * @date 2013-2014
  */
 
 require '../../Assistants/Slim/Slim.php';

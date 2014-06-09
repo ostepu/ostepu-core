@@ -7,6 +7,7 @@
  * @author Till Uhlig
  * @author Felix Schmidt
  * @example DB/DBQuery/QuerySample.json
+ * @date 2013-2014
  */
 
 require_once ( '../../Assistants/Slim/Slim.php' );

@@ -5,6 +5,7 @@
  * @file DBAttachment2.php contains the DBAttachment2 class
  *
  * @author Till Uhlig
+ * @date 2014
  */
 
 require_once ( '../../Assistants/Slim/Slim.php' );

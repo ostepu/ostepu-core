@@ -6,7 +6,8 @@
  *
  * @author Till Uhlig
  * @author Felix Schmidt
- * @verbinclude DB/DBUser/UserSample.json
+ * @example DB/DBUser/UserSample.json
+ * @date 2013-2014
  */
 
 require_once ( '../../Assistants/Slim/Slim.php' );
