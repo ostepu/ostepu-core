@@ -352,7 +352,7 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                                 $processor->setAttachment($attachments);
                             }
                             
-                            $tempProcessors[] = $processor;
+                            $tempProcessors[$tempKey] = $processor;
                         }
                         
                         if (isset($subexercise['processorParameterList']) && !empty($subexercise['processorParameterList']) && $subexercise['processorParameterList'] !== ''){
@@ -363,7 +363,8 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                                     if ($dat!=='')
                                         $Data2[] = $dat;
                                     
-                                $tempProcessors[$tempKey]->setParameter(implode(' ',array_values($Data2)));                   
+                                if (isset($tempProcessors[$tempKey]))
+                                    $tempProcessors[$tempKey]->setParameter(implode(' ',array_values($Data2)));                   
                             }
                         }
 
