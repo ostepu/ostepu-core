@@ -172,7 +172,7 @@ class Installation
        if (!is_array($result)) $result = array($result);
        foreach ($result as $res){
             if ($res["errno"] !== 0){
-                $fail = true; $errno = $result["errno"];$error = $result["error"];
+                $fail = true; $errno = $result["errno"];$error = isset($result["error"]) ? $result["error"] : '';
                 break;
             }
        }
@@ -187,7 +187,7 @@ class Installation
            $data['DB']['db_name'] = null;
            $result = DBRequest::request($sql, false, $data);
            if ($result["errno"] !== 0){
-                $fail = true; $errno = $result["errno"];$error = $result["error"];
+                $fail = true; $errno = $result["errno"];$error = isset($result["error"]) ? $result["error"] : '';
            }
            $data['DB']['db_name'] = $oldName;
         }
@@ -198,7 +198,7 @@ class Installation
             $data['DB']['db_name'] = null;
             $result = DBRequest::request($sql, false, $data);
             if ($result["errno"] !== 0){
-                $fail = true; $errno = $result["errno"];$error = $result["error"];
+                $fail = true; $errno = $result["errno"];$error = isset($result["error"]) ? $result["error"] : '';
             }
             $data['DB']['db_name'] = $oldName;
         }
@@ -209,7 +209,7 @@ class Installation
             if (!is_array($result)) $result = array($result);
             foreach ($result as $res){
                 if ($res["errno"] !== 0){
-                    $fail = true; $errno = $result["errno"];$error = $result["error"];
+                    $fail = true; $errno = $result["errno"];$error = isset($result["error"]) ? $result["error"] : '';
                     break;
                 }
            }
