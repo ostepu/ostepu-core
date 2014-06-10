@@ -358,9 +358,11 @@ class LFormPredecessor
                         if ($forms->getType()==0){
                             foreach ($choices as &$choice){
                                 foreach ($parameter as $param){
+                                    if ($param===null || $param==='') continue;
+                                    
                                     switch($param){
                                         case('isnumeric'):
-                                            if (!eregi("^-?([0-9])+([\.|,]([0-9])+)?$",DefaultNormalizer::normalizeText($text))){
+                                            if (!eregi("^-?([0-9])+([\.|,]([0-9])+)?$",DefaultNormalizer::normalizeText($choice->getText()))){
                                                 $fail = true;
                                                 $pro->addMessage('"'.$choice->getText().'" ist keine gültige Zahl.');
                                             }
