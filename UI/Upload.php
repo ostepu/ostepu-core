@@ -75,6 +75,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
                 }
 
                 if ($error === 0) {
+                    $errormsg = '';
                     if (isset($_FILES[$fileName])){
                         $filePath = $file['tmp_name'];
                         $uploadFile = File::createFile(null,$file['name'],null,$timestamp,null,null);
@@ -116,8 +117,6 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
                         
                         // if using forms, upload user input
                         if(isset($exercise['choices'])){
-                            if (!is_array($submissionIds))
-                                $submissionIds = array($submissionIds);
 
                             $i=0;    
                             foreach($formdata as &$form){
