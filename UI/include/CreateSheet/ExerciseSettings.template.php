@@ -143,10 +143,6 @@
                           
                     </select>
                     <div class="form-field processor-parameter-area" style="width:100%"></div>
-
-                    <!--anhang-->
-                    <!--anhang-->
-                    <!--anhang-->
                             </div>
                     </td></tr>
                     <?php } else { ?>

@@ -16,7 +16,7 @@
        <td><input type="checkbox" class="parameter-choice" name="exercises[0][subexercises][0][processorParameterList][0][]" value="isalphanum"/></td><td><label class="label bold">Buchstaben+Ziffern</label></td>
        </tr>
         <tr>
-        <td><input type="checkbox" class="parameter-choice" name="exercises[0][subexercises][0][processorParameterList][0][]" value="isnumeric"/></td><td><label class="label bold">Zahl (42,1e4,9.1)</label></td>
+        <td><input type="checkbox" class="parameter-choice" name="exercises[0][subexercises][0][processorParameterList][0][]" value="isnumeric"/></td><td><label class="label bold">Zahl (0-9,.)</label></td>
         <td><input type="checkbox" class="parameter-choice" name="exercises[0][subexercises][0][processorParameterList][0][]" value="ishex"/></td><td><label class="label bold">Hexadezimalziffern (A-F, a-f, 0-9)</label></td>
         <td><input type="checkbox" class="parameter-choice" name="exercises[0][subexercises][0][processorParameterList][0][]" value="isdigit"/></td><td><label class="label bold">Ziffern (0-9)</label></td>
         </tr>   
