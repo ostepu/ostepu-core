@@ -1,0 +1,10 @@
+[
+    {"method":"PUT", "path":"/selectedsubmission/leader/:userid/exercise/:eid(/)"},
+    {"method":"DELETE", "path":"/selectedsubmission/leader/:userid/exercise/:eid(/)"},
+    {"method":"PUT", "path":"/selectedsubmission/submission/:suid(/)"},
+    {"method":"DELETE", "path":"/selectedsubmission/submission/:suid(/)"},
+    {"method":"DELETE", "path":"/selectedsubmission/user/:userid/exercisesheet/:esid(/)"},
+    {"method":"POST", "path":"/selectedsubmission(/)"},
+    {"method":"GET", "path":"/selectedsubmission/exercise/:eid(/)"},
+    {"method":"GET", "path":"/selectedsubmission/exercisesheet/:esid(/)"}
+]

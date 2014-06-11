@@ -8,7 +8,9 @@
 /**
  * the submission structure
  *
- * @author Till Uhlig, Florian Lücke
+ * @author Till Uhlig
+ * @author Florian Lücke
+ * @date 2013-2014
  */
 class Submission extends Object implements JsonSerializable
 {
@@ -33,7 +35,7 @@ class Submission extends Object implements JsonSerializable
      *
      * @param string $value the new value for $id
      */
-    public function setId( $value )
+    public function setId( $value = null )
     {
         $this->id = $value;
     }
@@ -58,7 +60,7 @@ class Submission extends Object implements JsonSerializable
      *
      * @param string $value the new value for $studentId
      */
-    public function setStudentId( $value )
+    public function setStudentId( $value = null )
     {
         $this->studentId = $value;
     }
@@ -83,7 +85,7 @@ class Submission extends Object implements JsonSerializable
      *
      * @param string $value the new value for $exerciseId
      */
-    public function setExerciseId( $value )
+    public function setExerciseId( $value = null )
     {
         $this->exerciseId = $value;
     }
@@ -108,7 +110,7 @@ class Submission extends Object implements JsonSerializable
      *
      * @param string $value the new value for $comment
      */
-    public function setComment( $value )
+    public function setComment( $value = null )
     {
         $this->comment = $value;
     }
@@ -133,7 +135,7 @@ class Submission extends Object implements JsonSerializable
      *
      * @param file $value the new value for $file
      */
-    public function setFile( $value )
+    public function setFile( $value = null )
     {
         $this->file = $value;
     }
@@ -158,7 +160,7 @@ class Submission extends Object implements JsonSerializable
      *
      * @param hideFile $value the new value for $hideFile
      */
-    public function setHideFile( $value )
+    public function setHideFile( $value = null )
     {
         $this->hideFile = $value;
     }
@@ -183,7 +185,7 @@ class Submission extends Object implements JsonSerializable
      *
      * @param bool $value the new value for $accepted
      */
-    public function setAccepted( $value )
+    public function setAccepted( $value = null )
     {
         $this->accepted = $value;
     }
@@ -208,7 +210,7 @@ class Submission extends Object implements JsonSerializable
      *
      * @param string $value the new value for $selectedForGroup
      */
-    public function setSelectedForGroup( $value )
+    public function setSelectedForGroup( $value = null )
     {
         $this->selectedForGroup = $value;
     }
@@ -233,7 +235,7 @@ class Submission extends Object implements JsonSerializable
      *
      * @param date $value the new value for $date
      */
-    public function setDate( $value )
+    public function setDate( $value = null )
     {
         $this->date = $value;
     }
@@ -258,7 +260,7 @@ class Submission extends Object implements JsonSerializable
      *
      * @param int $value the new value for $exerciseNumber
      */
-    public function setExerciseNumber( $value )
+    public function setExerciseNumber( $value = null )
     {
         $this->exerciseNumber = $value;
     }
@@ -283,7 +285,7 @@ class Submission extends Object implements JsonSerializable
      *
      * @param int $value the new value for $flag
      */
-    public function setFlag( $value )
+    public function setFlag( $value = null )
     {
         $this->flag = $value;
     }
@@ -308,7 +310,7 @@ class Submission extends Object implements JsonSerializable
      *
      * @param int $value the new value for $leaderId
      */
-    public function setLeaderId( $value )
+    public function setLeaderId( $value = null )
     {
         $this->leaderId = $value;
     }
@@ -318,7 +320,7 @@ class Submission extends Object implements JsonSerializable
     {
         return $this->exerciseName;
     }
-    public function setExerciseName( $value )
+    public function setExerciseName( $value = null )
     {
         $this->exerciseName = $value;
     }
@@ -500,11 +502,14 @@ class Submission extends Object implements JsonSerializable
                                          false
                                          );
                     
-                } else 
-                    $this->{
-                    $key
-                    
-                } = $value;
+                } else {
+                    $func = 'set' . strtoupper($key[0]).substr($key,1);
+                    $methodVariable = array($this, $func);
+                    if (is_callable($methodVariable)){
+                        $this->$func($value);
+                    } else
+                        $this->{$key} = $value;
+                }
             }
         }
     }
@@ -584,7 +589,7 @@ class Submission extends Object implements JsonSerializable
             $list['hideFile'] = $this->hideFile;
         if ( $this->exerciseName !== null )
             $list['exerciseName'] = $this->exerciseName;
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 
     public static function ExtractSubmission( 

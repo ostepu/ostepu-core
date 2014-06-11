@@ -3,6 +3,9 @@
 
 /**
  * @file DBControl.php contains the DBControl class
+ *
+ * @author Till Uhlig
+ * @date 2013-2014
  */
 
 require_once ( '../../Assistants/Slim/Slim.php' );
@@ -11,6 +14,8 @@ include_once ( '../../Assistants/CConfig.php' );
 include_once ( '../../Assistants/Request.php' );
 include_once ( '../../Assistants/Controller.php' );
 include_once ( '../../Assistants/Logger.php' );
+
+\Slim\Slim::registerAutoloader( );
 
 /**
  * A class, to forwards requests into the heap of database components
@@ -44,17 +49,6 @@ class DBControl extends Controller
     {
         DBControl::$_prefix = $value;
     }
-}
-
-\Slim\Slim::registerAutoloader( );
-
-// runs the CConfig
-$com = new CConfig( DBControl::getPrefix( ) );
-
-// runs the DBControl
-if ( !$com->used( ) )
-    new DBControl( $com->loadConfig( ) );
-
- 
+} 
 ?>
 

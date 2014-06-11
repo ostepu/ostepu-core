@@ -3,6 +3,8 @@
  * @file LFileHandler.php contains the LFileHandler class
  *
  * @author Martin Daute
+ * @author Till Uhlig
+ * @date 2014
  */
  
  include_once ( '../../Assistants/Structures.php' );
@@ -20,7 +22,8 @@ class LFileHandler
      * as well as the reqest to the DBFile table to store the information
      * belongs to this file.
      *
-     * @param string $lURL The address of the logic-controller.
+     * @param string $database The link of the database.
+     * @param string $filesystem The link of the filesystem.
      * @param array $header The header of the request.
      * @param array $file The file that should being deleted.
      *
@@ -100,7 +103,8 @@ class LFileHandler
      * belongs to this file as well as the request
      * to the filesystem to delete the file.
      *
-     * @param string $lURL The address of the logic-controller.
+     * @param string $database The link of the database.
+     * @param string $filesystem The link of the filesystem.
      * @param array $header The header of the request.
      * @param array $file The file that should being deleted.
      */

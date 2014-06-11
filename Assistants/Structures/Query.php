@@ -9,6 +9,7 @@
  * this class is for querying SQL statemets
  *
  * @author Till Uhlig
+ * @date 2013-2014
  */
 class Query extends Object implements JsonSerializable
 {
@@ -33,7 +34,7 @@ class Query extends Object implements JsonSerializable
      *
      * @param string $value the new value for $idrequest
      */
-    public function setRequest( $value )
+    public function setRequest( $value = null )
     {
         $this->request = $value;
     }
@@ -64,7 +65,7 @@ class Query extends Object implements JsonSerializable
      *
      * @param string[] $value the new value for $response
      */
-    public function setResponse( $value )
+    public function setResponse( $value = array( ) )
     {
         $this->response = $value;
     }
@@ -89,7 +90,7 @@ class Query extends Object implements JsonSerializable
      *
      * @param int $value the new value for $errno
      */
-    public function setErrno( $value )
+    public function setErrno( $value = null )
     {
         $this->errno = $value;
     }
@@ -114,7 +115,7 @@ class Query extends Object implements JsonSerializable
      *
      * @param int $value the new value for $insertId
      */
-    public function setInsertId( $value )
+    public function setInsertId( $value = null )
     {
         $this->insertId = $value;
     }
@@ -139,7 +140,7 @@ class Query extends Object implements JsonSerializable
      *
      * @param int $value the new value for $affectedRows
      */
-    public function setAffectedRows( $value )
+    public function setAffectedRows( $value = null )
     {
         $this->affectedRows = $value;
     }
@@ -164,7 +165,7 @@ class Query extends Object implements JsonSerializable
      *
      * @param int $numRows the new value for $numRows
      */
-    public function setNumRows( $value )
+    public function setNumRows( $value = null )
     {
         $this->numRows = $value;
     }
@@ -189,7 +190,7 @@ class Query extends Object implements JsonSerializable
      *
      * @param bool $value the new value for $checkSession
      */
-    public function setCheckSession( $value )
+    public function setCheckSession( $value = null )
     {
         $this->checkSession = $value;
     }
@@ -203,17 +204,19 @@ class Query extends Object implements JsonSerializable
     {
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
-            if ($key=='response'){
-                $this->{
-                    $key
-                    
-                } = json_decode(json_encode($value),true);
-            }
-            else
-                $this->{
-                    $key
-                    
-                } = $value;
+                if ($key=='response'){
+                    $this->{
+                        $key
+                        
+                    } = json_decode(json_encode($value),true);
+                } else {
+                    $func = 'set' . strtoupper($key[0]).substr($key,1);
+                    $methodVariable = array($this, $func);
+                    if (is_callable($methodVariable)){
+                        $this->$func($value);
+                    } else
+                        $this->{$key} = $value;
+                }
             }
         }
     }
@@ -320,7 +323,7 @@ class Query extends Object implements JsonSerializable
             $list['numRows'] = $this->numRows;
         if ( $this->checkSession !== null )
             $list['checkSession'] = $this->checkSession;
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 }
 

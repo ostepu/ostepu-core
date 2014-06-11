@@ -1,2 +1,2 @@
 RewriteEngine On
-RewriteRule ^ DBAttachment2.php [QSA,L]
+RewriteRule !DBAttachment2.php index.php [QSA,L]

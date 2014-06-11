@@ -5,6 +5,7 @@
  * @file Structures.php contains the Object class and includes a lot of existing api structures
  *
  * @author Till Uhlig
+ * @date 2013-2014
  */
 
 include_once ( dirname( __FILE__ ) . '/Structures/ApprovalCondition.php' );
@@ -47,7 +48,7 @@ abstract class Object
      *
      * type: string
      */
-    private $sender;
+    private $sender = null;
 
     /**
      * the $sender getter
@@ -64,9 +65,79 @@ abstract class Object
      *
      * @param string $value the new value for $sender
      */
-    public function setSender( $_value )
+    public function setSender( $_value = null )
     {
         $this->sender = $_value;
+    }
+    
+    private $status = null;
+    public function getStatus( )
+    {
+        return $this->status;
+    }
+    public function setStatus( $_value = null )
+    {
+        $this->status = $_value;
+    }
+    
+    private $messages = array();
+    public function getMessages( )
+    {
+        return $this->messages;
+    }
+    public function setMessages( $_value = array() )
+    {
+        $this->messages = $_value;
+    }
+    public function addMessage($_value = null)
+    {
+        if (is_string($_value))
+            $this->messages[] = $_value;
+    }
+    
+    public function addMessages($_values = array())
+    {
+        foreach($_values as $val){
+            $this->addMessage($val);
+        }
+    }
+    
+    private $structure = null;
+    public function getStructure( )
+    {
+        return $this->structure;
+    }
+    public function setStructure( $_value = null )
+    {
+        $this->structure = $_value;
+    }
+    
+    private $language = null;
+    public function getLanguage( )
+    {
+        return $this->language;
+    }
+    public function setLanguage( $_value = null )
+    {
+        $this->language = $_value;
+    }
+    /**
+     * the json serialize function
+     */
+    public function jsonSerialize( )
+    {
+        $list = array( );
+        if ( $this->sender !== null )
+            $list['sender'] = $this->sender;
+        if ( $this->status !== null )
+            $list['status'] = $this->status;
+        if ( $this->messages !== null && $this->messages !== array())
+            $list['messages'] = $this->messages;
+        if ( $this->structure !== null )
+            $list['structure'] = $this->structure;
+         if ( $this->language !== null )
+            $list['language'] = $this->language;
+        return $list;
     }
 
     /**

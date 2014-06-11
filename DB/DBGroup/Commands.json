@@ -1,0 +1,10 @@
+[
+    {"method":"PUT", "path":"/group/user/:userid/exercisesheet/:esid(/)"},
+    {"method":"DELETE", "path":"/group/user/:userid/exercisesheet/:esid(/)"},
+    {"method":"POST", "path":"/group(/)"},
+    {"method":"GET", "path":"/group/user/:userid(/)"},
+    {"method":"GET", "path":"/group(/group)(/)"},
+    {"method":"GET", "path":"/group/user/:userid/exercisesheet/:esid(/)"},
+    {"method":"GET", "path":"/group/exercisesheet/:esid(/)"}
+    
+]

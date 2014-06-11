@@ -9,6 +9,7 @@
  * initialize an request objects
  *
  * @author Till Uhlig
+ * @date 2013-2014
  */
 class Request_CreateRequest
 {

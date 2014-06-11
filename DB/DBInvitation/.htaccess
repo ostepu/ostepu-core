@@ -1,2 +1,2 @@
 RewriteEngine On
-RewriteRule ^ DBInvitation.php [QSA,L]
+RewriteRule !DBInvitation.php index.php [QSA,L]

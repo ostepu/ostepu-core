@@ -6,11 +6,13 @@
  *
  * @author Till Uhlig
  * @author Felix Schmidt
+ * @date 2013-2014
  */
 
 require_once ( '../../Assistants/Slim/Slim.php' );
 include_once ( '../../Assistants/CConfig.php' );
 include_once ( '../../Assistants/Structures.php' );
+include_once ( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
 
@@ -68,7 +70,7 @@ class FSBinder
     {
 
         // initialize slim
-        $this->_app = new \Slim\Slim( );
+        $this->_app = new \Slim\Slim( array( 'debug' => true ) );
         $this->_app->response->headers->set( 
                                             'Content-Type',
                                             'application/json'
@@ -149,15 +151,29 @@ class FSBinder
             FSBinder::generatepath( dirname( $filePath ) );
 
             // writes the file to filesystem
-            $file = fopen( 
+            $file = fopen(
                           $filePath,
                           'w'
                           );
-            fwrite( 
-                   $file,
-                   base64_decode( $fileobject->getBody( ) )
-                   );
-            fclose( $file );
+            if ($file){
+                fwrite( 
+                       $file,
+                       base64_decode( $fileobject->getBody( ) )
+                       );
+                fclose( $file );
+                
+            }else{
+            $fileobject->setBody( null );
+            $fileobject->addMessage("Datei konnte nicht im Dateisystem angelegt werden.");
+            Logger::Log( 
+                    'POST postFile failed',
+                    LogLevel::ERROR
+                    );
+                    
+            $this->_app->response->setBody( File::encodeFile( $fileobject ) );
+            $this->_app->response->setStatus( 409 );
+            $this->_app->stop();
+            }
         }
 
         // resets the file content
@@ -191,7 +207,7 @@ class FSBinder
         }
 
         $filePath = FSBinder::$_baseDir . $this->_app->request->getResourceUri( );
-
+        
         if ( strlen( $filePath ) > 0 && 
              file_exists( $filePath ) ){
 
@@ -317,22 +333,9 @@ class FSBinder
      */
     public static function generatepath( $path )
     {
-        $parts = explode( 
-                         '/',
-                         $path
-                         );
-        if ( count( $parts ) > 0 ){
-            $path = $parts[0];
-            for ( $i = 1;$i <= count( $parts );$i++ ){
-                if ( !is_dir( $path ) )
-                    mkdir( 
-                          $path,
-                          0755
-                          );
-                if ( $i < count( $parts ) )
-                    $path .= '/' . $parts[$i];
-            }
-        }
+        if (!is_dir($path))          
+            mkdir( $path , 0777, true);
+        chmod( $path, 0777);
     }
 }
 

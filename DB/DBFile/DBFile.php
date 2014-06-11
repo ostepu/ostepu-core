@@ -7,6 +7,7 @@
  * @author Till Uhlig
  * @author Felix Schmidt
  * @example DB/DBFile/FileSample.json
+ * @date 2013-2014
  */
 
 require_once ( '../../Assistants/Slim/Slim.php' );
@@ -72,9 +73,15 @@ class DBFile
      *
      * @param Component $conf component data
      */
-    public function __construct( $conf )
+    public function __construct( )
     {
+        // runs the CConfig
+        $com = new CConfig( DBFile::getPrefix( ) );
 
+        // runs the DBFile
+        if ( $com->used( ) ) return;
+            $conf = $com->loadConfig( );
+            
         // initialize component
         $this->_conf = $conf;
         $this->query = array( CConfig::getLink( 
@@ -517,15 +524,6 @@ class DBFile
                    isset( $hash ) ? $hash : ''
                    );
     }
-}
-
-// runs the CConfig
-$com = new CConfig( DBFile::getPrefix( ) );
-
-// runs the DBFile
-if ( !$com->used( ) )
-    new DBFile( $com->loadConfig( ) );
-
- 
+} 
 ?>
 

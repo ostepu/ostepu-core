@@ -22,9 +22,14 @@ $createsheetData = json_decode($createsheetData, true);
 
 $noContent = false;
 
-$result = http_get($databaseURI.'/definition/LProcessor',true);
-$processorModules = array('processors' => Component::decodeComponent($result));
-
+$result = http_get($serverURI."/DB/DBProcess/processList/process/course/{$cid}",true);
+$processorModules = Process::decodeProcess($result);
+if (!is_array($processorModules)) $processorModules = array($processorModules);
+$components = array();
+foreach ($processorModules as $processor){
+    $components[] = $processor->getTarget();
+}
+$processorModules = array('processors' => $components);
         
 if (isset($createsheetData['exerciseTypes'])) {
     $_SESSION['JSCACHE'] = json_encode($createsheetData['exerciseTypes']);
@@ -89,7 +94,7 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
         $errormsg = "Bitte laden Sie ein Übungsblatt (PDF) hoch.";
         array_push($notifications, MakeNotification('warning', $errormsg));
     }*/
-    
+
     // validate subtasks
     $correctExercise = true;
     $validatedExercises = array();
@@ -131,11 +136,9 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                     }
 
                     // evaluate mime-types
-                    $mimeTypesForm = explode(",", $subexercise['mime-type']);
-                    
-
-                        $mimeTypes = array();
+                    $mimeTypes = array();
                     if (!isset($subexercise['type'])){    
+                        $mimeTypesForm = explode(",", $subexercise['mime-type']);
                         foreach ($mimeTypesForm as &$mimeType) {
                             if (FILE_TYPE::checkSupportedFileType(trim(strtolower($mimeType))) == false) {
                                 $errormsg = "Sie haben eine nicht unterstützte Dateiendung verwendet.";
@@ -233,17 +236,6 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                     $subexerciseObj = Exercise::createExercise(NULL,$cid,$id, $subexercise['maxPoints'],
                                                                $subexercise['exerciseType'],$key1+1,$bonus,$key2+1);
                     
-                    // add attachement if given
-                    if ($_FILES['exercises']['error'][$key1]['subexercises'][$key2]['attachment'] != 4) {
-                        $filePath = $_FILES['exercises']['tmp_name'][$key1]['subexercises'][$key2]['attachment'];
-                        $displayName = $_FILES['exercises']['name'][$key1]['subexercises'][$key2]['attachment'];
-                        $data = file_get_contents($filePath);
-                        $data = base64_encode($data);
-
-                        $attachementFile = File::createFile(NULL,$displayName,NULL,$timestamp,NULL,NULL,NULL);
-                        $attachementFile->setBody($data);
-                        $subexerciseObj->setAttachments($attachementFile);
-                    }
                     // set FileTypes (only as an array with strings in it)
                     $subexerciseObj->setFileTypes($subexercise['mime-type']);
                     // add subexercise to exercises
@@ -255,7 +247,7 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
 
                 $output2 = http_post_data($logicURI."/exercise", $exercisesJSON, true, $message);
                 $exercises = Exercise::decodeExercise($output2);
-                if ($message != 201) {echo "fail"; return;
+                if ($message != 201) {
                     $errorInSent = true;
                     break;
                 }
@@ -290,7 +282,7 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                         $choiceCorrect = $subexercise['correct'];
                         foreach ($choiceCorrect as $tempKey => $choiceData) {
                             if (isset($choices[$tempKey]))                          
-                                $choices[$tempKey]->setCorrect($choiceData);                   
+                                $choices[$tempKey]->setCorrect(1);                   
                         }
                         
                         $choices = array_values( $choices );
@@ -338,14 +330,41 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                             $component = new Component();
                             $component->setId($Data);
                             $processor->SetTarget($component); 
-                            $tempProcessors[] = $processor;
+                            
+                            // add attachement if given
+                            if (isset($_FILES['exercises']) && isset($_FILES['exercises']['error']) && isset($_FILES['exercises']['error'][$key1]) && isset($_FILES['exercises']['error'][$key1]['subexercises']) && isset($_FILES['exercises']['error'][$key1]['subexercises'][$key2]) && isset($_FILES['exercises']['error'][$key1]['subexercises'][$key2]['processAttachment']) && isset($_FILES['exercises']['error'][$key1]['subexercises'][$key2]['processAttachment'][$tempKey]))
+                            if ($_FILES['exercises']['error'][$key1]['subexercises'][$key2]['processAttachment'][$tempKey] != 4) {
+                                $filePath = $_FILES['exercises']['tmp_name'][$key1]['subexercises'][$key2]['processAttachment'][$tempKey];
+                                $displayName = $_FILES['exercises']['name'][$key1]['subexercises'][$key2]['processAttachment'][$tempKey];
+                                $attachments = array();
+                                
+                                foreach ($filePath as $attachKey => $attachPath){
+                                $data = file_get_contents($attachPath);
+                                $data = base64_encode($data);
+                                
+                                $attachment = new Attachment();
+                                $attachementFile = File::createFile(NULL,$displayName[$attachKey],NULL,$timestamp,NULL,NULL,NULL);
+                                $attachementFile->setBody($data);
+                                $attachment->setFile($attachementFile);
+                                $attachments[] = $attachment;
+                                }
+                                
+                                $processor->setAttachment($attachments);
+                            }
+                            
+                            $tempProcessors[$tempKey] = $processor;
                         }
                         
                         if (isset($subexercise['processorParameterList']) && !empty($subexercise['processorParameterList']) && $subexercise['processorParameterList'] !== ''){
                             $processorParameter = $subexercise['processorParameterList'];
-                            $b=0;
                             foreach ($processorParameter as $tempKey => $Data) {
-                                $tempProcessors[$b]->setParameter(implode(' ',array_values($Data)));                   
+                                $Data2 = array();
+                                foreach ($Data as &$dat)
+                                    if ($dat!=='')
+                                        $Data2[] = $dat;
+                                    
+                                if (isset($tempProcessors[$tempKey]))
+                                    $tempProcessors[$tempKey]->setParameter(implode(' ',array_values($Data2)));                   
                             }
                         }
 
@@ -360,7 +379,7 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                     http_post_data($URL, Process::encodeProcess($processors), true, $message);
 
                     if ($message != 201) {
-                        $errorInSent = true;
+                        $errorInSent = true; 
                         break;
                     }
                 }

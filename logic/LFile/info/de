@@ -1,1 +1,5 @@
-Beschreibungstext
+{
+"text":"
+Diese Komponente übernimmt das Eintragen von Dateien ins Dateisystem und die Datenbank, zudem das komplette Entfernen von Dateien. 
+"
+}

@@ -5,6 +5,7 @@
  * @author Peter Koenig
  * @author Christian Elze
  * @author Martin Daute 
+ * @date 2013-2014
  */
 
 require '../../Assistants/Slim/Slim.php';
@@ -66,10 +67,17 @@ class LSubmission
      *
      * @param Component $conf component data
      */
-    public function __construct($conf)
+    public function __construct()
     {
+        // runs the CConfig
+        $com = new CConfig( LSubmission::getPrefix( ) );
+
+        // runs the LSubmission
+        if ( $com->used( ) ) return;
+            $conf = $com->loadConfig( );
+            
         // initialize slim 
-        $this->app = new \Slim\Slim();
+        $this->app = new \Slim\Slim( array( 'debug' => true ) );
         $this->app->response->headers->set('Content-Type', 'application/json');
         
         // initialize component
@@ -115,6 +123,9 @@ class LSubmission
      * Called then this component receives an HTTP POST request to
      * /submission(/)
      * The request body should contain a JSON object representing a submission.
+     *
+     * @author Till Uhlig
+     * @date 2014
      */
     public function addSubmission()
     {
@@ -251,6 +262,9 @@ class LSubmission
      * @note Files are completely removed from the system. This is not intended
      * behaviour as this prevents lecturers and admins from seeing them in the
      * user's submission history.
+     *
+     * @author Till Uhlig
+     * @date 2014
      */
     public function deleteSubmission($submissionid){
         $result = Request::routeRequest( 
@@ -293,6 +307,9 @@ class LSubmission
      * @param int $sheetid The id of the sheet of which the submissions should
      * be zipped.
      * @param int $userid The id of the user whose submissions should be zipped.
+     *
+     * @author Till Uhlig
+     * @date 2014
      */
     public function loadSubmissionAsZip($sheetid, $userid)
     {       
@@ -394,15 +411,4 @@ class LSubmission
         $this->app->response->setStatus($answer['status']);*/
     }
 }
-
-/**
- * get new Config-Datas from DB
- */
-$com = new CConfig(LSubmission::getPrefix());
-
-/**
- * make a new instance of Submission-Class with the Config-Datas
- */
-if (!$com->used())
-    new LSubmission($com->loadConfig());
 ?>

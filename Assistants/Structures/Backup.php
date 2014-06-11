@@ -8,7 +8,9 @@
 /**
  * the backup structure
  *
- * @author Till Uhlig, Florian Lücke
+ * @author Till Uhlig
+ * @author Florian Lücke
+ * @date 2013
  */
 class Backup extends Object implements JsonSerializable
 {
@@ -33,7 +35,7 @@ class Backup extends Object implements JsonSerializable
      *
      * @param string $value the new value for $id
      */
-    public function setId( $value )
+    public function setId( $value = null )
     {
         $this->id = $value;
     }
@@ -58,7 +60,7 @@ class Backup extends Object implements JsonSerializable
      *
      * @param date $value the new value for $date
      */
-    public function setDate( $value )
+    public function setDate( $value = null )
     {
         $this->date = $value;
     }
@@ -83,7 +85,7 @@ class Backup extends Object implements JsonSerializable
      *
      * @param file $value the new value for $file
      */
-    public function setFile( $value )
+    public function setFile( $value = null )
     {
         $this->file = $value;
     }
@@ -145,10 +147,12 @@ class Backup extends Object implements JsonSerializable
     {
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
-                $this->{
-                    $key
-                    
-                } = $value;
+                $func = 'set' . strtoupper($key[0]).substr($key,1);
+                $methodVariable = array($this, $func);
+                if (is_callable($methodVariable)){
+                    $this->$func($value);
+                } else
+                    $this->{$key} = $value;
             }
         }
     }
@@ -208,7 +212,7 @@ class Backup extends Object implements JsonSerializable
             $list['date'] = $this->date;
         if ( $this->file !== null )
             $list['file'] = $this->file;
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 }
 

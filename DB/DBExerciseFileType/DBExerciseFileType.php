@@ -6,6 +6,7 @@
  *
  * @author Till Uhlig
  * @example DB/DBExerciseFileType/ExerciseFileTypeSample.json
+ * @date 2013-2014
  */
 
 require_once ( '../../Assistants/Slim/Slim.php' );
@@ -17,13 +18,6 @@ include_once ( '../../Assistants/CConfig.php' );
 include_once ( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
-
-// runs the CConfig
-$com = new CConfig( DBExerciseFileType::getPrefix( ) );
-
-// runs the DBExerciseSheet
-if ( !$com->used( ) )
-    new DBExerciseFileType( $com->loadConfig( ) );
 
 /**
  * A class, to abstract the "ExerciseFileType" table from database
@@ -79,9 +73,15 @@ class DBExerciseFileType
      *
      * @param Component $conf component data
      */
-    public function __construct( $conf )
+    public function __construct( )
     {
+        // runs the CConfig
+        $com = new CConfig( DBExerciseFileType::getPrefix( ) );
 
+        // runs the DBExerciseFileType
+        if ( $com->used( ) ) return;
+            $conf = $com->loadConfig( );
+            
         // initialize component
         $this->_conf = $conf;
         $this->query = array( CConfig::getLink( 

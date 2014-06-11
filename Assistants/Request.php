@@ -3,6 +3,7 @@
  * @file Request.php contains the Request class
  *
  * @author Till Uhlig
+ * @date 2013-2014
  */ 
 include_once( dirname(__FILE__) . '/Request/CreateRequest.php' );   
 include_once( dirname(__FILE__) . '/Request/MultiRequest.php' );   
@@ -23,7 +24,7 @@ class Request
      * @return an assoc array, with header entrys
      */
     public static function http_parse_headers( $header )
-    {
+    {        
         $retVal = array();
         $fields = explode("\r\n", preg_replace('/\x0D\x0A[\x09\x20]+/', ' ', $header));
         foreach( $fields as $field ) {
@@ -77,7 +78,7 @@ class Request
         $result['status'] = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         
         curl_close($ch);
-       // Logger::Log($target . ' ' . (round((microtime(true) - $begin),2)). 's', LogLevel::DEBUG, "/var/www/uebungsplattform/laufzeit.log");
+        Logger::Log($target . ' ' . (round((microtime(true) - $begin),2)). 's', LogLevel::DEBUG, dirname(__FILE__) . '../executionTime.log');
         return $result; 
     }
        

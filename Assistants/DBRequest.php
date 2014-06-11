@@ -5,6 +5,7 @@
  * @file DBRequest.php contains the DBRequest class
  *
  * @author Till Uhlig
+ * @date 2013-2014
  */
 include_once ( dirname( __FILE__ ) . '/Structures.php' );
 
@@ -160,9 +161,6 @@ class DBRequest
             return $query_result;
         }
 
-        // selects the database
-       // mysql_select_db( $config['DB']['db_name'] );
-
         $currentTime = $_SERVER['REQUEST_TIME'];
 
         // check session
@@ -221,7 +219,7 @@ class DBRequest
                                                );
         $query_result=array();    
 
-if ($answ===false){    
+    if ($answ===false){    
         $result=array();    
         $result['affectedRows'] = mysqli_affected_rows( $dbconn);
         $result['insertId'] = mysqli_insert_id( $dbconn);
@@ -230,37 +228,33 @@ if ($answ===false){
         $query_result[] = $result;
     }
     else{
-    do {
-        $result=array();
-         mysqli_next_result($dbconn);
-    if ($res = mysqli_store_result($dbconn)) {
-    //$res = mysqli_store_result($dbconn);
-       $result['content']  = $res;
+        do {
+            $result=array();
+            if ($res = mysqli_store_result( $dbconn )) {
+                $result['content']  = $res;
 
-        // evaluates the request
-        $result['affectedRows'] = mysqli_affected_rows($dbconn );
-        $result['insertId'] = mysqli_insert_id( $dbconn);
-        $result['errno'] = mysqli_errno( $dbconn );
-        $result['error'] = mysqli_error($dbconn );
+                // evaluates the request
+                $result['affectedRows'] = mysqli_affected_rows( $dbconn );
+                $result['insertId'] = mysqli_insert_id( $dbconn);
+                $result['errno'] = mysqli_errno( $dbconn );
+                $result['error'] = mysqli_error( $dbconn );
 
-        if ( gettype( $result['content'] ) != 'boolean' ){
-            $result['numRows'] = mysqli_num_rows( $result['content'] );
-        }
-        //mysqli_free_result($res);
-         }
-         else
-         {
-         $result['content']  = $res;
-                 $result['affectedRows'] = mysqli_affected_rows($dbconn );
-        $result['insertId'] = mysqli_insert_id( $dbconn);
-        $result['errno'] = mysqli_errno( $dbconn );
-        $result['error'] = mysqli_error($dbconn );
-         }
-        // echo mysqli_sqlstate($dbconn);
-        $query_result[] = $result;
-        //mysqli_more_results($dbconn) && 
-} while (mysqli_more_results($dbconn));
-}
+                if ( gettype( $result['content'] ) != 'boolean' ){
+                    $result['numRows'] = mysqli_num_rows( $result['content'] );
+                }
+            }
+            else
+            {
+                $result['content']  = $res;
+                $result['affectedRows'] = mysqli_affected_rows( $dbconn );
+                $result['insertId'] = mysqli_insert_id( $dbconn);
+                $result['errno'] = mysqli_errno( $dbconn );
+                $result['error'] = mysqli_error( $dbconn );
+            }
+
+            $query_result[] = $result;
+        } while (mysqli_more_results($dbconn) && mysqli_next_result($dbconn));
+    }
         // closes the connection and returns the result
         mysqli_close( $dbconn );
         $dbconn = null;

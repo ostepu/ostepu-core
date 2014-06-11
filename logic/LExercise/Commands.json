@@ -1,0 +1,6 @@
+[
+    {    "method":"POST", "path":"/exercise(/)" },
+    {    "method":"GET", "path":"/exercise/exercise/:exerciseid(/)" },
+    {    "method":"DELETE", "path":"/exercise/exercise/:exerciseid(/)" },
+    {    "method":"PUT", "path":"/exercise/exercise/:exerciseid(/)" }
+]

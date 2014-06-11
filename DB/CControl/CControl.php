@@ -7,6 +7,7 @@
  * @author Till Uhlig
  * @example DB/CControl/LinkSample.json
  * @example DB/CControl/ComponentSample.json
+ * @date 2013-2014
  */
 
 require '../../Assistants/Slim/Slim.php';
@@ -18,13 +19,6 @@ include_once ( '../../Assistants/CConfig.php' );
 include_once ( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
-
-// runs the CConfig
-$com = new CConfig( CControl::getPrefix( ) . ',link,definition' );
-
-// runs the CControl
-if ( !$com->used( ) )
-    new CControl( $com->loadConfig( ) );
 
 /**
  * A class, to abstract the "Component" and "ComponentLinkage" table from database
@@ -70,7 +64,12 @@ class CControl
      */
     public function __construct( )
     {
+        // runs the CConfig
+        $com = new CConfig( CControl::getPrefix( ) . ',link,definition'  );
 
+        // runs the DBSubmission
+        if ( $com->used( ) ) return;
+            
         // initialize slim
         $this->_app = new \Slim\Slim( );
         $this->_app->response->headers->set( 
@@ -182,7 +181,7 @@ class CControl
     }
 
     /**
-     * PUT EditLink
+     * Edits a specific link.
      *
      * @param $linkid a database linkage identifier
      */
@@ -230,7 +229,7 @@ class CControl
     }
 
     /**
-     * DELETE DeleteLink
+     * Deletes a specific link.
      *
      * @param $linkid a database linkage identifier
      */
@@ -265,7 +264,7 @@ class CControl
     }
 
     /**
-     * POST SetLink
+     * Adds a link.
      */
     public function setLink( )
     {
@@ -309,7 +308,7 @@ class CControl
     }
 
     /**
-     * GET GetLink
+     * Returns a specific link.
      *
      * @param $linkid a database linkage identifier
      */
@@ -351,7 +350,7 @@ class CControl
     }
 
     /**
-     * PUT EditComponent
+     * Edits a specific component.
      *
      * @param $componentid a database component identifier
      */
@@ -395,7 +394,7 @@ class CControl
     }
 
     /**
-     * DELETE DeleteComponent
+     * Removes a component.
      *
      * @param $componentid a database component identifier
      */
@@ -430,7 +429,7 @@ class CControl
     }
 
     /**
-     * POST SetComponent
+     * Adds a component
      */
     public function setComponent( )
     {
@@ -468,7 +467,7 @@ class CControl
     }
 
     /**
-     * GET GetComponent
+     * Returns a specific component.
      *
      * @param $componentid a database component identifier
      */
@@ -510,7 +509,7 @@ class CControl
     }
 
     /**
-     * GET GetComponentDefinitions
+     * Returns all component definitions.
      */
     public function getComponentDefinitions( )
     {
@@ -558,7 +557,7 @@ class CControl
     }
 
     /**
-     * GET GetComponentDefinition
+     * Returns a specific component definition.
      *
      * @param $componentid a database component identifier
      */
@@ -610,7 +609,7 @@ class CControl
     }
 
     /**
-     * GET SendComponentDefinitions
+     * Initializes all components, with the data, which can be found in database.
      */
     public function sendComponentDefinitions( )
     {
@@ -637,7 +636,7 @@ class CControl
                                                     Link::getDBPrimaryKey( ),
                                                     Link::getDBConvert( )
                                                     );
-            $result = DBJson::concatResultObjectLists( 
+            $objects = DBJson::concatResultObjectLists( 
                                                       $data,
                                                       $Components,
                                                       Component::getDBPrimaryKey( ),
@@ -645,17 +644,27 @@ class CControl
                                                       $Links,
                                                       Link::getDBPrimaryKey( )
                                                       );
-
-            $res = array();
-            foreach ( $result as $object ){
+            
+            $request = new Request_MultiRequest();
+            foreach ( $objects as $object ){
                 $object = Component::decodeComponent( Component::encodeComponent( $object ) );
 
-                $result = Request::post( 
-                                        $object->getAddress( ) . '/control',
-                                        array( ),
-                                        Component::encodeComponent( $object )
-                                        );
-                                        
+                $result = Request_CreateRequest::createPost( 
+                                                            $object->getAddress( ) . '/control',
+                                                            array( ),
+                                                            Component::encodeComponent( $object )
+                                                            );
+
+                $request->addRequest($result);
+            }
+            $results = $request->run();
+
+            $i=0;
+            $res = array();
+            foreach ( $objects as $object){
+                $object = Component::decodeComponent( Component::encodeComponent( $object ) );
+                $result = $results[$i++];
+                                   
                 $newObject = new Component();
                 $newObject->setId($object->getId());
                 $newObject->setName($object->getName());

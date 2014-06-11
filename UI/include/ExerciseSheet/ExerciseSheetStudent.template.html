@@ -79,7 +79,7 @@
                             <?php if(isset($exercise['attachment'])): ?>
                                 <?php $displayName = $exercise['attachment']['displayName']; ?>
                                 <?php $fileAddress = $exercise['attachment']['address']; ?>
-                                <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
+                                <?php $fileURL = "../FS/FSControl/{$fileAddress}/{$displayName}";/*{$filesystemURI}*/ ?>
 
                                 <a href="<?= $fileURL ?>" title="<?= $displayName ?>" class="plain" target="_blank">
                                     <img src="Images/Attachment.png" />
@@ -90,7 +90,7 @@
                             <?php if(isset($exercise['submission']) && $exercise['submission']['hideFile'] == "0"): ?>
                                 <?php $displayName = $exercise['submission']['file']['displayName']; ?>
                                 <?php $fileAddress = $exercise['submission']['file']['address']; ?>
-                                <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
+                                <?php $fileURL = "../FS/FSControl/{$fileAddress}/{$displayName}";/*{$filesystemURI}*/ ?>
 
                                 <a href="<?= $fileURL ?>" title="<?= $displayName ?>" class="plain" target="_blank">
                                     <img src="Images/Download.png" />
@@ -101,7 +101,7 @@
                             <?php if(isset($exercise['submission']['marking']) && $exercise['submission']['marking']['hideFile'] == "0" && $isExpired): ?>
                                 <?php $displayName = $exercise['submission']['marking']['file']['displayName']; ?>
                                 <?php $fileAddress = $exercise['submission']['marking']['file']['address']; ?>
-                                <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
+                                <?php $fileURL = "../FS/FSControl/{$fileAddress}/{$displayName}";/*{$filesystemURI}*/ ?>
 
                                 <a href="<?= $fileURL ?>" title="<?= $displayName ?>" class="plain" target="_blank">
                                     <img src="Images/DownloadCorrection.png" />
@@ -138,7 +138,7 @@
                     <?php if($isExpired && isset($sheet['sampleSolution'])): ?>
                         <?php $displayName = $sheet['sampleSolution']['displayName']; ?>
                         <?php $fileAddress = $sheet['sampleSolution']['address']; ?>
-                        <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
+                        <?php $fileURL = "../FS/FSControl/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
                         <li>
                             <a href="<?= $fileURL ?>" title="<?= $displayName ?>" target="_blank">
                                 Musterlösung
@@ -149,7 +149,7 @@
                     <li>
                         <?php $displayName = $sheet['sheetFile']['displayName']; ?>
                         <?php $fileAddress = $sheet['sheetFile']['address']; ?>
-                        <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
+                        <?php $fileURL = "../FS/FSControl/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
                         <a href="<?= $fileURL ?>" title="<?= $displayName ?>" target="_blank">
                             Aufgabenblatt
                         </a>

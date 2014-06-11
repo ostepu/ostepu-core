@@ -8,7 +8,9 @@
 /**
  * the exercise structure
  *
- * @author Till Uhlig, Florian Lücke
+ * @author Till Uhlig
+ * @author Florian Lücke
+ * @date 2013-2014
  */
 class Exercise extends Object implements JsonSerializable
 {
@@ -33,7 +35,7 @@ class Exercise extends Object implements JsonSerializable
      *
      * @param string $value the new value for $id
      */
-    public function setId( $value )
+    public function setId( $value = null )
     {
         $this->id = $value;
     }
@@ -58,7 +60,7 @@ class Exercise extends Object implements JsonSerializable
      *
      * @param string $value the new value for $courseId
      */
-    public function setCourseId( $value )
+    public function setCourseId( $value = null )
     {
         $this->courseId = $value;
     }
@@ -83,7 +85,7 @@ class Exercise extends Object implements JsonSerializable
      *
      * @param string $value the new value for $sheetId
      */
-    public function setSheetId( $value )
+    public function setSheetId( $value = null )
     {
         $this->sheetId = $value;
     }
@@ -108,7 +110,7 @@ class Exercise extends Object implements JsonSerializable
      *
      * @param int $value the new value for $maxPoints
      */
-    public function setMaxPoints( $value )
+    public function setMaxPoints( $value = null )
     {
         $this->maxPoints = $value;
     }
@@ -133,7 +135,7 @@ class Exercise extends Object implements JsonSerializable
      *
      * @param string $value the new value for $type
      */
-    public function setType( $value )
+    public function setType( $value = null )
     {
         $this->type = $value;
     }
@@ -158,7 +160,7 @@ class Exercise extends Object implements JsonSerializable
      *
      * @param int $value the new value for $link
      */
-    public function setLink( $value )
+    public function setLink( $value = null )
     {
         $this->link = $value;
     }
@@ -183,7 +185,7 @@ class Exercise extends Object implements JsonSerializable
      *
      * @param int $value the new value for $linkName
      */
-    public function setLinkName( $value )
+    public function setLinkName( $value = null )
     {
         $this->linkName = $value;
     }
@@ -208,7 +210,7 @@ class Exercise extends Object implements JsonSerializable
      *
      * @param Submission[] $value the new value for $submissions
      */
-    public function setSubmissions( $value )
+    public function setSubmissions( $value = array( ) )
     {
         $submissions = $value;
     }
@@ -233,7 +235,7 @@ class Exercise extends Object implements JsonSerializable
      *
      * @param File[] $value the new value for $attachments
      */
-    public function setAttachments( $value )
+    public function setAttachments( $value = array( ) )
     {
         $this->attachments = $value;
     }
@@ -258,7 +260,7 @@ class Exercise extends Object implements JsonSerializable
      *
      * @param Bool $value the new value for $bonus
      */
-    public function setBonus( $value )
+    public function setBonus( $value = null )
     {
         $this->bonus = $value;
     }
@@ -283,7 +285,7 @@ class Exercise extends Object implements JsonSerializable
      *
      * @param ExerciseFileType[] $value the new value for $fileTypes
      */
-    public function setFileTypes( $value )
+    public function setFileTypes( $value = array( ) )
     {
         $this->fileTypes = $value;
     }
@@ -455,11 +457,14 @@ class Exercise extends Object implements JsonSerializable
                                                                  false
                                                                  );
 
-                } else
-                    $this->{
-                    $key
-
-                } = $value;
+                } else {
+                    $func = 'set' . strtoupper($key[0]).substr($key,1);
+                    $methodVariable = array($this, $func);
+                    if (is_callable($methodVariable)){
+                        $this->$func($value);
+                    } else
+                        $this->{$key} = $value;
+                }
             }
         }
     }
@@ -540,7 +545,7 @@ class Exercise extends Object implements JsonSerializable
             $list['fileTypes'] = $this->fileTypes;
         if ( $this->linkName !== null )
             $list['linkName'] = $this->linkName;
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 
     public static function ExtractExercise(

@@ -1,0 +1,2 @@
+RewriteEngine On
+RewriteRule !LTutor.php index.php [QSA,L]

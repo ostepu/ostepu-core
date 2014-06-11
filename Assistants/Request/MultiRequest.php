@@ -8,6 +8,8 @@
  * requests.
  *
  * @author Till Uhlig
+ * @author Ralf Busch
+ * @date 2013-2014
  */
 class Request_MultiRequest
 {
@@ -42,10 +44,10 @@ class Request_MultiRequest
     public function addRequest($request)
     {
         if ($this->i < $this->rolling_window) {
-            $this->i = $this->i + 1;
+            $this->i++;
             curl_multi_add_handle($this->requests,$request);
         }
-        array_push($this->handles,$request);
+        $this->handles[] = $request;
     }
 
     /**
@@ -60,105 +62,50 @@ class Request_MultiRequest
 
         // execute all requests and waits for the first incoming
         // "performing" message
-       /* do {
-            $status_cme = curl_multi_exec($this->requests, $running_handles);
-        } while ($status_cme == CURLM_CALL_MULTI_PERFORM);
-
-
-        while ($running_handles && $status_cme == CURLM_OK) {
-
-            if (curl_multi_select($this->requests) != -1) {
-
-                // waits while curl perform the requests
-                do {
-                    $status_cme = curl_multi_exec($this->requests,
-                                                $running_handles);
-
-                } while ($status_cme == CURLM_CALL_MULTI_PERFORM);
-            } else
-            $status_cme = curl_multi_exec($this->requests, $running_handles);
-        }*/
         $res = array();
+
         $maxx = count($this->handles);
+        for($a = 0; $a<$maxx;$a++)
+            $res[] = null;
+            
         do {
             while(($execrun = curl_multi_exec($this->requests, $running_handles)) == CURLM_CALL_MULTI_PERFORM);
             if($execrun != CURLM_OK)
                 break;
+                
             // a request was just completed -- find out which one
             while($done = curl_multi_info_read($this->requests)) {
                 $info = curl_getinfo($done['handle']);
 
-                if ($info['http_code'] == 200 || $info['http_code'] == 201 || $info['http_code'] == 404 || $info['http_code'] == 401)  {
+               // if ($info['http_code'] == 200 || $info['http_code'] == 201 || $info['http_code'] == 404 || $info['http_code'] == 401)  {
 
-                    $content  = curl_multi_getcontent($done['handle']);
+                $content  = curl_multi_getcontent($done['handle']);
 
-                    $result = curl_getinfo($done['handle']);
-                    $header_size = curl_getinfo($done['handle'], CURLINFO_HEADER_SIZE);
+                $result = curl_getinfo($done['handle']);
+                $header_size = curl_getinfo($done['handle'], CURLINFO_HEADER_SIZE);
 
-                    $result['headers'] = array();
-                    $head = explode("\r\n",substr($content, 0, $header_size));
-                    foreach ($head as $f){
-                        $value = split(": ",$f);
-                        if (count($value)>=2){
-                            $result['headers'][$value[0]] = $value[1];
-                        }
-                    }
+                $result['headers'] = Request::http_parse_headers(substr($content, 0, $header_size));
+                $result['content'] = substr($content, $header_size);
+                $result['status'] = curl_getinfo($done['handle'], CURLINFO_HTTP_CODE);
 
-                    $result['content'] = substr($content, $header_size);
-                    $result['status'] = curl_getinfo($done['handle'], CURLINFO_HTTP_CODE);
-
-                    $res[array_search($done['handle'], $this->handles)] = $result;
-                    //array_push($res,$result);
-
-                    if ($this->i < $maxx)
-                    curl_multi_add_handle($this->requests,$this->handles[$this->i]);
-                    $this->i = $this->i + 1;
-
-                    // remove the curl handle that just completed
-                    curl_multi_remove_handle($this->requests, $done['handle']);
-                } else {
+                $res[array_search($done['handle'], $this->handles)] = $result;
+                /*} else {
                     // on all other status messages simply return an empty result with status 409
                     $result = array();
                     $result['content'] = json_encode(array());
                     $result['status'] = 409;
                     $res[array_search($done['handle'], $this->handles)] = $result;
+                }*/
+                                
+                if ($this->i < $maxx){
+                    curl_multi_add_handle($this->requests,$this->handles[$this->i]);
+                    $this->i++;
                 }
+
+                    // remove the curl handle that just completed
+                    curl_multi_remove_handle($this->requests, $done['handle']);
             }
         } while ($running_handles);
-
-        // now we can generate the result data for every request
-
-        /*foreach($this->handles as $k){
-
-            $error = curl_error($k);
-
-            // check for errors, during execution
-            if(!empty($error)){
-                $result ='';
-                array_push($res,$result);
-            } else{
-                // successfully executed, so we can create the result
-                $content  = curl_multi_getcontent( $k );
-                $result = curl_getinfo($k);
-                $header_size = curl_getinfo($k, CURLINFO_HEADER_SIZE);
-
-                $result['headers'] = array();
-                $head = explode("\r\n",substr($content, 0, $header_size));
-                foreach ($head as $f){
-                    $value = split(": ",$f);
-                    if (count($value)>=2){
-                        $result['headers'][$value[0]] = $value[1];
-                    }
-                }
-
-                $result['content'] = substr($content, $header_size);
-                $result['status'] = curl_getinfo($k, CURLINFO_HTTP_CODE);
-                array_push($res,$result);
-            }
-
-            // close current handler
-            //curl_multi_remove_handle($this->requests, $k );
-        }*/
 
         // close the multi curl object
         curl_multi_close($this->requests);

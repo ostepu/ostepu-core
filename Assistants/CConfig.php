@@ -5,8 +5,11 @@
  * @file CConfig.php contains the CConfig class
  *
  * @author Till Uhlig
+ * @date 2013-2014
  */
 include_once ( dirname( __FILE__ ) . '/Structures.php' );
+
+\Slim\Slim::registerAutoloader( );
 
 /**
  * this class is used to link components, to save new linkage data and to
@@ -75,30 +78,30 @@ class CConfig
                                             
         // GET Commands
         $this->_app->get( 
-                          '/info/commands(/)',
+                          '(/:pre+)/info/commands(/)',
                           array( 
                                 $this,
                                 'commands'
                                 )
                           );
-                          
-        // GET Info
-        $this->_app->get( 
-                          '/info/:language(/)',
-                          array( 
-                                $this,
-                                'info'
-                                )
-                          );
-                          
+
         // GET Instruction
         $this->_app->get( 
-                          '/info/instruction/:language(/)',
+                          '(/:pre+)/info/links(/)',
                           array( 
                                 $this,
                                 'instruction'
                                 )
-                          );                         
+                          );   
+
+        // GET Info
+        $this->_app->get( 
+                          '(/:pre+)/info/:language(/)',
+                          array( 
+                                $this,
+                                'info'
+                                )
+                          );                                              
 
         // POST Config
         $this->_app->post( 
@@ -122,7 +125,7 @@ class CConfig
         if ( strpos($this->_app->request->getResourceUri( ),'/control') !== false  ||  strpos( 
                     $this->_app->request->getResourceUri( ),
                     '/info'
-                    ) === 0 ){
+                    ) !== false ){
 
             // run Slim
             $this->_used = true;
@@ -131,7 +134,7 @@ class CConfig
         }
     }
     
-    public function info( $language)
+    public function info( $pre = array(), $language = 'de')
     {
         if (file_exists('info/'.$language)){
             $this->_app->response->setStatus( 200 );
@@ -142,22 +145,29 @@ class CConfig
         }
     }
     
-    public function instruction( $language)
+    public function instruction( $pre = array())
     {
-        if (file_exists('instruction/'.$language)){
+        if (file_exists('Links.json')){
             $this->_app->response->setStatus( 200 );
-            $this->_app->response->setBody( file_get_contents('instruction/'.$language) );
+            $this->_app->response->setBody( file_get_contents('Links.json') );
         }else{
             $this->_app->response->setStatus( 404 );
             $this->_app->response->setBody( '' );
         }
     }
     
-    public function commands()
+    public function commands( $pre = array() )
     {
         if (file_exists('Commands.json')){
             $this->_app->response->setStatus( 200 );
-            $this->_app->response->setBody( file_get_contents('Commands.json') );
+            $commands = json_decode(file_get_contents('Commands.json'), true);
+            $commands[] = array('method' => 'get', 'path' => '(/:pre+)/info/commands(/)');
+            $commands[] = array('method' => 'get', 'path' => '(/:pre+)/info/links(/)');
+            $commands[] = array('method' => 'get', 'path' => '(/:pre+)/info/:language(/)');
+            $commands[] = array('method' => 'post', 'path' => '(/:pre+)/control');
+            $commands[] = array('method' => 'get', 'path' => '(/:pre+)/control');
+            $this->_app->response->setBody( json_encode($commands) );
+
         }else{
             $this->_app->response->setStatus( 404 );
             $this->_app->response->setBody( '' );

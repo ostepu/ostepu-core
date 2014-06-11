@@ -36,7 +36,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
             $exerciseId = cleanInput($exercise['exerciseID']);
             $fileName = "file{$exerciseId}";
             
-            #region Form to PDF
+            #region generate form-data
             $formdata = array();
             if(isset($exercise['choices'])){
                 $formtext = $exercise['choices'];
@@ -48,7 +48,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
                     $choiceText = $choiceData2;
                     $choices = array();
                     foreach ($choiceText as $tempKey => $choiceData) {
-                        if ($choiceData === '') continue;
+                        if (trim($choiceData) === '') continue;
                         $choice = new Choice();
                         $choice->SetText($choiceData); 
                         $choice->SetFormId($formId);
@@ -75,6 +75,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
                 }
 
                 if ($error === 0) {
+                    $errormsg = '';
                     if (isset($_FILES[$fileName])){
                         $filePath = $file['tmp_name'];
                         $uploadFile = File::createFile(null,$file['name'],null,$timestamp,null,null);
@@ -90,19 +91,75 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
                     $uploadSubmission->setSelectedForGroup('1');
 
                     $URL = $serverURI.'/logic/LProcessor/submission';
-              //    echo Submission::encodeSubmission($uploadSubmission);
+//echo Submission::encodeSubmission($uploadSubmission);return;
 
                     $result = http_post_data($URL, Submission::encodeSubmission($uploadSubmission), true, $message);
+//var_dump($result);   return;  
 
                     if ($message != "201") {
+                        $result = Submission::decodeSubmission($result);
                         $exercise = $key + 1;
-                        $errormsg = "{$message}: Aufgabe ".$exercise['name']." konnte nicht hochgeladen werden.";
+                        $errormsg = "{$message}: Aufgabe ".$exercise['name']." konnte nicht hochgeladen werden.<br><br>";
+                        
+                        if ($result!==null){
+                            $messages = $result->getMessages();
+                            foreach ($messages as $message){
+                                $errormsg.=str_replace("\n",'<br>',$message).'<br>';
+                            }
+                        }
+                        
                         $notifications[] = MakeNotification('error',
                                                             $errormsg);
                         continue;
                     }
+                    else{
+                        $result = Submission::decodeSubmission($result);
+                        
+                        // if using forms, upload user input
+                        if(isset($exercise['choices'])){
 
-                    $msg = "Aufgabe ".$exercise['name']." wurde erfolgreich eingesendet.";
+                            $i=0;    
+                            foreach($formdata as &$form){
+                                $choices = $form->getChoices();
+                                foreach($choices as &$choice){
+                                    $choice->setSubmissionId($result->getId());
+                                }
+                                
+                                $URL = $serverURI.'/DB/DBChoice/formResult/choice';
+                                $result2 = http_post_data($URL, Choice::encodeChoice($choices), true, $message);
+                                
+                                    if ($message != "201") {
+                                        $result2 = Choice::decodeChoice($result2);
+                                        $exercise = $key + 1;
+                                        $errormsg = "{$message}: Aufgabe ".$exercise['name']." konnte nicht hochgeladen werden.<br><br>";
+                                        
+                                        if ($result2!==null){
+                                            $messages2 = $result2->getMessages();
+                                            foreach ($messages2 as $message){
+                                                $errormsg.=str_replace("\n",'<br>',$message).'<br>';
+                                            }
+                                        }
+                                        
+                                        $notifications[] = MakeNotification('error',
+                                                                            $errormsg);
+                                        continue;
+                                    }
+                                $i++;
+                            }
+                        
+                        }
+                        
+                        $messages = $result->getMessages();
+                        
+                        if ($messages !== null){
+                            foreach ($messages as $message){
+                                $errormsg.=str_replace("\n",'<br>',$message).'<br>';
+                            }
+                        }
+                    }
+                  
+
+                    $msg = "Aufgabe ".$exercise['name']." wurde erfolgreich eingesendet.<br>".$errormsg;
                     $notifications[] = MakeNotification('success',
                                                         $msg);
                 }

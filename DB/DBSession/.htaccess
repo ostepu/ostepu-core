@@ -1,2 +1,2 @@
 RewriteEngine On
-RewriteRule ^ DBSession.php [QSA,L]
+RewriteRule !DBSession.php index.php [QSA,L]

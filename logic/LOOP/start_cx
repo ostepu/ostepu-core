@@ -1,0 +1,62 @@
+#!/bin/bash
+##########################################
+# Aufruf des entsprechenden cx compilers #
+#                                        #
+# A.Th. 21.09.2007                       #
+#########################################
+
+### Analysieren der Parameter ###
+if [ $# == 0 ] 
+then
+   echo "keine Eingabedatei"
+   echo "412";
+   exit
+fi
+
+if [ $# -gt 1 ] 
+then
+  echo "nur eine Eingabedatei moeglich"
+  echo "412";
+  exit
+fi
+
+### Dateinamen analysieren ###
+endung=`echo $1 | cut -d. -f2`
+compiler=$endung
+
+if ([ "$endung" != "c0" ] && [ "$endung" != "c1" ] && [ "$endung" != "c2" ] && [ "$endung" != "c3" ] && [ "$endung" != "c4" ]);
+then
+   echo "Falsche Dateiendung"
+   echo "412";
+   exit
+fi
+
+if [ ! -f $1 ]
+then
+   echo "Datei $1 existiert nicht"
+   echo "404";
+   exit
+fi
+
+### Ausführen des Compilers
+akt_PATH=`pwd`;
+dat_o_end=`echo $1 | cut -d. -f1`
+
+cd `dirname $1`
+if "${akt_PATH}/compiler/$compiler" "$1"
+then
+   if `gcc -o $dat_o_end $dat_o_end.c`
+   then
+      echo "201";
+   else
+      echo "409";
+   fi
+else
+echo "408";
+fi
+
+cd $akt_PATH
+
+##########################################
+# Ende des Skriptes                      #
+##########################################

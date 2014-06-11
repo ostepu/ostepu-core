@@ -9,6 +9,7 @@
  * the component structure
  *
  * @author Till Uhlig
+ * @date 2013-2014
  */
 class Component extends Object implements JsonSerializable
 {
@@ -33,7 +34,7 @@ class Component extends Object implements JsonSerializable
      *
      * @param string $value the new value for $id
      */
-    public function setId( $value )
+    public function setId( $value = null )
     {
         $this->id = $value;
     }
@@ -58,7 +59,7 @@ class Component extends Object implements JsonSerializable
      *
      * @param string $value the new value for $name
      */
-    public function setName( $value )
+    public function setName( $value = null )
     {
         $this->name = $value;
     }
@@ -83,7 +84,7 @@ class Component extends Object implements JsonSerializable
      *
      * @param string $value the new value for $address
      */
-    public function setAddress( $value )
+    public function setAddress( $value = null )
     {
         $this->address = $value;
     }
@@ -108,7 +109,7 @@ class Component extends Object implements JsonSerializable
      *
      * @param string $value the new value for $option
      */
-    public function setOption( $value )
+    public function setOption( $value = null )
     {
         $this->option = $value;
     }
@@ -133,7 +134,7 @@ class Component extends Object implements JsonSerializable
      *
      * @param string $value the new value for $prefix
      */
-    public function setPrefix( $value )
+    public function setPrefix( $value = null )
     {
         $this->prefix = $value;
     }
@@ -158,7 +159,7 @@ class Component extends Object implements JsonSerializable
      *
      * @param Link[] $value the new value for $links
      */
-    public function setLinks( $value )
+    public function setLinks( $value = array( ) )
     {
         $this->links = $value;
     }
@@ -168,7 +169,7 @@ class Component extends Object implements JsonSerializable
     {
         return $this->status;
     }
-    public function setStatus( $value )
+    public function setStatus( $value = null )
     {
         $this->status = $value;
     }
@@ -290,11 +291,14 @@ class Component extends Object implements JsonSerializable
                                          false
                                          );
                     
-                } else 
-                    $this->{
-                    $key
-                    
-                } = $value;
+                } else {
+                    $func = 'set' . strtoupper($key[0]).substr($key,1);
+                    $methodVariable = array($this, $func);
+                    if (is_callable($methodVariable)){
+                        $this->$func($value);
+                    } else
+                        $this->{$key} = $value;
+                }
             }
         }
     }
@@ -363,7 +367,7 @@ class Component extends Object implements JsonSerializable
             $list['links'] = $this->links;
          if ( $this->status !== null )
             $list['status'] = $this->status;
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 }
 

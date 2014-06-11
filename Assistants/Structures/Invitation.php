@@ -10,6 +10,7 @@
  *
  * @author Till Uhlig
  * @author Florian Lücke
+ * @date 2013-2014
  */
 class Invitation extends Object implements JsonSerializable
 {
@@ -34,7 +35,7 @@ class Invitation extends Object implements JsonSerializable
      *
      * @param string $value the new value for $member
      */
-    public function setMember( $value )
+    public function setMember( $value = null )
     {
         $this->member = $value;
     }
@@ -59,7 +60,7 @@ class Invitation extends Object implements JsonSerializable
      *
      * @param string $value the new value for $leader
      */
-    public function setLeader( $value )
+    public function setLeader( $value = null )
     {
         $this->leader = $value;
     }
@@ -84,7 +85,7 @@ class Invitation extends Object implements JsonSerializable
      *
      * @param string $value the new value for $sheet
      */
-    public function setSheet( $value )
+    public function setSheet( $value = null )
     {
         $this->sheet = $value;
     }
@@ -224,10 +225,12 @@ class Invitation extends Object implements JsonSerializable
                                          );
                     
                 } else {
-                    $this->{
-                        $key
-                        
-                    } = $value;
+                    $func = 'set' . strtoupper($key[0]).substr($key,1);
+                    $methodVariable = array($this, $func);
+                    if (is_callable($methodVariable)){
+                        $this->$func($value);
+                    } else
+                        $this->{$key} = $value;
                 }
             }
         }
@@ -288,7 +291,7 @@ class Invitation extends Object implements JsonSerializable
             $list['leader'] = $this->leader;
         if ( $this->sheet !== null )
             $list['sheet'] = $this->sheet;
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 
     public static function ExtractInvitation( 

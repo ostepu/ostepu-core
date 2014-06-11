@@ -2,7 +2,14 @@
 
 
 /**
+ * @file ApprovalCondition.php contains the ApprovalCondition class
+ */
+
+/**
+ * the ApprovalCondition structure
  *
+ * @author Till Uhlig
+ * @date 2013-2014
  */
 class ApprovalCondition extends Object implements JsonSerializable
 {
@@ -29,7 +36,7 @@ class ApprovalCondition extends Object implements JsonSerializable
      *
      * @param string $value the new value for $id
      */
-    public function setId( $value )
+    public function setId( $value = null )
     {
         $this->id = $value;
     }
@@ -57,7 +64,7 @@ class ApprovalCondition extends Object implements JsonSerializable
      *
      * @param string $value the new value for $courseId
      */
-    public function setCourseId( $value )
+    public function setCourseId( $value = null )
     {
         $this->courseId = $value;
     }
@@ -84,7 +91,7 @@ class ApprovalCondition extends Object implements JsonSerializable
      *
      * @param string $value the new value for $exerciseTypeId
      */
-    public function setExerciseTypeId( $value )
+    public function setExerciseTypeId( $value = null )
     {
         $this->exerciseTypeId = $value;
     }
@@ -111,7 +118,7 @@ class ApprovalCondition extends Object implements JsonSerializable
      *
      * @param string $value the new value for $percentage
      */
-    public function setPercentage( $value )
+    public function setPercentage( $value = null )
     {
         $this->percentage = $value;
     }
@@ -219,10 +226,12 @@ class ApprovalCondition extends Object implements JsonSerializable
     {
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
-                $this->{
-                    $key
-                    
-                } = $value;
+                $func = 'set' . strtoupper($key[0]).substr($key,1);
+                $methodVariable = array($this, $func);
+                if (is_callable($methodVariable)){
+                    $this->$func($value);
+                } else
+                    $this->{$key} = $value;
             }
         }
     }
@@ -286,7 +295,7 @@ class ApprovalCondition extends Object implements JsonSerializable
             $list['exerciseTypeId'] = $this->exerciseTypeId;
         if ( $this->percentage !== null )
             $list['percentage'] = $this->percentage;
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 
     public static function ExtractApprovalCondition( 

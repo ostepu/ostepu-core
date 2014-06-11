@@ -1,2 +1,2 @@
 RewriteEngine On
-RewriteRule ^ DBSelectedSubmission.php [QSA,L]
+RewriteRule !DBSelectedSubmission.php index.php [QSA,L]

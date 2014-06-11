@@ -240,7 +240,7 @@ if (isset($_POST['action'])) {
 
                 if ($message == "201") {
                     $notifications[] = MakeNotification("success",
-                                                         "Der User wurde erstellt!");
+                                                         "Der Nutzer wurde erstellt!");
                 }
             } else {
                 $notifications[] = MakeNotification("error",

@@ -1,2 +1,2 @@
 RewriteEngine On
-RewriteRule ^ DBMarking.php [QSA,L]
+RewriteRule !DBMarking.php index.php [QSA,L]

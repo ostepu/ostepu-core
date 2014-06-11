@@ -1,0 +1,6 @@
+[
+    {"name":"pdf", "links":[] },
+    {"name":"postProcess", "links":[{"method":"POST", "path":"/process" }] },
+    {"name":"deleteProcess", "links":[{"method":"DELETE", "path":"/process/process/:processid" }] },
+    {"name":"getProcess", "links":[{"method":"GET", "path":"/process/course/:courseid/component/:componentid" }] }
+]

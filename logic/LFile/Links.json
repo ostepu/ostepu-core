@@ -1,0 +1,4 @@
+[
+    {"name":"fileDb", "links":[{"method":"GET", "path":"/file/:path+/hash/:hash" },{"method":"DELETE", "path":"/file/:fileid" }] },
+    {"name":"file", "links":[{"method":"POST", "path":"/file/:path+" },{"method":"DELETE", "path":"/:adress" }] }
+]

@@ -2,9 +2,10 @@
 
 
 /**
- * @file DBQuery.php contains the DBQuery class
+ * @file DBQuery2.php contains the DBQuery2 class
  *
  * @author Till Uhlig
+ * @date 2014
  */
 
 require_once ( '../../Assistants/Slim/Slim.php' );
@@ -16,17 +17,10 @@ include_once ( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
 
-// runs the CConfig
-$com = new CConfig( DBQuery::getPrefix( ) );
-
-// runs the DBQuery
-if ( !$com->used( ) )
-    new DBQuery( $com->loadConfig( ) );
-
 /**
  * A class, to perform requests to the database
  */
-class DBQuery
+class DBQuery2
 {
 
     /**
@@ -51,7 +45,7 @@ class DBQuery
      */
     public static function getPrefix( )
     {
-        return DBQuery::$_prefix;
+        return DBQuery2::$_prefix;
     }
 
     /**
@@ -61,7 +55,7 @@ class DBQuery
      */
     public static function setPrefix( $value )
     {
-        DBQuery::$_prefix = $value;
+        DBQuery2::$_prefix = $value;
     }
 
     /**
@@ -72,9 +66,15 @@ class DBQuery
      *
      * @param Component $conf component data
      */
-    public function __construct( $conf )
+    public function __construct( )
     {
+        // runs the CConfig
+        $com = new CConfig( DBQuery2::getPrefix( ) );
 
+        // runs the DBQuery2
+        if ( $com->used( ) ) return;
+            $conf = $com->loadConfig( );
+            
         // initialize component
         $this->_conf = $conf;
 
@@ -114,20 +114,8 @@ class DBQuery
                                 )
                           );
 
-        // starts slim only if the right prefix was received
-        if ( strpos( 
-                    $this->_app->request->getResourceUri( ),
-                    '/' . $this->getPrefix( )
-                    ) === 0  || strpos( 
-                    $this->_app->request->getResourceUri( ),
-                    '/info'
-                    ) === 0){
-
-            // run Slim
-            $this->_app->run( );
-        }
-        else
-        header("HTTP/1.0 404 Not Found");
+        // run Slim
+        $this->_app->run( );
     }
 
     /**
@@ -151,14 +139,6 @@ class DBQuery
 
         // decode the received query data, as an object
         $obj = Query::decodeQuery( $body );
-        //$obj->setCheckSession(false);
-    /*    $obj->setRequest("SET @statement = 
-concat(concat(
-\"INSERT INTO Form_\", (select E.C_id from `Exercise` E where E.E_id = '4' limit 1)), \" SET E_id='4',FO_type='0';\");
-PREPARE stmt1 FROM @statement;
-EXECUTE stmt1;");*/
-//$obj->setRequest("select * from Component where CO_id = 1;");
-//$obj->setRequest("select * from Component where CO_id = 1;insert into Form_3 set E_id=4, FO_type=0;");
 
         $answer = DBRequest::request2( 
                                            $obj->getRequest( ),
@@ -167,8 +147,8 @@ EXECUTE stmt1;");*/
                                            
         $this->_app->response->setStatus( 200 );
         $result = array();
-                        //var_dump($answer);                
-foreach ($answer as $query_result){
+             
+        foreach ($answer as $query_result){
             $obj = new Query( );
             
         if ( $query_result['errno'] != 0 ){
@@ -183,8 +163,6 @@ foreach ($answer as $query_result){
                             'GET queryResult failed, no content',
                             LogLevel::ERROR
                             );
-
-           // $this->_app->response->setBody( Query::encodeQuery( $obj ) );
 
             if ( $query_result['errno'] == 401 ){
                 $this->_app->response->setStatus( 401 );
@@ -203,7 +181,6 @@ foreach ($answer as $query_result){
             if ( isset( $query_result['numRows'] ) )
                 $obj->setNumRows( $query_result['numRows'] );
 
-          //  $this->_app->response->setBody( Query::encodeQuery( $obj ) );
           if ( isset( $query_result['errno'] ) && $query_result['errno']>0 ){
           $this->_app->response->setStatus( 409 );
           }
