@@ -7,6 +7,7 @@
  * @author Till Uhlig
  * @author Felix Schmidt
  * @example DB/DBExternalId/ExternalIdSample.json
+ * @date 2013-2014
  */
 
 require_once ( '../../Assistants/Slim/Slim.php' );
@@ -18,13 +19,6 @@ include_once ( '../../Assistants/CConfig.php' );
 include_once ( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
-
-// runs the CConfig
-$com = new CConfig( DBExternalId::getPrefix( ) );
-
-// runs the DBExternalId
-if ( !$com->used( ) )
-    new DBExternalId( $com->loadConfig( ) );
 
 /**
  * A class, to abstract the "ExternalId" table from database
@@ -80,9 +74,15 @@ class DBExternalId
      *
      * @param Component $conf component data
      */
-    public function __construct( $conf )
+    public function __construct( )
     {
+        // runs the CConfig
+        $com = new CConfig( DBExternalId::getPrefix( ) );
 
+        // runs the DBExternalId
+        if ( $com->used( ) ) return;
+            $conf = $com->loadConfig( );
+            
         // initialize component
         $this->_conf = $conf;
         $this->query = array( CConfig::getLink( 

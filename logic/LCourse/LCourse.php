@@ -5,6 +5,7 @@
  * @author Christian Elze
  * @author Peter König
  * @author Martin Daute
+ * @date 2013-2014
  */
 
 require_once '../../Assistants/Slim/Slim.php';
@@ -73,8 +74,15 @@ class LCourse
      *
      * @param Component $conf component data
      */
-    public function __construct($conf)
+    public function __construct()
     {
+        // runs the CConfig
+        $com = new CConfig( LCourse::getPrefix( ) );
+
+        // runs the LCourse
+        if ( $com->used( ) ) return;
+            $conf = $com->loadConfig( );
+            
         // initialize slim
         $this->app = new \Slim\Slim(array('debug' => true));
         $this->app->response->headers->set('Content-Type', 'application/json');
@@ -116,6 +124,9 @@ class LCourse
      * /course(/).
      * The request body should contain a JSON object representing the course's
      * attributes.
+     *
+     * @author Till Uhlig
+     * @date 2014
      */
     public function AddCourse()
     {
@@ -199,6 +210,9 @@ class LCourse
      * /course/course/$courseid(/).
      *
      * @param int $courseid The id of the course that is being deleted.
+     *
+     * @author Till Uhlig
+     * @date 2014
      */
     public function deleteCourse($courseid){
         Logger::Log( 
@@ -302,14 +316,4 @@ class LCourse
         $this->app->response->setBody($answer['content']);
     }
 }
-/**
- * get new Config-Datas from DB
- */
-$com = new CConfig(LCourse::getPrefix());
-
-/**
- * run a new instance of Course-Class with the Config-Datas
- */
-if (!$com->used())
-    new LCourse($com->loadConfig());
 ?>

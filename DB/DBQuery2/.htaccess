@@ -1,2 +1,2 @@
 RewriteEngine On
-RewriteRule ^ DBQuery2.php [QSA,L]
+RewriteRule !DBQuery2.php index.php [QSA,L]

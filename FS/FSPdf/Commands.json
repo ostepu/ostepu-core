@@ -1,0 +1,8 @@
+[
+    {    "method":"post", "path":"/pdf(/)" },
+    {    "method":"post", "path":"/pdf/:filename(/)" },
+    {    "method":"delete", "path":"/pdf/:hash(/)" },
+    {    "method":"get", "path":"/pdf/:hash(/)" },
+    {    "method":"get", "path":"/pdf/:hash/:filename(/)" }
+    
+]

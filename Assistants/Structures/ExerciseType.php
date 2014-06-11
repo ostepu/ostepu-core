@@ -9,6 +9,7 @@
  * the exercise type structure
  *
  * @author Till Uhlig
+ * @date 2013-2014
  */
 class ExerciseType extends Object implements JsonSerializable
 {
@@ -35,7 +36,7 @@ class ExerciseType extends Object implements JsonSerializable
      *
      * @param string $value the new value for $id
      */
-    public function setId( $value )
+    public function setId( $value = null )
     {
         $this->id = $value;
     }
@@ -62,7 +63,7 @@ class ExerciseType extends Object implements JsonSerializable
      *
      * @param string $value the new value for $name
      */
-    public function setName( $value )
+    public function setName( $value = null )
     {
         $this->name = $value;
     }
@@ -96,10 +97,12 @@ class ExerciseType extends Object implements JsonSerializable
     {
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
-                $this->{
-                    $key
-                    
-                } = $value;
+                $func = 'set' . strtoupper($key[0]).substr($key,1);
+                $methodVariable = array($this, $func);
+                if (is_callable($methodVariable)){
+                    $this->$func($value);
+                } else
+                    $this->{$key} = $value;
             }
         }
     }
@@ -213,7 +216,7 @@ class ExerciseType extends Object implements JsonSerializable
             $list['id'] = $this->id;
         if ( $this->name !== null )
             $list['name'] = $this->name;
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 
     public static function ExtractExerciseType( 

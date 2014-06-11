@@ -1,0 +1,7 @@
+[
+    {"name":"formDb", "links":[{"method":"GET", "path":"/form/exercise/:exerciseid" }] },
+    {"name":"postProcess", "links":[{"method":"POST", "path":"/process" }] },
+    {"name":"deleteProcess", "links":[{"method":"DELETE", "path":"/process/process/:processid" }] },
+    {"name":"getProcess", "links":[{"method":"GET", "path":"/process/course/:courseid/component/:componentid" }] },
+    {"name":"pdf", "links":[{"method":"POST", "path":"/pdf" }] }
+]

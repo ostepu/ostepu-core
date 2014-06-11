@@ -10,15 +10,21 @@ CREATE TABLE IF NOT EXISTS `Attachment{$pre}_{$object->getId()}` (
   `E_id` INT NOT NULL,
   `F_id` INT NOT NULL,
   `ES_id` INT NULL,
+  `PRO_id` INT NULL,
   PRIMARY KEY (`A_id`),
   UNIQUE INDEX `A_id_UNIQUE` USING BTREE (`A_id` ASC),
   INDEX `redundanz3{$pre}_{$object->getId()}` (`ES_id` ASC, `E_id` ASC),
-  CONSTRAINT `fk_Attachment_File1{$pre}_{$object->getId()}`
+  CONSTRAINT `fk_Attachment{$pre}_File1_{$object->getId()}`
     FOREIGN KEY (`F_id`)
     REFERENCES `File` (`F_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_Attachment_Exercise1{$pre}_{$object->getId()}`
+  CONSTRAINT `fk_Attachment{$pre}_Process1_{$object->getId()}`
+    FOREIGN KEY (`PRO_id`)
+    REFERENCES `Process_{$object->getId()}` (`PRO_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_Attachment{$pre}_Exercise1_{$object->getId()}`
     FOREIGN KEY (`E_id`)
     REFERENCES `Exercise` (`E_id`)
     ON DELETE NO ACTION
@@ -28,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `Attachment{$pre}_{$object->getId()}` (
     REFERENCES `Exercise` (`ES_id` , `E_id`)
     ON DELETE NO ACTION
     ON UPDATE CASCADE,
-  CONSTRAINT `fk_Attachment_ExerciseSheet1{$pre}_{$object->getId()}`
+  CONSTRAINT `fk_Attachment{$pre}_ExerciseSheet1_{$object->getId()}`
     FOREIGN KEY (`ES_id`)
     REFERENCES `ExerciseSheet` (`ES_id`)
     ON DELETE NO ACTION

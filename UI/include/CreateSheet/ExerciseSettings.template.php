@@ -133,22 +133,16 @@
                             <label class="short left label bold" for="exerciseType">Modul:</label>
                                <select class="form-field text-input processor-type" style="width:auto" name="exercises[<?= $key1 ?>][subexercises][<?= $key2 ?>][processorId][<?= $choiceId ?>]" value="Modul">
                         <?php                   
-                                $links = $processors->getLinks();
-                                foreach ($links as $link){
-                                    if ($link->getName()!=='process') continue;
-                                    if ($link->getTarget() === null || $link->getTargetName() === null) continue;
+                                foreach ($processors as $link){
+                                    if ($link->getId() === null || $link->getName() === null) continue;
                         ?>
-                           <option value="<?php echo $link->getTarget(); ?>" <?=($processor==$link->getTarget() ? 'selected' : '') ?>><?php echo $link->getTargetName(); ?></option>
+                           <option value="<?php echo $link->getId(); ?>" <?=($processor==$link->getId() ? 'selected' : '') ?>><?php echo $link->getName(); ?></option>
                         <?php
                                }
                         ?>
                           
                     </select>
                     <div class="form-field processor-parameter-area" style="width:100%"></div>
-
-                    <!--anhang-->
-                    <!--anhang-->
-                    <!--anhang-->
                             </div>
                     </td></tr>
                     <?php } else { ?>

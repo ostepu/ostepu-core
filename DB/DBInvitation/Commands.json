@@ -1,0 +1,11 @@
+[
+    {"method":"PUT", "path":"/invitation/user/:userid/exercisesheet/:esid/user/:memberid(/)"},
+    {"method":"DELETE", "path":"/invitation/user/:userid/exercisesheet/:esid/user/:memberid(/)"},
+    {"method":"POST", "path":"/invitation(/)"},
+    {"method":"GET", "path":"/invitation/leader/user/:userid(/)"},
+    {"method":"GET", "path":"/invitation/member/user/:userid(/)"},
+    {"method":"GET", "path":"/invitation(/invitation)(/)"},
+    {"method":"GET", "path":"/invitation/leader/exercisesheet/:esid/user/:userid(/)"},
+    {"method":"GET", "path":"/invitation/member/exercisesheet/:esid/user/:userid(/)"},
+    {"method":"GET", "path":"/invitation/exercisesheet/:esid(/)"}
+]

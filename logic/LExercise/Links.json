@@ -1,0 +1,3 @@
+[
+    {"name":"controller", "links":[{"method":"POST", "path":"/FS/file" },{"method":"POST", "path":"/DB/file" },{"method":"GET", "path":"/hash/:hash" },{"method":"POST", "path":"/DB/exercise" },{"method":"POST", "path":"/DB/attachment" },{"method":"POST", "path":"/DB/exercisefiletype" },{"method":"GET", "path":"/DB/exercise/:exerciseid" },{"method":"DELETE", "path":"/DB/exercise/exercise/:$exerciseid" },{"method":"PUT", "path":"/DB/exercise/:exerciseid" }] }
+]

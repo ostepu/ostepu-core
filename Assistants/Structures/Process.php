@@ -9,6 +9,7 @@
  * the Process structure
  *
  * @author Till Uhlig
+ * @date 2014
  */
 class Process extends Object implements JsonSerializable
 {
@@ -21,7 +22,7 @@ class Process extends Object implements JsonSerializable
     {
         return $this->exercise;
     }
-    public function setExercise( $value )
+    public function setExercise( $value = null )
     {
         $this->exercise = $value;
     }
@@ -31,7 +32,7 @@ class Process extends Object implements JsonSerializable
     {
         return $this->processId;
     }
-    public function setProcessId( $value )
+    public function setProcessId( $value = null )
     {
         $this->processId = $value;
     }
@@ -71,7 +72,7 @@ class Process extends Object implements JsonSerializable
     {
         return $this->target;
     }
-    public function setTarget( $value )
+    public function setTarget( $value = null )
     {
         $this->target = $value;
     }
@@ -81,7 +82,7 @@ class Process extends Object implements JsonSerializable
     {
         return $this->parameter;
     }
-    public function setParameter( $value )
+    public function setParameter( $value = null )
     {
         $this->parameter = $value;
     }
@@ -91,7 +92,7 @@ class Process extends Object implements JsonSerializable
     {
         return $this->attachment;
     }
-    public function setAttachment( $value )
+    public function setAttachment( $value = array( ) )
     {
         $this->attachment = $value;
     } 
@@ -101,7 +102,7 @@ class Process extends Object implements JsonSerializable
     {
         return $this->workFiles;
     }
-    public function setWorkFiles( $value )
+    public function setWorkFiles( $value = array( ) )
     {
         $this->workFiles = $value;
     } 
@@ -111,7 +112,7 @@ class Process extends Object implements JsonSerializable
     {
         return $this->rawSubmission;
     }
-    public function setRawSubmission( $value )
+    public function setRawSubmission( $value = null )
     {
         $this->rawSubmission = $value;
     } 
@@ -121,7 +122,7 @@ class Process extends Object implements JsonSerializable
     {
         return $this->submission;
     }
-    public function setSubmission( $value )
+    public function setSubmission( $value = null )
     {
         $this->submission = $value;
     } 
@@ -131,7 +132,7 @@ class Process extends Object implements JsonSerializable
     {
         return $this->marking;
     }
-    public function setMarking( $value )
+    public function setMarking( $value = null )
     {
         $this->marking = $value;
     }
@@ -248,7 +249,7 @@ class Process extends Object implements JsonSerializable
                     $this->{
                         $key
                         
-                    } = File::decodeFile( 
+                    } = Attachment::decodeAttachment( 
                                                            $value,
                                                            false
                                                            );
@@ -258,7 +259,7 @@ class Process extends Object implements JsonSerializable
                     $this->{
                         $key
                         
-                    } = File::decodeFile( 
+                    } = Attachment::decodeAttachment( 
                                                            $value,
                                                            false
                                                            );
@@ -313,11 +314,14 @@ class Process extends Object implements JsonSerializable
                                                            false
                                                            );
                     
-                } else
-                    $this->{
-                    $key
-                    
-                } = $value;
+                } else{
+                    $func = 'set' . strtoupper($key[0]).substr($key,1);
+                    $methodVariable = array($this, $func);
+                    if (is_callable($methodVariable)){
+                        $this->$func($value);
+                    } else
+                        $this->{$key} = $value;
+                }
             }
         }
     }
@@ -389,7 +393,7 @@ class Process extends Object implements JsonSerializable
             $list['rawSubmission'] = $this->rawSubmission;
         if ( $this->marking !== null )
             $list['marking'] = $this->marking;    
-        return $list;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 
     public static function ExtractProcess( 

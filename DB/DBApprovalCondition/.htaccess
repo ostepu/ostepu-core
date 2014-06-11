@@ -1,2 +1,2 @@
 RewriteEngine On
-RewriteRule ^ DBApprovalCondition.php [QSA,L]
+RewriteRule !DBApprovalCondition.php index.php [QSA,L]

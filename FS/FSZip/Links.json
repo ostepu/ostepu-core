@@ -1,0 +1,4 @@
+[
+    {"name":"out", "links":[{"method":"GET", "path":"/path+"},{"method":"INFO", "path":"/path+"},{"method":"DELETE", "path":"/path+"},{"method":"POST", "path":"/path+"}] },
+	{"name":"getFile", "links":[{"method":"GET", "path":"/path+"}] }
+]

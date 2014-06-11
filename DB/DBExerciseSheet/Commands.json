@@ -1,0 +1,10 @@
+[
+    {"method":"PUT", "path":"/exercisesheet(/exercisesheet)/:esid(/)"},
+    {"method":"DELETE", "path":"/exercisesheet(/exercisesheet)/:esid(/)"},
+    {"method":"POST", "path":"/exercisesheet(/)"},
+    {"method":"GET", "path":"/exercisesheet(/exercisesheet)/:esid/url(/)"},
+    {"method":"GET", "path":"/exercisesheet/course/:courseid/url(/)"},
+    {"method":"GET", "path":"/exercisesheet/course/:courseid+(/)"},
+    {"method":"GET", "path":"/exercisesheet(/exercisesheet)/:esid+(/)"}
+    
+]

@@ -5,6 +5,7 @@
  * @file DBProcess.php contains the DBProcess class
  *
  * @author Till Uhlig
+ * @date 2014
  */
 
 require_once ( '../../Assistants/Slim/Slim.php' );
@@ -16,13 +17,6 @@ include_once ( '../../Assistants/CConfig.php' );
 include_once ( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
-
-// runs the CConfig
-$com = new CConfig( DBProcess::getPrefix( ) . ',course,link' );
-
-// runs the DBProcess
-if ( !$com->used( ) )
-    new DBProcess( $com );
 
 /**
  * A class, to abstract the "DBProcess" table from database
@@ -75,14 +69,17 @@ class DBProcess
      *
      * This function contains the REST actions with the assignments to
      * the functions.
-     *
-     * @param Component $conf component data
      */
-    public function __construct( $conf )
+    public function __construct( )
     {
+        // runs the CConfig
+        $com = new CConfig( DBProcess::getPrefix( ) . ',course,link' );
 
+        // runs the DBProcess
+        if ( $com->used( ) ) return;
+            
         // initialize component
-        $this->_conf = $conf;
+        $this->_conf = $com;
 
         // initialize slim
         $this->_app = new \Slim\Slim( array('debug' => true) );
@@ -194,6 +191,13 @@ class DBProcess
             $this->_app->run( );
     }
     
+    /**
+     * Loads the configuration data for the component from CConfig.json file
+     *
+     * @param int $pre A optional prefix for the process table.
+     *
+     * @return an component object, which represents the configuration
+     */
     public function loadConfig( $pre='' )
     {
         // initialize component
@@ -204,6 +208,17 @@ class DBProcess
                                                ) );
     }
     
+    /**
+     * Edits a process.
+     *
+     * Called when this component receives an HTTP PUT request to
+     * (/$pre)/process(/process)/$processid(/)
+     * The request body should contain a JSON object representing the
+     * process new attributes.
+     *
+     * @param string $processid The id of the process that is being updated.
+     * @param int $pre A optional prefix for the process table.
+     */
     public function editProcess( $pre='' , $processid )
     {
         $this->loadConfig($pre);
@@ -259,6 +274,15 @@ class DBProcess
         }
     }
     
+    /**
+     * Deletes a process.
+     *
+     * Called when this component receives an HTTP DELETE request to
+     * (/$pre)/process(/process)/$processid(/).
+     *
+     * @param string $processid The id of the process that is being deleted.
+     * @param int $pre A optional prefix for the process table.
+     */
     public function deleteProcess( $pre='' , $processid )
     {
         $this->loadConfig($pre);
@@ -303,6 +327,14 @@ class DBProcess
         }
     }
     
+    /**
+     * Adds a process.
+     *
+     * Called when this component receives an HTTP POST request to
+     * (/$pre)/process(/).
+     *
+     * @param int $pre A optional prefix for the process table.
+     */
     public function addProcess( $pre='' )
     {
         $this->loadConfig($pre);
@@ -394,10 +426,7 @@ class DBProcess
                     );
 
         // checks whether incoming data has the correct data type
-        $processid = DBJson::mysql_real_escape_string( $processid );
-
         $pre = DBJson::mysql_real_escape_string( $pre );
-        $userid = DBJson::mysql_real_escape_string( $userid );
         $courseid = DBJson::mysql_real_escape_string( $courseid );
         $esid = DBJson::mysql_real_escape_string( $esid );
         $eid = DBJson::mysql_real_escape_string( $eid );
@@ -456,7 +485,16 @@ class DBProcess
         $this->_app->response->setBody( Process::encodeProcess( new Process( ) ) );
         $this->_app->stop( );
     }
-
+    
+    /**
+     * Returns a process.
+     *
+     * Called when this component receives an HTTP GET request to
+     * (/$pre)/process(/process)/$processid(/).
+     *
+     * @param string $processid The id of the process.
+     * @param int $pre A optional prefix for the process table.
+     */
     public function getProcess( $pre='' , $processid )
     {
         $this->get( 
@@ -471,7 +509,16 @@ class DBProcess
                    true
                    );
     }
-   
+    
+    /**
+     * Returns processes to a given course.
+     *
+     * Called when this component receives an HTTP GET request to
+     * (/$pre)/process(/process)/$courseid(/).
+     *
+     * @param string $courseid The id of the course.
+     * @param int $pre A optional prefix for the process table.
+     */
     public function getCourseProcesses( $pre='' , $courseid )
     {
         $this->get( 
@@ -487,6 +534,15 @@ class DBProcess
                    );
     }
     
+    /**
+     * Returns status code 200, if this component is correctly installed for the given course
+     *
+     * Called when this component receives an HTTP GET request to
+     * (/$pre)/link/exists/course/$courseid(/).
+     *
+     * @param string $courseid The id of the course.
+     * @param int $pre A optional prefix for the attachment table.
+     */
     public function getExistsCourseProcesses( $pre='' , $courseid )
     {
         $this->get( 
@@ -502,6 +558,15 @@ class DBProcess
                    );
     }
     
+    /**
+     * Returns processes to a given exercise sheet.
+     *
+     * Called when this component receives an HTTP GET request to
+     * (/$pre)/process/exercisesheet/$esid(/)
+     *
+     * @param string $esid The id of the exercise sheet.
+     * @param int $pre A optional prefix for the process table.
+     */
     public function getSheetProcesses( $pre='' , $esid )
     {
         $this->get( 
@@ -517,6 +582,15 @@ class DBProcess
                    );
     }
     
+    /**
+     * Returns processes to a given exercise.
+     *
+     * Called when this component receives an HTTP GET request to
+     * (/$pre)/process/exercise/$eid(/)
+     *
+     * @param string $eid The id of the exercise.
+     * @param int $pre A optional prefix for the process table.
+     */
     public function getExerciseProcesses( $pre='' , $eid )
     {
         $this->get( 
@@ -532,6 +606,16 @@ class DBProcess
                    );
     }
     
+    /**
+     * Returns processes to a given course and component.
+     *
+     * Called when this component receives an HTTP GET request to
+     * (/$pre)/process/course/$courseid/component/$comid(/)
+     *
+     * @param string $courseid The id of the course.
+     * @param string $comid The id of the component.
+     * @param int $pre A optional prefix for the process table.
+     */
     public function getCourseComponentProcesses( $pre='' , $courseid, $comid )
     {
         $this->get( 
@@ -547,6 +631,15 @@ class DBProcess
                    );
     }
     
+    /**
+     * Removes the component from a given course
+     *
+     * Called when this component receives an HTTP DELETE request to
+     * (/$pre)/course/$courseid(/).
+     *
+     * @param string $courseid The id of the course.
+     * @param int $pre A optional prefix for the attachment table.
+     */
     public function deleteCourse( $pre='' , $courseid )
     {
         $this->loadConfig($pre);
@@ -589,6 +682,14 @@ class DBProcess
         }
     }
     
+    /**
+     * Adds the component to a course
+     *
+     * Called when this component receives an HTTP POST request to
+     * (/$pre)/course(/).
+     *
+     * @param int $pre A optional prefix for the attachment table.
+     */
     public function addCourse($pre='' )
     {
         $this->loadConfig($pre);

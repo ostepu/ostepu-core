@@ -9,6 +9,7 @@
  * the choice structure
  *
  * @author Till Uhlig
+ * @date 2014
  */
 class Choice extends Object implements JsonSerializable
 {
@@ -32,7 +33,7 @@ class Choice extends Object implements JsonSerializable
      *
      * @param string $value the new value for $choiceId
      */
-    public function setChoiceId( $value )
+    public function setChoiceId( $value = null )
     {
         $this->choiceId = $value;
     }
@@ -87,7 +88,7 @@ class Choice extends Object implements JsonSerializable
      *
      * @param string $value the new value for $formId
      */
-    public function setFormId( $value )
+    public function setFormId( $value = null )
     {
         $this->formId = $value;
     }
@@ -112,7 +113,7 @@ class Choice extends Object implements JsonSerializable
      *
      * @param string $value the new value for $text
      */
-    public function setText( $value )
+    public function setText( $value = null )
     {
         $this->text = $value;
     }
@@ -137,9 +138,19 @@ class Choice extends Object implements JsonSerializable
      *
      * @param string $value the new value for $correct
      */
-    public function setCorrect( $value )
+    public function setCorrect( $value = null )
     {
         $this->correct = $value;
+    }
+    
+    private $submissionId = null;
+    public function getSubmissionId( )
+    {
+        return $this->submissionId;
+    }
+    public function setSubmissionId( $value = null )
+    {
+        $this->submissionId = $value;
     }
 
     
@@ -162,14 +173,16 @@ class Choice extends Object implements JsonSerializable
                                           $formId,
                                           $choiceId,
                                           $text,
-                                          $correct
+                                          $correct,
+                                          $submissionId = null
                                           )
     {
         return new Choice( array(
                                    'formId' => $formId,
                                    'choiceId' => $choiceId,
                                    'text' => $text,
-                                   'correct' => $correct
+                                   'correct' => $correct,
+                                   'submissionId' => $submissionId
                                    ) );
     }
 
@@ -184,7 +197,8 @@ class Choice extends Object implements JsonSerializable
                      'FO_id' => 'formId',
                      'CH_id' => 'choiceId',
                      'CH_text' => 'text',
-                     'CH_correct' => 'correct'
+                     'CH_correct' => 'correct',
+                     'S_id' => 'submissionId'
                      );
     }
 
@@ -221,6 +235,12 @@ class Choice extends Object implements JsonSerializable
                                  'CH_correct',
                                  DBJson::mysql_real_escape_string( $this->correct )
                                  );
+        if ( $this->submissionId != null )
+            $this->addInsertData(
+                                 $values,
+                                 'S_id',
+                                 DBJson::mysql_real_escape_string( $this->submissionId )
+                                 );
 
         if ( $values != '' ){
             $values = substr(
@@ -250,10 +270,12 @@ class Choice extends Object implements JsonSerializable
     {
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
-                $this->{
-                    $key
-
-                } = $value;
+                $func = 'set' . strtoupper($key[0]).substr($key,1);
+                $methodVariable = array($this, $func);
+                if (is_callable($methodVariable)){
+                    $this->$func($value);
+                } else
+                    $this->{$key} = $value;
             }
         }
     }
@@ -317,8 +339,10 @@ class Choice extends Object implements JsonSerializable
             $list['text'] = $this->text;
         if ( $this->correct !== null )
             $list['correct'] = $this->correct;
-
-        return $list;
+        if ( $this->submissionId !== null )
+            $list['submissionId'] = $this->submissionId;
+            
+        return array_merge($list,parent::jsonSerialize( ));
     }
 
     public static function ExtractChoice(

@@ -1,0 +1,5 @@
+[
+    {    "method":"get", "path":"/query(/)" },
+    {    "method":"put", "path":"/query(/)" },
+    {    "method":"post", "path":"/query(/)" }
+]

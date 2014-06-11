@@ -5,6 +5,7 @@
  * @file DBJson.php contains the DBJson class
  *
  * @author Till Uhlig
+ * @date 2013-2014
  */
 
 /**
@@ -331,10 +332,12 @@ class DBJson
             $key = '';
             if ( is_array( $primKey ) ){
                 foreach ( $primKey as $di ){
-                    $key .= $rw[$di] . ',';
+                    if (isset($rw[$di]))
+                        $key .= $rw[$di] . ',';
                 }
             } else {
-                $key = $rw[$primKey];
+                if (isset($rw[$primKey]))
+                    $key = $rw[$primKey];
             }
 
             $key2 = '';
@@ -395,10 +398,12 @@ class DBJson
             $key = '';
             if ( is_array( $primKey ) ){
                 foreach ( $primKey as $di ){
-                    $key .= $rw[$di] . ',';
+                    if (isset($rw[$di]))
+                        $key .= $rw[$di] . ',';
                 }
             } else {
-                $key = $rw[$primKey];
+                if (isset($rw[$primKey]))
+                    $key = $rw[$primKey];
             }
 
             if ( isset( $sec[$rw[$secKey . $extension]] ) ){
@@ -441,10 +446,12 @@ class DBJson
             $key = '';
             if ( is_array( $primKey ) ){
                 foreach ( $primKey as $di ){
-                    $key .= $rw[$di] . ',';
+                    if (isset($rw[$di]))
+                        $key .= $rw[$di] . ',';
                 }
             } else {
-                $key = $rw[$primKey];
+                if (isset($rw[$primKey]))
+                    $key = $rw[$primKey];
             }
 
             if ( isset( $rw[$secKey . $extension] ) && 
@@ -490,10 +497,12 @@ class DBJson
             $key = '';
             if ( is_array( $primKey ) ){
                 foreach ( $primKey as $di ){
-                    $key .= $rw[$di . $primextension] . ',';
+                    if (isset($rw[$di . $primextension]))
+                        $key .= $rw[$di . $primextension] . ',';
                 }
             } else {
-                $key = $rw[$primKey . $primextension];
+                if (isset($rw[$primKey . $primextension]))
+                    $key = $rw[$primKey . $primextension];
             }
 
             if ( isset( $rw[$secKey . $secextension] ) && 
@@ -539,13 +548,15 @@ class DBJson
             $key = '';
             if ( is_array( $primKey ) ){
                 foreach ( $primKey as $di ){
-                    $key .= $rw[$di] . ',';
+                    if (isset($rw[$di]))
+                        $key .= $rw[$di] . ',';
                 }
             } else {
-                $key = $rw[$primKey];
+                if (isset($rw[$primKey]))
+                    $key = $rw[$primKey];
             }
 
-            if ( isset( $sec[$rw[$secKey]] ) ){
+            if ( isset($rw[$secKey]) && isset( $sec[$rw[$secKey]] ) ){
                 $prim[$key][$primAttrib][] = $rw[$secKey];
             }
         }

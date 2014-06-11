@@ -1,2 +1,2 @@
 RewriteEngine On
-RewriteRule ^ DBProcess.php [QSA,L]
+RewriteRule !DBProcess.php index.php [QSA,L]

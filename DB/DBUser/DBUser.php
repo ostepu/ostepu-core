@@ -6,7 +6,8 @@
  *
  * @author Till Uhlig
  * @author Felix Schmidt
- * @verbinclude DB/DBUser/UserSample.json
+ * @example DB/DBUser/UserSample.json
+ * @date 2013-2014
  */
 
 require_once ( '../../Assistants/Slim/Slim.php' );
@@ -18,23 +19,6 @@ include_once ( '../../Assistants/CConfig.php' );
 include_once ( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
-
-Logger::Log( 
-            'begin DBUser',
-            LogLevel::DEBUG
-            );
-
-// runs the CConfig
-$com = new CConfig( DBUser::getPrefix( ) );
-
-// runs the DBUser
-if ( !$com->used( ) )
-    new DBUser( $com->loadConfig( ) );
-
-Logger::Log( 
-            'end DBUser',
-            LogLevel::DEBUG
-            );
 
 /**
  * A class, to abstract the "User" table from database
@@ -90,8 +74,15 @@ class DBUser
      *
      * @param Component $conf component data
      */
-    public function __construct( $conf )
+    public function __construct( )
     {
+        // runs the CConfig
+        $com = new CConfig( DBUser::getPrefix( ) );
+
+        // runs the DBUser
+        if ( $com->used( ) ) return;
+            $conf = $com->loadConfig( );
+    
 
         // initialize component
         $this->_conf = $conf;

@@ -3,12 +3,14 @@
  * @file LFormProcessor.php Contains the LFormProcessor class
  * 
  * @author Till Uhlig
+ * @date 2014
  */
 
 require_once '../../Assistants/Slim/Slim.php';
 include_once '../../Assistants/Request.php';
 include_once '../../Assistants/CConfig.php';
 include_once '../../Assistants/DBJson.php';
+include_once '../../Assistants/DefaultNormalizer.php';
 
 \Slim\Slim::registerAutoloader();
 
@@ -56,7 +58,7 @@ class LFormProcessor
      * @var Link[] $_pdf a list of links
      */
     private $_pdf = array( );
-    
+
     /**
      * @var Link[] $_formDb a list of links
      */
@@ -64,17 +66,22 @@ class LFormProcessor
     private $_postProcess = array( );
     private $_deleteProcess = array( );
     private $_getProcess = array( );
-    
+
     /**
      * REST actions
      *
      * This function contains the REST actions with the assignments to
      * the functions.
-     *
-     * @param Component $conf component data
      */
-    public function __construct($conf)
+    public function __construct()
     {
+        // runs the CConfig
+        $com = new CConfig( LFormProcessor::getPrefix( ) . ',course,link' );
+
+        // runs the LFormProcessor
+        if ( $com->used( ) ) return;
+            $conf = $com->loadConfig( );
+            
         // initialize slim    
         $this->app = new \Slim\Slim(array('debug' => true));
         $this->app->response->headers->set('Content-Type', 'application/json');
@@ -122,6 +129,14 @@ class LFormProcessor
         $this->app->run();
     }
     
+    /**
+     * Removes the component from a given course
+     *
+     * Called when this component receives an HTTP DELETE request to
+     * /course/$courseid(/).
+     *
+     * @param string $courseid The id of the course.
+     */
     public function deleteCourse( $courseid )
     {
         $result = Request::routeRequest( 
@@ -160,6 +175,12 @@ class LFormProcessor
         $this->app->response->setStatus( 404 );
     }
     
+    /**
+     * Adds the component to a course
+     *
+     * Called when this component receives an HTTP POST request to
+     * /course(/).
+     */
     public function addCourse( )
     {
          Logger::Log( 
@@ -230,6 +251,14 @@ class LFormProcessor
         $this->app->response->setBody( Course::encodeCourse( $courses ) );
     }
     
+    /**
+     * Returns whether the component is installed for the given course
+     *
+     * Called when this component receives an HTTP GET request to
+     * /link/exists/course/$courseid(/).
+     *
+     * @param int $courseid A course id.
+     */
     public function getExistsCourse($courseid)
     {
         $result = Request::routeRequest( 
@@ -249,6 +278,14 @@ class LFormProcessor
         $this->app->response->setStatus( 409 );
     }
     
+    /**
+     * Returns the text of a given choice id.
+     *
+     * @param string $choiceId The id of the choice.
+     * @param string[] $Choices An array of choices.
+     *
+     * @return String The text.
+     */
     public function ChoiceIdToText($choiceId, $Choices)
     {
         foreach ($Choices as $choice){
@@ -258,7 +295,13 @@ class LFormProcessor
         
         return null;
     }
-    
+   
+    /**
+     * Processes a process
+     *
+     * Called when this component receives an HTTP POST request to
+     * /process(/).
+     */
     public function postProcess()
     {
           
@@ -307,70 +350,6 @@ class LFormProcessor
                     if (is_array($formdata)) $formdata = $formdata[0];
 
                     if ($formdata !== null){
-                        // check the submission
-                        $fail = false;
-                        $parameter = explode(' ',strtolower($pro->getParameter()));
-
-                        $choices = $formdata->getChoices();
-                        
-                        if ($forms->getType()==0){
-                            foreach ($choices as &$choice){
-                                foreach ($parameter as $param){
-                                    switch($param){
-                                        case('isnumeric'):
-                                            if (!is_numeric($choice->getText()))
-                                                $fail = true;
-                                            break;
-                                        case('isdigit'):
-                                            if (!ctype_digit($choice->getText()))
-                                                $fail = true;
-                                            break;
-                                        case('isprintable'):
-                                            if (!ctype_print($choice->getText()))
-                                                $fail = true;
-                                            break;
-                                        case('isalpha'):
-                                            if (!ctype_alpha($choice->getText()))
-                                                $fail = true;
-                                            break;
-                                        case('isalphanum'):
-                                            if (!ctype_alnum($choice->getText()))
-                                                $fail = true;
-                                            break;
-                                    }
-                                    if ($fail) break;
-                                }
-                                if ($fail) break;
-                            }
-                        }
-                        
-                        if ($fail){
-                            // received submission isn't correct
-                            $res[] = null;
-                            $this->app->response->setStatus( 409 );
-                            continue;
-                        } 
-
-                        // preprocess the submission
-                        if ($forms->getType()==0){
-                            $choices = $formdata->getChoices();
-                            foreach ($choices as &$choice){
-                                foreach ($parameter as $param){
-                                    switch($param){
-                                        case('lowercase'):
-                                            $choice->setText(strtolower($choice->getText()));
-                                            break;
-                                        case('uppercase'):
-                                            $choice->setText(strtoupper($choice->getText()));
-                                            break;
-                                        case('trim'):
-                                            $choice->setText(trim($choice->getText()));
-                                            break;
-                                    }
-                                }
-                            }
-                            $formdata->setChoices($choices);
-                        }
                         
                         // evaluate the formdata
                         $points = 0;
@@ -379,8 +358,26 @@ class LFormProcessor
                         $allcorrect = true;
                         
                         if ($forms->getType()==0){
-                            if ($correctAnswers[0]->getText() != $answers[0]->getText())
-                                $allcorrect = false;
+                            
+                            $parameter = explode(' ',strtolower($pro->getParameter()));
+                            if ($parameter===null || count($parameter)===0){      
+                                if (DefaultNormalizer::normalizeText($correctAnswers[0]->getText()) != DefaultNormalizer::normalizeText($answers[0]->getText()))
+                                    $allcorrect = false;
+                            } elseif($parameter[0] === 'distance1'){
+                                $similarity = 0;
+                                similar_text(DefaultNormalizer::normalizeText($answers[0]->getText()),DefaultNormalizer::normalizeText($correctAnswers[0]->getText()),$similarity);
+                                if (isset($parameter[1])){
+                                    if ($similarity <$parameter[1]){
+                                        $allcorrect = false;
+                                    }
+                                }
+                                else{
+                                    if ($similarity <100){
+                                        $allcorrect = false;
+                                    }
+                                }
+                            }
+                            
                         
                         }elseif ($forms->getType()==1){
                             foreach ($correctAnswers as $mask){
@@ -550,11 +547,4 @@ class LFormProcessor
             $this->app->response->setBody( Process::encodeProcess( $res ) );
     }
 }
-
-// get new config data from DB
-$com = new CConfig(LFormProcessor::getPrefix() . ',link,course');
-
-// create a new instance of LFormProcessor class with the config data
-if (!$com->used())
-    new LFormProcessor($com->loadConfig());
 ?>

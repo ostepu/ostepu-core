@@ -9,6 +9,7 @@
  * the attachment structure
  *
  * @author Till Uhlig
+ * @date 2013-2014
  */
 class Attachment extends Object implements JsonSerializable
 {
@@ -33,7 +34,7 @@ class Attachment extends Object implements JsonSerializable
      *
      * @param string $value the new value for $id
      */
-    public function setId( $value )
+    public function setId( $value = null )
     {
         $this->id = $value;
     }
@@ -89,7 +90,7 @@ class Attachment extends Object implements JsonSerializable
      *
      * @param string $value the new value for $exerciseId
      */
-    public function setExerciseId( $value )
+    public function setExerciseId( $value = null )
     {
         $this->exerciseId = $value;
     }
@@ -114,11 +115,20 @@ class Attachment extends Object implements JsonSerializable
      *
      * @param file $value the new value for $file
      */
-    public function setFile( $value )
+    public function setFile( $value = null )
     {
         $this->file = $value;
     }
-
+    
+    private $processId = null;
+    public function getProcessId( )
+    {
+        return $this->processId;
+    }
+    public function setProcessId( $value = null )
+    {
+        $this->processId = $value;
+    }
     /**
      * Creates an Attachment object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -132,7 +142,8 @@ class Attachment extends Object implements JsonSerializable
     public static function createAttachment( 
                                             $attachmentId,
                                             $exerciseId,
-                                            $fileId
+                                            $fileId,
+                                            $processId
                                             )
     {
         return new Attachment( array( 
@@ -145,7 +156,8 @@ class Attachment extends Object implements JsonSerializable
                                                                 null,
                                                                 null,
                                                                 null
-                                                                )
+                                                                ),
+                                      'processId' => $processId
                                      ) );
     }
 
@@ -159,7 +171,8 @@ class Attachment extends Object implements JsonSerializable
         return array( 
                      'A_id' => 'id',
                      'E_id' => 'exerciseId',
-                     'F_file' => 'file'
+                     'F_file' => 'file',
+                     'PRO_id' => 'processId'
                      );
     }
 
@@ -190,6 +203,12 @@ class Attachment extends Object implements JsonSerializable
                                  $values,
                                  'F_id',
                                  DBJson::mysql_real_escape_string( $this->file->getFileId( ) )
+                                 );
+        if ( $this->processId != null)
+            $this->addInsertData( 
+                                 $values,
+                                 'PRO_id',
+                                 DBJson::mysql_real_escape_string( Process::getIdFromProcessId($this->processId) )
                                  );
 
         if ( $values != '' ){
@@ -229,11 +248,14 @@ class Attachment extends Object implements JsonSerializable
                                          false
                                          );
                     
-                } else 
-                    $this->{
-                    $key
-                    
-                } = $value;
+                } else {
+                    $func = 'set' . strtoupper($key[0]).substr($key,1);
+                    $methodVariable = array($this, $func);
+                    if (is_callable($methodVariable)){
+                        $this->$func($value);
+                    } else
+                        $this->{$key} = $value;
+                }
             }
         }
     }
@@ -295,7 +317,9 @@ class Attachment extends Object implements JsonSerializable
             $list['exerciseId'] = $this->exerciseId;
         if ( $this->file !== null )
             $list['file'] = $this->file;
-        return $list;
+        if ( $this->processId !== null )
+            $list['processId'] = $this->processId;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 
     public static function ExtractAttachment( 

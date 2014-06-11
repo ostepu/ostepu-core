@@ -7,6 +7,7 @@
  * @author Till Uhlig
  * @author Felix Schmidt
  * @example DB/DBExerciseSheet/ExerciseSheetSample.json
+ * @date 2013-2014 
  */
 
 require_once ( '../../Assistants/Slim/Slim.php' );
@@ -18,13 +19,6 @@ include_once ( '../../Assistants/CConfig.php' );
 include_once ( '../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
-
-// runs the CConfig
-$com = new CConfig( DBExerciseSheet::getPrefix( ) );
-
-// runs the DBExerciseSheet
-if ( !$com->used( ) )
-    new DBExerciseSheet( $com->loadConfig( ) );
 
 /**
  * A class, to abstract the "ExerciseSheet" table from database
@@ -80,9 +74,15 @@ class DBExerciseSheet
      *
      * @param Component $conf component data
      */
-    public function __construct( $conf )
+    public function __construct( )
     {
+        // runs the CConfig
+        $com = new CConfig( DBExerciseSheet::getPrefix( ) );
 
+        // runs the DBExerciseSheet
+        if ( $com->used( ) ) return;
+            $conf = $com->loadConfig( );
+            
         // initialize component
         $this->_conf = $conf;
         $this->query = array( CConfig::getLink( 

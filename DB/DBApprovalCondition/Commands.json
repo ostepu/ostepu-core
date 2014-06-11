@@ -1,0 +1,8 @@
+[
+    {"method":"PUT", "path":"/approvalcondition(/approvalcondition)/:apid(/)"},
+    {"method":"DELETE", "path":"/approvalcondition(/approvalcondition)/:apid(/)"},
+    {"method":"POST", "path":"/approvalcondition(/)"},
+    {"method":"GET", "path":"/approvalcondition(/approvalcondition)/:apid(/)"},
+    {"method":"GET", "path":"/approvalcondition(/approvalcondition)(/)"},
+    {"method":"GET", "path":"/approvalcondition/course/:courseid(/)"}
+]
