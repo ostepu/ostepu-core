@@ -176,6 +176,8 @@ class Installer
             $components = Installation::initialisiereKomponenten($data, $fail, $errno, $error);
         }
         
+        $installSuperAdmin = false;
+        
         echo "
             <html><head><style type='text/css'>
             body {background-color: #ffffff; color: #000000;}
@@ -254,6 +256,10 @@ class Installer
 
         #region Datenbankschnittstelle_einrichten
         $text='';
+        $text .= Design::erstelleZeile($simple, 'Benutzername', 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['db_user_operator']) ? $data['DB']['db_user_operator'] : null), 'data[DB][db_user_operator]', 'root'), 'v');
+        $text .= Design::erstelleZeile($simple, 'Passwort', 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_passwd_operator']) ? $data['DB']['db_passwd_operator'] : null), 'data[DB][db_passwd_operator]', ''), 'v');
+        
+        
         $defaultFiles = array('../DB/CControl/config.ini','../DB/DBQuery/config.ini','../DB/DBQuery2/config.ini');
         if (!isset($data['DB']['config'])) $data['DB']['config']=array(null,null,null);
         for ($confCount = 0; $confCount <= 2 ; $confCount++){
@@ -265,6 +271,19 @@ class Installer
 
         echo Design::erstelleBlock($simple, 'Datenbankschnittstelle einrichten', $text);
         #endregion Datenbankschnittstelle_einrichten
+        
+        #region Benutzer_erstellen
+        $text='';
+        $text .= Design::erstelleZeile($simple, 'Benutzername', 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['db_user_insert']) ? $data['DB']['db_user_insert'] : null), 'data[DB][db_user_insert]', 'root'), 'v');
+        $text .= Design::erstelleZeile($simple, 'Passwort', 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_passwd_insert']) ? $data['DB']['db_passwd_insert'] : null), 'data[DB][db_passwd_insert]', ''), 'v');
+        $text .= Design::erstelleZeile($simple, 'Vorname', 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_first_name_insert']) ? $data['DB']['db_first_name_insert'] : null), 'data[DB][db_first_name_insert]', ''), 'v');
+        $text .= Design::erstelleZeile($simple, 'Nachname', 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_last_name_insert']) ? $data['DB']['db_last_name_insert'] : null), 'data[DB][db_last_name_insert]', ''), 'v');
+        $text .= Design::erstelleZeile($simple, 'E-Mail', 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_email_insert']) ? $data['DB']['db_email_insert'] : null), 'data[DB][db_email_insert]', ''), 'v', Design::erstelleSubmitButton("actionInstallSuperAdmin"), 'h');
+
+        if ($installSuperAdmin)
+            $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error); 
+        echo Design::erstelleBlock($simple, 'Super-Admin erstellen', $text);
+        #endregion Benutzer_erstellen
         
         #region Komponenten
         $text='';
@@ -313,7 +332,7 @@ class Installer
                 }
                 
                 $countCommands = count(isset($component['commands']) ? $component['commands'] : array());
-                $text .= "<tr><td class='e' rowspan='{$countLinks}'>{$componentName}</td><td class='v'>{$component['init']->getAddress()}</td><td class='e'>".($component['init']->getStatus() === 201 ? "OK" : "<font color='red'>Fehler ({$component['init']->getStatus()})</font>")."</td></tr>";
+                $text .= "<tr><td class='e' rowspan='{$countLinks}'>{$componentName}</td><td class='v'>{$component['init']->getAddress()}</td><td class='e'><div align ='center'>".($component['init']->getStatus() === 201 ? "OK" : "<font color='red'>Fehler ({$component['init']->getStatus()})</font>")."</align></td></tr>";
                 
                 if (isset($component['init']) && $component['init']->getStatus() === 201){
                     $installedComponents++;
@@ -367,7 +386,7 @@ class Installer
                                     }
                                     if ($notRoutable) break;
                                 }
-                                $text .= "<tr><td class='v'>{$link->getName()}</td><td class='e'>".(!$notRoutable ? 'OK' : '<font color="red">Fehler</font>')."</td></tr>";
+                                $text .= "<tr><td class='v'>{$link->getName()}</td><td class='e'><div align ='center'>".(!$notRoutable ? 'OK' : '<font color="red">Fehler</font>')."</align></td></tr>";
                             }
                         }
                         
@@ -398,9 +417,9 @@ class Installer
             }
             
             $text .= Design::erstelleZeile($simple, '', '', '', '', '' , '');
-            $text .= Design::erstelleZeile($simple, 'installierte Komponenten', 'e', '', 'v', $installedComponents, 'v');
-            $text .= Design::erstelleZeile($simple, 'installierte Verbindungen', 'e', '', 'v', $installedLinks, 'v');
-            $text .= Design::erstelleZeile($simple, 'installierte Befehle', 'e', '', 'v', $installedCommands, 'v');
+            $text .= Design::erstelleZeile($simple, 'installierte Komponenten', 'e', '', 'v', "<div align ='center'>".$installedComponents."</align", 'v');
+            $text .= Design::erstelleZeile($simple, 'installierte Verbindungen', 'e', '', 'v', "<div align ='center'>".$installedLinks."</align", 'v');
+            $text .= Design::erstelleZeile($simple, 'installierte Befehle', 'e', '', 'v', "<div align ='center'>".$installedCommands."</align", 'v');
 
             $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error); 
         }

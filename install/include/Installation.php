@@ -58,20 +58,24 @@ class Installation
             if (!is_array($results)) $results = array($results);
             
             // get component definitions from database
-            $result = Request::get($data['PL']['url'].'/'.$url. '/definition',array(),'');
+            $result4 = Request::get($data['PL']['url'].'/'.$url. '/definition',array(),'');
             
-            if (isset($result['content']) && isset($result['status']) && $result['status'] === 200){
-            $definitions = Component::decodeComponent($result['content']);
+            if (isset($result4['content']) && isset($result4['status']) && $result4['status'] === 200){
+            $definitions = Component::decodeComponent($result4['content']);
             if (!is_array($definitions)) $definitions = array($definitions);
             
             $result2 = new Request_MultiRequest();
             $result3 = new Request_MultiRequest();
             foreach ($definitions as $definition){
+                $components[$definition->getName()] = array();
+                $components[$definition->getName()]['definition'] = $definition;
+                            
                 $request = Request_CreateRequest::createGet($definition->getAddress().'/info/commands',array(),'');
                 $result2->addRequest($request);
                 $request = Request_CreateRequest::createGet($definition->getAddress().'/info/links',array(),'');
                 $result3->addRequest($request);
             }
+            
             $result2 = $result2->run();
             $result3 = $result3->run();
             
@@ -92,9 +96,7 @@ class Installation
                             $links = Link::decodeLink(Link::encodeLink($links));
                             if (!is_array($links)) $links = array($links);
                             
-                            $components[$definition->getName()] = array();
                             $components[$definition->getName()]['links'] = $links;
-                            $components[$definition->getName()]['definition'] = $definition;
                             $components[$definition->getName()]['init'] = $res;
                             
                             if (isset($result2[$resultCounter]['content']) && isset($result2[$resultCounter]['status']) && $result2[$resultCounter]['status'] === 200){
@@ -122,14 +124,18 @@ class Installation
 
                     if ($res->getStatus() !== 201){
                         $fail = true;
+                        echo "fail";
                     }
                 }
             }
-       }else
-        $fail = true;
+       }else{
+            $fail = true;
+            $error .= "keine Definitionen";
+       }
         
         if ($result['status'] !== 200){
             $fail = true;
+            $error .= "Initialisierung fehlgeschlagen";
         }
         
         return $components;
@@ -140,8 +146,8 @@ class Installation
         $file = $data['DB']['config'][$id];
         $text = "[DB]\n".
                 "db_path = {$data['DB']['db_path']}\n".
-                "db_user = {$data['DB']['db_user']}\n".
-                "db_passwd = {$data['DB']['db_passwd']}\n".
+                "db_user = {$data['DB']['db_user_operator']}\n".
+                "db_passwd = {$data['DB']['db_passwd_operator']}\n".
                 "db_name = {$data['DB']['db_name']}";
                 
         if (!@file_put_contents($file,$text)) $fail = true;
