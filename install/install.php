@@ -176,7 +176,12 @@ class Installer
             $components = Installation::initialisiereKomponenten($data, $fail, $errno, $error);
         }
         
+        // install super admin
         $installSuperAdmin = false;
+        if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInstallSuperAdmin'])) && !$installFail){
+            $installSuperAdmin = true;
+            Installation::installiereSuperAdmin($data, $fail, $errno, $error);
+        }
         
         echo "
             <html><head><style type='text/css'>
@@ -332,7 +337,8 @@ class Installer
                 }
                 
                 $countCommands = count(isset($component['commands']) ? $component['commands'] : array());
-                $text .= "<tr><td class='e' rowspan='{$countLinks}'>{$componentName}</td><td class='v'>{$component['init']->getAddress()}</td><td class='e'><div align ='center'>".($component['init']->getStatus() === 201 ? "OK" : "<font color='red'>Fehler ({$component['init']->getStatus()})</font>")."</align></td></tr>";
+                if (isset($component['init']))
+                    $text .= "<tr><td class='e' rowspan='{$countLinks}'>{$componentName}</td><td class='v'>{$component['init']->getAddress()}</td><td class='e'><div align ='center'>".($component['init']->getStatus() === 201 ? "OK" : "<font color='red'>Fehler ({$component['init']->getStatus()})</font>")."</align></td></tr>";
                 
                 if (isset($component['init']) && $component['init']->getStatus() === 201){
                     $installedComponents++;
