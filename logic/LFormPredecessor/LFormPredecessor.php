@@ -362,7 +362,7 @@ class LFormPredecessor
                                     
                                     switch($param){
                                         case('isnumeric'):
-                                            if (!eregi("^-?([0-9])+([\.|,]([0-9])+)?$",DefaultNormalizer::normalizeText($choice->getText()))){
+                                            if (!preg_match("%^-?([0-9])+([\.|,]([0-9])+)?$%",DefaultNormalizer::normalizeText($choice->getText()))){
                                                 $fail = true;
                                                 $pro->addMessage('"'.$choice->getText().'" ist keine gültige Zahl.');
                                             }
@@ -398,7 +398,7 @@ class LFormPredecessor
                                             }
                                             break;
                                         default:
-                                            if (!@eregi($param, DefaultNormalizer::normalizeText($choice->getText()))){
+                                            if (!@preg_match($param, DefaultNormalizer::normalizeText($choice->getText()))){
                                                 $fail = true;
                                                 $pro->addMessage('"' . $choice->getText().'" entspricht nicht dem regulären Ausdruck "'.$param.'".');
                                             }
