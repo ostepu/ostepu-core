@@ -89,7 +89,7 @@
 
             <div class="content-description left new-line" style="width:748px">
                 <?php
-                echo $form->getTask();
+                echo str_replace(array(' ', "\n"), array('&nbsp', '<br>'), $form->getTask());
                 ?>
             </div>
             <?php }?>
