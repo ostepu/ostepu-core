@@ -363,7 +363,7 @@ class LFormProcessor
                             if ($parameter===null || count($parameter)===0){      
                                 if (DefaultNormalizer::normalizeText($correctAnswers[0]->getText()) != DefaultNormalizer::normalizeText($answers[0]->getText()))
                                     $allcorrect = false;
-                            } elseif($parameter[0] === 'distance1'){
+                            } elseif(strtolower($parameter[0]) === 'distance1'){
                                 $similarity = 0;
                                 similar_text(DefaultNormalizer::normalizeText($answers[0]->getText()),DefaultNormalizer::normalizeText($correctAnswers[0]->getText()),$similarity);
                                 if (isset($parameter[1])){
@@ -376,9 +376,21 @@ class LFormProcessor
                                         $allcorrect = false;
                                     }
                                 }
+                            } elseif(strtolower($parameter[0]) === 'regularexpression'){
+                                $test = '';$i = 1;
+                                while($i<count($parameter)){
+                                    $test.=$parameter[$i];
+                                    $i++;
+                                    if (@preg_match($test, DefaultNormalizer::normalizeText($answers[0]->getText()))!==false)
+                                        break;
+                                }
+                                
+                                $match = @preg_match($test, DefaultNormalizer::normalizeText(DefaultNormalizer::normalizeText($answers[0]->getText())));
+                                if ($match === false || $match == false || $test == ''){
+                                    $allcorrect = false;
+                                }
                             }
-                            
-                        
+
                         }elseif ($forms->getType()==1){
                             foreach ($correctAnswers as $mask){
                             
