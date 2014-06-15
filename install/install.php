@@ -8,13 +8,13 @@
  * @date 2014
  */
  
-require_once '../Assistants/Slim/Slim.php';
-require_once '../Assistants/Request.php';
-require_once '../Assistants/DBRequest.php';
-require_once '../Assistants/DBJson.php';
-require_once '../Assistants/Structures.php';
-require_once './include/Design.php';
-require_once './include/Installation.php';
+require_once dirname(__FILE__) . '/../Assistants/Slim/Slim.php';
+require_once dirname(__FILE__) . '/../Assistants/Request.php';
+require_once dirname(__FILE__) . '/../Assistants/DBRequest.php';
+require_once dirname(__FILE__) . '/../Assistants/DBJson.php';
+require_once dirname(__FILE__) . '/../Assistants/Structures.php';
+require_once dirname(__FILE__) . '/include/Design.php';
+require_once dirname(__FILE__) . '/include/Installation.php';
 
 \Slim\Slim::registerAutoloader();
 
@@ -74,18 +74,26 @@ class Installer
         // check if apache modules are existing
         $result['mod_php5'] = Installer::apache_module_exists('mod_php5');
         $result['mod_rewrite'] = Installer::apache_module_exists('mod_rewrite');
+        $result['mod_deflate'] = Installer::apache_module_exists('mod_deflate');
+        
+        // $result['mod_alias'] = Installer::apache_module_exists('mod_alias');
+        // $result['mod_authz_groupfile'] = Installer::apache_module_exists('mod_authz_groupfile');
+        // $result['mod_authz_host'] = Installer::apache_module_exists('mod_authz_host');
+        // $result['mod_log_config'] = Installer::apache_module_exists('mod_log_config');
+        // $result['mod_setenvif'] = Installer::apache_module_exists('mod_setenvif');      
         return $result;
     }
     
     public static function checkExtensions()
     {
         $result = array();
-        
         // check if php extensions are existing
         $result['curl'] = Installer::apache_extension_exists('curl');
         $result['mysql'] = Installer::apache_extension_exists('mysql');
         $result['mysqli'] = Installer::apache_extension_exists('mysqli');
         $result['json'] = Installer::apache_extension_exists('json');
+        $result['mbstring'] = Installer::apache_extension_exists('mbstring');
+        $result['openssl'] = Installer::apache_extension_exists('openssl');
         return $result;
     }
     
@@ -281,13 +289,13 @@ class Installer
         $text='';
         $text .= Design::erstelleZeile($simple, 'Benutzername', 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['db_user_insert']) ? $data['DB']['db_user_insert'] : null), 'data[DB][db_user_insert]', 'root'), 'v');
         $text .= Design::erstelleZeile($simple, 'Passwort', 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_passwd_insert']) ? $data['DB']['db_passwd_insert'] : null), 'data[DB][db_passwd_insert]', ''), 'v');
-        $text .= Design::erstelleZeile($simple, 'Vorname', 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_first_name_insert']) ? $data['DB']['db_first_name_insert'] : null), 'data[DB][db_first_name_insert]', ''), 'v');
-        $text .= Design::erstelleZeile($simple, 'Nachname', 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_last_name_insert']) ? $data['DB']['db_last_name_insert'] : null), 'data[DB][db_last_name_insert]', ''), 'v');
-        $text .= Design::erstelleZeile($simple, 'E-Mail', 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_email_insert']) ? $data['DB']['db_email_insert'] : null), 'data[DB][db_email_insert]', ''), 'v', Design::erstelleSubmitButton("actionInstallSuperAdmin"), 'h');
+        $text .= Design::erstelleZeile($simple, 'Vorname (optional)', 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_first_name_insert']) ? $data['DB']['db_first_name_insert'] : null), 'data[DB][db_first_name_insert]', ''), 'v');
+        $text .= Design::erstelleZeile($simple, 'Nachname (optional)', 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_last_name_insert']) ? $data['DB']['db_last_name_insert'] : null), 'data[DB][db_last_name_insert]', ''), 'v');
+        $text .= Design::erstelleZeile($simple, 'E-Mail (optional)', 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_email_insert']) ? $data['DB']['db_email_insert'] : null), 'data[DB][db_email_insert]', ''), 'v', Design::erstelleSubmitButton("actionInstallSuperAdmin"), 'h');
 
         if ($installSuperAdmin)
             $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error); 
-        echo Design::erstelleBlock($simple, 'Super-Admin erstellen', $text);
+        echo Design::erstelleBlock($simple, 'Systemadministrator anlegen', $text);
         #endregion Benutzer_erstellen
         
         #region Komponenten

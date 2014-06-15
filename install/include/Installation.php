@@ -1,5 +1,5 @@
 <?php
-
+require_once dirname(__FILE__) . '/../../UI/include/Authentication.php';
 
 /**
  * @file Installation.php contains the Installation class
@@ -189,11 +189,15 @@ class Installation
             }
        }
     }
-    
+
     public static function installiereSuperAdmin($data, &$fail, &$errno, &$error)
     {
         if (!$fail){
-           $sql = "INSERT INTO `User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`, `U_salt`, `U_failed_logins`, `U_externalId`, `U_studentNumber`, `U_isSuperAdmin`, `U_comment`) VALUES (NULL, '{$data['DB']['db_user_insert']}', '{$data['DB']['db_email_insert']}', '{$data['DB']['db_last_name_insert']}', '{$data['DB']['db_first_name_insert']}', NULL, '{$data['DB']['db_passwd_insert']}', 1, NULL, 0, NULL, NULL, 1, NULL);";
+           $auth = new Authentication();
+           $salt = $auth->generateSalt();
+           $passwordHash = $auth->hashPassword($data['DB']['db_passwd_insert'], $salt);
+           
+           $sql = "INSERT INTO `User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`, `U_salt`, `U_failed_logins`, `U_externalId`, `U_studentNumber`, `U_isSuperAdmin`, `U_comment`) VALUES (NULL, '{$data['DB']['db_user_insert']}', '{$data['DB']['db_email_insert']}', '{$data['DB']['db_last_name_insert']}', '{$data['DB']['db_first_name_insert']}', NULL, '$passwordHash', 1, '{$salt}', 0, NULL, NULL, 1, NULL);";
            $result = DBRequest::request($sql, false, $data);
            if ($result["errno"] !== 0){
                 $fail = true; $errno = $result["errno"];$error = isset($result["error"]) ? $result["error"] : '';
