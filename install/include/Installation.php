@@ -1,5 +1,5 @@
 <?php
-
+require_once dirname(__FILE__) . '/../../UI/include/Authentication.php';
 
 /**
  * @file Installation.php contains the Installation class
@@ -7,7 +7,7 @@
  * @author Till Uhlig
  * @date 2014
  */
- 
+  
 class Installation
 {
    /**
@@ -57,6 +57,11 @@ class Installation
             $results = Component::decodeComponent(Component::encodeComponent($results));
             if (!is_array($results)) $results = array($results);
             
+            foreach($results as $res){
+                $components[$res->getName()] = array();
+                $components[$res->getName()]['init'] = $res;
+            }
+
             // get component definitions from database
             $result4 = Request::get($data['PL']['url'].'/'.$url. '/definition',array(),'');
             
@@ -67,7 +72,6 @@ class Installation
             $result2 = new Request_MultiRequest();
             $result3 = new Request_MultiRequest();
             foreach ($definitions as $definition){
-                $components[$definition->getName()] = array();
                 $components[$definition->getName()]['definition'] = $definition;
                             
                 $request = Request_CreateRequest::createGet($definition->getAddress().'/info/commands',array(),'');
@@ -97,7 +101,6 @@ class Installation
                             if (!is_array($links)) $links = array($links);
                             
                             $components[$definition->getName()]['links'] = $links;
-                            $components[$definition->getName()]['init'] = $res;
                             
                             if (isset($result2[$resultCounter]['content']) && isset($result2[$resultCounter]['status']) && $result2[$resultCounter]['status'] === 200){
                                 $commands = json_decode($result2[$resultCounter]['content'], true);
@@ -124,18 +127,21 @@ class Installation
 
                     if ($res->getStatus() !== 201){
                         $fail = true;
-                        echo "fail";
                     }
                 }
+            } else{
+               $fail = true;
+               $error = "keine Definitionen";
             }
+            
        }else{
             $fail = true;
-            $error .= "keine Definitionen";
        }
         
-        if ($result['status'] !== 200){
+        if (isset($result['status']) && $result['status'] !== 200){
             $fail = true;
-            $error .= "Initialisierung fehlgeschlagen";
+            $error = "Initialisierung fehlgeschlagen";
+            $errno = $result['status'];
         }
         
         return $components;
@@ -182,6 +188,22 @@ class Installation
                 break;
             }
        }
+    }
+
+    public static function installiereSuperAdmin($data, &$fail, &$errno, &$error)
+    {
+        if (!$fail){
+           $auth = new Authentication();
+           $salt = $auth->generateSalt();
+           $passwordHash = $auth->hashPassword($data['DB']['db_passwd_insert'], $salt);
+           
+           $sql = "INSERT INTO `User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`, `U_salt`, `U_failed_logins`, `U_externalId`, `U_studentNumber`, `U_isSuperAdmin`, `U_comment`) VALUES (NULL, '{$data['DB']['db_user_insert']}', '{$data['DB']['db_email_insert']}', '{$data['DB']['db_last_name_insert']}', '{$data['DB']['db_first_name_insert']}', NULL, '$passwordHash', 1, '{$salt}', 0, NULL, NULL, 1, NULL);";
+           $result = DBRequest::request($sql, false, $data);
+           if ($result["errno"] !== 0){
+                $fail = true; $errno = $result["errno"];$error = isset($result["error"]) ? $result["error"] : '';
+           }
+        }
+    
     }
     
     public static function installiereDatenbankdatei($data, &$fail, &$errno, &$error)
