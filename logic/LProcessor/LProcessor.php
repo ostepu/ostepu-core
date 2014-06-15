@@ -561,7 +561,14 @@ class LProcessor
 
             // upload submission
             $uploadSubmission = $process->getSubmission();
-            if ($uploadSubmission===null)$uploadSubmission = $process->getRawSubmission();
+            if ($uploadSubmission===null){
+                $uploadSubmission = $process->getRawSubmission();
+                if ($uploadSubmission->getFile()!=null){
+                    $file = $uploadSubmission->getFile();
+                    if ($file->getDisplayName()==null)
+                        $file->setDisplayName($submission->getExerciseName());
+                }
+            }
             
             if ($uploadSubmission!==null){
 //echo Submission::encodeSubmission($uploadSubmission);return;
@@ -579,6 +586,7 @@ class LProcessor
                      $result['status'] <= 299 ){
                     $queryResult = Submission::decodeSubmission( $result['content'] );
                     $uploadSubmission->setId($queryResult->getId());
+                    $uploadSubmission->setFile($queryResult->getFile());
                     if ($process->getMarking()!==null){
                         $process->getMarking()->setSubmission($queryResult);
                     }
