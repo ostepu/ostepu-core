@@ -6,9 +6,9 @@
  * @author Ralf Busch
  */
 
-include_once 'include/Helpers.php';
-include_once 'include/AbstractAuthentication.php';
-include_once 'include/Config.php';
+include_once dirname(__FILE__) . '/Helpers.php';
+include_once dirname(__FILE__) . '/AbstractAuthentication.php';
+include_once dirname(__FILE__) . '/Config.php';
 
 /**
  * Authentication class.
