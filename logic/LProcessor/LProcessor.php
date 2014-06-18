@@ -3,6 +3,7 @@
  * @file LProcessor.php Contains the LProcessor class
  * 
  * @author Till Uhlig
+ * @date 2014
  */
 
 require_once '../../Assistants/Slim/Slim.php';
@@ -83,11 +84,16 @@ class LProcessor
      *
      * This function contains the REST actions with the assignments to
      * the functions.
-     *
-     * @param Component $conf component data
      */
-    public function __construct($conf)
+    public function __construct()
     {
+        // runs the CConfig
+        $com = new CConfig( LProcessor::getPrefix( ) . ',submission,course,link' );
+
+        // runs the LProcessor
+        if ( $com->used( ) ) return;
+            $conf = $com->loadConfig( );
+            
         // initialize slim    
         $this->app = new \Slim\Slim();
         $this->app->response->headers->set('Content-Type', 'application/json');
@@ -141,6 +147,16 @@ class LProcessor
         $this->app->run();
     }
     
+    /**
+     * Returns whether the component is installed for the given course
+     *
+     * Called when this component receives an HTTP GET request to
+     * /link/exists/course/$courseid(/).
+     *
+     * @param int $courseid A course id.
+     *
+     * @param string $courseid The id of the course.
+     */
     public function getExistsCourse($courseid)
     {
          Logger::Log( 
@@ -172,7 +188,13 @@ class LProcessor
         $this->app->response->setStatus( 200 );
         $this->app->response->setBody( null );
     }
-
+    
+    /**
+     * Adds the component to a course
+     *
+     * Called when this component receives an HTTP POST request to
+     * /course(/).
+     */
     public function addCourse()
     {
          Logger::Log( 
@@ -224,7 +246,13 @@ class LProcessor
         
         $this->app->response->setBody( Course::encodeCourse( $course ) );
     }
-
+    
+    /**
+     * Removes the component from a given course
+     *
+     * Called when this component receives an HTTP DELETE request to
+     * /course/$courseid(/).
+     */
     public function deleteCourse($courseid){
         Logger::Log( 
                     'starts DELETE DeleteCourse',
@@ -265,7 +293,13 @@ class LProcessor
             }
         }
     }
-    
+   
+    /**
+     * Adds a process.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /process(/).
+     */
     public function AddProcess()
     {
         $this->app->response->setStatus( 201 );
@@ -428,6 +462,12 @@ class LProcessor
             $this->app->response->setBody( Process::encodeProcess( $res ) );
     }
     
+    /**
+     * Processes a submissions
+     *
+     * Called when this component receives an HTTP POST request to
+     * /submission(/).
+     */
     public function postSubmission()
     {
         $this->app->response->setStatus( 201 );
@@ -521,7 +561,14 @@ class LProcessor
 
             // upload submission
             $uploadSubmission = $process->getSubmission();
-            if ($uploadSubmission===null)$uploadSubmission = $process->getRawSubmission();
+            if ($uploadSubmission===null){
+                $uploadSubmission = $process->getRawSubmission();
+                if ($uploadSubmission->getFile()!=null){
+                    $file = $uploadSubmission->getFile();
+                    if ($file->getDisplayName()==null)
+                        $file->setDisplayName($submission->getExerciseName());
+                }
+            }
             
             if ($uploadSubmission!==null){
 //echo Submission::encodeSubmission($uploadSubmission);return;
@@ -539,6 +586,7 @@ class LProcessor
                      $result['status'] <= 299 ){
                     $queryResult = Submission::decodeSubmission( $result['content'] );
                     $uploadSubmission->setId($queryResult->getId());
+                    $uploadSubmission->setFile($queryResult->getFile());
                     if ($process->getMarking()!==null){
                         $process->getMarking()->setSubmission($queryResult);
                     }

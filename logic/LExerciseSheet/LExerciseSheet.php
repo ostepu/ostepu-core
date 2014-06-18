@@ -6,6 +6,7 @@
  * @author Martin Daute
  * @author Peter Koenig
  * @author Ralf Busch
+ * @date 2013-2014
  */
 
 require '../../Assistants/Slim/Slim.php';
@@ -63,8 +64,15 @@ class LExerciseSheet
      *
      * @param Component $conf component data
      */
-    public function __construct($conf)
+    public function __construct()
     {
+        // runs the CConfig
+        $com = new CConfig( LExerciseSheet::getPrefix( ) );
+
+        // runs the LExerciseSheet
+        if ( $com->used( ) ) return;
+            $conf = $com->loadConfig( );
+            
         // initialize slim
         $this->app = new \Slim\Slim();
         $this->app->response->headers->set('Content-Type', 'application/json');

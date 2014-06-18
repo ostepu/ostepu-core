@@ -1,11 +1,14 @@
 <?php
+
+
+/**
+ * @file index.php executes the LGroup component on calling via rest api
+ *
+ * @author Till Uhlig
+ * @date 2014
+ */
+ 
 require_once ( dirname( __FILE__ ) . '/LGroup.php' );
-include_once ( '../../Assistants/CConfig.php' );
 
-// get new config data from DB
-$com = new CConfig(LGroup::getPrefix());
-
-// create a new instance of LUser class with the config data
-if (!$com->used())
-    new LGroup($com->loadConfig());
+new LGroup();
 ?>

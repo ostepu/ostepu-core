@@ -10,7 +10,7 @@
                               class="form-field task-field"
                               rows="5"
                               style="width:100%"
-                              maxlength=""></textarea>
+                              maxlength="2500"></textarea>
                               
 <a href="javascript:void(0);" class="body-option-color add-choice left">Auswahl hinzufügen</a>    
 
@@ -19,4 +19,4 @@
                               class="form-field"
                               rows="5"
                               style="width:100%"
-                              maxlength=""></textarea>
+                              maxlength="2500"></textarea>

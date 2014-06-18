@@ -5,6 +5,7 @@
  * @author Peter Koenig
  * @author Christian Elze
  * @author Martin Daute
+ * @date 2013-2014
  */
 
 require '../../Assistants/Slim/Slim.php';
@@ -63,8 +64,15 @@ class LTutor
      *
      * @param Component $conf component data
      */
-    public function __construct($conf)
+    public function __construct()
     {
+        // runs the CConfig
+        $com = new CConfig( LTutor::getPrefix( ) );
+
+        // runs the LTutor
+        if ( $com->used( ) ) return;
+            $conf = $com->loadConfig( );
+            
         /**
          *Initialise the Slim-Framework
          */

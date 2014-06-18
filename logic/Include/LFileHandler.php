@@ -3,6 +3,7 @@
  * @file LFileHandler.php contains the LFileHandler class
  *
  * @author Martin Daute
+ * @date 2014
  */
 
 /**

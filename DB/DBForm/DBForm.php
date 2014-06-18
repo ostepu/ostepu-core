@@ -3,6 +3,7 @@
  * @file DBForm.php contains the DBForm class
  *
  * @author Till Uhlig
+ * @date 2014
  */
 
 require_once ( '../../Assistants/Slim/Slim.php' );
@@ -66,8 +67,6 @@ class DBForm
      *
      * This function contains the REST actions with the assignments to
      * the functions.
-     *
-     * @param Component $conf component data
      */
     public function __construct( )
     {
@@ -186,6 +185,16 @@ class DBForm
             $this->_app->run( );
     }
     
+    /**
+     * Edits a form.
+     *
+     * Called when this component receives an HTTP PUT request to
+     * /form(/form)/$formid(/)
+     * The request body should contain a JSON object representing the
+     * form's new attributes.
+     *
+     * @param string $formid The id of the form that is being updated.
+     */
     public function editForm( $formid )
     {
         Logger::Log( 
@@ -238,6 +247,14 @@ class DBForm
         }
     }
     
+    /**
+     * Deletes a form.
+     *
+     * Called when this component receives an HTTP DELETE request to
+     * (/$pre)/form(/form)/$formid(/).
+     *
+     * @param string $formid The id of the form that is being deleted.
+     */
     public function deleteForm( $formid )
     {
         Logger::Log( 
@@ -279,6 +296,12 @@ class DBForm
         }
     }
     
+    /**
+     * Adds a form.
+     *
+     * Called when this component receives an HTTP POST request to
+     * (/$pre)/form(/).
+     */
     public function addForm( )
     {
         Logger::Log( 
@@ -421,6 +444,14 @@ class DBForm
         $this->_app->stop( );
     }
     
+    /**
+     * Returns a form.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /form(/form)/$formid(/).
+     *
+     * @param string $formid The id of the form.
+     */
     public function getForm( $formid )
     {
         $this->get( 
@@ -434,6 +465,14 @@ class DBForm
                    );
     }
     
+    /**
+     * Returns forms to a given course.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /form(/form)/$processid(/).
+     *
+     * @param string $courseid The id of the course.
+     */
     public function getCourseForms( $courseid )
     {
         $this->get( 
@@ -447,6 +486,14 @@ class DBForm
                    );
     }
     
+    /**
+     * Returns status code 200, if this component is correctly installed for the given course
+     *
+     * Called when this component receives an HTTP GET request to
+     * (/$pre)/link/exists/course/$courseid(/).
+     *
+     * @param string $courseid The id of the course.
+     */
     public function getExistsCourseForms( $courseid )
     {
         $this->get( 
@@ -460,6 +507,14 @@ class DBForm
                    );
     }
     
+    /**
+     * Returns forms to a given exercise sheet.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /form/exercisesheet/$esid(/)
+     *
+     * @param string $esid The id of the exercise sheet.
+     */
     public function getSheetForms( $esid )
     {
         $this->get( 
@@ -473,6 +528,14 @@ class DBForm
                    );
     }
     
+    /**
+     * Returns forms to a given exercise.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /form/exercise/$eid(/)
+     *
+     * @param string $eid The id of the exercise.
+     */
     public function getExerciseForms( $eid )
     {
         $this->get( 
@@ -486,6 +549,14 @@ class DBForm
                    );
     }
     
+    /**
+     * Removes the component from a given course
+     *
+     * Called when this component receives an HTTP DELETE request to
+     * /course/$courseid(/).
+     *
+     * @param string $courseid The id of the course.
+     */
     public function deleteCourse( $courseid )
     {
         Logger::Log( 
@@ -525,6 +596,12 @@ class DBForm
         }
     }
     
+    /**
+     * Adds the component to a course
+     *
+     * Called when this component receives an HTTP POST request to
+     * /course(/).
+     */
     public function addCourse( )
     {
         Logger::Log( 

@@ -1,4 +1,13 @@
 <?php
+require_once dirname(__FILE__) . '/../../UI/include/Authentication.php';
+
+/**
+ * @file Installation.php contains the Installation class
+ *
+ * @author Till Uhlig
+ * @date 2014
+ */
+  
 class Installation
 {
    /**
@@ -48,21 +57,29 @@ class Installation
             $results = Component::decodeComponent(Component::encodeComponent($results));
             if (!is_array($results)) $results = array($results);
             
+            foreach($results as $res){
+                $components[$res->getName()] = array();
+                $components[$res->getName()]['init'] = $res;
+            }
+
             // get component definitions from database
-            $result = Request::get($data['PL']['url'].'/'.$url. '/definition',array(),'');
+            $result4 = Request::get($data['PL']['url'].'/'.$url. '/definition',array(),'');
             
-            if (isset($result['content']) && isset($result['status']) && $result['status'] === 200){
-            $definitions = Component::decodeComponent($result['content']);
+            if (isset($result4['content']) && isset($result4['status']) && $result4['status'] === 200){
+            $definitions = Component::decodeComponent($result4['content']);
             if (!is_array($definitions)) $definitions = array($definitions);
             
             $result2 = new Request_MultiRequest();
             $result3 = new Request_MultiRequest();
             foreach ($definitions as $definition){
+                $components[$definition->getName()]['definition'] = $definition;
+                            
                 $request = Request_CreateRequest::createGet($definition->getAddress().'/info/commands',array(),'');
                 $result2->addRequest($request);
                 $request = Request_CreateRequest::createGet($definition->getAddress().'/info/links',array(),'');
                 $result3->addRequest($request);
             }
+            
             $result2 = $result2->run();
             $result3 = $result3->run();
             
@@ -83,21 +100,20 @@ class Installation
                             $links = Link::decodeLink(Link::encodeLink($links));
                             if (!is_array($links)) $links = array($links);
                             
-                            $components[$definition->getName()] = array();
                             $components[$definition->getName()]['links'] = $links;
-                            $components[$definition->getName()]['definition'] = $definition;
-                            $components[$definition->getName()]['init'] = $res;
                             
                             if (isset($result2[$resultCounter]['content']) && isset($result2[$resultCounter]['status']) && $result2[$resultCounter]['status'] === 200){
                                 $commands = json_decode($result2[$resultCounter]['content'], true);
-                                $router = new \Slim\Router();
-                                foreach($commands as $command){
-                                    $route = new \Slim\Route($command['path'],'is_array');
-                                    $route->via(strtoupper($command['method']));
-                                    $router->map($route);
+                                if ($commands!==null){
+                                    $router = new \Slim\Router();
+                                    foreach($commands as $command){
+                                        $route = new \Slim\Route($command['path'],'is_array');
+                                        $route->via(strtoupper($command['method']));
+                                        $router->map($route);
+                                    }
+                                    $components[$definition->getName()]['router'] = $router;
+                                    $components[$definition->getName()]['commands'] = $commands;
                                 }
-                                $components[$definition->getName()]['router'] = $router;
-                                $components[$definition->getName()]['commands'] = $commands;
                             }
                             
                             if (isset($result3[$resultCounter]['content']) && isset($result3[$resultCounter]['status']) && $result3[$resultCounter]['status'] === 200){
@@ -113,12 +129,19 @@ class Installation
                         $fail = true;
                     }
                 }
+            } else{
+               $fail = true;
+               $error = "keine Definitionen";
             }
-       }else
-        $fail = true;
-        
-        if ($result['status'] !== 200){
+            
+       }else{
             $fail = true;
+       }
+        
+        if (isset($result['status']) && $result['status'] !== 200){
+            $fail = true;
+            $error = "Initialisierung fehlgeschlagen";
+            $errno = $result['status'];
         }
         
         return $components;
@@ -129,8 +152,8 @@ class Installation
         $file = $data['DB']['config'][$id];
         $text = "[DB]\n".
                 "db_path = {$data['DB']['db_path']}\n".
-                "db_user = {$data['DB']['db_user']}\n".
-                "db_passwd = {$data['DB']['db_passwd']}\n".
+                "db_user = {$data['DB']['db_user_operator']}\n".
+                "db_passwd = {$data['DB']['db_passwd_operator']}\n".
                 "db_name = {$data['DB']['db_name']}";
                 
         if (!@file_put_contents($file,$text)) $fail = true;
@@ -161,10 +184,26 @@ class Installation
        if (!is_array($result)) $result = array($result);
        foreach ($result as $res){
             if ($res["errno"] !== 0){
-                $fail = true; $errno = $result["errno"];$error = $result["error"];
+                $fail = true; $errno = $result["errno"];$error = isset($result["error"]) ? $result["error"] : '';
                 break;
             }
        }
+    }
+
+    public static function installiereSuperAdmin($data, &$fail, &$errno, &$error)
+    {
+        if (!$fail){
+           $auth = new Authentication();
+           $salt = $auth->generateSalt();
+           $passwordHash = $auth->hashPassword($data['DB']['db_passwd_insert'], $salt);
+           
+           $sql = "INSERT INTO `User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`, `U_salt`, `U_failed_logins`, `U_externalId`, `U_studentNumber`, `U_isSuperAdmin`, `U_comment`) VALUES (NULL, '{$data['DB']['db_user_insert']}', '{$data['DB']['db_email_insert']}', '{$data['DB']['db_last_name_insert']}', '{$data['DB']['db_first_name_insert']}', NULL, '$passwordHash', 1, '{$salt}', 0, NULL, NULL, 1, NULL);";
+           $result = DBRequest::request($sql, false, $data);
+           if ($result["errno"] !== 0){
+                $fail = true; $errno = $result["errno"];$error = isset($result["error"]) ? $result["error"] : '';
+           }
+        }
+    
     }
     
     public static function installiereDatenbankdatei($data, &$fail, &$errno, &$error)
@@ -176,7 +215,7 @@ class Installation
            $data['DB']['db_name'] = null;
            $result = DBRequest::request($sql, false, $data);
            if ($result["errno"] !== 0){
-                $fail = true; $errno = $result["errno"];$error = $result["error"];
+                $fail = true; $errno = $result["errno"];$error = isset($result["error"]) ? $result["error"] : '';
            }
            $data['DB']['db_name'] = $oldName;
         }
@@ -187,7 +226,7 @@ class Installation
             $data['DB']['db_name'] = null;
             $result = DBRequest::request($sql, false, $data);
             if ($result["errno"] !== 0){
-                $fail = true; $errno = $result["errno"];$error = $result["error"];
+                $fail = true; $errno = $result["errno"];$error = isset($result["error"]) ? $result["error"] : '';
             }
             $data['DB']['db_name'] = $oldName;
         }
@@ -198,7 +237,7 @@ class Installation
             if (!is_array($result)) $result = array($result);
             foreach ($result as $res){
                 if ($res["errno"] !== 0){
-                    $fail = true; $errno = $result["errno"];$error = $result["error"];
+                    $fail = true; $errno = $result["errno"];$error = isset($result["error"]) ? $result["error"] : '';
                     break;
                 }
            }

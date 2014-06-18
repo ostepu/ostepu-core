@@ -1,4 +1,13 @@
 <?php
+
+
+/**
+ * @file Design.php contains the Design class
+ *
+ * @author Till Uhlig
+ * @date 2014
+ */
+ 
 class Design
 {
     public static function erstelleZeile()
@@ -44,7 +53,7 @@ class Design
     {
         if ($fail === true){
             $installFail = true;
-            return Design::erstelleZeile($simple, 'Installation', 'e', '', 'v', "<div align ='center'><font color='red'>Fehler ({$errno}) <br> {$error}</font></align>", 'v');
+            return Design::erstelleZeile($simple, 'Installation', 'e', '', 'v', "<div align ='center'><font color='red'>Fehler". (($errno!==null && $errno!='') ? " ({$errno})" : '') ."<br> {$error}</font></align>", 'v');
         } else{
             return Design::erstelleZeile($simple, 'Installation', 'e', '', 'v', '<div align ="center">OK</align>', 'v');
         }

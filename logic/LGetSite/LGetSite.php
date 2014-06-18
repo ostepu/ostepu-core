@@ -3,6 +3,7 @@
  * @file LGetSite.php
  *
  * contains the LGetSite class.
+ * @date 2013-2014
  */
 require '../../Assistants/Slim/Slim.php';
 include '../../Assistants/Request.php';
@@ -41,8 +42,15 @@ class LGetSite
 
     private $flag = 0;
 
-    public function __construct($conf)
+    public function __construct()
     {
+        // runs the CConfig
+        $com = new CConfig( LGetSite::getPrefix( ) );
+
+        // runs the LGetSite
+        if ( $com->used( ) ) return;
+            $conf = $com->loadConfig( );
+            
         // Initialize Slim
         $this->app = new \Slim\Slim();
         $this->app->response->headers->set('Content-Type', 'application/json');
@@ -800,12 +808,6 @@ class LGetSite
 
         // load all submissions for every exercise of the exerciseSheet
         if(!empty($exercises)) {
-            //$exercises = $exercisesheet['exercises'];
-            /*foreach ($exercises as $exercise) {
-                $URL = $this->lURL.'/DB/submission/user/'.$uploaduserid.'/exercise/'.$exercise['id'];
-                $answer = Request::custom('GET', $URL, $header, $body);
-                $submissions[] = json_decode($answer['content'], true);
-            }*/
             $URL = $this->lURL.'/DB/submission/user/'.$uploaduserid.'/exercisesheet/'.$sheetid;
             $answer = Request::custom('GET', $URL, $header, $body);
             $answer = json_decode($answer['content'], true);

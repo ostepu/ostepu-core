@@ -4,7 +4,8 @@
  * 
  * @author Peter Koenig
  * @author Christian Elze
- * @author Martin Daute 
+ * @author Martin Daute
+ * @date 2013-2014
  *
  * @author Till Uhlig
  */
@@ -62,8 +63,15 @@ class LMarking
      *
      * @param Component $conf component data
      */
-    public function __construct($conf)
+    public function __construct()
     {
+        // runs the CConfig
+        $com = new CConfig( LMarking::getPrefix( ) );
+
+        // runs the LMarking
+        if ( $com->used( ) ) return;
+            $conf = $com->loadConfig( );
+            
         // initialize slim    
         $this->app = new \Slim\Slim();
         $this->app->response->headers->set('Content-Type', 'application/json');
@@ -103,6 +111,9 @@ class LMarking
      * Called when this component receives an HTTP POST request to
      * /marking(/).
      * The request body should contain a JSON object representing the new marking.
+     *
+     * @author Till Uhlig
+     * @date 2014
      */
     public function addMarking(){
         $header = $this->app->request->headers->all();
@@ -226,6 +237,9 @@ class LMarking
      * /marking/marking/$markingid(/).
      *
      * @param int $markingid The id of the marking that is being deleted.
+     *
+     * @author Till Uhlig
+     * @date 2014
      */
     public function deleteMarking($markingid){
         $result = Request::routeRequest( 

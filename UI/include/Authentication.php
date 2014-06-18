@@ -6,9 +6,9 @@
  * @author Ralf Busch
  */
 
-include_once 'include/Helpers.php';
-include_once 'include/AbstractAuthentication.php';
-include_once 'include/Config.php';
+include_once dirname(__FILE__) . '/Helpers.php';
+include_once dirname(__FILE__) . '/AbstractAuthentication.php';
+include_once dirname(__FILE__) . '/Config.php';
 
 /**
  * Authentication class.
@@ -69,18 +69,21 @@ class Authentication extends AbstractAuthentication
         // check if user exists
         if ($message != "404" && empty($user) == false) {
             // create passwordhash with salt as suffix
-            $password = $this->hashData('sha256',$password.$user['salt']);
+            
+            if (isset($user['salt'])){
+                $password = $this->hashData('sha256',$password.$user['salt']);
 
-            if ($password == $user['password']) {
+                if (isset($user['password']) && $password == $user['password']) {
 
-                // save logged in uid
-                $_SESSION['UID'] = $user['id'];
-                $refresh = $this->refreshSession();
-                return $refresh;
-            } else {
-                $userid = $user['id'];
-                $databaseURL = "{$databaseURI}/user/user/{$userid}/IncFailedLogin";
-                $user = http_get($databaseURL, false, $message);
+                    // save logged in uid
+                    $_SESSION['UID'] = $user['id'];
+                    $refresh = $this->refreshSession();
+                    return $refresh;
+                } else {
+                    $userid = $user['id'];
+                    $databaseURL = "{$databaseURI}/user/user/{$userid}/IncFailedLogin";
+                    $user = http_get($databaseURL, false, $message);
+                }
             }
         }
         return false;

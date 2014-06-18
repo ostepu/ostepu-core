@@ -10,23 +10,21 @@
             <div class="content-body left">
             <table border="0" style="width:100%">          
                     
-       <tr>
-       
-       <td>
-       <input type="checkbox" class="parameter-choice" name="exercises[0][subexercises][0][processorParameterList][0][]" value="distance1"/>
-       </td>
-       <td>
-       <label class="label bold" for="">Übereinstimmung:</label>
-       </td>
-       <td>
-               <select class="parameter-choice" style="width:auto" name="exercises[0][subexercises][0][processorParameterList][0][]">
-           <option value="25">>=25%</option>
-           <option value="50">>=50%</option>
-           <option value="75">>=75%</option>
-    </select>
- </td> 
- 
-       </tr>
+        <tr>
+        <td>
+            <label class="label bold" for="">Vergleich:</label>
+        </td>
+        <td>
+            <select class="parameter-choice" style="width:auto" name="exercises[0][subexercises][0][processorParameterList][0][]">
+               <option value="">Normal</option>
+               <option value="distance1">Ähnlichkeit in %</option>
+               <option value="regularExpression">regulärer Ausdruck</option>
+           </select>
+        </td>
+        <td>
+            <input type="text" style="width:100%" class="parameter-choice" name="exercises[0][subexercises][0][processorParameterList][0][]" value=""/>
+        </td>
+        </tr>
        
         </table>
             </div>

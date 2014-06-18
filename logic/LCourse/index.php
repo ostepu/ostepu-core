@@ -1,15 +1,14 @@
 <?php
+
+
+/**
+ * @file index.php executes the LCourse component on calling via rest api
+ *
+ * @author Till Uhlig
+ * @date 2014
+ */
+ 
 require_once ( dirname( __FILE__ ) . '/LCourse.php' );
-include_once ( '../../Assistants/CConfig.php' );
 
-/**
- * get new Config-Datas from DB
- */
-$com = new CConfig(LCourse::getPrefix());
-
-/**
- * run a new instance of LCourse with the Config-Datas
- */
-if (!$com->used())
-    new LCourse($com->loadConfig());
+new LCourse();
 ?>

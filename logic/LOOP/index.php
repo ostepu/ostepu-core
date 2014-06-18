@@ -1,11 +1,14 @@
 <?php
+
+
+/**
+ * @file index.php executes the LOOP component on calling via rest api
+ *
+ * @author Till Uhlig
+ * @date 2014
+ */
+ 
 require_once ( dirname( __FILE__ ) . '/LOOP.php' );
-include_once ( '../../Assistants/CConfig.php' );
 
-// get new config data from DB
-$com = new CConfig(LOOP::getPrefix() . ',link,course');
-
-// create a new instance of LOOP class with the config data
-if (!$com->used())
-    new LOOP($com->loadConfig());
+new LOOP();
 ?>

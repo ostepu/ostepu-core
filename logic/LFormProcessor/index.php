@@ -1,11 +1,14 @@
 <?php
+
+
+/**
+ * @file index.php executes the LFormProcessor component on calling via rest api
+ *
+ * @author Till Uhlig
+ * @date 2014
+ */
+ 
 require_once ( dirname( __FILE__ ) . '/LFormProcessor.php' );
-include_once ( '../../Assistants/CConfig.php' );
 
-// get new config data from DB
-$com = new CConfig(LFormProcessor::getPrefix() . ',link,course');
-
-// create a new instance of LFormProcessor class with the config data
-if (!$com->used())
-    new LFormProcessor($com->loadConfig());
+new LFormProcessor();
 ?>

@@ -1,11 +1,14 @@
 <?php
+
+
+/**
+ * @file index.php executes the LMarking component on calling via rest api
+ *
+ * @author Till Uhlig
+ * @date 2014
+ */
+ 
 require_once ( dirname( __FILE__ ) . '/LMarking.php' );
-include_once ( '../../Assistants/CConfig.php' );
 
-// get new config data from DB
-$com = new CConfig(LMarking::getPrefix());
-
-// create a new instance of LMarking class with the config data
-if (!$com->used())
-    new LMarking($com->loadConfig());
+new LMarking();
 ?>

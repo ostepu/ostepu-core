@@ -4,7 +4,8 @@
 /**
  * @file LFile.php contains the LFile class
  *
- * @author Till Uhlig
+ * @author Till Uhlig 
+ * @date 2014
  */ 
 
 require_once ( '../../Assistants/Slim/Slim.php' );
@@ -73,12 +74,17 @@ class LFile
      *
      * This function contains the REST actions with the assignments to
      * the functions.
-     *
-     * @param Component $conf component data
      */
-    public function __construct( $_conf )
+    public function __construct()
     {
-        $this->_conf = $_conf;
+        // runs the CConfig
+        $com = new CConfig( LFile::$_baseDir );
+
+        // runs the LFile
+        if ( $com->used( ) ) return;
+        $conf = $com->loadConfig( );
+            
+        $this->_conf = $conf;
         $this->_fs = CConfig::getLinks($this->_conf->getLinks( ),'file');
         $this->_db = CConfig::getLinks($this->_conf->getLinks( ),'fileDb');
 
@@ -117,28 +123,17 @@ class LFile
                                   )
                             );
 
-        if ( strpos( 
-                    $this->_app->request->getResourceUri( ),
-                    '/' . LFile::$_baseDir
-                    ) === 0   || strpos( 
-                    $this->_app->request->getResourceUri( ),
-                    '/info'
-                    ) === 0){
-
-            // run Slim
-            $this->_app->run( );
-        }
-        else
-        header("HTTP/1.0 404 Not Found");
+        // run Slim
+        $this->_app->run( );
     }
-
+   
     /**
-     * Prepares the saving process by generating the hash and the place where the file is stored.
+     * Adds a file.
      *
-     * Called when this component receives an HTTP POST request to
-     * /file.
-     * The request body should contain a JSON object representing the file's
-     * attributes.
+     * Called when this component receives an HTTP DELETE request to
+     * /file/$path(/)
+     *
+     * @param String the path, where the file should be stored
      */
     public function postPathFile( $path)
     {
@@ -192,7 +187,13 @@ class LFile
         $this->_app->response->setStatus( 201 );
         $this->_app->response->setBody( File::encodeFile( $res ) );
     }
-    
+   
+    /**
+     * Adds a file.
+     *
+     * Called when this component receives an HTTP POST request to
+     * /file(/)
+     */
     public function postFile( )
     {
         $this->postPathFile(array(''));
@@ -202,9 +203,7 @@ class LFile
      * Deletes a file.
      *
      * Called when this component receives an HTTP DELETE request to
-     * /file/$hash.
-     *
-     * @param string $hash The hash of the file which should be deleted.
+     * /file(/)
      */
     public function deleteFile( )
     {

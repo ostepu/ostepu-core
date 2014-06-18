@@ -3,12 +3,14 @@
  * @file LFormProcessor.php Contains the LFormProcessor class
  * 
  * @author Till Uhlig
+ * @date 2014
  */
 
 require_once '../../Assistants/Slim/Slim.php';
 include_once '../../Assistants/Request.php';
 include_once '../../Assistants/CConfig.php';
 include_once '../../Assistants/DBJson.php';
+include_once '../../Assistants/DefaultNormalizer.php';
 
 \Slim\Slim::registerAutoloader();
 
@@ -70,11 +72,16 @@ class LFormProcessor
      *
      * This function contains the REST actions with the assignments to
      * the functions.
-     *
-     * @param Component $conf component data
      */
-    public function __construct($conf)
+    public function __construct()
     {
+        // runs the CConfig
+        $com = new CConfig( LFormProcessor::getPrefix( ) . ',course,link' );
+
+        // runs the LFormProcessor
+        if ( $com->used( ) ) return;
+            $conf = $com->loadConfig( );
+            
         // initialize slim    
         $this->app = new \Slim\Slim(array('debug' => true));
         $this->app->response->headers->set('Content-Type', 'application/json');
@@ -122,6 +129,14 @@ class LFormProcessor
         $this->app->run();
     }
     
+    /**
+     * Removes the component from a given course
+     *
+     * Called when this component receives an HTTP DELETE request to
+     * /course/$courseid(/).
+     *
+     * @param string $courseid The id of the course.
+     */
     public function deleteCourse( $courseid )
     {
         $result = Request::routeRequest( 
@@ -160,6 +175,12 @@ class LFormProcessor
         $this->app->response->setStatus( 404 );
     }
     
+    /**
+     * Adds the component to a course
+     *
+     * Called when this component receives an HTTP POST request to
+     * /course(/).
+     */
     public function addCourse( )
     {
          Logger::Log( 
@@ -230,6 +251,14 @@ class LFormProcessor
         $this->app->response->setBody( Course::encodeCourse( $courses ) );
     }
     
+    /**
+     * Returns whether the component is installed for the given course
+     *
+     * Called when this component receives an HTTP GET request to
+     * /link/exists/course/$courseid(/).
+     *
+     * @param int $courseid A course id.
+     */
     public function getExistsCourse($courseid)
     {
         $result = Request::routeRequest( 
@@ -249,6 +278,14 @@ class LFormProcessor
         $this->app->response->setStatus( 409 );
     }
     
+    /**
+     * Returns the text of a given choice id.
+     *
+     * @param string $choiceId The id of the choice.
+     * @param string[] $Choices An array of choices.
+     *
+     * @return String The text.
+     */
     public function ChoiceIdToText($choiceId, $Choices)
     {
         foreach ($Choices as $choice){
@@ -258,7 +295,13 @@ class LFormProcessor
         
         return null;
     }
-    
+   
+    /**
+     * Processes a process
+     *
+     * Called when this component receives an HTTP POST request to
+     * /process(/).
+     */
     public function postProcess()
     {
           
@@ -318,24 +361,36 @@ class LFormProcessor
                             
                             $parameter = explode(' ',strtolower($pro->getParameter()));
                             if ($parameter===null || count($parameter)===0){      
-                                if ($correctAnswers[0]->getText() != $answers[0]->getText())
+                                if (DefaultNormalizer::normalizeText($correctAnswers[0]->getText()) != DefaultNormalizer::normalizeText($answers[0]->getText()))
                                     $allcorrect = false;
-                            } elseif($parameter[0] === 'distance1'){
+                            } elseif(strtolower($parameter[0]) === 'distance1'){
                                 $similarity = 0;
-                                similar_text($answers[0]->getText(),$correctAnswers[0]->getText(),$similarity);
+                                similar_text(DefaultNormalizer::normalizeText($answers[0]->getText()),DefaultNormalizer::normalizeText($correctAnswers[0]->getText()),$similarity);
                                 if (isset($parameter[1])){
-                                    if (similar_text<$parameter[1]){
+                                    if ($similarity <$parameter[1]){
                                         $allcorrect = false;
                                     }
                                 }
                                 else{
-                                    if (similar_text<100){
+                                    if ($similarity <100){
                                         $allcorrect = false;
                                     }
                                 }
+                            } elseif(strtolower($parameter[0]) === 'regularexpression'){
+                                $test = '';$i = 1;
+                                while($i<count($parameter)){
+                                    $test.=$parameter[$i];
+                                    $i++;
+                                    if (@preg_match($test, DefaultNormalizer::normalizeText($answers[0]->getText()))!==false)
+                                        break;
+                                }
+                                
+                                $match = @preg_match($test, DefaultNormalizer::normalizeText(DefaultNormalizer::normalizeText($answers[0]->getText())));
+                                if ($match === false || $match == false || $test == ''){
+                                    $allcorrect = false;
+                                }
                             }
-                            
-                        
+
                         }elseif ($forms->getType()==1){
                             foreach ($correctAnswers as $mask){
                             

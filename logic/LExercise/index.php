@@ -1,11 +1,14 @@
 <?php
+
+
+/**
+ * @file index.php executes the LExercise component on calling via rest api
+ *
+ * @author Till Uhlig
+ * @date 2014
+ */
+ 
 require_once ( dirname( __FILE__ ) . '/LExercise.php' );
-include_once ( '../../Assistants/CConfig.php' );
 
-// get new config data from DB
-$com = new CConfig(LExercise::getPrefix());
-
-// create a new instance of LExercise class with the config data
-if (!$com->used())
-    new LExercise($com->loadConfig());
+new LExercise();
 ?>

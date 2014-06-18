@@ -5,6 +5,7 @@
  * @file DBChoice.php contains the DBChoice class
  *
  * @author Till Uhlig
+ * @date 2014
  */
 
 require_once ( '../../Assistants/Slim/Slim.php' );
@@ -68,8 +69,6 @@ class DBChoice
      *
      * This function contains the REST actions with the assignments to
      * the functions.
-     *
-     * @param Component $conf component data
      */
     public function __construct( )
     {
@@ -192,6 +191,15 @@ class DBChoice
             $this->_app->run( );
     }
     
+    /**
+     * Loads the configuration data for the component from CConfig.json file
+     *
+     * @param int $preChoice A optional prefix for the Choice table.
+     * @param int $preForm A optional prefix for the Form table.
+     * @param int $preExercise A optional prefix for the Exercise table.
+     *
+     * @return an component object, which represents the configuration
+     */
     public function loadConfig( $preChoice='',  $preForm='',  $preExercise='')
     {
         // initialize component
@@ -202,6 +210,18 @@ class DBChoice
                                                ) );
     }
     
+    /**
+     * Edits a specific choice
+     *
+     * Called when this component receives an HTTP PUT request to
+     * (/$preChoice(/$preForm(/$preExercise)))/choice(/choice)/$choiceid(/).
+     * The request body should contain a JSON object representing the new choice
+     *
+     * @param int $preChoice A optional prefix for the Choice table.
+     * @param int $preForm A optional prefix for the Form table.
+     * @param int $preExercise A optional prefix for the Exercise table.
+     * @param int $choiceid The id of the choice.
+     */
     public function editChoice( $preChoice='',  $preForm='',  $preExercise='', $choiceid )
     {
         $this->loadConfig($preChoice, $preForm,  $preExercise);
@@ -265,6 +285,17 @@ class DBChoice
         }
     }
     
+    /**
+     * Deletes a choice.
+     *
+     * Called when this component receives an HTTP DELETE request to
+     * (/$preChoice(/$preForm(/$preExercise)))/choice(/choice)/$choiceid(/).
+     *
+     * @param string $choiceid The id of the choice that is being deleted.
+     * @param int $preForm A optional prefix for the Form table.
+     * @param int $preExercise A optional prefix for the Exercise table.
+     * @param int $choiceid The id of the choice.
+     */
     public function deleteChoice( $preChoice='',  $preForm='',  $preExercise='', $choiceid )
     {
         $this->loadConfig($preChoice, $preForm,  $preExercise);
@@ -317,6 +348,16 @@ class DBChoice
         }
     }
     
+    /**
+     * Adds a choice.
+     *
+     * Called when this component receives an HTTP POST request to
+     * (/$preChoice(/$preForm(/$preExercise)))/choice(/).
+     *
+     * @param int $preForm A optional prefix for the Form table.
+     * @param int $preExercise A optional prefix for the Exercise table.
+     * @param int $choiceid The id of the choice.
+     */
     public function addChoice( $preChoice='',  $preForm='',  $preExercise='' )
     {
         $this->loadConfig($preChoice, $preForm,  $preExercise);
@@ -482,6 +523,17 @@ class DBChoice
         $this->_app->stop( );
     }
     
+    /**
+     * Returns a choice.
+     *
+     * Called when this component receives an HTTP GET request to
+     * (/:preChoice(/:preForm(/:preExercise)))/choice(/choice)/$choiceid(/).
+     *
+     * @param string $choiceid The id of the choice.
+     * @param int $preChoice A optional prefix for the Choice table.
+     * @param int $preForm A optional prefix for the Form table.
+     * @param int $preExercise A optional prefix for the Exercise table.
+     */   
     public function getChoice( $preChoice='',  $preForm='',  $preExercise='', $choiceid )
     {
         $this->get( 
@@ -499,6 +551,17 @@ class DBChoice
                    );
     }
     
+    /**
+     * Returns choices to a given course.
+     *
+     * Called when this component receives an HTTP GET request to
+     * (/:preChoice(/:preForm(/:preExercise)))/choice(/choice)/$processid(/).
+     *
+     * @param string $courseid The id of the course.
+     * @param int $preChoice A optional prefix for the Choice table.
+     * @param int $preForm A optional prefix for the Form table.
+     * @param int $preExercise A optional prefix for the Exercise table.
+     */
     public function getCourseChoices( $preChoice='',  $preForm='',  $preExercise='', $courseid )
     {
         $this->get( 
@@ -516,6 +579,17 @@ class DBChoice
                    );
     }
     
+    /**
+     * Returns status code 200, if this component is correctly installed for the given course
+     *
+     * Called when this component receives an HTTP GET request to
+     * (/:preChoice(/:preForm(/:preExercise)))/link/exists/course/:courseid(/).
+     *
+     * @param string $esid The id of the course.
+     * @param int $preChoice A optional prefix for the Choice table.
+     * @param int $preForm A optional prefix for the Form table.
+     * @param int $preExercise A optional prefix for the Exercise table.
+     */ 
     public function getExistsCourseChoices( $preChoice='',  $preForm='',  $preExercise='', $courseid )
     {
         $this->get( 
@@ -533,6 +607,17 @@ class DBChoice
                    );
     }
     
+    /**
+     * Returns choices to a given exercise sheet.
+     *
+     * Called when this component receives an HTTP GET request to
+     * (/:preChoice(/:preForm(/:preExercise)))/choice/exercisesheet/$esid(/)
+     *
+     * @param string $esid The id of the exercise sheet.
+     * @param int $preChoice A optional prefix for the Choice table.
+     * @param int $preForm A optional prefix for the Form table.
+     * @param int $preExercise A optional prefix for the Exercise table.
+     */
     public function getSheetChoices( $preChoice='',  $preForm='',  $preExercise='', $esid )
     {
         $this->get( 
@@ -550,6 +635,17 @@ class DBChoice
                    );
     }
     
+    /**
+     * Returns choices to a given exercise.
+     *
+     * Called when this component receives an HTTP GET request to
+     * (/:preChoice(/:preForm(/:preExercise)))/choice/exercise/$eid(/)
+     *
+     * @param string $eid The id of the exercise.
+     * @param int $preChoice A optional prefix for the Choice table.
+     * @param int $preForm A optional prefix for the Form table.
+     * @param int $preExercise A optional prefix for the Exercise table.
+     */
     public function getExerciseChoices( $preChoice='',  $preForm='',  $preExercise='', $eid )
     {
         $this->get( 
@@ -567,6 +663,17 @@ class DBChoice
                    );
     }
     
+    /**
+     * Returns choices to a given form.
+     *
+     * Called when this component receives an HTTP GET request to
+     * (/:preChoice(/:preForm(/:preExercise)))/choice/form/$formid(/)
+     *
+     * @param string $formid The id of the form.
+     * @param int $preChoice A optional prefix for the Choice table.
+     * @param int $preForm A optional prefix for the Form table.
+     * @param int $preExercise A optional prefix for the Exercise table.
+     */
     public function getFormChoices( $preChoice='',  $preForm='',  $preExercise='', $formid )
     {
         $this->get( 
@@ -584,6 +691,17 @@ class DBChoice
                    );
     }
     
+    /**
+     * Removes the component from a given course
+     *
+     * Called when this component receives an HTTP DELETE request to
+     * (/:preChoice(/:preForm(/:preExercise)))/course/$courseid(/).
+     *
+     * @param string $courseid The id of the course.
+     * @param int $preChoice A optional prefix for the Choice table.
+     * @param int $preForm A optional prefix for the Form table.
+     * @param int $preExercise A optional prefix for the Exercise table.
+     */
     public function deleteCourse( $preChoice='',  $preForm='',  $preExercise='', $courseid )
     {
         $this->loadConfig($preChoice, $preForm,  $preExercise);
@@ -634,6 +752,16 @@ class DBChoice
         }
     }
     
+    /**
+     * Adds the component to a course
+     *
+     * Called when this component receives an HTTP POST request to
+     * (/:preChoice(/:preForm(/:preExercise)))/course(/).
+     *
+     * @param int $preChoice A optional prefix for the Choice table.
+     * @param int $preForm A optional prefix for the Form table.
+     * @param int $preExercise A optional prefix for the Exercise table.
+     */
     public function addCourse( $preChoice='',  $preForm='',  $preExercise='' )
     {
         $this->loadConfig($preChoice, $preForm,  $preExercise);

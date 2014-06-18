@@ -1,11 +1,14 @@
 <?php
+
+
+/**
+ * @file index.php executes the LGetSite component on calling via rest api
+ *
+ * @author Till Uhlig
+ * @date 2014
+ */
+ 
 require_once ( dirname( __FILE__ ) . '/LGetSite.php' );
-include_once ( '../../Assistants/CConfig.php' );
 
-// get new componenent configuartion from the database
-$com = new CConfig(LGetSite::getPrefix());
-
-// start the component with the newly received configuration
-if (!$com->used())
-    new LGetSite($com->loadConfig());
+new LGetSite();
 ?>

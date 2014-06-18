@@ -1,11 +1,14 @@
 <?php
+
+
+/**
+ * @file index.php executes the LCondition component on calling via rest api
+ *
+ * @author Till Uhlig
+ * @date 2014
+ */
+ 
 require_once ( dirname( __FILE__ ) . '/LCondition.php' );
-include_once ( '../../Assistants/CConfig.php' );
 
-// get new config data from DB
-$com = new CConfig(LCondition::getPrefix());
-
-// create a new instance of LCondition class with the config data
-if (!$com->used())
-    new LCondition($com->loadConfig());
+new LCondition();
 ?>
