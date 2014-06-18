@@ -167,6 +167,13 @@ class Installer
             Installation::installiereUIKonfigurationsdatei($data, $fail, $errno, $error);
         }
         
+        // install DB operator
+        $installDBOperator = false;
+        if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInstallDBOperator'])) && !$installFail){
+            $installDBOperator = true;
+            Installation::installiereDBOperator($data, $fail, $errno, $error);
+        }
+        
         // install DB conf files
         $installDBFiles = array(false,false,false);
         for($confCount=0;$confCount<=2;$confCount++){
@@ -244,6 +251,7 @@ class Installer
         $text='';
         $text .= Design::erstelleZeile($simple, 'Adresse', 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['db_path']) ? $data['DB']['db_path'] : null), 'data[DB][db_path]', 'localhost'), 'v');
         $text .= Design::erstelleZeile($simple, 'Datenbank', 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['db_name']) ? $data['DB']['db_name'] : null), 'data[DB][db_name]', 'uebungsplattform'), 'v');
+        $text .= Design::erstelleZeile($simple, 'Datenbank ueberschreiben', 'e', Design::erstelleAuswahl($simple, (isset($data['DB']['db_override']) ? $data['DB']['db_override'] : null), 'data[DB][db_override]', 'override', null), 'v');
         $text .= Design::erstelleZeile($simple, 'Benutzername', 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['db_user']) ? $data['DB']['db_user'] : null), 'data[DB][db_user]', 'root'), 'v');
         $text .= Design::erstelleZeile($simple, 'Passwort', 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_passwd']) ? $data['DB']['db_passwd'] : null), 'data[DB][db_passwd]', ''), 'v');
         
@@ -269,9 +277,11 @@ class Installer
 
         #region Datenbankschnittstelle_einrichten
         $text='';
-        $text .= Design::erstelleZeile($simple, 'Benutzername', 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['db_user_operator']) ? $data['DB']['db_user_operator'] : null), 'data[DB][db_user_operator]', 'root'), 'v');
-        $text .= Design::erstelleZeile($simple, 'Passwort', 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_passwd_operator']) ? $data['DB']['db_passwd_operator'] : null), 'data[DB][db_passwd_operator]', ''), 'v');
-        
+        $text .= Design::erstelleZeile($simple, 'Benutzername', 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['db_user_operator']) ? $data['DB']['db_user_operator'] : null), 'data[DB][db_user_operator]', 'DBOperator'), 'v');
+        $text .= Design::erstelleZeile($simple, 'Benutzer ueberschreiben', 'e', Design::erstelleAuswahl($simple, (isset($data['DB']['db_user_override_operator']) ? $data['DB']['db_user_override_operator'] : null), 'data[DB][db_user_override_operator]', 'override', null), 'v');
+        $text .= Design::erstelleZeile($simple, 'Passwort', 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_passwd_operator']) ? $data['DB']['db_passwd_operator'] : null), 'data[DB][db_passwd_operator]', ''), 'v', Design::erstelleSubmitButton("actionInstallDBOperator", 'Erstellen'), 'h');
+        if ($installDBOperator)
+            $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error); 
         
         $defaultFiles = array('../DB/CControl/config.ini','../DB/DBQuery/config.ini','../DB/DBQuery2/config.ini');
         if (!isset($data['DB']['config'])) $data['DB']['config']=array(null,null,null);
@@ -291,7 +301,7 @@ class Installer
         $text .= Design::erstelleZeile($simple, 'Passwort', 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_passwd_insert']) ? $data['DB']['db_passwd_insert'] : null), 'data[DB][db_passwd_insert]', ''), 'v');
         $text .= Design::erstelleZeile($simple, 'Vorname (optional)', 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_first_name_insert']) ? $data['DB']['db_first_name_insert'] : null), 'data[DB][db_first_name_insert]', ''), 'v');
         $text .= Design::erstelleZeile($simple, 'Nachname (optional)', 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_last_name_insert']) ? $data['DB']['db_last_name_insert'] : null), 'data[DB][db_last_name_insert]', ''), 'v');
-        $text .= Design::erstelleZeile($simple, 'E-Mail (optional)', 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_email_insert']) ? $data['DB']['db_email_insert'] : null), 'data[DB][db_email_insert]', ''), 'v', Design::erstelleSubmitButton("actionInstallSuperAdmin"), 'h');
+        $text .= Design::erstelleZeile($simple, 'E-Mail (optional)', 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_email_insert']) ? $data['DB']['db_email_insert'] : null), 'data[DB][db_email_insert]', ''), 'v', Design::erstelleSubmitButton("actionInstallSuperAdmin", 'Erstellen'), 'h');
 
         if ($installSuperAdmin)
             $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error); 

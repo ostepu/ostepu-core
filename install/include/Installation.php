@@ -192,7 +192,7 @@ class Installation
 
     public static function installiereSuperAdmin($data, &$fail, &$errno, &$error)
     {
-        if (!$fail){
+        if (!$fail){    
            $auth = new Authentication();
            $salt = $auth->generateSalt();
            $passwordHash = $auth->hashPassword($data['DB']['db_passwd_insert'], $salt);
@@ -203,13 +203,60 @@ class Installation
                 $fail = true; $errno = $result["errno"];$error = isset($result["error"]) ? $result["error"] : '';
            }
         }
+    }
     
+    public static function installiereDBOperator($data, &$fail, &$errno, &$error)
+    {
+        if (!$fail && isset($data['DB']['db_user_override_operator']) && $data['DB']['db_user_override_operator'] === 'override'){
+            $oldName = $data['DB']['db_name'];
+            $data['DB']['db_name'] = null;
+            $sql = "DROP USER {$data['DB']['db_user_operator']}@localhost;";
+            $result = DBRequest::request($sql, false, $data);
+            if ($result["errno"] !== 0){
+                $fail = true; $errno = $result["errno"];$error = isset($result["error"]) ? $result["error"] : '';
+            }
+            $data['DB']['db_name'] = $oldName;
+        }
+        
+        $userExists = false;
+        if (!$fail){
+            $oldName = $data['DB']['db_name'];
+            $data['DB']['db_name'] = null;
+            $sql = "SELECT count(1) as 'exists' FROM mysql.user WHERE user = '{$data['DB']['db_user_operator']}';";
+            $result = DBRequest::request($sql, false, $data);
+            
+            if ($result["errno"] !== 0 || !isset($result["content"])){
+                $fail = true; $errno = $result["errno"];$error = isset($result["error"]) ? $result["error"] : '';
+            } else {
+                $result = DBJson::getRows($result['content']);
+                if (count($result)>0 && isset($result[0]['exists']) && $result[0]['exists'] === '1') {
+                    $userExists = true;
+                }
+            }
+            $data['DB']['db_name'] = $oldName;
+        }
+ 
+        if (!$fail && !$userExists){
+            $oldName = $data['DB']['db_name'];
+            $data['DB']['db_name'] = null;
+            $sql = "GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,TRIGGER ".
+                    "ON {$oldName}.* ".
+                    "TO '{$data['DB']['db_user_operator']}'@'localhost' ".
+                    "IDENTIFIED BY '{$data['DB']['db_passwd_operator']}';";
+            $result = DBRequest::request($sql, false, $data);
+            if ($result["errno"] !== 0){
+                $fail = true; $errno = $result["errno"];$error = isset($result["error"]) ? $result["error"] : '';
+            }
+            $data['DB']['db_name'] = $oldName;
+        } elseif ($userExists){
+            $fail = true; $errno = 0;$error = 'user already exists';
+        }
     }
     
     public static function installiereDatenbankdatei($data, &$fail, &$errno, &$error)
     {
         // database.sql    
-        if (!$fail){
+        if (!$fail && (isset($data['DB']['db_override']) && $data['DB']['db_override'] === 'override')){
            $sql = "DROP SCHEMA IF EXISTS `".$data['DB']['db_name']."`;";
            $oldName = $data['DB']['db_name'];
            $data['DB']['db_name'] = null;
@@ -221,7 +268,7 @@ class Installation
         }
        
         if (!$fail){
-            $sql = "CREATE SCHEMA IF NOT EXISTS `".$data['DB']['db_name']."` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;";
+            $sql = "CREATE SCHEMA `".$data['DB']['db_name']."` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;";
             $oldName = $data['DB']['db_name'];
             $data['DB']['db_name'] = null;
             $result = DBRequest::request($sql, false, $data);
