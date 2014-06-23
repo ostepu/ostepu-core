@@ -594,11 +594,11 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 -- -----------------------------------------------------
 -- Data for table `User`
 -- -----------------------------------------------------
---START TRANSACTION;
+-- START TRANSACTION;
 
---INSERT INTO `User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`, `U_salt`, `U_failed_logins`, `U_externalId`, `U_studentNumber`, `U_isSuperAdmin`, `U_comment`) VALUES (1, 'super-admin', NULL, NULL, NULL, NULL, '63bc857a5d61c988f4fa588228461f6eef9303aa713473bb414c23bb1f2c78f6', 1, 'ebf203bdb7928de0947deec93199987a7675c251', 0, NULL, NULL, 1, NULL);
+-- INSERT INTO `User` (`U_id`, `U_username`, `U_email`, `U_lastName`, `U_firstName`, `U_title`, `U_password`, `U_flag`, `U_salt`, `U_failed_logins`, `U_externalId`, `U_studentNumber`, `U_isSuperAdmin`, `U_comment`) VALUES (1, 'super-admin', NULL, NULL, NULL, NULL, '63bc857a5d61c988f4fa588228461f6eef9303aa713473bb414c23bb1f2c78f6', 1, 'ebf203bdb7928de0947deec93199987a7675c251', 0, NULL, NULL, 1, NULL);
 
---COMMIT;
+-- COMMIT;
 
 CREATE TRIGGER `Course_BDEL` BEFORE DELETE ON `Course` FOR EACH ROW
 /*delete corresponding data
