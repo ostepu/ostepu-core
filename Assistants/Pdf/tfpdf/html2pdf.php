@@ -217,7 +217,8 @@ function WriteHTML($html)
         '&nbsp;' => " ",
         '&quot;' => "\"",
         '&#039;' => "'",
-        '&#39;' => "'"
+        '&#39;' => "'",
+        "\n" => '<br>'
     );
     
     foreach ($str as $_from => $_to) $html = str_replace($_from,$_to,$html);

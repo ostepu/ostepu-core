@@ -5,7 +5,7 @@ if (!isset($_GET['split'])){
     $_GET['split'] = 4;
 }
 
-$input = file_get_contents(LogLevel::DEBUG, dirname(__FILE__) . '../executionTime.log');
+$input = file_get_contents(dirname(__FILE__) . '../executionTime.log');
 $input = explode("\n",$input);
 foreach ($input as &$in){
     $in = substr($in, stripos($in,'[DEBUG]: ')+9,strlen($in));
@@ -30,17 +30,16 @@ foreach ($input as &$in){
     }
 }
 
-echo str_pad("quantity", 5, " ", STR_PAD_LEFT) . "    " . str_pad("elapsed time", 8, " ", STR_PAD_LEFT) . "     " .  "link" . "\n";
+echo str_pad("quantity", 5, " ", STR_PAD_LEFT) . "    " . str_pad("elapsed time", 13, " ", STR_PAD_LEFT) . "     " .  "link" . "\n";
 
 $summe = 0;
 $gesamtzeit = 0;
 foreach ($result as $key => $value){
-echo str_pad($value['count'], 5, " ", STR_PAD_LEFT) . "    " . str_pad((round($value['time']/$value['count'],2)), 8, " ", STR_PAD_LEFT) . "s    " .  $key . "\n";
+echo str_pad($value['count'], 5, " ", STR_PAD_LEFT) . "    " . str_pad((round($value['time']/$value['count'],2)), 13, " ", STR_PAD_LEFT) . "s    " .  $key . "\n";
 $summe+=$value['count'];
 $gesamtzeit+=$value['time'];
 }
 
-echo "\n\total: " . $summe . "\n";
-//echo "Gesamtzeit: " . round($gesamtzeit,2) . "s\n";
+echo "\ntotal:        " . str_pad($summe, 8, " ", STR_PAD_LEFT). "\n";
 echo "average time: " . str_pad((round($gesamtzeit/$summe,2)), 8, " ", STR_PAD_LEFT). "s\n";
 ?>

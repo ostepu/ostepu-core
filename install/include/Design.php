@@ -43,6 +43,12 @@ class Design
         return $result;
     }
     
+    public static function erstelleAuswahl($simple, $variable, $variablenName, $value, $default)
+    {
+        $result = "<input style='width:100%' type='checkbox' name='{$variablenName}' value='".$value."'".(($variable===$value &&  $variable!== null) ? "checked" : ($default === null ? '' : ($default===$value ? "checked" : '')) ).">";
+        return $result;
+    }
+    
     public static function erstellePasswortzeile($simple, $variable, $variablenName, $default)
     {
         $result = "<input style='width:100%' type='password' name='{$variablenName}' value='".(isset($variable) ? $variable : $default)."'>";
@@ -53,15 +59,15 @@ class Design
     {
         if ($fail === true){
             $installFail = true;
-            return Design::erstelleZeile($simple, 'Installation', 'e', '', 'v', "<div align ='center'><font color='red'>Fehler ({$errno}) <br> {$error}</font></align>", 'v');
+            return Design::erstelleZeile($simple, 'Installation', 'e', '', 'v', "<div align ='center'><font color='red'>Fehler". (($errno!==null && $errno!='') ? " ({$errno})" : '') ."<br> {$error}</font></align>", 'v');
         } else{
             return Design::erstelleZeile($simple, 'Installation', 'e', '', 'v', '<div align ="center">OK</align>', 'v');
         }
     }
     
-    public static function erstelleSubmitButton($var)
+    public static function erstelleSubmitButton($var, $text = 'Installieren')
     {
-        return "<input type='submit' name='{$var}' value=' Installieren '>";
+        return "<input type='submit' name='{$var}' value=' {$text} '>";
     }
 }
 

@@ -357,12 +357,14 @@ class LFormPredecessor
                         
                         if ($forms->getType()==0){
                             foreach ($choices as &$choice){
-                                foreach ($parameter as $param){
+                                $i=0;
+                                for ($i<0;$i<count($parameter);$i++){
+                                    $param = $parameter[$i];
                                     if ($param===null || $param==='') continue;
                                     
                                     switch($param){
                                         case('isnumeric'):
-                                            if (!eregi("^-?([0-9])+([\.|,]([0-9])+)?$",DefaultNormalizer::normalizeText($choice->getText()))){
+                                            if (!@preg_match("%^-?([0-9])+([\.|,]([0-9])+)?$%",DefaultNormalizer::normalizeText($choice->getText()))){
                                                 $fail = true;
                                                 $pro->addMessage('"'.$choice->getText().'" ist keine gültige Zahl.');
                                             }
@@ -398,9 +400,21 @@ class LFormPredecessor
                                             }
                                             break;
                                         default:
-                                            if (!@eregi($param, DefaultNormalizer::normalizeText($choice->getText()))){
+                                            $test = '';$i++;
+                                            while($i<count($parameter)){
+                                                $test.=$parameter[$i];
+                                                $i++;
+                                                if (@preg_match($test, DefaultNormalizer::normalizeText($choice->getText()))!==false)
+                                                    break;
+                                            }
+                                            
+                                            $match = @preg_match($test, DefaultNormalizer::normalizeText($choice->getText()));
+                                            if ($match === false){
                                                 $fail = true;
-                                                $pro->addMessage('"' . $choice->getText().'" entspricht nicht dem regulären Ausdruck "'.$param.'".');
+                                                $pro->addMessage('"' . $test . '" ist kein gültiger regulärer Ausdruck.');
+                                            } elseif ($match == false){
+                                                $fail = true;
+                                                $pro->addMessage('"' . $choice->getText().'" entspricht nicht dem regulären Ausdruck "'.$test.'".');
                                             }
                                             break;
                                     }

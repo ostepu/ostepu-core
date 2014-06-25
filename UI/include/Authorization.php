@@ -1,6 +1,6 @@
 <?php
-include_once 'include/Authentication.php';
-include_once 'include/StudIPAuthentication.php';
+include_once  dirname(__FILE__) . '/Authentication.php';
+include_once dirname(__FILE__) . '/StudIPAuthentication.php';
 
 $auth = new Authentication();
 $StudIPauth = new StudIPAuthentication();
