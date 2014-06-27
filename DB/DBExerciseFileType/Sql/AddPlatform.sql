@@ -1,0 +1,33 @@
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+
+-- -----------------------------------------------------
+-- Table `ExerciseFileType`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `ExerciseFileType` (
+  `EFT_id` INT NOT NULL AUTO_INCREMENT,
+  `E_id` INT NOT NULL,
+  `EFT_text` VARCHAR(255) NULL,
+  PRIMARY KEY (`EFT_id`),
+  UNIQUE INDEX `EFT_id_UNIQUE` (`EFT_id` ASC),
+  CONSTRAINT `fk_ExerciseFileType_Exercise1`
+    FOREIGN KEY (`E_id`)
+    REFERENCES `Exercise` (`E_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 1;
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+DROP TRIGGER IF EXISTS `ExerciseType_BDEL`;
+CREATE TRIGGER `ExerciseType_BDEL` BEFORE DELETE ON `ExerciseType` FOR EACH ROW
+/* delete corresponding data
+@author Till*/
+BEGIN
+DELETE FROM `Exercise` WHERE ET_id = OLD.ET_id;
+DELETE FROM `ApprovalCondition` WHERE ET_id = OLD.ET_id;
+END;

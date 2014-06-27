@@ -1,0 +1,1 @@
+{"id":"55","name":"DBProcessList","address":"http:\/\/localhost\/uebungsplattform\/DB\/DBProcess\/processList","option":"","prefix":"process,course,link","links":[{"id":"105","name":"out","address":"http:\/\/localhost\/uebungsplattform\/DB\/DBQuery2","target":"39","owner":"55","relevanz":"","targetName":"DBQuery2"}]}
