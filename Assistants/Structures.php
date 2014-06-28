@@ -27,6 +27,8 @@ include_once ( dirname( __FILE__ ) . '/Structures/Invitation.php' );
 include_once ( dirname( __FILE__ ) . '/Structures/Link.php' );
 include_once ( dirname( __FILE__ ) . '/Structures/Marking.php' );
 include_once ( dirname( __FILE__ ) . '/Structures/Pdf.php' );
+include_once ( dirname( __FILE__ ) . '/Structures/Platform.php' );
+include_once ( dirname( __FILE__ ) . '/Structures/Plugin.php' );
 include_once ( dirname( __FILE__ ) . '/Structures/Process.php' );
 include_once ( dirname( __FILE__ ) . '/Structures/Query.php' );
 include_once ( dirname( __FILE__ ) . '/Structures/SelectedSubmission.php' );
