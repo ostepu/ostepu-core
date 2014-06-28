@@ -40,6 +40,7 @@ class DBExternalId
      * @var Link[] $query a list of links to a query component
      */
     private $query = array( );
+    private $query2 = array( );
 
     /**
      * @var string $_prefix the prefixes, the class works with (comma separated)
@@ -89,6 +90,10 @@ class DBExternalId
                                                $conf->getLinks( ),
                                                'out'
                                                ) );
+        $this->query2 = array( CConfig::getLink( 
+                                               $conf->getLinks( ),
+                                               'out2'
+                                               ) );
 
         // initialize slim
         $this->_app = new \Slim\Slim( );
@@ -96,7 +101,33 @@ class DBExternalId
                                             'Content-Type',
                                             'application/json'
                                             );
-
+        // POST AddPlatform
+        $this->_app->post( 
+                         '/platform',
+                         array( 
+                               $this,
+                               'addPlatform'
+                               )
+                         );
+                         
+        // DELETE DeletePlatform
+        $this->_app->delete( 
+                         '/platform',
+                         array( 
+                               $this,
+                               'deletePlatform'
+                               )
+                         );
+                         
+        // GET GetExistsPlatform
+        $this->_app->get( 
+                         '/link/exists/platform',
+                         array( 
+                               $this,
+                               'getExistsPlatform'
+                               )
+                         );
+                         
         // PUT EditExternalId
         $this->_app->put( 
                          '/' . $this->getPrefix( ) . '(/externalid)/:exid(/)',
@@ -151,15 +182,8 @@ class DBExternalId
                                )
                          );
 
-        // starts slim only if the right prefix was received
-        if ( strpos( 
-                    $this->_app->request->getResourceUri( ),
-                    '/' . $this->getPrefix( )
-                    ) === 0 ){
-
-            // run Slim
-            $this->_app->run( );
-        }
+        // run Slim
+        $this->_app->run( );
     }
 
     /**
@@ -471,6 +495,136 @@ class DBExternalId
                    isset( $exid ) ? $exid : '',
                    isset( $mid ) ? $mid : ''
                    );
+    }
+    
+    /**
+     * Returns status code 200, if this component is correctly installed for the platform
+     *
+     * Called when this component receives an HTTP GET request to
+     * /link/exists/platform.
+     */
+    public function getExistsPlatform( )
+    {
+        $this->get( 
+                   'GetExistsPlatform',
+                   'Sql/GetExistsPlatform.sql',
+                   isset( $userid ) ? $userid : '',
+                   isset( $courseid ) ? $courseid : '',
+                   isset( $esid ) ? $esid : '',
+                   isset( $eid ) ? $eid : '',
+                   isset( $exid ) ? $exid : '',
+                   isset( $mid ) ? $mid : '',
+                   true
+                   );
+    }
+    
+    /**
+     * Removes the component from the platform
+     *
+     * Called when this component receives an HTTP DELETE request to
+     * /platform.
+     */
+    public function deletePlatform( )
+    {
+        Logger::Log( 
+                    'starts DELETE DeletePlatform',
+                    LogLevel::DEBUG
+                    );
+
+        // starts a query, by using a given file
+        $result = DBRequest::getRoutedSqlFile( 
+                                              $this->query2,
+                                              'Sql/DeletePlatform.sql',
+                                              array( )
+                                              );
+
+        // checks the correctness of the query
+        if ( $result['status'] >= 200 && 
+             $result['status'] <= 299 ){
+
+            $this->_app->response->setStatus( 201 );
+            $this->_app->response->setBody( '' );
+            if ( isset( $result['headers']['Content-Type'] ) )
+                $this->_app->response->headers->set( 
+                                                    'Content-Type',
+                                                    $result['headers']['Content-Type']
+                                                    );
+            
+        } else {
+            Logger::Log( 
+                        'DELETE DeletePlatform failed',
+                        LogLevel::ERROR
+                        );
+            $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+            $this->_app->response->setBody( '' );
+            $this->_app->stop( );
+        }
+    }
+    
+    /**
+     * Adds the component to the platform
+     *
+     * Called when this component receives an HTTP POST request to
+     * /platform.
+     */
+    public function addPlatform( )
+    {
+        Logger::Log( 
+                    'starts POST AddPlatform',
+                    LogLevel::DEBUG
+                    );
+
+        // decode the received course data, as an object
+        $insert = Platform::decodePlatform( $this->_app->request->getBody( ) );
+
+        // always been an array
+        $arr = true;
+        if ( !is_array( $insert ) ){
+            $insert = array( $insert );
+            $arr = false;
+        }
+
+        // this array contains the indices of the inserted objects
+        $res = array( );
+        foreach ( $insert as $in ){
+        
+            // starts a query, by using a given file
+            $result = DBRequest::getRoutedSqlFile( 
+                                                  $this->query2,
+                                                  'Sql/AddPlatform.sql',
+                                                  array( 'object' => $in )
+                                                  );
+
+            // checks the correctness of the query
+            if ( $result['status'] >= 200 && 
+                 $result['status'] <= 299 ){
+                $queryResult = Query::decodeQuery( $result['content'] );
+
+                $res[] = $in;
+                $this->_app->response->setStatus( 201 );
+                if ( isset( $result['headers']['Content-Type'] ) )
+                    $this->_app->response->headers->set( 
+                                                        'Content-Type',
+                                                        $result['headers']['Content-Type']
+                                                        );
+                
+            } else {
+                Logger::Log( 
+                            'POST AddPlatform failed',
+                            LogLevel::ERROR
+                            );
+                $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+                $this->_app->response->setBody( Platform::encodePlatform( $res ) );
+                $this->_app->stop( );
+            }
+        }
+
+        if ( !$arr && 
+             count( $res ) == 1 ){
+            $this->_app->response->setBody( Platform::encodePlatform( $res[0] ) );
+            
+        } else 
+            $this->_app->response->setBody( Platform::encodePlatform( $res ) );
     }
 }
 
