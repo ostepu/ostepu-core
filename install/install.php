@@ -74,13 +74,7 @@ class Installer
         // check if apache modules are existing
         $result['mod_php5'] = Installer::apache_module_exists('mod_php5');
         $result['mod_rewrite'] = Installer::apache_module_exists('mod_rewrite');
-        $result['mod_deflate'] = Installer::apache_module_exists('mod_deflate');
-        
-        // $result['mod_alias'] = Installer::apache_module_exists('mod_alias');
-        // $result['mod_authz_groupfile'] = Installer::apache_module_exists('mod_authz_groupfile');
-        // $result['mod_authz_host'] = Installer::apache_module_exists('mod_authz_host');
-        // $result['mod_log_config'] = Installer::apache_module_exists('mod_log_config');
-        // $result['mod_setenvif'] = Installer::apache_module_exists('mod_setenvif');      
+        $result['mod_deflate'] = Installer::apache_module_exists('mod_deflate'); 
         return $result;
     }
     
@@ -305,16 +299,17 @@ class Installer
 
         if ($installSuperAdmin)
             $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error); 
-        echo Design::erstelleBlock($simple, 'Systemadministrator anlegen', $text);
+        echo Design::erstelleBlock($simple, 'Plattform - Systemadministrator anlegen', $text);
         #endregion Benutzer_erstellen
         
         #region Komponenten
         $text='';
         $text .= "<tr><td colspan='2'>Zur Initialisierung der Komponenten werden in deren Ordnern Schreibrechte benoetigt. (zum Schreiben der CConfig.json Dateien)</td></tr>";
         $text .= Design::erstelleZeile($simple, 'Initialisierung (Komponenten)', 'e', Design::erstelleEingabezeile($simple, (isset($data['PL']['init']) ? $data['PL']['init'] : null), 'data[PL][init]', 'DB/CControl'), 'v', Design::erstelleSubmitButton("actionInitComponents"), 'h');
+        $text .= Design::erstelleZeile($simple, 'Details anzeigen', 'e', Design::erstelleAuswahl($simple, (isset($data['CO']['co_details']) ? $data['CO']['co_details'] : null), 'data[CO][co_details]', 'details', null), 'v');
         
         if ($initComponents){
-               // counts installed commands
+            // counts installed commands
             $installedCommands = 0;
             
             // counts installed components
@@ -355,7 +350,7 @@ class Installer
                 }
                 
                 $countCommands = count(isset($component['commands']) ? $component['commands'] : array());
-                if (isset($component['init']))
+                if (isset($component['init']) && isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details')
                     $text .= "<tr><td class='e' rowspan='{$countLinks}'>{$componentName}</td><td class='v'>{$component['init']->getAddress()}</td><td class='e'><div align ='center'>".($component['init']->getStatus() === 201 ? "OK" : "<font color='red'>Fehler ({$component['init']->getStatus()})</font>")."</align></td></tr>";
                 
                 if (isset($component['init']) && $component['init']->getStatus() === 201){
@@ -363,7 +358,8 @@ class Installer
                     $installedLinks+=count(isset($component['links']) ? $component['links'] : array());
                     $installedCommands+=$countCommands;
                     
-                    $text .= "<tr><td class='v' colspan='2'>installierte Befehle: {$countCommands}</td></tr>";
+                    if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details')
+                        $text .= "<tr><td class='v' colspan='2'>installierte Befehle: {$countCommands}</td></tr>";
                 
                     $links = array();
                     if (isset($component['links']))
@@ -410,11 +406,14 @@ class Installer
                                     }
                                     if ($notRoutable) break;
                                 }
-                                $text .= "<tr><td class='v'>{$link->getName()}</td><td class='e'><div align ='center'>".(!$notRoutable ? 'OK' : '<font color="red">Fehler</font>')."</align></td></tr>";
+                                
+                                if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details')
+                                    $text .= "<tr><td class='v'>{$link->getName()}</td><td class='e'><div align ='center'>".(!$notRoutable ? 'OK' : '<font color="red">Fehler</font>')."</align></td></tr>";
                             }
                         }
                         
-                        $text .= "<tr><td class='v'>{$link->getName()}".(!$linkFound ? " (<font color='red'>unbekannt</font>)" : '')."</td><td class='v'>{$link->getTargetName()}</td></tr>"; 
+                        if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details')
+                            $text .= "<tr><td class='v'>{$link->getName()}".(!$linkFound ? " (<font color='red'>unbekannt</font>)" : '')."</td><td class='v'>{$link->getTargetName()}</td></tr>"; 
                     
                         $lastLink = $link->getName();
                     }
@@ -433,14 +432,17 @@ class Installer
                                 }
                             }
                             if (!$found){
-                                $text .= "<tr><td class='v'>{$callList['name']}</td><td class='e'><font color='red'>nicht belegt</font></td></tr>";
+                                if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details')
+                                    $text .= "<tr><td class='v'>{$callList['name']}</td><td class='e'><font color='red'>nicht belegt</font></td></tr>";
                             }
                         }
                     }
                 }
             }
             
-            $text .= Design::erstelleZeile($simple, '', '', '', '', '' , '');
+            if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details')
+                $text .= Design::erstelleZeile($simple, '', '', '', '', '' , '');
+            
             $text .= Design::erstelleZeile($simple, 'installierte Komponenten', 'e', '', 'v', "<div align ='center'>".$installedComponents."</align", 'v');
             $text .= Design::erstelleZeile($simple, 'installierte Verbindungen', 'e', '', 'v', "<div align ='center'>".$installedLinks."</align", 'v');
             $text .= Design::erstelleZeile($simple, 'installierte Befehle', 'e', '', 'v', "<div align ='center'>".$installedCommands."</align", 'v');
