@@ -4,6 +4,8 @@
     {"method":"POST", "path":"/externalid(/)"},
     {"method":"GET", "path":"/externalid(/externalid)/:exid(/)"},
     {"method":"GET", "path":"/externalid(/externalid)(/)"},
-    {"method":"GET", "path":"/externalid/course/:courseid(/)"}
-    
+    {"method":"GET", "path":"/externalid/course/:courseid(/)"},
+    {"method":"POST", "path":"/platform"},
+    {"method":"DELETE", "path":"/platform"},
+    {"method":"GET", "path":"/link/exists/platform"}    
 ]

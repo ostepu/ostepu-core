@@ -4,6 +4,8 @@
     {"method":"POST", "path":"/exercisefiletype(/)"},
     {"method":"GET", "path":"/exercisefiletype(/exercisefiletype)/:eftid(/)"},
     {"method":"GET", "path":"/exercisefiletype/exercise/:eid(/)"},
-    {"method":"GET", "path":"/exercisefiletype(/exercisefiletype)(/)"}
-    
+    {"method":"GET", "path":"/exercisefiletype(/exercisefiletype)(/)"},
+    {"method":"POST", "path":"/platform"},
+    {"method":"DELETE", "path":"/platform"},
+    {"method":"GET", "path":"/link/exists/platform"}    
 ]

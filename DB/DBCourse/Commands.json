@@ -4,5 +4,8 @@
     {"method":"POST", "path":"/course(/)"},
     {"method":"GET", "path":"/course(/course)/:courseid(/)"},
     {"method":"GET", "path":"/course(/course)(/)"},
-    {"method":"GET", "path":"/course/user/:userid(/)"}
+    {"method":"GET", "path":"/course/user/:userid(/)"},
+    {"method":"POST", "path":"/platform"},
+    {"method":"DELETE", "path":"/platform"},
+    {"method":"GET", "path":"/link/exists/platform"}
 ]

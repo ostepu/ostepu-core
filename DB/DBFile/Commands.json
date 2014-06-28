@@ -1,8 +1,11 @@
 [
-    {    "method":"put", "path":"/file(/file)/:fileid(/)" },
-    {    "method":"delete", "path":"/file(/file)/:fileid(/)" },
-    {    "method":"post", "path":"/file(/)" },
-    {    "method":"get", "path":"/file(/file)/:fileid(/)" },
-    {    "method":"get", "path":"/file/hash/:hash(/)" },
-    {    "method":"get", "path":"/file(/file)(/)" }
+    {"method":"put", "path":"/file(/file)/:fileid(/)" },
+    {"method":"delete", "path":"/file(/file)/:fileid(/)" },
+    {"method":"post", "path":"/file(/)" },
+    {"method":"get", "path":"/file(/file)/:fileid(/)" },
+    {"method":"get", "path":"/file/hash/:hash(/)" },
+    {"method":"get", "path":"/file(/file)(/)" },
+    {"method":"POST", "path":"/platform"},
+    {"method":"DELETE", "path":"/platform"},
+    {"method":"GET", "path":"/link/exists/platform"}
 ]

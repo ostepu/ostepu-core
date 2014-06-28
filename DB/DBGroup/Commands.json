@@ -5,6 +5,9 @@
     {"method":"GET", "path":"/group/user/:userid(/)"},
     {"method":"GET", "path":"/group(/group)(/)"},
     {"method":"GET", "path":"/group/user/:userid/exercisesheet/:esid(/)"},
-    {"method":"GET", "path":"/group/exercisesheet/:esid(/)"}
+    {"method":"GET", "path":"/group/exercisesheet/:esid(/)"},
+    {"method":"POST", "path":"/platform"},
+    {"method":"DELETE", "path":"/platform"},
+    {"method":"GET", "path":"/link/exists/platform"}
     
 ]
