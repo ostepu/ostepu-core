@@ -59,14 +59,16 @@ class Design
     {
         if ($fail === true){
             $installFail = true;
-            return Design::erstelleZeile($simple, 'Installation', 'e', '', 'v', "<div align ='center'><font color='red'>Fehler". (($errno!==null && $errno!='') ? " ({$errno})" : '') ."<br> {$error}</font></align>", 'v');
+            return Design::erstelleZeile($simple, Sprachen::Get('main','installation'), 'e', '', 'v', "<div align ='center'><font color='red'>".Sprachen::Get('main','fail'). (($errno!==null && $errno!='') ? " ({$errno})" : '') ."<br> {$error}</font></align>", 'v');
         } else{
-            return Design::erstelleZeile($simple, 'Installation', 'e', '', 'v', '<div align ="center">OK</align>', 'v');
+            return Design::erstelleZeile($simple, Sprachen::Get('main','installation'), 'e', '', 'v', '<div align ="center">'.Sprachen::Get('main','ok').'</align>', 'v');
         }
     }
     
-    public static function erstelleSubmitButton($var, $text = 'Installieren')
+    public static function erstelleSubmitButton($var, $text = null)
     {
+        if ($text === null)
+            $text = Sprachen::Get('main','install');
         return "<input type='submit' name='{$var}' value=' {$text} '>";
     }
     

@@ -246,7 +246,7 @@ class Installer
         #region Modulprüfung_ausgeben
         $text = '';
         foreach ($modules as $moduleName => $status){
-            $text .= Design::erstelleZeile($simple, $moduleName, 'e', ($status ? "OK" : "<font color='red'>Fehler</font>"), 'v');
+            $text .= Design::erstelleZeile($simple, $moduleName, 'e', ($status ? Sprachen::Get('main','ok') : "<font color='red'>".Sprachen::Get('main','fail')."</font>"), 'v');
         }
         
         if (!$simple)
@@ -256,7 +256,7 @@ class Installer
         #region Prüfung_der_Erweiterungen_ausgeben
         $text = '';
         foreach ($extensions as $extensionName => $status){
-            $text .= Design::erstelleZeile($simple, $extensionName, 'e', ($status ? "OK" : "<font color='red'>Fehler</font>"), 'v');
+            $text .= Design::erstelleZeile($simple, $extensionName, 'e', ($status ? Sprachen::Get('main','ok') : "<font color='red'>".Sprachen::Get('main','fail')."</font>"), 'v');
         }
         
         if (!$simple)
@@ -305,7 +305,7 @@ class Installer
         $text='';
         $text .= Design::erstelleZeile($simple, Sprachen::Get('databaseInterface','db_user_operator'), 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['db_user_operator']) ? $data['DB']['db_user_operator'] : null), 'data[DB][db_user_operator]', 'DBOperator'), 'v');
         $text .= Design::erstelleZeile($simple, Sprachen::Get('databaseInterface','db_user_override_operator'), 'e', Design::erstelleAuswahl($simple, (isset($data['DB']['db_user_override_operator']) ? $data['DB']['db_user_override_operator'] : null), 'data[DB][db_user_override_operator]', 'override', null), 'v');
-        $text .= Design::erstelleZeile($simple, Sprachen::Get('databaseInterface','db_passwd_operator'), 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_passwd_operator']) ? $data['DB']['db_passwd_operator'] : null), 'data[DB][db_passwd_operator]', ''), 'v', Design::erstelleSubmitButton("actionInstallDBOperator", 'Erstellen'), 'h');
+        $text .= Design::erstelleZeile($simple, Sprachen::Get('databaseInterface','db_passwd_operator'), 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_passwd_operator']) ? $data['DB']['db_passwd_operator'] : null), 'data[DB][db_passwd_operator]', ''), 'v', Design::erstelleSubmitButton("actionInstallDBOperator", Sprachen::Get('main','create')), 'h');
         if ($installDBOperator)
             $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error); 
         
@@ -328,7 +328,7 @@ class Installer
         $text .= Design::erstelleZeile($simple, Sprachen::Get('createSuperAdmin','db_passwd_insert'), 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_passwd_insert']) ? $data['DB']['db_passwd_insert'] : null), 'data[DB][db_passwd_insert]', ''), 'v');
         $text .= Design::erstelleZeile($simple, Sprachen::Get('createSuperAdmin','db_first_name_insert'), 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_first_name_insert']) ? $data['DB']['db_first_name_insert'] : null), 'data[DB][db_first_name_insert]', ''), 'v');
         $text .= Design::erstelleZeile($simple, Sprachen::Get('createSuperAdmin','db_last_name_insert'), 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_last_name_insert']) ? $data['DB']['db_last_name_insert'] : null), 'data[DB][db_last_name_insert]', ''), 'v');
-        $text .= Design::erstelleZeile($simple, Sprachen::Get('createSuperAdmin','db_email_insert'), 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_email_insert']) ? $data['DB']['db_email_insert'] : null), 'data[DB][db_email_insert]', ''), 'v', Design::erstelleSubmitButton("actionInstallSuperAdmin", 'Erstellen'), 'h');
+        $text .= Design::erstelleZeile($simple, Sprachen::Get('createSuperAdmin','db_email_insert'), 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_email_insert']) ? $data['DB']['db_email_insert'] : null), 'data[DB][db_email_insert]', ''), 'v', Design::erstelleSubmitButton("actionInstallSuperAdmin", Sprachen::Get('main','create')), 'h');
 
         if ($installSuperAdmin)
             $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error); 
@@ -386,7 +386,7 @@ class Installer
                 
                 $countCommands = count(isset($component['commands']) ? $component['commands'] : array());
                 if (isset($component['init']) && isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details')
-                    $text .= "<tr><td class='e' rowspan='{$countLinks}'>{$componentName}</td><td class='v'>{$component['init']->getAddress()}</td><td class='e'><div align ='center'>".($component['init']->getStatus() === 201 ? "OK" : "<font color='red'>Fehler ({$component['init']->getStatus()})</font>")."</align></td></tr>";
+                    $text .= "<tr><td class='e' rowspan='{$countLinks}'>{$componentName}</td><td class='v'>{$component['init']->getAddress()}</td><td class='e'><div align ='center'>".($component['init']->getStatus() === 201 ? Sprachen::Get('main','ok') : "<font color='red'>".Sprachen::Get('main','fail')." ({$component['init']->getStatus()})</font>")."</align></td></tr>";
                 
                 if (isset($component['init']) && $component['init']->getStatus() === 201){
                     $installedComponents++;
@@ -394,7 +394,7 @@ class Installer
                     $installedCommands+=$countCommands;
                     
                     if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details')
-                        $text .= "<tr><td class='v' colspan='2'>installierte Befehle: {$countCommands}</td></tr>";
+                        $text .= "<tr><td class='v' colspan='2'>".Sprachen::Get('components','installedCalls').": {$countCommands}</td></tr>";
                 
                     $links = array();
                     if (isset($component['links']))
@@ -443,12 +443,12 @@ class Installer
                                 }
                                 
                                 if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details')
-                                    $text .= "<tr><td class='v'>{$link->getName()}</td><td class='e'><div align ='center'>".(!$notRoutable ? 'OK' : '<font color="red">Fehler</font>')."</align></td></tr>";
+                                    $text .= "<tr><td class='v'>{$link->getName()}</td><td class='e'><div align ='center'>".(!$notRoutable ? Sprachen::Get('main','ok') : '<font color="red">'.Sprachen::Get('components','notRoutable').'</font>')."</align></td></tr>";
                             }
                         }
                         
                         if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details')
-                            $text .= "<tr><td class='v'>{$link->getName()}".(!$linkFound ? " (<font color='red'>unbekannt</font>)" : '')."</td><td class='v'>{$link->getTargetName()}</td></tr>"; 
+                            $text .= "<tr><td class='v'>{$link->getName()}".(!$linkFound ? " (<font color='red'>".Sprachen::Get('components','unknown')."</font>)" : '')."</td><td class='v'>{$link->getTargetName()}</td></tr>"; 
                     
                         $lastLink = $link->getName();
                     }
@@ -468,7 +468,7 @@ class Installer
                             }
                             if (!$found){
                                 if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details')
-                                    $text .= "<tr><td class='v'>{$callList['name']}</td><td class='e'><font color='red'>nicht belegt</font></td></tr>";
+                                    $text .= "<tr><td class='v'>{$callList['name']}</td><td class='e'><font color='red'>".Sprachen::Get('components','unallocated')."</font></td></tr>";
                             }
                         }
                     }
