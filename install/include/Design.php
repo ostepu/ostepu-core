@@ -69,6 +69,11 @@ class Design
     {
         return "<input type='submit' name='{$var}' value=' {$text} '>";
     }
+    
+    public static function erstelleSubmitButtonGrafisch($var, $bild, $width = null, $height = null)
+    {
+        return "<input type='image' src='{$bild}' name='{$var}' style='".($width!==null ? 'width:'.$width.'px;': '' ).($height!==null ? 'height:'.$height.'px;': '' )."'>";
+    }
 }
 
 ?>

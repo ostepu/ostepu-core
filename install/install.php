@@ -124,6 +124,8 @@ class Installer
             $data = $_POST['data'];
             
         if (isset($_POST['actionInstall'])) $_POST['action'] = 'install';
+        if (!isset($data['PL']['language']))
+            $data['PL']['language'] = 'DE';
         
         if ($simple)
             $this->app->response->headers->set('Content-Type', 'application/json');
@@ -192,40 +194,60 @@ class Installer
             Installation::installiereSuperAdmin($data, $fail, $errno, $error);
         }
         
-        echo "
-            <html><head><style type='text/css'>
-            body {background-color: #ffffff; color: #000000;}
-            body, td, th, h1, h2 {font-family: sans-serif;}
-            pre {margin: 0px; font-family: monospace;}
-            a:link {color: #000099; text-decoration: none; background-color: #ffffff;}
-            a:hover {text-decoration: underline;}
-            table {border-collapse: collapse;}
-            .center {text-align: center;}
-            .center table { margin-left: auto; margin-right: auto; text-align: left;}
-            .center th { text-align: center !important; }
-            td, th { border: 1px solid #000000; font-size: 75%; vertical-align: baseline;}
-            h1 {font-size: 150%;}
-            h2 {font-size: 125%;}
-            .p {text-align: left;}
-            .e {background-color: #ccccff; font-weight: bold; color: #000000;}
-            .h {background-color: #9999cc; font-weight: bold; color: #000000;text-align: right;}
-            .v {background-color: #cccccc; color: #000000;}
-            .vr {background-color: #cccccc; text-align: right; color: #000000;}
-            img {float: right; border: 0px;}
-            hr {width: 600px; background-color: #cccccc; border: 0px; height: 1px; color: #000000;}
-            </style></head><body>
-            <div class='center'>
-            <h1>Installation</h1></br><hr />
-        ";
-
-        echo "<form action='' method='post'>";
+        // select language - german
+        if (isset($_POST['actionSelectGerman']) || isset($_POST['actionSelectGerman_x'])){
+            $data['PL']['language'] = 'DE';
+        }
+        
+        // select language - english
+        if (isset($_POST['actionSelectEnglish']) || isset($_POST['actionSelectEnglish_x'])){
+            $data['PL']['language'] = 'EN';
+        }
+        
+        if (!$simple){
+            echo "
+                <html><head><style type='text/css'>
+                body {background-color: #ffffff; color: #000000;}
+                body, td, th, h1, h2 {font-family: sans-serif;}
+                pre {margin: 0px; font-family: monospace;}
+                a:link {color: #000099; text-decoration: none; background-color: #ffffff;}
+                a:hover {text-decoration: underline;}
+                table {border-collapse: collapse;}
+                .center {text-align: center;}
+                .center table { margin-left: auto; margin-right: auto; text-align: left;}
+                .center th { text-align: center !important; }
+                td, th { border: 1px solid #000000; font-size: 75%; vertical-align: baseline;}
+                h1 {font-size: 150%;}
+                h2 {font-size: 125%;}
+                .p {text-align: left;}
+                .e {background-color: #ccccff; font-weight: bold; color: #000000;}
+                .h {background-color: #9999cc; font-weight: bold; color: #000000;text-align: right;}
+                .v {background-color: #cccccc; color: #000000;}
+                .vr {background-color: #cccccc; text-align: right; color: #000000;}
+                img {float: right; border: 0px;}
+                hr {width: 600px; background-color: #cccccc; border: 0px; height: 1px; color: #000000;}
+                </style></head><body>
+                <div class='center'>
+                <h1>Installation</h1></br><hr />
+            ";
+            echo "<form action='' method='post'>";
+            echo "<input type='hidden' name='data[PL][language]' value='{$data['PL']['language']}'>";
+        }
+        
+        #region Sprachwahl
+        if (!$simple){
+            echo "<div align='center'>".Design::erstelleSubmitButtonGrafisch('actionSelectGerman', './images/DE.gif', 32 , 22).Design::erstelleSubmitButtonGrafisch('actionSelectEnglish', './images/EN.gif', 32 , 22)."</div>";
+        }
+        #endregion Sprachwahl
 
         #region Modulprüfung_ausgeben
         $text = '';
         foreach ($modules as $moduleName => $status){
             $text .= Design::erstelleZeile($simple, $moduleName, 'e', ($status ? "OK" : "<font color='red'>Fehler</font>"), 'v');
         }
-        echo Design::erstelleBlock($simple, 'Apache Module', $text);
+        
+        if (!$simple)
+            echo Design::erstelleBlock($simple, 'Apache Module', $text);
         #endregion Modulprüfung_ausgeben
         
         #region Prüfung_der_Erweiterungen_ausgeben
@@ -233,12 +255,16 @@ class Installer
         foreach ($extensions as $extensionName => $status){
             $text .= Design::erstelleZeile($simple, $extensionName, 'e', ($status ? "OK" : "<font color='red'>Fehler</font>"), 'v');
         }
-        echo Design::erstelleBlock($simple, 'PHP Erweiterungen', $text);
+        
+        if (!$simple)
+            echo Design::erstelleBlock($simple, 'PHP Erweiterungen', $text);
         #endregion Prüfung_der_Erweiterungen_ausgeben
         
         #region Grundeinstellungen_ausgeben
         $text=Design::erstelleZeile($simple, 'URL', 'e', Design::erstelleEingabezeile($simple, (isset($data['PL']['url']) ? $data['PL']['url'] : null), 'data[PL][url]', 'http://localhost/uebungsplattform'), 'v');
-        echo Design::erstelleBlock($simple, 'Grundeinstellungen', $text);
+        
+        if (!$simple)
+            echo Design::erstelleBlock($simple, 'Grundeinstellungen', $text);
         #endregion Grundeinstellungen_ausgeben
  
         #region Datenbank_einrichten
@@ -257,7 +283,8 @@ class Installer
         if ($installComponentFile)
             $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error); 
 
-        echo Design::erstelleBlock($simple, 'Datenbank einrichten', $text);
+        if (!$simple)
+            echo Design::erstelleBlock($simple, 'Datenbank einrichten', $text);
         #endregion Datenbank_einrichten
         
         #region Benutzerschnittstelle_einrichten
@@ -266,7 +293,9 @@ class Installer
 
         if ($installUiFile) 
             $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error); 
-        echo Design::erstelleBlock($simple, 'Benutzerschnittstelle einrichten', $text);
+        
+        if (!$simple)
+            echo Design::erstelleBlock($simple, 'Benutzerschnittstelle einrichten', $text);
         #endregion Benutzerschnittstelle_einrichten
 
         #region Datenbankschnittstelle_einrichten
@@ -286,7 +315,8 @@ class Installer
                $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error); 
         }
 
-        echo Design::erstelleBlock($simple, 'Datenbankschnittstelle einrichten', $text);
+        if (!$simple)
+            echo Design::erstelleBlock($simple, 'Datenbankschnittstelle einrichten', $text);
         #endregion Datenbankschnittstelle_einrichten
         
         #region Benutzer_erstellen
@@ -299,7 +329,9 @@ class Installer
 
         if ($installSuperAdmin)
             $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error); 
-        echo Design::erstelleBlock($simple, 'Plattform - Systemadministrator anlegen', $text);
+        
+        if (!$simple)
+            echo Design::erstelleBlock($simple, 'Plattform - Systemadministrator anlegen', $text);
         #endregion Benutzer_erstellen
         
         #region Komponenten
@@ -450,17 +482,20 @@ class Installer
             $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error); 
         }
         
-        echo Design::erstelleBlock($simple, 'Komponenten', $text);
+        if (!$simple)
+            echo Design::erstelleBlock($simple, 'Komponenten', $text);
         #endregion Komponenten
         
-        echo "<table border='0' cellpadding='3' width='600'>";
-        echo "<tr><td class='h'><div align='center'><input type='submit' name='actionInstall' value=' Alles Installieren '></div></td></tr>";
-        echo "</table><br />";
-        echo "</form>";
+        if (!$simple){
+            echo "<table border='0' cellpadding='3' width='600'>";
+            echo "<tr><td class='h'><div align='center'><input type='submit' name='actionInstall' value=' Alles Installieren '></div></td></tr>";
+            echo "</table><br />";
+            echo "</form>";
 
-        echo "
-            </div></body></html>
-        ";
+            echo "
+                </div></body></html>
+            ";
+        }
         
     }
     
