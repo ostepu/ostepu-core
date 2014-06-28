@@ -379,7 +379,7 @@ class LFormProcessor
                             } elseif(strtolower($parameter[0]) === 'regularexpression'){
                                 $test = '';$i = 1;
                                 while($i<count($parameter)){
-                                    $test.=$parameter[$i];
+                                    $test.=' '.$parameter[$i];
                                     $i++;
                                     if (@preg_match($test, DefaultNormalizer::normalizeText($answers[0]->getText()))!==false)
                                         break;
