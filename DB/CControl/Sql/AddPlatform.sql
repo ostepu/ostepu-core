@@ -47,5 +47,6 @@ DROP TRIGGER IF EXISTS `deleteComponentLinks`;
 CREATE TRIGGER `deleteComponentLinks` BEFORE DELETE ON `Component` FOR EACH ROW
 /*delete corresponding componentlinkage
 author Till*/
+BEGIN
 DELETE FROM ComponentLinkage WHERE CO_id_owner = OLD.CO_id or CO_id_target = OLD.CO_id;
-
+END;

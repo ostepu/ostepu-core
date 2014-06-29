@@ -241,7 +241,7 @@ class CControl
                                          );
 
             // checks the correctness of the query
-            if ( !$result['errno'] && 
+            if ( (!isset($result['errno']) || !$result['errno']) && 
                  $result['content'] ){
                 $this->_app->response->setStatus( 201 );
                 
@@ -277,7 +277,7 @@ class CControl
                                      );
 
         // checks the correctness of the query
-        if ( !$result['errno'] && 
+        if ( (!isset($result['errno']) || !$result['errno']) && 
              $result['content'] ){
             $this->_app->response->setStatus( 201 );
             
@@ -314,7 +314,7 @@ class CControl
                                          );
 
             // checks the correctness of the query
-            if ( !$result['errno'] && 
+            if ( (!isset($result['errno']) || !$result['errno']) && 
                  $result['content'] ){
 
                 // sets the new auto-increment id
@@ -356,7 +356,7 @@ class CControl
                                      );
 
         // checks the correctness of the query
-        if ( !$result['errno'] && 
+        if ( (!isset($result['errno']) || !$result['errno']) && 
              $result['content'] ){
             $data = DBJson::getRows( $result['content'] );
             $links = DBJson::getResultObjectsByAttributes( 
@@ -406,7 +406,7 @@ class CControl
                                          );
 
             // checks the correctness of the query
-            if ( !$result['errno'] && 
+            if ( (!isset($result['errno']) || !$result['errno']) && 
                  $result['content'] ){
                 $this->_app->response->setStatus( 201 );
                 
@@ -442,7 +442,7 @@ class CControl
                                      );
 
         // checks the correctness of the query
-        if ( !$result['errno'] && 
+        if ( (!isset($result['errno']) || !$result['errno']) && 
              $result['content'] ){
             $this->_app->response->setStatus( 201 );
             
@@ -474,7 +474,7 @@ class CControl
                                          false
                                          );
 
-            if ( !$result['errno'] && 
+            if ( (!isset($result['errno']) || !$result['errno']) && 
                  $result['content'] ){
 
                 $obj = new Component( );
@@ -515,7 +515,7 @@ class CControl
                                      );
 
         // checks the correctness of the query
-        if ( !$result['errno'] && 
+        if ( (!isset($result['errno']) || !$result['errno']) && 
              $result['content'] ){
             $data = DBJson::getRows( $result['content'] );
             $components = DBJson::getResultObjectsByAttributes( 
@@ -549,7 +549,7 @@ class CControl
                                      );
 
         // checks the correctness of the query
-        if ( !$result['errno'] && 
+        if ( (!isset($result['errno']) || !$result['errno']) && 
              $result['content'] ){
             $data = DBJson::getRows( $result['content'] );
 
@@ -600,7 +600,7 @@ class CControl
                                      );
 
         // checks the correctness of the query
-        if ( !$result['errno'] && 
+        if ( (!isset($result['errno']) || !$result['errno']) && 
              $result['content'] ){
             $data = DBJson::getRows( $result['content'] );
 
@@ -649,7 +649,7 @@ class CControl
                                      );
 
         // checks the correctness of the query
-        if ( !$result['errno'] && 
+        if ( (!isset($result['errno']) || !$result['errno']) && 
              $result['content'] ){
             $data = DBJson::getRows( $result['content'] );
 
@@ -735,6 +735,11 @@ class CControl
                     'starts GET GetExistsPlatform',
                     LogLevel::DEBUG
                     );
+                    
+        if (!file_exists('config.ini')){
+            $this->_app->response->setStatus( 409 );
+            $this->_app->stop();
+        }
 
         // starts a query
         eval( "\$sql = \"" . file_get_contents( 'Sql/GetExistsPlatform.sql' ) . "\";" );
@@ -744,23 +749,18 @@ class CControl
                                      );
 
         // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
-             $result['status'] <= 299 ){
+        if ( (!isset($result['errno']) || !$result['errno']) && 
+             $result['content'] ){
 
             $this->_app->response->setStatus( 200 );
             $this->_app->response->setBody( '' );
-            if ( isset( $result['headers']['Content-Type'] ) )
-                $this->_app->response->headers->set( 
-                                                    'Content-Type',
-                                                    $result['headers']['Content-Type']
-                                                    );
             
         } else {
             Logger::Log( 
                         'GET GetExistsPlatform failed',
                         LogLevel::ERROR
                         );
-            $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+            $this->_app->response->setStatus( 409 );
             $this->_app->response->setBody( '' );
             $this->_app->stop( );
         }
@@ -787,23 +787,17 @@ class CControl
                                      );
 
         // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
-             $result['status'] <= 299 ){
+        if ( (!isset($result['errno']) || !$result['errno'])){
 
             $this->_app->response->setStatus( 201 );
             $this->_app->response->setBody( '' );
-            if ( isset( $result['headers']['Content-Type'] ) )
-                $this->_app->response->headers->set( 
-                                                    'Content-Type',
-                                                    $result['headers']['Content-Type']
-                                                    );
             
         } else {
             Logger::Log( 
                         'DELETE DeletePlatform failed',
                         LogLevel::ERROR
                         );
-            $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+            $this->_app->response->setStatus( 409 );
             $this->_app->response->setBody( '' );
             $this->_app->stop( );
         }
@@ -836,32 +830,44 @@ class CControl
         $res = array( );
         foreach ( $insert as $in ){
         
-        // starts a query
-        eval( "\$sql = \"" . file_get_contents( 'Sql/AddPlatform.sql' ) . "\";" );
-        $result = DBRequest::request2( 
-                                     $sql,
-                                     false
-                                     );
+            $file = 'config.ini';
+            $text = "[DB]\n".
+                    "db_path = {$in->getDatabaseUrl()}\n".
+                    "db_user = {$in->getDatabaseOperatorUser()}\n".
+                    "db_passwd = {$in->getDatabaseOperatorPassword()}\n".
+                    "db_name = {$in->getDatabaseName()}";
+                    
+            if (!@file_put_contents($file,$text)){
+                Logger::Log( 
+                            'POST AddPlatform failed, config.ini no access',
+                            LogLevel::ERROR
+                            );
+
+                $this->_app->response->setStatus( 409 );
+                $this->_app->stop();
+            }       
+            
+            // starts a query
+            eval( "\$sql = \"" . file_get_contents( 'Sql/AddPlatform.sql' ) . "\";" );
+            $result = DBRequest::request2( 
+                                         $sql,
+                                         false
+                                         );
 
             // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
-                 $result['status'] <= 299 ){
-                $queryResult = Query::decodeQuery( $result['content'] );
+            if ( (!isset($result['errno']) || !$result['errno'])){
 
-                $res[] = $in;
+                $platform = new Platform();
+                $platform->setStatus(201);
+                $res[] = $platform;
                 $this->_app->response->setStatus( 201 );
-                if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
-                                                        'Content-Type',
-                                                        $result['headers']['Content-Type']
-                                                        );
                 
             } else {
                 Logger::Log( 
                             'POST AddPlatform failed',
                             LogLevel::ERROR
                             );
-                $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+                $this->_app->response->setStatus( 409 );
                 $this->_app->response->setBody( Platform::encodePlatform( $res ) );
                 $this->_app->stop( );
             }
