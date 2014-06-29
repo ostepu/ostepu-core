@@ -60,6 +60,29 @@ class Platform extends Object implements JsonSerializable
     }
  
  
+    private $databaseName = null;
+
+    /**
+     * the $databaseName getter
+     *
+     * @return the value of $databaseName
+     */
+    public function getDatabaseName( )
+    {
+        return $this->databaseName;
+    }
+
+    /**
+     * the $databaseName setter
+     *
+     * @param string $value the new value for $databaseName
+     */
+    public function setDatabaseName( $value = null )
+    {
+        $this->databaseName = $value;
+    }
+
+    
     private $databaseRootUser = null;
 
     /**
@@ -155,20 +178,20 @@ class Platform extends Object implements JsonSerializable
      * Creates an patform object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
      *
-     * @param string $exerciseId The id of the exercise.
-     * @param string $courseId The id of the course. (do not use!)
-     * @param string $sheetId The id of the exercise sheet.
-     * @param string $maxPoints the max points
-     * @param string $type the id of the exercise type
-     * @param string $link the id of the exercise, this exercise belongs to
-     * @param string $linkName the name of the sub exercise.
-     * @param string $bonus the bonus flag
+     * @param string $baseUrl The components URL.
+     * @param string $databaseUrl The URL where the database is located.
+     * @param string $databaseName The name of the database.
+     * @param string $databaseRootUser The root user name.
+     * @param string $databaseRootPassword The root password.
+     * @param string $databaseOperatorUser The user name of the platform operator.
+     * @param string $databaseOperatorPassword The password of the operator.
      *
      * @return a platform object
      */
     public static function createPlatform(
                                           $baseUrl,
                                           $databaseUrl,
+                                          $databaseName,
                                           $databaseRootUser,
                                           $databaseRootPassword,
                                           $databaseOperatorUser,
@@ -178,6 +201,7 @@ class Platform extends Object implements JsonSerializable
         return new Platform( array(
                                    'baseUrl' => $baseUrl,
                                    'databaseUrl' => $databaseUrl,
+                                   'databaseName' => $databaseName,
                                    'databaseRootUser' => $databaseRootUser,
                                    'databaseRootPassword' => $databaseRootPassword,
                                    'databaseOperatorUser' => $databaseOperatorUser,
@@ -292,6 +316,8 @@ class Platform extends Object implements JsonSerializable
             $list['baseUrl'] = $this->baseUrl;
         if ( $this->databaseUrl !== null )
             $list['databaseUrl'] = $this->databaseUrl;
+        if ( $this->databaseName !== null )
+            $list['databaseName'] = $this->databaseName;
         if ( $this->databaseRootUser !== null )
             $list['databaseRootUser'] = $this->databaseRootUser;
         if ( $this->databaseRootPassword !== null )
