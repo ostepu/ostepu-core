@@ -32,6 +32,7 @@ class Design
     public static function erstelleBlock($simple, $name, $data)
     {
         $result = "<h2>{$name}</h2><table border='0' cellpadding='3' width='600'>";
+        $result .= "<colgroup><col width='200'><col width='300'><col width='100'></colgroup>";
         $result.=$data;
         $result.="</table><br/>";
         return $result;

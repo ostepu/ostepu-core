@@ -1,5 +1,6 @@
 <?php
 require_once dirname(__FILE__) . '/../../UI/include/Authentication.php';
+require_once dirname(__FILE__) . '/../../Assistants/Structures.php';
 
 /**
  * @file Installation.php contains the Installation class
@@ -37,6 +38,107 @@ class Installation
         $args[] = &$data;
         call_user_func_array('array_multisort', $args);
         return array_pop($args);
+    }
+    
+    public static function PlattformZusammenstellen($data)
+    {
+        // hier aus den Daten ein Plattform-Objekt zusammenstellen
+        $platform = Platform::createPlatform(
+                                            $data['PL']['url'],
+                                            $data['DB']['db_path'],
+                                            $data['DB']['db_name'],
+                                            null,
+                                            null,
+                                            $data['DB']['db_user_operator'],
+                                            $data['DB']['db_passwd_operator']
+                                            );
+        return $platform;
+    }
+    
+    public static function installiereInit($data, &$fail, &$errno, &$error)
+    {
+        // Datenbank einrichten
+        if (!$fail && (isset($data['DB']['db_override']) && $data['DB']['db_override'] === 'override')){
+           $sql = "DROP SCHEMA IF EXISTS `".$data['DB']['db_name']."`;";
+           $oldName = $data['DB']['db_name'];
+           $data['DB']['db_name'] = null;
+           $result = DBRequest::request($sql, false, $data);
+           if ($result["errno"] !== 0){
+                $fail = true; $errno = $result["errno"];$error = isset($result["error"]) ? $result["error"] : '';
+           }
+           $data['DB']['db_name'] = $oldName;
+        }
+       
+        if (!$fail){
+            $sql = "CREATE SCHEMA `".$data['DB']['db_name']."` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;";
+            $oldName = $data['DB']['db_name'];
+            $data['DB']['db_name'] = null;
+            $result = DBRequest::request($sql, false, $data);
+            if ($result["errno"] !== 0){
+                $fail = true; $errno = $result["errno"];$error = isset($result["error"]) ? $result["error"] : '';
+            }
+            $data['DB']['db_name'] = $oldName;
+        }
+        
+        
+        // CControl+DBQuery+DBQuery2 einrichten
+        $res = array();
+        if (!$fail){
+            $list = array('DB/CControl','DB/DBQuery','DB/DBQuery2');
+            $platform = Installation::PlattformZusammenstellen($data);
+            
+            for ($i=0;$i<count($list);$i++){
+                $url = $list[$i];//$data['PL']['init'];
+                // inits all components
+                $result = Request::post($data['PL']['url'].'/'.$url. '/platform',array(),Platform::encodePlatform($platform));
+                
+                $res[$url] = array();
+                if (isset($result['content']) && isset($result['status']) && $result['status'] === 201){
+                    $res[$url]['status'] = 201;
+                } else {
+                    $res[$url]['status'] = 409;
+                    $fail = true;
+                    if (isset($result['status'])){
+                        $errno = $result['status'];
+                        $res[$url]['status'] = $result['status'];
+                    }
+                }
+            }
+        }
+        
+        return $res;
+    }
+    
+    public static function installierePlattform($data, &$fail, &$errno, &$error)
+    {
+        $res = array();
+    
+        if (!$fail){
+            // die /platform Befehle auslösen
+            $list = array('DB/DBApprovalCondition','DB/DBAttachment','DB/DBCourse','DB/DBCourseStatus','DB/DBExercise','DB/DBExerciseFileType','DB/DBExerciseSheet','DB/DBExerciseType','DB/DBExternalId','DB/DBFile','DB/DBGroup','DB/DBInvitation','DB/DBMarking','DB/DBSelectedSubmission','DB/DBSession','DB/DBSubmission','DB/DBUser');
+            $platform = Installation::PlattformZusammenstellen($data);
+            
+            
+            for ($i=0;$i<count($list);$i++){
+                $url = $list[$i];//$data['PL']['init'];
+                // inits all components
+                $result = Request::post($data['PL']['url'].'/'.$url. '/platform',array(),Platform::encodePlatform($platform));
+                
+                $res[$url] = array();
+                if (isset($result['content']) && isset($result['status']) && $result['status'] === 201){
+                    $res[$url]['status'] = 201;
+                } else {
+                    $res[$url]['status'] = 409;
+                    $fail = true;
+                    if (isset($result['status'])){
+                        $errno = $result['status'];
+                        $res[$url]['status'] = $result['status'];
+                    }
+                }
+            }
+        }
+        
+        return $res;
     }
     
     public static function initialisiereKomponenten($data, &$fail, &$errno, &$error)
@@ -176,17 +278,24 @@ class Installation
 
     public static function installiereKomponentendatei($data, &$fail, &$errno, &$error)
     {
-       $fail = false;
-       $sql = file_get_contents($data['DB']['componentsSql']);
-       $sql = str_replace("'localhost/uebungsplattform/", "'{$data['PL']['url']}/" ,$sql);
-       
-       $result = DBRequest::request2($sql, false, $data);
-       if (!is_array($result)) $result = array($result);
-       foreach ($result as $res){
-            if ($res["errno"] !== 0){
-                $fail = true; $errno = $result["errno"];$error = isset($result["error"]) ? $result["error"] : '';
-                break;
-            }
+        if (!$fail){
+            if (!file_exists($data['DB']['componentsSql'])){
+                $error = "Datei existiert nicht";
+                $fail = true;
+                return;
+        }
+                
+           $sql = file_get_contents($data['DB']['componentsSql']);
+           $sql = str_replace("'localhost/uebungsplattform/", "'{$data['PL']['url']}/" ,$sql);
+           
+           $result = DBRequest::request2($sql, false, $data);
+           if (!is_array($result)) $result = array($result);
+           foreach ($result as $res){
+                if ($res["errno"] !== 0){
+                    $fail = true; $errno = $result["errno"];$error = isset($result["error"]) ? $result["error"] : '';
+                    break;
+                }
+           }
        }
     }
 
@@ -279,6 +388,12 @@ class Installation
         }
         
         if (!$fail){
+            if (!file_exists($data['DB']['databaseSql'])){
+                $error = "Datei existiert nicht";
+                $fail = true;
+                return;
+            }
+            
             $sql = file_get_contents($data['DB']['databaseSql']);
             $result = DBRequest::request2($sql, false, $data);
             if (!is_array($result)) $result = array($result);

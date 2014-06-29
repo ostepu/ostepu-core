@@ -127,6 +127,9 @@ class Installer
         if (isset($_POST['actionInstall'])) $_POST['action'] = 'install';
         if (!isset($data['PL']['language']))
             $data['PL']['language'] = 'de';
+            
+        if (!isset($data['PL']['init']))
+            $data['PL']['init'] = 'DB/CControl';
         
         if ($simple)
             $this->app->response->headers->set('Content-Type', 'application/json');
@@ -143,11 +146,27 @@ class Installer
         if (isset($data['PL']['url'])) $data['PL']['url'] = rtrim($data['PL']['url'], '/');
         if (isset($data['PL']['init'])) $data['PL']['init'] = rtrim($data['PL']['init'], '/');
                         
-        // install database file
+       /* // install database file
         $installDatabaseFile = false;
         if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInstallDatabase'])) && !$installFail){
             $installDatabaseFile = true;
             Installation::installiereDatenbankdatei($data, $fail, $errno, $error);
+        }*/
+        
+        // install init
+        $installInit = false;
+        $installInitResult = array();
+        if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInstallInit'])) && !$installFail){
+            $installInit = true;
+            $installInitResult = Installation::installiereInit($data, $fail, $errno, $error);
+        }
+        
+        // install platform
+        $installPlatform = false;
+        $installPlatformResult = array();
+        if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInstallPlatform'])) && !$installFail){
+            $installPlatform = true;
+            $installPlatformResult = Installation::installierePlattform($data, $fail, $errno, $error);
         }
         
         // install components file
@@ -171,14 +190,14 @@ class Installer
             Installation::installiereDBOperator($data, $fail, $errno, $error);
         }
         
-        // install DB conf files
+       /* // install DB conf files
         $installDBFiles = array(false,false,false);
         for($confCount=0;$confCount<=2;$confCount++){
             if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInstallDatabaseConf'.$confCount])) && !$installFail && isset($data['DB']['config'][$confCount]) && $data['DB']['config'][$confCount]!==''){
                 $installDBFiles[$confCount] = true;
                 Installation::installiereDBKonfigurationsdatei($data, $confCount, $fail, $errno, $error);
             }
-        }
+        }*/
         
         // init components
         $initComponents = false;
@@ -265,6 +284,16 @@ class Installer
         
         #region Grundeinstellungen_ausgeben
         $text=Design::erstelleZeile($simple, Sprachen::Get('general','url'), 'e', Design::erstelleEingabezeile($simple, (isset($data['PL']['url']) ? $data['PL']['url'] : null), 'data[PL][url]', 'http://localhost/uebungsplattform'), 'v');
+        $text .= Design::erstelleZeile($simple, 'Initialisieren', 'e', '', 'v', Design::erstelleSubmitButton('actionInstallInit'), 'h');
+        $text .= Design::erstelleZeile($simple, "Details anzeigen", 'e', Design::erstelleAuswahl($simple, (isset($data['PL']['pl_main_details']) ? $data['PL']['pl_main_details'] : null), 'data[PL][pl_main_details]', 'details', null), 'v');
+        
+        if ($installInit){
+            foreach ($installInitResult as $component => $dat){
+                $text .= "<tr><td class='e' rowspan='1'>{$component}</td><td class='v'></td><td class='e'><div align ='center'>".((isset($dat['status']) && $dat['status']===201) ? Sprachen::Get('main','ok') : "<font color='red'>".Sprachen::Get('main','fail')." ({$dat['status']})</font>")."</align></td></tr>";
+            }
+            
+            $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error);
+        }
         
         if (!$simple)
             echo Design::erstelleBlock($simple, Sprachen::Get('general','title'), $text);
@@ -278,12 +307,19 @@ class Installer
         $text .= Design::erstelleZeile($simple, Sprachen::Get('database','db_user'), 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['db_user']) ? $data['DB']['db_user'] : null), 'data[DB][db_user]', 'root'), 'v');
         $text .= Design::erstelleZeile($simple, Sprachen::Get('database','db_passwd'), 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_passwd']) ? $data['DB']['db_passwd'] : null), 'data[DB][db_passwd]', ''), 'v');
         
-        $text .= Design::erstelleZeile($simple, Sprachen::Get('database','databaseSql'), 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['databaseSql']) ? $data['DB']['databaseSql'] : null), 'data[DB][databaseSql]', '../DB/Database2.sql'), 'v', Design::erstelleSubmitButton('actionInstallDatabase'), 'h');
-        if ($installDatabaseFile)
-            $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error);
+        //$text .= Design::erstelleZeile($simple, Sprachen::Get('database','databaseSql'), 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['databaseSql']) ? $data['DB']['databaseSql'] : null), 'data[DB][databaseSql]', '../DB/Database2.sql'), 'v', Design::erstelleSubmitButton('actionInstallDatabase'), 'h');
+        //if ($installDatabaseFile)
+        //    $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error);
         
         $text .= Design::erstelleZeile($simple, Sprachen::Get('database','componentsSql'), 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['componentsSql']) ? $data['DB']['componentsSql'] : null), 'data[DB][componentsSql]', '../DB/Components2.sql'), 'v', Design::erstelleSubmitButton('actionInstallComponents'), 'h');
         if ($installComponentFile)
+            $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error); 
+            
+        $text .= Design::erstelleZeile($simple, Sprachen::Get('databaseInterface','db_user_operator'), 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['db_user_operator']) ? $data['DB']['db_user_operator'] : null), 'data[DB][db_user_operator]', 'DBOperator'), 'v');
+        $text .= Design::erstelleZeile($simple, Sprachen::Get('databaseInterface','db_user_override_operator'), 'e', Design::erstelleAuswahl($simple, (isset($data['DB']['db_user_override_operator']) ? $data['DB']['db_user_override_operator'] : null), 'data[DB][db_user_override_operator]', 'override', null), 'v');
+        $text .= Design::erstelleZeile($simple, Sprachen::Get('databaseInterface','db_passwd_operator'), 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_passwd_operator']) ? $data['DB']['db_passwd_operator'] : null), 'data[DB][db_passwd_operator]', ''), 'v', Design::erstelleSubmitButton("actionInstallDBOperator", Sprachen::Get('main','create')), 'h');
+        
+        if ($installDBOperator)
             $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error); 
 
         if (!$simple)
@@ -300,47 +336,12 @@ class Installer
         if (!$simple)
             echo Design::erstelleBlock($simple, Sprachen::Get('userInterface','title'), $text);
         #endregion Benutzerschnittstelle_einrichten
-
-        #region Datenbankschnittstelle_einrichten
-        $text='';
-        $text .= Design::erstelleZeile($simple, Sprachen::Get('databaseInterface','db_user_operator'), 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['db_user_operator']) ? $data['DB']['db_user_operator'] : null), 'data[DB][db_user_operator]', 'DBOperator'), 'v');
-        $text .= Design::erstelleZeile($simple, Sprachen::Get('databaseInterface','db_user_override_operator'), 'e', Design::erstelleAuswahl($simple, (isset($data['DB']['db_user_override_operator']) ? $data['DB']['db_user_override_operator'] : null), 'data[DB][db_user_override_operator]', 'override', null), 'v');
-        $text .= Design::erstelleZeile($simple, Sprachen::Get('databaseInterface','db_passwd_operator'), 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_passwd_operator']) ? $data['DB']['db_passwd_operator'] : null), 'data[DB][db_passwd_operator]', ''), 'v', Design::erstelleSubmitButton("actionInstallDBOperator", Sprachen::Get('main','create')), 'h');
-        if ($installDBOperator)
-            $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error); 
-        
-        $defaultFiles = array('../DB/CControl/config.ini','../DB/DBQuery/config.ini','../DB/DBQuery2/config.ini');
-        if (!isset($data['DB']['config'])) $data['DB']['config']=array(null,null,null);
-        for ($confCount = 0; $confCount <= 2 ; $confCount++){
-            $text .= Design::erstelleZeile($simple, Sprachen::Get('databaseInterface','db_config'.$confCount), 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['config'][$confCount]) ? $data['DB']['config'][$confCount] : null), 'data[DB][config][]', $defaultFiles[$confCount]), 'v', Design::erstelleSubmitButton("actionInstallDatabaseConf{$confCount}"), 'h');
-
-            if ($installDBFiles[$confCount])
-               $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error); 
-        }
-
-        if (!$simple)
-            echo Design::erstelleBlock($simple, Sprachen::Get('databaseInterface','title'), $text);
-        #endregion Datenbankschnittstelle_einrichten
-        
-        #region Benutzer_erstellen
-        $text='';
-        $text .= Design::erstelleZeile($simple, Sprachen::Get('createSuperAdmin','db_user_insert'), 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['db_user_insert']) ? $data['DB']['db_user_insert'] : null), 'data[DB][db_user_insert]', 'root'), 'v');
-        $text .= Design::erstelleZeile($simple, Sprachen::Get('createSuperAdmin','db_passwd_insert'), 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_passwd_insert']) ? $data['DB']['db_passwd_insert'] : null), 'data[DB][db_passwd_insert]', ''), 'v');
-        $text .= Design::erstelleZeile($simple, Sprachen::Get('createSuperAdmin','db_first_name_insert'), 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_first_name_insert']) ? $data['DB']['db_first_name_insert'] : null), 'data[DB][db_first_name_insert]', ''), 'v');
-        $text .= Design::erstelleZeile($simple, Sprachen::Get('createSuperAdmin','db_last_name_insert'), 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_last_name_insert']) ? $data['DB']['db_last_name_insert'] : null), 'data[DB][db_last_name_insert]', ''), 'v');
-        $text .= Design::erstelleZeile($simple, Sprachen::Get('createSuperAdmin','db_email_insert'), 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_email_insert']) ? $data['DB']['db_email_insert'] : null), 'data[DB][db_email_insert]', ''), 'v', Design::erstelleSubmitButton("actionInstallSuperAdmin", Sprachen::Get('main','create')), 'h');
-
-        if ($installSuperAdmin)
-            $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error); 
-        
-        if (!$simple)
-            echo Design::erstelleBlock($simple, Sprachen::Get('createSuperAdmin','title'), $text);
-        #endregion Benutzer_erstellen
-        
+               
         #region Komponenten
         $text='';
         $text .= "<tr><td colspan='2'>".Sprachen::Get('components','description')."</td></tr>";
-        $text .= Design::erstelleZeile($simple, Sprachen::Get('components','init'), 'e', Design::erstelleEingabezeile($simple, (isset($data['PL']['init']) ? $data['PL']['init'] : null), 'data[PL][init]', 'DB/CControl'), 'v', Design::erstelleSubmitButton("actionInitComponents"), 'h');
+        //Design::erstelleEingabezeile($simple, (isset($data['PL']['init']) ? $data['PL']['init'] : null), 'data[PL][init]', 'DB/CControl')
+        $text .= Design::erstelleZeile($simple, Sprachen::Get('components','init'), 'e', '', 'v', Design::erstelleSubmitButton("actionInitComponents"), 'h');
         $text .= Design::erstelleZeile($simple, Sprachen::Get('components','details'), 'e', Design::erstelleAuswahl($simple, (isset($data['CO']['co_details']) ? $data['CO']['co_details'] : null), 'data[CO][co_details]', 'details', null), 'v');
         
         if ($initComponents){
@@ -488,6 +489,38 @@ class Installer
         if (!$simple)
             echo Design::erstelleBlock($simple, Sprachen::Get('components','title'), $text);
         #endregion Komponenten
+        
+        #region PlattformEinrichten
+        $text='';
+        $text .= Design::erstelleZeile($simple, 'Tabellen anlegen', 'e', '', 'v', Design::erstelleSubmitButton('actionInstallPlatform'), 'h');
+        $text .= Design::erstelleZeile($simple, "Details anzeigen", 'e', Design::erstelleAuswahl($simple, (isset($data['PL']['pl_details']) ? $data['PL']['pl_details'] : null), 'data[PL][pl_details]', 'details', null), 'v');
+        
+        if ($installPlatform){
+            foreach ($installPlatformResult as $component => $dat){
+                $text .= "<tr><td class='e' rowspan='1'>{$component}</td><td class='v'></td><td class='e'><div align ='center'>".((isset($dat['status']) && $dat['status']===201) ? Sprachen::Get('main','ok') : "<font color='red'>".Sprachen::Get('main','fail')." ({$dat['status']})</font>")."</align></td></tr>";
+            }
+            $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error);
+        }
+        
+        if (!$simple)
+            echo Design::erstelleBlock($simple, 'Plattform anlegen', $text);
+        #endregion PlattformEinrichten
+        
+        #region Benutzer_erstellen
+        $text='';
+        $text .= Design::erstelleZeile($simple, Sprachen::Get('createSuperAdmin','db_user_insert'), 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['db_user_insert']) ? $data['DB']['db_user_insert'] : null), 'data[DB][db_user_insert]', 'root'), 'v');
+        $text .= Design::erstelleZeile($simple, Sprachen::Get('createSuperAdmin','db_passwd_insert'), 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_passwd_insert']) ? $data['DB']['db_passwd_insert'] : null), 'data[DB][db_passwd_insert]', ''), 'v');
+        $text .= Design::erstelleZeile($simple, Sprachen::Get('createSuperAdmin','db_first_name_insert'), 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_first_name_insert']) ? $data['DB']['db_first_name_insert'] : null), 'data[DB][db_first_name_insert]', ''), 'v');
+        $text .= Design::erstelleZeile($simple, Sprachen::Get('createSuperAdmin','db_last_name_insert'), 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_last_name_insert']) ? $data['DB']['db_last_name_insert'] : null), 'data[DB][db_last_name_insert]', ''), 'v');
+        $text .= Design::erstelleZeile($simple, Sprachen::Get('createSuperAdmin','db_email_insert'), 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_email_insert']) ? $data['DB']['db_email_insert'] : null), 'data[DB][db_email_insert]', ''), 'v', Design::erstelleSubmitButton("actionInstallSuperAdmin", Sprachen::Get('main','create')), 'h');
+
+        if ($installSuperAdmin)
+            $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error); 
+        
+        if (!$simple)
+            echo Design::erstelleBlock($simple, Sprachen::Get('createSuperAdmin','title'), $text);
+        #endregion Benutzer_erstellen
+        
         
         if (!$simple){
             echo "<table border='0' cellpadding='3' width='600'>";
