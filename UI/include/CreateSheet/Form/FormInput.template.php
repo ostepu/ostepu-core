@@ -75,7 +75,7 @@ if ( $result['status'] >= 200 &&
                                 foreach ($components as $link){
                                     if ($link->getId() === null || $link->getName() === null) continue;
                         ?>
-                           <option value="<?php echo $link->getId(); ?>" <?=($processor==$link->getId() ? 'selected' : '') ?>><?php echo $link->getName(); ?></option>
+                           <option value="<?php echo $link->getId(); ?>" <?php echo($processor==$link->getId() ? 'selected' : ''); ?>><?php echo $link->getName(); ?></option>
                         <?php
                                }
                         ?>

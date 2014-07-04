@@ -12,13 +12,13 @@
         <div class="content-body left">
             <label class="form-field left label bold" for="sheetName">Blattname:</label>
             <input class="form-field left text-input" name="sheetName" placeholder="Bonusserie"
-            <?php if (isset($sheetName)) {?> value="<?= $sheetName ?>" <?php } ?>
+            <?php if (isset($sheetName)) {?> value="<?php echo $sheetName; ?>" <?php } ?>
             id="sheetName" /> (optional)
 
             <label class="form-field left label bold new-line" for="startDate">Bearbeitungsanfang:</label>
             <div id="datetimepicker1" class="input-append left date">
                 <input class="form-field text-input" data-format="dd.MM.yyyy - hh:mm"
-                <?php if (isset($startDate)) {?> value="<?= $startDate ?>" <?php } ?>
+                <?php if (isset($startDate)) {?> value="<?php echo $startDate; ?>" <?php } ?>
                 type="text" id="startDate" name="startDate"/>
                 <span class="add-on">
                   ...
@@ -28,7 +28,7 @@
             <label class="form-field left label bold new-line" for="endDate">Bearbeitungsende:</label>
             <div id="datetimepicker2" class="input-append left date">
                 <input class="form-field text-input" data-format="dd.MM.yyyy - hh:mm"
-                <?php if (isset($endDate)) {?> value="<?= $endDate ?>" <?php } ?>
+                <?php if (isset($endDate)) {?> value="<?php echo $endDate; ?>" <?php } ?>
                 type="text" id="endDate" name="endDate"/>
                 <span class="add-on">
                   ...

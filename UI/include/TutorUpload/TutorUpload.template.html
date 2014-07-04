@@ -1,9 +1,9 @@
-<form action="TutorUpload.php?cid=<?= $cid ?>&sid=<?= $sid ?>" method="POST" enctype="multipart/form-data">
+<form action="TutorUpload.php?cid=<?php echo $cid; ?>&sid=<?php echo $sid; ?>" method="POST" enctype="multipart/form-data">
     <input type="hidden" name="action" value="TutorUpload">
     <div class="content-element">
         <div class="content-header">
             <div class="content-title left uppercase">
-                <?= $sheetName ?>
+                <?php echo $sheetName; ?>
             </div>
             <button class="text-button info-color bold right">
                 absenden
