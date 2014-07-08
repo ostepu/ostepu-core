@@ -9,9 +9,9 @@
  * @date 2013-2014
  */
 
-require_once ( dirname(__FILE__) . '../../Assistants/Slim/Slim.php' );
-include_once ( dirname(__FILE__) . '../../Assistants/CConfig.php' );
-include_once ( dirname(__FILE__) . '../../Assistants/Structures.php' );
+require_once ( dirname(__FILE__) . '/../../Assistants/Slim/Slim.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/CConfig.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/Structures.php' );
 include_once ( dirname(__FILE__) . '/Pdf/tfpdf/html2pdf.php' );
 
 \Slim\Slim::registerAutoloader( );
