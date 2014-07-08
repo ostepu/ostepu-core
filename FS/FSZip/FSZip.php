@@ -9,10 +9,10 @@
  * @date 2013-2014
  */
 
-require '../../Assistants/Slim/Slim.php';
-include_once ( '../../Assistants/CConfig.php' );
-include_once ( '../../Assistants/Structures.php' );
-include_once ( '../../Assistants/Request.php' );
+require ( dirname(__FILE__) . '../../Assistants/Slim/Slim.php' );
+include_once ( dirname(__FILE__) . '../../Assistants/CConfig.php' );
+include_once ( dirname(__FILE__) . '../../Assistants/Structures.php' );
+include_once ( dirname(__FILE__) . '../../Assistants/Request.php' );
 
 \Slim\Slim::registerAutoloader( );
 
