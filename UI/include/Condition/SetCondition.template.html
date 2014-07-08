@@ -20,15 +20,15 @@
                 foreach ($minimumPercentages as $percentage): 
             ?>
                 <label class="form-field left label bold new-line"
-                    for="<?= $percentage['approvalConditionId'] ?>"
+                    for="<?php echo $percentage['approvalConditionId']; ?>"
                 >
                     <?php print $percentage['exerciseType'] . " (Angabe in %)"; ?>
                 </label>
 
                 <input class="form-field left text-input short"
-                       name="<?= $percentage['approvalConditionId'] ?>"
-                       value="<?= $percentage['minimumPercentage'] ?>"
-                       id="<?= $percentage['approvalConditionId'] ?>"
+                       name="<?php echo $percentage['approvalConditionId']; ?>"
+                       value="<?php echo $percentage['minimumPercentage']; ?>"
+                       id="<?php echo $percentage['approvalConditionId']; ?>"
                        maxlength="2"
                 >
             <?php 

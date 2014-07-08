@@ -9,13 +9,13 @@
     <div class="content-element collapsible">
         <div class="content-header">
             <div class="content-title left uppercase">
-                    <?= $sheet['sheetName'], " " ?>
+                    <?php echo $sheet['sheetName'], " "; ?>
                     <?php if ($isExpired): ?>
                         (abgelaufen)
                     <?php endif; ?>
             </div>
             <div class="critical-color bold right">
-                <?= date('d.m.Y  -  H:i', $sheet['endDate']); ?>
+                <?php echo date('d.m.Y  -  H:i', $sheet['endDate']); ?>
             </div>
             <div class="exercise-sheet-info info-color bold right">
                 <?php 
@@ -24,7 +24,7 @@
                      *       calculated in GetSite.
                      */
                 ?>
-                <?= $sheet['exerciseSheetInfo'], ' unkorrigiert' ?>
+                <?php echo $sheet['exerciseSheetInfo'], ' unkorrigiert'; ?>
             </div>
         </div>
 
@@ -45,11 +45,11 @@
                     ?>
                     <li>
                         <div class="exercise-type">
-                            <?= $exercise['typeName'] ?>
-                            <?= $exercise['bonus'] ? ' (*)' : '' ?>
+                            <?php echo $exercise['typeName']; ?>
+                            <?php echo $exercise['bonus'] ? ' (*)' : ''; ?>
                         </div>
                         <div class="exercise-points">
-                            <?= $exercise['maxPoints']?> P
+                            <?php echo $exercise['maxPoints'];?> P
                         </div>
                         <div class="exercise-sheet-images">
                         <?php // creates a downloadAttachment icon for the exercise (if it exists) ?>
@@ -58,7 +58,7 @@
                             <?php $fileAddress = $exercise['attachment']['address']; ?>
                             <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
 
-                            <a href="<?= $fileURL ?>" title="<?= $displayName ?>" class="plain" target="_blank">
+                            <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" class="plain" target="_blank">
                                 <img src="Images/Attachment.png" />
                             </a>
                         <?php endif; ?>
@@ -84,7 +84,7 @@
                             <?php $displayName = $sheet['sampleSolution']['displayName']; ?>
                             <?php $fileAddress = $sheet['sampleSolution']['address']; ?>
                             <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
-                            <a href="<?= $fileURL ?>" title="<?= $displayName ?>" target="_blank">
+                            <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
                                 Musterlösung
                             </a>
                         </li>
@@ -94,7 +94,7 @@
                         <?php $displayName = $sheet['sheetFile']['displayName']; ?>
                         <?php $fileAddress = $sheet['sheetFile']['address']; ?>
                         <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
-                        <a href="<?= $fileURL ?>" title="<?= $displayName ?>" target="_blank">
+                        <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
                             Aufgabenblatt
                         </a>
                     </li>
@@ -102,7 +102,7 @@
                     <?php // prints a link to download attachments ?>
                     <?php if ($sheet['hasAttachments']): ?>
                         <li>
-                            <button name="downloadAttachments" value="<?= $sheet['id'] ?>" class="text-button body-option-color">
+                            <button name="downloadAttachments" value="<?php echo $sheet['id']; ?>" class="text-button body-option-color">
                                 Alle Anhänge herunterladen
                             </button>
                         </li>
@@ -114,16 +114,16 @@
                         </button>
                     </li>
                     <li>
-                        <a href="TutorUpload.php?cid=<?= $user['courses'][0]['course']['id'],
+                        <a href="TutorUpload.php?cid=<?php echo $user['courses'][0]['course']['id'],
                                                          '&sid=',
-                                                         $sheet['id'] ?>">
+                                                         $sheet['id']; ?>">
                             Einsendungen hochladen
                         </a>
                     </li>
                     <li>
-                        <a href="TutorAssign.php?cid=<?= $user['courses'][0]['course']['id'],
+                        <a href="TutorAssign.php?cid=<?php echo $user['courses'][0]['course']['id'],
                                                          '&sid=',
-                                                         $sheet['id'] ?>">
+                                                         $sheet['id']; ?>">
                             Kontrolleurzuweisung
                         </a>
                     </li>
@@ -140,9 +140,9 @@
             ?>
             <ol>
                 <li class="footer-text bold">Einsendungen:</li>
-                <li class="footer-text"><?=$sheet['courseUserCount'] ?> Studenten</li>
-                <li class="footer-text"><?=$sheet['studentsWithSubmissionCount'] ?> mit Einsendungen</li>
-                <li class="footer-text"><?=$sheet['studentsWithoutSubmissionCount'] ?> ohne Einsendungen</li>
+                <li class="footer-text"><?php echo$sheet['courseUserCount']; ?> Studenten</li>
+                <li class="footer-text"><?php echo$sheet['studentsWithSubmissionCount']; ?> mit Einsendungen</li>
+                <li class="footer-text"><?php echo$sheet['studentsWithoutSubmissionCount']; ?> ohne Einsendungen</li>
             </ol>
         </div><!-- end: content-body-wrapper -->
     </div> <!-- end: content-element -->

@@ -1,4 +1,4 @@
-<form action="Upload.php?cid=<?= $cid ?>&sid=<?= $sid ?>" method="POST" enctype="multipart/form-data">
+<form action="Upload.php?cid=<?php echo $cid; ?>&sid=<?php echo $sid; ?>" method="POST" enctype="multipart/form-data">
     <input type="hidden" name="action" value="submit">
     <button class="submit" type="submit" name="submit" id="submitButton">
         <div class="content-element">
@@ -23,7 +23,7 @@
         <div class="content-element">
             <div class="content-header">
                 <div class="content-title left">
-                    AUFGABE <?= $exercise['link'] ?><?php
+                    AUFGABE <?php echo $exercise['link']; ?><?php
                     $add="";
                     // if next exercise is not main or is main but current one is subexercise or end is reached but current one is subex.
                     if ((isset($exercises[$key+1]) && $exercises[$key+1]['linkName'] != 1) ||
@@ -35,8 +35,8 @@
                     }
                     ?>
                     <input type="hidden"
-                           name="exercises[<?= $key ?>][name]"
-                           value="<?= $exercise['link'].$add?>">
+                           name="exercises[<?php echo $key; ?>][name]"
+                           value="<?php echo $exercise['link'].$add;?>">
                 </div>
                 <button class="text-button info-color bold right">
                   alle absenden
@@ -56,13 +56,13 @@
                             <?php $date = $sub['date']; ?>
                             <?php $fileURL = "../FS/FSControl/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
 
-                            <a href="<?= $fileURL ?>"
-                               title="<?= $displayName ?>"
+                            <a href="<?php echo $fileURL; ?>"
+                               title="<?php echo $displayName; ?>"
                                class="left body-option-color"
                                target="_blank">
                                 Herunterladen (
-                                <?= date('d.m.Y  -  H:i', $date) ?>,
-                                <?= formatBytes($file['fileSize']) ?>
+                                <?php echo date('d.m.Y  -  H:i', $date); ?>,
+                                <?php echo formatBytes($file['fileSize']); ?>
                                 )
                             </a>
 
@@ -72,7 +72,7 @@
                                 </div> <br />
                                 <input type="text"
                                         class="left wider form-field text-input"
-                                        value="<?= $sub['comment'] ?>"
+                                        value="<?php echo $sub['comment']; ?>"
                                         disabled/>
                             <?php endif; ?>
                             <br><br>
@@ -99,7 +99,7 @@
                     ?>
                     
             <label class="short left label bold" for="answer">Antwort:</label>
-            <input type="text" class="form-field text-input new-line" style="width:748px" name="<?php echo "exercises[".$key."][choices][{$form->getFormId()}][0]" ?>" placeholder="Antwort"/>    
+            <input type="text" class="form-field text-input new-line" style="width:748px" name="<?php echo "exercises[".$key."][choices][{$form->getFormId()}][0]"; ?>" placeholder="Antwort"/>    
             <br><br>
             
                     <?php
@@ -112,7 +112,7 @@
                     foreach ($form->getChoices() as $choice){
                         ?>
                         <div class="form-input-radio new-line" style="width:748px; margin:5px 0px;">
-                        <input type="radio" name="<?php echo "exercises[".$key."][choices][{$form->getFormId()}][0]" ?>" value="<?= $choice->getChoiceId() ?>"/> <?php echo $choice->getText(); ?>
+                        <input type="radio" name="<?php echo "exercises[".$key."][choices][{$form->getFormId()}][0]"; ?>" value="<?php echo $choice->getChoiceId(); ?>"/> <?php echo $choice->getText(); ?>
                         </div>                        
                         <?php
                         $i++;
@@ -129,7 +129,7 @@
                     foreach ($form->getChoices() as $choice){
                         ?>
                         <div class="form-input-checkbox new-line" style="width:748px; margin:5px 0px;">
-                        <input type="checkbox" name="<?php echo "exercises[".$key."][choices][{$form->getFormId()}][".$i."]" ?>" value="<?= $choice->getChoiceId() ?>"/> <?php echo $choice->getText(); ?>
+                        <input type="checkbox" name="<?php echo "exercises[".$key."][choices][{$form->getFormId()}][".$i."]"; ?>" value="<?php echo $choice->getChoiceId(); ?>"/> <?php echo $choice->getText(); ?>
                         </div>                        
                         <?php
                         $i++;
@@ -148,7 +148,7 @@
 
                     <label class="short left label bold new-line"
                            for="studentComment">Kommentar:</label>
-                    <textarea name="exercises[<?= $key ?>][comment]"
+                    <textarea name="exercises[<?php echo $key; ?>][comment]"
                               class="form-field text-input"
                               rows="5"
                               maxlength="255"></textarea>
@@ -160,11 +160,11 @@
                            for="studentComment">Datei:</label>
                     <input type="file"
                            class="button left"
-                           name="file<?= $exercise['id'] ?>">
+                           name="file<?php echo $exercise['id']; ?>">
                     <?php } ?>
                     <input type="hidden"
-                           name="exercises[<?= $key ?>][exerciseID]"
-                           value="<?= $exercise['id'] ?>">
+                           name="exercises[<?php echo $key; ?>][exerciseID]"
+                           value="<?php echo $exercise['id']; ?>">
                 </div>
             </div>
         </div>

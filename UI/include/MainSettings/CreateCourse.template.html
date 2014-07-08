@@ -15,7 +15,7 @@
                        name="courseName"
                        placeholder="Veranstaltungsname"
                        id="courseName"
-                       value="<?= $courseName ?>"
+                       value="<?php echo $courseName; ?>"
                        maxlength="255" />
             <?php else: ?>
                 <input class="form-field left text-input"
@@ -35,12 +35,12 @@
                 <?php $currentYear = date('Y') + 1; ?>
                 <?php $endyear = $currentYear-7; ?>
                 <?php for ($i = $currentYear; $i >= $endyear; $i--): ?>
-                        <option  value="SS <?= $i ?> ">
-                            SS <?= $i ?>
+                        <option  value="SS <?php echo $i; ?> ">
+                            SS <?php echo $i; ?>
                         </option>
 
-                        <option value="WS <?= $i ?>">
-                            WS <?= ($i - 1), "/", $i ?>
+                        <option value="WS <?php echo $i; ?>">
+                            WS <?php echo ($i - 1), "/", $i; ?>
                         </option>
                 <?php endfor; ?>
             </select>
@@ -52,7 +52,7 @@
                 <input class="form-field left text-input short"
                        name="defaultGroupSize"
                        id="defaultGroupSize"
-                       value="<?= $defaultGroupSize ?>"
+                       value="<?php echo $defaultGroupSize; ?>"
                        maxlength="3" />
             <?php else: ?>
                 <input class="form-field left text-input short"
@@ -69,8 +69,8 @@
                 <?php foreach ($exerciseTypes as $exerciseType): ?>
                     <input type="checkbox"
                            name="exerciseTypes[]"
-                           value="<?= $exerciseType['id'] ?>" />
-                    <?= $exerciseType['name'] ?>
+                           value="<?php echo $exerciseType['id']; ?>" />
+                    <?php echo $exerciseType['name']; ?>
                     <br />
                 <?php endforeach; ?>
             </div>

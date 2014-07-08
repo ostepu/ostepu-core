@@ -18,16 +18,16 @@
     <div class="content-element collapsible">
         <div class="content-header">
             <div class="content-title left uppercase">
-                <?= $sheet['sheetName'], " " ?>
+                <?php echo $sheet['sheetName'], " "; ?>
                 <?php if ($isExpired): ?>
                     (abgelaufen)
                 <?php endif; ?>
             </div>
             <div class="critical-color bold right">
-                <?= date('d.m.Y  -  H:i', $sheet['endDate']); ?>
+                <?php echo date('d.m.Y  -  H:i', $sheet['endDate']); ?>
             </div>
             <div class="exercise-sheet-info info-color bold right">
-                <?= $sheet['percentage'], '%' ?>
+                <?php echo $sheet['percentage'], '%'; ?>
             </div>
         </div>
 
@@ -48,8 +48,8 @@
                     ?>
                     <li>
                         <div class="exercise-type">
-                            <?= $exercise['typeName'] ?>
-                            <?= $exercise['bonus'] ? ' (*)' : '' ?>
+                            <?php echo $exercise['typeName']; ?>
+                            <?php echo $exercise['bonus'] ? ' (*)' : ''; ?>
                         </div>
 
                         <div class="exercise-points">
@@ -57,16 +57,16 @@
                             <?php if (isset($exercise['submission']['marking'])
                                      && $isExpired
                                      && $exercise['submission']['marking']['statusId'] >= 2): ?>
-                                <?= $exercise['submission']['marking']['points'] ?>
+                                <?php echo $exercise['submission']['marking']['points']; ?>
                             <?php else: ?>
                                 -
                             <?php endif; ?>
-                            / <?= $exercise['maxPoints'] ?> P
+                            / <?php echo $exercise['maxPoints']; ?> P
                         </div>
 
                         <div class="exercise-status">
                             <?php if (isset($exercise['submission']['marking'])): ?>
-                                <?= $exercise['submission']['marking']['status']; ?>
+                                <?php echo $exercise['submission']['marking']['status']; ?>
                             <?php elseif (isset($exercise['submission'])): ?>
                                 unkontrolliert
                             <?php else: ?>
@@ -81,7 +81,7 @@
                                 <?php $fileAddress = $exercise['attachment']['address']; ?>
                                 <?php $fileURL = "../FS/FSControl/{$fileAddress}/{$displayName}";/*{$filesystemURI}*/ ?>
 
-                                <a href="<?= $fileURL ?>" title="<?= $displayName ?>" class="plain" target="_blank">
+                                <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" class="plain" target="_blank">
                                     <img src="Images/Attachment.png" />
                                 </a>
                             <?php endif; ?>
@@ -92,7 +92,7 @@
                                 <?php $fileAddress = $exercise['submission']['file']['address']; ?>
                                 <?php $fileURL = "../FS/FSControl/{$fileAddress}/{$displayName}";/*{$filesystemURI}*/ ?>
 
-                                <a href="<?= $fileURL ?>" title="<?= $displayName ?>" class="plain" target="_blank">
+                                <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" class="plain" target="_blank">
                                     <img src="Images/Download.png" />
                                 </a>
                             <?php endif; ?>
@@ -103,7 +103,7 @@
                                 <?php $fileAddress = $exercise['submission']['marking']['file']['address']; ?>
                                 <?php $fileURL = "../FS/FSControl/{$fileAddress}/{$displayName}";/*{$filesystemURI}*/ ?>
 
-                                <a href="<?= $fileURL ?>" title="<?= $displayName ?>" class="plain" target="_blank">
+                                <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" class="plain" target="_blank">
                                     <img src="Images/DownloadCorrection.png" />
                                 </a>
                             <?php endif; ?>
@@ -113,7 +113,7 @@
                                       && !$isExpired 
                                       && $sheet['group']['leader']['id'] == $uid
                                       && $exercise['submission']['hideFile'] == "0"): ?>
-                                    <input type="image" name="deleteSubmission" value="<?= $exercise['submission']['id'] ?>" 
+                                    <input type="image" name="deleteSubmission" value="<?php echo $exercise['submission']['id']; ?>" 
                                            class="text-button" src="Images/Delete.png" title="Einsendung löschen" />
                             <?php endif; ?>
                         </div>
@@ -140,7 +140,7 @@
                         <?php $fileAddress = $sheet['sampleSolution']['address']; ?>
                         <?php $fileURL = "../FS/FSControl/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
                         <li>
-                            <a href="<?= $fileURL ?>" title="<?= $displayName ?>" target="_blank">
+                            <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
                                 Musterlösung
                             </a>
                         </li>
@@ -150,18 +150,18 @@
                         <?php $displayName = $sheet['sheetFile']['displayName']; ?>
                         <?php $fileAddress = $sheet['sheetFile']['address']; ?>
                         <?php $fileURL = "../FS/FSControl/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
-                        <a href="<?= $fileURL ?>" title="<?= $displayName ?>" target="_blank">
+                        <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
                             Aufgabenblatt
                         </a>
                     </li>
                     <li>
-                        <a href="Group.php?sid=<?= $sheet['id'], '&cid=', $cid ?>">
+                        <a href="Group.php?sid=<?php echo $sheet['id'], '&cid=', $cid; ?>">
                             Gruppe verwalten
                         </a>
                     </li>
 
                     <li>
-                        <a href="Upload.php?cid=<?= $cid ?>&sid=<?= $sheet['id'] ?>" title="Upload">
+                        <a href="Upload.php?cid=<?php echo $cid; ?>&sid=<?php echo $sheet['id']; ?>" title="Upload">
                             Aufgaben hochladen
                         </a>
                     </li>
@@ -169,7 +169,7 @@
                     <?php // prints a link to download attachments ?>
                     <?php if ($sheet['hasAttachments']): ?>
                         <li>
-                            <button name="downloadAttachments" value="<?= $sheet['id'] ?>" class="text-button body-option-color">
+                            <button name="downloadAttachments" value="<?php echo $sheet['id']; ?>" class="text-button body-option-color">
                                 Alle Anhänge herunterladen
                             </button>
                         </li>
@@ -178,7 +178,7 @@
                     <?php // prints a link to download markings ?>
                     <?php if ($sheet['hasMarkings']): ?>
                         <li>
-                            <button name="downloadMarkings" value="<?= $sheet['id'] ?>" class="text-button body-option-color">
+                            <button name="downloadMarkings" value="<?php echo $sheet['id']; ?>" class="text-button body-option-color">
                                 Alle Einsendungen herunterladen
                             </button>
                         </li>
@@ -196,7 +196,7 @@
                     </li>
                     <?php foreach ($sheet['group']['members'] as $member): ?>
                         <li class="footer-text">
-                            <?= $member['firstName'], " ", $member['lastName'] ?>
+                            <?php echo $member['firstName'], " ", $member['lastName']; ?>
                         </li>
                     <?php endforeach; ?>
                 </ol>
