@@ -1,6 +1,6 @@
 <input type="hidden" 
        name="maxMarkingStatus" 
-       value="<?= count($markingStatus) - 1 ?>" />
+       value="<?php echo count($markingStatus) - 1; ?>" />
 <?php
     if (!empty($groups)) {
     foreach ($groups as $group):
@@ -15,7 +15,7 @@
         <div class="info-color bold right">
             <button class="text-button info-color bold right" 
                     name="MarkingTool"
-                    value="<?= $leaderID ?>">
+                    value="<?php echo $leaderID; ?>">
                     speichern
             </button>
         </div>
@@ -39,16 +39,16 @@
                 ?>
                 <li>
                 <input type="hidden" 
-                       name="exercises[<?= $leaderID ?>][<?= $eid ?>][maxPoints]" 
-                       value="<?= $exercise['maxPoints'] ?>" />
+                       name="exercises[<?php echo $leaderID; ?>][<?php echo $eid; ?>][maxPoints]" 
+                       value="<?php echo $exercise['maxPoints']; ?>" />
 
                 <input type="hidden" 
-                       name="exercises[<?= $leaderID ?>][<?= $eid ?>][submissionID]" 
-                       value="<?= isset($exercise['submission']) ? $exercise['submission']['id'] : -1 ?>" />
+                       name="exercises[<?php echo $leaderID; ?>][<?php echo $eid; ?>][submissionID]" 
+                       value="<?php echo isset($exercise['submission']) ? $exercise['submission']['id'] : -1; ?>" />
 
                 <input type="hidden" 
-                       name="exercises[<?= $leaderID ?>][<?= $eid ?>][markingID]" 
-                       value="<?= isset($exercise['submission']['marking']) ? $exercise['submission']['marking']['id'] : -1 ?>" />
+                       name="exercises[<?php echo $leaderID; ?>][<?php echo $eid; ?>][markingID]" 
+                       value="<?php echo isset($exercise['submission']['marking']) ? $exercise['submission']['marking']['id'] : -1; ?>" />
 
                     <?php
                         print '<input class="form-field text-input very-short" name="';
@@ -72,7 +72,7 @@
                     ?>
 
                     <select class="form-field text-input very-short" 
-                            name="exercises[<?= $leaderID ?>][<?= $eid ?>][status]" 
+                            name="exercises[<?php echo $leaderID; ?>][<?php echo $eid; ?>][status]" 
                             id="exerciseType"> 
                         <?php
                             foreach ($markingStatus as $status) {

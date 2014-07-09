@@ -15,7 +15,7 @@
             <label class="form-field left label bold" for="courseName">Veranstaltungsname:</label>
             <input class="form-field left text-input" 
                    name="courseName" 
-                   value="<?= $course['name'] ?>" 
+                   value="<?php echo $course['name']; ?>" 
                    id="courseName"
                    maxlength="255" />
 
@@ -36,15 +36,15 @@
                 <?php for ($i = $currentYear; $i >= $endyear; $i--): ?>
 
                         <?php $semesterString = "SS " . $i; ?>
-                        <option <?php echo ($semesterString == $semester) ? 'selected="selected"' : NULL ?>
-                            value="SS <?= $i ?>">
-                            SS <?= $i ?>
+                        <option <?php echo ($semesterString == $semester) ? 'selected="selected"' : NULL; ?>
+                            value="SS <?php echo $i; ?>">
+                            SS <?php echo $i; ?>
                         </option>
 
                         <?php $semesterString = "WS " . (string)($i - 1) . "/" . $i; ?>
-                        <option <?php echo ($semesterString == $semester) ? 'selected="selected"' : NULL ?>
-                            value="<?= $semesterString ?> "\>
-                            <?php echo $semesterString ?>
+                        <option <?php echo ($semesterString == $semester) ? 'selected="selected"' : NULL;?>
+                            value="<?php echo $semesterString; ?> "\>
+                            <?php echo $semesterString; ?>
                         </option>
                 <?php endfor; ?>
             </select>
@@ -53,7 +53,7 @@
                 Max. Gruppengröße (Standardwert):
             </label>
             <input class="form-field left text-input short" name="defaultGroupSize"
-            value="<?= $course['defaultGroupSize']; ?>" id="defaultGroupSize" maxlength="3" />
+            value="<?php echo $course['defaultGroupSize']; ?>" id="defaultGroupSize" maxlength="3" />
 
             <label class="form-field left label bold new-line" for="defaultExerciseTypes">
                 Zugelassene Punktearten:

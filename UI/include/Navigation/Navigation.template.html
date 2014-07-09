@@ -8,23 +8,23 @@
 <?php if (!$switchDisabled && !$forIndex): ?>
     <?php if ($requiredPrivilege == $courseStatus): ?>
         <li>
-            <a href="Student.php?cid=<?= $cid ?>">Studentenrolle einnehmen</a>
+            <a href="Student.php?cid=<?php echo $cid; ?>">Studentenrolle einnehmen</a>
         </li>
         <?php else: ?>
         <li>
-            <a href="<?= $sites[$courseStatus] ?>?cid=<?= $cid ?>">Studentenrolle verlassen</a>
+            <a href="<?php echo $sites[$courseStatus]; ?>?cid=<?php echo $cid; ?>">Studentenrolle verlassen</a>
         </li>
     <?php endif; ?>
 <?php endif; ?>
 <?php if ($courseStatus == 3 /* PRIVILEGE_LEVEL::ADMIN */  && !$forIndex): ?>
     <li>
-        <a href="CourseManagement.php?cid=<?= $cid ?>">Kurs verwalten</a>
+        <a href="CourseManagement.php?cid=<?php echo $cid; ?>">Kurs verwalten</a>
     </li>
     <li>
-        <a href="Condition.php?cid=<?= $cid ?>">Zulassungsbedingungen</a>
+        <a href="Condition.php?cid=<?php echo $cid; ?>">Zulassungsbedingungen</a>
     </li>
     <li>
-        <a href="UploadHistory.php?cid=<?= $cid ?>">Einsendungsverlauf</a>
+        <a href="UploadHistory.php?cid=<?php echo $cid; ?>">Einsendungsverlauf</a>
     </li>
 <?php endif; ?>
 </ul>
