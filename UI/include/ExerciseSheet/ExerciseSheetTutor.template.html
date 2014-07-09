@@ -114,11 +114,12 @@
                         </button>
                     </li>
                     <li>
-                        <a href="TutorUpload.php?cid=<?php echo $user['courses'][0]['course']['id'],
+                        <a style="color:#b9b8b8"><s>
+                        <!--<a href="TutorUpload.php?cid=<?php echo $user['courses'][0]['course']['id'],
                                                          '&sid=',
-                                                         $sheet['id']; ?>">
-                            Einsendungen hochladen
-                        </a>
+                                                         $sheet['id']; ?>">-->
+                            Korrekturen hochladen
+                        </s></a>
                     </li>
                     <li>
                         <a href="TutorAssign.php?cid=<?php echo $user['courses'][0]['course']['id'],
@@ -139,10 +140,10 @@
                  */
             ?>
             <ol>
-                <li class="footer-text bold">Einsendungen:</li>
-                <li class="footer-text"><?php echo$sheet['courseUserCount']; ?> Studenten</li>
-                <li class="footer-text"><?php echo$sheet['studentsWithSubmissionCount']; ?> mit Einsendungen</li>
-                <li class="footer-text"><?php echo$sheet['studentsWithoutSubmissionCount']; ?> ohne Einsendungen</li>
+                <li class="footer-text bold" style="color:#b9b8b8"><s>Einsendungen:</s></li>
+                <li class="footer-text" style="color:#b9b8b8"><s><?php echo$sheet['courseUserCount']; ?> Studenten</s></li>
+                <li class="footer-text" style="color:#b9b8b8"><s><?php echo$sheet['studentsWithSubmissionCount']; ?> mit Einsendungen</s></li>
+                <li class="footer-text" style="color:#b9b8b8"><s><?php echo$sheet['studentsWithoutSubmissionCount']; ?> ohne Einsendungen</s></li>
             </ol>
         </div><!-- end: content-body-wrapper -->
     </div> <!-- end: content-element -->

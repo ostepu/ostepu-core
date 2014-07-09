@@ -34,8 +34,8 @@ include_once '../Config.php';
         
         ?>
     </select>
-    <input class="form-field text-input very-short mime-field" name="exercises[0][subexercises][0][mime-type]" value="pdf" id="mime-type" placeholder="pdf, zip, html, jpg, gif" style="background-color: #b9b8b8;color:#b9b8b8" disabled />
-    <input class="button" type="file" style="color:#b9b8b8" disabled />
+    <input class="form-field text-input very-short mime-field" name="exercises[0][subexercises][0][mime-type]" value="pdf" id="mime-type" placeholder="pdf, zip, html, jpg, gif" style="background-color: #b9b8b8;color:#b9b8b8;" disabled />
+    <input class="button" type="file" style="color:#b9b8b8;" disabled />
     <!--<input class="button" type="file" name="exercises[0][subexercises][0][attachment]" value="Anhang auswählen ..." />-->
                         <a href="javascript:void(0);" class="body-option-color deny-button delete-subtask right">Teilaufgabe löschen</a>
                         
