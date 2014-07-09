@@ -1,6 +1,9 @@
 <?php
 require_once dirname(__FILE__) . '/../../UI/include/Authentication.php';
 require_once dirname(__FILE__) . '/../../Assistants/Structures.php';
+require_once dirname(__FILE__) . '/../../Assistants/Request.php';
+require_once dirname(__FILE__) . '/../../Assistants/DBRequest.php';
+require_once dirname(__FILE__) . '/../../Assistants/DBJson.php';
 
 /**
  * @file Installation.php contains the Installation class
@@ -69,8 +72,9 @@ class Installation
            $data['DB']['db_name'] = $oldName;
         }
        
-        if (!$fail){
-            $sql = "CREATE SCHEMA `".$data['DB']['db_name']."` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;";
+        if (!$fail){ 
+            $add = ((isset($data['DB']['db_ignore']) && $data['DB']['db_ignore'] === 'ignore') ? 'IF NOT EXISTS ' : '');
+            $sql = "CREATE SCHEMA {$add}`".$data['DB']['db_name']."` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;";
             $oldName = $data['DB']['db_name'];
             $data['DB']['db_name'] = null;
             $result = DBRequest::request($sql, false, $data);
@@ -91,7 +95,6 @@ class Installation
                 $url = $list[$i];//$data['PL']['init'];
                 // inits all components
                 $result = Request::post($data['PL']['url'].'/'.$url. '/platform',array(),Platform::encodePlatform($platform));
-                
                 $res[$url] = array();
                 if (isset($result['content']) && isset($result['status']) && $result['status'] === 201){
                     $res[$url]['status'] = 201;
@@ -118,12 +121,19 @@ class Installation
             $list = array('DB/DBApprovalCondition','DB/DBAttachment','DB/DBCourse','DB/DBCourseStatus','DB/DBExercise','DB/DBExerciseFileType','DB/DBExerciseSheet','DB/DBExerciseType','DB/DBExternalId','DB/DBFile','DB/DBGroup','DB/DBInvitation','DB/DBMarking','DB/DBSelectedSubmission','DB/DBSession','DB/DBSubmission','DB/DBUser');
             $platform = Installation::PlattformZusammenstellen($data);
             
-            
+            $multiRequestHandle = new Request_MultiRequest();
+
             for ($i=0;$i<count($list);$i++){
                 $url = $list[$i];//$data['PL']['init'];
                 // inits all components
-                $result = Request::post($data['PL']['url'].'/'.$url. '/platform',array(),Platform::encodePlatform($platform));
-                
+                $handler = Request_CreateRequest::createPost($data['PL']['url'].'/'.$url. '/platform',array(),Platform::encodePlatform($platform));
+                $multiRequestHandle->addRequest($handler);
+            }
+            
+            $answer = $multiRequestHandle->run();
+            
+            for ($i=0;$i<count($list);$i++){  
+                $result = $answer[$i];
                 $res[$url] = array();
                 if (isset($result['content']) && isset($result['status']) && $result['status'] === 201){
                     $res[$url]['status'] = 201;

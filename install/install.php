@@ -89,6 +89,7 @@ class Installer
         $result['json'] = Installer::apache_extension_exists('json');
         $result['mbstring'] = Installer::apache_extension_exists('mbstring');
         $result['openssl'] = Installer::apache_extension_exists('openssl');
+        $result['fileinfo'] = Installer::apache_extension_exists('fileinfo');
         return $result;
     }
     
@@ -284,8 +285,8 @@ class Installer
         
         #region Grundeinstellungen_ausgeben
         $text=Design::erstelleZeile($simple, Sprachen::Get('general','url'), 'e', Design::erstelleEingabezeile($simple, (isset($data['PL']['url']) ? $data['PL']['url'] : null), 'data[PL][url]', 'http://localhost/uebungsplattform'), 'v');
-        $text .= Design::erstelleZeile($simple, 'Initialisieren', 'e', '', 'v', Design::erstelleSubmitButton('actionInstallInit'), 'h');
-        $text .= Design::erstelleZeile($simple, "Details anzeigen", 'e', Design::erstelleAuswahl($simple, (isset($data['PL']['pl_main_details']) ? $data['PL']['pl_main_details'] : null), 'data[PL][pl_main_details]', 'details', null), 'v');
+        $text .= Design::erstelleZeile($simple, Sprachen::Get('general','init'), 'e', '', 'v', Design::erstelleSubmitButton('actionInstallInit'), 'h');
+        $text .= Design::erstelleZeile($simple, Sprachen::Get('general','details'), 'e', Design::erstelleAuswahl($simple, (isset($data['PL']['pl_main_details']) ? $data['PL']['pl_main_details'] : null), 'data[PL][pl_main_details]', 'details', null), 'v');
         
         if ($installInit){
             foreach ($installInitResult as $component => $dat){
@@ -304,6 +305,7 @@ class Installer
         $text .= Design::erstelleZeile($simple, Sprachen::Get('database','db_path'), 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['db_path']) ? $data['DB']['db_path'] : null), 'data[DB][db_path]', 'localhost'), 'v');
         $text .= Design::erstelleZeile($simple, Sprachen::Get('database','db_name'), 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['db_name']) ? $data['DB']['db_name'] : null), 'data[DB][db_name]', 'uebungsplattform'), 'v');
         $text .= Design::erstelleZeile($simple, Sprachen::Get('database','db_override'), 'e', Design::erstelleAuswahl($simple, (isset($data['DB']['db_override']) ? $data['DB']['db_override'] : null), 'data[DB][db_override]', 'override', null), 'v');
+        $text .= Design::erstelleZeile($simple, Sprachen::Get('database','db_ignore'), 'e', Design::erstelleAuswahl($simple, (isset($data['DB']['db_ignore']) ? $data['DB']['db_ignore'] : null), 'data[DB][db_ignore]', 'ignore', null), 'v');
         $text .= Design::erstelleZeile($simple, Sprachen::Get('database','db_user'), 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['db_user']) ? $data['DB']['db_user'] : null), 'data[DB][db_user]', 'root'), 'v');
         $text .= Design::erstelleZeile($simple, Sprachen::Get('database','db_passwd'), 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_passwd']) ? $data['DB']['db_passwd'] : null), 'data[DB][db_passwd]', ''), 'v');
         
@@ -492,8 +494,8 @@ class Installer
         
         #region PlattformEinrichten
         $text='';
-        $text .= Design::erstelleZeile($simple, 'Tabellen anlegen', 'e', '', 'v', Design::erstelleSubmitButton('actionInstallPlatform'), 'h');
-        $text .= Design::erstelleZeile($simple, "Details anzeigen", 'e', Design::erstelleAuswahl($simple, (isset($data['PL']['pl_details']) ? $data['PL']['pl_details'] : null), 'data[PL][pl_details]', 'details', null), 'v');
+        $text .= Design::erstelleZeile($simple, Sprachen::Get('platform','createTables'), 'e', '', 'v', Design::erstelleSubmitButton('actionInstallPlatform'), 'h');
+        $text .= Design::erstelleZeile($simple, Sprachen::Get('platform','details'), 'e', Design::erstelleAuswahl($simple, (isset($data['PL']['pl_details']) ? $data['PL']['pl_details'] : null), 'data[PL][pl_details]', 'details', null), 'v');
         
         if ($installPlatform){
             foreach ($installPlatformResult as $component => $dat){
@@ -503,7 +505,7 @@ class Installer
         }
         
         if (!$simple)
-            echo Design::erstelleBlock($simple, 'Plattform anlegen', $text);
+            echo Design::erstelleBlock($simple, Sprachen::Get('platform','title'), $text);
         #endregion PlattformEinrichten
         
         #region Benutzer_erstellen
