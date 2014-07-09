@@ -84,7 +84,7 @@ class FSFile
         $this->_conf = $_conf;
         $this->_fs = $this->_conf->getLinks( );
 
-        $this->_app = new \Slim\Slim( array( 'debug' => false ) );
+        $this->_app = new \Slim\Slim( array( 'debug' => true ) );
 
         $this->_app->response->headers->set( 
                                             'Content-Type',
@@ -130,14 +130,8 @@ class FSFile
                                   )
                             );
 
-        if ( strpos( 
-                    $this->_app->request->getResourceUri( ),
-                    '/' . FSFile::$_baseDir
-                    ) === 0 ){
-
-            // run Slim
-            $this->_app->run( );
-        }
+        // run Slim
+        $this->_app->run( );
     }
 
     /**

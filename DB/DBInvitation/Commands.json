@@ -7,5 +7,8 @@
     {"method":"GET", "path":"/invitation(/invitation)(/)"},
     {"method":"GET", "path":"/invitation/leader/exercisesheet/:esid/user/:userid(/)"},
     {"method":"GET", "path":"/invitation/member/exercisesheet/:esid/user/:userid(/)"},
-    {"method":"GET", "path":"/invitation/exercisesheet/:esid(/)"}
+    {"method":"GET", "path":"/invitation/exercisesheet/:esid(/)"},
+    {"method":"POST", "path":"/platform"},
+    {"method":"DELETE", "path":"/platform"},
+    {"method":"GET", "path":"/link/exists/platform"}
 ]

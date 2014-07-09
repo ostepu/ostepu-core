@@ -1,3 +1,4 @@
 [
-    {"name":"out", "links":[{"method":"POST", "path":"/query" }] }
+    {"name":"out", "links":[{"method":"POST", "path":"/query" }] },
+    {"name":"out2", "links":[{"method":"POST", "path":"/query" }] }
 ]

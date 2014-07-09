@@ -6,5 +6,8 @@
     {"method":"DELETE", "path":"/selectedsubmission/user/:userid/exercisesheet/:esid(/)"},
     {"method":"POST", "path":"/selectedsubmission(/)"},
     {"method":"GET", "path":"/selectedsubmission/exercise/:eid(/)"},
-    {"method":"GET", "path":"/selectedsubmission/exercisesheet/:esid(/)"}
+    {"method":"GET", "path":"/selectedsubmission/exercisesheet/:esid(/)"},
+    {"method":"POST", "path":"/platform"},
+    {"method":"DELETE", "path":"/platform"},
+    {"method":"GET", "path":"/link/exists/platform"}
 ]

@@ -155,19 +155,16 @@ class Choice extends Object implements JsonSerializable
 
     
     /**
-     * Creates an Exercise object, for database post(insert) and put(update).
+     * Creates an Choice object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
      *
-     * @param string $exerciseId The id of the exercise.
-     * @param string $courseId The id of the course. (do not use!)
-     * @param string $sheetId The id of the exercise sheet.
-     * @param string $maxPoints the max points
-     * @param string $type the id of the exercise type
-     * @param string $link the id of the exercise, this exercise belongs to
-     * @param string $linkName the name of the sub exercise.
-     * @param string $bonus the bonus flag
+     * @param string $formId The id of the form.
+     * @param string $choiceId The id of the choice.
+     * @param string $text The text of the choice.
+     * @param string $correct Is part of the solution.
+     * @param string $submissionId The id of the submission.
      *
-     * @return an exercise object
+     * @return an choice object
      */
     public static function createChoice(
                                           $formId,

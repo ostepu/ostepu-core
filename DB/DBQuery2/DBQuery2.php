@@ -87,6 +87,33 @@ class DBQuery2
                                             'application/json'
                                             );
 
+        // POST AddPlatform
+        $this->_app->post( 
+                         '/platform',
+                         array( 
+                               $this,
+                               'addPlatform'
+                               )
+                         );
+                         
+        // DELETE DeletePlatform
+        $this->_app->delete( 
+                         '/platform',
+                         array( 
+                               $this,
+                               'deletePlatform'
+                               )
+                         );
+                         
+        // GET GetExistsPlatform
+        $this->_app->get( 
+                         '/link/exists/platform',
+                         array( 
+                               $this,
+                               'getExistsPlatform'
+                               )
+                         );
+                         
         // GET QueryResult
         $this->_app->get( 
                          '/' . $this->getPrefix( ) . '(/)',
@@ -211,6 +238,108 @@ class DBQuery2
         }
         if (count($result)==1) $result = $result[0];        
         $this->_app->response->setBody( Query::encodeQuery( $result ) );
+    }
+    
+    /**
+     * Returns status code 200, if this component is correctly installed for the platform
+     *
+     * Called when this component receives an HTTP GET request to
+     * /link/exists/platform.
+     */
+    public function getExistsPlatform( )
+    {
+        Logger::Log( 
+                    'starts GET GetExistsPlatform',
+                    LogLevel::DEBUG
+                    );
+                    
+        if (!file_exists('config.ini')){
+            $this->_app->response->setStatus( 409 );
+            $this->_app->stop();
+        }
+       
+        $this->_app->response->setStatus( 200 );
+        $this->_app->response->setBody( '' );   
+    }
+    
+    /**
+     * Removes the component from the platform
+     *
+     * Called when this component receives an HTTP DELETE request to
+     * /platform.
+     */
+    public function deletePlatform( )
+    {
+        Logger::Log( 
+                    'starts DELETE DeletePlatform',
+                    LogLevel::DEBUG
+                    );
+        if (file_exists('config.ini') && !unlink('config.ini')){
+            $this->_app->response->setStatus( 409 );
+            $this->_app->stop();
+        }
+        
+        $this->_app->response->setStatus( 201 );
+        $this->_app->response->setBody( '' );
+
+    }
+    
+    /**
+     * Adds the component to the platform
+     *
+     * Called when this component receives an HTTP POST request to
+     * /platform.
+     */
+    public function addPlatform( )
+    {
+        Logger::Log( 
+                    'starts POST AddPlatform',
+                    LogLevel::DEBUG
+                    );
+
+        // decode the received course data, as an object
+        $insert = Platform::decodePlatform( $this->_app->request->getBody( ) );
+
+        // always been an array
+        $arr = true;
+        if ( !is_array( $insert ) ){
+            $insert = array( $insert );
+            $arr = false;
+        }
+
+        // this array contains the indices of the inserted objects
+        $res = array( );
+        foreach ( $insert as $in ){
+        
+            $file = 'config.ini';
+            $text = "[DB]\n".
+                    "db_path = {$in->getDatabaseUrl()}\n".
+                    "db_user = {$in->getDatabaseOperatorUser()}\n".
+                    "db_passwd = {$in->getDatabaseOperatorPassword()}\n".
+                    "db_name = {$in->getDatabaseName()}";
+                    
+            if (!@file_put_contents($file,$text)){
+                Logger::Log( 
+                            'POST AddPlatform failed, config.ini no access',
+                            LogLevel::ERROR
+                            );
+
+                $this->_app->response->setStatus( 409 );
+                $this->_app->stop();
+            }   
+
+            $platform = new Platform();
+            $platform->setStatus(201);
+            $res[] = $platform;
+            $this->_app->response->setStatus( 201 );            
+        }
+
+        if ( !$arr && 
+             count( $res ) == 1 ){
+            $this->_app->response->setBody( Platform::encodePlatform( $res[0] ) );
+            
+        } else 
+            $this->_app->response->setBody( Platform::encodePlatform( $res ) );
     }
 }
 

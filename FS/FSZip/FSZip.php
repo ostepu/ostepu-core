@@ -9,7 +9,7 @@
  * @date 2013-2014
  */
 
-require ( dirname(__FILE__) . '/../../Assistants/Slim/Slim.php' );
+require_once ( dirname(__FILE__) . '/../../Assistants/Slim/Slim.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/CConfig.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/Structures.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/Request.php' );
@@ -159,15 +159,8 @@ class FSZip
                                   )
                             );
 
-        // starts slim only if the right prefix was received
-        if ( strpos( 
-                    $this->_app->request->getResourceUri( ),
-                    '/' . FSZip::$_baseDir
-                    ) === 0 ){
-
-            // run Slim
-            $this->_app->run( );
-        }
+        // run Slim
+        $this->_app->run( );
     }
 
     /**

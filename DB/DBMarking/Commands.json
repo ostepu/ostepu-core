@@ -20,5 +20,8 @@
     {"method":"GET", "path":"/marking(/marking)/:mid(/)"},
     {"method":"GET", "path":"/marking(/marking)/:mid/nosubmission(/)"},
     {"method":"GET", "path":"/marking(/marking)(/)"},
-    {"method":"GET", "path":"/marking(/marking)/nosubmission(/)"}
+    {"method":"GET", "path":"/marking(/marking)/nosubmission(/)"},
+    {"method":"POST", "path":"/platform"},
+    {"method":"DELETE", "path":"/platform"},
+    {"method":"GET", "path":"/link/exists/platform"}
 ]

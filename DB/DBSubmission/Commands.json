@@ -16,5 +16,8 @@
     {"method":"GET", "path":"/submission/exercise/:eid/selected(/)"},
     {"method":"GET", "path":"/submission/exercisesheet/:esid(/)"},
     {"method":"GET", "path":"/submission(/submission)/:suid(/)"},
-    {"method":"GET", "path":"/submission/course/:courseid(/)"}
+    {"method":"GET", "path":"/submission/course/:courseid(/)"},
+    {"method":"POST", "path":"/platform"},
+    {"method":"DELETE", "path":"/platform"},
+    {"method":"GET", "path":"/link/exists/platform"}
 ]
