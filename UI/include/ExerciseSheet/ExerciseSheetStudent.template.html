@@ -27,7 +27,7 @@
                 <?php echo date('d.m.Y  -  H:i', $sheet['endDate']); ?>
             </div>
             <div class="exercise-sheet-info info-color bold right">
-                <?php echo $sheet['percentage'], '%'; ?>
+                <?php if ($isExpired) echo $sheet['percentage'], '%';?>
             </div>
         </div>
 
@@ -103,7 +103,7 @@
                                 <?php $fileAddress = $exercise['submission']['marking']['file']['address']; ?>
                                 <?php $fileURL = "../FS/FSControl/{$fileAddress}/{$displayName}";/*{$filesystemURI}*/ ?>
 
-                                <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" class="plain" target="_blank">
+                                <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" class="plain image-button" target="_blank">
                                     <img src="Images/DownloadCorrection.png" />
                                 </a>
                             <?php endif; ?>
@@ -112,9 +112,10 @@
                             <?php if (isset($exercise['submission']) 
                                       && !$isExpired 
                                       && $sheet['group']['leader']['id'] == $uid
-                                      && $exercise['submission']['hideFile'] == "0"): ?>
-                                    <input type="image" name="deleteSubmission" value="<?php echo $exercise['submission']['id']; ?>" 
-                                           class="text-button" src="Images/Delete.png" title="Einsendung löschen" />
+                                      && $exercise['submission']['hideFile'] == "0"): ?>                                           
+                                    <button title="Einsendung löschen" name="deleteSubmission" value="<?php echo $exercise['submission']['id']; ?>" class="image-button">
+                                        <img src="Images/Delete.png">
+                                    </button>
                             <?php endif; ?>
                         </div>
                     </li>
@@ -155,15 +156,23 @@
                         </a>
                     </li>
                     <li>
-                        <a href="Group.php?sid=<?php echo $sheet['id'], '&cid=', $cid; ?>">
+                        <a style="color:#b9b8b8"><!--<a href="Group.php?sid=<?php echo $sheet['id'], '&cid=', $cid; ?>">-->
                             Gruppe verwalten
                         </a>
                     </li>
 
                     <li>
+                        <?php 
+                        if ($isExpired){
+                        ?>
+                        <a style="color:#b9b8b8">
+                            Aufgaben hochladen
+                        </a>
+                        <?php } else { ?>
                         <a href="Upload.php?cid=<?php echo $cid; ?>&sid=<?php echo $sheet['id']; ?>" title="Upload">
                             Aufgaben hochladen
                         </a>
+                        <?php } ?>
                     </li>
 
                     <?php // prints a link to download attachments ?>
@@ -178,9 +187,11 @@
                     <?php // prints a link to download markings ?>
                     <?php if ($sheet['hasMarkings']): ?>
                         <li>
-                            <button name="downloadMarkings" value="<?php echo $sheet['id']; ?>" class="text-button body-option-color">
+                            <!--<button name="downloadMarkings" value="<?php echo $sheet['id']; ?>" class="text-button body-option-color">-->
+                            <a style="color:#b9b8b8" class="text-button body-option-color">
                                 Alle Einsendungen herunterladen
-                            </button>
+                            </a>
+                            <!--</button>-->
                         </li>
                     <?php endif; ?>
                 </ol>
