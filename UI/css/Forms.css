@@ -126,3 +126,9 @@ button:hover {
 .text-button::after {
     content: ' >';
 }
+
+.image-button {
+    border: 0;
+    margin: 0;
+    padding: 0;
+}
