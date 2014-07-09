@@ -551,7 +551,7 @@ class LGetSite
     public function markingToolBase($userid,
                                     $courseid,
                                     $sheetid,
-                                    $tutorId,
+                                    $tutorid,
                                     $statusid,
                                     $shouldfilter,
                                     $selector)
@@ -669,7 +669,7 @@ class LGetSite
             $submission['marking'] = $marking;
 
             // filter out markings by the tutor with id $tutorid
-            if (($shouldfilter == false) || $selector($marking, $tutor, $statusid)) {
+            if (($shouldfilter == false) || $selector($marking, $tutorid, $statusid)) {
                 $exerciseId = $submission['exerciseId'];
                 $exerciseIndex = $exerciseIndices[$exerciseId];
                 $studentId = $submission['studentId'];
