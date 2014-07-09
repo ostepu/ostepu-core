@@ -335,7 +335,7 @@ class LGetSite
                 $selectedSubmission = &$submissionsByExercise[$exerciseId];
                 $selectedSubmissionStudentId = $selectedSubmission['studentId'];
 
-                if ($selectedSubmissionStudentId == $studentId) {
+                if ($selectedSubmissionStudentId == $studentId && (isset($marking['submission']['id']) && isset($selectedSubmission['id']) && $marking['submission']['id'] == $selectedSubmission['id'])) {
                     // the student id of the selected submission and the student
                     // id of the marking match
 
@@ -384,8 +384,8 @@ class LGetSite
 
             // prepare exercises
             foreach ($sheet['exercises'] as &$exercise) {
-                $isBonus = $exercise['bonus'];
-                $maxSheetPoints += $isBonus ? $exercise['maxPoints'] : 0;
+                $isBonus = isset($exercise['bonus']) ? $exercise['bonus'] : null;
+                $maxSheetPoints += ($isBonus == null || $isBonus == '0') ? $exercise['maxPoints'] : 0;
                 $exerciseID = $exercise['id'];
 
                 // add submission to exercise
@@ -1190,7 +1190,7 @@ class LGetSite
         foreach ($exercisesByType as $type => $exercises) {
             $maxPointsByType[$type] = array_reduce($exercises,
                                                    function ($value, $exercise) {
-                if ($exercise['bonus'] == 0) {
+                if ($exercise['bonus'] == null || $exercise['bonus'] == '0') {
                     // only count the
                     $value += $exercise['maxPoints'];
                 }
@@ -1238,7 +1238,8 @@ class LGetSite
             $markings = json_decode($answer['content'], true);
 
             foreach($markings as $marking){
-                $allMarkings[] = $marking;
+                if (isset($marking['submission']['selectedForGroup']) && $marking['submission']['selectedForGroup'] == 1)
+                    $allMarkings[] = $marking;
             }
         }
 
@@ -1317,7 +1318,7 @@ class LGetSite
                             $thisPercentage['points'] = $points;
                             $thisPercentage['maxPoints'] = $maxPoints;
 
-                            $typeApproved = ($percentage > $percentageNeeded);
+                            $typeApproved = ($percentage >= $percentageNeeded);
                             $allApproved = $allApproved && $typeApproved;
 
                             $thisPercentage['isApproved'] = $typeApproved;
