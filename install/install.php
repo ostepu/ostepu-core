@@ -1,6 +1,4 @@
 <?php
-
-
 /**
  * @file install.php contains the Installer class
  *
