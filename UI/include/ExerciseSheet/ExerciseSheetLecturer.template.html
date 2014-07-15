@@ -100,7 +100,7 @@ foreach ($sheets as $sheet):
                     <?php $fileAddress = $sheet['sheetFile']['address']; ?>
                     <?php $fileURL = $filesystemURI . '/' . $fileAddress
                                                     . '/' . $displayName; ?>
-                    <a href="<?= $fileURL ?>" title="<?= $displayName ?>"
+                    <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>"
                         target="_blank">
                         Aufgabenblatt
                     </a>
@@ -110,12 +110,12 @@ foreach ($sheets as $sheet):
                         <?php $displayName = $sheet['sampleSolution']['displayName']; ?>
                         <?php $fileAddress = $sheet['sampleSolution']['address']; ?>
                         <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
-                        <a href="<?= $fileURL ?>" title="<?= $displayName ?>" target="_blank">
+                        <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
                             Musterlösung
                         </a>
                     </li>
                 <?php endif; ?>
-                <li><a href="CreateSheet.php">Serie bearbeiten</a></li>
+                <li><!--<a href="CreateSheet.php">--> <a style="color:#b9b8b8"><s>Serie bearbeiten</s></a></li>
                 <?php
                     if ($sheet['hasAttachments']) {
                         print '<li>';
@@ -137,23 +137,24 @@ foreach ($sheets as $sheet):
                     print '</li>';
                 ?>
                 <li>
-                    <a href="TutorUpload.php?cid=<?= $user['courses'][0]['course']['id'],
+                    <a style="color:#b9b8b8"><s>
+                   <!-- <a href="TutorUpload.php?cid=<?php echo $user['courses'][0]['course']['id'],
                                                      '&sid=',
-                                                     $sheet['id'] ?>">
-                        Einsendungen hochladen
-                    </a>
+                                                     $sheet['id']; ?>">-->
+                        Korrekturen hochladen
+                   </s></a>
                 </li>
                 <li>
-                    <a href="TutorAssign.php?cid=<?= $user['courses'][0]['course']['id'],
+                    <a href="TutorAssign.php?cid=<?php echo $user['courses'][0]['course']['id'],
                                                      '&sid=',
-                                                     $sheet['id'] ?>">
+                                                     $sheet['id']; ?>">
                         Kontrolleurzuweisung
                     </a>
                 </li>
                 <li>
-                    <a href="MarkingTool.php?cid=<?= $user['courses'][0]['course']['id'],
+                    <a href="MarkingTool.php?cid=<?php echo $user['courses'][0]['course']['id'],
                                                      '&sid=',
-                                                     $sheet['id'] ?>">
+                                                     $sheet['id']; ?>">
                         Korrekturassistent
                     </a>
                 </li>
@@ -162,11 +163,17 @@ foreach ($sheets as $sheet):
     </div>
 
     <div class="content-footer">
+        <?php 
+            /**
+             * @todo The way how courseUserCount is calculated needs to be changed in GetSite because
+             *       it does not show the possible number of submissions. 
+             */
+        ?>
         <ol>
-            <li class="footer-text bold">Einsendungen:</li>
-            <li class="footer-text"><?=$sheet['courseUserCount'] ?> Studenten</li>
-            <li class="footer-text"><?=$sheet['studentsWithSubmissionCount'] ?> mit Einsendungen</li>
-            <li class="footer-text"><?=$sheet['studentsWithoutSubmissionCount'] ?> ohne Einsendungen</li>
+            <li class="footer-text bold" style="color:#b9b8b8"><s>Einsendungen:</s></li>
+            <li class="footer-text" style="color:#b9b8b8"><s><?php echo $sheet['courseUserCount']; ?> Studenten</s></li>
+            <li class="footer-text" style="color:#b9b8b8"><s><?php echo $sheet['studentsWithSubmissionCount']; ?> mit Einsendungen</s></li>
+            <li class="footer-text" style="color:#b9b8b8"><s><?php echo $sheet['studentsWithoutSubmissionCount']; ?> ohne Einsendungen</s></li>
         </ol>
     </div> <!-- end: content-body-wrapper -->
 </div> <!-- end: content-element -->

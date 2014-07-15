@@ -308,9 +308,9 @@ if (isset($_POST['MarkingTool'])) {
                 if ($f->evaluate(true)) {
                     $foundValues = $f->foundValues;
 
-                    $points = $foundValues['points'];
-                    $tutorComment = $foundValues['tutorComment'];
-                    $status = $foundValues['status'];
+                    $points = (isset($foundValues['points']) ? $foundValues['points'] : null);
+                    $tutorComment = (isset($foundValues['tutorComment']) ? $foundValues['tutorComment'] : null);
+                    $status = (isset($foundValues['status']) ? $foundValues['status'] : null);
 
                     if (!saveMarking($points, 
                                      $tutorComment, 

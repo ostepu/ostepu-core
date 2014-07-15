@@ -10,11 +10,11 @@
  * @date 2013-2014
  */ 
 
-require_once ( '../../Assistants/Slim/Slim.php' );
-include_once ( '../../Assistants/CConfig.php' );
-include_once ( '../../Assistants/Request.php' );
-include_once ( '../../Assistants/Structures.php' );
-include_once ( '../../Assistants/Logger.php' );
+require_once ( dirname(__FILE__) . '/../../Assistants/Slim/Slim.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/CConfig.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/Request.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/Structures.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
 
@@ -84,7 +84,7 @@ class FSFile
         $this->_conf = $_conf;
         $this->_fs = $this->_conf->getLinks( );
 
-        $this->_app = new \Slim\Slim( array( 'debug' => false ) );
+        $this->_app = new \Slim\Slim( array( 'debug' => true ) );
 
         $this->_app->response->headers->set( 
                                             'Content-Type',
@@ -130,14 +130,8 @@ class FSFile
                                   )
                             );
 
-        if ( strpos( 
-                    $this->_app->request->getResourceUri( ),
-                    '/' . FSFile::$_baseDir
-                    ) === 0 ){
-
-            // run Slim
-            $this->_app->run( );
-        }
+        // run Slim
+        $this->_app->run( );
     }
 
     /**

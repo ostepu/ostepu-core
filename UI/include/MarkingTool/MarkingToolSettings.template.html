@@ -13,6 +13,8 @@
             <select class="form-field left text-input" name="sheetID" id="sheetID">
                 <?php
                     foreach ($exerciseSheets as $sheet) {
+                        if (!isset($sheet['id'])) continue;
+                        if (!isset($sheet['sheetName'])) $sheet['sheetName'] = '???';
                         print '<option value="';
                         print $sheet['id'] . '"';
                         print $sheet['id'] == $sheetID ? ' selected="selected"' : NULL;
@@ -28,6 +30,10 @@
                 <option value="all">Alle</option>
                 <?php
                     foreach ($tutors as $tutor) {
+                        if (!isset($tutor['id'])) continue;
+                        if (!isset($tutor['firstName'])) $tutor['firstName'] = '???';
+                        if (!isset($tutor['lastName'])) $tutor['lastName'] = '???';
+                        
                         print '<option value="';
                         print $tutor['id'] . '"';
                         if (!empty($tutorID)) {
@@ -45,6 +51,9 @@
                 <option value="all">Alle</option>
                 <?php
                     foreach ($markingStatus as $status) {
+                        if (!isset($status['id'])) continue;
+                        if (!isset($status['longName'])) $status['longName'] = '???';
+                        
                         print '<option value="';
                         print $status['id'] . '"';
                         if (isset($statusID)) {

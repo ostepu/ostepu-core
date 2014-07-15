@@ -78,7 +78,7 @@ class Request
         $result['status'] = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         
         curl_close($ch);
-        Logger::Log($target . ' ' . (round((microtime(true) - $begin),2)). 's', LogLevel::DEBUG, dirname(__FILE__) . '../executionTime.log');
+        ///Logger::Log($target . ' ' . (round((microtime(true) - $begin),2)). 's', LogLevel::DEBUG, dirname(__FILE__) . '../executionTime.log');
         return $result; 
     }
        

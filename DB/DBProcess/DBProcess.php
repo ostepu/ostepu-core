@@ -530,6 +530,7 @@ class DBProcess
                    isset( $esid ) ? $esid : '',
                    isset( $eid ) ? $eid : '',
                    isset( $comid ) ? $comid : '',
+                   false,
                    false
                    );
     }
@@ -554,7 +555,8 @@ class DBProcess
                    isset( $esid ) ? $esid : '',
                    isset( $eid ) ? $eid : '',
                    isset( $comid ) ? $comid : '',
-                   true
+                   true,
+                   false
                    );
     }
     

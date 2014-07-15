@@ -211,19 +211,16 @@ class Form extends Object implements JsonSerializable
     public static $CHECKBOX = 2;
     
     /**
-     * Creates an Exercise object, for database post(insert) and put(update).
+     * Creates an Form object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
      *
+     * @param string $formId The id of the form.
      * @param string $exerciseId The id of the exercise.
-     * @param string $courseId The id of the course. (do not use!)
-     * @param string $sheetId The id of the exercise sheet.
-     * @param string $maxPoints the max points
-     * @param string $type the id of the exercise type
-     * @param string $link the id of the exercise, this exercise belongs to
-     * @param string $linkName the name of the sub exercise.
-     * @param string $bonus the bonus flag
+     * @param string $solution The solution text.
+     * @param string $task The task text.
+     * @param string $type The form type.
      *
-     * @return an exercise object
+     * @return an form object
      */
     public static function createForm(
                                           $formId,

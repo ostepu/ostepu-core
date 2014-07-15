@@ -5,5 +5,8 @@
     {    "method":"get", "path":"/attachment(/attachment)/:aid(/)" },
     {    "method":"get", "path":"/attachment(/attachment)(/)" },
     {    "method":"get", "path":"/attachment/exercise/:eid(/)" },
-    {    "method":"get", "path":"/attachment/exercisesheet/:esid(/)" }
+    {    "method":"get", "path":"/attachment/exercisesheet/:esid(/)" },
+    {"method":"POST", "path":"/platform"},
+    {"method":"DELETE", "path":"/platform"},
+    {"method":"GET", "path":"/link/exists/platform"}
 ]

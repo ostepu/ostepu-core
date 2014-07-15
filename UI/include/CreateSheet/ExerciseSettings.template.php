@@ -16,8 +16,8 @@
                 <ol class="full-width-list lower-alpha">
                 <?php foreach ($exercise['subexercises'] as $key2 => $subexercise):?>
                     <li>
-                        <input class="form-field text-input very-short" name="exercises[<?= $key1 ?>][subexercises][<?= $key2 ?>][maxPoints]" value="<?= $subexercise['maxPoints'] ?>" placeholder="Punkte" id="exerciseMaxPoints" />
-                        <select class="form-field text-input short" name="exercises[<?= $key1 ?>][subexercises][<?= $key2 ?>][exerciseType]" id="exerciseType">
+                        <input class="form-field text-input very-short" name="exercises[<?php echo $key1; ?>][subexercises][<?php echo $key2; ?>][maxPoints]" value="<?php echo $subexercise['maxPoints']; ?>" placeholder="Punkte" id="exerciseMaxPoints" />
+                        <select class="form-field text-input short" name="exercises[<?php echo $key1; ?>][subexercises][<?php echo $key2; ?>][exerciseType]" id="exerciseType">
                             <?php
                             session_start();
                             if (isset($_SESSION['JSCACHE'])) {
@@ -33,9 +33,9 @@
                             }
                             ?>
                         </select>
-                        <input class="form-field text-input very-short mime-field" name="exercises[<?= $key1 ?>][subexercises][<?= $key2 ?>][mime-type]" value="<?= $subexercise['mime-type'] ?>" id="mime-type" placeholder="pdf, zip, html, jpg, gif" disabled="<?= (isset($subexercise['type']) ? 'disabled' : '') ?>"/>
+                        <input class="form-field text-input very-short mime-field" name="exercises[<?php echo $key1; ?>][subexercises][<?php echo $key2; ?>][mime-type]" value="<?php echo $subexercise['mime-type']; ?>" id="mime-type" placeholder="pdf, zip, html, jpg, gif" disabled="<?php echo (isset($subexercise['type']) ? 'disabled' : ''); ?>"/>
                         
-                        <input class="button" type="file" name="exercises[<?= $key1 ?>][subexercises][<?= $key2 ?>][attachment]" value="Anhang auswählen ..." />
+                        <input class="button" type="file" name="exercises[<?php echo $key1; ?>][subexercises][<?php echo $key2; ?>][attachment]" value="Anhang auswählen ..." />
                         <a href="javascript:void(0);" class="body-option-color deny-button right delete-subtask"<?php if(count($exercise['subexercises'])==1):?> style="display:none;" <?php endif;?>>Teilaufgabe löschen</a>
         <div class="content-body-wrapper">
                     <table border="0" style="width:100%">
@@ -60,26 +60,26 @@
                     
                         <div class="content-body left">
                     </div>
-                        <input type="hidden" class="input-choice" name="exercises[<?= $key1 ?>][subexercises][<?= $key2 ?>][type]" value="<?= $subexercise['type'] ?>">
+                        <input type="hidden" class="input-choice" name="exercises[<?php echo $key1; ?>][subexercises][<?php echo $key2; ?>][type]" value="<?php echo $subexercise['type']; ?>">
                         
                         <label class="short label bold" for="task">Aufgabenstellung:</label>
-                        <textarea id="task" name="exercises[<?= $key1 ?>][subexercises][<?= $key2 ?>][task]"
+                        <textarea id="task" name="exercises[<?php echo $key1; ?>][subexercises][<?php echo $key2; ?>][task]"
                                                       class="form-field task-field"
                                                       rows="5"
                                                       style="width:100%"
-                                                      maxlength="255"><?= (isset($subexercise['task']) ? $subexercise['task'] : '') ?></textarea>
+                                                      maxlength="255"><?php echo (isset($subexercise['task']) ? $subexercise['task'] : ''); ?></textarea>
                                                       
                     <?php if ($subexercise['type'] == 0) { ?>
                    
                         <div class="form-input-input" style="margin:5px 0px;">
-                        <input type="hidden" class="choice-input" name="exercises[<?= $key1 ?>][subexercises][<?= $key2 ?>][correct][<?= $choiceId ?>]" value="1"><input class="form-field input-choice-text" style="width:100%" name="exercises[<?= $key1 ?>][subexercises][<?= $key2 ?>][choice][<?= $choiceId ?>]" value="<?= (isset($subexercise['choice'][0]) ? $subexercise['choice'][0] : '') ?>" placeholder="Musterlösung"/>    
+                        <input type="hidden" class="choice-input" name="exercises[<?php echo $key1; ?>][subexercises][<?php echo $key2; ?>][correct][<?php echo $choiceId; ?>]" value="1"><input class="form-field input-choice-text" style="width:100%" name="exercises[<?php echo $key1; ?>][subexercises][<?php echo $key2; ?>][choice][<?php echo $choiceId; ?>]" value="<?php echo (isset($subexercise['choice'][0]) ? $subexercise['choice'][0] : ''); ?>" placeholder="Musterlösung"/>    
                         </div>
                         
                     <?php $choiceId++; } elseif ($subexercise['type'] == 1) { ?>
                     
                     <?php foreach ($subexercise['choice'] as $key3 => $choice): ?>
                         <div class="form-input-radio" style="margin:5px 0px;">
-                        <input type="radio" class="choice-input" name="exercises[<?= $key1 ?>][subexercises][<?= $key2 ?>][correct][<?= $choiceId ?>]" value="" <?= (isset($subexercise['correct'][$key3]) ? 'checked' : '') ?>/><input class="form-field input-choice-text" name="exercises[<?= $key1 ?>][subexercises][<?= $key2 ?>][choice][<?= $choiceId ?>]" value="<?= $choice?>" placeholder="Auswahltext"/>    
+                        <input type="radio" class="choice-input" name="exercises[<?php echo $key1; ?>][subexercises][<?php echo $key2; ?>][correct][<?php echo $choiceId; ?>]" value="" <?php echo (isset($subexercise['correct'][$key3]) ? 'checked' : '') ?>/><input class="form-field input-choice-text" name="exercises[<?php echo $key1; ?>][subexercises][<?php echo $key2; ?>][choice][<?php echo $choiceId; ?>]" value="<?php echo $choice;?>" placeholder="Auswahltext"/>    
                         <a href="javascript:void(0);" class="body-option-color deny-button delete-choice center">Auswahlmöglichkeit löschen</a>
                         </div>
                     <?php $choiceId++;endforeach;?>
@@ -90,7 +90,7 @@
                     
                         <?php foreach ($subexercise['choice'] as $key3 => $choice): ?>
                         <div class="form-input-checkbox" style="margin:5px 0px;">
-                        <input type="checkbox" class="choice-input" name="exercises[<?= $key1 ?>][subexercises][<?= $key2 ?>][correct][<?= $choiceId ?>]" value="" <?= (isset($subexercise['correct'][$key3]) ? 'checked' : '') ?>/><input class="form-field input-choice-text" name="exercises[<?= $key1 ?>][subexercises][<?= $key2 ?>][choice][<?= $choiceId ?>]" value="<?= $choice?>" placeholder="Auswahltext"/>    
+                        <input type="checkbox" class="choice-input" name="exercises[<?php echo $key1; ?>][subexercises][<?php echo $key2; ?>][correct][<?php echo $choiceId; ?>]" value="" <?php echo (isset($subexercise['correct'][$key3]) ? 'checked' : ''); ?>/><input class="form-field input-choice-text" name="exercises[<?php echo $key1; ?>][subexercises][<?php echo $key2; ?>][choice][<?php echo $choiceId; ?>]" value="<?php echo $choice;?>" placeholder="Auswahltext"/>    
                         <a href="javascript:void(0);" class="body-option-color deny-button delete-choice center">Auswahlmöglichkeit löschen</a>
                         </div>
                     <?php $choiceId++;endforeach;?>
@@ -99,11 +99,11 @@
                     
                     <?php }?>
                         <label class="short label bold" for="solution">Lösungsbegründung:</label>
-                        <textarea name="exercises[<?= $key1 ?>][subexercises][<?= $key2 ?>][solution]"
+                        <textarea name="exercises[<?php echo $key1; ?>][subexercises][<?php echo $key2; ?>][solution]"
                                                       class="form-field solution-field"
                                                       rows="5"
                                                       style="width:100%"
-                                                      maxlength="255"><?= (isset($subexercise['solution']) ? $subexercise['solution'] : '') ?></textarea>
+                                                      maxlength="255"><?php echo (isset($subexercise['solution']) ? $subexercise['solution'] : ''); ?></textarea>
                        </div> 
 
                     <?php }?>
@@ -131,12 +131,12 @@
                         
                             <div class="content-body left"></div>
                             <label class="short left label bold" for="exerciseType">Modul:</label>
-                               <select class="form-field text-input processor-type" style="width:auto" name="exercises[<?= $key1 ?>][subexercises][<?= $key2 ?>][processorId][<?= $choiceId ?>]" value="Modul">
+                               <select class="form-field text-input processor-type" style="width:auto" name="exercises[<?php echo $key1; ?>][subexercises][<?php echo $key2; ?>][processorId][<?php echo $choiceId; ?>]" value="Modul">
                         <?php                   
                                 foreach ($processors as $link){
                                     if ($link->getId() === null || $link->getName() === null) continue;
                         ?>
-                           <option value="<?php echo $link->getId(); ?>" <?=($processor==$link->getId() ? 'selected' : '') ?>><?php echo $link->getName(); ?></option>
+                           <option value="<?php echo $link->getId(); ?>" <?php echo($processor==$link->getId() ? 'selected' : '') ?>><?php echo $link->getName(); ?></option>
                         <?php
                                }
                         ?>

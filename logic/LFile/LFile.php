@@ -147,7 +147,7 @@ class LFile
         
         $temp="";
         foreach ($path as $part){
-        $temp = $part.'/';
+        $temp .= $part.'/';
         }
         $path = $temp;
 

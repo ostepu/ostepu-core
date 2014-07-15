@@ -9,5 +9,8 @@
     {"method":"GET", "path":"/exercise/exercisesheet/:esid(/)"},
     {"method":"GET", "path":"/exercise/exercisesheet/:esid/nosubmission(/)"},
     {"method":"GET", "path":"/exercise/course/:courseid(/)"},
-    {"method":"GET", "path":"/exercise/course/:courseid/nosubmission(/)"}
+    {"method":"GET", "path":"/exercise/course/:courseid/nosubmission(/)"},
+    {"method":"POST", "path":"/platform"},
+    {"method":"DELETE", "path":"/platform"},
+    {"method":"GET", "path":"/link/exists/platform"}
 ]

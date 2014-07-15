@@ -5,7 +5,7 @@
         <?php if ($isInGroup): ?>
         <button 
             name="leaveGroup" 
-            value="<?= $group['leader']['id'] ?>" 
+            value="<?php echo $group['leader']['id']; ?>" 
             class="right text-button critical-color bold">
             verlassen
         </button>

@@ -9,5 +9,8 @@
     {"method":"GET", "path":"/user/course/:courseid/status/:statusid(/)"},
     {"method":"GET", "path":"/user/course/:courseid(/)"},
     {"method":"GET", "path":"/user/group/user/:userid/exercisesheet/:esid(/)"},
-    {"method":"GET", "path":"/user/status/:statusid(/)"}
+    {"method":"GET", "path":"/user/status/:statusid(/)"},
+    {"method":"POST", "path":"/platform"},
+    {"method":"DELETE", "path":"/platform"},
+    {"method":"GET", "path":"/link/exists/platform"}
 ]

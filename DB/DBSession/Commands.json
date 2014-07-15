@@ -6,5 +6,8 @@
     {"method":"POST", "path":"/session(/)"},
     {"method":"", "path":"/session/user/:userid(/)"},
     {"method":"", "path":"/session(/session)/:seid(/)"},
-    {"method":"", "path":"/session(/session)(/)"}
+    {"method":"", "path":"/session(/session)(/)"},
+    {"method":"POST", "path":"/platform"},
+    {"method":"DELETE", "path":"/platform"},
+    {"method":"GET", "path":"/link/exists/platform"}
 ]

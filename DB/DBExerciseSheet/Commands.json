@@ -5,6 +5,8 @@
     {"method":"GET", "path":"/exercisesheet(/exercisesheet)/:esid/url(/)"},
     {"method":"GET", "path":"/exercisesheet/course/:courseid/url(/)"},
     {"method":"GET", "path":"/exercisesheet/course/:courseid+(/)"},
-    {"method":"GET", "path":"/exercisesheet(/exercisesheet)/:esid+(/)"}
-    
+    {"method":"GET", "path":"/exercisesheet(/exercisesheet)/:esid+(/)"},
+    {"method":"POST", "path":"/platform"},
+    {"method":"DELETE", "path":"/platform"},
+    {"method":"GET", "path":"/link/exists/platform"}    
 ]

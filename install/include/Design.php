@@ -32,6 +32,7 @@ class Design
     public static function erstelleBlock($simple, $name, $data)
     {
         $result = "<h2>{$name}</h2><table border='0' cellpadding='3' width='600'>";
+        $result .= "<colgroup><col width='200'><col width='300'><col width='100'></colgroup>";
         $result.=$data;
         $result.="</table><br/>";
         return $result;
@@ -59,15 +60,22 @@ class Design
     {
         if ($fail === true){
             $installFail = true;
-            return Design::erstelleZeile($simple, 'Installation', 'e', '', 'v', "<div align ='center'><font color='red'>Fehler". (($errno!==null && $errno!='') ? " ({$errno})" : '') ."<br> {$error}</font></align>", 'v');
+            return Design::erstelleZeile($simple, Sprachen::Get('main','installation'), 'e', '', 'v', "<div align ='center'><font color='red'>".Sprachen::Get('main','fail'). (($errno!==null && $errno!='') ? " ({$errno})" : '') ."<br> {$error}</font></align>", 'v');
         } else{
-            return Design::erstelleZeile($simple, 'Installation', 'e', '', 'v', '<div align ="center">OK</align>', 'v');
+            return Design::erstelleZeile($simple, Sprachen::Get('main','installation'), 'e', '', 'v', '<div align ="center">'.Sprachen::Get('main','ok').'</align>', 'v');
         }
     }
     
-    public static function erstelleSubmitButton($var, $text = 'Installieren')
+    public static function erstelleSubmitButton($var, $text = null)
     {
+        if ($text === null)
+            $text = Sprachen::Get('main','install');
         return "<input type='submit' name='{$var}' value=' {$text} '>";
+    }
+    
+    public static function erstelleSubmitButtonGrafisch($var, $bild, $width = null, $height = null)
+    {
+        return "<input type='image' src='{$bild}' name='{$var}' style='".($width!==null ? 'width:'.$width.'px;': '' ).($height!==null ? 'height:'.$height.'px;': '' )."'>";
     }
 }
 

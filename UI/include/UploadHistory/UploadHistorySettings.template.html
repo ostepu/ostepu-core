@@ -3,7 +3,11 @@
     <div class="content-header">
         <div class="content-title left uppercase">Einsendungsverlauf ansehen</div>
         <div class="info-color bold right">
+        <?php
+        if (count($sheets)>0){
+        ?>
             <button class="text-button info-color bold right">Einsendungen anzeigen</button>
+        <?php } ?>
         </div>
     </div>
 
@@ -13,6 +17,13 @@
             <select class="form-field left text-input" name="userID" id="Student" size="10">
                 <?php
                     foreach ($users as $user) {
+                        if (!isset($user['courses']) || !isset($user['courses'][0]) || !isset($user['courses'][0]['status'])) continue;
+                        $statusDefinitions = CourseStatus::getStatusDefinition();
+                        if ($statusDefinitions[$user['courses'][0]['status']] != 'student') continue;
+                        if (!isset($user['id'])) continue;
+                        if (!isset($user['lastName'])) $user['lastName'] = '???';
+                        if (!isset($user['firstName'])) $user['firstName'] = '???';
+                        
                         print '<option value="';
                         print $user['id'] . '"';
                         print $user['id'] == $uploadUserID ? ' selected="selected"' : NULL;
@@ -23,19 +34,26 @@
                 ?>
             </select>
 
-            <label class="form-field left label bold new-line" for="ExerciseSheet">Serie auswählen:</label>
-            <select class="form-field left text-input" name="sheetID" id="ExerciseSheet">
-                <?php
-                    foreach ($sheets as $sheet) {
-                        print '<option value="';
-                        print $sheet['id'] . '"';
-                        print $sheet['id'] == $sheetID ? ' selected="selected"' : NULL;
-                        print '>';
-                        print $sheet['sheetName'];
-                        print '</option>';
-                    }
-                ?>
-            </select>
+            <?php
+            if (count($sheets)>0){
+            ?>
+                <label class="form-field left label bold new-line" for="ExerciseSheet">Serie auswählen:</label>
+                <select class="form-field left text-input" name="sheetID" id="ExerciseSheet">
+                    <?php
+                        foreach ($sheets as $sheet) {
+                            if (!isset($sheet['id'])) continue;
+                            if (!isset($sheet['sheetName'])) $sheet['sheetName'] = '???';
+                        
+                            print '<option value="';
+                            print $sheet['id'] . '"';
+                            print $sheet['id'] == $sheetID ? ' selected="selected"' : NULL;
+                            print '>';
+                            print $sheet['sheetName'];
+                            print '</option>';
+                        }
+                    ?>
+                </select>
+            <?php } ?>
         </div>
     </div> <!-- end: content-body -->
 </div> <!-- end: content-wrapper -->
