@@ -436,6 +436,8 @@ class LTutor
         $this->app->response->setBody($answer['content']);
     }
 
+    // @todo use LFile to upload markings
+    // @todo use parallel requests
     public function uploadZip($userid, $sheetid){
         // error array of strings
         $errors = array();

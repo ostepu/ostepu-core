@@ -40,7 +40,7 @@
                 <li>
                 <input type="hidden" 
                        name="exercises[<?php echo $leaderID; ?>][<?php echo $eid; ?>][maxPoints]" 
-                       value="<?php echo $exercise['maxPoints']; ?>" />
+                       value="<?php if (isset($exercise['maxPoints'])) echo $exercise['maxPoints']; ?>" />
 
                 <input type="hidden" 
                        name="exercises[<?php echo $leaderID; ?>][<?php echo $eid; ?>][submissionID]" 
@@ -67,22 +67,25 @@
                     <?php
                         print '<input class="form-field text-input" name="';
                         print 'exercises[' . $leaderID . '][' . $eid . '][tutorComment]" value="';
-                        print $exercise['submission']['marking']['tutorComment'];
+                        if (isset($exercise['submission']['marking']['tutorComment'])) print $exercise['submission']['marking']['tutorComment'];
                         print '" id="markingComment" maxlength="255" />';
                     ?>
 
-                    <select class="form-field text-input very-short" 
+                    <select class="form-field text-input short" 
                             name="exercises[<?php echo $leaderID; ?>][<?php echo $eid; ?>][status]" 
                             id="exerciseType"> 
                         <?php
                             foreach ($markingStatus as $status) {
+                                if (!isset($status['id'])) continue;
+                                if (!isset($status['longName'])) $status['longName'] = '???';
+                                
                                 print '<option value="';
                                 print $status['id'] . '" ';
                                 if (isset($exercise['submission']['marking']['status'])) {
                                     print $status['id'] == $exercise['submission']['marking']['status'] ? ' selected="selected"' : NULL;
                                 }
                                 print '>';
-                                print $status['shortName'];
+                                print $status['longName'];
                                 print '</option>';
                             }
                         ?>
@@ -92,18 +95,20 @@
                         <?php
                             // creates a download icon for the submission (if it exists)
                             if (isset($exercise['submission'])) {
-                                if ($exercise['submission']['file']['hideFile'] == "0") {
-                                    $displayName = $exercise['submission']['file']['displayName'];
-                                    $fileAddress = $exercise['submission']['file']['address'];
-                                    $fileURL = $filesystemURI . '/' . $fileAddress . '/' . $displayName;
+                                if (!isset($exercise['submission']['hideFile']) || $exercise['submission']['hideFile'] == "0") {
+                                    if (isset($exercise['submission']['file']['displayName']) && isset($exercise['submission']['file']['address'])){
+                                        $displayName = $exercise['submission']['file']['displayName'];
+                                        $fileAddress = $exercise['submission']['file']['address'];
+                                        $fileURL = '../FS/FSControl/' . $fileAddress . '/' . $displayName; //$filesystemURI
 
-                                    print '<a href="';
-                                    print $fileURL;
-                                    print '" title="';
-                                    print $displayName;
-                                    print '" class="plain" target="_blank">';
-                                    print '<img src="Images/Download.png" />';
-                                    print '</a>';
+                                        print '<a href="';
+                                        print $fileURL;
+                                        print '" title="';
+                                        print $displayName;
+                                        print '" class="plain" target="_blank">';
+                                        print '<img src="Images/Download.png" />';
+                                        print '</a>';
+                                    }
                                 }
                             }
                         ?>
@@ -111,31 +116,35 @@
                         <?php
                             // creates a downloadCorrection icon for the marking (if it exists)
                             if (isset($exercise['submission']['marking'])) {
-                                if ($exercise['submission']['markng']['file']['hideFile'] == "0") {
-                                    $displayName = $exercise['submission']['marking']['file']['displayName'];
-                                    $fileAddress = $exercise['submission']['marking']['file']['address'];
-                                    $fileURL = $filesystemURI . '/' . $fileAddress . '/' . $displayName;
+                                if (!isset($exercise['submission']['marking']['hideFile']) || $exercise['submission']['marking']['hideFile'] == "0") {
+                                    if (isset($exercise['submission']['marking']['file']['displayName']) && isset($exercise['submission']['marking']['file']['address'])){
+                                        $displayName = $exercise['submission']['marking']['file']['displayName'];
+                                        $fileAddress = $exercise['submission']['marking']['file']['address'];
+                                        $fileURL = '../FS/FSControl/' . $fileAddress . '/' . $displayName; //$filesystemURI
 
-                                    print '<a href="';
-                                    print $fileURL;
-                                    print '" title="';
-                                    print $displayName;
-                                    print '" class="plain" target="_blank">';
-                                    print '<img src="Images/DownloadCorrection.png" />';
-                                    print '</a>';
+                                        print '<a href="';
+                                        print $fileURL;
+                                        print '" title="';
+                                        print $displayName;
+                                        print '" class="plain" target="_blank">';
+                                        print '<img src="Images/DownloadCorrection.png" />';
+                                        print '</a>';
+                                    }
                                 }
                             }
                         ?>
 
                         <?php
-                            $studentComment = $exercise['submission']['comment'];
+                            if (isset($exercise['submission']['comment'])){
+                                $studentComment = $exercise['submission']['comment'];
 
-                            if (!empty($studentComment)) {
-                                print '<a href="javascript:alert(\'';
-                                print $studentComment;
-                                print '\')" class="body-option-color exercise-comment right">';
-                                print 'Kommentar (Student)';
-                                print '</a>';
+                                if (!empty($studentComment)) {
+                                    print '<a href="javascript:alert(\'';
+                                    print $studentComment;
+                                    print '\')" class="body-option-color exercise-comment right">';
+                                    print 'Kommentar (Student)';
+                                    print '</a>';
+                                }
                             }
                         ?>
                 </li>

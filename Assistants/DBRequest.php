@@ -63,7 +63,7 @@ class DBRequest
         $currentTime = $_SERVER['REQUEST_TIME'];
 
         // check session
-         $checkSession = false; // remove the comment this line to disable the session examination
+        /// $checkSession = false; // remove the comment this line to disable the session examination
         // Storing whether or not a session condition is not satisfied
         $sessionFail = false;
         if ( $checkSession === true ){
@@ -164,7 +164,7 @@ class DBRequest
         $currentTime = $_SERVER['REQUEST_TIME'];
 
         // check session
-        $checkSession = false; // remove the comment this line to disable the session examination
+        /// $checkSession = false; // remove the comment this line to disable the session examination
         // Storing whether or not a session condition is not satisfied
         $sessionFail = false;
         if ( $checkSession === true ){
@@ -183,7 +183,7 @@ class DBRequest
                                        );
 
                 // evaluates the session
-                $errno = mysqli_errno( );
+                $errno = mysqli_errno( $dbconn );
                 if ( $errno == 0 && 
                      gettype( $content ) != 'boolean' ){
                     $data = DBJson::getRows2( $content );

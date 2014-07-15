@@ -10,6 +10,7 @@
 
 include_once 'include/Boilerplate.php';
 include_once '../Assistants/Structures.php';
+include_once '../Assistants/MimeReader.php';
 
 if (isset($_POST['action']) && $_POST['action'] == 'TutorUpload') {
     if (isset($_FILES['MarkingFile'])) {
@@ -22,7 +23,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'TutorUpload') {
             $type = $file["type"];
 
             // checks file ending
-            if ($type == "application/zip") {
+            if (MimeReader::get_mime($filePath) == "application/zip") {
 
                 // creates the JSON object containing the file
                 $data = file_get_contents($filePath);
@@ -74,7 +75,7 @@ $menu = MakeNavigationElement($user_course_data,
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
-$h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
+$h->bind(array("name" => (isset($user_course_data['courses'][0]['course']['name']) ? $user_course_data['courses'][0]['course']['name'] : null),
                "notificationElements" => $notifications));
 
 // construct a content element for uploading markings
