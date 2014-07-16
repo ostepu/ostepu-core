@@ -137,7 +137,7 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
 
                     // evaluate mime-types
                     $mimeTypes = array();
-                    if (!isset($subexercise['type'])){    
+                    if (!isset($subexercise['type']) && isset($subexercise['mime-type'])){    
                         $mimeTypesForm = explode(",", $subexercise['mime-type']);
                         foreach ($mimeTypesForm as &$mimeType) {
                             if (FILE_TYPE::checkSupportedFileType(trim(strtolower($mimeType))) == false) {
@@ -238,6 +238,25 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                     
                     // set FileTypes (only as an array with strings in it)
                     $subexerciseObj->setFileTypes($subexercise['mime-type']);
+                    
+                    // add attachement if given
+                    if (isset($_FILES['exercises']) && isset($_FILES['exercises']['error']) && isset($_FILES['exercises']['error'][$key1]) && isset($_FILES['exercises']['error'][$key1]['subexercises']) && isset($_FILES['exercises']['error'][$key1]['subexercises'][$key2]) && isset($_FILES['exercises']['error'][$key1]['subexercises'][$key2]['attachment']))
+                    if ($_FILES['exercises']['error'][$key1]['subexercises'][$key2]['attachment'] != 4) {
+                        $filePath = $_FILES['exercises']['tmp_name'][$key1]['subexercises'][$key2]['attachment'];
+                        $displayName = $_FILES['exercises']['name'][$key1]['subexercises'][$key2]['attachment'];
+                        $attachments = array();
+                        
+                        $data = file_get_contents($filePath);
+                        $data = base64_encode($data);
+                        
+                        $attachment = new Attachment();
+                        $attachementFile = File::createFile(NULL,$displayName,NULL,$timestamp,NULL,NULL,NULL);
+                        $attachementFile->setBody($data);
+                        $attachment->setFile($attachementFile);
+                        
+                        $subexerciseObj->setAttachments(array($attachment));
+                    }
+                    
                     // add subexercise to exercises
                     array_push($exercises, $subexerciseObj);
                 }
@@ -246,11 +265,13 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                 $exercisesJSON = Exercise::encodeExercise($exercises);
 
                 $output2 = http_post_data($logicURI."/exercise", $exercisesJSON, true, $message);
-                $exercises = Exercise::decodeExercise($output2);
+                $exercises = array();
                 if ($message != 201) {
                     $errorInSent = true;
                     break;
                 }
+                
+                $exercises = Exercise::decodeExercise($output2);
                                 
 
                 #region create_forms

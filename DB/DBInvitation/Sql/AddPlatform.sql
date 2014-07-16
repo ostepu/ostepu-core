@@ -13,18 +13,18 @@ CREATE TABLE IF NOT EXISTS `Invitation` (
   CONSTRAINT `fk_Invitation_User1`
     FOREIGN KEY (`U_id_member`)
     REFERENCES `User` (`U_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Invitation_User2`
     FOREIGN KEY (`U_id_leader`)
     REFERENCES `User` (`U_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Invitation_ExerciseSheet1`
     FOREIGN KEY (`ES_id`)
     REFERENCES `ExerciseSheet` (`ES_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
 PACK_KEYS = 1;
 

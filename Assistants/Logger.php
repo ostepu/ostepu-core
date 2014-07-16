@@ -31,13 +31,6 @@
  */
 class Logger
 {
-    /**
-     * @var int $logLevel The levels that should be logged. Can also be multiple
-     * LogLevels connected with bitwise or. (e.g. LogLevel:ERROR | LogLevel::DEBUG)
-     * @see LogLevel
-     */
-    static $logLevel = LogLevel::ALL;
-
     /*
      * @TODO: Add the possibility to bail on errors using "die", optionally printing
      * a call trace.
@@ -75,7 +68,7 @@ class Logger
         $infoString = "[Logger] " . date('M j G:i:s');
 
         // test if the message should be logged
-        if ((self::$logLevel & $logLevel) !== 0) {
+        if ((error_reporting() & $logLevel) > 0) {
 
             $info = debug_backtrace();
             if (isset($info[1])) {
@@ -156,28 +149,17 @@ class Logger
  */
 abstract class LogLevel
 {
-    const OFF = 0;          /**< enum OFF: tells the Logger to turn off logging. */
-    const NONE = self::OFF; /**< enum NONE: same as above */
-    const DEBUG = 1;        /**< enum DEBUG: log debug info */
-    const INFO = 2;         /**< enum INFO: log general info */
-    const WARNING = 4;      /**< enum WARNING: log warnings */
-    const ERROR = 8;        /**< enum ERROR: log errors */
-
-    /**
-     * enum ALL: log everything.
-     */
-    const ALL = 15; //= self::ERROR | self::WARNING | self::INFO | self::DEBUG;
-
-    /**
-     * enum NO_DEBUG: log everything but debug.
-     */
-    const NO_DEBUG = 14; //= self::ERROR | self::WARNING | self::INFO;
+   // const OFF = 0;          /**< enum OFF: tells the Logger to turn off logging. */
+    const NONE = 0; /**< enum NONE: same as above */
+    const DEBUG = 11;        /**< enum DEBUG: log debug info */
+    const INFO = 8;         /**< enum INFO: log general info */
+    const WARNING = 2;      /**< enum WARNING: log warnings */
+    const ERROR = 1;        /**< enum ERROR: log errors */
 
     /**
      * An array that allows the conversion from a constant to a name.
      */
-    static $names = array(self::OFF => 'OFF',
-                          self::INFO => 'INFO',
+    static $names = array(self::INFO => 'INFO',
                           self::WARNING => 'WARNING',
                           self::ERROR => 'ERROR',
                           self::DEBUG => 'DEBUG');

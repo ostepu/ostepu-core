@@ -23,43 +23,34 @@ CREATE TABLE IF NOT EXISTS `Submission` (
   CONSTRAINT `fk_Submission_Exercise`
     FOREIGN KEY (`E_id`)
     REFERENCES `Exercise` (`E_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Submission_User1`
     FOREIGN KEY (`U_id`)
     REFERENCES `User` (`U_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Submission_File1`
     FOREIGN KEY (`F_id_file`)
     REFERENCES `File` (`F_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE RESTRICT
+    ON UPDATE CASCADE,
   CONSTRAINT `redundanz5`
     FOREIGN KEY (`ES_id` , `E_id`)
     REFERENCES `Exercise` (`ES_id` , `E_id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `fk_Submission_ExerciseSheet1`
     FOREIGN KEY (`ES_id`)
     REFERENCES `ExerciseSheet` (`ES_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
 AUTO_INCREMENT = 1;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
-
-DROP TRIGGER IF EXISTS `Submission_BDEL`;
-CREATE TRIGGER `Submission_BDEL` BEFORE DELETE ON `Submission` FOR EACH ROW
-/*check if this submission is selected and replace 
-@author Till, edited by Lisa Dietrich*/
-begin
-Delete From `Marking` where S_id = OLD.S_id;
-delete from `SelectedSubmission` where S_id_selected = OLD.S_id;
-end;
 
 DROP TRIGGER IF EXISTS `Submission_BINS`;
 CREATE TRIGGER `Submission_BINS` BEFORE INSERT ON `Submission` FOR EACH ROW
@@ -93,10 +84,4 @@ SET NEW.S_leaderId = (SELECT G.U_id_member FROM `Group` G WHERE G.U_id_leader = 
 if (NEW.S_leaderId is NULL) then
 SIGNAL sqlstate '23000' set message_text = 'no corresponding group leader';
 END if;
-END;
-
-DROP TRIGGER IF EXISTS `Submission_ADEL`;
-CREATE TRIGGER `Submission_ADEL` AFTER DELETE ON `Submission` FOR EACH ROW
-BEGIN
-##Delete ignore from `File` where OLD.F_id_file = F_id;
 END;

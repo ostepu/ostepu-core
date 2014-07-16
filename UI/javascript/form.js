@@ -60,7 +60,8 @@ function rename(){
         // add a new header text
         var elem = $(all[i]);
         var oldName = elem.attr('name');
-
+        
+        if (oldName != null){
             var regex = /exercises\[(.+?)]\[.+?\]\[(.+?)]\[(.+?)]\[[0-9]+\]/gm;
             var nameString = "exercises[$1][subexercises][$2][$3]["+ (i) +"]";
 
@@ -69,6 +70,7 @@ function rename(){
 
             // set the new name
             elem.attr('name', newName);
+        }
     }
     
     var all2 = $('.input-choice-text');

@@ -19,17 +19,17 @@ CREATE TABLE IF NOT EXISTS `Form_{$object->getId()}` (
   CONSTRAINT `fk_Form_Exercise1_{$object->getId()}`
     FOREIGN KEY (`E_id`)
     REFERENCES `Exercise` (`E_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Form_ExerciseSheet1_{$object->getId()}`
     FOREIGN KEY (`ES_id`)
     REFERENCES `ExerciseSheet` (`ES_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `redundanzForm_{$object->getId()}`
     FOREIGN KEY (`ES_id` , `E_id`)
     REFERENCES `Exercise` (`ES_id` , `E_id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE CASCADE)
 ENGINE = InnoDB
 AUTO_INCREMENT = 1;

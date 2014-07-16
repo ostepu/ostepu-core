@@ -55,6 +55,7 @@ class LExercise
      * @var string $lURL the URL of the logic-controller
      */
     private $lURL = ""; // readed out from config below
+    private $_postAttachment = array();
 
     /**
      * REST actions
@@ -80,6 +81,7 @@ class LExercise
         // initialize component
         $this->_conf = $conf;
         $this->query = CConfig::getLink($conf->getLinks(),"controller");
+        $this->_postAttachment = CConfig::getLinks($conf->getLinks(),"postAttachment");
 
         // initialize lURL
         $this->lURL = $this->query->getAddress();
@@ -120,39 +122,30 @@ class LExercise
         if (isset($body) == true && empty($body) == false) {
             foreach ($body as $subexercise) {
                 //upload attachement if it exists
-                if (isset($subexercise['attachments']) == true && empty($subexercise['attachments']) == false) {
-                    // get attachment
-                    $attachmentFile = json_encode($subexercise['attachments']);
+                /*if (isset($subexercise['attachments']) == true && empty($subexercise['attachments']) == false) {
+                    // get attachments
+                    $attachmentFiles = Attachment::encodeAttachment($subexercise['attachments']);
+                    
+                    $result = Request::routeRequest( 
+                                                    'POST',
+                                                    '/file',
+                                                    $header,
+                                                    $attachmentFiles,
+                                                    $_postFile,
+                                                    'file'
+                                                    );
 
-                    // set URL for requests to filesystem
-                    $URL = $this->lURL.'/FS/file';
-
-                    // upload Attachment
-                    $answer = Request::custom('POST', $URL, $header, $attachmentFile);
-                    if($answer['status'] == 201) {
-                        $URL = $this->lURL.'/DB/file';
-                        $answer2 = Request::custom('POST', $URL, $header, $answer['content']);
-
-                        // if file already exists
-                        if($answer2['status'] != 201) {
-                            $attachmentFSContent = json_decode($answer['content'], true);
-                            $answer2 = Request::custom('GET', $URL.'/hash/'.$attachmentFSContent['hash'], $header, "");
-                            if ($answer2['status'] == 200) {
-                                $id = json_decode($answer2['content'], true);
-                                $subexercise['attachments'] = $id;
-                            } else {
-                                $allright = false;
-                                break;
-                            }
-                        } elseif ($answer2['status'] == 201) {
-                            $id = json_decode($answer2['content'], true);
-                            $subexercise['attachments'] = $id;
-                        }
+                    // checks the correctness of the query
+                    if ( $result['status'] >= 200 && 
+                         $result['status'] <= 299 ){
+                        $queryResult = Course::decodeCourse( $result['content'] );
+                        
+                        
                     } else {
                         $allright = false;
                         break;
                     }
-                }
+                }*/
 
                 // create exercise in DB
                 if (isset($subexercise['fileTypes'])){
@@ -171,14 +164,28 @@ class LExercise
                     if (isset($subexerciseOutput['id'])) {
                         $linkid = $subexerciseOutput['id'];
                     }
-                    // create attachement in DB
-                    if (isset($subexercise['attachments']) == true && empty($subexercise['attachments']) == false) {
-                        $AttachmentObj = Attachment::createAttachment(NULL,$linkid,$subexercise['attachments']['fileId']);
-                        $AttachmentObjJSON = Attachment::encodeAttachment($AttachmentObj);
-                        $URL = $this->lURL."/DB/attachment";
-                        $AttachmentAnswer = Request::custom('POST', $URL, $header, $AttachmentObjJSON);
+                    
+                    // create attachement in DB and FS
+                    if (isset($subexercise['attachments']) && !empty($subexercise['attachments'])) { 
+                        foreach($subexercise['attachments'] as &$attachment)
+                            $attachment['exerciseId'] = $linkid;
+                            
+                        $attachments = Attachment::encodeAttachment($subexercise['attachments']);
 
-                        if ($AttachmentAnswer['status'] != 201) {
+                        $result = Request::routeRequest( 
+                                                        'POST',
+                                                        '/attachment',
+                                                        $header,
+                                                        $attachments,
+                                                        $this->_postAttachment,
+                                                        'attachment'
+                                                        );
+
+                        // checks the correctness of the query
+                        if ( $result['status'] >= 200 && 
+                             $result['status'] <= 299 ){                          
+                            // ...
+                        } else {
                             $allright = false;
                             break;
                         }
@@ -226,14 +233,14 @@ class LExercise
      * @param int $exerciseid The id of the exercise that should be returned.
      */
     public function getExercise($exerciseid) {
-        $header = $this->app->request->headers->all();
+        /*$header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
         $URL = $this->lURL.'/DB/exercise/'.$exerciseid;
         //request to database
         $answer = Request::custom('GET', $URL, $header, $body);
         //set response
         $this->app->response->setBody($answer['content']);
-        $this->app->response->setStatus($answer['status']);
+        $this->app->response->setStatus($answer['status']);*/
     }
 
     /**
@@ -245,12 +252,15 @@ class LExercise
      * @param int $exerciseid The id of the exercise that is beeing deleted.
      */
     public function deleteExercise($exerciseid){
-        $header = $this->app->request->headers->all();
+        /*$header = $this->app->request->headers->all();
         $URL = $this->lURL.'/DB/exercise/exercise/'.$exerciseid;
         // request to database
+        
+        // ???
         print_r($URL);
+        
         $answer = Request::custom('DELETE', $URL, $header, "");
-        $this->app->response->setStatus($answer['status']);
+        $this->app->response->setStatus($answer['status']);*/
     }
 
     /**
@@ -264,14 +274,14 @@ class LExercise
      * @param int $exerciseid The id of the exercise that is beeing updated.
      */
     public function editExercise($exerciseid){
-        $header = $this->app->request->headers->all();
+        /*$header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
         $URL = $this->lURL.'/DB/exercise/'.$exerciseid;
         // request to database
         $answer = Request::custom('PUT', $URL, $header, $body);
         // set response
         $this->app->response->setBody($answer['content']);
-        $this->app->response->setStatus($answer['status']);
+        $this->app->response->setStatus($answer['status']);*/
     }
 }
 ?>

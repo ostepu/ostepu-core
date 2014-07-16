@@ -83,15 +83,8 @@ class Controller
                                 'INFO'
                                 );
 
-        // starts slim only if the right prefix was received
-        if ( strpos( 
-                    $this->_app->request->getResourceUri( ),
-                    '/component'
-                    ) !== 0 ){
-
-            // run Slim
-            $this->_app->run( );
-        }
+        // run Slim
+        $this->_app->run( );
     }
 
     /**
@@ -139,7 +132,7 @@ class Controller
                 $ch = Request::custom( 
                                       $this->_app->request->getMethod( ),
                                       $links->getAddress( ) . $this->_app->request->getResourceUri( ),
-                                      $this->_app->request->headers->all( ),
+                                      array(), //$this->_app->request->headers->all( )
                                       $this->_app->request->getBody( )
                                       );
 
@@ -164,9 +157,10 @@ class Controller
                                                             );
 
                     Logger::Log( 
-                                'Controller prefix search failed',
+                                'Controller prefix search done',
                                 LogLevel::DEBUG
                                 );
+                                
                     $this->_app->stop( );
                     return;
                 }
@@ -210,7 +204,7 @@ class Controller
             $ch = Request::custom( 
                                   $this->_app->request->getMethod( ),
                                   $links->getAddress( ) . $this->_app->request->getResourceUri( ),
-                                  $this->_app->request->headers->all( ),
+                                  array(), //$this->_app->request->headers->all( )
                                   $this->_app->request->getBody( )
                                   );
 
@@ -235,9 +229,10 @@ class Controller
                                                         );
 
                 Logger::Log( 
-                            'Controller blank search failed',
+                            'Controller blank search done',
                             LogLevel::DEBUG
                             );
+                            
                 $this->_app->stop( );
                 return;
             }

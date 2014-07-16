@@ -29,6 +29,7 @@ foreach ($sheets as $sheet):
                 }
             ?>
         </div>
+        
         <div class="critical-color bold right">
             <?php print date('d.m.Y  -  H:i', $sheet['endDate']); ?>
         </div>
@@ -119,21 +120,25 @@ foreach ($sheets as $sheet):
                 <?php
                     if ($sheet['hasAttachments']) {
                         print '<li>';
-                        print '<button name="downloadAttachments" value="';
-                        print $sheet['id'];
-                        print '" class="text-button body-option-color">';
+                        print '<a style="color:#b9b8b8"><s>';
+                       // print '<button name="downloadAttachments" value="';
+                      //  print $sheet['id'];
+                      //  print '" class="text-button body-option-color">';
                         print 'Alle Anhänge herunterladen';
-                        print '</button>';
+                      //  print '</button>';
+                      print '</s></a>';
                         print '</li>';
                     }
                 ?>
                 <?php
                     print '<li>';
-                    print '<button name="downloadCSV" value="';
-                    print $sheet['id'];
-                    print '" class="text-button body-option-color">';
+                    print '<a style="color:#b9b8b8"><s>';
+                    //print '<button name="downloadCSV" value="';
+                    //print $sheet['id'];
+                    //print '" class="text-button body-option-color">';
                     print 'Einsendungen herunterladen';
-                    print '</button>';
+                    //print '</button>';
+                    print '</s></a>';
                     print '</li>';
                 ?>
                 <li>
@@ -158,6 +163,14 @@ foreach ($sheets as $sheet):
                         Korrekturassistent
                     </a>
                 </li>
+                <li>
+                </li>
+                <li>
+                    <button title="Übungsserie löschen" name="deleteSheet" value="<?php echo $sheet['id']; ?>" class="critical-color text-button">
+                        Übungsserie löschen
+                    </button>
+                </li>
+                       
             </ol>
         </div>
     </div>

@@ -1,0 +1,2 @@
+RewriteEngine On
+RewriteRule !CFilter.php index.php [QSA,L]

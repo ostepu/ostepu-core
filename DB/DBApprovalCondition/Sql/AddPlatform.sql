@@ -15,13 +15,13 @@ CREATE TABLE IF NOT EXISTS `ApprovalCondition` (
   CONSTRAINT `fk_ApprovalConditions_ExerciseTypes1`
     FOREIGN KEY (`ET_id`)
     REFERENCES `ExerciseType` (`ET_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_ApprovalConditions_Course1`
     FOREIGN KEY (`C_id`)
     REFERENCES `Course` (`C_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
 AUTO_INCREMENT = 1;
 
