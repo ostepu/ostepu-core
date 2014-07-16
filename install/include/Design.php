@@ -8,6 +8,8 @@
  * @date 2014
  */
  
+ require_once dirname(__FILE__) . '/Einstellungen.php';
+ 
 class Design
 {
     public static function erstelleZeile()
@@ -38,19 +40,33 @@ class Design
         return $result;
     }
     
-    public static function erstelleEingabezeile($simple, $variable, $variablenName, $default)
+    public static function erstelleEingabezeile($simple, &$variable, $variablenName, $default, $save=false)
     {
+        if ($save == true && $variable === null){
+            $variable = Einstellungen::Get($variablenName, $default);
+        } 
+        
+        if ($save == true)
+            Einstellungen::Set($variablenName, $variable);
+        
         $result = "<input style='width:100%' type='text' name='{$variablenName}' value='".($variable!==null ? $variable : $default)."'>";
         return $result;
     }
     
-    public static function erstelleAuswahl($simple, $variable, $variablenName, $value, $default)
+    public static function erstelleAuswahl($simple, &$variable, $variablenName, $value, $default, $save=false)
     {
+        if ($save == true && $variable === null){
+            $variable = Einstellungen::Get($variablenName, $default);
+        } 
+        
+        if ($save == true)
+            Einstellungen::Set($variablenName, $variable);
+            
         $result = "<input style='width:100%' type='checkbox' name='{$variablenName}' value='".$value."'".(($variable===$value &&  $variable!== null) ? "checked" : ($default === null ? '' : ($default===$value ? "checked" : '')) ).">";
         return $result;
     }
     
-    public static function erstellePasswortzeile($simple, $variable, $variablenName, $default)
+    public static function erstellePasswortzeile($simple, $variable, $variablenName, $default, $save=false)
     {
         $result = "<input style='width:100%' type='password' name='{$variablenName}' value='".(isset($variable) ? $variable : $default)."'>";
         return $result;
