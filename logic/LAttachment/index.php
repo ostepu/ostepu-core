@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * @file index.php executes the LAttachment component on calling via rest api
  *
