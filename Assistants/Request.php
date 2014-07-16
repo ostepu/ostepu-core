@@ -78,7 +78,10 @@ class Request
         $result['status'] = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         
         curl_close($ch);
-        ///Logger::Log($target . ' ' . (round((microtime(true) - $begin),2)). 's', LogLevel::DEBUG, dirname(__FILE__) . '../executionTime.log');
+        
+        if (error_reporting() & E_NOTICE)
+            Logger::Log($target . ' ' . (round((microtime(true) - $begin),2)). 's', LogLevel::DEBUG, dirname(__FILE__) . '../executionTime.log');
+            
         return $result; 
     }
        
@@ -177,7 +180,7 @@ class Request
                                       $links->getAddress().$resourceUri,
                                       $header,
                                       $content);
-                                  
+                      
                 // checks the answered status code             
                 if ($ch['status']>=200 && $ch['status']<=299){
                 
