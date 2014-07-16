@@ -86,7 +86,8 @@ $databaseURI = $getSiteURI . "/accountsettings/user/{$uid}";
 $accountSettings_data = http_get($databaseURI, true);
 $accountSettings_data = json_decode($accountSettings_data, true);
 
-$user_course_data = $accountSettings_data['user'];
+// ??? obsolete
+//$user_course_data = $accountSettings_data['user'];
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
