@@ -139,14 +139,17 @@ function renameSubtask(i)
             // get the old name
             var oldName = elem.attr('name');
 
-            var regex = /exercises\[[0-9]+\]\[.+?\]\[[0-9]+\]\[(.+?)]/gm;
-            var nameString = "exercises[" + (i - 1) + "][subexercises][" + index + "][$1]";
+            if (oldName != null){
+       
+                var regex = /exercises\[[0-9]+\]\[.+?\]\[[0-9]+\]\[(.+?)]/gm;
+                var nameString = "exercises[" + (i - 1) + "][subexercises][" + index + "][$1]";
 
-            // match the regex and replace the numbers
-            var newName = oldName.replace(regex, nameString);
+                // match the regex and replace the numbers
+                var newName = oldName.replace(regex, nameString);
 
-            // set the new name
-            elem.attr('name', newName);
+                // set the new name
+                elem.attr('name', newName);
+            }
         });
     };
 }
