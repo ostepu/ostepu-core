@@ -277,7 +277,7 @@ class DBFile
 
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
-                                              $this->query,
+                                              $this->query2,
                                               'Sql/DeleteFile.sql',
                                               array( 'fileid' => $fileid )
                                               );
@@ -287,7 +287,7 @@ class DBFile
              $result['status'] <= 299 ){
             $query = Query::decodeQuery( $result['content'] );
 
-            $data = $query->getResponse( );
+            $data = $query[count($query)-1]->getResponse();
 
             // generates an assoc array of an file by using a defined list of
             // its attributes
