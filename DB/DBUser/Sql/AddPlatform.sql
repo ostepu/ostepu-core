@@ -109,13 +109,3 @@ If NEW.U_flag != 1
 then delete from `Session` where NEW.U_id = U_id;
 end if;
 end;
-
-DROP TRIGGER IF EXISTS `User_ADEL`;
-CREATE TRIGGER `User_ADEL` AFTER DELETE ON `User` FOR EACH ROW
-/* delete corresponding groups
-*maybe replace it in After Update if U_flag = 0
-@author Lisa Dietrich*/
-begin
-#delete from `Group` 
-#where U_id_member = (Select U_id_member from `Group` where U_id_leader = OLD.U_id);
-end;

@@ -17,28 +17,28 @@ CREATE TABLE IF NOT EXISTS `Attachment{$pre}_{$object->getId()}` (
   CONSTRAINT `fk_Attachment{$pre}_File1_{$object->getId()}`
     FOREIGN KEY (`F_id`)
     REFERENCES `File` (`F_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE RESTRICT
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Attachment{$pre}_Process1_{$object->getId()}`
     FOREIGN KEY (`PRO_id`)
     REFERENCES `Process_{$object->getId()}` (`PRO_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Attachment{$pre}_Exercise1_{$object->getId()}`
     FOREIGN KEY (`E_id`)
     REFERENCES `Exercise` (`E_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `redundanz3{$pre}_{$object->getId()}`
     FOREIGN KEY (`ES_id` , `E_id`)
     REFERENCES `Exercise` (`ES_id` , `E_id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `fk_Attachment{$pre}_ExerciseSheet1_{$object->getId()}`
     FOREIGN KEY (`ES_id`)
     REFERENCES `ExerciseSheet` (`ES_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
 AUTO_INCREMENT = 1;
 

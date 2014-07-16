@@ -24,33 +24,33 @@ CREATE TABLE IF NOT EXISTS `Marking` (
   CONSTRAINT `fk_Marking_Submission1`
     FOREIGN KEY (`S_id`)
     REFERENCES `Submission` (`S_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE RESTRICT
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Marking_User1`
     FOREIGN KEY (`U_id_tutor`)
     REFERENCES `User` (`U_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE RESTRICT
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Marking_File1`
     FOREIGN KEY (`F_id_file`)
     REFERENCES `File` (`F_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE RESTRICT
+    ON UPDATE CASCADE,
   CONSTRAINT `redundanz6`
     FOREIGN KEY (`ES_id` , `E_id` , `S_id`)
     REFERENCES `Submission` (`ES_id` , `E_id` , `S_id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `fk_Marking_ExerciseSheet1`
     FOREIGN KEY (`ES_id`)
     REFERENCES `ExerciseSheet` (`ES_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Marking_Exercise1`
     FOREIGN KEY (`E_id`)
     REFERENCES `Exercise` (`E_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
 AUTO_INCREMENT = 1;
 
@@ -90,17 +90,4 @@ SET NEW.ES_id = (select S.ES_id from Submission S where S.S_id = NEW.S_id limit 
 if (NEW.ES_id is NULL) then
 SIGNAL sqlstate '45001' set message_text = 'no corresponding submission';
 END if;
-END;
-
-DROP TRIGGER IF EXISTS `Marking_BDEL`;
-CREATE TRIGGER `Marking_BDEL` BEFORE DELETE ON `Marking` FOR EACH ROW
-/* delete corresponding file
-@author Lisa*/
-begin
-end; 
-
-DROP TRIGGER IF EXISTS `Marking_ADEL`;
-CREATE TRIGGER `Marking_ADEL` AFTER DELETE ON `Marking` FOR EACH ROW
-BEGIN
-##delete ignore from `File` where F_id = OLD.F_id_file;
 END;

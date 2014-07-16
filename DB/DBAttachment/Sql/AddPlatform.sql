@@ -16,37 +16,29 @@ CREATE TABLE IF NOT EXISTS `Attachment` (
   CONSTRAINT `fk_Attachment_File1`
     FOREIGN KEY (`F_id`)
     REFERENCES `File` (`F_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE RESTRICT
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Attachment_Exercise1`
     FOREIGN KEY (`E_id`)
     REFERENCES `Exercise` (`E_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `redundanz3`
     FOREIGN KEY (`ES_id` , `E_id`)
     REFERENCES `Exercise` (`ES_id` , `E_id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `fk_Attachment_ExerciseSheet1`
     FOREIGN KEY (`ES_id`)
     REFERENCES `ExerciseSheet` (`ES_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
 AUTO_INCREMENT = 1;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
-
-DROP TRIGGER IF EXISTS `Attachment_ADEL`;
-CREATE TRIGGER `Attachment_ADEL` AFTER DELETE ON `Attachment` FOR EACH ROW
-/*delete corresponding data
-author Till*/
-begin
-##Delete IGNORE From `File` where F_id = OLD.F_id;
-end;
 
 DROP TRIGGER IF EXISTS `Attachment_BINS`;
 CREATE TRIGGER `Attachment_BINS` BEFORE INSERT ON `Attachment` FOR EACH ROW
