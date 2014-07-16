@@ -11,6 +11,7 @@
 include_once ( dirname( __FILE__ ) . '/Structures/ApprovalCondition.php' );
 include_once ( dirname( __FILE__ ) . '/Structures/Attachment.php' );
 include_once ( dirname( __FILE__ ) . '/Structures/Backup.php' );
+include_once ( dirname( __FILE__ ) . '/Structures/Call.php' );
 include_once ( dirname( __FILE__ ) . '/Structures/Choice.php' );
 include_once ( dirname( __FILE__ ) . '/Structures/Component.php' );
 include_once ( dirname( __FILE__ ) . '/Structures/Course.php' );
