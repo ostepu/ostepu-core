@@ -9,6 +9,7 @@
 require_once '../../Assistants/Slim/Slim.php';
 include_once '../../Assistants/Request.php';
 include_once '../../Assistants/CConfig.php';
+include_once '../../Assistants/Structures.php';
 
 \Slim\Slim::registerAutoloader();
 

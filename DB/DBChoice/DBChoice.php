@@ -518,6 +518,7 @@ class DBChoice
                     'GET ' . $functionName . ' failed',
                     LogLevel::ERROR
                     );
+                    
         $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
         $this->_app->response->setBody( Choice::encodeChoice( new Choice( ) ) );
         $this->_app->stop( );
