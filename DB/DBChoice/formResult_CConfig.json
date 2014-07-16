@@ -1,1 +1,0 @@
-{"id":"56","name":"DBFormResult","address":"http:\/\/localhost\/uebungsplattform\/DB\/DBChoice\/formResult","option":"","prefix":"choice,course,link","links":[{"id":"116","name":"out","address":"http:\/\/localhost\/uebungsplattform\/DB\/DBQuery2","target":"39","owner":"56","relevanz":"","targetName":"DBQuery2"}]}
