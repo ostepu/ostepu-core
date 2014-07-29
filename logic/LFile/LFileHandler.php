@@ -113,16 +113,18 @@ class LFileHandler
         if ($file !== null && $file!==array()){
             // requests to file-table of DB
             $answer = Request::routeRequest( 
-                                                'DELETE',
-                                                '/file/'.$file->getFileId(),
-                                                $header,
-                                                '',
-                                                $database,
-                                                'file'
-                                                );
+                                            'DELETE',
+                                            '/file/'.$file->getFileId(),
+                                            $header,
+                                            '',
+                                            $database,
+                                            'file'
+                                            );
                                                 
             // even if file has been deleted from db file table delete it from fs
-            if ($answer['status'] >= 200 && $answer['status'] <= 299) {
+            if ($answer['status'] >= 200 && $answer['status'] <= 299 && isset($answer['content']) && !empty($answer['content'])) {
+                $file = File::decodeFile($answer['content']);
+            
                 // requests to filesystem
                 $answer = Request::routeRequest( 
                                                 'DELETE',

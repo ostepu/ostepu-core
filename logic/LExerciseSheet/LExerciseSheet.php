@@ -11,6 +11,7 @@
 
 require '../../Assistants/Slim/Slim.php';
 include '../../Assistants/Request.php';
+include '../../Assistants/Structures.php';
 include_once '../../Assistants/CConfig.php';
 include '../Include/LArraySorter.php';
 
@@ -55,7 +56,13 @@ class LExerciseSheet
      * @var string $lURL the URL of the logic-controller
      */
     private $lURL = ""; // readed out from config below
-
+    
+    private $_postFile = array();
+    private $_deleteFile = array();
+    private $_postExerciseSheet = array();
+    private $_getExerciseSheet = array();
+    private $_deleteExerciseSheet = array();
+    
     /**
      * REST actions
      *
@@ -80,6 +87,11 @@ class LExerciseSheet
         // initialize component
         $this->_conf = $conf;
         $this->query = CConfig::getLink($conf->getLinks(),"controller");
+        $this->_postFile = CConfig::getLinks($this->_conf->getLinks( ),'postFile');
+        $this->_deleteFile = CConfig::getLinks($this->_conf->getLinks( ),'deleteFile');
+        $this->_postExerciseSheet = CConfig::getLinks($this->_conf->getLinks( ),'postExerciseSheet');
+        $this->_deleteExerciseSheet = CConfig::getLinks($this->_conf->getLinks( ),'deleteExerciseSheet');
+        $this->_getExerciseSheet = CConfig::getLinks($this->_conf->getLinks( ),'getExerciseSheet');
 
         // initialize lURL
         $this->lURL = $this->query->getAddress();
@@ -389,38 +401,91 @@ class LExerciseSheet
      * @param int $sheetid The id of the exercise sheet that is being deleted.
      */
     public function deleteExerciseSheet($sheetid){
+        
+        $this->app->response->setStatus( 201 );
+        Logger::Log( 
+                    'starts DELETE DeleteExerciseSheet',
+                    LogLevel::DEBUG
+                    );
+                    
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
+        $res = null;
+        
         // getExerciseSheet
-        $URL = $this->lURL.'/DB/exercisesheet/exercisesheet/'.$sheetid;
-        $answer = Request::custom('GET', $URL, $header, "");
-        $exerciseSheet = json_decode($answer['content'], true);
-        $sampleFileAddress = $exerciseSheet['sampleSolution']['address'];
-        $sampleFileid = $exerciseSheet['sampleSolution']['fileId'];
-        $sheetFileAddress = $exerciseSheet['sheetFile']['address'];
-        $sheetFileid = $exerciseSheet['sheetFile']['fileId'];
+        $result = Request::routeRequest( 
+                                        'GET',
+                                        '/exercisesheet/'.$sheetid,
+                                        $this->app->request->headers->all(),
+                                        '',
+                                        $this->_getExerciseSheet,
+                                        'exercisesheet'
+                                        );
+                                        
+        // checks the correctness of the query
+        if ( $result['status'] >= 200 && 
+             $result['status'] <= 299 && isset($result['content'])){
 
-        $URL = $this->lURL.'/DB/exercisesheet/exercisesheet/'.$sheetid;
-        // request to database
-        $answer = Request::custom('DELETE', $URL, $header, $body);
-        $this->app->response->setStatus($answer['status']);
-
-        /*
-         * if the file information has been deleted, the files
-         * will being deleted from filetable and from filesystem
-         */
-        if ($answer['status'] >= 200 and $answer['status'] < 300){
-            // requests to file-table of DB
-            $URL = $this->lURL.'/DB/file/'.$sampleFileid;
-            $answer = Request::custom('DELETE', $URL, $header, "");
-            $URL = $this->lURL.'/DB/file/'.$sheetFileid;
-            $answer = Request::custom('DELETE', $URL, $header, "");
-            // requests to filesystem
-            $URL = $this->lURL.'/FS/'.$sampleFileAddress;
-            $answer = Request::custom('DELETE', $URL, $header, $body);
-            $URL = $this->lURL.'/FS/'.$sheetFileAddress;
-            $answer = Request::custom('DELETE', $URL, $header, $body);
+            $exerciseSheet = ExerciseSheet::decodeExerciseSheet($result['content']);
+            $sampleFile = $exerciseSheet->getSampleSolution();
+            $sheetFile = $exerciseSheet->getSheetFile();
+            
+            // delete exerciseSheet
+            $result = Request::routeRequest( 
+                                            'DELETE',
+                                            '/exercisesheet/'.$sheetid,
+                                            $this->app->request->headers->all(),
+                                            '',
+                                            $this->_deleteExerciseSheet,
+                                            'exercisesheet'
+                                            );
+                                            
+            if ( $result['status'] >= 200 && 
+                 $result['status'] <= 299){
+                // exerciseSheet is deleted
+                
+                // delete sampleSolution if exists
+                if ($sampleFile !== null){
+                    $result = Request::routeRequest( 
+                                                    'DELETE',
+                                                    '/file/'.$sampleFile->getFileId(),
+                                                    array(),
+                                                    '',
+                                                    $this->_deleteFile,
+                                                    'file'
+                                                    );
+                }
+                
+                // delete sheetFile if exists
+                if ($sheetFile !== null){
+                    $result = Request::routeRequest( 
+                                                    'DELETE',
+                                                    '/file/'.$sheetFile->getFileId(),
+                                                    array(),
+                                                    '',
+                                                    $this->_deleteFile,
+                                                    'file'
+                                                    );
+                }
+                
+                $res = new ExerciseSheet();
+    
+            } else {
+                $res = null;
+                $this->app->response->setStatus( 409 );
+            }
+        } else {
+            $res = null;
+            $this->app->response->setStatus( 409 );
         }
+        
+        if ($this->app->response->getStatus( ) != 201)
+            Logger::Log( 
+                        'DELETE DeleteExerciseSheet failed',
+                        LogLevel::ERROR
+                        );
+                    
+        $this->app->response->setBody( ExerciseSheet::encodeExerciseSheet( $res ) );
     }
 }
 ?>

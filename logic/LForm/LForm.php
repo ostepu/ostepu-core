@@ -9,6 +9,7 @@
 require_once '../../Assistants/Slim/Slim.php';
 include_once '../../Assistants/Request.php';
 include_once '../../Assistants/CConfig.php';
+include_once '../../Assistants/Structures.php';
 
 \Slim\Slim::registerAutoloader();
 
@@ -207,9 +208,9 @@ class LForm
                 
             } else {
             
-               /* if ($course->getId()!==null){
+                if ($course->getId()!==null){
                     $this->deleteCourse($course->getId());
-                }*/
+                }
             
                 Logger::Log( 
                             'POST AddCourse failed',
@@ -283,6 +284,11 @@ class LForm
      */
     public function addForm()
     {
+        Logger::Log( 
+                    'starts POST AddForm',
+                    LogLevel::DEBUG
+                    );
+                    
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
         $this->app->response->setStatus( 201 );
@@ -316,7 +322,7 @@ class LForm
                                     
         // checks the correctness of the query
         if ( $result['status'] >= 200 && 
-             $result['status'] <= 299 ){
+             $result['status'] <= 299 && isset($result['content'])){
             $newforms = Form::decodeForm($result['content']);
             if ( !is_array( $newforms ) )
                 $newforms = array($newforms);
@@ -391,11 +397,12 @@ class LForm
             $res[] = null;
             $this->app->response->setStatus( 409 );
         }
-            
-        Logger::Log( 
-                    'POST AddForms failed',
-                    LogLevel::ERROR
-                    );
+           
+        if ($this->app->response->getStatus( ) != 201)
+            Logger::Log( 
+                        'POST AddForms failed',
+                        LogLevel::ERROR
+                        );
 
         if ( !$arr && 
              count( $res ) == 1 ){

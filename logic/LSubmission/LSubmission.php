@@ -335,13 +335,13 @@ class LSubmission
 
              
             $result = Request::routeRequest( 
-                    'POST',
-                    '/zip/'.$sheetid.'.zip',
-                    $this->app->request->headers->all( ),
-                    File::encodeFile($files),
-                    $this->_zip,
-                    'zip'
-                    );
+                                            'POST',
+                                            '/zip/'.$sheetid.'.zip',
+                                            $this->app->request->headers->all( ),
+                                            File::encodeFile($files),
+                                            $this->_zip,
+                                            'zip'
+                                            );
             
             if ( $result['status'] >= 200 && 
                  $result['status'] <= 299 ){

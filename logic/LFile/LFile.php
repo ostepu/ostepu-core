@@ -116,7 +116,7 @@ class LFile
                             
         // DELETE File
         $this->_app->delete( 
-                            '/' . LFile::$_baseDir. '(/)',
+                            '/' . LFile::$_baseDir. '/:fileid',
                             array( 
                                   $this,
                                   'deleteFile'
@@ -141,7 +141,8 @@ class LFile
                 'starts POST postFile',
                 LogLevel::DEBUG
                 );
-                    
+                   
+        $this->_app->response->setStatus( 201 );                   
         $body = $this->_app->request->getBody( );
         $fileObjects = File::decodeFile( $body );
         
@@ -164,19 +165,17 @@ class LFile
 
             $result = LFileHandler::add($this->_db,$this->_fs,$path, array(),$fileObject);
             if ( $result !== null){
+                $result->setStatus(201);
                 $res[] = $result; 
             } else {
+                $result->setStatus(409);
                 $fileObject->addMessage("Die Datei konnte nicht gespeichert werden.");
                 $res[] = $fileObject;
                 
                 Logger::Log( 
-                    'POST postPathFile failed',
-                    LogLevel::ERROR
-                    );
-                
-                $this->_app->response->setStatus( 409 );
-                $this->_app->response->setBody( File::encodeFile( $res ) );
-                $this->_app->stop( );
+                            'POST postPathFile failed',
+                            LogLevel::ERROR
+                            );
             }
         }
 
@@ -184,7 +183,6 @@ class LFile
              count( $res ) == 1 )
             $res = $res[0];
 
-        $this->_app->response->setStatus( 201 );
         $this->_app->response->setBody( File::encodeFile( $res ) );
     }
    
@@ -205,47 +203,37 @@ class LFile
      * Called when this component receives an HTTP DELETE request to
      * /file(/)
      */
-    public function deleteFile( )
+    public function deleteFile( $fileid )
     {
         Logger::Log( 
                 'starts Delete deleteFile',
                 LogLevel::DEBUG
                 );
-                
-        $body = $this->_app->request->getBody( );
-        $fileObjects = File::decodeFile( $body );
-
-        // always been an array
-        $arr = true;
-        if ( !is_array( $fileObjects ) ){
-            $fileObjects = array( $fileObjects );
-            $arr = false;
-        }
-
-        $res = array( );
-        foreach ( $fileObjects as $fileObject ){
-            if ($fileObject!==null && $fileObject !== array()){
-                $result = LFileHandler::delete($this->_db, $this->_fs, array(), $fileObject);    
-            } else
-                $result = new File();
-                
-            if ( $result !== null){
-                $res[] = $result; 
-            } else {
-                $uploadSubmission->getMessages()[] = ("Die Datei konnte nicht gelöscht werden.");
-                $res[] = $fileObject;
-                
-                $this->_app->response->setStatus( 409 );
-                $this->_app->response->setBody( File::encodeFile( $res ) );
-                $this->_app->stop( );
-            }
-        }
-
-        if ( !$arr && 
-             count( $res ) == 1 )
-            $res = $res[0];
 
         $this->_app->response->setStatus( 201 );
+
+        $fileObject = new File();
+        $fileObject->setFileId($fileid);
+
+        $res = null;
+        
+        if ($fileObject!==null && $fileObject !== array()){
+            $result = LFileHandler::delete($this->_db, $this->_fs, array(), $fileObject);    
+        } else
+            $result = null;
+            
+        if ( $result !== null){
+            $result->setStatus(201);
+            $res = $result; 
+        } else {
+            $result = new File();
+            $result->getMessages()[] = ("Die Datei konnte nicht gelöscht werden.");
+            $result->setStatus(409);
+            $res = $result;
+            
+            $this->_app->response->setStatus( 409 );
+        }
+
         $this->_app->response->setBody( File::encodeFile( $res ) );                        
     }
 }

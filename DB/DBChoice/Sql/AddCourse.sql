@@ -18,23 +18,23 @@ CREATE TABLE IF NOT EXISTS `Choice{$preChoice}_{$object->getId()}` (
   CONSTRAINT `fk_Choice_Form1{$preChoice}{$preForm}_{$object->getId()}`
     FOREIGN KEY (`FO_id`)
     REFERENCES `Form{$preForm}_{$object->getId()}` (`FO_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Choice_Exercise1{$preChoice}{$preExercise}_{$object->getId()}`
     FOREIGN KEY (`E_id`)
     REFERENCES `Exercise{$preExercise}` (`E_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `redundanz16{$preChoice}{$preForm}_{$object->getId()}`
     FOREIGN KEY (`E_id` , `FO_id`)
     REFERENCES `Form{$preForm}_{$object->getId()}` (`E_id` , `FO_id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `fk_Choice_Submission1{$preChoice}_{$object->getId()}`
     FOREIGN KEY (`S_id`)
     REFERENCES `Submission` (`S_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
 AUTO_INCREMENT = 1;
 

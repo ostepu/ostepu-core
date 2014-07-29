@@ -17,23 +17,23 @@ CREATE TABLE IF NOT EXISTS `Process{$pre}_{$object->getId()}` (
   CONSTRAINT `fk_Process_Exercise1{$pre}_{$object->getId()}`
     FOREIGN KEY (`E_id`)
     REFERENCES `Exercise` (`E_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `fk_Process_ExerciseSheet1{$pre}_{$object->getId()}`
     FOREIGN KEY (`ES_id`)
     REFERENCES `ExerciseSheet` (`ES_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
   CONSTRAINT `redundanzProcess{$pre}_{$object->getId()}`
     FOREIGN KEY (`ES_id` , `E_id`)
     REFERENCES `Exercise` (`ES_id` , `E_id`)
-    ON DELETE NO ACTION
+    ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `fk_Process_Component1{$pre}_{$object->getId()}`
     FOREIGN KEY (`CO_id_target`)
     REFERENCES `Component` (`CO_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE)
 ENGINE = InnoDB
 AUTO_INCREMENT = 1;
 

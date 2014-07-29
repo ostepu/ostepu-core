@@ -20,40 +20,6 @@ CREATE TABLE IF NOT EXISTS `File` (
 ENGINE = InnoDB
 AUTO_INCREMENT = 1;
 
--- -----------------------------------------------------
--- procedure deleteFile
--- -----------------------------------------------------
-
-CREATE PROCEDURE `deleteFile` (IN fileid int(11))
-BEGIN
-DECLARE count char(55);
-select F_address into count
-from File where F_id = fileid;
-
-Delete from File
-where F_id = fileid;
-
-SELECT 
-    count as F_address;
-END;
-
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
-
-DROP TRIGGER IF EXISTS `File_ADEL`;
-CREATE TRIGGER `File_ADEL` AFTER DELETE ON `File` FOR EACH ROW
-/* insert fileaddress into removableFiles
-@author Lisa*/
-begin
-#insert IGNORE into RemovableFiles 
-#set F_address = OLD.F_address;
-end;
-
-DROP TRIGGER IF EXISTS `File_AINS`;
-CREATE TRIGGER `File_AINS` AFTER INSERT ON `File` FOR EACH ROW
-/*delete from removableFiles if address exists
-@author Lisa*/
-begin
-#Delete From RemovableFiles where F_address = NEW.F_address
-end;

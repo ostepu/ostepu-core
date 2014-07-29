@@ -54,6 +54,8 @@ class LAttachment
      * @var string $lURL the URL of the logic-controller
      */
     private $lURL = ""; // readed out from config below
+    private $_postFile = array();
+    private $_postAttachment = array();
 
     /**
      * REST actions
@@ -74,11 +76,14 @@ class LAttachment
             
         // initialize slim
         $this->app = new \Slim\Slim();
+        $this->app->response->setStatus( 409 );
         $this->app->response->headers->set('Content-Type', 'application/json');
 
         // initialize component
         $this->_conf = $conf;
         $this->query = CConfig::getLink($conf->getLinks(),"controller");
+        $this->_postFile = CConfig::getLinks($conf->getLinks(),"postFile");
+        $this->_postAttachment = CConfig::getLinks($conf->getLinks(),"postAttachment");
 
         // initialize lURL
         $this->lURL = $this->query->getAddress();
@@ -113,18 +118,97 @@ class LAttachment
     public function addAttachment(){
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
-        $body = json_decode($body, true);
-
-        //add the File
-        $body['file'] = LFileHandler::add($this->lURL, $header, $body['file']);
-        // if file has not been saved
-        if(empty($body['file'])){
-            $this->app->response->setStatus(409);
-        } else { // if file has been saved
-            $URL = $this->lURL.'/DB/attachment';
-            $answer = Request::custom('POST', $URL, $header, json_encode($body));
-            $this->app->response->setStatus($answer['status']);
+        $fileObjects = Attachment::decodeAttachment($body);
+        
+        // always been an array
+        $arr = true;
+        if ( !is_array( $fileObjects ) ){
+            $fileObjects = array( $fileObjects );
+            $arr = false;
         }
+
+        $res = array( );
+        $files=array();
+        
+        foreach ( $fileObjects as $fileObject )
+            $files[] = $fileObject->getFile();
+
+        //add the Files
+        $result = Request::routeRequest( 
+                                        'POST',
+                                        '/file',
+                                        array(),
+                                        File::encodeFile($files),
+                                        $this->_postFile,
+                                        'file'
+                                        );
+                                        
+        $tempFiles = File::decodeFile($result['content']);
+        
+          // checks the correctness of the query
+        if ( $result['status'] === 201 && isset($result['content'])){   
+             
+            // upload files
+            $countObjects = count($fileObjects);
+            for($i=0;$i<$countObjects;$i++){
+                if ($tempFiles[$i]->getStatus() === 201){
+                    $fileObjects[$i]->setFile($tempFiles[$i]);
+                    
+                    if ($files[$i] !== null)
+                        $files[$i]->setStatus(201);
+                } else {
+                    $fileObjects[$i]->setStatus(409);
+                    $fileObjects[$i]->addMessage("Die Datei konnte nicht gespeichert werden.");
+                    if ($files[$i] !== null)
+                        $files[$i]->setBody();
+                }
+            }
+        } else {
+            $this->app->response->setStatus(409);
+            $this->app->response->setBody( Attachment::encodeAttachment( new Attachment()) );
+            $this->app->stop();
+        }
+        
+        // upload attachments
+        $result = Request::routeRequest( 
+                                        'POST',
+                                        '/attachment',
+                                        array(),
+                                        Attachment::encodeAttachment($fileObjects),
+                                        $this->_postAttachment,
+                                        'attachment'
+                                        );
+         
+        if ( $result['status'] === 201 && isset($result['content'])){ 
+            $tempAttachments = Attachment::decodeAttachment($result['content']);
+            
+            $countObjects = count($fileObjects);
+            for($i=0;$i<$countObjects;$i++){
+                $fileObjects[$i]->setStatus($tempAttachments[$i]->getStatus());
+                $fileObjects[$i]->addMessages($tempAttachments[$i]->getMessages());
+                
+                if ($tempAttachments[$i]->getStatus() !== 201){
+                    $fileObjects[$i]->addMessage('Anhang konnte nicht erstellt werden.');
+                    $fileObjects[$i]->getFile()->setBody();
+                } else
+                    $fileObjects[$i]->setId($tempAttachments[$i]->getId());
+                
+                $res[] = $fileObjects[$i];
+            }
+             
+        } else {
+            $this->app->response->setStatus(409);
+            $this->app->response->setBody( Attachment::encodeAttachment( new Attachment()) );
+            $this->app->stop();
+            
+        }          
+ 
+        if ( !$arr && 
+             count( $res ) == 1 )
+            $res = $res[0];
+
+        $this->app->response->setBody( Attachment::encodeAttachment( $res ) );
+        $this->app->response->setStatus( 201 );
     }
 
     /**

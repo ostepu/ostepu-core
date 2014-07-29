@@ -19,6 +19,15 @@ if (isset($_POST['action'])) {
         $location = $logicURI . '/tutor/user/' . $uid . '/exercisesheet/' . $sid;
         header("Location: {$location}");
     }
+    if ($_POST['action'] == "ExerciseSheetLecturer" && isset($_POST['deleteSheet'])) {
+        $URL = $logicURI . "/exercisesheet/exercisesheet/{$_POST['deleteSheet']}";
+        $result = http_delete($URL, true, $message);
+        
+        if ($message == 201){
+            array_push($notifications, MakeNotification('success', 'Die Übungsserie wurde gelöscht.'));
+        } else 
+            array_push($notifications, MakeNotification('warning', 'Die Übungsserie konnte nicht gelöscht werden.'));
+    }
 }
 
 // load GetSite data for Admin.php

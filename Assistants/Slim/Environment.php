@@ -6,7 +6,7 @@
  * @copyright   2011 Josh Lockhart
  * @link        http://www.slimframework.com
  * @license     http://www.slimframework.com/license
- * @version     2.3.5
+ * @version     2.4.2
  * @package     Slim
  *
  * MIT LICENSE
@@ -145,7 +145,7 @@ class Environment implements \ArrayAccess, \IteratorAggregate
             
             if (!isset($env['PATH_INFO'][0]) || $env['PATH_INFO'][0] !== '/') // <-- Ensure leading slash
                 $env['PATH_INFO'] = '/' . $env['PATH_INFO'];
-
+                
             // Query string (without leading "?")
             $env['QUERY_STRING'] = $queryString;
 

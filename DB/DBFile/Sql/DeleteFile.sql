@@ -5,4 +5,12 @@
  * @param int \$fileid a %File identifier
  * @result -
  */
-call deleteFile('$fileid'); 
+set @a = (select F_address from `File` where F_id = '$fileid' limit 1);
+
+Delete from File
+    where F_id = '$fileid';
+ 
+SELECT @a as F_address;
+
+
+

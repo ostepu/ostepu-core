@@ -97,6 +97,7 @@ class DBAttachment
 
         // initialize slim
         $this->_app = new \Slim\Slim( );
+        $this->_app->response->setStatus( 409 );
         $this->_app->response->headers->set( 
                                             'Content-Type',
                                             'application/json'
@@ -359,9 +360,8 @@ class DBAttachment
                 // sets the new auto-increment id
                 $obj = new Attachment( );
                 $obj->setId( $queryResult->getInsertId( ) );
-
+                $obj->setStatus(201);
                 $res[] = $obj;
-                $this->_app->response->setStatus( 201 );
                 if ( isset( $result['headers']['Content-Type'] ) )
                     $this->_app->response->headers->set( 
                                                         'Content-Type',
@@ -369,13 +369,16 @@ class DBAttachment
                                                         );
                 
             } else {
-                Logger::Log( 
+                $obj = new Attachment( );
+                $obj->setStatus(409);
+                $res[] = $obj;
+              /*  Logger::Log( 
                             'POST AddAttachment failed',
                             LogLevel::ERROR
-                            );
-                $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-                $this->_app->response->setBody( Attachment::encodeAttachment( $res ) );
-                $this->_app->stop( );
+                            );*/
+               /// $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+               // $this->_app->response->setBody( Attachment::encodeAttachment( $res ) );
+               // $this->_app->stop( );
             }
         }
 
@@ -385,6 +388,8 @@ class DBAttachment
             
         } else 
             $this->_app->response->setBody( Attachment::encodeAttachment( $res ) );
+         
+        $this->_app->response->setStatus( 201 );
     }
 
     public function get( 
