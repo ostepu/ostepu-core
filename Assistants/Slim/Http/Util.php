@@ -432,3 +432,4 @@ class Util
         return pack("h*", $data1.$data2);
     }
 }
+?>

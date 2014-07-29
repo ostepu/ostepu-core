@@ -51,4 +51,3 @@ class CFilter extends Controller2
     }
 } 
 ?>
-

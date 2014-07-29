@@ -95,6 +95,7 @@ class Installation
                 $url = $list[$i];//$data['PL']['init'];
                 // inits all components
                 $result = Request::post($data['PL']['url'].'/'.$url. '/platform',array(),Platform::encodePlatform($platform));
+
                 $res[$url] = array();
                 if (isset($result['content']) && isset($result['status']) && $result['status'] === 201){
                     $res[$url]['status'] = 201;
@@ -417,3 +418,4 @@ class Installation
         }
     }
 }
+?>

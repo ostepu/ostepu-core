@@ -345,4 +345,3 @@ class DBQuery2
 
  
 ?>
-

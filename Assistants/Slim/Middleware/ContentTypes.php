@@ -172,3 +172,4 @@ class ContentTypes extends \Slim\Middleware
         return $res;
     }
 }
+?>

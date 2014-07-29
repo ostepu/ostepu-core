@@ -316,3 +316,4 @@ class DBSelectedSubmissionTest extends PHPUnit_Framework_TestCase
                               );
     }
 }
+?>
