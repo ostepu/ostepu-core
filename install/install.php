@@ -260,7 +260,7 @@ class Installer
         
         #region Sprachwahl
         if (!$simple){
-            echo "<div align='center'>".Design::erstelleSubmitButtonGrafisch('actionSelectGerman', './images/DE.gif', 32 , 22).Design::erstelleSubmitButtonGrafisch('actionSelectEnglish', './images/EN.gif', 32 , 22)."</div>";
+            echo "<div align='center'>".Design::erstelleSubmitButtonGrafisch('actionSelectGerman', './images/de.gif', 32 , 22).Design::erstelleSubmitButtonGrafisch('actionSelectEnglish', './images/en.gif', 32 , 22)."</div>";
         }
         #endregion Sprachwahl
 
