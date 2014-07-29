@@ -318,7 +318,7 @@ class Installer
         if ($installComponentFile)
             $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error); 
             
-        $text .= Design::erstelleZeile($simple, Sprachen::Get('databaseInterface','db_user_operator'), 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['db_user_operator']) ? $data['DB']['db_user_operator'] : null), 'data[DB][db_user_operator]', 'DBOperator'), 'v');
+        $text .= Design::erstelleZeile($simple, Sprachen::Get('databaseInterface','db_user_operator'), 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['db_user_operator']) ? $data['DB']['db_user_operator'] : null), 'data[DB][db_user_operator]', 'DBOperator',true), 'v');
         $text .= Design::erstelleZeile($simple, Sprachen::Get('databaseInterface','db_user_override_operator'), 'e', Design::erstelleAuswahl($simple, (isset($data['DB']['db_user_override_operator']) ? $data['DB']['db_user_override_operator'] : null), 'data[DB][db_user_override_operator]', 'override', null, true), 'v');
         $text .= Design::erstelleZeile($simple, Sprachen::Get('databaseInterface','db_passwd_operator'), 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_passwd_operator']) ? $data['DB']['db_passwd_operator'] : null), 'data[DB][db_passwd_operator]', ''), 'v', Design::erstelleSubmitButton("actionInstallDBOperator", Sprachen::Get('main','create')), 'h');
         
