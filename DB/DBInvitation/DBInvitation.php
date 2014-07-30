@@ -761,4 +761,3 @@ class DBInvitation
 
  
 ?>
-

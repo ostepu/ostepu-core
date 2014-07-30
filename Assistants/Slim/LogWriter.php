@@ -73,3 +73,4 @@ class LogWriter
         return fwrite($this->resource, (string) $message . PHP_EOL);
     }
 }
+?>

@@ -327,3 +327,4 @@ class DBExerciseFileTypeTest extends PHPUnit_Framework_TestCase
                               );
     }
 }
+?>

@@ -381,3 +381,4 @@ class DBAttachmentTest extends PHPUnit_Framework_TestCase
                               );
     }
 }
+?>

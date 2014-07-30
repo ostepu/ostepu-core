@@ -255,3 +255,4 @@ class Router
         return new \ArrayIterator($this->namedRoutes);
     }
 }
+?>

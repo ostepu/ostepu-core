@@ -329,4 +329,3 @@ class Query extends Object implements JsonSerializable
 
  
 ?>
-

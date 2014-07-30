@@ -1,6 +1,5 @@
 <?php
 
-
 /**
  * @file install.php contains the Installer class
  *
@@ -229,38 +228,43 @@ class Installer
         // load language
         Sprachen::ladeSprache($data['PL']['language']);
         if (!$simple){
-            echo "
-                <html><head><style type='text/css'>
-                body {background-color: #ffffff; color: #000000;}
-                body, td, th, h1, h2 {font-family: sans-serif;}
-                pre {margin: 0px; font-family: monospace;}
-                a:link {color: #000099; text-decoration: none; background-color: #ffffff;}
-                a:hover {text-decoration: underline;}
-                table {border-collapse: collapse;}
-                .center {text-align: center;}
-                .center table { margin-left: auto; margin-right: auto; text-align: left;}
-                .center th { text-align: center !important; }
-                td, th { border: 1px solid #000000; font-size: 75%; vertical-align: baseline;}
-                h1 {font-size: 150%;}
-                h2 {font-size: 125%;}
-                .p {text-align: left;}
-                .e {background-color: #ccccff; font-weight: bold; color: #000000;}
-                .h {background-color: #9999cc; font-weight: bold; color: #000000;text-align: right;}
-                .v {background-color: #cccccc; color: #000000;}
-                .vr {background-color: #cccccc; text-align: right; color: #000000;}
-                img {float: right; border: 0px;}
-                hr {width: 600px; background-color: #cccccc; border: 0px; height: 1px; color: #000000;}
-                </style></head><body>
-                <div class='center'>
-                <h1>".Sprachen::Get('main','title')."</h1></br><hr />
-            ";
+            echo "<html><head><style type='text/css'>
+body {background-color: #ffffff; color: #000000;}
+body, td, th, h1, h2 {font-family: sans-serif;}
+pre {margin: 0px; font-family: monospace;}
+a:link {color: #000099; text-decoration: none; background-color: #ffffff;}
+a:hover {text-decoration: underline;}
+table {border-collapse: collapse;}
+.center {text-align: center;}
+.center table { margin-left: auto; margin-right: auto; text-align: left;}
+.center th { text-align: center !important; }
+td, th { border: 1px solid #000000; font-size: 75%; vertical-align: baseline;}
+h1 {font-size: 150%;}
+h2 {font-size: 125%;}
+.p {text-align: left;}
+.e {background-color: #ccccff; font-weight: bold; color: #000000;}
+.h {background-color: #9999cc; font-weight: bold; color: #000000;text-align: right;}
+.v {background-color: #cccccc; color: #000000;}
+.vr {background-color: #cccccc; text-align: right; color: #000000;}
+a:link { text-decoration:none; font-weight:bold; }
+img {float: right; border: 0px;}
+hr {width: 600px; background-color: #cccccc; border: 0px; height: 1px; color: #000000;}
+</style></head><body>
+<div class='center'>
+<h1>".Sprachen::Get('main','title')."</h1></br><hr />";
+            
+            
             echo "<form action='' method='post'>";
+            $text='';
+            $text .= Design::erstelleZeile($simple, Design::erstelleSubmitButton('menu_information','Informationen &gt'), 'h', Design::erstelleSubmitButton('menu_settings','Einstellungen &gt'), 'e');
+            //echo Design::erstelleBlock($simple, '', $text);
+            echo "<hr />";
             echo "<input type='hidden' name='data[PL][language]' value='{$data['PL']['language']}'>";
         }
         
         #region Sprachwahl
         if (!$simple){
-            echo "<div align='center'>".Design::erstelleSubmitButtonGrafisch('actionSelectGerman', './images/DE.gif', 32 , 22).Design::erstelleSubmitButtonGrafisch('actionSelectEnglish', './images/EN.gif', 32 , 22)."</div>";
+            echo "<div align='center'>".Design::erstelleSubmitButtonGrafisch('actionSelectGerman', './images/de.gif', 32 , 22).Design::erstelleSubmitButtonGrafisch('actionSelectEnglish', './images/en.gif', 32 , 22)."</div>";
         }
         #endregion Sprachwahl
 
@@ -318,7 +322,7 @@ class Installer
         if ($installComponentFile)
             $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error); 
             
-        $text .= Design::erstelleZeile($simple, Sprachen::Get('databaseInterface','db_user_operator'), 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['db_user_operator']) ? $data['DB']['db_user_operator'] : null), 'data[DB][db_user_operator]', 'DBOperator'), 'v');
+        $text .= Design::erstelleZeile($simple, Sprachen::Get('databaseInterface','db_user_operator'), 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['db_user_operator']) ? $data['DB']['db_user_operator'] : null), 'data[DB][db_user_operator]', 'DBOperator',true), 'v');
         $text .= Design::erstelleZeile($simple, Sprachen::Get('databaseInterface','db_user_override_operator'), 'e', Design::erstelleAuswahl($simple, (isset($data['DB']['db_user_override_operator']) ? $data['DB']['db_user_override_operator'] : null), 'data[DB][db_user_override_operator]', 'override', null, true), 'v');
         $text .= Design::erstelleZeile($simple, Sprachen::Get('databaseInterface','db_passwd_operator'), 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_passwd_operator']) ? $data['DB']['db_passwd_operator'] : null), 'data[DB][db_passwd_operator]', ''), 'v', Design::erstelleSubmitButton("actionInstallDBOperator", Sprachen::Get('main','create')), 'h');
         
