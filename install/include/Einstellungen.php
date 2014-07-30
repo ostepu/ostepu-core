@@ -59,6 +59,17 @@ class Einstellungen
         } else
             return $default;
     }
+    
+    public static function GetValue($varName, &$CurrentValue){
+        if (isset($CurrentValue))
+            return;
+        
+        $val = Einstellungen::Get($varName, null);
+        if ($val !== null)
+            $CurrentValue = $val;
+            
+        return;
+    }
 }
 
 ?>
