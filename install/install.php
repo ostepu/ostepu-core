@@ -702,6 +702,12 @@ hr {width: 600px; background-color: #cccccc; border: 0px; height: 1px; color: #0
         }
         #endregion Benutzer_erstellen
         
+        if ($selected_menu==0){
+            if (!isset($_POST['actionShowPhpInfo'])){
+                echo Design::erstelleSubmitButton("actionShowPhpInfo", 'PHPInfo');
+            } else
+                phpinfo();
+        }
         
         if (!$simple){
             if (($selected_menu === 2 || $selected_menu === 3 || $selected_menu === 4) && false){
