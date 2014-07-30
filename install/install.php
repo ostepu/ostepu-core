@@ -312,12 +312,13 @@ hr {width: 600px; background-color: #cccccc; border: 0px; height: 1px; color: #0
         #endregion Prüfung_der_Erweiterungen_ausgeben
 
         #region Plattform_Datenbanknutzer
+        $data['DB']['db_user_override_operator'] = isset($data['DB']['db_user_override_operator']) ? $data['DB']['db_user_override_operator'] : null;
         if ($selected_menu === 2){
             $text='';               
-            
+
             $empty = '';
             $text .= Design::erstelleVersteckteEingabezeile($simple, $empty, 'data[DB][db_user_override_operator]', null, true);
-            $text .= Design::erstelleZeile($simple, Sprachen::Get('createDatabasePlatformUser','db_user_override_operator'), 'e', Design::erstelleAuswahl($simple, (isset($data['DB']['db_user_override_operator']) ? $data['DB']['db_user_override_operator'] : null), 'data[DB][db_user_override_operator]', 'override', null, true), 'v');
+            $text .= Design::erstelleZeile($simple, Sprachen::Get('createDatabasePlatformUser','db_user_override_operator'), 'e', Design::erstelleAuswahl($simple, $data['DB']['db_user_override_operator'], 'data[DB][db_user_override_operator]', 'override', null, true), 'v');
             $text .= Design::erstelleZeile($simple, Sprachen::Get('createDatabasePlatformUser','createUser'), 'e', '', 'v', Design::erstelleSubmitButton("actionInstallDBOperator", Sprachen::Get('main','create')), 'h');
             
             if ($installDBOperator)
@@ -327,22 +328,30 @@ hr {width: 600px; background-color: #cccccc; border: 0px; height: 1px; color: #0
                 echo Design::erstelleBlock($simple, Sprachen::Get('createDatabasePlatformUser','title'), $text);
         } else {
             $text = '';
-            $text .= Design::erstelleVersteckteEingabezeile($simple, (isset($data['DB']['db_user_override_operator']) ? $data['DB']['db_user_override_operator'] : null), 'data[DB][db_user_override_operator]', null, true);
+            $text .= Design::erstelleVersteckteEingabezeile($simple, $data['DB']['db_user_override_operator'], 'data[DB][db_user_override_operator]', null, true);
             echo $text;
         }
         #endregion
         
         #region Grundinformationen
+        $data['PL']['url'] = isset($data['PL']['url']) ? $data['PL']['url'] : null;
         if ($selected_menu === 1){
             $text = '';
-            $text .= Design::erstelleZeile($simple, Sprachen::Get('general_informations','url'), 'e', Design::erstelleEingabezeile($simple, (isset($data['PL']['url']) ? $data['PL']['url'] : null), 'data[PL][url]', 'http://localhost/uebungsplattform', true), 'v');
+            $text .= Design::erstelleZeile($simple, Sprachen::Get('general_informations','url'), 'e', Design::erstelleEingabezeile($simple, $data['PL']['url'], 'data[PL][url]', 'http://localhost/uebungsplattform', true), 'v');
 
             if (!$simple)
                 echo Design::erstelleBlock($simple, Sprachen::Get('general_informations','title'), $text);
+        } else {
+            $text = '';
+            $text .= Design::erstelleVersteckteEingabezeile($simple, $data['PL']['url'], 'data[PL][url]', 'http://localhost/uebungsplattform', true);
+            echo $text;
         }
         #endregion Grundinformationen
         
         #region Grundeinstellungen_ausgeben
+        $data['DB']['db_ignore'] = isset($data['DB']['db_ignore']) ? $data['DB']['db_ignore'] : null;
+        $data['DB']['db_override'] = isset($data['DB']['db_override']) ? $data['DB']['db_override'] : null;
+        $data['PL']['pl_main_details'] = isset($data['PL']['pl_main_details']) ? $data['PL']['pl_main_details'] : null;
         if ($selected_menu === 2){
             $text = '';
             
@@ -351,10 +360,10 @@ hr {width: 600px; background-color: #cccccc; border: 0px; height: 1px; color: #0
             $text .= Design::erstelleVersteckteEingabezeile($simple, $empty, 'data[DB][db_override]', null, true);
             $text .= Design::erstelleVersteckteEingabezeile($simple, $empty, 'data[PL][pl_main_details]', null, true);
             $text .= Design::erstelleZeile($simple, Sprachen::Get('general_settings','init'), 'e', '', 'v', Design::erstelleSubmitButton('actionInstallInit'), 'h');
-            $text .= Design::erstelleZeile($simple, Sprachen::Get('database','db_override'), 'e', Design::erstelleAuswahl($simple, (isset($data['DB']['db_override']) ? $data['DB']['db_override'] : null), 'data[DB][db_override]', 'override', null, true), 'v');
-            $text .= Design::erstelleZeile($simple, Sprachen::Get('database','db_ignore'), 'e', Design::erstelleAuswahl($simple, (isset($data['DB']['db_ignore']) ? $data['DB']['db_ignore'] : null), 'data[DB][db_ignore]', 'ignore', null, true), 'v');
+            $text .= Design::erstelleZeile($simple, Sprachen::Get('database','db_override'), 'e', Design::erstelleAuswahl($simple, $data['DB']['db_override'], 'data[DB][db_override]', 'override', null, true), 'v');
+            $text .= Design::erstelleZeile($simple, Sprachen::Get('database','db_ignore'), 'e', Design::erstelleAuswahl($simple, $data['DB']['db_ignore'], 'data[DB][db_ignore]', 'ignore', null, true), 'v');
 
-            $text .= Design::erstelleZeile($simple, Sprachen::Get('general_settings','details'), 'e', Design::erstelleAuswahl($simple, (isset($data['PL']['pl_main_details']) ? $data['PL']['pl_main_details'] : null), 'data[PL][pl_main_details]', 'details', null, true), 'v');
+            $text .= Design::erstelleZeile($simple, Sprachen::Get('general_settings','details'), 'e', Design::erstelleAuswahl($simple, $data['PL']['pl_main_details'], 'data[PL][pl_main_details]', 'details', null, true), 'v');
             
             if ($installInit){
                 foreach ($installInitResult as $component => $dat){
@@ -368,51 +377,60 @@ hr {width: 600px; background-color: #cccccc; border: 0px; height: 1px; color: #0
                 echo Design::erstelleBlock($simple, Sprachen::Get('general_settings','title'), $text);
         } else {
             $text = '';
-            $text .= Design::erstelleVersteckteEingabezeile($simple, (isset($data['DB']['db_ignore']) ? $data['DB']['db_ignore'] : null), 'data[DB][db_ignore]', null, true);
-            $text .= Design::erstelleVersteckteEingabezeile($simple, (isset($data['DB']['db_override']) ? $data['DB']['db_override'] : null), 'data[DB][db_override]', null, true);
-            $text .= Design::erstelleVersteckteEingabezeile($simple, (isset($data['PL']['pl_main_details']) ? $data['PL']['pl_main_details'] : null), 'data[PL][pl_main_details]', null, true);
+            $text .= Design::erstelleVersteckteEingabezeile($simple, $data['DB']['db_ignore'], 'data[DB][db_ignore]', null, true);
+            $text .= Design::erstelleVersteckteEingabezeile($simple, $data['DB']['db_override'], 'data[DB][db_override]', null, true);
+            $text .= Design::erstelleVersteckteEingabezeile($simple, $data['PL']['pl_main_details'], 'data[PL][pl_main_details]', null, true);
             echo $text;
         }
         #endregion Grundeinstellungen_ausgeben
         
         #region Datenbank_informationen
+        $data['DB']['db_path'] = isset($data['DB']['db_path']) ? $data['DB']['db_path'] : null;
+        $data['DB']['db_name'] = isset($data['DB']['db_name']) ? $data['DB']['db_name'] : null;
+        $data['DB']['db_user'] = isset($data['DB']['db_user']) ? $data['DB']['db_user'] : null;
+        $data['DB']['db_passwd'] = isset($data['DB']['db_passwd']) ? $data['DB']['db_passwd'] : null;
+        $data['DB']['db_user_operator'] = isset($data['DB']['db_user_operator']) ? $data['DB']['db_user_operator'] : null;
+        $data['DB']['db_passwd_operator'] = isset($data['DB']['db_passwd_operator']) ? $data['DB']['db_passwd_operator'] : null;
         if ($selected_menu === 1){
             $text = '';
-            $text .= Design::erstelleZeile($simple, Sprachen::Get('database_informations','db_path'), 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['db_path']) ? $data['DB']['db_path'] : null), 'data[DB][db_path]', 'localhost', true), 'v');
-            $text .= Design::erstelleZeile($simple, Sprachen::Get('database_informations','db_name'), 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['db_name']) ? $data['DB']['db_name'] : null), 'data[DB][db_name]', 'uebungsplattform', true), 'v');
+            $empty = null;
+            $text .= Design::erstelleZeile($simple, Sprachen::Get('database_informations','db_path'), 'e', Design::erstelleEingabezeile($simple, $data['DB']['db_path'], 'data[DB][db_path]', 'localhost', true), 'v');
+            $text .= Design::erstelleZeile($simple, Sprachen::Get('database_informations','db_name'), 'e', Design::erstelleEingabezeile($simple, $data['DB']['db_name'], 'data[DB][db_name]', 'uebungsplattform', true), 'v');
             
             if (!$simple)
                 echo Design::erstelleBlock($simple, Sprachen::Get('database_informations','title'), $text);
                 
             $text = '';
-            $text .= Design::erstelleZeile($simple, Sprachen::Get('databaseAdmin','db_user'), 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['db_user']) ? $data['DB']['db_user'] : null), 'data[DB][db_user]', 'root', true), 'v');
-            $text .= Design::erstelleZeile($simple, Sprachen::Get('databaseAdmin','db_passwd'), 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_passwd']) ? $data['DB']['db_passwd'] : null), 'data[DB][db_passwd]', ''), 'v');
+            $text .= Design::erstelleZeile($simple, Sprachen::Get('databaseAdmin','db_user'), 'e', Design::erstelleEingabezeile($simple, $data['DB']['db_user'], 'data[DB][db_user]', 'root', true), 'v');
+            $text .= Design::erstelleZeile($simple, Sprachen::Get('databaseAdmin','db_passwd'), 'e', Design::erstellePasswortzeile($simple, $data['DB']['db_passwd'], 'data[DB][db_passwd]', ''), 'v');
             
             if (!$simple)
                 echo Design::erstelleBlock($simple, Sprachen::Get('databaseAdmin','title'), $text);
                 
             $text = '';
-            $text .= Design::erstelleZeile($simple, Sprachen::Get('databasePlatformUser','db_user_operator'), 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['db_user_operator']) ? $data['DB']['db_user_operator'] : null), 'data[DB][db_user_operator]', 'DBOperator',true), 'v');
-            $text .= Design::erstelleZeile($simple, Sprachen::Get('databasePlatformUser','db_passwd_operator'), 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_passwd_operator']) ? $data['DB']['db_passwd_operator'] : null), 'data[DB][db_passwd_operator]', ''), 'v');
+            $text .= Design::erstelleZeile($simple, Sprachen::Get('databasePlatformUser','db_user_operator'), 'e', Design::erstelleEingabezeile($simple, $data['DB']['db_user_operator'], 'data[DB][db_user_operator]', 'DBOperator',true), 'v');
+            $text .= Design::erstelleZeile($simple, Sprachen::Get('databasePlatformUser','db_passwd_operator'), 'e', Design::erstellePasswortzeile($simple, $data['DB']['db_passwd_operator'], 'data[DB][db_passwd_operator]', ''), 'v');
             
             if (!$simple)
                 echo Design::erstelleBlock($simple, Sprachen::Get('databasePlatformUser','title'), $text);
         } else {
             $text = '';
-            $text .= Design::erstelleVersteckteEingabezeile($simple, (isset($data['DB']['db_passwd']) ? $data['DB']['db_passwd'] : null), 'data[DB][db_passwd]', '');
-            $text .= Design::erstelleVersteckteEingabezeile($simple, (isset($data['DB']['db_passwd_operator']) ? $data['DB']['db_passwd_operator'] : null), 'data[DB][db_passwd_operator]', '');
-            $text .= Design::erstelleVersteckteEingabezeile($simple, (isset($data['DB']['db_user_operator']) ? $data['DB']['db_user_operator'] : null), 'data[DB][db_user_operator]', '',true);
-            $text .= Design::erstelleVersteckteEingabezeile($simple, (isset($data['DB']['db_user']) ? $data['DB']['db_user'] : null), 'data[DB][db_user]', '',true);
-            $text .= Design::erstelleVersteckteEingabezeile($simple, (isset($data['DB']['db_name']) ? $data['DB']['db_name'] : null), 'data[DB][db_name]', '',true);
-            $text .= Design::erstelleVersteckteEingabezeile($simple, (isset($data['DB']['db_path']) ? $data['DB']['db_path'] : null), 'data[DB][db_path]', '',true);
+            $empty = null;
+            $text .= Design::erstelleVersteckteEingabezeile($simple, $data['DB']['db_passwd'], 'data[DB][db_passwd]', null);
+            $text .= Design::erstelleVersteckteEingabezeile($simple, $data['DB']['db_passwd_operator'], 'data[DB][db_passwd_operator]', null);
+            $text .= Design::erstelleVersteckteEingabezeile($simple, $data['DB']['db_user_operator'], 'data[DB][db_user_operator]', 'DBOperator',true);
+            $text .= Design::erstelleVersteckteEingabezeile($simple, $data['DB']['db_user'], 'data[DB][db_user]', 'root' ,true);
+            $text .= Design::erstelleVersteckteEingabezeile($simple, $data['DB']['db_name'], 'data[DB][db_name]', 'uebungsplattform',true);
+            $text .= Design::erstelleVersteckteEingabezeile($simple, $data['DB']['db_path'], 'data[DB][db_path]', 'localhost',true);
             echo $text;
         }
         #endregion Datenbank_informationen
  
         #region Datenbank_einrichten
+        $data['DB']['componentsSql'] = isset($data['DB']['componentsSql']) ? $data['DB']['componentsSql'] : null;
         if ($selected_menu === 3){
             $text='';
-            $text .= Design::erstelleZeile($simple, Sprachen::Get('componentDefinitions','componentsSql'), 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['componentsSql']) ? $data['DB']['componentsSql'] : null), 'data[DB][componentsSql]', '../DB/Components2.sql', true), 'v', Design::erstelleSubmitButton('actionInstallComponents'), 'h');
+            $text .= Design::erstelleZeile($simple, Sprachen::Get('componentDefinitions','componentsSql'), 'e', Design::erstelleEingabezeile($simple, $data['DB']['componentsSql'], 'data[DB][componentsSql]', '../DB/Components2.sql', true), 'v', Design::erstelleSubmitButton('actionInstallComponents'), 'h');
             if ($installComponentFile)
                 $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error); 
                
@@ -420,15 +438,16 @@ hr {width: 600px; background-color: #cccccc; border: 0px; height: 1px; color: #0
                 echo Design::erstelleBlock($simple, Sprachen::Get('componentDefinitions','title'), $text);
         } else {
             $text = '';
-            $text .= Design::erstelleVersteckteEingabezeile($simple, (isset($data['DB']['componentsSql']) ? $data['DB']['componentsSql'] : null), 'data[DB][componentsSql]', '../DB/Components2.sql', true);
+            $text .= Design::erstelleVersteckteEingabezeile($simple, $data['DB']['componentsSql'], 'data[DB][componentsSql]', '../DB/Components2.sql', true);
             echo $text;
         }
         #endregion Datenbank_einrichten
         
         #region Benutzerschnittstelle_einrichten
+        $data['UI']['conf'] = isset($data['UI']['conf']) ? $data['UI']['conf'] : null;
         if ($selected_menu === 4){
             $text='';
-            $text .= Design::erstelleZeile($simple, Sprachen::Get('userInterface','conf'), 'e', Design::erstelleEingabezeile($simple, (isset($data['UI']['conf']) ? $data['UI']['conf'] : null), 'data[UI][conf]', '../UI/include/Config.php', true), 'v', Design::erstelleSubmitButton('actionInstallUIConf'), 'h');
+            $text .= Design::erstelleZeile($simple, Sprachen::Get('userInterface','conf'), 'e', Design::erstelleEingabezeile($simple, $data['UI']['conf'], 'data[UI][conf]', '../UI/include/Config.php', true), 'v', Design::erstelleSubmitButton('actionInstallUIConf'), 'h');
 
             if ($installUiFile) 
                 $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error); 
@@ -437,7 +456,7 @@ hr {width: 600px; background-color: #cccccc; border: 0px; height: 1px; color: #0
                 echo Design::erstelleBlock($simple, Sprachen::Get('userInterface','title'), $text);
         } else {
             $text = '';
-            $text .= Design::erstelleVersteckteEingabezeile($simple, (isset($data['UI']['conf']) ? $data['UI']['conf'] : null), 'data[UI][conf]', '../UI/include/Config.php', true);
+            $text .= Design::erstelleVersteckteEingabezeile($simple, $data['UI']['conf'], 'data[UI][conf]', '../UI/include/Config.php', true);
             echo $text;
         }
         #endregion Benutzerschnittstelle_einrichten
@@ -465,6 +484,7 @@ hr {width: 600px; background-color: #cccccc; border: 0px; height: 1px; color: #0
         #endregion PlugInsInstallieren
                
         #region Komponenten
+        $data['CO']['co_details'] = isset($data['CO']['co_details']) ? $data['CO']['co_details'] : null;
         if ($selected_menu === 3){
             $text='';
             
@@ -473,7 +493,7 @@ hr {width: 600px; background-color: #cccccc; border: 0px; height: 1px; color: #0
             $text .= "<tr><td colspan='2'>".Sprachen::Get('components','description')."</td></tr>";
             //Design::erstelleEingabezeile($simple, (isset($data['PL']['init']) ? $data['PL']['init'] : null), 'data[PL][init]', 'DB/CControl')
             $text .= Design::erstelleZeile($simple, Sprachen::Get('components','init'), 'e', '', 'v', Design::erstelleSubmitButton("actionInitComponents"), 'h');
-            $text .= Design::erstelleZeile($simple, Sprachen::Get('components','details'), 'e', Design::erstelleAuswahl($simple, (isset($data['CO']['co_details']) ? $data['CO']['co_details'] : null), 'data[CO][co_details]', 'details', null, true), 'v');
+            $text .= Design::erstelleZeile($simple, Sprachen::Get('components','details'), 'e', Design::erstelleAuswahl($simple, $data['CO']['co_details'], 'data[CO][co_details]', 'details', null, true), 'v');
             
             if ($initComponents){
                 // counts installed commands
@@ -621,19 +641,20 @@ hr {width: 600px; background-color: #cccccc; border: 0px; height: 1px; color: #0
                 echo Design::erstelleBlock($simple, Sprachen::Get('components','title'), $text);
         } else {
             $text = '';
-            $text .= Design::erstelleVersteckteEingabezeile($simple, (isset($data['CO']['co_details']) ? $data['CO']['co_details'] : null), 'data[CO][co_details]', null,true);
+            $text .= Design::erstelleVersteckteEingabezeile($simple, $data['CO']['co_details'], 'data[CO][co_details]', null,true);
             echo $text;
         }
         #endregion Komponenten
                 
         #region PlattformEinrichten
+        $data['PL']['pl_details'] = isset($data['PL']['pl_details']) ? $data['PL']['pl_details'] : null;
         if ($selected_menu === 4){
             $text='';
             
             $empty = '';
             $text .= Design::erstelleVersteckteEingabezeile($simple, $empty, 'data[PL][pl_details]', null, true);
             $text .= Design::erstelleZeile($simple, Sprachen::Get('platform','createTables'), 'e', '', 'v', Design::erstelleSubmitButton('actionInstallPlatform'), 'h');
-            $text .= Design::erstelleZeile($simple, Sprachen::Get('platform','details'), 'e', Design::erstelleAuswahl($simple, (isset($data['PL']['pl_details']) ? $data['PL']['pl_details'] : null), 'data[PL][pl_details]', 'details', null), 'v');
+            $text .= Design::erstelleZeile($simple, Sprachen::Get('platform','details'), 'e', Design::erstelleAuswahl($simple, $data['PL']['pl_details'], 'data[PL][pl_details]', 'details', null), 'v');
             
             if ($installPlatform){
                 foreach ($installPlatformResult as $component => $dat){
@@ -646,19 +667,24 @@ hr {width: 600px; background-color: #cccccc; border: 0px; height: 1px; color: #0
                 echo Design::erstelleBlock($simple, Sprachen::Get('platform','title'), $text);
         } else {
             $text = '';
-            $text .= Design::erstelleVersteckteEingabezeile($simple, (isset($data['PL']['pl_details']) ? $data['PL']['pl_details'] : null), 'data[PL][pl_details]', null,true);
+            $text .= Design::erstelleVersteckteEingabezeile($simple, $data['PL']['pl_details'], 'data[PL][pl_details]', null,true);
             echo $text;
         }
         #endregion PlattformEinrichten
         
         #region Benutzer_erstellen
+        $data['DB']['db_user_insert'] = isset($data['DB']['db_user_insert']) ? $data['DB']['db_user_insert'] : null;
+        $data['DB']['db_first_name_insert'] = isset($data['DB']['db_first_name_insert']) ? $data['DB']['db_first_name_insert'] : null;
+        $data['DB']['db_last_name_insert'] = isset($data['DB']['db_last_name_insert']) ? $data['DB']['db_last_name_insert'] : null;
+        $data['DB']['db_email_insert'] = isset($data['DB']['db_email_insert']) ? $data['DB']['db_email_insert'] : null;
+        $data['DB']['db_passwd_insert'] = isset($data['DB']['db_passwd_insert']) ? $data['DB']['db_passwd_insert'] : null;
         if ($selected_menu === 4){
             $text='';
-            $text .= Design::erstelleZeile($simple, Sprachen::Get('createSuperAdmin','db_user_insert'), 'e', Design::erstelleEingabezeile($simple, (isset($data['DB']['db_user_insert']) ? $data['DB']['db_user_insert'] : null), 'data[DB][db_user_insert]', 'root'), 'v');
-            $text .= Design::erstelleZeile($simple, Sprachen::Get('createSuperAdmin','db_passwd_insert'), 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_passwd_insert']) ? $data['DB']['db_passwd_insert'] : null), 'data[DB][db_passwd_insert]', ''), 'v');
-            $text .= Design::erstelleZeile($simple, Sprachen::Get('createSuperAdmin','db_first_name_insert'), 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_first_name_insert']) ? $data['DB']['db_first_name_insert'] : null), 'data[DB][db_first_name_insert]', ''), 'v');
-            $text .= Design::erstelleZeile($simple, Sprachen::Get('createSuperAdmin','db_last_name_insert'), 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_last_name_insert']) ? $data['DB']['db_last_name_insert'] : null), 'data[DB][db_last_name_insert]', ''), 'v');
-            $text .= Design::erstelleZeile($simple, Sprachen::Get('createSuperAdmin','db_email_insert'), 'e', Design::erstellePasswortzeile($simple, (isset($data['DB']['db_email_insert']) ? $data['DB']['db_email_insert'] : null), 'data[DB][db_email_insert]', ''), 'v', Design::erstelleSubmitButton("actionInstallSuperAdmin", Sprachen::Get('main','create')), 'h');
+            $text .= Design::erstelleZeile($simple, Sprachen::Get('createSuperAdmin','db_user_insert'), 'e', Design::erstelleEingabezeile($simple, $data['DB']['db_user_insert'], 'data[DB][db_user_insert]', 'root'), 'v');
+            $text .= Design::erstelleZeile($simple, Sprachen::Get('createSuperAdmin','db_passwd_insert'), 'e', Design::erstellePasswortzeile($simple, $data['DB']['db_passwd_insert'], 'data[DB][db_passwd_insert]', ''), 'v');
+            $text .= Design::erstelleZeile($simple, Sprachen::Get('createSuperAdmin','db_first_name_insert'), 'e', Design::erstelleEingabezeile($simple, $data['DB']['db_first_name_insert'], 'data[DB][db_first_name_insert]', ''), 'v');
+            $text .= Design::erstelleZeile($simple, Sprachen::Get('createSuperAdmin','db_last_name_insert'), 'e', Design::erstelleEingabezeile($simple, $data['DB']['db_last_name_insert'], 'data[DB][db_last_name_insert]', ''), 'v');
+            $text .= Design::erstelleZeile($simple, Sprachen::Get('createSuperAdmin','db_email_insert'), 'e', Design::erstelleEingabezeile($simple, $data['DB']['db_email_insert'], 'data[DB][db_email_insert]', ''), 'v', Design::erstelleSubmitButton("actionInstallSuperAdmin", Sprachen::Get('main','create')), 'h');
 
             if ($installSuperAdmin)
                 $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error); 
@@ -667,11 +693,11 @@ hr {width: 600px; background-color: #cccccc; border: 0px; height: 1px; color: #0
                 echo Design::erstelleBlock($simple, Sprachen::Get('createSuperAdmin','title'), $text);
         } else {
             $text = '';
-            $text .= Design::erstelleVersteckteEingabezeile($simple, (isset($data['DB']['db_user_insert']) ? $data['DB']['db_user_insert'] : null), 'data[DB][db_user_insert]', 'root',true);
-            $text .= Design::erstelleVersteckteEingabezeile($simple, (isset($data['DB']['db_first_name_insert']) ? $data['DB']['db_first_name_insert'] : null), 'data[DB][db_first_name_insert]', '',true);
-            $text .= Design::erstelleVersteckteEingabezeile($simple, (isset($data['DB']['db_last_name_insert']) ? $data['DB']['db_last_name_insert'] : null), 'data[DB][db_last_name_insert]', '',true);
-            $text .= Design::erstelleVersteckteEingabezeile($simple, (isset($data['DB']['db_email_insert']) ? $data['DB']['db_email_insert'] : null), 'data[DB][db_email_insert]', '',true);
-            $text .= Design::erstelleVersteckteEingabezeile($simple, (isset($data['DB']['db_passwd_insert']) ? $data['DB']['db_passwd_insert'] : null), 'data[DB][db_passwd_insert]', '');
+            $text .= Design::erstelleVersteckteEingabezeile($simple, $data['DB']['db_user_insert'], 'data[DB][db_user_insert]', 'root',true);
+            $text .= Design::erstelleVersteckteEingabezeile($simple, $data['DB']['db_first_name_insert'], 'data[DB][db_first_name_insert]', '',true);
+            $text .= Design::erstelleVersteckteEingabezeile($simple, $data['DB']['db_last_name_insert'], 'data[DB][db_last_name_insert]', '',true);
+            $text .= Design::erstelleVersteckteEingabezeile($simple, $data['DB']['db_email_insert'], 'data[DB][db_email_insert]', '',true);
+            $text .= Design::erstelleVersteckteEingabezeile($simple, $data['DB']['db_passwd_insert'], 'data[DB][db_passwd_insert]', '');
             echo $text;
         }
         #endregion Benutzer_erstellen

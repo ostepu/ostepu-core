@@ -16,7 +16,7 @@ class Einstellungen
     
     public static function ladeEinstellungen()
     {
-        if (file_exists('./config.ini')){
+        if (file_exists('./config.ini') && is_readable('./config.ini')){
             $temp = file_get_contents('./config.ini');
             $temp = explode("\n",$temp);
             foreach ($temp as $element){
@@ -48,19 +48,23 @@ class Einstellungen
         fclose($handle);
     }
     
-    public static function Set($varName, $value){
+    public static function Set($varName, $value)
+    {
+        return;
         Einstellungen::$konfiguration[$varName] = $value;
     }
     
     public static function Get($varName, $default)
     {
+        return null;
         if (Einstellungen::$konfiguration != null && isset(Einstellungen::$konfiguration[$varName])){
             return Einstellungen::$konfiguration[$varName];
         } else
             return $default;
     }
     
-    public static function GetValue($varName, &$CurrentValue){
+    public static function GetValue($varName, &$CurrentValue)
+    {
         if (isset($CurrentValue))
             return;
         
