@@ -361,7 +361,7 @@ class LGetSite
             }
         }
 
-        // oder exercise types by id
+        // order exercise types by id
         $exerciseTypes = array();
         foreach ($possibleExerciseTypes as $exerciseType) {
             $exerciseTypes[$exerciseType['id']] = $exerciseType;
