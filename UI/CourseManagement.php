@@ -223,7 +223,7 @@ if (isset($_POST['action'])) {
 
             // show notification
             if ($message == "201") {
-                $notifications[] = MakeNotification("success", "Die Punkteart wurden erfolgreich angelegt!");
+                $notifications[] = MakeNotification("success", "Die Punkteart wurde erfolgreich angelegt!");
             } else {
                 $notifications[] = MakeNotification("error", "Beim Speichern ist ein Fehler aufgetreten!");
             }
@@ -245,7 +245,7 @@ if (isset($_POST['action'])) {
 
             // show notification
             if ($message == "201") {
-                $notifications[] = MakeNotification("success", "Die Punkteart wurden erfolgreich geändert!");
+                $notifications[] = MakeNotification("success", "Die Punkteart wurde erfolgreich geändert!");
             } else {
                 $notifications[] = MakeNotification("error", "Beim Speichern ist ein Fehler aufgetreten!");
             }
