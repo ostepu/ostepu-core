@@ -133,6 +133,7 @@ class Installation
         if (!$fail){
             // die /platform Befehle auslösen
             $list = array('DB/DBApprovalCondition','DB/DBAttachment','DB/DBCourse','DB/DBCourseStatus','DB/DBExercise','DB/DBExerciseFileType','DB/DBExerciseSheet','DB/DBExerciseType','DB/DBExternalId','DB/DBFile','DB/DBGroup','DB/DBInvitation','DB/DBMarking','DB/DBSelectedSubmission','DB/DBSession','DB/DBSubmission','DB/DBUser');
+            
             $platform = Installation::PlattformZusammenstellen($data);
             
             $multiRequestHandle = new Request_MultiRequest();

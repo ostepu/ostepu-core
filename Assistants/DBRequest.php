@@ -299,11 +299,10 @@ class DBRequest
         // loads the given sql file and creates the Query object
         $obj = new Query( );
         eval( "\$sql = \"" . file_get_contents( $sqlFile ) . "\";" );
-//echo $sql;
+
         $obj->setRequest( $sql );
         $obj->setCheckSession( $checkSession );
 
-//echo Query::encodeQuery( $obj );
         // perform the route process
         return Request::routeRequest( 
                                      'POST',
