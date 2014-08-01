@@ -120,13 +120,11 @@ foreach ($sheets as $sheet):
                 <?php
                     if ($sheet['hasAttachments']) {
                         print '<li>';
-                        print '<a style="color:#b9b8b8"><s>';
-                       // print '<button name="downloadAttachments" value="';
-                      //  print $sheet['id'];
-                      //  print '" class="text-button body-option-color">';
+                        print '<button name="downloadAttachments" value="';
+                        print $sheet['id'];
+                        print '" class="text-button body-option-color">';
                         print 'Alle Anhänge herunterladen';
-                      //  print '</button>';
-                      print '</s></a>';
+                        print '</button>';
                         print '</li>';
                     }
                 ?>
