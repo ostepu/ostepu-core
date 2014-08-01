@@ -401,7 +401,8 @@ class DBAttachment
                         $eid,
                         $suid,
                         $aid,
-                        $singleResult = false
+                        $singleResult = false,
+                        $checkSession = true
                         )
     {
         Logger::Log( 
@@ -431,7 +432,8 @@ class DBAttachment
                                                     'eid' => $eid,
                                                     'suid' => $suid,
                                                     'aid' => $aid
-                                                    )
+                                                    ),
+                                              $checkSession
                                               );
 
         // checks the correctness of the query
@@ -572,7 +574,8 @@ class DBAttachment
                    isset( $eid ) ? $eid : '',
                    isset( $suid ) ? $suid : '',
                    isset( $aid ) ? $aid : '',
-                   true
+                   true,
+                   false
                    );
     }
     
@@ -593,7 +596,8 @@ class DBAttachment
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query2,
                                               'Sql/DeletePlatform.sql',
-                                              array( )
+                                              array( ),
+                                              false
                                               );
 
         // checks the correctness of the query
@@ -650,7 +654,8 @@ class DBAttachment
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query2,
                                                   'Sql/AddPlatform.sql',
-                                                  array( 'object' => $in )
+                                                  array( 'object' => $in ),
+                                                  false
                                                   );
 
             // checks the correctness of the query

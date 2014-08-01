@@ -582,7 +582,8 @@ class DBMarking
                         $suid,
                         $mid,
                         $sub,
-                        $singleResult = false
+                        $singleResult = false,
+                        $checkSession = true
                         )
     {
         Logger::Log( 
@@ -616,7 +617,8 @@ class DBMarking
                                                     'suid' => $suid,
                                                     'mid' => $mid,
                                                     'sub' => $sub
-                                                    )
+                                                    ),
+                                              $checkSession
                                               );
 
         // checks the correctness of the query
@@ -1013,7 +1015,8 @@ class DBMarking
                    '',
                    '',
                    0,
-                   true
+                   true,
+                   false
                    );
     }
     
@@ -1034,7 +1037,8 @@ class DBMarking
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query2,
                                               'Sql/DeletePlatform.sql',
-                                              array( )
+                                              array( ),
+                                              false
                                               );
 
         // checks the correctness of the query
@@ -1091,7 +1095,8 @@ class DBMarking
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query2,
                                                   'Sql/AddPlatform.sql',
-                                                  array( 'object' => $in )
+                                                  array( 'object' => $in ),
+                                                  false
                                                   );
 
             // checks the correctness of the query

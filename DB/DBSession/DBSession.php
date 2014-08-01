@@ -647,7 +647,8 @@ class DBSession
                    isset( $eid ) ? $eid : '',
                    isset( $seid ) ? $seid : '',
                    isset( $mid ) ? $mid : '',
-                   true
+                   true,
+                   false
                    );
     }
     
@@ -668,7 +669,8 @@ class DBSession
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query2,
                                               'Sql/DeletePlatform.sql',
-                                              array( )
+                                              array( ),
+                                              false
                                               );
 
         // checks the correctness of the query
@@ -725,7 +727,8 @@ class DBSession
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query2,
                                                   'Sql/AddPlatform.sql',
-                                                  array( 'object' => $in )
+                                                  array( 'object' => $in ),
+                                                  false
                                                   );
 
             // checks the correctness of the query

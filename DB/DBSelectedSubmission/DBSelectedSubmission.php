@@ -576,7 +576,8 @@ class DBSelectedSubmission
                         $eid,
                         $suid,
                         $mid,
-                        $singleResult = false
+                        $singleResult = false,
+                        $checkSession = true
                         )
     {
         Logger::Log( 
@@ -606,7 +607,8 @@ class DBSelectedSubmission
                                                     'eid' => $eid,
                                                     'suid' => $suid,
                                                     'mid' => $mid
-                                                    )
+                                                    ),
+                                              $checkSession
                                               );
 
         // checks the correctness of the query
@@ -704,7 +706,8 @@ class DBSelectedSubmission
                    isset( $eid ) ? $eid : '',
                    isset( $suid ) ? $suid : '',
                    isset( $mid ) ? $mid : '',
-                   true
+                   true,
+                   false
                    );
     }
     
@@ -725,7 +728,8 @@ class DBSelectedSubmission
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query2,
                                               'Sql/DeletePlatform.sql',
-                                              array( )
+                                              array( ),
+                                              false
                                               );
 
         // checks the correctness of the query
@@ -782,7 +786,8 @@ class DBSelectedSubmission
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query2,
                                                   'Sql/AddPlatform.sql',
-                                                  array( 'object' => $in )
+                                                  array( 'object' => $in ),
+                                                  false
                                                   );
 
             // checks the correctness of the query

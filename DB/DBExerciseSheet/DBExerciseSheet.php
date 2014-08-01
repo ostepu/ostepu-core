@@ -934,7 +934,8 @@ class DBExerciseSheet
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
                                               'Sql/GetExistsPlatform.sql',
-                                              array( )
+                                              array( ),
+                                              false
                                               );
 
         // checks the correctness of the query
@@ -977,7 +978,8 @@ class DBExerciseSheet
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query2,
                                               'Sql/DeletePlatform.sql',
-                                              array( )
+                                              array( ),
+                                              false
                                               );
 
         // checks the correctness of the query
@@ -1034,7 +1036,8 @@ class DBExerciseSheet
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query2,
                                                   'Sql/AddPlatform.sql',
-                                                  array( 'object' => $in )
+                                                  array( 'object' => $in ),
+                                                  false
                                                   );
 
             // checks the correctness of the query
