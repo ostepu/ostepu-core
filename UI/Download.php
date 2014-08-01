@@ -33,7 +33,7 @@ if ($options['download'] == 'attachments') {
     } else {
         $sid = $options['sid'];
 
-        $URL = "{$serverURI}/logic/Controller/DB/attachment/exercisesheet/{sid}";
+        $URL = "{$logicURI}/DB/attachment/exercisesheet/{$sid}";
         $attachments = http_get($URL, true);
         $attachments = json_decode($attachments, true);
 
@@ -60,7 +60,7 @@ if ($options['download'] == 'attachments') {
         $sid = $options['sid'];
         $uid = $options['uid'];
 
-        $URL = "{$serverURI}/logic/Controller/DB/marking/exercisesheet/{$sid}/user/{$uid}";
+        $URL = "{$logicURI}/DB/marking/exercisesheet/{$sid}/user/{$uid}";
         $markings = http_get($URL, true);
         $markings = json_decode($markings, true);
 
