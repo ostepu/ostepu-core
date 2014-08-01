@@ -65,9 +65,9 @@
                         </div>
 
                         <div class="exercise-status">
-                            <?php if (isset($exercise['submission']['marking'])): ?>
+                            <?php if (isset($exercise['submission']['marking']) && $isExpired): ?>
                                 <?php echo $exercise['submission']['marking']['status']; ?>
-                            <?php elseif (isset($exercise['submission'])): ?>
+                            <?php elseif (isset($exercise['submission']) || (isset($exercise['submission']['marking']) && !$isExpired)): ?>
                                 unkontrolliert
                             <?php else: ?>
                                 nicht eingesendet
@@ -165,14 +165,12 @@
                         <?php 
                         if ($isExpired){
                         ?>
-                        <a style="color:#b9b8b8">
-                            Aufgaben hochladen
-                        </a>
+                            <a style="color:#b9b8b8">
                         <?php } else { ?>
-                        <a href="Upload.php?cid=<?php echo $cid; ?>&sid=<?php echo $sheet['id']; ?>" title="Upload">
-                            Aufgaben hochladen
-                        </a>
+                            <a href="Upload.php?cid=<?php echo $cid; ?>&sid=<?php echo $sheet['id']; ?>" title="Upload">
                         <?php } ?>
+                            Aufgaben hochladen
+                            </a>
                     </li>
 
                     <?php // prints a link to download attachments ?>
