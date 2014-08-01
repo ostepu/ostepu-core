@@ -531,10 +531,10 @@ function submitFile($databaseURI,
  */
 function downloadAttachmentsOfSheet($sheetId)
 {
-    $tokenString = "downloadAttachments{$sid}{$uid}";
-    $token = md5($tokenString);
-
     $sid = cleanInput($sheetId);
+    
+    $tokenString = "{$sid}_{$uid}_AttachmentsDownload";
+    $token = md5($tokenString);
 
     if (!isset($_SESSION['downloads'][$token])) {
         $_SESSION['downloads'][$token] = array('download' => 'attachments',
@@ -551,11 +551,11 @@ function downloadAttachmentsOfSheet($sheetId)
  */
 function downloadMarkingsForSheet($userId, $sheetId)
 {
-    $tokenString = "downloadMarkings{$sid}{$uid}";
-    $token = md5($tokenString);
-
     $sid = cleanInput($sheetId);
     $uid = cleanInput($userId);
+    
+    $tokenString = "{$sid}_{$uid}_MarkingsDownload";
+    $token = md5($tokenString);
 
     if (!isset($_SESSION['downloads'][$token])) {
         $_SESSION['downloads'][$token] = array('download' => 'markings',
