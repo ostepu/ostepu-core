@@ -330,23 +330,28 @@ if (isset($_POST['action'])) {
             $user = http_get($URL, true);
             $user = json_decode($user, true);
 
-            $userId = $user['id'];
+            if (isset($user['id'])){
+                $userId = $user['id'];
 
-            $newUser = User::createCourseStatus($userId, $cid, $rights);
-            $newUser = User::encodeUser($newUser);
+                $newUser = User::createCourseStatus($userId, $cid, $rights);
+                $newUser = User::encodeUser($newUser);
 
-            $URL = $databaseURI . '/coursestatus';
-            http_post_data($URL, $newUser, true, $message);
+                $URL = $databaseURI . '/coursestatus';
+                http_post_data($URL, $newUser, true, $message);
 
-            if ($message == "201") {
-                $notifications[] = MakeNotification('success',
-                                                    'Der Nutzer wurde'
-                                                    .' erfolgreich in die'
-                                                    .' Veranstaltung eingetragem.');
+                if ($message == "201") {
+                    $notifications[] = MakeNotification('success',
+                                                        'Der Nutzer wurde'
+                                                        .' erfolgreich in die'
+                                                        .' Veranstaltung eingetragen.');
+                } else {
+                    $notifications[] = MakeNotification('error',
+                                                        'Beim Eintragen ist ein Fehler aufgetreten.');
+                }
             } else {
-                set_error("409");
-                exit;
-            }
+                $notifications[] = MakeNotification('error',
+                                                    'Unbekannter Nutzer.');
+            }                                        
         } else {
             $notifications = $notifications + $f->notifications;
         }
