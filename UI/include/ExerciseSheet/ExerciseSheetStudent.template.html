@@ -115,8 +115,8 @@
                             <?php if (isset($exercise['submission']) 
                                       && !$isExpired 
                                       && $sheet['group']['leader']['id'] == $uid
-                                      && $exercise['submission']['hideFile'] == "0"): ?>                                           
-                                    <button title="Einsendung löschen" name="deleteSubmission" value="<?php echo $exercise['submission']['id']; ?>" class="image-button">
+                                      && $exercise['submission']['hideFile'] == "0"): ?>                                       
+                                    <button type="button" title="Einsendung löschen" name="deleteSubmission" value="<?php echo $exercise['submission']['id']; ?>" class="image-button">
                                         <img src="Images/Delete.png">
                                     </button>
                             <?php endif; ?>
