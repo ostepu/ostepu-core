@@ -196,6 +196,7 @@ class LGetSite
                 $response['tutorAssignments'][] = array('tutor' => $tutor, 'submissions' => array());
             }
         }
+        $response['tutorAssignments'][] = array('tutor' => json_decode(User::encodeUser(User::createUser(null,'','','','',null,null,null,null,null,null)),true), 'submissions' => array());
 
         // get markings
         $URL = $this->lURL.'/DB/marking/exercisesheet/'.$sheetid;
@@ -204,7 +205,7 @@ class LGetSite
         // assign submissions for the markings to the right tutor
         foreach (json_decode($answer['content'], true) as $marking ) {
             foreach ($response['tutorAssignments'] as &$tutorAssignment ) {
-                if ($marking['tutorId'] == $tutorAssignment['tutor']['id']) {
+                if (!isset($tutorAssignment['tutor']['id']) || $marking['tutorId'] == $tutorAssignment['tutor']['id']) {
 
                     // rename 'id' to 'submissionId'
                     $marking['submission']['submissionId'] = $marking['submission']['id'];
@@ -221,10 +222,15 @@ class LGetSite
 
                     // save ids of all assigned submission
                     $assignedSubmissionIDs[] = $marking['submission']['submissionId'];
+                    $found = true;
                     break;
                 }
             }
         }
+        
+        // remove unknown lecturer if empty
+        if (count($response['tutorAssignments'][count($response['tutorAssignments'])-1]['submissions']) == 0)
+            unset($response['tutorAssignments'][count($response['tutorAssignments'])-1]);
 
         // Get SelectedSubmissions
         $URL = $this->lURL.'/DB/selectedsubmission/exercisesheet/'.$sheetid;
