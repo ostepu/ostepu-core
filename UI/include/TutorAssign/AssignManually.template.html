@@ -21,13 +21,13 @@
                         print '<label for="';
                         print $tutorId . '" class="tutor-name">';
 
-                        if (!isset($tutorAssignment['tutor']['id']) && $tutorAssignment['tutor']['userName'] != "unassigned") {
+                        if ($tutorAssignment['tutor']['userName'] != "unassigned") {
                             if (!isset($tutorAssignment['tutor']['id'])){
                                 echo "unbekannter Kontrolleur";
                             } else {
-                                print $tutorAssignment['tutor']['firstName'];
-                                print " ";
-                                print $tutorAssignment['tutor']['lastName'];
+                                print isset($tutorAssignment['tutor']['firstName']) ? $tutorAssignment['tutor']['firstName'].' ' : '';
+                                print isset($tutorAssignment['tutor']['lastName']) ? $tutorAssignment['tutor']['lastName'].' ': '';    
+                                echo isset($tutorAssignment['tutor']['userName']) ? '('.$tutorAssignment['tutor']['userName'].')' : '';
                             }
                             print " (" . count($tutorAssignment['submissions']) . ")";
                         } else {

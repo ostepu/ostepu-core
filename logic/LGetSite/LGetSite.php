@@ -173,7 +173,8 @@ class LGetSite
         $lecturers = json_decode($answer[1]['content'], true);
         $admins = json_decode($answer[2]['content'], true);
 
-        // delete all super-admins from admin list
+        // obsolete ???
+        /*// delete all super-admins from admin list
         if (!empty($admins)) {
             foreach ($admins as $key => $value) {
                 if ($value['isSuperAdmin'] == 1) {
@@ -181,7 +182,7 @@ class LGetSite
                     break;
                 }
             }
-        }
+        }*/
 
         $tutors = array_merge($tutors, $lecturers, $admins);
 
@@ -222,7 +223,6 @@ class LGetSite
 
                     // save ids of all assigned submission
                     $assignedSubmissionIDs[] = $marking['submission']['submissionId'];
-                    $found = true;
                     break;
                 }
             }
