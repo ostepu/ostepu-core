@@ -1,4 +1,5 @@
 [
     {"name":"controller", "links":[{"method":"PUT", "path":"/DB/course/course/:courseid" },{"method":"POST", "path":"/DB/coursestatus" },{"method":"GET", "path":"/DB/user/course/:courseid" },{"method":"GET", "path":"/DB/course/user/:userid" }] },
-    {"name":"out", "links":[{"method":"POST", "path":"/course" },{"method":"DELETE", "path":"/course/:courseid" }] }
+    {"name":"postCourse", "links":[{"method":"POST", "path":"/course" }] },
+    {"name":"deleteCourse", "links":[{"method":"DELETE", "path":"/course/:courseid" }] }
 ]
