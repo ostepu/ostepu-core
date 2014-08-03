@@ -6,6 +6,6 @@
  * @result -
  */
 
-UPDATE `Attachment{pre}_".Attachment::getCourseFromAttachmentId($aid)."`
+UPDATE `Attachment{$pre}_".Attachment::getCourseFromAttachmentId($aid)."`
 SET {$object->getInsertData()}
 WHERE A_id = '".Attachment::getIdFromAttachmentId($aid)."'

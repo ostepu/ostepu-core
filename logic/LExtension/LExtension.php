@@ -65,7 +65,7 @@ class LExtension
     public function __construct()
     {
         // runs the CConfig
-        $com = new CConfig( LExtension::getPrefix( ) );
+        $com = new CConfig( LExtension::getPrefix( ) . ',course' );
 
         // runs the LExtension
         if ( $com->used( ) ) return;
@@ -80,16 +80,19 @@ class LExtension
         $this->_extension = CConfig::getLinks($conf->getLinks(),"extension");
         
         //POST AddCourseExtension
-        $this->app->post('/link/course/:courseid/extension/:name(/)', array($this, 'addCourseExtension'));
+        $this->app->post('/link/course/:courseid/extension/:name', array($this, 'addCourseExtension'));
 
         //DELETE DeleteCourseExtension
-        $this->app->delete('/link/course/:courseid/extension/:name(/)', array($this, 'deleteCourseExtension'));
+        $this->app->delete('/link/course/:courseid/extension/:name', array($this, 'deleteCourseExtension'));
+        
+        //DELETE DeleteCourse
+        $this->app->delete('/course/:courseid/', array($this, 'deleteCourse'));
         
         //GET GetExtensionInstalled
-        $this->app->get('/link/exists/course/:courseid/extension/:name(/)', array($this, 'getExtensionInstalled'));
+        $this->app->get('/link/exists/course/:courseid/extension/:name', array($this, 'getExtensionInstalled'));
         
         //GET GetInstalledExtensions
-        $this->app->get('/link/course/:courseid/extension(/)', array($this, 'getInstalledExtensions'));
+        $this->app->get('/link/course/:courseid/extension', array($this, 'getInstalledExtensions'));
         
         
         
@@ -99,10 +102,10 @@ class LExtension
         $this->app->get('/link/extension(/)', array($this, 'getExtensions'));
         
         //GET GetExtensionExists
-        $this->app->get('/link/exists/extension/:name(/)', array($this, 'getExtensionExists'));
+        $this->app->get('/link/exists/extension/:name', array($this, 'getExtensionExists'));
         
         //GET GetExtension
-        $this->app->get('/link/extension/:name(/)', array($this, 'getExtension'));
+        $this->app->get('/link/extension/:name', array($this, 'getExtension'));
 
         //run Slim
         $this->app->run();
@@ -156,6 +159,65 @@ class LExtension
         }
         
         $this->app->response->setStatus( 404 );
+        $this->app->response->setBody( null );
+    }
+    
+    /**
+     * Removes all extensions from the given course.
+     *
+     * Called when this component receives an HTTP DELETE request to
+     * /link/course/$courseid/extension/$name.
+     *
+     * @param int $courseid The id of the course.
+     * @param int $name The name of the component
+     */
+    public function deleteCourse($courseid)
+    {
+        $extensions = array();
+        foreach($this->_extension as $link){
+            $result = Request::routeRequest( 
+                                            'GET',
+                                            '/link/exists/course/'.$courseid,
+                                            $this->app->request->headers->all(),
+                                            '',
+                                            $link,
+                                            'link'
+                                            );
+
+            // checks the correctness of the query
+            if ( $result['status'] >= 200 && 
+                 $result['status'] <= 299 ){
+                $extensions[] = $link;                  
+            }
+        }
+        
+        foreach($extensions as $link){
+            
+            $result = Request::routeRequest( 
+                                            'DELETE',
+                                            '/course/'.$courseid,
+                                            $this->app->request->headers->all(),
+                                            '',
+                                            $link,
+                                            'course'
+                                            );
+
+            // checks the correctness of the query
+            if ( $result['status'] >= 200 && 
+                 $result['status'] <= 299 ){
+                // ok
+                
+            } else {
+                Logger::Log( 
+                            'DELETE DeleteCourse failed',
+                            LogLevel::ERROR
+                            );
+                $this->app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+                $this->app->stop( );
+            }
+        }
+        
+        $this->app->response->setStatus( 201 );
         $this->app->response->setBody( null );
     }
    

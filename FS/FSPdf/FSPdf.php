@@ -411,11 +411,11 @@ class FSPdf
              isset( $result['content'] ) ){
             $tempObject = File::decodeFile( $result['content'] );
             $tempObject->setAddress( FSPdf::getBaseDir( ) . '/' . $hash );
-            $this->_app->response->setStatus( $result['status'] );
+            $this->_app->response->setStatus( 201 );
             $this->_app->response->setBody( File::encodeFile( $tempObject ) );
             
         } else {
-            $this->_app->response->setStatus( 452 );
+            $this->_app->response->setStatus( 409 );
             $this->_app->response->setBody( File::encodeFile( new File( ) ) );
             $this->_app->stop( );
         }

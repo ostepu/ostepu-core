@@ -179,19 +179,19 @@ class DBQuery2
             $obj = new Query( );
             
         if ( $query_result['errno'] != 0 ){
-            if ( $query_result['errno'] != 0 )
+            if ( isset($query_result['errno']) && $query_result['errno'] != 0 )
                 Logger::Log( 
                             'GET queryResult failed errno: ' . $query_result['errno'] . ' error: ' . $query_result['error'],
                             LogLevel::ERROR
                             );
 
-            if ( !$query_result['content'] )
+            if ( !isset($query_result['content']) || !$query_result['content'] )
                 Logger::Log( 
                             'GET queryResult failed, no content',
                             LogLevel::ERROR
                             );
 
-            if ( $query_result['errno'] == 401 ){
+            if ( isset($query_result['errno']) && $query_result['errno'] == 401 ){
                 $this->_app->response->setStatus( 401 );
                 
             } else 

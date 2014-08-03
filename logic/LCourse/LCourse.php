@@ -64,7 +64,8 @@ class LCourse
     /**
      * @var Link[] $_out a list of links
      */
-    private $_out = array( );
+    private $_deleteCourse = array( );
+    private $_postCourse = array( );
     
     /**
      * REST actions
@@ -90,7 +91,8 @@ class LCourse
         // initialize component
         $this->_conf = $conf;
         $this->query = CConfig::getLink($conf->getLinks(),"controller");
-        $this->_out = CConfig::getLinks($conf->getLinks(),"out");
+        $this->_deleteCourse = CConfig::getLinks($conf->getLinks(),"deleteCourse");
+        $this->_postCourse = CConfig::getLinks($conf->getLinks(),"postCourse");
 
         // initialize lURL
         $this->lURL = $this->query->getAddress();
@@ -140,7 +142,7 @@ class LCourse
         
         $course = Course::decodeCourse($body);
     
-        foreach ( $this->_out as $_link ){
+        foreach ( $this->_postCourse as $_link ){
             $result = Request::routeRequest( 
                                             'POST',
                                             '/course',
@@ -219,11 +221,12 @@ class LCourse
                     'starts DELETE DeleteCourse',
                     LogLevel::DEBUG
                     );
-                    
+        $this->app->response->setStatus( 201 );
+                        
         $header = $this->app->request->headers->all();
         $courseid = DBJson::mysql_real_escape_string( $courseid ); 
         
-        foreach ( $this->_out as $_link ){
+        foreach ( $this->_deleteCourse as $_link ){
             $result = Request::routeRequest( 
                                             'DELETE',
                                             '/course/'.$courseid,
@@ -236,17 +239,10 @@ class LCourse
             // checks the correctness of the query
             if ( $result['status'] >= 200 && 
                  $result['status'] <= 299 ){
-
-                $this->app->response->setStatus( 201 );
-                if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->app->response->headers->set( 
-                                                        'Content-Type',
-                                                        $result['headers']['Content-Type']
-                                                        );
-                
+                // ok
             } else {
                 Logger::Log( 
-                            'POST DeleteCourse failed',
+                            'DELETE DeleteCourse failed',
                             LogLevel::ERROR
                             );
                 $this->app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
