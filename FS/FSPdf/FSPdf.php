@@ -196,6 +196,7 @@ class FSPdf
                                             $this->_fs,
                                             $fileObject->getHash( )
                                             );
+//echo File::encodeFile( $fileObject ); return;
         $result = Request::routeRequest( 
                                         'POST',
                                         '/' . $filePath,
@@ -214,7 +215,7 @@ class FSPdf
             $this->_app->response->setBody( File::encodeFile( $fileObject ) );
             
         } else {
-            $this->_app->response->setStatus( 451 );
+            $this->_app->response->setStatus( 409 );
             $fileObject->setBody( null );
             $this->_app->response->setBody( File::encodeFile( $fileObject ) );
             $this->_app->stop( );
