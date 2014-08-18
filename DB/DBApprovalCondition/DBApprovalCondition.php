@@ -388,7 +388,8 @@ class DBApprovalCondition
                         $eid,
                         $suid,
                         $apid,
-                        $singleResult = false
+                        $singleResult = false,
+                        $checkSession = true
                         )
     {
         Logger::Log( 
@@ -418,7 +419,8 @@ class DBApprovalCondition
                                                     'eid' => $eid,
                                                     'suid' => $suid,
                                                     'apid' => $apid
-                                                    )
+                                                    ),
+                                              $checkSession
                                               );
 
         // checks the correctness of the query
@@ -541,7 +543,8 @@ class DBApprovalCondition
                    isset( $eid ) ? $eid : '',
                    isset( $suid ) ? $suid : '',
                    isset( $apid ) ? $apid : '',
-                   true
+                   true,
+                   false
                    );
     }
     
@@ -562,7 +565,8 @@ class DBApprovalCondition
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query2,
                                               'Sql/DeletePlatform.sql',
-                                              array( )
+                                              array( ),
+                                              false
                                               );
 
         // checks the correctness of the query
@@ -619,7 +623,8 @@ class DBApprovalCondition
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query2,
                                                   'Sql/AddPlatform.sql',
-                                                  array( 'object' => $in )
+                                                  array( 'object' => $in ),
+                                                  false
                                                   );
 
             // checks the correctness of the query

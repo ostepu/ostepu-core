@@ -179,7 +179,7 @@ table td {
 }
 
 .lower-alpha li:before {
-    content: counter(item, lower-alpha);
+    content: counter(item, lower-alpha) ")";
     counter-increment: item;
 }
 

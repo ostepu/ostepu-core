@@ -196,6 +196,7 @@ class FSPdf
                                             $this->_fs,
                                             $fileObject->getHash( )
                                             );
+//echo File::encodeFile( $fileObject ); return;
         $result = Request::routeRequest( 
                                         'POST',
                                         '/' . $filePath,
@@ -214,7 +215,7 @@ class FSPdf
             $this->_app->response->setBody( File::encodeFile( $fileObject ) );
             
         } else {
-            $this->_app->response->setStatus( 451 );
+            $this->_app->response->setStatus( 409 );
             $fileObject->setBody( null );
             $this->_app->response->setBody( File::encodeFile( $fileObject ) );
             $this->_app->stop( );
@@ -411,11 +412,11 @@ class FSPdf
              isset( $result['content'] ) ){
             $tempObject = File::decodeFile( $result['content'] );
             $tempObject->setAddress( FSPdf::getBaseDir( ) . '/' . $hash );
-            $this->_app->response->setStatus( $result['status'] );
+            $this->_app->response->setStatus( 201 );
             $this->_app->response->setBody( File::encodeFile( $tempObject ) );
             
         } else {
-            $this->_app->response->setStatus( 452 );
+            $this->_app->response->setStatus( 409 );
             $this->_app->response->setBody( File::encodeFile( new File( ) ) );
             $this->_app->stop( );
         }

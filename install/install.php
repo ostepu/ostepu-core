@@ -136,6 +136,7 @@ class Installer
             $this->app->response->headers->set('Content-Type', 'application/json');
 
         // check which menu is selected
+        $menuItems = array('menu_information','menu_settings','menu_database','menu_extensions','menu_platform');
         $selected_menu = isset($_POST['selected_menu']) ? intval($_POST['selected_menu']) : 0;
         if (isset($_POST['menu_information']) || isset($_POST['menu_information_x']))
             $selected_menu = 0;
@@ -252,7 +253,8 @@ table {border-collapse: collapse;}
 .center {text-align: center;}
 .center table { margin-left: auto; margin-right: auto; text-align: left;}
 .center th { text-align: center !important; }
-td, th { border: 1px solid #000000; font-size: 75%; vertical-align: baseline;}
+td { border: 1px solid #000000; font-size: 75%;}
+th { font-size: 150%;}
 h1 {font-size: 150%;}
 h2 {font-size: 125%;}
 .p {text-align: left;}
@@ -263,10 +265,18 @@ h2 {font-size: 125%;}
 hr {width: 600px; background-color: #cccccc; border: 0px; height: 1px; color: #000000;}
 </style></head><body>
 <div class='center'>
-<h1>".Sprachen::Get('main','title'.$selected_menu)."</h1></br><hr />";//
-            
-            
-            echo "<form action='' method='post'>";
+<h1>".Sprachen::Get('main','title'.$selected_menu)."</h1></br><hr />";
+
+echo "<form action='' method='post' autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false'>";
+echo "<table border='0'><tr><th width='0'valign='top'>";
+            if ($selected_menu==0){
+                if (!isset($_POST['actionShowPhpInfo'])){
+                    ///echo Design::erstelleSubmitButton("actionShowPhpInfo", 'PHPInfo');
+                }
+            }
+echo "</th>"; 
+
+echo "<th width='600'>";        
             $text='';
             $text .= "<table border='0' cellpadding='4' width='600'>";
             $text .= "<tr><td class='h'><div align='center'>".Design::erstelleSubmitButtonGrafisch('menu_information',($selected_menu == 0 ? './images/1.png' : './images/1_2.png'),32,32)."</div></td>";
@@ -701,28 +711,70 @@ hr {width: 600px; background-color: #cccccc; border: 0px; height: 1px; color: #0
             echo $text;
         }
         #endregion Benutzer_erstellen
-        
-        if ($selected_menu==0){
-            if (!isset($_POST['actionShowPhpInfo'])){
-                echo Design::erstelleSubmitButton("actionShowPhpInfo", 'PHPInfo');
-            } else
-                phpinfo();
-        }
-        
+               
         if (!$simple){
             if (($selected_menu === 2 || $selected_menu === 3 || $selected_menu === 4) && false){
                 echo "<table border='0' cellpadding='3' width='600'>";
                 echo "<tr><td class='h'><div align='center'><input type='submit' name='actionInstall' value=' ".Sprachen::Get('main','installAll')." '></div></td></tr>";
                 echo "</table><br />";
             }
+                        
+            #region zurück_weiter_buttons
+            $text = '';
+            $a='';$b='';
+            if ($selected_menu>0)
+                $a = Design::erstelleSubmitButton($menuItems[$selected_menu-1], 'zurueck');
+                
+            if ($selected_menu<count($menuItems)-1)
+                $b = Design::erstelleSubmitButton($menuItems[$selected_menu+1], 'weiter');
             
-            echo "</form>";
+            echo "<table border='0' cellpadding='3' width='600'>";
+            echo "<thead><tr><th align='left' width='50%'>{$a}</th><th align='right' width='50%'>{$b}</th></tr></thead>";
+            echo "</table>";
+            #endregion zurück_weiter_buttons
+            
+            echo "<div>";
+
+            echo "</div>";
+            
+            echo "</th>";
+            echo "<th valign='top'>";
+            $text='';
+            
+            echo "<div style='width:150px;word-break: break-all;'>";
+            echo "<table border='0'>";
+            echo "<tr><td class='e'>".Sprachen::Get('general_informations','url')."</td></tr>";
+            echo "<tr><td>".$data['PL']['url']."</td></tr>";
+            echo "<tr><th></th></tr>";
+            echo "<tr><td class='e'>".Sprachen::Get('database_informations','db_name')."</td></tr>";
+            echo "<tr><td>".$data['DB']['db_name']."</td></tr>";
+            echo "<tr><th></th></tr>";
+            echo "<tr><td class='e'>".Sprachen::Get('database_informations','db_path')."</td></tr>";
+            echo "<tr><td>".$data['DB']['db_path']."</td></tr>";
+            echo "<tr><th></th></tr>";
+            echo "<tr><td class='e'>".Sprachen::Get('databaseAdmin','db_user')."</td></tr>";
+            echo "<tr><td>".$data['DB']['db_user']."</td></tr>";
+            echo "<tr><th></th></tr>";
+            echo "<tr><td class='e'>".Sprachen::Get('databasePlatformUser','db_user_operator')."</td></tr>";
+            echo "<tr><td>".$data['DB']['db_user_operator']."</td></tr>";
+            echo "</table>";
+            echo "</div";
+            
+            echo "</th></tr></form></table>";
 
             echo "
                 </div></body></html>
             ";
+            
+            echo "<div width='600'>";
+            if ($selected_menu==0){
+                if (isset($_POST['actionShowPhpInfo'])){
+                    ///phpinfo();
+                }
+            }
+            echo "</div>";
         }
-        
+                
         Einstellungen::speichereEinstellungen();
         
     }

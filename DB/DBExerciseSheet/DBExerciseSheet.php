@@ -17,6 +17,7 @@ include_once ( '../../Assistants/DBJson.php' );
 include_once ( '../../Assistants/DBRequest.php' );
 include_once ( '../../Assistants/CConfig.php' );
 include_once ( '../../Assistants/Logger.php' );
+include_once ( '../../Assistants/LArraySorter.php' );
 
 \Slim\Slim::registerAutoloader( );
 
@@ -782,17 +783,7 @@ class DBExerciseSheet
                                                                 $data,
                                                                 ExerciseSheet::getDBPrimaryKey( ),
                                                                 ExerciseSheet::getDBConvert( )
-                                                                );
-
-                // sets the sheet names
-                $id = 1;
-                foreach ( $exerciseSheet as & $sheet ){
-                    if ( !isset( $sheet['sheetName'] ) || 
-                         $sheet['sheetName'] == null ){
-                        $sheet['sheetName'] = 'Serie ' . ( string )$id;
-                        $id++;
-                    }
-                }
+                                                                );           
 
                 // generates an assoc array of an file by using a defined list of its attributes
                 $exerciseSheetFile = DBJson::getObjectsByAttributes( 
@@ -890,9 +881,21 @@ class DBExerciseSheet
                                                            Exercise::getDBPrimaryKey( )
                                                            );
                 }
-
+                
                 // to reindex
                 $res = array_merge( $res );
+                
+                $res = LArraySorter::orderBy($res, 'startDate', SORT_ASC );
+                                
+                // sets the sheet names
+                $id = 1;
+                foreach ( $res as & $sheet ){
+                    if ( !isset( $sheet['sheetName'] ) || 
+                         $sheet['sheetName'] == null ){
+                        $sheet['sheetName'] = 'Serie ' . ( string )$id;
+                        $id++;
+                    }
+                } 
 
                 $this->_app->response->setBody( ExerciseSheet::encodeExerciseSheet( $res ) );
                 $this->_app->response->setStatus( 200 );
@@ -934,7 +937,8 @@ class DBExerciseSheet
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
                                               'Sql/GetExistsPlatform.sql',
-                                              array( )
+                                              array( ),
+                                              false
                                               );
 
         // checks the correctness of the query
@@ -977,7 +981,8 @@ class DBExerciseSheet
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query2,
                                               'Sql/DeletePlatform.sql',
-                                              array( )
+                                              array( ),
+                                              false
                                               );
 
         // checks the correctness of the query
@@ -1034,7 +1039,8 @@ class DBExerciseSheet
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query2,
                                                   'Sql/AddPlatform.sql',
-                                                  array( 'object' => $in )
+                                                  array( 'object' => $in ),
+                                                  false
                                                   );
 
             // checks the correctness of the query

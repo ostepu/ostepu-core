@@ -173,7 +173,8 @@ class LGetSite
         $lecturers = json_decode($answer[1]['content'], true);
         $admins = json_decode($answer[2]['content'], true);
 
-        // delete all super-admins from admin list
+        // obsolete ???
+        /*// delete all super-admins from admin list
         if (!empty($admins)) {
             foreach ($admins as $key => $value) {
                 if ($value['isSuperAdmin'] == 1) {
@@ -181,7 +182,7 @@ class LGetSite
                     break;
                 }
             }
-        }
+        }*/
 
         $tutors = array_merge($tutors, $lecturers, $admins);
 
@@ -196,6 +197,7 @@ class LGetSite
                 $response['tutorAssignments'][] = array('tutor' => $tutor, 'submissions' => array());
             }
         }
+        $response['tutorAssignments'][] = array('tutor' => json_decode(User::encodeUser(User::createUser(null,'','','','',null,null,null,null,null,null)),true), 'submissions' => array());
 
         // get markings
         $URL = $this->lURL.'/DB/marking/exercisesheet/'.$sheetid;
@@ -204,7 +206,7 @@ class LGetSite
         // assign submissions for the markings to the right tutor
         foreach (json_decode($answer['content'], true) as $marking ) {
             foreach ($response['tutorAssignments'] as &$tutorAssignment ) {
-                if ($marking['tutorId'] == $tutorAssignment['tutor']['id']) {
+                if (!isset($tutorAssignment['tutor']['id']) || $marking['tutorId'] == $tutorAssignment['tutor']['id']) {
 
                     // rename 'id' to 'submissionId'
                     $marking['submission']['submissionId'] = $marking['submission']['id'];
@@ -225,6 +227,10 @@ class LGetSite
                 }
             }
         }
+        
+        // remove unknown lecturer if empty
+        if (count($response['tutorAssignments'][count($response['tutorAssignments'])-1]['submissions']) == 0)
+            unset($response['tutorAssignments'][count($response['tutorAssignments'])-1]);
 
         // Get SelectedSubmissions
         $URL = $this->lURL.'/DB/selectedsubmission/exercisesheet/'.$sheetid;
@@ -361,7 +367,7 @@ class LGetSite
             }
         }
 
-        // oder exercise types by id
+        // order exercise types by id
         $exerciseTypes = array();
         foreach ($possibleExerciseTypes as $exerciseType) {
             $exerciseTypes[$exerciseType['id']] = $exerciseType;

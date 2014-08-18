@@ -17,6 +17,10 @@
             <div class="critical-color bold right">
                 <?php echo date('d.m.Y  -  H:i', $sheet['endDate']); ?>
             </div>
+            <div class="info-color bold right">
+                <?php echo date('d.m.Y  -  H:i', $sheet['startDate']).' bis&nbsp;'; ?>
+            </div>
+            
             <div class="exercise-sheet-info info-color bold right">
                 <?php 
                     /**
@@ -56,7 +60,7 @@
                         <?php if(isset($exercise['attachment'])): ?>
                             <?php $displayName = $exercise['attachment']['displayName']; ?>
                             <?php $fileAddress = $exercise['attachment']['address']; ?>
-                            <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
+                            <?php $fileURL = "../FS/FSControl/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
 
                             <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" class="plain" target="_blank">
                                 <img src="Images/Attachment.png" />
@@ -83,7 +87,7 @@
                         <li>
                             <?php $displayName = $sheet['sampleSolution']['displayName']; ?>
                             <?php $fileAddress = $sheet['sampleSolution']['address']; ?>
-                            <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
+                            <?php $fileURL = "../FS/FSControl/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
                             <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
                                 Musterlösung
                             </a>
@@ -93,7 +97,7 @@
                     <li>
                         <?php $displayName = $sheet['sheetFile']['displayName']; ?>
                         <?php $fileAddress = $sheet['sheetFile']['address']; ?>
-                        <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
+                        <?php $fileURL = "../FS/FSControl/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
                         <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
                             Aufgabenblatt
                         </a>
@@ -102,11 +106,9 @@
                     <?php // prints a link to download attachments ?>
                     <?php if ($sheet['hasAttachments']): ?>
                         <li>
-                        <a style="color:#b9b8b8"><s>
-                           <!-- <button name="downloadAttachments" value="<?php echo $sheet['id']; ?>" class="text-button body-option-color">-->
+                            <button name="downloadAttachments" value="<?php echo $sheet['id']; ?>" class="text-button body-option-color">
                                 Alle Anhänge herunterladen
-                            <!--</button>-->
-                            </s></a>
+                            </button>
                         </li>
                     <?php endif; ?>
 

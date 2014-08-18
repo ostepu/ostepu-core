@@ -740,7 +740,8 @@ class DBUser
                    isset( $eid ) ? $eid : '',
                    isset( $suid ) ? $suid : '',
                    isset( $statusid ) ? $statusid : '',
-                   true
+                   true,
+                   false
                    );
     }
     
@@ -761,7 +762,8 @@ class DBUser
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query2,
                                               'Sql/DeletePlatform.sql',
-                                              array( )
+                                              array( ),
+                                              false
                                               );
 
         // checks the correctness of the query
@@ -818,7 +820,8 @@ class DBUser
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query2,
                                                   'Sql/AddPlatform.sql',
-                                                  array( 'object' => $in )
+                                                  array( 'object' => $in ),
+                                                  false
                                                   );
 
             // checks the correctness of the query

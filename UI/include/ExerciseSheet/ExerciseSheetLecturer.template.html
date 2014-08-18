@@ -33,6 +33,10 @@ foreach ($sheets as $sheet):
         <div class="critical-color bold right">
             <?php print date('d.m.Y  -  H:i', $sheet['endDate']); ?>
         </div>
+        
+        <div class="info-color bold right">
+                <?php echo date('d.m.Y  -  H:i', $sheet['startDate']).' bis&nbsp;'; ?>
+        </div>
     </div>
 
     <div class="content-body-wrapper">
@@ -120,13 +124,11 @@ foreach ($sheets as $sheet):
                 <?php
                     if ($sheet['hasAttachments']) {
                         print '<li>';
-                        print '<a style="color:#b9b8b8"><s>';
-                       // print '<button name="downloadAttachments" value="';
-                      //  print $sheet['id'];
-                      //  print '" class="text-button body-option-color">';
+                        print '<button name="downloadAttachments" value="';
+                        print $sheet['id'];
+                        print '" class="text-button body-option-color">';
                         print 'Alle Anhänge herunterladen';
-                      //  print '</button>';
-                      print '</s></a>';
+                        print '</button>';
                         print '</li>';
                     }
                 ?>

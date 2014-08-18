@@ -223,11 +223,11 @@ function addExercise(event)
     $.get("include/CreateSheet/ExerciseSettings.template.php", function (data) {
 
         var collapsible = $(".collapsible");
-        if (collapsible.length == 1) {
-            $(".add").last().after(data);
-        } else {
-            $(".collapsible").last().after(data);
-        }
+       // if (collapsible.length == 1) {
+            $(".add").last().before(data);
+        //} else {
+        //    $(".collapsible").last().before(data);
+        //}
 
         // animate new element
         $('.collapsible').last().hide().fadeIn('fast');

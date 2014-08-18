@@ -307,14 +307,14 @@ class FSBinder
 
             // the removing/unlink process failed, if the file still exists.
             if ( file_exists( $filePath ) ){
-                $this->_app->response->setStatus( 452 );
+                $this->_app->response->setStatus( 409 );
                 $this->_app->response->setBody( File::encodeFile( new File( ) ) );
                 $this->_app->stop( );
             }
 
             // the file is removed
             $this->_app->response->setBody( File::encodeFile( $file ) );
-            $this->_app->response->setStatus( 252 );
+            $this->_app->response->setStatus( 201 );
             $this->_app->stop( );
             
         } else {

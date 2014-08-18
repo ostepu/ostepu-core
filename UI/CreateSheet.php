@@ -453,8 +453,8 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
             $exerciseSettings->bind($processorModules);
 
             // wrap all the elements in some HTML and show them on the page
-            $w = new HTMLWrapper($h, $sheetSettings, $createExercise, $exerciseSettings);//, $exerciseSettings
-            $w->defineForm(basename(__FILE__)."?cid=".$cid, true, $sheetSettings, $createExercise, $exerciseSettings);//, $exerciseSettings
+            $w = new HTMLWrapper($h, $sheetSettings, $exerciseSettings, $createExercise);//, $exerciseSettings
+            $w->defineForm(basename(__FILE__)."?cid=".$cid, true, $sheetSettings, $exerciseSettings, $createExercise);//, $exerciseSettings
             $w->set_config_file('include/configs/config_createSheet.json');
             $w->show();
         } else {
