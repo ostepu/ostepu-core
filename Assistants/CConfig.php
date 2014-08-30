@@ -26,7 +26,7 @@ class CConfig
     /**
      * @var $CONF_FILE the file where the component configuration would be stored
      */
-    private $CONF_FILE = 'CConfig.json';
+    private static $CONF_FILE = 'CConfig.json';
 
     /**
      * @var $_prefix the prefix, the class works with
@@ -218,8 +218,8 @@ class CConfig
         }
         $pre = $tempPre;
         
-        if ( file_exists( $pre . $this->CONF_FILE ) ){
-            $com = Component::decodeComponent( file_get_contents( $pre . $this->CONF_FILE ) );
+        if ( file_exists( $pre . CConfig::$CONF_FILE ) ){
+            $com = Component::decodeComponent( file_get_contents( $pre . CConfig::$CONF_FILE ) );
             $com->setPrefix( $this->getPrefix( ) );
             $this->_app->response->setBody( Component::encodeComponent( $com ) );
             $this->_app->response->setStatus( 200 );
@@ -237,10 +237,14 @@ class CConfig
      *
      * @param $content the json encode Component object
      */
-    public function saveConfig( $pre='', $content )
+    public function saveConfig( $pre='', $content ){
+        CConfig::saveConfigGlobal($pre,$content);
+    }
+     
+    public static function saveConfigGlobal( $pre='', $content )
     {
         $file = fopen( 
-                      $pre . $this->CONF_FILE,
+                      $pre . CConfig::$CONF_FILE,
                       'w'
                       );
         fwrite( 
@@ -265,10 +269,10 @@ class CConfig
         }
         $pre = $tempPre;
         
-        if ( file_exists( $pre . $this->CONF_FILE ) ){
+        if ( file_exists( $pre . CConfig::$CONF_FILE ) ){
 
             // file was found, create a Component object from file content
-            $com = Component::decodeComponent( file_get_contents( $pre . $this->CONF_FILE ) );
+            $com = Component::decodeComponent( file_get_contents( $pre . CConfig::$CONF_FILE ) );
             $com->setPrefix( $this->getPrefix( ) );
             
             // check if the links
