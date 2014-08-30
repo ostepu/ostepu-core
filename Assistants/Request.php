@@ -180,7 +180,7 @@ class Request
                                       $links->getAddress().$resourceUri,
                                       $header,
                                       $content);
-                      
+
                 // checks the answered status code             
                 if ($ch['status']>=200 && $ch['status']<=299){
                 

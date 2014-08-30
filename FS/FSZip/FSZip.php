@@ -221,7 +221,7 @@ class FSZip
 
         // generate zip
         $zip = new ZipArchive( );
-        $savepath = 'temp/' . $hash;
+        $savepath = dirname(__FILE__).'/temp/' . $hash;
 
         // if the directory doesn't exist, create it
         FSZip::generatepath( dirname( $savepath ) );
@@ -263,10 +263,12 @@ class FSZip
                         
                     } else {
                         $this->_app->response->setStatus( 409 );
-                        $zipFile->setBody( null );
-                        $this->_app->response->setBody( File::encodeFile( $zipFile ) );
+                        $this->_app->response->setBody( File::encodeFile( new File() ) );
                         $zip->close( );
-                        unlink( $savepath );
+                        
+                        if (file_exists($savepath))
+                            unlink( $savepath );
+                            
                         $this->_app->stop( );
                     }
                 }

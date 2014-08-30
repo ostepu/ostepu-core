@@ -333,36 +333,29 @@ class LTutor
                 foreach($sortedMarkings[$exercise['id']] as $marking){
                     $row = array();
                     //MarkingId
+                    if (!isset($marking['id'])) continue;
                     $row[] = $marking['id'];
-                    //Points
-                    if(array_key_exists('points', $marking)) {
-                        $row[] = $marking['points'];
-                    }else {
-                        $row[] = "";
-                    }
+                    
+                    //Points{
+                    $row[] = (isset($marking['points']) ? $marking['points'] : '0');
+
                     //MaxPoints
-                    $row[] = $exercise['maxPoints'];
+                    $row[] = (isset($marking['maxPoints']) ? $exercise['maxPoints'] : '0');
+                    
                     //Outstanding
-                    if(array_key_exists('outstanding', $marking)) {
-                        $row[] = $marking['outstanding'];
-                    }else {
-                        $row[] = "";
-                    }
+                    $row[] = (isset($marking['outstanding']) ? $marking['outstanding'] : '');
+
                     //Status
-                    if(array_key_exists('status', $marking)) {
-                        $row[] = $marking['status'];
-                    }else {
-                        $row[] = 0;
-                    }
+                    $row[] = (isset($marking['status']) ? $marking['status'] : '0');
+
                     //TutorComment
-                    if(array_key_exists('tutorComment', $marking)) {
-                        $row[] = $marking['tutorComment'];
-                    }else {
-                        $row[] = "";
-                    }
+                    $row[] = (isset($marking['tutorComment']) ? $marking['tutorComment'] : '');
+
                     //StudentComment
-                    $submission = $marking['submission'];
-                    $row[] = $submission['comment'];
+                    if (isset($marking['submission'])){
+                        $submission = $marking['submission'];
+                        $row[] = (isset($submission['comment']) ? $submission['comment'] : '');
+                    }
 
                     $rows[] = $row;
                 }
@@ -400,6 +393,7 @@ class LTutor
                 foreach($sortedMarkings[$exerciseId] as $marking){
                     $URL = $this->lURL.'/DB/submission/submission/'.
                                             $marking['submission']['id'];
+                                            
                     //request to database to get the submission file
                     $answer = Request::custom('GET', $URL, $header,"");
                     $submission = json_decode($answer['content'], true);
@@ -408,8 +402,8 @@ class LTutor
 
                     $newfile['displayName'] =
                         $namesOfExercises[$exerciseId].'/'.$marking['id'].'.pdf';
-                    if ($newfile['fileId'] > 2){            //inkonsistente DB-FS-Verlinkungen
-                        $filesToZip[] = $newfile;}
+
+                    $filesToZip[] = $newfile;
                 }
             }
         }
@@ -431,8 +425,11 @@ class LTutor
         //request to filesystem to get the created Zip-File
         $answer = Request::custom('GET', $URL, $header,"");
 
-        $this->app->response->headers->set('Content-Type', $answer['headers']['Content-Type']);
-        $this->app->response->headers->set('Content-Disposition', $answer['headers']['Content-Disposition']);
+        if (isset($answer['headers']['Content-Type']))
+            $this->app->response->headers->set('Content-Type', $answer['headers']['Content-Type']);
+        
+        if (isset($answer['headers']['Content-Disposition']))
+            $this->app->response->headers->set('Content-Disposition', $answer['headers']['Content-Disposition']);
         $this->app->response->setBody($answer['content']);
     }
 

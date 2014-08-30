@@ -984,7 +984,7 @@ class LGetSite
         $sheets = json_decode($answer2[1]['content'], true);
         $courseUser = json_decode($answer2[2]['content'], true);
 
-        // load alls selectedsubmission in one pack
+        // loads all selected submissions in one pack
         $multiRequestHandle = new Request_MultiRequest();
 
         foreach ($sheets as $sheet) {
