@@ -199,6 +199,15 @@ class DBSelectedSubmission
                                'getSheetSelected'
                                )
                          );
+                         
+                // GET GetCourseSelected
+        $this->_app->get( 
+                         '/' . $this->getPrefix( ) . '/course/:courseid(/)',
+                         array( 
+                               $this,
+                               'getCourseSelected'
+                               )
+                         );
 
         // run Slim
         $this->_app->run( );
@@ -586,15 +595,12 @@ class DBSelectedSubmission
                     );
 
         // checks whether incoming data has the correct data type
-        DBJson::checkInput( 
-                           $this->_app,
-                           $userid == '' ? true : ctype_digit( $userid ),
-                           $courseid == '' ? true : ctype_digit( $courseid ),
-                           $esid == '' ? true : ctype_digit( $esid ),
-                           $eid == '' ? true : ctype_digit( $eid ),
-                           $suid == '' ? true : ctype_digit( $suid ),
-                           $mid == '' ? true : ctype_digit( $mid )
-                           );
+        $userid = DBJson::mysql_real_escape_string( $userid );
+        $courseid = DBJson::mysql_real_escape_string( $courseid );
+        $esid = DBJson::mysql_real_escape_string( $esid );
+        $eid = DBJson::mysql_real_escape_string( $eid );
+        $suid = DBJson::mysql_real_escape_string( $suid );
+        $mid = DBJson::mysql_real_escape_string( $mid );
 
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
@@ -680,6 +686,28 @@ class DBSelectedSubmission
         $this->get( 
                    'GetSheetSelected',
                    'Sql/GetSheetSelected.sql',
+                   isset( $userid ) ? $userid : '',
+                   isset( $courseid ) ? $courseid : '',
+                   isset( $esid ) ? $esid : '',
+                   isset( $eid ) ? $eid : '',
+                   isset( $suid ) ? $suid : '',
+                   isset( $mid ) ? $mid : ''
+                   );
+    }
+    
+    /**
+     * Returns all exercises that should be marked to a given course.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /selectedsubmission/course/$courseid(/).
+     *
+     * @param int $courseid The id of the course.
+     */
+    public function getCourseSelected( $courseid )
+    {
+        $this->get( 
+                   'GetCourseSelected',
+                   'Sql/GetCourseSelected.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
