@@ -36,7 +36,7 @@ class LFileHandler
         $displayName = $file->getDisplayName();
         //request to filesystem to save the file
         if ($file->getAddress()===null){
-        $answer = Request::routeRequest( 
+            $answer = Request::routeRequest( 
                                             'POST',
                                             '/file'.$path,
                                             $header,
@@ -46,9 +46,9 @@ class LFileHandler
                                             );
         }
         else{
-        $answer=array();
-        $answer['status'] = 201;
-        $answer['content'] = File::encodeFile( $file );
+            $answer=array();
+            $answer['status'] = 201;
+            $answer['content'] = File::encodeFile( $file );
         }
 
         // check if file has been saved
@@ -63,7 +63,7 @@ class LFileHandler
                                             $database,
                                             'file'
                                             );
-
+                                            
             if ($answer['status'] < 200 || $answer['status'] > 299 || !isset($answer['content'])) { //if file does not exists, add it to db file table
                 $answer = Request::routeRequest( 
                                                 'POST',
