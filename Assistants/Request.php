@@ -164,7 +164,16 @@ class Request
     
         // get possible links
         $else = array();
+        if ($linkedComponents == null || (count($linkedComponents) == 1 && $linkedComponents[0] == null)){
+            // there aren't any links
+            $ch = array();
+            $ch['status'] = 404;
+            return $ch;
+        }
+        
         foreach ($linkedComponents as $links){
+            if ($links==null)
+                continue;
  
             // if $linkName is set, only use links with correct names
             if ($linkName!=NULL && $linkName!=$links->getName())
