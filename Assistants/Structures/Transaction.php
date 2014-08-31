@@ -210,13 +210,13 @@ class Transaction extends Object implements JsonSerializable
             $this->addInsertData( 
                                  $values,
                                  'T_authentication',
-                                 DBJson::mysql_real_escape_string( Process::getIdFromProcessId($this->authentication) )
+                                 DBJson::mysql_real_escape_string( $this->authentication )
                                  );
         if ( $this->content != null)
             $this->addInsertData( 
                                  $values,
                                  'T_content',
-                                 DBJson::mysql_real_escape_string( Process::getIdFromProcessId($this->content) )
+                                 DBJson::mysql_real_escape_string( $this->content )
                                  );
                                  
         if ( $values != '' ){
