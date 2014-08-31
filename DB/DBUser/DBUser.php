@@ -510,7 +510,7 @@ class DBUser
 
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
-                                              $this->query,
+                                              $this->query2,
                                               $sqlFile,
                                               array( 
                                                     'userid' => $userid,
@@ -527,7 +527,10 @@ class DBUser
         if ( $result['status'] >= 200 && 
              $result['status'] <= 299 ){
             $query = Query::decodeQuery( $result['content'] );
-
+ 
+            if (!is_array($query)) $query = array($query);
+            $query = $query[count($query)-1];
+            
             if ( $query->getNumRows( ) > 0 ){
                 $res = User::ExtractUser( 
                                          $query->getResponse( ),
