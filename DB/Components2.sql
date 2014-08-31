@@ -58,6 +58,7 @@ REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('LOOP', 
 REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('DBProcessList', 'localhost/uebungsplattform/DB/DBProcess/processList', '');
 REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('DBFormResult', 'localhost/uebungsplattform/DB/DBChoice/formResult', '');
 REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('CFilter', 'localhost/uebungsplattform/DB/CFilter', '');
+REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('DBTransaction', 'localhost/uebungsplattform/DB/DBTransaction', '');
 COMMIT;
 
 
@@ -120,6 +121,7 @@ SET @DBProcess = (select CO_id from Component where CO_name='DBProcess' limit 1)
 SET @DBProcessAttachment = (select CO_id from Component where CO_name='DBProcessAttachment' limit 1);
 SET @DBProcessWorkFiles = (select CO_id from Component where CO_name='DBProcessWorkFiles' limit 1);
 SET @CFilter = (select CO_id from Component where CO_name='CFilter' limit 1);
+SET @DBTransaction = (select CO_id from Component where CO_name='DBTransaction' limit 1);
 
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@FSZip, 'getFile', '', @FSControl);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@FSControl, 'out', '', @FSFile);
@@ -274,6 +276,10 @@ INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LAttachment, 'postFile', '', @LFile);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LExercise, 'postAttachment', '', @LAttachment);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LAttachment, 'postAttachment', '', @DBAttachment);
+INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@DBTransaction, 'out', '', @DBQuery2);
+INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LCourse, 'postCourse', '', @DBTransaction);
+INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LCourse, 'deleteCourse', '', @DBTransaction);
+
 #INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (00, '', '', 00);
 #INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (00, '', '', 00);
 #INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (00, '', '', 00);
