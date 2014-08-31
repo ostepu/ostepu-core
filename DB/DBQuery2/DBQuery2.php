@@ -75,7 +75,7 @@ class DBQuery2
         if ( $com->used( ) ) return;
             
         // initialize component
-        $this->_conf = $conf;
+        $this->_conf = $com;
 
         // initialize slim
         $this->_app = new \Slim\Slim( array( 'debug' => true ));
@@ -154,7 +154,7 @@ class DBQuery2
                     'starts GET queryResult',
                     LogLevel::DEBUG
                     );
-                    
+
         $this->loadConfig($name);
         $body = $this->_app->request->getBody( );
 
