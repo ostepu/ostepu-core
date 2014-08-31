@@ -114,6 +114,24 @@ class DBTransaction
                                 'addTransaction'
                                 )
                           );
+                          
+        // POST AddSheetTransaction
+        $this->_app->post( 
+                          '(/:name)/transaction/exercisesheet/:esid',
+                          array( 
+                                $this,
+                                'addSheetTransaction'
+                                )
+                          );
+                          
+        // POST AddExerciseTransaction
+        $this->_app->post( 
+                          '(/:name)/transaction/exercise/:eid',
+                          array( 
+                                $this,
+                                'addExerciseTransaction'
+                                )
+                          );
                         
         // GET GetTransaction
         $this->_app->get( 
@@ -219,15 +237,30 @@ class DBTransaction
      * The request body should contain a JSON object representing the
      * transaction's attributes.
      *
-     * @param int $name A optional name for the transaction table.
+     * @param string $name A optional name for the transaction table.
      */
     public function addTransaction( $name='', $courseid )
+    {
+        $this->add($name, $courseid, 'courseid', 'POST AddTransaction', 'Sql/AddTransaction.sql');
+    }
+    
+    public function addSheetTransaction( $name='', $esid )
+    {
+        $this->add($name, $esid, 'esid', 'POST AddShetTransaction', 'Sql/AddSheetTransaction.sql');
+    }
+    
+   public function addExerciseTransaction( $name='', $eid )
+    {
+        $this->add($name, $eid, 'eid', 'POST AddExerciseTransaction', 'Sql/AddExerciseTransaction.sql');
+    }
+    
+    public function add( $name='', $id, $idName ,$functionName, $sqlFile)
     {
         $this->loadConfig($name);
         $name = ($name === '' ? '' : '_') . $name;
         
         Logger::Log( 
-                    'starts POST AddTransaction',
+                    'starts '.$functionName,
                     LogLevel::DEBUG
                     );
 
@@ -242,6 +275,7 @@ class DBTransaction
         }
         
         $name = DBJson::mysql_real_escape_string( $name );
+        $id = DBJson::mysql_real_escape_string( $id );
 
         $uuid = new uuid();
         // this array contains the indices of the inserted objects
@@ -257,8 +291,8 @@ class DBTransaction
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/AddTransaction.sql',
-                                                  array( 'object' => $in,'name' => $name, 'courseid' => $courseid, 'random' => $random )
+                                                  $sqlFile,
+                                                  array( 'object' => $in,'name' => $name, $idName => $id, 'random' => $random )
                                                   );
 
             // checks the correctness of the query
@@ -283,7 +317,7 @@ class DBTransaction
                 
             } else {
                 Logger::Log( 
-                            'POST AddTransaction failed',
+                            $functionName.' failed',
                             LogLevel::ERROR
                             );
                 $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
