@@ -16,7 +16,7 @@ from
     `Transaction{$name}_".Transaction::getCourseFromTransactionId($tid)."` T
 where
     T.T_id = '".Transaction::getIdFromTransactionId($tid)."'
-    and (T.T_authentication is null or T.T_authentication = '{$auid}')
+    and ((T.T_authentication is null and '{$auid}' = '') or T.T_authentication = '{$auid}')
     and T.T_random = '".Transaction::getRandomFromTransactionId($tid)."'
     and UNIX_TIMESTAMP() <= T.T_durability;
     

@@ -9,6 +9,6 @@
 DELETE FROM `Transaction{$name}_".Transaction::getCourseFromTransactionId($tid)."`
 WHERE
     T_id = '".Transaction::getIdFromTransactionId($tid)."'
-    and (T_authentication is null or T_authentication = '{$auid}')
+    and ((T.T_authentication is null and '{$auid}' = '') or T.T_authentication = '{$auid}')
     and T_random = '".Transaction::getRandomFromTransactionId($tid)."';
 
