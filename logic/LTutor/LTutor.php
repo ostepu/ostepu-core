@@ -274,16 +274,26 @@ class LTutor
         $header = $this->app->request->headers->all();
         $body = json_decode($this->app->request->getBody());
 
-        $URL = $this->lURL.'/DB/marking/exercisesheet/'.$sheetid.'/tutor/'.$userid;
+        $multiRequestHandle = new Request_MultiRequest();
+        
         //request to database to get the markings
-        $answer = Request::custom('GET', $URL, $header,"");
-        $markings = json_decode($answer['content'], true);
-
-        $URL = $this->lURL.'/DB/exercise/exercisesheet/'.$sheetid;
+        $handler = Request_CreateRequest::createCustom('GET', $this->lURL.'/DB/marking/exercisesheet/'.$sheetid.'/tutor/'.$userid, $header,"");
+        $multiRequestHandle->addRequest($handler);
+        
         //request to database to get the exercise sheets
-        $answer = Request::custom('GET', $URL, $header,"");
-        $exercises = json_decode($answer['content'], true);
+        $handler = Request_CreateRequest::createCustom('GET', $this->lURL.'/DB/exercise/exercisesheet/'.$sheetid, $header,"");
+        $multiRequestHandle->addRequest($handler);
+        
+        $answer = $multiRequestHandle->run();
+        if (count($answer)< 2 || !isset($answer[0]['status']) || $answer[0]['status']!=200 || !isset($answer[0]['content']) || !isset($answer[1]['status']) || $answer[1]['status']!=200 || !isset($answer[1]['content'])){
+            $this->app->response->setStatus(409);
+            $this->app->stop();
+        }
 
+        $markings = json_decode($answer[0]['content'], true);
+        $exercises = json_decode($answer[1]['content'], true);
+
+        
         $count = 0;
         //an array to descripe the subtasks
         $alphabet = range('a', 'z');
@@ -303,6 +313,7 @@ class LTutor
                 $exerciseIdWithExistingMarkings[] = $id;
             }
         }
+
 
         //formating, create the layout of the CSV-file for the tutor
         //first two rows of an exercise are the heads of the table
@@ -374,9 +385,9 @@ class LTutor
 
         //request to database to get the user name of the tutor for the
         //name of the CSV-file
-        $URL = $this->lURL.'/DB/user/user/'.$userid;
+        /*$URL = $this->lURL.'/DB/user/user/'.$userid;
         $answer = Request::custom('GET', $URL, $header, "");
-        $user = json_decode($answer['content'], true);
+        $user = json_decode($answer['content'], true);*/
         
         // create transaction ticket
         $transaction = Transaction::createTransaction(
@@ -397,21 +408,19 @@ class LTutor
         // checks the correctness of the query
         if ( isset($result['status']) && isset($result['content']) && $result['status'] == 201){
             $transaction = Transaction::decodeTransaction($result['content']);
-            $rows[0][] = $transaction->getTransactionId(); 
              
             $this->deleteDir("./csv");
             mkdir("./csv");        
 
             //this is the true writing of the CSV-file named [tutorname]_[sheetid].csv
-            $CSV = fopen('./csv/'.$user['lastName'].'_'.$sheetid.'.csv', 'w');
+            $CSV = fopen('./csv/'.$sheetid.'.csv', 'w'); // $user['lastName'].'_'.
 
             foreach($rows as $row){
                 fputcsv($CSV, $row, ';');
             }
 
             fclose($CSV);
-            
-            
+
             //Create Zip
             $filesToZip = array();
             //Push all SubmissionFiles to an array in order of exercises
@@ -419,12 +428,13 @@ class LTutor
                 $exerciseId = $exercise['id'];
                 if(in_array($exercise['id'], $exerciseIdWithExistingMarkings)){
                     foreach($sortedMarkings[$exerciseId] as $marking){
-                        $URL = $this->lURL.'/DB/submission/submission/'.
+                    //var_dump($marking);
+                        /*$URL = $this->lURL.'/DB/submission/submission/'.
                                                 $marking['submission']['id'];
                                                 
                         //request to database to get the submission file
-                        $answer = Request::custom('GET', $URL, $header,"");
-                        $submission = json_decode($answer['content'], true);
+                        $answer = Request::custom('GET', $URL, $header,"");*/
+                        $submission = $marking['submission'];//json_decode($answer['content'], true);
 
                         $newfile = $submission['file'];
 
@@ -436,22 +446,16 @@ class LTutor
                 }
             }
 
-
             //push the .csv-file to the array
-            $path = './csv/'.$user['lastName'].'_'.$sheetid.'.csv';
+            $path = './csv/'.$sheetid.'.csv';//$user['lastName'].'_'.
             $csvFile = array(
-                        'displayName' => $user['lastName'].'_'.$sheetid.'.csv',
+                        'displayName' => $sheetid.'.csv', //$user['lastName'].'_'.
                         'body' => base64_encode(file_get_contents($path))
                     );
             $filesToZip[] = $csvFile;
 
-            $URL = $this->lURL.'/FS/zip';
             //request to filesystem to create the Zip-File
-            $answer = Request::custom('POST', $URL, $header,json_encode($filesToZip));
-            $zipFile = json_decode($answer['content'], true);
-            $URL = $this->lURL.'/FS/'.$zipFile['address'].'/'.$userid.'_'.$sheetid.'.zip';
-            //request to filesystem to get the created Zip-File
-            $answer = Request::custom('GET', $URL, $header,"");
+            $answer = Request::custom('POST', $this->lURL.'/FS/zip/'.$transaction->getTransactionId().'.zip', $header,json_encode($filesToZip));
 
             if (isset($answer['headers']['Content-Type']))
                 $this->app->response->headers->set('Content-Type', $answer['headers']['Content-Type']);
