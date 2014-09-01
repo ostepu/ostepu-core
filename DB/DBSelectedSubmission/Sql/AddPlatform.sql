@@ -2,9 +2,6 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
--- -----------------------------------------------------
--- Table `SelectedSubmission`
--- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `SelectedSubmission` (
   `U_id_leader` INT NOT NULL,
   `S_id_selected` INT NOT NULL,
@@ -46,9 +43,11 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 DROP TRIGGER IF EXISTS `SelectedSubmission_BINS`;
 CREATE TRIGGER `SelectedSubmission_BINS` BEFORE INSERT ON `SelectedSubmission` FOR EACH ROW
+<?php
 /*check if corresponding exercise exists
 @if not send error message
 @author Lisa, Till*/
+?>
 BEGIN
 SET NEW.E_id = (SELECT S.E_id FROM Submission S WHERE S.S_id = NEW.S_id_selected limit 1);
 
@@ -74,9 +73,11 @@ END;
 
 DROP TRIGGER IF EXISTS `SelectedSubmission_BUPD`;
 CREATE TRIGGER `SelectedSubmission_BUPD` BEFORE UPDATE ON `SelectedSubmission` FOR EACH ROW
+<?php
 /*check if corresponding exercise exists
 @if not send error message
 @author Lisa*/
+?>
 BEGIN
 SET NEW.E_id = (SELECT S.E_id FROM Submission S WHERE S.S_id = NEW.S_id_selected limit 1);
 

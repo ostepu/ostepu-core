@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetUserExerciseSubmissions.sql
  * gets the specified submissions from %Submission table
@@ -9,6 +10,7 @@
  * - S, the submission data
  * - SS, the selected data
  */
+?>
  
 select 
     F.F_id,
@@ -36,4 +38,4 @@ from
         left join
     SelectedSubmission SS ON (S.S_id = SS.S_id_selected)
 where
-    S.U_id = '$userid' and S.E_id = '$eid'
+    S.U_id = '<?php echo $userid; ?>' and S.E_id = '<?php echo $eid; ?>'

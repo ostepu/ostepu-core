@@ -1,3 +1,4 @@
+<?php
 /** 
  * @file DeleteTransaction.sql
  * deletes an specified transaction from %Transaction table
@@ -5,10 +6,11 @@
  * @param string \$tid a %transaction identifier
  * @result -
  */
+?>
  
-DELETE FROM `Transaction{$name}_".Transaction::getCourseFromTransactionId($tid)."`
+DELETE FROM `Transaction<?php echo $name; ?>_<?php echo Transaction::getCourseFromTransactionId($tid); ?>`
 WHERE
-    T_id = '".Transaction::getIdFromTransactionId($tid)."'
-    and ((T.T_authentication is null and '{$auid}' = '') or T.T_authentication = '{$auid}')
-    and T_random = '".Transaction::getRandomFromTransactionId($tid)."';
+    T_id = '<?php echo Transaction::getIdFromTransactionId($tid); ?>'
+    and ((T.T_authentication is null and '<?php echo $auid; ?>' = '') or T.T_authentication = '<?php echo $auid; ?>')
+    and T_random = '<?php echo Transaction::getRandomFromTransactionId($tid); ?>';
 

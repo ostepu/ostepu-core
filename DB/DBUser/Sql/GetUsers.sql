@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetUsers.sql
  * gets all users 
@@ -7,6 +8,7 @@
  * - CS, the course status data
  * - C, the course data
  */
+?>
  SELECT 
     U.U_id,
     U.U_username,

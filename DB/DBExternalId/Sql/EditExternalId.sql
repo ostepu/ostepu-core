@@ -1,3 +1,4 @@
+<?php
 /**
  * @file EditExternalId.sql
  * updates an specified external id from %ExternalId table
@@ -6,7 +7,8 @@
  * @param string $values the input data, e.g. 'a=1, b=2'
  * @result -
  */
+?>
  
 UPDATE ExternalId
-SET $values
-WHERE EX_id = '$exid'
+SET <?php echo $values; ?>
+WHERE EX_id = '<?php echo $exid; ?>'

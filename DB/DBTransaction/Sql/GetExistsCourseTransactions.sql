@@ -1,9 +1,11 @@
+<?php
 /**
  * @file GetExistsCourseTransactions.sql
  * checks whether table exists
  */
+?>
 
 select 
     count(1)
 from
-    `Transaction{$name}_{$courseid}` T limit 1;
+    `Transaction<?php echo $name; ?>_<?php echo $courseid; ?>` T limit 1;

@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetUserCourses.sql
  * gets all courses of a user from %Course table
@@ -7,6 +8,7 @@
  * - C, the course data
  * - ES, the exercise sheet data
  */
+?>
  
 select 
     C.C_id,
@@ -20,4 +22,4 @@ from
         left join
     ExerciseSheet ES ON C.C_id = ES.C_id
 where
-    U_id = '$userid'
+    U_id = '<?php echo $userid; ?>'

@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetCourseChoices.sql
  * gets all choices of a course from %Choice table
@@ -6,13 +7,14 @@
  * @result 
  * - CH, the choice data
  */
+?>
  
 select 
-    concat('\", {$courseid} ,\"','_',CH.CH_id) as CH_id,
+    concat('<?php echo $courseid; ?>_',CH.CH_id) as CH_id,
     CH.FO_id,
     CH.E_id,
     CH.CH_text,
     CH.CH_correct,
     CH.S_id
 from
-    `Choice{$preChoice}_{$courseid}` CH
+    `Choice<?php echo $preChoice; ?>_<?php echo $courseid; ?>` CH

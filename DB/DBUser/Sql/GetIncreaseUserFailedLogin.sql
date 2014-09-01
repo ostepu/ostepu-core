@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetIncreaseUserFailedLogin.sql
  * increases the failed logins counter and returns the user
@@ -8,13 +9,14 @@
  * - CS, the course status data
  * - C, the course data
  */
+?>
  
 UPDATE `User` SET U_failed_logins=U_failed_logins+1
-where U_id = '{$userid}' or U_username = '{$userid}' or U_externalId = '{$userid}';
+where U_id = '<?php echo $userid; ?>' or U_username = '<?php echo $userid; ?>' or U_externalId = '<?php echo $userid; ?>';
 
 UPDATE User
 SET U_flag = if (U_failed_logins>=10, 2, U_flag)
-where U_id = '{$userid}' or U_username = '{$userid}' or U_externalId = '{$userid}';
+where U_id = '<?php echo $userid; ?>' or U_username = '<?php echo $userid; ?>' or U_externalId = '<?php echo $userid; ?>';
 
 SELECT 
     U.U_id,
@@ -41,4 +43,4 @@ FROM
         left join
     Course C ON (CS.C_id = C.C_id)
 WHERE
-    U.U_id like '{$userid}' or U_username = '{$userid}' or U_externalId = '{$userid}';
+    U.U_id like '<?php echo $userid; ?>' or U_username = '<?php echo $userid; ?>' or U_externalId = '<?php echo $userid; ?>';

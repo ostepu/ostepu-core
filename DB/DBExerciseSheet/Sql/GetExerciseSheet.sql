@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetExerciseSheet.sql
  * gets an specified exercise sheet
@@ -8,6 +9,7 @@
  * - F, the exercise sheet file
  * - F2, the sample solution file
  */
+?>
  
 select 
     ES.ES_id,
@@ -36,4 +38,4 @@ from
         left join
     File F2 ON (F2.F_id = ES.F_id_sampleSolution)
 where
-    ES.ES_id = '$esid'
+    ES.ES_id = '<?php echo $esid; ?>'

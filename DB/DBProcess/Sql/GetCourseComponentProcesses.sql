@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetCourseComponentProcesses.sql
  * gets all processes of a course and a component from %Process table
@@ -8,9 +9,10 @@
  * - PRO, the process data
  * - CO, the component data
  */
+?>
  
 select 
-    concat('{$courseid}','_',PRO.PRO_id) as PRO_id,
+    concat('<?php echo $courseid; ?>','_',PRO.PRO_id) as PRO_id,
     PRO.E_id,
     PRO.E_id as E_id2,
     PRO.PRO_parameter,
@@ -24,7 +26,7 @@ select
     CO.CO_id,
     CO.CO_name,
     CO.CO_address,
-    concat('{$courseid}','_',A.A_id) as A_id_PRO1,
+    concat('<?php echo $courseid; ?>','_',A.A_id) as A_id_PRO1,
     A.E_id as E_id_PRO1,
     F.F_id as F_id_PRO1,
     F.F_displayName as F_displayName_PRO1,
@@ -33,7 +35,7 @@ select
     F.F_fileSize as F_fileSize_PRO1,
     F.F_comment as F_comment_PRO1,
     F.F_hash as F_hash_PRO1,
-    concat('{$courseid}','_',A2.A_id) as A_id_PRO2,
+    concat('<?php echo $courseid; ?>','_',A2.A_id) as A_id_PRO2,
     A2.E_id as E_id_PRO2,
     F2.F_id as F_id_PRO2,
     F2.F_displayName as F_displayName_PRO2,
@@ -43,18 +45,18 @@ select
     F2.F_comment as F_comment_PRO2,
     F2.F_hash as F_hash_PRO2
 from
-    `Process{$pre}_{$courseid}` PRO
+    `Process<?php echo $pre; ?>_<?php echo $courseid; ?>` PRO
         left join
     `Component` CO ON (PRO.CO_id_target = CO.CO_id)
         left join
     `Exercise` E ON (E.E_id = PRO.E_id)
         left join
-    `Attachment_processAttachment_{$courseid}` A ON (PRO.PRO_id = A.PRO_id)
+    `Attachment_processAttachment_<?php echo $courseid; ?>` A ON (PRO.PRO_id = A.PRO_id)
         left join
     `File` F ON F.F_id = A.F_id
         left join
-    `Attachment_processWorkFiles_{$courseid}` A2 ON (PRO.PRO_id = A2.PRO_id)
+    `Attachment_processWorkFiles_<?php echo $courseid; ?>` A2 ON (PRO.PRO_id = A2.PRO_id)
         left join
     `File` F2 ON F2.F_id = A2.F_id
 where
-    PRO.CO_id_target = '{$comid}'
+    PRO.CO_id_target = '<?php echo $comid; ?>'

@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetCourseMember.sql
  * gets an specified course member (user)
@@ -8,6 +9,7 @@
  * - CS, the course status data
  * - C, the course data
  */
+?>
  
 SELECT 
     U.U_id,
@@ -36,4 +38,4 @@ FROM
         left join
     Course C ON (CS.C_id = C.C_id)
 WHERE
-    CS.C_id = '$courseid'
+    CS.C_id = '<?php echo $courseid; ?>'

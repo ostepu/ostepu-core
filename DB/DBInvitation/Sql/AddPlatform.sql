@@ -2,9 +2,6 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
--- -----------------------------------------------------
--- Table `Invitation`
--- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Invitation` (
   `U_id_leader` INT NOT NULL,
   `U_id_member` INT NOT NULL,
@@ -34,9 +31,11 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 DROP TRIGGER IF EXISTS `Invitation_BINS`;
 CREATE TRIGGER `Invitation_BINS` BEFORE INSERT ON `Invitation` FOR EACH ROW
+<?php
 /*check if maximal groupsize is reached
 @if not insert into invitation
 @author Lisa*/
+?>
 begin
 if ((SELECT COUNT(G.U_id_leader) FROM `Group` G WHERE G.U_id_member = NEW.U_id_member AND G.ES_id = NEW.ES_id)+(SELECT COUNT(U_id_member) FROM Invitation WHERE U_id_member = NEW.U_id_member AND ES_id = NEW.ES_id))>=(SELECT E.ES_groupSize FROM ExerciseSheet E WHERE E.ES_id = NEW.ES_id) 
 then SIGNAL sqlstate '45001' set message_text = 'maximal groupsize reached';

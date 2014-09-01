@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetAllAttachments.sql
  * gets all attachments from %Attachment table
@@ -6,6 +7,7 @@
  * - A, the attachment data
  * - F, the attachment file
  */
+?>
  
 select 
     A.A_id,

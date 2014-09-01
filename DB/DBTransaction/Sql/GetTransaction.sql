@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetTransaction.sql
  * gets an specified transaction from %Transaction table
@@ -6,18 +7,19 @@
  * @result 
  * - T, the transaction data
  */
+?>
  
 select 
-    concat('".Transaction::getCourseFromTransactionId($tid)."','_',T.T_id,'_',T.T_random) as T_id,
+    concat('<?php echo Transaction::getCourseFromTransactionId($tid); ?>','_',T.T_id,'_',T.T_random) as T_id,
     T.T_durability,
     T.T_authentication,
     T.T_content
 from
-    `Transaction{$name}_".Transaction::getCourseFromTransactionId($tid)."` T
+    `Transaction<?php echo $name; ?>_<?php echo Transaction::getCourseFromTransactionId($tid); ?>` T
 where
-    T.T_id = '".Transaction::getIdFromTransactionId($tid)."'
-    and ((T.T_authentication is null and '{$auid}' = '') or T.T_authentication = '{$auid}')
-    and T.T_random = '".Transaction::getRandomFromTransactionId($tid)."'
+    T.T_id = '<?php echo Transaction::getIdFromTransactionId($tid); ?>'
+    and ((T.T_authentication is null and '<?php echo $auid; ?>' = '') or T.T_authentication = '<?php echo $auid; ?>')
+    and T.T_random = '<?php echo Transaction::getRandomFromTransactionId($tid); ?>'
     and UNIX_TIMESTAMP() <= T.T_durability;
     
     

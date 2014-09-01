@@ -1,1 +1,1 @@
-INSERT INTO ComponentLinkage SET $values
+INSERT INTO ComponentLinkage SET <?php echo $values; ?>

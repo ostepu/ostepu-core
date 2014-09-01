@@ -1,3 +1,4 @@
+<?php
 /**
  * @file AddSubmission.sql
  * inserts a submission into %Submission table
@@ -5,5 +6,6 @@
  * @param string $values the input data, e.g. 'a=1, b=2'
  * @result -
  */
+?>
  
-INSERT INTO Submission SET $values
+INSERT INTO Submission SET <?php echo $values; ?>

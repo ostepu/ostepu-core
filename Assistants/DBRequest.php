@@ -223,7 +223,7 @@ class DBRequest
                                                );
         $query_result=array();    
 
-    if ($answ===false){    
+    if ($answ===false){
         $result=array();    
         $result['affectedRows'] = mysqli_affected_rows( $dbconn);
         $result['insertId'] = mysqli_insert_id( $dbconn);
@@ -298,20 +298,33 @@ class DBRequest
 
         // loads the given sql file and creates the Query object
         $obj = new Query( );
-        eval( "\$sql = \"" . file_get_contents( $sqlFile ) . "\";" );
-
-        $obj->setRequest( $sql );
-        $obj->setCheckSession( $checkSession );
-
-        // perform the route process
-        return Request::routeRequest( 
-                                     'POST',
-                                     '/query',
-                                     array( ),
-                                     Query::encodeQuery( $obj ),
-                                     $querys,
-                                     'query'
-                                     );
+        ob_start();
+        $sqlParsed = eval("?>" .  file_get_contents( $sqlFile ));
+        $sql = ob_get_contents();
+        ob_end_clean();
+        
+        if ($sqlParsed === false){
+            $answer = array();
+            $answer['status'] = 409;
+            return $answer;
+        } else {
+            $obj->setRequest( $sql );
+            $obj->setCheckSession( $checkSession );
+            
+            // perform the route process
+            return Request::routeRequest( 
+                                         'POST',
+                                         '/query',
+                                         array( ),
+                                         Query::encodeQuery( $obj ),
+                                         $querys,
+                                         'query'
+                                         );
+        }
+        
+        $answer = array();
+        $answer['status'] = 409;
+        return $answer;
     }
 }
 

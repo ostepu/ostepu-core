@@ -5,7 +5,7 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 -- -----------------------------------------------------
 -- Table `Transaction`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Transaction{$name}_{$object->getId()}` (
+CREATE TABLE IF NOT EXISTS `Transaction<?php echo $name; ?>_<?php echo $object->getId(); ?>` (
   `T_id` INT NOT NULL AUTO_INCREMENT,
   `T_durability` BIGINT NOT NULL,
   `T_authentication` varchar(140),

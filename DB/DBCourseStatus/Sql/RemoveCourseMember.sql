@@ -1,3 +1,4 @@
+<?php
 /** 
  * @file RemoveCourseMember.sql
  * deletes an specified course status from %CourseStatus table
@@ -6,7 +7,8 @@
  * @param int \$userid an %User identifier
  * @result -
  */
+?>
  
 DELETE FROM CourseStatus 
 WHERE
-    C_id = '$courseid' and U_id = '$userid'
+    C_id = '<?php echo $courseid; ?>' and U_id = '<?php echo $userid; ?>'

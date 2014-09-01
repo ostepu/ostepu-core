@@ -1,9 +1,11 @@
+<?php
 /**
  * @file AddTransaction.sql
  * inserts an transaction into %Transaction table
  * @author  Till Uhlig
  * @result -
  */
+?>
 
-INSERT INTO `Transaction{$name}_{$courseid}` SET {$object->getInsertData()},T_random = '{$random}';
-select '{$courseid}' as 'C_id';
+INSERT INTO `Transaction<?php echo $name; ?>_<?php echo $courseid; ?>` SET <?php echo $object->getInsertData(); ?>,T_random = '<?php echo $random; ?>';
+select '<?php echo $courseid; ?>' as 'C_id';

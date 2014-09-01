@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetAllSubmissions.sql
  * gets all submissions from %Submission table
@@ -7,6 +8,7 @@
  * - S, the submission data
  * - SS, the selected data
  */
+?>
  
 select 
     F.F_id,

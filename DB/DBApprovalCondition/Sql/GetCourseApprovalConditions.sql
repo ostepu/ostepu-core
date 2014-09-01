@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetCourseApprovalConditions.sql
  * gets specified approval conditions from %ApprovalCondition table
@@ -5,10 +6,11 @@
  * @param int \$courseid a %Course identifier
  * @result AC_id, C_id, ET_id, AC_percentage
  */
+?>
 
 select 
     AC_id, C_id, ET_id, AC_percentage
 from
     ApprovalCondition
 where
-    C_id = '$courseid'
+    C_id = '<?php echo $courseid; ?>'

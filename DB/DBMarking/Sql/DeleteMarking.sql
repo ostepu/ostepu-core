@@ -1,3 +1,4 @@
+<?php
 /** 
  * @file DeleteMarking.sql
  * deletes a specified marking from %Marking table
@@ -5,7 +6,8 @@
  * @param int \$mid a %Marking identifier
  * @result -
  */
+?>
  
 DELETE FROM Marking 
 WHERE
-    M_id = '$mid'
+    M_id = '<?php echo $mid; ?>'

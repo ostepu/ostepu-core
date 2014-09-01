@@ -1,3 +1,4 @@
+<?php
 /** 
  * @file DeleteForm.sql
  * deletes a specified form from %Form table
@@ -5,7 +6,8 @@
  * @param int \$formid a %Form identifier
  * @result -
  */
+?>
 
-DELETE FROM `Form_".Form::getCourseFromFormId($formid)."`
+DELETE FROM `Form_<?php echo Form::getCourseFromFormId($formid); ?>`
 WHERE
-    FO_id = '".Form::getIdFromFormId($formid)."'
+    FO_id = '<?php echo Form::getIdFromFormId($formid); ?>'

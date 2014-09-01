@@ -2,9 +2,6 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
--- -----------------------------------------------------
--- Table `Attachment`
--- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Attachment` (
   `A_id` INT NOT NULL AUTO_INCREMENT,
   `E_id` INT NOT NULL,
@@ -42,9 +39,11 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 DROP TRIGGER IF EXISTS `Attachment_BINS`;
 CREATE TRIGGER `Attachment_BINS` BEFORE INSERT ON `Attachment` FOR EACH ROW
+<?php
 /*check if corresponding exercise exists
 if not send error message
 author Lisa*/
+?>
 BEGIN
 SET NEW.ES_id = (select E.ES_id from Exercise E where E.E_id = NEW.E_id limit 1);
 if (NEW.ES_id is NULL) then
@@ -54,9 +53,11 @@ END;
 
 DROP TRIGGER IF EXISTS `Attachment_BUPD`;
 CREATE TRIGGER `Attachment_BUPD` BEFORE UPDATE ON `Attachment` FOR EACH ROW
+<?php
 /*check if corresponding exercise exists
 if not send error message
 author Lisa*/
+?>
 BEGIN
 SET NEW.ES_id = (select E.ES_id from Exercise E where E.E_id = NEW.E_id limit 1);
 if (NEW.ES_id is NULL) then

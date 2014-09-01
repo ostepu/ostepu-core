@@ -1,3 +1,4 @@
+<?php
 /** 
  * @file DeleteChoice.sql
  * deletes a specified choice from %Choice table
@@ -5,7 +6,8 @@
  * @param int \$choiceid a %Choice identifier
  * @result -
  */
+?>
  
-DELETE FROM `Choice{$preChoice}_".Choice::getCourseFromChoiceId($choiceid)."`
+DELETE FROM `Choice<?php echo $preChoice; ?>_<?php echo Choice::getCourseFromChoiceId($choiceid); ?>`
 WHERE
-    CH_id = '".Choice::getIdFromChoiceId($choiceid)."'
+    CH_id = '<?php echo Choice::getIdFromChoiceId($choiceid); ?>'

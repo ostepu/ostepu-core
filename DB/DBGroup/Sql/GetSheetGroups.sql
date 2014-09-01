@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetSheetGroups.sql
  * gets a table for output, where all groups for a specific exercisesheet are listed
@@ -7,6 +8,7 @@
  * - U is the groupleader
  * - U2 are the members of the group without the leader
  */
+?>
  
 SELECT 
     U.U_id,
@@ -42,4 +44,4 @@ FROM
         and U2.U_id <> G.U_id_member
 WHERE
     G.U_id_leader = G2.U_id_leader
-        and G.ES_id = '$esid'
+        and G.ES_id = '<?php echo $esid; ?>'

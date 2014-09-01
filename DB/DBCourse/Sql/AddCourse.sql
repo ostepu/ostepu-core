@@ -1,3 +1,4 @@
+<?php
 /**
  * @file AddCourse.sql
  * inserts a course into %Course table
@@ -5,5 +6,6 @@
  * @param string $values the input data, e.g. 'a=1, b=2'
  * @result -
  */
+?>
  
-INSERT INTO Course SET $values
+INSERT INTO Course SET <?php echo $values; ?>

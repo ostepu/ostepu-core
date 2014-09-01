@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetAllCourses.sql
  * gets all courses from %Course table
@@ -6,6 +7,7 @@
  * - C, the course data
  * - ES, the exercise sheet data
  */
+?>
  
 select 
     C.C_id,

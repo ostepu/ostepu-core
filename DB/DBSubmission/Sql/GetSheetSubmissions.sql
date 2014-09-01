@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetSheetSubmissions.sql
  * gets the specified submissions from %Submission table
@@ -8,6 +9,7 @@
  * - S, the submission data
  * - SS, the selected data
  */
+?>
  
 select 
     F.F_id,
@@ -36,4 +38,4 @@ from
     SelectedSubmission SS ON (S.S_id = SS.S_id_selected
         and S.E_id = SS.E_id)
 where
-    S.ES_id = '$esid'
+    S.ES_id = '<?php echo $esid; ?>'

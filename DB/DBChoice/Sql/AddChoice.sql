@@ -1,14 +1,16 @@
+<?php
 /**
  * @file AddChoice.sql
  * inserts a choice into %Choice table
  * @author  Till Uhlig
  * @result -
  */
+?>
  
-SET @course = '".Form::getCourseFromFormId($object->getFormId())."';
+SET @course = '<?php echo Form::getCourseFromFormId($object->getFormId()); ?>';
 SET @statement = 
 concat(
-\"INSERT INTO `Choice{$preChoice}_\", @course, \"` SET {$object->getInsertData()};\");
+"INSERT INTO `Choice<?php echo $preChoice; ?>_", @course, "` SET <?php echo $object->getInsertData(); ?>;");
 
 PREPARE stmt1 FROM @statement;
 EXECUTE stmt1;
