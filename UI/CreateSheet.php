@@ -179,7 +179,7 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
         $data = base64_encode($data);
         $sheetPDFFile = File::createFile(NULL,$displayName,NULL,$timestamp,NULL,NULL,NULL);
         $sheetPDFFile->setBody($data);
-
+        
         // create exerciseSheet
         $foundValues = $f->foundValues;
         $sheetName = $foundValues['sheetName'];

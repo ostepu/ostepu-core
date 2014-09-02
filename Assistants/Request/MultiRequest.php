@@ -105,11 +105,39 @@ class Request_MultiRequest
                     // remove the curl handle that just completed
                     curl_multi_remove_handle($this->requests, $done['handle']);
             }
+            //Request_MultiRequest::Sleeper(10);
         } while ($running_handles);
 
         // close the multi curl object
         curl_multi_close($this->requests);
         return $res;
+    }
+    
+    // @see http://php.net/manual/de/function.usleep.php#72284
+    public static function Sleeper($mSec)
+    {
+        //    For dummies like me who spent 5 minutes
+        //    wondering why socket_create wasn't defined
+        if(!function_exists('socket_create')){
+            die("Please enable extension php_sockets.dll");
+        }
+
+        //    So the socket is only created once
+        static $socket=false;
+        if($socket===false){
+            $socket=array(socket_create(AF_INET,SOCK_RAW,0));
+        }
+        $pSock=$socket;
+       
+        //    Calc time
+        $uSex = $mSec * 1000;
+
+        //    Do the waiting
+        $except=0;$write=NULL;$read=NULL;
+        socket_select($read,$write,$pSock,$except,$uSex);
+       
+        //    OCD
+        return true;
     }
 }
 ?>
