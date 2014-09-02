@@ -53,4 +53,4 @@ from
     (Submission S
     left join SelectedSubmission SS ON S.S_id = SS.S_id_selected) ON S.E_id = E.E_id
 where
-    E.C_id = '<?php echo $courseid'
+    E.C_id = '<?php echo $courseid; ?>'

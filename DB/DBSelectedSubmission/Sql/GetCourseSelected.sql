@@ -9,7 +9,7 @@
 ?>
 
 select 
-    SS.U_id_leader, SS.S_id_selected, SS.E_id
+    SS.U_id_leader, SS.S_id_selected, SS.E_id, SS.ES_id
 from
     SelectedSubmission SS
     join 
