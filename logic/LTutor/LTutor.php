@@ -57,6 +57,9 @@ class LTutor
     private $lURL = ""; //aus config lesen
     
     private $_postTransaction = array();
+    private $_postZip = array();
+    private $_getMarking = array();
+    private $_getExercise = array();
 
     /**
      * REST actions
@@ -92,7 +95,19 @@ class LTutor
                                                         $this->_conf->getLinks( ),
                                                         'postTransaction'
                                                         ) );
-
+        $this->_postZip = array( CConfig::getLink( 
+                                                    $this->_conf->getLinks( ),
+                                                    'postZip'
+                                                    ) );
+        $this->_getMarking = array( CConfig::getLink( 
+                                                        $this->_conf->getLinks( ),
+                                                        'getMarking'
+                                                        ) );
+        $this->_getExercise = array( CConfig::getLink( 
+                                                        $this->_conf->getLinks( ),
+                                                        'getExercise'
+                                                        ) );
+                                                        
         // initialize lURL
         $this->lURL = $this->query->getAddress();
 
@@ -277,16 +292,16 @@ class LTutor
         $multiRequestHandle = new Request_MultiRequest();
         
         //request to database to get the markings
-        $handler = Request_CreateRequest::createCustom('GET', $this->lURL.'/DB/marking/exercisesheet/'.$sheetid.'/tutor/'.$userid, $header,"");
+        $handler = Request_CreateRequest::createCustom('GET', $this->_getMarking[0]->getAddress().'/marking/exercisesheet/'.$sheetid.'/tutor/'.$userid, $header,"");
         $multiRequestHandle->addRequest($handler);
         
         //request to database to get the exercise sheets
-        $handler = Request_CreateRequest::createCustom('GET', $this->lURL.'/DB/exercise/exercisesheet/'.$sheetid, $header,"");
+        $handler = Request_CreateRequest::createCustom('GET', $this->_getExercise[0]->getAddress().'/exercise/exercisesheet/'.$sheetid, $header,"");
         $multiRequestHandle->addRequest($handler);
         
         $answer = $multiRequestHandle->run();
         if (count($answer)< 2 || !isset($answer[0]['status']) || $answer[0]['status']!=200 || !isset($answer[0]['content']) || !isset($answer[1]['status']) || $answer[1]['status']!=200 || !isset($answer[1]['content'])){
-            $this->app->response->setStatus(409);
+            $this->app->response->setStatus(404);
             $this->app->stop();
         }
 
@@ -410,7 +425,9 @@ class LTutor
             $transaction = Transaction::decodeTransaction($result['content']);
              
             $this->deleteDir("./csv");
-            mkdir("./csv");        
+            mkdir("./csv");
+            $transactionRow = array($transaction->getTransactionId());
+            array_unshift($rows,$transactionRow);
 
             //this is the true writing of the CSV-file named [tutorname]_[sheetid].csv
             $CSV = fopen('./csv/'.$sheetid.'.csv', 'w'); // $user['lastName'].'_'.
@@ -455,18 +472,28 @@ class LTutor
             $filesToZip[] = $csvFile;
 
             //request to filesystem to create the Zip-File
-            $answer = Request::custom('POST', $this->lURL.'/FS/zip/'.$transaction->getTransactionId().'.zip', $header,json_encode($filesToZip));
+            $result = Request::routeRequest( 
+                                            'POST',
+                                            '/zip/'.$transaction->getTransactionId().'.zip',
+                                            array(),
+                                            json_encode($filesToZip),
+                                            $this->_postZip,
+                                            'zip'
+                                            );
 
-            if (isset($answer['headers']['Content-Type']))
-                $this->app->response->headers->set('Content-Type', $answer['headers']['Content-Type']);
+            // checks the correctness of the query
+            if ( $result['status'] == 201){
+                if (isset($result['headers']['Content-Type']))
+                $this->app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
             
-            if (isset($answer['headers']['Content-Disposition']))
-                $this->app->response->headers->set('Content-Disposition', $answer['headers']['Content-Disposition']);
-            $this->app->response->setBody($answer['content']);
-        } else {
+                if (isset($result['headers']['Content-Disposition']))
+                $this->app->response->headers->set('Content-Disposition', $result['headers']['Content-Disposition']);
+                $this->app->response->setBody($result['content']);
+                $this->app->response->setStatus(201);
+            } else 
+                $this->app->response->setStatus(409);
+        } else 
             $this->app->response->setStatus(409);
-        }
-        
     }
 
     // @todo use LFile to upload markings
