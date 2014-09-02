@@ -30,35 +30,10 @@ class FSBinder
 {
 
     /**
-     * @var string $_baseDir the name of the folder where the files would be
-     * stored in filesystem
-     */
-    private static $_baseDir = 'files';
-
-    /**
-     * the $_baseDir getter
-     *
-     * @return the value of $_baseDir
-     */
-    public static function getBaseDir( )
-    {
-        return FSBinder::$_baseDir;
-    }
-
-    /**
-     * the $_baseDir setter
-     *
-     * @param string $value the new value for $_baseDir
-     */
-    public static function setBaseDir( $value )
-    {
-        FSBinder::$_baseDir = $value;
-    }
-
-    /**
      * @var Slim $_app the slim object
      */
     private $_app;
+    private $_config = array();
 
     /**
      * REST actions
@@ -68,17 +43,48 @@ class FSBinder
      */
     public function __construct( )
     {
-
+        $this->config = parse_ini_file( 
+                                       dirname(__FILE__).'/config.ini',
+                                       TRUE
+                                       ); 
+    
         // initialize slim
         $this->_app = new \Slim\Slim( array( 'debug' => true ) );
         $this->_app->response->headers->set( 
                                             'Content-Type',
                                             'application/json'
                                             );
+                                            
+        // POST AddPlatform
+        $this->_app->post( 
+                         '/platform',
+                         array( 
+                               $this,
+                               'addPlatform'
+                               )
+                         );
+                         
+        // DELETE DeletePlatform
+        $this->_app->delete( 
+                         '/platform',
+                         array( 
+                               $this,
+                               'deletePlatform'
+                               )
+                         );
+                         
+        // GET GetExistsPlatform
+        $this->_app->get( 
+                         '/link/exists/platform',
+                         array( 
+                               $this,
+                               'getExistsPlatform'
+                               )
+                         );
 
         // POST file
         $this->_app->post( 
-                          '/:path+',
+                          '/:folder/:a/:b/:c/:file',
                           array( 
                                 $this,
                                 'postFile'
@@ -87,7 +93,7 @@ class FSBinder
 
         // GET file as document
         $this->_app->get( 
-                         '/:path+',
+                         '/:folder/:a/:b/:c/:file/:filename',
                          array( 
                                $this,
                                'getFile'
@@ -96,21 +102,21 @@ class FSBinder
 
         // DELETE file
         $this->_app->delete( 
-                            '/:path+',
+                            '/:folder/:a/:b/:c/:file',
                             array( 
                                   $this,
                                   'deleteFile'
                                   )
                             );
 
-        // INFO file
+        // GET file
         $this->_app->map( 
-                         '/:path+',
+                         '/:folder/:a/:b/:c/:file',
                          array( 
                                $this,
                                'infoFile'
                                )
-                         )->via( 'INFO' );
+                         )->via( 'INFO', 'GET' );
 
         // run Slim
         $this->_app->run( );
@@ -120,39 +126,33 @@ class FSBinder
      * Adds a file.
      *
      * Called when this component receives an HTTP POST request to
-     * /$path.
+     * /$folder/$a/$b/$c/$file.
      * The request body should contain a JSON object representing the file's
      * attributes.
      *
      * @param string[] $path The path where the file should be stored.
      */
-    public function postFile( $path )
+    public function postFile( $folder, $a, $b, $c, $file )
     {
-
-        // if no path is passed, the request is invalid
-        if ( count( $path ) == 0 ){
-            $this->_app->response->setStatus( 409 );
-            $this->_app->stop( );
-            return;
-        }
+        $path = array($folder,$a,$b,$c, $file);
 
         $body = $this->_app->request->getBody( );
         $fileobject = File::decodeFile( $body );
 
-        $filePath = FSBinder::$_baseDir . '/' . implode( 
-                                                        '/',
-                                                        array_slice( 
-                                                                    $path,
-                                                                    0
-                                                                    )
-                                                        );
+        $filePath = implode( 
+                            '/',
+                            array_slice( 
+                                        $path,
+                                        0
+                                        )
+                            );
 
-        if ( !file_exists( $filePath ) ){
-            FSBinder::generatepath( dirname( $filePath ) );
+        if ( !file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
+            FSBinder::generatepath( $this->config['DIR']['files'].'/'.dirname( $filePath ) );
 
             // writes the file to filesystem
             $file = fopen(
-                          $filePath,
+                          $this->config['DIR']['files'].'/'.$filePath,
                           'w'
                           );
             if ($file){
@@ -161,10 +161,12 @@ class FSBinder
                        base64_decode( $fileobject->getBody( ) )
                        );
                 fclose( $file );
+                $fileObject->setStatus(201);
                 
             }else{
             $fileobject->setBody( null );
             $fileobject->addMessage("Datei konnte nicht im Dateisystem angelegt werden.");
+            $fileObject->setStatus(409);
             Logger::Log( 
                     'POST postFile failed',
                     LogLevel::ERROR
@@ -180,9 +182,9 @@ class FSBinder
         $fileobject->setBody( null );
 
         // generate new file address, file size and file hash
-        $fileobject->setAddress( FSBinder::$_baseDir . '/' . $filePath );
-        $fileobject->setFileSize( filesize( $filePath ) );
-        $fileobject->setHash( sha1_file( $filePath ) );
+        $fileobject->setAddress( $filePath );
+        $fileobject->setFileSize( filesize( $this->config['DIR']['files'].'/'.$filePath ) );
+        $fileobject->setHash( sha1_file( $this->config['DIR']['files'].'/'.$filePath ) );
 
         $this->_app->response->setBody( File::encodeFile( $fileobject ) );
         $this->_app->response->setStatus( 201 );
@@ -192,32 +194,37 @@ class FSBinder
      * Returns a file.
      *
      * Called when this component receives an HTTP GET request to
-     * /$path.
+     * /$folder/$a/$b/$c/$file/$filename.
      *
      * @param string[] $path The path where the requested file is stored.
      */
-    public function getFile( $path )
+    public function getFile( $folder, $a, $b, $c, $file, $filename )
     {
+        $path = array($folder,$a,$b,$c,$file);
 
-        // if no path is passed, the request is invalid
-        if ( count( $path ) == 0 ){
-            $this->_app->response->setStatus( 409 );
-            $this->_app->stop( );
-            return;
-        }
-
-        $filePath = FSBinder::$_baseDir . $this->_app->request->getResourceUri( );
+        $filePath = implode( 
+                            '/',
+                            array_slice( 
+                                        $path,
+                                        0
+                                        )
+                            );
         
-        if ( strlen( $filePath ) > 0 && 
-             file_exists( $filePath ) ){
+        if ( strlen( $this->config['DIR']['files'].'/'.$filePath ) > 1 && 
+             file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
 
             // the file was found
             $this->_app->response->headers->set( 
                                                 'Content-Type',
                                                 'application/octet-stream'
                                                 );
+            $this->_app->response->headers->set( 
+                                    'Content-Disposition',
+                                    "attachment; filename=\"$filename\""
+                                    );
+                                            
             $this->_app->response->setStatus( 200 );
-            readfile( $filePath );
+            readfile( $this->config['DIR']['files'].'/'.$filePath );
             $this->_app->stop( );
             
         } else {
@@ -230,31 +237,30 @@ class FSBinder
      * Returns the file infos as a JSON file object.
      *
      * Called when this component receives an HTTP INFO request to
-     * /$path.
+     * /$folder/$a/$b/$c/$file.
      *
      * @param string[] $path The path where the requested file is stored.
      */
-    public function infoFile( $path )
+    public function infoFile( $folder, $a, $b, $c, $file )
     {
+        $path = array($folder,$a,$b,$c,$file);
 
-        // if no path is passed, the request is invalid
-        if ( count( $path ) == 0 ){
-            $this->_app->response->setBody( File::encodeFile( new File( ) ) );
-            $this->_app->response->setStatus( 409 );
-            $this->_app->stop( );
-            return;
-        }
+        $filePath = implode( 
+                            '/',
+                            array_slice( 
+                                        $path,
+                                        0
+                                        )
+                            );
 
-        $filePath = FSBinder::$_baseDir . $this->_app->request->getResourceUri( );
-
-        if ( strlen( $filePath ) > 0 && 
-             file_exists( $filePath ) ){
+        if ( strlen( $this->config['DIR']['files'].'/'.$filePath ) > 0 && 
+             file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
 
             // the file was found
             $file = new File( );
             $file->setAddress( $filePath );
-            $file->setFileSize( filesize( $filePath ) );
-            $file->setHash( sha1_file( $filePath ) );
+            $file->setFileSize( filesize( $this->config['DIR']['files'].'/'.$filePath ) );
+            $file->setHash( sha1_file( $this->config['DIR']['files'].'/'.$filePath ) );
             $this->_app->response->setBody( File::encodeFile( $file ) );
             $this->_app->response->setStatus( 200 );
             $this->_app->stop( );
@@ -270,43 +276,37 @@ class FSBinder
      * Deletes a file.
      *
      * Called when this component receives an HTTP DELETE request to
-     * /$path.
+     * /$folder/$a/$b/$c/$file.
      *
      * @param string[] $path The path where the file which should be deleted is stored.
      */
-    public function deleteFile( $path )
+    public function deleteFile( $folder, $a, $b, $c, $file )
     {
 
-        // if no path is passed, the request is invalid
-        if ( count( $path ) == 0 ){
-            $this->_app->response->setStatus( 409 );
-            $this->_app->stop( );
-            return;
-        }
+        $path = array($folder,$a,$b,$c,$file);
 
-        // creates the path of the file in the file system
-        $filePath = FSBinder::$_baseDir . '/' . implode( 
-                                                        '/',
-                                                        array_slice( 
-                                                                    $path,
-                                                                    0
-                                                                    )
-                                                        );
+        $filePath = implode( 
+                            '/',
+                            array_slice( 
+                                        $path,
+                                        0
+                                        )
+                            );
 
         if ( strlen( $filePath ) > 0 && 
-             file_exists( $filePath ) ){
+             file_exists( $this->config['DIR']['files'] . '/' . $filePath ) ){
 
             // after the successful deletion, we want to return the file data
             $file = new File( );
-            $file->setAddress( FSBinder::$_baseDir . '/' . $filePath );
-            $file->setFileSize( filesize( $filePath ) );
-            $file->setHash( sha1_file( $filePath ) );
+            $file->setAddress( $filePath );
+            $file->setFileSize( filesize( $this->config['DIR']['files'] . '/' . $filePath ) );
+            $file->setHash( sha1_file( $this->config['DIR']['files'] . '/' . $filePath ) );
 
             // removes the file
-            unlink( $filePath );
+            unlink( $this->config['DIR']['files'] . '/' . $filePath );
 
             // the removing/unlink process failed, if the file still exists.
-            if ( file_exists( $filePath ) ){
+            if ( file_exists( $this->config['DIR']['files'] . '/' . $filePath ) ){
                 $this->_app->response->setStatus( 409 );
                 $this->_app->response->setBody( File::encodeFile( new File( ) ) );
                 $this->_app->stop( );
@@ -325,18 +325,130 @@ class FSBinder
             $this->_app->stop( );
         }
     }
+    
+    /**
+     * Returns status code 200, if this component is correctly installed for the platform
+     *
+     * Called when this component receives an HTTP GET request to
+     * /link/exists/platform.
+     */
+    public function getExistsPlatform( )
+    {
+        Logger::Log( 
+                    'starts GET GetExistsPlatform',
+                    LogLevel::DEBUG
+                    );
+                    
+        if (!file_exists('config.ini')){
+            $this->_app->response->setStatus( 409 );
+            $this->_app->stop();
+        }
+       
+        $this->_app->response->setStatus( 200 );
+        $this->_app->response->setBody( '' );  
+    }
+    
+    /**
+     * Removes the component from the platform
+     *
+     * Called when this component receives an HTTP DELETE request to
+     * /platform.
+     */
+    public function deletePlatform( )
+    {
+        Logger::Log( 
+                    'starts DELETE DeletePlatform',
+                    LogLevel::DEBUG
+                    );
+        if (file_exists('config.ini') && !unlink('config.ini')){
+            $this->_app->response->setStatus( 409 );
+            $this->_app->stop();
+        }
+        
+        $this->_app->response->setStatus( 201 );
+        $this->_app->response->setBody( '' );
+    }
+    
+    /**
+     * Adds the component to the platform
+     *
+     * Called when this component receives an HTTP POST request to
+     * /platform.
+     */
+    public function addPlatform( )
+    {
+        Logger::Log( 
+                    'starts POST AddPlatform',
+                    LogLevel::DEBUG
+                    );
 
+        // decode the received course data, as an object
+        $insert = Platform::decodePlatform( $this->_app->request->getBody( ) );
+
+        // always been an array
+        $arr = true;
+        if ( !is_array( $insert ) ){
+            $insert = array( $insert );
+            $arr = false;
+        }
+
+        // this array contains the indices of the inserted objects
+        $res = array( );
+        foreach ( $insert as $in ){
+        
+            $file = 'config.ini';
+            $text = "[DIR]\n".
+                    "temp = ".str_replace("\\","/",$in->getTempDirectory())."\n".
+                    "files = ".str_replace("\\","/",$in->getFilesDirectory())."\n";
+                    
+            if (!@file_put_contents($file,$text)){
+                Logger::Log( 
+                            'POST AddPlatform failed, config.ini no access',
+                            LogLevel::ERROR
+                            );
+
+                $this->_app->response->setStatus( 409 );
+                $this->_app->stop();
+            }   
+
+            $platform = new Platform();
+            $platform->setStatus(201);
+            $res[] = $platform;
+            $this->_app->response->setStatus( 201 );
+        }
+
+        if ( !$arr && 
+             count( $res ) == 1 ){
+            $this->_app->response->setBody( Platform::encodePlatform( $res[0] ) );
+            
+        } else 
+            $this->_app->response->setBody( Platform::encodePlatform( $res ) );
+    }
+    
     /**
      * Creates the path in the filesystem, if necessary.
      *
      * @param string $path The path which should be created.
+     * @see http://php.net/manual/de/function.mkdir.php#83265
      */
-    public static function generatepath( $path )
+    public static function generatepath( $path, $mode = 0755 )
     {
-        if (!is_dir($path))          
-            mkdir( $path , 0777, true);
-        chmod( $path, 0777);
+        $path = rtrim(preg_replace(array("/\\\\/", "/\/{2,}/"), "/", $path), "/");
+        $e = explode("/", ltrim($path, "/"));
+        if(substr($path, 0, 1) == "/") {
+            $e[0] = "/".$e[0];
+        }
+        $c = count($e);
+        $cp = $e[0];
+        for($i = 1; $i < $c; $i++) {
+            if(!is_dir($cp) && !@mkdir($cp, $mode)) {
+                return false;
+            }
+            $cp .= "/".$e[$i];
+        }
+        return @mkdir($path, $mode);
     }
+
 }
 
  

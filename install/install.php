@@ -75,7 +75,8 @@ class Installer
         // check if apache modules are existing
         $result['mod_php5'] = Installer::apache_module_exists('mod_php5');
         $result['mod_rewrite'] = Installer::apache_module_exists('mod_rewrite');
-        $result['mod_deflate'] = Installer::apache_module_exists('mod_deflate'); 
+        $result['mod_deflate'] = Installer::apache_module_exists('mod_deflate');  
+        
         return $result;
     }
     
@@ -90,6 +91,7 @@ class Installer
         $result['mbstring'] = Installer::apache_extension_exists('mbstring');
         $result['openssl'] = Installer::apache_extension_exists('openssl');
         $result['fileinfo'] = Installer::apache_extension_exists('fileinfo');
+        $result['sockets'] = Installer::apache_extension_exists('sockets');
         return $result;
     }
     
@@ -159,6 +161,8 @@ class Installer
         $errno = null;
         $error = null;
         if (isset($data['PL']['url'])) $data['PL']['url'] = rtrim($data['PL']['url'], '/');
+        if (isset($data['PL']['temp'])) $data['PL']['temp'] = rtrim($data['PL']['temp'], '/');
+        if (isset($data['PL']['files'])) $data['PL']['files'] = rtrim($data['PL']['files'], '/');
         if (isset($data['PL']['init'])) $data['PL']['init'] = rtrim($data['PL']['init'], '/');
                         
        /* // install database file
@@ -350,17 +354,23 @@ echo "<th width='600'><hr />";
         
         #region Grundinformationen
         $data['PL']['url'] = isset($data['PL']['url']) ? $data['PL']['url'] : null;
+        $data['PL']['temp'] = isset($data['PL']['temp']) ? $data['PL']['temp'] : null;
+        $data['PL']['files'] = isset($data['PL']['files']) ? $data['PL']['files'] : null;
         if ($selected_menu === 1){
             $text = '';
             $text .= "<tr><td colspan='2'>".Sprachen::Get('general_informations','description')."</td></tr>";
                         
             $text .= Design::erstelleZeile($simple, Sprachen::Get('general_informations','url'), 'e', Design::erstelleEingabezeile($simple, $data['PL']['url'], 'data[PL][url]', 'http://localhost/uebungsplattform', true), 'v');
+            $text .= Design::erstelleZeile($simple, Sprachen::Get('general_informations','temp'), 'e', Design::erstelleEingabezeile($simple, $data['PL']['temp'], 'data[PL][temp]', '/temp', true), 'v');
+            $text .= Design::erstelleZeile($simple, Sprachen::Get('general_informations','files'), 'e', Design::erstelleEingabezeile($simple, $data['PL']['files'], 'data[PL][files]', '/var/www/uebungsplattform/files', true), 'v');
             
             if (!$simple)
                 echo Design::erstelleBlock($simple, Sprachen::Get('general_informations','title'), $text);
         } else {
             $text = '';
             $text .= Design::erstelleVersteckteEingabezeile($simple, $data['PL']['url'], 'data[PL][url]', 'http://localhost/uebungsplattform', true);
+            $text .= Design::erstelleVersteckteEingabezeile($simple, $data['PL']['temp'], 'data[PL][temp]', '/temp', true);
+            $text .= Design::erstelleVersteckteEingabezeile($simple, $data['PL']['files'], 'data[PL][files]', '/var/www/uebungsplattform/files', true);
             echo $text;
         }
         #endregion Grundinformationen
