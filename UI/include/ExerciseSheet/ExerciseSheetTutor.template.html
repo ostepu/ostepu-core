@@ -60,7 +60,7 @@
                         <?php if(isset($exercise['attachment'])): ?>
                             <?php $displayName = $exercise['attachment']['displayName']; ?>
                             <?php $fileAddress = $exercise['attachment']['address']; ?>
-                            <?php $fileURL = "../FS/FSControl/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
+                            <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
 
                             <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" class="plain" target="_blank">
                                 <img src="Images/Attachment.png" />
@@ -87,7 +87,7 @@
                         <li>
                             <?php $displayName = $sheet['sampleSolution']['displayName']; ?>
                             <?php $fileAddress = $sheet['sampleSolution']['address']; ?>
-                            <?php $fileURL = "../FS/FSControl/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
+                            <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
                             <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
                                 Musterlösung
                             </a>
@@ -97,7 +97,7 @@
                     <li>
                         <?php $displayName = $sheet['sheetFile']['displayName']; ?>
                         <?php $fileAddress = $sheet['sheetFile']['address']; ?>
-                        <?php $fileURL = "../FS/FSControl/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
+                        <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
                         <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
                             Aufgabenblatt
                         </a>
@@ -120,12 +120,13 @@
                        <!-- </s></a>-->
                     </li>
                     <li>
-                        <a style="color:#b9b8b8"><s>
-                        <!--<a href="TutorUpload.php?cid=<?php echo $user['courses'][0]['course']['id'],
+                        <!-- <a style="color:#b9b8b8"><s>-->
+                        <a href="TutorUpload.php?cid=<?php echo $user['courses'][0]['course']['id'],
                                                          '&sid=',
-                                                         $sheet['id']; ?>">-->
+                                                         $sheet['id']; ?>">
                             Korrekturen hochladen
-                        </s></a>
+                        </a>
+                        <!-- </s></a>-->
                     </li>
                     <li>
                         <a href="TutorAssign.php?cid=<?php echo $user['courses'][0]['course']['id'],

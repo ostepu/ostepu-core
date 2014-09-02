@@ -71,7 +71,7 @@ foreach ($sheets as $sheet):
 
                             $displayName = $exercise['attachments'][0]['displayName'];
                             $fileAddress = $exercise['attachments'][0]['address'];
-                            $fileURL = $filesystemURI . '/' . $fileAddress . '/' . $displayName;
+                            $fileURL = '../FS/FSBinder/' . $fileAddress . '/' . $displayName; /*$filesystemURI*/
 
                             print '<a href="';
                             print $fileURL;
@@ -103,9 +103,9 @@ foreach ($sheets as $sheet):
                 <li>
                     <?php $displayName = $sheet['sheetFile']['displayName']; ?>
                     <?php $fileAddress = $sheet['sheetFile']['address']; ?>
-                    <?php $fileURL = $filesystemURI . '/' . $fileAddress
+                    <?php $fileURL = '../FS/FSBinder/' . $fileAddress
                                                     . '/' . $displayName; ?>
-                    <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>"
+                    <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; /*{$filesystemURI}*/ ?>"
                         target="_blank">
                         Aufgabenblatt
                     </a>
@@ -114,7 +114,7 @@ foreach ($sheets as $sheet):
                     <li>
                         <?php $displayName = $sheet['sampleSolution']['displayName']; ?>
                         <?php $fileAddress = $sheet['sampleSolution']['address']; ?>
-                        <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
+                        <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/ ?>
                         <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
                             Musterlösung
                         </a>
@@ -134,13 +134,13 @@ foreach ($sheets as $sheet):
                 ?>
                 <?php
                     print '<li>';
-                    print '<a style="color:#b9b8b8"><s>';
-                    //print '<button name="downloadCSV" value="';
-                    //print $sheet['id'];
-                    //print '" class="text-button body-option-color">';
+                    //print '<a style="color:#b9b8b8"><s>';
+                    print '<button name="downloadCSV" value="';
+                    print $sheet['id'];
+                    print '" class="text-button body-option-color">';
                     print 'Einsendungen herunterladen';
-                    //print '</button>';
-                    print '</s></a>';
+                    print '</button>';
+                    //print '</s></a>';
                     print '</li>';
                 ?>
                 <li>

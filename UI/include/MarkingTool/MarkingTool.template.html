@@ -99,7 +99,7 @@
                                     if (isset($exercise['submission']['file']['displayName']) && isset($exercise['submission']['file']['address'])){
                                         $displayName = $exercise['submission']['file']['displayName'];
                                         $fileAddress = $exercise['submission']['file']['address'];
-                                        $fileURL = '../FS/FSControl/' . $fileAddress . '/' . $displayName; //$filesystemURI
+                                        $fileURL = '../FS/FSBinder/' . $fileAddress . '/' . $displayName; //$filesystemURI
 
                                         print '<a href="';
                                         print $fileURL;
@@ -120,7 +120,7 @@
                                     if (isset($exercise['submission']['marking']['file']['displayName']) && isset($exercise['submission']['marking']['file']['address'])){
                                         $displayName = $exercise['submission']['marking']['file']['displayName'];
                                         $fileAddress = $exercise['submission']['marking']['file']['address'];
-                                        $fileURL = '../FS/FSControl/' . $fileAddress . '/' . $displayName; //$filesystemURI
+                                        $fileURL = '../FS/FSBinder/' . $fileAddress . '/' . $displayName; //$filesystemURI
 
                                         print '<a href="';
                                         print $fileURL;
