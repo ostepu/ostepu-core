@@ -107,7 +107,7 @@ class LFile
                           
         // POST PathFile
         $this->_app->post( 
-                          '/' . LFile::$_baseDir . '/:path+(/)',
+                          '/' . LFile::$_baseDir . '/:path(/)',
                           array( 
                                 $this,
                                 'postPathFile'
@@ -146,6 +146,7 @@ class LFile
         $body = $this->_app->request->getBody( );
         $fileObjects = File::decodeFile( $body );
         
+        if (!is_array($path)) $path = array($path);
         $temp="";
         foreach ($path as $part){
             if ($part!='')
@@ -163,7 +164,7 @@ class LFile
         $res = array( );
 
         foreach ( $fileObjects as $fileObject ){
-            if ($fileObject->getBody() == null){
+            if ($fileObject->getBody() == null && $fileObject->getAddress() == null){
                 $result = new File();
                 $result->setBody(null);
                 $result->setStatus(409);
