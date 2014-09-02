@@ -46,6 +46,8 @@ class Installation
     public static function PlattformZusammenstellen($data)
     {
         Einstellungen::GetValue('data[PL][url]',$data['PL']['url']);
+        Einstellungen::GetValue('data[PL][temp]',$data['PL']['temp']);
+        Einstellungen::GetValue('data[PL][files]',$data['PL']['files']);
         Einstellungen::GetValue('data[DB][db_path]',$data['DB']['db_path']);
         Einstellungen::GetValue('data[DB][db_name]',$data['DB']['db_name']);
         Einstellungen::GetValue('data[DB][db_user_operator]',$data['DB']['db_user_operator']);
@@ -59,7 +61,9 @@ class Installation
                                             null,
                                             null,
                                             $data['DB']['db_user_operator'],
-                                            $data['DB']['db_passwd_operator']
+                                            $data['DB']['db_passwd_operator'],
+                                            $data['PL']['temp'],
+                                            $data['PL']['files']
                                             );
         return $platform;
     }
@@ -132,7 +136,7 @@ class Installation
     
         if (!$fail){
             // die /platform Befehle auslösen
-            $list = array('DB/DBApprovalCondition','DB/DBAttachment','DB/DBCourse','DB/DBCourseStatus','DB/DBExercise','DB/DBExerciseFileType','DB/DBExerciseSheet','DB/DBExerciseType','DB/DBExternalId','DB/DBFile','DB/DBGroup','DB/DBInvitation','DB/DBMarking','DB/DBSelectedSubmission','DB/DBSession','DB/DBSubmission','DB/DBUser','DB/DBTransaction');
+            $list = array('DB/DBApprovalCondition','DB/DBAttachment','DB/DBCourse','DB/DBCourseStatus','DB/DBExercise','DB/DBExerciseFileType','DB/DBExerciseSheet','DB/DBExerciseType','DB/DBExternalId','DB/DBFile','DB/DBGroup','DB/DBInvitation','DB/DBMarking','DB/DBSelectedSubmission','DB/DBSession','DB/DBSubmission','DB/DBUser','DB/DBTransaction','FS/FSFile','FS/FSPdf','FS/FSZip','FS/FSBinder');
             
             $platform = Installation::PlattformZusammenstellen($data);
             
