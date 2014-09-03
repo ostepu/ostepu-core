@@ -12,7 +12,7 @@
 require_once ( dirname(__FILE__) . '/../../Assistants/Slim/Slim.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/CConfig.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/Structures.php' );
-require_once(dirname(__FILE__).'/html2pdf/html2pdf.class.php');
+require_once(dirname(__FILE__).'/Pdf/tfpdf/html2pdf.php');
 
 \Slim\Slim::registerAutoloader( );
 
@@ -183,36 +183,46 @@ class FSPdf
     {
         $body = $this->_app->request->getBody( );
         $data = Pdf::decodePdf($body);
-        $hash = sha1( $body );
-
-        $html2pdf = new HTML2PDF(($data->getOrientation()!==null ? $data->getOrientation() : 'P'),($data->getFormat()!==null ? $data->getFormat() : 'A4'), 'de', true, 'UTF-8', 3);
-        $html2pdf->pdf->SetAutoPageBreak( true );
-        $html2pdf->pdf->SetTitle($data->getTitle()!==null ? $data->getTitle() : '');
-        $html2pdf->pdf->SetSubject($data->getSubject()!==null ? $data->getSubject() : '');
-        $html2pdf->pdf->SetAuthor($data->getAuthor()!==null ? $data->getAuthor() : '');
-        $html2pdf->pdf->SetCreator($data->getCreator()!==null ? $data->getCreator() : '');
-        $html2pdf->parsingCss->value['font-size'] = ($data->getFontSize()!==null ? $data->getFontSize() : '12')*0.5;
-        $res=false;
-        $html2pdf->parsingCss->value['color'] = $html2pdf->parsingCss->convertToColor(($data->getTextColor()!=null ? $data->getTextColor() : 'black'),$res);
-        $html2pdf->setDefaultFont(($data->getFont()!==null ? $data->getFont() : 'times'));
+        $name = sha1( $body );
+        unset($body);
         
-        $html2pdf->writeHTML($data->getText());
-        unset($data);
-        
-        // stores the pdf binary data to $result
-        $result = $html2pdf->Output( 
-                                   '',
-                                   'S'
-                                   );
-                                       
-        // generate zip
+                // generate pdf
         $filePath = FSPdf::generateFilePath( 
                                             FSPdf::getBaseDir( ),
-                                            $hash
+                                            $name
                                             );
                                            
         if ( !file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
             FSPdf::generatepath( $this->config['DIR']['files'].'/'.dirname( $filePath ) );
+
+            $form = new Formatierung();
+            $form->Font = ($data->getFont()!==null ? $data->getFont() : 'times');
+            $form->FontSize = ($data->getFontSize()!==null ? $data->getFontSize() : '12');
+            $form->TextColor = ($data->getTextColor()!=null ? $data->getTextColor() : 'black');
+            
+            $pdf = new PDF_HTML( 
+                           ($data->getOrientation()!==null ? $data->getOrientation() : 'P'),
+                           'mm',
+                           ($data->getFormat()!==null ? $data->getFormat() : 'A4'),
+                           $form
+                           );
+                           
+            $pdf->SetAutoPageBreak( true );
+
+            $pdf->SetTitle($data->getTitle()!==null ? $data->getTitle() : '');
+            $pdf->SetSubject($data->getSubject()!==null ? $data->getSubject() : '');
+            $pdf->SetAuthor($data->getAuthor()!==null ? $data->getAuthor() : '');
+            $pdf->SetCreator($data->getCreator()!==null ? $data->getCreator() : '');
+            
+            $pdf->AddPage( );
+
+            $pdf->WriteHTML(utf8_decode($data->getText()));
+
+            // stores the pdf binary data to $result
+            $result = $pdf->Output( 
+                                   '',
+                                   'S'
+                                   ); 
 
             // writes the file to filesystem
             $file = fopen(
@@ -242,7 +252,10 @@ class FSPdf
                                
         $this->_app->response->setStatus( 201 );
         if ($filename!=null){
-            $this->_app->response->setBody($result);
+            if (isset($result)){
+                $this->_app->response->setBody($result);
+            } else 
+                readfile($this->config['DIR']['files'].'/'.$filePath);
             
             $this->_app->response->headers->set( 
                                                 'Content-Type',
@@ -255,11 +268,13 @@ class FSPdf
         } else {
             $pdfFile = new File( );
             $pdfFile->setStatus(201);
-            $pdfFile->setHash( $hash );
             $pdfFile->setAddress( $filePath );
             
-            if (file_exists($this->config['DIR']['files'].'/'.$filePath))
+            if (file_exists($this->config['DIR']['files'].'/'.$filePath)){
                 $pdfFile->setFileSize( filesize( $this->config['DIR']['files'].'/'.$filePath ) );
+                $hash = sha1(file_get_contents($this->config['DIR']['files'].'/'.$filePath));   
+                $pdfFile->setHash( $hash );
+            }
             $this->_app->response->setBody( File::encodeFile($pdfFile) );
         }
     }
