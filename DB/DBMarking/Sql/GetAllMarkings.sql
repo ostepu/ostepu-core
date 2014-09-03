@@ -47,7 +47,8 @@ SELECT
     S.S_flag as S_flag2, 
     S.S_leaderId as S_leaderId2,
     S.S_hideFile as S_hideFile2,
-    S.E_id as E_id2
+    S.E_id as E_id2,
+    S.ES_id as ES_id2
     <?php } ?>
 from
     Marking M

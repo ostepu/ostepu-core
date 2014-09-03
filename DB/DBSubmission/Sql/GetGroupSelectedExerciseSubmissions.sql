@@ -30,7 +30,8 @@ select
     S.S_flag,
     S.S_leaderId,
     S.S_hideFile,
-    S.E_id
+    S.E_id,
+    S.ES_id
 from
    (Submission S
     join File F ON (S.F_id_file = F.F_id
