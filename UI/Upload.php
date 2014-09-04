@@ -94,14 +94,14 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
 //echo Submission::encodeSubmission($uploadSubmission);return;
 
                     $result = http_post_data($URL, Submission::encodeSubmission($uploadSubmission), true, $message);
-//var_dump($result);   return;  
 
                     if ($message != "201") {
                         $result = Submission::decodeSubmission($result);
                         $exercise = $key + 1;
-                        $errormsg = "{$message}: Aufgabe ".$exercise['name']." konnte nicht hochgeladen werden.<br><br>";
+                        $errormsg = "{$message}: Aufgabe ".$exercise['name']." konnte nicht hochgeladen werden.";
                         
-                        if ($result!==null){
+                        if ($result!==null && !empty($result)){
+                            $errormsg .= "<br><br>";
                             $messages = $result->getMessages();
                             foreach ($messages as $message){
                                 $errormsg.=str_replace("\n",'<br>',$message).'<br>';
@@ -131,9 +131,10 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
                                     if ($message != "201") {
                                         $result2 = Choice::decodeChoice($result2);
                                         $exercise = $key + 1;
-                                        $errormsg = "{$message}: Aufgabe ".$exercise['name']." konnte nicht hochgeladen werden.<br><br>";
+                                        $errormsg = "{$message}: Aufgabe ".$exercise['name']." konnte nicht hochgeladen werden.";
                                         
                                         if ($result2!==null){
+                                            $errormsg .= "<br><br>";
                                             $messages2 = $result2->getMessages();
                                             foreach ($messages2 as $message){
                                                 $errormsg.=str_replace("\n",'<br>',$message).'<br>';
