@@ -885,7 +885,7 @@ class DBExerciseSheet
                 // to reindex
                 $res = array_merge( $res );
                 
-                $res = LArraySorter::orderBy($res, 'startDate', SORT_ASC );
+                $res = LArraySorter::orderBy($res, 'startDate', SORT_ASC, 'id',  SORT_ASC);
                                 
                 // sets the sheet names
                 $id = 1;
