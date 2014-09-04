@@ -464,12 +464,12 @@ class LFormProcessor
                                     "</p>".
                                     "<p>".
                                     "<h2>Antwort:</h2>".
-                                    "<font style='color: ".($points===0 ? 'red' : 'black')."'>".
+                                    "<font color='".($points===0 ? 'red' : 'black')."'>".
                                     $answer.
                                     "</font></p>";
                             if ($points===0){
                                 $Text.= "<p>".
-                                        "<h2>Lösung:</h2><font style='color: green;'>".
+                                        "<h2>Lösung:</h2><font color='green'>".
                                         $answer2.
                                         "</font></p>";
                             }
@@ -479,7 +479,7 @@ class LFormProcessor
                                     $forms->getSolution().
                                     "</p>".
                                     "<p align='right'>".
-                                    "<h2><font style='color: red;'>{$points}P</font></h2>".
+                                    "<h2><font color='red'>{$points}P</font></h2>".
                                     "</p>";
                                     
                             $pdf = Pdf::createPdf($Text);
