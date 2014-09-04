@@ -143,7 +143,6 @@ class LTutor
     public function autoAllocateByExercise($courseid, $sheetid){
         $header = $this->app->request->headers->all();
         $body = json_decode($this->app->request->getBody(), true);
-        $URL = $this->lURL.'/DB/marking';
 
         $error = false;
 
@@ -180,14 +179,22 @@ class LTutor
         }
 
         //requests to database
-        foreach($markings as $marking){
+        $URL = $this->lURL.'/DB/marking';
+        /*foreach($markings as $marking){
             $answer = Request::custom('POST', $URL, $header,
                     json_encode($marking));
             if ($answer['status'] >= 300){
                 $error = true;
                 $errorstatus = $answer['status'];
             }
+        }*/
+        $answer = Request::custom('POST', $URL, array(),
+            json_encode($markings));
+        if ($answer['status'] >= 300){
+            $error = true;
+            $errorstatus = $answer['status'];
         }
+        
         // response
         if ($error == false){
             $this->app->response->setStatus(201);
@@ -215,7 +222,6 @@ class LTutor
 
         $header = $this->app->request->headers->all();
         $body = json_decode($this->app->request->getBody(), true);
-        $URL = $this->lURL.'/DB/marking';
 
         $error = false;
 
@@ -247,18 +253,25 @@ class LTutor
             } else {
                 $i = 0;
             }
-
         }
 
         //requests to database
-        foreach($markings as $marking){
-            $answer = Request::custom('POST', $URL, $header,
+        $URL = $this->lURL.'/DB/marking';
+        /*foreach($markings as $marking){
+            $answer = Request::custom('POST', $URL, array(),
                     json_encode($marking));
             if ($answer['status'] >= 300){
                 $error = true;
                 $errorstatus = $answer['status'];
             }
+        }*/
+        $answer = Request::custom('POST', $URL, array(),
+                    json_encode($markings));
+        if ($answer['status'] >= 300){
+            $error = true;
+            $errorstatus = $answer['status'];
         }
+        
         // response
         if ($error == false){
             $this->app->response->setStatus(201);
@@ -285,18 +298,16 @@ class LTutor
      * @param $userid an integer identifies the user (tutor)
      * @param $sheetid an integer identifies the exercisesheet
      */
-    public function getZip($userid, $sheetid){
-        $header = $this->app->request->headers->all();
-        $body = json_decode($this->app->request->getBody());
-
+    public function getZip($userid, $sheetid)
+    {
         $multiRequestHandle = new Request_MultiRequest();
         
         //request to database to get the markings
-        $handler = Request_CreateRequest::createCustom('GET', $this->_getMarking[0]->getAddress().'/marking/exercisesheet/'.$sheetid.'/tutor/'.$userid, $header,"");
+        $handler = Request_CreateRequest::createCustom('GET', $this->_getMarking[0]->getAddress().'/marking/exercisesheet/'.$sheetid.'/tutor/'.$userid, array(),"");
         $multiRequestHandle->addRequest($handler);
         
         //request to database to get the exercise sheets
-        $handler = Request_CreateRequest::createCustom('GET', $this->_getExercise[0]->getAddress().'/exercise/exercisesheet/'.$sheetid, $header,"");
+        $handler = Request_CreateRequest::createCustom('GET', $this->_getExercise[0]->getAddress().'/exercise/exercisesheet/'.$sheetid, array(),"");
         $multiRequestHandle->addRequest($handler);
         
         $answer = $multiRequestHandle->run();
@@ -321,6 +332,9 @@ class LTutor
         //exercises with informations of marking and submissions
         //sorted by exercise ID and checked of existence
         foreach( $markings as $marking){
+            if (!isset($marking['submission']['selectedForGroup']) || !$marking['submission']['selectedForGroup'])
+                continue;
+                
             $submission = $marking['submission'];
             $id = $submission['exerciseId'];
             $sortedMarkings[$id][] = $marking;
@@ -445,6 +459,8 @@ class LTutor
                 $exerciseId = $exercise['id'];
                 if(in_array($exercise['id'], $exerciseIdWithExistingMarkings)){
                     foreach($sortedMarkings[$exerciseId] as $marking){
+                        if (!isset($marking['submission']['selectedForGroup']) || !$marking['submission']['selectedForGroup'])
+                            continue;
                     //var_dump($marking);
                         /*$URL = $this->lURL.'/DB/submission/submission/'.
                                                 $marking['submission']['id'];
