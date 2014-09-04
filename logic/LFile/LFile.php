@@ -145,7 +145,7 @@ class LFile
         $this->_app->response->setStatus( 201 );                   
         $body = $this->_app->request->getBody( );
         $fileObjects = File::decodeFile( $body );
-        
+
         if (!is_array($path)) $path = array($path);
         $temp="";
         foreach ($path as $part){
