@@ -271,7 +271,25 @@ class DBMarking
                                'getTutorSheetMarkingsNoSubmission'
                                )
                          );
+                         
+        // GET GetTutorCourseMarkings
+        $this->_app->get( 
+                         '/' . $this->getPrefix( ) . '/course/:cid/tutor/:userid(/)',
+                         array( 
+                               $this,
+                               'getTutorCourseMarkings'
+                               )
+                         );
 
+        // GET GetTutorCourseMarkingsNoSubmission
+        $this->_app->get( 
+                         '/' . $this->getPrefix( ) . '/course/:cid/tutor/:userid/nosubmission(/)',
+                         array( 
+                               $this,
+                               'getTutorCourseMarkingsNoSubmission'
+                               )
+                         );
+                         
         // GET GetTutorExerciseMarkings
         $this->_app->get( 
                          '/' . $this->getPrefix( ) . '/exercise/:eid/tutor/:userid(/)',
@@ -508,7 +526,7 @@ class DBMarking
     public function addMarking( )
     {
         Logger::Log( 
-                    'starts OST AddMarking',
+                    'starts POST AddMarking',
                     LogLevel::DEBUG
                     );
 
@@ -602,6 +620,7 @@ class DBMarking
                            $mid == '' ? true : ctype_digit( $mid )
                            );
 
+
         if ( $sub != 1 )
             $sub = 0;
 
@@ -625,21 +644,21 @@ class DBMarking
         if ( $result['status'] >= 200 && 
              $result['status'] <= 299 ){
             $query = Query::decodeQuery( $result['content'] );
+            unset($result['content']);
 
             if ( $query->getNumRows( ) > 0 ){
                 $res = Marking::ExtractMarking( 
                                                $query->getResponse( ),
                                                $singleResult
                                                );
+                unset($query);                 
                 $this->_app->response->setBody( Marking::encodeMarking( $res ) );
-
                 $this->_app->response->setStatus( 200 );
                 if ( isset( $result['headers']['Content-Type'] ) )
                     $this->_app->response->headers->set( 
                                                         'Content-Type',
                                                         $result['headers']['Content-Type']
                                                         );
-
                 $this->_app->stop( );
                 
             } else 
@@ -954,6 +973,49 @@ class DBMarking
                                      );
     }
 
+    /**
+     * Returns all markings created by a given tutor regarding
+     * a specific course.
+     *
+     * Called when this component receives an HTTP GET request to
+     * /marking/course/$cid/tutor/$userid(/).
+     *
+     * @param int $cid The id of the course.
+     * @param int $userid The userid of the tutor that created the markings
+     * which should be returned.
+     */
+    public function getTutorCourseMarkings( 
+                                          $cid,
+                                          $userid,
+                                          $sub = 1
+                                          )
+    {
+        $this->get( 
+                   'GetTutorCourseMarkings',
+                   'Sql/GetTutorCourseMarkings.sql',
+                   $userid,
+                   $cid,
+                   '',
+                   '',
+                   '',
+                   '',
+                   $sub
+                   );
+    }
+
+    public function getTutorCourseMarkingsNoSubmission( 
+                                                      $cid,
+                                                      $userid,
+                                                      $sub = 0
+                                                      )
+    {
+        $this->getTutorCourseMarkings( 
+                                     $courseid,
+                                     $userid,
+                                     $sub
+                                     );
+    }
+    
     /**
      * Returns all markings created by a given tutor regarding
      * a specific exercise.
