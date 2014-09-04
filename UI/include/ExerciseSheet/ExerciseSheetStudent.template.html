@@ -151,12 +151,14 @@
                     <?php endif; ?>
 
                     <li>
+                        <?php if (isset($sheet['sheetFile']['address'])){?>
                         <?php $displayName = $sheet['sheetFile']['displayName']; ?>
                         <?php $fileAddress = $sheet['sheetFile']['address']; ?>
                         <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
                         <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
                             Aufgabenblatt
                         </a>
+                        <?php } ?>
                     </li>
                     
                     <li>
@@ -193,13 +195,13 @@
                     <?php endif; ?>
 
                     <?php // prints a link to download markings ?>
-                    <?php if ($sheet['hasMarkings']): ?>
+                    <?php if ($sheet['hasMarkings'] && $isExpired): ?>
                         <li>
-                            <!--<button name="downloadMarkings" value="<?php echo $sheet['id']; ?>" class="text-button body-option-color">-->
-                            <a style="color:#b9b8b8" class="text-button body-option-color"><s>
-                                Alle Einsendungen herunterladen
-                            </s></a>
-                            <!--</button>-->
+                            <button name="downloadMarkings" value="<?php echo $sheet['id']; ?>" class="text-button body-option-color">
+                            <!--<a style="color:#b9b8b8" class="text-button body-option-color"><s>-->
+                                Alles herunterladen
+                            <!--</s></a>-->
+                            </button>
                         </li>
                     <?php endif; ?>
                 </ol>
