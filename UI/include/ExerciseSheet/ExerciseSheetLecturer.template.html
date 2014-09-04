@@ -100,6 +100,8 @@ foreach ($sheets as $sheet):
         </div>
         <div class="content-body right">
             <ol class="body-options body-option-color">
+            
+                    <?php if (isset($sheet['sheetFile']['address'])){?>
                 <li>
                     <?php $displayName = $sheet['sheetFile']['displayName']; ?>
                     <?php $fileAddress = $sheet['sheetFile']['address']; ?>
@@ -110,6 +112,8 @@ foreach ($sheets as $sheet):
                         Aufgabenblatt
                     </a>
                 </li>
+                    <?php } ?>
+                
                 <?php if (isset($sheet['sampleSolution'])): ?>
                     <li>
                         <?php $displayName = $sheet['sampleSolution']['displayName']; ?>
@@ -132,15 +136,15 @@ foreach ($sheets as $sheet):
                         print '</li>';
                     }
                 ?>
+                
+                <?php if (isset($sheet['tutorMarkings']) && $sheet['tutorMarkings']>0){ ?>
                 <?php
                     print '<li>';
-                    //print '<a style="color:#b9b8b8"><s>';
                     print '<button name="downloadCSV" value="';
                     print $sheet['id'];
                     print '" class="text-button body-option-color">';
                     print 'Einsendungen herunterladen';
                     print '</button>';
-                    //print '</s></a>';
                     print '</li>';
                 ?>
                 <li>
@@ -151,6 +155,7 @@ foreach ($sheets as $sheet):
                         Korrekturen hochladen
                    </s></a>
                 </li>
+                <?php } ?>
                 <li>
                     <a href="TutorAssign.php?cid=<?php echo $user['courses'][0]['course']['id'],
                                                      '&sid=',
@@ -186,9 +191,9 @@ foreach ($sheets as $sheet):
         ?>
         <ol>
             <li class="footer-text bold" style="color:#b9b8b8"><s>Einsendungen:</s></li>
-            <li class="footer-text" style="color:#b9b8b8"><s><?php echo $sheet['courseUserCount']; ?> Studenten</s></li>
-            <li class="footer-text" style="color:#b9b8b8"><s><?php echo $sheet['studentsWithSubmissionCount']; ?> mit Einsendungen</s></li>
-            <li class="footer-text" style="color:#b9b8b8"><s><?php echo $sheet['studentsWithoutSubmissionCount']; ?> ohne Einsendungen</s></li>
+            <li class="footer-text"><?php echo $sheet['courseUserCount']; ?> Studenten</li>
+            <li class="footer-text"><?php echo $sheet['selectedSubmissions']; ?> Einsendungen</li>
+            <li class="footer-text"><?php echo $sheet['tutorMarkings']; ?> Korrekturaufträge</li>
         </ol>
     </div> <!-- end: content-body-wrapper -->
 </div> <!-- end: content-element -->

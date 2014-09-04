@@ -999,34 +999,63 @@ class LGetSite
         $multiRequestHandle2 = new Request_MultiRequest();
 
         $URL = $this->_getExerciseType->getAddress().'/exercisetype';
-        $handler1 = Request_CreateRequest::createGet($URL, $header, $body);
+        $handler1 = Request_CreateRequest::createGet($URL, $header,'');
         $URL = $this->lURL . '/exercisesheet/course/' . $courseid . '/exercise';
-        $handler2 = Request_CreateRequest::createGet($URL, $header, $body);
-        $URL = $this->_getUser->getAddress().'/user/course/' . $courseid;
-        $handler3 = Request_CreateRequest::createGet($URL, $header, $body);
+        $handler2 = Request_CreateRequest::createGet($URL, $header,'');
+        
+        // to get all students of the course
+        $URL = $this->_getUser->getAddress().'/user/course/' . $courseid. '/status/0';
+        $handler3 = Request_CreateRequest::createGet($URL, $header,'');
+        $URL = $this->_getMarking->getAddress().'/marking/course/'.$courseid.'/tutor/'.$userid;
+        $handler4 = Request_CreateRequest::createGet($URL, $header,'');
 
         $multiRequestHandle2->addRequest($handler1);
         $multiRequestHandle2->addRequest($handler2);
         $multiRequestHandle2->addRequest($handler3);
+        $multiRequestHandle2->addRequest($handler4);
 
         $answer2 = $multiRequestHandle2->run();
+        unset($multiRequestHandle2);
 
         // decode answers (given in the order which they've been declared)
         $exerciseTypes = json_decode($answer2[0]['content'], true);
         $sheets = json_decode($answer2[1]['content'], true);
         $courseUser = json_decode($answer2[2]['content'], true);
+        $markings = json_decode($answer2[3]['content'], true);
+        unset($answer2);
 
         $URL = "{$this->_getSelectedSubmission->getAddress()}/selectedsubmission/course/{$courseid}";
         $answer = Request::custom('GET', $URL, $header, '');
         $selectedSubs = json_decode($answer['content'], true);
+        unset($answer);
         $selectedSubmissionsCount = null;
         foreach($selectedSubs as $subs){
             $key = $subs['exerciseSheetId'];
-            if (!isset($selectedSubmissionsCount[$key])){
-                $selectedSubmissionsCount[$key] = 1;
-            } else 
-                $selectedSubmissionsCount[$key]+=1;
+            if (!isset($selectedSubmissionsCount[$key]))
+                $selectedSubmissionsCount[$key] = array();
+                
+            if (!isset($selectedSubmissionsCount[$key]['selected'])){
+                $selectedSubmissionsCount[$key]['selected']=1;
+            } else {
+                $selectedSubmissionsCount[$key]['selected']+=1;
+            }
         }
+        unset($selectedSubs);
+        
+        foreach ($markings as $marking){
+            if (isset($marking['submission']['selectedForGroup']) && $marking['submission']['selectedForGroup']){
+                $key = $marking['submission']['exerciseSheetId'];
+                if (!isset($selectedSubmissionsCount[$key]))
+                    $selectedSubmissionsCount[$key] = array();
+                
+                if (!isset($selectedSubmissionsCount[$key]['tutorMarkings'])){
+                    $selectedSubmissionsCount[$key]['tutorMarkings']=1;
+                } else {
+                    $selectedSubmissionsCount[$key]['tutorMarkings']+=1;
+                }  
+            }
+        }
+        unset($markings);
 
         foreach ($sheets as $key => &$sheet) {
 
@@ -1045,8 +1074,8 @@ class LGetSite
 
             // adds counts for the additional information in the footer
             $sheet['courseUserCount'] = count($courseUser);
-            $sheet['studentsWithSubmissionCount'] = (isset($selectedSubmissionsCount[$sheet['id']]) ? $selectedSubmissionsCount[$sheet['id']] : 0);
-            $sheet['studentsWithoutSubmissionCount'] = $sheet['courseUserCount'] - $sheet['studentsWithSubmissionCount'];
+            $sheet['selectedSubmissions'] = (isset($selectedSubmissionsCount[$sheet['id']]['selected']) ? $selectedSubmissionsCount[$sheet['id']]['selected'] : 0);
+            $sheet['tutorMarkings'] = (isset($selectedSubmissionsCount[$sheet['id']]['tutorMarkings']) ? $selectedSubmissionsCount[$sheet['id']]['tutorMarkings'] : 0);
 
             foreach ($sheet['exercises'] as &$exercise) {
                 foreach ($exerciseTypes as $exerciseType) {

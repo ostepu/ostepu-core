@@ -93,7 +93,8 @@
                             </a>
                         </li>
                     <?php endif; ?>
-
+                    
+                    <?php if (isset($sheet['sheetFile']['address'])){?>
                     <li>
                         <?php $displayName = $sheet['sheetFile']['displayName']; ?>
                         <?php $fileAddress = $sheet['sheetFile']['address']; ?>
@@ -102,6 +103,7 @@
                             Aufgabenblatt
                         </a>
                     </li>
+                    <?php } ?>
 
                     <?php // prints a link to download attachments ?>
                     <?php if ($sheet['hasAttachments']): ?>
@@ -111,23 +113,23 @@
                             </button>
                         </li>
                     <?php endif; ?>
-
+                    
+                    <?php if (isset($sheet['tutorMarkings']) && $sheet['tutorMarkings']>0){ ?>
                     <li>
-                    <!--<a style="color:#b9b8b8"><s>-->
                         <button name="downloadCSV" value="<?php echo $sheet['id']; ?>" class="text-button body-option-color">
                             Einsendungen herunterladen
                         </button>
-                       <!-- </s></a>-->
                     </li>
+
                     <li>
-                        <!-- <a style="color:#b9b8b8"><s>-->
                         <a href="TutorUpload.php?cid=<?php echo $user['courses'][0]['course']['id'],
                                                          '&sid=',
                                                          $sheet['id']; ?>">
                             Korrekturen hochladen
                         </a>
-                        <!-- </s></a>-->
                     </li>
+                    <?php } ?>
+                    
                     <li>
                         <a href="TutorAssign.php?cid=<?php echo $user['courses'][0]['course']['id'],
                                                          '&sid=',
@@ -147,10 +149,10 @@
                  */
             ?>
             <ol>
-                <li class="footer-text bold" style="color:#b9b8b8"><s>Einsendungen:</s></li>
-                <li class="footer-text" style="color:#b9b8b8"><s><?php echo$sheet['courseUserCount']; ?> Studenten</s></li>
-                <li class="footer-text" style="color:#b9b8b8"><s><?php echo$sheet['studentsWithSubmissionCount']; ?> mit Einsendungen</s></li>
-                <li class="footer-text" style="color:#b9b8b8"><s><?php echo$sheet['studentsWithoutSubmissionCount']; ?> ohne Einsendungen</s></li>
+                <li class="footer-text bold">Einsendungen:</li>
+                <li class="footer-text"><?php echo $sheet['courseUserCount']; ?> Studenten</li>
+                <li class="footer-text"><?php echo $sheet['selectedSubmissions']; ?> Einsendungen</li>
+                <li class="footer-text"><?php echo $sheet['tutorMarkings']; ?> Korrekturaufträge</li>
             </ol>
         </div><!-- end: content-body-wrapper -->
     </div> <!-- end: content-element -->
