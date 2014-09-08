@@ -295,7 +295,7 @@ class FormEvaluator {
         return false;
     }
 
-    // chek if value is an email address
+    // checks if value is an email address
     private function evaluateEmail($key,
                                    $required)
     {
