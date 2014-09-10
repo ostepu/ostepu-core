@@ -69,7 +69,7 @@ class FSZip
      * @var Slim $_app the slim object
      */
     private $_app = null;
-    private $_config = array();
+    private $config = array();
     
     /**
      * @var Component $_conf the component data object
@@ -187,8 +187,7 @@ class FSZip
      */
     public function postZip( $filename = null )
     {
-        $body = $this->_app->request->getBody( );
-        $fileObject = File::decodeFile( $body );
+        $fileObject = File::decodeFile( $this->_app->request->getBody( ) );
         if ( !is_array( $fileObject ) )
             $fileObject = array( $fileObject );
 
@@ -202,10 +201,12 @@ class FSZip
             } else 
                 $hashArray[] = $part->getAddress( ) . $part->getDisplayName( );
         }
+        
         $hash = sha1( implode( 
                               "\n",
                               $hashArray
                               ) );
+       // unset($hashArray);
 
         // generate zip
         $filePath = FSZip::generateFilePath( 
@@ -222,7 +223,7 @@ class FSZip
                             $this->config['DIR']['files'].'/'.$filePath,
                             ZIPARCHIVE::CREATE
                             ) === TRUE ){
-                foreach ( $fileObject as $part ){
+                foreach ( $fileObject as &$part ){
                     if ( $part->getBody( ) !== null ){
                         $zip->addFromString( 
                                             $part->getDisplayName( ),
@@ -245,6 +246,7 @@ class FSZip
                             $this->_app->stop( );
                         }
                     }
+                    //unset($part);
                 }
                 $zip->close( );
             } else {

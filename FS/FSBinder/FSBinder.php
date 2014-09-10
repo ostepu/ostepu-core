@@ -11,7 +11,8 @@
 
 require_once ( dirname(__FILE__) . '/../../Assistants/Slim/Slim.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/CConfig.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Structures.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/Structures/Platform.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/Structures/File.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
@@ -33,7 +34,7 @@ class FSBinder
      * @var Slim $_app the slim object
      */
     private $_app;
-    private $_config = array();
+    private $config = array();
 
     /**
      * REST actions

@@ -64,7 +64,7 @@ class FSPdf
      * @var Component $_conf the component data object
      */
     private $_conf;
-    private $_config = array();
+    private $config = array();
 
     /**
      * REST actions
