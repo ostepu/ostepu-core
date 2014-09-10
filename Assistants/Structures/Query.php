@@ -5,6 +5,8 @@
  * @file Query.php contains the Query class
  */
 
+include_once ( dirname( __FILE__ ) . '/Object.php' );
+
 /**
  * this class is for querying SQL statemets
  *

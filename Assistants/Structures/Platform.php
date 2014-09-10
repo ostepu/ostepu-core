@@ -5,6 +5,8 @@
  * @file Platform.php contains the Platform class
  */
 
+include_once ( dirname( __FILE__ ) . '/Object.php' );
+ 
 /**
  * the platform structure
  *

@@ -5,6 +5,8 @@
  * @file Exercise.php contains the Exercise class
  */
 
+include_once ( dirname( __FILE__ ) . '/Object.php' );
+
 /**
  * the exercise structure
  *

@@ -5,6 +5,8 @@
  * @file Course.php contains the Course class
  */
 
+include_once ( dirname( __FILE__ ) . '/Object.php' );
+
 /**
  * the course structure
  *

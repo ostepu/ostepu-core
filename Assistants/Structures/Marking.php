@@ -5,6 +5,8 @@
  * @file Marking.php contains the Marking class
  */
 
+include_once ( dirname( __FILE__ ) . '/Object.php' );
+
 /**
  * the marking structure
  *

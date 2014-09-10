@@ -5,6 +5,8 @@
  * @file Submission.php contains the Submission class
  */
 
+include_once ( dirname( __FILE__ ) . '/Object.php' );
+
 /**
  * the submission structure
  *

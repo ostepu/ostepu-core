@@ -5,6 +5,8 @@
  * @file Plugin.php contains the Plugin class
  */
 
+include_once ( dirname( __FILE__ ) . '/Object.php' );
+
 /**
  * the plugin structure
  *

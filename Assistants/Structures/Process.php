@@ -4,6 +4,8 @@
 /**
  * @file Process.php contains the Process class
  */
+ 
+include_once ( dirname( __FILE__ ) . '/Object.php' );
 
 /**
  * the Process structure

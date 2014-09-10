@@ -5,6 +5,8 @@
  * @file File.php contains the File class
  */
 
+include_once ( dirname( __FILE__ ) . '/Object.php' );
+
 /**
  * the file structure
  *
