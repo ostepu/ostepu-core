@@ -30,7 +30,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'TutorUpload') {
 
                 $data = base64_encode($data);
 
-                $file = array('timeStamp' => $timestamp,
+                $file = array('timeStamp' => time(),
                               'displayName' => $displayName,
                               'body' => $data);
 
