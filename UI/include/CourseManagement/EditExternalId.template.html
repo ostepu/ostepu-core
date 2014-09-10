@@ -1,0 +1,39 @@
+<input type="hidden" name="action" value="EditExternalId">
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left uppercase">Externe Veranstaltung entfernen</div>
+        <button class="text-button info-color bold right">Entfernen</button>
+    </div>
+
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            <div class="content-description">
+                Hier können Veranstaltungs-IDs anderer Plattformen entfernt werden.
+            </div>
+            <?php if (isset($externalId)) { 
+            if (count($externalId)>0){
+            ?>
+            <table border="0">
+            <?php foreach ($externalId as $extern){
+            $parts = explode('_',$extern['id']);
+            $begin = array_shift($parts);
+            $end = implode('_',$parts);
+            
+            echo "<tr><td width='0%'><input type='checkbox' name='externalId' id='externalId' value='{$extern['id']}'/></td><td width='10%'>";
+            switch($begin){
+                case 'S':
+                    echo 'Stud.IP';break;
+                default:
+                    echo 'Sonstiges';break;
+            }
+            echo "</td><td width='*'>{$extern['id']}</td></tr>";            
+            } ?>
+            </table>
+            <?php 
+            } else {
+                echo "keine Vorhanden";
+            }
+            } ?>
+        </div>
+    </div> <!-- end: content-body -->
+</div> <!-- end: content-wrapper -->

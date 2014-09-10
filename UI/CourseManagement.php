@@ -40,7 +40,75 @@ foreach ($plugins_data['plugins'] as &$plugin){
 }
 
 if (isset($_POST['action'])) {
-    if ($_POST['action'] == "Plugins") {
+        if ($_POST['action'] == "EditExternalId") {
+        $externalId = (isset($_POST['externalId']) ? cleanInput($_POST['externalId']) : array());
+        if (!is_array($externalId)) $externalId = array($externalId);
+        
+        $RequestError = false;
+        if (count($externalId) == 0){
+            $RequestError = true;
+            $notifications[] = MakeNotification("error", 'Wählen Sie einen Alias!');
+        }
+
+        if (!$RequestError){
+            foreach ($externalId as $key => $ext){
+        
+                // delete externalId
+                $URI = $serverURI . "/DB/DBExternalId/externalid/externalid/{$ext}";
+                http_delete($URI, true, $messageNewAc);
+                if ($messageNewAc != "201") {
+                    $RequestError = true;
+                    $notifications[] = MakeNotification("error", "Beim Entfernen ist ein Fehler aufgetreten!");
+                    break;
+                }
+            }
+        }
+ 
+        // show notification
+        if ($RequestError == false) {
+            $notifications[] = MakeNotification("success", "Die Veranstaltung wurde bearbeitet!");
+        }
+    
+    } elseif ($_POST['action'] == "AddExternalId") {
+        $externalId = (isset($_POST['externalId']) ? cleanInput($_POST['externalId']) : '');
+        $externalType = (isset($_POST['externalType']) ? cleanInput($_POST['externalType']) : '');
+        $externalTypeName = (isset($_POST['externalTypeName']) ? cleanInput($_POST['externalTypeName']) : '');
+        $RequestError = false;
+        if (strlen($externalId) == 0){
+            $RequestError = true;
+            $notifications[] = MakeNotification("error", 'Geben Sie einen Alias für die Veranstaltung ein!');
+        }
+        
+        if (strlen($externalType) == 0){
+            $RequestError = true;
+            $notifications[] = MakeNotification("error", 'Kein Alias-Typ gefunden!');
+        }
+        
+        if ($externalType == 2 && strlen($externalTypeName) == 0){
+            $RequestError = true;
+            $notifications[] = MakeNotification("error", 'Geben Sie einen Alias-Präfix an!');
+        }
+        
+        if (!$RequestError){
+            if ($externalType==1)
+                $externalTypeName = 'S';
+        
+            // add externalId
+            $URI = $serverURI . "/DB/DBExternalId/externalid";
+            $ext = ExternalId::createExternalId($externalTypeName.'_'.$externalId,$cid);
+            http_post_data($URI, ExternalId::encodeExternalId($ext), true, $messageNewAc);
+            if ($messageNewAc != "201") {
+                $RequestError = true;
+                $notifications[] = MakeNotification("error", "Beim Anlegen ist ein Fehler aufgetreten!");
+            }
+        }
+ 
+        // show notification
+        if ($RequestError == false) {
+            $notifications[] = MakeNotification("success", "Die Veranstaltung wurde bearbeitet!");
+        }
+    
+    } elseif ($_POST['action'] == "Plugins") {
         
         $plugins = cleanInput($_POST['plugins']);
         
@@ -368,6 +436,12 @@ $courseManagement_data = json_decode($courseManagement_data, true);
 
 $user_course_data = $courseManagement_data['user'];
 
+// load externalId data
+$URI = $serverURI . "/DB/DBExternalId/externalid/course/{$cid}";
+$externalid_data = array();
+$externalid_data['externalId'] = http_get($URI, true);
+$externalid_data['externalId'] = json_decode($externalid_data['externalId'], true);
+
 $menu = MakeNavigationElement($user_course_data,
                               PRIVILEGE_LEVEL::ADMIN,
                               true);
@@ -402,6 +476,11 @@ $grantRights->bind($courseManagement_data);
 $revokeRights = Template::WithTemplateFile('include/CourseManagement/RevokeRights.template.html');
 $revokeRights->bind($courseManagement_data);
 
+$editExternalId = Template::WithTemplateFile('include/CourseManagement/EditExternalId.template.html');
+$editExternalId->bind($externalid_data);
+
+$addExternalId = Template::WithTemplateFile('include/CourseManagement/AddExternalId.template.html');
+
 // construct a content element for adding users
 $addUser = Template::WithTemplateFile('include/CourseManagement/AddUser.template.html');
 
@@ -410,7 +489,7 @@ $addUser = Template::WithTemplateFile('include/CourseManagement/AddUser.template
  */
 
 // wrap all the elements in some HTML and show them on the page
-$w = new HTMLWrapper($h, $courseSettings, $plugins, $addExerciseType, $editExerciseType, $grantRights, $revokeRights, $addUser);
+$w = new HTMLWrapper($h, $courseSettings, $plugins, $addExerciseType, $editExerciseType, $grantRights, $revokeRights, $addUser, $editExternalId, $addExternalId);
 $w->defineForm(basename(__FILE__)."?cid=".$cid, false, $courseSettings);
 $w->defineForm(basename(__FILE__)."?cid=".$cid, false, $plugins);
 $w->defineForm(basename(__FILE__)."?cid=".$cid, false, $addExerciseType);
@@ -418,6 +497,8 @@ $w->defineForm(basename(__FILE__)."?cid=".$cid, false, $editExerciseType);
 $w->defineForm(basename(__FILE__)."?cid=".$cid, false, $grantRights);
 $w->defineForm(basename(__FILE__)."?cid=".$cid, false, $revokeRights);
 $w->defineForm(basename(__FILE__)."?cid=".$cid, false, $addUser);
+$w->defineForm(basename(__FILE__)."?cid=".$cid, false, $editExternalId);
+$w->defineForm(basename(__FILE__)."?cid=".$cid, false, $addExternalId);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
 
