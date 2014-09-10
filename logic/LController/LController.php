@@ -103,12 +103,14 @@ class LController
             // set the database URL
             $URI = CConfig::getLink($this->query, "database")->getAddress();
             $this->sendNewRequest($string, $method, $URI, $header, $body);
+            $this->app->stop();
         } elseif ($string[0] == "FS") {
         // if the prefix is "FS", send the request on the database controller
             unset($string[0]);
             // set the filesystem URL
             $URI = CConfig::getLink($this->query, "filesystem")->getAddress();
             $this->sendNewRequest($string, $method, $URI, $header, $body);
+            $this->app->stop();
         } else {
         // if the prefix is another one, send the request on the corresponding logic component
             $arrayOfLinks = $this->query;
@@ -116,10 +118,13 @@ class LController
             foreach ($arrayOfLinks as $linkObj){
                 if ($linkObj->getPrefix() == $string[0]){
                     $URI = $linkObj->getAddress();
-                    break;
+                    $this->sendNewRequest($string, $method, $URI, $header, $body);
+                    $this->app->stop();
                 }
             }
-            $this->sendNewRequest($string, $method, $URI, $header, $body);
+            
+            $this->app->response->setStatus(412);
+            $this->app->response->stop();
         }
     }
 
