@@ -6,6 +6,8 @@
  * @author Till Uhlig
  * @date 2013-2014
  */
+ 
+require_once ( dirname(__FILE__) . '/Slim/Slim.php' );
 include_once ( dirname( __FILE__ ) . '/Structures.php' );
 
 \Slim\Slim::registerAutoloader( );
