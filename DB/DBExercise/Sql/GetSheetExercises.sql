@@ -15,6 +15,7 @@
 select 
     E.E_id,
     E.ES_id,
+    E.C_id,
     E.ET_id,
     E.E_maxPoints,
     E.E_bonus,
