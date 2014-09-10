@@ -80,6 +80,10 @@
                     ?>
                     <?php endforeach; ?>
                 </ol>
+                    <li class="footer-text bold">Einsendungen:</li>
+                    <li class="footer-text"><?php echo $sheet['courseUserCount']; ?> Studenten</li>
+                    <li class="footer-text"><?php echo $sheet['selectedSubmissions']; ?> Einsendungen</li>
+                    <li class="footer-text"><?php echo $sheet['tutorMarkings']; ?> Korrekturaufträge</li>
             </div>
             <div class="content-body right">
                 <ol class="body-options body-option-color">
@@ -141,20 +145,6 @@
             </div>
         </div>
 
-        <div class="content-footer">
-            <?php 
-                /**
-                 * @todo The way how courseUserCount is calculated needs to be changed in GetSite because
-                 *       it does not show the possible number of submissions. 
-                 */
-            ?>
-            <ol>
-                <li class="footer-text bold">Einsendungen:</li>
-                <li class="footer-text"><?php echo $sheet['courseUserCount']; ?> Studenten</li>
-                <li class="footer-text"><?php echo $sheet['selectedSubmissions']; ?> Einsendungen</li>
-                <li class="footer-text"><?php echo $sheet['tutorMarkings']; ?> Korrekturaufträge</li>
-            </ol>
-        </div><!-- end: content-body-wrapper -->
     </div> <!-- end: content-element -->
     <?php endforeach; ?>
 <?php else: ?>
