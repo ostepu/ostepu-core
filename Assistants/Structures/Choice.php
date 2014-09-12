@@ -5,6 +5,8 @@
  * @file Choice.php contains the Choice class
  */
 
+include_once ( dirname( __FILE__ ) . '/Object.php' );
+
 /**
  * the choice structure
  *

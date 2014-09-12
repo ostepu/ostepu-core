@@ -1,0 +1,34 @@
+<input type="hidden" name="action" value="AddExternalId">
+<div class="content-element">
+    <div class="content-header">
+        <div class="content-title left uppercase">Externe Veranstaltung hinzufügen</div>
+        <button class="text-button info-color bold right">Hinzufügen</button>
+    </div>
+
+    <div class="content-body-wrapper">
+        <div class="content-body left">
+            <div class="content-description">
+                Hier können Veranstaltungs-IDs anderer Plattformen zugewiesen werden.
+            </div>
+ 
+            <div class="form-field left label bold new-line">Alias:
+            <input class="form-field text-input long"
+                   name="externalId"
+                   id="externalId"
+                /></div>
+               
+            <div class="form-field right">
+                <input type="radio" name="externalType" id="externalType" checked="true" value="1"/>
+                <label for="externalType">Stud.IP</label><br>
+                
+                <input type="radio" name="externalType" id="externalType" value="2"/>
+                <label for="externalType">Sonstiges</label>
+                <input class="form-field text-input short"
+                   name="externalTypeName"
+                   id="externalTypeName"
+                />
+                
+            </div>
+        </div>
+    </div> <!-- end: content-body -->
+</div> <!-- end: content-wrapper -->

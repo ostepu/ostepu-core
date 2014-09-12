@@ -5,6 +5,8 @@
  * @file Invitation.php contains the Invitation class
  */
 
+include_once ( dirname( __FILE__ ) . '/Object.php' );
+
 /**
  * the invitation structure
  *

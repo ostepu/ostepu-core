@@ -4,6 +4,8 @@
 /**
  * @file ExternalId.php contains the ExternalId class
  */
+ 
+include_once ( dirname( __FILE__ ) . '/Object.php' );
 
 /**
  * the external id structure

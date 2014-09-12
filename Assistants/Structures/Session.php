@@ -5,6 +5,8 @@
  * @file Session.php contains the Session class
  */
 
+include_once ( dirname( __FILE__ ) . '/Object.php' );
+
 /**
  * the session structure
  *

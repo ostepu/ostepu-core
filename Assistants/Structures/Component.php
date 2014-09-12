@@ -5,6 +5,8 @@
  * @file Component.php contains the Component class
  */
 
+include_once ( dirname( __FILE__ ) . '/Object.php' );
+
 /**
  * the component structure
  *

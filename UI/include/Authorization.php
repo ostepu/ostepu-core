@@ -1,5 +1,5 @@
 <?php
-include_once  dirname(__FILE__) . '/Authentication.php';
+include_once dirname(__FILE__) . '/Authentication.php';
 include_once dirname(__FILE__) . '/StudIPAuthentication.php';
 
 $auth = new Authentication();

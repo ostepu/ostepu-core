@@ -5,6 +5,8 @@
  * @file User.php contains the User class
  */
 
+include_once ( dirname( __FILE__ ) . '/Object.php' );
+
 /**
  * the user structure
  *

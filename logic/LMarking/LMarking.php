@@ -92,7 +92,7 @@ class LMarking
         // DELETE DeleteMarking
         $this->app->delete('/'.$this->getPrefix().'/marking/:markingid(/)',
                         array($this, 'deleteMarking'));
-
+                        
         // PUT EditMarking
         $this->app->put('/'.$this->getPrefix().'/marking/:markingid(/)',
                         array($this, 'editMarking'));
@@ -163,18 +163,24 @@ class LMarking
                 
                 // upload marking to database
                 if ($marking->getId()===null){
-                $result = Request::routeRequest( 
-                                        'POST',
-                                        '/marking',
-                                        $this->app->request->headers->all( ),
-                                        Marking::encodeMarking($marking),
-                                        $this->_marking,
-                                        'marking'
-                                        );
+                    $result = Request::routeRequest( 
+                                                    'POST',
+                                                    '/marking',
+                                                    $this->app->request->headers->all( ),
+                                                    Marking::encodeMarking($marking),
+                                                    $this->_marking,
+                                                    'marking'
+                                                    );
                 }
                 else{
-                    $result['status'] = 201;
-                    $result['content'] = Marking::encodeMarking($marking);
+                    $result = Request::routeRequest( 
+                                                    'PUT',
+                                                    '/marking/marking/'.$marking->getId(),
+                                                    $this->app->request->headers->all( ),
+                                                    Marking::encodeMarking($marking),
+                                                    $this->_marking,
+                                                    'marking'
+                                                    );
                 }
                 
                 if ( $result['status'] >= 200 && 

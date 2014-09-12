@@ -5,6 +5,8 @@
  * @file ApprovalCondition.php contains the ApprovalCondition class
  */
 
+include_once ( dirname( __FILE__ ) . '/Object.php' );
+
 /**
  * the ApprovalCondition structure
  *

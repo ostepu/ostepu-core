@@ -5,6 +5,8 @@
  * @file Backup.php contains the Backup class
  */
 
+include_once ( dirname( __FILE__ ) . '/Object.php' );
+
 /**
  * the backup structure
  *

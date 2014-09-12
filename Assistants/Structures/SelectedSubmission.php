@@ -5,6 +5,8 @@
  * @file SelectedSubmission.php contains the SelectedSubmission class
  */
 
+include_once ( dirname( __FILE__ ) . '/Object.php' );
+
 /**
  * the selected submission structure
  *

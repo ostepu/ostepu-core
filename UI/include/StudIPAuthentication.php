@@ -6,10 +6,10 @@
  * @author Ralf Busch
  */
 
-include_once 'include/Helpers.php';
-include_once 'include/AbstractAuthentication.php';
-include_once '../Assistants/Structures.php';
-include_once 'include/Config.php';
+include_once dirname(__FILE__) . '/Helpers.php';
+include_once dirname(__FILE__) . '/AbstractAuthentication.php';
+include_once dirname(__FILE__) . '/../../Assistants/Structures.php';
+include_once dirname(__FILE__) . '/Config.php';
 
 /**
  * StudIPAuthentication class.
@@ -44,7 +44,7 @@ class StudIPAuthentication extends AbstractAuthentication
     private $courseStatus;
 
     /**
-     * The default contructor which logs the user in, if uid, cid and sid is given in GET Parameters.
+     * The default constructor which logs the user in, if uid, cid and sid is given in GET Parameters.
      */
     public function __construct()
     {
@@ -110,6 +110,7 @@ class StudIPAuthentication extends AbstractAuthentication
      */
     public function checkUserInStudip($uid, $sid)
     {
+        // TODO make configurable
         $query = "https://studip.uni-halle.de/upgateway/intern/request.php?cmd=check_user&uid={$uid}&sid={$sid}";
         $check = http_get($query, false);
 
@@ -124,6 +125,7 @@ class StudIPAuthentication extends AbstractAuthentication
      */
     public function getUserInStudip($uid)
     {
+        // TODO make configurable
         $query = "https://studip.uni-halle.de/upgateway/intern/request.php?cmd=get_user&uid={$uid}";
         $getUserData = http_get($query, false);
         if ($getUserData != "not found") {

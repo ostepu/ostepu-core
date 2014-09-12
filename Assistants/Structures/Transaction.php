@@ -4,6 +4,8 @@
 /**
  * @file Transaction.php contains the Transaction class
  */
+ 
+include_once ( dirname( __FILE__ ) . '/Object.php' );
 
 /**
  * the transaction structure

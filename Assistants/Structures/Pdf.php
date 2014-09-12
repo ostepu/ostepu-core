@@ -5,6 +5,8 @@
  * @file Pdf.php contains the Pdf class
  */
 
+include_once ( dirname( __FILE__ ) . '/Object.php' );
+
 /**
  * the pdf structure
  *

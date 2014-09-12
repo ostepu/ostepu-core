@@ -5,6 +5,8 @@
  * @file ExerciseSheet.php contains the ExerciseSheet class
  */
 
+include_once ( dirname( __FILE__ ) . '/Object.php' );
+
 /**
  * the exercise sheet structure
  *

@@ -5,7 +5,7 @@ if (!isset($_GET['split'])){
     $_GET['split'] = 4;
 }
 
-$input = file_get_contents(dirname(__FILE__) . '../executionTime.log');
+$input = file_get_contents(dirname(__FILE__) . '/../executionTime.log');
 $input = explode("\n",$input);
 foreach ($input as &$in){
     $in = substr($in, stripos($in,'[DEBUG]: ')+9,strlen($in));

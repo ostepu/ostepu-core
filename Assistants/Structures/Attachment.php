@@ -5,6 +5,8 @@
  * @file Attachment.php contains the Attachment class
  */
 
+include_once ( dirname( __FILE__ ) . '/Object.php' );
+
 /**
  * the attachment structure
  *
