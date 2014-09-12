@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetSheetAttachments.sql
  * gets all exerchise sheet attachments from %Attachment table
@@ -7,6 +8,7 @@
  * - A, the attachment data
  * - F, the attachment file
  */
+?>
  
 select 
     A.A_id,
@@ -24,4 +26,4 @@ from
     (Attachment A
     left join File F ON F.F_id = A.F_id) ON E.E_id = A.E_id
 where
-    E.ES_id = '$esid'
+    E.ES_id = '<?php echo $esid; ?>'

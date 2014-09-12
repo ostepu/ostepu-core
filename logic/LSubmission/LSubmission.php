@@ -146,7 +146,7 @@ class LSubmission
                                 $this->_file,
                                 'file'
                                 );        
-                
+//echo File::encodeFile($file);return;       
         if ( $result['status'] >= 200 && 
              $result['status'] <= 299 ){
             // file is uploaded

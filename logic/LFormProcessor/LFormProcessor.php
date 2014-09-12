@@ -359,9 +359,8 @@ class LFormProcessor
                         $allcorrect = true;
                         
                         if ($forms->getType()==0){
-                            
                             $parameter = explode(' ',strtolower($pro->getParameter()));
-                            if ($parameter===null || count($parameter)===0){      
+                            if ($parameter===null || count($parameter)===0 || $parameter[0] === ''){      
                                 if (DefaultNormalizer::normalizeText($correctAnswers[0]->getText()) != DefaultNormalizer::normalizeText($answers[0]->getText()))
                                     $allcorrect = false;
                             } elseif(strtolower($parameter[0]) === 'distance1'){
@@ -465,7 +464,7 @@ class LFormProcessor
                                     "</p>".
                                     "<p>".
                                     "<h2>Antwort:</h2>".
-                                    "<font color='".($points===0 ? 'red' : '')."'>".
+                                    "<font color='".($points===0 ? 'red' : 'black')."'>".
                                     $answer.
                                     "</font></p>";
                             if ($points===0){
@@ -486,7 +485,7 @@ class LFormProcessor
                             $pdf = Pdf::createPdf($Text);
                             $result = Request::routeRequest( 
                                                             'POST',
-                                                            '/pdf',
+                                                            '/pdf/',
                                                             array(),
                                                             Pdf::encodePdf($pdf),
                                                             $this->_pdf,

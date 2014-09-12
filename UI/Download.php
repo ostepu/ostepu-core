@@ -6,7 +6,8 @@
  * @todo support downloads of csv files
  */
 
-include_once 'include/Boilerplate.php';
+include_once dirname(__FILE__) . '/include/Boilerplate.php';
+include_once dirname(__FILE__) . '/../Assistants/Request.php';
 
 // get the download token
 if (isset($_GET['t'])) {
@@ -33,7 +34,7 @@ if ($options['download'] == 'attachments') {
     } else {
         $sid = $options['sid'];
 
-        $URL = "{$serverURI}/logic/Controller/DB/attachment/exercisesheet/{sid}";
+        $URL = "{$logicURI}/DB/attachment/exercisesheet/{$sid}";
         $attachments = http_get($URL, true);
         $attachments = json_decode($attachments, true);
 
@@ -47,26 +48,92 @@ if ($options['download'] == 'attachments') {
         $zipfile = http_post_data($filesystemURI . '/zip',  $fileString, true);
         $zipfile = json_decode($zipfile, true);
 
-        $location = "{$filesystemURI}/{$zipfile['address']}/attachments.zip";
+        $location = "../FS/FSBinder/{$zipfile['address']}/attachments.zip"; //{$filesystemURI}
         $_SESSION['downloads'][$token]['URL'] = $location;
     }
 
 } elseif ($options['download'] == 'markings') {
 
-    if (isset($options['URL'])) {
+    if (isset($options['URL']) && false) {
         // if the user has downloaded all markings in this session, reuse the location
         $location = $options['URL'];
     } else {
         $sid = $options['sid'];
         $uid = $options['uid'];
+        
+        $multiRequestHandle = new Request_MultiRequest();
+        
+        //request to database to get the markings
+        $handler = Request_CreateRequest::createCustom('GET', "{$logicURI}/DB/marking/exercisesheet/{$sid}/user/{$uid}", array(),'');
+        $multiRequestHandle->addRequest($handler);
+        
+        $handler = Request_CreateRequest::createCustom('GET', "{$logicURI}/DB/exercisesheet/exercisesheet/{$sid}/exercise", array(),'');
+        $multiRequestHandle->addRequest($handler);
+ 
+        $answer = $multiRequestHandle->run();
+        $markings = json_decode($answer[0]['content'], true);
+        $sheet = json_decode($answer[1]['content'], true);
+        $exercises = $sheet['exercises'];
+        
+        //an array to descripe the subtasks
+        $alphabet = range('a', 'z');
+        $count = 0;
+        $namesOfExercises = array();
+        $attachments = array();
+        foreach ($exercises as $exercise){
+            $firstRow = array();
+            $secondRow = array();
+            $row = array();
+            
+            if (isset($exercise['attachments']))
+                $attachments[$exercise['id']] = $exercise['attachments'];
 
-        $URL = "{$serverURI}/logic/Controller/DB/marking/exercisesheet/{$sid}/user/{$uid}";
-        $markings = http_get($URL, true);
-        $markings = json_decode($markings, true);
+            if ($exercise != $exercise['link']){
+                $count++;
+                $namesOfExercises[$exercise['id']] = 'Aufgabe '.$count;
+                $subtask = 0;
+            }else{
+                $namesOfExercises[$exercise['id']] = 'Aufgabe '.$count.$alphabet[$subtask];
+                $subtask++;
+            }
+        }
 
         $files = array();
         foreach ($markings as $marking) {
-            $files[] = $marking['file'];
+            if (isset($marking['file']) && isset($marking['submission']['selectedForGroup']) && $marking['submission']['selectedForGroup']){                   
+                $exerciseId = $marking['submission']['exerciseId'];
+                
+                // marking
+                $marking['file']['displayName'] = "{$namesOfExercises[$exerciseId]}/K_{$marking['file']['hash']}_{$marking['file']['displayName']}";
+                $files[] = $marking['file'];
+                
+                // submission
+                $marking['submission']['file']['displayName'] = "{$namesOfExercises[$exerciseId]}/{$marking['submission']['file']['hash']}_{$marking['submission']['file']['displayName']}";
+                $files[] = $marking['submission']['file']; 
+                
+                // attachments
+                if (isset($attachments[$exerciseId])){
+                    foreach ($attachments[$exerciseId] as $attachment){
+                        if (isset($attachment['file']['address'])){
+                            $attachment['file']['displayName'] = "{$namesOfExercises[$exerciseId]}/A_{$attachment['file']['hash']}_{$attachment['file']['displayName']}";
+                            $files[] = $attachment['file'];     
+                        }
+                    }
+                }
+            }
+        }
+        unset($attachments, $markings, $exercises);
+        
+        // sheetFile
+        if (isset($sheet['sheetFile']['address'])){
+            $sheet['sheetFile']['displayName'] = "{$sheet['sheetFile']['displayName']}";
+            $files[] = $sheet['sheetFile'];
+        }
+        
+        // sampleSolution
+        if (isset($sheet['sampleSolution']['address'])){
+            $sheet['sampleSolution']['displayName'] = "{$sheet['sampleSolution']['displayName']}";
+            $files[] = $sheet['sampleSolution'];
         }
 
         $fileString = json_encode($files);
@@ -74,7 +141,7 @@ if ($options['download'] == 'attachments') {
         $zipfile = http_post_data($filesystemURI . '/zip',  $fileString, true);
         $zipfile = json_decode($zipfile, true);
 
-        $location = "{$filesystemURI}/{$zipfile['address']}/markings.zip";
+        $location = "../FS/FSBinder/{$zipfile['address']}/markings.zip"; //{$filesystemURI}
         $_SESSION['downloads'][$token]['URL'] = $location;
     }
 

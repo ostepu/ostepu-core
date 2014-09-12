@@ -449,7 +449,7 @@ class LFormPredecessor
                                 foreach($formdata->getChoices() as $chosen)
                                     $answer.= $this->ChoiceIdToText(DBJson::mysql_real_escape_string($chosen->getText()), $forms->getChoices()).'<br>';
                         
-                            $Text=  "<h1>AUFGABE {$exerciseName}</h1>".
+                            $Text =  "<h1>AUFGABE {$exerciseName}</h1>".
                                     "<hr>".
                                     "<p>".
                                     "<h2>Aufgabenstellung:</h2>".
@@ -462,9 +462,10 @@ class LFormPredecessor
 
                             $pdf = Pdf::createPdf($Text);
                             $pdf->setText($Text);
+//echo Pdf::encodePdf($pdf);return;
                             $result = Request::routeRequest( 
                                                             'POST',
-                                                            '/pdf',
+                                                            '/pdf/',
                                                             array(),
                                                             Pdf::encodePdf($pdf),
                                                             $this->_pdf,

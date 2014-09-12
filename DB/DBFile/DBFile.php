@@ -416,7 +416,8 @@ class DBFile
                         $eid,
                         $fileid,
                         $hash,
-                        $singleResult = false
+                        $singleResult = false,
+                        $checkSession = true
                         )
     {
         Logger::Log( 
@@ -446,7 +447,8 @@ class DBFile
                                                     'eid' => $eid,
                                                     'fileid' => $fileid,
                                                     'hash' => $hash
-                                                    )
+                                                    ),
+                                              $checkSession
                                               );
 
         // checks the correctness of the query
@@ -566,7 +568,8 @@ class DBFile
                    isset( $eid ) ? $eid : '',
                    isset( $fileid ) ? $fileid : '',
                    isset( $hash ) ? $hash : '',
-                   true
+                   true,
+                   false
                    );
     }
     
@@ -587,7 +590,8 @@ class DBFile
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query2,
                                               'Sql/DeletePlatform.sql',
-                                              array( )
+                                              array( ),
+                                              false
                                               );
 
         // checks the correctness of the query
@@ -644,7 +648,8 @@ class DBFile
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query2,
                                                   'Sql/AddPlatform.sql',
-                                                  array( 'object' => $in )
+                                                  array( 'object' => $in ),
+                                                  false
                                                   );
 
             // checks the correctness of the query
@@ -680,4 +685,3 @@ class DBFile
     }
 }
 ?>
-

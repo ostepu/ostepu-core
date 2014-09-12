@@ -12,4 +12,4 @@ from
         join
     Component CO ON CO.CO_id = CL.CO_id_owner
 where
-    CL_id = '$linkid' or CL_name = '$linkid'
+    CL_id = '<?php echo $linkid; ?>' or CL_name = '<?php echo $linkid; ?>'

@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetCourseExercises.sql
  * gets all course exercises from %Exercise table
@@ -9,6 +10,7 @@
  * - S, the submission data
  * - SS, the selected submission data
  */
+?>
  
 select 
     E.E_id,
@@ -46,4 +48,4 @@ from
     (Submission S
     join SelectedSubmission SS ON S.S_id = SS.S_id_selected) ON S.E_id = E.E_id
 where
-    E.C_id = '$courseid'
+    E.C_id = '<?php echo $courseid; ?>'

@@ -2,9 +2,6 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
--- -----------------------------------------------------
--- Table `Exercise`
--- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Exercise` (
   `C_id` INT NULL,
   `E_id` INT NOT NULL AUTO_INCREMENT,
@@ -46,9 +43,11 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 DROP TRIGGER IF EXISTS `Exercise_BINS`;
 CREATE TRIGGER `Exercise_BINS` BEFORE INSERT ON `Exercise` FOR EACH ROW
+<?php
 /*check if corresponding exerciseSheet exists
 @if not send error message_text
 @author Lisa*/
+?>
 BEGIN
 SET NEW.C_id = (select ES.C_id from ExerciseSheet ES where ES.ES_id = NEW.ES_id limit 1);
 if (NEW.C_id is NULL) then
@@ -58,9 +57,11 @@ END;
 
 DROP TRIGGER IF EXISTS `Exercise_BUPD`;
 CREATE TRIGGER `Exercise_BUPD` BEFORE UPDATE ON `Exercise` FOR EACH ROW
+<?php
 /* check if corresponding exerciseSheet exists
 @if not send error message
 @author Lisa*/
+?>
 BEGIN
 SET NEW.C_id = (select ES.C_id from ExerciseSheet ES where ES.ES_id = NEW.ES_id limit 1);
 if (NEW.C_id is NULL) then

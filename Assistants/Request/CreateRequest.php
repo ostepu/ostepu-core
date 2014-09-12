@@ -52,9 +52,9 @@ class Request_CreateRequest
          */
         curl_setopt($ch, CURLOPT_FRESH_CONNECT, 0);
         curl_setopt($ch, CURLOPT_FORBID_REUSE, 0);
+        //curl_setopt($ch, CURLOPT_TIMEOUT, 60);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); 
-        
-        
+
         curl_setopt($ch, CURLOPT_HEADER, 1);
         return $ch; 
     }

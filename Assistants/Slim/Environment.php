@@ -224,3 +224,4 @@ class Environment implements \ArrayAccess, \IteratorAggregate
         return new \ArrayIterator($this->properties);
     }
 }
+?>

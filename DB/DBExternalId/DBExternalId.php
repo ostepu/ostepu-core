@@ -365,7 +365,8 @@ class DBExternalId
                         $eid,
                         $exid,
                         $mid,
-                        $singleResult = false
+                        $singleResult = false,
+                        $checkSession = true
                         )
     {
         Logger::Log( 
@@ -395,7 +396,8 @@ class DBExternalId
                                                     'eid' => $eid,
                                                     'exid' => $exid,
                                                     'mid' => $mid
-                                                    )
+                                                    ),
+                                              $checkSession
                                               );
 
         // checks the correctness of the query
@@ -514,7 +516,8 @@ class DBExternalId
                    isset( $eid ) ? $eid : '',
                    isset( $exid ) ? $exid : '',
                    isset( $mid ) ? $mid : '',
-                   true
+                   true,
+                   false
                    );
     }
     
@@ -535,7 +538,8 @@ class DBExternalId
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query2,
                                               'Sql/DeletePlatform.sql',
-                                              array( )
+                                              array( ),
+                                              false
                                               );
 
         // checks the correctness of the query
@@ -592,7 +596,8 @@ class DBExternalId
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query2,
                                                   'Sql/AddPlatform.sql',
-                                                  array( 'object' => $in )
+                                                  array( 'object' => $in ),
+                                                  false
                                                   );
 
             // checks the correctness of the query
@@ -630,4 +635,3 @@ class DBExternalId
 
  
 ?>
-

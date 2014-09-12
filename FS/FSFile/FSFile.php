@@ -65,11 +65,7 @@ class FSFile
      * @var Component $_conf the component data object
      */
     private $_conf;
-
-    /**
-     * @var Link[] $_fs links to components which work with files, e.g. FSBinder
-     */
-    private $_fs = array( );
+    private $_config = array();
 
     /**
      * REST actions
@@ -81,8 +77,12 @@ class FSFile
      */
     public function __construct( $_conf )
     {
+        $this->config = parse_ini_file( 
+                                       dirname(__FILE__).'/config.ini',
+                                       TRUE
+                                       ); 
+                                       
         $this->_conf = $_conf;
-        $this->_fs = $this->_conf->getLinks( );
 
         $this->_app = new \Slim\Slim( array( 'debug' => true ) );
 
@@ -91,9 +91,36 @@ class FSFile
                                             'application/json'
                                             );
 
+        // POST AddPlatform
+        $this->_app->post( 
+                         '/platform',
+                         array( 
+                               $this,
+                               'addPlatform'
+                               )
+                         );
+                         
+        // DELETE DeletePlatform
+        $this->_app->delete( 
+                         '/platform',
+                         array( 
+                               $this,
+                               'deletePlatform'
+                               )
+                         );
+                         
+        // GET GetExistsPlatform
+        $this->_app->get( 
+                         '/link/exists/platform',
+                         array( 
+                               $this,
+                               'getExistsPlatform'
+                               )
+                         );
+                         
         // POST File
         $this->_app->post( 
-                          '/' . FSFile::$_baseDir . '(/)',
+                          '/'.FSFile::getBaseDir( ).'(/)',
                           array( 
                                 $this,
                                 'postFile'
@@ -102,7 +129,7 @@ class FSFile
 
         // GET Filedata
         $this->_app->map( 
-                         '/' . FSFile::$_baseDir . '/:hash(/)',
+                         '/'.FSFile::getBaseDir( ).'/:a/:b/:c/:file(/)',
                          array( 
                                $this,
                                'getFileData'
@@ -114,7 +141,7 @@ class FSFile
 
         // GET GetFileDocument
         $this->_app->get( 
-                         '/' . FSFile::$_baseDir . '/:hash/:filename(/)',
+                         '/'.FSFile::getBaseDir( ).'/:a/:b/:c/:file/:filename(/)',
                          array( 
                                $this,
                                'getFileDocument'
@@ -123,7 +150,7 @@ class FSFile
 
         // DELETE File
         $this->_app->delete( 
-                            '/' . FSFile::$_baseDir . '/:hash(/)',
+                            '/'.FSFile::getBaseDir( ).'/:a/:b/:c/:file(/)',
                             array( 
                                   $this,
                                   'deleteFile'
@@ -138,7 +165,7 @@ class FSFile
      * Prepares the saving process by generating the hash and the place where the file is stored.
      *
      * Called when this component receives an HTTP POST request to
-     * /file.
+     * /$a/$b/$c/$file.
      * The request body should contain a JSON object representing the file's
      * attributes.
      */
@@ -165,71 +192,44 @@ class FSFile
                                                  );
             $fileObject->setAddress( FSFile::getBaseDir( ) . '/' . $fileObject->getHash( ) );
 
-            $links = FSFile::filterRelevantLinks( 
-                                                 $this->_fs,
-                                                 $fileObject->getHash( )
-                                                 );
+            if ( !file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
+                FSFile::generatepath( $this->config['DIR']['files'].'/'.dirname( $filePath ) );
 
-            $result = Request::routeRequest( 
-                                            'INFO',
-                                            '/' . $filePath,
-                                            $this->_app->request->headers->all( ),
-                                            '',
-                                            $links,
-                                            FSFile::getBaseDir( )
-                                            );
+                // writes the file to filesystem
+                $file = fopen(
+                              $this->config['DIR']['files'].'/'.$filePath,
+                              'w'
+                              );
+                if ($file){
+                    fwrite( 
+                           $file,
+                           base64_decode( $fileObject->getBody( ) )
+                           );
+                    fclose( $file );
+                    $fileObject->setStatus(201);
+                 
+                }else{
+                    $fileObject->addMessage("Datei konnte nicht im Dateisystem angelegt werden.");
+                    $fileObject->setStatus(409);
+                    Logger::Log( 
+                            'POST postFile failed',
+                            LogLevel::ERROR
+                            );
 
-            if ( $result['status'] >= 200 && 
-                 $result['status'] <= 299 ){
-                $tempObject = File::decodeFile( $result['content'] );
-                $fileObject->setFileSize( $tempObject->getFileSize( ) );
-                $fileObject->setBody( null );
-                $res[] = $fileObject;
-                
-                Logger::Log( 
-                    'POST postFile, file exists',
-                    LogLevel::DEBUG
-                    );
-
-               // $this->_app->response->setStatus(201);
-               // $this->_app->response->setBody(File::encodeFile($fileObject));
-               // $this->_app->stop();
-                continue;
+                    $this->_app->response->setBody( File::encodeFile( $fileObject ) );
+                }
             }
 
-            $result = Request::routeRequest( 
-                                            'POST',
-                                            '/' . $filePath,
-                                            $this->_app->request->headers->all( ),
-                                            File::encodeFile( $fileObject ),
-                                            $links,
-                                            FSFile::getBaseDir( )
-                                            );
+            // resets the file content
+            $fileObject->setBody( null );
 
-            if ( $result['status'] >= 200 && 
-                 $result['status'] <= 299 ){
-                $tempObject = File::decodeFile( $result['content'] );
-                $fileObject->setFileSize( $tempObject->getFileSize( ) );
-                $fileObject->setBody( null );
-                $res[] = $fileObject;
+            // generate new file address, file size and file hash
+            $fileObject->setAddress( $filePath );
+            $fileObject->setFileSize( filesize( $this->config['DIR']['files'].'/'.$filePath ) );
+            $fileObject->setHash( sha1_file( $this->config['DIR']['files'].'/'.$filePath ) );
 
-                // $this->_app->response->setStatus($result['status']);
-                // $this->_app->response->setBody(File::encodeFile($fileObject));
-                
-            } else {
-                $fileObject->getMessages()[] = ("Datei konnte nicht gespeichert werden.");
-                Logger::Log( 
-                    'POST postFile failed',
-                    LogLevel::ERROR
-                    );
-                    
-                $res[] = $fileObject;
-                $this->_app->response->setStatus( 409 );
+            $res[] = $fileObject;
 
-                // $fileObject->setBody(null);
-                $this->_app->response->setBody( File::encodeFile( $res ) );
-                $this->_app->stop( );
-            }
         }
 
         if ( !$arr && 
@@ -244,48 +244,49 @@ class FSFile
      * Returns a file.
      *
      * Called when this component receives an HTTP GET request to
-     * /file/$hash/$filename.
+     * /file/$a/$b/$c/$file/$filename.
      *
      * @param string $hash The hash of the file which should be returned.
      * @param string $filename A freely chosen filename of the returned file.
      */
     public function getFileDocument( 
-                                    $hash,
+                                    $a, $b, $c, $file,
                                     $filename
                                     )
     {
-        $links = FSFile::filterRelevantLinks( 
-                                             $this->_fs,
-                                             $hash
-                                             );
-        $filePath = FSFile::generateFilePath( 
-                                             FSFile::getBaseDir( ),
-                                             $hash
-                                             );
-        $result = Request::routeRequest( 
-                                        'GET',
-                                        '/' . $filePath,
-                                        $this->_app->request->headers->all( ),
-                                        '',
-                                        $links,
-                                        FSFile::getBaseDir( )
-                                        );
 
-        if ( isset( $result['status'] ) )
-            $this->_app->response->setStatus( $result['status'] );
+        $path = array(FSFile::getBaseDir( ),$a,$b,$c,$file);
 
-        if ( isset( $result['content'] ) )
-            $this->_app->response->setBody( $result['content'] );
+        $filePath = implode( 
+                            '/',
+                            array_slice( 
+                                        $path,
+                                        0
+                                        )
+                            );
 
-        if ( isset( $result['headers']['Content-Type'] ) )
+        if ( strlen( $this->config['DIR']['files'].'/'.$filePath ) > 1 && 
+             file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
+
+            // the file was found
             $this->_app->response->headers->set( 
                                                 'Content-Type',
-                                                $result['headers']['Content-Type']
+                                                'application/octet-stream'
                                                 );
-        $this->_app->response->headers->set( 
-                                            'Content-Disposition',
-                                            "attachment; filename=\"$filename\""
-                                            );
+            $this->_app->response->headers->set( 
+                                    'Content-Disposition',
+                                    "attachment; filename=\"$filename\""
+                                    );
+                                            
+            $this->_app->response->setStatus( 200 );
+            readfile( $this->config['DIR']['files'].'/'.$filePath );
+            $this->_app->stop( );
+            
+        } else {
+            $this->_app->response->setStatus( 409 );
+            $this->_app->stop( );
+        }
+
         $this->_app->stop( );
     }
 
@@ -293,94 +294,193 @@ class FSFile
      * Returns the file infos as a JSON file object.
      *
      * Called when this component receives an HTTP GET request to
-     * /file/$hash.
+     * /file/$a/$b/$c/$file.
      *
      * @param string $hash The hash of the requested file.
      */
-    public function getFileData( $hash )
+    public function getFileData( $a, $b, $c, $file )
     {
-        $links = FSFile::filterRelevantLinks( 
-                                             $this->_fs,
-                                             $hash
-                                             );
-        $filePath = FSFile::generateFilePath( 
-                                             FSFile::getBaseDir( ),
-                                             $hash
-                                             );
-        $result = Request::routeRequest( 
-                                        'INFO',
-                                        '/' . $filePath,
-                                        $this->_app->request->headers->all( ),
-                                        '',
-                                        $links,
-                                        FSFile::getBaseDir( )
-                                        );
+        $path = array(FSFile::getBaseDir( ),$a,$b,$c,$file);
 
-        if ( isset( $result['headers']['Content-Type'] ) )
-            $this->_app->response->headers->set( 
-                                                'Content-Type',
-                                                $result['headers']['Content-Type']
-                                                );
+        $filePath = implode( 
+                            '/',
+                            array_slice( 
+                                        $path,
+                                        0
+                                        )
+                            );
 
-        if ( $result['status'] >= 200 && 
-             $result['status'] <= 299 && 
-             isset( $result['content'] ) ){
-            $tempObject = File::decodeFile( $result['content'] );
-            $tempObject->setAddress( FSFile::getBaseDir( ) . '/' . $hash );
-            $this->_app->response->setStatus( $result['status'] );
-            $this->_app->response->setBody( File::encodeFile( $tempObject ) );
+        if ( strlen( $this->config['DIR']['files'].'/'.$filePath ) > 0 && 
+             file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
+
+            // the file was found
+            $file = new File( );
+            $file->setAddress( $filePath );
+            $file->setFileSize( filesize( $this->config['DIR']['files'].'/'.$filePath ) );
+            $file->setHash( sha1_file( $this->config['DIR']['files'].'/'.$filePath ) );
+            $this->_app->response->setBody( File::encodeFile( $file ) );
+            $this->_app->response->setStatus( 200 );
+            $this->_app->stop( );
             
         } else {
-            $this->_app->response->setStatus( 409 );
             $this->_app->response->setBody( File::encodeFile( new File( ) ) );
+            $this->_app->response->setStatus( 409 );
             $this->_app->stop( );
         }
-        $this->_app->stop( );
     }
 
     /**
      * Deletes a file.
      *
      * Called when this component receives an HTTP DELETE request to
-     * /file/$hash.
+     * /file/$a/$b/$c/$file.
      *
      * @param string $hash The hash of the file which should be deleted.
      */
-    public function deleteFile( $hash )
+    public function deleteFile( $a, $b, $c, $file )
     {
-        $links = FSFile::filterRelevantLinks( 
-                                             $this->_fs,
-                                             $hash
-                                             );
-        $filePath = FSFile::generateFilePath( 
-                                             FSFile::getBaseDir( ),
-                                             $hash
-                                             );
-        $result = Request::routeRequest( 
-                                        'DELETE',
-                                        '/' . $filePath,
-                                        $this->_app->request->headers->all( ),
-                                        '',
-                                        $links,
-                                        FSFile::getBaseDir( )
-                                        );
+        $path = array(FSFile::getBaseDir( ),$a,$b,$c,$file);
 
-        if ( $result['status'] >= 200 && 
-             $result['status'] <= 299 && 
-             isset( $result['content'] ) ){
-            $tempObject = File::decodeFile( $result['content'] );
-            $tempObject->setAddress( FSFile::getBaseDir( ) . '/' . $hash );
-            $this->_app->response->setStatus( $result['status'] );
-            $this->_app->response->setBody( File::encodeFile( $tempObject ) );
+        $filePath = implode( 
+                            '/',
+                            array_slice( 
+                                        $path,
+                                        0
+                                        )
+                            );
+
+        if ( strlen( $filePath ) > 0 && 
+             file_exists( $this->config['DIR']['files'] . '/' . $filePath ) ){
+
+            // after the successful deletion, we want to return the file data
+            $file = new File( );
+            $file->setAddress( $filePath );
+            $file->setFileSize( filesize( $this->config['DIR']['files'] . '/' . $filePath ) );
+            $file->setHash( sha1_file( $this->config['DIR']['files'] . '/' . $filePath ) );
+
+            // removes the file
+            unlink( $this->config['DIR']['files'] . '/' . $filePath );
+
+            // the removing/unlink process failed, if the file still exists.
+            if ( file_exists( $this->config['DIR']['files'] . '/' . $filePath ) ){
+                $this->_app->response->setStatus( 409 );
+                $this->_app->response->setBody( File::encodeFile( new File( ) ) );
+                $this->_app->stop( );
+            }
+
+            // the file is removed
+            $this->_app->response->setBody( File::encodeFile( $file ) );
+            $this->_app->response->setStatus( 201 );
+            $this->_app->stop( );
             
         } else {
+
+            // file does not exist
             $this->_app->response->setStatus( 409 );
             $this->_app->response->setBody( File::encodeFile( new File( ) ) );
             $this->_app->stop( );
         }
-        $this->_app->stop( );
     }
+    
+    /**
+     * Returns status code 200, if this component is correctly installed for the platform
+     *
+     * Called when this component receives an HTTP GET request to
+     * /link/exists/platform.
+     */
+    public function getExistsPlatform( )
+    {
+        Logger::Log( 
+                    'starts GET GetExistsPlatform',
+                    LogLevel::DEBUG
+                    );
+                    
+        if (!file_exists('config.ini')){
+            $this->_app->response->setStatus( 409 );
+            $this->_app->stop();
+        }
+       
+        $this->_app->response->setStatus( 200 );
+        $this->_app->response->setBody( '' );  
+    }
+    
+    /**
+     * Removes the component from the platform
+     *
+     * Called when this component receives an HTTP DELETE request to
+     * /platform.
+     */
+    public function deletePlatform( )
+    {
+        Logger::Log( 
+                    'starts DELETE DeletePlatform',
+                    LogLevel::DEBUG
+                    );
+        if (file_exists('config.ini') && !unlink('config.ini')){
+            $this->_app->response->setStatus( 409 );
+            $this->_app->stop();
+        }
+        
+        $this->_app->response->setStatus( 201 );
+        $this->_app->response->setBody( '' );
+    }
+    
+    /**
+     * Adds the component to the platform
+     *
+     * Called when this component receives an HTTP POST request to
+     * /platform.
+     */
+    public function addPlatform( )
+    {
+        Logger::Log( 
+                    'starts POST AddPlatform',
+                    LogLevel::DEBUG
+                    );
 
+        // decode the received course data, as an object
+        $insert = Platform::decodePlatform( $this->_app->request->getBody( ) );
+
+        // always been an array
+        $arr = true;
+        if ( !is_array( $insert ) ){
+            $insert = array( $insert );
+            $arr = false;
+        }
+
+        // this array contains the indices of the inserted objects
+        $res = array( );
+        foreach ( $insert as $in ){
+        
+            $file = 'config.ini';
+            $text = "[DIR]\n".
+                    "temp = ".str_replace("\\","/",$in->getTempDirectory())."\n".
+                    "files = ".str_replace("\\","/",$in->getFilesDirectory())."\n";
+                    
+            if (!@file_put_contents($file,$text)){
+                Logger::Log( 
+                            'POST AddPlatform failed, config.ini no access',
+                            LogLevel::ERROR
+                            );
+
+                $this->_app->response->setStatus( 409 );
+                $this->_app->stop();
+            }   
+
+            $platform = new Platform();
+            $platform->setStatus(201);
+            $res[] = $platform;
+            $this->_app->response->setStatus( 201 );
+        }
+
+        if ( !$arr && 
+             count( $res ) == 1 ){
+            $this->_app->response->setBody( Platform::encodePlatform( $res[0] ) );
+            
+        } else 
+            $this->_app->response->setBody( Platform::encodePlatform( $res ) );
+    }
+    
     /**
      * Creates a file path by splitting the hash.
      *
@@ -406,102 +506,27 @@ class FSFile
      * Creates the path in the filesystem, if necessary.
      *
      * @param string $path The path which should be created.
+     * @see http://php.net/manual/de/function.mkdir.php#83265
      */
-    public static function generatepath( $path )
+    public static function generatepath( $path, $mode = 0755 )
     {
-        $parts = explode( 
-                         '/',
-                         $path
-                         );
-        if ( count( $parts ) > 0 ){
-            $path = $parts[0];
-            for ( $i = 1;$i <= count( $parts );$i++ ){
-                if ( !is_dir( $path ) )
-                    mkdir( 
-                          $path,
-                          0755
-                          );
-                if ( $i < count( $parts ) )
-                    $path .= '/' . $parts[$i];
-            }
+        $path = rtrim(preg_replace(array("/\\\\/", "/\/{2,}/"), "/", $path), "/");
+        $e = explode("/", ltrim($path, "/"));
+        if(substr($path, 0, 1) == "/") {
+            $e[0] = "/".$e[0];
         }
-    }
-
-    /**
-     * Selects the components which are responsible for handling the file with
-     * the given hash.
-     *
-     * @param link[] $linkedComponents An array of links to components which could
-     * possibly handle the file.
-     * @param string $hash The hash of the file.
-     */
-    public static function filterRelevantLinks( 
-                                               $linkedComponents,
-                                               $hash
-                                               )
-    {
-        $result = array( );
-        foreach ( $linkedComponents as $link ){
-            $in = explode( 
-                          '-',
-                          $link->getRelevanz( )
-                          );
-            if ( count( $in ) < 2 ){
-                $result[] = $link;
-                
-            }elseif ( FSFile::isRelevant( 
-                                         $hash,
-                                         $in[0],
-                                         $in[1]
-                                         ) ){
-                $result[] = $link;
+        $c = count($e);
+        $cp = $e[0];
+        for($i = 1; $i < $c; $i++) {
+            if(!is_dir($cp) && !@mkdir($cp, $mode)) {
+                return false;
             }
+            $cp .= "/".$e[$i];
         }
-        return $result;
+        return @mkdir($path, $mode);
     }
 
-    /**
-     * Decides if the given component is responsible for the specific hash.
-     *
-     * @param string $hash The hash of the file.
-     * @param string $_relevantBegin The minimum hash the component is responsible for.
-     * @param string $_relevantEnd The maximum hash the component is responsible for.
-     */
-    public static function isRelevant( 
-                                      $hash,
-                                      $relevant_begin,
-                                      $relevant_end
-                                      )
-    {
-
-        // to compare the begin and the end, we need an other form
-        $begin = hexdec( substr( 
-                                $relevant_begin,
-                                0,
-                                strlen( $relevant_begin )
-                                ) );
-        $end = hexdec( substr( 
-                              $relevant_end,
-                              0,
-                              strlen( $relevant_end )
-                              ) );
-
-        // the numeric form of the test hash
-        $current = hexdec( substr( 
-                                  $hash,
-                                  0,
-                                  strlen( $relevant_end )
-                                  ) );
-
-        if ( $current >= $begin && 
-             $current <= $end ){
-            return true;
-            
-        } else 
-            return false;
-    }
 }
 
  
 ?>
-

@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetSheetUserGroups.sql
  * gets a table for output, where all members of a group are listed
@@ -8,6 +9,7 @@
  * - U is the groupleader
  * - U2 are the members of the group without the leader
  */
+?>
 
 SELECT 
     U.U_id,
@@ -42,4 +44,4 @@ FROM
     User U2 ON U2.U_id = G2.U_id_leader
         and U2.U_id <> G.U_id_member
 WHERE
-    G.U_id_leader = '$userid' and G.ES_id = '$esid'
+    G.U_id_leader = '<?php echo $userid; ?>' and G.ES_id = '<?php echo $esid; ?>'

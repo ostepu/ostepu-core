@@ -1,3 +1,4 @@
+<?php
 /**
  * @file EditFile.sql
  * updates an specified file from %File table
@@ -6,7 +7,8 @@
  * @param string $values the input data, e.g. 'a=1, b=2'
  * @result -
  */
+?>
  
 UPDATE File
-SET $values
-WHERE F_id = '$fileid'
+SET <?php echo $values; ?>
+WHERE F_id = '<?php echo $fileid; ?>'

@@ -2,9 +2,6 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
--- -----------------------------------------------------
--- Table `Group`
--- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Group` (
   `U_id_leader` INT NOT NULL,
   `U_id_member` INT NOT NULL,
@@ -46,9 +43,11 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 DROP TRIGGER IF EXISTS `Group_BINS`;
 CREATE TRIGGER `Group_BINS` BEFORE INSERT ON `Group` FOR EACH ROW
+<?php
 /*check if corresponding exerciseSheet exists
 @if not send error message
 @author Lisa*/
+?>
 BEGIN
 SET NEW.C_id = (select ES.C_id from ExerciseSheet ES where ES.ES_id = NEW.ES_id limit 1);
 if (NEW.C_id is NULL) then
@@ -58,10 +57,12 @@ END;
 
 DROP TRIGGER IF EXISTS `Group_BUPD`;
 CREATE TRIGGER `Group_BUPD` BEFORE UPDATE ON `Group` FOR EACH ROW
+<?php
 /*check if corresponding exerciseSheet exists
 *and if invitation exists
 *if not send error message
 @author Lisa Dietrich*/
+?>
 BEGIN
 SET NEW.C_id = (select ES.C_id from ExerciseSheet ES where ES.ES_id = NEW.ES_id limit 1);
 if (NEW.C_id is NULL) then
@@ -74,12 +75,16 @@ END;
 
 DROP TRIGGER IF EXISTS `Group_BDEL`;
 CREATE TRIGGER `Group_BDEL` BEFORE DELETE ON `Group` FOR EACH ROW
+<?php
 /* check if all users in this group are deleted
 @author Lisa Dietrich*/
+?>
 begin
+<?php
 /*if exists (Select U_id from user where U_id = OLD.U_id_leader AND U_flag = 1 limit 1)
 then signal  sqlstate '45001' set message_text = 'active users in group';
 else delete from Submission
 where U_id = OLD.U_id_leader;
 end if;*/
+?>
 end;

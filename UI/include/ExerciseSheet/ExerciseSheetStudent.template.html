@@ -7,13 +7,9 @@
            // bool if endDate of sheet is greater than the actual date
            $isExpired = date('U') > date('U', $sheet['endDate']); 
 
-           /**
-            * @todo Only show sheets if $hasStarted is true.
-            * @todo Hide links if $isExpired is true ('Aufgaben hochladen', 'Gruppe verwalten', ...)
-            */
-
            // bool if startDate of sheet is greater than the actual date
            $hasStarted = date('U') > date('U', $sheet['startDate']);
+           if (!$hasStarted) continue;
            ?>
     <div class="content-element collapsible">
         <div class="content-header">
@@ -23,9 +19,16 @@
                     (abgelaufen)
                 <?php endif; ?>
             </div>
+               
             <div class="critical-color bold right">
                 <?php echo date('d.m.Y  -  H:i', $sheet['endDate']); ?>
             </div>
+            <div class="info-color bold right">
+            <?php if (!$isExpired){ ?>
+                <?php echo date('d.m.Y  -  H:i', $sheet['startDate']).' bis&nbsp;'; ?>
+                <?php } ?>
+            </div>
+            
             <div class="exercise-sheet-info info-color bold right">
                 <?php if ($isExpired) echo $sheet['percentage'], '%';?>
             </div>
@@ -65,9 +68,9 @@
                         </div>
 
                         <div class="exercise-status">
-                            <?php if (isset($exercise['submission']['marking'])): ?>
+                            <?php if (isset($exercise['submission']['marking']) && $isExpired): ?>
                                 <?php echo $exercise['submission']['marking']['status']; ?>
-                            <?php elseif (isset($exercise['submission'])): ?>
+                            <?php elseif (isset($exercise['submission']) || (isset($exercise['submission']['marking']) && !$isExpired)): ?>
                                 unkontrolliert
                             <?php else: ?>
                                 nicht eingesendet
@@ -79,7 +82,7 @@
                             <?php if(isset($exercise['attachment'])): ?>
                                 <?php $displayName = $exercise['attachment']['displayName']; ?>
                                 <?php $fileAddress = $exercise['attachment']['address']; ?>
-                                <?php $fileURL = "../FS/FSControl/{$fileAddress}/{$displayName}";/*{$filesystemURI}*/ ?>
+                                <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}";/*{$filesystemURI}*/ ?>
 
                                 <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" class="plain" target="_blank">
                                     <img src="Images/Attachment.png" />
@@ -90,7 +93,7 @@
                             <?php if(isset($exercise['submission']) && $exercise['submission']['hideFile'] == "0"): ?>
                                 <?php $displayName = $exercise['submission']['file']['displayName']; ?>
                                 <?php $fileAddress = $exercise['submission']['file']['address']; ?>
-                                <?php $fileURL = "../FS/FSControl/{$fileAddress}/{$displayName}";/*{$filesystemURI}*/ ?>
+                                <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}";/*{$filesystemURI}*/ ?>
 
                                 <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" class="plain" target="_blank">
                                     <img src="Images/Download.png" />
@@ -98,10 +101,10 @@
                             <?php endif; ?>
 
                             <?php // creates a downloadCorrection icon for the marking (if it exists) ?>
-                            <?php if(isset($exercise['submission']['marking']) && $exercise['submission']['marking']['hideFile'] == "0" && $isExpired): ?>
+                            <?php if(isset($exercise['submission']['marking']['file']) && $exercise['submission']['marking']['hideFile'] == "0" && $isExpired): ?>
                                 <?php $displayName = $exercise['submission']['marking']['file']['displayName']; ?>
                                 <?php $fileAddress = $exercise['submission']['marking']['file']['address']; ?>
-                                <?php $fileURL = "../FS/FSControl/{$fileAddress}/{$displayName}";/*{$filesystemURI}*/ ?>
+                                <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}";/*{$filesystemURI}*/ ?>
 
                                 <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" class="plain image-button" target="_blank">
                                     <img src="Images/DownloadCorrection.png" />
@@ -112,7 +115,7 @@
                             <?php if (isset($exercise['submission']) 
                                       && !$isExpired 
                                       && $sheet['group']['leader']['id'] == $uid
-                                      && $exercise['submission']['hideFile'] == "0"): ?>                                           
+                                      && $exercise['submission']['hideFile'] == "0"): ?>                                       
                                     <button title="Einsendung löschen" name="deleteSubmission" value="<?php echo $exercise['submission']['id']; ?>" class="image-button">
                                         <img src="Images/Delete.png">
                                     </button>
@@ -139,7 +142,7 @@
                     <?php if($isExpired && isset($sheet['sampleSolution'])): ?>
                         <?php $displayName = $sheet['sampleSolution']['displayName']; ?>
                         <?php $fileAddress = $sheet['sampleSolution']['address']; ?>
-                        <?php $fileURL = "../FS/FSControl/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
+                        <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
                         <li>
                             <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
                                 Musterlösung
@@ -148,16 +151,25 @@
                     <?php endif; ?>
 
                     <li>
+                        <?php if (isset($sheet['sheetFile']['address'])){?>
                         <?php $displayName = $sheet['sheetFile']['displayName']; ?>
                         <?php $fileAddress = $sheet['sheetFile']['address']; ?>
-                        <?php $fileURL = "../FS/FSControl/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
+                        <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
                         <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
                             Aufgabenblatt
                         </a>
+                        <?php } ?>
                     </li>
+                    
                     <li>
-                        <a style="color:#b9b8b8"><s><!--<a href="Group.php?sid=<?php echo $sheet['id'], '&cid=', $cid; ?>">-->
-                            Gruppe verwalten
+                        <?php 
+                        if ($isExpired){
+                        ?>
+                            <a style="color:#b9b8b8"><s>
+                        <?php } else { ?>
+                            <a style="color:#b9b8b8"><s><!--<a href="Group.php?sid=<?php echo $sheet['id'], '&cid=', $cid; ?>">-->
+                        <?php } ?>
+                        Gruppe verwalten
                         </s></a>
                     </li>
 
@@ -165,14 +177,12 @@
                         <?php 
                         if ($isExpired){
                         ?>
-                        <a style="color:#b9b8b8">
-                            Aufgaben hochladen
-                        </a>
+                            <a style="color:#b9b8b8">
                         <?php } else { ?>
-                        <a href="Upload.php?cid=<?php echo $cid; ?>&sid=<?php echo $sheet['id']; ?>" title="Upload">
-                            Aufgaben hochladen
-                        </a>
+                            <a href="Upload.php?cid=<?php echo $cid; ?>&sid=<?php echo $sheet['id']; ?>" title="Upload">
                         <?php } ?>
+                            Aufgaben hochladen
+                            </a>
                     </li>
 
                     <?php // prints a link to download attachments ?>
@@ -185,13 +195,13 @@
                     <?php endif; ?>
 
                     <?php // prints a link to download markings ?>
-                    <?php if ($sheet['hasMarkings']): ?>
+                    <?php if ($sheet['hasMarkings'] && $isExpired): ?>
                         <li>
-                            <!--<button name="downloadMarkings" value="<?php echo $sheet['id']; ?>" class="text-button body-option-color">-->
-                            <a style="color:#b9b8b8" class="text-button body-option-color"><s>
-                                Alle Einsendungen herunterladen
-                            </s></a>
-                            <!--</button>-->
+                            <button name="downloadMarkings" value="<?php echo $sheet['id']; ?>" class="text-button body-option-color">
+                            <!--<a style="color:#b9b8b8" class="text-button body-option-color"><s>-->
+                                Alles herunterladen
+                            <!--</s></a>-->
+                            </button>
                         </li>
                     <?php endif; ?>
                 </ol>

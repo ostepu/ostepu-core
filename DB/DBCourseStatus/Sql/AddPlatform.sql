@@ -2,9 +2,6 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
--- -----------------------------------------------------
--- Table `CourseStatus`
--- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `CourseStatus` (
   `C_id` INT NOT NULL,
   `U_id` INT NOT NULL,
@@ -28,8 +25,10 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 DROP TRIGGER IF EXISTS `CourseStatus_AINS`;
 CREATE TRIGGER `CourseStatus_AINS` AFTER INSERT ON `CourseStatus` FOR EACH ROW
+<?php
 /*add group for the new member in this course
 @author: Lisa Dietrich */
+?>
 begin
 if NEW.CS_status = 0 then
 INSERT IGNORE INTO `Group` 
@@ -41,8 +40,10 @@ end;
 
 DROP TRIGGER IF EXISTS `CourseStatus_AUPD`;
 CREATE TRIGGER `CourseStatus_AUPD` AFTER UPDATE ON `CourseStatus` FOR EACH ROW
+<?php
 /*add group for the new member in this course
 @author: Till Uhlig */
+?>
 begin
 if NEW.CS_status = 0 then
 INSERT IGNORE INTO `Group` 

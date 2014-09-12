@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetCourseAttachments.sql
  * gets all course attachments from %Attachment table
@@ -7,10 +8,11 @@
  * - A, the attachment data
  * - F, the attachment file
  */
+?>
  
 select 
-    concat('{$courseid}','_',A.A_id) as A_id,
-    concat('{$courseid}','_',A.PRO_id) as PRO_id,
+    concat('<?php echo $courseid; ?>','_',A.A_id) as A_id,
+    concat('<?php echo $courseid; ?>','_',A.PRO_id) as PRO_id,
     A.E_id,
     F.F_id,
     F.F_displayName,
@@ -20,5 +22,5 @@ select
     F.F_comment,
     F.F_hash
 from
-    `Attachment{$pre}_{$courseid}` A
+    `Attachment<?php echo $pre; ?>_<?php echo $courseid; ?>` A
     left join `File` F ON F.F_id = A.F_id

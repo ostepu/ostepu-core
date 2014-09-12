@@ -7,8 +7,8 @@
  * @author Till Uhlig
  */
 
-include_once ( '/../../Assistants/Request.php' );
-include_once ( '/../../Assistants/Structures.php' );
+include_once ( dirname( __FILE__ ) . '/../../Assistants/Request.php' );
+include_once ( dirname( __FILE__ ) . '/../../Assistants/Structures.php' );
 
 /**
  * A class, to test the DBAttachment component
@@ -381,3 +381,4 @@ class DBAttachmentTest extends PHPUnit_Framework_TestCase
                               );
     }
 }
+?>

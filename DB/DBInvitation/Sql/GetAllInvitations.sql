@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetAllInvitations.sql
  * gets a table for output, where all invitations are listed
@@ -7,6 +8,7 @@
  * - U is the groupleader who invites
  * - U2 are the members of the Invitation without the leader
  */
+?>
 
 SELECT 
     U.U_id,

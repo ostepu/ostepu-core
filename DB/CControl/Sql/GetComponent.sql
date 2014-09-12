@@ -3,5 +3,5 @@ select
 from
     Component
 where
-    CO_id = '$componentid'
-        or CO_name = '$componentid'
+    CO_id = '<?php echo $componentid; ?>'
+        or CO_name = '<?php echo $componentid; ?>'

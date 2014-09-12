@@ -2,9 +2,6 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
--- -----------------------------------------------------
--- Table `ExerciseSheet`
--- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `ExerciseSheet` (
   `C_id` INT NOT NULL,
   `ES_id` INT NOT NULL AUTO_INCREMENT,
@@ -40,8 +37,10 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 DROP TRIGGER IF EXISTS `ExerciseSheet_AINS`;
 CREATE TRIGGER `ExerciseSheet_AINS` AFTER INSERT ON `ExerciseSheet` FOR EACH ROW
+<?php
 /*insert new group for every exerciseSheet
 @author Lisa*/
+?>
 begin
 INSERT IGNORE INTO `Group` 
 SELECT C.U_id , C.U_id , null , NEW.ES_id 
@@ -51,9 +50,11 @@ end;
 
 DROP TRIGGER IF EXISTS `ExerciseSheet_BINS`;
 CREATE TRIGGER `ExerciseSheet_BINS` BEFORE INSERT ON `ExerciseSheet` FOR EACH ROW
+<?php
 /*check if groupsize exists
 @if not take default groupsize from course
 @author Lisa*/
+?>
 begin
 IF NEW.ES_groupSize is null 
 then Set NEW.ES_groupSize = (SELECT C_defaultGroupSize FROM Course WHERE C_id = NEW.C_id limit 1);

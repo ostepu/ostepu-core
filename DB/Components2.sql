@@ -2,62 +2,63 @@
 -- Data for table `Component`
 -- -----------------------------------------------------
 START TRANSACTION;
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('FSControl', 'localhost/uebungsplattform/FS/FSControl', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('FSFile', 'localhost/uebungsplattform/FS/FSFile', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('FSZip', 'localhost/uebungsplattform/FS/FSZip', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('DBControl', 'localhost/uebungsplattform/DB/DBControl', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('FSBinder', 'localhost/uebungsplattform/FS/FSBinder', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('DBCourse', 'localhost/uebungsplattform/DB/DBCourse', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('DBUser', 'localhost/uebungsplattform/DB/DBUser', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('DBAttachment', 'localhost/uebungsplattform/DB/DBAttachment', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('DBExercise', 'localhost/uebungsplattform/DB/DBExercise', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('DBExerciseSheet', 'localhost/uebungsplattform/DB/DBExerciseSheet', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('DBExerciseType', 'localhost/uebungsplattform/DB/DBExerciseType', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('DBFile', 'localhost/uebungsplattform/DB/DBFile', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('DBQuery', 'localhost/uebungsplattform/DB/DBQuery', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('LController', 'localhost/uebungsplattform/logic/LController', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('LGroup', 'localhost/uebungsplattform/logic/LGroup', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('LUser', 'localhost/uebungsplattform/logic/LUser', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('DBCourseStatus', 'localhost/uebungsplattform/DB/DBCourseStatus', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('FSPdf', 'localhost/uebungsplattform/FS/FSPdf', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('DBExternalId', 'localhost/uebungsplattform/DB/DBExternalId', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('DBApprovalCondition', 'localhost/uebungsplattform/DB/DBApprovalCondition', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('DBGroup', 'localhost/uebungsplattform/DB/DBGroup', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('DBInvitation', 'localhost/uebungsplattform/DB/DBInvitation', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('DBMarking', 'localhost/uebungsplattform/DB/DBMarking', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('DBSession', 'localhost/uebungsplattform/DB/DBSession', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('DBSubmission', 'localhost/uebungsplattform/DB/DBSubmission', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('DBSelectedSubmission', 'localhost/uebungsplattform/DB/DBSelectedSubmission', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('LTutor', 'localhost/uebungsplattform/logic/LTutor', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('LExerciseSheet', 'localhost/uebungsplattform/logic/LExerciseSheet', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('LExercise', 'localhost/uebungsplattform/logic/LExercise', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('LCondition', 'localhost/uebungsplattform/logic/LCondition', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('LAttachment', 'localhost/uebungsplattform/logic/LAttachment', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('LExerciseType', 'localhost/uebungsplattform/logic/LExerciseType', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('LGetSite', 'localhost/uebungsplattform/logic/LGetSite', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('DBExerciseFileType', 'localhost/uebungsplattform/DB/DBExerciseFileType', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('CControl', 'localhost/uebungsplattform/DB/CControl', '');
-
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('LCourse', 'localhost/uebungsplattform/logic/LCourse', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('LSubmission', 'localhost/uebungsplattform/logic/LSubmission', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('LMarking', 'localhost/uebungsplattform/logic/LMarking', '');
-
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('DBQuery2', 'localhost/uebungsplattform/DB/DBQuery2', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('LFile', 'localhost/uebungsplattform/logic/LFile', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('DBForm', 'localhost/uebungsplattform/DB/DBForm', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('DBChoice', 'localhost/uebungsplattform/DB/DBChoice', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('LFormPredecessor', 'localhost/uebungsplattform/logic/LFormPredecessor', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('LFormProcessor', 'localhost/uebungsplattform/logic/LFormProcessor', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('LForm', 'localhost/uebungsplattform/logic/LForm', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('LProcessor', 'localhost/uebungsplattform/logic/LProcessor', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('DBProcess', 'localhost/uebungsplattform/DB/DBProcess', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('DBProcessAttachment', 'localhost/uebungsplattform/DB/DBAttachment2/processAttachment', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('DBProcessWorkFiles', 'localhost/uebungsplattform/DB/DBAttachment2/processWorkFiles', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('LExtension', 'localhost/uebungsplattform/logic/LExtension', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('LOOP', 'localhost/uebungsplattform/logic/LOOP', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('DBProcessList', 'localhost/uebungsplattform/DB/DBProcess/processList', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('DBFormResult', 'localhost/uebungsplattform/DB/DBChoice/formResult', '');
-REPLACE INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ('CFilter', 'localhost/uebungsplattform/DB/CFilter', '');
+INSERT INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES 
+('FSControl', 'localhost/uebungsplattform/FS/FSControl', ''),
+('FSFile', 'localhost/uebungsplattform/FS/FSFile', ''),
+('FSZip', 'localhost/uebungsplattform/FS/FSZip', ''),
+('DBControl', 'localhost/uebungsplattform/DB/DBControl', ''),
+('FSBinder', 'localhost/uebungsplattform/FS/FSBinder', ''),
+('DBCourse', 'localhost/uebungsplattform/DB/DBCourse', ''),
+('DBUser', 'localhost/uebungsplattform/DB/DBUser', ''),
+('DBAttachment', 'localhost/uebungsplattform/DB/DBAttachment', ''),
+('DBExercise', 'localhost/uebungsplattform/DB/DBExercise', ''),
+('DBExerciseSheet', 'localhost/uebungsplattform/DB/DBExerciseSheet', ''),
+('DBExerciseType', 'localhost/uebungsplattform/DB/DBExerciseType', ''),
+('DBFile', 'localhost/uebungsplattform/DB/DBFile', ''),
+('DBQuery', 'localhost/uebungsplattform/DB/DBQuery', ''),
+('LController', 'localhost/uebungsplattform/logic/LController', ''),
+('LGroup', 'localhost/uebungsplattform/logic/LGroup', ''),
+('LUser', 'localhost/uebungsplattform/logic/LUser', ''),
+('DBCourseStatus', 'localhost/uebungsplattform/DB/DBCourseStatus', ''),
+('FSPdf', 'localhost/uebungsplattform/FS/FSPdf', ''),
+('DBExternalId', 'localhost/uebungsplattform/DB/DBExternalId', ''),
+('DBApprovalCondition', 'localhost/uebungsplattform/DB/DBApprovalCondition', ''),
+('DBGroup', 'localhost/uebungsplattform/DB/DBGroup', ''),
+('DBInvitation', 'localhost/uebungsplattform/DB/DBInvitation', ''),
+('DBMarking', 'localhost/uebungsplattform/DB/DBMarking', ''),
+('DBSession', 'localhost/uebungsplattform/DB/DBSession', ''),
+('DBSubmission', 'localhost/uebungsplattform/DB/DBSubmission', ''),
+('DBSelectedSubmission', 'localhost/uebungsplattform/DB/DBSelectedSubmission', ''),
+('LTutor', 'localhost/uebungsplattform/logic/LTutor', ''),
+('LExerciseSheet', 'localhost/uebungsplattform/logic/LExerciseSheet', ''),
+('LExercise', 'localhost/uebungsplattform/logic/LExercise', ''),
+('LCondition', 'localhost/uebungsplattform/logic/LCondition', ''),
+('LAttachment', 'localhost/uebungsplattform/logic/LAttachment', ''),
+('LExerciseType', 'localhost/uebungsplattform/logic/LExerciseType', ''),
+('LGetSite', 'localhost/uebungsplattform/logic/LGetSite', ''),
+('DBExerciseFileType', 'localhost/uebungsplattform/DB/DBExerciseFileType', ''),
+('CControl', 'localhost/uebungsplattform/DB/CControl', ''),
+('LCourse', 'localhost/uebungsplattform/logic/LCourse', ''),
+('LSubmission', 'localhost/uebungsplattform/logic/LSubmission', ''),
+('LMarking', 'localhost/uebungsplattform/logic/LMarking', ''),
+('DBQuery2', 'localhost/uebungsplattform/DB/DBQuery2', ''),
+('LFile', 'localhost/uebungsplattform/logic/LFile', ''),
+('DBForm', 'localhost/uebungsplattform/DB/DBForm', ''),
+('DBChoice', 'localhost/uebungsplattform/DB/DBChoice', ''),
+('LFormPredecessor', 'localhost/uebungsplattform/logic/LFormPredecessor', ''),
+('LFormProcessor', 'localhost/uebungsplattform/logic/LFormProcessor', ''),
+('LForm', 'localhost/uebungsplattform/logic/LForm', ''),
+('LProcessor', 'localhost/uebungsplattform/logic/LProcessor', ''),
+('DBProcess', 'localhost/uebungsplattform/DB/DBProcess', ''),
+('DBProcessAttachment', 'localhost/uebungsplattform/DB/DBAttachment2/processAttachment', ''),
+('DBProcessWorkFiles', 'localhost/uebungsplattform/DB/DBAttachment2/processWorkFiles', ''),
+('LExtension', 'localhost/uebungsplattform/logic/LExtension', ''),
+('LOOP', 'localhost/uebungsplattform/logic/LOOP', ''),
+('DBProcessList', 'localhost/uebungsplattform/DB/DBProcess/processList', ''),
+('DBFormResult', 'localhost/uebungsplattform/DB/DBChoice/formResult', ''),
+('CFilter', 'localhost/uebungsplattform/DB/CFilter', ''),
+('DBTransaction', 'localhost/uebungsplattform/DB/DBTransaction', '')
+ON DUPLICATE KEY UPDATE CO_address=VALUES(CO_address), CO_option=VALUES(CO_option);
 COMMIT;
 
 
@@ -120,12 +121,10 @@ SET @DBProcess = (select CO_id from Component where CO_name='DBProcess' limit 1)
 SET @DBProcessAttachment = (select CO_id from Component where CO_name='DBProcessAttachment' limit 1);
 SET @DBProcessWorkFiles = (select CO_id from Component where CO_name='DBProcessWorkFiles' limit 1);
 SET @CFilter = (select CO_id from Component where CO_name='CFilter' limit 1);
+SET @DBTransaction = (select CO_id from Component where CO_name='DBTransaction' limit 1);
 
-INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@FSZip, 'getFile', '', @FSControl);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@FSControl, 'out', '', @FSFile);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@FSControl, 'out', '', @FSZip);
-INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@FSZip, 'out', '0-f', @FSBinder);
-INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@FSFile, 'out', '0-f', @FSBinder);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@DBCourse, 'out', '', @DBQuery);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@DBUser, 'out', '', @DBQuery);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@DBAttachment, 'out', '', @DBQuery);
@@ -145,7 +144,6 @@ INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LController, 'out', '', @LUser);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LController, 'database', '', @DBControl);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LController, 'filesystem', '', @FSControl);
-INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@FSPdf, 'out', '0-f', @FSBinder);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@FSControl, 'out', '', @FSPdf);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@DBControl, 'out', '', @DBSession);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@DBControl, 'out', '', @DBExternalId);
@@ -205,7 +203,8 @@ INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LFormPredecessor, 'pdf', '', @FSPdf);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LFormProcessor, 'pdf', '', @FSPdf);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LOOP, 'pdf', '', @FSPdf);
-INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LCourse, 'out', '', @DBCourse);
+INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LCourse, 'postCourse', '', @DBCourse);
+INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LCourse, 'deleteCourse', '', @DBCourse);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LExtension, 'extension', '', @LForm);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LSubmission, 'zip', '', @FSZip);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LForm, 'choice', '', @DBChoice);
@@ -240,7 +239,9 @@ INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LFormPredecessor, 'getProcess', '', @DBProcessList);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LFormProcessor, 'getProcess', '', @DBProcessList);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LOOP, 'getProcess', '', @DBProcessList);
-INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LCourse, 'out', '', @LProcessor);
+INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LCourse, 'postCourse', '', @LProcessor);
+INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LCourse, 'deleteCourse', '', @LProcessor);
+INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LCourse, 'deleteCourse', '', @LExtension);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@DBFormResult, 'out', '', @DBQuery2);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LForm, 'postCourse', '', @DBFormResult);
 
@@ -271,6 +272,25 @@ INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LAttachment, 'postFile', '', @LFile);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LExercise, 'postAttachment', '', @LAttachment);
 INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LAttachment, 'postAttachment', '', @DBAttachment);
+INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@DBTransaction, 'out', '', @DBQuery2);
+INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LCourse, 'postCourse', '', @DBTransaction);
+INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LCourse, 'deleteCourse', '', @DBTransaction);
+INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LTutor, 'postTransaction', '', @DBTransaction);
+INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LTutor, 'postZip', '', @FSZip);
+INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LTutor, 'getMarking', '', @DBMarking);
+INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LTutor, 'getExercise', '', @DBExercise);
+
+INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LGetSite, 'getExerciseType', '', @DBExerciseType);
+INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LGetSite, 'getExercise', '', @DBExercise);
+INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LGetSite, 'getApprovalCondition', '', @DBApprovalCondition);
+INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LGetSite, 'getUser', '', @DBUser);
+INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LGetSite, 'getMarking', '', @DBMarking);
+INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LGetSite, 'getSelectedSubmission', '', @DBSelectedSubmission);
+INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LGetSite, 'getGroup', '', @DBGroup);
+INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LGetSite, 'getCourseStatus', '', @DBCourseStatus);
+INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LGetSite, 'getSubmission', '', @DBSubmission);
+INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LGetSite, 'getCourse', '', @DBCourse);
+INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (@LGetSite, 'getInvitation', '', @DBInvitation);
 #INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (00, '', '', 00);
 #INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (00, '', '', 00);
 #INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES (00, '', '', 00);

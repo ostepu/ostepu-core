@@ -17,6 +17,10 @@
             <div class="critical-color bold right">
                 <?php echo date('d.m.Y  -  H:i', $sheet['endDate']); ?>
             </div>
+            <div class="info-color bold right">
+                <?php echo date('d.m.Y  -  H:i', $sheet['startDate']).' bis&nbsp;'; ?>
+            </div>
+            
             <div class="exercise-sheet-info info-color bold right">
                 <?php 
                     /**
@@ -24,7 +28,7 @@
                      *       calculated in GetSite.
                      */
                 ?>
-                <?php echo $sheet['exerciseSheetInfo'], ' unkorrigiert'; ?>
+                <?php if (isset($sheet['exerciseSheetInfo'])) echo $sheet['exerciseSheetInfo'], ' unkorrigiert'; ?>
             </div>
         </div>
 
@@ -56,7 +60,7 @@
                         <?php if(isset($exercise['attachment'])): ?>
                             <?php $displayName = $exercise['attachment']['displayName']; ?>
                             <?php $fileAddress = $exercise['attachment']['address']; ?>
-                            <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
+                            <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
 
                             <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" class="plain" target="_blank">
                                 <img src="Images/Attachment.png" />
@@ -83,48 +87,49 @@
                         <li>
                             <?php $displayName = $sheet['sampleSolution']['displayName']; ?>
                             <?php $fileAddress = $sheet['sampleSolution']['address']; ?>
-                            <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
+                            <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
                             <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
                                 Musterlösung
                             </a>
                         </li>
                     <?php endif; ?>
-
+                    
+                    <?php if (isset($sheet['sheetFile']['address'])){?>
                     <li>
                         <?php $displayName = $sheet['sheetFile']['displayName']; ?>
                         <?php $fileAddress = $sheet['sheetFile']['address']; ?>
-                        <?php $fileURL = "{$filesystemURI}/{$fileAddress}/{$displayName}"; ?>
+                        <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
                         <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
                             Aufgabenblatt
                         </a>
                     </li>
+                    <?php } ?>
 
                     <?php // prints a link to download attachments ?>
                     <?php if ($sheet['hasAttachments']): ?>
                         <li>
-                        <a style="color:#b9b8b8"><s>
-                           <!-- <button name="downloadAttachments" value="<?php echo $sheet['id']; ?>" class="text-button body-option-color">-->
+                            <button name="downloadAttachments" value="<?php echo $sheet['id']; ?>" class="text-button body-option-color">
                                 Alle Anhänge herunterladen
-                            <!--</button>-->
-                            </s></a>
+                            </button>
                         </li>
                     <?php endif; ?>
+                    
+                    <?php if (isset($sheet['tutorMarkings']) && $sheet['tutorMarkings']>0){ ?>
+                    <li>
+                        <button name="downloadCSV" value="<?php echo $sheet['id']; ?>" class="text-button body-option-color">
+                            Einsendungen herunterladen
+                        </button>
+                    </li>
 
                     <li>
-                    <a style="color:#b9b8b8"><s>
-                        <!--<button name="downloadCSV" value="$sheet['id']" class="text-button body-option-color">-->
-                            Einsendungen herunterladen
-                        <!--</button>-->
-                        </s></a>
-                    </li>
-                    <li>
-                        <a style="color:#b9b8b8"><s>
-                        <!--<a href="TutorUpload.php?cid=<?php echo $user['courses'][0]['course']['id'],
+                        <a href="TutorUpload.php?cid=<?php echo $user['courses'][0]['course']['id'],
                                                          '&sid=',
-                                                         $sheet['id']; ?>">-->
+                                                         $sheet['id']; ?>">
                             Korrekturen hochladen
-                        </s></a>
+                        </a>
                     </li>
+                    <?php } ?>
+                    
                     <li>
                         <a href="TutorAssign.php?cid=<?php echo $user['courses'][0]['course']['id'],
                                                          '&sid=',
@@ -144,10 +149,10 @@
                  */
             ?>
             <ol>
-                <li class="footer-text bold" style="color:#b9b8b8"><s>Einsendungen:</s></li>
-                <li class="footer-text" style="color:#b9b8b8"><s><?php echo$sheet['courseUserCount']; ?> Studenten</s></li>
-                <li class="footer-text" style="color:#b9b8b8"><s><?php echo$sheet['studentsWithSubmissionCount']; ?> mit Einsendungen</s></li>
-                <li class="footer-text" style="color:#b9b8b8"><s><?php echo$sheet['studentsWithoutSubmissionCount']; ?> ohne Einsendungen</s></li>
+                <li class="footer-text bold">Einsendungen:</li>
+                <li class="footer-text"><?php echo $sheet['courseUserCount']; ?> Studenten</li>
+                <li class="footer-text"><?php echo $sheet['selectedSubmissions']; ?> Einsendungen</li>
+                <li class="footer-text"><?php echo $sheet['tutorMarkings']; ?> Korrekturaufträge</li>
             </ol>
         </div><!-- end: content-body-wrapper -->
     </div> <!-- end: content-element -->

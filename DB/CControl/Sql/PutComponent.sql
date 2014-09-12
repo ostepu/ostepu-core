@@ -1,3 +1,3 @@
 UPDATE Component
-SET $values
-WHERE CO_id = '$componentid' or CO_name = '$componentid'
+SET <?php echo $values; ?>
+WHERE CO_id = '<?php echo $componentid; ?>' or CO_name = '<?php echo $componentid; ?>'

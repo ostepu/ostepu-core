@@ -1,3 +1,4 @@
+<?php
 /** 
  * @file DeleteExerciseSheet.sql
  * deletes an specified exercise sheet from %ExerciseSheet table
@@ -5,7 +6,8 @@
  * @param int \$esid an %ExerciseSheet identifier
  * @result -
  */
+?>
  
 DELETE FROM ExerciseSheet 
 WHERE
-    ES_id = '$esid'
+    ES_id = '<?php echo $esid; ?>'

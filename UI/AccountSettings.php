@@ -65,7 +65,8 @@ if (isset($_POST['action'])) {
                     http_put_data($URI, $newUserSettings, true, $message);
 
                     if ($message == "201") {
-                        $notifications[] = MakeNotification("success", "Das Passwort wurde geändert!");
+                        /// $notifications[] = MakeNotification("success", "Das Passwort wurde geändert!");
+                        Authentication::logoutUser();
                     }
                 }
                 else {

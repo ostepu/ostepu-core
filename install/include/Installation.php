@@ -45,6 +45,14 @@ class Installation
     
     public static function PlattformZusammenstellen($data)
     {
+        Einstellungen::GetValue('data[PL][url]',$data['PL']['url']);
+        Einstellungen::GetValue('data[PL][temp]',$data['PL']['temp']);
+        Einstellungen::GetValue('data[PL][files]',$data['PL']['files']);
+        Einstellungen::GetValue('data[DB][db_path]',$data['DB']['db_path']);
+        Einstellungen::GetValue('data[DB][db_name]',$data['DB']['db_name']);
+        Einstellungen::GetValue('data[DB][db_user_operator]',$data['DB']['db_user_operator']);
+        Einstellungen::GetValue('data[DB][db_passwd_operator]',$data['DB']['db_passwd_operator']);
+    
         // hier aus den Daten ein Plattform-Objekt zusammenstellen
         $platform = Platform::createPlatform(
                                             $data['PL']['url'],
@@ -53,13 +61,20 @@ class Installation
                                             null,
                                             null,
                                             $data['DB']['db_user_operator'],
-                                            $data['DB']['db_passwd_operator']
+                                            $data['DB']['db_passwd_operator'],
+                                            $data['PL']['temp'],
+                                            $data['PL']['files']
                                             );
         return $platform;
     }
     
     public static function installiereInit($data, &$fail, &$errno, &$error)
     {
+        Einstellungen::GetValue('data[DB][db_name]',$data['DB']['db_name']);
+        Einstellungen::GetValue('data[DB][db_override]',$data['DB']['db_override']);
+        Einstellungen::GetValue('data[DB][db_ignore]',$data['DB']['db_ignore']);
+        Einstellungen::GetValue('data[PL][url]',$data['PL']['url']);
+        
         // Datenbank einrichten
         if (!$fail && (isset($data['DB']['db_override']) && $data['DB']['db_override'] === 'override')){
            $sql = "DROP SCHEMA IF EXISTS `".$data['DB']['db_name']."`;";
@@ -95,7 +110,7 @@ class Installation
                 $url = $list[$i];//$data['PL']['init'];
                 // inits all components
                 $result = Request::post($data['PL']['url'].'/'.$url. '/platform',array(),Platform::encodePlatform($platform));
-                
+
                 $res[$url] = array();
                 if (isset($result['content']) && isset($result['status']) && $result['status'] === 201){
                     $res[$url]['status'] = 201;
@@ -115,11 +130,14 @@ class Installation
     
     public static function installierePlattform($data, &$fail, &$errno, &$error)
     {
+        Einstellungen::GetValue('data[PL][url]',$data['PL']['url']);
+    
         $res = array();
     
         if (!$fail){
             // die /platform Befehle auslösen
-            $list = array('DB/DBApprovalCondition','DB/DBAttachment','DB/DBCourse','DB/DBCourseStatus','DB/DBExercise','DB/DBExerciseFileType','DB/DBExerciseSheet','DB/DBExerciseType','DB/DBExternalId','DB/DBFile','DB/DBGroup','DB/DBInvitation','DB/DBMarking','DB/DBSelectedSubmission','DB/DBSession','DB/DBSubmission','DB/DBUser');
+            $list = array('DB/DBApprovalCondition','DB/DBAttachment','DB/DBCourse','DB/DBCourseStatus','DB/DBExercise','DB/DBExerciseFileType','DB/DBExerciseSheet','DB/DBExerciseType','DB/DBExternalId','DB/DBFile','DB/DBGroup','DB/DBInvitation','DB/DBMarking','DB/DBSelectedSubmission','DB/DBSession','DB/DBSubmission','DB/DBUser','DB/DBTransaction','FS/FSFile','FS/FSPdf','FS/FSZip','FS/FSBinder');
+            
             $platform = Installation::PlattformZusammenstellen($data);
             
             $multiRequestHandle = new Request_MultiRequest();
@@ -155,6 +173,9 @@ class Installation
     
     public static function initialisiereKomponenten($data, &$fail, &$errno, &$error)
     {
+        Einstellungen::GetValue('data[PL][init]',$data['PL']['init']);
+        Einstellungen::GetValue('data[PL][url]',$data['PL']['url']);
+        
         $fail = false;
         $url = $data['PL']['init'];
         $components = array();
@@ -263,6 +284,12 @@ class Installation
     
     public static function installiereDBKonfigurationsdatei($data, $id, &$fail, &$errno, &$error)
     {
+        Einstellungen::GetValue("data[DB][config][{$id}]",$data['DB']['config'][$id]);
+        Einstellungen::GetValue('data[DB][db_path]',$data['DB']['db_path']);
+        Einstellungen::GetValue('data[DB][db_user_operator]',$data['DB']['db_user_operator']);
+        Einstellungen::GetValue('data[DB][db_passwd_operator]',$data['DB']['db_passwd_operator']);
+        Einstellungen::GetValue('data[DB][db_name]',$data['DB']['db_name']);
+        
         $file = $data['DB']['config'][$id];
         $text = "[DB]\n".
                 "db_path = {$data['DB']['db_path']}\n".
@@ -275,6 +302,9 @@ class Installation
     
     public static function installiereUIKonfigurationsdatei($data, &$fail, &$errno, &$error)
     {
+        Einstellungen::GetValue('data[UI][conf]',$data['UI']['conf']);
+        Einstellungen::GetValue('data[PL][url]',$data['PL']['url']);
+    
         $fail = false;
         $file = $data['UI']['conf'];
         $text = explode("\n",file_get_contents($data['UI']['conf']));
@@ -290,6 +320,9 @@ class Installation
 
     public static function installiereKomponentendatei($data, &$fail, &$errno, &$error)
     {
+        Einstellungen::GetValue('data[DB][componentsSql]',$data['DB']['componentsSql']);
+        Einstellungen::GetValue('data[PL][url]',$data['PL']['url']);
+    
         if (!$fail){
             if (!file_exists($data['DB']['componentsSql'])){
                 $error = "Datei existiert nicht";
@@ -313,6 +346,12 @@ class Installation
 
     public static function installiereSuperAdmin($data, &$fail, &$errno, &$error)
     {
+        Einstellungen::GetValue('data[DB][db_passwd_insert]',$data['DB']['db_passwd_insert']);
+        Einstellungen::GetValue('data[DB][db_user_insert]',$data['DB']['db_user_insert']);
+        Einstellungen::GetValue('data[DB][db_email_insert]',$data['DB']['db_email_insert']);
+        Einstellungen::GetValue('data[DB][db_last_name_insert]',$data['DB']['db_last_name_insert']);
+        Einstellungen::GetValue('data[DB][db_first_name_insert]',$data['DB']['db_first_name_insert']);
+    
         if (!$fail){    
            $auth = new Authentication();
            $salt = $auth->generateSalt();
@@ -328,14 +367,19 @@ class Installation
     
     public static function installiereDBOperator($data, &$fail, &$errno, &$error)
     {
+        Einstellungen::GetValue('data[DB][db_user_override_operator]',$data['DB']['db_user_override_operator']);
+        Einstellungen::GetValue('data[DB][db_user_operator]',$data['DB']['db_user_operator']);
+        Einstellungen::GetValue('data[DB][db_name]',$data['DB']['db_name']);
+        Einstellungen::GetValue('data[DB][db_passwd_operator]',$data['DB']['db_passwd_operator']);
+    
         if (!$fail && isset($data['DB']['db_user_override_operator']) && $data['DB']['db_user_override_operator'] === 'override'){
             $oldName = $data['DB']['db_name'];
             $data['DB']['db_name'] = null;
             $sql = "DROP USER {$data['DB']['db_user_operator']}@localhost;";
             $result = DBRequest::request($sql, false, $data);
-            if ($result["errno"] !== 0){
+            /*if ($result["errno"] !== 0){
                 $fail = true; $errno = $result["errno"];$error = isset($result["error"]) ? $result["error"] : '';
-            }
+            }*/
             $data['DB']['db_name'] = $oldName;
         }
         
@@ -345,7 +389,7 @@ class Installation
             $data['DB']['db_name'] = null;
             $sql = "SELECT count(1) as 'exists' FROM mysql.user WHERE user = '{$data['DB']['db_user_operator']}';";
             $result = DBRequest::request($sql, false, $data);
-            
+
             if ($result["errno"] !== 0 || !isset($result["content"])){
                 $fail = true; $errno = $result["errno"];$error = isset($result["error"]) ? $result["error"] : '';
             } else {
@@ -376,6 +420,10 @@ class Installation
     
     public static function installiereDatenbankdatei($data, &$fail, &$errno, &$error)
     {
+        Einstellungen::GetValue('data[DB][db_override]',$data['DB']['db_override']);
+        Einstellungen::GetValue('data[DB][db_name]',$data['DB']['db_name']);
+        Einstellungen::GetValue('data[DB][databaseSql]',$data['DB']['databaseSql']);
+        
         // database.sql    
         if (!$fail && (isset($data['DB']['db_override']) && $data['DB']['db_override'] === 'override')){
            $sql = "DROP SCHEMA IF EXISTS `".$data['DB']['db_name']."`;";
@@ -418,3 +466,4 @@ class Installation
         }
     }
 }
+?>

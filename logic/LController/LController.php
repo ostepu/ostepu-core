@@ -116,6 +116,7 @@ class LController
             foreach ($arrayOfLinks as $linkObj){
                 if ($linkObj->getPrefix() == $string[0]){
                     $URI = $linkObj->getAddress();
+                    break;
                 }
             }
             $this->sendNewRequest($string, $method, $URI, $header, $body);

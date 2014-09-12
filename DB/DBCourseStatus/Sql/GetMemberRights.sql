@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetMemberRights.sql
  * gets the course status for a user 
@@ -8,6 +9,7 @@
  * - C, the course data
  * - CS, the courstatus data
  */
+?>
  
 select 
     U.U_id,
@@ -34,4 +36,4 @@ from
     User U
        ON (U.U_id = CS.U_id)
 WHERE
-    CS.U_id = '$userid'
+    CS.U_id = '<?php echo $userid; ?>'

@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetExternalId.sql
  * gets a specified external id from %ExternalId table
@@ -5,6 +6,7 @@
  * @param string $exid a %ExternalId identifier
  * @result  C.C_id, C.C_name, C.C_semester, C.C_defaultGroupSize, EX.EX_id
  */
+?>
 
 select 
     C.C_id,
@@ -15,4 +17,4 @@ select
 from
     ExternalId EX left join Course C ON (EX.C_id = C.C_id)
 where
-    EX.EX_id = '$exid'
+    EX.EX_id = '<?php echo $exid; ?>'

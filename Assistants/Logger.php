@@ -53,6 +53,7 @@ class Logger
      */
     public static function Log($message,
                                $logLevel = LogLevel::INFO,
+                               $trace = true,
                                $logFile = NULL)
     {
         // if the function is called with the no prority don't log anything
@@ -70,40 +71,42 @@ class Logger
         // test if the message should be logged
         if ((error_reporting() & $logLevel) > 0) {
 
-            $info = debug_backtrace();
-            if (isset($info[1])) {
-                // the function was invoked from a class
+            if ($trace){
+                $info = debug_backtrace();
+                if (isset($info[1])) {
+                    // the function was invoked from a class
 
-                $callerInfo = $info[1];
+                    $callerInfo = $info[1];
 
-                // show calling class
-                if (isset($callerInfo['class'])) {
-                    $infoString .= " " . $callerInfo['class'];
+                    // show calling class
+                    if (isset($callerInfo['class'])) {
+                        $infoString .= " " . $callerInfo['class'];
+                    }
+
+                    // show class/instance Method
+                    if (isset($callerInfo['type'])) {
+                        $infoString .= " " . $callerInfo['type'];
+                    }
+
+                    // shwo calling function
+                    if (isset($callerInfo['function'])) {
+                        $infoString .= " " . $callerInfo['function'] . "()";
+                    }
+                } else {
+                    // the function was invoked from outside a class
+
+                    $callerInfo = $info[0];
+
+                    // show the file in which the function was called
+                    if (isset($callerInfo['file'])) {
+                        $infoString .=  " " . $callerInfo['file'];
+                    }
                 }
 
-                // show class/instance Method
-                if (isset($callerInfo['type'])) {
-                    $infoString .= " " . $callerInfo['type'];
+                // show the line in which the function was called
+                if (isset($callerInfo['line'])) {
+                    $infoString .= " (" . $callerInfo['line'] . ")";
                 }
-
-                // shwo calling function
-                if (isset($callerInfo['function'])) {
-                    $infoString .= " " . $callerInfo['function'] . "()";
-                }
-            } else {
-                // the function was invoked from outside a class
-
-                $callerInfo = $info[0];
-
-                // show the file in which the function was called
-                if (isset($callerInfo['file'])) {
-                    $infoString .=  " " . $callerInfo['file'];
-                }
-            }
-
-            // show the line in which the function was called
-            if (isset($callerInfo['line'])) {
-                $infoString .= " (" . $callerInfo['line'] . ")";
             }
 
             // convert message to string if neccessary
@@ -111,8 +114,11 @@ class Logger
                 $message = implode("\n[Logger] ",explode("\n", print_r($message, true)));
             }
 
-            $infoString .=  " [" . LogLevel::$names[$logLevel] . "]: " . $message . "\n";
-
+            if ($trace){
+                $infoString .=  " [" . LogLevel::$names[$logLevel] . "]: " . $message . "\n";
+            } else
+                $infoString .=  ' ' . $message . "\n";
+            
             // open the log file for appending
             $fp = @fopen($logFile, "a");
 
@@ -122,6 +128,8 @@ class Logger
 
             // try to lock the file to prevent messages from overlapping
             // or overwriting each other
+            //do{} while(!flock($fp, LOCK_EX);
+            
             if (flock($fp, LOCK_EX)) {
                 // print the message to the file
                 fwrite($fp, $infoString);
@@ -130,7 +138,7 @@ class Logger
                 flock($fp, LOCK_UN);
 
             } else {
-                die("Getting lock on " . $logFile . " failed!\n");
+                //die("Getting lock on " . $logFile . " failed!\n");
             }
 
             fclose($fp);

@@ -10,21 +10,26 @@
                 <div class="tutor-assign-element left">
                     <div class="tutor-assign-element-title">
                         <?php
-                        $tutorId = $tutorAssignment['tutor']['id'];
+                        $tutorId = isset($tutorAssignment['tutor']['id']) ? $tutorAssignment['tutor']['id'] : null;
 
-                        print '<input type="radio" name="tutorID" value="';
-                        print $tutorId . '" for="';
-                        print $tutorId . '" />';
+                        if (isset($tutorAssignment['tutor']['id'])){
+                            print '<input type="radio" name="tutorID" value="';
+                            print $tutorId . '" for="';
+                            print $tutorId . '" />';
+                        }
 
                         print '<label for="';
                         print $tutorId . '" class="tutor-name">';
 
                         if ($tutorAssignment['tutor']['userName'] != "unassigned") {
-                            print $tutorAssignment['tutor']['firstName'];
-                            print " ";
-                            print $tutorAssignment['tutor']['lastName'];
-                            print " ";
-                            print "(" . count($tutorAssignment['submissions']) . ")";
+                            if (!isset($tutorAssignment['tutor']['id'])){
+                                echo "unbekannter Kontrolleur";
+                            } else {
+                                print isset($tutorAssignment['tutor']['firstName']) ? $tutorAssignment['tutor']['firstName'].' ' : '';
+                                print isset($tutorAssignment['tutor']['lastName']) ? $tutorAssignment['tutor']['lastName'].' ': '';    
+                                echo isset($tutorAssignment['tutor']['userName']) ? '('.$tutorAssignment['tutor']['userName'].')' : '';
+                            }
+                            print " (" . count($tutorAssignment['submissions']) . ")";
                         } else {
                             print "Unzugeordnet ";
                             print "(" . count($tutorAssignment['submissions']) . ")";

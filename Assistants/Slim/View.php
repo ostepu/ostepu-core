@@ -280,3 +280,4 @@ class View
         return ob_get_clean();
     }
 }
+?>

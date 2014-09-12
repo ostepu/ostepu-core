@@ -42,27 +42,50 @@ class Design
     
     public static function erstelleEingabezeile($simple, &$variable, $variablenName, $default, $save=false)
     {
-        if ($save == true && $variable === null){
+        if ($save == true && $variable == null){
             $variable = Einstellungen::Get($variablenName, $default);
         } 
         
-        if ($save == true)
+        if ($save == true && $variable != null)
             Einstellungen::Set($variablenName, $variable);
+            
+        if ($variable == null)
+            $variable = $default;
         
-        $result = "<input style='width:100%' type='text' name='{$variablenName}' value='".($variable!==null ? $variable : $default)."'>";
+        $result = "<input style='width:100%' type='text' name='{$variablenName}' value='".($variable != null? $variable : $default)."'>";
+        return $result;
+    }
+    
+    public static function erstelleVersteckteEingabezeile($simple, &$variable, $variablenName, $default, $save=false)
+    {
+        if ($save == true && $variable == null){
+            $variable = Einstellungen::Get($variablenName, $default);
+        } 
+        
+        if ($save == true && $variable != null)
+            Einstellungen::Set($variablenName, $variable);
+            
+        if ($variable == null)
+            $variable = $default;
+        
+        $result = '';
+            $result = "<input type='hidden' name='{$variablenName}' value='".($variable != null ? $variable : $default)."'>";
         return $result;
     }
     
     public static function erstelleAuswahl($simple, &$variable, $variablenName, $value, $default, $save=false)
     {
-        if ($save == true && $variable === null){
-            $variable = Einstellungen::Get($variablenName, $default);
+        if ($save == true && $variable == null){
+           $variable = Einstellungen::Get($variablenName, $default);
         } 
         
-        if ($save == true)
+        if ($save == true && $variable != null)
             Einstellungen::Set($variablenName, $variable);
             
-        $result = "<input style='width:100%' type='checkbox' name='{$variablenName}' value='".$value."'".(($variable===$value &&  $variable!== null) ? "checked" : ($default === null ? '' : ($default===$value ? "checked" : '')) ).">";
+        if ($variable == null)
+            $variable = $default;
+
+        $result = "<input style='width:100%' type='checkbox' name='{$variablenName}' value='".$value."'".(($variable==$value && $variable != null) ? "checked" : ($default === null ? '' : ($default===$value ? "checked" : '')) ).">";
         return $result;
     }
     

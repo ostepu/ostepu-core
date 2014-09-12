@@ -387,7 +387,8 @@ class DBExerciseFileType
                         $eid,
                         $etid,
                         $eftid,
-                        $singleResult = false
+                        $singleResult = false,
+                        $checkSession = true
                         )
     {
         Logger::Log( 
@@ -417,7 +418,8 @@ class DBExerciseFileType
                                                     'eid' => $eid,
                                                     'etid' => $etid,
                                                     'eftid' => $eftid
-                                                    )
+                                                    ),
+                                              $checkSession
                                               );
 
         // checks the correctness of the query
@@ -536,7 +538,8 @@ class DBExerciseFileType
                    isset( $eid ) ? $eid : '',
                    isset( $etid ) ? $etid : '',
                    isset( $eftid ) ? $eftid : '',
-                   true
+                   true,
+                   false
                    );
     }
     
@@ -557,7 +560,8 @@ class DBExerciseFileType
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query2,
                                               'Sql/DeletePlatform.sql',
-                                              array( )
+                                              array( ),
+                                              false
                                               );
 
         // checks the correctness of the query
@@ -614,7 +618,8 @@ class DBExerciseFileType
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query2,
                                                   'Sql/AddPlatform.sql',
-                                                  array( 'object' => $in )
+                                                  array( 'object' => $in ),
+                                                  false
                                                   );
 
             // checks the correctness of the query
@@ -652,4 +657,3 @@ class DBExerciseFileType
 
  
 ?>
-

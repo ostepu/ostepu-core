@@ -615,3 +615,4 @@ class Request
         return $this->headers->get('HTTP_USER_AGENT');
     }
 }
+?>

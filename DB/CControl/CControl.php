@@ -234,7 +234,10 @@ class CControl
             $values = $in->getInsertData( );
 
             // starts a query
-            eval( "\$sql = \"" . file_get_contents( 'Sql/PutLink.sql' ) . "\";" );
+            ob_start();
+            eval("?>" .  file_get_contents( 'Sql/PutLink.sql' ));
+            $sql = ob_get_contents();
+            ob_end_clean();
             $result = DBRequest::request( 
                                          $sql,
                                          false
@@ -270,7 +273,10 @@ class CControl
                            );
 
         // starts a query
-        eval( "\$sql = \"" . file_get_contents( 'Sql/DeleteLink.sql' ) . "\";" );
+        ob_start();
+        eval("?>" .  file_get_contents( 'Sql/DeleteLink.sql' ));
+        $sql = ob_get_contents();
+        ob_end_clean();
         $result = DBRequest::request( 
                                      $sql,
                                      false
@@ -307,7 +313,10 @@ class CControl
             $values = $in->getInsertData( );
 
             // starts a query
-            eval( "\$sql = \"" . file_get_contents( 'Sql/PostLink.sql' ) . "\";" );
+            ob_start();
+            eval("?>" .  file_get_contents( 'Sql/PostLink.sql' ));
+            $sql = ob_get_contents();
+            ob_end_clean();
             $result = DBRequest::request( 
                                          $sql,
                                          false
@@ -349,7 +358,10 @@ class CControl
                            );
 
         // starts a query
-        eval( "\$sql = \"" . file_get_contents( 'Sql/GetLink.sql' ) . "\";" );
+        ob_start();
+        eval("?>" .  file_get_contents( 'Sql/GetLink.sql' ));
+        $sql = ob_get_contents();
+        ob_end_clean();
         $result = DBRequest::request( 
                                      $sql,
                                      false
@@ -399,7 +411,10 @@ class CControl
             $values = $in->getInsertData( );
 
             // starts a query
-            eval( "\$sql = \"" . file_get_contents( 'Sql/PutComponent.sql' ) . "\";" );
+            ob_start();
+            eval("?>" .  file_get_contents( 'Sql/PutComponent.sql' ));
+            $sql = ob_get_contents();
+            ob_end_clean();
             $result = DBRequest::request( 
                                          $sql,
                                          false
@@ -435,7 +450,10 @@ class CControl
                            );
 
         // starts a query
-        eval( "\$sql = \"" . file_get_contents( 'Sql/DeleteComponent.sql' ) . "\";" );
+        ob_start();
+        eval("?>" .  file_get_contents( 'Sql/DeleteComponent.sql' ));
+        $sql = ob_get_contents();
+        ob_end_clean();
         $result = DBRequest::request( 
                                      $sql,
                                      false
@@ -468,7 +486,10 @@ class CControl
             $values = $in->getInsertData( );
 
             // starts a query
-            eval( "\$sql = \"" . file_get_contents( 'Sql/PostComponent.sql' ) . "\";" );
+            ob_start();
+            eval("?>" .  file_get_contents( 'Sql/PostComponent.sql' ));
+            $sql = ob_get_contents();
+            ob_end_clean();
             $result = DBRequest::request( 
                                          $sql,
                                          false
@@ -508,7 +529,10 @@ class CControl
                            );
 
         // starts a query
-        eval( "\$sql = \"" . file_get_contents( 'Sql/GetComponent.sql' ) . "\";" );
+        ob_start();
+        eval("?>" .  file_get_contents( 'Sql/GetComponent.sql' ));
+        $sql = ob_get_contents();
+        ob_end_clean();
         $result = DBRequest::request( 
                                      $sql,
                                      false
@@ -542,7 +566,10 @@ class CControl
     {
 
         // starts a query
-        eval( "\$sql = \"" . file_get_contents( 'Sql/GetComponentDefinitions.sql' ) . "\";" );
+        ob_start();
+        eval("?>" .  file_get_contents( 'Sql/GetComponentDefinitions.sql' ));
+        $sql = ob_get_contents();
+        ob_end_clean();
         $result = DBRequest::request( 
                                      $sql,
                                      false
@@ -593,7 +620,10 @@ class CControl
         $componentid = DBJson::mysql_real_escape_string( $componentid );
         
         // starts a query
-        eval( "\$sql = \"" . file_get_contents( 'Sql/GetComponentDefinition.sql' ) . "\";" );
+        ob_start();
+        eval("?>" .  file_get_contents( 'Sql/GetComponentDefinition.sql' ));
+        $sql = ob_get_contents();
+        ob_end_clean();
         $result = DBRequest::request( 
                                      $sql,
                                      false
@@ -642,7 +672,10 @@ class CControl
     {
         $this->_app->response->setStatus( 200 );
         // starts a query
-        eval( "\$sql = \"" . file_get_contents( 'Sql/GetComponentDefinitions.sql' ) . "\";" );
+        ob_start();
+        eval("?>" .  file_get_contents( 'Sql/GetComponentDefinitions.sql' ));
+        $sql = ob_get_contents();
+        ob_end_clean();
         $result = DBRequest::request( 
                                      $sql,
                                      false
@@ -742,7 +775,10 @@ class CControl
         }
 
         // starts a query
-        eval( "\$sql = \"" . file_get_contents( 'Sql/GetExistsPlatform.sql' ) . "\";" );
+        ob_start();
+        eval("?>" .  file_get_contents( 'Sql/GetExistsPlatform.sql' ));
+        $sql = ob_get_contents();
+        ob_end_clean();
         $result = DBRequest::request( 
                                      $sql,
                                      false
@@ -780,7 +816,10 @@ class CControl
                     );
 
         // starts a query
-        eval( "\$sql = \"" . file_get_contents( 'Sql/DeletePlatform.sql' ) . "\";" );
+        ob_start();
+        eval("?>" .  file_get_contents( 'Sql/DeletePlatform.sql' ));
+        $sql = ob_get_contents();
+        ob_end_clean();
         $result = DBRequest::request2( 
                                      $sql,
                                      false
@@ -848,7 +887,10 @@ class CControl
             }       
             
             // starts a query
-            eval( "\$sql = \"" . file_get_contents( 'Sql/AddPlatform.sql' ) . "\";" );
+            ob_start();
+            eval("?>" .  file_get_contents( 'Sql/AddPlatform.sql' ));
+            $sql = ob_get_contents();
+            ob_end_clean();
             $result = DBRequest::request2( 
                                          $sql,
                                          false
@@ -884,4 +926,3 @@ class CControl
 
  
 ?>
-

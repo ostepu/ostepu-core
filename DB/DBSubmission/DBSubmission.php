@@ -517,7 +517,8 @@ class DBSubmission
                         $eid,
                         $suid,
                         $mid,
-                        $singleResult = false
+                        $singleResult = false,
+                        $checkSession = true
                         )
     {
         Logger::Log( 
@@ -547,7 +548,8 @@ class DBSubmission
                                                     'eid' => $eid,
                                                     'suid' => $suid,
                                                     'mid' => $mid
-                                                    )
+                                                    ),
+                                              $checkSession
                                               );
 
         // checks the correctness of the query
@@ -951,7 +953,8 @@ class DBSubmission
                    isset( $eid ) ? $eid : '',
                    isset( $suid ) ? $suid : '',
                    isset( $mid ) ? $mid : '',
-                   true
+                   true,
+                   false
                    );
     }
     
@@ -972,7 +975,8 @@ class DBSubmission
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query2,
                                               'Sql/DeletePlatform.sql',
-                                              array( )
+                                              array( ),
+                                              false
                                               );
 
         // checks the correctness of the query
@@ -1029,7 +1033,8 @@ class DBSubmission
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query2,
                                                   'Sql/AddPlatform.sql',
-                                                  array( 'object' => $in )
+                                                  array( 'object' => $in ),
+                                                  false
                                                   );
 
             // checks the correctness of the query
@@ -1067,4 +1072,3 @@ class DBSubmission
 
  
 ?>
-

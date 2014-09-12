@@ -1,3 +1,4 @@
+<?php
 /** 
  * @file DeleteAttachment.sql
  * deletes an specified attachment from %Attachment table
@@ -5,8 +6,9 @@
  * @param int \$aid a %Attachment identifier
  * @result -
  */
+?>
  
-DELETE FROM `Attachment{pre}_".Attachment::getCourseFromAttachmentId($aid)."`
+DELETE FROM `Attachment<?php echo $pre; ?>_<?php echo Attachment::getCourseFromAttachmentId($aid); ?>`
 WHERE
-    A_id = '".Attachment::getIdFromAttachmentId($aid)."'
+    A_id = '<?php echo Attachment::getIdFromAttachmentId($aid); ?>'
 

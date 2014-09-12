@@ -1,3 +1,4 @@
+<?php
 /**
  * @file AddGroup.sql
  * creates a new entry in %Group table
@@ -5,5 +6,6 @@
  * @param string \$values the input data, e.g. 'a=1, b=2'
  * @result -
  */
+?>
 
-INSERT INTO `Group` SET $values
+INSERT INTO `Group` SET <?php echo $values; ?>

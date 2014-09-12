@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetAttachment.sql
  * gets an specified attachment from %Attachment table
@@ -7,6 +8,7 @@
  * - A, the attachment data
  * - F, the attachment file
  */
+?>
  
 select 
     A.A_id,
@@ -23,4 +25,4 @@ from
         left join
     File F ON F.F_id = A.F_id
 where
-    A.A_id = '$aid'
+    A.A_id = '<?php echo $aid; ?>'

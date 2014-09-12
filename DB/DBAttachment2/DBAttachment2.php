@@ -489,7 +489,7 @@ class DBAttachment2
      * /attachment/$aid(/) or /attachment/attachment/$aid(/).
      *
      * @param string $aid The id of the attachment that should be returned.
-     * @param int $pre A optional prefix for the attachment table.
+     * @param string $pre A optional prefix for the attachment table.
      */
     public function getAttachment( $pre='' ,$aid )
     {
@@ -514,7 +514,7 @@ class DBAttachment2
      * /attachment/exercise/$eid(/).
      *
      * @param string $eid The id of the exercise.
-     * @param int $pre A optional prefix for the attachment table.
+     * @param string $pre A optional prefix for the attachment table.
      */
     public function getExerciseAttachments( $pre='' ,$eid )
     {
@@ -538,7 +538,7 @@ class DBAttachment2
      * /attachment/exercisesheet/$esid(/).
      *
      * @param string $esid The id of the exercise sheet.
-     * @param int $pre A optional prefix for the attachment table.
+     * @param string $pre A optional prefix for the attachment table.
      */
     public function getSheetAttachments($pre='' , $esid )
     {
@@ -562,7 +562,7 @@ class DBAttachment2
      * /attachment/course/$courseid(/).
      *
      * @param string $esid The id of the exercise sheet.
-     * @param int $pre A optional prefix for the attachment table.
+     * @param string $pre A optional prefix for the attachment table.
      */
     public function getCourseAttachments($pre='' , $courseid )
     {
@@ -585,8 +585,8 @@ class DBAttachment2
      * Called when this component receives an HTTP GET request to
      * (/$pre)/link/exists/course/$courseid(/).
      *
-     * @param string $esid The id of the course.
-     * @param int $pre A optional prefix for the attachment table.
+     * @param string $courseid The id of the course.
+     * @param string $pre A optional prefix for the attachment table.
      */
     public function getExistsCourseAttachments( $pre='' , $courseid )
     {
@@ -729,4 +729,3 @@ class DBAttachment2
 
  
 ?>
-

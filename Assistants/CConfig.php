@@ -1,6 +1,5 @@
 <?php 
 
-
 /**
  * @file CConfig.php contains the CConfig class
  *
@@ -10,6 +9,17 @@
 include_once ( dirname( __FILE__ ) . '/Structures.php' );
 
 \Slim\Slim::registerAutoloader( );
+
+$scriptName = $_SERVER['SCRIPT_NAME'];
+$requestUri = $_SERVER['REQUEST_URI'];
+$path = str_replace('?' . (isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : ''), '', substr_replace($requestUri, '', 0, strlen((strpos($requestUri, $scriptName) !== false ? $scriptName : str_replace('\\', '', dirname($scriptName))))));
+if ( strpos($path,'/control') === false  &&  strpos( 
+            $path,
+            '/info'
+            ) === false ) {
+    CConfig::$possible = false;
+}
+unset($path, $scriptName, $requestUri);
 
 /**
  * this class is used to link components, to save new linkage data and to
@@ -22,11 +32,13 @@ class CConfig
      * @var $_app the slim object
      */
     private $_app;
+    
+    public static $possible = true;
 
     /**
      * @var $CONF_FILE the file where the component configuration would be stored
      */
-    private $CONF_FILE = 'CConfig.json';
+    private static $CONF_FILE = 'CConfig.json';
 
     /**
      * @var $_prefix the prefix, the class works with
@@ -69,68 +81,63 @@ class CConfig
 
         // initialize slim
         $this->setPrefix( $prefix );
-        $this->_app = new \Slim\Slim( array('debug' => true) );
+        
+        if (CConfig::$possible){
+            $this->_app = new \Slim\Slim( array('debug' => true) );
 
-        $this->_app->response->headers->set( 
-                                            'Content-Type',
-                                            'application/json'
-                                            );
-                                            
-        // GET Commands
-        $this->_app->get( 
-                          '(/:pre+)/info/commands(/)',
-                          array( 
-                                $this,
-                                'commands'
-                                )
-                          );
+            $this->_app->response->headers->set( 
+                                                'Content-Type',
+                                                'application/json'
+                                                );
+                                                
+            // GET Commands
+            $this->_app->get( 
+                              '(/:pre+)/info/commands(/)',
+                              array( 
+                                    $this,
+                                    'commands'
+                                    )
+                              );
 
-        // GET Instruction
-        $this->_app->get( 
-                          '(/:pre+)/info/links(/)',
-                          array( 
-                                $this,
-                                'instruction'
-                                )
-                          );   
+            // GET Instruction
+            $this->_app->get( 
+                              '(/:pre+)/info/links(/)',
+                              array( 
+                                    $this,
+                                    'instruction'
+                                    )
+                              );   
 
-        // GET Info
-        $this->_app->get( 
-                          '(/:pre+)/info/:language(/)',
-                          array( 
-                                $this,
-                                'info'
-                                )
-                          );                                              
+            // GET Info
+            $this->_app->get( 
+                              '(/:pre+)/info/:language(/)',
+                              array( 
+                                    $this,
+                                    'info'
+                                    )
+                              );                                              
 
-        // POST Config
-        $this->_app->post( 
-                          '(/:pre+)/control',
-                          array( 
-                                $this,
-                                'postConfig'
-                                )
-                          );
+            // POST Config
+            $this->_app->post( 
+                              '(/:pre+)/control',
+                              array( 
+                                    $this,
+                                    'postConfig'
+                                    )
+                              );
 
-        // GET Config
-        $this->_app->get( 
-                         '(/:pre+)/control',
-                         array( 
-                               $this,
-                               'getConfig'
-                               )
-                         );
+            // GET Config
+            $this->_app->get( 
+                             '(/:pre+)/control',
+                             array( 
+                                   $this,
+                                   'getConfig'
+                                   )
+                             );
 
-        // starts slim only if the right prefix was received
-        if ( strpos($this->_app->request->getResourceUri( ),'/control') !== false  ||  strpos( 
-                    $this->_app->request->getResourceUri( ),
-                    '/info'
-                    ) !== false ){
-
-            // run Slim
-            $this->_used = true;
-            $this->_app->run( );
-            
+        // run Slim
+        $this->_used = true;
+        $this->_app->run( );
         }
     }
     
@@ -218,8 +225,8 @@ class CConfig
         }
         $pre = $tempPre;
         
-        if ( file_exists( $pre . $this->CONF_FILE ) ){
-            $com = Component::decodeComponent( file_get_contents( $pre . $this->CONF_FILE ) );
+        if ( file_exists( $pre . CConfig::$CONF_FILE ) ){
+            $com = Component::decodeComponent( file_get_contents( $pre . CConfig::$CONF_FILE ) );
             $com->setPrefix( $this->getPrefix( ) );
             $this->_app->response->setBody( Component::encodeComponent( $com ) );
             $this->_app->response->setStatus( 200 );
@@ -237,10 +244,14 @@ class CConfig
      *
      * @param $content the json encode Component object
      */
-    public function saveConfig( $pre='', $content )
+    public function saveConfig( $pre='', $content ){
+        CConfig::saveConfigGlobal($pre,$content);
+    }
+     
+    public static function saveConfigGlobal( $pre='', $content )
     {
         $file = fopen( 
-                      $pre . $this->CONF_FILE,
+                      $pre . CConfig::$CONF_FILE,
                       'w'
                       );
         fwrite( 
@@ -265,10 +276,10 @@ class CConfig
         }
         $pre = $tempPre;
         
-        if ( file_exists( $pre . $this->CONF_FILE ) ){
+        if ( file_exists( $pre . CConfig::$CONF_FILE ) ){
 
             // file was found, create a Component object from file content
-            $com = Component::decodeComponent( file_get_contents( $pre . $this->CONF_FILE ) );
+            $com = Component::decodeComponent( file_get_contents( $pre . CConfig::$CONF_FILE ) );
             $com->setPrefix( $this->getPrefix( ) );
             
             // check if the links
@@ -392,7 +403,5 @@ class CConfig
         return $result;
     }
 }
-
  
 ?>
-

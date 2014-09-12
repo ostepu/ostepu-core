@@ -167,19 +167,19 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
     if ($ready == true && $noFile == false && $correctExercise == true && $correctDates == true) {
         // get sheetPDF
         if (!$_FILES['sheetPDF']['error'] == 4){
-        $filePath = $_FILES['sheetPDF']['tmp_name'];
-        $displayName = $_FILES['sheetPDF']['name'];
-        $data = file_get_contents($filePath);
+            $filePath = $_FILES['sheetPDF']['tmp_name'];
+            $displayName = $_FILES['sheetPDF']['name'];
+            $data = file_get_contents($filePath);
+            $data = base64_encode($data);
+            $sheetPDFFile = File::createFile(NULL,$displayName,NULL,$timestamp,NULL,NULL,NULL);
+            $sheetPDFFile->setBody($data);
         }
         else{
-        $displayName="no.txt";
-        $data="";
+            $sheetPDFFile = null;
         }
         
-        $data = base64_encode($data);
-        $sheetPDFFile = File::createFile(NULL,$displayName,NULL,$timestamp,NULL,NULL,NULL);
-        $sheetPDFFile->setBody($data);
 
+        
         // create exerciseSheet
         $foundValues = $f->foundValues;
         $sheetName = $foundValues['sheetName'];
@@ -453,8 +453,8 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
             $exerciseSettings->bind($processorModules);
 
             // wrap all the elements in some HTML and show them on the page
-            $w = new HTMLWrapper($h, $sheetSettings, $createExercise, $exerciseSettings);//, $exerciseSettings
-            $w->defineForm(basename(__FILE__)."?cid=".$cid, true, $sheetSettings, $createExercise, $exerciseSettings);//, $exerciseSettings
+            $w = new HTMLWrapper($h, $sheetSettings, $exerciseSettings, $createExercise);//, $exerciseSettings
+            $w->defineForm(basename(__FILE__)."?cid=".$cid, true, $sheetSettings, $exerciseSettings, $createExercise);//, $exerciseSettings
             $w->set_config_file('include/configs/config_createSheet.json');
             $w->show();
         } else {

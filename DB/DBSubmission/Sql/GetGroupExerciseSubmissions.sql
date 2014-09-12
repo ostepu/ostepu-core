@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetGroupExerciseSubmissions.sql
  * gets the specified submissions from %Submission table
@@ -9,6 +10,7 @@
  * - S, the submission data
  * - SS, the selected data
  */
+?>
  
 select 
     F.F_id,
@@ -28,11 +30,12 @@ select
     S.S_flag,
     S.S_leaderId,
     S.S_hideFile,
-    S.E_id
+    S.E_id,
+    S.ES_id
 from
    (Submission S
     left join File F ON (S.F_id_file = F.F_id
-        and S.E_id = '$eid')
+        and S.E_id = '<?php echo $eid; ?>')
     left join SelectedSubmission SS ON (S.S_id = SS.S_id_selected
         and S.E_id = SS.E_id))
         join
@@ -40,7 +43,7 @@ from
 
 (`Group` G
         join
-    `Group` G2 ON (G.U_id_leader = '$userid'
+    `Group` G2 ON (G.U_id_leader = '<?php echo $userid; ?>'
         and G.U_id_member = G2.U_id_member
         and G2.ES_id = G.ES_id)
 )

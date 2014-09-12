@@ -54,7 +54,7 @@
                             <?php $displayName = $file['displayName']; ?>
                             <?php $fileAddress = $file['address']; ?>
                             <?php $date = $sub['date']; ?>
-                            <?php $fileURL = "../FS/FSControl/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
+                            <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
 
                             <a href="<?php echo $fileURL; ?>"
                                title="<?php echo $displayName; ?>"
@@ -99,7 +99,7 @@
                     ?>
                     
             <label class="short left label bold" for="answer">Antwort:</label>
-            <input type="text" class="form-field text-input new-line" style="width:748px" name="<?php echo "exercises[".$key."][choices][{$form->getFormId()}][0]"; ?>" placeholder="Antwort"/>    
+            <input type="text" maxlength="250" class="form-field text-input new-line" style="width:748px" name="<?php echo "exercises[".$key."][choices][{$form->getFormId()}][0]"; ?>" placeholder="Antwort"/>    
             <br><br>
             
                     <?php

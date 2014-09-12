@@ -32,11 +32,10 @@ class LFileHandler
      */
     public static function add($database, $filesystem, $path, $header, $file)
     {
-    
         $displayName = $file->getDisplayName();
         //request to filesystem to save the file
-        if ($file->getAddress()===null){
-        $answer = Request::routeRequest( 
+        if ($file->getAddress() == null || $file->getHash() == null){
+            $answer = Request::routeRequest( 
                                             'POST',
                                             '/file'.$path,
                                             $header,
@@ -46,24 +45,28 @@ class LFileHandler
                                             );
         }
         else{
-        $answer=array();
-        $answer['status'] = 201;
-        $answer['content'] = File::encodeFile( $file );
+            $answer=array();
+            $answer['status'] = 201;
+            $answer['content'] = File::encodeFile( $file );
         }
-
+     
         // check if file has been saved
         if ($answer['status'] >= 200 && $answer['status'] <= 299 && isset($answer['content'])) {
             $file = File::decodeFile($answer['content']);
+            if ($file->getFileId() != null){
+                return $file;
+            }
+            
             //request to database file table to check if the file already exists
             $answer = Request::routeRequest( 
                                             'GET',
-                                           '/file'.$path.'hash/'.$file->getHash(),
+                                           '/file'.$path.'/hash/'.$file->getHash(),
                                             $header,
                                             '',
                                             $database,
                                             'file'
                                             );
-
+                                      
             if ($answer['status'] < 200 || $answer['status'] > 299 || !isset($answer['content'])) { //if file does not exists, add it to db file table
                 $answer = Request::routeRequest( 
                                                 'POST',

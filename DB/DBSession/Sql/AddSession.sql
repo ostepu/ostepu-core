@@ -1,3 +1,4 @@
+<?php
 /**
  * @file AddSession.sql
  * inserts a session into %Session table
@@ -5,7 +6,8 @@
  * @param string \$values the input data, e.g. 'a=1, b=2'
  * @result -
  */
+?>
  
 INSERT INTO Session (U_id, SE_sessionID) 
-VALUES ($userid, '$sessionid')
-ON DUPLICATE KEY UPDATE SE_sessionID = '$sessionid'
+VALUES ('<?php echo $userid; ?>', '<?php echo $sessionid; ?>')
+ON DUPLICATE KEY UPDATE SE_sessionID = '<?php echo $sessionid; ?>'

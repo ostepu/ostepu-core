@@ -174,6 +174,52 @@ class Platform extends Object implements JsonSerializable
         $this->databaseOperatorPassword = $value;
     }
     
+    
+    private $tempDirectory = null;
+
+    /**
+     * the $tempDirectory getter
+     *
+     * @return the value of $tempDirectory
+     */
+    public function getTempDirectory( )
+    {
+        return $this->tempDirectory;
+    }
+
+    /**
+     * the $tempDirectory setter
+     *
+     * @param string $value the new value for $tempDirectory
+     */
+    public function setTempDirectory( $value = null )
+    {
+        $this->tempDirectory = $value;
+    }
+    
+    
+    private $filesDirectory = null;
+
+    /**
+     * the $filesDirectory getter
+     *
+     * @return the value of $filesDirectory
+     */
+    public function getFilesDirectory( )
+    {
+        return $this->filesDirectory;
+    }
+
+    /**
+     * the $filesDirectory setter
+     *
+     * @param string $value the new value for $filesDirectory
+     */
+    public function setFilesDirectory( $value = null )
+    {
+        $this->filesDirectory = $value;
+    }
+    
     /**
      * Creates an patform object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -195,7 +241,9 @@ class Platform extends Object implements JsonSerializable
                                           $databaseRootUser,
                                           $databaseRootPassword,
                                           $databaseOperatorUser,
-                                          $databaseOperatorPassword
+                                          $databaseOperatorPassword,
+                                          $tempDirectory,
+                                          $filesDirectory
                                           )
     {
         return new Platform( array(
@@ -205,7 +253,9 @@ class Platform extends Object implements JsonSerializable
                                    'databaseRootUser' => $databaseRootUser,
                                    'databaseRootPassword' => $databaseRootPassword,
                                    'databaseOperatorUser' => $databaseOperatorUser,
-                                   'databaseOperatorPassword' => $databaseOperatorPassword
+                                   'databaseOperatorPassword' => $databaseOperatorPassword,
+                                   'tempDirectory' => $tempDirectory,
+                                   'filesDirectory' => $filesDirectory,
                                    ) );
     }
 
@@ -326,7 +376,11 @@ class Platform extends Object implements JsonSerializable
             $list['databaseOperatorUser'] = $this->databaseOperatorUser;
         if ( $this->databaseOperatorPassword !== null )
              $list['databaseOperatorPassword'] = $this->databaseOperatorPassword;
-
+        if ( $this->tempDirectory !== null )
+             $list['tempDirectory'] = $this->tempDirectory;
+        if ( $this->filesDirectory !== null )
+             $list['filesDirectory'] = $this->filesDirectory;
+             
         return array_merge($list,parent::jsonSerialize( ));
     }
 

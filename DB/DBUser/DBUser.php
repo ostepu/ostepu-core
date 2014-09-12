@@ -510,7 +510,7 @@ class DBUser
 
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
-                                              $this->query,
+                                              $this->query2,
                                               $sqlFile,
                                               array( 
                                                     'userid' => $userid,
@@ -527,7 +527,10 @@ class DBUser
         if ( $result['status'] >= 200 && 
              $result['status'] <= 299 ){
             $query = Query::decodeQuery( $result['content'] );
-
+ 
+            if (!is_array($query)) $query = array($query);
+            $query = $query[count($query)-1];
+            
             if ( $query->getNumRows( ) > 0 ){
                 $res = User::ExtractUser( 
                                          $query->getResponse( ),
@@ -740,7 +743,8 @@ class DBUser
                    isset( $eid ) ? $eid : '',
                    isset( $suid ) ? $suid : '',
                    isset( $statusid ) ? $statusid : '',
-                   true
+                   true,
+                   false
                    );
     }
     
@@ -761,7 +765,8 @@ class DBUser
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query2,
                                               'Sql/DeletePlatform.sql',
-                                              array( )
+                                              array( ),
+                                              false
                                               );
 
         // checks the correctness of the query
@@ -818,7 +823,8 @@ class DBUser
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query2,
                                                   'Sql/AddPlatform.sql',
-                                                  array( 'object' => $in )
+                                                  array( 'object' => $in ),
+                                                  false
                                                   );
 
             // checks the correctness of the query
@@ -856,4 +862,3 @@ class DBUser
 
  
 ?>
-

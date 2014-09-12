@@ -510,3 +510,4 @@ class Response implements \ArrayAccess, \Countable, \IteratorAggregate
         }
     }
 }
+?>

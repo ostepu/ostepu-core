@@ -1,3 +1,4 @@
+<?php
 /**
  * @file AddUser.sql
  * inserts a user into %User table
@@ -5,6 +6,7 @@
  * @param string \$values the input data, e.g. 'a=1, b=2'
  * @result -
  */
+?>
  
-insert into User SET $values
+insert into User SET <?php echo $values; ?>
 

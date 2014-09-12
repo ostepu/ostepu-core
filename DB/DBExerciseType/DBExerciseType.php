@@ -378,7 +378,8 @@ class DBExerciseType
                         $eid,
                         $etid,
                         $mid,
-                        $singleResult = false
+                        $singleResult = false,
+                        $checkSession = true
                         )
     {
         Logger::Log( 
@@ -408,7 +409,8 @@ class DBExerciseType
                                                     'eid' => $eid,
                                                     'etid' => $etid,
                                                     'mid' => $mid
-                                                    )
+                                                    ),
+                                              $checkSession
                                               );
 
         // checks the correctness of the query
@@ -505,7 +507,8 @@ class DBExerciseType
                    isset( $eid ) ? $eid : '',
                    isset( $etid ) ? $etid : '',
                    isset( $mid ) ? $mid : '',
-                   true
+                   true,
+                   false
                    );
     }
     
@@ -526,7 +529,8 @@ class DBExerciseType
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query2,
                                               'Sql/DeletePlatform.sql',
-                                              array( )
+                                              array( ),
+                                              false
                                               );
 
         // checks the correctness of the query
@@ -583,7 +587,8 @@ class DBExerciseType
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query2,
                                                   'Sql/AddPlatform.sql',
-                                                  array( 'object' => $in )
+                                                  array( 'object' => $in ),
+                                                  false
                                                   );
 
             // checks the correctness of the query
@@ -621,4 +626,3 @@ class DBExerciseType
 
  
 ?>
-
