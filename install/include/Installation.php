@@ -44,15 +44,7 @@ class Installation
     }
     
     public static function PlattformZusammenstellen($data)
-    {
-        Einstellungen::GetValue('data[PL][url]',$data['PL']['url']);
-        Einstellungen::GetValue('data[PL][temp]',$data['PL']['temp']);
-        Einstellungen::GetValue('data[PL][files]',$data['PL']['files']);
-        Einstellungen::GetValue('data[DB][db_path]',$data['DB']['db_path']);
-        Einstellungen::GetValue('data[DB][db_name]',$data['DB']['db_name']);
-        Einstellungen::GetValue('data[DB][db_user_operator]',$data['DB']['db_user_operator']);
-        Einstellungen::GetValue('data[DB][db_passwd_operator]',$data['DB']['db_passwd_operator']);
-    
+    {   
         // hier aus den Daten ein Plattform-Objekt zusammenstellen
         $platform = Platform::createPlatform(
                                             $data['PL']['url'],
@@ -70,11 +62,6 @@ class Installation
     
     public static function installiereInit($data, &$fail, &$errno, &$error)
     {
-        Einstellungen::GetValue('data[DB][db_name]',$data['DB']['db_name']);
-        Einstellungen::GetValue('data[DB][db_override]',$data['DB']['db_override']);
-        Einstellungen::GetValue('data[DB][db_ignore]',$data['DB']['db_ignore']);
-        Einstellungen::GetValue('data[PL][url]',$data['PL']['url']);
-        
         // Datenbank einrichten
         if (!$fail && (isset($data['DB']['db_override']) && $data['DB']['db_override'] === 'override')){
            $sql = "DROP SCHEMA IF EXISTS `".$data['DB']['db_name']."`;";
@@ -130,8 +117,6 @@ class Installation
     
     public static function installierePlattform($data, &$fail, &$errno, &$error)
     {
-        Einstellungen::GetValue('data[PL][url]',$data['PL']['url']);
-    
         $res = array();
     
         if (!$fail){
@@ -173,9 +158,6 @@ class Installation
     
     public static function initialisiereKomponenten($data, &$fail, &$errno, &$error)
     {
-        Einstellungen::GetValue('data[PL][init]',$data['PL']['init']);
-        Einstellungen::GetValue('data[PL][url]',$data['PL']['url']);
-        
         $fail = false;
         $url = $data['PL']['init'];
         $components = array();
@@ -282,29 +264,8 @@ class Installation
         return $components;
     }
     
-    public static function installiereDBKonfigurationsdatei($data, $id, &$fail, &$errno, &$error)
-    {
-        Einstellungen::GetValue("data[DB][config][{$id}]",$data['DB']['config'][$id]);
-        Einstellungen::GetValue('data[DB][db_path]',$data['DB']['db_path']);
-        Einstellungen::GetValue('data[DB][db_user_operator]',$data['DB']['db_user_operator']);
-        Einstellungen::GetValue('data[DB][db_passwd_operator]',$data['DB']['db_passwd_operator']);
-        Einstellungen::GetValue('data[DB][db_name]',$data['DB']['db_name']);
-        
-        $file = $data['DB']['config'][$id];
-        $text = "[DB]\n".
-                "db_path = {$data['DB']['db_path']}\n".
-                "db_user = {$data['DB']['db_user_operator']}\n".
-                "db_passwd = {$data['DB']['db_passwd_operator']}\n".
-                "db_name = {$data['DB']['db_name']}";
-                
-        if (!@file_put_contents($file,$text)) $fail = true;
-    }
-    
     public static function installiereUIKonfigurationsdatei($data, &$fail, &$errno, &$error)
     {
-        Einstellungen::GetValue('data[UI][conf]',$data['UI']['conf']);
-        Einstellungen::GetValue('data[PL][url]',$data['PL']['url']);
-    
         $fail = false;
         $file = $data['UI']['conf'];
         $text = explode("\n",file_get_contents($data['UI']['conf']));
@@ -320,9 +281,6 @@ class Installation
 
     public static function installiereKomponentendatei($data, &$fail, &$errno, &$error)
     {
-        Einstellungen::GetValue('data[DB][componentsSql]',$data['DB']['componentsSql']);
-        Einstellungen::GetValue('data[PL][url]',$data['PL']['url']);
-    
         if (!$fail){
             if (!file_exists($data['DB']['componentsSql'])){
                 $error = "Datei existiert nicht";
@@ -346,12 +304,6 @@ class Installation
 
     public static function installiereSuperAdmin($data, &$fail, &$errno, &$error)
     {
-        Einstellungen::GetValue('data[DB][db_passwd_insert]',$data['DB']['db_passwd_insert']);
-        Einstellungen::GetValue('data[DB][db_user_insert]',$data['DB']['db_user_insert']);
-        Einstellungen::GetValue('data[DB][db_email_insert]',$data['DB']['db_email_insert']);
-        Einstellungen::GetValue('data[DB][db_last_name_insert]',$data['DB']['db_last_name_insert']);
-        Einstellungen::GetValue('data[DB][db_first_name_insert]',$data['DB']['db_first_name_insert']);
-    
         if (!$fail){    
            $auth = new Authentication();
            $salt = $auth->generateSalt();
@@ -367,11 +319,6 @@ class Installation
     
     public static function installiereDBOperator($data, &$fail, &$errno, &$error)
     {
-        Einstellungen::GetValue('data[DB][db_user_override_operator]',$data['DB']['db_user_override_operator']);
-        Einstellungen::GetValue('data[DB][db_user_operator]',$data['DB']['db_user_operator']);
-        Einstellungen::GetValue('data[DB][db_name]',$data['DB']['db_name']);
-        Einstellungen::GetValue('data[DB][db_passwd_operator]',$data['DB']['db_passwd_operator']);
-    
         if (!$fail && isset($data['DB']['db_user_override_operator']) && $data['DB']['db_user_override_operator'] === 'override'){
             $oldName = $data['DB']['db_name'];
             $data['DB']['db_name'] = null;
@@ -420,10 +367,6 @@ class Installation
     
     public static function installiereDatenbankdatei($data, &$fail, &$errno, &$error)
     {
-        Einstellungen::GetValue('data[DB][db_override]',$data['DB']['db_override']);
-        Einstellungen::GetValue('data[DB][db_name]',$data['DB']['db_name']);
-        Einstellungen::GetValue('data[DB][databaseSql]',$data['DB']['databaseSql']);
-        
         // database.sql    
         if (!$fail && (isset($data['DB']['db_override']) && $data['DB']['db_override'] === 'override')){
            $sql = "DROP SCHEMA IF EXISTS `".$data['DB']['db_name']."`;";

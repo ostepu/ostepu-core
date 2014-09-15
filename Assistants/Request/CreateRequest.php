@@ -24,7 +24,7 @@ class Request_CreateRequest
      * @return an curl request object 
      */
     public static function createCustom($method, $target, $header,  $content)
-    {
+    {        
         $ch = curl_init($target);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);

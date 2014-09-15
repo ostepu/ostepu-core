@@ -58,6 +58,8 @@ class Request
      */
     public static function custom($method, $target, $header,  $content)
     {
+        //if (error_reporting() & E_NOTICE)
+        //    Logger::Log('BEGIN '.$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
         $begin = microtime(true);
         // creates a custom request
         $ch = Request_CreateRequest::createCustom($method,$target,$header,$content);
@@ -80,8 +82,9 @@ class Request
         curl_close($ch);
         
         if (error_reporting() & E_NOTICE)
-            Logger::Log($target . ' ' . (round((microtime(true) - $begin),2)). 's', LogLevel::DEBUG, dirname(__FILE__) . '../executionTime.log');
-            
+            Logger::Log($target . ' ' . (round((microtime(true) - $begin),2)). 's', false, LogLevel::DEBUG, dirname(__FILE__) . '/../executionTime.log');
+        //if (error_reporting() & E_NOTICE)
+        //    Logger::Log('END '.$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
         return $result; 
     }
        
