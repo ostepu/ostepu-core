@@ -1,0 +1,12 @@
+{
+  "name":"FSPdf",
+  "version":"1.0",
+  "files":[
+    {"path":".htaccess"},
+    {"path":"FSPdf.php"},
+    {"path":"Links.json"},
+    {"path":"Commands.json"},
+    {"path":"Pdf/"},
+    {"path":"Component.json"}
+  ]
+}

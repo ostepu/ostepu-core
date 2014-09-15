@@ -1,0 +1,12 @@
+{
+  "name":"CControl",
+  "version":"1.0",
+  "files":[
+    {"path":".htaccess"},
+    {"path":"CControl.php"},
+    {"path":"index.php"},
+    {"path":"Links.json"},
+    {"path":"Commands.json"},
+    {"path":"Sql/"}
+  ]
+}

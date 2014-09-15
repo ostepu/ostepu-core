@@ -1,0 +1,11 @@
+{
+  "name":"FSBinder",
+  "version":"1.0",
+  "files":[
+    {"path":".htaccess"},
+    {"path":"FSBinder.php"},
+    {"path":"Links.json"},
+    {"path":"Commands.json"},
+    {"path":"Component.json"}
+  ]
+}

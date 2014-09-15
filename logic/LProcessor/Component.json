@@ -1,0 +1,12 @@
+{
+  "name":"LProcessor",
+  "version":"1.0",
+  "files":[
+    {"path":".htaccess"},
+    {"path":"LProcessor.php"},
+    {"path":"index.php"},
+    {"path":"Links.json"},
+    {"path":"Commands.json"},
+    {"path":"Component.json"}
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name":"LFormPredecessor",
+  "version":"1.0",
+  "files":[
+    {"path":".htaccess"},
+    {"path":"LFormPredecessor.php"},
+    {"path":"index.php"},
+    {"path":"Links.json"},
+    {"path":"Commands.json"},
+    {"path":"Component.json"}
+}

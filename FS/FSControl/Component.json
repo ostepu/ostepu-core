@@ -1,0 +1,11 @@
+{
+  "name":"FSControl",
+  "version":"1.0",
+  "files":[
+    {"path":".htaccess"},
+    {"path":"FSControl.php"},
+    {"path":"Links.json"},
+    {"path":"Commands.json"},
+    {"path":"Component.json"}
+  ]
+}

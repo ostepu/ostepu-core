@@ -1,0 +1,12 @@
+{
+  "name":"LAttachment",
+  "version":"1.0",
+  "files":[
+    {"path":".htaccess"},
+    {"path":"LAttachment.php"},
+    {"path":"index.php"},
+    {"path":"Links.json"},
+    {"path":"Commands.json"},
+    {"path":"Component.json"}
+  ]
+}

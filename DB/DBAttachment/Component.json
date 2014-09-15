@@ -1,0 +1,13 @@
+{
+  "name":"DBAttachment",
+  "version":"1.0",
+  "files":[
+    {"path":".htaccess"},
+    {"path":"DBAttachment.php"},
+    {"path":"index.php"},
+    {"path":"Links.json"},
+    {"path":"Commands.json"},
+    {"path":"Component.json"},
+    {"path":"Sql/"}
+  ]
+}

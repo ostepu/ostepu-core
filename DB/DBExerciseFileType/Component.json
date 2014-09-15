@@ -1,0 +1,13 @@
+{
+  "name":"DBExerciseFileType",
+  "version":"1.0",
+  "files":[
+    {"path":".htaccess"},
+    {"path":"CControl.php"},
+    {"path":"index.php"},
+    {"path":"Links.json"},
+    {"path":"Commands.json"},
+    {"path":"Component.json"},
+    {"path":"Sql/"}
+  ]
+}
