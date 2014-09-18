@@ -1,27 +1,116 @@
 <?php
 #region PlugInsInstallieren
-if (!$simple)
-    if ($selected_menu === 3){
+if (!$simple) {
+    $pluginFiles = array();
+    if ($handle = @opendir(dirname(__FILE__) . '/../../Plugins')) {
+        while (false !== ($file = readdir($handle))) {
+            if ($file=='.' || $file=='..') continue;
+            if (is_dir(dirname(__FILE__) . '/../../Plugins/'.$file)) continue;
+            $pluginFiles[] = $file;
+        }
+        closedir($handle);
+    }
+    
+    if ($selected_menu === 6){
         $text='';
         $text .= "<tr><td colspan='2'>".""."</td></tr>";
         
-        $text .= Design::erstelleZeile($simple, '<s>ausgewaehlte Installieren</s>', 'e', '', 'v', Design::erstelleSubmitButton('actionInstallPlugins',Sprachen::Get('main','install')), 'h');
+        $text .= Design::erstelleZeile($simple, 'ausgewaehlte installieren', 'e', '', 'v', Design::erstelleSubmitButton('actionInstallPlugins',Sprachen::Get('main','install')), 'h');
+        $text .= Design::erstelleZeile($simple, 'ausgewaehlte deinstallieren', 'e', '', 'v', Design::erstelleSubmitButton('actionUninstallPlugins',Sprachen::Get('main','install')), 'h');
         
-        // hier die möglichen Erweiterungen ausgeben, zudem noch die Daten dieser Erweiterungen
-        $text .= Design::erstelleZeile($simple, 'Core v0.1', 'e', Design::erstelleAuswahl($simple, $data['PL']['pl_details'], 'data[PL][pl_details]', 'details', null, true), 'v');
-        $text .= Design::erstelleZeile($simple, 'OSTEPU-UI v0.1', 'e', Design::erstelleAuswahl($simple, $data['PL']['pl_details'], 'data[PL][pl_details]', 'details', null), 'v');
-        $text .= Design::erstelleZeile($simple, 'OSTEPU-LOGIC v0.1', 'e', Design::erstelleAuswahl($simple, $data['PL']['pl_details'], 'data[PL][pl_details]', 'details', null), 'v');
-        $text .= Design::erstelleZeile($simple, 'OSTEPU-DB v0.1', 'e', Design::erstelleAuswahl($simple, $data['PL']['pl_details'], 'data[PL][pl_details]', 'details', null), 'v');
-        $text .= Design::erstelleZeile($simple, 'OSTEPU-FS v0.1', 'e', Design::erstelleAuswahl($simple, $data['PL']['pl_details'], 'data[PL][pl_details]', 'details', null), 'v');
-        
-        if ($installPlatform){
-            foreach ($installPlatformResult as $component => $dat){
-                $text .= "<tr><td class='e' rowspan='1'>{$component}</td><td class='v'></td><td class='e'><div align ='center'>".((isset($dat['status']) && $dat['status']===201) ? Sprachen::Get('main','ok') : "<font color='red'>".Sprachen::Get('main','fail')." ({$dat['status']})</font>")."</align></td></tr>";
+        // hier die möglichen Erweiterungen ausgeben, zudem noch die Daten dieser Erweiterungen       
+        foreach ($pluginFiles as $plug){
+            $dat = file_get_contents(dirname(__FILE__) . '/../../Plugins/'.$plug);
+            $dat = json_decode($dat,true);
+            $name = $dat['name'];
+            $version = $dat['version'];
+            $voraussetzungen = $dat['requirements'];
+            if (!is_array($voraussetzungen)) $voraussetzungen = array($voraussetzungen);
+
+            $text .= Design::erstelleZeile($simple, "{$name} v{$dat['version']}", 'e', Design::erstelleAuswahl($simple, $data['PLUG']['plug_install_'.$name], 'data[PLUG][plug_install_'.$name.']', $plug, null, true), 'v');
+            
+            $isInstalled=false;
+            foreach($installedPlugins as $instPlug){
+                if ($name == $instPlug['name']){
+                    if (isset($instPlug['version'])){
+                        $text .= Design::erstelleZeile($simple, 'installierte Version' , 'v', 'v'.$instPlug['version'] , 'v'); 
+                    } else 
+                        $text .= Design::erstelleZeile($simple, 'installierte Version' , 'v', '???' , 'v');
+                    $isInstalled=true;
+                    break;
+                }
             }
+            
+            if (!$isInstalled)
+                $text .= Design::erstelleZeile($simple, 'installierte Version' , 'v', '---' , 'v');
+            
+            $vorText = '';
+            foreach ($voraussetzungen as $vor){
+                $vorText .= "{$vor['name']} v{$vor['version']}, ";
+            }
+            if ($vorText==''){
+                $vorText = '---';
+            } else 
+                $vorText = substr($vorText,0,-2);
+            
+            $text .= Design::erstelleZeile($simple, 'Voraussetzungen' , 'v', $vorText , 'v');
+            
+            $file = dirname(__FILE__) . '/../../Plugins/'.$plug;
+            $fileCount=0;
+            $fileSize=0;
+            $componentCount=0;
+            if (file_exists($file) && is_readable($file)){
+                $input = file_get_contents($file);
+                $input = json_decode($input,true);
+                if ($input == null){
+                    $fail = true;
+                    break;
+                }
+                $fileList = array();
+                $fileListAddress = array();
+                $componentFiles = array();
+                Installation::gibPluginDateien($input, $fileList, $fileListAddress, $componentFiles);
+                $fileCount=count($fileList);
+                foreach($fileList as $f){
+                    if (is_readable($f))
+                        $fileSize += filesize($f);
+                }
+                $componentCount = count($componentFiles);
+            }
+              
+            $text .= Design::erstelleZeile($simple, 'Komponenten' , 'v', $componentCount , 'v');        
+            $text .= Design::erstelleZeile($simple, 'Dateien' , 'v', $fileCount , 'v');
+            $text .= Design::erstelleZeile($simple, 'Größe' , 'v', Design::formatBytes($fileSize) , 'v');
+        }
+        
+        if ($installPlugins){
+            if ($installPluginsResult !=null)
+                foreach ($installPluginsResult as $component){
+                   // $text .= "<tr><td class='e' rowspan='1'>{$component}</td><td class='v'></td><td class='e'><div align ='center'>".((isset($dat['status']) && $dat['status']===201) ? Sprachen::Get('main','ok') : "<font color='red'>".Sprachen::Get('main','fail')." ({$dat['status']})</font>")."</align></td></tr>";
+                }
+            $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error);
+        }
+        
+        if ($uninstallPlugins){
+            if ($uninstallPluginsResult !=null)
+                foreach ($uninstallPluginsResult as $component){
+                   // $text .= "<tr><td class='e' rowspan='1'>{$component}</td><td class='v'></td><td class='e'><div align ='center'>".((isset($dat['status']) && $dat['status']===201) ? Sprachen::Get('main','ok') : "<font color='red'>".Sprachen::Get('main','fail')." ({$dat['status']})</font>")."</align></td></tr>";
+                }
+                
             $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error);
         }
         
         echo Design::erstelleBlock($simple, 'Erweiterungen installieren', $text);
+    } else {
+        $text = '';
+        $text .= Design::erstelleVersteckteEingabezeile($simple, $data['PLUG']['plug_install_CORE'], 'data[PLUG][plug_install_CORE]', '_', true);
+        $text .= Design::erstelleVersteckteEingabezeile($simple, $data['PLUG']['plug_install_OSTEPU-UI'], 'data[PLUG][plug_install_OSTEPU-UI]', '_', true);
+        $text .= Design::erstelleVersteckteEingabezeile($simple, $data['PLUG']['plug_install_OSTEPU-DB'], 'data[PLUG][plug_install_OSTEPU-DB]', '_', true);
+        $text .= Design::erstelleVersteckteEingabezeile($simple, $data['PLUG']['plug_install_OSTEPU-FS'], 'data[PLUG][plug_install_OSTEPU-FS]', '_', true);
+        $text .= Design::erstelleVersteckteEingabezeile($simple, $data['PLUG']['plug_install_OSTEPU-LOGIC'], 'data[PLUG][plug_install_OSTEPU-LOGIC]', '_', true);
+        $text .= Design::erstelleVersteckteEingabezeile($simple, $data['PLUG']['plug_install_INSTALL'], 'data[PLUG][plug_install_INSTALL]', '_', true);
+        echo $text;
     }
+}
 #endregion PlugInsInstallieren
 ?>

@@ -582,7 +582,7 @@ class LProcessor
                                                 $this->_submission,
                                                 'submission'
                                                );
-
+//var_dump($result);return;
                 // checks the correctness of the query
                 if ( $result['status'] >= 200 && 
                      $result['status'] <= 299 ){
@@ -595,7 +595,7 @@ class LProcessor
                    
                 } else {
                     $uploadSubmission->addMessage("Beim Speichern der Einsendung ist ein Fehler aufgetreten.");
-                
+//var_dump($uploadSubmission); return;
                     if (isset($result['content'])){
                         $content = Submission::decodeSubmission($result['content']);
                         $uploadSubmission->setStatus($content->getStatus());  

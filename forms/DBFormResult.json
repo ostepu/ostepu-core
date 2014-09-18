@@ -1,0 +1,7 @@
+{
+  "name":"DBFormResult",
+  "version":"1.0",
+  "type":"clone",
+  "base":"DBChoice",
+  "baseURI":"/formResult"
+}

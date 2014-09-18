@@ -6,7 +6,14 @@
     {"path":"LExerciseSheet.php"},
     {"path":"index.php"},
     {"path":"Links.json"},
-    {"path":"Commands.json"},
-    {"path":"Component.json"}
+    {"path":"Commands.json"}
+  ],
+  "links":[
+    {"name":"controller", "target":"LController", "links":[{"method":"DELETE", "path":"/FS/sheetFileAddress+" },{"method":"DELETE", "path":"/FS/sampleFileAddress+" },{"method":"DELETE", "path":"/DB/exercisesheet/exercisesheet/:sheetid" },{"method":"GET", "path":"/DB/exercisesheet/course/:courseid/exercise" },{"method":"GET", "path":"/DB/exercisesheet/course/:courseid" },{"method":"GET", "path":"/DB/exercisesheet/exercisesheet/:sheetid/exercise" },{"method":"GET", "path":"/DB/exercisesheet/exercisesheet/:sheetid/url" },{"method":"PUT", "path":"/DB/exercisesheet/exercisesheet/:sheetid" },{"method":"POST", "path":"/DB/exercisesheet" },{"method":"", "path":"" },{"method":"GET", "path":"/hash/:hash" },{"method":"POST", "path":"/DB/file" },{"method":"POST", "path":"/FS/file" }] },
+    {"name":"postFile", "target":"LFile", "links":[]},
+    {"name":"deleteFile", "target":"LFile", "links":[{"method":"DELETE", "path":"/file/:fileId" }]},
+    {"name":"postExerciseSheet", "target":"DBExerciseSheet", "links":[]},
+    {"name":"getExerciseSheet", "target":"DBExerciseSheet", "links":[{"method":"GET", "path":"/exercisesheet/:sheetId" }]},
+    {"name":"deleteExerciseSheet", "target":"DBExerciseSheet", "links":[{"method":"DELETE", "path":"/exercisesheet/:sheetId" }]}
   ]
 }

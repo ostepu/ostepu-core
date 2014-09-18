@@ -5,7 +5,6 @@
     {"path":".htaccess"},
     {"path":"FSBinder.php"},
     {"path":"Links.json"},
-    {"path":"Commands.json"},
-    {"path":"Component.json"}
+    {"path":"Commands.json"}
   ]
 }

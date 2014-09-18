@@ -6,7 +6,14 @@
     {"path":"LForm.php"},
     {"path":"index.php"},
     {"path":"Links.json"},
-    {"path":"Commands.json"},
-    {"path":"Component.json"}
+    {"path":"Commands.json"}
+  ],
+  "links":[
+    {"name":"form", "target":"DBForm", "links":[{"method":"POST", "path":"/form" },{"method":"DELETE", "path":"/form/:formid" }] },
+    {"name":"choice", "target":"DBChoice", "links":[{"method":"POST", "path":"/choice" }] },
+    {"name":"postCourse", "target":["DBForm","DBChoice"], "links":[{"method":"GET", "path":"/link/exists/course/:courseid" },{"method":"POST", "path":"/course" },{"method":"DELETE", "path":"/course/:courseid" }] }
+  ],
+  "connector":[
+    {"name":"extension", "target":"LExtension"}
   ]
 }

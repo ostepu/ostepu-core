@@ -6,7 +6,11 @@
     {"path":"LController.php"},
     {"path":"index.php"},
     {"path":"Links.json"},
-    {"path":"Commands.json"},
-    {"path":"Component.json"}
+    {"path":"Commands.json"}
+  ],
+  "links":[
+    {"name":"out", "target":["LProcessor","LForm","LGetSite","LAttachment","LCondition","LExercise","LTutor","LExerciseSheet","LUser","LGroup","LCourse"], "links":[] },
+    {"name":"database", "target":"DBControl", "links":[{"method":"POST", "path":"/path+" },{"method":"GET", "path":"/path+" },{"method":"PUT", "path":"/path+" },{"method":"DELETE", "path":"/path+" }] },
+    {"name":"filesystem", "target":"FSControl", "links":[{"method":"POST", "path":"/path+" },{"method":"GET", "path":"/path+" },{"method":"PUT", "path":"/path+" },{"method":"DELETE", "path":"/path+" }] }
   ]
 }

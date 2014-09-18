@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS `Component` (
   `CO_option` VARCHAR(255) NULL,
   PRIMARY KEY (`CO_id`),
   UNIQUE INDEX `CO_id_UNIQUE` (`CO_id` ASC),
-  UNIQUE INDEX `CO_name_UNIQUE` (CO_name ASC))
+  UNIQUE INDEX `CO_address_UNIQUE` (`CO_address` ASC))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1;
 

@@ -6,7 +6,9 @@
     {"path":"LCondition.php"},
     {"path":"index.php"},
     {"path":"Links.json"},
-    {"path":"Commands.json"},
-    {"path":"Component.json"}
+    {"path":"Commands.json"}
+  ],
+  "links":[
+    {"name":"controller", "target":"LController", "links":[{"method":"POST", "path":"/DB/approvalcondition" },{"method":"PUT", "path":"/DB/approvalcondition/:courseid" }] }
   ]
 }

@@ -6,7 +6,15 @@
     {"path":"LOOP.php"},
     {"path":"index.php"},
     {"path":"Links.json"},
-    {"path":"Commands.json"},
-    {"path":"Component.json"}
+    {"path":"Commands.json"}
+  ],
+  "links":[
+    {"name":"pdf", "target":"FSPdf", "links":[] },
+    {"name":"postProcess", "target":"DBProcessList", "links":[{"method":"POST", "path":"/process" }] },
+    {"name":"deleteProcess", "target":"DBProcessList", "links":[{"method":"DELETE", "path":"/process/process/:processid" }] },
+    {"name":"getProcess", "target":"DBProcessList", "links":[{"method":"GET", "path":"/process/course/:courseid/component/:componentid" }] }
+  ],
+  "connector":[
+    {"name":"extension", "target":"LExtension"}
   ]
 }

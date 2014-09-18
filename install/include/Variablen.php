@@ -20,9 +20,16 @@ class Variablen
     public static $UIVariablen = array( 'conf');
     
     public static $SVVariablen = array( 'name');
+    public static $PLUGVariablen = array( 'plug_install_CORE',
+                                          'plug_install_OSTEPU-UI',
+                                          'plug_install_OSTEPU-DB',
+                                          'plug_install_OSTEPU-FS',
+                                          'plug_install_OSTEPU-LOGIC',
+                                          'plug_install_INSTALL');
                                         
     public static $PLVariablen = array( 'pl_main_details',
                                         'url',
+                                        'urlExtern',
                                         'temp',
                                         'files',
                                         'pl_details');
@@ -34,7 +41,9 @@ class Variablen
                                         'zv_ssh_auth_type',
                                         'zv_ssh_address');
                                         
-    public static $COVariablen = array( 'co_details');  
+    public static $COVariablen = array( 'co_details',
+                                        'co_link_type',
+                                        'co_link_availability');  
     
     public static function Initialisieren(&$data)
     {
@@ -50,6 +59,8 @@ class Variablen
             $data['SV'][$var] = isset($data['SV'][$var]) ? $data['SV'][$var] : null;
         foreach (Variablen::$ZVVariablen as $var)
             $data['ZV'][$var] = isset($data['ZV'][$var]) ? $data['ZV'][$var] : null;
+        foreach (Variablen::$PLUGVariablen as $var)
+            $data['PLUG'][$var] = isset($data['PLUG'][$var]) ? $data['PLUG'][$var] : null;
     }
     
     public static function Einsetzen(&$data)
@@ -66,6 +77,26 @@ class Variablen
             Einstellungen::GetValue("data[SV][{$var}]",$data['SV'][$var]);
         foreach (Variablen::$ZVVariablen as $var)
             Einstellungen::GetValue("data[ZV][{$var}]",$data['ZV'][$var]);
+        foreach (Variablen::$PLUGVariablen as $var)
+            Einstellungen::GetValue("data[PLUG][{$var}]",$data['PLUG'][$var]);
+    }
+    
+    public static function EinsetzenDirekt($konfiguration,&$data)
+    {
+        foreach (Variablen::$DBVariablen as $var)
+            Einstellungen::GetValueDirekt($konfiguration,"data[DB][{$var}]",$data['DB'][$var]);
+        foreach (Variablen::$UIVariablen as $var)
+            Einstellungen::GetValueDirekt($konfiguration,"data[UI][{$var}]",$data['UI'][$var]);
+        foreach (Variablen::$PLVariablen as $var)
+            Einstellungen::GetValueDirekt($konfiguration,"data[PL][{$var}]",$data['PL'][$var]);
+        foreach (Variablen::$COVariablen as $var)
+            Einstellungen::GetValueDirekt($konfiguration,"data[CO][{$var}]",$data['CO'][$var]);
+        foreach (Variablen::$SVVariablen as $var)
+            Einstellungen::GetValueDirekt($konfiguration,"data[SV][{$var}]",$data['SV'][$var]);
+        foreach (Variablen::$ZVVariablen as $var)
+            Einstellungen::GetValueDirekt($konfiguration,"data[ZV][{$var}]",$data['ZV'][$var]);
+        foreach (Variablen::$PLUGVariablen as $var)
+            Einstellungen::GetValueDirekt($konfiguration,"data[PLUG][{$var}]",$data['PLUG'][$var]);
     }
     
     public static function Zuruecksetzen(&$data)
@@ -82,6 +113,8 @@ class Variablen
             $data['SV'][$var] = null;
         foreach (Variablen::$ZVVariablen as $var)
             $data['ZV'][$var] = null;
+        foreach (Variablen::$PLUGVariablen as $var)
+            $data['PLUG'][$var] = null;
     }
 }
 ?>

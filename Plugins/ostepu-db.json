@@ -1,18 +1,20 @@
 {
-  "name":"ostepu-db",
+  "name":"OSTEPU-DB",
   "version":"0.1",
   "versionDate":"27.06.2014",
   "author":"",
   "sourceURL":"",
   "updateURL":"",
-  "requirements":[{"type":"plugin","name":"core","version":"0.1"}],
+  "requirements":[{"type":"plugin","name":"CORE","version":"0.1"}],
   "files":
     [
+      {"path":"Plugins/ostepu-db.json"}
     ],
   "components":
     [
       {"conf":"DB/DBApprovalCondition/Component.json"},
       {"conf":"DB/DBAttachment/Component.json"},
+      {"conf":"DB/DBAttachment2/Component.json"},
       {"conf":"DB/DBChoice/Component.json"},
       {"conf":"DB/DBControl/Component.json"},
       {"conf":"DB/DBCourse/Component.json"},
@@ -31,6 +33,10 @@
       {"conf":"DB/DBSelectedSubmission/Component.json"},
       {"conf":"DB/DBSubmission/Component.json"},
       {"conf":"DB/DBTransaction/Component.json"},
-      {"conf":"DB/DBUser/Component.json"}
+      {"conf":"DB/DBUser/Component.json"},
+      {"conf":"forms/DBFormResult.json"},
+      {"conf":"forms/DBProcess.json"},
+      {"conf":"forms/DBProcessAttachment.json"},
+      {"conf":"forms/DBProcessWorkFiles.json"}
     ]
 }

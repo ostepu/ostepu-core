@@ -55,9 +55,10 @@ class Installer
             $this->CallInstall(true);
             return;
         }
-        
+
         // initialize slim    
         $this->app = new \Slim\Slim(array( 'debug' => true ));
+        $this->app->contentType('text/html; charset=utf-8');
 
         // POST,GET showInstall
         $this->app->map('(/)',
@@ -108,8 +109,8 @@ class Installer
     
     public function CallInstall($simple = false)
     {
-        $output = array();
     
+        $output = array();
         $installFail = false;
         if (isset($_POST['data']))
             $data = $_POST['data'];
@@ -124,6 +125,7 @@ class Installer
             $data['PL']['init'] = 'DB/CControl';
             
         if (isset($data['PL']['url'])) $data['PL']['url'] = rtrim($data['PL']['url'], '/');
+        if (isset($data['PL']['urlExtern'])) $data['PL']['urlExtern'] = rtrim($data['PL']['urlExtern'], '/');
         if (isset($data['PL']['temp'])) $data['PL']['temp'] = rtrim($data['PL']['temp'], '/');
         if (isset($data['PL']['files'])) $data['PL']['files'] = rtrim($data['PL']['files'], '/');
         if (isset($data['PL']['init'])) $data['PL']['init'] = rtrim($data['PL']['init'], '/');
@@ -136,18 +138,12 @@ class Installer
                 Einstellungen::umbenennenEinstellungen($selected_server,$data['SV']['name']);
 
         // check which menu is selected
-        $menuItems = array(5, 0,1,2,3,4);
+        $menuItems = array(5,0,1,6,2,7,3,4);
+        $menuTypes = array(0,0,0,0,0,0,1,1);
         $selected_menu = intval(isset($_POST['selected_menu']) ? $_POST['selected_menu'] : $menuItems[0]);
         
         // check server configs
-        $serverFiles = array();
-        if ($handle = opendir(dirname(__FILE__) . '/config')) {
-            while (false !== ($file = readdir($handle))) {
-                if ($file=='.' || $file=='..') continue;
-                $serverFiles[] = $file;
-            }
-            closedir($handle);
-        }
+        $serverFiles = Installation::GibServerDateien();
           
         // add Server
         $addServer = false;
@@ -186,10 +182,14 @@ class Installer
         Einstellungen::ladeEinstellungen($server);
         Variablen::Einsetzen($data);
         
+        if ($simple)
+            $data['ZV']['zv_type'] = 'local';
+
         $fail = false;
         $errno = null;
         $error = null;
         
+        $modules = array();
         if ($selected_menu === 0 || ($simple && isset($_POST['actionCheckModules']))){
             // check if apache modules are existing
             $modules = Zugang::Ermitteln('actionCheckModules','Installer::checkModules',$data, $fail, $errno, $error);
@@ -198,6 +198,7 @@ class Installer
                 $output['actionCheckModules'] = $modules;
         }
         
+        $extensions = array();
         if ($selected_menu === 0 || ($simple && isset($_POST['actionCheckExtensions']))){
             // check if php extensions are existing
             $extensions = Zugang::Ermitteln('actionCheckExtensions','Installer::checkExtensions',$data, $fail, $errno, $error);
@@ -235,19 +236,198 @@ class Installer
                 $output['actionInstallPlatform'] = $installPlatformResult;
             }
         }
-        
+
         // install components file
         $installComponentFile = false;
         if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInstallComponents'])) && !$installFail){
             $installComponentFile = true;
             Zugang::Ermitteln('actionInstallComponents','Installation::installiereKomponentendatei',$data, $fail, $errno, $error);
-            
+
             if ($simple){
                 $result = array();
                 $result['fail'] = $fail;
                 $result['errno'] = $errno;
                 $result['error'] = $error;
                 $output['actionInstallComponents'] = $result;
+            }
+        }
+        
+        // install component definitions
+        $installComponentDefs = false;
+        $installComponentDefsResult = array();
+        if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInstallComponentDefs'])) && !$installFail){
+            $installComponentDefs = true;
+            
+            if ($simple){
+                $installComponentDefsResult = Zugang::Ermitteln('actionInstallComponentDefs','Installation::installiereKomponentenDefinitionen',$data, $fail, $errno, $error);
+                $result['fail'] = $fail;
+                $result['errno'] = $errno;
+                $result['error'] = $error;
+                $output['actionInstallComponentDefs'] = $installComponentDefsResult;
+            } else {
+            
+                $serverFiles = Installation::GibServerDateien();
+                
+                $installComponentDefsResult['components']=array();
+                foreach($serverFiles as $sf){
+                    $sf = pathinfo($sf)['filename'];
+                    $tempData = Einstellungen::ladeEinstellungenDirekt($sf);
+                    $componentList = Zugang::Ermitteln('actionInstallComponentDefs','Installation::installiereKomponentenDefinitionen',$tempData, $fail, $errno, $error); 
+                   
+                    if (isset($componentList['components']))
+                        $installComponentDefsResult['components'] = array_merge($installComponentDefsResult['components'],$componentList['components']);
+                }
+                
+                // Komponenten erzeugen
+                $comList = array();
+                $setDBNames = array();
+                $ComponentList = array();
+                
+                // zunächst die Komponentenliste nach Namen sortieren
+                $ComponentListInput = array();
+                foreach ($installComponentDefsResult['components'] as $key => $input){
+                    if (!isset($input['name'])) continue;
+                    if (!isset($ComponentListInput[$input['name']]))$ComponentListInput[$input['name']]=array();
+                    $ComponentListInput[$input['name']][$key] = $input;
+                }
+                
+                for($zz=0;$zz<2;$zz++){
+                $tempList = array();
+                foreach ($ComponentListInput as $key2 => $ComNames){
+                    foreach ($ComNames as $key => $input){
+                        if (!isset($input['name'])) continue;
+                        
+                        if (!isset($input['type']) || $input['type']=='normal'){
+                            // normale Komponente
+                            
+                            if (!isset($input['registered'])){
+                                $comList[] = "('{$input['name']}', '{$input['urlExtern']}/{$input['path']}', '".(isset($input['option']) ? $input['option'] : '')."')"; 
+                                // Verknüpfungen erstellen
+                                $setDBNames[] = " SET @{$key}_{$input['name']} = (select CO_id from Component where CO_address='{$input['urlExtern']}/{$input['path']}' limit 1); ";
+                                $input['dbName'] = $key.'_'.$input['name'];
+                                $input['registered'] = '1';
+                            }   
+                            if (!isset($tempList[$key2])) $tempList[$key2] = array();
+                                $tempList[$key2][$key] = $input;
+                                    
+                        } elseif (isset($input['type']) && $input['type']=='clone') {
+                            // Komponente basiert auf einer bestehenden
+                            if (!isset($input['base'])) continue;
+                             
+                            if (isset($ComponentListInput[$input['base']]))
+                                foreach ($ComponentListInput[$input['base']] as $key3 => $input2){
+                                    if (!isset($input2['name'])) continue;
+
+                                    // pruefe, dass die Eintraege nicht doppelt erstellt werden
+                                    $found=false;
+                                    foreach ($ComponentListInput[$input['name']] as $input3){
+                                        if ("{$input3['urlExtern']}/{$input3['path']}" == "{$input2['urlExtern']}/{$input2['path']}{$input['baseURI']}"){
+                                            $found = true;
+                                            break;
+                                        }
+                                    }
+                                    if ($found){ continue;}
+                                    
+                                    $input2['path'] = "{$input2['path']}{$input['baseURI']}";
+                                    
+                                    if (isset($input2['links']) && isset($input['links']))
+                                        $input2['links'] = array_merge($input['links']);
+                                        
+                                    if (isset($input2['connector']) && isset($input['connector']))
+                                        $input2['connector'] = array_merge($input['connector']);
+
+                                    $input2['name'] = $input['name'];
+                                    if (!isset($tempList[$key2])) $tempList[$key2] = array();
+                                        $tempList[$key2][$key] = $input2;
+                                }
+                        }
+                    }
+                }
+                    $ComponentListInput = $tempList;
+                }
+                
+                $sql = "START TRANSACTION;SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;TRUNCATE TABLE `ComponentLinkage`;ALTER TABLE `ComponentLinkage` AUTO_INCREMENT = 1;TRUNCATE TABLE `Component`;ALTER TABLE `Component` AUTO_INCREMENT = 1;INSERT INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ";
+                $installComponentDefsResult['componentsCount'] = count($comList);
+                $sql.=implode(',',$comList);
+                unset($comList);
+                $sql .= " ON DUPLICATE KEY UPDATE CO_address=VALUES(CO_address), CO_option=VALUES(CO_option);SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;COMMIT;";
+                DBRequest::request2($sql, false, $data);
+                
+                $sql = "START TRANSACTION;SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;";
+                $sql .=implode('',$setDBNames);
+                unset($setDBNames);
+                $sql .= " TRUNCATE TABLE `ComponentLinkage`;INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES ";
+                $links = array();
+                
+                foreach ($ComponentListInput as $key2 => $ComNames){
+                    foreach ($ComNames as $key => $input){
+                        if (isset($input['type']) && $input['type']!='normal') continue;
+                        if (isset($input['dbName'])){
+                        
+                            // prüfe nun alle Verknüpfungen dieser Komponente und erstelle diese
+                            if (isset($input['links']))
+                                foreach ($input['links'] as $link){
+                                    if (!is_array($link['target'])) $link['target'] = array($link['target']);
+                                    
+                                    foreach ($link['target'] as $tar){// $tar -> der Name der Zielkomponente
+                                        if (!isset($ComponentListInput[$tar])) continue;
+                                        foreach ($ComponentListInput[$tar] as $target){
+                                            // $target -> das Objekt der Zielkomponente
+                                            if (!isset($target['dbName'])) continue;
+                                            if ($input['link_type']=='local'){
+                                                if ($input['urlExtern'] == $target['urlExtern']){
+                                                    $l = "(@{$input['dbName']}, '{$link['name']}', '".(isset($input['relevanz']) ? $input['relevanz'] : '')."', @{$target['dbName']})\n";
+                                                   // echo $l.'<br>';
+                                                    $links[] = $l;
+                                                }
+                                            } elseif ($input['link_type']=='full'){
+                                                if ($input['urlExtern'] == $target['urlExtern'] || (isset($target['link_availability']) && $target['link_availability']=='full')){
+                                                
+                                                    $l = "(@{$input['dbName']}, '{$link['name']}', '".(isset($input['relevanz']) ? $input['relevanz'] : '')."', @{$target['dbName']})\n";
+                                                   // echo $l.'<br>';
+                                                    $links[] = $l;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                
+                            if (isset($input['connector']))
+                                foreach ($input['connector'] as $link){
+                                    if (!is_array($link['target'])) $link['target'] = array($link['target']);
+                                    
+                                    foreach ($link['target'] as $tar){// $tar -> der Name der Zielkomponente
+                                        if (!isset($ComponentListInput[$tar])) continue;
+                                        foreach ($ComponentListInput[$tar] as $target){
+                                            // $target -> das Objekt der Zielkomponente
+                                            if (!isset($target['dbName'])) continue;
+                                            if ($input['link_type']=='local'){
+                                                if ($input['urlExtern'] == $target['urlExtern']){
+                                                    $l = "(@{$target['dbName']}, '{$link['name']}', '".(isset($input['relevanz']) ? $input['relevanz'] : '')."', @{$input['dbName']})\n";
+                                                   // echo $l.'<br>';
+                                                    $links[] = $l;
+                                                }
+                                            } elseif ($input['link_type']=='full'){
+                                                if ($input['urlExtern'] == $target['urlExtern'] || (isset($input['link_availability']) && $input['link_availability']=='full')){
+                                                
+                                                    $l = "(@{$target['dbName']}, '{$link['name']}', '".(isset($input['relevanz']) ? $input['relevanz'] : '')."', @{$input['dbName']})\n";
+                                                   // echo $l.'<br>';
+                                                    $links[] = $l;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                        }
+                    }
+                }
+                
+                $installComponentDefsResult['linksCount'] = count($links);
+                $sql.=implode(',',$links);
+                unset($links);
+                $sql .= "; COMMIT;";
+                DBRequest::request2($sql, false, $data);
+                $installComponentDefsResult['components'] = $ComponentListInput;
             }
         }
         
@@ -281,6 +461,22 @@ class Installer
             }
         }
         
+        // install plugins
+        $installPlugins = false;
+        $installPluginsResult = array();
+        if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInstallPlugins'])) && !$installFail){
+            $installPlugins = true;
+            $installPluginsResult = Installation::initialisierePlugins($data, $fail, $errno, $error);
+        }
+        
+        // uninstall plugins
+        $uninstallPlugins = false;
+        $uninstallPluginsResult = array();
+        if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionUninstallPlugins'])) && !$installFail){
+            $uninstallPlugins = true;
+            $uninstallPluginsResult = Installation::deinitialisierePlugins($data, $fail, $errno, $error);
+        }
+        
         // init components
         $initComponents = false;
         $components = array();
@@ -311,6 +507,15 @@ class Installer
             }
         }
         
+        $installedPlugins = array();
+        if ($selected_menu === 6 || ($simple && isset($_POST['actionCheckPlugins']))){
+            // check installed plugins
+            $installedPlugins = Zugang::Ermitteln('actionCheckPlugins','Installation::checkPlugins',$data, $fail, $errno, $error);
+            
+            if ($simple)
+                $output['actionCheckPlugins'] = $installedPlugins;
+        }
+        
         if (!$simple){
             // select language - german
             if (isset($_POST['actionSelectGerman']) || isset($_POST['actionSelectGerman_x'])){
@@ -333,6 +538,7 @@ class Installer
             echo "<table border='0'><tr>";
             echo "<th valign='top'>";
             
+            // Serverliste ausgeben
             echo "<div style='width:150px;word-break: break-all;'>";
             echo "<table border='0'>";
             echo "<tr><td class='e'>Serverliste</td></tr>";
@@ -347,6 +553,8 @@ class Installer
            
             echo "</table>";
             echo "</div";
+            
+            echo "</th>";
             echo "<th width='2'></th>";
             
             echo "</th>";
@@ -354,14 +562,15 @@ class Installer
             echo "<th width='600'><hr />";        
             $text='';
             $text .= "<table border='0' cellpadding='4' width='600'>";
-            $text .= "<tr>";
             $text .= "<input type='hidden' name='selected_menu' value='{$selected_menu}'>";
-            $text .= "<td class='h'><div align='center'>".Design::erstelleSubmitButtonFlach('selected_menu','5',($selected_menu == 5 ? '<font color="maroon">Zugangsdaten</font>' : 'Zugangsdaten'))."</div></td>";
-            $text .= "<td class='h'><div align='center'>".Design::erstelleSubmitButtonFlach('selected_menu','0',($selected_menu == 0 ? '<font color="maroon">Informationen</font>' : 'Informationen'))."</div></td>";
-            $text .= "<td class='h'><div align='center'>".Design::erstelleSubmitButtonFlach('selected_menu','1',($selected_menu == 1 ? '<font color="maroon">Einstellungen</font>' : 'Einstellungen'))."</div></td>";
-            $text .= "<td class='h'><div align='center'>".Design::erstelleSubmitButtonFlach('selected_menu','2',($selected_menu == 2 ? '<font color="maroon">Datenbank</font>' : 'Datenbank'))."</div></td>";
-            $text .= "<td class='h'><div align='center'>".Design::erstelleSubmitButtonFlach('selected_menu','3',($selected_menu == 3 ? '<font color="maroon">Komponenten</font>' : 'Komponenten'))."</div></td>";
-            $text .= "<td class='h'><div align='center'>".Design::erstelleSubmitButtonFlach('selected_menu','4',($selected_menu == 4 ? '<font color="maroon">Plattform</font>' : 'Plattform'))."</div></td>";
+            
+            $text .= "<tr>";
+            for ($i=0;$i<count($menuItems);$i++){
+                if ($i%5==0 && $i>0) $text .= "<tr>";
+                $item = $menuItems[$i];
+                $type = $menuTypes[$i];
+                $text .= "<td class='".($type==0?'h':'k')."'><div align='center'>".Design::erstelleSubmitButtonFlach('selected_menu',$item,($selected_menu == $item ? '<font color="maroon">'.Sprachen::Get('main','title'.$item).'</font>' : Sprachen::Get('main','title'.$item)))."</div></td>";
+            }
             $text .= "</tr></table>";
             echo $text;
             echo "<hr />";
@@ -374,19 +583,48 @@ class Installer
         }
         #endregion Sprachwahl
 
-        require_once dirname(__FILE__) . '/segments/Zugang_ausgeben.php';
+        if (file_exists(dirname(__FILE__) . '/segments/Zugang_ausgeben.php'))
+            require_once dirname(__FILE__) . '/segments/Zugang_ausgeben.php';
+         
+        if (file_exists(dirname(__FILE__) . '/segments/Modulpruefung_ausgeben.php'))
         require_once dirname(__FILE__) . '/segments/Modulpruefung_ausgeben.php';
+         
+        if (file_exists(dirname(__FILE__) . '/segments/Pruefung_der_Erweiterungen_ausgeben.php'))
         require_once dirname(__FILE__) . '/segments/Pruefung_der_Erweiterungen_ausgeben.php';
+         
+        if (file_exists(dirname(__FILE__) . '/segments/Plattform_Datenbanknutzer.php'))
         require_once dirname(__FILE__) . '/segments/Plattform_Datenbanknutzer.php';
+         
+        if (file_exists(dirname(__FILE__) . '/segments/Grundinformationen.php'))
         require_once dirname(__FILE__) . '/segments/Grundinformationen.php';
-        require_once dirname(__FILE__) . '/segments/Grundeinstellungen_ausgeben.php';
-        require_once dirname(__FILE__) . '/segments/Datenbank_informationen.php';
-        require_once dirname(__FILE__) . '/segments/Datenbank_einrichten.php';
-        require_once dirname(__FILE__) . '/segments/Benutzerschnittstelle_einrichten.php';
-        require_once dirname(__FILE__) . '/segments/PlugInsInstallieren.php';
-        require_once dirname(__FILE__) . '/segments/Komponenten.php';
-        require_once dirname(__FILE__) . '/segments/PlattformEinrichten.php';
-        require_once dirname(__FILE__) . '/segments/Benutzer_erstellen.php';
+         
+        if (file_exists(dirname(__FILE__) . '/segments/Grundeinstellungen_ausgeben.php'))
+            require_once dirname(__FILE__) . '/segments/Grundeinstellungen_ausgeben.php';
+            
+        if (file_exists(dirname(__FILE__) . '/segments/PlugInsInstallieren.php'))
+            require_once dirname(__FILE__) . '/segments/PlugInsInstallieren.php';
+            
+        if (file_exists(dirname(__FILE__) . '/segments/Datenbank_informationen.php'))
+            require_once dirname(__FILE__) . '/segments/Datenbank_informationen.php';
+
+        if (file_exists(dirname(__FILE__) . '/segments/Datenbank_einrichten.php'))
+            require_once dirname(__FILE__) . '/segments/Datenbank_einrichten.php';
+            
+        if (file_exists(dirname(__FILE__) . '/segments/Komponenten_erstellen.php'))
+            require_once dirname(__FILE__) . '/segments/Komponenten_erstellen.php';
+                     
+        if (file_exists(dirname(__FILE__) . '/segments/Benutzerschnittstelle_einrichten.php'))
+            require_once dirname(__FILE__) . '/segments/Benutzerschnittstelle_einrichten.php';
+            
+        if (file_exists(dirname(__FILE__) . '/segments/Komponenten.php'))
+            require_once dirname(__FILE__) . '/segments/Komponenten.php';
+                        
+        if (file_exists(dirname(__FILE__) . '/segments/PlattformEinrichten.php'))
+            require_once dirname(__FILE__) . '/segments/PlattformEinrichten.php';
+         
+        if (file_exists(dirname(__FILE__) . '/segments/Benutzer_erstellen.php'))
+            require_once dirname(__FILE__) . '/segments/Benutzer_erstellen.php';
+            
 
         if (!$simple){
             if (($selected_menu === 2 || $selected_menu === 3 || $selected_menu === 4) && false){
@@ -398,11 +636,15 @@ class Installer
             #region zurück_weiter_buttons
             $text = '';
             $a='';$b='';
-            if (array_search($selected_menu,$menuItems)>0)
-                $a = Design::erstelleSubmitButtonFlach('selected_menu',$menuItems[array_search($selected_menu,$menuItems)-1], '<< zurueck');
-                
-            if (array_search($selected_menu,$menuItems)<count($menuItems)-1)
-                $b = Design::erstelleSubmitButtonFlach('selected_menu',$menuItems[array_search($selected_menu,$menuItems)+1], 'weiter >>');
+            if (array_search($selected_menu,$menuItems)>0){
+                $item = $menuItems[array_search($selected_menu,$menuItems)-1];
+                $a = Design::erstelleSubmitButtonFlach('selected_menu',$item, '<< zurueck').'<br><font size=1>('.Sprachen::Get('main','title'.$item).')</font>';
+            }
+            
+            if (array_search($selected_menu,$menuItems)<count($menuItems)-1){
+                $item = $menuItems[array_search($selected_menu,$menuItems)+1];
+                $b = Design::erstelleSubmitButtonFlach('selected_menu',$item, 'weiter >>').'<br><font size=1>('.Sprachen::Get('main','title'.$item).')</font>';
+            }
             
             echo "<table border='0' cellpadding='3' width='600'>";
             echo "<thead><tr><th align='left' width='50%'>{$a}</th><th align='right' width='50%'>{$b}</th></tr></thead>";
@@ -439,6 +681,10 @@ class Installer
             echo "<tr><th></th></tr>";
             echo "<tr><td class='e'>".Sprachen::Get('databasePlatformUser','db_user_operator')."</td></tr>";
             echo "<tr><td>".$data['DB']['db_user_operator']."</td></tr>";
+            echo "<tr><td class='e'>".Sprachen::Get('general_informations','temp')."</td></tr>";
+            echo "<tr><td>".$data['PL']['temp']."</td></tr>";
+            echo "<tr><td class='e'>".Sprachen::Get('general_informations','files')."</td></tr>";
+            echo "<tr><td>".$data['PL']['files']."</td></tr>";
             echo "</table>";
             echo "</div";
             

@@ -6,8 +6,9 @@
     {"path":"DBControl.php"},
     {"path":"index.php"},
     {"path":"Links.json"},
-    {"path":"Commands.json"},
-    {"path":"Component.json"},
-    {"path":"Sql/"}
+    {"path":"Commands.json"}
+  ],
+  "links":[
+    {"name":"out", "target":["DBCourse","DBUser","DBAttachment","DBExercise","DBExerciseSheet","DBExerciseType","DBFile","DBSession","DBExternalId","DBApprovalCondition","DBGroup","DBInvitation","DBMarking","DBCourseStatus","DBSelectedSubmission","DBSubmission","DBExerciseFileType","CControl","DBForm","DBProcess"], "links":[] }
   ]
 }

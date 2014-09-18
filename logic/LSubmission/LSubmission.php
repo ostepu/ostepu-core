@@ -129,7 +129,7 @@ class LSubmission
      */
     public function addSubmission()
     {
-                    
+
         $body = $this->app->request->getBody();
         
         $submission = Submission::decodeSubmission($body);
@@ -148,7 +148,7 @@ class LSubmission
                                 );        
 //echo File::encodeFile($file);return;       
         if ( $result['status'] >= 200 && 
-             $result['status'] <= 299 ){
+             $result['status'] <= 299 ){  
             // file is uploaded
             $newFile = File::decodeFile($result['content']);
             $file->setAddress($newFile->getAddress());
@@ -224,7 +224,7 @@ class LSubmission
                 }
             }         
         }
-        
+     
         Logger::Log( 
                     'POST AddSubmission failed',
                     LogLevel::ERROR

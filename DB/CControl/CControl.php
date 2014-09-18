@@ -885,12 +885,13 @@ class CControl
                 $this->_app->response->setStatus( 409 );
                 $this->_app->stop();
             }       
-            
+
             // starts a query
             ob_start();
             eval("?>" .  file_get_contents( 'Sql/AddPlatform.sql' ));
             $sql = ob_get_contents();
             ob_end_clean();
+            
             $result = DBRequest::request2( 
                                          $sql,
                                          false

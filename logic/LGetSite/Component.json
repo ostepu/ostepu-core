@@ -6,7 +6,20 @@
     {"path":"LGetSite.php"},
     {"path":"index.php"},
     {"path":"Links.json"},
-    {"path":"Commands.json"},
-    {"path":"Component.json"}
+    {"path":"Commands.json"}
+  ],
+  "links":[
+    {"name":"controller", "target":"LController","links":[]},
+    {"name":"getExerciseType", "target":"DBExerciseType","links":[]},
+    {"name":"getExercise", "target":"DBExercise","links":[]},
+    {"name":"getApprovalCondition", "target":"DBApprovalCondition","links":[]},
+    {"name":"getUser", "target":"DBUser","links":[]},
+    {"name":"getMarking", "target":"DBMarking","links":[]},
+    {"name":"getSelectedSubmission", "target":"DBSelectedSubmission","links":[]},
+    {"name":"getGroup", "target":"DBGroup","links":[]},
+    {"name":"getCourseStatus", "target":"DBCourseStatus","links":[]},
+    {"name":"getSubmission", "target":"DBSubmission","links":[]},
+    {"name":"getCourse", "target":"DBCourse","links":[]},
+    {"name":"getInvitation", "target":"DBInvitation","links":[]}
   ]
 }

@@ -6,7 +6,9 @@
     {"path":"LUser.php"},
     {"path":"index.php"},
     {"path":"Links.json"},
-    {"path":"Commands.json"},
-    {"path":"Component.json"}
+    {"path":"Commands.json"}
+  ],
+  "links":[
+    {"name":"controller", "target":"LController", "links":[{"method":"GET","path":"/DB/user/user/:userid"},{"method":"GET", "path":"/DB/user/user" },{"method":"PUT", "path":"/DB/user/:userid" },{"method":"PUT", "path":"/DB/user/:userid" },{"method":"POST", "path":"/DB/user" },{"method":"PUT", "path":"/DB/coursestatus/course/:courseid/user/:userid" },{"method":"GET", "path":"/DB/user/user/:userid" }] }
   ]
 }

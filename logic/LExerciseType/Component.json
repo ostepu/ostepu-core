@@ -6,7 +6,9 @@
     {"path":"LExerciseType.php"},
     {"path":"index.php"},
     {"path":"Links.json"},
-    {"path":"Commands.json"},
-    {"path":"Component.json"}
+    {"path":"Commands.json"}
+  ],
+  "links":[
+    {"name":"controller", "target":"LController", "links":[] }
   ]
 }

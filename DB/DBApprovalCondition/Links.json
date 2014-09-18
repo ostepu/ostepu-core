@@ -1,4 +1,4 @@
 [
-    {"name":"out", "links":[{"method":"POST", "path":"/query" }] },
-    {"name":"out2", "links":[{"method":"POST", "path":"/query" }] }
+    {"name":"out", "target":"DBQuery", "links":[{"method":"POST", "path":"/query" }] },
+    {"name":"out2", "target":"DBQuery2", "links":[{"method":"POST", "path":"/query" }] }
 ]

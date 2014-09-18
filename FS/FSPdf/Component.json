@@ -6,7 +6,6 @@
     {"path":"FSPdf.php"},
     {"path":"Links.json"},
     {"path":"Commands.json"},
-    {"path":"Pdf/"},
-    {"path":"Component.json"}
+    {"path":"Pdf/"}
   ]
 }

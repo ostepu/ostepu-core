@@ -6,7 +6,10 @@
     {"path":"LFile.php"},
     {"path":"index.php"},
     {"path":"Links.json"},
-    {"path":"Commands.json"},
-    {"path":"Component.json"}
+    {"path":"Commands.json"}
+  ],
+  "links":[
+    {"name":"fileDb", "target":"DBFile", "links":[{"method":"GET", "path":"/file/:adress/hash/:hash" },{"method":"DELETE", "path":"/file/:fileid" }] },
+    {"name":"file", "target":"FSFile", "links":[{"method":"POST", "path":"/file/:adress" },{"method":"DELETE", "path":"/:adress" }] }
   ]
 }

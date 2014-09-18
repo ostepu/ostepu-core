@@ -48,6 +48,28 @@ class Einstellungen
         }
     }
     
+    public static function ladeEinstellungenDirekt($serverName)
+    {
+        $path = dirname(__FILE__) . '/../config';
+        Einstellungen::generatepath($path);
+        
+        $konfiguration = array();
+        $data = array();
+        if (file_exists($path.'/'.$serverName.".ini") && is_readable($path.'/'.$serverName.".ini")){
+            $temp = file_get_contents($path.'/'.$serverName.".ini");
+            $temp = explode("\n",$temp);
+            foreach ($temp as $element){
+                $pos = strpos($element, '=');
+                if ($pos === false || $pos === 0) 
+                    continue;
+                    
+                $konfiguration[substr($element,0,$pos)] = substr($element,$pos+1);
+            }
+        }
+        Variablen::EinsetzenDirekt($konfiguration,$data);
+        return $data;
+    }
+    
     public static function speichereEinstellungen($serverName)
     {
         $filename = Einstellungen::$path."/../config/".$serverName.".ini";
@@ -80,6 +102,14 @@ class Einstellungen
             return $default;
     }
     
+    public static function GetDirekt($konfiguration, $varName, $default)
+    {
+        if ($konfiguration != null && isset($konfiguration[$varName])){
+            return $konfiguration[$varName];
+        } else
+            return $default;
+    }
+    
     public static function GetValue($varName, &$CurrentValue)
     {
         if (isset($CurrentValue)){
@@ -93,6 +123,17 @@ class Einstellungen
             
         Einstellungen::Set($varName, $CurrentValue);
         return;
+    }
+    
+    public static function GetValueDirekt($konfiguration, $varName, &$CurrentValue)
+    {
+        if (isset($CurrentValue)){
+            return;
+        }
+        
+        $val = Einstellungen::GetDirekt($konfiguration,$varName, null);
+        if ($val !== null)
+            $CurrentValue = $val;
     }
     
     /**

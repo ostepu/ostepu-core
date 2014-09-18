@@ -7,7 +7,13 @@
     {"path":"index.php"},
     {"path":"Links.json"},
     {"path":"Commands.json"},
-    {"path":"Component.json"},
     {"path":"Sql/"}
+  ],
+  "links":[
+    {"name":"out", "target":"DBQuery2", "links":[{"method":"POST", "path":"/query" }] }
+  ],
+  "connector":[
+    {"name":"deleteCourse", "target":"LCourse"},
+    {"name":"postCourse", "target":"LCourse"}
   ]
 }

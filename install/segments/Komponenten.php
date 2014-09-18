@@ -6,7 +6,7 @@ if (!$simple)
 
         $text .= "<tr><td colspan='2'>".Sprachen::Get('components','description')."</td></tr>";
         //Design::erstelleEingabezeile($simple, (isset($data['PL']['init']) ? $data['PL']['init'] : null), 'data[PL][init]', 'DB/CControl')
-        $text .= Design::erstelleZeile($simple, Sprachen::Get('components','init'), 'e', '', 'v', Design::erstelleSubmitButton("actionInitComponents"), 'h');
+        $text .= Design::erstelleZeile($simple, '<s>'.Sprachen::Get('components','init').'</s>', 'e', '', 'v', Design::erstelleSubmitButton("actionInitComponents"), 'h');
         $text .= Design::erstelleZeile($simple, Sprachen::Get('components','details'), 'e', Design::erstelleAuswahl($simple, $data['CO']['co_details'], 'data[CO][co_details]', 'details', null, true), 'v');
         
         if ($initComponents){

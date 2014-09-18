@@ -92,7 +92,7 @@ class Installation
         if (!$fail){
             $list = array('DB/CControl','DB/DBQuery','DB/DBQuery2');
             $platform = Installation::PlattformZusammenstellen($data);
-            
+
             for ($i=0;$i<count($list);$i++){
                 $url = $list[$i];//$data['PL']['init'];
                 // inits all components
@@ -110,6 +110,247 @@ class Installation
                     }
                 }
             }
+        }
+        
+        return $res;
+    }
+    
+    public static function GibServerDateien()
+    {
+        $serverFiles = array();
+        if ($handle = opendir(dirname(__FILE__) . '/../config')) {
+            while (false !== ($file = readdir($handle))) {
+                if ($file=='.' || $file=='..') continue;
+                $serverFiles[] = $file;
+            }
+            closedir($handle);
+        }
+        return $serverFiles;
+    }
+    
+    public static function gibPluginDateien($input, &$fileList, &$fileListAddress, &$componentFiles)
+    {
+        $mainPath = dirname(__FILE__) . '/../..';
+        if (isset($input['files'])){
+            $files = $input['files'];
+            if (!is_array($files)) $files = array($files);
+            
+            foreach ($files as $file){
+                if (isset($file['path'])){
+                    if (is_dir($mainPath . '/' . $file['path'])){
+                        $found = Installation::read_all_files($mainPath . '/' . $file['path']);
+                        foreach ($found['files'] as $temp){
+                            $fileList[] = $temp;
+                            $fileListAddress[] = substr($temp,strlen($mainPath)+1);
+                        }
+                    } else {
+                        $fileList[] = $mainPath . '/' . $file['path'];
+                        $fileListAddress[] = $file['path'];
+                    }
+                }
+            }
+        }
+        
+        if (isset($input['components'])){
+            $files = $input['components'];
+            if (!is_array($files)) $files = array($files);
+            
+            foreach ($files as $file){
+                if (isset($file['conf'])){
+                    if (!file_exists($mainPath . '/' . $file['conf']) || !is_readable($mainPath . '/' . $file['conf'])) continue;
+                    $componentFiles[] = $mainPath . '/' . $file['conf'];
+                    $definition = file_get_contents($mainPath . '/' . $file['conf']);
+                    $definition = json_decode($definition,true);
+                    $comPath = dirname($mainPath . '/' . $file['conf']);
+                    
+                    $fileList[] = $mainPath . '/' . $file['conf'];
+                    $fileListAddress[] = $file['conf'];
+                    
+                    if (isset($definition['files'])){
+                        if (!is_array($definition['files'])) $definition['files'] = array($definition['files']);
+                        
+                        foreach ($definition['files'] as $paths){
+                            if (!isset($paths['path'])) continue;
+                            
+                            if (is_dir($comPath . '/' . $paths['path'])){
+                                $found = Installation::read_all_files($comPath . '/' . $paths['path']);
+                                foreach ($found['files'] as $temp){
+                                    $fileList[] = $temp;
+                                    $fileListAddress[] = substr($temp,strlen($mainPath)+1);
+                                }
+                            } else {
+                                $fileList[] = $comPath . '/' . $paths['path'];
+                                $fileListAddress[] = dirname($file['conf']) . '/' . $paths['path'];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    public static function checkPlugins($data, &$fail, &$errno, &$error)
+    {
+        $res = array();
+    
+        if (!$fail){
+            $mainPath = dirname(__FILE__) . '/../..';
+            $pluginFiles = array();
+            if ($handle = @opendir(dirname(__FILE__) . '/../../Plugins')) {
+                while (false !== ($file = readdir($handle))) {
+                    if ($file=='.' || $file=='..') continue;
+                    if (is_dir(dirname(__FILE__) . '/../../Plugins/'.$file)) continue;
+                    $filePath = dirname(__FILE__) . '/../../Plugins/'.$file;
+                    if (file_exists($filePath) && is_readable($filePath)){
+                        $input = file_get_contents($filePath);
+                        $input = json_decode($input,true);
+                        if ($input == null){
+                            $fail = true;
+                            break;
+                        }
+                        $res[] = $input;
+                    }
+                }
+                closedir($handle);
+            }
+        }
+        
+        return $res;
+    }
+    
+    public static function initialisierePlugins($data, &$fail, &$errno, &$error)
+    {
+        $res = array();
+    
+        if (!$fail){
+            $mainPath = dirname(__FILE__) . '/../..';
+            foreach ($data['PLUG'] as $plugs){
+                $file = dirname(__FILE__) . '/../../Plugins/'.$plugs;
+                
+                if (file_exists($file) && is_readable($file)){
+                    $input = file_get_contents($file);
+                    $input = json_decode($input,true);
+                    if ($input == null){
+                        $fail = true;
+                        break;
+                    }
+                
+                    // Dateiliste zusammentragen
+                    $fileList = array();
+                    $fileListAddress = array();
+                    $componentFiles = array();
+                    Installation::gibPluginDateien($input, $fileList, $fileListAddress, $componentFiles);
+                    $fileList[] = $mainPath.'/install/config/'.$data['SV']['name'].'.ini';
+                    $fileListAddress[] = 'install/config/'.$data['SV']['name'].'.ini';
+                    // Dateien übertragen
+                    Zugang::SendeDateien($fileList,$fileListAddress,$data);
+                }
+            }
+        }
+        
+        return $res;
+    }
+    
+    public static function deinitialisierePlugins($data, &$fail, &$errno, &$error)
+    {
+        $res = array();
+    
+        if (!$fail){
+            $mainPath = dirname(__FILE__) . '/../..';
+            foreach ($data['PLUG'] as $plugs){
+                $file = dirname(__FILE__) . '/../../Plugins/'.$plugs;
+                
+                if (file_exists($file) && is_readable($file)){
+                    $input = file_get_contents($file);
+                    $input = json_decode($input,true);
+                    if ($input == null){
+                        $fail = true;
+                        break;
+                    }
+                
+                    // Dateiliste zusammentragen
+                    $fileList = array();
+                    $fileListAddress = array();
+                    $componentFiles = array();
+                    Installation::gibPluginDateien($input, $fileList, $fileListAddress, $componentFiles);
+                    $fileList[] = $mainPath.'/install/config/'.$data['SV']['name'].'.ini';
+                    $fileListAddress[] = 'install/config/'.$data['SV']['name'].'.ini';
+                    
+                    // Dateien entfernen
+                    Zugang::EntferneDateien($fileList,$fileListAddress,$data);
+                }
+            }
+        }
+        
+        return $res;
+    }
+    
+    public static function installiereKomponentenDefinitionen($data, &$fail, &$errno, &$error)
+    {
+        $res = array();
+    
+        if (!$fail){
+            $mainPath = dirname(__FILE__) . '/../..';
+            $components = array();
+                
+            $componentFiles = array();
+            $plugins = Installation::checkPlugins($data, $fail, $errno, $error);
+            
+            foreach ($plugins as $input){
+                
+                // Dateiliste zusammentragen
+                $fileList = array();
+                $fileListAddress = array();
+                Installation::gibPluginDateien($input, $fileList, $fileListAddress, $componentFiles);
+                unset($fileList);
+                unset($fileListAddress);
+            }
+            
+
+            // Komponentennamen und Orte ermitteln
+            $res['components'] = array();
+            foreach ($componentFiles as $comFile){
+                if (!file_exists($comFile) || !is_readable($comFile)) continue;
+                $input = file_get_contents($comFile);
+                $input = json_decode($input,true);
+                if ($input==null) continue;
+                $input['urlExtern'] = $data['PL']['urlExtern'];
+                $input['url'] = $data['PL']['url'];
+                $input['path'] = substr(dirname($comFile),strlen($mainPath)+1);
+                $input['link_type'] = $data['CO']['co_link_type'];
+                $input['link_availability'] = $data['CO']['co_link_availability'];
+                
+                if (isset($input['files'])) unset($input['files']);
+                
+                $res['components'][] = $input;
+                /*if (!isset($input['type']) || $input['type']=='normal'){
+                    // normale Komponente
+                    if (!isset($input['name'])) continue;
+                    if (!isset($components[$input['name']]))$components[$input['name']] = array();
+                    $components[$input['name']][] = substr(dirname($comFile),strlen($mainPath)+1);
+                    
+                } elseif (isset($input['type']) && $input['type']=='clone') {
+                    // Komponente basiert auf einer bestehenden
+                    if (!isset($components[$input['name']]))$components[$input['name']] = array();
+                    $components[$input['name']][] = substr(dirname($comFile),strlen($mainPath)+1);
+                }*/
+            }
+            
+            // Komponenten eintragen
+            //$res['components'] = array();
+            //$sql = "START TRANSACTION;INSERT INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ";
+            //$comList = array();
+            foreach($components as $comName => $coms){
+                foreach($coms as $com){
+                    //$comList[] = "('{$comName}', '{$com}', '')";
+                    //$res['components'][] = array($comName,$com,$data['PL']['urlExtern']);
+                }
+            }
+            //$sql.=implode(',',$comList);
+
+            //$sql .= " ON DUPLICATE KEY UPDATE CO_address=VALUES(CO_address), CO_option=VALUES(CO_option);COMMIT;";
+            //DBRequest::request2($sql, false, $data);
+            //$res = $components;
         }
         
         return $res;
@@ -268,7 +509,9 @@ class Installation
     {
         $fail = false;
         $file = $data['UI']['conf'];
-        $text = explode("\n",file_get_contents($data['UI']['conf']));
+        if (!file_exists(dirname(__FILE__).'/../'.$data['UI']['conf'])){ $fail = true;$error='UI-Konfigurationsdatei wurde nicht gefunden!';return;}
+        
+        $text = explode("\n",file_get_contents(dirname(__FILE__).'/../'.$data['UI']['conf']));
         foreach ($text as &$tt){
             if (substr(trim($tt),0,10)==='$serverURI'){
                 $tt='$serverURI'. " = '{$data['PL']['url']}';";
@@ -276,21 +519,22 @@ class Installation
         }
         $text = implode("\n",$text);
 
-        if (!@file_put_contents($file,$text)) $fail = true;
+        if (!@file_put_contents(dirname(__FILE__).'/../'.$file,$text)){ $fail = true;$error='UI-Konfigurationsdatei, kein Schreiben möglich!';return;}
     }
 
     public static function installiereKomponentendatei($data, &$fail, &$errno, &$error)
     {
+        $mainPath = dirname(__FILE__) . '/..';
         if (!$fail){
-            if (!file_exists($data['DB']['componentsSql'])){
+            if (!file_exists($mainPath.'/'.$data['DB']['componentsSql'])){
                 $error = "Datei existiert nicht";
                 $fail = true;
                 return;
-        }
+            }
                 
-           $sql = file_get_contents($data['DB']['componentsSql']);
+           $sql = file_get_contents($mainPath.'/'.$data['DB']['componentsSql']);
            $sql = str_replace("'localhost/uebungsplattform/", "'{$data['PL']['url']}/" ,$sql);
-           
+
            $result = DBRequest::request2($sql, false, $data);
            if (!is_array($result)) $result = array($result);
            foreach ($result as $res){
@@ -408,5 +652,47 @@ class Installation
            }
         }
     }
+   
+   /** 
+    * Finds path, relative to the given root folder, of all files and directories in the given directory and its sub-directories non recursively. 
+    * Will return an array of the form 
+    * array( 
+    *   'files' => [], 
+    *   'dirs'  => [], 
+    * ) 
+    * @author sreekumar 
+    * @param string $root 
+    * @result array 
+    */ 
+    public static function read_all_files($root = '.'){ 
+      $files  = array('files'=>array(), 'dirs'=>array()); 
+      $directories  = array(); 
+      $last_letter  = $root[strlen($root)-1]; 
+      $root  = ($last_letter == '/') ? $root : $root.'/'; 
+      
+      $directories[]  = $root; 
+      
+      while (sizeof($directories)) { 
+        $dir  = array_pop($directories); 
+        if ($handle = opendir($dir)) { 
+          while (false !== ($file = readdir($handle))) { 
+            if ($file == '.' || $file == '..') { 
+              continue; 
+            } 
+            $file  = $dir.$file; 
+            if (is_dir($file)) { 
+              $directory_path = $file.'/'; 
+              array_push($directories, $directory_path); 
+              $files['dirs'][]  = $directory_path; 
+            } elseif (is_file($file)) { 
+              $files['files'][]  = $file; 
+            } 
+          } 
+          closedir($handle); 
+        } 
+      } 
+      
+      return $files; 
+    } 
 }
 ?>

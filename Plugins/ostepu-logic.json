@@ -1,14 +1,15 @@
 {
-  "name":"ostepu-logic",
+  "name":"OSTEPU-LOGIC",
   "version":"0.1",
   "versionDate":"27.06.2014",
   "author":"",
   "sourceURL":"",
   "updateURL":"",
-  "requirements":[{"type":"plugin","name":"core","version":"0.1"}],
+  "requirements":[{"type":"plugin","name":"CORE","version":"0.1"}],
   "files":
     [
-      {"path":"Include/"}
+      {"path":"Include/"},
+      {"path":"Plugins/ostepu-logic.json"}
     ],
   "components":
     [
@@ -29,7 +30,6 @@
       {"conf":"logic/LMarking/Component.json"},
       {"conf":"logic/LOOP/Component.json"},
       {"conf":"logic/LProcessor/Component.json"},
-      {"conf":"logic/LSampleSolution/Component.json"},
       {"conf":"logic/LSubmission/Component.json"},
       {"conf":"logic/LTutor/Component.json"},
       {"conf":"logic/LUser/Component.json"}

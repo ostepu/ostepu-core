@@ -1,7 +1,7 @@
 <?php
 #region Benutzerschnittstelle_einrichten
 if (!$simple)
-    if ($selected_menu === 4){
+    if ($selected_menu === 6){
         $text='';
         $text .= "<tr><td colspan='2'>".Sprachen::Get('userInterface','description')."</td></tr>";
         

@@ -6,6 +6,16 @@
     {"path":"LFormPredecessor.php"},
     {"path":"index.php"},
     {"path":"Links.json"},
-    {"path":"Commands.json"},
-    {"path":"Component.json"}
+    {"path":"Commands.json"}
+  ],
+  "links":[
+    {"name":"formDb", "target":"DBForm", "links":[{"method":"GET", "path":"/form/exercise/:exerciseid" }] },
+    {"name":"pdf", "target":"FSPdf", "links":[{"method":"POST", "path":"/pdf" }] },
+    {"name":"postProcess", "target":"DBProcessList", "links":[{"method":"POST", "path":"/process" }] },
+    {"name":"deleteProcess", "target":"DBProcessList", "links":[{"method":"DELETE", "path":"/process/process/:processid" }] },
+    {"name":"getProcess", "target":"DBProcessList", "links":[{"method":"GET", "path":"/process/course/:courseid/component/:componentid" }] }
+  ],
+  "connector":[
+    {"name":"extension", "target":"LExtension"}
+  ]
 }

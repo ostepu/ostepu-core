@@ -6,7 +6,12 @@
     {"path":"LSubmission.php"},
     {"path":"index.php"},
     {"path":"Links.json"},
-    {"path":"Commands.json"},
-    {"path":"Component.json"}
+    {"path":"Commands.json"}
+  ],
+  "links":[
+    {"name":"file", "target":"LFile", "links":[{"method":"POST", "path":"/file" }] },
+    {"name":"submission", "target":"DBSubmission", "links":[{"method":"GET", "path":"/submission/group/user/:userid/exercisesheet/:sheetid/selected" },{"method":"DELETE", "path":"/submission/:submissionid" },{"method":"POST", "path":"/submission" }] },
+    {"name":"selectedSubmission", "target":"DBSelectedSubmission", "links":[{"method":"PUT", "path":"/selectedsubmission/leader/:leaderid/exercise/:exerciseid" },{"method":"POST", "path":"/selectedsubmission" }] },
+    {"name":"zip", "target":"FSZip", "links":[{"method":"POST", "path":"/zip/:zipname" }] }
   ]
 }

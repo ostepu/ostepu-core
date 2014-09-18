@@ -6,7 +6,9 @@
     {"path":"LGroup.php"},
     {"path":"index.php"},
     {"path":"Links.json"},
-    {"path":"Commands.json"},
-    {"path":"Component.json"}
+    {"path":"Commands.json"}
+  ],
+  "links":[
+    {"name":"controller", "target":"LController", "links":[{"method":"GET", "path":"/DB/user/:userid/exerciseSheet/:sheetid" },{"method":"PUT", "path":"/DB/user/:userid/deletMember" },{"method":"PUT", "path":"/DB/user/:userid/leave" },{"method":"PUT", "path":"/DB/accept" },{"method":"POST", "path":"/DB/invitation/" }] }
   ]
 }

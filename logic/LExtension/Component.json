@@ -6,7 +6,12 @@
     {"path":"LExtension.php"},
     {"path":"index.php"},
     {"path":"Links.json"},
-    {"path":"Commands.json"},
-    {"path":"Component.json"}
+    {"path":"Commands.json"}
+  ],
+  "links":[
+    {"name":"extension", "target":"", "links":[{"method":"DELETE", "path":"/course/:courseid" },{"method":"POST", "path":"/course" },{"method":"GET", "path":"/link/exists/course/:courseid" },{"method":"GET", "path":"/exists/course/:courseid" }] }
+  ],
+  "connector":[
+    {"name":"deleteCourse", "target":"LCourse"}
   ]
 }

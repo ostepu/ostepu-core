@@ -1,5 +1,5 @@
 {
-  "name":"core",
+  "name":"CORE",
   "version":"0.1",
   "versionDate":"27.06.2014",
   "author":"",
@@ -8,7 +8,10 @@
   "requirements":[],
   "files":
     [
-      {"path":"Assistants/"}
+      {"path":"Assistants/"},
+      {"path":".htaccess"},
+      {"path":"Plugins/core.json"},
+      {"path":"DB/Components2.sql"}
     ],
   "components":
     [
