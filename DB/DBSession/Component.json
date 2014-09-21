@@ -1,11 +1,12 @@
 {
   "name":"DBSession",
   "version":"1.0",
+  "classFile":"DBSession.php",
+  "className":"DBSession",
   "files":[
     {"path":".htaccess"},
     {"path":"DBSession.php"},
     {"path":"index.php"},
-    {"path":"Links.json"},
     {"path":"Commands.json"},
     {"path":"Sql/"}
   ],

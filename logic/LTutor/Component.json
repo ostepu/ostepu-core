@@ -1,11 +1,12 @@
 {
   "name":"LTutor",
   "version":"1.0",
+  "classFile":"LTutor.php",
+  "className":"LTutor",
   "files":[
     {"path":".htaccess"},
     {"path":"LTutor.php"},
     {"path":"index.php"},
-    {"path":"Links.json"},
     {"path":"Commands.json"}
   ],
   "links":[

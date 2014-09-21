@@ -75,8 +75,8 @@ class DBQuery
 
         // runs the DBQuery
         if ( $com->used( ) ) return;
-            $conf = $com->loadConfig( );
-            
+            $conf = $com->loadConfig2( dirname(__FILE__) );
+
         // initialize component
         $this->_conf = $conf;
 
@@ -86,7 +86,7 @@ class DBQuery
                                             'Content-Type',
                                             'application/json'
                                             );
-                                            
+       //var_dump(\Slim\Environment::getInstance(false));                                     
         // POST AddPlatform
         $this->_app->post( 
                          '/platform',
@@ -169,7 +169,11 @@ class DBQuery
 
         $query_result = DBRequest::request( 
                                            $obj->getRequest( ),
-                                           $obj->getCheckSession( )
+                                           $obj->getCheckSession( ),
+                                           parse_ini_file( 
+                                     dirname(__FILE__).'/config.ini',
+                                     TRUE
+                                     )
                                            );
 
         if ( $query_result['errno'] != 0 || 
@@ -309,7 +313,9 @@ class DBQuery
                     "db_path = {$in->getDatabaseUrl()}\n".
                     "db_user = {$in->getDatabaseOperatorUser()}\n".
                     "db_passwd = {$in->getDatabaseOperatorPassword()}\n".
-                    "db_name = {$in->getDatabaseName()}";
+                    "db_name = {$in->getDatabaseName()}\n".
+                    "[PL]\n".
+                    "urlExtern = {$in->getExternalUrl()}";
                     
             if (!@file_put_contents($file,$text)){
                 Logger::Log( 

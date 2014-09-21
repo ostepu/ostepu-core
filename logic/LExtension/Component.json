@@ -1,11 +1,12 @@
 {
   "name":"LExtension",
   "version":"1.0",
+  "classFile":"LExtension.php",
+  "className":"LExtension",
   "files":[
     {"path":".htaccess"},
     {"path":"LExtension.php"},
     {"path":"index.php"},
-    {"path":"Links.json"},
     {"path":"Commands.json"}
   ],
   "links":[

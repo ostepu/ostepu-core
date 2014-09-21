@@ -1,5 +1,0 @@
-[
-    {"name":"form", "links":[{"method":"POST", "path":"/form" },{"method":"DELETE", "path":"/form/:formid" }] },
-    {"name":"choice", "links":[{"method":"POST", "path":"/choice" }] },
-    {"name":"postCourse", "links":[{"method":"GET", "path":"/link/exists/course/:courseid" },{"method":"POST", "path":"/course" },{"method":"DELETE", "path":"/course/:courseid" }] }
-]

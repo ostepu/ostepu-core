@@ -1,11 +1,12 @@
 {
   "name":"LGetSite",
   "version":"1.0",
+  "classFile":"LGetSite.php",
+  "className":"LGetSite",
   "files":[
     {"path":".htaccess"},
     {"path":"LGetSite.php"},
     {"path":"index.php"},
-    {"path":"Links.json"},
     {"path":"Commands.json"}
   ],
   "links":[

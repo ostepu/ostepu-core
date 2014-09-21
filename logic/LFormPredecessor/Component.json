@@ -1,11 +1,12 @@
 {
   "name":"LFormPredecessor",
   "version":"1.0",
+  "classFile":"LFormPredecessor.php",
+  "className":"LFormPredecessor",
   "files":[
     {"path":".htaccess"},
     {"path":"LFormPredecessor.php"},
     {"path":"index.php"},
-    {"path":"Links.json"},
     {"path":"Commands.json"}
   ],
   "links":[

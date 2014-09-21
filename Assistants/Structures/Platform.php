@@ -222,6 +222,29 @@ class Platform extends Object implements JsonSerializable
         $this->filesDirectory = $value;
     }
     
+    
+    private $externalUrl = null;
+
+    /**
+     * the $externalUrl getter
+     *
+     * @return the value of $externalUrl
+     */
+    public function getExternalUrl( )
+    {
+        return $this->externalUrl;
+    }
+
+    /**
+     * the $externalUrl setter
+     *
+     * @param string $value the new value for $externalUrl
+     */
+    public function setExternalUrl( $value = null )
+    {
+        $this->externalUrl = $value;
+    }
+    
     /**
      * Creates an patform object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -245,7 +268,8 @@ class Platform extends Object implements JsonSerializable
                                           $databaseOperatorUser,
                                           $databaseOperatorPassword,
                                           $tempDirectory,
-                                          $filesDirectory
+                                          $filesDirectory,
+                                          $externalUrl=''
                                           )
     {
         return new Platform( array(
@@ -258,6 +282,7 @@ class Platform extends Object implements JsonSerializable
                                    'databaseOperatorPassword' => $databaseOperatorPassword,
                                    'tempDirectory' => $tempDirectory,
                                    'filesDirectory' => $filesDirectory,
+                                   'externalUrl' => $externalUrl,
                                    ) );
     }
 
@@ -382,6 +407,8 @@ class Platform extends Object implements JsonSerializable
              $list['tempDirectory'] = $this->tempDirectory;
         if ( $this->filesDirectory !== null )
              $list['filesDirectory'] = $this->filesDirectory;
+        if ( $this->externalUrl !== null )
+             $list['externalUrl'] = $this->externalUrl;
              
         return array_merge($list,parent::jsonSerialize( ));
     }

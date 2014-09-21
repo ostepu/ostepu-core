@@ -135,7 +135,7 @@ class DBQuery2
      */
     public function loadConfig( $name='' ){
         // initialize component
-        $this->_conf = $this->_conf->loadConfig( $name );
+        $this->_conf = $this->_conf->loadConfig2( dirname(__FILE__) ); // $name
     }
 
     /**
@@ -321,7 +321,9 @@ class DBQuery2
                     "db_path = {$in->getDatabaseUrl()}\n".
                     "db_user = {$in->getDatabaseOperatorUser()}\n".
                     "db_passwd = {$in->getDatabaseOperatorPassword()}\n".
-                    "db_name = {$in->getDatabaseName()}";
+                    "db_name = {$in->getDatabaseName()}\n".
+                    "[PL]\n".
+                    "urlExtern = {$in->getExternalUrl()}";
                     
             if (!@file_put_contents($file,$text)){
                 Logger::Log( 

@@ -1,11 +1,12 @@
 {
   "name":"LMarking",
   "version":"1.0",
+  "classFile":"LMarking.php",
+  "className":"LMarking",
   "files":[
     {"path":".htaccess"},
     {"path":"LMarking.php"},
     {"path":"index.php"},
-    {"path":"Links.json"},
     {"path":"Commands.json"}
   ],
   "links":[

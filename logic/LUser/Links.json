@@ -1,3 +1,0 @@
-[
-    {"name":"controller", "links":[{"method":"GET","path":"/DB/user/user/:userid"},{"method":"GET", "path":"/DB/user/user" },{"method":"PUT", "path":"/DB/user/:userid" },{"method":"PUT", "path":"/DB/user/:userid" },{"method":"POST", "path":"/DB/user" },{"method":"PUT", "path":"/DB/coursestatus/course/:courseid/user/:userid" },{"method":"GET", "path":"/DB/user/user/:userid" }] }
-]

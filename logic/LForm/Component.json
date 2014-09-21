@@ -1,11 +1,12 @@
 {
   "name":"LForm",
   "version":"1.0",
+  "classFile":"LForm.php",
+  "className":"LForm",
   "files":[
     {"path":".htaccess"},
     {"path":"LForm.php"},
     {"path":"index.php"},
-    {"path":"Links.json"},
     {"path":"Commands.json"}
   ],
   "links":[

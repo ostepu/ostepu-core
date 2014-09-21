@@ -58,33 +58,119 @@ class Request
      */
     public static function custom($method, $target, $header,  $content)
     {
-        //if (error_reporting() & E_NOTICE)
-        //    Logger::Log('BEGIN '.$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+        //Logger::Log('BEGIN '.$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+        
         $begin = microtime(true);
-        // creates a custom request
-        $ch = Request_CreateRequest::createCustom($method,$target,$header,$content);
-        $content = curl_exec($ch);
-          
-        // get the request result
-        $result = curl_getinfo($ch);
-        $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
         
-        // splits the received header info, to create an entry 
-        // in the $result['headers'] for each part of the header
-        $result['headers'] = Request::http_parse_headers(substr($content, 0, $header_size));
+        $done = false;
+       /* if ($method=='GET' && strpos($target,'http://localhost/')===0){
+            $coms   = array(
+                            array('url'=>'DB/DBUser','class'=>'DBUser'),
+                            array('url'=>'DB/DBExerciseSheet','class'=>'DBExerciseSheet'),
+                            array('url'=>'DB/DBCourseStatus','class'=>'DBCourseStatus'),
+                            array('url'=>'DB/DBSelectedSubmission','class'=>'DBSelectedSubmission'),
+                            array('url'=>'DB/DBSession','class'=>'DBSession'),
+                            array('url'=>'DB/DBCourse','class'=>'DBCourse'),
+                            array('url'=>'DB/DBExercise','class'=>'DBExercise'),
+                            array('url'=>'DB/DBExerciseType','class'=>'DBExerciseType'),
+                            array('url'=>'DB/DBExerciseFileType','class'=>'DBExerciseFileType'),
+                            array('url'=>'DB/DBMarking','class'=>'DBMarking'),
+                            array('url'=>'DB/DBSubmission','class'=>'DBSubmission'),
+                            array('url'=>'logic/LController','class'=>'LController'),
+                            array('url'=>'DB/DBApprovalCondition','class'=>'DBApprovalCondition')
+                            );
+            
+            foreach ($coms as $com){
+                $url = 'http://localhost/uebungsplattform/'.$com['url'];
+                if (strpos($target,$url.'/')===0){
+                    $done=true;
+                    $result = array();
+                    $tar = dirname(__FILE__).'/../'.$com['url'].'/'.$com['class'].'.php';
+                    $add = substr($target,strlen($url));
+                    $args = array(
+                                  'REQUEST_METHOD' => $method,
+                                  'PATH_INFO' => $add,
+                                  'slim.input' => $content);
+                    include_once($tar);
+                    \Slim\Environment::mock($args);
+                    
+                    ob_start();
+                    $obj = new $com['class']();
+                 
+                    unset($obj);            
+                    $result['content'] = ob_get_contents();
+                    ob_end_clean();
 
-        // seperates the content part
-        $result['content'] = substr($content, $header_size);
+                    $result['header']=array();            
+                    $result['status']=200;
+                    break;
+                }
+            }
+        } 
         
-        // sets the received status code
-        $result['status'] = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        if (!$done && $method=='POST' && strpos($target,'http://localhost/uebungsplattform/DB/DBQuery/')===0){
+            $done=true;
+            $result = array();
+            $tar = dirname(__FILE__).'/../DB/DBQuery/DBQuery.php';
+            $args = array(
+            'REQUEST_METHOD' => 'POST',
+            'PATH_INFO' => '/query',
+            'slim.input' => $content);
+            include_once($tar);
+
+            \Slim\Environment::mock($args);
+            ob_start();
+            $obj = new DBQuery();    
+            unset($obj);
+            $result['content'] = ob_get_contents();
+            ob_end_clean();
+              
+            $result['header']=array();            
+            $result['status']=200;
+        } elseif (!$done && $method=='POST' && strpos($target,'http://localhost/uebungsplattform/DB/DBQuery2/')===0){
+            $done=true;
+            $result = array();
+            $tar = dirname(__FILE__).'/../DB/DBQuery2/DBQuery2.php';
+            $args = array(
+            'REQUEST_METHOD' => 'POST',
+            'PATH_INFO' => '/query',
+            'slim.input' => $content);
+            include_once($tar);
+
+            \Slim\Environment::mock($args);
+            ob_start();
+            $obj = new DBQuery2();    
+            unset($obj);
+            $result['content'] = ob_get_contents();
+            ob_end_clean();
+              
+            $result['header']=array();            
+            $result['status']=200;
+        } else*/if (!$done){
+            // creates a custom request
+            $ch = Request_CreateRequest::createCustom($method,$target,$header,$content);
+            $content = curl_exec($ch);
+              
+            // get the request result
+            $result = curl_getinfo($ch);
+            $header_size = curl_getinfo($ch, CURLINFO_HEADER_SIZE);
+            
+            // splits the received header info, to create an entry 
+            // in the $result['headers'] for each part of the header
+            $result['headers'] = Request::http_parse_headers(substr($content, 0, $header_size));
+
+            // seperates the content part
+            $result['content'] = substr($content, $header_size);
+            
+            // sets the received status code
+            $result['status'] = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            
+            curl_close($ch);                                                                            
+        }
         
-        curl_close($ch);
-        
-        if (error_reporting() & E_NOTICE)
-            Logger::Log($target . ' ' . (round((microtime(true) - $begin),2)). 's', false, LogLevel::DEBUG, dirname(__FILE__) . '/../executionTime.log');
-        //if (error_reporting() & E_NOTICE)
-        //    Logger::Log('END '.$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+        //if ($method=='POST')
+        Logger::Log($target . ' ' . (round((microtime(true) - $begin),2)). 's', LogLevel::DEBUG, false, dirname(__FILE__) . '/../executionTime.log');
+        //Logger::Log('END '.$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
         return $result; 
     }
        

@@ -83,7 +83,7 @@ class DBMarking
 
         // runs the DBMarking
         if ( $com->used( ) ) return;
-            $conf = $com->loadConfig( );
+            $conf = $com->loadConfig2( dirname(__FILE__) );
             
         // initialize component
         $this->_conf = $conf;
@@ -390,7 +390,7 @@ class DBMarking
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/EditMarking.sql',
+                                                  dirname(__FILE__) . '/Sql/EditMarking.sql',
                                                   array( 
                                                         'mid' => $mid,
                                                         'values' => $data
@@ -442,7 +442,7 @@ class DBMarking
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
-                                              'Sql/DeleteMarking.sql',
+                                              dirname(__FILE__) . '/Sql/DeleteMarking.sql',
                                               array( 'mid' => $mid )
                                               );
 
@@ -491,7 +491,7 @@ class DBMarking
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
-                                              'Sql/DeleteSheetMarkings.sql',
+                                              dirname(__FILE__) . '/Sql/DeleteSheetMarkings.sql',
                                               array( 'esid' => $esid )
                                               );
 
@@ -551,7 +551,7 @@ class DBMarking
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/AddMarking.sql',
+                                                  dirname(__FILE__) . '/Sql/AddMarking.sql',
                                                   array( 'values' => $data )
                                                   );
 
@@ -685,7 +685,7 @@ class DBMarking
     {
         $this->get( 
                    'GetAllMarkings',
-                   'Sql/GetAllMarkings.sql',
+                   dirname(__FILE__) . '/Sql/GetAllMarkings.sql',
                    '',
                    '',
                    '',
@@ -716,7 +716,7 @@ class DBMarking
     {
         $this->get( 
                    'GetMarking',
-                   'Sql/GetMarking.sql',
+                   dirname(__FILE__) . '/Sql/GetMarking.sql',
                    '',
                    '',
                    '',
@@ -755,7 +755,7 @@ class DBMarking
     {
         $this->get( 
                    'GetSubmissionMarking',
-                   'Sql/GetSubmissionMarking.sql',
+                   dirname(__FILE__) . '/Sql/GetSubmissionMarking.sql',
                    '',
                    '',
                    '',
@@ -794,7 +794,7 @@ class DBMarking
     {
         $this->get( 
                    'GetExerciseMarkings',
-                   'Sql/GetExerciseMarkings.sql',
+                   dirname(__FILE__) . '/Sql/GetExerciseMarkings.sql',
                    '',
                    '',
                    '',
@@ -831,7 +831,7 @@ class DBMarking
     {
         $this->get( 
                    'GetSheetMarkings',
-                   'Sql/GetSheetMarkings.sql',
+                   dirname(__FILE__) . '/Sql/GetSheetMarkings.sql',
                    '',
                    '',
                    $esid,
@@ -868,7 +868,7 @@ class DBMarking
     {
         $this->get( 
                    'GetCourseMarkings',
-                   'Sql/GetCourseMarkings.sql',
+                   dirname(__FILE__) . '/Sql/GetCourseMarkings.sql',
                    '',
                    $cid,
                    '',
@@ -907,7 +907,7 @@ class DBMarking
     {
         $this->get( 
                    'GetUserGroupMarkings',
-                   'Sql/GetUserGroupMarkings.sql',
+                   dirname(__FILE__) . '/Sql/GetUserGroupMarkings.sql',
                    $userid,
                    '',
                    $esid,
@@ -950,7 +950,7 @@ class DBMarking
     {
         $this->get( 
                    'GetTutorSheetMarkings',
-                   'Sql/GetTutorSheetMarkings.sql',
+                   dirname(__FILE__) . '/Sql/GetTutorSheetMarkings.sql',
                    $userid,
                    '',
                    $esid,
@@ -993,7 +993,7 @@ class DBMarking
     {
         $this->get( 
                    'GetTutorCourseMarkings',
-                   'Sql/GetTutorCourseMarkings.sql',
+                   dirname(__FILE__) . '/Sql/GetTutorCourseMarkings.sql',
                    $userid,
                    $cid,
                    '',
@@ -1036,7 +1036,7 @@ class DBMarking
     {
         $this->get( 
                    'GetTutorExerciseMarkings',
-                   'Sql/GetTutorExerciseMarkings.sql',
+                   dirname(__FILE__) . '/Sql/GetTutorExerciseMarkings.sql',
                    $userid,
                    '',
                    '',
@@ -1070,7 +1070,7 @@ class DBMarking
     {
         $this->get( 
                    'GetExistsPlatform',
-                   'Sql/GetExistsPlatform.sql',
+                   dirname(__FILE__) . '/Sql/GetExistsPlatform.sql',
                    '',
                    '',
                    '',
@@ -1099,7 +1099,7 @@ class DBMarking
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query2,
-                                              'Sql/DeletePlatform.sql',
+                                              dirname(__FILE__) . '/Sql/DeletePlatform.sql',
                                               array( ),
                                               false
                                               );
@@ -1157,7 +1157,7 @@ class DBMarking
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query2,
-                                                  'Sql/AddPlatform.sql',
+                                                  dirname(__FILE__) . '/Sql/AddPlatform.sql',
                                                   array( 'object' => $in ),
                                                   false
                                                   );

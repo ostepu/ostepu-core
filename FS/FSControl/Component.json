@@ -1,10 +1,11 @@
 {
   "name":"FSControl",
   "version":"1.0",
+  "classFile":"FSControl.php",
+  "className":"FSControl",
   "files":[
     {"path":".htaccess"},
     {"path":"FSControl.php"},
-    {"path":"Links.json"},
     {"path":"Commands.json"}
   ],
   "links":[

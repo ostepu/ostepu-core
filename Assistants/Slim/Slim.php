@@ -153,7 +153,7 @@ class Slim
         // Setup IoC container
         $this->container = new \Slim\Helper\Set();
         $this->container['settings'] = array_merge(static::getDefaultSettings(), $userSettings);
-
+//var_dump($this->container['settings']);
         // Default environment
         $this->container->singleton('environment', function ($c) {
             return \Slim\Environment::getInstance();

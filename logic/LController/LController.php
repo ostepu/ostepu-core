@@ -8,8 +8,8 @@
  * @date 2013-2014
  */
 
-require '../../Assistants/Slim/Slim.php';
-include '../../Assistants/Request.php';
+require_once '../../Assistants/Slim/Slim.php';
+include_once '../../Assistants/Request.php';
 include_once '../../Assistants/CConfig.php';
 
 \Slim\Slim::registerAutoloader();
@@ -65,7 +65,7 @@ class LController
 
         // runs the LController
         if ( $com->used( ) ) return;
-            $conf = $com->loadConfig( );
+            $conf = $com->loadConfig2( dirname(__FILE__) );
             
         // initialize slim
         $this->app = new \Slim\Slim();

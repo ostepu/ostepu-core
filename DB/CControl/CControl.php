@@ -673,7 +673,7 @@ class CControl
         $this->_app->response->setStatus( 200 );
         // starts a query
         ob_start();
-        eval("?>" .  file_get_contents( 'Sql/GetComponentDefinitions.sql' ));
+        eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/GetComponentDefinitions.sql' ));
         $sql = ob_get_contents();
         ob_end_clean();
         $result = DBRequest::request( 
@@ -706,18 +706,36 @@ class CControl
                                                       );
             
             $request = new Request_MultiRequest();
+            $data =  parse_ini_file( 
+                                     dirname(__FILE__).'/config.ini',
+                                     TRUE
+                                     );
+                                     
+            $tempObjects = array();
             foreach ( $objects as $object ){
                 $object = Component::decodeComponent( Component::encodeComponent( $object ) );
+                
+                // prüfen, welche Komponente auf diesem Server ist
+                if (strpos($object->getAddress().'/', $data['PL']['urlExtern'].'/')===false) continue;
 
+                $object->setAddress($data['PL']['url'].substr($object->getAddress(),strlen($data['PL']['urlExtern'])));
+                $links = $object->getLinks();
+                foreach($links as &$link){
+                    if (strpos($link->getAddress().'/', $data['PL']['urlExtern'].'/')===false) continue;
+                    $link->setAddress($data['PL']['url'].substr($link->getAddress(),strlen($data['PL']['urlExtern'])));
+                }
+                $object->setLinks($links);
+                
                 $result = Request_CreateRequest::createPost( 
                                                             $object->getAddress( ) . '/control',
                                                             array( ),
                                                             Component::encodeComponent( $object )
                                                             );
-
+                $tempObjects[] = $object;
                 $request->addRequest($result);
             }
             $results = $request->run();
+            $objects = $tempObjects;
 
             $i=0;
             $res = array();
@@ -874,7 +892,10 @@ class CControl
                     "db_path = {$in->getDatabaseUrl()}\n".
                     "db_user = {$in->getDatabaseOperatorUser()}\n".
                     "db_passwd = {$in->getDatabaseOperatorPassword()}\n".
-                    "db_name = {$in->getDatabaseName()}";
+                    "db_name = {$in->getDatabaseName()}\n".
+                    "[PL]\n".
+                    "urlExtern = {$in->getExternalUrl()}\n".
+                    "url = {$in->getBaseUrl()}";
                     
             if (!@file_put_contents($file,$text)){
                 Logger::Log( 
@@ -888,13 +909,17 @@ class CControl
 
             // starts a query
             ob_start();
-            eval("?>" .  file_get_contents( 'Sql/AddPlatform.sql' ));
+            eval("?>" .  file_get_contents( dirname(__FILE__).'/Sql/AddPlatform.sql' ));
             $sql = ob_get_contents();
             ob_end_clean();
             
             $result = DBRequest::request2( 
                                          $sql,
-                                         false
+                                         false,
+                                         parse_ini_file( 
+                                     dirname(__FILE__).'/config.ini',
+                                     TRUE
+                                     )
                                          );
 
             // checks the correctness of the query

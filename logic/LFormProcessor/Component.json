@@ -1,11 +1,12 @@
 {
   "name":"LFormProcessor",
   "version":"1.0",
+  "classFile":"LFormProcessor.php",
+  "className":"LFormProcessor",
   "files":[
     {"path":".htaccess"},
     {"path":"LFormProcessor.php"},
     {"path":"index.php"},
-    {"path":"Links.json"},
     {"path":"Commands.json"}
   ],
   "links":[

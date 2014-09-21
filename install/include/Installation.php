@@ -55,7 +55,8 @@ class Installation
                                             $data['DB']['db_user_operator'],
                                             $data['DB']['db_passwd_operator'],
                                             $data['PL']['temp'],
-                                            $data['PL']['files']
+                                            $data['PL']['files'],
+                                            $data['PL']['urlExtern']
                                             );
         return $platform;
     }
@@ -107,7 +108,8 @@ class Installation
                     if (isset($result['status'])){
                         $errno = $result['status'];
                         $res[$url]['status'] = $result['status'];
-                    }
+                    };
+                    if (isset($result['content'])) echo $result['content'];
                 }
             }
         }
@@ -224,6 +226,10 @@ class Installation
     
         if (!$fail){
             $mainPath = dirname(__FILE__) . '/../..';
+            $fileList = array();
+            $fileListAddress = array();
+            $componentFiles = array();
+                    
             foreach ($data['PLUG'] as $plugs){
                 $file = dirname(__FILE__) . '/../../Plugins/'.$plugs;
                 
@@ -236,16 +242,14 @@ class Installation
                     }
                 
                     // Dateiliste zusammentragen
-                    $fileList = array();
-                    $fileListAddress = array();
-                    $componentFiles = array();
                     Installation::gibPluginDateien($input, $fileList, $fileListAddress, $componentFiles);
                     $fileList[] = $mainPath.'/install/config/'.$data['SV']['name'].'.ini';
                     $fileListAddress[] = 'install/config/'.$data['SV']['name'].'.ini';
-                    // Dateien übertragen
-                    Zugang::SendeDateien($fileList,$fileListAddress,$data);
                 }
             }
+            
+            // Dateien übertragen
+            Zugang::SendeDateien($fileList,$fileListAddress,$data); 
         }
         
         return $res;
@@ -405,6 +409,7 @@ class Installation
        
         // inits all components
         $result = Request::get($data['PL']['url'].'/'.$url. '/definition/send',array(),'');
+        //echo $result['content'];
         if (isset($result['content']) && isset($result['status'])){
 
             // component routers
@@ -450,6 +455,8 @@ class Installation
                     $countLinks = 0;
                     $resultCounter=-1;
                     foreach ($definitions as $definition){
+                        if (strpos($definition->getAddress().'/', $data['PL']['urlExtern'].'/')===false) continue;
+                        
                         $resultCounter++;
                         if ($definition->getId() === $res->getId()){
                         
@@ -463,13 +470,13 @@ class Installation
                             if (isset($result2[$resultCounter]['content']) && isset($result2[$resultCounter]['status']) && $result2[$resultCounter]['status'] === 200){
                                 $commands = json_decode($result2[$resultCounter]['content'], true);
                                 if ($commands!==null){
-                                    $router = new \Slim\Router();
+                                    /*$router = new \Slim\Router();
                                     foreach($commands as $command){
                                         $route = new \Slim\Route($command['path'],'is_array');
                                         $route->via(strtoupper($command['method']));
                                         $router->map($route);
                                     }
-                                    $components[$definition->getName()]['router'] = $router;
+                                    $components[$definition->getName()]['router'] = $router;*/
                                     $components[$definition->getName()]['commands'] = $commands;
                                 }
                             }
@@ -566,7 +573,8 @@ class Installation
         if (!$fail && isset($data['DB']['db_user_override_operator']) && $data['DB']['db_user_override_operator'] === 'override'){
             $oldName = $data['DB']['db_name'];
             $data['DB']['db_name'] = null;
-            $sql = "DROP USER {$data['DB']['db_user_operator']}@localhost;";
+            $sql = "DROP USER '{$data['DB']['db_user_operator']}'@'%';";
+            $sql .= "DROP USER '{$data['DB']['db_user_operator']}'@'localhost';";
             $result = DBRequest::request($sql, false, $data);
             /*if ($result["errno"] !== 0){
                 $fail = true; $errno = $result["errno"];$error = isset($result["error"]) ? $result["error"] : '';
@@ -596,6 +604,10 @@ class Installation
             $oldName = $data['DB']['db_name'];
             $data['DB']['db_name'] = null;
             $sql = "GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,TRIGGER ".
+                    "ON {$oldName}.* ".
+                    "TO '{$data['DB']['db_user_operator']}'@'%' ".
+                    "IDENTIFIED BY '{$data['DB']['db_passwd_operator']}';";
+            $sql.= "GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,TRIGGER ".
                     "ON {$oldName}.* ".
                     "TO '{$data['DB']['db_user_operator']}'@'localhost' ".
                     "IDENTIFIED BY '{$data['DB']['db_passwd_operator']}';";

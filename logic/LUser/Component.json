@@ -1,11 +1,12 @@
 {
   "name":"LUser",
   "version":"1.0",
+  "classFile":"LUser.php",
+  "className":"LUser",
   "files":[
     {"path":".htaccess"},
     {"path":"LUser.php"},
     {"path":"index.php"},
-    {"path":"Links.json"},
     {"path":"Commands.json"}
   ],
   "links":[

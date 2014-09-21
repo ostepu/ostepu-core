@@ -9,6 +9,7 @@
   "files":
     [
       {"path":"UI/"},
-      {"path":"Plugins/ostepu-ui.json"}
+      {"path":"Plugins/ostepu-ui.json"},
+      {"path":".htaccess"}
     ]
 }

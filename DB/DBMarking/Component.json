@@ -1,11 +1,12 @@
 {
   "name":"DBMarking",
   "version":"1.0",
+  "classFile":"DBMarking.php",
+  "className":"DBMarking",
   "files":[
     {"path":".htaccess"},
     {"path":"DBMarking.php"},
     {"path":"index.php"},
-    {"path":"Links.json"},
     {"path":"Commands.json"},
     {"path":"Sql/"}
   ],

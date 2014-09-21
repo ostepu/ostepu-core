@@ -19,7 +19,7 @@ if (!$simple)
             // counts installed links
             $installedLinks = 0;
             
-            foreach($components as $componentName => $component)
+            foreach($componentsResult as $componentName => $component)
             {
                 $linkNames = array();
                 $linkNamesUnique = array();
@@ -90,16 +90,16 @@ if (!$simple)
                                 foreach($calls as $pos => $callList){                
                                     if ($link->getName() !== $callList['name']) continue;
                                     foreach($callList['links'] as $pos2 => $call){
-                                        if (!isset($components[$link->getTargetName()]['router'])){
+                                        if (!isset($componentsResult[$link->getTargetName()]['router'])){
                                             $notRoutable=true;
                                             break;
                                         }
-                                        if ($components[$link->getTargetName()]['router']==null) continue;
+                                        if ($componentsResult[$link->getTargetName()]['router']==null) continue;
                                         if ($call===null) continue;
                                         if (!isset($call['method'])) continue;
                                         if (!isset($call['path'])) continue;
                                         
-                                        $routes = count($components[$link->getTargetName()]['router']->getMatchedRoutes(strtoupper($call['method']), $call['path']),true);
+                                        $routes = count($componentsResult[$link->getTargetName()]['router']->getMatchedRoutes(strtoupper($call['method']), $call['path']),true);
                                         if ($routes===0){
                                             $notRoutable=true;
                                             break;

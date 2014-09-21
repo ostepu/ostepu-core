@@ -1,10 +1,11 @@
 {
   "name":"FSPdf",
   "version":"1.0",
+  "classFile":"FSPdf.php",
+  "className":"FSPdf",
   "files":[
     {"path":".htaccess"},
     {"path":"FSPdf.php"},
-    {"path":"Links.json"},
     {"path":"Commands.json"},
     {"path":"Pdf/"}
   ]

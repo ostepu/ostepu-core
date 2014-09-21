@@ -1,11 +1,12 @@
 {
   "name":"LSubmission",
   "version":"1.0",
+  "classFile":"LSubmission.php",
+  "className":"LSubmission",
   "files":[
     {"path":".htaccess"},
     {"path":"LSubmission.php"},
     {"path":"index.php"},
-    {"path":"Links.json"},
     {"path":"Commands.json"}
   ],
   "links":[

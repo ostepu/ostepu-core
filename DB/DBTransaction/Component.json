@@ -1,11 +1,12 @@
 {
   "name":"DBTransaction",
   "version":"1.0",
+  "classFile":"DBTransaction.php",
+  "className":"DBTransaction",
   "files":[
     {"path":".htaccess"},
     {"path":"DBTransaction.php"},
     {"path":"index.php"},
-    {"path":"Links.json"},
     {"path":"Commands.json"},
     {"path":"Sql/"}
   ],

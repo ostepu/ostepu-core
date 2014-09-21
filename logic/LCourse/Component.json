@@ -1,11 +1,12 @@
 {
   "name":"LCourse",
   "version":"1.0",
+  "classFile":"LCourse.php",
+  "className":"LCourse",
   "files":[
     {"path":".htaccess"},
     {"path":"LCourse.php"},
     {"path":"index.php"},
-    {"path":"Links.json"},
     {"path":"Commands.json"}
   ],
   "links":[

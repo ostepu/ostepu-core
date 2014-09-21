@@ -1,11 +1,12 @@
 {
   "name":"DBSubmission",
   "version":"1.0",
+  "classFile":"DBSubmission.php",
+  "className":"DBSubmission",
   "files":[
     {"path":".htaccess"},
     {"path":"DBSubmission.php"},
     {"path":"index.php"},
-    {"path":"Links.json"},
     {"path":"Commands.json"},
     {"path":"Sql/"}
   ],

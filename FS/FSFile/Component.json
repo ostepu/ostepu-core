@@ -1,10 +1,11 @@
 {
   "name":"FSFile",
   "version":"1.0",
+  "classFile":"FSFile.php",
+  "className":"FSFile",
   "files":[
     {"path":".htaccess"},
     {"path":"FSFile.php"},
-    {"path":"Links.json"},
     {"path":"Commands.json"}
   ]
 }

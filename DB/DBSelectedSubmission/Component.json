@@ -1,11 +1,12 @@
 {
   "name":"DBSelectedSubmission",
   "version":"1.0",
+  "classFile":"DBSelectedSubmission.php",
+  "className":"DBSelectedSubmission",
   "files":[
     {"path":".htaccess"},
     {"path":"DBSelectedSubmission.php"},
     {"path":"index.php"},
-    {"path":"Links.json"},
     {"path":"Commands.json"},
     {"path":"Sql/"}
   ],

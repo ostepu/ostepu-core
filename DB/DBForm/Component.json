@@ -1,11 +1,12 @@
 {
   "name":"DBForm",
   "version":"1.0",
+  "classFile":"DBForm.php",
+  "className":"DBForm",
   "files":[
     {"path":".htaccess"},
     {"path":"DBForm.php"},
     {"path":"index.php"},
-    {"path":"Links.json"},
     {"path":"Commands.json"},
     {"path":"Sql/"}
   ],

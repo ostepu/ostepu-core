@@ -81,7 +81,7 @@ class DBExerciseFileType
 
         // runs the DBExerciseFileType
         if ( $com->used( ) ) return;
-            $conf = $com->loadConfig( );
+            $conf = $com->loadConfig2( dirname(__FILE__) );
             
         // initialize component
         $this->_conf = $conf;
@@ -226,7 +226,7 @@ class DBExerciseFileType
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/EditExerciseFileType.sql',
+                                                  dirname(__FILE__) . '/Sql/EditExerciseFileType.sql',
                                                   array( 
                                                         'eftid' => $eftid,
                                                         'values' => $data
@@ -278,7 +278,7 @@ class DBExerciseFileType
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
-                                              'Sql/DeleteExerciseFileType.sql',
+                                              dirname(__FILE__) . '/Sql/DeleteExerciseFileType.sql',
                                               array( 'eftid' => $eftid )
                                               );
 
@@ -338,7 +338,7 @@ class DBExerciseFileType
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/AddExerciseFileType.sql',
+                                                  dirname(__FILE__) . '/Sql/AddExerciseFileType.sql',
                                                   array( 'values' => $data )
                                                   );
 
@@ -466,7 +466,7 @@ class DBExerciseFileType
     {
         $this->get( 
                    'GetAllExerciseFileTypes',
-                   'Sql/GetAllExerciseFileTypes.sql',
+                   dirname(__FILE__) . '/Sql/GetAllExerciseFileTypes.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -488,7 +488,7 @@ class DBExerciseFileType
     {
         $this->get( 
                    'GetExerciseFileType',
-                   'Sql/GetExerciseFileType.sql',
+                   dirname(__FILE__) . '/Sql/GetExerciseFileType.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -511,7 +511,7 @@ class DBExerciseFileType
     {
         $this->get( 
                    'GetExerciseExerciseFileTypes',
-                   'Sql/GetExerciseExerciseFileTypes.sql',
+                   dirname(__FILE__) . '/Sql/GetExerciseExerciseFileTypes.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -531,7 +531,7 @@ class DBExerciseFileType
     {
         $this->get( 
                    'GetExistsPlatform',
-                   'Sql/GetExistsPlatform.sql',
+                   dirname(__FILE__) . '/Sql/GetExistsPlatform.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -559,7 +559,7 @@ class DBExerciseFileType
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query2,
-                                              'Sql/DeletePlatform.sql',
+                                              dirname(__FILE__) . '/Sql/DeletePlatform.sql',
                                               array( ),
                                               false
                                               );
@@ -617,7 +617,7 @@ class DBExerciseFileType
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query2,
-                                                  'Sql/AddPlatform.sql',
+                                                  dirname(__FILE__) . '/Sql/AddPlatform.sql',
                                                   array( 'object' => $in ),
                                                   false
                                                   );

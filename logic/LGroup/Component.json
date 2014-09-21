@@ -1,11 +1,12 @@
 {
   "name":"LGroup",
   "version":"1.0",
+  "classFile":"LGroup.php",
+  "className":"LGroup",
   "files":[
     {"path":".htaccess"},
     {"path":"LGroup.php"},
     {"path":"index.php"},
-    {"path":"Links.json"},
     {"path":"Commands.json"}
   ],
   "links":[

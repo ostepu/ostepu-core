@@ -81,7 +81,7 @@ class DBCourseStatus
 
         // runs the DBCourseStatus
         if ( $com->used( ) ) return;
-            $conf = $com->loadConfig( );
+            $conf = $com->loadConfig2( dirname(__FILE__) );
             
         // initialize component
         $this->_conf = $conf;
@@ -233,7 +233,7 @@ class DBCourseStatus
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/EditMemberRight.sql',
+                                                  dirname(__FILE__) . '/Sql/EditMemberRight.sql',
                                                   array( 
                                                         'courseid' => $courseid,
                                                         'userid' => $userid,
@@ -291,7 +291,7 @@ class DBCourseStatus
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
-                                              'Sql/RemoveCourseMember.sql',
+                                              dirname(__FILE__) . '/Sql/RemoveCourseMember.sql',
                                               array( 
                                                     'courseid' => $courseid,
                                                     'userid' => $userid
@@ -351,7 +351,7 @@ class DBCourseStatus
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/AddCourseMember.sql',
+                                                  dirname(__FILE__) . '/Sql/AddCourseMember.sql',
                                                   array( 'values' => $data )
                                                   );
 
@@ -470,7 +470,7 @@ class DBCourseStatus
     {
         $this->get( 
                    'GetMemberRight',
-                   'Sql/GetMemberRight.sql',
+                   dirname(__FILE__) . '/Sql/GetMemberRight.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -493,7 +493,7 @@ class DBCourseStatus
     {
         $this->get( 
                    'GetMemberRights',
-                   'Sql/GetMemberRights.sql',
+                   dirname(__FILE__) . '/Sql/GetMemberRights.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -515,7 +515,7 @@ class DBCourseStatus
     {
         $this->get( 
                    'GetCourseRights',
-                   'Sql/GetCourseRights.sql',
+                   dirname(__FILE__) . '/Sql/GetCourseRights.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -535,7 +535,7 @@ class DBCourseStatus
     {
         $this->get( 
                    'GetExistsPlatform',
-                   'Sql/GetExistsPlatform.sql',
+                   dirname(__FILE__) . '/Sql/GetExistsPlatform.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -563,7 +563,7 @@ class DBCourseStatus
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query2,
-                                              'Sql/DeletePlatform.sql',
+                                              dirname(__FILE__) . '/Sql/DeletePlatform.sql',
                                               array( ),
                                               false
                                               );
@@ -621,7 +621,7 @@ class DBCourseStatus
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query2,
-                                                  'Sql/AddPlatform.sql',
+                                                  dirname(__FILE__) . '/Sql/AddPlatform.sql',
                                                   array( 'object' => $in ),
                                                   false
                                                   );

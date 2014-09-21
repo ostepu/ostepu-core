@@ -1,11 +1,12 @@
 {
   "name":"DBFile",
   "version":"1.0",
+  "classFile":"DBFile.php",
+  "className":"DBFile",
   "files":[
     {"path":".htaccess"},
     {"path":"DBFile.php"},
     {"path":"index.php"},
-    {"path":"Links.json"},
     {"path":"Commands.json"},
     {"path":"Sql/"}
   ],

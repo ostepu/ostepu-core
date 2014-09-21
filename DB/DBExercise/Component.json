@@ -1,11 +1,12 @@
 {
   "name":"DBExercise",
   "version":"1.0",
+  "classFile":"DBExercise.php",
+  "className":"DBExercise",
   "files":[
     {"path":".htaccess"},
     {"path":"DBExercise.php"},
     {"path":"index.php"},
-    {"path":"Links.json"},
     {"path":"Commands.json"},
     {"path":"Sql/"}
   ],

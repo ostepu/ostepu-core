@@ -6,8 +6,9 @@
  * @author Till Uhlig
  * @date 2014
  */
+define('ISCLI', PHP_SAPI === 'cli'); 
 
-if (!isset($argv))
+if (!constant('ISCLI'))
     require_once dirname(__FILE__) . '/../Assistants/Slim/Slim.php';
 
 require_once dirname(__FILE__) . '/../Assistants/Request.php';
@@ -21,8 +22,10 @@ require_once dirname(__FILE__) . '/include/Einstellungen.php';
 require_once dirname(__FILE__) . '/include/Variablen.php';
 require_once dirname(__FILE__) . '/include/Zugang.php';
 
-if (!isset($argv))
+if (!constant('ISCLI'))
     \Slim\Slim::registerAutoloader();
+    
+    
 
 /**
  * A class, to handle requests to the Installer-Component
@@ -63,6 +66,10 @@ class Installer
         // POST,GET showInstall
         $this->app->map('(/)',
                         array($this, 'CallInstall'))->via('POST', 'GET','INFO' );
+                        
+        // POST,GET showInstall
+        $this->app->map('/checkModulesExtern(/)',
+                        array($this, 'checkModulesExtern'))->via('POST', 'GET','INFO' );
 
         // run Slim
         $this->app->run();  
@@ -91,6 +98,14 @@ class Installer
         
         return $result;
     }
+    public static function callCheckModules($data, &$fail, &$errno, &$error)
+    {
+        if (constant('ISCLI')){
+            return json_decode(Request::get($data['PL']['url'].'/install/install.php/checkModulesExtern',array(),'')['content'],true);
+        } else {
+            return checkModules($data,$fail,$errno,$error);
+        }
+    }
     
     public static function checkExtensions($data, &$fail, &$errno, &$error)
     {
@@ -105,6 +120,12 @@ class Installer
         $result['fileinfo'] = Installer::apache_extension_exists('fileinfo');
         $result['sockets'] = Installer::apache_extension_exists('sockets');
         return $result;
+    }
+    
+    public function checkModulesExtern()
+    {
+        $dat = null;
+        echo json_encode(Installer::checkModules(null,$dat,$dat,$dat));
     }
     
     public function CallInstall($simple = false)
@@ -192,7 +213,7 @@ class Installer
         $modules = array();
         if ($selected_menu === 0 || ($simple && isset($_POST['actionCheckModules']))){
             // check if apache modules are existing
-            $modules = Zugang::Ermitteln('actionCheckModules','Installer::checkModules',$data, $fail, $errno, $error);
+            $modules = Zugang::Ermitteln('actionCheckModules','Installer::callCheckModules',$data, $fail, $errno, $error);
             
             if ($simple)
                 $output['actionCheckModules'] = $modules;
@@ -351,7 +372,8 @@ class Installer
                 $sql.=implode(',',$comList);
                 unset($comList);
                 $sql .= " ON DUPLICATE KEY UPDATE CO_address=VALUES(CO_address), CO_option=VALUES(CO_option);SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;COMMIT;";
-                DBRequest::request2($sql, false, $data);
+                echo $sql;
+                DBRequest::request2($sql, false, $data, true);
                 
                 $sql = "START TRANSACTION;SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;";
                 $sql .=implode('',$setDBNames);
@@ -426,7 +448,7 @@ class Installer
                 $sql.=implode(',',$links);
                 unset($links);
                 $sql .= "; COMMIT;";
-                DBRequest::request2($sql, false, $data);
+                DBRequest::request2($sql, false, $data, true);
                 $installComponentDefsResult['components'] = $ComponentListInput;
             }
         }
@@ -479,16 +501,16 @@ class Installer
         
         // init components
         $initComponents = false;
-        $components = array();
+        $componentsResult = array();
         if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInitComponents'])) && !$installFail && isset($data['PL']['init']) && $data['PL']['init']!==''){
             $initComponents = true;
-            $components = Zugang::Ermitteln('actionInitComponents','Installation::initialisiereKomponenten',$data, $fail, $errno, $error);
+            $componentsResult = Zugang::Ermitteln('actionInitComponents','Installation::initialisiereKomponenten',$data, $fail, $errno, $error);
             
             if ($simple){
-                $components['fail'] = $fail;
-                $components['errno'] = $errno;
-                $components['error'] = $error;
-                $output['actionInitComponents'] = $components;
+                $componentsResult['fail'] = $fail;
+                $componentsResult['errno'] = $errno;
+                $componentsResult['error'] = $error;
+                $output['actionInitComponents'] = $componentsResult;
             }
         }
         
@@ -669,6 +691,9 @@ class Installer
             echo "<table border='0'>";
             echo "<tr><td class='e'>".Sprachen::Get('general_informations','url')."</td></tr>";
             echo "<tr><td>".$data['PL']['url']."</td></tr>";
+            echo "<tr><th></th></tr>";
+            echo "<tr><td class='e'>".Sprachen::Get('general_informations','urlExtern')."</td></tr>";
+            echo "<tr><td>".$data['PL']['urlExtern']."</td></tr>";
             echo "<tr><th></th></tr>";
             echo "<tr><td class='e'>".Sprachen::Get('database_informations','db_name')."</td></tr>";
             echo "<tr><td>".$data['DB']['db_name']."</td></tr>";

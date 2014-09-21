@@ -1,11 +1,12 @@
 {
   "name":"DBExternalId",
   "version":"1.0",
+  "classFile":"DBExternalId.php",
+  "className":"DBExternalId",
   "files":[
     {"path":".htaccess"},
     {"path":"DBExternalId.php"},
     {"path":"index.php"},
-    {"path":"Links.json"},
     {"path":"Commands.json"},
     {"path":"Sql/"}
   ],

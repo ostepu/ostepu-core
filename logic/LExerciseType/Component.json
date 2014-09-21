@@ -1,11 +1,12 @@
 {
   "name":"LExerciseType",
   "version":"1.0",
+  "classFile":"LExerciseType.php",
+  "className":"LExerciseType",
   "files":[
     {"path":".htaccess"},
     {"path":"LExerciseType.php"},
     {"path":"index.php"},
-    {"path":"Links.json"},
     {"path":"Commands.json"}
   ],
   "links":[

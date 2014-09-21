@@ -1,11 +1,12 @@
 {
   "name":"DBInvitation",
   "version":"1.0",
+  "classFile":"DBInvitation.php",
+  "className":"DBInvitation",
   "files":[
     {"path":".htaccess"},
     {"path":"DBInvitation.php"},
     {"path":"index.php"},
-    {"path":"Links.json"},
     {"path":"Commands.json"},
     {"path":"Sql/"}
   ],

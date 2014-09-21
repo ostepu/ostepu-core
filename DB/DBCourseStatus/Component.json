@@ -1,11 +1,12 @@
 {
   "name":"DBCourseStatus",
   "version":"1.0",
+  "classFile":"DBCourseStatus.php",
+  "className":"DBCourseStatus",
   "files":[
     {"path":".htaccess"},
     {"path":"DBCourseStatus.php"},
     {"path":"index.php"},
-    {"path":"Links.json"},
     {"path":"Commands.json"},
     {"path":"Sql/"}
   ],

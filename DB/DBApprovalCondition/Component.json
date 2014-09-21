@@ -1,11 +1,12 @@
 {
   "name":"DBApprovalCondition",
   "version":"1.0",
+  "classFile":"DBApprovalCondition.php",
+  "className":"DBApprovalCondition",
   "files":[
     {"path":".htaccess"},
     {"path":"DBApprovalCondition.php"},
     {"path":"index.php"},
-    {"path":"Links.json"},
     {"path":"Commands.json"},
     {"path":"Sql/"}
   ],

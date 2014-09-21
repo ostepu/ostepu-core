@@ -6,22 +6,25 @@
  * @author Till Uhlig
  * @date 2013-2014
  */
- 
-require_once ( dirname(__FILE__) . '/Slim/Slim.php' );
-include_once ( dirname( __FILE__ ) . '/Structures.php' );
+    include_once ( dirname( __FILE__ ) . '/Structures.php' );
+  
+if (isset($_SERVER['SCRIPT_NAME']) && isset($_SERVER['REQUEST_URI'])){
+    $scriptName = $_SERVER['SCRIPT_NAME'];
+    $requestUri = $_SERVER['REQUEST_URI'];
+    $path = str_replace('?' . (isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : ''), '', substr_replace($requestUri, '', 0, strlen((strpos($requestUri, $scriptName) !== false ? $scriptName : str_replace('\\', '', dirname($scriptName))))));
+    if ( strpos($path,'/control') === false  &&  strpos( 
+                $path,
+                '/info'
+                ) === false ) {
+        CConfig::$possible = false;
+    }
+    unset($path, $scriptName, $requestUri);
+} else CConfig::$possible = false;
 
-\Slim\Slim::registerAutoloader( );
-
-$scriptName = $_SERVER['SCRIPT_NAME'];
-$requestUri = $_SERVER['REQUEST_URI'];
-$path = str_replace('?' . (isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : ''), '', substr_replace($requestUri, '', 0, strlen((strpos($requestUri, $scriptName) !== false ? $scriptName : str_replace('\\', '', dirname($scriptName))))));
-if ( strpos($path,'/control') === false  &&  strpos( 
-            $path,
-            '/info'
-            ) === false ) {
-    CConfig::$possible = false;
+if (CConfig::$possible){
+    require_once ( dirname(__FILE__) . '/Slim/Slim.php' );
+    \Slim\Slim::registerAutoloader( );
 }
-unset($path, $scriptName, $requestUri);
 
 /**
  * this class is used to link components, to save new linkage data and to
@@ -156,9 +159,10 @@ class CConfig
     
     public function instruction( $pre = array())
     {
-        if (file_exists('Links.json')){
+        if (file_exists('Component.json')){
             $this->_app->response->setStatus( 200 );
-            $this->_app->response->setBody( file_get_contents('Links.json') );
+            $data = json_decode(file_get_contents('Component.json'),true);
+            $this->_app->response->setBody( json_encode((isset($data['links']) ? $data['links'] : array())) );
         }else{
             $this->_app->response->setStatus( 404 );
             $this->_app->response->setBody( '' );
@@ -218,8 +222,9 @@ class CConfig
      * GET Config
      * - to ask this component for his component data
      */
-    public function getConfig( $pre = array()  )
+    public function getConfig( $pre = array(), $path = ''  )
     {
+        if ($path!='') $path.='/';
         $tempPre = '';
         foreach($pre as $pr){
             if ($pr !== '')
@@ -227,8 +232,8 @@ class CConfig
         }
         $pre = $tempPre;
         
-        if ( file_exists( $pre . CConfig::$CONF_FILE ) ){
-            $com = Component::decodeComponent( file_get_contents( $pre . CConfig::$CONF_FILE ) );
+        if ( file_exists( $path . $pre . CConfig::$CONF_FILE ) ){
+            $com = Component::decodeComponent( file_get_contents( $path . $pre . CConfig::$CONF_FILE ) );
             $com->setPrefix( $this->getPrefix( ) );
             $this->_app->response->setBody( Component::encodeComponent( $com ) );
             $this->_app->response->setStatus( 200 );
@@ -268,6 +273,66 @@ class CConfig
      *
      * @return a Component object
      */
+         public function loadConfig2( $path = '' )
+    {
+        if ($path!='') $path.='/';
+
+        if ( file_exists( $path . CConfig::$CONF_FILE ) ){
+
+            // file was found, create a Component object from file content
+            $com = Component::decodeComponent( file_get_contents( $path . CConfig::$CONF_FILE ) );
+            $com->setPrefix( $this->getPrefix( ) );
+            
+            // check if the links
+            // know their prefixes
+            $conf = $com;
+            $links = $conf->getLinks( );
+
+            // always been an array
+            if ( !is_array( $links ) )
+                $links = array( $links );
+
+            $changed = false;
+            foreach ( $links as & $link ){
+
+                // if a link has no prefix, we have to ask the link target
+                // for the prefix list
+                if ( $link->getPrefix( ) === null ){
+                    $result = Request::get( 
+                                           $link->getAddress( ) . '/control',
+                                           array( ),
+                                           ''
+                                           );
+
+                    if ( $result['status'] == 200 ){
+
+                        // the link target has send its component definition,
+                        // so that we can remember this
+                        $changed = true;
+                        $obj = Component::decodeComponent( $result['content'] );
+                        $link->setPrefix( $obj->getPrefix( ) );
+                    }
+                }
+            }
+
+            // if any new prefix was found, we have to store the link definitions
+            if ( $changed ){
+                $conf->setLinks( $links );
+                $this->saveConfig( '', Component::encodeComponent( $conf ) );
+                $com = $conf;
+            }
+            
+            return $com;
+            
+        } else {
+
+            // can't find the file, create an empty object
+            $com = new Component( );
+            $com->setPrefix( $this->getPrefix( ) );
+            return $com;
+        }
+    }
+    
     public function loadConfig( )
     {
         $tempPre = '';

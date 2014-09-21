@@ -1,11 +1,12 @@
 {
   "name":"DBChoice",
   "version":"1.0",
+  "classFile":"DBChoice.php",
+  "className":"DBChoice",
   "files":[
     {"path":".htaccess"},
     {"path":"DBChoice.php"},
     {"path":"index.php"},
-    {"path":"Links.json"},
     {"path":"Commands.json"},
     {"path":"Sql/"}
   ],

@@ -1,5 +1,0 @@
-[
-    {"name":"controller", "links":[{"method":"POST", "path":"/DB/attachment" },{"method":"GET", "path":"/DB/attachment/attachment/:attachmentid" },{"method":"DELETE", "path":"/DB/attachment/:attachmentid" },{"method":"PUT", "path":"/DB/attachment/:attachmentid" }] },
-    {"name":"postFile", "links":[{"method":"POST", "path":"/file" }]},
-    {"name":"postAttachment", "links":[{"method":"POST", "path":"/attachment" }]}
-]

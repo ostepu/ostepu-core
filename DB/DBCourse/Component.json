@@ -1,11 +1,12 @@
 {
   "name":"DBCourse",
   "version":"1.0",
+  "classFile":"DBCourse.php",
+  "className":"DBCourse",
   "files":[
     {"path":".htaccess"},
     {"path":"DBCourse.php"},
     {"path":"index.php"},
-    {"path":"Links.json"},
     {"path":"Commands.json"},
     {"path":"Sql/"}
   ],

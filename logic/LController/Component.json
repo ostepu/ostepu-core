@@ -1,11 +1,12 @@
 {
   "name":"LController",
   "version":"1.0",
+  "classFile":"LController.php",
+  "className":"LController",
   "files":[
     {"path":".htaccess"},
     {"path":"LController.php"},
     {"path":"index.php"},
-    {"path":"Links.json"},
     {"path":"Commands.json"}
   ],
   "links":[

@@ -1,3 +1,0 @@
-[
-    {"name":"controller", "links":[{"method":"GET", "path":"/DB/user/:userid/exerciseSheet/:sheetid" },{"method":"PUT", "path":"/DB/user/:userid/deletMember" },{"method":"PUT", "path":"/DB/user/:userid/leave" },{"method":"PUT", "path":"/DB/accept" },{"method":"POST", "path":"/DB/invitation/" }] }
-]

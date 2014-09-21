@@ -1,11 +1,12 @@
 {
   "name":"LCondition",
   "version":"1.0",
+  "classFile":"LCondition.php",
+  "className":"LCondition",
   "files":[
     {"path":".htaccess"},
     {"path":"LCondition.php"},
     {"path":"index.php"},
-    {"path":"Links.json"},
     {"path":"Commands.json"}
   ],
   "links":[
