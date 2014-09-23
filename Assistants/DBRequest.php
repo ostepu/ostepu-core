@@ -32,7 +32,8 @@ class DBRequest
     public static function request( 
                                    $sqlStatement,
                                    $checkSession,
-                                   $config = null
+                                   $config = null,
+                                   $useDbOperator = false
                                    )
     {
 

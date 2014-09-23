@@ -17,7 +17,7 @@ class Sprachen
     
     public static $defaultLanguage = array();
     public static $selectedDefaultLanguage = null;
-    public static $default = 'de';
+    public static $default = 'en';
     
     public static function ladeSprache($lang)
     {

@@ -81,7 +81,7 @@ class Request
                             );
             
             foreach ($coms as $com){
-                $url = 'http://localhost/uebungsplattform/'.$com['url'];
+                $url = 'http://localhost/LOGIC_I/'.$com['url'];
                 if (strpos($target,$url.'/')===0){
                     $done=true;
                     $result = array();
@@ -108,7 +108,7 @@ class Request
             }
         } 
         
-        if (!$done && $method=='POST' && strpos($target,'http://localhost/uebungsplattform/DB/DBQuery/')===0){
+        if (!$done && $method=='POST' && strpos($target,'http://localhost/LOGIC_I/DB/DBQuery/')===0){
             $done=true;
             $result = array();
             $tar = dirname(__FILE__).'/../DB/DBQuery/DBQuery.php';
@@ -127,7 +127,7 @@ class Request
               
             $result['header']=array();            
             $result['status']=200;
-        } elseif (!$done && $method=='POST' && strpos($target,'http://localhost/uebungsplattform/DB/DBQuery2/')===0){
+        } elseif (!$done && $method=='POST' && strpos($target,'http://localhost/LOGIC_I/DB/DBQuery2/')===0){
             $done=true;
             $result = array();
             $tar = dirname(__FILE__).'/../DB/DBQuery2/DBQuery2.php';

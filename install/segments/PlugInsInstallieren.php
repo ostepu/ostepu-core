@@ -13,10 +13,10 @@ if (!$simple) {
     
     if ($selected_menu === 6){
         $text='';
-        $text .= "<tr><td colspan='2'>".""."</td></tr>";
+        $text .= "<tr><td colspan='2'>".Sprachen::Get('packages','description')."</td></tr>";
         
-        $text .= Design::erstelleZeile($simple, 'ausgewaehlte installieren', 'e', '', 'v', Design::erstelleSubmitButton('actionInstallPlugins',Sprachen::Get('main','install')), 'h');
-        $text .= Design::erstelleZeile($simple, 'ausgewaehlte deinstallieren', 'e', '', 'v', Design::erstelleSubmitButton('actionUninstallPlugins',Sprachen::Get('main','install')), 'h');
+        $text .= Design::erstelleZeile($simple, Sprachen::Get('packages','installSelected'), 'e', '', 'v', Design::erstelleSubmitButton('actionInstallPlugins',Sprachen::Get('main','install')), 'h');
+        $text .= Design::erstelleZeile($simple, Sprachen::Get('packages','uninstallSelected'), 'e', '', 'v', Design::erstelleSubmitButton('actionUninstallPlugins',Sprachen::Get('main','uninstall')), 'h');
         
         // hier die möglichen Erweiterungen ausgeben, zudem noch die Daten dieser Erweiterungen       
         foreach ($pluginFiles as $plug){
@@ -33,16 +33,16 @@ if (!$simple) {
             foreach($installedPlugins as $instPlug){
                 if ($name == $instPlug['name']){
                     if (isset($instPlug['version'])){
-                        $text .= Design::erstelleZeile($simple, 'installierte Version' , 'v', 'v'.$instPlug['version'] , 'v'); 
+                        $text .= Design::erstelleZeile($simple, Sprachen::Get('packages','currentVersion') , 'v', 'v'.$instPlug['version'] , 'v'); 
                     } else 
-                        $text .= Design::erstelleZeile($simple, 'installierte Version' , 'v', '???' , 'v');
+                        $text .= Design::erstelleZeile($simple, Sprachen::Get('packages','currentVersion') , 'v', '???' , 'v');
                     $isInstalled=true;
                     break;
                 }
             }
             
             if (!$isInstalled)
-                $text .= Design::erstelleZeile($simple, 'installierte Version' , 'v', '---' , 'v');
+                $text .= Design::erstelleZeile($simple, Sprachen::Get('packages','currentVersion') , 'v', '---' , 'v');
             
             $vorText = '';
             foreach ($voraussetzungen as $vor){
@@ -53,7 +53,7 @@ if (!$simple) {
             } else 
                 $vorText = substr($vorText,0,-2);
             
-            $text .= Design::erstelleZeile($simple, 'Voraussetzungen' , 'v', $vorText , 'v');
+            $text .= Design::erstelleZeile($simple, Sprachen::Get('packages','requirements') , 'v', $vorText , 'v');
             
             $file = dirname(__FILE__) . '/../../Plugins/'.$plug;
             $fileCount=0;
@@ -78,9 +78,9 @@ if (!$simple) {
                 $componentCount = count($componentFiles);
             }
               
-            $text .= Design::erstelleZeile($simple, 'Komponenten' , 'v', $componentCount , 'v');        
-            $text .= Design::erstelleZeile($simple, 'Dateien' , 'v', $fileCount , 'v');
-            $text .= Design::erstelleZeile($simple, 'Größe' , 'v', Design::formatBytes($fileSize) , 'v');
+            $text .= Design::erstelleZeile($simple, Sprachen::Get('packages','numberComponents') , 'v', $componentCount , 'v');        
+            $text .= Design::erstelleZeile($simple, Sprachen::Get('packages','numberFiles') , 'v', $fileCount , 'v');
+            $text .= Design::erstelleZeile($simple, Sprachen::Get('packages','size') , 'v', Design::formatBytes($fileSize) , 'v');
         }
         
         if ($installPlugins){
@@ -100,7 +100,7 @@ if (!$simple) {
             $text .= Design::erstelleInstallationszeile($simple, $installFail, $fail, $errno, $error);
         }
         
-        echo Design::erstelleBlock($simple, 'Erweiterungen installieren', $text);
+        echo Design::erstelleBlock($simple, Sprachen::Get('packages','title'), $text);
     } else {
         $text = '';
         $text .= Design::erstelleVersteckteEingabezeile($simple, $data['PLUG']['plug_install_CORE'], 'data[PLUG][plug_install_CORE]', '_', true);

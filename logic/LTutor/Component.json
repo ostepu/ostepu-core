@@ -12,10 +12,10 @@
   "links":[
     {"name":"controller", "target":"LController", "links":[{"method":"PUT", "path":"/DB/marking/:marking" },{"method":"POST", "path":"/DB/file" },{"method":"GET", "path":"/DB/file/hash/:hash" },{"method":"POST", "path":"/FS/file" },{"method":"GET", "path":"/DB/user:userid" },{"method":"GET", "path":"/FS/path+" },{"method":"POST", "path":"/FS/zip" },{"method":"GET", "path":"/DB/submission/submission/:submissionid" },{"method":"GET", "path":"/DB/user/user/:userid" },{"method":"GET", "path":"/DB/exercise/exercisesheet/:sheetid" },{"method":"GET", "path":"/DB/marking/exercisesheet/:sheetid/tutor/:userid" },{"method":"POST", "path":"/DB/marking" }] },
     {"name":"postTransaction", "target":"DBTransaction", "links":[{"method":"POST", "path":"/transaction/exercisesheet/:sheetid" }]},
-    {"name":"getTransaction", "target":"DBTransaction", "links":[{"method":"", "path":"" }]},
-    {"name":"postZip", "target":"FSZip", "links":[{"method":"", "path":"" }]},
-    {"name":"postMarking", "target":"LMarking", "links":[{"method":"", "path":"" }]},
-    {"name":"getMarking", "target":"DBMarking", "links":[{"method":"", "path":"" }]},
-    {"name":"getExercise", "target":"DBExercise", "links":[{"method":"", "path":"" }]}
+    {"name":"getTransaction", "target":"DBTransaction", "links":[]},
+    {"name":"postZip", "target":"FSZip", "links":[]},
+    {"name":"postMarking", "target":"LMarking", "links":[]},
+    {"name":"getMarking", "target":"DBMarking", "links":[]},
+    {"name":"getExercise", "target":"DBExercise", "links":[]}
   ]
 }

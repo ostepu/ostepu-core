@@ -3,5 +3,8 @@
   "version":"1.0",
   "type":"clone",
   "base":"DBAttachment2",
-  "baseURI":"/processWorkFiles"
+  "baseURI":"/processWorkFiles",
+  "connector":[
+    {"name":"postCourse", "target":"LProcessor"}
+  ]
 }

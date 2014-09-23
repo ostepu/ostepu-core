@@ -10,6 +10,7 @@ define('ISCLI', PHP_SAPI === 'cli');
 
 if (!constant('ISCLI'))
     require_once dirname(__FILE__) . '/../Assistants/Slim/Slim.php';
+require_once dirname(__FILE__) . '/../Assistants/Slim/Route.php';
 
 require_once dirname(__FILE__) . '/../Assistants/Request.php';
 require_once dirname(__FILE__) . '/../Assistants/DBRequest.php';
@@ -103,7 +104,7 @@ class Installer
         if (constant('ISCLI')){
             return json_decode(Request::get($data['PL']['url'].'/install/install.php/checkModulesExtern',array(),'')['content'],true);
         } else {
-            return checkModules($data,$fail,$errno,$error);
+            return Installer::checkModules($data,$fail,$errno,$error);
         }
     }
     
@@ -159,8 +160,8 @@ class Installer
                 Einstellungen::umbenennenEinstellungen($selected_server,$data['SV']['name']);
 
         // check which menu is selected
-        $menuItems = array(5,0,1,6,2,7,3,4);
-        $menuTypes = array(0,0,0,0,0,0,1,1);
+        $menuItems = array(5,0,1,6,2,3,4);
+        $menuTypes = array(0,0,0,0,0,1,1);
         $selected_menu = intval(isset($_POST['selected_menu']) ? $_POST['selected_menu'] : $menuItems[0]);
         
         // check server configs
@@ -322,6 +323,7 @@ class Installer
                             // normale Komponente
                             
                             if (!isset($input['registered'])){
+                            //echo $input['name'].'__'.$input['urlExtern']."<br>";
                                 $comList[] = "('{$input['name']}', '{$input['urlExtern']}/{$input['path']}', '".(isset($input['option']) ? $input['option'] : '')."')"; 
                                 // Verknüpfungen erstellen
                                 $setDBNames[] = " SET @{$key}_{$input['name']} = (select CO_id from Component where CO_address='{$input['urlExtern']}/{$input['path']}' limit 1); ";
@@ -329,7 +331,7 @@ class Installer
                                 $input['registered'] = '1';
                             }   
                             if (!isset($tempList[$key2])) $tempList[$key2] = array();
-                                $tempList[$key2][$key] = $input;
+                                $tempList[$key2][] = $input;
                                     
                         } elseif (isset($input['type']) && $input['type']=='clone') {
                             // Komponente basiert auf einer bestehenden
@@ -341,44 +343,60 @@ class Installer
 
                                     // pruefe, dass die Eintraege nicht doppelt erstellt werden
                                     $found=false;
-                                    foreach ($ComponentListInput[$input['name']] as $input3){
-                                        if ("{$input3['urlExtern']}/{$input3['path']}" == "{$input2['urlExtern']}/{$input2['path']}{$input['baseURI']}"){
-                                            $found = true;
-                                            break;
+                                    if (isset($ComponentListInput[$input['name']]))
+                                        foreach ($ComponentListInput[$input['name']] as $input3){
+                                            if ("{$input3['urlExtern']}/{$input3['path']}" == "{$input2['urlExtern']}/{$input2['path']}{$input['baseURI']}"){
+                                                $found = true;
+                                                break;
+                                            }
                                         }
-                                    }
+                                    if ($found){ continue;}
+                                    
+                                    if (isset($tempList[$input['name']]))
+                                        foreach ($tempList[$input['name']] as $input3){
+                                            if ("{$input3['urlExtern']}/{$input3['path']}" == "{$input2['urlExtern']}/{$input2['path']}{$input['baseURI']}"){
+                                                $found = true;
+                                                break;
+                                            }
+                                        }
                                     if ($found){ continue;}
                                     
                                     $input2['path'] = "{$input2['path']}{$input['baseURI']}";
                                     
-                                    if (isset($input2['links']) && isset($input['links']))
-                                        $input2['links'] = array_merge($input['links']);
-                                        
-                                    if (isset($input2['connector']) && isset($input['connector']))
-                                        $input2['connector'] = array_merge($input['connector']);
+                                    $input2['links'] = array_merge((isset($input2['links']) ? $input2['links'] : array()),(isset($input['links']) ? $input['links'] : array()));
+                                    $input2['connector'] = array_merge((isset($input2['connector']) ? $input2['connector'] : array()),(isset($input['connector']) ? $input['connector'] : array()));
 
                                     $input2['name'] = $input['name'];
+                                    $input2['registered'] = null;
                                     if (!isset($tempList[$key2])) $tempList[$key2] = array();
-                                        $tempList[$key2][$key] = $input2;
+                                    $tempList[$key2][] = $input2;
+                                    //echo $input2['name'].'__'.$input2['urlExtern']."<br>";
+                                    //var_dump($input2);
+                                    //var_dump($input2);
                                 }
                         }
                     }
                 }
                     $ComponentListInput = $tempList;
                 }
+                //var_dump($ComponentListInput);
                 
-                $sql = "START TRANSACTION;SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;TRUNCATE TABLE `ComponentLinkage`;ALTER TABLE `ComponentLinkage` AUTO_INCREMENT = 1;TRUNCATE TABLE `Component`;ALTER TABLE `Component` AUTO_INCREMENT = 1;INSERT INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ";
+                $sql = "START TRANSACTION;SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;TRUNCATE TABLE `ComponentLinkage`;TRUNCATE TABLE `Component`;SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;COMMIT;";
+                DBRequest::request2($sql, false, $data, true);
+                
+                $sql = "START TRANSACTION;SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;INSERT INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ";
                 $installComponentDefsResult['componentsCount'] = count($comList);
                 $sql.=implode(',',$comList);
                 unset($comList);
                 $sql .= " ON DUPLICATE KEY UPDATE CO_address=VALUES(CO_address), CO_option=VALUES(CO_option);SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;COMMIT;";
-                echo $sql;
+                //echo $sql;
                 DBRequest::request2($sql, false, $data, true);
+                //echo $sql;
                 
                 $sql = "START TRANSACTION;SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;";
                 $sql .=implode('',$setDBNames);
                 unset($setDBNames);
-                $sql .= " TRUNCATE TABLE `ComponentLinkage`;INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES ";
+                $sql .= " INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES ";
                 $links = array();
                 
                 foreach ($ComponentListInput as $key2 => $ComNames){
@@ -447,7 +465,7 @@ class Installer
                 $installComponentDefsResult['linksCount'] = count($links);
                 $sql.=implode(',',$links);
                 unset($links);
-                $sql .= "; COMMIT;";
+                $sql .= "; SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;COMMIT;";
                 DBRequest::request2($sql, false, $data, true);
                 $installComponentDefsResult['components'] = $ComponentListInput;
             }
@@ -563,14 +581,14 @@ class Installer
             // Serverliste ausgeben
             echo "<div style='width:150px;word-break: break-all;'>";
             echo "<table border='0'>";
-            echo "<tr><td class='e'>Serverliste</td></tr>";
+            echo "<tr><td class='e'>".Sprachen::Get('main','serverList')."</td></tr>";
             foreach($serverFiles as $serverFile){
                 $file = pathinfo($serverFile)['filename'];
                 echo "<tr><td class='v'>".Design::erstelleSubmitButtonFlach('server',$file,($server == $file ? '<font color="maroon">'.$file.'</font>' : $file))."</td></tr>";
             }
             
             echo "<tr><th height='10'></th></tr>";
-            echo "<tr><td class='v'>".Design::erstelleSubmitButtonFlach('actionAddServer','OK','Server hinzufügen')."</td></tr>";
+            echo "<tr><td class='v'>".Design::erstelleSubmitButtonFlach('actionAddServer','OK',Sprachen::Get('main','addServer'))."</td></tr>";
             echo Design::erstelleVersteckteEingabezeile($simple, $selected_server, 'selected_server', null);
            
             echo "</table>";
@@ -660,12 +678,12 @@ class Installer
             $a='';$b='';
             if (array_search($selected_menu,$menuItems)>0){
                 $item = $menuItems[array_search($selected_menu,$menuItems)-1];
-                $a = Design::erstelleSubmitButtonFlach('selected_menu',$item, '<< zurueck').'<br><font size=1>('.Sprachen::Get('main','title'.$item).')</font>';
+                $a = Design::erstelleSubmitButtonFlach('selected_menu',$item, Sprachen::Get('main','back')).'<br><font size=1>('.Sprachen::Get('main','title'.$item).')</font>';
             }
             
             if (array_search($selected_menu,$menuItems)<count($menuItems)-1){
                 $item = $menuItems[array_search($selected_menu,$menuItems)+1];
-                $b = Design::erstelleSubmitButtonFlach('selected_menu',$item, 'weiter >>').'<br><font size=1>('.Sprachen::Get('main','title'.$item).')</font>';
+                $b = Design::erstelleSubmitButtonFlach('selected_menu',$item, Sprachen::Get('main','next')).'<br><font size=1>('.Sprachen::Get('main','title'.$item).')</font>';
             }
             
             echo "<table border='0' cellpadding='3' width='600'>";

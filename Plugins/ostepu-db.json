@@ -36,7 +36,7 @@
       {"conf":"DB/DBTransaction/Component.json"},
       {"conf":"DB/DBUser/Component.json"},
       {"conf":"forms/DBFormResult.json"},
-      {"conf":"forms/DBProcess.json"},
+      {"conf":"forms/DBProcessList.json"},
       {"conf":"forms/DBProcessAttachment.json"},
       {"conf":"forms/DBProcessWorkFiles.json"}
     ]

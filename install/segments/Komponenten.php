@@ -6,7 +6,7 @@ if (!$simple)
 
         $text .= "<tr><td colspan='2'>".Sprachen::Get('components','description')."</td></tr>";
         //Design::erstelleEingabezeile($simple, (isset($data['PL']['init']) ? $data['PL']['init'] : null), 'data[PL][init]', 'DB/CControl')
-        $text .= Design::erstelleZeile($simple, '<s>'.Sprachen::Get('components','init').'</s>', 'e', '', 'v', Design::erstelleSubmitButton("actionInitComponents"), 'h');
+        $text .= Design::erstelleZeile($simple, Sprachen::Get('components','init'), 'e', '', 'v', Design::erstelleSubmitButton("actionInitComponents"), 'h');
         $text .= Design::erstelleZeile($simple, Sprachen::Get('components','details'), 'e', Design::erstelleAuswahl($simple, $data['CO']['co_details'], 'data[CO][co_details]', 'details', null, true), 'v');
         
         if ($initComponents){
@@ -18,6 +18,30 @@ if (!$simple)
             
             // counts installed links
             $installedLinks = 0;
+
+            foreach($componentsResult as $componentName => &$component)
+            {
+                if (isset($component['init']))
+                    $component['init'] = Component::decodeComponent(json_encode($component['init']));
+                    
+                if (isset($component['links']))
+                    $component['links'] = Link::decodeLink(json_encode($component['links']));
+                    
+                if (isset($component['commands'])){
+                    $router = new \Slim\Router();
+                    foreach($component['commands'] as $command){
+                        $route = new \Slim\Route($command['path'],'is_array');
+                        $route->via(strtoupper($command['method']));
+                        $router->map($route);
+                    }
+                    $component['router'] = $router;
+                }
+            }
+            /*foreach($componentsResult as $componentName => $component)
+            {if ($componentName=='DBApprovalCondition'){
+                        // $link->getName();
+                        var_dump($component);
+                    }}*/
             
             foreach($componentsResult as $componentName => $component)
             {
@@ -31,6 +55,7 @@ if (!$simple)
                 foreach($links as $link){
                     $linkNames[] = $link->getName();
                     $linkNamesUnique[$link->getName()] = $link->getName();
+                    
                 }
                 
                 $calls=null;
@@ -42,8 +67,7 @@ if (!$simple)
                             $callNames[$callList['name']] = $callList['name'];
                     }
                 }
-                
-                        
+                                    
                 $countLinks = 1;
                 if (isset($component['init']) && $component['init']->getStatus() === 201){
                     $countLinks+=count($linkNames) + count(array_diff($callNames,$linkNamesUnique)) + count($linkNamesUnique) - count(array_diff($linkNamesUnique,$callNames));

@@ -109,7 +109,7 @@ class Installation
                         $errno = $result['status'];
                         $res[$url]['status'] = $result['status'];
                     };
-                    if (isset($result['content'])) echo $result['content'];
+                    ///if (isset($result['content'])) echo $result['content'];
                 }
             }
         }
@@ -414,7 +414,7 @@ class Installation
 
             // component routers
             $router = array();
-       
+
             $results = Component::decodeComponent($result['content']);
             $results = Installation::orderBy(json_decode(Component::encodeComponent($results),true),'name',SORT_ASC);
             $results = Component::decodeComponent(Component::encodeComponent($results));
@@ -429,22 +429,26 @@ class Installation
             $result4 = Request::get($data['PL']['url'].'/'.$url. '/definition',array(),'');
             
             if (isset($result4['content']) && isset($result4['status']) && $result4['status'] === 200){
-            $definitions = Component::decodeComponent($result4['content']);
-            if (!is_array($definitions)) $definitions = array($definitions);
-            
-            $result2 = new Request_MultiRequest();
-            $result3 = new Request_MultiRequest();
-            foreach ($definitions as $definition){
-                $components[$definition->getName()]['definition'] = $definition;
-                            
-                $request = Request_CreateRequest::createGet($definition->getAddress().'/info/commands',array(),'');
-                $result2->addRequest($request);
-                $request = Request_CreateRequest::createGet($definition->getAddress().'/info/links',array(),'');
-                $result3->addRequest($request);
-            }
-            
-            $result2 = $result2->run();
-            $result3 = $result3->run();
+                $definitions = Component::decodeComponent($result4['content']);
+                if (!is_array($definitions)) $definitions = array($definitions);
+                
+                $result2 = new Request_MultiRequest();
+                $result3 = new Request_MultiRequest();
+                $tempDef = array();
+                foreach ($definitions as $definition){
+                    if (strpos($definition->getAddress().'/', $data['PL']['urlExtern'].'/')===false) {continue;}
+                    
+                    $components[$definition->getName()]['definition'] = $definition;
+                    $tempDef[] = $definition;      
+                    $request = Request_CreateRequest::createGet($definition->getAddress().'/info/commands',array(),'');
+                    $result2->addRequest($request);
+                    $request = Request_CreateRequest::createGet($definition->getAddress().'/info/links',array(),'');
+                    $result3->addRequest($request);
+                }
+                $definitions = $tempDef;
+                
+                $result2 = $result2->run();
+                $result3 = $result3->run();
             
                 foreach($results as $res){
                     if ($res===null){
@@ -455,7 +459,7 @@ class Installation
                     $countLinks = 0;
                     $resultCounter=-1;
                     foreach ($definitions as $definition){
-                        if (strpos($definition->getAddress().'/', $data['PL']['urlExtern'].'/')===false) continue;
+                        //if (strpos($definition->getAddress().'/', $data['PL']['urlExtern'].'/')===false) continue;
                         
                         $resultCounter++;
                         if ($definition->getId() === $res->getId()){
@@ -575,10 +579,10 @@ class Installation
             $data['DB']['db_name'] = null;
             $sql = "DROP USER '{$data['DB']['db_user_operator']}'@'%';";
             $sql .= "DROP USER '{$data['DB']['db_user_operator']}'@'localhost';";
-            $result = DBRequest::request($sql, false, $data);
+            $result = DBRequest::request2($sql, false, $data);
             /*if ($result["errno"] !== 0){
                 $fail = true; $errno = $result["errno"];$error = isset($result["error"]) ? $result["error"] : '';
-            }*/
+            }*///echo "REMOVED";
             $data['DB']['db_name'] = $oldName;
         }
         
@@ -604,16 +608,16 @@ class Installation
             $oldName = $data['DB']['db_name'];
             $data['DB']['db_name'] = null;
             $sql = "GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,TRIGGER ".
-                    "ON {$oldName}.* ".
+                    "ON `{$oldName}`.* ".
                     "TO '{$data['DB']['db_user_operator']}'@'%' ".
                     "IDENTIFIED BY '{$data['DB']['db_passwd_operator']}';";
             $sql.= "GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,TRIGGER ".
-                    "ON {$oldName}.* ".
+                    "ON `{$oldName}`.* ".
                     "TO '{$data['DB']['db_user_operator']}'@'localhost' ".
                     "IDENTIFIED BY '{$data['DB']['db_passwd_operator']}';";
-            $result = DBRequest::request($sql, false, $data);
-            if ($result["errno"] !== 0){
-                $fail = true; $errno = $result["errno"];$error = isset($result["error"]) ? $result["error"] : '';
+            $result = DBRequest::request2($sql, false, $data);
+            if ($result[0]["errno"] !== 0 && $result[1]["errno"] !== 0){
+                $fail = true; $errno = $result[0]["errno"];$error = isset($result[0]["error"]) ? $result[0]["error"] : '';
             }
             $data['DB']['db_name'] = $oldName;
         } elseif ($userExists){

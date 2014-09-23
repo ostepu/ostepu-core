@@ -95,6 +95,10 @@ class Zugang
         
         return '"'.str_replace("\"","'",$command).'"';
     }
+    
+    public static function SendeServerEinstellungen(){
+    
+    }
 
     public static function SendeDateien($files,$filesAddresses, $data)
     {
@@ -108,24 +112,26 @@ class Zugang
             // Dateien senden
             if (!is_array($files)) $files = array($files);
             
-            /*$allPaths = array();
+            $allPaths = array();
             foreach ($filesAddresses as $addresses)
-                $allPaths[] = dirname($addresses);*/
+                $allPaths[] = dirname($addresses);
             
-            /*$allPaths = array_unique($allPaths);
+            $allPaths = array_unique($allPaths);
             $allPaths = array_values($allPaths);
 
             for($i=0;$i<count($allPaths)-1;$i++)
                 if (strpos($allPaths[$i+1].'/',$allPaths[$i].'/') === 0)
                     $allPaths[$i]=null;
-
+                    
+            $ssh = Zugang::Verbinden($data);
             foreach ($allPaths as $path){
                 if ($path!=null){
-                    $command = '$path="'.$path.'"; $e=explode("/", ltrim($path,"/")); $c=count($e); $cp=$e[0]; for($i=1;$i<$c;$i++){if(!is_dir($cp) && !@mkdir($cp,0755)){return false;} $cp.="/".$e[$i];} return @mkdir($path,0755);';
-                    if (count($ssh->channel_status)>0 && $ssh->channel_status[0] != 97){$ssh = Zugang::Verbinden($data);$scp = new Net_SCP($ssh);}
-                    $ssh->exec('php -r \''.$command.'\'')."<br>";
+                    $command = '$path="'.$path.'"; $e=explode("/", ltrim($path,"/")); $c=count($e); $cp=$e[0]; for($i=1;$i<$c;$i++){if(!is_dir($cp) && !@mkdir($cp,0775)){return false;} chmod($cp,0775);$cp.="/".$e[$i];} @mkdir($path,0775);chmod($path,0775);return true;';
+                    $command = Zugang::checkServerType($ssh,$command);
+                    if (count($ssh->channel_status)>0 && $ssh->channel_status[0] != 97){$ssh = Zugang::Verbinden($data);}
+                    $ssh->exec('php -r '.$command);
                 }
-            }*/
+            }
             
             $zip = new ZipArchive( );
             Einstellungen::generatepath( dirname(__FILE__).'/../temp' );
@@ -147,7 +153,8 @@ class Zugang
                 //$scp->put('data.zip', dirname(__FILE__).'/../temp/data.zip', NET_SCP_LOCAL_FILE);
             }
             
-            $ssh = Zugang::Verbinden($data);
+            //$ssh = Zugang::Verbinden($data);
+            if (count($ssh->channel_status)>0 && $ssh->channel_status[0] != 97){$ssh = Zugang::Verbinden($data);}
             $scp = new Net_SCP($ssh);
             if (count($ssh->channel_status)>0 && $ssh->channel_status[0] != 97){$ssh = Zugang::Verbinden($data);$scp = new Net_SCP($ssh);}
             $scp->put('data.zip', dirname(__FILE__).'/../temp/data.zip', NET_SCP_LOCAL_FILE);
@@ -202,7 +209,7 @@ class Zugang
 
             $ssh = Zugang::Verbinden($data);
             $result = $ssh->exec('php -f install/install.php -- '.$action);
-echo $result;
+//echo $result;
             $result = json_decode($result,true);
             $ssh->disconnect();
             

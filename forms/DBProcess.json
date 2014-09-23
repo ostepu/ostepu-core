@@ -1,7 +1,0 @@
-{
-  "name":"DBProcessList",
-  "version":"1.0",
-  "type":"clone",
-  "base":"DBProcess",
-  "baseURI":"/processList"
-}
