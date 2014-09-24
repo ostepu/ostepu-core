@@ -78,11 +78,11 @@ class DBUser
     public function __construct( )
     {
         // runs the CConfig
-        $com = new CConfig( DBUser::getPrefix( ) );
+        $com = new CConfig( DBUser::getPrefix( ), dirname(__FILE__) );
 
         // runs the DBUser
         if ( $com->used( ) ) return;
-            $conf = $com->loadConfig2( dirname(__FILE__) );
+            $conf = $com->loadConfig( );
     
 
         // initialize component

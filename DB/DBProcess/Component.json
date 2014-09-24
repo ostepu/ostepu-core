@@ -12,5 +12,8 @@
   ],
   "links":[
     {"name":"out", "target":"DBQuery2", "links":[{"method":"POST", "path":"/query" }] }
+  ],
+  "connector":[
+    {"name":"request", "target":"CLocalObjectRequest"}
   ]
 }

@@ -16,5 +16,8 @@
     {"name":"postExerciseSheet", "target":"DBExerciseSheet", "links":[]},
     {"name":"getExerciseSheet", "target":"DBExerciseSheet", "links":[{"method":"GET", "path":"/exercisesheet/:sheetId" }]},
     {"name":"deleteExerciseSheet", "target":"DBExerciseSheet", "links":[{"method":"DELETE", "path":"/exercisesheet/:sheetId" }]}
+  ],
+  "connector":[
+    {"name":"request", "target":"CLocalObjectRequest"}
   ]
 }

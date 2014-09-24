@@ -77,11 +77,11 @@ class DBExerciseType
     public function __construct( )
     {
         // runs the CConfig
-        $com = new CConfig( DBExerciseType::getPrefix( ) );
+        $com = new CConfig( DBExerciseType::getPrefix( ), dirname(__FILE__) );
 
         // runs the DBExerciseType
         if ( $com->used( ) ) return;
-            $conf = $com->loadConfig2( dirname(__FILE__) );
+            $conf = $com->loadConfig( );
             
         // initialize component
         $this->_conf = $conf;

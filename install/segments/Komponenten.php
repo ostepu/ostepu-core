@@ -37,11 +37,6 @@ if (!$simple)
                     $component['router'] = $router;
                 }
             }
-            /*foreach($componentsResult as $componentName => $component)
-            {if ($componentName=='DBApprovalCondition'){
-                        // $link->getName();
-                        var_dump($component);
-                    }}*/
             
             foreach($componentsResult as $componentName => $component)
             {

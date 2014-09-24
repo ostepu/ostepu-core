@@ -78,11 +78,11 @@ class DBCourse
     public function __construct( )
     {
         // runs the CConfig
-        $com = new CConfig( DBCourse::getPrefix( ) );
+        $com = new CConfig( DBCourse::getPrefix( ), dirname(__FILE__) );
 
         // runs the DBCourse
         if ( $com->used( ) ) return;
-            $conf = $com->loadConfig2( dirname(__FILE__)  );
+            $conf = $com->loadConfig(  );
             
         // initialize component
         $this->_conf = $conf;

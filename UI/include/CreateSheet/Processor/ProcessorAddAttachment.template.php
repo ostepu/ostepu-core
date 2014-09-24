@@ -3,6 +3,7 @@
  * @file ProcessorAddAttachment.template.php
  * @author  Till Uhlig
  */
+ header('Content-Type: text/html; charset=utf-8');
  ?>
  <div class="processor-attachment new-line" style="margin:5px 0px; width:100%;">
  <tr><td></td><td>

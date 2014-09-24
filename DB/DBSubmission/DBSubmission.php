@@ -78,11 +78,11 @@ class DBSubmission
     public function __construct( )
     {
         // runs the CConfig
-        $com = new CConfig( DBSubmission::getPrefix( ) );
+        $com = new CConfig( DBSubmission::getPrefix( ), dirname(__FILE__) );
 
         // runs the DBSubmission
         if ( $com->used( ) ) return;
-            $conf = $com->loadConfig2( dirname(__FILE__) );
+            $conf = $com->loadConfig( );
 
         // initialize component
         $this->_conf = $conf;

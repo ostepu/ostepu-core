@@ -8,5 +8,8 @@
     {"path":"DBQuery2.php"},
     {"path":"index.php"},
     {"path":"Commands.json"}
+  ],
+  "connector":[
+    {"name":"request", "target":"CLocalObjectRequest"}
   ]
 }

@@ -175,7 +175,36 @@ class Component extends Object implements JsonSerializable
     {
         $this->status = $value;
     }
-
+    
+    private $classFile = null;
+    public function getClassFile( )
+    {
+        return $this->classFile;
+    }
+    public function setClassFile( $value = null )
+    {
+        $this->classFile = $value;
+    }
+    
+    private $className = null;
+    public function getClassName( )
+    {
+        return $this->className;
+    }
+    public function setClassName( $value = null )
+    {
+        $this->className = $value;
+    }
+    
+    private $localPath = null;
+    public function getLocalPath( )
+    {
+        return $this->localPath;
+    }
+    public function setLocalPath( $value = null )
+    {
+        $this->localPath = $value;
+    }
     /**
      * Creates an Component object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -215,7 +244,9 @@ class Component extends Object implements JsonSerializable
                      'CO_address' => 'address',
                      'CO_option' => 'option',
                      'CO_prefix' => 'prefix',
-                     'CO_links' => 'links'
+                     'CO_links' => 'links',
+                     'CO_classFile' => 'classFile',
+                     'CO_className' => 'className'
                      );
     }
 
@@ -367,8 +398,15 @@ class Component extends Object implements JsonSerializable
             $list['prefix'] = $this->prefix;
         if ( $this->links !== null && $this->links !== array( ) )
             $list['links'] = $this->links;
-         if ( $this->status !== null )
+        if ( $this->status !== null )
             $list['status'] = $this->status;
+        if ( $this->classFile !== null )
+            $list['classFile'] = $this->classFile;
+        if ( $this->className !== null )
+            $list['className'] = $this->className;
+        if ( $this->localPath !== null )
+            $list['localPath'] = $this->localPath;
+
         return array_merge($list,parent::jsonSerialize( ));
     }
 }

@@ -1,4 +1,6 @@
-<?php if (!empty($exercises)):
+<?php 
+    header('Content-Type: text/html; charset=utf-8');
+    if (!empty($exercises)):
 
     $choiceId = 0;
     //var_dump($exercises);
@@ -112,7 +114,7 @@
                     
                     
                     
-                    <?php ?>
+                    <?php?>
                      <?php if (isset($subexercise['processorId'])){ ?>
                      <?php foreach ($subexercise['processorId'] as $key4 => $processor): ?>
                      <?php if ($processors!==null){ ?>

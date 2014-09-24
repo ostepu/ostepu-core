@@ -77,7 +77,7 @@ class DBFile
     public function __construct( )
     {
         // runs the CConfig
-        $com = new CConfig( DBFile::getPrefix( ) );
+        $com = new CConfig( DBFile::getPrefix( ), dirname(__FILE__) );
 
         // runs the DBFile
         if ( $com->used( ) ) return;
@@ -226,7 +226,7 @@ class DBFile
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/EditFile.sql',
+                                                  dirname(__FILE__) . '/Sql/EditFile.sql',
                                                   array( 
                                                         'fileid' => $fileid,
                                                         'values' => $data
@@ -278,7 +278,7 @@ class DBFile
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query2,
-                                              'Sql/DeleteFile.sql',
+                                              dirname(__FILE__) . '/Sql/DeleteFile.sql',
                                               array( 'fileid' => $fileid )
                                               );
 
@@ -366,7 +366,7 @@ class DBFile
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/AddFile.sql',
+                                                  dirname(__FILE__) . '/Sql/AddFile.sql',
                                                   array( 'values' => $data )
                                                   );
 
@@ -497,7 +497,7 @@ class DBFile
     {
         $this->get( 
                    'GetFile',
-                   'Sql/GetFile.sql',
+                   dirname(__FILE__) . '/Sql/GetFile.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -520,7 +520,7 @@ class DBFile
     {
         $this->get( 
                    'GetFileByHash',
-                   'Sql/GetFileByHash.sql',
+                   dirname(__FILE__) . '/Sql/GetFileByHash.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -541,7 +541,7 @@ class DBFile
     {
         $this->get( 
                    'GetAllFiles',
-                   'Sql/GetAllFiles.sql',
+                   dirname(__FILE__) . '/Sql/GetAllFiles.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -561,7 +561,7 @@ class DBFile
     {
         $this->get( 
                    'GetExistsPlatform',
-                   'Sql/GetExistsPlatform.sql',
+                   dirname(__FILE__) . '/Sql/GetExistsPlatform.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -589,7 +589,7 @@ class DBFile
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query2,
-                                              'Sql/DeletePlatform.sql',
+                                              dirname(__FILE__) . '/Sql/DeletePlatform.sql',
                                               array( ),
                                               false
                                               );
@@ -647,7 +647,7 @@ class DBFile
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query2,
-                                                  'Sql/AddPlatform.sql',
+                                                  dirname(__FILE__) . '/Sql/AddPlatform.sql',
                                                   array( 'object' => $in ),
                                                   false
                                                   );

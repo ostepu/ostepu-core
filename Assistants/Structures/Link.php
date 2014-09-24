@@ -201,7 +201,36 @@ class Link extends Object implements JsonSerializable
     {
         $this->targetName = $value;
     }
-
+    
+    private $classFile = null;
+    public function getClassFile( )
+    {
+        return $this->classFile;
+    }
+    public function setClassFile( $value = null )
+    {
+        $this->classFile = $value;
+    }
+    
+    private $className = null;
+    public function getClassName( )
+    {
+        return $this->className;
+    }
+    public function setClassName( $value = null )
+    {
+        $this->className = $value;
+    }
+    
+    private $localPath = null;
+    public function getLocalPath( )
+    {
+        return $this->localPath;
+    }
+    public function setLocalPath( $value = null )
+    {
+        $this->localPath = $value;
+    }
     /**
      * Creates an Link object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -397,6 +426,13 @@ class Link extends Object implements JsonSerializable
             $list['relevanz'] = $this->relevanz;
         if ( $this->targetName !== null )
             $list['targetName'] = $this->targetName;
+        if ( $this->classFile !== null )
+            $list['classFile'] = $this->classFile;
+        if ( $this->className !== null )
+            $list['className'] = $this->className;
+        if ( $this->localPath !== null )
+            $list['localPath'] = $this->localPath;
+            
         return array_merge($list,parent::jsonSerialize( ));
     }
 }

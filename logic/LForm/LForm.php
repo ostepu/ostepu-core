@@ -68,7 +68,7 @@ class LForm
     public function __construct()
     {
         // runs the CConfig
-        $com = new CConfig( LForm::getPrefix( ) . ',course,link' );
+        $com = new CConfig( LForm::getPrefix( ) . ',course,link', dirname(__FILE__) );
 
         // runs the LForm
         if ( $com->used( ) ) return;

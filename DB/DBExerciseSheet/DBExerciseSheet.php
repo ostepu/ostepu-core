@@ -79,11 +79,11 @@ class DBExerciseSheet
     public function __construct( )
     {
         // runs the CConfig
-        $com = new CConfig( DBExerciseSheet::getPrefix( ) );
+        $com = new CConfig( DBExerciseSheet::getPrefix( ), dirname(__FILE__) );
 
         // runs the DBExerciseSheet
         if ( $com->used( ) ) return;
-            $conf = $com->loadConfig2( dirname(__FILE__) );//array(), dirname(__FILE__) );
+            $conf = $com->loadConfig(  );
 
         // initialize component
         $this->_conf = $conf;
@@ -238,7 +238,7 @@ class DBExerciseSheet
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/EditExerciseSheet.sql',
+                                                  dirname(__FILE__) . '/Sql/EditExerciseSheet.sql',
                                                   array( 
                                                         'esid' => $esid,
                                                         'values' => $data
@@ -290,7 +290,7 @@ class DBExerciseSheet
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
-                                              'Sql/DeleteExerciseSheet.sql',
+                                              dirname(__FILE__) . '/Sql/DeleteExerciseSheet.sql',
                                               array( 'esid' => $esid )
                                               );
 
@@ -349,7 +349,7 @@ class DBExerciseSheet
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/AddExerciseSheet.sql',
+                                                  dirname(__FILE__) . '/Sql/AddExerciseSheet.sql',
                                                   array( 'values' => $data )
                                                   );
 

@@ -89,7 +89,7 @@ class LProcessor
     public function __construct()
     {
         // runs the CConfig
-        $com = new CConfig( LProcessor::getPrefix( ) . ',submission,course,link' );
+        $com = new CConfig( LProcessor::getPrefix( ) . ',submission,course,link', dirname(__FILE__) );
 
         // runs the LProcessor
         if ( $com->used( ) ) return;

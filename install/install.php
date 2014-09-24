@@ -365,7 +365,9 @@ class Installer
                                     
                                     $input2['links'] = array_merge((isset($input2['links']) ? $input2['links'] : array()),(isset($input['links']) ? $input['links'] : array()));
                                     $input2['connector'] = array_merge((isset($input2['connector']) ? $input2['connector'] : array()),(isset($input['connector']) ? $input['connector'] : array()));
-
+                                    if (isset($input['option']))
+                                        $input2['option'] = $input['option'];
+                                    
                                     $input2['name'] = $input['name'];
                                     $input2['registered'] = null;
                                     if (!isset($tempList[$key2])) $tempList[$key2] = array();
@@ -407,6 +409,7 @@ class Installer
                             // prüfe nun alle Verknüpfungen dieser Komponente und erstelle diese
                             if (isset($input['links']))
                                 foreach ($input['links'] as $link){
+                                    if (!isset($link['target'])) $link['target'] = '';
                                     if (!is_array($link['target'])) $link['target'] = array($link['target']);
                                     
                                     foreach ($link['target'] as $tar){// $tar -> der Name der Zielkomponente
@@ -434,6 +437,7 @@ class Installer
                                 
                             if (isset($input['connector']))
                                 foreach ($input['connector'] as $link){
+                                    if (!isset($link['target'])) $link['target'] = '';
                                     if (!is_array($link['target'])) $link['target'] = array($link['target']);
                                     
                                     foreach ($link['target'] as $tar){// $tar -> der Name der Zielkomponente

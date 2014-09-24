@@ -71,7 +71,7 @@ class DBForm
     public function __construct( )
     {
         // runs the CConfig
-        $com = new CConfig( DBForm::getPrefix( ). ',course,link' );
+        $com = new CConfig( DBForm::getPrefix( ). ',course,link', dirname(__FILE__) );
 
         // runs the DBForm
         if ( $com->used( ) ) return;
@@ -219,7 +219,7 @@ class DBForm
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/EditForm.sql',
+                                                  dirname(__FILE__) . '/Sql/EditForm.sql',
                                                   array( 
                                                         'formid' => $formid,
                                                         'object' => $in
@@ -267,7 +267,7 @@ class DBForm
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
-                                              'Sql/DeleteForm.sql',
+                                              dirname(__FILE__) . '/Sql/DeleteForm.sql',
                                               array( 'formid' => $formid )
                                               );
 
@@ -326,7 +326,7 @@ class DBForm
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/AddForm.sql',
+                                                  dirname(__FILE__) . '/Sql/AddForm.sql',
                                                   array( 'object' => $in)
                                                   );
 
@@ -456,7 +456,7 @@ class DBForm
     {
         $this->get( 
                    'GetForm',
-                   'Sql/GetForm.sql',
+                   dirname(__FILE__) . '/Sql/GetForm.sql',
                    isset( $formid ) ? $formid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -477,7 +477,7 @@ class DBForm
     {
         $this->get( 
                    'GetCourseForms',
-                   'Sql/GetCourseForms.sql',
+                   dirname(__FILE__) . '/Sql/GetCourseForms.sql',
                    isset( $formid ) ? $formid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -498,7 +498,7 @@ class DBForm
     {
         $this->get( 
                    'GetExistsCourseForms',
-                   'Sql/GetExistsCourseForms.sql',
+                   dirname(__FILE__) . '/Sql/GetExistsCourseForms.sql',
                    isset( $formid ) ? $formid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -520,7 +520,7 @@ class DBForm
     {
         $this->get( 
                    'GetSheetForms',
-                   'Sql/GetSheetForms.sql',
+                   dirname(__FILE__) . '/Sql/GetSheetForms.sql',
                    isset( $formid ) ? $formid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -541,7 +541,7 @@ class DBForm
     {
         $this->get( 
                    'GetExerciseForms',
-                   'Sql/GetExerciseForms.sql',
+                   dirname(__FILE__) . '/Sql/GetExerciseForms.sql',
                    isset( $formid ) ? $formid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -570,7 +570,7 @@ class DBForm
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
-                                              'Sql/DeleteCourse.sql',
+                                              dirname(__FILE__) . '/Sql/DeleteCourse.sql',
                                               array( 'courseid' => $courseid )
                                               );
 
@@ -627,7 +627,7 @@ class DBForm
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/AddCourse.sql',
+                                                  dirname(__FILE__) . '/Sql/AddCourse.sql',
                                                   array( 'object' => $in )
                                                   );
 

@@ -79,11 +79,11 @@ class DBMarking
     public function __construct( )
     {
         // runs the CConfig
-        $com = new CConfig( DBMarking::getPrefix( ) );
+        $com = new CConfig( DBMarking::getPrefix( ), dirname(__FILE__) );
 
         // runs the DBMarking
         if ( $com->used( ) ) return;
-            $conf = $com->loadConfig2( dirname(__FILE__) );
+            $conf = $com->loadConfig( );
             
         // initialize component
         $this->_conf = $conf;

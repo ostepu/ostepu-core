@@ -77,11 +77,11 @@ class DBApprovalCondition
     public function __construct( )
     {
         // runs the CConfig
-        $com = new CConfig( DBApprovalCondition::getPrefix( ) );
+        $com = new CConfig( DBApprovalCondition::getPrefix( ), dirname(__FILE__) );
 
         // runs the DBApprovalCondition
         if ( $com->used( ) ) return;
-            $conf = $com->loadConfig2( dirname(__FILE__) );
+            $conf = $com->loadConfig( );
             
         // initialize component
         $this->_conf = $conf;

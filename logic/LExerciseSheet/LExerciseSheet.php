@@ -13,7 +13,7 @@ require_once dirname(__FILE__) . '/../../Assistants/Slim/Slim.php';
 include_once dirname(__FILE__) . '/../../Assistants/Request.php';
 include_once dirname(__FILE__) . '/../../Assistants/Structures.php';
 include_once dirname(__FILE__) . '/../../Assistants/CConfig.php';
-include_once dirname(__FILE__) . '/../Include/LArraySorter.php';
+include_once dirname(__FILE__) . '/../../Assistants/LArraySorter.php';
 
 \Slim\Slim::registerAutoloader();
 
@@ -74,11 +74,11 @@ class LExerciseSheet
     public function __construct()
     {
         // runs the CConfig
-        $com = new CConfig( LExerciseSheet::getPrefix( ) );
+        $com = new CConfig( LExerciseSheet::getPrefix( ), dirname(__FILE__) );
 
         // runs the LExerciseSheet
         if ( $com->used( ) ) return;
-            $conf = $com->loadConfig2( dirname(__FILE__) );
+            $conf = $com->loadConfig( );
             
         // initialize slim
         $this->app = new \Slim\Slim();

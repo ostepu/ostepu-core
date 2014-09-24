@@ -6,25 +6,9 @@
  * @author Till Uhlig
  * @date 2013-2014
  */
-    include_once ( dirname( __FILE__ ) . '/Structures.php' );
-  
-if (isset($_SERVER['SCRIPT_NAME']) && isset($_SERVER['REQUEST_URI'])){
-    $scriptName = $_SERVER['SCRIPT_NAME'];
-    $requestUri = $_SERVER['REQUEST_URI'];
-    $path = str_replace('?' . (isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : ''), '', substr_replace($requestUri, '', 0, strlen((strpos($requestUri, $scriptName) !== false ? $scriptName : str_replace('\\', '', dirname($scriptName))))));
-    if ( strpos($path,'/control') === false  &&  strpos( 
-                $path,
-                '/info'
-                ) === false ) {
-        CConfig::$possible = false;
-    }
-    unset($path, $scriptName, $requestUri);
-} else CConfig::$possible = false;
-
-if (CConfig::$possible){
-    require_once ( dirname(__FILE__) . '/Slim/Slim.php' );
-    \Slim\Slim::registerAutoloader( );
-}
+include_once ( dirname( __FILE__ ) . '/Structures.php' );
+require_once ( dirname(__FILE__) . '/Slim/Slim.php' );
+\Slim\Slim::registerAutoloader( );
 
 /**
  * this class is used to link components, to save new linkage data and to
@@ -38,7 +22,7 @@ class CConfig
      */
     private $_app;
     
-    public static $possible = true;
+    ///public static $possible = true;
 
     /**
      * @var $CONF_FILE the file where the component configuration would be stored
@@ -55,6 +39,9 @@ class CConfig
      * has been addressed
      */
     private $_used = false;
+    public $pre = null;
+    public $confFile = null;
+    public $callPath = null;
 
     /**
      * the $_prefix getter
@@ -81,13 +68,28 @@ class CConfig
      *
      * @param $prefix the prefix, the component works with
      */
-    public function __construct( $prefix )
+    public function __construct( $prefix, $callPath = null )
     {
 
         // initialize slim
         $this->setPrefix( $prefix );
         
-        if (CConfig::$possible){
+        $callPath = str_replace("\\",'/',$callPath);
+        $this->callPath = $callPath;
+        
+        ///if (CConfig::$possible){
+
+        $scriptName = $_SERVER['SCRIPT_NAME'];
+        $requestUri = $_SERVER['REQUEST_URI'];
+        $path = str_replace('?' . (isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : ''), '', substr_replace($requestUri, '', 0, strlen((strpos($requestUri, $scriptName) !== false ? $scriptName : str_replace('\\', '', dirname($scriptName))))));
+    
+    if ( strpos($path,'/control') === false  &&  strpos( 
+                $path,
+                '/info'
+                ) === false ) {
+                //echo $scriptName."\n".$requestUri."\n".$path."\nNOT\n";
+                } else {
+                //echo $path."\nPOSSIBLE\n";
             $this->_app = new \Slim\Slim( array('debug' => true) );
 
             $this->_app->response->headers->set( 
@@ -143,6 +145,7 @@ class CConfig
         // run Slim
         $this->_used = true;
         $this->_app->run( );
+        ///unset($this->_app);
         }
     }
     
@@ -159,9 +162,12 @@ class CConfig
     
     public function instruction( $pre = array())
     {
-        if (file_exists('Component.json')){
+        $path = (isset($this->callPath) ? $this->callPath.'/' : '');
+        $path = str_replace("\\",'/',$path);
+        
+        if (file_exists($path.'Component.json')){
             $this->_app->response->setStatus( 200 );
-            $data = json_decode(file_get_contents('Component.json'),true);
+            $data = json_decode(file_get_contents($path.'Component.json'),true);
             $this->_app->response->setBody( json_encode((isset($data['links']) ? $data['links'] : array())) );
         }else{
             $this->_app->response->setStatus( 404 );
@@ -224,7 +230,10 @@ class CConfig
      */
     public function getConfig( $pre = array(), $path = ''  )
     {
+        if ($path=='' && $this->callPath!=null) $path = $this->callPath;
         if ($path!='') $path.='/';
+        $path = str_replace("\\",'/',$path);
+        
         $tempPre = '';
         foreach($pre as $pr){
             if ($pr !== '')
@@ -234,6 +243,17 @@ class CConfig
         
         if ( file_exists( $path . $pre . CConfig::$CONF_FILE ) ){
             $com = Component::decodeComponent( file_get_contents( $path . $pre . CConfig::$CONF_FILE ) );
+            
+            if (file_exists($path . 'Component.json')){
+                $def = Component::decodeComponent( file_get_contents( $path . 'Component.json' ) );
+                $com->setClassFile( $def->getClassFile() );
+                $com->setClassName( $def->getClassName() );
+                if ($path!=""){
+                    $myPath = str_replace("\\",'/',dirname(__FILE__));
+                    $com->setLocalPath( substr(substr($path,0,-1),strrpos($myPath,'/')+1 ) );
+                }
+            }
+            
             $com->setPrefix( $this->getPrefix( ) );
             $this->_app->response->setBody( Component::encodeComponent( $com ) );
             $this->_app->response->setStatus( 200 );
@@ -251,14 +271,27 @@ class CConfig
      *
      * @param $content the json encode Component object
      */
-    public function saveConfig( $pre='', $content ){
-        CConfig::saveConfigGlobal($pre,$content);
+    public function saveConfig( $pre='', $content )
+    {
+        $path='';
+        if ($this->callPath!=null) $path = $this->callPath;
+        $path = str_replace("\\",'/',$path);
+        
+        CConfig::saveConfigGlobal($pre,$content,$path);
+        $this->pre = substr($pre,0,-1);
     }
      
-    public static function saveConfigGlobal( $pre='', $content )
+    public static function saveConfigGlobal( $pre='', $content, $path='', $file=null )
     {
+        if ($path!='')$path.='/';
+        $path = str_replace("\\",'/',$path);
+        
+        $ff = $path.$pre . CConfig::$CONF_FILE;
+        if ($file!=null)
+            $ff=$path.$file;
+        
         $file = fopen( 
-                      $pre . CConfig::$CONF_FILE,
+                      $ff,
                       'w'
                       );
         fwrite( 
@@ -273,15 +306,26 @@ class CConfig
      *
      * @return a Component object
      */
-         public function loadConfig2( $path = '' )
+    public function loadConfig2( $path = '' )
     {
-        if ($path!='') $path.='/';
+        if ($this->callPath==null && $path!='') $this->callPath=$path;
+        $this->confFile = $path . '/' . CConfig::$CONF_FILE;
+        return CConfig::loadStaticConfig($this->getPrefix(), '', $this->callPath);
+    }
+    
+    public static function loadStaticConfig( $pref, $pre, $path='', $file=null )
+    {
 
-        if ( file_exists( $path . CConfig::$CONF_FILE ) ){
+        if ($path!='') $path.='/';
+        $path = str_replace("\\",'/',$path);
+
+        $ff = $path . $pre . CConfig::$CONF_FILE;
+        if ($file!=null) $ff=$path . $file;
+        if ( file_exists( $ff ) ){
 
             // file was found, create a Component object from file content
-            $com = Component::decodeComponent( file_get_contents( $path . CConfig::$CONF_FILE ) );
-            $com->setPrefix( $this->getPrefix( ) );
+            $com = Component::decodeComponent( file_get_contents( $ff ) );
+            $com->setPrefix( $pref );
             
             // check if the links
             // know their prefixes
@@ -298,6 +342,8 @@ class CConfig
                 // if a link has no prefix, we have to ask the link target
                 // for the prefix list
                 if ( $link->getPrefix( ) === null ){
+Logger::Log($com->getName().'->'.$link->getTargetName( ), LogLevel::DEBUG, false, dirname(__FILE__) . '/../cconfig.log');
+
                     $result = Request::get( 
                                            $link->getAddress( ) . '/control',
                                            array( ),
@@ -311,6 +357,9 @@ class CConfig
                         $changed = true;
                         $obj = Component::decodeComponent( $result['content'] );
                         $link->setPrefix( $obj->getPrefix( ) );
+                        $link->setClassFile( $obj->getClassFile( ) );
+                        $link->setClassName( $obj->getClassName( ) );
+                        $link->setLocalPath( $obj->getLocalPath() );
                     }
                 }
             }
@@ -318,7 +367,7 @@ class CConfig
             // if any new prefix was found, we have to store the link definitions
             if ( $changed ){
                 $conf->setLinks( $links );
-                $this->saveConfig( '', Component::encodeComponent( $conf ) );
+                CConfig::saveConfigGlobal( $pre, Component::encodeComponent( $conf ), substr($path,0,-1),$file );
                 $com = $conf;
             }
             
@@ -328,7 +377,7 @@ class CConfig
 
             // can't find the file, create an empty object
             $com = new Component( );
-            $com->setPrefix( $this->getPrefix( ) );
+            $com->setPrefix( $pref );
             return $com;
         }
     }
@@ -343,60 +392,11 @@ class CConfig
         }
         $pre = $tempPre;
         
-        if ( file_exists( $pre . CConfig::$CONF_FILE ) ){
-
-            // file was found, create a Component object from file content
-            $com = Component::decodeComponent( file_get_contents( $pre . CConfig::$CONF_FILE ) );
-            $com->setPrefix( $this->getPrefix( ) );
-            
-            // check if the links
-            // know their prefixes
-            $conf = $com;
-            $links = $conf->getLinks( );
-
-            // always been an array
-            if ( !is_array( $links ) )
-                $links = array( $links );
-
-            $changed = false;
-            foreach ( $links as & $link ){
-
-                // if a link has no prefix, we have to ask the link target
-                // for the prefix list
-                if ( $link->getPrefix( ) === null ){
-                    $result = Request::get( 
-                                           $link->getAddress( ) . '/control',
-                                           array( ),
-                                           ''
-                                           );
-
-                    if ( $result['status'] == 200 ){
-
-                        // the link target has send its component definition,
-                        // so that we can remember this
-                        $changed = true;
-                        $obj = Component::decodeComponent( $result['content'] );
-                        $link->setPrefix( $obj->getPrefix( ) );
-                    }
-                }
-            }
-
-            // if any new prefix was found, we have to store the link definitions
-            if ( $changed ){
-                $conf->setLinks( $links );
-                $this->saveConfig( $pre, Component::encodeComponent( $conf ) );
-                $com = $conf;
-            }
-            
-            return $com;
-            
-        } else {
-
-            // can't find the file, create an empty object
-            $com = new Component( );
-            $com->setPrefix( $this->getPrefix( ) );
-            return $com;
-        }
+        $path ='';
+        if ($this->callPath!=null) $path=$this->callPath;
+        
+        $this->confFile = $path . $pre . CConfig::$CONF_FILE;
+        return CConfig::loadStaticConfig($this->getPrefix(), $pre, $this->callPath);
     }
 
     /**

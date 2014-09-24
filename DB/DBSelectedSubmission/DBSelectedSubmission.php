@@ -78,11 +78,11 @@ class DBSelectedSubmission
     public function __construct( )
     {
         // runs the CConfig
-        $com = new CConfig( DBSelectedSubmission::getPrefix( ) );
+        $com = new CConfig( DBSelectedSubmission::getPrefix( ), dirname(__FILE__) );
 
         // runs the DBSelectedSubmission
         if ( $com->used( ) ) return;
-            $conf = $com->loadConfig2( dirname(__FILE__) );
+            $conf = $com->loadConfig( );
             
         // initialize component
         $this->_conf = $conf;

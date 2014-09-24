@@ -77,7 +77,7 @@ class LFormPredecessor
     public function __construct()
     {
         // runs the CConfig
-        $com = new CConfig( LFormPredecessor::getPrefix( ) . ',course,link' );
+        $com = new CConfig( LFormPredecessor::getPrefix( ) . ',course,link', dirname(__FILE__) );
 
         // runs the LFormPredecessor
         if ( $com->used( ) ) return;

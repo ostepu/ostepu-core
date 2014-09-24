@@ -8,9 +8,9 @@
  * @date 2013-2014
  */
 
-require_once '../../Assistants/Slim/Slim.php';
-include_once '../../Assistants/Request.php';
-include_once '../../Assistants/CConfig.php';
+require_once dirname(__FILE__) . '/../../Assistants/Slim/Slim.php';
+include_once dirname(__FILE__) . '/../../Assistants/Request.php';
+include_once dirname(__FILE__) . '/../../Assistants/CConfig.php';
 
 \Slim\Slim::registerAutoloader();
 
@@ -61,11 +61,11 @@ class LController
     public function __construct()
     {
         // runs the CConfig
-        $com = new CConfig( LController::getPrefix( ) );
+        $com = new CConfig( LController::getPrefix( ), dirname(__FILE__) );
 
         // runs the LController
         if ( $com->used( ) ) return;
-            $conf = $com->loadConfig2( dirname(__FILE__) );
+            $conf = $com->loadConfig( );
             
         // initialize slim
         $this->app = new \Slim\Slim();
@@ -152,10 +152,10 @@ class LController
         $answer = Request::custom($method, $URI, $header, $body);
         $this->app->response->setBody($answer['content']);
         $this->app->response->setStatus($answer['status']);
-        $this->app->response->headers->set('Content-Type', $answer['headers']['Content-Type']);
-        if(isset($answer['headers']['Content-Disposition'])){
+        if(isset($answer['headers']['Content-Type']))
+            $this->app->response->headers->set('Content-Type', $answer['headers']['Content-Type']);
+        if(isset($answer['headers']['Content-Disposition']))
             $this->app->response->headers->set('Content-Disposition', $answer['headers']['Content-Disposition']);
-        }
     }
 }
 ?>

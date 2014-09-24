@@ -73,7 +73,7 @@ class DBAttachment2
     public function __construct( )
     {
         // runs the CConfig
-        $com = new CConfig( DBAttachment2::getPrefix( ) . ',course,link' );
+        $com = new CConfig( DBAttachment2::getPrefix( ) . ',course,link', dirname(__FILE__) );
 
         // runs the DBAttachment2
         if ( $com->used( ) ) return;
@@ -236,7 +236,7 @@ class DBAttachment2
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/EditAttachment.sql',
+                                                  dirname(__FILE__) . '/Sql/EditAttachment.sql',
                                                   array( 
                                                         'aid' => $aid,
                                                         'object' => $in,
@@ -290,7 +290,7 @@ class DBAttachment2
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
-                                              'Sql/DeleteAttachment.sql',
+                                              dirname(__FILE__) . '/Sql/DeleteAttachment.sql',
                                               array( 'aid' => $aid,'pre' => $pre )
                                               );
 
@@ -356,7 +356,7 @@ class DBAttachment2
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/AddAttachment.sql',
+                                                  dirname(__FILE__) . '/Sql/AddAttachment.sql',
                                                   array( 'object' => $in,'pre' => $pre )
                                                   );
 
@@ -495,7 +495,7 @@ class DBAttachment2
     {
         $this->get( 
                    'GetAttachment',
-                   'Sql/GetAttachment.sql',
+                   dirname(__FILE__) . '/Sql/GetAttachment.sql',
                    isset( $pre ) ? $pre : '',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
@@ -520,7 +520,7 @@ class DBAttachment2
     {
         $this->get( 
                    'GetExerciseAttachments',
-                   'Sql/GetExerciseAttachments.sql',
+                   dirname(__FILE__) . '/Sql/GetExerciseAttachments.sql',
                    isset( $pre ) ? $pre : '',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
@@ -544,7 +544,7 @@ class DBAttachment2
     {
         $this->get( 
                    'GetSheetAttachments',
-                   'Sql/GetSheetAttachments.sql',
+                   dirname(__FILE__) . '/Sql/GetSheetAttachments.sql',
                    isset( $pre ) ? $pre : '',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
@@ -568,7 +568,7 @@ class DBAttachment2
     {
         $this->get( 
                    'GetCourseAttachments',
-                   'Sql/GetCourseAttachments.sql',
+                   dirname(__FILE__) . '/Sql/GetCourseAttachments.sql',
                    isset( $pre ) ? $pre : '',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
@@ -592,7 +592,7 @@ class DBAttachment2
     {
         $this->get( 
                    'GetExistsCourseAttachments',
-                   'Sql/GetExistsCourseAttachments.sql',
+                   dirname(__FILE__) . '/Sql/GetExistsCourseAttachments.sql',
                    isset( $pre ) ? $pre : '',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
@@ -628,7 +628,7 @@ class DBAttachment2
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
-                                              'Sql/DeleteCourse.sql',
+                                              dirname(__FILE__) . '/Sql/DeleteCourse.sql',
                                               array( 'courseid' => $courseid,'pre' => $pre )
                                               );
 
@@ -690,7 +690,7 @@ class DBAttachment2
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/AddCourse.sql',
+                                                  dirname(__FILE__) . '/Sql/AddCourse.sql',
                                                   array( 'object' => $in,'pre' => $pre )
                                                   );
 

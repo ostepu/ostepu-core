@@ -15,6 +15,7 @@
     {"name":"postCourse", "target":["DBForm","DBChoice"], "links":[{"method":"GET", "path":"/link/exists/course/:courseid" },{"method":"POST", "path":"/course" },{"method":"DELETE", "path":"/course/:courseid" }] }
   ],
   "connector":[
-    {"name":"extension", "target":"LExtension"}
+    {"name":"extension", "target":"LExtension"},
+    {"name":"request", "target":"CLocalObjectRequest"}
   ]
 }

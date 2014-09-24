@@ -71,11 +71,11 @@ class DBQuery
     public function __construct( )
     {
         // runs the CConfig
-        $com = new CConfig( DBQuery::getPrefix( ) );
+        $com = new CConfig( DBQuery::getPrefix( ),dirname(__FILE__) );
 
         // runs the DBQuery
         if ( $com->used( ) ) return;
-            $conf = $com->loadConfig2( dirname(__FILE__) );
+            $conf = $com->loadConfig(  );
 
         // initialize component
         $this->_conf = $conf;
@@ -86,7 +86,8 @@ class DBQuery
                                             'Content-Type',
                                             'application/json'
                                             );
-       //var_dump(\Slim\Environment::getInstance(false));                                     
+       //var_dump(\Slim\Environment::getInstance(false));      
+      
         // POST AddPlatform
         $this->_app->post( 
                          '/platform',
@@ -250,7 +251,7 @@ class DBQuery
                     LogLevel::DEBUG
                     );
                     
-        if (!file_exists('config.ini')){
+        if (!file_exists(dirname(__FILE__) . '/config.ini')){
             $this->_app->response->setStatus( 409 );
             $this->_app->stop();
         }
@@ -271,7 +272,7 @@ class DBQuery
                     'starts DELETE DeletePlatform',
                     LogLevel::DEBUG
                     );
-        if (file_exists('config.ini') && !unlink('config.ini')){
+        if (file_exists(dirname(__FILE__) . '/config.ini') && !unlink(dirname(__FILE__) . '/config.ini')){
             $this->_app->response->setStatus( 409 );
             $this->_app->stop();
         }
@@ -308,7 +309,7 @@ class DBQuery
         $res = array( );
         foreach ( $insert as $in ){
         
-            $file = 'config.ini';
+            $file = dirname(__FILE__) . '/config.ini';
             $text = "[DB]\n".
                     "db_path = {$in->getDatabaseUrl()}\n".
                     "db_user = {$in->getDatabaseOperatorUser()}\n".

@@ -21,6 +21,7 @@
   "connector":[
     {"name":"extension", "target":"LExtension"},
     {"name":"deleteCourse", "target":"LCourse"},
-    {"name":"postCourse", "target":"LCourse"}
+    {"name":"postCourse", "target":"LCourse"},
+    {"name":"request", "target":"CLocalObjectRequest"}
   ]
 }

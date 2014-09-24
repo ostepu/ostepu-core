@@ -235,12 +235,16 @@ class CControl
 
             // starts a query
             ob_start();
-            eval("?>" .  file_get_contents( 'Sql/PutLink.sql' ));
+            eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/PutLink.sql' ));
             $sql = ob_get_contents();
             ob_end_clean();
             $result = DBRequest::request( 
                                          $sql,
-                                         false
+                                         false,
+                                           parse_ini_file( 
+                                     dirname(__FILE__).'/config.ini',
+                                     TRUE
+                                     )
                                          );
 
             // checks the correctness of the query
@@ -274,12 +278,16 @@ class CControl
 
         // starts a query
         ob_start();
-        eval("?>" .  file_get_contents( 'Sql/DeleteLink.sql' ));
+        eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/DeleteLink.sql' ));
         $sql = ob_get_contents();
         ob_end_clean();
         $result = DBRequest::request( 
                                      $sql,
-                                     false
+                                     false,
+                                           parse_ini_file( 
+                                     dirname(__FILE__).'/config.ini',
+                                     TRUE
+                                     )
                                      );
 
         // checks the correctness of the query
@@ -314,12 +322,16 @@ class CControl
 
             // starts a query
             ob_start();
-            eval("?>" .  file_get_contents( 'Sql/PostLink.sql' ));
+            eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/PostLink.sql' ));
             $sql = ob_get_contents();
             ob_end_clean();
             $result = DBRequest::request( 
                                          $sql,
-                                         false
+                                         false,
+                                           parse_ini_file( 
+                                     dirname(__FILE__).'/config.ini',
+                                     TRUE
+                                     )
                                          );
 
             // checks the correctness of the query
@@ -359,12 +371,16 @@ class CControl
 
         // starts a query
         ob_start();
-        eval("?>" .  file_get_contents( 'Sql/GetLink.sql' ));
+        eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/GetLink.sql' ));
         $sql = ob_get_contents();
         ob_end_clean();
         $result = DBRequest::request( 
                                      $sql,
-                                     false
+                                     false,
+                                           parse_ini_file( 
+                                     dirname(__FILE__).'/config.ini',
+                                     TRUE
+                                     )
                                      );
 
         // checks the correctness of the query
@@ -412,12 +428,16 @@ class CControl
 
             // starts a query
             ob_start();
-            eval("?>" .  file_get_contents( 'Sql/PutComponent.sql' ));
+            eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/PutComponent.sql' ));
             $sql = ob_get_contents();
             ob_end_clean();
             $result = DBRequest::request( 
                                          $sql,
-                                         false
+                                         false,
+                                           parse_ini_file( 
+                                     dirname(__FILE__).'/config.ini',
+                                     TRUE
+                                     )
                                          );
 
             // checks the correctness of the query
@@ -451,12 +471,16 @@ class CControl
 
         // starts a query
         ob_start();
-        eval("?>" .  file_get_contents( 'Sql/DeleteComponent.sql' ));
+        eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/DeleteComponent.sql' ));
         $sql = ob_get_contents();
         ob_end_clean();
         $result = DBRequest::request( 
                                      $sql,
-                                     false
+                                     false,
+                                           parse_ini_file( 
+                                     dirname(__FILE__).'/config.ini',
+                                     TRUE
+                                     )
                                      );
 
         // checks the correctness of the query
@@ -487,12 +511,16 @@ class CControl
 
             // starts a query
             ob_start();
-            eval("?>" .  file_get_contents( 'Sql/PostComponent.sql' ));
+            eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/PostComponent.sql' ));
             $sql = ob_get_contents();
             ob_end_clean();
             $result = DBRequest::request( 
                                          $sql,
-                                         false
+                                         false,
+                                           parse_ini_file( 
+                                     dirname(__FILE__).'/config.ini',
+                                     TRUE
+                                     )
                                          );
 
             if ( (!isset($result['errno']) || !$result['errno']) && 
@@ -530,12 +558,16 @@ class CControl
 
         // starts a query
         ob_start();
-        eval("?>" .  file_get_contents( 'Sql/GetComponent.sql' ));
+        eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/GetComponent.sql' ));
         $sql = ob_get_contents();
         ob_end_clean();
         $result = DBRequest::request( 
                                      $sql,
-                                     false
+                                     false,
+                                           parse_ini_file( 
+                                     dirname(__FILE__).'/config.ini',
+                                     TRUE
+                                     )
                                      );
 
         // checks the correctness of the query
@@ -567,12 +599,16 @@ class CControl
 
         // starts a query
         ob_start();
-        eval("?>" .  file_get_contents( 'Sql/GetComponentDefinitions.sql' ));
+        eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/GetComponentDefinitions.sql' ));
         $sql = ob_get_contents();
         ob_end_clean();
         $result = DBRequest::request( 
                                      $sql,
-                                     false
+                                     false,
+                                           parse_ini_file( 
+                                     dirname(__FILE__).'/config.ini',
+                                     TRUE
+                                     )
                                      );
 
         // checks the correctness of the query
@@ -621,12 +657,16 @@ class CControl
         
         // starts a query
         ob_start();
-        eval("?>" .  file_get_contents( 'Sql/GetComponentDefinition.sql' ));
+        eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/GetComponentDefinition.sql' ));
         $sql = ob_get_contents();
         ob_end_clean();
         $result = DBRequest::request( 
                                      $sql,
-                                     false
+                                     false,
+                                           parse_ini_file( 
+                                     dirname(__FILE__).'/config.ini',
+                                     TRUE
+                                     )
                                      );
 
         // checks the correctness of the query
@@ -678,7 +718,11 @@ class CControl
         ob_end_clean();
         $result = DBRequest::request( 
                                      $sql,
-                                     false
+                                     false,
+                                           parse_ini_file( 
+                                     dirname(__FILE__).'/config.ini',
+                                     TRUE
+                                     )
                                      );
 
         // checks the correctness of the query
@@ -794,12 +838,16 @@ class CControl
 
         // starts a query
         ob_start();
-        eval("?>" .  file_get_contents( 'Sql/GetExistsPlatform.sql' ));
+        eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/GetExistsPlatform.sql' ));
         $sql = ob_get_contents();
         ob_end_clean();
         $result = DBRequest::request( 
                                      $sql,
-                                     false
+                                     false,
+                                           parse_ini_file( 
+                                     dirname(__FILE__).'/config.ini',
+                                     TRUE
+                                     )
                                      );
 
         // checks the correctness of the query
@@ -835,12 +883,16 @@ class CControl
 
         // starts a query
         ob_start();
-        eval("?>" .  file_get_contents( 'Sql/DeletePlatform.sql' ));
+        eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/DeletePlatform.sql' ));
         $sql = ob_get_contents();
         ob_end_clean();
         $result = DBRequest::request2( 
                                      $sql,
-                                     false
+                                     false,
+                                           parse_ini_file( 
+                                     dirname(__FILE__).'/config.ini',
+                                     TRUE
+                                     )
                                      );
 
         // checks the correctness of the query

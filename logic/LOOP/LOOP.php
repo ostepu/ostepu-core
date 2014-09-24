@@ -75,7 +75,7 @@ class LOOP
     public function __construct()
     {
         // runs the CConfig
-        $com = new CConfig( LOOP::getPrefix( ) . ',course,link' );
+        $com = new CConfig( LOOP::getPrefix( ) . ',course,link', dirname(__FILE__) );
 
         // runs the LOOP
         if ( $com->used( ) ) return;

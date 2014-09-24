@@ -77,11 +77,11 @@ class DBSession
     public function __construct( )
     {
         // runs the CConfig
-        $com = new CConfig( DBSession::getPrefix( ) );
+        $com = new CConfig( DBSession::getPrefix( ), dirname(__FILE__) );
 
         // runs the DBSession
         if ( $com->used( ) ) return;
-            $conf = $com->loadConfig2( dirname(__FILE__) );
+            $conf = $com->loadConfig( );
             
         // initialize component
         $this->_conf = $conf;

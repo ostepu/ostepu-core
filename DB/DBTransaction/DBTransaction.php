@@ -50,7 +50,7 @@ class DBTransaction
     public function __construct( )
     {
         // runs the CConfig
-        $com = new CConfig( 'transaction,course,link' );
+        $com = new CConfig( 'transaction,course,link', dirname(__FILE__) );
 
         // runs the DBTransaction
         if ( $com->used( ) ) return;
@@ -200,7 +200,7 @@ class DBTransaction
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
-                                              'Sql/DeleteTransaction.sql',
+                                              dirname(__FILE__) . '/Sql/DeleteTransaction.sql',
                                               array( 'auid' => $auid,'name' => $name,'tid' => $tid )
                                               );
 
@@ -243,17 +243,17 @@ class DBTransaction
      */
     public function addTransaction( $name='', $courseid )
     {
-        $this->add($name, $courseid, 'courseid', 'POST AddTransaction', 'Sql/AddTransaction.sql');
+        $this->add($name, $courseid, 'courseid', 'POST AddTransaction', dirname(__FILE__) . '/Sql/AddTransaction.sql');
     }
     
     public function addSheetTransaction( $name='', $esid )
     {
-        $this->add($name, $esid, 'esid', 'POST AddShetTransaction', 'Sql/AddSheetTransaction.sql');
+        $this->add($name, $esid, 'esid', 'POST AddShetTransaction', dirname(__FILE__) . '/Sql/AddSheetTransaction.sql');
     }
     
    public function addExerciseTransaction( $name='', $eid )
     {
-        $this->add($name, $eid, 'eid', 'POST AddExerciseTransaction', 'Sql/AddExerciseTransaction.sql');
+        $this->add($name, $eid, 'eid', 'POST AddExerciseTransaction', dirname(__FILE__) . '/Sql/AddExerciseTransaction.sql');
     }
     
     public function add( $name='', $id, $idName ,$functionName, $sqlFile)
@@ -433,7 +433,7 @@ class DBTransaction
     {
         $this->get( 
                    'GetTransaction',
-                   'Sql/GetTransaction.sql',
+                   dirname(__FILE__) . '/Sql/GetTransaction.sql',
                    isset( $name ) ? $name : '',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
@@ -463,7 +463,7 @@ class DBTransaction
     {
         $this->get( 
                    'GetExistsCourseTransactions',
-                   'Sql/GetExistsCourseTransactions.sql',
+                   dirname(__FILE__) . '/Sql/GetExistsCourseTransactions.sql',
                    isset( $pre ) ? $pre : '',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
@@ -499,7 +499,7 @@ class DBTransaction
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
-                                              'Sql/DeleteCourse.sql',
+                                              dirname(__FILE__) . '/Sql/DeleteCourse.sql',
                                               array( 'courseid' => $courseid,'name' => $name )
                                               );
 
@@ -561,7 +561,7 @@ class DBTransaction
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/AddCourse.sql',
+                                                  dirname(__FILE__) . '/Sql/AddCourse.sql',
                                                   array( 'object' => $in,'name' => $name )
                                                   );
 

@@ -5,6 +5,9 @@
  * @author Till Uhlig
  * @date 2013-2014
  */ 
+
+include_once ( dirname( __FILE__ ) . '/Structures.php' );
+require_once( dirname(__FILE__) . '/CConfig.php' );
 include_once( dirname(__FILE__) . '/Request/CreateRequest.php' );   
 include_once( dirname(__FILE__) . '/Request/MultiRequest.php' );   
 include_once( dirname(__FILE__) . '/Logger.php' );
@@ -43,6 +46,8 @@ class Request
         return $retVal;
     }
 
+    public static $components = null;
+    
     /**
      * performs a custom request
      *
@@ -58,95 +63,81 @@ class Request
      */
     public static function custom($method, $target, $header,  $content)
     {
-        //Logger::Log('BEGIN '.$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
-        
         $begin = microtime(true);
         
         $done = false;
-       /* if ($method=='GET' && strpos($target,'http://localhost/')===0){
-            $coms   = array(
-                            array('url'=>'DB/DBUser','class'=>'DBUser'),
-                            array('url'=>'DB/DBExerciseSheet','class'=>'DBExerciseSheet'),
-                            array('url'=>'DB/DBCourseStatus','class'=>'DBCourseStatus'),
-                            array('url'=>'DB/DBSelectedSubmission','class'=>'DBSelectedSubmission'),
-                            array('url'=>'DB/DBSession','class'=>'DBSession'),
-                            array('url'=>'DB/DBCourse','class'=>'DBCourse'),
-                            array('url'=>'DB/DBExercise','class'=>'DBExercise'),
-                            array('url'=>'DB/DBExerciseType','class'=>'DBExerciseType'),
-                            array('url'=>'DB/DBExerciseFileType','class'=>'DBExerciseFileType'),
-                            array('url'=>'DB/DBMarking','class'=>'DBMarking'),
-                            array('url'=>'DB/DBSubmission','class'=>'DBSubmission'),
-                            array('url'=>'logic/LController','class'=>'LController'),
-                            array('url'=>'DB/DBApprovalCondition','class'=>'DBApprovalCondition')
-                            );
-            
-            foreach ($coms as $com){
-                $url = 'http://localhost/LOGIC_I/'.$com['url'];
-                if (strpos($target,$url.'/')===0){
-                    $done=true;
-                    $result = array();
-                    $tar = dirname(__FILE__).'/../'.$com['url'].'/'.$com['class'].'.php';
-                    $add = substr($target,strlen($url));
-                    $args = array(
-                                  'REQUEST_METHOD' => $method,
-                                  'PATH_INFO' => $add,
-                                  'slim.input' => $content);
-                    include_once($tar);
-                    \Slim\Environment::mock($args);
-                    
-                    ob_start();
-                    $obj = new $com['class']();
-                 
-                    unset($obj);            
-                    $result['content'] = ob_get_contents();
-                    ob_end_clean();
 
-                    $result['header']=array();            
-                    $result['status']=200;
-                    break;
+        if (strpos($target,'http://localhost/')===0 && file_exists(dirname(__FILE__) . '/request_cconfig.json')){
+            if (Request::$components==null){
+                Request::$components=CConfig::loadStaticConfig('','',dirname(__FILE__),'request_cconfig.json');
+            }
+
+            $coms = Request::$components->getLinks();
+            if ($coms!=null){      
+                if (!is_array($coms)) $coms = array($coms);
+                foreach ($coms as $com){
+                    if ($com->getPrefix() == null || $com->getLocalPath()==null || $com->getClassFile()==null || $com->getClassName()==null) continue;
+                    $url = 'http://localhost/uebungsplattform/'.$com->getLocalPath();
+
+                    if (strpos($target,$url.'/')===0){
+                        $result = array();
+                        $tar = dirname(__FILE__).'/../'.$com->getLocalPath().'/'.$com->getClassFile();
+                        $tar=str_replace("\\","/",$tar);
+                        if (!file_exists($tar)) continue;
+                        
+                        $add = substr($target,strlen($url));
+                        $args = array(
+                                      'REQUEST_METHOD' => $method,
+                                      'PATH_INFO' => $add,
+                                      'slim.input' => $content);
+                        $oldMethod = \Slim\Environment::getInstance()->offsetGet('REQUEST_METHOD');
+                        $oldPath = \Slim\Environment::getInstance()->offsetGet('PATH_INFO');
+                        $oldInput = \Slim\Environment::getInstance()->offsetGet('slim.input');
+                        $oldRequestURI = $_SERVER['REQUEST_URI'];
+                        $oldScriptName = $_SERVER['SCRIPT_NAME'];
+                        $_SERVER['REQUEST_URI'] = $tar.$add;
+                        $_SERVER['SCRIPT_NAME'] = $tar;
+                        $_SERVER['QUERY_STRING']='';
+                        \Slim\Environment::mock($args);
+                        include_once($tar);
+                        
+                        $oldStatus = http_response_code();
+                        $oldHeader = array_merge(array(),headers_list());
+                        header_remove(); 
+                        http_response_code(0);
+                       
+                        $name = $com->getClassName();
+                        ob_start();
+                        
+                        new $name();  
+                        if (isset($obj))
+                            unset($obj);                        
+                        $result['content'] = ob_get_contents();
+                        ob_end_clean(); 
+                            
+                        $result['headers'] = array_merge(array(),apache_response_headers()); 
+                        header_remove();        
+                   
+                        $result['status'] = http_response_code();
+                        $_SERVER['REQUEST_URI'] = $oldRequestURI;
+                        $_SERVER['SCRIPT_NAME'] = $oldScriptName;
+                        $args = array(
+                            'REQUEST_METHOD' => $oldMethod,
+                            'PATH_INFO' => $oldPath,
+                            'slim.input' => $oldInput);
+                        \Slim\Environment::mock($args);
+                        http_response_code($oldStatus);
+                        foreach ($oldHeader as $head)
+                            header($head);
+
+                        $done=true;
+                        break;
+                    }
                 }
             }
-        } 
-        
-        if (!$done && $method=='POST' && strpos($target,'http://localhost/LOGIC_I/DB/DBQuery/')===0){
-            $done=true;
-            $result = array();
-            $tar = dirname(__FILE__).'/../DB/DBQuery/DBQuery.php';
-            $args = array(
-            'REQUEST_METHOD' => 'POST',
-            'PATH_INFO' => '/query',
-            'slim.input' => $content);
-            include_once($tar);
+        }
 
-            \Slim\Environment::mock($args);
-            ob_start();
-            $obj = new DBQuery();    
-            unset($obj);
-            $result['content'] = ob_get_contents();
-            ob_end_clean();
-              
-            $result['header']=array();            
-            $result['status']=200;
-        } elseif (!$done && $method=='POST' && strpos($target,'http://localhost/LOGIC_I/DB/DBQuery2/')===0){
-            $done=true;
-            $result = array();
-            $tar = dirname(__FILE__).'/../DB/DBQuery2/DBQuery2.php';
-            $args = array(
-            'REQUEST_METHOD' => 'POST',
-            'PATH_INFO' => '/query',
-            'slim.input' => $content);
-            include_once($tar);
-
-            \Slim\Environment::mock($args);
-            ob_start();
-            $obj = new DBQuery2();    
-            unset($obj);
-            $result['content'] = ob_get_contents();
-            ob_end_clean();
-              
-            $result['header']=array();            
-            $result['status']=200;
-        } else*/if (!$done){
+        if (!$done){
             // creates a custom request
             $ch = Request_CreateRequest::createCustom($method,$target,$header,$content);
             $content = curl_exec($ch);
@@ -164,13 +155,11 @@ class Request
             
             // sets the received status code
             $result['status'] = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            
+Logger::Log("--".$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
             curl_close($ch);                                                                            
         }
-        
-        //if ($method=='POST')
+
         Logger::Log($target . ' ' . (round((microtime(true) - $begin),2)). 's', LogLevel::DEBUG, false, dirname(__FILE__) . '/../executionTime.log');
-        //Logger::Log('END '.$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
         return $result; 
     }
        
