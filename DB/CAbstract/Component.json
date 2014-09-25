@@ -1,0 +1,12 @@
+{
+  "name":"CAbstract",
+  "version":"1.0",
+  "classFile":"CAbstract.php",
+  "className":"CAbstract",
+  "files":[
+    {"path":".htaccess"},
+    {"path":"CAbstract.php"},
+    {"path":"index.php"},
+    {"path":"Commands.json"}
+  ]
+}
