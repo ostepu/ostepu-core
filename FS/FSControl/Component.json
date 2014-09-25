@@ -6,7 +6,8 @@
   "files":[
     {"path":".htaccess"},
     {"path":"FSControl.php"},
-    {"path":"Commands.json"}
+    {"path":"Commands.json"},
+    {"path":"Controller3.php"}
   ],
   "links":[
     {"name":"out", "target":["FSFile","FSZip","FSPdf"], "links":[] }

@@ -1,6 +1,4 @@
-<?php 
-
-
+<?php
 /**
  * @file DBUser.php Contains the DBUser class
  *

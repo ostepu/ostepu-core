@@ -43,7 +43,7 @@ class Einstellungen
                 if ($pos === false || $pos === 0) 
                     continue;
                     
-                Einstellungen::$konfiguration[substr($element,0,$pos)] = substr($element,$pos+1);
+                Einstellungen::$konfiguration[substr($element,0,$pos)] = parse_ini_string('a='.substr($element,$pos+1))['a'];
             }
         }
     }
@@ -63,7 +63,7 @@ class Einstellungen
                 if ($pos === false || $pos === 0) 
                     continue;
                     
-                $konfiguration[substr($element,0,$pos)] = substr($element,$pos+1);
+                $konfiguration[substr($element,0,$pos)] = parse_ini_string('a='.substr($element,$pos+1))['a'];
             }
         }
         Variablen::EinsetzenDirekt($konfiguration,$data);
@@ -79,7 +79,7 @@ class Einstellungen
         }
 
         foreach (Einstellungen::$konfiguration as $varName => $value){
-            if (!fwrite($handle, $varName.'='.$value."\n")){
+            if (!fwrite($handle, $varName.'="'.str_replace(array("\\","\""),array("\\\\","\\\""),$value)."\"\n")){
                fclose($handle);
                 return;
             }

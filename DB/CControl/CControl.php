@@ -831,7 +831,7 @@ class CControl
                     LogLevel::DEBUG
                     );
                     
-        if (!file_exists('config.ini')){
+        if (!file_exists(dirname(__FILE__).'/config.ini')){
             $this->_app->response->setStatus( 409 );
             $this->_app->stop();
         }
@@ -939,16 +939,16 @@ class CControl
         $res = array( );
         foreach ( $insert as $in ){
         
-            $file = 'config.ini';
+            $file = dirname(__FILE__).'/config.ini';
             $text = "[DB]\n".
-                    "db_path = {$in->getDatabaseUrl()}\n".
-                    "db_user = {$in->getDatabaseOperatorUser()}\n".
-                    "db_passwd = {$in->getDatabaseOperatorPassword()}\n".
-                    "db_name = {$in->getDatabaseName()}\n".
+                    "db_path = \"".str_replace(array("\\","\""),array("\\\\","\\\""),$in->getDatabaseUrl())."\"\n".
+                    "db_user = \"".str_replace(array("\\","\""),array("\\\\","\\\""),$in->getDatabaseOperatorUser())."\"\n".
+                    "db_passwd = \"".str_replace(array("\\","\""),array("\\\\","\\\""),$in->getDatabaseOperatorPassword())."\"\n".
+                    "db_name = \"".str_replace(array("\\","\""),array("\\\\","\\\""),$in->getDatabaseName())."\"\n".
                     "[PL]\n".
-                    "urlExtern = {$in->getExternalUrl()}\n".
-                    "url = {$in->getBaseUrl()}";
-                    
+                    "urlExtern = \"".str_replace(array("\\","\""),array("\\\\","\\\""),$in->getExternalUrl())."\"\n".
+                    "url = \"".str_replace(array("\\","\""),array("\\\\","\\\""),$in->getBaseUrl())."\"";
+            
             if (!@file_put_contents($file,$text)){
                 Logger::Log( 
                             'POST AddPlatform failed, config.ini no access',

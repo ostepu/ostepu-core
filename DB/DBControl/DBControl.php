@@ -12,7 +12,7 @@ require_once ( dirname(__FILE__) . '/../../Assistants/Slim/Slim.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/Structures.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/CConfig.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/Request.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Controller.php' );
+include_once ( dirname(__FILE__) . '/Controller.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );

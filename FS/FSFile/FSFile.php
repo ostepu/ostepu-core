@@ -454,8 +454,8 @@ class FSFile
         
             $file = 'config.ini';
             $text = "[DIR]\n".
-                    "temp = ".str_replace("\\","/",$in->getTempDirectory())."\n".
-                    "files = ".str_replace("\\","/",$in->getFilesDirectory())."\n";
+                    "temp = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$in->getTempDirectory()))."\"\n".
+                    "files = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$in->getFilesDirectory()))."\"\n";
                     
             if (!@file_put_contents($file,$text)){
                 Logger::Log( 

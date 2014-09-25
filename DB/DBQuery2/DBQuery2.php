@@ -318,12 +318,13 @@ class DBQuery2
         
             $file = dirname(__FILE__) . '/config'.($name!='' ? '_'.$name : '').'.ini';
             $text = "[DB]\n".
-                    "db_path = {$in->getDatabaseUrl()}\n".
-                    "db_user = {$in->getDatabaseOperatorUser()}\n".
-                    "db_passwd = {$in->getDatabaseOperatorPassword()}\n".
-                    "db_name = {$in->getDatabaseName()}\n".
+                    "db_path = \"".str_replace(array("\\","\""),array("\\\\","\\\""),$in->getDatabaseUrl())."\"\n".
+                    "db_user = \"".str_replace(array("\\","\""),array("\\\\","\\\""),$in->getDatabaseOperatorUser())."\"\n".
+                    "db_passwd = \"".str_replace(array("\\","\""),array("\\\\","\\\""),$in->getDatabaseOperatorPassword())."\"\n".
+                    "db_name = \"".str_replace(array("\\","\""),array("\\\\","\\\""),$in->getDatabaseName())."\"\n".
                     "[PL]\n".
-                    "urlExtern = {$in->getExternalUrl()}";
+                    "urlExtern = \"".str_replace(array("\\","\""),array("\\\\","\\\""),$in->getExternalUrl())."\"\n".
+                    "url = \"".str_replace(array("\\","\""),array("\\\\","\\\""),$in->getBaseUrl())."\"";
                     
             if (!@file_put_contents($file,$text)){
                 Logger::Log( 
