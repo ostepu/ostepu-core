@@ -3,5 +3,8 @@
   "version":"1.0",
   "type":"clone",
   "base":"DBChoice",
-  "baseURI":"/formResult"
+  "baseURI":"/formResult",
+  "connector":[
+    {"name":"postCourse", "target":"LForm"}
+  ]
 }
