@@ -16,8 +16,15 @@ if (isset($_POST['downloadAttachments'])) {
 
 if (isset($_POST['downloadCSV'])) {
     $sid = cleanInput($_POST['downloadCSV']);
-    $location = $logicURI . '/tutor/user/' . $uid . '/exercisesheet/' . $sid;
-    header("Location: {$location}");
+    $URI = $logicURI . '/tutor/user/' . $uid . '/exercisesheet/' . $sid;
+    $csvFile = http_get($URI, true);
+    $csvFile = json_decode($csvFile, true);
+   
+    if (isset($csvFile['address']) && isset($csvFile['displayName'])){
+        $fileAddress = $csvFile['address'];
+        $displayName = $csvFile['displayName'];
+        header("Location: ../FS/FSBinder/{$fileAddress}/{$displayName}");
+    }
 }
 
 $requiredPrivilege = PRIVILEGE_LEVEL::TUTOR;
