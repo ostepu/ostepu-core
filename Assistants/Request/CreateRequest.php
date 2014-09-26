@@ -38,7 +38,7 @@ class Request_CreateRequest
             array_push($resultHeader,'DATE: ' . $_SERVER['HTTP_DATE']);
         if (isset($_SERVER['HTTP_USER']))
             array_push($resultHeader,'USER: ' . $_SERVER['HTTP_USER']);
-            
+
         $resultHeader = array_merge($resultHeader,$header);
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, $resultHeader);

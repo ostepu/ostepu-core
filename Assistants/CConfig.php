@@ -342,7 +342,7 @@ class CConfig
                 // if a link has no prefix, we have to ask the link target
                 // for the prefix list
                 if ( $link->getPrefix( ) === null ){
-Logger::Log($com->getName().'->'.$link->getTargetName( ), LogLevel::DEBUG, false, dirname(__FILE__) . '/../cconfig.log');
+//Logger::Log($com->getName().'->'.$link->getTargetName( ), LogLevel::DEBUG, false, dirname(__FILE__) . '/../cconfig.log');
 
                     $result = Request::get( 
                                            $link->getAddress( ) . '/control',

@@ -90,6 +90,14 @@ class Request
                                       'REQUEST_METHOD' => $method,
                                       'PATH_INFO' => $add,
                                       'slim.input' => $content);
+                                      
+                        /*if (isset($_SERVER['HTTP_SESSION']))
+                            $args['HTTP_SESSION'] = $_SERVER['HTTP_SESSION'];   
+                        if (isset($_SERVER['HTTP_DATE']))
+                            $args['HTTP_DATE'] = $_SERVER['HTTP_DATE'];
+                        if (isset($_SERVER['HTTP_USER']))
+                            $args['HTTP_USER'] = $_SERVER['HTTP_USER'];*/
+                                      
                         $oldMethod = \Slim\Environment::getInstance()->offsetGet('REQUEST_METHOD');
                         $oldPath = \Slim\Environment::getInstance()->offsetGet('PATH_INFO');
                         $oldInput = \Slim\Environment::getInstance()->offsetGet('slim.input');
@@ -155,11 +163,11 @@ class Request
             
             // sets the received status code
             $result['status'] = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-Logger::Log("--".$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+///Logger::Log("--".$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
             curl_close($ch);                                                                            
         }
 
-        Logger::Log($target . ' ' . (round((microtime(true) - $begin),2)). 's', LogLevel::DEBUG, false, dirname(__FILE__) . '/../executionTime.log');
+///        Logger::Log($target . ' ' . (round((microtime(true) - $begin),2)). 's', LogLevel::DEBUG, false, dirname(__FILE__) . '/../executionTime.log');
         return $result; 
     }
        
