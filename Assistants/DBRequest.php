@@ -69,8 +69,8 @@ class DBRequest
         $currentTime = $_SERVER['REQUEST_TIME'];
 
         // check session
-        if (error_reporting() & E_NOTICE)
-            $checkSession = false; // remove the comment this line to disable the session examination
+        ///if (error_reporting() & E_NOTICE)
+        ///    $checkSession = false; // remove the comment this line to disable the session examination
         
         // Storing whether or not a session condition is not satisfied
         $sessionFail = false;
@@ -194,8 +194,8 @@ class DBRequest
         $currentTime = $_SERVER['REQUEST_TIME'];
 
         // check session
-        if (error_reporting() & E_NOTICE)
-            $checkSession = false; // remove the comment this line to disable the session examination
+        ///if (error_reporting() & E_NOTICE)
+        ///    $checkSession = false; // remove the comment this line to disable the session examination
         
         // Storing whether or not a session condition is not satisfied
         $sessionFail = false;
@@ -330,7 +330,7 @@ class DBRequest
         $sqlParsed = eval("?>" .  file_get_contents( $sqlFile ));
         $sql = ob_get_contents();
         ob_end_clean();
-
+///echo $sql;
         if ($sqlParsed === false){
             $answer = array();
             $answer['status'] = 409;
