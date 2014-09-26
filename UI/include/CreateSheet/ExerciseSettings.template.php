@@ -21,7 +21,7 @@
                         <input class="form-field text-input very-short" name="exercises[<?php echo $key1; ?>][subexercises][<?php echo $key2; ?>][maxPoints]" value="<?php echo $subexercise['maxPoints']; ?>" placeholder="Punkte" id="exerciseMaxPoints" />
                         <select class="form-field text-input short" name="exercises[<?php echo $key1; ?>][subexercises][<?php echo $key2; ?>][exerciseType]" id="exerciseType">
                             <?php
-                            session_start();
+                            ///session_start();
                             if (isset($_SESSION['JSCACHE'])) {
                                 $cache = json_decode($_SESSION['JSCACHE'], true);
                                 foreach ($cache as $excercisetype) {
@@ -35,7 +35,7 @@
                             }
                             ?>
                         </select>
-                        <input class="form-field text-input very-short mime-field" name="exercises[<?php echo $key1; ?>][subexercises][<?php echo $key2; ?>][mime-type]" value="<?php echo $subexercise['mime-type']; ?>" id="mime-type" placeholder="pdf, zip, html, jpg, gif" disabled="<?php echo (isset($subexercise['type']) ? 'disabled' : ''); ?>"/>
+                        <input class="form-field text-input very-short mime-field" name="exercises[<?php echo $key1; ?>][subexercises][<?php echo $key2; ?>][mime-type]" value="<?php echo (isset($subexercise['mime-type']) ? $subexercise['mime-type'] : ''); ?>" id="mime-type" placeholder="pdf, zip, html, jpg, gif" disabled="<?php echo (isset($subexercise['type']) ? 'disabled' : ''); ?>"/>
                         
                         <input class="button" type="file" name="exercises[<?php echo $key1; ?>][subexercises][<?php echo $key2; ?>][attachment]" value="Anhang auswählen ..." />
                         <a href="javascript:void(0);" class="body-option-color deny-button right delete-subtask"<?php if(count($exercise['subexercises'])==1):?> style="display:none;" <?php endif;?>>Teilaufgabe löschen</a>
