@@ -7,7 +7,6 @@
  * @author Martin Daute
  * @date 2013-2014
  */
-
 require_once dirname(__FILE__) . '/../../Assistants/Slim/Slim.php';
 include_once dirname(__FILE__) . '/../../Assistants/Request.php';
 include_once dirname(__FILE__) . '/../../Assistants/CConfig.php';
@@ -500,13 +499,15 @@ class LTutor
         if ( isset($result['status']) && isset($result['content']) && $result['status'] == 201){
             $transaction = Transaction::decodeTransaction($result['content']);
              
-            $this->deleteDir("./csv");
-            mkdir("./csv");
+            LTutor::generatepath($this->config['DIR']['temp']);
+            $tempDir = $this->tempdir($this->config['DIR']['temp'], 'createCSV', $mode=0775);
+        
+            ///$this->deleteDir($tempDir);
             $transactionRow = array($transaction->getTransactionId());
             array_unshift($rows,$transactionRow);
 
             //this is the true writing of the CSV-file named [tutorname]_[sheetid].csv
-            $CSV = fopen('./csv/'.$sheetid.'.csv', 'w'); // $user['lastName'].'_'.
+            $CSV = fopen($tempDir.'/'.$sheetid.'.csv', 'w'); // $user['lastName'].'_'.
 
             foreach($rows as $row){
                 fputcsv($CSV, $row, ';','"');
@@ -537,17 +538,20 @@ class LTutor
             }
 
             //push the .csv-file to the array
-            $path = './csv/'.$sheetid.'.csv';//$user['lastName'].'_'.
+            $path = $tempDir.'/'.$sheetid.'.csv';//$user['lastName'].'_'.
             $csvFile = array(
                         'displayName' => $sheetid.'.csv', //$user['lastName'].'_'.
                         'body' => base64_encode(file_get_contents($path))
                     );
             $filesToZip[] = $csvFile;
+            
+            unlink($path);
+            $this->deleteDir(dirname($path));
 
             //request to filesystem to create the Zip-File
             $result = Request::routeRequest( 
                                             'POST',
-                                            '/zip/'.$transaction->getTransactionId().'.zip',
+                                            '/zip',
                                             array(),
                                             json_encode($filesToZip),
                                             $this->_postZip,
@@ -556,12 +560,15 @@ class LTutor
 
             // checks the correctness of the query
             if ( $result['status'] == 201){
-                if (isset($result['headers']['Content-Type']))
-                $this->app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+                $ff = File::decodeFile($result['content']);
+                $ff->setDisplayName($transaction->getTransactionId().'.zip');
+                
+               // if (isset($result['headers']['Content-Type']))
+               // $this->app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
             
-                if (isset($result['headers']['Content-Disposition']))
-                $this->app->response->headers->set('Content-Disposition', $result['headers']['Content-Disposition']);
-                $this->app->response->setBody($result['content']);
+                //if (isset($result['headers']['Content-Disposition']))
+                //$this->app->response->headers->set('Content-Disposition', $result['headers']['Content-Disposition']);
+                $this->app->response->setBody(File::encodeFile($ff));
                 $this->app->response->setStatus(201);
             } else 
                 $this->app->response->setStatus(409);
@@ -574,7 +581,7 @@ class LTutor
         // error array of strings
         $errors = array();
         LTutor::generatepath($this->config['DIR']['temp']);
-        $tempDir = $this->tempdir($this->config['DIR']['temp'], 'extractZip', $mode=0700);
+        $tempDir = $this->tempdir($this->config['DIR']['temp'], 'extractZip', $mode=0775);
 
         $body = json_decode($this->app->request->getBody(), true); //1 file-Object        
         $filename = $tempDir.'/'.$sheetid.'.zip';
@@ -586,7 +593,7 @@ class LTutor
         $zip->extractTo($tempDir.'/files');
         $zip->close();        
         unlink($filename);
-        $this->deleteDir($filename);
+        $this->deleteDir(dirname($filename));
         unset($zip);
         
         $files = $tempDir.'/files';
@@ -869,7 +876,7 @@ class LTutor
         return @mkdir($path, $mode);
     }
     
-    public function tempdir($dir, $prefix='', $mode=0700)
+    public function tempdir($dir, $prefix='', $mode=0775)
     {
         if (substr($dir, -1) != '/') $dir .= '/';
 
