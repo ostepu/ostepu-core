@@ -75,9 +75,18 @@ class Request
             $coms = Request::$components->getLinks();
             if ($coms!=null){      
                 if (!is_array($coms)) $coms = array($coms);
+                
+                $e = strlen($_SERVER['DOCUMENT_ROOT']);
+                $f = substr(str_replace("\\","/",dirname(__FILE__)),$e);
+                $g = substr(str_replace("\\","/",$_SERVER['SCRIPT_FILENAME']),$e);
+                
+                $a=0;
+                for (;$a<strlen($g) && $a<strlen($f) && $f[$a] == $g[$a];$a++){}
+                $h = substr(str_replace("\\","/",$_SERVER['PHP_SELF']),0,$a-1);
+                
                 foreach ($coms as $com){
                     if ($com->getPrefix() == null || $com->getLocalPath()==null || $com->getClassFile()==null || $com->getClassName()==null) continue;
-                    $url = 'http://localhost/uebungsplattform/'.$com->getLocalPath();
+                    $url = 'http://localhost'.$h.'/'.$com->getLocalPath();
 
                     if (strpos($target,$url.'/')===0){
                         $result = array();
