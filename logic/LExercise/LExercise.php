@@ -172,7 +172,7 @@ class LExercise
                             
                         $attachments = Attachment::encodeAttachment($subexercise['attachments']);
 
-                        $result = Request::routeRequest( 
+                        $res = Request::routeRequest( 
                                                         'POST',
                                                         '/attachment',
                                                         $header,
@@ -182,8 +182,8 @@ class LExercise
                                                         );
 
                         // checks the correctness of the query
-                        if ( $result['status'] >= 200 && 
-                             $result['status'] <= 299 ){                          
+                        if ( $res['status'] >= 200 && 
+                             $res['status'] <= 299 ){                          
                             // ...
                         } else {
                             $allright = false;
