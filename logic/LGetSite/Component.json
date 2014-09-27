@@ -22,5 +22,8 @@
     {"name":"getSubmission", "target":"DBSubmission","links":[]},
     {"name":"getCourse", "target":"DBCourse","links":[]},
     {"name":"getInvitation", "target":"DBInvitation","links":[]}
+  ],
+  "connector":[
+    {"name":"request", "target":"CLocalObjectRequest"}
   ]
 }
