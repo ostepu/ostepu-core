@@ -42,6 +42,7 @@ class CConfig
     public $pre = null;
     public $confFile = null;
     public $callPath = null;
+    public static $onload=false;
 
     /**
      * the $_prefix getter
@@ -315,7 +316,7 @@ class CConfig
     
     public static function loadStaticConfig( $pref, $pre, $path='', $file=null )
     {
-
+        CConfig::$onload = true;
         if ($path!='') $path.='/';
         $path = str_replace("\\",'/',$path);
 
@@ -371,6 +372,7 @@ class CConfig
                 $com = $conf;
             }
             
+            CConfig::$onload=false;
             return $com;
             
         } else {
@@ -378,8 +380,10 @@ class CConfig
             // can't find the file, create an empty object
             $com = new Component( );
             $com->setPrefix( $pref );
+            CConfig::$onload=false;
             return $com;
         }
+        CConfig::$onload=false;
     }
     
     public function loadConfig( )
