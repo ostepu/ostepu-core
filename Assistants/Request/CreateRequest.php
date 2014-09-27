@@ -23,7 +23,7 @@ class Request_CreateRequest
      *
      * @return an curl request object 
      */
-    public static function createCustom($method, $target, $header,  $content)
+    public static function createCustom($method, $target, $header, $content, $authbool = true, $sessiondelete = false)
     {        
         $ch = curl_init($target);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -32,13 +32,30 @@ class Request_CreateRequest
         // take the SESSION, DATE and USER fields from received header and 
         // add them to the header of our curl object
         $resultHeader = array();
-        if (isset($_SERVER['HTTP_SESSION']))
-            array_push($resultHeader,'SESSION: ' . $_SERVER['HTTP_SESSION']);
-        if (isset($_SERVER['HTTP_DATE']))
-            array_push($resultHeader,'DATE: ' . $_SERVER['HTTP_DATE']);
-        if (isset($_SERVER['HTTP_USER']))
-            array_push($resultHeader,'USER: ' . $_SERVER['HTTP_USER']);
-
+                
+        if ($authbool){
+            if (isset($_SESSION['UID']))
+                $resultHeader['USER'] = 'USER: ' . $_SESSION['UID'];
+            if (isset($_SESSION['SESSION']))
+                $resultHeader['SESSION'] = 'SESSION: ' . $_SESSION['SESSION'];
+                                                
+            if ($sessiondelete) {
+                if (isset($_SERVER['REQUEST_TIME']))
+                    $resultHeader['DATE'] = 'DATE: ' . $_SERVER['REQUEST_TIME'];
+            } else {
+                if (isset($_SESSION['LASTACTIVE']))
+                    $resultHeader['DATE'] = 'DATE: ' . $_SESSION['LASTACTIVE'];
+            }
+        }
+        
+        if (isset($_SERVER['HTTP_SESSION']) && !in_array('SESSION',$resultHeader))
+            $resultHeader['SESSION'] = 'SESSION: ' . $_SERVER['HTTP_SESSION'];
+        if (isset($_SERVER['HTTP_USER']) && !in_array('USER',$resultHeader))
+            $resultHeader['USER'] = 'USER: ' . $_SERVER['HTTP_USER'];
+        if (isset($_SERVER['HTTP_DATE']) && !in_array('DATE',$resultHeader))
+            $resultHeader['DATE'] = 'DATE: ' . $_SERVER['HTTP_DATE'];
+            
+        $resultHeader = array_values($resultHeader);    
         $resultHeader = array_merge($resultHeader,$header);
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, $resultHeader);
@@ -69,12 +86,14 @@ class Request_CreateRequest
      *
      * @return an curl request object 
      */
-    public static function createGet($target, $header,  $content)
+    public static function createGet($target, $header,  $content, $authbool = true, $sessiondelete = false)
     {
         return Request_CreateRequest::createCustom("GET", 
                                                     $target, 
                                                     $header,  
-                                                    $content); 
+                                                    $content,  
+                                                    $authbool,  
+                                                    $sessiondelete); 
     }
     
     
@@ -87,12 +106,14 @@ class Request_CreateRequest
      *
      * @return an curl request object 
      */
-    public static function createPost($target, $header,  $content)
+    public static function createPost($target, $header,  $content, $authbool = true, $sessiondelete = false)
     {
         return Request_CreateRequest::createCustom("POST", 
                                                     $target, 
                                                     $header,  
-                                                    $content); 
+                                                    $content,  
+                                                    $authbool,  
+                                                    $sessiondelete); 
     }
     
     
@@ -105,12 +126,14 @@ class Request_CreateRequest
      *
      * @return an curl request object 
      */
-    public static function createPut($target, $header,  $content)
+    public static function createPut($target, $header,  $content, $authbool = true, $sessiondelete = false)
     {
         return Request_CreateRequest::createCustom("PUT", 
                                                     $target, 
                                                     $header,  
-                                                    $content); 
+                                                    $content,  
+                                                    $authbool,  
+                                                    $sessiondelete); 
     }
     
     
@@ -123,12 +146,14 @@ class Request_CreateRequest
      *
      * @return an curl request object 
      */
-    public static function createDelete($target, $header,  $content)
+    public static function createDelete($target, $header,  $content, $authbool = true, $sessiondelete = false)
     {
         return Request_CreateRequest::createCustom("DELETE", 
                                                     $target, 
                                                     $header,  
-                                                    $content); 
+                                                    $content,  
+                                                    $authbool,  
+                                                    $sessiondelete); 
     }
 }
 ?>
