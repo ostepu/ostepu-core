@@ -17,8 +17,8 @@
     [
       {"conf":"DB/CControl/Component.json"},
       {"conf":"DB/CFilter/Component.json"},
-      {"conf":"DB/DBQuery/Component.json"},
       {"conf":"DB/CAbstract/Component.json"},
+      {"conf":"DB/DBQuery2/DBQuery.json"},
       {"conf":"DB/DBQuery2/Component.json"},
       {"conf":"Assistants/Request.json"}
     ]
