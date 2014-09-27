@@ -44,6 +44,8 @@ class DBRequest
                                      TRUE
                                      );
         }
+        
+        ini_set('mysql.connect_timeout','60');
 
         // creates a new connection to database
         if (!isset($config['ZV']['zv_type']) || (isset($config['ZV']['zv_type']) && $config['ZV']['zv_type']=='local')){
@@ -54,7 +56,9 @@ class DBRequest
         $dbconn = @mysql_connect( 
                                 $path,
                                 $config['DB']['db_user'],
-                                $config['DB']['db_passwd']
+                                $config['DB']['db_passwd'],
+                                false,
+                                MYSQL_CLIENT_COMPRESS
                                 );
         if (!$dbconn){
             $query_result['errno'] = mysql_errno( );
@@ -65,8 +69,6 @@ class DBRequest
         // selects the database
         if ($config['DB']['db_name'] !== null)
             mysql_select_db( $config['DB']['db_name'] );
-
-        $currentTime = $_SERVER['REQUEST_TIME'];
 
         // check session
         ///if (error_reporting() & E_NOTICE)
@@ -97,22 +99,28 @@ class DBRequest
                     if ( $data != null && 
                          $data[0]['SE_sessionID'] == $_SERVER['HTTP_SESSION'] ){
                         $sessionFail = false;
+                        $query_result['error'] = 'access denied V';
                         
-                    } else 
+                    } else {
                         $sessionFail = true;
-                    
-                } else 
+                        $query_result['error'] = 'access denied IV';
+                    }
+                } else {
                     $sessionFail = true;
+                    $query_result['error'] = 'access denied III';
+                }
                 
-            } else 
+            } else {
                 $sessionFail = true;
+                $query_result['error'] = "access denied II";
+            }
         }
 
         // if a condition is not met, the request is invalid
         if ( $sessionFail == true ){
             $query_result['content'] = '';
             $query_result['errno'] = 401;
-            $query_result['error'] = 'access denied';
+            if (!isset($query_result['error'])) $query_result['error'] = 'unknown access denied';
             $query_result['numRows'] = 0;
             mysql_close( $dbconn );
             $dbconn = null;
@@ -157,6 +165,8 @@ class DBRequest
                                      );
         }
 
+        ini_set('mysql.connect_timeout','60');
+        
         // creates a new connection to database
         //echo "type: ".$config['ZV']['zv_type']."<br>";
         if (!isset($config['ZV']['zv_type']) || (isset($config['ZV']['zv_type']) && $config['ZV']['zv_type']=='local')){
