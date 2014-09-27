@@ -61,13 +61,14 @@ class Request
      * - ['content'] = the response content
      * - ['status'] = the status code e.g. 200,201,404,409,...
      */
-    public static function custom($method, $target, $header,  $content)
+    public static function custom($method, $target, $header,  $content, $authbool=true, $sessiondelete = false)
     {
         $begin = microtime(true);
         
         $done = false;
+///Logger::Log($method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
 
-        if (strpos($target,'http://localhost/')===0 && file_exists(dirname(__FILE__) . '/request_cconfig.json')){
+        if (!CConfig::$onload && strpos($target,'http://localhost/')===0 && file_exists(dirname(__FILE__) . '/request_cconfig.json')){
             if (Request::$components==null){
                 Request::$components=CConfig::loadStaticConfig('','',dirname(__FILE__),'request_cconfig.json');
             }
@@ -93,23 +94,53 @@ class Request
                         $tar = dirname(__FILE__).'/../'.$com->getLocalPath().'/'.$com->getClassFile();
                         $tar=str_replace("\\","/",$tar);
                         if (!file_exists($tar)) continue;
+                        ///Logger::Log($method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
                         
                         $add = substr($target,strlen($url));
                         $args = array(
                                       'REQUEST_METHOD' => $method,
                                       'PATH_INFO' => $add,
                                       'slim.input' => $content);
-                                      
-                        /*if (isset($_SERVER['HTTP_SESSION']))
+                                                        
+                        if (isset($_SERVER['HTTP_SESSION']))
                             $args['HTTP_SESSION'] = $_SERVER['HTTP_SESSION'];   
+                        if (isset($_SERVER['HTTP_USER']))
+                            $args['HTTP_USER'] = $_SERVER['HTTP_USER'];
+                            
+                        if ($authbool){
+                            if (isset($_SESSION['UID'])){
+                                $args['HTTP_USER'] = $_SESSION['UID'];
+                                $_SERVER['HTTP_USER'] = $_SESSION['UID'];
+                            }
+                            if (isset($_SESSION['SESSION'])){
+                                $args['HTTP_SESSION'] = $_SESSION['SESSION'];
+                                $_SERVER['HTTP_SESSION'] = $_SESSION['SESSION'];
+                            }
+                            
+                            if ($sessiondelete) {
+                                if (isset($_SERVER['REQUEST_TIME'])){
+                                    $args['HTTP_DATE'] = $_SERVER['REQUEST_TIME'];
+                                    $_SERVER['HTTP_DATE'] = $_SERVER['REQUEST_TIME'];
+                                }
+                            } else {
+                                if (isset($_SESSION['LASTACTIVE'])){
+                                    $args['HTTP_DATE'] = $_SESSION['LASTACTIVE'];
+                                    $_SERVER['HTTP_DATE'] = $_SESSION['LASTACTIVE'];
+                                }
+                            }
+                        }              
+                        
                         if (isset($_SERVER['HTTP_DATE']))
                             $args['HTTP_DATE'] = $_SERVER['HTTP_DATE'];
-                        if (isset($_SERVER['HTTP_USER']))
-                            $args['HTTP_USER'] = $_SERVER['HTTP_USER'];*/
-                                      
-                        $oldMethod = \Slim\Environment::getInstance()->offsetGet('REQUEST_METHOD');
-                        $oldPath = \Slim\Environment::getInstance()->offsetGet('PATH_INFO');
-                        $oldInput = \Slim\Environment::getInstance()->offsetGet('slim.input');
+                            
+                        $oldArgs = array('REQUEST_METHOD' => \Slim\Environment::getInstance()->offsetGet('REQUEST_METHOD'),
+                                         'PATH_INFO' => \Slim\Environment::getInstance()->offsetGet('PATH_INFO'),
+                                         'slim.input' => \Slim\Environment::getInstance()->offsetGet('slim.input'),
+                                         'HTTP_DATE' => \Slim\Environment::getInstance()->offsetGet('HTTP_DATE'),
+                                         'HTTP_USER' => \Slim\Environment::getInstance()->offsetGet('HTTP_USER'),
+                                         'HTTP_SESSION' => \Slim\Environment::getInstance()->offsetGet('HTTP_SESSION'),
+                                         'REQUEST_TIME' => \Slim\Environment::getInstance()->offsetGet('REQUEST_TIME'));
+                                         
                         $oldRequestURI = $_SERVER['REQUEST_URI'];
                         $oldScriptName = $_SERVER['SCRIPT_NAME'];
                         $_SERVER['REQUEST_URI'] = $tar.$add;
@@ -124,6 +155,7 @@ class Request
                         http_response_code(0);
                        
                         $name = $com->getClassName();
+
                         ob_start();
                         
                         new $name();  
@@ -138,12 +170,11 @@ class Request
                         $result['status'] = http_response_code();
                         $_SERVER['REQUEST_URI'] = $oldRequestURI;
                         $_SERVER['SCRIPT_NAME'] = $oldScriptName;
-                        $args = array(
-                            'REQUEST_METHOD' => $oldMethod,
-                            'PATH_INFO' => $oldPath,
-                            'slim.input' => $oldInput);
-                        \Slim\Environment::mock($args);
+                        
+                        \Slim\Environment::mock($oldArgs);
                         http_response_code($oldStatus);
+                        
+                        header('Content-Type: text/html; charset=utf-8');
                         foreach ($oldHeader as $head)
                             header($head);
 
@@ -156,7 +187,9 @@ class Request
 
         if (!$done){
             // creates a custom request
-            $ch = Request_CreateRequest::createCustom($method,$target,$header,$content);
+            ///Logger::Log("--".$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+            
+            $ch = Request_CreateRequest::createCustom($method,$target,$header,$content, $authbool, $sessiondelete);
             $content = curl_exec($ch);
               
             // get the request result
@@ -172,11 +205,10 @@ class Request
             
             // sets the received status code
             $result['status'] = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-///Logger::Log("--".$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
             curl_close($ch);                                                                            
         }
 
-///        Logger::Log($target . ' ' . (round((microtime(true) - $begin),2)). 's', LogLevel::DEBUG, false, dirname(__FILE__) . '/../executionTime.log');
+        ///Logger::Log($target . ' ' . (round((microtime(true) - $begin),2)). 's', LogLevel::DEBUG, false, dirname(__FILE__) . '/../executionTime.log');
         return $result; 
     }
        
@@ -190,9 +222,9 @@ class Request
      *
      * @return an array with the request result (status, header, content)
      */
-    public static function post($target, $header,  $content)
+    public static function post($target, $header,  $content, $authbool=true, $sessiondelete = false)
     {
-        return Request::custom("POST", $target , $header, $content); 
+        return Request::custom("POST", $target , $header, $content, $authbool, $sessiondelete); 
     }
     
     
@@ -205,9 +237,9 @@ class Request
      *
      * @return an array with the request result (status, header, content)
      */
-    public static function get($target, $header,  $content)
+    public static function get($target, $header,  $content, $authbool=true, $sessiondelete = false)
     {
-        return Request::custom("GET", $target, $header, $content); 
+        return Request::custom("GET", $target, $header, $content, $authbool, $sessiondelete); 
     }
     
     
@@ -220,9 +252,9 @@ class Request
      *
      * @return an array with the request result (status, header, content)
      */
-    public static function delete($target, $header,  $content)
+    public static function delete($target, $header,  $content, $authbool=true, $sessiondelete = false)
     {
-        return Request::custom("DELETE", $target, $header, $content); 
+        return Request::custom("DELETE", $target, $header, $content, $authbool, $sessiondelete); 
     } 
     
     /**
@@ -234,9 +266,9 @@ class Request
      *
      * @return an array with the request result (status, header, content)
      */
-    public static function put($target, $header,  $content)
+    public static function put($target, $header,  $content, $authbool=true, $sessiondelete = false)
     {
-        return Request::custom("PUT", $target, $header, $content); 
+        return Request::custom("PUT", $target, $header, $content, $authbool, $sessiondelete); 
     } 
 
     /**
