@@ -1,0 +1,7 @@
+{
+  "name":"DBQuery",
+  "version":"1.0",
+  "type":"clone",
+  "base":"DBQuery2",
+  "baseURI":""
+}
