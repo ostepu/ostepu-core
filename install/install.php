@@ -96,6 +96,9 @@ class Installer
         $result['mod_php5'] = Installer::apache_module_exists('mod_php5');
         $result['mod_rewrite'] = Installer::apache_module_exists('mod_rewrite');
         $result['mod_deflate'] = Installer::apache_module_exists('mod_deflate');  
+        $result['mod_headers'] = Installer::apache_module_exists('mod_headers');  
+        $result['mod_filter'] = Installer::apache_module_exists('mod_filter');  
+        $result['mod_expires'] = Installer::apache_module_exists('mod_expires');  
         
         return $result;
     }
@@ -323,7 +326,7 @@ class Installer
                             // normale Komponente
                             
                             if (!isset($input['registered'])){
-                            //echo $input['name'].'__'.$input['urlExtern']."<br>";
+                            ///echo $input['name'].'__'.$input['urlExtern']."<br>";
                                 $comList[] = "('{$input['name']}', '{$input['urlExtern']}/{$input['path']}', '".(isset($input['option']) ? $input['option'] : '')."')"; 
                                 // Verknüpfungen erstellen
                                 $setDBNames[] = " SET @{$key}_{$input['name']} = (select CO_id from Component where CO_address='{$input['urlExtern']}/{$input['path']}' limit 1); ";
@@ -336,6 +339,7 @@ class Installer
                         } elseif (isset($input['type']) && $input['type']=='clone') {
                             // Komponente basiert auf einer bestehenden
                             if (!isset($input['base'])) continue;
+                            if (!isset($input['baseURI'])) $input['baseURI'] = '';
                              
                             if (isset($ComponentListInput[$input['base']]))
                                 foreach ($ComponentListInput[$input['base']] as $key3 => $input2){
@@ -345,8 +349,11 @@ class Installer
                                     $found=false;
                                     if (isset($ComponentListInput[$input['name']]))
                                         foreach ($ComponentListInput[$input['name']] as $input3){
-                                            if ("{$input3['urlExtern']}/{$input3['path']}" == "{$input2['urlExtern']}/{$input2['path']}{$input['baseURI']}"){
+                                            if ((!isset($input3['type']) || $input3['type']=='normal') && $input['name'] == $input3['name'] && "{$input3['urlExtern']}/{$input3['path']}" == "{$input2['urlExtern']}/{$input2['path']}{$input['baseURI']}"){
                                                 $found = true;
+                                                ///echo "found: ".$input['name'].'__'.$input3['name']."<br>";
+                                                ///echo "{$input2['urlExtern']}/{$input2['path']}{$input['baseURI']}<br>";
+                                                ///echo "{$input3['urlExtern']}/{$input3['path']}<br>";
                                                 break;
                                             }
                                         }
@@ -354,8 +361,11 @@ class Installer
                                     
                                     if (isset($tempList[$input['name']]))
                                         foreach ($tempList[$input['name']] as $input3){
-                                            if ("{$input3['urlExtern']}/{$input3['path']}" == "{$input2['urlExtern']}/{$input2['path']}{$input['baseURI']}"){
+                                            if ($input['name'] == $input3['name'] && "{$input3['urlExtern']}/{$input3['path']}" == "{$input2['urlExtern']}/{$input2['path']}{$input['baseURI']}"){
                                                 $found = true;
+                                                ///echo "found2: ".$input['name'].'__'.$input3['name']."<br>";
+                                                ///echo "{$input2['urlExtern']}/{$input2['path']}{$input['baseURI']}<br>";
+                                                ///echo "{$input3['urlExtern']}/{$input3['path']}";
                                                 break;
                                             }
                                         }
