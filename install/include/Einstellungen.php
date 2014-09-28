@@ -12,6 +12,7 @@ class Einstellungen
 {
     public static $konfiguration = array();
     public static $path = null;
+    public static $accessAllowed = true;
     
     public static function NeuenServerAnlegen()
     {
@@ -29,12 +30,14 @@ class Einstellungen
         $serverNameOld = $serverNameNew;
     }
     
-    public static function ladeEinstellungen($serverName)
+    public static function ladeEinstellungen($serverName, &$data)
     {
         Einstellungen::$path = dirname(__FILE__) . '/../config';
         Einstellungen::generatepath(Einstellungen::$path);
-        
-        $konfiguration = array();
+
+        Einstellungen::$konfiguration = array();
+
+        ///$pass = $data['P']['masterPassword'];
         if (file_exists(Einstellungen::$path.'/'.$serverName.".ini") && is_readable(Einstellungen::$path.'/'.$serverName.".ini")){
             $temp = file_get_contents(Einstellungen::$path.'/'.$serverName.".ini");
             $temp = explode("\n",$temp);
@@ -43,16 +46,46 @@ class Einstellungen
                 if ($pos === false || $pos === 0) 
                     continue;
                     
-                Einstellungen::$konfiguration[substr($element,0,$pos)] = parse_ini_string('a='.substr($element,$pos+1))['a'];
+                $dat = parse_ini_string('a='.substr($element,$pos+1))['a'];
+                /*$dat = base64_decode($dat,true);
+                if ($dat===false) {
+                    $dat = '???';
+                } else
+                    $dat = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_128,$pass,$dat,MCRYPT_MODE_ECB,''),"\x00..\x1F");*/
+                    
+                //echo substr($element,0,$pos).'='.$dat."<br>";
+                
+               /// if ('data[P][masterPassword]'!=substr($element,0,$pos))
+                    Einstellungen::$konfiguration[substr($element,0,$pos)] = $dat;
             }
         }
+        
+        /*echo $serverName.'__'.(isset($data['SV']['name'])?$data['SV']['name']:'').'__'.(isset(Einstellungen::$konfiguration['data[SV][name]'])?Einstellungen::$konfiguration['data[SV][name]']:'').'<br>';
+        echo strlen($serverName).'__'.strlen((isset($data['SV']['name'])?$data['SV']['name']:'')).'__'.strlen((isset(Einstellungen::$konfiguration['data[SV][name]'])?Einstellungen::$konfiguration['data[SV][name]']:'')).'<br>';
+        
+        if (!isset(Einstellungen::$konfiguration['data[SV][name]']) && !isset($data['SV']['name'])){
+            Variablen::Zuruecksetzen($data);
+            Einstellungen::$konfiguration=array();
+            Einstellungen::$accessAllowed = true;
+            echo "fail2<br>";
+        } elseif ($serverName != (isset(Einstellungen::$konfiguration['data[SV][name]'])?Einstellungen::$konfiguration['data[SV][name]']:'') && $serverName != (isset($data['SV']['name'])?$data['SV']['name']:'')){
+            // daten zurücksetzen
+            foreach(Einstellungen::$konfiguration as $key => $dat)
+                Einstellungen::$konfiguration[$key] = '???';
+            echo "fail<br>";
+            //Einstellungen::$konfiguration=array();
+            Variablen::Zuruecksetzen($data);
+            Einstellungen::$accessAllowed = false;
+        } else{echo "fail4<br>";
+            Einstellungen::$accessAllowed = true;
+        }*/
     }
     
-    public static function ladeEinstellungenDirekt($serverName)
+    public static function ladeEinstellungenDirekt($serverName, $data)
     {
         $path = dirname(__FILE__) . '/../config';
         Einstellungen::generatepath($path);
-        
+
         $konfiguration = array();
         $data = array();
         if (file_exists($path.'/'.$serverName.".ini") && is_readable($path.'/'.$serverName.".ini")){
@@ -63,27 +96,48 @@ class Einstellungen
                 if ($pos === false || $pos === 0) 
                     continue;
                     
-                $konfiguration[substr($element,0,$pos)] = parse_ini_string('a='.substr($element,$pos+1))['a'];
+                $dat = parse_ini_string('a='.substr($element,$pos+1))['a'];
+                /*$dat = base64_decode($dat,true);
+                if ($dat===false) {
+                    $dat = '???';
+                } else
+                    $dat = mcrypt_decrypt(MCRYPT_RIJNDAEL_128,$data['P']['masterPassword'],$dat,MCRYPT_MODE_ECB,'');*/
+                
+                $konfiguration[substr($element,0,$pos)] = $dat;
             }
         }
-        Variablen::EinsetzenDirekt($konfiguration,$data);
+        
+        if ($serverName != $konfiguration['data[SV][name]']){
+            // daten zurücksetzen
+            foreach($konfiguration as $key => $dat)
+                $konfiguration[$key] = '???';
+            
+            Variablen::Zuruecksetzen($data);
+            $accessAllowed = false;
+        } else
+            Variablen::EinsetzenDirekt($konfiguration,$data);
         return $data;
     }
     
-    public static function speichereEinstellungen($serverName)
+    public static function speichereEinstellungen($serverName, $data)
     {
+        ///if (!Einstellungen::$accessAllowed) return;
+        
         $filename = Einstellungen::$path."/../config/".$serverName.".ini";
         
         if (!$handle = @fopen($filename, "w")) {
             return;
         }
-
+///echo "saved<br>";
         foreach (Einstellungen::$konfiguration as $varName => $value){
-            if (!fwrite($handle, $varName.'="'.str_replace(array("\\","\""),array("\\\\","\\\""),$value)."\"\n")){
+            if ('data[P][masterPassword]'==$varName) continue;
+            
+            $write = str_replace(array("\\","\""),array("\\\\","\\\""),$value);
+            ///$write = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_128,$data['P']['masterPassword'],$write,MCRYPT_MODE_ECB,''));
+            if (!fwrite($handle, $varName.'="'.$write."\"\n")){
                fclose($handle);
                 return;
             }
-                
         }
 
         fclose($handle);

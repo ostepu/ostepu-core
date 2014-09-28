@@ -141,6 +141,7 @@ class Installer
             $data = $_POST['data'];
 
         Variablen::Initialisieren($data);
+        $data['P']['masterPassword'] = (isset($data['P']['masterPassword']) ? $data['P']['masterPassword'] : '');
 
         if (isset($_POST['actionInstall'])) $_POST['action'] = 'install';
         if (!isset($data['PL']['language']))
@@ -179,16 +180,17 @@ class Installer
             $server = Einstellungen::NeuenServerAnlegen();
             $serverFiles[] = $server;
             $server = pathinfo($server)['filename'];
-            Einstellungen::ladeEinstellungen($server);
-            Einstellungen::speichereEinstellungen($server);
+            Einstellungen::ladeEinstellungen($server,$data);
+            ///$data['SV']['name'] = $server;
+            Einstellungen::speichereEinstellungen($server,$data);
         }
                     
         // save data on switching between server-confs
         if ($selected_server!==null && $server!=null){
             if ($server!=$selected_server){
-                Einstellungen::ladeEinstellungen($selected_server);
+                Einstellungen::ladeEinstellungen($selected_server,$data);
                 Variablen::Einsetzen($data);
-                Einstellungen::speichereEinstellungen($selected_server);
+                Einstellungen::speichereEinstellungen($selected_server,$data);
                 Variablen::Zuruecksetzen($data);
             }
         }
@@ -203,8 +205,9 @@ class Installer
             $selected_server=$server;
         
         $server=$selected_server;
+        ///$data['SV']['name'] = $server;
         
-        Einstellungen::ladeEinstellungen($server);
+        Einstellungen::ladeEinstellungen($server,$data);
         Variablen::Einsetzen($data);
         
         if ($simple)
@@ -296,7 +299,7 @@ class Installer
                 $installComponentDefsResult['components']=array();
                 foreach($serverFiles as $sf){
                     $sf = pathinfo($sf)['filename'];
-                    $tempData = Einstellungen::ladeEinstellungenDirekt($sf);
+                    $tempData = Einstellungen::ladeEinstellungenDirekt($sf,$data);
                     $componentList = Zugang::Ermitteln('actionInstallComponentDefs','Installation::installiereKomponentenDefinitionen',$tempData, $fail, $errno, $error); 
                    
                     if (isset($componentList['components']))
@@ -592,8 +595,8 @@ class Installer
             echo "<table border='0'><tr>";
             echo "<th valign='top'>";
             
-            // Serverliste ausgeben
             echo "<div style='width:150px;word-break: break-all;'>";
+            // Serverliste ausgeben
             echo "<table border='0'>";
             echo "<tr><td class='e'>".Sprachen::Get('main','serverList')."</td></tr>";
             foreach($serverFiles as $serverFile){
@@ -604,8 +607,15 @@ class Installer
             echo "<tr><th height='10'></th></tr>";
             echo "<tr><td class='v'>".Design::erstelleSubmitButtonFlach('actionAddServer','OK',Sprachen::Get('main','addServer'))."</td></tr>";
             echo Design::erstelleVersteckteEingabezeile($simple, $selected_server, 'selected_server', null);
-           
+            
+            // master-Passwort abfragen
+            echo "<tr><th height='10'></th></tr>";
+
+
+            echo "<tr><td class='e'>".Sprachen::Get('main','masterPassword')."</td></tr>";
+            echo "<tr><td class='v'>".Design::erstellePasswortzeile($simple, $data['P']['masterPassword'], 'data[P][masterPassword]', $data['P']['masterPassword'])."</td></tr>";
             echo "</table>";
+
             echo "</div";
             
             echo "</th>";
@@ -787,7 +797,7 @@ class Installer
             echo json_encode($output);
         
         if (!$simple)
-            Einstellungen::speichereEinstellungen($server);
+            Einstellungen::speichereEinstellungen($server,$data);
     }
 }
 
