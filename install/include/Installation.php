@@ -120,6 +120,8 @@ class Installation
     public static function GibServerDateien()
     {
         $serverFiles = array();
+        Einstellungen::$path = dirname(__FILE__) . '/../config';
+        Einstellungen::generatepath(Einstellungen::$path);
         if ($handle = opendir(dirname(__FILE__) . '/../config')) {
             while (false !== ($file = readdir($handle))) {
                 if ($file=='.' || $file=='..') continue;
@@ -582,7 +584,7 @@ class Installation
             $result = DBRequest::request2($sql, false, $data);
             /*if ($result["errno"] !== 0){
                 $fail = true; $errno = $result["errno"];$error = isset($result["error"]) ? $result["error"] : '';
-            }*///echo "REMOVED";
+            }*/
             $data['DB']['db_name'] = $oldName;
         }
         
