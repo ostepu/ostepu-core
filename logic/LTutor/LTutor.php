@@ -593,7 +593,7 @@ class LTutor
         $zip->extractTo($tempDir.'/files');
         $zip->close();        
         unlink($filename);
-        $this->deleteDir(dirname($filename));
+        ///$this->deleteDir(dirname($filename));
         unset($zip);
         
         $files = $tempDir.'/files';
