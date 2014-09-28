@@ -86,7 +86,7 @@ class Request
                 $h = substr(str_replace("\\","/",$_SERVER['PHP_SELF']),0,$a-1);
                 
                 foreach ($coms as $com){
-                    if ($com->getPrefix() == null || $com->getLocalPath()==null || $com->getClassFile()==null || $com->getClassName()==null) continue;
+                    if ($com->getPrefix() === null || $com->getLocalPath()==null || $com->getClassFile()==null || $com->getClassName()==null) continue;
                     $url = 'http://localhost'.$h.'/'.$com->getLocalPath();
 
                     if (strpos($target,$url.'/')===0){
