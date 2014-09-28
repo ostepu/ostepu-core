@@ -17,7 +17,7 @@ if (!$simple)
         echo Design::erstelleBlock($simple, Sprachen::Get('access','title'), $text);
     } else {
         $text = '';
-        $text .= Design::erstelleVersteckteEingabezeile($simple, $data['DB']['db_user_insert'], 'data[DB][db_user_insert]', 'root',true);
+        //$text .= Design::erstelleVersteckteEingabezeile($simple, $data['DB']['db_user_insert'], 'data[DB][db_user_insert]', 'root',true);
         echo $text;
     }
 #endregion Zugang_ausgeben
