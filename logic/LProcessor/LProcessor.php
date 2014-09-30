@@ -550,18 +550,18 @@ class LProcessor
                 
                 // check file type
                 if ($filePath!=null){
-                    $fail = false;
+                    $found = false;
                     foreach ($exerciseFileTypes as $type){
-                        if (MimeReader::get_mime($filePath) != $type->getText()) {
-                            $fail=true;
-                            $submission->addMessage("falscher Dateityp ({$type->getText()})");
-                            $res[] = $submission;
-                            $this->app->response->setStatus( 409 );
+                        if (MimeReader::get_mime($filePath) == $type->getText()) {
+                            $found = true;
                             break;
                         }
                     }
                     
-                    if ($fail){
+                    if (!$found && count($exerciseFileTypes)>0){
+                        $submission->addMessage("falscher Dateityp ({$type->getText()})");
+                        $res[] = $submission;
+                        $this->app->response->setStatus( 409 );
                         continue;
                     }
                 }
