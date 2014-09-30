@@ -10,6 +10,7 @@ require_once dirname(__FILE__) . '/../../Assistants/Slim/Slim.php';
 include_once dirname(__FILE__) . '/../../Assistants/Request.php';
 include_once dirname(__FILE__) . '/../../Assistants/CConfig.php';
 include_once dirname(__FILE__) . '/../../Assistants/Structures.php';
+include_once dirname(__FILE__) . '/../../Assistants/MimeReader.php';
 
 \Slim\Slim::registerAutoloader();
 
@@ -79,6 +80,7 @@ class LProcessor
     private $_workFiles = array( );
     private $_createCourse = array( );
     private $_file = array( );
+    private $_getExerciseExerciseFileType = array( );
     
     /**
      * REST actions
@@ -108,6 +110,7 @@ class LProcessor
         $this->_workFiles = CConfig::getLinks($conf->getLinks(),"workFiles");
         $this->_file = CConfig::getLinks($conf->getLinks(),"file");
         $this->_createCourse = CConfig::getLinks($conf->getLinks(),"postCourse");
+        $this->_getExerciseExerciseFileType = CConfig::getLinks($conf->getLinks(),"getExerciseExerciseFileType");
         
         // POST PostSubmission
         $this->app->map('/submission(/)',
@@ -497,11 +500,12 @@ class LProcessor
             $result = Request::routeRequest( 
                                 'GET',
                                 '/process/exercise/'.$eid,
-                                $this->app->request->headers->all( ),
+                                array(),
                                 '',
                                 $this->_processorDb,
                                 'process'
                                 );
+                                
             $processors = null;
             if ( $result['status'] >= 200 && 
                  $result['status'] <= 299 ){
@@ -515,6 +519,62 @@ class LProcessor
                }
             }
             
+            $result2 = Request::routeRequest( 
+                                'GET',
+                                '/exercisefiletype/exercise/'.$eid,
+                                array(),
+                                '',
+                                $this->_getExerciseExerciseFileType,
+                                'exercisefiletype'
+                                );
+                                
+            $exerciseFileTypes = null;
+            if ( $result2['status'] >= 200 && 
+                 $result2['status'] <= 299 ){
+                $exerciseFileTypes = ExerciseFileType::decodeExerciseFileType( $result2['content'] );
+                if (!is_array($exerciseFileTypes)) $exerciseFileTypes = array($exerciseFileTypes);
+
+                $filePath = null;
+                if ($submission->getFile()!=null){
+                    $file = base64_decode($submission->getFile()->getBody());
+                  
+                    if ($file !== null){
+                        $fileHash = sha1($file);
+                    
+                        $filePath = '/tmp/'.$fileHash;
+                        LProcessor::generatepath($filePath);
+                        file_put_contents($filePath . '/' . $submission->getFile()->getDisplayName(), $file); 
+                        $filePath .= '/' . $submission->getFile()->getDisplayName();                        
+                    }
+                }
+                
+                // check file type
+                if ($filePath!=null){
+                    $fail = false;
+                    foreach ($exerciseFileTypes as $type){
+                        if (MimeReader::get_mime($filePath) != $type->getText()) {
+                            $fail=true;
+                            $submission->addMessage("falscher Dateityp ({$type->getText()})");
+                            $res[] = $submission;
+                            $this->app->response->setStatus( 409 );
+                            break;
+                        }
+                    }
+                    
+                    if ($fail){
+                        continue;
+                    }
+                }
+                
+            } else {
+               if ($result2['status'] != 404){
+                    $submission->addMessage("Interner Fehler");
+                    $res[] = $submission;
+                    $this->app->response->setStatus( 409 );
+                    continue;
+               }
+            }
+                        
             // process submission
             if ($processors !== null){
                 if (!is_array($processors)) $processors = array($processors);
@@ -645,6 +705,17 @@ class LProcessor
             $this->app->response->setBody( Submission::encodeSubmission( $res[0] ) );
         } else 
             $this->app->response->setBody( Submission::encodeSubmission( $res ) );
+    }
+    
+    /**
+     * Creates the path in the filesystem, if necessary.
+     *
+     * @param string $path The path which should be created.
+     */
+    public static function generatepath( $path )
+    {
+        if (!is_dir($path))          
+            mkdir( $path , 0775, true);
     }
 }
 ?>
