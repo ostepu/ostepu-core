@@ -1,0 +1,15 @@
+{
+  "name":"INSTALL",
+  "version":"0.1",
+  "versionDate":"27.06.2014",
+  "author":"",
+  "sourceURL":null,
+  "updateURL":null,
+  "requirements":[{"type":"plugin","name":"CORE","version":"0.1"},{"type":"plugin","name":"OSTEPU-UI","version":"0.1"}],
+  "files":
+    [
+      {"path":"install/include"},
+      {"path":"install/install.php"},
+      {"path":"Plugins/install.json"}
+    ]
+}

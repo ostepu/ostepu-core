@@ -13,12 +13,12 @@ require_once ( dirname(__FILE__) . '/../../Assistants/Slim/Slim.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/Structures.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/CConfig.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/Request.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Controller.php' );
+include_once ( dirname(__FILE__) . '/Controller3.php' );
 
 /**
  * The controller of the filesystem.
  */
-class FSControl extends Controller
+class FSControl extends Controller3
 {
 
     /**
@@ -49,12 +49,7 @@ class FSControl extends Controller
 
 \Slim\Slim::registerAutoloader( );
 
-// runs the CConfig
-$com = new CConfig( FSControl::getPrefix( ) );
-
-// runs the FSControl
-if ( !$com->used( ) )
-    new FSControl( $com->loadConfig( ) );
+new FSControl( );
 
  
 ?>

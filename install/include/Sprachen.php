@@ -22,9 +22,9 @@ class Sprachen
     public static function ladeSprache($lang)
     {
         if (Sprachen::$selectedDefaultLanguage==null || Sprachen::$selectedDefaultLanguage != Sprachen::$default){
-            if (file_exists('./languages/'.Sprachen::$default.'.ini')){
+            if (file_exists(dirname(__FILE__) . '/../languages/'.Sprachen::$default.'.ini')){
                 Sprachen::$defaultLanguage = parse_ini_file( 
-                                          './languages/'.Sprachen::$default.'.ini',
+                                          dirname(__FILE__) . '/../languages/'.Sprachen::$default.'.ini',
                                           TRUE
                                           );
                 Sprachen::$selectedDefaultLanguage = Sprachen::$default;
@@ -32,7 +32,7 @@ class Sprachen
         }
     
         if (Sprachen::$selectedLanguage === $lang || $lang === null) return;
-        if (file_exists('./languages/'.$lang.'.ini')){
+        if (file_exists(dirname(__FILE__) . '/../languages/'.$lang.'.ini')){
             Sprachen::$language = parse_ini_file( 
                                       './languages/'.$lang.'.ini',
                                       TRUE

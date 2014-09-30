@@ -77,7 +77,7 @@ class DBApprovalCondition
     public function __construct( )
     {
         // runs the CConfig
-        $com = new CConfig( DBApprovalCondition::getPrefix( ) );
+        $com = new CConfig( DBApprovalCondition::getPrefix( ), dirname(__FILE__) );
 
         // runs the DBApprovalCondition
         if ( $com->used( ) ) return;
@@ -227,7 +227,7 @@ class DBApprovalCondition
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/EditApprovalCondition.sql',
+                                                  dirname(__FILE__) . '/Sql/EditApprovalCondition.sql',
                                                   array( 
                                                         'apid' => $apid,
                                                         'values' => $data
@@ -279,7 +279,7 @@ class DBApprovalCondition
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
-                                              'Sql/DeleteApprovalCondition.sql',
+                                              dirname(__FILE__) . '/Sql/DeleteApprovalCondition.sql',
                                               array( 'apid' => $apid )
                                               );
 
@@ -339,7 +339,7 @@ class DBApprovalCondition
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/AddApprovalCondition.sql',
+                                                  dirname(__FILE__) . '/Sql/AddApprovalCondition.sql',
                                                   array( 'values' => $data )
                                                   );
 
@@ -470,7 +470,7 @@ class DBApprovalCondition
     {
         $this->get( 
                    'GetAllApprovalConditions',
-                   'Sql/GetAllApprovalConditions.sql',
+                   dirname(__FILE__) . '/Sql/GetAllApprovalConditions.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -492,7 +492,7 @@ class DBApprovalCondition
     {
         $this->get( 
                    'GetApprovalCondition',
-                   'Sql/GetApprovalCondition.sql',
+                   dirname(__FILE__) . '/Sql/GetApprovalCondition.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -516,7 +516,7 @@ class DBApprovalCondition
     {
         $this->get( 
                    'GetCourseApprovalConditions',
-                   'Sql/GetCourseApprovalConditions.sql',
+                   dirname(__FILE__) . '/Sql/GetCourseApprovalConditions.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -536,7 +536,7 @@ class DBApprovalCondition
     {
         $this->get( 
                    'GetExistsPlatform',
-                   'Sql/GetExistsPlatform.sql',
+                   dirname(__FILE__) . '/Sql/GetExistsPlatform.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -564,7 +564,7 @@ class DBApprovalCondition
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query2,
-                                              'Sql/DeletePlatform.sql',
+                                              dirname(__FILE__) . '/Sql/DeletePlatform.sql',
                                               array( ),
                                               false
                                               );
@@ -622,7 +622,7 @@ class DBApprovalCondition
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query2,
-                                                  'Sql/AddPlatform.sql',
+                                                  dirname(__FILE__) . '/Sql/AddPlatform.sql',
                                                   array( 'object' => $in ),
                                                   false
                                                   );

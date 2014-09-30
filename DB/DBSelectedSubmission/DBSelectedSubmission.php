@@ -78,7 +78,7 @@ class DBSelectedSubmission
     public function __construct( )
     {
         // runs the CConfig
-        $com = new CConfig( DBSelectedSubmission::getPrefix( ) );
+        $com = new CConfig( DBSelectedSubmission::getPrefix( ), dirname(__FILE__) );
 
         // runs the DBSelectedSubmission
         if ( $com->used( ) ) return;
@@ -258,7 +258,7 @@ class DBSelectedSubmission
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/EditSelectedSubmission.sql',
+                                                  dirname(__FILE__) . '/Sql/EditSelectedSubmission.sql',
                                                   array( 
                                                         'userid' => $userid,
                                                         'eid' => $eid,
@@ -327,7 +327,7 @@ class DBSelectedSubmission
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/EditSubmissionSelectedSubmission.sql',
+                                                  dirname(__FILE__) . '/Sql/EditSubmissionSelectedSubmission.sql',
                                                   array( 
                                                         'suid' => $suid,
                                                         'values' => $data
@@ -384,7 +384,7 @@ class DBSelectedSubmission
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
-                                              'Sql/DeleteSelectedSubmission.sql',
+                                              dirname(__FILE__) . '/Sql/DeleteSelectedSubmission.sql',
                                               array( 
                                                     'userid' => $userid,
                                                     'eid' => $eid
@@ -441,7 +441,7 @@ class DBSelectedSubmission
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
-                                              'Sql/DeleteUserSheetSelectedSubmission.sql',
+                                              dirname(__FILE__) . '/Sql/DeleteUserSheetSelectedSubmission.sql',
                                               array( 
                                                     'userid' => $userid,
                                                     'esid' => $esid
@@ -493,7 +493,7 @@ class DBSelectedSubmission
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
-                                              'Sql/DeleteSubmissionSelectedSubmission.sql',
+                                              dirname(__FILE__) . '/Sql/DeleteSubmissionSelectedSubmission.sql',
                                               array( 'suid' => $suid )
                                               );
 
@@ -550,7 +550,7 @@ class DBSelectedSubmission
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/AddSelectedSubmission.sql',
+                                                  dirname(__FILE__) . '/Sql/AddSelectedSubmission.sql',
                                                   array( 'values' => $data )
                                                   );
 
@@ -663,7 +663,7 @@ class DBSelectedSubmission
     {
         $this->get( 
                    'GetExerciseSelected',
-                   'Sql/GetExerciseSelected.sql',
+                   dirname(__FILE__) . '/Sql/GetExerciseSelected.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -685,7 +685,7 @@ class DBSelectedSubmission
     {
         $this->get( 
                    'GetSheetSelected',
-                   'Sql/GetSheetSelected.sql',
+                   dirname(__FILE__) . '/Sql/GetSheetSelected.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -707,7 +707,7 @@ class DBSelectedSubmission
     {
         $this->get( 
                    'GetCourseSelected',
-                   'Sql/GetCourseSelected.sql',
+                   dirname(__FILE__) . '/Sql/GetCourseSelected.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -727,7 +727,7 @@ class DBSelectedSubmission
     {
         $this->get( 
                    'GetExistsPlatform',
-                   'Sql/GetExistsPlatform.sql',
+                   dirname(__FILE__) . '/Sql/GetExistsPlatform.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -755,7 +755,7 @@ class DBSelectedSubmission
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query2,
-                                              'Sql/DeletePlatform.sql',
+                                              dirname(__FILE__) . '/Sql/DeletePlatform.sql',
                                               array( ),
                                               false
                                               );
@@ -813,7 +813,7 @@ class DBSelectedSubmission
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query2,
-                                                  'Sql/AddPlatform.sql',
+                                                  dirname(__FILE__) . '/Sql/AddPlatform.sql',
                                                   array( 'object' => $in ),
                                                   false
                                                   );

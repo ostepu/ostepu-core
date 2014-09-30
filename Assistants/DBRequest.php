@@ -32,7 +32,8 @@ class DBRequest
     public static function request( 
                                    $sqlStatement,
                                    $checkSession,
-                                   $config = null
+                                   $config = null,
+                                   $useDbOperator = false
                                    )
     {
 
@@ -43,12 +44,21 @@ class DBRequest
                                      TRUE
                                      );
         }
+        
+        ini_set('mysql.connect_timeout','60');
 
         // creates a new connection to database
+        if (!isset($config['ZV']['zv_type']) || (isset($config['ZV']['zv_type']) && $config['ZV']['zv_type']=='local')){
+            $path = (strpos($config['PL']['urlExtern'],$config['DB']['db_path'])===false ? $config['DB']['db_path'] : 'localhost');
+        } else 
+            $path = $config['DB']['db_path'];
+            
         $dbconn = @mysql_connect( 
-                                $config['DB']['db_path'],
+                                $path,
                                 $config['DB']['db_user'],
-                                $config['DB']['db_passwd']
+                                $config['DB']['db_passwd'],
+                                false,
+                                MYSQL_CLIENT_COMPRESS
                                 );
         if (!$dbconn){
             $query_result['errno'] = mysql_errno( );
@@ -60,11 +70,9 @@ class DBRequest
         if ($config['DB']['db_name'] !== null)
             mysql_select_db( $config['DB']['db_name'] );
 
-        $currentTime = $_SERVER['REQUEST_TIME'];
-
         // check session
-        if (error_reporting() & E_NOTICE)
-            $checkSession = false; // remove the comment this line to disable the session examination
+        ///if (error_reporting() & E_NOTICE)
+        ///    $checkSession = false; // remove the comment this line to disable the session examination
         
         // Storing whether or not a session condition is not satisfied
         $sessionFail = false;
@@ -91,22 +99,28 @@ class DBRequest
                     if ( $data != null && 
                          $data[0]['SE_sessionID'] == $_SERVER['HTTP_SESSION'] ){
                         $sessionFail = false;
+                        $query_result['error'] = 'access denied V';
                         
-                    } else 
+                    } else {
                         $sessionFail = true;
-                    
-                } else 
+                        $query_result['error'] = 'access denied IV';
+                    }
+                } else {
                     $sessionFail = true;
+                    $query_result['error'] = 'access denied III';
+                }
                 
-            } else 
+            } else {
                 $sessionFail = true;
+                $query_result['error'] = "access denied II";
+            }
         }
 
         // if a condition is not met, the request is invalid
         if ( $sessionFail == true ){
             $query_result['content'] = '';
             $query_result['errno'] = 401;
-            $query_result['error'] = 'access denied';
+            if (!isset($query_result['error'])) $query_result['error'] = 'unknown access denied';
             $query_result['numRows'] = 0;
             mysql_close( $dbconn );
             $dbconn = null;
@@ -138,7 +152,8 @@ class DBRequest
     public static function request2( 
                                    $sqlStatement,
                                    $checkSession,
-                                   $config = null
+                                   $config = null,
+                                   $useDbOperator = false
                                    )
     {
 
@@ -150,13 +165,36 @@ class DBRequest
                                      );
         }
 
+        ini_set('mysql.connect_timeout','60');
+        
         // creates a new connection to database
-        $dbconn = @mysqli_connect( 
-                                $config['DB']['db_path'],
-                                $config['DB']['db_user'],
-                                $config['DB']['db_passwd'],
-                                $config['DB']['db_name'] 
-                                );
+        //echo "type: ".$config['ZV']['zv_type']."<br>";
+        if (!isset($config['ZV']['zv_type']) || (isset($config['ZV']['zv_type']) && $config['ZV']['zv_type']=='local')){
+            $path = (strpos($config['PL']['urlExtern'],$config['DB']['db_path'])===false ? $config['DB']['db_path'] : 'localhost' );
+        } else
+            $path = $config['DB']['db_path'];
+            
+        //echo "Path: ".$path."<br>";
+        if (!$useDbOperator){
+        //echo "User: ".$config['DB']['db_user']."<br>";
+        //echo "Passwort: ".$config['DB']['db_passwd']."<br>";
+            $dbconn = @mysqli_connect( 
+                                    $path,
+                                    $config['DB']['db_user'],
+                                    $config['DB']['db_passwd'],
+                                    $config['DB']['db_name'] 
+                                    );
+        } else {
+        //echo "User: ".$config['DB']['db_user_operator']."<br>";
+        //echo "Passwort: ".$config['DB']['db_passwd_operator']."<br>";
+            $dbconn = @mysqli_connect( 
+                                    $path,
+                                    $config['DB']['db_user_operator'],
+                                    $config['DB']['db_passwd_operator'],
+                                    $config['DB']['db_name'] 
+                                    );
+
+        }
                                 
         if (!$dbconn){
             $query_result['errno'] = 10;
@@ -166,8 +204,8 @@ class DBRequest
         $currentTime = $_SERVER['REQUEST_TIME'];
 
         // check session
-        if (error_reporting() & E_NOTICE)
-            $checkSession = false; // remove the comment this line to disable the session examination
+        ///if (error_reporting() & E_NOTICE)
+        ///    $checkSession = false; // remove the comment this line to disable the session examination
         
         // Storing whether or not a session condition is not satisfied
         $sessionFail = false;
@@ -302,7 +340,7 @@ class DBRequest
         $sqlParsed = eval("?>" .  file_get_contents( $sqlFile ));
         $sql = ob_get_contents();
         ob_end_clean();
-        
+///echo $sql;
         if ($sqlParsed === false){
             $answer = array();
             $answer['status'] = 409;

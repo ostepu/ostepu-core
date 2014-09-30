@@ -1,0 +1,25 @@
+{
+  "name":"CORE",
+  "version":"0.1",
+  "versionDate":"27.06.2014",
+  "author":"",
+  "sourceURL":null,
+  "updateURL":null,
+  "requirements":[],
+  "files":
+    [
+      {"path":"Assistants/"},
+      {"path":".htaccess"},
+      {"path":"Plugins/core.json"},
+      {"path":"DB/Components2.sql"}
+    ],
+  "components":
+    [
+      {"conf":"DB/CControl/Component.json"},
+      {"conf":"DB/CFilter/Component.json"},
+      {"conf":"DB/CAbstract/Component.json"},
+      {"conf":"DB/DBQuery2/DBQuery.json"},
+      {"conf":"DB/DBQuery2/Component.json"},
+      {"conf":"Assistants/Request.json"}
+    ]
+}

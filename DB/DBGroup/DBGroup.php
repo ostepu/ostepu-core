@@ -78,7 +78,7 @@ class DBGroup
     public function __construct( )
     {
         // runs the CConfig
-        $com = new CConfig( DBGroup::getPrefix( ) );
+        $com = new CConfig( DBGroup::getPrefix( ), dirname(__FILE__) );
 
         // runs the DBGroup
         if ( $com->used( ) ) return;
@@ -242,7 +242,7 @@ class DBGroup
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/EditGroup.sql',
+                                                  dirname(__FILE__) . '/Sql/EditGroup.sql',
                                                   array( 
                                                         'esid' => $esid,
                                                         'userid' => $userid,
@@ -301,7 +301,7 @@ class DBGroup
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
-                                              'Sql/DeleteGroup.sql',
+                                              dirname(__FILE__) . '/Sql/DeleteGroup.sql',
                                               array( 
                                                     'esid' => $esid,
                                                     'userid' => $userid
@@ -361,7 +361,7 @@ class DBGroup
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/AddGroup.sql',
+                                                  dirname(__FILE__) . '/Sql/AddGroup.sql',
                                                   array( 'values' => $data )
                                                   );
 
@@ -477,7 +477,7 @@ class DBGroup
     {
         $this->get( 
                    'GetUserGroups',
-                   'Sql/GetUserGroups.sql',
+                   dirname(__FILE__) . '/Sql/GetUserGroups.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -497,7 +497,7 @@ class DBGroup
     {
         $this->get( 
                    'GetAllGroups',
-                   'Sql/GetAllGroups.sql',
+                   dirname(__FILE__) . '/Sql/GetAllGroups.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -524,7 +524,7 @@ class DBGroup
     {
         $this->get( 
                    'GetUserSheetGroups',
-                   'Sql/GetUserSheetGroups.sql',
+                   dirname(__FILE__) . '/Sql/GetUserSheetGroups.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -547,7 +547,7 @@ class DBGroup
     {
         $this->get( 
                    'GetSheetGroups',
-                   'Sql/GetSheetGroups.sql',
+                   dirname(__FILE__) . '/Sql/GetSheetGroups.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -567,7 +567,7 @@ class DBGroup
     {
         $this->get( 
                    'GetExistsPlatform',
-                   'Sql/GetExistsPlatform.sql',
+                   dirname(__FILE__) . '/Sql/GetExistsPlatform.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -595,7 +595,7 @@ class DBGroup
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query2,
-                                              'Sql/DeletePlatform.sql',
+                                              dirname(__FILE__) . '/Sql/DeletePlatform.sql',
                                               array( ),
                                               false
                                               );
@@ -653,7 +653,7 @@ class DBGroup
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query2,
-                                                  'Sql/AddPlatform.sql',
+                                                  dirname(__FILE__) . '/Sql/AddPlatform.sql',
                                                   array( 'object' => $in ),
                                                   false
                                                   );

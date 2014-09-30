@@ -6,12 +6,12 @@
  * @date 2014
  */
 
-require_once '../../Assistants/Slim/Slim.php';
-include_once '../../Assistants/Request.php';
-include_once '../../Assistants/CConfig.php';
-include_once '../../Assistants/DBJson.php';
-include_once '../../Assistants/Structures.php';
-include_once '../../Assistants/DefaultNormalizer.php';
+require_once dirname(__FILE__) . '/../../Assistants/Slim/Slim.php';
+include_once dirname(__FILE__) . '/../../Assistants/Request.php';
+include_once dirname(__FILE__) . '/../../Assistants/CConfig.php';
+include_once dirname(__FILE__) . '/../../Assistants/DBJson.php';
+include_once dirname(__FILE__) . '/../../Assistants/Structures.php';
+include_once dirname(__FILE__) . '/../../Assistants/DefaultNormalizer.php';
 
 \Slim\Slim::registerAutoloader();
 
@@ -77,7 +77,7 @@ class LFormProcessor
     public function __construct()
     {
         // runs the CConfig
-        $com = new CConfig( LFormProcessor::getPrefix( ) . ',course,link' );
+        $com = new CConfig( LFormProcessor::getPrefix( ) . ',course,link', dirname(__FILE__) );
 
         // runs the LFormProcessor
         if ( $com->used( ) ) return;

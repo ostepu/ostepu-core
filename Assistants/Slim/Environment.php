@@ -103,7 +103,7 @@ class Environment implements \ArrayAccess, \IteratorAggregate
             'slim.input' => '',
             'slim.errors' => @fopen('php://stderr', 'w')
         );
-        self::$environment = new self(array_merge($defaults, $userSettings));
+        self::$environment = new self(array_merge($defaults,$userSettings)); 
 
         return self::$environment;
     }

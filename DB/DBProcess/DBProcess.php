@@ -73,7 +73,7 @@ class DBProcess
     public function __construct( )
     {
         // runs the CConfig
-        $com = new CConfig( DBProcess::getPrefix( ) . ',course,link' );
+        $com = new CConfig( DBProcess::getPrefix( ) . ',course,link', dirname(__FILE__) );
 
         // runs the DBProcess
         if ( $com->used( ) ) return;
@@ -246,7 +246,7 @@ class DBProcess
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/EditProcess.sql',
+                                                  dirname(__FILE__) . '/Sql/EditProcess.sql',
                                                   array( 
                                                         'processid' => $processid,
                                                         'object' => $in,'pre' => $pre 
@@ -298,7 +298,7 @@ class DBProcess
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
-                                              'Sql/DeleteProcess.sql',
+                                              dirname(__FILE__) . '/Sql/DeleteProcess.sql',
                                               array( 'processid' => $processid,'pre' => $pre  )
                                               );
 
@@ -362,7 +362,7 @@ class DBProcess
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/AddProcess.sql',
+                                                  dirname(__FILE__) . '/Sql/AddProcess.sql',
                                                   array( 'object' => $in,'pre' => $pre )
                                                   );
 
@@ -499,7 +499,7 @@ class DBProcess
     {
         $this->get( 
                    'GetProcess',
-                   'Sql/GetProcess.sql',
+                   dirname(__FILE__) . '/Sql/GetProcess.sql',
                    isset( $pre ) ? $pre : '',
                    isset( $processid ) ? $processid : '',
                    isset( $courseid ) ? $courseid : '',
@@ -523,7 +523,7 @@ class DBProcess
     {
         $this->get( 
                    'GetCourseProcesses',
-                   'Sql/GetCourseProcesses.sql',
+                   dirname(__FILE__) . '/Sql/GetCourseProcesses.sql',
                    isset( $pre ) ? $pre : '',
                    isset( $processid ) ? $processid : '',
                    isset( $courseid ) ? $courseid : '',
@@ -548,7 +548,7 @@ class DBProcess
     {
         $this->get( 
                    'GetExistsCourseProcesses',
-                   'Sql/GetExistsCourseProcesses.sql',
+                   dirname(__FILE__) . '/Sql/GetExistsCourseProcesses.sql',
                    isset( $pre ) ? $pre : '',
                    isset( $processid ) ? $processid : '',
                    isset( $courseid ) ? $courseid : '',
@@ -573,7 +573,7 @@ class DBProcess
     {
         $this->get( 
                    'GetSheetProcesses',
-                   'Sql/GetSheetProcesses.sql',
+                   dirname(__FILE__) . '/Sql/GetSheetProcesses.sql',
                    isset( $pre ) ? $pre : '',
                    isset( $processid ) ? $processid : '',
                    isset( $courseid ) ? $courseid : '',
@@ -597,7 +597,7 @@ class DBProcess
     {
         $this->get( 
                    'GetExerciseProcesses',
-                   'Sql/GetExerciseProcesses.sql',
+                   dirname(__FILE__) . '/Sql/GetExerciseProcesses.sql',
                    isset( $pre ) ? $pre : '',
                    isset( $processid ) ? $processid : '',
                    isset( $courseid ) ? $courseid : '',
@@ -622,7 +622,7 @@ class DBProcess
     {
         $this->get( 
                    'GetCourseComponentProcesses',
-                   'Sql/GetCourseComponentProcesses.sql',
+                   dirname(__FILE__) . '/Sql/GetCourseComponentProcesses.sql',
                    isset( $pre ) ? $pre : '',
                    isset( $processid ) ? $processid : '',
                    isset( $courseid ) ? $courseid : '',
@@ -657,7 +657,7 @@ class DBProcess
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
-                                              'Sql/DeleteCourse.sql',
+                                              dirname(__FILE__) . '/Sql/DeleteCourse.sql',
                                               array( 'courseid' => $courseid ,'pre' => $pre )
                                               );
 
@@ -719,7 +719,7 @@ class DBProcess
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/AddCourse.sql',
+                                                  dirname(__FILE__) . '/Sql/AddCourse.sql',
                                                   array( 'object' => $in ,'pre' => $pre )
                                                   );
 

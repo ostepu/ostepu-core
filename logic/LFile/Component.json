@@ -1,0 +1,16 @@
+{
+  "name":"LFile",
+  "version":"1.0",
+  "classFile":"LFile.php",
+  "className":"LFile",
+  "files":[
+    {"path":".htaccess"},
+    {"path":"LFile.php"},
+    {"path":"index.php"},
+    {"path":"Commands.json"}
+  ],
+  "links":[
+    {"name":"fileDb", "target":"DBFile", "links":[{"method":"GET", "path":"/file/:adress/hash/:hash" },{"method":"DELETE", "path":"/file/:fileid" }] },
+    {"name":"file", "target":"FSFile", "links":[{"method":"POST", "path":"/file/:adress" },{"method":"DELETE", "path":"/:adress" }] }
+  ]
+}

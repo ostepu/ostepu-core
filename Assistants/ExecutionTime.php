@@ -5,10 +5,16 @@ if (!isset($_GET['split'])){
     $_GET['split'] = 4;
 }
 
+if (!file_exists(dirname(__FILE__) . '/../executionTime.log')){
+echo "keine Daten!";
+exit();
+}
+
 $input = file_get_contents(dirname(__FILE__) . '/../executionTime.log');
 $input = explode("\n",$input);
 foreach ($input as &$in){
-    $in = substr($in, stripos($in,'[DEBUG]: ')+9,strlen($in));
+
+    $in = trim(substr($in, stripos($in,'[LOGGER]: ')+24,strlen($in)));
     $in = rtrim($in,"s");
     $in = explode(" ",$in);
     

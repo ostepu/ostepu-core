@@ -3,10 +3,11 @@
  * @file Processor.template.php
  * @author  Till Uhlig
  */
+header('Content-Type: text/html; charset=utf-8');
 
-include_once '../../../../Assistants/Structures.php';
-include_once '../../../../Assistants/Request.php';
-include_once '../../Config.php';
+include_once dirname(__FILE__) . '/../../../../Assistants/Structures.php';
+include_once dirname(__FILE__) . '/../../../../Assistants/Request.php';
+include_once dirname(__FILE__) . '/../../Config.php';
 
 session_start();
 $courseid = null;

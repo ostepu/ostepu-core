@@ -1,0 +1,16 @@
+{
+  "name":"LMarking",
+  "version":"1.0",
+  "classFile":"LMarking.php",
+  "className":"LMarking",
+  "files":[
+    {"path":".htaccess"},
+    {"path":"LMarking.php"},
+    {"path":"index.php"},
+    {"path":"Commands.json"}
+  ],
+  "links":[
+    {"name":"file", "target":"LFile", "links":[{"method":"POST", "path":"/file" }] },
+    {"name":"marking", "target":"DBMarking", "links":[{"method":"DELETE", "path":"/marking/:markingid" },{"method":"POST", "path":"/marking" }] }
+  ]
+}

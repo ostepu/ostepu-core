@@ -1,0 +1,23 @@
+{
+  "name":"LFormPredecessor",
+  "version":"1.0",
+  "classFile":"LFormPredecessor.php",
+  "className":"LFormPredecessor",
+  "files":[
+    {"path":".htaccess"},
+    {"path":"LFormPredecessor.php"},
+    {"path":"index.php"},
+    {"path":"Commands.json"}
+  ],
+  "links":[
+    {"name":"formDb", "target":"DBForm", "links":[{"method":"GET", "path":"/form/exercise/:exerciseid" }] },
+    {"name":"pdf", "target":"FSPdf", "links":[{"method":"POST", "path":"/pdf" }] },
+    {"name":"postProcess", "target":"DBProcessList", "links":[{"method":"POST", "path":"/process" }] },
+    {"name":"deleteProcess", "target":"DBProcessList", "links":[{"method":"DELETE", "path":"/process/process/:processid" }] },
+    {"name":"getProcess", "target":"DBProcessList", "links":[{"method":"GET", "path":"/process/course/:courseid/component/:componentid" }] }
+  ],
+  "connector":[
+    {"name":"extension", "target":"LExtension"},
+    {"name":"request", "target":"CLocalObjectRequest"}
+  ]
+}

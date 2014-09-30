@@ -78,7 +78,7 @@ class DBInvitation
     public function __construct( )
     {
         // runs the CConfig
-        $com = new CConfig( DBInvitation::getPrefix( ) );
+        $com = new CConfig( DBInvitation::getPrefix( ), dirname(__FILE__) );
 
         // runs the DBInvitation
         if ( $com->used( ) ) return;
@@ -262,7 +262,7 @@ class DBInvitation
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/EditInvitation.sql',
+                                                  dirname(__FILE__) . '/Sql/EditInvitation.sql',
                                                   array( 
                                                         'userid' => $userid,
                                                         'esid' => $esid,
@@ -324,7 +324,7 @@ class DBInvitation
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
-                                              'Sql/DeleteInvitation.sql',
+                                              dirname(__FILE__) . '/Sql/DeleteInvitation.sql',
                                               array( 
                                                     'userid' => $userid,
                                                     'esid' => $esid,
@@ -386,7 +386,7 @@ class DBInvitation
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/AddInvitation.sql',
+                                                  dirname(__FILE__) . '/Sql/AddInvitation.sql',
                                                   array( 'values' => $data )
                                                   );
 
@@ -500,7 +500,7 @@ class DBInvitation
     {
         $this->get( 
                    'GetAllInvitations',
-                   'Sql/GetAllInvitations.sql',
+                   dirname(__FILE__) . '/Sql/GetAllInvitations.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -522,7 +522,7 @@ class DBInvitation
     {
         $this->get( 
                    'GetLeaderInvitations',
-                   'Sql/GetLeaderInvitations.sql',
+                   dirname(__FILE__) . '/Sql/GetLeaderInvitations.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -544,7 +544,7 @@ class DBInvitation
     {
         $this->get( 
                    'GetMemberInvitations',
-                   'Sql/GetMemberInvitations.sql',
+                   dirname(__FILE__) . '/Sql/GetMemberInvitations.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -571,7 +571,7 @@ class DBInvitation
     {
         $this->get( 
                    'GetSheetLeaderInvitations',
-                   'Sql/GetSheetLeaderInvitations.sql',
+                   dirname(__FILE__) . '/Sql/GetSheetLeaderInvitations.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -598,7 +598,7 @@ class DBInvitation
     {
         $this->get( 
                    'GetSheetMemberInvitations',
-                   'Sql/GetSheetMemberInvitations.sql',
+                   dirname(__FILE__) . '/Sql/GetSheetMemberInvitations.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -620,7 +620,7 @@ class DBInvitation
     {
         $this->get( 
                    'GetSheetInvitations',
-                   'Sql/GetSheetInvitations.sql',
+                   dirname(__FILE__) . '/Sql/GetSheetInvitations.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -640,7 +640,7 @@ class DBInvitation
     {
         $this->get( 
                    'GetExistsPlatform',
-                   'Sql/GetExistsPlatform.sql',
+                   dirname(__FILE__) . '/Sql/GetExistsPlatform.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -668,7 +668,7 @@ class DBInvitation
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query2,
-                                              'Sql/DeletePlatform.sql',
+                                              dirname(__FILE__) . '/Sql/DeletePlatform.sql',
                                               array( ),
                                               false
                                               );
@@ -726,7 +726,7 @@ class DBInvitation
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query2,
-                                                  'Sql/AddPlatform.sql',
+                                                  dirname(__FILE__) . '/Sql/AddPlatform.sql',
                                                   array( 'object' => $in ),
                                                   false
                                                   );

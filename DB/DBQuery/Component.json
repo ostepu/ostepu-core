@@ -1,0 +1,15 @@
+{
+  "name":"DBQuery",
+  "version":"1.0",
+  "classFile":"DBQuery.php",
+  "className":"DBQuery",
+  "files":[
+    {"path":".htaccess"},
+    {"path":"DBQuery.php"},
+    {"path":"index.php"},
+    {"path":"Commands.json"}
+  ],
+  "connector":[
+    {"name":"request", "target":"CLocalObjectRequest"}
+  ]
+}

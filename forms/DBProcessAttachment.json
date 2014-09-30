@@ -1,0 +1,10 @@
+{
+  "name":"DBProcessAttachment",
+  "version":"1.0",
+  "type":"clone",
+  "base":"DBAttachment2",
+  "baseURI":"/processAttachment",
+  "connector":[
+    {"name":"postCourse", "target":"LProcessor"}
+  ]
+}

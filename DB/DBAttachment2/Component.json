@@ -1,0 +1,19 @@
+{
+  "name":"DBAttachment2",
+  "version":"1.0",
+  "classFile":"DBAttachment2.php",
+  "className":"DBAttachment2",
+  "files":[
+    {"path":".htaccess"},
+    {"path":"DBAttachment2.php"},
+    {"path":"index.php"},
+    {"path":"Commands.json"},
+    {"path":"Sql/"}
+  ],
+  "links":[
+    {"name":"out", "target":"DBQuery2", "links":[{"method":"POST", "path":"/query" }] }
+  ],
+  "connector":[
+    {"name":"request", "target":"CLocalObjectRequest"}
+  ]
+}

@@ -77,7 +77,7 @@ class DBSession
     public function __construct( )
     {
         // runs the CConfig
-        $com = new CConfig( DBSession::getPrefix( ) );
+        $com = new CConfig( DBSession::getPrefix( ), dirname(__FILE__) );
 
         // runs the DBSession
         if ( $com->used( ) ) return;
@@ -234,7 +234,7 @@ class DBSession
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/EditSession.sql',
+                                                  dirname(__FILE__) . '/Sql/EditSession.sql',
                                                   array( 
                                                         'seid' => $seid,
                                                         'values' => $data
@@ -282,7 +282,7 @@ class DBSession
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
-                                              'Sql/DeleteSession.sql',
+                                              dirname(__FILE__) . '/Sql/DeleteSession.sql',
                                               array( 'seid' => $seid )
                                               );
 
@@ -344,7 +344,7 @@ class DBSession
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/EditUserSession.sql',
+                                                  dirname(__FILE__) . '/Sql/EditUserSession.sql',
                                                   array( 
                                                         'userid' => $userid,
                                                         'values' => $data
@@ -395,7 +395,7 @@ class DBSession
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
-                                              'Sql/DeleteUserSession.sql',
+                                              dirname(__FILE__) . '/Sql/DeleteUserSession.sql',
                                               array( 'userid' => $userid )
                                               );
 
@@ -457,7 +457,7 @@ class DBSession
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/AddSession.sql',
+                                                  dirname(__FILE__) . '/Sql/AddSession.sql',
                                                   array( 
                                                         'userid' => $userid,
                                                         'sessionid' => $sessionid
@@ -576,7 +576,7 @@ class DBSession
     {
         $this->get( 
                    'GetUserSession',
-                   'Sql/GetUserSession.sql',
+                   dirname(__FILE__) . '/Sql/GetUserSession.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -599,7 +599,7 @@ class DBSession
     {
         $this->get( 
                    'GetSessionUser',
-                   'Sql/GetSessionUser.sql',
+                   dirname(__FILE__) . '/Sql/GetSessionUser.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -620,7 +620,7 @@ class DBSession
     {
         $this->get( 
                    'GetAllSessions',
-                   'Sql/GetAllSessions.sql',
+                   dirname(__FILE__) . '/Sql/GetAllSessions.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -640,7 +640,7 @@ class DBSession
     {
         $this->get( 
                    'GetExistsPlatform',
-                   'Sql/GetExistsPlatform.sql',
+                   dirname(__FILE__) . '/Sql/GetExistsPlatform.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -668,7 +668,7 @@ class DBSession
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query2,
-                                              'Sql/DeletePlatform.sql',
+                                              dirname(__FILE__) . '/Sql/DeletePlatform.sql',
                                               array( ),
                                               false
                                               );
@@ -726,7 +726,7 @@ class DBSession
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query2,
-                                                  'Sql/AddPlatform.sql',
+                                                  dirname(__FILE__) . '/Sql/AddPlatform.sql',
                                                   array( 'object' => $in ),
                                                   false
                                                   );

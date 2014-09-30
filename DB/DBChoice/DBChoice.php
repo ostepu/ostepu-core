@@ -73,7 +73,7 @@ class DBChoice
     public function __construct( )
     {
         // runs the CConfig
-        $com = new CConfig( DBChoice::getPrefix( ) . ',course,link' );
+        $com = new CConfig( DBChoice::getPrefix( ) . ',course,link', dirname(__FILE__) );
 
         // runs the DBChoice
         if ( $com->used( ) ) return;
@@ -254,7 +254,7 @@ class DBChoice
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/EditChoice.sql',
+                                                  dirname(__FILE__) . '/Sql/EditChoice.sql',
                                                   array( 
                                                         'choiceid' => $choiceid,
                                                         'object' => $in,
@@ -316,7 +316,7 @@ class DBChoice
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
-                                              'Sql/DeleteChoice.sql',
+                                              dirname(__FILE__) . '/Sql/DeleteChoice.sql',
                                               array( 'choiceid' => $choiceid,
                                                      'preChoice' => $preChoice,
                                                      'preForm' => $preForm,
@@ -391,7 +391,7 @@ class DBChoice
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/AddChoice.sql',
+                                                  dirname(__FILE__) . '/Sql/AddChoice.sql',
                                                   array( 'object' => $in,
                                                          'preChoice' => $preChoice,
                                                          'preForm' => $preForm,
@@ -539,7 +539,7 @@ class DBChoice
     {
         $this->get( 
                    'GetChoice',
-                   'Sql/GetChoice.sql',
+                   dirname(__FILE__) . '/Sql/GetChoice.sql',
                    $preChoice,
                    $preForm,
                    $preExercise,
@@ -567,7 +567,7 @@ class DBChoice
     {
         $this->get( 
                    'GetCourseChoices',
-                   'Sql/GetCourseChoices.sql',
+                   dirname(__FILE__) . '/Sql/GetCourseChoices.sql',
                    $preChoice,
                    $preForm,
                    $preExercise,
@@ -595,7 +595,7 @@ class DBChoice
     {
         $this->get( 
                    'GetExistsCourseChoices',
-                   'Sql/GetExistsCourseChoices.sql',
+                   dirname(__FILE__) . '/Sql/GetExistsCourseChoices.sql',
                    $preChoice,
                    $preForm,
                    $preExercise,
@@ -604,7 +604,8 @@ class DBChoice
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
                    isset( $eid ) ? $eid : '',
-                   true
+                   true,
+                   false
                    );
     }
     
@@ -623,7 +624,7 @@ class DBChoice
     {
         $this->get( 
                    'GetSheetChoices',
-                   'Sql/GetSheetChoices.sql',
+                   dirname(__FILE__) . '/Sql/GetSheetChoices.sql',
                    $preChoice,
                    $preForm,
                    $preExercise,
@@ -651,7 +652,7 @@ class DBChoice
     {
         $this->get( 
                    'GetExerciseChoices',
-                   'Sql/GetExerciseChoices.sql',
+                   dirname(__FILE__) . '/Sql/GetExerciseChoices.sql',
                    $preChoice,
                    $preForm,
                    $preExercise,
@@ -679,7 +680,7 @@ class DBChoice
     {
         $this->get( 
                    'GetFormChoices',
-                   'Sql/GetFormChoices.sql',
+                   dirname(__FILE__) . '/Sql/GetFormChoices.sql',
                    $preChoice,
                    $preForm,
                    $preExercise,
@@ -723,7 +724,7 @@ class DBChoice
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
-                                              'Sql/DeleteCourse.sql',
+                                              dirname(__FILE__) . '/Sql/DeleteCourse.sql',
                                               array( 'courseid' => $courseid,
                                                      'preChoice' => $preChoice,
                                                      'preForm' => $preForm,
@@ -795,7 +796,7 @@ class DBChoice
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/AddCourse.sql',
+                                                  dirname(__FILE__) . '/Sql/AddCourse.sql',
                                                   array( 'object' => $in,
                                                          'preChoice' => $preChoice,
                                                          'preForm' => $preForm,

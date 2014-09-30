@@ -3,6 +3,7 @@
  * @file FormSettings.template.php
  * @author  Till Uhlig
  */
+ header('Content-Type: text/html; charset=utf-8');
  ?>
         <div class="content-element form" style="outline:2px solid #b9b8b8;border-radius: 0px;margin: 0px;">
                         

@@ -5,11 +5,11 @@
  * contains the LGetSite class.
  * @date 2013-2014
  */
-require '../../Assistants/Slim/Slim.php';
-include '../../Assistants/Request.php';
-include_once '../../Assistants/CConfig.php';
-include_once '../../Assistants/Logger.php';
-include_once '../../Assistants/Structures.php';
+require_once dirname(__FILE__).'/../../Assistants/Slim/Slim.php';
+include_once dirname(__FILE__).'/../../Assistants/Request.php';
+include_once dirname(__FILE__).'/../../Assistants/CConfig.php';
+include_once dirname(__FILE__).'/../../Assistants/Logger.php';
+include_once dirname(__FILE__).'/../../Assistants/Structures.php';
 
 \Slim\Slim::registerAutoloader();
 
@@ -57,7 +57,7 @@ class LGetSite
     public function __construct()
     {
         // runs the CConfig
-        $com = new CConfig( LGetSite::getPrefix( ) );
+        $com = new CConfig( LGetSite::getPrefix( ), dirname(__FILE__) );
 
         // runs the LGetSite
         if ( $com->used( ) ) return;
@@ -173,26 +173,24 @@ class LGetSite
         $assignedSubmissionIDs = array();
 
         // get tutors
-        $body = $this->app->request->getBody();
-        $header = $this->app->request->headers->all();
 
         // get all users with status 1,2,3 (tutor,lecturer,admin)
         $URL = $this->_getUser->getAddress().'/user/course/'.$courseid.'/status/1';
-        $handler1 = Request_CreateRequest::createGet($URL, $header, $body);
+        $handler1 = Request_CreateRequest::createGet($URL, array(), '');
 
         $URL = $this->_getUser->getAddress().'/user/course/'.$courseid.'/status/2';
-        $handler2 = Request_CreateRequest::createGet($URL, $header, $body);
+        $handler2 = Request_CreateRequest::createGet($URL, array(), '');
 
         $URL = $this->_getUser->getAddress().'/user/course/'.$courseid.'/status/3';
-        $handler3 = Request_CreateRequest::createGet($URL, $header, $body);
+        $handler3 = Request_CreateRequest::createGet($URL, array(), '');
         
         // get markings
         $URL = $this->_getMarking->getAddress().'/marking/exercisesheet/'.$sheetid;
-        $handler4 = Request_CreateRequest::createGet($URL, $header, $body);
+        $handler4 = Request_CreateRequest::createGet($URL, array(), '');
         
         // Get SelectedSubmissions
         $URL = $this->_getSelectedSubmission->getAddress().'/selectedsubmission/exercisesheet/'.$sheetid;
-        $handler5 = Request_CreateRequest::createGet($URL, $header, $body);
+        $handler5 = Request_CreateRequest::createGet($URL, array(), '');
         
 
         $multiRequestHandle = new Request_MultiRequest();
@@ -307,24 +305,22 @@ class LGetSite
     {
         $response = array('sheets' => array(),
                           'user' => array());
-        $body = $this->app->request->getBody();
-        $header = $this->app->request->headers->all();
 
         // load all Requests async
         $URL = $this->lURL . '/exercisesheet/course/' . $courseid . '/exercise';
-        $handler1 = Request_CreateRequest::createGet($URL, $header, $body);
+        $handler1 = Request_CreateRequest::createGet($URL, array(), '');
 
         $URL = $this->_getSubmission->getAddress().'/submission/group/user/' . $userid . '/course/' . $courseid . '/selected';
-        $handler2 = Request_CreateRequest::createGet($URL, $header, $body);
+        $handler2 = Request_CreateRequest::createGet($URL, array(), '');
 
         $URL = $this->_getMarking->getAddress().'/marking/course/' . $courseid;
-        $handler3 = Request_CreateRequest::createGet($URL, $header, $body);
+        $handler3 = Request_CreateRequest::createGet($URL, array(), '');
 
         $URL = $this->_getGroup->getAddress().'/group/user/' . $userid;
-        $handler4 = Request_CreateRequest::createGet($URL, $header, $body);
+        $handler4 = Request_CreateRequest::createGet($URL, array(), '');
 
         $URL = $this->_getExerciseType->getAddress().'/exercisetype';
-        $handler5 = Request_CreateRequest::createGet($URL, $header, $body);
+        $handler5 = Request_CreateRequest::createGet($URL, array(), '');
 
         $multiRequestHandle = new Request_MultiRequest();
         $multiRequestHandle->addRequest($handler1);
@@ -480,11 +476,9 @@ class LGetSite
 
     public function userWithCourse($userid, $courseid)
     {
-        $body = $this->app->request->getBody();
-        $header = $this->app->request->headers->all();
 
         $URL = $this->_getCourseStatus->getAddress().'/coursestatus/course/'.$courseid.'/user/'.$userid;
-        $answer = Request::custom('GET', $URL, $header, $body);
+        $answer = Request::custom('GET', $URL, array(), '');
         $user = json_decode($answer['content'], true);
 
         $response = $user;
@@ -499,11 +493,8 @@ class LGetSite
 
     public function userWithAllCourses($userid)
     {
-        $body = $this->app->request->getBody();
-        $header = $this->app->request->headers->all();
-
         $URL = $this->_getUser->getAddress().'/user/user/'.$userid;
-        $answer = Request::custom('GET', $URL, $header, $body);
+        $answer = Request::custom('GET', $URL, array(), '');
         $user = json_decode($answer['content'], true);
 
         $response = array('id' =>  $user['id'],
@@ -531,11 +522,8 @@ class LGetSite
 
     public function accountsettings($userid)
     {
-        $body = $this->app->request->getBody();
-        $header = $this->app->request->headers->all();
-
         $URL = $this->_getUser->getAddress().'/user/user/' . $userid;
-        $answer = Request::custom('GET', $URL, $header, $body);
+        $answer = Request::custom('GET', $URL, array(), '');
         $user = json_decode($answer['content'], true);
 
         $this->app->response->setBody(json_encode($user));
@@ -543,15 +531,13 @@ class LGetSite
 
     public function userWithCourseAndHash($userid, $courseid)
     {
-        $body = $this->app->request->getBody();
-        $header = $this->app->request->headers->all();
 
         $URL = $this->_getCourseStatus->getAddress().'/coursestatus/course/'.$courseid.'/user/'.$userid;
-        $answer = Request::custom('GET', $URL, $header, $body);
+        $answer = Request::custom('GET', $URL, array(), '');
         $user = json_decode($answer['content'], true);
 
         $URL = $this->_getUser->getAddress().'/user/user/'.$userid;
-        $answer = Request::custom('GET', $URL, $header, $body);
+        $answer = Request::custom('GET', $URL, array(), '');
         $response['user'] = json_decode($answer['content'], true);
 
         unset($response['user']['courses']);
@@ -594,29 +580,26 @@ class LGetSite
                                     $shouldfilter,
                                     $selector)
     {
-        $body = $this->app->request->getBody();
-        $header = $this->app->request->headers->all();
-
         $response = array();
 
         //Get neccessary data
         $URL = "{$this->lURL}/exercisesheet/course/{$courseid}/exercise";
-        $handler1 = Request_CreateRequest::createGet($URL, $header, $body);
+        $handler1 = Request_CreateRequest::createGet($URL, array(), '');
 
         $URL = "{$this->_getMarking->getAddress()}/marking/exercisesheet/{$sheetid}";
-        $handler2 = Request_CreateRequest::createGet($URL, $header, $body);
+        $handler2 = Request_CreateRequest::createGet($URL, array(), '');
 
         $URL = "{$this->_getUser->getAddress()}/user/course/{$courseid}/status/1";
-        $handler3 = Request_CreateRequest::createGet($URL, $header, $body);
+        $handler3 = Request_CreateRequest::createGet($URL, array(), '');
 
         $URL = "{$this->_getGroup->getAddress()}/group/exercisesheet/{$sheetid}";
-        $handler4 = Request_CreateRequest::createGet($URL, $header, $body);
+        $handler4 = Request_CreateRequest::createGet($URL, array(), '');
 
         $URL = "{$this->_getSubmission->getAddress()}/submission/exercisesheet/{$sheetid}/selected";
-        $handler5 = Request_CreateRequest::createGet($URL, $header, $body);
+        $handler5 = Request_CreateRequest::createGet($URL, array(), '');
 
         $URL = $this->_getExerciseType->getAddress().'/exercisetype';
-        $handler6 = Request_CreateRequest::createGet($URL, $header, $body);
+        $handler6 = Request_CreateRequest::createGet($URL, array(), '');
 
         $multiRequestHandle = new Request_MultiRequest();
         $multiRequestHandle->addRequest($handler1);
@@ -831,12 +814,9 @@ class LGetSite
 
     public function uploadHistory($userid, $courseid, $sheetid, $uploaduserid)
     {
-        $body = $this->app->request->getBody();
-        $header = $this->app->request->headers->all();
-
         // load all exercises of an exercise sheet
         $URL = $this->lURL.'/exercisesheet/exercisesheet/'.$sheetid.'/exercise/';
-        $answer = Request::custom('GET', $URL, $header, $body);
+        $answer = Request::custom('GET', $URL, array(), '');
         $exercisesheet = json_decode($answer['content'], true);
 
         if(!empty($exercisesheet)) {
@@ -847,7 +827,7 @@ class LGetSite
         // load all submissions for every exercise of the exerciseSheet
         if(!empty($exercises)) {
             $URL = $this->_getSubmission->getAddress().'/submission/user/'.$uploaduserid.'/exercisesheet/'.$sheetid;
-            $answer = Request::custom('GET', $URL, $header, $body);
+            $answer = Request::custom('GET', $URL, array(), '');
             $answer = json_decode($answer['content'], true);
             $submissions = array();
             if(!empty($answer)) {
@@ -875,17 +855,14 @@ class LGetSite
 
     public function uploadHistoryOptions($userid, $courseid)
     {
-        $body = $this->app->request->getBody();
-        $header = $this->app->request->headers->all();
-
         // load all users of the course
         $URL = $this->_getUser->getAddress().'/user/course/'.$courseid;
-        $answer = Request::custom('GET', $URL, $header, $body);
+        $answer = Request::custom('GET', $URL, array(), '');
         $response['users'] = json_decode($answer['content'], true);
 
         // load all exercisesheets of the course
         $URL = $this->lURL.'/exercisesheet/course/'.$courseid;
-        $answer = Request::custom('GET', $URL, $header, $body);
+        $answer = Request::custom('GET', $URL, array(), '');
         $response['sheets'] = json_decode($answer['content'], true);
 
         if(!empty($exercisesheet)) {
@@ -907,16 +884,13 @@ class LGetSite
      */
     public function upload($userid, $courseid, $sheetid)
     {
-        $body = $this->app->request->getBody();
-        $header = $this->app->request->headers->all();
-
         // loads all exercises of an exercise sheet
         $URL = "{$this->lURL}/exercisesheet/exercisesheet/{$sheetid}/exercise/";
-        $answer = Request::custom('GET', $URL, $header, $body);
+        $answer = Request::custom('GET', $URL, array(), '');
         $exercisesheet = json_decode($answer['content'], true);
 
         $URL = "{$this->_getSubmission->getAddress()}/submission/group/user/{$userid}/exercisesheet/{$sheetid}/selected";
-        $answer = Request::custom('GET', $URL, $header, $body);
+        $answer = Request::custom('GET', $URL, array(), '');
         $submissions = json_decode($answer['content'], true);
 
         if (isset($submissions) == false) {
@@ -956,22 +930,19 @@ class LGetSite
 
     public function mainSettings($userid)
     {
-        $body = $this->app->request->getBody();
-        $header = $this->app->request->headers->all();
-
         // returns all courses
         $URL = $this->_getCourse->getAddress().'/course';
-        $courses = Request::custom('GET', $URL, $header, $body);
+        $courses = Request::custom('GET', $URL, array(), '');
         $courses = json_decode($courses['content'], true);
 
         // returns all possible exercisetypes
         $URL = $this->_getExerciseType->getAddress().'/exercisetype';
-        $exerciseTypes = Request::custom('GET', $URL, $header, $body);
+        $exerciseTypes = Request::custom('GET', $URL, array(), '');
         $response['exerciseTypes'] = json_decode($exerciseTypes['content'], true);
 
         // returns the user
         $URL = $this->_getUser->getAddress().'/user/user/' . $userid;
-        $answer = Request::custom('GET', $URL, $header, $body);
+        $answer = Request::custom('GET', $URL, array(), '');
         $user = json_decode($answer['content'], true);
 
         unset($user['courses']);
@@ -992,22 +963,19 @@ class LGetSite
 
     public function tutorDozentAdmin($userid, $courseid)
     {
-
-        $body = $this->app->request->getBody();
-        $header = $this->app->request->headers->all();
         // load first pack of Requests
         $multiRequestHandle2 = new Request_MultiRequest();
 
         $URL = $this->_getExerciseType->getAddress().'/exercisetype';
-        $handler1 = Request_CreateRequest::createGet($URL, $header,'');
+        $handler1 = Request_CreateRequest::createGet($URL, array(), '');
         $URL = $this->lURL . '/exercisesheet/course/' . $courseid . '/exercise';
-        $handler2 = Request_CreateRequest::createGet($URL, $header,'');
+        $handler2 = Request_CreateRequest::createGet($URL, array(), '');
         
         // to get all students of the course
         $URL = $this->_getUser->getAddress().'/user/course/' . $courseid. '/status/0';
-        $handler3 = Request_CreateRequest::createGet($URL, $header,'');
+        $handler3 = Request_CreateRequest::createGet($URL, array(), '');
         $URL = $this->_getMarking->getAddress().'/marking/course/'.$courseid.'/tutor/'.$userid;
-        $handler4 = Request_CreateRequest::createGet($URL, $header,'');
+        $handler4 = Request_CreateRequest::createGet($URL, array(), '');
 
         $multiRequestHandle2->addRequest($handler1);
         $multiRequestHandle2->addRequest($handler2);
@@ -1025,7 +993,7 @@ class LGetSite
         unset($answer2);
 
         $URL = "{$this->_getSelectedSubmission->getAddress()}/selectedsubmission/course/{$courseid}";
-        $answer = Request::custom('GET', $URL, $header, '');
+        $answer = Request::custom('GET', $URL, array(), '');
         $selectedSubs = json_decode($answer['content'], true);
         unset($answer);
         $selectedSubmissionsCount = null;
@@ -1103,32 +1071,30 @@ class LGetSite
      */
     public function groupSite($userid, $courseid, $sheetid)
     {
-        $body = $this->app->request->getBody();
-        $header = $this->app->request->headers->all();
         $response = array();
 
         //Get the Group of the User for the given sheet
         $URL = "{$this->_getGroup->getAddress()}/group/user/{$userid}/exercisesheet/{$sheetid}";
-        $answer = Request::custom('GET', $URL, $header, $body);
+        $answer = Request::custom('GET', $URL, array(), '');
         $group = json_decode($answer['content'], true);
 
         //Get the maximum Groupsize of the sheet
         $URL = "{$this->lURL}/exercisesheet/exercisesheet/{$sheetid}/exercise";
-        $answer = Request::custom('GET', $URL, $header, $body);
+        $answer = Request::custom('GET', $URL, array(), '');
         $sheet = json_decode($answer['content'], true);
 
         $exercises = &$sheet['exercises'];
 
         $URL = "{$this->_getSubmission->getAddress()}/submission/group/user/{$userid}/exercisesheet/{$sheetid}";
-        $answer = Request::custom('GET', $URL, $header, $body);
+        $answer = Request::custom('GET', $URL, array(), '');
         $submissions = json_decode($answer['content'], true);
 
         $URL = "{$this->_getInvitation->getAddress()}/invitation/leader/exercisesheet/{$sheetid}/user/{$userid}";
-        $answer = Request::custom('GET', $URL, $header, $body);
+        $answer = Request::custom('GET', $URL, array(), '');
         $invited = json_decode($answer['content'], true);
 
         $URL = "{$this->_getInvitation->getAddress()}/invitation/member/exercisesheet/{$sheetid}/user/{$userid}";
-        $answer = Request::custom('GET', $URL, $header, $body);
+        $answer = Request::custom('GET', $URL, array(), '');
         $invitations = json_decode($answer['content'], true);
 
         // oder users by id
@@ -1205,9 +1171,6 @@ class LGetSite
      */
     public function checkCondition($userid, $courseid)
     {
-        $body = $this->app->request->getBody();
-        $header = $this->app->request->headers->all();
-
         // load all the data
         $multiRequestHandle = new Request_MultiRequest();
         
@@ -1300,7 +1263,7 @@ class LGetSite
         // get all markings
         $allMarkings = array();
         $URL = $this->_getMarking->getAddress() . '/marking/course/'.$courseid;
-        $answer = Request::custom('GET', $URL, $header, $body);
+        $answer = Request::custom('GET', $URL, array(), '');
         $markings = json_decode($answer['content'], true);
 
         foreach($markings as $marking){
@@ -1423,27 +1386,24 @@ class LGetSite
 
     public function courseManagement($userid, $courseid)
     {
-        $body = $this->app->request->getBody();
-        $header = $this->app->request->headers->all();
-
         // returns basic course information
         $URL = $this->_getCourse->getAddress() . '/course/'.$courseid;
-        $answer = Request::custom('GET', $URL, $header, $body);
+        $answer = Request::custom('GET', $URL, array(), '');
         $response['course'] = json_decode($answer['content'], true);
 
         // returns all exerciseTypes
         $URL = $this->_getExerciseType->getAddress() . '/exercisetype';
-        $answer = Request::custom('GET', $URL, $header, $body);
+        $answer = Request::custom('GET', $URL, array(), '');
         $response['exerciseTypes'] = json_decode($answer['content'], true);
 
         // returns all possible exerciseTypes of the course
         $URL = $this->_getApprovalCondition->getAddress() . '/approvalcondition/course/' . $courseid;
-        $answer = Request::custom('GET', $URL, $header, $body);
+        $answer = Request::custom('GET', $URL, array(), '');
         $approvalConditions = json_decode($answer['content'], true);
 
         // returns all users of the given course
         $URL = $this->_getUser->getAddress() . '/user/course/'.$courseid;
-        $answer = Request::custom('GET', $URL, $header, $body);
+        $answer = Request::custom('GET', $URL, array(), '');
         $allUsers = json_decode($answer['content'], true);
 
         // adds an 'inCourse' flag to the exerciseType if there is
@@ -1490,18 +1450,17 @@ class LGetSite
         $this->app->response->setBody(json_encode($response));
     }
 
-    public function createSheetInfo($userid, $courseid) {
-        $body = $this->app->request->getBody();
-        $header = $this->app->request->headers->all();
+    public function createSheetInfo($userid, $courseid) 
+    {
 
         // returns all possible exerciseTypes of the course
         $URL = $this->_getApprovalCondition->getAddress() . '/approvalcondition/course/' . $courseid;
-        $answer = Request::custom('GET', $URL, $header, $body);
+        $answer = Request::custom('GET', $URL, array(), '');
         $response['exerciseTypes'] = json_decode($answer['content'], true);
 
         // returns all exerciseTypes
         $URL = $this->_getExerciseType->getAddress() . '/exercisetype';
-        $answer = Request::custom('GET', $URL, $header, $body);
+        $answer = Request::custom('GET', $URL, array(), '');
         $allexerciseTypes = json_decode($answer['content'], true);
 
         if(!empty($response['exerciseTypes'])) {

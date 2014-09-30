@@ -77,7 +77,7 @@ class DBExerciseType
     public function __construct( )
     {
         // runs the CConfig
-        $com = new CConfig( DBExerciseType::getPrefix( ) );
+        $com = new CConfig( DBExerciseType::getPrefix( ), dirname(__FILE__) );
 
         // runs the DBExerciseType
         if ( $com->used( ) ) return;
@@ -217,7 +217,7 @@ class DBExerciseType
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/EditExerciseType.sql',
+                                                  dirname(__FILE__) . '/Sql/EditExerciseType.sql',
                                                   array( 
                                                         'etid' => $etid,
                                                         'values' => $data
@@ -269,7 +269,7 @@ class DBExerciseType
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
-                                              'Sql/DeleteExerciseType.sql',
+                                              dirname(__FILE__) . '/Sql/DeleteExerciseType.sql',
                                               array( 'etid' => $etid )
                                               );
 
@@ -329,7 +329,7 @@ class DBExerciseType
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/AddExerciseType.sql',
+                                                  dirname(__FILE__) . '/Sql/AddExerciseType.sql',
                                                   array( 'values' => $data )
                                                   );
 
@@ -457,7 +457,7 @@ class DBExerciseType
     {
         $this->get( 
                    'GetAllExerciseTypes',
-                   'Sql/GetAllExerciseTypes.sql',
+                   dirname(__FILE__) . '/Sql/GetAllExerciseTypes.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -479,7 +479,7 @@ class DBExerciseType
     {
         $this->get( 
                    'GetExerciseType',
-                   'Sql/GetExerciseType.sql',
+                   dirname(__FILE__) . '/Sql/GetExerciseType.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -500,7 +500,7 @@ class DBExerciseType
     {
         $this->get( 
                    'GetExistsPlatform',
-                   'Sql/GetExistsPlatform.sql',
+                   dirname(__FILE__) . '/Sql/GetExistsPlatform.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -528,7 +528,7 @@ class DBExerciseType
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query2,
-                                              'Sql/DeletePlatform.sql',
+                                              dirname(__FILE__) . '/Sql/DeletePlatform.sql',
                                               array( ),
                                               false
                                               );
@@ -586,7 +586,7 @@ class DBExerciseType
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query2,
-                                                  'Sql/AddPlatform.sql',
+                                                  dirname(__FILE__) . '/Sql/AddPlatform.sql',
                                                   array( 'object' => $in ),
                                                   false
                                                   );

@@ -1,17 +1,2 @@
-RewriteEngine on
-
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^Sheets/([0-9]+)$ Sheet.php?id=$1
-
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^Sheets/?$ Sheet.php
-
-RewriteCond %{REQUEST_FILENAME} -d
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^(/?)$ %{REQUEST_URI}UI/ [R,L]
-
-<ifmodule mod_deflate.c>
-AddOutputFilterByType DEFLATE text/text text/html text/plain text/xml text/css application/x-javascript application/javascript application/json
-</ifmodule>
+Order Allow,Deny
+Deny from all

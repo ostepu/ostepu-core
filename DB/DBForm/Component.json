@@ -1,0 +1,19 @@
+{
+  "name":"DBForm",
+  "version":"1.0",
+  "classFile":"DBForm.php",
+  "className":"DBForm",
+  "files":[
+    {"path":".htaccess"},
+    {"path":"DBForm.php"},
+    {"path":"index.php"},
+    {"path":"Commands.json"},
+    {"path":"Sql/"}
+  ],
+  "links":[
+    {"name":"out", "target":"DBQuery2", "links":[{"method":"POST", "path":"/query" }] }
+  ],
+  "connector":[
+    {"name":"request", "target":"CLocalObjectRequest"}
+  ]
+}

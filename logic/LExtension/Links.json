@@ -1,3 +1,0 @@
-[
-    {"name":"extension", "links":[{"method":"DELETE", "path":"/course/:courseid" },{"method":"POST", "path":"/course" },{"method":"GET", "path":"/link/exists/course/:courseid" },{"method":"GET", "path":"/exists/course/:courseid" }] }
-]

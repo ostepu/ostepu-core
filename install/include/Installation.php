@@ -44,15 +44,7 @@ class Installation
     }
     
     public static function PlattformZusammenstellen($data)
-    {
-        Einstellungen::GetValue('data[PL][url]',$data['PL']['url']);
-        Einstellungen::GetValue('data[PL][temp]',$data['PL']['temp']);
-        Einstellungen::GetValue('data[PL][files]',$data['PL']['files']);
-        Einstellungen::GetValue('data[DB][db_path]',$data['DB']['db_path']);
-        Einstellungen::GetValue('data[DB][db_name]',$data['DB']['db_name']);
-        Einstellungen::GetValue('data[DB][db_user_operator]',$data['DB']['db_user_operator']);
-        Einstellungen::GetValue('data[DB][db_passwd_operator]',$data['DB']['db_passwd_operator']);
-    
+    {   
         // hier aus den Daten ein Plattform-Objekt zusammenstellen
         $platform = Platform::createPlatform(
                                             $data['PL']['url'],
@@ -63,18 +55,14 @@ class Installation
                                             $data['DB']['db_user_operator'],
                                             $data['DB']['db_passwd_operator'],
                                             $data['PL']['temp'],
-                                            $data['PL']['files']
+                                            $data['PL']['files'],
+                                            $data['PL']['urlExtern']
                                             );
         return $platform;
     }
     
     public static function installiereInit($data, &$fail, &$errno, &$error)
     {
-        Einstellungen::GetValue('data[DB][db_name]',$data['DB']['db_name']);
-        Einstellungen::GetValue('data[DB][db_override]',$data['DB']['db_override']);
-        Einstellungen::GetValue('data[DB][db_ignore]',$data['DB']['db_ignore']);
-        Einstellungen::GetValue('data[PL][url]',$data['PL']['url']);
-        
         // Datenbank einrichten
         if (!$fail && (isset($data['DB']['db_override']) && $data['DB']['db_override'] === 'override')){
            $sql = "DROP SCHEMA IF EXISTS `".$data['DB']['db_name']."`;";
@@ -105,7 +93,7 @@ class Installation
         if (!$fail){
             $list = array('DB/CControl','DB/DBQuery','DB/DBQuery2');
             $platform = Installation::PlattformZusammenstellen($data);
-            
+
             for ($i=0;$i<count($list);$i++){
                 $url = $list[$i];//$data['PL']['init'];
                 // inits all components
@@ -120,7 +108,8 @@ class Installation
                     if (isset($result['status'])){
                         $errno = $result['status'];
                         $res[$url]['status'] = $result['status'];
-                    }
+                    };
+                    ///if (isset($result['content'])) echo $result['content'];
                 }
             }
         }
@@ -128,10 +117,253 @@ class Installation
         return $res;
     }
     
+    public static function GibServerDateien()
+    {
+        $serverFiles = array();
+        Einstellungen::$path = dirname(__FILE__) . '/../config';
+        Einstellungen::generatepath(Einstellungen::$path);
+        if ($handle = opendir(dirname(__FILE__) . '/../config')) {
+            while (false !== ($file = readdir($handle))) {
+                if ($file=='.' || $file=='..') continue;
+                $serverFiles[] = $file;
+            }
+            closedir($handle);
+        }
+        return $serverFiles;
+    }
+    
+    public static function gibPluginDateien($input, &$fileList, &$fileListAddress, &$componentFiles)
+    {
+        $mainPath = dirname(__FILE__) . '/../..';
+        if (isset($input['files'])){
+            $files = $input['files'];
+            if (!is_array($files)) $files = array($files);
+            
+            foreach ($files as $file){
+                if (isset($file['path'])){
+                    if (is_dir($mainPath . '/' . $file['path'])){
+                        $found = Installation::read_all_files($mainPath . '/' . $file['path']);
+                        foreach ($found['files'] as $temp){
+                            $fileList[] = $temp;
+                            $fileListAddress[] = substr($temp,strlen($mainPath)+1);
+                        }
+                    } else {
+                        $fileList[] = $mainPath . '/' . $file['path'];
+                        $fileListAddress[] = $file['path'];
+                    }
+                }
+            }
+        }
+        
+        if (isset($input['components'])){
+            $files = $input['components'];
+            if (!is_array($files)) $files = array($files);
+            
+            foreach ($files as $file){
+                if (isset($file['conf'])){
+                    if (!file_exists($mainPath . '/' . $file['conf']) || !is_readable($mainPath . '/' . $file['conf'])) continue;
+                    $componentFiles[] = $mainPath . '/' . $file['conf'];
+                    $definition = file_get_contents($mainPath . '/' . $file['conf']);
+                    $definition = json_decode($definition,true);
+                    $comPath = dirname($mainPath . '/' . $file['conf']);
+                    
+                    $fileList[] = $mainPath . '/' . $file['conf'];
+                    $fileListAddress[] = $file['conf'];
+                    
+                    if (isset($definition['files'])){
+                        if (!is_array($definition['files'])) $definition['files'] = array($definition['files']);
+                        
+                        foreach ($definition['files'] as $paths){
+                            if (!isset($paths['path'])) continue;
+                            
+                            if (is_dir($comPath . '/' . $paths['path'])){
+                                $found = Installation::read_all_files($comPath . '/' . $paths['path']);
+                                foreach ($found['files'] as $temp){
+                                    $fileList[] = $temp;
+                                    $fileListAddress[] = substr($temp,strlen($mainPath)+1);
+                                }
+                            } else {
+                                $fileList[] = $comPath . '/' . $paths['path'];
+                                $fileListAddress[] = dirname($file['conf']) . '/' . $paths['path'];
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    public static function checkPlugins($data, &$fail, &$errno, &$error)
+    {
+        $res = array();
+    
+        if (!$fail){
+            $mainPath = dirname(__FILE__) . '/../..';
+            $pluginFiles = array();
+            if ($handle = @opendir(dirname(__FILE__) . '/../../Plugins')) {
+                while (false !== ($file = readdir($handle))) {
+                    if ($file=='.' || $file=='..') continue;
+                    if (is_dir(dirname(__FILE__) . '/../../Plugins/'.$file)) continue;
+                    $filePath = dirname(__FILE__) . '/../../Plugins/'.$file;
+                    if (file_exists($filePath) && is_readable($filePath)){
+                        $input = file_get_contents($filePath);
+                        $input = json_decode($input,true);
+                        if ($input == null){
+                            $fail = true;
+                            break;
+                        }
+                        $res[] = $input;
+                    }
+                }
+                closedir($handle);
+            }
+        }
+        
+        return $res;
+    }
+    
+    public static function initialisierePlugins($data, &$fail, &$errno, &$error)
+    {
+        $res = array();
+    
+        if (!$fail){
+            $mainPath = dirname(__FILE__) . '/../..';
+            $fileList = array();
+            $fileListAddress = array();
+            $componentFiles = array();
+                    
+            foreach ($data['PLUG'] as $plugs){
+                $file = dirname(__FILE__) . '/../../Plugins/'.$plugs;
+                
+                if (file_exists($file) && is_readable($file)){
+                    $input = file_get_contents($file);
+                    $input = json_decode($input,true);
+                    if ($input == null){
+                        $fail = true;
+                        break;
+                    }
+                
+                    // Dateiliste zusammentragen
+                    Installation::gibPluginDateien($input, $fileList, $fileListAddress, $componentFiles);
+                    $fileList[] = $mainPath.'/install/config/'.$data['SV']['name'].'.ini';
+                    $fileListAddress[] = 'install/config/'.$data['SV']['name'].'.ini';
+                }
+            }
+            
+            // Dateien übertragen
+            Zugang::SendeDateien($fileList,$fileListAddress,$data); 
+        }
+        
+        return $res;
+    }
+    
+    public static function deinitialisierePlugins($data, &$fail, &$errno, &$error)
+    {
+        $res = array();
+    
+        if (!$fail){
+            $mainPath = dirname(__FILE__) . '/../..';
+            foreach ($data['PLUG'] as $plugs){
+                $file = dirname(__FILE__) . '/../../Plugins/'.$plugs;
+                
+                if (file_exists($file) && is_readable($file)){
+                    $input = file_get_contents($file);
+                    $input = json_decode($input,true);
+                    if ($input == null){
+                        $fail = true;
+                        break;
+                    }
+                
+                    // Dateiliste zusammentragen
+                    $fileList = array();
+                    $fileListAddress = array();
+                    $componentFiles = array();
+                    Installation::gibPluginDateien($input, $fileList, $fileListAddress, $componentFiles);
+                    $fileList[] = $mainPath.'/install/config/'.$data['SV']['name'].'.ini';
+                    $fileListAddress[] = 'install/config/'.$data['SV']['name'].'.ini';
+                    
+                    // Dateien entfernen
+                    Zugang::EntferneDateien($fileList,$fileListAddress,$data);
+                }
+            }
+        }
+        
+        return $res;
+    }
+    
+    public static function installiereKomponentenDefinitionen($data, &$fail, &$errno, &$error)
+    {
+        $res = array();
+    
+        if (!$fail){
+            $mainPath = dirname(__FILE__) . '/../..';
+            $components = array();
+                
+            $componentFiles = array();
+            $plugins = Installation::checkPlugins($data, $fail, $errno, $error);
+            
+            foreach ($plugins as $input){
+                
+                // Dateiliste zusammentragen
+                $fileList = array();
+                $fileListAddress = array();
+                Installation::gibPluginDateien($input, $fileList, $fileListAddress, $componentFiles);
+                unset($fileList);
+                unset($fileListAddress);
+            }
+            
+
+            // Komponentennamen und Orte ermitteln
+            $res['components'] = array();
+            foreach ($componentFiles as $comFile){
+                if (!file_exists($comFile) || !is_readable($comFile)) continue;
+                $input = file_get_contents($comFile);
+                $input = json_decode($input,true);
+                if ($input==null) continue;
+                $input['urlExtern'] = $data['PL']['urlExtern'];
+                $input['url'] = $data['PL']['url'];
+                $input['path'] = substr(dirname($comFile),strlen($mainPath)+1);
+                $input['link_type'] = $data['CO']['co_link_type'];
+                $input['link_availability'] = $data['CO']['co_link_availability'];
+                
+                if (isset($input['files'])) unset($input['files']);
+                
+                $res['components'][] = $input;
+                /*if (!isset($input['type']) || $input['type']=='normal'){
+                    // normale Komponente
+                    if (!isset($input['name'])) continue;
+                    if (!isset($components[$input['name']]))$components[$input['name']] = array();
+                    $components[$input['name']][] = substr(dirname($comFile),strlen($mainPath)+1);
+                    
+                } elseif (isset($input['type']) && $input['type']=='clone') {
+                    // Komponente basiert auf einer bestehenden
+                    if (!isset($components[$input['name']]))$components[$input['name']] = array();
+                    $components[$input['name']][] = substr(dirname($comFile),strlen($mainPath)+1);
+                }*/
+            }
+            
+            // Komponenten eintragen
+            //$res['components'] = array();
+            //$sql = "START TRANSACTION;INSERT INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ";
+            //$comList = array();
+            foreach($components as $comName => $coms){
+                foreach($coms as $com){
+                    //$comList[] = "('{$comName}', '{$com}', '')";
+                    //$res['components'][] = array($comName,$com,$data['PL']['urlExtern']);
+                }
+            }
+            //$sql.=implode(',',$comList);
+
+            //$sql .= " ON DUPLICATE KEY UPDATE CO_address=VALUES(CO_address), CO_option=VALUES(CO_option);COMMIT;";
+            //DBRequest::request2($sql, false, $data);
+            //$res = $components;
+        }
+        
+        return $res;
+    }
+    
     public static function installierePlattform($data, &$fail, &$errno, &$error)
     {
-        Einstellungen::GetValue('data[PL][url]',$data['PL']['url']);
-    
         $res = array();
     
         if (!$fail){
@@ -173,20 +405,18 @@ class Installation
     
     public static function initialisiereKomponenten($data, &$fail, &$errno, &$error)
     {
-        Einstellungen::GetValue('data[PL][init]',$data['PL']['init']);
-        Einstellungen::GetValue('data[PL][url]',$data['PL']['url']);
-        
         $fail = false;
         $url = $data['PL']['init'];
         $components = array();
        
         // inits all components
         $result = Request::get($data['PL']['url'].'/'.$url. '/definition/send',array(),'');
+        //echo $result['content'];
         if (isset($result['content']) && isset($result['status'])){
 
             // component routers
             $router = array();
-       
+
             $results = Component::decodeComponent($result['content']);
             $results = Installation::orderBy(json_decode(Component::encodeComponent($results),true),'name',SORT_ASC);
             $results = Component::decodeComponent(Component::encodeComponent($results));
@@ -201,22 +431,26 @@ class Installation
             $result4 = Request::get($data['PL']['url'].'/'.$url. '/definition',array(),'');
             
             if (isset($result4['content']) && isset($result4['status']) && $result4['status'] === 200){
-            $definitions = Component::decodeComponent($result4['content']);
-            if (!is_array($definitions)) $definitions = array($definitions);
-            
-            $result2 = new Request_MultiRequest();
-            $result3 = new Request_MultiRequest();
-            foreach ($definitions as $definition){
-                $components[$definition->getName()]['definition'] = $definition;
-                            
-                $request = Request_CreateRequest::createGet($definition->getAddress().'/info/commands',array(),'');
-                $result2->addRequest($request);
-                $request = Request_CreateRequest::createGet($definition->getAddress().'/info/links',array(),'');
-                $result3->addRequest($request);
-            }
-            
-            $result2 = $result2->run();
-            $result3 = $result3->run();
+                $definitions = Component::decodeComponent($result4['content']);
+                if (!is_array($definitions)) $definitions = array($definitions);
+                
+                $result2 = new Request_MultiRequest();
+                $result3 = new Request_MultiRequest();
+                $tempDef = array();
+                foreach ($definitions as $definition){
+                    if (strpos($definition->getAddress().'/', $data['PL']['urlExtern'].'/')===false) {continue;}
+                    
+                    $components[$definition->getName()]['definition'] = $definition;
+                    $tempDef[] = $definition;      
+                    $request = Request_CreateRequest::createGet($definition->getAddress().'/info/commands',array(),'');
+                    $result2->addRequest($request);
+                    $request = Request_CreateRequest::createGet($definition->getAddress().'/info/links',array(),'');
+                    $result3->addRequest($request);
+                }
+                $definitions = $tempDef;
+                
+                $result2 = $result2->run();
+                $result3 = $result3->run();
             
                 foreach($results as $res){
                     if ($res===null){
@@ -227,6 +461,8 @@ class Installation
                     $countLinks = 0;
                     $resultCounter=-1;
                     foreach ($definitions as $definition){
+                        //if (strpos($definition->getAddress().'/', $data['PL']['urlExtern'].'/')===false) continue;
+                        
                         $resultCounter++;
                         if ($definition->getId() === $res->getId()){
                         
@@ -240,13 +476,13 @@ class Installation
                             if (isset($result2[$resultCounter]['content']) && isset($result2[$resultCounter]['status']) && $result2[$resultCounter]['status'] === 200){
                                 $commands = json_decode($result2[$resultCounter]['content'], true);
                                 if ($commands!==null){
-                                    $router = new \Slim\Router();
+                                    /*$router = new \Slim\Router();
                                     foreach($commands as $command){
                                         $route = new \Slim\Route($command['path'],'is_array');
                                         $route->via(strtoupper($command['method']));
                                         $router->map($route);
                                     }
-                                    $components[$definition->getName()]['router'] = $router;
+                                    $components[$definition->getName()]['router'] = $router;*/
                                     $components[$definition->getName()]['commands'] = $commands;
                                 }
                             }
@@ -282,32 +518,13 @@ class Installation
         return $components;
     }
     
-    public static function installiereDBKonfigurationsdatei($data, $id, &$fail, &$errno, &$error)
-    {
-        Einstellungen::GetValue("data[DB][config][{$id}]",$data['DB']['config'][$id]);
-        Einstellungen::GetValue('data[DB][db_path]',$data['DB']['db_path']);
-        Einstellungen::GetValue('data[DB][db_user_operator]',$data['DB']['db_user_operator']);
-        Einstellungen::GetValue('data[DB][db_passwd_operator]',$data['DB']['db_passwd_operator']);
-        Einstellungen::GetValue('data[DB][db_name]',$data['DB']['db_name']);
-        
-        $file = $data['DB']['config'][$id];
-        $text = "[DB]\n".
-                "db_path = {$data['DB']['db_path']}\n".
-                "db_user = {$data['DB']['db_user_operator']}\n".
-                "db_passwd = {$data['DB']['db_passwd_operator']}\n".
-                "db_name = {$data['DB']['db_name']}";
-                
-        if (!@file_put_contents($file,$text)) $fail = true;
-    }
-    
     public static function installiereUIKonfigurationsdatei($data, &$fail, &$errno, &$error)
     {
-        Einstellungen::GetValue('data[UI][conf]',$data['UI']['conf']);
-        Einstellungen::GetValue('data[PL][url]',$data['PL']['url']);
-    
         $fail = false;
         $file = $data['UI']['conf'];
-        $text = explode("\n",file_get_contents($data['UI']['conf']));
+        if (!file_exists(dirname(__FILE__).'/../'.$data['UI']['conf'])){ $fail = true;$error='UI-Konfigurationsdatei wurde nicht gefunden!';return;}
+        
+        $text = explode("\n",file_get_contents(dirname(__FILE__).'/../'.$data['UI']['conf']));
         foreach ($text as &$tt){
             if (substr(trim($tt),0,10)==='$serverURI'){
                 $tt='$serverURI'. " = '{$data['PL']['url']}';";
@@ -315,24 +532,22 @@ class Installation
         }
         $text = implode("\n",$text);
 
-        if (!@file_put_contents($file,$text)) $fail = true;
+        if (!@file_put_contents(dirname(__FILE__).'/../'.$file,$text)){ $fail = true;$error='UI-Konfigurationsdatei, kein Schreiben möglich!';return;}
     }
 
     public static function installiereKomponentendatei($data, &$fail, &$errno, &$error)
     {
-        Einstellungen::GetValue('data[DB][componentsSql]',$data['DB']['componentsSql']);
-        Einstellungen::GetValue('data[PL][url]',$data['PL']['url']);
-    
+        $mainPath = dirname(__FILE__) . '/..';
         if (!$fail){
-            if (!file_exists($data['DB']['componentsSql'])){
+            if (!file_exists($mainPath.'/'.$data['DB']['componentsSql'])){
                 $error = "Datei existiert nicht";
                 $fail = true;
                 return;
-        }
+            }
                 
-           $sql = file_get_contents($data['DB']['componentsSql']);
+           $sql = file_get_contents($mainPath.'/'.$data['DB']['componentsSql']);
            $sql = str_replace("'localhost/uebungsplattform/", "'{$data['PL']['url']}/" ,$sql);
-           
+
            $result = DBRequest::request2($sql, false, $data);
            if (!is_array($result)) $result = array($result);
            foreach ($result as $res){
@@ -346,12 +561,6 @@ class Installation
 
     public static function installiereSuperAdmin($data, &$fail, &$errno, &$error)
     {
-        Einstellungen::GetValue('data[DB][db_passwd_insert]',$data['DB']['db_passwd_insert']);
-        Einstellungen::GetValue('data[DB][db_user_insert]',$data['DB']['db_user_insert']);
-        Einstellungen::GetValue('data[DB][db_email_insert]',$data['DB']['db_email_insert']);
-        Einstellungen::GetValue('data[DB][db_last_name_insert]',$data['DB']['db_last_name_insert']);
-        Einstellungen::GetValue('data[DB][db_first_name_insert]',$data['DB']['db_first_name_insert']);
-    
         if (!$fail){    
            $auth = new Authentication();
            $salt = $auth->generateSalt();
@@ -367,16 +576,12 @@ class Installation
     
     public static function installiereDBOperator($data, &$fail, &$errno, &$error)
     {
-        Einstellungen::GetValue('data[DB][db_user_override_operator]',$data['DB']['db_user_override_operator']);
-        Einstellungen::GetValue('data[DB][db_user_operator]',$data['DB']['db_user_operator']);
-        Einstellungen::GetValue('data[DB][db_name]',$data['DB']['db_name']);
-        Einstellungen::GetValue('data[DB][db_passwd_operator]',$data['DB']['db_passwd_operator']);
-    
         if (!$fail && isset($data['DB']['db_user_override_operator']) && $data['DB']['db_user_override_operator'] === 'override'){
             $oldName = $data['DB']['db_name'];
             $data['DB']['db_name'] = null;
-            $sql = "DROP USER {$data['DB']['db_user_operator']}@localhost;";
-            $result = DBRequest::request($sql, false, $data);
+            $sql = "DROP USER '{$data['DB']['db_user_operator']}'@'%';";
+            $sql .= "DROP USER '{$data['DB']['db_user_operator']}'@'localhost';";
+            $result = DBRequest::request2($sql, false, $data);
             /*if ($result["errno"] !== 0){
                 $fail = true; $errno = $result["errno"];$error = isset($result["error"]) ? $result["error"] : '';
             }*/
@@ -405,12 +610,16 @@ class Installation
             $oldName = $data['DB']['db_name'];
             $data['DB']['db_name'] = null;
             $sql = "GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,TRIGGER ".
-                    "ON {$oldName}.* ".
+                    "ON `{$oldName}`.* ".
+                    "TO '{$data['DB']['db_user_operator']}'@'%' ".
+                    "IDENTIFIED BY '{$data['DB']['db_passwd_operator']}';";
+            $sql.= "GRANT SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,TRIGGER ".
+                    "ON `{$oldName}`.* ".
                     "TO '{$data['DB']['db_user_operator']}'@'localhost' ".
                     "IDENTIFIED BY '{$data['DB']['db_passwd_operator']}';";
-            $result = DBRequest::request($sql, false, $data);
-            if ($result["errno"] !== 0){
-                $fail = true; $errno = $result["errno"];$error = isset($result["error"]) ? $result["error"] : '';
+            $result = DBRequest::request2($sql, false, $data);
+            if ($result[0]["errno"] !== 0 && $result[1]["errno"] !== 0){
+                $fail = true; $errno = $result[0]["errno"];$error = isset($result[0]["error"]) ? $result[0]["error"] : '';
             }
             $data['DB']['db_name'] = $oldName;
         } elseif ($userExists){
@@ -420,10 +629,6 @@ class Installation
     
     public static function installiereDatenbankdatei($data, &$fail, &$errno, &$error)
     {
-        Einstellungen::GetValue('data[DB][db_override]',$data['DB']['db_override']);
-        Einstellungen::GetValue('data[DB][db_name]',$data['DB']['db_name']);
-        Einstellungen::GetValue('data[DB][databaseSql]',$data['DB']['databaseSql']);
-        
         // database.sql    
         if (!$fail && (isset($data['DB']['db_override']) && $data['DB']['db_override'] === 'override')){
            $sql = "DROP SCHEMA IF EXISTS `".$data['DB']['db_name']."`;";
@@ -465,5 +670,47 @@ class Installation
            }
         }
     }
+   
+   /** 
+    * Finds path, relative to the given root folder, of all files and directories in the given directory and its sub-directories non recursively. 
+    * Will return an array of the form 
+    * array( 
+    *   'files' => [], 
+    *   'dirs'  => [], 
+    * ) 
+    * @author sreekumar 
+    * @param string $root 
+    * @result array 
+    */ 
+    public static function read_all_files($root = '.'){ 
+      $files  = array('files'=>array(), 'dirs'=>array()); 
+      $directories  = array(); 
+      $last_letter  = $root[strlen($root)-1]; 
+      $root  = ($last_letter == '/') ? $root : $root.'/'; 
+      
+      $directories[]  = $root; 
+      
+      while (sizeof($directories)) { 
+        $dir  = array_pop($directories); 
+        if ($handle = opendir($dir)) { 
+          while (false !== ($file = readdir($handle))) { 
+            if ($file == '.' || $file == '..') { 
+              continue; 
+            } 
+            $file  = $dir.$file; 
+            if (is_dir($file)) { 
+              $directory_path = $file.'/'; 
+              array_push($directories, $directory_path); 
+              $files['dirs'][]  = $directory_path; 
+            } elseif (is_file($file)) { 
+              $files['files'][]  = $file; 
+            } 
+          } 
+          closedir($handle); 
+        } 
+      } 
+      
+      return $files; 
+    } 
 }
 ?>

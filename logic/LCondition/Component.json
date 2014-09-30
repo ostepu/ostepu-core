@@ -1,0 +1,15 @@
+{
+  "name":"LCondition",
+  "version":"1.0",
+  "classFile":"LCondition.php",
+  "className":"LCondition",
+  "files":[
+    {"path":".htaccess"},
+    {"path":"LCondition.php"},
+    {"path":"index.php"},
+    {"path":"Commands.json"}
+  ],
+  "links":[
+    {"name":"controller", "target":"LController", "links":[{"method":"POST", "path":"/DB/approvalcondition" },{"method":"PUT", "path":"/DB/approvalcondition/:courseid" }] }
+  ]
+}

@@ -79,25 +79,26 @@ class DBExerciseSheet
     public function __construct( )
     {
         // runs the CConfig
-        $com = new CConfig( DBExerciseSheet::getPrefix( ) );
+        $com = new CConfig( DBExerciseSheet::getPrefix( ), dirname(__FILE__) );
 
         // runs the DBExerciseSheet
         if ( $com->used( ) ) return;
-            $conf = $com->loadConfig( );
-            
+            $conf = $com->loadConfig(  );
+
         // initialize component
         $this->_conf = $conf;
         $this->query = array( CConfig::getLink( 
-                                               $conf->getLinks( ),
+                                               $this->_conf->getLinks( ),
                                                'out'
                                                ) );
+
         $this->query2 = array( CConfig::getLink( 
-                                               $conf->getLinks( ),
+                                               $this->_conf->getLinks( ),
                                                'out2'
                                                ) );
 
         // initialize slim
-        $this->_app = new \Slim\Slim( );
+        $this->_app = new \Slim\Slim( array( 'debug' => true ) );
         $this->_app->response->headers->set( 
                                             'Content-Type',
                                             'application/json'
@@ -237,7 +238,7 @@ class DBExerciseSheet
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/EditExerciseSheet.sql',
+                                                  dirname(__FILE__) . '/Sql/EditExerciseSheet.sql',
                                                   array( 
                                                         'esid' => $esid,
                                                         'values' => $data
@@ -289,7 +290,7 @@ class DBExerciseSheet
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
-                                              'Sql/DeleteExerciseSheet.sql',
+                                              dirname(__FILE__) . '/Sql/DeleteExerciseSheet.sql',
                                               array( 'esid' => $esid )
                                               );
 
@@ -348,7 +349,7 @@ class DBExerciseSheet
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/AddExerciseSheet.sql',
+                                                  dirname(__FILE__) . '/Sql/AddExerciseSheet.sql',
                                                   array( 'values' => $data )
                                                   );
 
@@ -476,7 +477,7 @@ class DBExerciseSheet
     {
         $this->getUrl( 
                       'GetExerciseSheetURL',
-                      'Sql/GetExerciseSheetURL.sql',
+                      dirname(__FILE__).'/Sql/GetExerciseSheetURL.sql',
                       isset( $userid ) ? $userid : '',
                       isset( $courseid ) ? $courseid : '',
                       isset( $esid ) ? $esid : '',
@@ -499,7 +500,7 @@ class DBExerciseSheet
     {
         $this->getUrl( 
                       'GetCourseSheetURLs',
-                      'Sql/GetCourseSheetURLs.sql',
+                      dirname(__FILE__).'/Sql/GetCourseSheetURLs.sql',
                       isset( $userid ) ? $userid : '',
                       isset( $courseid ) ? $courseid : '',
                       isset( $esid ) ? $esid : '',
@@ -550,7 +551,7 @@ class DBExerciseSheet
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
-                                              'Sql/GetExerciseSheet.sql',
+                                              dirname(__FILE__).'/Sql/GetExerciseSheet.sql',
                                               array( 'esid' => $esid )
                                               );
 
@@ -563,7 +564,7 @@ class DBExerciseSheet
             // starts a query, by using a given file
             $result2 = DBRequest::getRoutedSqlFile( 
                                                    $this->query,
-                                                   'Sql/GetSheetExercises.sql',
+                                                   dirname(__FILE__).'/Sql/GetSheetExercises.sql',
                                                    array( 'esid' => $esid )
                                                    );
         }
@@ -751,7 +752,7 @@ class DBExerciseSheet
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
-                                              'Sql/GetCourseSheets.sql',
+                                              dirname(__FILE__).'/Sql/GetCourseSheets.sql',
                                               array( 'courseid' => $courseid )
                                               );
 
@@ -762,7 +763,7 @@ class DBExerciseSheet
                       ) ){
             $result2 = DBRequest::getRoutedSqlFile( 
                                                    $this->query,
-                                                   'Sql/GetCourseExercises.sql',
+                                                   dirname(__FILE__).'/Sql/GetCourseExercises.sql',
                                                    array( 'courseid' => $courseid )
                                                    );
         }
@@ -907,8 +908,9 @@ class DBExerciseSheet
 
                 $this->_app->stop( );
                 
-            } else 
+            } else {
                 $result['status'] = 404;
+                }
         }
 
         Logger::Log( 
@@ -936,7 +938,7 @@ class DBExerciseSheet
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
-                                              'Sql/GetExistsPlatform.sql',
+                                              dirname(__FILE__).'/Sql/GetExistsPlatform.sql',
                                               array( ),
                                               false
                                               );
@@ -980,7 +982,7 @@ class DBExerciseSheet
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query2,
-                                              'Sql/DeletePlatform.sql',
+                                              dirname(__FILE__).'/Sql/DeletePlatform.sql',
                                               array( ),
                                               false
                                               );
@@ -1038,7 +1040,7 @@ class DBExerciseSheet
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query2,
-                                                  'Sql/AddPlatform.sql',
+                                                  dirname(__FILE__).'/Sql/AddPlatform.sql',
                                                   array( 'object' => $in ),
                                                   false
                                                   );

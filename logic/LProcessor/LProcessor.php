@@ -6,10 +6,10 @@
  * @date 2014
  */
 
-require_once '../../Assistants/Slim/Slim.php';
-include_once '../../Assistants/Request.php';
-include_once '../../Assistants/CConfig.php';
-include_once '../../Assistants/Structures.php';
+require_once dirname(__FILE__) . '/../../Assistants/Slim/Slim.php';
+include_once dirname(__FILE__) . '/../../Assistants/Request.php';
+include_once dirname(__FILE__) . '/../../Assistants/CConfig.php';
+include_once dirname(__FILE__) . '/../../Assistants/Structures.php';
 
 \Slim\Slim::registerAutoloader();
 
@@ -89,7 +89,7 @@ class LProcessor
     public function __construct()
     {
         // runs the CConfig
-        $com = new CConfig( LProcessor::getPrefix( ) . ',submission,course,link' );
+        $com = new CConfig( LProcessor::getPrefix( ) . ',submission,course,link', dirname(__FILE__) );
 
         // runs the LProcessor
         if ( $com->used( ) ) return;
@@ -582,7 +582,7 @@ class LProcessor
                                                 $this->_submission,
                                                 'submission'
                                                );
-
+//var_dump($result);return;
                 // checks the correctness of the query
                 if ( $result['status'] >= 200 && 
                      $result['status'] <= 299 ){
@@ -595,7 +595,7 @@ class LProcessor
                    
                 } else {
                     $uploadSubmission->addMessage("Beim Speichern der Einsendung ist ein Fehler aufgetreten.");
-                
+//var_dump($uploadSubmission); return;
                     if (isset($result['content'])){
                         $content = Submission::decodeSubmission($result['content']);
                         $uploadSubmission->setStatus($content->getStatus());  

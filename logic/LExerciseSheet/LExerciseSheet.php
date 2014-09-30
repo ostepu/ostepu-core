@@ -9,11 +9,11 @@
  * @date 2013-2014
  */
 
-require '../../Assistants/Slim/Slim.php';
-include '../../Assistants/Request.php';
-include '../../Assistants/Structures.php';
-include_once '../../Assistants/CConfig.php';
-include '../Include/LArraySorter.php';
+require_once dirname(__FILE__) . '/../../Assistants/Slim/Slim.php';
+include_once dirname(__FILE__) . '/../../Assistants/Request.php';
+include_once dirname(__FILE__) . '/../../Assistants/Structures.php';
+include_once dirname(__FILE__) . '/../../Assistants/CConfig.php';
+include_once dirname(__FILE__) . '/../../Assistants/LArraySorter.php';
 
 \Slim\Slim::registerAutoloader();
 
@@ -74,7 +74,7 @@ class LExerciseSheet
     public function __construct()
     {
         // runs the CConfig
-        $com = new CConfig( LExerciseSheet::getPrefix( ) );
+        $com = new CConfig( LExerciseSheet::getPrefix( ), dirname(__FILE__) );
 
         // runs the LExerciseSheet
         if ( $com->used( ) ) return;
@@ -144,7 +144,6 @@ class LExerciseSheet
      * the information belongs to this exercisesheet will be stored in the database.
      */
      public function addExerciseSheet(){
-        $header = $this->app->request->headers->all();
         $body = json_decode($this->app->request->getBody(), true);
         
         // if sheetFile is given
@@ -156,15 +155,15 @@ class LExerciseSheet
             $URL = $this->lURL.'/FS/file';
 
             // upload sheetfile
-            $sheetanswer = Request::custom('POST', $URL, $header, $sheetfile);
+            $sheetanswer = Request::custom('POST', $URL, array(), $sheetfile);
             if($sheetanswer['status'] == 201) {
                 $URL = $this->lURL.'/DB/file';
-                $sheetanswer2 = Request::custom('POST', $URL, $header, $sheetanswer['content']);
+                $sheetanswer2 = Request::custom('POST', $URL, array(), $sheetanswer['content']);
 
                 // if file already exists
                 if($sheetanswer2['status'] != 201) {
                     $sheetFSContent = json_decode($sheetanswer['content'], true);
-                    $sheetanswer2 = Request::custom('GET', $URL.'/hash/'.$sheetFSContent['hash'], $header, "");
+                    $sheetanswer2 = Request::custom('GET', $URL.'/hash/'.$sheetFSContent['hash'], array(), "");
                     if ($sheetanswer2['status'] == 200) {
                         $id = json_decode($sheetanswer2['content'], true);
                         $body['sheetFile'] = $id;
@@ -189,15 +188,15 @@ class LExerciseSheet
             $URL = $this->lURL.'/FS/file';
 
             // upload sampleSolution
-            $sheetanswer = Request::custom('POST', $URL, $header, $sheetfile);
+            $sheetanswer = Request::custom('POST', $URL, array(), $sheetfile);
             if($sheetanswer['status'] == 201) {
                 $URL = $this->lURL.'/DB/file';
-                $sheetanswer2 = Request::custom('POST', $URL, $header, $sheetanswer['content']);
+                $sheetanswer2 = Request::custom('POST', $URL, array(), $sheetanswer['content']);
 
                 // if file already exists
                 if($sheetanswer2['status'] != 201) {
                     $sheetFSContent = json_decode($sheetanswer['content'], true);
-                    $sheetanswer2 = Request::custom('GET', $URL.'/hash/'.$sheetFSContent['hash'], $header, "");
+                    $sheetanswer2 = Request::custom('GET', $URL.'/hash/'.$sheetFSContent['hash'], array(), "");
                     if ($sheetanswer2['status'] == 200) {
                         $id = json_decode($sheetanswer2['content'], true);
                         $body['sampleSolution'] = $id;
@@ -215,7 +214,7 @@ class LExerciseSheet
 
         // create ExerciseSheet
         $URL = $this->lURL.'/DB/exercisesheet';
-        $CreateSheetDB = Request::custom('POST', $URL, $header, json_encode($body));
+        $CreateSheetDB = Request::custom('POST', $URL, array(), json_encode($body));
         $this->app->response->setBody($CreateSheetDB['content']);
         $this->app->response->setStatus($CreateSheetDB['status']);
     }
@@ -233,7 +232,6 @@ class LExerciseSheet
      * @param int $sheetid The id of the exercise sheet that is beeing updated.
      */
     public function editExerciseSheet($sheetid){
-        $header = $this->app->request->headers->all();
         $body = json_decode($this->app->request->getBody(), true);
 
         // get files from body
@@ -244,8 +242,8 @@ class LExerciseSheet
         $URL = $this->lURL.'/FS/file';
 
         // requests to filesystem
-        $sampleanswer = Request::custom('POST', $URL, $header, $samplesolutionfile);
-        $sheetanswer = Request::custom('POST', $URL, $header, $sheetfile);
+        $sampleanswer = Request::custom('POST', $URL, array(), $samplesolutionfile);
+        $sheetanswer = Request::custom('POST', $URL, array(), $sheetfile);
 
         /*
          * if the files has been stored, the information
@@ -255,8 +253,8 @@ class LExerciseSheet
             and $sheetanswer['status'] >= 200 and $sheetanswer['status'] < 300){
                 // first request to store the fileinformation to the DBfile table
                 $URL = $this->lURL.'/DB/file';
-                $sampleanswer = Request::custom('POST', $URL, $header, $sampleanswer['content']);
-                $sheetanswer = Request::custom('POST', $URL, $header, $sheetanswer['content']);
+                $sampleanswer = Request::custom('POST', $URL, array(), $sampleanswer['content']);
+                $sheetanswer = Request::custom('POST', $URL, array(), $sheetanswer['content']);
                 if($sampleanswer['status'] >= 200 and $sampleanswer['status'] < 300
                     and $sheetanswer['status'] >= 200 and $sheetanswer['status'] < 300){
                         // set the request body for database
@@ -264,7 +262,7 @@ class LExerciseSheet
                         $body['sheetFile'] = json_decode($sheetanswer['content'], true);
                         // request to database
                         $URL = $this->lURL.'/DB/exercisesheet/exercisesheet/'.$sheetid;
-                        $answer = Request::custom('PUT', $URL, $header, json_encode($body));
+                        $answer = Request::custom('PUT', $URL, array(), json_encode($body));
                         $this->app->response->setStatus($answer['status']);
                 } else {
                     $this->app->response->setStatus(400);
@@ -283,9 +281,8 @@ class LExerciseSheet
      * @param int $sheetid The id of the exercise sheet the returned URL belongs to.
      */
     public function getExerciseSheetURL($sheetid){
-        $header = $this->app->request->headers->all();
         $URL = $this->lURL.'/DB/exercisesheet/exercisesheet/'.$sheetid.'/url';
-        $answer = Request::custom('GET', $URL, $header, "");
+        $answer = Request::custom('GET', $URL, array(), "");
         $this->app->response->setBody($answer['content']);
         $this->app->response->setStatus($answer['status']);
     }
@@ -299,9 +296,8 @@ class LExerciseSheet
      * @param int $sheetid The id of the exercise sheet that should be returned.
      */
     public function getExerciseSheet($sheetid){
-        $header = $this->app->request->headers->all();
         $URL = $this->lURL.'/DB/exercisesheet/exercisesheet/'.$sheetid;
-        $answer = Request::custom('GET', $URL, $header, "");
+        $answer = Request::custom('GET', $URL, array(), "");
         $this->app->response->setBody($answer['content']);
         $this->app->response->setStatus($answer['status']);
     }
@@ -315,9 +311,8 @@ class LExerciseSheet
      * @param int $sheetid The id of the exercise sheet that should be returned.
      */
     public function getExerciseSheetExercise($sheetid){
-        $header = $this->app->request->headers->all();
         $URL = $this->lURL.'/DB/exercisesheet/exercisesheet/'.$sheetid.'/exercise';
-        $answer = Request::custom('GET', $URL, $header, "");
+        $answer = Request::custom('GET', $URL, array(), "");
 
         $sheet = json_decode($answer['content'], true);
 
@@ -341,9 +336,8 @@ class LExerciseSheet
      * @param int $sheetid The id of the exercise sheet that should be returned.
      */
     public function getExerciseSheetCourse($courseid){
-        $header = $this->app->request->headers->all();
         $URL = $this->lURL.'/DB/exercisesheet/course/'.$courseid;
-        $answer = Request::custom('GET', $URL, $header, "");
+        $answer = Request::custom('GET', $URL, array(), "");
 
         $sheets = json_decode($answer['content'], true);
 
@@ -367,9 +361,8 @@ class LExerciseSheet
      * @param int $sheetid The id of the exercise sheet that should be returned.
      */
     public function getExerciseSheetCourseExercise($courseid){
-        $header = $this->app->request->headers->all();
         $URL = $this->lURL.'/DB/exercisesheet/course/'.$courseid.'/exercise';
-        $answer = Request::custom('GET', $URL, $header, "");
+        $answer = Request::custom('GET', $URL, array(), "");
 
         $sheets = json_decode($answer['content'], true);
         // latest sheets on top
@@ -408,7 +401,6 @@ class LExerciseSheet
                     LogLevel::DEBUG
                     );
                     
-        $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
         $res = null;
         
@@ -416,7 +408,7 @@ class LExerciseSheet
         $result = Request::routeRequest( 
                                         'GET',
                                         '/exercisesheet/'.$sheetid,
-                                        $this->app->request->headers->all(),
+                                        array(),
                                         '',
                                         $this->_getExerciseSheet,
                                         'exercisesheet'
@@ -434,7 +426,7 @@ class LExerciseSheet
             $result = Request::routeRequest( 
                                             'DELETE',
                                             '/exercisesheet/'.$sheetid,
-                                            $this->app->request->headers->all(),
+                                            array(),
                                             '',
                                             $this->_deleteExerciseSheet,
                                             'exercisesheet'

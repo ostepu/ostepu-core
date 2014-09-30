@@ -1,0 +1,19 @@
+{
+  "name":"DBControl",
+  "version":"1.0",
+  "classFile":"DBControl.php",
+  "className":"DBControl",
+  "files":[
+    {"path":".htaccess"},
+    {"path":"DBControl.php"},
+    {"path":"index.php"},
+    {"path":"Commands.json"},
+    {"path":"Controller.php"}
+  ],
+  "links":[
+    {"name":"out", "target":["DBCourse","DBUser","DBAttachment","DBExercise","DBExerciseSheet","DBExerciseType","DBFile","DBSession","DBExternalId","DBApprovalCondition","DBGroup","DBInvitation","DBMarking","DBCourseStatus","DBSelectedSubmission","DBSubmission","DBExerciseFileType","CControl","DBForm","DBProcess"], "links":[] }
+  ],
+  "connector":[
+    {"name":"request", "target":"CLocalObjectRequest"}
+  ]
+}

@@ -78,7 +78,7 @@ class DBSubmission
     public function __construct( )
     {
         // runs the CConfig
-        $com = new CConfig( DBSubmission::getPrefix( ) );
+        $com = new CConfig( DBSubmission::getPrefix( ), dirname(__FILE__) );
 
         // runs the DBSubmission
         if ( $com->used( ) ) return;
@@ -306,7 +306,7 @@ class DBSubmission
     {
         $this->get( 
                    'GetExerciseSubmissions',
-                   'Sql/GetExerciseSubmissions.sql',
+                   dirname(__FILE__) . '/Sql/GetExerciseSubmissions.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -357,7 +357,7 @@ class DBSubmission
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/EditSubmission.sql',
+                                                  dirname(__FILE__) . '/Sql/EditSubmission.sql',
                                                   array( 
                                                         'suid' => $suid,
                                                         'values' => $data
@@ -409,7 +409,7 @@ class DBSubmission
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
-                                              'Sql/DeleteSubmission.sql',
+                                              dirname(__FILE__) . '/Sql/DeleteSubmission.sql',
                                               array( 'suid' => $suid )
                                               );
 
@@ -468,7 +468,7 @@ class DBSubmission
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/AddSubmission.sql',
+                                                  dirname(__FILE__) . '/Sql/AddSubmission.sql',
                                                   array( 'values' => $data )
                                                   );
 
@@ -596,7 +596,7 @@ class DBSubmission
     {
         $this->get( 
                    'GetAllSubmissions',
-                   'Sql/GetAllSubmissions.sql',
+                   dirname(__FILE__) . '/Sql/GetAllSubmissions.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -623,7 +623,7 @@ class DBSubmission
     {
         $this->get( 
                    'GetGroupSubmissions',
-                   'Sql/GetGroupSubmissions.sql',
+                   dirname(__FILE__) . '/Sql/GetGroupSubmissions.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -650,7 +650,7 @@ class DBSubmission
     {
         $this->get( 
                    'GetGroupSelectedSubmissions',
-                   'Sql/GetGroupSelectedSubmissions.sql',
+                   dirname(__FILE__) . '/Sql/GetGroupSelectedSubmissions.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -677,7 +677,7 @@ class DBSubmission
     {
         $this->get( 
                    'GetGroupSelectedCourseSubmissions',
-                   'Sql/GetGroupSelectedCourseSubmissions.sql',
+                   dirname(__FILE__) . '/Sql/GetGroupSelectedCourseSubmissions.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -703,7 +703,7 @@ class DBSubmission
     {
         $this->get( 
                    'GetGroupCourseSubmissions',
-                   'Sql/GetGroupCourseSubmissions.sql',
+                   dirname(__FILE__) . '/Sql/GetGroupCourseSubmissions.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -730,7 +730,7 @@ class DBSubmission
     {
         $this->get( 
                    'GetGroupExerciseSubmissions',
-                   'Sql/GetGroupExerciseSubmissions.sql',
+                   dirname(__FILE__) . '/Sql/GetGroupExerciseSubmissions.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -757,7 +757,7 @@ class DBSubmission
     {
         $this->get( 
                    'GetGroupSelectedExerciseSubmissions',
-                   'Sql/GetGroupSelectedExerciseSubmissions.sql',
+                   dirname(__FILE__) . '/Sql/GetGroupSelectedExerciseSubmissions.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -779,7 +779,7 @@ class DBSubmission
     {
         $this->get( 
                    'GetSubmission',
-                   'Sql/GetSubmission.sql',
+                   dirname(__FILE__) . '/Sql/GetSubmission.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -803,7 +803,7 @@ class DBSubmission
     {
         $this->get( 
                    'GetSheetSubmissions',
-                   'Sql/GetSheetSubmissions.sql',
+                   dirname(__FILE__) . '/Sql/GetSheetSubmissions.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -826,7 +826,7 @@ class DBSubmission
     {
         $this->get( 
                    'GetSelectedSheetSubmissions',
-                   'Sql/GetSelectedSheetSubmissions.sql',
+                   dirname(__FILE__) . '/Sql/GetSelectedSheetSubmissions.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -849,7 +849,7 @@ class DBSubmission
     {
         $this->get( 
                    'GetSelectedExerciseSubmissions',
-                   'Sql/GetSelectedExerciseSubmissions.sql',
+                   dirname(__FILE__) . '/Sql/GetSelectedExerciseSubmissions.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -876,7 +876,7 @@ class DBSubmission
     {
         $this->get( 
                    'GetUserExerciseSubmissions',
-                   'Sql/GetUserExerciseSubmissions.sql',
+                   dirname(__FILE__) . '/Sql/GetUserExerciseSubmissions.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -903,7 +903,7 @@ class DBSubmission
     {
         $this->get( 
                    'GetUserSheetSubmissions',
-                   'Sql/GetUserSheetSubmissions.sql',
+                   dirname(__FILE__) . '/Sql/GetUserSheetSubmissions.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -926,7 +926,7 @@ class DBSubmission
     {
         $this->get( 
                    'GetCourseSubmissions',
-                   'Sql/GetCourseSubmissions.sql',
+                   dirname(__FILE__) . '/Sql/GetCourseSubmissions.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -946,7 +946,7 @@ class DBSubmission
     {
         $this->get( 
                    'GetExistsPlatform',
-                   'Sql/GetExistsPlatform.sql',
+                   dirname(__FILE__) . '/Sql/GetExistsPlatform.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -974,7 +974,7 @@ class DBSubmission
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query2,
-                                              'Sql/DeletePlatform.sql',
+                                              dirname(__FILE__) . '/Sql/DeletePlatform.sql',
                                               array( ),
                                               false
                                               );
@@ -1032,7 +1032,7 @@ class DBSubmission
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query2,
-                                                  'Sql/AddPlatform.sql',
+                                                  dirname(__FILE__) . '/Sql/AddPlatform.sql',
                                                   array( 'object' => $in ),
                                                   false
                                                   );

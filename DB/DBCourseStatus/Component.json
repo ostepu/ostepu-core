@@ -1,0 +1,20 @@
+{
+  "name":"DBCourseStatus",
+  "version":"1.0",
+  "classFile":"DBCourseStatus.php",
+  "className":"DBCourseStatus",
+  "files":[
+    {"path":".htaccess"},
+    {"path":"DBCourseStatus.php"},
+    {"path":"index.php"},
+    {"path":"Commands.json"},
+    {"path":"Sql/"}
+  ],
+  "links":[
+    {"name":"out", "target":"DBQuery", "links":[{"method":"POST", "path":"/query" }] },
+    {"name":"out2", "target":"DBQuery2", "links":[{"method":"POST", "path":"/query" }] }
+  ],
+  "connector":[
+    {"name":"request", "target":"CLocalObjectRequest"}
+  ]
+}

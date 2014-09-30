@@ -4,6 +4,8 @@
  * @author  Till Uhlig
  */
  
+ header('Content-Type: text/html; charset=utf-8');
+ 
 /*include_once '../../../../Assistants/Structures.php';
 include_once '../../../../Assistants/Request.php';
 include_once '../../Config.php';

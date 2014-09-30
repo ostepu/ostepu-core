@@ -1,0 +1,22 @@
+{
+  "name":"LOOP",
+  "version":"1.0",
+  "classFile":"LOOP.php",
+  "className":"LOOP",
+  "files":[
+    {"path":".htaccess"},
+    {"path":"LOOP.php"},
+    {"path":"index.php"},
+    {"path":"Commands.json"}
+  ],
+  "links":[
+    {"name":"pdf", "target":"FSPdf", "links":[] },
+    {"name":"postProcess", "target":"DBProcessList", "links":[{"method":"POST", "path":"/process" }] },
+    {"name":"deleteProcess", "target":"DBProcessList", "links":[{"method":"DELETE", "path":"/process/process/:processid" }] },
+    {"name":"getProcess", "target":"DBProcessList", "links":[{"method":"GET", "path":"/process/course/:courseid/component/:componentid" }] }
+  ],
+  "connector":[
+    {"name":"extension", "target":"LExtension"},
+    {"name":"request", "target":"CLocalObjectRequest"}
+  ]
+}

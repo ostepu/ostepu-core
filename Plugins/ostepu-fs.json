@@ -1,0 +1,21 @@
+{
+  "name":"OSTEPU-FS",
+  "version":"0.1",
+  "versionDate":"27.06.2014",
+  "author":"",
+  "sourceURL":"",
+  "updateURL":"",
+  "requirements":[{"type":"plugin","name":"CORE","version":"0.1"}],
+  "files":
+    [
+      {"path":"Plugins/ostepu-fs.json"}
+    ],
+  "components":
+    [
+      {"conf":"FS/FSBinder/Component.json"},
+      {"conf":"FS/FSControl/Component.json"},
+      {"conf":"FS/FSFile/Component.json"},
+      {"conf":"FS/FSPdf/Component.json"},
+      {"conf":"FS/FSZip/Component.json"}
+    ]
+}

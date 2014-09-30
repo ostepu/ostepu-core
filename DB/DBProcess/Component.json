@@ -1,0 +1,19 @@
+{
+  "name":"DBProcess",
+  "version":"1.0",
+  "classFile":"DBProcess.php",
+  "className":"DBProcess",
+  "files":[
+    {"path":".htaccess"},
+    {"path":"DBProcess.php"},
+    {"path":"index.php"},
+    {"path":"Commands.json"},
+    {"path":"Sql/"}
+  ],
+  "links":[
+    {"name":"out", "target":"DBQuery2", "links":[{"method":"POST", "path":"/query" }] }
+  ],
+  "connector":[
+    {"name":"request", "target":"CLocalObjectRequest"}
+  ]
+}

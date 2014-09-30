@@ -1,0 +1,19 @@
+{
+  "name":"DBChoice",
+  "version":"1.0",
+  "classFile":"DBChoice.php",
+  "className":"DBChoice",
+  "files":[
+    {"path":".htaccess"},
+    {"path":"DBChoice.php"},
+    {"path":"index.php"},
+    {"path":"Commands.json"},
+    {"path":"Sql/"}
+  ],
+  "links":[
+    {"name":"out", "target":"DBQuery2", "links":[{"method":"POST", "path":"/query" }] }
+  ],
+  "connector":[
+    {"name":"request", "target":"CLocalObjectRequest"}
+  ]
+}

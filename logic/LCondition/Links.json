@@ -1,3 +1,0 @@
-[
-    {"name":"controller", "links":[{"method":"POST", "path":"/DB/approvalcondition" },{"method":"PUT", "path":"/DB/approvalcondition/:courseid" }] }
-]

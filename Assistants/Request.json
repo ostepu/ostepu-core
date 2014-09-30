@@ -1,0 +1,11 @@
+{
+  "name":"CLocalObjectRequest",
+  "version":"1.0",
+  "type":"clone",
+  "base":"CAbstract",
+  "baseURI":"/localObjectRequest",
+  "option":"confPath=Assistants/request_cconfig.json",
+  "links":[
+    {"name":"request","target":"","links":[]}
+  ]
+}

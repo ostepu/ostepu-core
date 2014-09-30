@@ -1,4 +1,0 @@
-[
-    {"name":"file", "links":[{"method":"POST", "path":"/file" }] },
-    {"name":"marking", "links":[{"method":"DELETE", "path":"/marking/:markingid" },{"method":"POST", "path":"/marking" }] }
-]

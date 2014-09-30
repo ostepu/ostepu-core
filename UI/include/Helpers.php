@@ -6,6 +6,9 @@
  * @author Florian Lücke
  * @author Ralf Busch
  */
+ 
+ 
+include_once ( dirname(__FILE__) . '/../../Assistants/Request.php' );
 
 /**
  * Remove a value fom an array
@@ -69,26 +72,16 @@ function set_error($errormsg)
  */
 function http_get($url, $authbool, &$message = 0)
 {
-    $c = curl_init();
-
-    curl_setopt($c, CURLOPT_URL, $url);
-    curl_setopt($c, CURLOPT_HTTPGET, 1);
-    if ($authbool) {
-        curlSetAuthentication($c);
-    }
-
-    curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
-
-    $retData = curl_exec($c);
-    $message = curl_getinfo($c, CURLINFO_HTTP_CODE);
-
+    $answer = Request::get($url, array(), '', $authbool);
+    
+    if (isset($answer['status']))
+        $message = $answer['status'];     
+  
     if ($message == "401") {
         Authentication::logoutUser();
     }
 
-    curl_close($c);
-
-    return $retData;
+    return (isset($answer['content']) ? $answer['content'] : null);
 }
 
 /**
@@ -217,7 +210,7 @@ function curlSetAuthentication($curl, $sessiondelete = false)
                 CURLOPT_HTTPHEADER,
                 array("User: {$user}",
                       "Session: {$session}",
-                      "Date : {$date}")
+                      "Date: {$date}")
                 );
 }
 

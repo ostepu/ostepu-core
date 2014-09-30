@@ -78,7 +78,7 @@ class DBExternalId
     public function __construct( )
     {
         // runs the CConfig
-        $com = new CConfig( DBExternalId::getPrefix( ) );
+        $com = new CConfig( DBExternalId::getPrefix( ), dirname(__FILE__) );
 
         // runs the DBExternalId
         if ( $com->used( ) ) return;
@@ -221,7 +221,7 @@ class DBExternalId
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/EditExternalId.sql',
+                                                  dirname(__FILE__) . '/Sql/EditExternalId.sql',
                                                   array( 
                                                         'exid' => $exid,
                                                         'values' => $data
@@ -269,7 +269,7 @@ class DBExternalId
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
-                                              'Sql/DeleteExternalId.sql',
+                                              dirname(__FILE__) . '/Sql/DeleteExternalId.sql',
                                               array( 'exid' => $exid )
                                               );
 
@@ -329,7 +329,7 @@ class DBExternalId
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/AddExternalId.sql',
+                                                  dirname(__FILE__) . '/Sql/AddExternalId.sql',
                                                   array( 'values' => $data )
                                                   );
 
@@ -446,7 +446,7 @@ class DBExternalId
     {
         $this->get( 
                    'GetExternalId',
-                   'Sql/GetExternalId.sql',
+                   dirname(__FILE__) . '/Sql/GetExternalId.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -467,7 +467,7 @@ class DBExternalId
     {
         $this->get( 
                    'GetAllExternalIds',
-                   'Sql/GetAllExternalIds.sql',
+                   dirname(__FILE__) . '/Sql/GetAllExternalIds.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -489,7 +489,7 @@ class DBExternalId
     {
         $this->get( 
                    'GetCourseExternalIds',
-                   'Sql/GetCourseExternalIds.sql',
+                   dirname(__FILE__) . '/Sql/GetCourseExternalIds.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -509,7 +509,7 @@ class DBExternalId
     {
         $this->get( 
                    'GetExistsPlatform',
-                   'Sql/GetExistsPlatform.sql',
+                   dirname(__FILE__) . '/Sql/GetExistsPlatform.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -537,7 +537,7 @@ class DBExternalId
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query2,
-                                              'Sql/DeletePlatform.sql',
+                                              dirname(__FILE__) . '/Sql/DeletePlatform.sql',
                                               array( ),
                                               false
                                               );
@@ -595,7 +595,7 @@ class DBExternalId
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query2,
-                                                  'Sql/AddPlatform.sql',
+                                                  dirname(__FILE__) . '/Sql/AddPlatform.sql',
                                                   array( 'object' => $in ),
                                                   false
                                                   );

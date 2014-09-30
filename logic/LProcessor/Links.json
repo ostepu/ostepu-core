@@ -1,9 +1,0 @@
-[
-    {"name":"submission", "links":[{"method":"POST", "path":"/submission" }] },
-    {"name":"marking", "links":[{"method":"POST", "path":"/marking" }] },
-    {"name":"processorDb", "links":[{"method":"POST", "path":"/process" },{"method":"GET", "path":"/process/exercise/:exerciseid" }] },
-    {"name":"attachment", "links":[{"method":"POST", "path":"/attachment" }] },
-    {"name":"workFiles", "links":[{"method":"POST", "path":"/attachment" }] },
-    {"name":"file", "links":[{"method":"POST", "path":"/file" }] },
-    {"name":"postCourse", "links":[{"method":"GET", "path":"/link/exists/course/:courseid" },{"method":"POST", "path":"/course" },{"method":"DELETE", "path":"/course/:courseid" }] }
-]

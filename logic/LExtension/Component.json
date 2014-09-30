@@ -1,0 +1,19 @@
+{
+  "name":"LExtension",
+  "version":"1.0",
+  "classFile":"LExtension.php",
+  "className":"LExtension",
+  "files":[
+    {"path":".htaccess"},
+    {"path":"LExtension.php"},
+    {"path":"index.php"},
+    {"path":"Commands.json"}
+  ],
+  "links":[
+    {"name":"extension", "target":"", "links":[{"method":"DELETE", "path":"/course/:courseid" },{"method":"POST", "path":"/course" },{"method":"GET", "path":"/link/exists/course/:courseid" },{"method":"GET", "path":"/exists/course/:courseid" }] }
+  ],
+  "connector":[
+    {"name":"deleteCourse", "target":"LCourse"},
+    {"name":"request", "target":"CLocalObjectRequest"}
+  ]
+}

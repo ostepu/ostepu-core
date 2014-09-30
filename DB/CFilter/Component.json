@@ -1,0 +1,12 @@
+{
+  "name":"CFilter",
+  "version":"1.0",
+  "classFile":"CFilter.php",
+  "className":"CFilter",
+  "files":[
+    {"path":".htaccess"},
+    {"path":"CFilter.php"},
+    {"path":"index.php"},
+    {"path":"Commands.json"}
+  ]
+}

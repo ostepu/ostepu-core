@@ -1,0 +1,11 @@
+{
+  "name":"FSZip",
+  "version":"1.0",
+  "classFile":"FSZip.php",
+  "className":"FSZip",
+  "files":[
+    {"path":".htaccess"},
+    {"path":"FSZip.php"},
+    {"path":"Commands.json"}
+  ]
+}

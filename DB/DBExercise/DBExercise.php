@@ -78,7 +78,7 @@ class DBExercise
     public function __construct( )
     {
         // runs the CConfig
-        $com = new CConfig( DBExercise::getPrefix( ) );
+        $com = new CConfig( DBExercise::getPrefix( ), dirname(__FILE__) );
 
         // runs the DBExercise
         if ( $com->used( ) ) return;
@@ -272,7 +272,7 @@ class DBExercise
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/EditExercise.sql',
+                                                  dirname(__FILE__) . '/Sql/EditExercise.sql',
                                                   array( 
                                                         'eid' => $eid,
                                                         'values' => $data
@@ -324,7 +324,7 @@ class DBExercise
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
-                                              'Sql/DeleteExercise.sql',
+                                              dirname(__FILE__) . '/Sql/DeleteExercise.sql',
                                               array( 'eid' => $eid )
                                               );
 
@@ -383,7 +383,7 @@ class DBExercise
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/AddExercise.sql',
+                                                  dirname(__FILE__) . '/Sql/AddExercise.sql',
                                                   array( 'values' => $data )
                                                   );
 
@@ -521,7 +521,7 @@ class DBExercise
     {
         $this->get( 
                    'GetExercise',
-                   'Sql/GetExercise.sql',
+                   dirname(__FILE__) . '/Sql/GetExercise.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -553,7 +553,7 @@ class DBExercise
     {
         $this->get( 
                    'GetAllExercises',
-                   'Sql/GetAllExercises.sql',
+                   dirname(__FILE__) . '/Sql/GetAllExercises.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -583,7 +583,7 @@ class DBExercise
     {
         $this->get( 
                    'GetSheetExercises',
-                   'Sql/GetSheetExercises.sql',
+                   dirname(__FILE__) . '/Sql/GetSheetExercises.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -619,7 +619,7 @@ class DBExercise
     {
         $this->get( 
                    'GetCourseExercises',
-                   'Sql/GetCourseExercises.sql',
+                   dirname(__FILE__) . '/Sql/GetCourseExercises.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -650,7 +650,7 @@ class DBExercise
     {
         $this->get( 
                    'GetExistsPlatform',
-                   'Sql/GetExistsPlatform.sql',
+                   dirname(__FILE__) . '/Sql/GetExistsPlatform.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -679,7 +679,7 @@ class DBExercise
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query2,
-                                              'Sql/DeletePlatform.sql',
+                                              dirname(__FILE__) . '/Sql/DeletePlatform.sql',
                                               array( ),
                                               false
                                               );
@@ -737,7 +737,7 @@ class DBExercise
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query2,
-                                                  'Sql/AddPlatform.sql',
+                                                  dirname(__FILE__) . '/Sql/AddPlatform.sql',
                                                   array( 'object' => $in ),
                                                   false
                                                   );

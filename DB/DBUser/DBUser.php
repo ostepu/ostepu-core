@@ -1,6 +1,4 @@
-<?php 
-
-
+<?php
 /**
  * @file DBUser.php Contains the DBUser class
  *
@@ -78,7 +76,7 @@ class DBUser
     public function __construct( )
     {
         // runs the CConfig
-        $com = new CConfig( DBUser::getPrefix( ) );
+        $com = new CConfig( DBUser::getPrefix( ), dirname(__FILE__) );
 
         // runs the DBUser
         if ( $com->used( ) ) return;
@@ -97,7 +95,7 @@ class DBUser
                                                ) );
 
         // initialize slim
-        $this->_app = new \Slim\Slim( array( 'debug' => false ) );
+        $this->_app = new \Slim\Slim( array( 'debug' => true ) );
         $this->_app->response->headers->set( 
                                             'Content-Type',
                                             'application/json'
@@ -269,7 +267,7 @@ class DBUser
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/EditUser.sql',
+                                                  dirname(__FILE__).'/Sql/EditUser.sql',
                                                   array( 
                                                         'userid' => $userid,
                                                         'values' => $data
@@ -317,7 +315,7 @@ class DBUser
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
-                                              'Sql/DeleteUser.sql',
+                                              dirname(__FILE__).'/Sql/DeleteUser.sql',
                                               array( 'userid' => $userid )
                                               );
 
@@ -370,7 +368,7 @@ class DBUser
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
-                                              'Sql/DeleteUserPermanent.sql',
+                                              dirname(__FILE__).'/Sql/DeleteUserPermanent.sql',
                                               array( 'userid' => $userid )
                                               );
 
@@ -437,7 +435,7 @@ class DBUser
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
-                                                  'Sql/AddUser.sql',
+                                                  dirname(__FILE__).'/Sql/AddUser.sql',
                                                   array( 'values' => $data ),
                                                   false
                                                   );
@@ -510,7 +508,7 @@ class DBUser
 
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
-                                              $this->query2,
+                                              $this->query,
                                               $sqlFile,
                                               array( 
                                                     'userid' => $userid,
@@ -570,7 +568,7 @@ class DBUser
     {
         $this->get( 
                    'GetUsers',
-                   'Sql/GetUsers.sql',
+                   dirname(__FILE__).'/Sql/GetUsers.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -592,7 +590,7 @@ class DBUser
     {
         $this->get( 
                    'GetUser',
-                   'Sql/GetUser.sql',
+                   dirname(__FILE__).'/Sql/GetUser.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -616,7 +614,7 @@ class DBUser
     {
         $this->get( 
                    'GetIncreaseUserFailedLogin',
-                   'Sql/GetIncreaseUserFailedLogin.sql',
+                   dirname(__FILE__).'/Sql/GetIncreaseUserFailedLogin.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -640,7 +638,7 @@ class DBUser
     {
         $this->get( 
                    'GetCourseMember',
-                   'Sql/GetCourseMember.sql',
+                   dirname(__FILE__).'/Sql/GetCourseMember.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -667,7 +665,7 @@ class DBUser
     {
         $this->get( 
                    'GetGroupMember',
-                   'Sql/GetGroupMember.sql',
+                   dirname(__FILE__).'/Sql/GetGroupMember.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -689,7 +687,7 @@ class DBUser
     {
         $this->get( 
                    'GetUserByStatus',
-                   'Sql/GetUserByStatus.sql',
+                   dirname(__FILE__).'/Sql/GetUserByStatus.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -716,7 +714,7 @@ class DBUser
     {
         $this->get( 
                    'GetCourseUserByStatus',
-                   'Sql/GetCourseUserByStatus.sql',
+                   dirname(__FILE__).'/Sql/GetCourseUserByStatus.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',
@@ -736,7 +734,7 @@ class DBUser
     {
         $this->get( 
                    'GetExistsPlatform',
-                   'Sql/GetExistsPlatform.sql',
+                   dirname(__FILE__).'/Sql/GetExistsPlatform.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',

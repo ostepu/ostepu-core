@@ -69,7 +69,7 @@ class DBQuery2
     public function __construct( )
     {
         // runs the CConfig
-        $com = new CConfig( DBQuery2::getPrefix( ) );
+        $com = new CConfig( DBQuery2::getPrefix( ), dirname(__FILE__) );
 
         // runs the DBQuery2
         if ( $com->used( ) ) return;
@@ -135,7 +135,7 @@ class DBQuery2
      */
     public function loadConfig( $name='' ){
         // initialize component
-        $this->_conf = $this->_conf->loadConfig( $name );
+        $this->_conf = $this->_conf->loadConfig( $name ); 
     }
 
     /**
@@ -162,7 +162,7 @@ class DBQuery2
         $obj = Query::decodeQuery( $body );
         
         $config = parse_ini_file( 
-                                'config'.($name!='' ? '_'.$name : '').'.ini',
+                                dirname(__FILE__).'/config'.($name!='' ? '_'.$name : '').'.ini',
                                 TRUE
                                 );
 
@@ -254,7 +254,7 @@ class DBQuery2
                     );
                     
         $this->loadConfig($name);           
-        if (!file_exists('config'.($name!='' ? '_'.$name : '').'.ini')){
+        if (!file_exists(dirname(__FILE__) . '/config'.($name!='' ? '_'.$name : '').'.ini')){
             $this->_app->response->setStatus( 409 );
             $this->_app->stop();
         }
@@ -277,7 +277,7 @@ class DBQuery2
                     );
           
         $this->loadConfig($name);  
-        $configFile = 'config'.($name!='' ? '_'.$name : '').'.ini';
+        $configFile = dirname(__FILE__) . '/config'.($name!='' ? '_'.$name : '').'.ini';
         if (file_exists($configFile) && !unlink($configFile)){
             $this->_app->response->setStatus( 409 );
             $this->_app->stop();
@@ -316,12 +316,15 @@ class DBQuery2
         $res = array( );
         foreach ( $insert as $in ){
         
-            $file = 'config'.($name!='' ? '_'.$name : '').'.ini';
+            $file = dirname(__FILE__) . '/config'.($name!='' ? '_'.$name : '').'.ini';
             $text = "[DB]\n".
-                    "db_path = {$in->getDatabaseUrl()}\n".
-                    "db_user = {$in->getDatabaseOperatorUser()}\n".
-                    "db_passwd = {$in->getDatabaseOperatorPassword()}\n".
-                    "db_name = {$in->getDatabaseName()}";
+                    "db_path = \"".str_replace(array("\\","\""),array("\\\\","\\\""),$in->getDatabaseUrl())."\"\n".
+                    "db_user = \"".str_replace(array("\\","\""),array("\\\\","\\\""),$in->getDatabaseOperatorUser())."\"\n".
+                    "db_passwd = \"".str_replace(array("\\","\""),array("\\\\","\\\""),$in->getDatabaseOperatorPassword())."\"\n".
+                    "db_name = \"".str_replace(array("\\","\""),array("\\\\","\\\""),$in->getDatabaseName())."\"\n".
+                    "[PL]\n".
+                    "urlExtern = \"".str_replace(array("\\","\""),array("\\\\","\\\""),$in->getExternalUrl())."\"\n".
+                    "url = \"".str_replace(array("\\","\""),array("\\\\","\\\""),$in->getBaseUrl())."\"";
                     
             if (!@file_put_contents($file,$text)){
                 Logger::Log( 

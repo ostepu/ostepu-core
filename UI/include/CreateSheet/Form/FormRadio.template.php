@@ -3,6 +3,7 @@
  * @file FormRadio.template.php
  * @author  Till Uhlig
  */
+ header('Content-Type: text/html; charset=utf-8');
  ?>
 <input type="hidden" class="input-choice" name="exercises[0][subexercises][0][type]" value="1">
 <label class="short label bold" for="task">Aufgabenstellung:</label>

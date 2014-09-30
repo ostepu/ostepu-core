@@ -1,0 +1,27 @@
+{
+  "name":"LProcessor",
+  "version":"1.0",
+  "classFile":"LProcessor.php",
+  "className":"LProcessor",
+  "files":[
+    {"path":".htaccess"},
+    {"path":"LProcessor.php"},
+    {"path":"index.php"},
+    {"path":"Commands.json"}
+  ],
+  "links":[
+    {"name":"submission", "target":"LSubmission", "links":[{"method":"POST", "path":"/submission" }] },
+    {"name":"marking", "target":"LMarking", "links":[{"method":"POST", "path":"/marking" }] },
+    {"name":"processorDb", "target":"DBProcess", "links":[{"method":"POST", "path":"/process" },{"method":"GET", "path":"/process/exercise/:exerciseid" }] },
+    {"name":"attachment", "target":"DBProcessAttachment", "links":[{"method":"POST", "path":"/attachment" }] },
+    {"name":"workFiles", "target":"DBProcessWorkFiles", "links":[{"method":"POST", "path":"/attachment" }] },
+    {"name":"file", "target":"LFile", "links":[{"method":"POST", "path":"/file" }] },
+    {"name":"postCourse", "target":"DBProcess", "links":[{"method":"GET", "path":"/link/exists/course/:courseid" },{"method":"POST", "path":"/course" },{"method":"DELETE", "path":"/course/:courseid" }] }
+  ],
+  "connector":[
+    {"name":"extension", "target":"LExtension"},
+    {"name":"deleteCourse", "target":"LCourse"},
+    {"name":"postCourse", "target":"LCourse"},
+    {"name":"request", "target":"CLocalObjectRequest"}
+  ]
+}

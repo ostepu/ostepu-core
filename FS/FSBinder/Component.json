@@ -1,0 +1,11 @@
+{
+  "name":"FSBinder",
+  "version":"1.0",
+  "classFile":"FSBinder.php",
+  "className":"FSBinder",
+  "files":[
+    {"path":".htaccess"},
+    {"path":"FSBinder.php"},
+    {"path":"Commands.json"}
+  ]
+}
