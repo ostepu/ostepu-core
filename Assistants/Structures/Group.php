@@ -4,6 +4,8 @@
 /**
  * @file Group.php contains the Group class
  */
+ 
+include_once ( dirname( __FILE__ ) . '/Object.php' );
 
 /**
  * the group structure

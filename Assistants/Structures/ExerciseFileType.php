@@ -4,6 +4,8 @@
 /**
  * @file ExerciseFileType.php contains the ExerciseFileType class
  */
+ 
+include_once ( dirname( __FILE__ ) . '/Object.php' );
 
 /**
  * the exercise file type structure

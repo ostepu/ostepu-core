@@ -5,6 +5,8 @@
  * @file CourseStatus.php contains the CourseStatus class
  */
 
+include_once ( dirname( __FILE__ ) . '/Object.php' );
+
 /**
  * the course status structure
  *

@@ -2,9 +2,6 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
--- -----------------------------------------------------
--- Table `Marking`
--- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Marking` (
   `M_id` INT NOT NULL AUTO_INCREMENT,
   `U_id_tutor` INT NOT NULL,
@@ -60,9 +57,11 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 DROP TRIGGER IF EXISTS `Marking_BINS`;
 CREATE TRIGGER `Marking_BINS` BEFORE INSERT ON `Marking` FOR EACH ROW
+<?php
 /*check if corresponding submission exists
 @if not send error message
 @author Lisa*/
+?>
 BEGIN
 SET NEW.E_id = (select S.E_id from Submission S where S.S_id = NEW.S_id limit 1);
 if (NEW.E_id is NULL) then
@@ -77,9 +76,11 @@ END;
 
 DROP TRIGGER IF EXISTS `Marking_BUPD`;
 CREATE TRIGGER `Marking_BUPD` BEFORE UPDATE ON `Marking` FOR EACH ROW
+<?php
 /*check if corresponding submission exists
 @if not send error message
 @author Lisa*/
+?>
 BEGIN
 SET NEW.E_id = (select S.E_id from Submission S where S.S_id = NEW.S_id limit 1);
 if (NEW.E_id is NULL) then

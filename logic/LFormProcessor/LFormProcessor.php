@@ -464,7 +464,7 @@ class LFormProcessor
                                     "</p>".
                                     "<p>".
                                     "<h2>Antwort:</h2>".
-                                    "<font color='".($points===0 ? 'red' : '')."'>".
+                                    "<font color='".($points===0 ? 'red' : 'black')."'>".
                                     $answer.
                                     "</font></p>";
                             if ($points===0){

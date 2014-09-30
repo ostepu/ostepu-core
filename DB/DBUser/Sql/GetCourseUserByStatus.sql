@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetCourseUserByStatus.sql
  * gets all specified course users from %User table
@@ -9,6 +10,7 @@
  * - CS, the course status data
  * - C, the course data
  */
+?>
  
 SELECT 
     U.U_id,
@@ -36,4 +38,4 @@ FROM
     CourseStatus CS ON (U.U_id = CS.U_id)
         left join
     Course C ON (CS.C_id = C.C_id)
-where CS.CS_status = '$statusid' and C.C_id = '$courseid'
+where CS.CS_status = '<?php echo $statusid; ?>' and C.C_id = '<?php echo $courseid; ?>'

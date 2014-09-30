@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetUser.sql
  * gets all specified user from %User table
@@ -9,6 +10,7 @@
  * - CS, the course status data
  * - C, the course data
  */
+?>
  
 SELECT 
     U.U_id,
@@ -42,6 +44,6 @@ FROM
     left join CourseStatus CS ON (U.U_id = CS.U_id)
     left join Course C ON (CS.C_id = C.C_id)) ON U.U_id = G2.U_id_leader
 WHERE
-    (U2.U_id like '$userid'
-        or U2.U_username = '$userid' or U2.U_externalId = '$userid')
-        and G.ES_id = '$esid'
+    (U2.U_id like '<?php echo $userid; ?>'
+        or U2.U_username = '<?php echo $userid; ?>' or U2.U_externalId = '<?php echo $userid; ?>')
+        and G.ES_id = '<?php echo $esid; ?>'

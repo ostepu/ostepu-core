@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetSheetMemberInvitations.sql
  * gets a table for output, where all invitations are listed where the user is Groupmember for an specific Exercisesheet
@@ -8,6 +9,7 @@
  * - U is the groupleader who invites
  * - U2 are the members of the Invitation without the leader
  */
+?>
 
 SELECT 
     U.U_id,
@@ -39,4 +41,4 @@ from
     User U2 ON (I.U_id_leader = U2.U_id)
 where
     I.ES_id = $esid
-        and I.U_id_leader = $userid
+        and I.U_id_leader = '<?php echo $userid; ?>'

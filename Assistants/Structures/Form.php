@@ -5,6 +5,8 @@
  * @file Form.php contains the Form class
  */
 
+include_once ( dirname( __FILE__ ) . '/Object.php' );
+
 /**
  * the form structure
  *

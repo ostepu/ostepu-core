@@ -449,7 +449,7 @@ class LFormPredecessor
                                 foreach($formdata->getChoices() as $chosen)
                                     $answer.= $this->ChoiceIdToText(DBJson::mysql_real_escape_string($chosen->getText()), $forms->getChoices()).'<br>';
                         
-                            $Text=  "<h1>AUFGABE {$exerciseName}</h1>".
+                            $Text =  "<h1>AUFGABE {$exerciseName}</h1>".
                                     "<hr>".
                                     "<p>".
                                     "<h2>Aufgabenstellung:</h2>".

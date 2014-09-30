@@ -10,14 +10,14 @@
  * @date 2013-2014 
  */
 
-require_once ( '../../Assistants/Slim/Slim.php' );
-include_once ( '../../Assistants/Structures.php' );
-include_once ( '../../Assistants/Request.php' );
-include_once ( '../../Assistants/DBJson.php' );
-include_once ( '../../Assistants/DBRequest.php' );
-include_once ( '../../Assistants/CConfig.php' );
-include_once ( '../../Assistants/Logger.php' );
-include_once ( '../../Assistants/LArraySorter.php' );
+require_once ( dirname(__FILE__) . '/../../Assistants/Slim/Slim.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/Structures.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/Request.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/DBJson.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/DBRequest.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/CConfig.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/LArraySorter.php' );
 
 \Slim\Slim::registerAutoloader( );
 
@@ -885,7 +885,7 @@ class DBExerciseSheet
                 // to reindex
                 $res = array_merge( $res );
                 
-                $res = LArraySorter::orderBy($res, 'startDate', SORT_ASC );
+                $res = LArraySorter::orderBy($res, 'startDate', SORT_ASC, 'id',  SORT_ASC);
                                 
                 // sets the sheet names
                 $id = 1;

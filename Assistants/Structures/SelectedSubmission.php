@@ -5,6 +5,8 @@
  * @file SelectedSubmission.php contains the SelectedSubmission class
  */
 
+include_once ( dirname( __FILE__ ) . '/Object.php' );
+
 /**
  * the selected submission structure
  *
@@ -88,7 +90,33 @@ class SelectedSubmission extends Object implements JsonSerializable
     {
         $this->exerciseId = $value;
     }
+    
+    
+    /**
+     * @var string $exerciseSheetId a string that identifies the exercisesheet this submission belongs to.
+     */
+    private $exerciseSheetId = null;
 
+    /**
+     * the $exerciseSheetId getter
+     *
+     * @return the value of $exerciseSheetId
+     */
+    public function getExerciseSheetId( )
+    {
+        return $this->exerciseSheetId;
+    }
+
+    /**
+     * the $exerciseSheetId setter
+     *
+     * @param string $value the new value for $exerciseSheetId
+     */
+    public function setExerciseSheetId( $value = null )
+    {
+        $this->exerciseSheetId = $value;
+    }
+    
     /**
      * Creates an SelectedSubmission object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -122,7 +150,8 @@ class SelectedSubmission extends Object implements JsonSerializable
         return array( 
                      'U_id_leader' => 'leaderId',
                      'S_id_selected' => 'submissionId',
-                     'E_id' => 'exerciseId'
+                     'E_id' => 'exerciseId',
+                     'ES_id' => 'exerciseSheetId'
                      );
     }
 
@@ -153,7 +182,7 @@ class SelectedSubmission extends Object implements JsonSerializable
                                  'E_id',
                                  DBJson::mysql_real_escape_string( $this->exerciseId )
                                  );
-
+                                 
         if ( $values != '' ){
             $values = substr( 
                              $values,
@@ -251,6 +280,8 @@ class SelectedSubmission extends Object implements JsonSerializable
             $list['submissionId'] = $this->submissionId;
         if ( $this->exerciseId !== null )
             $list['exerciseId'] = $this->exerciseId;
+        if ( $this->exerciseSheetId !== null )
+            $list['exerciseSheetId'] = $this->exerciseSheetId;
         return array_merge($list,parent::jsonSerialize( ));
     }
 

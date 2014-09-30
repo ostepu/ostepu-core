@@ -5,6 +5,8 @@
  * @file TutorAssignment.php contains the TutorAssignment class
  */
 
+include_once ( dirname( __FILE__ ) . '/Object.php' );
+
 /**
  * the tutor assignment structure
  *

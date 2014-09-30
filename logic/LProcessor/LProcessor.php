@@ -537,6 +537,7 @@ class LProcessor
                     if ( $result['status'] >= 200 && 
                          $result['status'] <= 299 ){
                          $process = Process::decodeProcess( $result['content'] ); 
+
                     } else {
                         $fail = true;
                         $submission->addMessage("Beim Verarbeiten der Einsendung ist ein Fehler aufgetreten");

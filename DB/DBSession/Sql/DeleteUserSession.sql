@@ -1,3 +1,4 @@
+<?php
 /** 
  * @file DeleteUserSession.sql
  * deletes a specified session from %Session table
@@ -5,7 +6,8 @@
  * @param int \$userid a %User identifier
  * @result -
  */
+?>
  
 DELETE FROM `Session` 
 WHERE
-    U_id = '$userid'
+    U_id = '<?php echo $userid; ?>'

@@ -9,13 +9,13 @@
  * @example DB/DBExerciseType/ExerciseTypeSample.json
  */
 
-require_once ( '../../Assistants/Slim/Slim.php' );
-include_once ( '../../Assistants/Structures.php' );
-include_once ( '../../Assistants/Request.php' );
-include_once ( '../../Assistants/DBJson.php' );
-include_once ( '../../Assistants/DBRequest.php' );
-include_once ( '../../Assistants/CConfig.php' );
-include_once ( '../../Assistants/Logger.php' );
+require_once ( dirname(__FILE__) . '/../../Assistants/Slim/Slim.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/Structures.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/Request.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/DBJson.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/DBRequest.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/CConfig.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
 

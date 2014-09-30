@@ -82,7 +82,7 @@
                             <?php if(isset($exercise['attachment'])): ?>
                                 <?php $displayName = $exercise['attachment']['displayName']; ?>
                                 <?php $fileAddress = $exercise['attachment']['address']; ?>
-                                <?php $fileURL = "../FS/FSControl/{$fileAddress}/{$displayName}";/*{$filesystemURI}*/ ?>
+                                <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}";/*{$filesystemURI}*/ ?>
 
                                 <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" class="plain" target="_blank">
                                     <img src="Images/Attachment.png" />
@@ -93,7 +93,7 @@
                             <?php if(isset($exercise['submission']) && $exercise['submission']['hideFile'] == "0"): ?>
                                 <?php $displayName = $exercise['submission']['file']['displayName']; ?>
                                 <?php $fileAddress = $exercise['submission']['file']['address']; ?>
-                                <?php $fileURL = "../FS/FSControl/{$fileAddress}/{$displayName}";/*{$filesystemURI}*/ ?>
+                                <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}";/*{$filesystemURI}*/ ?>
 
                                 <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" class="plain" target="_blank">
                                     <img src="Images/Download.png" />
@@ -101,10 +101,10 @@
                             <?php endif; ?>
 
                             <?php // creates a downloadCorrection icon for the marking (if it exists) ?>
-                            <?php if(isset($exercise['submission']['marking']) && $exercise['submission']['marking']['hideFile'] == "0" && $isExpired): ?>
+                            <?php if(isset($exercise['submission']['marking']['file']) && $exercise['submission']['marking']['hideFile'] == "0" && $isExpired): ?>
                                 <?php $displayName = $exercise['submission']['marking']['file']['displayName']; ?>
                                 <?php $fileAddress = $exercise['submission']['marking']['file']['address']; ?>
-                                <?php $fileURL = "../FS/FSControl/{$fileAddress}/{$displayName}";/*{$filesystemURI}*/ ?>
+                                <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}";/*{$filesystemURI}*/ ?>
 
                                 <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" class="plain image-button" target="_blank">
                                     <img src="Images/DownloadCorrection.png" />
@@ -113,8 +113,7 @@
 
                             <?php // creates a deleteSubmission icon for the submission (if it exists) ?>
                             <?php if (isset($exercise['submission']) 
-                                      && !$isExpired 
-                                      && $sheet['group']['leader']['id'] == $uid
+                                      && !$isExpired
                                       && $exercise['submission']['hideFile'] == "0"): ?>                                       
                                     <button title="Einsendung löschen" name="deleteSubmission" value="<?php echo $exercise['submission']['id']; ?>" class="image-button">
                                         <img src="Images/Delete.png">
@@ -142,7 +141,7 @@
                     <?php if($isExpired && isset($sheet['sampleSolution'])): ?>
                         <?php $displayName = $sheet['sampleSolution']['displayName']; ?>
                         <?php $fileAddress = $sheet['sampleSolution']['address']; ?>
-                        <?php $fileURL = "../FS/FSControl/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
+                        <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
                         <li>
                             <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
                                 Musterlösung
@@ -151,12 +150,14 @@
                     <?php endif; ?>
 
                     <li>
+                        <?php if (isset($sheet['sheetFile']['address'])){?>
                         <?php $displayName = $sheet['sheetFile']['displayName']; ?>
                         <?php $fileAddress = $sheet['sheetFile']['address']; ?>
-                        <?php $fileURL = "../FS/FSControl/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
+                        <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
                         <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
                             Aufgabenblatt
                         </a>
+                        <?php } ?>
                     </li>
                     
                     <li>
@@ -193,13 +194,13 @@
                     <?php endif; ?>
 
                     <?php // prints a link to download markings ?>
-                    <?php if ($sheet['hasMarkings']): ?>
+                    <?php if ($sheet['hasMarkings'] && $isExpired): ?>
                         <li>
-                            <!--<button name="downloadMarkings" value="<?php echo $sheet['id']; ?>" class="text-button body-option-color">-->
-                            <a style="color:#b9b8b8" class="text-button body-option-color"><s>
-                                Alle Einsendungen herunterladen
-                            </s></a>
-                            <!--</button>-->
+                            <button name="downloadMarkings" value="<?php echo $sheet['id']; ?>" class="text-button body-option-color">
+                            <!--<a style="color:#b9b8b8" class="text-button body-option-color"><s>-->
+                                Alles herunterladen
+                            <!--</s></a>-->
+                            </button>
                         </li>
                     <?php endif; ?>
                 </ol>

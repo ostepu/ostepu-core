@@ -2,9 +2,6 @@ SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
--- -----------------------------------------------------
--- Table `Submission`
--- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `Submission` (
   `U_id` INT NOT NULL,
   `S_id` INT NOT NULL AUTO_INCREMENT,
@@ -54,9 +51,11 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 DROP TRIGGER IF EXISTS `Submission_BINS`;
 CREATE TRIGGER `Submission_BINS` BEFORE INSERT ON `Submission` FOR EACH ROW
+<?php
 /*check if corresponding exerciseSheet exists
 @if not send error message
 @author Lisa*/
+?>
 BEGIN
 SET NEW.ES_id = (select E.ES_id from Exercise E where E.E_id = NEW.E_id limit 1);
 if (NEW.ES_id is NULL) then
@@ -71,9 +70,11 @@ END;
 
 DROP TRIGGER IF EXISTS `Submission_BUPD`;
 CREATE TRIGGER `Submission_BUPD` BEFORE UPDATE ON `Submission` FOR EACH ROW
+<?php
 /*check if corresponding exerciseSheet exists
 @if not send error message
 @author Lisa*/
+?>
 BEGIN
 SET NEW.ES_id = (select E.ES_id from Exercise E where E.E_id = NEW.E_id limit 1);
 if (NEW.ES_id is NULL) then

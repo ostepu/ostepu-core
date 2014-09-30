@@ -1,3 +1,4 @@
+<?php
 /**
  * @file EditExerciseFileType.sql
  * updates an specified exercise file type from %ExerciseFileType table
@@ -6,7 +7,8 @@
  * @param string $values the input data, e.g. 'a=1, b=2'
  * @result -
  */
+?>
  
 UPDATE ExerciseFileType
-SET $values
-WHERE EFT_id = '$eftid'
+SET <?php echo $values; ?>
+WHERE EFT_id = '<?php echo $eftid; ?>'

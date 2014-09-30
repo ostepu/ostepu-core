@@ -1,3 +1,4 @@
+<?php
 /**
  * @file EditExerciseType.sql
  * updates an specified possible type from %ExerciseType table
@@ -6,7 +7,8 @@
  * @param string $values the input data, e.g. 'a=1, b=2'
  * @result -
  */
+?>
  
 UPDATE ExerciseType
-SET $values
-WHERE ET_id = '$etid'
+SET <?php echo $values; ?>
+WHERE ET_id = '<?php echo $etid; ?>'

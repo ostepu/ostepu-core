@@ -75,7 +75,7 @@ class DBJson
                             count( $args )
                             );
 
-        foreach ( $args as & $a ){
+        foreach ( $args as $a ){
 
             // search a argument, which is not true
             if ( !$a ){

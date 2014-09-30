@@ -1,3 +1,4 @@
+<?php
 /** 
  * @file DeleteInvitation.sql
  * deletes a specified group entry from %Invitation table
@@ -7,7 +8,8 @@
  * @param int \$memberid a %Invitation identifier
  * @result -
  */
+?>
 
 DELETE FROM Invitation 
 WHERE
-    ES_id = '$esid' and U_id_leader = '$memberid' and U_id_member = '$userid'
+    ES_id = '<?php echo $esid; ?>' and U_id_leader = '<?php echo $memberid; ?>' and U_id_member = '<?php echo $userid; ?>'

@@ -1,3 +1,4 @@
+<?php
 /** 
  * @file DeleteSheetMarkings.sql
  * deletes all specified markings from %Marking table
@@ -5,7 +6,8 @@
  * @param int \$esid a %ExerciseSheet identifier
  * @result -
  */
+?>
  
 DELETE FROM Marking 
 WHERE
-    ES_id = '$esid'
+    ES_id = '<?php echo $esid; ?>'

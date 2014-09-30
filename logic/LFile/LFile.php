@@ -15,7 +15,7 @@ include_once ( '../../Assistants/Structures.php' );
 include_once ( '../../Assistants/Logger.php' );
 
 include_once ( './LFileHandler.php' );
-
+//var_dump($_SERVER);
 \Slim\Slim::registerAutoloader( );
 
 /**
@@ -95,16 +95,7 @@ class LFile
                                             'Content-Type',
                                             'application/json'
                                             );
-                          
-        // POST PathFile
-        $this->_app->post( 
-                          '/' . LFile::$_baseDir . '/:path+(/)',
-                          array( 
-                                $this,
-                                'postPathFile'
-                                )
-                          );
-                          
+                                            
         // POST File
         $this->_app->post( 
                           '/' . LFile::$_baseDir . '(/)',
@@ -113,7 +104,16 @@ class LFile
                                 'postFile'
                                 )
                           );
-                            
+                          
+        // POST PathFile
+        $this->_app->post( 
+                          '/' . LFile::$_baseDir . '/:path(/)',
+                          array( 
+                                $this,
+                                'postPathFile'
+                                )
+                          );
+                                                      
         // DELETE File
         $this->_app->delete( 
                             '/' . LFile::$_baseDir. '/:fileid',
@@ -145,10 +145,12 @@ class LFile
         $this->_app->response->setStatus( 201 );                   
         $body = $this->_app->request->getBody( );
         $fileObjects = File::decodeFile( $body );
-        
+
+        if (!is_array($path)) $path = array($path);
         $temp="";
         foreach ($path as $part){
-        $temp .= $part.'/';
+            if ($part!='')
+            $temp .= $part.'/';
         }
         $path = $temp;
 
@@ -162,15 +164,26 @@ class LFile
         $res = array( );
 
         foreach ( $fileObjects as $fileObject ){
-
+            if ($fileObject->getBody() == null && $fileObject->getAddress() == null){
+                $result = new File();
+                $result->setBody(null);
+                $result->setStatus(409);
+                $res[] = $result;
+                continue;
+            }
+            
             $result = LFileHandler::add($this->_db,$this->_fs,$path, array(),$fileObject);
+            
             if ( $result !== null){
                 $result->setStatus(201);
+                $result->setBody(null);
                 $res[] = $result; 
             } else {
+                $result = $fileObject;
+                $result->setBody(null);
                 $result->setStatus(409);
-                $fileObject->addMessage("Die Datei konnte nicht gespeichert werden.");
-                $res[] = $fileObject;
+                $result->addMessage("Die Datei konnte nicht gespeichert werden.");
+                $res[] = $result;
                 
                 Logger::Log( 
                             'POST postPathFile failed',
@@ -240,4 +253,3 @@ class LFile
 
  
 ?>
-

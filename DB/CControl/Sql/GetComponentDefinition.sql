@@ -19,5 +19,5 @@ from
         left join
     Component CO2 ON CO2.CO_id = CL.CO_id_target
 where
-    CO.CO_id = '$componentid'
-        or CO.CO_name = '$componentid'
+    CO.CO_id = '<?php echo $componentid; ?>'
+        or CO.CO_name = '<?php echo $componentid; ?>'

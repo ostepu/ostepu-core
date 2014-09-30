@@ -8,12 +8,12 @@
  * @date 2014
  */
 
-require_once ( '../../Assistants/Slim/Slim.php' );
-include_once ( '../../Assistants/Structures.php' );
-include_once ( '../../Assistants/DBJson.php' );
-include_once ( '../../Assistants/DBRequest.php' );
-include_once ( '../../Assistants/CConfig.php' );
-include_once ( '../../Assistants/Logger.php' );
+require_once ( dirname(__FILE__) . '/../../Assistants/Slim/Slim.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/Structures.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/DBJson.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/DBRequest.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/CConfig.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
 
@@ -73,10 +73,9 @@ class DBQuery2
 
         // runs the DBQuery2
         if ( $com->used( ) ) return;
-            $conf = $com->loadConfig( );
             
         // initialize component
-        $this->_conf = $conf;
+        $this->_conf = $com;
 
         // initialize slim
         $this->_app = new \Slim\Slim( array( 'debug' => true ));
@@ -89,7 +88,7 @@ class DBQuery2
 
         // POST AddPlatform
         $this->_app->post( 
-                         '/platform',
+                         '(/:name)/platform',
                          array( 
                                $this,
                                'addPlatform'
@@ -98,7 +97,7 @@ class DBQuery2
                          
         // DELETE DeletePlatform
         $this->_app->delete( 
-                         '/platform',
+                         '(/:name)/platform',
                          array( 
                                $this,
                                'deletePlatform'
@@ -107,42 +106,36 @@ class DBQuery2
                          
         // GET GetExistsPlatform
         $this->_app->get( 
-                         '/link/exists/platform',
+                         '(/:name)/link/exists/platform',
                          array( 
                                $this,
                                'getExistsPlatform'
                                )
                          );
-                         
-        // GET QueryResult
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '(/)',
-                         array( 
-                               $this,
-                               'queryResult'
-                               )
-                         );
 
-        // PUT QueryResult
-        $this->_app->put( 
-                         '/' . $this->getPrefix( ) . '(/)',
-                         array( 
-                               $this,
-                               'queryResult'
-                               )
-                         );
-
-        // POST QueryResult
-        $this->_app->post( 
-                          '/' . $this->getPrefix( ) . '(/)',
+        // POST,GET,PUT QueryResult
+        $this->_app->map( 
+                          '(/:name)/' . $this->getPrefix( ) . '(/)',
                           array( 
                                 $this,
                                 'queryResult'
                                 )
-                          );
+                          )->via('GET','POST','PUT');
 
         // run Slim
         $this->_app->run( );
+    }
+    
+    /**
+     * Loads the configuration data for the component from CConfig.json file
+     *
+     * @param int $name A optional prefix for the attachment table.
+     *
+     * @return an component object, which represents the configuration
+     */
+    public function loadConfig( $name='' ){
+        // initialize component
+        $this->_conf = $this->_conf->loadConfig( $name );
     }
 
     /**
@@ -155,22 +148,29 @@ class DBQuery2
      * Called when this component receives an HTTP GET, an HTTP PUT or an HTTP POST
      * request to /query/.
      */
-    public function queryResult( )
+    public function queryResult( $name = '' )
     {
         Logger::Log( 
                     'starts GET queryResult',
                     LogLevel::DEBUG
                     );
 
+        $this->loadConfig($name);
         $body = $this->_app->request->getBody( );
 
         // decode the received query data, as an object
         $obj = Query::decodeQuery( $body );
+        
+        $config = parse_ini_file( 
+                                'config'.($name!='' ? '_'.$name : '').'.ini',
+                                TRUE
+                                );
 
         $answer = DBRequest::request2( 
                                            $obj->getRequest( ),
-                                           $obj->getCheckSession( )
-                                           );
+                                           $obj->getCheckSession( ),
+                                           $config
+                                     );
                                            
         $this->_app->response->setStatus( 200 );
         $result = array();
@@ -246,14 +246,15 @@ class DBQuery2
      * Called when this component receives an HTTP GET request to
      * /link/exists/platform.
      */
-    public function getExistsPlatform( )
+    public function getExistsPlatform( $name = '' )
     {
         Logger::Log( 
                     'starts GET GetExistsPlatform',
                     LogLevel::DEBUG
                     );
                     
-        if (!file_exists('config.ini')){
+        $this->loadConfig($name);           
+        if (!file_exists('config'.($name!='' ? '_'.$name : '').'.ini')){
             $this->_app->response->setStatus( 409 );
             $this->_app->stop();
         }
@@ -268,13 +269,16 @@ class DBQuery2
      * Called when this component receives an HTTP DELETE request to
      * /platform.
      */
-    public function deletePlatform( )
+    public function deletePlatform( $name = '' )
     {
         Logger::Log( 
                     'starts DELETE DeletePlatform',
                     LogLevel::DEBUG
                     );
-        if (file_exists('config.ini') && !unlink('config.ini')){
+          
+        $this->loadConfig($name);  
+        $configFile = 'config'.($name!='' ? '_'.$name : '').'.ini';
+        if (file_exists($configFile) && !unlink($configFile)){
             $this->_app->response->setStatus( 409 );
             $this->_app->stop();
         }
@@ -290,13 +294,14 @@ class DBQuery2
      * Called when this component receives an HTTP POST request to
      * /platform.
      */
-    public function addPlatform( )
+    public function addPlatform( $name = '' )
     {
         Logger::Log( 
                     'starts POST AddPlatform',
                     LogLevel::DEBUG
                     );
-
+                    
+        $this->loadConfig($name);
         // decode the received course data, as an object
         $insert = Platform::decodePlatform( $this->_app->request->getBody( ) );
 
@@ -311,7 +316,7 @@ class DBQuery2
         $res = array( );
         foreach ( $insert as $in ){
         
-            $file = 'config.ini';
+            $file = 'config'.($name!='' ? '_'.$name : '').'.ini';
             $text = "[DB]\n".
                     "db_path = {$in->getDatabaseUrl()}\n".
                     "db_user = {$in->getDatabaseOperatorUser()}\n".

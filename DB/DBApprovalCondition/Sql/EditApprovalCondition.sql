@@ -1,3 +1,4 @@
+<?php
 /**
  * @file EditApprovalCondition.sql
  * updates an specified approval condition from %ApprovalCondition table
@@ -6,7 +7,8 @@
  * @param string $values the input data, e.g. 'a=1, b=2'
  * @result -
  */
+?>
 
 UPDATE ApprovalCondition
-SET $values
-WHERE AC_id = '$apid'
+SET <?php echo $values; ?>
+WHERE AC_id = '<?php echo $apid; ?>'

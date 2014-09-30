@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetExerciseType.sql
  * gets an specified possible type from %ExerciseType table
@@ -5,10 +6,11 @@
  * @param int \$etid a %ExerciseType identifier
  * @result ET_id, ET_name
  */
+?>
  
 select 
     ET_id, ET_name
 from
     ExerciseType
 where
-    ET_id = '$etid'
+    ET_id = '<?php echo $etid; ?>'

@@ -1,3 +1,4 @@
+<?php
 /** 
  * @file DeleteSession.sql
  * deletes an specified session from %Session table
@@ -5,7 +6,8 @@
  * @param string $seid a %Session identifier
  * @result -
  */
+?>
  
 DELETE FROM `Session` 
 WHERE
-    SE_sessionID = '$seid'
+    SE_sessionID = '<?php echo $seid; ?>'

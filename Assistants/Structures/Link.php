@@ -5,6 +5,8 @@
  * @file Link.php contains the Link class
  */
 
+include_once ( dirname( __FILE__ ) . '/Object.php' );
+
 /**
  * the link structure
  *

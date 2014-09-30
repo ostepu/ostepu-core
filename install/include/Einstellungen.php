@@ -50,13 +50,11 @@ class Einstellungen
     
     public static function Set($varName, $value)
     {
-        return;
         Einstellungen::$konfiguration[$varName] = $value;
     }
     
     public static function Get($varName, $default)
     {
-        return null;
         if (Einstellungen::$konfiguration != null && isset(Einstellungen::$konfiguration[$varName])){
             return Einstellungen::$konfiguration[$varName];
         } else

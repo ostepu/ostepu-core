@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetUserShetSubmissions.sql
  * gets the specified submissions from %Submission table
@@ -9,6 +10,7 @@
  * - S, the submission data
  * - SS, the selected data
  */
+?>
  
 select 
     F.F_id,
@@ -28,7 +30,8 @@ select
     S.S_flag,
     S.S_leaderId,
     S.S_hideFile,
-    S.E_id
+    S.E_id,
+    S.ES_id
 from
     Submission S
        left join
@@ -36,4 +39,4 @@ from
         left join
     SelectedSubmission SS ON (S.S_id = SS.S_id_selected)
 where
-    S.U_id = '$userid' and S.ES_id = '$esid'
+    S.U_id = '<?php echo $userid; ?>' and S.ES_id = '<?php echo $esid; ?>'

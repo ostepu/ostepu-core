@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetSubmission.sql
  * gets the specified submission from %Submission table
@@ -8,6 +9,7 @@
  * - S, the submission data
  * - SS, the selected data
  */
+?>
  
 select 
     F.F_id,
@@ -27,7 +29,8 @@ select
     S.S_flag,
     S.S_leaderId,
     S.S_hideFile,
-    S.E_id
+    S.E_id,
+    S.ES_id
 from
     Submission S
       left join
@@ -36,4 +39,4 @@ from
     SelectedSubmission SS ON (S.S_id = SS.S_id_selected
         and S.E_id = SS.E_id)
 where
-    S.S_id = '$suid'
+    S.S_id = '<?php echo $suid; ?>'

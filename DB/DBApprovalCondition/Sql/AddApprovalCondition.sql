@@ -1,3 +1,4 @@
+<?php
 /**
  * @file AddApprovalCondition.sql
  * inserts an approval condition into %ApprovalCondition table
@@ -5,5 +6,6 @@
  * @param string \$values the input data, e.g. 'a=1, b=2'
  * @result -
  */
+?>
 
-INSERT INTO ApprovalCondition SET $values
+INSERT INTO ApprovalCondition SET <?php echo $values; ?>

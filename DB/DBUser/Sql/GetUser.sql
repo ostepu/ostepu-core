@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetUser.sql
  * gets an specified User from %User table
@@ -8,6 +9,7 @@
  * - CS, the course status data
  * - C, the course data
  */
+?>
  
 SELECT 
     U.U_id,
@@ -36,4 +38,4 @@ FROM
         left join
     Course C ON (CS.C_id = C.C_id)
 WHERE
-    U.U_id like '$userid' or U.U_username = '$userid' or U_externalId = '$userid'
+    U.U_id like '<?php echo $userid; ?>' or U.U_username = '<?php echo $userid; ?>' or U_externalId = '<?php echo $userid; ?>'

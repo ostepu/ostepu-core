@@ -1,1 +1,1 @@
-INSERT INTO Component SET $values
+INSERT INTO Component SET <?php echo $values; ?>

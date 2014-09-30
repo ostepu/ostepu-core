@@ -1,3 +1,4 @@
+<?php
 /** 
  * @file DeleteSubmission.sql
  * deletes a specified submission from %Submission table
@@ -5,7 +6,8 @@
  * @param int \$suid a %Submission identifier
  * @result -
  */
+?>
  
 DELETE FROM Submission 
 WHERE
-    S_id = '$suid'
+    S_id = '<?php echo $suid; ?>'

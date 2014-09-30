@@ -187,8 +187,8 @@ if (isset($_POST['action'])) {
                               array('min' => 1));
 
         $f->checkEmailForKey('email',
-                              FormEvaluator::REQUIRED,
-                              true,
+                              FormEvaluator::OPTIONAL,
+                              false,
                               'warning',
                               'Ungültige E-Mail-Adresse.');
 
@@ -210,7 +210,7 @@ if (isset($_POST['action'])) {
 
             $lastName = $foundValues['lastName'];
             $firstName = $foundValues['firstName'];
-            $email = $foundValues['email'];
+            $email = isset($foundValues['email']) ? $foundValues['email'] : null;
             $userName = $foundValues['userName'];
 
             $password = $foundValues['password'];

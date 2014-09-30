@@ -10,13 +10,13 @@
  * @date 2013-2014
  */
 
-require_once ( '../../Assistants/Slim/Slim.php' );
-include_once ( '../../Assistants/Structures.php' );
-include_once ( '../../Assistants/Request.php' );
-include_once ( '../../Assistants/DBRequest.php' );
-include_once ( '../../Assistants/DBJson.php' );
-include_once ( '../../Assistants/CConfig.php' );
-include_once ( '../../Assistants/Logger.php' );
+require_once ( dirname(__FILE__) . '/../../Assistants/Slim/Slim.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/Structures.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/Request.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/DBRequest.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/DBJson.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/CConfig.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
 
@@ -510,7 +510,7 @@ class DBUser
 
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
-                                              $this->query,
+                                              $this->query2,
                                               $sqlFile,
                                               array( 
                                                     'userid' => $userid,
@@ -527,7 +527,10 @@ class DBUser
         if ( $result['status'] >= 200 && 
              $result['status'] <= 299 ){
             $query = Query::decodeQuery( $result['content'] );
-
+ 
+            if (!is_array($query)) $query = array($query);
+            $query = $query[count($query)-1];
+            
             if ( $query->getNumRows( ) > 0 ){
                 $res = User::ExtractUser( 
                                          $query->getResponse( ),

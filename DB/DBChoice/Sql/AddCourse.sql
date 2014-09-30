@@ -5,7 +5,7 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 -- -----------------------------------------------------
 -- Table `Choice`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `Choice{$preChoice}_{$object->getId()}` (
+CREATE TABLE IF NOT EXISTS `Choice<?php echo $preChoice; ?>_<?php echo $object->getId(); ?>` (
   `CH_id` INT NOT NULL AUTO_INCREMENT,
   `E_id` INT NULL,
   `FO_id` INT NOT NULL,
@@ -14,23 +14,23 @@ CREATE TABLE IF NOT EXISTS `Choice{$preChoice}_{$object->getId()}` (
   `S_id` INT NULL,
   PRIMARY KEY (`CH_id`),
   UNIQUE INDEX `CH_id_UNIQUE` (`CH_id` ASC),
-  INDEX `redundanz16{$preChoice}_{$object->getId()}` (`E_id` ASC, `FO_id` ASC),
-  CONSTRAINT `fk_Choice_Form1{$preChoice}{$preForm}_{$object->getId()}`
+  INDEX `redundanz16<?php echo $preChoice; ?>_<?php echo $object->getId(); ?>` (`E_id` ASC, `FO_id` ASC),
+  CONSTRAINT `fk_Choice_Form1<?php echo $preChoice; ?><?php echo $preForm; ?>_<?php echo $object->getId(); ?>`
     FOREIGN KEY (`FO_id`)
-    REFERENCES `Form{$preForm}_{$object->getId()}` (`FO_id`)
+    REFERENCES `Form<?php echo $preForm; ?>_<?php echo $object->getId(); ?>` (`FO_id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
-  CONSTRAINT `fk_Choice_Exercise1{$preChoice}{$preExercise}_{$object->getId()}`
+  CONSTRAINT `fk_Choice_Exercise1<?php echo $preChoice; ?><?php echo $preExercise; ?>_<?php echo $object->getId(); ?>`
     FOREIGN KEY (`E_id`)
-    REFERENCES `Exercise{$preExercise}` (`E_id`)
+    REFERENCES `Exercise<?php echo $preExercise; ?>` (`E_id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
-  CONSTRAINT `redundanz16{$preChoice}{$preForm}_{$object->getId()}`
+  CONSTRAINT `redundanz16<?php echo $preChoice; ?><?php echo $preForm; ?>_<?php echo $object->getId(); ?>`
     FOREIGN KEY (`E_id` , `FO_id`)
-    REFERENCES `Form{$preForm}_{$object->getId()}` (`E_id` , `FO_id`)
+    REFERENCES `Form<?php echo $preForm; ?>_<?php echo $object->getId(); ?>` (`E_id` , `FO_id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
-  CONSTRAINT `fk_Choice_Submission1{$preChoice}_{$object->getId()}`
+  CONSTRAINT `fk_Choice_Submission1<?php echo $preChoice; ?>_<?php echo $object->getId(); ?>`
     FOREIGN KEY (`S_id`)
     REFERENCES `Submission` (`S_id`)
     ON DELETE CASCADE
@@ -42,19 +42,19 @@ SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
-DROP TRIGGER IF EXISTS `Choice{$preChoice}_BUPD_{$object->getId()}`;
-CREATE TRIGGER `Choice{$preChoice}_BUPD_{$object->getId()}` BEFORE UPDATE ON `Choice{$preChoice}_{$object->getId()}` FOR EACH ROW
+DROP TRIGGER IF EXISTS `Choice<?php echo $preChoice; ?>_BUPD_<?php echo $object->getId(); ?>`;
+CREATE TRIGGER `Choice<?php echo $preChoice; ?>_BUPD_<?php echo $object->getId(); ?>` BEFORE UPDATE ON `Choice<?php echo $preChoice; ?>_<?php echo $object->getId(); ?>` FOR EACH ROW
 BEGIN
-SET NEW.E_id = (select FO.E_id from `Form{$preForm}_{$object->getId()}` FO where FO.FO_id = NEW.FO_id limit 1);
+SET NEW.E_id = (select FO.E_id from `Form<?php echo $preForm; ?>_<?php echo $object->getId(); ?>` FO where FO.FO_id = NEW.FO_id limit 1);
 if (NEW.E_id is NULL) then
 SIGNAL sqlstate '45001' set message_text = 'no corresponding form';
 END if;
 END;
 
-DROP TRIGGER IF EXISTS `Choice{$preChoice}_BINS_{$object->getId()}`;
-CREATE TRIGGER `Choice{$preChoice}_BINS_{$object->getId()}` BEFORE INSERT ON `Choice{$preChoice}_{$object->getId()}` FOR EACH ROW
+DROP TRIGGER IF EXISTS `Choice<?php echo $preChoice; ?>_BINS_<?php echo $object->getId(); ?>`;
+CREATE TRIGGER `Choice<?php echo $preChoice; ?>_BINS_<?php echo $object->getId(); ?>` BEFORE INSERT ON `Choice<?php echo $preChoice; ?>_<?php echo $object->getId(); ?>` FOR EACH ROW
 BEGIN
-SET NEW.E_id = (select FO.E_id from `Form{$preForm}_{$object->getId()}` FO where FO.FO_id = NEW.FO_id limit 1);
+SET NEW.E_id = (select FO.E_id from `Form<?php echo $preForm; ?>_<?php echo $object->getId(); ?>` FO where FO.FO_id = NEW.FO_id limit 1);
 if (NEW.E_id is NULL) then
 SIGNAL sqlstate '45001' set message_text = 'no corresponding form';
 END if;

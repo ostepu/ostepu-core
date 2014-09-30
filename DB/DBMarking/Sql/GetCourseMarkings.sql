@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetCourseMarkings.sql
  * gets all specified markings from %Marking table
@@ -10,6 +11,7 @@
  * - S, the submission data
  * - SS, the selected data
  */
+?>
  
 SELECT 
     M.M_id,
@@ -28,8 +30,8 @@ SELECT
     F.F_fileSize,
     F.F_comment,
     F.F_hash
-    " . ($sub==1 ? 
-    ",
+    <?php if ($sub==1){ ?>
+    ,
     F2.F_id as F_id2,
     F2.F_displayName as F_displayName2,
     F2.F_address as F_address2,
@@ -47,9 +49,9 @@ SELECT
     S.S_flag as S_flag2,
     S.S_leaderId as S_leaderId2,
     S.S_hideFile as S_hideFile2,
-    S.E_id as E_id2": "" ) 
-    .
-    "
+    S.E_id as E_id2,
+    S.ES_id as ES_id2
+    <?php } ?>
 from
     ExerciseSheet ES
     join
@@ -63,4 +65,4 @@ from
         left join 
     File F2 ON (F2.F_id = S.F_id_file)
 where
-    ES.C_id = '$cid'
+    ES.C_id = '<?php echo $cid; ?>'

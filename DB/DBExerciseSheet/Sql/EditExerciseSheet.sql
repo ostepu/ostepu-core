@@ -1,3 +1,4 @@
+<?php
 /**
  * @file EditExerciseSheet.sql
  * updates an specified exercise sheet from %ExerciseSheet table
@@ -6,7 +7,8 @@
  * @param string $values the input data, e.g. 'a=1, b=2'
  * @result -
  */
+?>
  
 UPDATE ExerciseSheet
-SET $values
-WHERE ES_id = '$esid'
+SET <?php echo $values; ?>
+WHERE ES_id = '<?php echo $esid; ?>'

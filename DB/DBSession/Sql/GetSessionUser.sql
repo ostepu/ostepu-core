@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetSessionUser.sql
  * gets the user session from %Session table
@@ -5,6 +6,7 @@
  * @param string $seid a %Session identifier
  * @result  U_id, SE_sessionID
  */
+?>
  
 select 
     U_id,
@@ -12,4 +14,4 @@ select
 from
     `Session`
 where
-    SE_sessionID = '$seid'
+    SE_sessionID = '<?php echo $seid; ?>'

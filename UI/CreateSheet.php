@@ -167,19 +167,19 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
     if ($ready == true && $noFile == false && $correctExercise == true && $correctDates == true) {
         // get sheetPDF
         if (!$_FILES['sheetPDF']['error'] == 4){
-        $filePath = $_FILES['sheetPDF']['tmp_name'];
-        $displayName = $_FILES['sheetPDF']['name'];
-        $data = file_get_contents($filePath);
+            $filePath = $_FILES['sheetPDF']['tmp_name'];
+            $displayName = $_FILES['sheetPDF']['name'];
+            $data = file_get_contents($filePath);
+            $data = base64_encode($data);
+            $sheetPDFFile = File::createFile(NULL,$displayName,NULL,$timestamp,NULL,NULL,NULL);
+            $sheetPDFFile->setBody($data);
         }
         else{
-        $displayName="no.txt";
-        $data="";
+            $sheetPDFFile = null;
         }
         
-        $data = base64_encode($data);
-        $sheetPDFFile = File::createFile(NULL,$displayName,NULL,$timestamp,NULL,NULL,NULL);
-        $sheetPDFFile->setBody($data);
 
+        
         // create exerciseSheet
         $foundValues = $f->foundValues;
         $sheetName = $foundValues['sheetName'];

@@ -1,3 +1,4 @@
+<?php
 /**
  * @file AddInvitation.sql
  * creates a new entry in %Invitation table
@@ -5,5 +6,6 @@
  * @param string $values the input data, e.g. 'a=1, b=2'
  * @result -
  */
+?>
 
-INSERT INTO Invitation SET $values
+INSERT INTO Invitation SET <?php echo $values; ?>

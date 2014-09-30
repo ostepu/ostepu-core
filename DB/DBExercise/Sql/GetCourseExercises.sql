@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetCourseExercises.sql
  * gets all course exercises from %Exercise table
@@ -9,10 +10,12 @@
  * - S, the submission data
  * - SS, the selected submission data
  */
+?>
  
 select 
     E.E_id,
     E.ES_id,
+    E.C_id,
     E.ET_id,
     E.E_maxPoints,
     E.E_bonus,
@@ -27,8 +30,8 @@ select
     F.F_hash,
     EFT_id,
     EFT_text
-    " . ($sub==1 ? 
-    ",
+    <?php if ($sub==1){ ?> 
+    ,
     S.U_id as U_id2,
     S.S_id as S_id2,
     S.F_id_file as F_id_file2,
@@ -38,9 +41,8 @@ select
     S.S_accepted as S_accepted2,
     S.S_leaderId as S_leaderId2,
     S.S_hideFile as S_hideFile2,
-    S.E_id as E_id2": "" ) 
-    .
-    "
+    S.E_id as E_id2
+    <?php } ?>
 from
     Exercise E
         left join
@@ -52,4 +54,4 @@ from
     (Submission S
     left join SelectedSubmission SS ON S.S_id = SS.S_id_selected) ON S.E_id = E.E_id
 where
-    E.C_id = '$courseid'
+    E.C_id = '<?php echo $courseid; ?>'

@@ -5,6 +5,8 @@
  * @file Submission.php contains the Submission class
  */
 
+include_once ( dirname( __FILE__ ) . '/Object.php' );
+
 /**
  * the submission structure
  *
@@ -89,7 +91,34 @@ class Submission extends Object implements JsonSerializable
     {
         $this->exerciseId = $value;
     }
+    
+    
+    /**
+     * @var string $exerciseSheetId a string that identifies the exercise this submission belongs to.
+     */
+    private $exerciseSheetId = null;
 
+    /**
+     * the $exerciseSheetId getter
+     *
+     * @return the value of $exerciseSheetId
+     */
+    public function getExerciseSheetId( )
+    {
+        return $this->exerciseSheetId;
+    }
+
+    /**
+     * the $exerciseSheetId setter
+     *
+     * @param string $value the new value for $exerciseSheetId
+     */
+    public function setExerciseSheetId( $value = null )
+    {
+        $this->exerciseSheetId = $value;
+    }
+
+    
     /**
      * @var string $comment A comment that a student made on his submission.
      */
@@ -380,6 +409,7 @@ class Submission extends Object implements JsonSerializable
                      'U_id' => 'studentId',
                      'S_file' => 'file',
                      'E_id' => 'exerciseId',
+                     'ES_id' => 'exerciseSheetId',
                      'S_comment' => 'comment',
                      'S_accepted' => 'accepted',
                      'S_date' => 'date',
@@ -569,6 +599,8 @@ class Submission extends Object implements JsonSerializable
             $list['studentId'] = $this->studentId;
         if ( $this->exerciseId !== null )
             $list['exerciseId'] = $this->exerciseId;
+        if ( $this->exerciseSheetId !== null )
+            $list['exerciseSheetId'] = $this->exerciseSheetId;
         if ( $this->comment !== null )
             $list['comment'] = $this->comment;
         if ( $this->file !== null && $this->file !== array() )

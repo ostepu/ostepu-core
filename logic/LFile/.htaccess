@@ -1,2 +1,2 @@
 RewriteEngine On
-RewriteRule !LFile.php index.php [QSA,L]
+RewriteRule ^(?:(?!(LFile(Test)?\.php)).*)$ index.php [QSA,L]

@@ -1,3 +1,4 @@
+<?php
 /** 
  * @file DeleteExerciseType.sql
  * deletes a specified possible type from %ExerciseType table
@@ -5,7 +6,8 @@
  * @param int \$etid a %ExerciseType identifier
  * @result -
  */
+?>
  
 DELETE FROM ExerciseType 
 WHERE
-    ET_id = '$etid'
+    ET_id = '<?php echo $etid; ?>'

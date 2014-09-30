@@ -1,3 +1,4 @@
+<?php
 /**
  * @file GetCourseSheetsURLs.sql
  * gets all course exercise sheets files
@@ -6,6 +7,7 @@
  * @result 
  * - F, the exercise sheet file
  */
+?>
  
 select 
     F.F_id,
@@ -20,4 +22,4 @@ from
         left join
     File F ON F.F_id = ES.F_id_file
 where
-    ES.C_id = '$courseid'
+    ES.C_id = '<?php echo $courseid; ?>'
