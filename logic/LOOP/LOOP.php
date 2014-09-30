@@ -319,28 +319,75 @@ class LOOP
                     LOOP::generatepath($filePath);
                     file_put_contents($filePath . '/' . $fileName, $file);  
 
-                    $output = array();
-                    $return = '';
-                    exec('(./start_cx '.$filePath . '/' . $fileName.') 2>&1', $output, $return);
-                    
-                    if (count($output)>0 && $output[count($output)-1] === '201'){
-                        // nothing
-                        $pro->setStatus(201);
-                    }
-                    else{
-                        $pro->setStatus(409);
-                        if (count($output)>0){
-                        $text = '';
-                            unset($output[count($output)-1]);
-                            foreach($output as $out){
-                                $pos = strpos($out, ',');
-                                //$text.=$fileName.': '.substr($out,$pos+1)."\n";
-                                $text.=$out."\n";
+                    $parameter = explode(' ',strtolower($pro->getParameter()));
+                    if (count($parameter)>=2){
+                        if ($parameter[0] == 'cx'){
+                            $output = array();
+                            $return = '';
+                            exec('(./start_cx '.$filePath . '/' . $fileName.') 2>&1', $output, $return);
+                            
+                            if (count($output)>0 && $output[count($output)-1] === '201'){
+                                // nothing
+                                $pro->setStatus(201);
                             }
-                            $pro->addMessage($text);
+                            else{
+                                $pro->setStatus(409);
+                                if (count($output)>0){
+                                $text = '';
+                                    unset($output[count($output)-1]);
+                                    foreach($output as $out){
+                                        $pos = strpos($out, ',');
+                                        //$text.=$fileName.': '.substr($out,$pos+1)."\n";
+                                        $text.=$out."\n";
+                                    }
+                                    $pro->addMessage($text);
+                                }
+                                $this->app->response->setStatus( 409 );
+                            }
+                        } elseif ($parameter[0] == 'java'){
+                            $output = array();
+                            $return = '';
+                            exec('(javac '.$filePath . '/' . $fileName.') 2>&1', $output, $return);
+                            
+                            if ($return == 0){
+                                // nothing
+                                $pro->setStatus(201);
+                            }
+                            else{
+                                $pro->setStatus(409);
+                                if (count($output)>0){
+                                    $text = '';
+                                    $outputList = array();
+                                    foreach($output as $out){
+                                        $out = trim(trim($out),'^');
+                                        if ($out=='') continue;
+                                        $outputList[] = $out;
+                                    }
+                                    
+                                    if (count($outputList)>10){
+                                        $outputList[7] = '...';
+                                        for ($i=8;$i<count($outputList)-2;$i++)
+                                            $outputList[$i]='';
+                                    }
+                                    
+                                    foreach($outputList as $out){
+                                        if ($out=='') continue;
+                                        $text.=$out."\n";
+                                    }
+                                    
+                                    
+                                        
+                                    $pro->addMessage($text);
+                                }
+                                $this->app->response->setStatus( 409 );
+                            }
                         }
-                        $this->app->response->setStatus( 409 );
+                        
+                    } else {
+                        // no parameter
                     }
+                    
+                    unlink($filePath . '/' . $fileName);
                     
                     
                     $res[] = $pro;          
@@ -366,7 +413,7 @@ class LOOP
     public static function generatepath( $path )
     {
         if (!is_dir($path))          
-            mkdir( $path , 0777, true);
+            mkdir( $path , 0775, true);
     }
 }
 ?>
