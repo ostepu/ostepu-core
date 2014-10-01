@@ -1,5 +1,5 @@
 RewriteEngine On
-RewriteCond %{HTTP_HOST} !^127\.0\.0\.1$
+RewriteCond %{HTTP_HOST} !^localhost$
 RewriteCond %{REQUEST_METHOD} !^GET$ [OR]
 RewriteCond %{THE_REQUEST} !(.)*\/FSBinder\/(file|zip|pdf)\/([0-9,a-f])\/([0-9,a-f])\/([0-9,a-f])\/([0-9,a-f])+\/(.+)\.(.+)
 RewriteRule ^ - [F]
