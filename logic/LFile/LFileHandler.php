@@ -7,8 +7,8 @@
  * @date 2014
  */
  
- include_once ( '../../Assistants/Structures.php' );
- include_once ( '../../Assistants/Request.php' );
+ include_once ( dirname(__FILE__). '/../../Assistants/Structures.php' );
+ include_once ( dirname(__FILE__). '/../../Assistants/Request.php' );
 
 /**
  * A class, to handle the methods to add and delete a file properly.
