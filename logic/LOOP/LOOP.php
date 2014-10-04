@@ -140,7 +140,7 @@ class LOOP
         $result = Request::routeRequest( 
                                         'GET',
                                         '/process/course/'.$courseid.'/component/'.$this->_conf->getId(),
-                                        $this->app->request->headers->all( ),
+                                        array(),
                                         '',
                                         $this->_getProcess,
                                         'process'
@@ -185,8 +185,7 @@ class LOOP
                     'starts POST AddCourse',
                     LogLevel::DEBUG
                     );
-                    
-        $header = $this->app->request->headers->all();
+
         $body = $this->app->request->getBody();
         
         $courses = Course::decodeCourse($body);
@@ -213,7 +212,7 @@ class LOOP
             $result = Request::routeRequest( 
                                             'POST',
                                             '/process',
-                                            $header,
+                                            array(),
                                             Process::encodeProcess($processes),
                                             $_link,
                                             'process'
@@ -262,7 +261,7 @@ class LOOP
         $result = Request::routeRequest( 
                                         'GET',
                                         '/process/course/'.$courseid.'/component/'.$this->_conf->getId(),
-                                        $this->app->request->headers->all( ),
+                                        array(),
                                         '',
                                         $this->_getProcess,
                                         'process'
@@ -286,7 +285,6 @@ class LOOP
     {
         $this->app->response->setStatus( 201 );
            
-        $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
         $process = Process::decodeProcess($body);
         
@@ -321,7 +319,8 @@ class LOOP
 
                     $parameter = explode(' ',strtolower($pro->getParameter()));
                     if (count($parameter)>=2){
-                        if ($parameter[0] == 'cx'){
+                        $type = array_shift($parameter);
+                        if ($type == 'cx'){
                             $output = array();
                             $return = '';
                             exec('(./start_cx '.$filePath . '/' . $fileName.') 2>&1', $output, $return);
@@ -337,17 +336,22 @@ class LOOP
                                     unset($output[count($output)-1]);
                                     foreach($output as $out){
                                         $pos = strpos($out, ',');
-                                        //$text.=$fileName.': '.substr($out,$pos+1)."\n";
                                         $text.=$out."\n";
                                     }
                                     $pro->addMessage($text);
                                 }
                                 $this->app->response->setStatus( 409 );
                             }
-                        } elseif ($parameter[0] == 'java'){
+                        } elseif ($type == 'java'){
                             $output = array();
                             $return = '';
-                            exec('(javac '.$filePath . '/' . $fileName.') 2>&1', $output, $return);
+                            $param = implode(' ',$parameter);
+                            if ($param!=''){
+                                $param=str_replace('$file',$filePath . '/' . $fileName,$param);
+                            } else
+                                $param = $filePath . '/' . $fileName;
+                                
+                            exec('(javac '.$param.') 2>&1', $output, $return);
                             
                             if ($return == 0){
                                 // nothing
@@ -367,6 +371,44 @@ class LOOP
                                     if (count($outputList)>10){
                                         $outputList[7] = '...';
                                         for ($i=8;$i<count($outputList)-2;$i++)
+                                            $outputList[$i]='';
+                                    }
+                                    
+                                    foreach($outputList as $out){
+                                        if ($out=='') continue;
+                                        $text.=$out."\n";
+                                    }
+                                    
+                                    
+                                        
+                                    $pro->addMessage($text);
+                                }
+                                $this->app->response->setStatus( 409 );
+                            }
+                        } elseif ($type == 'custom'){
+                            $output = array();
+                            $return = '';
+                            $param = implode(' ',$parameter);
+                            if ($param!=''){
+                                $param=str_replace('$file',$filePath . '/' . $fileName,$param);
+                            } else
+                                $param = $filePath . '/' . $fileName;
+                                
+                            exec('('.$param.') 2>&1', $output, $return);
+                            
+                            if ($return == 0){
+                                // nothing
+                                $pro->setStatus(201);
+                            }
+                            else{
+                                $pro->setStatus(409);
+                                if (count($output)>0){
+                                    $text = '';
+                                    $outputList = $output;
+                                    
+                                    if (count($outputList)>10){
+                                        $outputList[4] = '...';
+                                        for ($i=5;$i<count($outputList)-5;$i++)
                                             $outputList[$i]='';
                                     }
                                     
