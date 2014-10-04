@@ -36,7 +36,7 @@ include_once dirname(__FILE__) . '/../Config.php';
         
         ?>
     </select>
-    <input class="form-field text-input very-short mime-field" name="exercises[0][subexercises][0][mime-type]" value="pdf" id="mime-type" placeholder="pdf, zip, html, jpg, gif" />
+    <input class="form-field text-input very-short mime-field" name="exercises[0][subexercises][0][mime-type]" value="" id="mime-type" placeholder="pdf, zip, html, jpg, gif" />
     <input class="button" type="file" name="exercises[0][subexercises][0][attachment]" value="Anhang auswählen ..." />
                         <a href="javascript:void(0);" class="body-option-color deny-button delete-subtask right">Teilaufgabe löschen</a>
                         
