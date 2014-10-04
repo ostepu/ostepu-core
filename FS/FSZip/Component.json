@@ -6,6 +6,10 @@
   "files":[
     {"path":".htaccess"},
     {"path":"FSZip.php"},
-    {"path":"Commands.json"}
+    {"path":"Commands.json"},
+    {"path":"index.json"}
+  ],
+  "connector":[
+    {"name":"request", "target":"CLocalObjectRequest"}
   ]
 }

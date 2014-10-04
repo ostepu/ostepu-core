@@ -1,2 +1,2 @@
 RewriteEngine On
-RewriteRule ^ FSZip.php [QSA,L]
+RewriteRule ^ index.php [QSA,L]

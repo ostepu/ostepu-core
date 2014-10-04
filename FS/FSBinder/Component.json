@@ -6,6 +6,10 @@
   "files":[
     {"path":".htaccess"},
     {"path":"FSBinder.php"},
-    {"path":"Commands.json"}
+    {"path":"Commands.json"},
+    {"path":"index.json"}
+  ],
+  "connector":[
+    {"name":"request", "target":"CLocalObjectRequest"}
   ]
 }
