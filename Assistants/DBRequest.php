@@ -205,7 +205,7 @@ class DBRequest
 
         // check session
         ///if (error_reporting() & E_NOTICE)
-        ///    $checkSession = false; // remove the comment this line to disable the session examination
+                ///$checkSession = false; // remove the comment this line to disable the session examination
         
         // Storing whether or not a session condition is not satisfied
         $sessionFail = false;
@@ -218,7 +218,7 @@ class DBRequest
                  isset( $_SERVER['HTTP_USER'] ) && 
                  isset( $_SERVER['HTTP_DATE'] ) && 
                  ctype_digit( $_SERVER['HTTP_USER'] ) && 
-                 ( int )$_SERVER['REQUEST_TIME'] <= ( int )$_SERVER['HTTP_DATE'] + 10 * 60 ){
+                 ( int )$_SERVER['REQUEST_TIME'] <= ( int )$_SERVER['HTTP_DATE'] + 45 * 60 ){
                 $content = mysqli_query( 
                                         $dbconn,
                                        'select SE_sessionID from Session where U_id = ' . $_SERVER['HTTP_USER']
