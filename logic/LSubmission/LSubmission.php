@@ -136,19 +136,20 @@ class LSubmission
         $file = $submission->getFile();
         if (!isset($file)) $file = new File();
         if ($file->getTimeStamp()===null) $file->setTimeStamp(time());
-        
+//echo File::encodeFile($file);return;   
         // upload file to filesystem        
         $result = Request::routeRequest( 
                                 'POST',
                                 '/file',
-                                $this->app->request->headers->all( ),
+                                array(),
                                 File::encodeFile($file),
                                 $this->_file,
                                 'file'
-                                );        
-//echo File::encodeFile($file);return;       
+                                );     
+//var_dump($result);                                
+//echo $result['content'];return;       
         if ( $result['status'] >= 200 && 
-             $result['status'] <= 299 ){  
+             $result['status'] <= 299 ){
             // file is uploaded
             $newFile = File::decodeFile($result['content']);
             $file->setAddress($newFile->getAddress());
@@ -159,10 +160,11 @@ class LSubmission
 
             // upload submission to database
             if ($submission->getId()===null){
+//echo Submission::encodeSubmission($submission);
             $result = Request::routeRequest( 
                                     'POST',
                                     '/submission',
-                                    $this->app->request->headers->all( ),
+                                    array(),
                                     Submission::encodeSubmission($submission),
                                     $this->_submission,
                                     'submission'
@@ -172,7 +174,7 @@ class LSubmission
                 $result['status'] = 201;
                 $result['content'] = Submission::encodeSubmission($submission);
             }
-            
+//var_dump($result);           
             if ( $result['status'] >= 200 && 
              $result['status'] <= 299 ){
                 // submission is uploaded
@@ -186,7 +188,7 @@ class LSubmission
                 $result = Request::routeRequest( 
                                     'POST',
                                     '/selectedsubmission',
-                                    $this->app->request->headers->all( ),
+                                    array(),
                                     SelectedSubmission::encodeSelectedSubmission($selectedSubmission),
                                     $this->_selectedSubmission,
                                     'selectedsubmission'
@@ -270,7 +272,7 @@ class LSubmission
         $result = Request::routeRequest( 
                                         'DELETE',
                                         '/submission/'.$submissionid,
-                                        $this->app->request->headers->all( ),
+                                        array(),
                                         '',
                                         $this->_submission,
                                         'submission'
