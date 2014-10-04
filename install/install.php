@@ -493,7 +493,7 @@ class Installer
         if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInstallUIConf'])) && !$installFail && isset($data['UI']['conf']) && $data['UI']['conf']!==''){
             $installUiFile = true;
             Zugang::Ermitteln('actionInstallUIConf','Installation::installiereUIKonfigurationsdatei',$data, $fail, $errno, $error);
-            
+
             if ($simple){
                 $result = array();
                 $result['fail'] = $fail;

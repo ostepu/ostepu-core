@@ -205,12 +205,12 @@ class Installation
                     if ($file=='.' || $file=='..') continue;
                     if (is_dir(dirname(__FILE__) . '/../../Plugins/'.$file)) continue;
                     $filePath = dirname(__FILE__) . '/../../Plugins/'.$file;
-                    if (file_exists($filePath) && is_readable($filePath)){
+                    if (substr($filePath,-5)=='.json' && file_exists($filePath) && is_readable($filePath)){
                         $input = file_get_contents($filePath);
                         $input = json_decode($input,true);
                         if ($input == null){
-                            $fail = true;
-                            break;
+                            //$fail = true;
+                            //break;
                         }
                         $res[] = $input;
                     }
@@ -218,7 +218,6 @@ class Installation
                 closedir($handle);
             }
         }
-        
         return $res;
     }
     
@@ -235,7 +234,7 @@ class Installation
             foreach ($data['PLUG'] as $plugs){
                 $file = dirname(__FILE__) . '/../../Plugins/'.$plugs;
                 
-                if (file_exists($file) && is_readable($file)){
+                if (substr($file,-5)=='.json' && file_exists($file) && is_readable($file)){
                     $input = file_get_contents($file);
                     $input = json_decode($input,true);
                     if ($input == null){
@@ -266,7 +265,7 @@ class Installation
             foreach ($data['PLUG'] as $plugs){
                 $file = dirname(__FILE__) . '/../../Plugins/'.$plugs;
                 
-                if (file_exists($file) && is_readable($file)){
+                if (substr($file,-5)=='.json' && file_exists($file) && is_readable($file)){
                     $input = file_get_contents($file);
                     $input = json_decode($input,true);
                     if ($input == null){
@@ -531,7 +530,6 @@ class Installation
             }
         }
         $text = implode("\n",$text);
-
         if (!@file_put_contents(dirname(__FILE__).'/../'.$file,$text)){ $fail = true;$error='UI-Konfigurationsdatei, kein Schreiben möglich!';return;}
     }
 
