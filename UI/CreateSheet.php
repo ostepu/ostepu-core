@@ -140,6 +140,7 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                     if (!isset($subexercise['type']) && isset($subexercise['mime-type'])){    
                         $mimeTypesForm = explode(",", $subexercise['mime-type']);
                         foreach ($mimeTypesForm as &$mimeType) {
+                            if ($mimeType=='')continue;
                             if (FILE_TYPE::checkSupportedFileType(trim(strtolower($mimeType))) == false) {
                                 $errormsg = "Sie haben eine nicht unterstützte Dateiendung verwendet.";
                                 array_push($notifications, MakeNotification('warning', $errormsg));
@@ -287,8 +288,8 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                         $form = Form::createForm(
                                            null,
                                            $exercises[$i]->getId(),
-                                           isset($subexercise['solution']) ? $subexercise['solution'] : null,
-                                           isset($subexercise['task']) ? $subexercise['task'] : null,
+                                           html_entity_decode(isset($subexercise['solution']) ? $subexercise['solution'] : null),
+                                           html_entity_decode(isset($subexercise['task']) ? $subexercise['task'] : null),
                                            isset($subexercise['type']) ? $subexercise['type'] : null
                                           );
                                           
