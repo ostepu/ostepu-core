@@ -9,7 +9,8 @@
   "files":
     [
       {"path":"Include/"},
-      {"path":"Plugins/ostepu-logic.json"}
+      {"path":"Plugins/ostepu-logic.json"},
+      {"path":"logic/.htaccess"}
     ],
   "components":
     [

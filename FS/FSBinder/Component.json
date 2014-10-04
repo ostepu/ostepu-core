@@ -7,7 +7,7 @@
     {"path":".htaccess"},
     {"path":"FSBinder.php"},
     {"path":"Commands.json"},
-    {"path":"index.json"}
+    {"path":"index.php"}
   ],
   "connector":[
     {"name":"request", "target":"CLocalObjectRequest"}

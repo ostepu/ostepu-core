@@ -8,7 +8,7 @@
     {"path":"FSPdf.php"},
     {"path":"Commands.json"},
     {"path":"_tcpdf_6.0.095/"},
-    {"path":"index.json"}
+    {"path":"index.php"}
   ],
   "connector":[
     {"name":"request", "target":"CLocalObjectRequest"}

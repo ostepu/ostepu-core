@@ -8,7 +8,7 @@
     {"path":"FSControl.php"},
     {"path":"Commands.json"},
     {"path":"Controller3.php"},
-    {"path":"index.json"}
+    {"path":"index.php"}
   ],
   "links":[
     {"name":"out", "target":["FSFile","FSZip","FSPdf"], "links":[] }
