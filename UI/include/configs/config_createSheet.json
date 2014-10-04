@@ -10,7 +10,8 @@
         "css/Forms.css",
         "css/Navigation.css",
         "css/Notifications.css",
-        "css/bootstrap-datetimepicker.css"
+        "css/bootstrap-datetimepicker.css",
+        "javascript/ckeditor/contents.css"
     ],
     "javascripts":[
         "javascript/retina.js",
@@ -20,6 +21,8 @@
         "javascript/interactive.js",
         "javascript/form.js",
         "javascript/createSheet.js",
-        "javascript/processor.js"
+        "javascript/processor.js",
+        "javascript/ckeditor/ckeditor.js",
+        "javascript/ckeditor/config.js"
     ]
 }

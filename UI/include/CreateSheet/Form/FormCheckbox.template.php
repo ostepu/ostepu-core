@@ -8,7 +8,7 @@
 <input type="hidden" class="input-choice" name="exercises[0][subexercises][0][type]" value="2">
 <label class="short label bold" for="studentComment">Aufgabenstellung:</label>
 <textarea id="task" name="exercises[0][subexercises][0][task]"
-                              class="form-field task-field"
+                              class="form-field task-field ckeditor"
                               rows="5"
                               style="width:100%"
                               maxlength="2500"></textarea>
@@ -17,7 +17,7 @@
 
 <br><br><label class="short label bold" for="studentComment">Lösungsbegründung:</label>
 <textarea name="exercises[0][subexercises][0][solution]"
-                              class="form-field"
+                              class="form-field ckeditor"
                               rows="5"
                               style="width:100%"
                               maxlength="2500"></textarea>
