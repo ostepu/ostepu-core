@@ -19,6 +19,7 @@
             <select class="parameter-choice" style="width:auto" name="exercises[0][subexercises][0][processorParameterList][0][]">
                <option value="java">Java</option>
                <option value="cx">Cx</option>
+               <option value="custom">Benutzerdefiniert</option>
            </select>
         </td>
         </tr>
