@@ -401,14 +401,14 @@ class LFormPredecessor
                                             }
                                             break;
                                         default:
-                                            $test = '';
+                                            $test = $parameter[$i];$i++;
                                             while($i<count($parameter)){
-                                                $test.=' '.$parameter[$i];
-                                                $i++;
                                                 if (@preg_match($test, DefaultNormalizer::normalizeText($choice->getText()))!==false)
                                                     break;
-                                            }
-                                            
+                                                $test.=' '.$parameter[$i];
+                                                $i++;
+                                            };
+
                                             $match = @preg_match($test, DefaultNormalizer::normalizeText($choice->getText()));
                                             if ($match === false){
                                                 $fail = true;
