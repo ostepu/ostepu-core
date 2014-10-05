@@ -7,7 +7,9 @@
     {"path":".htaccess"},
     {"path":"LProcessor.php"},
     {"path":"index.php"},
-    {"path":"Commands.json"}
+    {"path":"Commands.json"},
+    {"path":"info/"},
+    {"path":"messages/"}
   ],
   "links":[
     {"name":"submission", "target":"LSubmission", "links":[{"method":"POST", "path":"/submission" }] },

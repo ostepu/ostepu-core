@@ -7,7 +7,10 @@
     {"path":".htaccess"},
     {"path":"LOOP.php"},
     {"path":"index.php"},
-    {"path":"Commands.json"}
+    {"path":"Commands.json"},
+    {"path":"compiler/"},
+    {"path":"info/"},
+    {"path":"start_cx"}
   ],
   "links":[
     {"name":"pdf", "target":"FSPdf", "links":[] },
