@@ -11,6 +11,8 @@
 require_once dirname(__FILE__) . '/../../Assistants/Slim/Slim.php';
 include_once dirname(__FILE__) . '/../../Assistants/Request.php';
 include_once dirname(__FILE__) . '/../../Assistants/CConfig.php';
+include_once dirname(__FILE__) . '/../../Assistants/Structures.php';
+include_once ( dirname(__FILE__). '/../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader();
 
@@ -70,7 +72,7 @@ class LSubmission
     public function __construct()
     {
         // runs the CConfig
-        $com = new CConfig( LSubmission::getPrefix( ) );
+        $com = new CConfig( LSubmission::getPrefix( ), dirname(__FILE__) );
 
         // runs the LSubmission
         if ( $com->used( ) ) return;
@@ -136,7 +138,7 @@ class LSubmission
         $file = $submission->getFile();
         if (!isset($file)) $file = new File();
         if ($file->getTimeStamp()===null) $file->setTimeStamp(time());
-//echo File::encodeFile($file);return;   
+///echo File::encodeFile($file);return;   
         // upload file to filesystem        
         $result = Request::routeRequest( 
                                 'POST',
@@ -147,7 +149,7 @@ class LSubmission
                                 'file'
                                 );     
 //var_dump($result);                                
-//echo $result['content'];return;       
+///echo $result['content'];return;       
         if ( $result['status'] >= 200 && 
              $result['status'] <= 299 ){
             // file is uploaded

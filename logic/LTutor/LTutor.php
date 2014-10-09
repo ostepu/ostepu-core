@@ -76,7 +76,7 @@ class LTutor
     public function __construct()
     {
         // runs the CConfig
-        $com = new CConfig( LTutor::getPrefix( ) );
+        $com = new CConfig( LTutor::getPrefix( ), dirname(__FILE__) );
 
         // runs the LTutor
         if ( $com->used( ) ) return;
@@ -563,11 +563,11 @@ class LTutor
                 $ff = File::decodeFile($result['content']);
                 $ff->setDisplayName($transaction->getTransactionId().'.zip');
                 
-               // if (isset($result['headers']['Content-Type']))
-               // $this->app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+                //if (isset($result['headers']['Content-Type']))
+                //  $this->app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
             
                 //if (isset($result['headers']['Content-Disposition']))
-                //$this->app->response->headers->set('Content-Disposition', $result['headers']['Content-Disposition']);
+                    //$this->app->response->headers->set('Content-Disposition', $result['headers']['Content-Disposition']);
                 $this->app->response->setBody(File::encodeFile($ff));
                 $this->app->response->setStatus(201);
             } else 

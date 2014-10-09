@@ -330,7 +330,7 @@ class LProcessor
                                                 
                 if ( $result['status'] >= 200 && 
                      $result['status'] <= 299 ){
-                     
+
                     $queryResult = Process::decodeProcess($result['content']);
                     $process->setProcessId($queryResult->getProcessId());
                     $res[] = $process;
@@ -634,7 +634,7 @@ class LProcessor
             }
 
             if ($uploadSubmission!==null){
-//echo Submission::encodeSubmission($uploadSubmission);return;
+///echo Submission::encodeSubmission($uploadSubmission);return;
                 $result = Request::routeRequest( 
                                                 'POST',
                                                 '/submission',

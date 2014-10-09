@@ -14,5 +14,8 @@
     {"name":"submission", "target":"DBSubmission", "links":[{"method":"GET", "path":"/submission/group/user/:userid/exercisesheet/:sheetid/selected" },{"method":"DELETE", "path":"/submission/:submissionid" },{"method":"POST", "path":"/submission" }] },
     {"name":"selectedSubmission", "target":"DBSelectedSubmission", "links":[{"method":"PUT", "path":"/selectedsubmission/leader/:leaderid/exercise/:exerciseid" },{"method":"POST", "path":"/selectedsubmission" }] },
     {"name":"zip", "target":"FSZip", "links":[{"method":"POST", "path":"/zip/:zipname" }] }
+  ],
+  "connector":[
+    {"name":"request", "target":"CLocalObjectRequest"}
   ]
 }

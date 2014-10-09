@@ -8,11 +8,11 @@
  * @date 2013-2014
  */
 
-require_once '../../Assistants/Slim/Slim.php';
-include_once '../../Assistants/Request.php';
-include_once '../../Assistants/CConfig.php';
-include_once ( '../../Assistants/Logger.php' );
-include_once ( '../../Assistants/Structures.php' );
+require_once dirname(__FILE__) . '/../../Assistants/Slim/Slim.php';
+include_once dirname(__FILE__) . '/../../Assistants/Request.php';
+include_once dirname(__FILE__) . '/../../Assistants/CConfig.php';
+include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/Structures.php' );
 
 \Slim\Slim::registerAutoloader();
 
@@ -78,7 +78,7 @@ class LCourse
     public function __construct()
     {
         // runs the CConfig
-        $com = new CConfig( LCourse::getPrefix( ) );
+        $com = new CConfig( LCourse::getPrefix( ), dirname(__FILE__) );
 
         // runs the LCourse
         if ( $com->used( ) ) return;
