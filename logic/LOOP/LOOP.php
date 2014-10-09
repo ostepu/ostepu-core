@@ -323,8 +323,14 @@ class LOOP
                         if ($type == 'cx'){
                             $output = array();
                             $return = '';
-                            exec('(./start_cx '.$filePath . '/' . $fileName.') 2>&1', $output, $return);
-                            
+                            $param = implode(' ',$parameter);
+                            if ($param!=''){
+                                $param=str_replace('$file',$filePath . '/' . $fileName,$param);
+                            } else
+                                $param = $filePath . '/' . $fileName;
+                                
+                            exec('(./start_cx '.$param.') 2>&1', $output, $return);
+                           
                             if (count($output)>0 && $output[count($output)-1] === '201'){
                                 // nothing
                                 $pro->setStatus(201);
@@ -352,6 +358,10 @@ class LOOP
                                 $param = $filePath . '/' . $fileName;
                                 
                             exec('(javac '.$param.') 2>&1', $output, $return);
+                            /*ob_start();
+                            system('("C:/Program Files/Java/jdk1.8.0_05/bin/javac" '.$param.') 2>&1',$return);
+                            $output=explode("\n",ob_get_contents());
+                            ob_end_clean();*/
                             
                             if ($return == 0){
                                 // nothing
