@@ -29,7 +29,7 @@ a.plain:after {
 }
 
 a:after {
-    content: '';
+    content: ' >';
 }
 
 .inline:after {
