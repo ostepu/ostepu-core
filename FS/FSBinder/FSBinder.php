@@ -37,10 +37,11 @@ class FSBinder
      */
     public function __construct( )
     {
-        $this->config = parse_ini_file( 
-                                       dirname(__FILE__).'/config.ini',
-                                       TRUE
-                                       ); 
+        if (file_exists(dirname(__FILE__).'/config.ini'))
+            $this->config = parse_ini_file( 
+                                           dirname(__FILE__).'/config.ini',
+                                           TRUE
+                                           ); 
                                        
         // runs the CConfig
         $com = new CConfig( '', dirname(__FILE__) );
@@ -343,7 +344,7 @@ class FSBinder
                     LogLevel::DEBUG
                     );
                     
-        if (!file_exists('config.ini')){
+        if (!file_exists(dirname(__FILE__).'/config.ini')){
             $this->_app->response->setStatus( 409 );
             $this->_app->stop();
         }
@@ -364,7 +365,7 @@ class FSBinder
                     'starts DELETE DeletePlatform',
                     LogLevel::DEBUG
                     );
-        if (file_exists('config.ini') && !unlink('config.ini')){
+        if (file_exists(dirname(__FILE__).'/config.ini') && !unlink(dirname(__FILE__).'/config.ini')){
             $this->_app->response->setStatus( 409 );
             $this->_app->stop();
         }
@@ -400,7 +401,7 @@ class FSBinder
         $res = array( );
         foreach ( $insert as $in ){
         
-            $file = 'config.ini';
+            $file = dirname(__FILE__).'/config.ini';
             $text = "[DIR]\n".
                     "temp = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$in->getTempDirectory()))."\"\n".
                     "files = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$in->getFilesDirectory()))."\"\n";
