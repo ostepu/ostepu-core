@@ -76,7 +76,7 @@ class LTutor
     public function __construct()
     {
         // runs the CConfig
-        $com = new CConfig( LTutor::getPrefix( ) );
+        $com = new CConfig( LTutor::getPrefix( ), dirname(__FILE__) );
 
         // runs the LTutor
         if ( $com->used( ) ) return;
@@ -88,10 +88,11 @@ class LTutor
         $this->app = new \Slim\Slim();
         $this->app->response->headers->set('Content-Type', 'application/json');
         
-        $this->config = parse_ini_file( 
-                                       dirname(__FILE__).'/config.ini',
-                                       TRUE
-                                       );
+        if (file_exists(dirname(__FILE__).'/config.ini'))
+            $this->config = parse_ini_file( 
+                                           dirname(__FILE__).'/config.ini',
+                                           TRUE
+                                           ); 
 
         /**
          *Set the Logiccontroller-URL
@@ -563,11 +564,11 @@ class LTutor
                 $ff = File::decodeFile($result['content']);
                 $ff->setDisplayName($transaction->getTransactionId().'.zip');
                 
-               // if (isset($result['headers']['Content-Type']))
-               // $this->app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
+                //if (isset($result['headers']['Content-Type']))
+                //  $this->app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
             
                 //if (isset($result['headers']['Content-Disposition']))
-                //$this->app->response->headers->set('Content-Disposition', $result['headers']['Content-Disposition']);
+                    //$this->app->response->headers->set('Content-Disposition', $result['headers']['Content-Disposition']);
                 $this->app->response->setBody(File::encodeFile($ff));
                 $this->app->response->setStatus(201);
             } else 
@@ -742,7 +743,7 @@ class LTutor
                     LogLevel::DEBUG
                     );
                     
-        if (!file_exists('config.ini')){
+        if (!file_exists(dirname(__FILE__).'/config.ini')){
             $this->app->response->setStatus( 409 );
             $this->app->stop();
         }
@@ -763,7 +764,7 @@ class LTutor
                     'starts DELETE DeletePlatform',
                     LogLevel::DEBUG
                     );
-        if (file_exists('config.ini') && !unlink('config.ini')){
+        if (file_exists(dirname(__FILE__).'/config.ini') && !unlink(dirname(__FILE__).'/config.ini')){
             $this->app->response->setStatus( 409 );
             $this->app->stop();
         }
@@ -799,7 +800,7 @@ class LTutor
         $res = array( );
         foreach ( $insert as $in ){
         
-            $file = 'config.ini';
+            $file = dirname(__FILE__).'/config.ini';
             $text = "[DIR]\n".
                     "temp = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$in->getTempDirectory()))."\"\n".
                     "files = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$in->getFilesDirectory()))."\"\n";

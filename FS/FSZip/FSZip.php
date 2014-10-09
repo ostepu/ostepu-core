@@ -75,10 +75,11 @@ class FSZip
         if ( $com->used( ) ) return;
             ///$_conf = $com->loadConfig( );
             
-        $this->config = parse_ini_file( 
-                                       dirname(__FILE__).'/config.ini',
-                                       TRUE
-                                       ); 
+        if (file_exists(dirname(__FILE__).'/config.ini'))
+            $this->config = parse_ini_file( 
+                                           dirname(__FILE__).'/config.ini',
+                                           TRUE
+                                           ); 
                                        
         // initialize component
         ///$this->_conf = $_conf;
@@ -424,7 +425,7 @@ class FSZip
                     LogLevel::DEBUG
                     );
                     
-        if (!file_exists('config.ini')){
+        if (!file_exists(dirname(__FILE__).'/config.ini')){
             $this->_app->response->setStatus( 409 );
             $this->_app->stop();
         }
@@ -445,7 +446,7 @@ class FSZip
                     'starts DELETE DeletePlatform',
                     LogLevel::DEBUG
                     );
-        if (file_exists('config.ini') && !unlink('config.ini')){
+        if (file_exists(dirname(__FILE__).'/config.ini') && !unlink(dirname(__FILE__).'/config.ini')){
             $this->_app->response->setStatus( 409 );
             $this->_app->stop();
         }
@@ -481,7 +482,7 @@ class FSZip
         $res = array( );
         foreach ( $insert as $in ){
         
-            $file = 'config.ini';
+            $file = dirname(__FILE__).'/config.ini';
             $text = "[DIR]\n".
                     "temp = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$in->getTempDirectory()))."\"\n".
                     "files = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$in->getFilesDirectory()))."\"\n";
