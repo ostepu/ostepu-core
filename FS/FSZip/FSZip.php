@@ -16,23 +16,6 @@ include_once ( dirname(__FILE__) . '/../../Assistants/Request.php' );
 
 \Slim\Slim::registerAutoloader( );
 
-Logger::Log( 
-            'begin FSZip',
-            LogLevel::DEBUG
-            );
-
-// runs the CConfig
-$com = new CConfig( FSZip::getBaseDir( ) );
-
-// runs the FSZip
-if ( !$com->used( ) )
-    new FSZip( $com->loadConfig( ) );
-
-Logger::Log( 
-            'end FSZip',
-            LogLevel::DEBUG
-            );
-
 /**
  * A class for creating and loading ZIP archives from the file system
  */
@@ -81,18 +64,24 @@ class FSZip
      *
      * This function contains the REST actions with the assignments to
      * the functions.
-     *
-     * @param Component $conf component data
      */
-    public function __construct( $conf )
+    public function __construct( )
     {
+    
+        // runs the CConfig
+        $com = new CConfig( FSZip::getBaseDir( ), dirname(__FILE__) );
+
+        // runs the FSZip
+        if ( $com->used( ) ) return;
+            ///$_conf = $com->loadConfig( );
+            
         $this->config = parse_ini_file( 
                                        dirname(__FILE__).'/config.ini',
                                        TRUE
                                        ); 
                                        
         // initialize component
-        $this->_conf = $conf;
+        ///$this->_conf = $_conf;
 
         // initialize slim
         $this->_app = new \Slim\Slim( );

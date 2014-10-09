@@ -17,13 +17,6 @@ include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
 
-// runs the CConfig
-$com = new CConfig( '' );
-
-// runs the FSBinder
-if ( !$com->used( ) )
-    new FSBinder( );
-
 /**
  * The class for storing files.
  */
@@ -48,7 +41,17 @@ class FSBinder
                                        dirname(__FILE__).'/config.ini',
                                        TRUE
                                        ); 
-    
+                                       
+        // runs the CConfig
+        $com = new CConfig( '', dirname(__FILE__) );
+
+        // runs the FSBinder
+        if ( $com->used( ) ) return;
+            ///$_conf = $com->loadConfig( );
+            
+        // initialize component
+        ///$this->_conf = $_conf;
+        
         // initialize slim
         $this->_app = new \Slim\Slim( array( 'debug' => true ) );
         $this->_app->response->headers->set( 
