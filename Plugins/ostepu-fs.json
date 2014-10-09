@@ -8,7 +8,8 @@
   "requirements":[{"type":"plugin","name":"CORE","version":"0.1"}],
   "files":
     [
-      {"path":"Plugins/ostepu-fs.json"}
+      {"path":"Plugins/ostepu-fs.json"},
+      {"conf":"FS/.htaccess"}
     ],
   "components":
     [

@@ -10,6 +10,7 @@
     [
       {"path":"Assistants/"},
       {"path":".htaccess"},
+      {"path":"Plugins/.htaccess"},
       {"path":"Plugins/core.json"},
       {"path":"DB/Components2.sql"}
     ],
