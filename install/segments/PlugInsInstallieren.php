@@ -4,7 +4,7 @@ if (!$simple) {
     $pluginFiles = array();
     if ($handle = @opendir(dirname(__FILE__) . '/../../Plugins')) {
         while (false !== ($file = readdir($handle))) {
-            if ($file=='.' || $file=='..') continue;
+            if (substr($file,-5)!='.json' || $file=='.' || $file=='..') continue;
             if (is_dir(dirname(__FILE__) . '/../../Plugins/'.$file)) continue;
             $pluginFiles[] = $file;
         }
