@@ -10,10 +10,13 @@
     {"path":"Commands.json"},
     {"path":"info/"},
     {"path":"messages/"},
-    {"path":"LFileHandler.php"}
+    {"path":"LFileHandler2.php"}
   ],
   "links":[
     {"name":"fileDb", "target":"DBFile", "links":[{"method":"GET", "path":"/file/:adress/hash/:hash" },{"method":"DELETE", "path":"/file/:fileid" }] },
     {"name":"file", "target":"FSFile", "links":[{"method":"POST", "path":"/file/:adress" },{"method":"DELETE", "path":"/:adress" }] }
+  ],
+  "connector":[
+    {"name":"request", "target":"CLocalObjectRequest"}
   ]
 }

@@ -97,9 +97,9 @@ class Installer
         $result['mod_php5'] = Installer::apache_module_exists('mod_php5');
         $result['mod_rewrite'] = Installer::apache_module_exists('mod_rewrite');
         $result['mod_deflate'] = Installer::apache_module_exists('mod_deflate');  
-        $result['mod_headers'] = Installer::apache_module_exists('mod_headers');  
-        $result['mod_filter'] = Installer::apache_module_exists('mod_filter');  
-        $result['mod_expires'] = Installer::apache_module_exists('mod_expires');  
+        $result['mod_headers(win)'] = Installer::apache_module_exists('mod_headers');  
+        $result['mod_filter(win)'] = Installer::apache_module_exists('mod_filter');  
+        $result['mod_expires(win)'] = Installer::apache_module_exists('mod_expires');  
         
         return $result;
     }
@@ -124,6 +124,7 @@ class Installer
         $result['openssl'] = Installer::apache_extension_exists('openssl');
         $result['fileinfo'] = Installer::apache_extension_exists('fileinfo');
         $result['sockets'] = Installer::apache_extension_exists('sockets');
+        $result['gd'] = Installer::apache_extension_exists('gd');
         return $result;
     }
     

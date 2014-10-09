@@ -33,7 +33,7 @@ class Request_MultiRequest
     public function __construct()
     {
         // initialize a curl multi instance
-        $this->requests = curl_multi_init();
+        //$this->requests = curl_multi_init();
     }
 
     /**
@@ -43,10 +43,10 @@ class Request_MultiRequest
      */
     public function addRequest($request)
     {
-        if ($this->i < $this->rolling_window) {
+        /*if ($this->i < $this->rolling_window) {
             $this->i++;
             curl_multi_add_handle($this->requests,$request);
-        }
+        }*/
         $this->handles[] = $request;
     }
 
@@ -55,26 +55,33 @@ class Request_MultiRequest
      *
      * @ return a array of request results
      */
+    
     public function run()
     {
-        // this var stores the number of running requests
+        $res = array();
+        foreach ($this->handles as $handle){
+           $res[] = Request::custom($handle->method, $handle->target, $handle->header,  $handle->content, $handle->authbool, $handle->sessiondelete);
+        }
+        /*// this var stores the number of running requests
         $running_handles = null;
 
-        // execute all requests and waits for the first incoming
-        // "performing" message
         $res = array();
 
         $maxx = count($this->handles);
         for($a = 0; $a<$maxx;$a++)
             $res[] = null;
-            
+
         do {
-            while(($execrun = curl_multi_exec($this->requests, $running_handles)) == CURLM_CALL_MULTI_PERFORM);
-            if($execrun != CURLM_OK)
+
+            while (($execrun = curl_multi_exec($this->requests, $running_handles)) === CURLM_CALL_MULTI_PERFORM) {
+            }
+            
+            if($execrun != CURLM_OK){
                 break;
+            }
                 
             // a request was just completed -- find out which one
-            while($done = curl_multi_info_read($this->requests)) {
+            while(($done = curl_multi_info_read($this->requests))!== false) {
                 $info = curl_getinfo($done['handle']);
 
                // if ($info['http_code'] == 200 || $info['http_code'] == 201 || $info['http_code'] == 404 || $info['http_code'] == 401)  {
@@ -89,27 +96,21 @@ class Request_MultiRequest
                 $result['status'] = curl_getinfo($done['handle'], CURLINFO_HTTP_CODE);
 
                 $res[array_search($done['handle'], $this->handles)] = $result;
-                /*} else {
-                    // on all other status messages simply return an empty result with status 409
-                    $result = array();
-                    $result['content'] = json_encode(array());
-                    $result['status'] = 409;
-                    $res[array_search($done['handle'], $this->handles)] = $result;
-                }*/
-                                
+
                 if ($this->i < $maxx){
                     curl_multi_add_handle($this->requests,$this->handles[$this->i]);
-                    $this->i++;
+                    $this->i++;                    
                 }
 
                     // remove the curl handle that just completed
                     curl_multi_remove_handle($this->requests, $done['handle']);
             }
+        
             //Request_MultiRequest::Sleeper(10);
         } while ($running_handles);
 
         // close the multi curl object
-        curl_multi_close($this->requests);
+        curl_multi_close($this->requests);*/
         return $res;
     }
     

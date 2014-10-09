@@ -73,8 +73,11 @@ class FSFile
 
         // runs the FSFile
         if ( $com->used( ) ) return;
-            $_conf = $com->loadConfig( );
+            ///$_conf = $com->loadConfig( );
             
+        // initialize component
+        ///$this->_conf = $_conf;
+
         $this->config = parse_ini_file( 
                                        dirname(__FILE__).'/config.ini',
                                        TRUE

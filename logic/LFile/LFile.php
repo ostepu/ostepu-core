@@ -13,9 +13,8 @@ include_once ( dirname(__FILE__). '/../../Assistants/CConfig.php' );
 include_once ( dirname(__FILE__). '/../../Assistants/Request.php' );
 include_once ( dirname(__FILE__). '/../../Assistants/Structures.php' );
 include_once ( dirname(__FILE__). '/../../Assistants/Logger.php' );
+include_once ( dirname(__FILE__). '/LFileHandler2.php' );
 
-include_once ( dirname(__FILE__). '/LFileHandler.php' );
-//var_dump($_SERVER);
 \Slim\Slim::registerAutoloader( );
 
 /**
@@ -78,7 +77,7 @@ class LFile
     public function __construct()
     {
         // runs the CConfig
-        $com = new CConfig( LFile::$_baseDir );
+        $com = new CConfig( LFile::$_baseDir, dirname(__FILE__) );
 
         // runs the LFile
         if ( $com->used( ) ) return;
@@ -172,7 +171,7 @@ class LFile
                 continue;
             }
             
-            $result = LFileHandler::add($this->_db,$this->_fs,$path, array(),$fileObject);
+            $result = LFileHandler2::add($this->_db,$this->_fs,$path, array(),$fileObject);
             
             if ( $result !== null){
                 $result->setStatus(201);
@@ -231,7 +230,7 @@ class LFile
         $res = null;
         
         if ($fileObject!==null && $fileObject !== array()){
-            $result = LFileHandler::delete($this->_db, $this->_fs, array(), $fileObject);    
+            $result = LFileHandler2::delete($this->_db, $this->_fs, array(), $fileObject);    
         } else
             $result = null;
             

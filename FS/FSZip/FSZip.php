@@ -73,15 +73,15 @@ class FSZip
 
         // runs the FSZip
         if ( $com->used( ) ) return;
-            $_conf = $com->loadConfig( );
-            
+            ///$_conf = $com->loadConfig( );
+
         $this->config = parse_ini_file( 
                                        dirname(__FILE__).'/config.ini',
                                        TRUE
                                        ); 
                                        
         // initialize component
-        $this->_conf = $conf;
+        ///$this->_conf = $_conf;
 
         // initialize slim
         $this->_app = new \Slim\Slim( );

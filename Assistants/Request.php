@@ -37,7 +37,7 @@ class Request
                     if (!is_array($retVal[$match[1]])) {
                         $retVal[$match[1]] = array($retVal[$match[1]]);
                     }
-                    $retVal[$match[1]][] = $match[2];
+                    $retVal[$match[1]] = $match[2];
                 } else {
                     $retVal[$match[1]] = trim($match[2]);
                 }
@@ -45,7 +45,26 @@ class Request
         }
         return $retVal;
     }
-
+    
+    public static function http_parse_headers_short( $fields )
+    {        
+        $retVal = array();
+        foreach( $fields as $field ) {
+            if( preg_match('/([^:]+): (.+)/m', $field, $match) ) {
+                $match[1] = preg_replace('/(?<=^|[\x09\x20\x2D])./e', 'strtoupper("\0")', strtolower(trim($match[1])));
+                if( isset($retVal[$match[1]]) ) {
+                    if (!is_array($retVal[$match[1]])) {
+                        $retVal[$match[1]] = array($retVal[$match[1]]);
+                    }
+                    $retVal[$match[1]] = $match[2];
+                } else {
+                    $retVal[$match[1]] = trim($match[2]);
+                }
+            }
+        }
+        return $retVal;
+    }
+    
     public static $components = null;
     
     /**
@@ -72,23 +91,32 @@ class Request
             if (Request::$components==null){
                 Request::$components=CConfig::loadStaticConfig('','',dirname(__FILE__),'request_cconfig.json');
             }
+            ///Logger::Log('<<possible>>', LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
 
             $coms = Request::$components->getLinks();
             if ($coms!=null){      
                 if (!is_array($coms)) $coms = array($coms);
                 
-                $e = strlen($_SERVER['DOCUMENT_ROOT']);
+                $e = strlen(rtrim($_SERVER['DOCUMENT_ROOT'],'/'));
+                ///Logger::Log("e: ".$e, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
                 $f = substr(str_replace("\\","/",dirname(__FILE__)),$e);
+                ///Logger::Log("f: ".$f, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
                 $g = substr(str_replace("\\","/",$_SERVER['SCRIPT_FILENAME']),$e);
-                
+                ///Logger::Log("g: ".$g, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+
                 $a=0;
                 for (;$a<strlen($g) && $a<strlen($f) && $f[$a] == $g[$a];$a++){}
                 $h = substr(str_replace("\\","/",$_SERVER['PHP_SELF']),0,$a-1);
-                
+                ///Logger::Log("h: ".$h, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
                 foreach ($coms as $com){
-                    if ($com->getPrefix() === null || $com->getLocalPath()==null || $com->getClassFile()==null || $com->getClassName()==null) continue;
+                    if ($com->getPrefix() === null || $com->getLocalPath()==null || $com->getClassFile()==null || $com->getClassName()==null) {
+                        Logger::Log('nodata: '.$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+                        continue;
+                    }
+                    
                     $url = 'http://localhost'.$h.'/'.$com->getLocalPath();
-
+                    ///Logger::Log("url: ".$url, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+                        
                     if (strpos($target,$url.'/')===0){
                         $result = array();
                         $tar = dirname(__FILE__).'/../'.$com->getLocalPath().'/'.$com->getClassFile();
@@ -163,10 +191,14 @@ class Request
                             unset($obj);                        
                         $result['content'] = ob_get_contents();
                         ob_end_clean(); 
+                        
+                        ///Logger::Log($method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
                             
-                        $result['headers'] = array_merge(array(),apache_response_headers()); 
+                        $result['headers'] = array_merge(array(),Request::http_parse_headers_short(headers_list())); 
+                        ///foreach ($result['headers'] as $key => $value)
+                        ///    Logger::Log($key.'__'.$value, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
                         header_remove();        
-                   
+
                         $result['status'] = http_response_code();
                         $_SERVER['REQUEST_URI'] = $oldRequestURI;
                         $_SERVER['SCRIPT_NAME'] = $oldScriptName;
@@ -187,9 +219,9 @@ class Request
 
         if (!$done){
             // creates a custom request
-            ///Logger::Log("--".$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+            Logger::Log("--".$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
             
-            $ch = Request_CreateRequest::createCustom($method,$target,$header,$content, $authbool, $sessiondelete);
+            $ch = Request_CreateRequest::createCustom($method,$target,$header,$content, $authbool, $sessiondelete)->get();
             $content = curl_exec($ch);
               
             // get the request result
@@ -208,7 +240,7 @@ class Request
             curl_close($ch);                                                                            
         }
 
-        ///Logger::Log($target . ' ' . (round((microtime(true) - $begin),2)). 's', LogLevel::DEBUG, false, dirname(__FILE__) . '/../executionTime.log');
+        Logger::Log($target . ' ' . (round((microtime(true) - $begin),2)). 's', LogLevel::DEBUG, false, dirname(__FILE__) . '/../executionTime.log');
         return $result; 
     }
        

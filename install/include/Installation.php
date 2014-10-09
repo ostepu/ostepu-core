@@ -616,7 +616,7 @@ class Installation
                     "TO '{$data['DB']['db_user_operator']}'@'localhost' ".
                     "IDENTIFIED BY '{$data['DB']['db_passwd_operator']}';";
             $result = DBRequest::request2($sql, false, $data);
-            if ($result[0]["errno"] !== 0 && $result[1]["errno"] !== 0){
+            if ($result[0]["errno"] !== 0 && (count($result)<2 || $result[1]["errno"] !== 0)){
                 $fail = true; $errno = $result[0]["errno"];$error = isset($result[0]["error"]) ? $result[0]["error"] : '';
             }
             $data['DB']['db_name'] = $oldName;
