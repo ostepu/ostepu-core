@@ -74,14 +74,15 @@ class FSPdf
 
         // runs the FSPdf
         if ( $com->used( ) ) return;
-            $_conf = $com->loadConfig( );
+            ///$_conf = $com->loadConfig( );
 
         $this->config = parse_ini_file( 
                                        dirname(__FILE__).'/config.ini',
                                        TRUE
                                        );
                                        
-        $this->_conf = $_conf;
+        // initialize component
+        ///$this->_conf = $_conf;
 
         $this->_app = new \Slim\Slim( array( 'debug' => true ) );
 
@@ -192,7 +193,7 @@ class FSPdf
                                             $name
                                             );
                                            
-        if ( !file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
+        if (!file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
             FSPdf::generatepath( $this->config['DIR']['files'].'/'.dirname( $filePath ) );
 
            /* $form = new Formatierung();
@@ -217,7 +218,9 @@ class FSPdf
             $pdf->setPrintFooter(false);
 
             $pdf->AddPage( );
-            $pdf->WriteHTML(utf8_decode(htmlspecialchars_decode($data->getText())));
+            $text=utf8_decode(htmlspecialchars_decode($data->getText()));
+        
+            $pdf->WriteHTML($text);
 
             // stores the pdf binary data to $result
             $result = $pdf->Output( 
