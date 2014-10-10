@@ -289,6 +289,7 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                     if (isset($subexercise['type'])){
                                 
                         $task = html_entity_decode(isset($subexercise['task']) ? $subexercise['task'] : '');
+                        $solution = html_entity_decode(isset($subexercise['solution']) ? $subexercise['solution'] : '');
 
                         // inline math-tex
                         $first='<span class="math-tex">';
@@ -298,21 +299,30 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                             $pos2 = strpos ( $task , $second );
                             if ($pos2 !== false){
                                 $mathTex = substr($task, $pos+strlen($first), $pos2-$pos-strlen($first));
-                                $replace = false;
-                                $replace = texify('$'.$mathTex.'$');
-                                
+                                $replace = false;$replace = texify('$'.$mathTex.'$');
                                 if ($replace===false)
                                     $replace = '<img src="http://latex.codecogs.com/gif.latex?'.rawurlencode($mathTex).'">';
                                 $task = substr($task,0,$pos).$replace.substr($task,$pos2+strlen($second));
                             }
-                            
                             $pos = strpos ( $task , $first, $pos+strlen($first)+strlen($second) );
                         }
+                        $pos = strpos ( $solution , $first );
+                        while ($pos!==false){
+                            $pos2 = strpos ( $solution , $second );
+                            if ($pos2 !== false){
+                                $mathTex = substr($solution, $pos+strlen($first), $pos2-$pos-strlen($first));
+                                $replace = false;$replace = texify('$'.$mathTex.'$');
+                                if ($replace===false)
+                                    $replace = '<img src="http://latex.codecogs.com/gif.latex?'.rawurlencode($mathTex).'">';
+                                $solution = substr($solution,0,$pos).$replace.substr($solution,$pos2+strlen($second));
+                            }
+                            $pos = strpos ( $solution , $first, $pos+strlen($first)+strlen($second) );
+                        }   
                         
                         $form = Form::createForm(
                                            null,
                                            $exercises[$i]->getId(),
-                                           html_entity_decode(isset($subexercise['solution']) ? $subexercise['solution'] : null),
+                                           $solution,
                                            $task,
                                            isset($subexercise['type']) ? $subexercise['type'] : null
                                           );
