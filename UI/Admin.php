@@ -17,6 +17,9 @@ if (isset($_POST['action'])) {
     if ($_POST['action'] == "ExerciseSheetLecturer" && isset($_POST['downloadCSV'])) {
         $sid = cleanInput($_POST['downloadCSV']);
         $location = $logicURI . '/tutor/user/' . $uid . '/exercisesheet/' . $sid;
+        $result = http_get($location, true);
+        $zipfile = json_decode($result, true);
+        $location = "../FS/FSBinder/{$zipfile['address']}/".$zipfile['displayName'];
         header("Location: {$location}");
     }
     if ($_POST['action'] == "ExerciseSheetLecturer" && isset($_POST['deleteSheet'])) {

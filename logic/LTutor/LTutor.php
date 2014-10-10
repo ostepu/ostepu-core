@@ -390,7 +390,23 @@ class LTutor
                 $exerciseIdWithExistingMarkings[] = $id;
             }
         }
+  
+        foreach ($exercises as $exercise){
+            $exerciseId = $exercise['id'];
+            
+            if (isset($exercise['attachments']))
+                $attachments[$exerciseId] = $exercise['attachments'];
 
+            if ($exerciseId == $exercise['link']){
+                $count++;
+                $namesOfExercises[$exerciseId] = 'Aufgabe_'.$count;
+                $subtask = 0;
+            }else{
+                $subtask++;
+                $namesOfExercises[$exerciseId] = 'Aufgabe_'.$count.$alphabet[$subtask];
+                $namesOfExercises[$exercise['link']] = 'Aufgabe_'.$count.$alphabet[0];
+            }
+        }
 
         //formating, create the layout of the CSV-file for the tutor
         //first two rows of an exercise are the heads of the table
@@ -402,19 +418,8 @@ class LTutor
             if (!isset($exercise['id'])) continue;
             $exerciseId = $exercise['id'];
 
-            if ($exercise != $exercise['link']){
-                $count++;
-                $firstRow[] = '--Aufgabe_'.$count;
-                $int = $exerciseId;
-                $namesOfExercises[$int] = 'Aufgabe_'.$count;
-                $subtask = 0;
-            }else{
-                $firstRow[] = '--Aufgabe_'.$count.$alphabet[$subtask];
-                $int = $exerciseId;
-                $namesOfExercises[$int] = 'Aufgabe_'.$count.$alphabet[$subtask];
-                $subtask++;
-            }
-            
+            $firstRow[] = '--'.$namesOfExercises[$exerciseId];
+                
             // $firstRow[] = $exerciseId; /// obsolete???
             $secondRow[] = '--ID';
             $secondRow[] = 'Points';
