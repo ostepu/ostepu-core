@@ -60,7 +60,7 @@ if ($options['download'] == 'attachments') {
     } else {
         $sid = $options['sid'];
         $uid = $options['uid'];
-        
+
         $multiRequestHandle = new Request_MultiRequest();
         
         //request to database to get the markings
@@ -72,6 +72,7 @@ if ($options['download'] == 'attachments') {
  
         $answer = $multiRequestHandle->run();
         $markings = json_decode($answer[0]['content'], true);
+
         $sheet = json_decode($answer[1]['content'], true);
         $exercises = $sheet['exercises'];
         
@@ -81,20 +82,19 @@ if ($options['download'] == 'attachments') {
         $namesOfExercises = array();
         $attachments = array();
         foreach ($exercises as $exercise){
-            $firstRow = array();
-            $secondRow = array();
-            $row = array();
+            $exerciseId = $exercise['id'];
             
             if (isset($exercise['attachments']))
-                $attachments[$exercise['id']] = $exercise['attachments'];
+                $attachments[$exerciseId] = $exercise['attachments'];
 
-            if ($exercise != $exercise['link']){
+            if ($exerciseId == $exercise['link']){
                 $count++;
-                $namesOfExercises[$exercise['id']] = 'Aufgabe '.$count;
+                $namesOfExercises[$exerciseId] = 'Aufgabe_'.$count;
                 $subtask = 0;
             }else{
-                $namesOfExercises[$exercise['id']] = 'Aufgabe '.$count.$alphabet[$subtask];
                 $subtask++;
+                $namesOfExercises[$exerciseId] = 'Aufgabe_'.$count.$alphabet[$subtask];
+                $namesOfExercises[$exercise['link']] = 'Aufgabe_'.$count.$alphabet[0];
             }
         }
 
