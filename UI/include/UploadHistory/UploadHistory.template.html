@@ -1,8 +1,9 @@
-<?php
+<?php 
     // bool if subtasks are printed
     $isSubtask = false;
     if (isset($submissionHistory))
-    foreach ($submissionHistory as $key => $exercise):
+    foreach ($exercises as $ex):
+    $key = $ex['id'];
 ?>
 <div class="content-element">
     <div class="content-header">
@@ -26,8 +27,8 @@
         <div class="content-body left">
             <?php
                 $noSubmission = true;
-                if (!empty($exercise)) {
-                    foreach ($exercise as $submission) {
+                if (!empty($submissionHistory[$key])) {
+                    foreach ($submissionHistory[$key] as $submission) {
                         if ($submission['hideFile'] == "0") {
                             $noSubmission = false;
 
