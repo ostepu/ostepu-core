@@ -394,9 +394,6 @@ class LTutor
         $count=null;
         foreach ($exercises as $key => $exercise){
             $exerciseId = $exercise['id'];
-            
-            if (isset($exercise['attachments']))
-                $attachments[$exerciseId] = $exercise['attachments'];
 
             if ($count===null || $exercises[$count]['link'] != $exercise['link']){
                 $count=$key;

@@ -839,12 +839,7 @@ class LGetSite
             }
         }
 
-        // add every submission to the response
-        if(!empty($submissions)) {
-            foreach ($submissions as $submission) {
-                $response['submissionHistory'][] = $submission;
-            }
-        }
+        $response['submissionHistory'] = $submissions;
 
         $this->flag = 1;
         $response['user'] = $this->userWithCourse($userid, $courseid);
