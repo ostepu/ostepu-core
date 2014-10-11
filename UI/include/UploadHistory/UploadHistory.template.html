@@ -1,5 +1,22 @@
 <?php 
     // bool if subtasks are printed
+    $count=null;
+    $namesOfExercises=array();
+    $alphabet = range('a', 'z');
+    foreach ($exercises as $key => $exercise){
+        $exerciseId = $exercise['id'];
+
+        if ($count===null || $exercises[$count]['link'] != $exercise['link']){
+            $count=$key;
+            $namesOfExercises[$exerciseId] = 'AUFGABE '.$exercise['link'];
+            $subtask = 0;
+        }else{
+            $subtask++;
+            $namesOfExercises[$exerciseId] = 'AUFGABE '.$exercise['link'].$alphabet[$subtask];
+            $namesOfExercises[$exercises[$count]['id']] = 'AUFGABE '.$exercises[$count]['link'].$alphabet[0];
+        }
+    }
+    
     $isSubtask = false;
     if (isset($submissionHistory))
     foreach ($exercises as $ex):
@@ -7,20 +24,7 @@
 ?>
 <div class="content-element">
     <div class="content-header">
-        <div class="content-title left">AUFGABE <?php
-                    if (isset($exercises[$key])) {
-                        print $exercises[$key]['link'];
-                    }
-                    // if next exercise is not main or is main but current one is subexercise or end is reached but current one is subex.
-                    if ((isset($exercises[$key+1]) && $exercises[$key+1]['linkName'] != 1) ||
-                        (isset($exercises[$key+1]) && $exercises[$key+1]['linkName'] == 1 && $isSubtask == true) ||
-                        (isset($exercises[$key+1]) == false && $isSubtask == true)) {
-                        if (isset($exercises[$key])) {
-                            print chr(96+$exercises[$key]['linkName']);
-                            $isSubtask = true;
-                        }
-                    }
-                    ?></div>
+        <div class="content-title left"><?php echo $namesOfExercises[$key];?></div>
     </div>
 
     <div class="content-body-wrapper">
