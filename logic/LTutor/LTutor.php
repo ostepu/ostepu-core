@@ -391,20 +391,21 @@ class LTutor
             }
         }
   
-        foreach ($exercises as $exercise){
+        $count=null;
+        foreach ($exercises as $key => $exercise){
             $exerciseId = $exercise['id'];
             
             if (isset($exercise['attachments']))
                 $attachments[$exerciseId] = $exercise['attachments'];
 
-            if ($exerciseId == $exercise['link']){
-                $count++;
-                $namesOfExercises[$exerciseId] = 'Aufgabe_'.$count;
+            if ($count===null || $exercises[$count]['link'] != $exercise['link']){
+                $count=$key;
+                $namesOfExercises[$exerciseId] = 'Aufgabe_'.$exercise['link'];
                 $subtask = 0;
             }else{
                 $subtask++;
-                $namesOfExercises[$exerciseId] = 'Aufgabe_'.$count.$alphabet[$subtask];
-                $namesOfExercises[$exercise['link']] = 'Aufgabe_'.$count.$alphabet[0];
+                $namesOfExercises[$exerciseId] = 'Aufgabe_'.$exercise['link'].$alphabet[$subtask];
+                $namesOfExercises[$exercises[$count]['id']] = 'Aufgabe_'.$exercises[$count]['link'].$alphabet[0];
             }
         }
 
