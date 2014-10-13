@@ -65,7 +65,7 @@ class CControl
     public function __construct( )
     {
         // runs the CConfig
-        $com = new CConfig( CControl::getPrefix( ) . ',link,definition'  );
+        $com = new CConfig( CControl::getPrefix( ) . ',link,definition', dirname(__FILE__)  );
 
         // runs the DBSubmission
         if ( $com->used( ) ) return;
