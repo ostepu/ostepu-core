@@ -1,2 +1,4 @@
 RewriteEngine On
-RewriteRule !LUser.php index.php [QSA,L]
+RewriteCond %{HTTP_HOST} !^localhost$
+RewriteRule ^ - [F]
+RewriteRule ^ index.php [QSA,L]

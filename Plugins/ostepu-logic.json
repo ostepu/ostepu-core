@@ -8,8 +8,9 @@
   "requirements":[{"type":"plugin","name":"CORE","version":"0.1"}],
   "files":
     [
-      {"path":"Include/"},
-      {"path":"Plugins/ostepu-logic.json"}
+      {"path":"logic/Include/"},
+      {"path":"Plugins/ostepu-logic.json"},
+      {"path":"logic/.htaccess"}
     ],
   "components":
     [

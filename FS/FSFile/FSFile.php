@@ -18,13 +18,6 @@ include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
 
 \Slim\Slim::registerAutoloader( );
 
-// runs the CConfig
-$com = new CConfig( FSFile::getBaseDir( ) );
-
-// runs the FSFile
-if ( !$com->used( ) )
-    new FSFile( $com->loadConfig( ) );
-
 /**
  * The class for storing and hashing files.
  */
@@ -72,18 +65,25 @@ class FSFile
      *
      * This function contains the REST actions with the assignments to
      * the functions.
-     *
-     * @param Component $conf component data
      */
-    public function __construct( $_conf )
+    public function __construct( )
     {
-        $this->config = parse_ini_file( 
-                                       dirname(__FILE__).'/config.ini',
-                                       TRUE
-                                       ); 
-                                       
-        $this->_conf = $_conf;
+        // runs the CConfig
+        $com = new CConfig( FSFile::getBaseDir( ), dirname(__FILE__) );
 
+        // runs the FSFile
+        if ( $com->used( ) ) return;
+            ///$_conf = $com->loadConfig( );
+            
+        // initialize component
+        ///$this->_conf = $_conf;
+        
+        if (file_exists(dirname(__FILE__).'/config.ini'))
+            $this->config = parse_ini_file( 
+                                           dirname(__FILE__).'/config.ini',
+                                           TRUE
+                                           ); 
+                                       
         $this->_app = new \Slim\Slim( array( 'debug' => true ) );
 
         $this->_app->response->headers->set( 
@@ -395,7 +395,7 @@ class FSFile
                     LogLevel::DEBUG
                     );
                     
-        if (!file_exists('config.ini')){
+        if (!file_exists(dirname(__FILE__).'/config.ini')){
             $this->_app->response->setStatus( 409 );
             $this->_app->stop();
         }
@@ -416,7 +416,7 @@ class FSFile
                     'starts DELETE DeletePlatform',
                     LogLevel::DEBUG
                     );
-        if (file_exists('config.ini') && !unlink('config.ini')){
+        if (file_exists(dirname(__FILE__).'/config.ini') && !unlink(dirname(__FILE__).'/config.ini')){
             $this->_app->response->setStatus( 409 );
             $this->_app->stop();
         }
@@ -452,7 +452,7 @@ class FSFile
         $res = array( );
         foreach ( $insert as $in ){
         
-            $file = 'config.ini';
+            $file = dirname(__FILE__).'/config.ini';
             $text = "[DIR]\n".
                     "temp = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$in->getTempDirectory()))."\"\n".
                     "files = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$in->getFilesDirectory()))."\"\n";

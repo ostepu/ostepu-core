@@ -15,6 +15,8 @@ include_once ( dirname(__FILE__) . '/../../Assistants/CConfig.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/Request.php' );
 include_once ( dirname(__FILE__) . '/Controller3.php' );
 
+\Slim\Slim::registerAutoloader( );
+
 /**
  * The controller of the filesystem.
  */
@@ -45,11 +47,5 @@ class FSControl extends Controller3
     {
         FSControl::$_prefix = $value;
     }
-}
-
-\Slim\Slim::registerAutoloader( );
-
-new FSControl( );
-
- 
+} 
 ?>

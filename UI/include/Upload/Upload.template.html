@@ -89,7 +89,7 @@
 
             <div class="content-description left new-line" style="width:748px">
                 <?php
-                echo str_replace(array(' ', "\n"), array('&nbsp', '<br>'), $form->getTask());
+                echo '<p style="white-space: pre;">'.str_replace(array(' ', "\n"), array(' ', '<br>'), htmlspecialchars_decode($form->getTask())).'</pre>';
                 ?>
             </div>
             <?php }?>

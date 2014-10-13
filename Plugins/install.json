@@ -8,8 +8,12 @@
   "requirements":[{"type":"plugin","name":"CORE","version":"0.1"},{"type":"plugin","name":"OSTEPU-UI","version":"0.1"}],
   "files":
     [
-      {"path":"install/include"},
+      {"path":"install/include/"},
       {"path":"install/install.php"},
-      {"path":"Plugins/install.json"}
+      {"path":"Plugins/install.json"},
+      {"path":"install/images/"},
+      {"path":"install/css/"},
+      {"path":"install/languages/"},
+      {"path":"install/segments/"}
     ]
 }

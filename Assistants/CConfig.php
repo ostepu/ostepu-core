@@ -178,9 +178,9 @@ class CConfig
     
     public function commands( $pre = array() )
     {
-        if (file_exists('Commands.json')){
+        if (file_exists($this->callPath.'/'.'Commands.json')){
             $this->_app->response->setStatus( 200 );
-            $commands = json_decode(file_get_contents('Commands.json'), true);
+            $commands = json_decode(file_get_contents($this->callPath.'/'.'Commands.json'), true);
             $commands[] = array('method' => 'get', 'path' => '(/:pre+)/info/commands(/)');
             $commands[] = array('method' => 'get', 'path' => '(/:pre+)/info/links(/)');
             $commands[] = array('method' => 'get', 'path' => '(/:pre+)/info/:language(/)');

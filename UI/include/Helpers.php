@@ -81,7 +81,7 @@ function http_get($url, $authbool, &$message = 0)
         Authentication::logoutUser();
     }
 
-    return (isset($answer['content']) ? $answer['content'] : null);
+    return (isset($answer['content']) ? $answer['content'] : '');
 }
 
 /**
@@ -96,28 +96,16 @@ function http_get($url, $authbool, &$message = 0)
  */
 function http_post_data($url, $data, $authbool, &$message = 0)
 {
-    $c = curl_init();
-
-    curl_setopt($c, CURLOPT_URL, $url);
-    curl_setopt($c, CURLOPT_CUSTOMREQUEST, "POST");
-    curl_setopt($c, CURLOPT_POSTFIELDS, $data);
-
-    if ($authbool) {
-        curlSetAuthentication($c);
-    }
-
-    curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
-
-    $retData = curl_exec($c);
-    $message = curl_getinfo($c, CURLINFO_HTTP_CODE);
-
+    $answer = Request::post($url, array(), $data, $authbool);
+    
+    if (isset($answer['status']))
+        $message = $answer['status'];     
+  
     if ($message == "401") {
         Authentication::logoutUser();
     }
 
-    curl_close($c);
-
-    return $retData;
+    return (isset($answer['content']) ? $answer['content'] : '');
 }
 
 /**
@@ -132,28 +120,16 @@ function http_post_data($url, $data, $authbool, &$message = 0)
  */
 function http_put_data($url, $data, $authbool, &$message = 0)
 {
-    $c = curl_init();
-
-    curl_setopt($c, CURLOPT_URL, $url);
-    curl_setopt($c, CURLOPT_POSTFIELDS, $data);
-    curl_setopt($c, CURLOPT_CUSTOMREQUEST, 'PUT');
-
-    if ($authbool) {
-        curlSetAuthentication($c);
-    }
-
-    curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
-
-    $retData = curl_exec($c);
-    $message = curl_getinfo($c, CURLINFO_HTTP_CODE);
-
+    $answer = Request::put($url, array(), '', $authbool);
+    
+    if (isset($answer['status']))
+        $message = $answer['status'];     
+  
     if ($message == "401") {
         Authentication::logoutUser();
     }
 
-    curl_close($c);
-
-    return $retData;
+    return (isset($answer['content']) ? $answer['content'] : '');
 }
 
 /**
@@ -168,27 +144,16 @@ function http_put_data($url, $data, $authbool, &$message = 0)
  */
 function http_delete($url, $authbool, &$message = 0, $sessiondelete = false)
 {
-    $c = curl_init();
-
-    curl_setopt($c, CURLOPT_URL, $url);
-    curl_setopt($c, CURLOPT_CUSTOMREQUEST, 'DELETE');
-
-    if ($authbool) {
-        curlSetAuthentication($c, $sessiondelete);
-    }
-
-    curl_setopt($c, CURLOPT_RETURNTRANSFER, TRUE);
-
-    $retData = curl_exec($c);
-    $message = curl_getinfo($c, CURLINFO_HTTP_CODE);
-
+    $answer = Request::delete($url, array(), '', $authbool);
+    
+    if (isset($answer['status']))
+        $message = $answer['status'];     
+  
     if ($message == "401" && $sessiondelete == false) {
         Authentication::logoutUser();
     }
 
-    curl_close($c);
-
-    return $retData;
+    return (isset($answer['content']) ? $answer['content'] : '');
 }
 
 /**
@@ -266,8 +231,7 @@ function cleanInput($input)
 
         if (get_magic_quotes_gpc() == 0) {
             // magic quotes is turned off
-            $input = htmlspecialchars(trim(stripcslashes($input)),
-                                           ENT_QUOTES, 'UTF-8');
+            $input = htmlspecialchars(trim(($input)),ENT_QUOTES, 'UTF-8');     //stripcslashes       
         } else {
             $input = htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
         }
@@ -588,7 +552,7 @@ class FILE_TYPE
         'csv' => array('text/comma-separated-values'),
         'css' => array('text/css'),
         'js' => array('text/javascript', 'application/x-javascript'),
-        'txt' => array('text/plain'));
+        'txt' => array('text/plain','text/x-c++'));
 
     /**
      * Check if FileType has a given MimeType.

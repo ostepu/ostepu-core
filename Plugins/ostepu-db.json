@@ -8,7 +8,9 @@
   "requirements":[{"type":"plugin","name":"CORE","version":"0.1"}],
   "files":
     [
-      {"path":"Plugins/ostepu-db.json"}
+      {"path":"Plugins/ostepu-db.json"},
+      {"path":"forms/.htaccess"},
+      {"path":"DB/.htaccess"}
     ],
   "components":
     [

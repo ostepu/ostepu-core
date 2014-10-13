@@ -95,7 +95,7 @@ abstract class AbstractAuthentication
 
         // check for timeout (after 10 minutes of inactivity)
         if (!isset($_SESSION['LASTACTIVE'])
-            || (($_SESSION['LASTACTIVE'] + 10*60) <= $_SERVER['REQUEST_TIME'])) {
+            || (($_SESSION['LASTACTIVE'] + 45*60) <= $_SERVER['REQUEST_TIME'])) {
             return false;
         }
 

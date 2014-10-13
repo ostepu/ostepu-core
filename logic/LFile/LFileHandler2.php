@@ -1,19 +1,19 @@
 <?php
 /**
- * @file LFileHandler.php contains the LFileHandler class
+ * @file LFileHandler2.php contains the LFileHandler2 class
  *
  * @author Martin Daute
  * @author Till Uhlig
  * @date 2014
  */
  
- include_once ( '../../Assistants/Structures.php' );
- include_once ( '../../Assistants/Request.php' );
+ include_once ( dirname(__FILE__). '/../../Assistants/Structures.php' );
+ include_once ( dirname(__FILE__). '/../../Assistants/Request.php' );
 
 /**
  * A class, to handle the methods to add and delete a file properly.
  */
-class LFileHandler
+class LFileHandler2
 {
     /**
      * Adds a file.
@@ -49,7 +49,7 @@ class LFileHandler
             $answer['status'] = 201;
             $answer['content'] = File::encodeFile( $file );
         }
-     
+
         // check if file has been saved
         if ($answer['status'] >= 200 && $answer['status'] <= 299 && isset($answer['content'])) {
             $file = File::decodeFile($answer['content']);
@@ -66,7 +66,7 @@ class LFileHandler
                                             $database,
                                             'file'
                                             );
-                                      
+                                     
             if ($answer['status'] < 200 || $answer['status'] > 299 || !isset($answer['content'])) { //if file does not exists, add it to db file table
                 $answer = Request::routeRequest( 
                                                 'POST',
@@ -76,7 +76,7 @@ class LFileHandler
                                                 $database,
                                                 'file'
                                                 );
-
+///echo File::encodeFile($file);return;
                 // check if file has been saved
                 if ($answer['status'] >= 200 && $answer['status'] <= 299 && isset($answer['content'])) {
                     $returnFile = File::decodeFile($answer['content']);

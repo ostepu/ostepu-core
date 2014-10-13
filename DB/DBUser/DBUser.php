@@ -762,7 +762,7 @@ class DBUser
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query2,
-                                              'Sql/DeletePlatform.sql',
+                                              dirname(__FILE__).'/Sql/DeletePlatform.sql',
                                               array( ),
                                               false
                                               );
@@ -820,7 +820,7 @@ class DBUser
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query2,
-                                                  'Sql/AddPlatform.sql',
+                                                  dirname(__FILE__).'/Sql/AddPlatform.sql',
                                                   array( 'object' => $in ),
                                                   false
                                                   );

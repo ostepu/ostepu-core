@@ -11,35 +11,41 @@
  * @author Till Uhlig
  * @date 2013-2014
  */
-class Request_CreateRequest
+class Request_RequestObject
 {
-    /**
-     * creates an custom curl request object 
-     *
-     * @param $method the request type (POST, DELETE, PUT, GET, ...) 
-     * @param $target the taget URL
-     * @param $header an array with header informations
-     * @param $content the request content/body
-     *
-     * @return an curl request object 
-     */
-    public static function createCustom($method, $target, $header, $content, $authbool = true, $sessiondelete = false)
-    {        
-        $ch = curl_init($target);
+    public $method;
+    public $target;
+    public $header;
+    public $content;
+    public $authbool;
+    public $sessiondelete;
+    public function __construct($method, $target, $header, $content, $authbool = true, $sessiondelete = false)
+    {
+        $this->method=$method;
+        $this->target=$target;
+        $this->header=$header;
+        $this->content=$content;
+        $this->authbool=$authbool;
+        $this->sessiondelete=$sessiondelete;
+    }
+    
+    public function get()
+    {
+        $ch = curl_init($this->target);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $method);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $this->method);
 
         // take the SESSION, DATE and USER fields from received header and 
         // add them to the header of our curl object
         $resultHeader = array();
                 
-        if ($authbool){
+        if ($this->authbool){
             if (isset($_SESSION['UID']))
                 $resultHeader['USER'] = 'USER: ' . $_SESSION['UID'];
             if (isset($_SESSION['SESSION']))
                 $resultHeader['SESSION'] = 'SESSION: ' . $_SESSION['SESSION'];
                                                 
-            if ($sessiondelete) {
+            if ($this->sessiondelete) {
                 if (isset($_SERVER['REQUEST_TIME']))
                     $resultHeader['DATE'] = 'DATE: ' . $_SERVER['REQUEST_TIME'];
             } else {
@@ -56,24 +62,42 @@ class Request_CreateRequest
             $resultHeader['DATE'] = 'DATE: ' . $_SERVER['HTTP_DATE'];
             
         $resultHeader = array_values($resultHeader);    
-        $resultHeader = array_merge($resultHeader,$header);
+        $resultHeader = array_merge($resultHeader,$this->header);
 
         curl_setopt($ch, CURLOPT_HTTPHEADER, $resultHeader);
         
-        if ($method == 'POST' || $method == 'PUT'){
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
+        if ($this->method == 'POST' || $this->method == 'PUT'){
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $this->content);
         }
         
         /**
          * @todo CURLOPT_FRESH_CONNECT and CURLOPT_FORBID_REUSE, we need that?
          */
-        curl_setopt($ch, CURLOPT_FRESH_CONNECT, 0);
-        curl_setopt($ch, CURLOPT_FORBID_REUSE, 0);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 60);
+        //curl_setopt($ch, CURLOPT_FRESH_CONNECT, 0);
+        //curl_setopt($ch, CURLOPT_FORBID_REUSE, 0);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 180);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); 
 
         curl_setopt($ch, CURLOPT_HEADER, 1);
         return $ch; 
+    }
+}
+ 
+class Request_CreateRequest
+{
+    /**
+     * creates an custom curl request object 
+     *
+     * @param $method the request type (POST, DELETE, PUT, GET, ...) 
+     * @param $target the taget URL
+     * @param $header an array with header informations
+     * @param $content the request content/body
+     *
+     * @return an curl request object 
+     */
+    public static function createCustom($method, $target, $header, $content, $authbool = true, $sessiondelete = false)
+    {        
+        return new Request_RequestObject($method,$target, $header, $content, $authbool, $sessiondelete);
     }
     
 
