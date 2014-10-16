@@ -33,7 +33,8 @@ class StudIPAuthentication extends AbstractAuthentication
      * @var CourseID
      */
     private $cid;
-
+    private $vid;
+    
     /**
      * @var userData of the user
      */
@@ -65,7 +66,10 @@ class StudIPAuthentication extends AbstractAuthentication
         if (isset($_GET['sid'])) {
             $this->sid = cleanInput($_GET['sid']);
         }
-
+        if (isset($_GET['vid'])) {
+            $this->vid = cleanInput($_GET['vid']);
+        }
+        
         if (isset($_GET['cid'])) {
             $this->cid = cleanInput($_GET['cid']);
             // if cid is not numeric
