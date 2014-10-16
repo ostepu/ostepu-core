@@ -44,7 +44,7 @@ class StudIPAuthentication extends AbstractAuthentication
      */
     private $courseStatus;
     
-    private static $StudipAPI = "https://studip.uni-halle.de/upgateway/intern";
+    private static $StudipAPI = "https://schulung.studip.uni-halle.de/ostepuGateway";
     
     /**
      * The default constructor which logs the user in, if uid, cid and sid is given in GET Parameters.
@@ -131,6 +131,7 @@ class StudIPAuthentication extends AbstractAuthentication
         $query = StudIPAuthentication::$StudipAPI . "/request.php?cmd=check_user&uid={$uid}&sid={$sid}";
         $check = http_get($query, false, $message);
         ///$check = "OK";$message=200;
+///Logger::Log("check_user: ".$check, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
         if ($message==200)
             return $check == "OK";
         return false;
@@ -181,7 +182,7 @@ class StudIPAuthentication extends AbstractAuthentication
         $query = StudIPAuthentication::$StudipAPI . "/request.php?cmd=get_user&uid={$uid}";
         $getUserData = http_get($query, false, $message);
         ///$getUserData = "Till:Uhlig:-:hash:acfmr:211203809";$message=200;
-        
+///Logger::Log("get_user: ".$getUserData, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
         if ($message == 200 && $getUserData != "not found") {
             // convert output to our user structure
             $getUserData = explode(":", utf8_encode($getUserData));
@@ -208,6 +209,7 @@ class StudIPAuthentication extends AbstractAuthentication
         $query = StudIPAuthentication::$StudipAPI . "/request.php?cmd=get_user_status&uid={$uid}&vid={$vid}";
         $status = http_get($query, false, $message);
         ///$status = "dozent";$message=200;
+///Logger::Log("get_user_status: ".$status, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
         if($message==200)
             return $this->getOSTEPUStatus($status);
         return null;
@@ -225,10 +227,12 @@ class StudIPAuthentication extends AbstractAuthentication
         $query = StudIPAuthentication::$StudipAPI . "/request.php?cmd=get_title&vid={$vid}";
         $title = http_get($query, false, $message);
         ///$title = "Veranstaltung";$message=200;
+///Logger::Log("get_title: ".$title, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
         if ($message == 200 && $title != "not found") {
             $query = StudIPAuthentication::$StudipAPI . "/request.php?cmd=get_semester&vid={$vid}";
             $semester = http_get($query, false, $message);
             ///$semester="SS 2015";$message=200;
+///Logger::Log("get_semester: ".$semester, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
             if ($message == 200 && $semester != "not found") {
                 return Course::createCourse(null,$title,$semester,1);
             }
@@ -291,6 +295,7 @@ class StudIPAuthentication extends AbstractAuthentication
         $studip = $this->checkUserInStudip($this->uid,$this->sid);
         $studipStatus = $this->getUserStatusInStudip($this->uid,$this->vid);
         if ($studip == true && $studipStatus!==null) {
+///Logger::Log("inStudip", LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
 
             $url = "{$databaseURI}/user/user/{$username}";
             $message=null;
