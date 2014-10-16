@@ -120,7 +120,7 @@ function http_post_data($url, $data, $authbool, &$message = 0)
  */
 function http_put_data($url, $data, $authbool, &$message = 0)
 {
-    $answer = Request::put($url, array(), '', $authbool);
+    $answer = Request::put($url, array(), $data, $authbool);
     
     if (isset($answer['status']))
         $message = $answer['status'];     
