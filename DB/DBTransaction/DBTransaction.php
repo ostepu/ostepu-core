@@ -486,7 +486,7 @@ class DBTransaction
      */
     public function deleteCourse( $name='' , $courseid )
     {
-        $this->loadConfig(name);
+        $this->loadConfig($name);
         $name = ($name === '' ? '' : '_') . $name;
         
         Logger::Log( 

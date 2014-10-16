@@ -128,15 +128,16 @@ class CourseStatus extends Object implements JsonSerializable
     /**
      * returns an array to get the course status defintions
      */
-    public static function getStatusDefinition( )
+    public static function getStatusDefinition( $flip=false )
     {
-        return array( 
+        $arr = array( 
                      '0' => 'student',
                      '1' => 'tutor',
                      '2' => 'lecturer',
                      '3' => 'administrator',
                      '4' => 'super-administrator'
                      );
+        return (!$flip ? $arr : array_flip($arr));
     }
 
     /**
