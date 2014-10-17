@@ -45,7 +45,7 @@ class StudIPAuthentication extends AbstractAuthentication
      */
     private $courseStatus;
     
-    private static $StudipAPI = "https://schulung.studip.uni-halle.de/ostepuGateway";
+    private static $StudipAPI = "https://studip.uni-halle.de/ostepuGateway";
     
     /**
      * The default constructor which logs the user in, if uid, cid and sid is given in GET Parameters.
