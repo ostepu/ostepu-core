@@ -320,7 +320,7 @@ class StudIPAuthentication extends AbstractAuthentication
                     $this->cid = $this->convertVidToCid($_GET['vid']);
                     if ($this->cid===null && $studipStatus===CourseStatus::getStatusDefinition(true)['administrator']){
                         // create course                
-                        $courseObject = $this->getCourseInStudip();
+                        $courseObject = $this->getCourseInStudip($this->vid);
                         if ($courseObject!==null){
                             $url = "{$logicURI}/course";
                             $courseObject = http_post_data($url, Course::encodeCourse($courseObject), false, $message);
