@@ -91,7 +91,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
                     $uploadSubmission->setSelectedForGroup('1');
 
                     $URL = $serverURI.'/logic/LProcessor/submission';
-//echo Submission::encodeSubmission($uploadSubmission);return;
+///echo Submission::encodeSubmission($uploadSubmission);return;
 
                     $result = http_post_data($URL, Submission::encodeSubmission($uploadSubmission), true, $message);
 //echo $result;

@@ -24,9 +24,9 @@
                 <?php
                     // Dynamically creates a list of possible semesters beginning
                     // with the current year + 1 and ending with the current year - 7 or the $semester if it is older
-                    $semester = $course['semester'];
-                    $savedYear = substr($course['semester'], -4); ?>
-                <?php $currentYear = date('Y') + 1; ?>
+                    $semester = (isset($course['semester']) ? $course['semester'] : null);
+                    $currentYear = date('Y') + 1;
+                    $savedYear = (isset($course['semester']) ? substr($course['semester'], -4) : $currentYear); ?>
                 <?php if ($savedYear < $currentYear - 7): ?>
                         <?php $endyear = $savedYear; ?>
                 <?php else: ?>
@@ -36,13 +36,13 @@
                 <?php for ($i = $currentYear; $i >= $endyear; $i--): ?>
 
                         <?php $semesterString = "SS " . $i; ?>
-                        <option <?php echo ($semesterString == $semester) ? 'selected="selected"' : NULL; ?>
+                        <option <?php echo (isset($semester) && $semester!=null && $semesterString == $semester) ? 'selected="selected"' : NULL; ?>
                             value="SS <?php echo $i; ?>">
                             SS <?php echo $i; ?>
                         </option>
 
                         <?php $semesterString = "WS " . (string)($i - 1) . "/" . $i; ?>
-                        <option <?php echo ($semesterString == $semester) ? 'selected="selected"' : NULL;?>
+                        <option <?php echo (isset($semester) && $semester!=null && $semesterString == $semester) ? 'selected="selected"' : NULL;?>
                             value="<?php echo $semesterString; ?> "\>
                             <?php echo $semesterString; ?>
                         </option>

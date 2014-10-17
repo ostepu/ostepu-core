@@ -87,7 +87,7 @@ class Request
         $done = false;
 ///Logger::Log($method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
 
-        if (!CConfig::$onload && strpos($target,'http://localhost/')===0 && file_exists(dirname(__FILE__) . '/request_cconfig.json')){
+        if (false && !CConfig::$onload && strpos($target,'http://localhost/')===0 && file_exists(dirname(__FILE__) . '/request_cconfig.json')){
             if (Request::$components==null){
                 Request::$components=CConfig::loadStaticConfig('','',dirname(__FILE__),'request_cconfig.json');
             }

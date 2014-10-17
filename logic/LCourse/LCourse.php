@@ -237,8 +237,7 @@ class LCourse
                                             );
 
             // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
-                 $result['status'] <= 299 ){
+            if ( $result['status'] == 201){
                 // ok
             } else {
                 Logger::Log( 
