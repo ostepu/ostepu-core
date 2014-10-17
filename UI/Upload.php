@@ -50,7 +50,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
                     foreach ($choiceText as $tempKey => $choiceData) {
                         if (trim($choiceData) === '') continue;
                         $choice = new Choice();
-                        $choice->SetText($choiceData); 
+                        $choice->SetText(htmlentities(htmlentities(htmlspecialchars_decode($choiceData))));
                         $choice->SetFormId($formId);
                         $choices[] = $choice;
                     }
@@ -94,7 +94,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
 //echo Submission::encodeSubmission($uploadSubmission);return;
 
                     $result = http_post_data($URL, Submission::encodeSubmission($uploadSubmission), true, $message);
-
+//echo $result;
                     if ($message != "201") {
                         $result = Submission::decodeSubmission($result);
                         $exercise = $key + 1;

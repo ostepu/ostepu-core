@@ -12,16 +12,10 @@
 require_once ( dirname(__FILE__) . '/../../Assistants/Slim/Slim.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/CConfig.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/Structures.php' );
-require_once(dirname(__FILE__).'/Pdf/tfpdf/html2pdf.php');
+require_once(dirname(__FILE__).'/_tcpdf_6.0.095/tcpdf_autoconfig.php');
+require_once(dirname(__FILE__).'/_tcpdf_6.0.095/tcpdf.php');
 
 \Slim\Slim::registerAutoloader( );
-
-// runs the CConfig
-$com = new CConfig( FSPdf::getBaseDir( ) );
-
-// runs the FSPdf
-if ( !$com->used( ) )
-    new FSPdf( $com->loadConfig( ) );
 
 /**
  * A class for creating, storing and loading PDF files from the file system
@@ -71,19 +65,27 @@ class FSPdf
      *
      * This function contains the REST actions with the assignments to
      * the functions.
-     *
-     * @param Component $conf component data
      */
-    public function __construct( $_conf )
+    public function __construct( )
     {
-        $this->config = parse_ini_file( 
-                                       dirname(__FILE__).'/config.ini',
-                                       TRUE
-                                       );
-                                       
-        $this->_conf = $_conf;
+    
+        // runs the CConfig
+        $com = new CConfig( FSPdf::getBaseDir( ), dirname(__FILE__) );
 
-        $this->_app = new \Slim\Slim( array( 'debug' => false ) );
+        // runs the FSPdf
+        if ( $com->used( ) ) return;
+            ///$_conf = $com->loadConfig( );
+
+        if (file_exists(dirname(__FILE__).'/config.ini'))
+            $this->config = parse_ini_file( 
+                                           dirname(__FILE__).'/config.ini',
+                                           TRUE
+                                           ); 
+                                       
+        // initialize component
+        ///$this->_conf = $_conf;
+
+        $this->_app = new \Slim\Slim( array( 'debug' => true ) );
 
         $this->_app->response->headers->set( 
                                             'Content-Type',
@@ -192,19 +194,18 @@ class FSPdf
                                             $name
                                             );
                                            
-        if ( !file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
+        if (!file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
             FSPdf::generatepath( $this->config['DIR']['files'].'/'.dirname( $filePath ) );
 
-            $form = new Formatierung();
+           /* $form = new Formatierung();
             $form->Font = ($data->getFont()!==null ? $data->getFont() : 'times');
             $form->FontSize = ($data->getFontSize()!==null ? $data->getFontSize() : '12');
-            $form->TextColor = ($data->getTextColor()!=null ? $data->getTextColor() : 'black');
+            $form->TextColor = ($data->getTextColor()!=null ? $data->getTextColor() : 'black');*/
             
-            $pdf = new PDF_HTML( 
+            $pdf = new TCPDF( 
                            ($data->getOrientation()!==null ? $data->getOrientation() : 'P'),
                            'mm',
-                           ($data->getFormat()!==null ? $data->getFormat() : 'A4'),
-                           $form
+                           ($data->getFormat()!==null ? $data->getFormat() : 'A4')
                            );
                            
             $pdf->SetAutoPageBreak( true );
@@ -213,10 +214,14 @@ class FSPdf
             $pdf->SetSubject($data->getSubject()!==null ? $data->getSubject() : '');
             $pdf->SetAuthor($data->getAuthor()!==null ? $data->getAuthor() : '');
             $pdf->SetCreator($data->getCreator()!==null ? $data->getCreator() : '');
-            
-            $pdf->AddPage( );
+            $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+            $pdf->setPrintHeader(false);
+            $pdf->setPrintFooter(false);
 
-            $pdf->WriteHTML(utf8_decode($data->getText()));
+            $pdf->AddPage( );
+            $text=utf8_decode(htmlspecialchars_decode($data->getText()));
+        
+            $pdf->WriteHTML($text);
 
             // stores the pdf binary data to $result
             $result = $pdf->Output( 

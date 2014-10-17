@@ -35,7 +35,8 @@
                             }
                             ?>
                         </select>
-                        <input class="form-field text-input very-short mime-field" name="exercises[<?php echo $key1; ?>][subexercises][<?php echo $key2; ?>][mime-type]" value="<?php echo (isset($subexercise['mime-type']) ? $subexercise['mime-type'] : ''); ?>" id="mime-type" placeholder="pdf, zip, html, jpg, gif" disabled="<?php echo (isset($subexercise['type']) ? 'disabled' : ''); ?>"/>
+
+                        <input class="form-field text-input very-short mime-field" name="exercises[<?php echo $key1; ?>][subexercises][<?php echo $key2; ?>][mime-type]" value="<?php echo (isset($subexercise['mime-type']) ? $subexercise['mime-type'] : ''); ?>" id="mime-type" placeholder="pdf, zip, html, jpg, gif"<?php echo (isset($subexercise['type']) ? ' disabled="disabled"' : ''); ?>/>
                         
                         <input class="button" type="file" name="exercises[<?php echo $key1; ?>][subexercises][<?php echo $key2; ?>][attachment]" value="Anhang auswählen ..." />
                         <a href="javascript:void(0);" class="body-option-color deny-button right delete-subtask"<?php if(count($exercise['subexercises'])==1):?> style="display:none;" <?php endif;?>>Teilaufgabe löschen</a>
@@ -175,7 +176,6 @@
                     </table>
                         </div>
                         
-                    </li>
                 <?php endforeach;?>
                     <li class="skip-item">
                         <a href="javascript:void(0);" class="body-option-color right deny-button skip-list-item">Teilaufgabe hinzufügen</a>
@@ -201,7 +201,6 @@ endforeach;
             
                 <ol class="full-width-list lower-alpha">
                 
-                    </li>
                     <li class="skip-item">
                         <a href="javascript:void(0);" class="body-option-color right deny-button skip-list-item">Teilaufgabe hinzufügen</a>
                     </li>

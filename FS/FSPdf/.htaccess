@@ -1,4 +1,4 @@
 RewriteEngine On
 RewriteCond %{HTTP_HOST} !^localhost$
 RewriteRule ^ - [F]
-RewriteRule ^ FSPdf.php [QSA,L]
+RewriteRule ^ index.php [QSA,L]

@@ -4,57 +4,24 @@
  * @author  Till Uhlig
  */
  
- header('Content-Type: text/html; charset=utf-8');
- 
-/*include_once '../../../../Assistants/Structures.php';
-include_once '../../../../Assistants/Request.php';
-include_once '../../Config.php';
-
-session_start();
-$courseid = null;
-if (isset($_SESSION['JSCACHE'])) {
-    $cache = json_decode($_SESSION['JSCACHE'], true);
-
-    foreach ($cache as $excercisetype) {
-        $courseid = $excercisetype['courseId'];
-        break;
-    }
-}
-
-if ($courseid!==null){           
-    $result = Request::get($serverURI.'/DB/DBProcess/processList/process/course/' . $courseid,array(),'');
-} else 
-    $result['status'] = 409;
-  
-$components = array();  
-if ( $result['status'] >= 200 && 
-     $result['status'] <= 299 ){
-     
-    $processors = Process::decodeProcess($result['content']);
-    if (!is_array($processors)) $processors = array($processors);
-    
-    foreach ($processors as $processor){
-        if ($processor->getTarget()!==null && $processor->getTarget()->getName()==='LFormPredecessor')
-            $components[] = $processor->getTarget();
-    }
-}*/
-        
+ header('Content-Type: text/html; charset=utf-8');       
  ?>
 <input type="hidden" class="input-choice" name="exercises[0][subexercises][0][type]" value="0">
 <label class="short label bold" for="task">Aufgabenstellung:</label>
 <textarea name="exercises[0][subexercises][0][task]"
-                              class="form-field task-field"
+                              class="form-field task-field ckeditor"
                               rows="5"
-                              style="width:100%"
+                              style="width:100%; "
                               maxlength="2500"></textarea>
-                              
+
+
 <div class="form-input-input" style="margin:5px 0px;">
 <input type="hidden" class="choice-input" name="exercises[0][subexercises][0][correct][0]" value="1"><input class="form-field input-choice-text" style="width:100%" name="exercises[0][subexercises][0][choice][0]" value="" placeholder="Musterlösung"/>    
 </div>
 
 <label class="short label bold" for="solution">Lösungsbegründung:</label>
 <textarea name="exercises[0][subexercises][0][solution]"
-                              class="form-field solution-field"
+                              class="form-field solution-field ckeditor"
                               rows="5"
                               style="width:100%"
                               maxlength="2500"></textarea>

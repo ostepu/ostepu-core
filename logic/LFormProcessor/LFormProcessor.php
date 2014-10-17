@@ -377,12 +377,12 @@ class LFormProcessor
                                     }
                                 }
                             } elseif(strtolower($parameter[0]) === 'regularexpression'){
-                                $test = '';$i = 1;
+                                $i = 1;$test = $parameter[$i];
                                 while($i<count($parameter)){
-                                    $test.=' '.$parameter[$i];
-                                    $i++;
                                     if (@preg_match($test, DefaultNormalizer::normalizeText($answers[0]->getText()))!==false)
                                         break;
+                                    $test.=' '.$parameter[$i];
+                                    $i++;
                                 }
                                 
                                 $match = @preg_match($test, DefaultNormalizer::normalizeText(DefaultNormalizer::normalizeText($answers[0]->getText())));
@@ -464,25 +464,26 @@ class LFormProcessor
                                     "</p>".
                                     "<p>".
                                     "<h2>Antwort:</h2>".
-                                    "<font color='".($points===0 ? 'red' : 'black')."'>".
+                                    "<span style=\"color: ".($points===0 ? 'red' : 'black')."\">".
                                     $answer.
-                                    "</font></p>";
+                                    "</span></p>";
                             if ($points===0){
                                 $Text.= "<p>".
-                                        "<h2>Lösung:</h2><font color='green'>".
+                                        "<h2>L&ouml;sung:</h2><span style=\"color: green\">".
                                         $answer2.
-                                        "</font></p>";
+                                        "</span></p>";
                             }
                                     
                             $Text.= "<p>".
-                                    "<h2>Lösungsbegründung:</h2>".
+                                    "<h2>L&ouml;sungsbegr&uuml;ndung:</h2>".
                                     $forms->getSolution().
                                     "</p>".
-                                    "<p align='right'>".
-                                    "<h2><font color='red'>{$points}P</font></h2>".
+                                    "<p style=\"text-align: center;\">".
+                                    "<h2><span style=\"color: red\">{$points}P</span></h2>".
                                     "</p>";
                                     
                             $pdf = Pdf::createPdf($Text);
+//echo Pdf::encodePdf($pdf);return;
                             $result = Request::routeRequest( 
                                                             'POST',
                                                             '/pdf/',

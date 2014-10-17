@@ -3,7 +3,15 @@ function deleteForm(event) {
     var container = trig.parents('.form');
     trig.parents('.form').parent().find('.use-form').hide().fadeIn('fast');
     
-    trig.parents('li').find('.mime-field').removeAttr("disabled");    
+    trig.parents('li').find('.mime-field').removeAttr("disabled");   
+
+    var all = trig.parents('.form').find('.ckeditor');
+    for (var i = 0; i < all.length; i++) {
+        var oldName = $(all[i]).attr('name');
+
+        if ($.inArray(oldName,CKEDITOR.instances))
+            CKEDITOR.instances[oldName].destroy()
+    }
     
     container.slideToggle('fast', function() {
     container[0].parentNode.removeChild(container[0]);
@@ -33,6 +41,7 @@ function useForm(event) {
         trig.parent().find('.form').first().find('.use-radio').first().on("click",useRadio);
         trig.parent().find('.form').first().find('.use-checkbox').first().on("click",useCheckbox);
         renumberExercises();
+
     });
 }
 
@@ -50,6 +59,12 @@ trig.parents('.form').last().find('.content-title').first().text("Eingabezeile")
         trig.parent().find('.use-input').first().remove();
         parent.after(data);
         renameInput(parent.parent());
+        
+        var all = parent.parent().find('.ckeditor');
+        for (var i = 0; i < all.length; i++) {
+            var oldName = $(all[i]).attr('name');
+            CKEDITOR.inline( oldName );
+        }
     });
 }
 
@@ -112,6 +127,12 @@ trig.parents('.form').last().find('.content-title').first().text("Einfachauswahl
         parent.parent().find('.add-choice').first().on("click",addRadio);
         parent.parent().find('.add-choice').first().click();
         renameInput(parent.parent());
+        
+        var all = parent.parent().find('.ckeditor');
+        for (var i = 0; i < all.length; i++) {
+            var oldName = $(all[i]).attr('name');
+            CKEDITOR.inline( oldName );
+        }
     });
 }
 
@@ -167,6 +188,12 @@ trig.parents('.form').last().find('.content-title').first().text("Mehrfachauswah
         parent.parent().find('.add-choice').first().on("click",addCheckbox);
         parent.parent().find('.add-choice').first().click();
         renameCheckbox(parent.parent());
+        
+        var all = parent.parent().find('.ckeditor');
+        for (var i = 0; i < all.length; i++) {
+            var oldName = $(all[i]).attr('name');
+            CKEDITOR.inline( oldName );
+        }
     });
 }
 

@@ -14,6 +14,7 @@
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
 include_once dirname(__FILE__) . '/include/FormEvaluator.php';
+require_once(dirname(__FILE__).'/phplatex.php');
 
 // load user data from the database
 $URL = $getSiteURI . "/createsheet/user/{$uid}/course/{$cid}";
@@ -105,10 +106,12 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
             }
             // evaluate if subexercises per exercise isnt empty
             $eval = new FormEvaluator($exercise);
+            
             $eval->checkArrayOfArraysForKey('subexercises',
                                     FormEvaluator::REQUIRED,
                                     'warning',
                                     'Ungültige Anzahl an Teilaufgaben.');
+                                    
             if ($eval->evaluate(true)) {
                 // clean Exercises
                 $foundValues = $eval->foundValues;
@@ -140,6 +143,7 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                     if (!isset($subexercise['type']) && isset($subexercise['mime-type'])){    
                         $mimeTypesForm = explode(",", $subexercise['mime-type']);
                         foreach ($mimeTypesForm as &$mimeType) {
+                            if ($mimeType=='')continue;
                             if (FILE_TYPE::checkSupportedFileType(trim(strtolower($mimeType))) == false) {
                                 $errormsg = "Sie haben eine nicht unterstützte Dateiendung verwendet.";
                                 array_push($notifications, MakeNotification('warning', $errormsg));
@@ -273,7 +277,6 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                 
                 $exercises = Exercise::decodeExercise($output2);
                                 
-
                 #region create_forms
                 ##########################
                 ### begin create_forms ###
@@ -284,11 +287,43 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                 $i=0;
                 foreach ($exercise as $key2 => $subexercise) {
                     if (isset($subexercise['type'])){
+                                
+                        $task = html_entity_decode(isset($subexercise['task']) ? $subexercise['task'] : '');
+                        $solution = html_entity_decode(isset($subexercise['solution']) ? $subexercise['solution'] : '');
+
+                        // inline math-tex
+                        $first='<span class="math-tex">';
+                        $second='</span>';
+                        $pos = strpos ( $task , $first );
+                        while ($pos!==false){
+                            $pos2 = strpos ( $task , $second );
+                            if ($pos2 !== false){
+                                $mathTex = substr($task, $pos+strlen($first), $pos2-$pos-strlen($first));
+                                $replace = false;$replace = texify('$'.$mathTex.'$');
+                                if ($replace===false)
+                                    $replace = '<img src="http://latex.codecogs.com/gif.latex?'.rawurlencode($mathTex).'">';
+                                $task = substr($task,0,$pos).$replace.substr($task,$pos2+strlen($second));
+                            }
+                            $pos = strpos ( $task , $first, $pos+strlen($first)+strlen($second) );
+                        }
+                        $pos = strpos ( $solution , $first );
+                        while ($pos!==false){
+                            $pos2 = strpos ( $solution , $second );
+                            if ($pos2 !== false){
+                                $mathTex = substr($solution, $pos+strlen($first), $pos2-$pos-strlen($first));
+                                $replace = false;$replace = texify('$'.$mathTex.'$');
+                                if ($replace===false)
+                                    $replace = '<img src="http://latex.codecogs.com/gif.latex?'.rawurlencode($mathTex).'">';
+                                $solution = substr($solution,0,$pos).$replace.substr($solution,$pos2+strlen($second));
+                            }
+                            $pos = strpos ( $solution , $first, $pos+strlen($first)+strlen($second) );
+                        }   
+                        
                         $form = Form::createForm(
                                            null,
                                            $exercises[$i]->getId(),
-                                           isset($subexercise['solution']) ? $subexercise['solution'] : null,
-                                           isset($subexercise['task']) ? $subexercise['task'] : null,
+                                           $solution,
+                                           $task,
                                            isset($subexercise['type']) ? $subexercise['type'] : null
                                           );
                                           

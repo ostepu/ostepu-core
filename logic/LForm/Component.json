@@ -7,7 +7,8 @@
     {"path":".htaccess"},
     {"path":"LForm.php"},
     {"path":"index.php"},
-    {"path":"Commands.json"}
+    {"path":"Commands.json"},
+    {"path":"info/"}
   ],
   "links":[
     {"name":"form", "target":"DBForm", "links":[{"method":"POST", "path":"/form" },{"method":"DELETE", "path":"/form/:formid" }] },

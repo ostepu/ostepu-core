@@ -48,11 +48,11 @@ class FSBinder
 
         // runs the FSBinder
         if ( $com->used( ) ) return;
-            ///$_conf = $com->loadConfig( );
-            
+            //$_conf = $com->loadConfig( );
+
         // initialize component
         ///$this->_conf = $_conf;
-        
+
         // initialize slim
         $this->_app = new \Slim\Slim( array( 'debug' => true ) );
         $this->_app->response->headers->set( 
