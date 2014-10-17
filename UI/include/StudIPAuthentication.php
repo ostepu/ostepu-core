@@ -10,6 +10,7 @@ include_once dirname(__FILE__) . '/Helpers.php';
 include_once dirname(__FILE__) . '/AbstractAuthentication.php';
 include_once dirname(__FILE__) . '/../../Assistants/Structures.php';
 include_once dirname(__FILE__) . '/Config.php';
+include_once dirname(__FILE__) . '/../../Assistants/Logger.php';
 
 /**
  * StudIPAuthentication class.
@@ -32,7 +33,8 @@ class StudIPAuthentication extends AbstractAuthentication
      * @var CourseID
      */
     private $cid;
-
+    private $vid;
+    
     /**
      * @var userData of the user
      */
@@ -42,18 +44,32 @@ class StudIPAuthentication extends AbstractAuthentication
      * @var CourseStatus of the user
      */
     private $courseStatus;
-
+    
+    private static $StudipAPI = "https://schulung.studip.uni-halle.de/ostepuGateway";
+    
     /**
      * The default constructor which logs the user in, if uid, cid and sid is given in GET Parameters.
      */
     public function __construct()
     {
+        if (!isset($_GET['logintype']) || $_GET['logintype']!='studip') {
+            return;
+        }
+        
+        if (isset($_GET['uid'])) {
+            $this->uid = cleanInput($_GET['uid']);
+        }
+        
         if (isset($_GET['uid'])) {
             $this->uid = cleanInput($_GET['uid']);
         }
         if (isset($_GET['sid'])) {
             $this->sid = cleanInput($_GET['sid']);
         }
+        if (isset($_GET['vid'])) {
+            $this->vid = cleanInput($_GET['vid']);
+        }
+        
         if (isset($_GET['cid'])) {
             $this->cid = cleanInput($_GET['cid']);
             // if cid is not numeric
@@ -62,7 +78,9 @@ class StudIPAuthentication extends AbstractAuthentication
                 exit();
             }
         }
-        if (isset($_GET['uid']) && isset($_GET['sid']) && isset($_GET['cid'])) {
+
+        if (isset($_GET['uid']) && isset($_GET['sid']) && (isset($_GET['cid']) || isset($_GET['vid']))) {
+                    
             // log in user and return result
             $signed = $this->loginUser($this->uid, "");
 
@@ -81,6 +99,9 @@ class StudIPAuthentication extends AbstractAuthentication
             } else {
                 $this->logoutUser(true);
             }
+        } else {
+            set_error("401");
+            exit();
         }
     }
 
@@ -110,11 +131,47 @@ class StudIPAuthentication extends AbstractAuthentication
      */
     public function checkUserInStudip($uid, $sid)
     {
-        // TODO make configurable
-        $query = "https://studip.uni-halle.de/upgateway/intern/request.php?cmd=check_user&uid={$uid}&sid={$sid}";
-        $check = http_get($query, false);
+        $message=null;
+        $query = StudIPAuthentication::$StudipAPI . "/request.php?cmd=check_user&uid={$uid}&sid={$sid}";
+        $check = http_get($query, false, $message);
+        ///$check = "OK";$message=200;
+///Logger::Log("check_user: ".$check, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+        if ($message==200)
+            return $check == "OK";
+        return false;
+    }
 
-        return $check == "OK";
+    public function getOSTEPUStatus($status){
+        $Status_StudIPToOSTEPU = array();
+        $Status_StudIPToOSTEPU['dozent'] = CourseStatus::getStatusDefinition(true)['administrator'];
+        $Status_StudIPToOSTEPU['tutor'] = CourseStatus::getStatusDefinition(true)['tutor'];
+        $Status_StudIPToOSTEPU['autor'] = CourseStatus::getStatusDefinition(true)['student'];
+        return (array_key_exists($status,$Status_StudIPToOSTEPU) ? $Status_StudIPToOSTEPU[$status] : null);
+    }
+     
+    /**
+     * converts the studIP course IDs (vid) to ostepu IDs (cid)
+     *
+     * @param string $uid Is the userid from StudIP
+     * @param string $sid Is the sessionid from StudIP
+     * @return true if user is logged in
+     */
+    public function convertVidToCid($vid)
+    {
+        global $databaseURI;
+        $url = "{$databaseURI}/externalid/S_".$vid;
+        $message=null;
+        $answer = http_get($url, false, $message);
+        if ($message == 200){
+            $externalId = ExternalId::decodeExternalId($answer);
+            
+            if ($externalId->getCourse()!==null){
+                return $externalId->getCourse()->getId();
+            } else
+                return null;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -125,10 +182,12 @@ class StudIPAuthentication extends AbstractAuthentication
      */
     public function getUserInStudip($uid)
     {
-        // TODO make configurable
-        $query = "https://studip.uni-halle.de/upgateway/intern/request.php?cmd=get_user&uid={$uid}";
-        $getUserData = http_get($query, false);
-        if ($getUserData != "not found") {
+        $message=null;
+        $query = StudIPAuthentication::$StudipAPI . "/request.php?cmd=get_user&uid={$uid}";
+        $getUserData = http_get($query, false, $message);
+        ///$getUserData = "Till:Uhlig:-:hash:acfmr:211203809";$message=200;
+///Logger::Log("get_user: ".$getUserData, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+        if ($message == 200 && $getUserData != "not found") {
             // convert output to our user structure
             $getUserData = explode(":", utf8_encode($getUserData));
 
@@ -136,11 +195,56 @@ class StudIPAuthentication extends AbstractAuthentication
 
             $user = User::createUser(NULL,$getUserData[4],$getUserData[2],$getUserData[0],$getUserData[1],NULL,"1","noPassword","noSalt","0",$uid);
         } else {
-            $user = $getUserData;
+            $user = "not found";
         }
         return $user;
     }
+    
+    /**
+     * Give user status from Studip
+     *
+     * @param string $uid Is the userid from StudIP
+     * @param string $vid Is the courseid from StudIP
+     * @return ostepu user status (0-3) or null
+     */
+    public function getUserStatusInStudip($uid, $vid)
+    {
+        $message=null;
+        $query = StudIPAuthentication::$StudipAPI . "/request.php?cmd=get_user_status&uid={$uid}&vid={$vid}";
+        $status = http_get($query, false, $message);
+        ///$status = "dozent";$message=200;
+///Logger::Log("get_user_status: ".$status, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+        if($message==200)
+            return $this->getOSTEPUStatus($status);
+        return null;
+    }
+    
+    /**
+     * Give course from Studip
+     *
+     * @param string $vid Is the courseid from StudIP
+     * @return Course $course which contains our Structure Course with the given information from StudIP
+     */
+    public function getCourseInStudip($vid)
+    {
+        $message=null;
+        $query = StudIPAuthentication::$StudipAPI . "/request.php?cmd=get_title&vid={$vid}";
+        $title = http_get($query, false, $message);
+        ///$title = "Veranstaltung";$message=200;
+///Logger::Log("get_title: ".$title, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+        if ($message == 200 && $title != "not found") {
+            $query = StudIPAuthentication::$StudipAPI . "/request.php?cmd=get_semester&vid={$vid}";
+            $semester = http_get($query, false, $message);
+            ///$semester="SS 2015";$message=200;
+///Logger::Log("get_semester: ".$semester, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+            if ($message == 200 && $semester != "not found") {
+                return Course::createCourse(null,$title,$semester,1);
+            }
+        }
 
+        return null;
+    }
+    
     /**
      * Create User in DB
      *
@@ -153,6 +257,7 @@ class StudIPAuthentication extends AbstractAuthentication
         $data = User::encodeUser($data);
 
         $url = "{$databaseURI}/user";
+        $message = null;
         http_post_data($url, $data, false, $message);
 
         return $message == "201";
@@ -172,6 +277,7 @@ class StudIPAuthentication extends AbstractAuthentication
         $data = User::encodeUser(User::createCourseStatus($userId,$courseId,$status));
 
         $url = "{$databaseURI}/coursestatus";
+        $message=null;
         http_post_data($url, $data, true, $message);
 
         return $message == "201";
@@ -187,13 +293,17 @@ class StudIPAuthentication extends AbstractAuthentication
     public function loginUser($username, $password)
     {
         global $databaseURI;
+        global $logicURI;
+
         // check if logged in in studip
         $studip = $this->checkUserInStudip($this->uid,$this->sid);
+        $studipStatus = $this->getUserStatusInStudip($this->uid,$this->vid);
+        if ($studip == true && $studipStatus!==null) {
+///Logger::Log("inStudip", LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
 
-        if ($studip == true) {
-
-            $databaseURI = "{$databaseURI}/user/user/{$username}";
-            $this->userData = http_get($databaseURI, false, $message);
+            $url = "{$databaseURI}/user/user/{$username}";
+            $message=null;
+            $this->userData = http_get($url, false, $message);
             $this->userData = json_decode($this->userData, true);
 
             // check if user exists in our system
@@ -203,17 +313,62 @@ class StudIPAuthentication extends AbstractAuthentication
 
                 // refresh Session in UI and DB
                 $refresh = $this->refreshSession();
+                
+                if (isset($_GET['vid']) && (!isset($_GET['cid']) || $this->cid===null)){
+                    // convert vid to cid
+                    // create course if does not exist
+                    $this->cid = $this->convertVidToCid($_GET['vid']);
+                    if ($this->cid===null && $studipStatus===CourseStatus::getStatusDefinition(true)['administrator']){
+                        // create course                
+                        $courseObject = $this->getCourseInStudip($this->vid);
+                        if ($courseObject!==null){
+                            $url = "{$logicURI}/course";
+                            $courseObject = http_post_data($url, Course::encodeCourse($courseObject), false, $message);
+                            if ($message===201){
+                                // new course was created
+                                $courseObject = Course::decodeCourse($courseObject);
+                                if ($courseObject!==null){
+                                    $this->cid = $courseObject->getId();
+                                    $url = "{$databaseURI}/externalid";
+                                    $externalId = ExternalId::createExternalId('S_'.$_GET['vid'],$this->cid);
+                                    $externalId = http_post_data($url, ExternalId::encodeExternalId($externalId), false, $message);
 
+                                    if ($message!==201){
+                                        // create externalId fails, remove course
+                                        $url = "{$logicURI}/course/course/".$this->cid;
+                                        http_delete($url, false, $message);
+                                        $this->cid=null;
+                                    }
+
+                                    if ($this->cid!==null && $studipStatus===CourseStatus::getStatusDefinition(true)['administrator']){
+                                        // redirect user to course settings
+                                        /// ???
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (!isset($this->cid) || $this->cid===null){
+                    set_error("409");
+                    exit(); 
+                }
+                    
                 // get the courseStatus for given course
                 $this->courseStatus = $this->findCourseStatus();
 
-                // if user hase no status in course create it
+                // if user has no status in course create it
                 if (!isset($this->courseStatus)) {
-                    $CourseStatusResponse = $this->createCourseStatus($this->userData['id'],$this->cid,"0");
+                    if ($studipStatus===null)
+                        $studipStatus = $this->getUserStatusInStudip($this->uid,$this->vid);
+                    if ($studipStatus!==null){
+                        $CourseStatusResponse = $this->createCourseStatus($this->userData['id'],$this->cid,$studipStatus);
 
-                    // set courseStatus to 0 only if status is created in DB successfully
-                    if ($CourseStatusResponse == true) {
-                        $this->courseStatus = "0";
+                        // set courseStatus to studipStatus only if status is created in DB successfully
+                        if ($CourseStatusResponse == true) {
+                            $this->courseStatus = $studipStatus;
+                        }
                     }
                 }
 
