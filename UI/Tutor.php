@@ -13,13 +13,14 @@ include_once 'include/Boilerplate.php';
 if (isset($_POST['downloadAttachments'])) {
     downloadAttachmentsOfSheet($_POST['downloadAttachments']);
 }
-
+ 
 if (isset($_POST['downloadCSV'])) {
     $sid = cleanInput($_POST['downloadCSV']);
     $URI = $logicURI . '/tutor/user/' . $uid . '/exercisesheet/' . $sid;
+
     $csvFile = http_get($URI, true);
     $csvFile = json_decode($csvFile, true);
-   
+
     if (isset($csvFile['address']) && isset($csvFile['displayName'])){
         $fileAddress = $csvFile['address'];
         $displayName = $csvFile['displayName'];

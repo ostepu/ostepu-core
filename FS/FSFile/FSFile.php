@@ -77,7 +77,7 @@ class FSFile
             
         // initialize component
         ///$this->_conf = $_conf;
-
+        
         if (file_exists(dirname(__FILE__).'/config.ini'))
             $this->config = parse_ini_file( 
                                            dirname(__FILE__).'/config.ini',

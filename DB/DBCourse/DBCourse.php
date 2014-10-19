@@ -223,7 +223,7 @@ class DBCourse
 
             // generates the update data for the object
             $data = $in->getInsertData( );
-
+            
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,

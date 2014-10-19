@@ -74,7 +74,7 @@ class FSZip
         // runs the FSZip
         if ( $com->used( ) ) return;
             ///$_conf = $com->loadConfig( );
-
+            
         if (file_exists(dirname(__FILE__).'/config.ini'))
             $this->config = parse_ini_file( 
                                            dirname(__FILE__).'/config.ini',

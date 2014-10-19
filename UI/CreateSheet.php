@@ -124,7 +124,7 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                                                  FormEvaluator::REQUIRED,
                                                  'warning',
                                                  'Ungültige Punkteanzahl angegeben.',
-                                                 array('min' => 1));
+                                                 array('min' => 0));
                     if ($subeval->evaluate() == false) {
                         $notifications = array_merge($notifications, $subeval->notifications);
                         $correctExercise = false;

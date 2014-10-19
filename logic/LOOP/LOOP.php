@@ -312,9 +312,7 @@ class LOOP
                     $fail = false;
                     
                     $fileHash = sha1($file);
-                
-                    $filePath = '/tmp/'.$fileHash;
-                    LOOP::generatepath($filePath);
+                    $filePath = $this->tempdir('/tmp/', $fileHash);
                     file_put_contents($filePath . '/' . $fileName, $file);  
 
                     $parameter = explode(' ',strtolower($pro->getParameter()));
@@ -395,6 +393,7 @@ class LOOP
                                 }
                                 $this->app->response->setStatus( 409 );
                             }
+                            
                         } elseif ($type == 'custom'){
                             $output = array();
                             $return = '';
@@ -439,8 +438,7 @@ class LOOP
                         // no parameter
                     }
                     
-                    unlink($filePath . '/' . $fileName);
-                    
+                    $this->deleteDir($filePath);
                     
                     $res[] = $pro;          
                     continue;
@@ -466,6 +464,36 @@ class LOOP
     {
         if (!is_dir($path))          
             mkdir( $path , 0775, true);
+    }
+    
+    public function deleteDir($path)
+    {
+        if (is_dir($path) === true) {
+            $files = array_diff(scandir($path), array('.', '..'));
+
+            foreach ($files as $file) {
+                $this->deleteDir(realpath($path) . '/' . $file);
+            }
+            return rmdir($path);
+        }
+
+        // Datei entfernen
+        else if (is_file($path) === true) {
+            return unlink($path);
+        }
+        return false;
+    }
+    
+    public function tempdir($dir, $prefix='', $mode=0775)
+    {
+        if (substr($dir, -1) != '/') $dir .= '/';
+
+        do
+        {
+            $path = $dir.$prefix.mt_rand(0, 9999999);
+        } while (!mkdir($path, $mode));
+
+        return $path;
     }
 }
 ?>

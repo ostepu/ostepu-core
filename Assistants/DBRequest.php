@@ -205,7 +205,7 @@ class DBRequest
 
         // check session
         ///if (error_reporting() & E_NOTICE)
-        ///        $checkSession = false; // remove the comment this line to disable the session examination
+        ///    $checkSession = false; // remove the comment this line to disable the session examination
         
         // Storing whether or not a session condition is not satisfied
         $sessionFail = false;
