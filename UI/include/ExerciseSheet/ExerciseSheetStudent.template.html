@@ -1,4 +1,13 @@
-<?php if (!empty($sheets)): ?>
+<?php 
+    $anyoneStarted=false;
+    if (!empty($sheets))
+        foreach ($sheets as $sheet)
+            if (date('U') > date('U', $sheet['startDate'])){
+                $anyoneStarted=true;
+                break;
+            }
+    
+    if (!empty($sheets) && $anyoneStarted): ?>
     <?php foreach ($sheets as $sheet):?>
     <?php /**
            * @todo Date check needs more testing.
