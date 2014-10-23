@@ -5,7 +5,4 @@
  */
 ?>
 
-select 
-    count(1)
-from
-    `Choice<?php echo $preChoice; ?>_<?php echo $courseid; ?>` FO limit 1;
+show tables like 'Choice<?php echo $preChoice; ?>_<?php echo $courseid; ?>';

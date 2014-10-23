@@ -5,7 +5,4 @@
  */
 ?>
 
-select 
-    count(1)
-from
-    `ExternalId` A limit 1;
+show tables like 'ExternalId';

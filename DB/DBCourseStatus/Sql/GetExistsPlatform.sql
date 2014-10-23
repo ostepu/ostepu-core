@@ -5,7 +5,4 @@
  */
 ?>
 
-select 
-    count(1)
-from
-    `CourseStatus` A limit 1;
+show tables like 'CourseStatus';

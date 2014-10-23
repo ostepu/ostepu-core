@@ -5,7 +5,4 @@
  */
 ?>
 
-select 
-    count(1)
-from
-    `ExerciseSheet` A limit 1;
+show tables like 'ExerciseSheet';

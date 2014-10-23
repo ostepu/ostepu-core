@@ -5,7 +5,4 @@
  */
 ?>
 
-select 
-    count(1)
-from
-    `Transaction<?php echo $name; ?>_<?php echo $courseid; ?>` T limit 1;
+show tables like 'Transaction<?php echo $name; ?>_<?php echo $courseid; ?>';

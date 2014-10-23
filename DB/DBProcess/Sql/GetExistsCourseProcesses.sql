@@ -5,7 +5,4 @@
  */
 ?>
 
-select 
-    count(1)
-from
-    `Process<?php echo $pre; ?>_<?php echo $courseid; ?>` PRO limit 1;
+show tables like 'Process<?php echo $pre; ?>_<?php echo $courseid; ?>';
