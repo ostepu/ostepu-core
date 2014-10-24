@@ -316,15 +316,16 @@ Logger::Log("create_user_status_data: ".$data, LogLevel::DEBUG, false, dirname(_
 
         // check if logged in in studip
         $studip = $this->checkUserInStudip($this->uid,$this->sid);
-        $studipStatus = $this->getUserStatusInStudip($this->uid,$this->vid);
-        if ($studip == true && $studipStatus!==null) {
+        if ($studip == true) {
 Logger::Log("inStudip", LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
 
             $url = "{$databaseURI}/user/user/{$username}";
             $message=null;
             $this->userData = http_get($url, false, $message);
+Logger::Log("ostepuUser_url: ".$url, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+Logger::Log("ostepuUser_message: ".$message, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+Logger::Log("ostepuUser_data: ".$this->userData, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
             $this->userData = json_decode($this->userData, true);
-
             // check if user exists in our system
             if ($message != "404" && empty($this->userData) == false) {
                 // save logged in uid
@@ -336,33 +337,38 @@ Logger::Log("inStudip", LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth
                 if (isset($_GET['vid']) && (!isset($_GET['cid']) || $this->cid===null)){
                     // convert vid to cid
                     // create course if does not exist
+                    
+                    
                     $this->cid = $this->convertVidToCid($_GET['vid']);
-                    if ($this->cid===null && $studipStatus===CourseStatus::getStatusDefinition(true)['administrator']){
+                    if ($this->cid===null){
                         // create course       
+                        $studipStatus = $this->getUserStatusInStudip($this->uid,$this->vid);
+                        if ($studipStatus===CourseStatus::getStatusDefinition(true)['administrator']){
 Logger::Log("createCourse>>".$_GET['vid'] , LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
-                        $courseObject = $this->getCourseInStudip($this->vid);
-                        if ($courseObject!==null){
-                            $url = "{$logicURI}/course";
-                            $courseObject = http_post_data($url, Course::encodeCourse($courseObject), false, $message);
-                            if ($message===201){
-                                // new course was created
-                                $courseObject = Course::decodeCourse($courseObject);
-                                if ($courseObject!==null){
-                                    $this->cid = $courseObject->getId();
-                                    $url = "{$databaseURI}/externalid";
-                                    $externalId = ExternalId::createExternalId('S_'.$_GET['vid'],$this->cid);
-                                    $externalId = http_post_data($url, ExternalId::encodeExternalId($externalId), false, $message);
+                            $courseObject = $this->getCourseInStudip($this->vid);
+                            if ($courseObject!==null){
+                                $url = "{$logicURI}/course";
+                                $courseObject = http_post_data($url, Course::encodeCourse($courseObject), false, $message);
+                                if ($message===201){
+                                    // new course was created
+                                    $courseObject = Course::decodeCourse($courseObject);
+                                    if ($courseObject!==null){
+                                        $this->cid = $courseObject->getId();
+                                        $url = "{$databaseURI}/externalid";
+                                        $externalId = ExternalId::createExternalId('S_'.$_GET['vid'],$this->cid);
+                                        $externalId = http_post_data($url, ExternalId::encodeExternalId($externalId), false, $message);
 
-                                    if ($message!==201){
-                                        // create externalId fails, remove course
-                                        $url = "{$logicURI}/course/course/".$this->cid;
-                                        http_delete($url, false, $message);
-                                        $this->cid=null;
-                                    }
+                                        if ($message!==201){
+                                            // create externalId fails, remove course
+                                            $url = "{$logicURI}/course/course/".$this->cid;
+                                            http_delete($url, false, $message);
+                                            $this->cid=null;
+                                        }
 
-                                    if ($this->cid!==null && $studipStatus===CourseStatus::getStatusDefinition(true)['administrator']){
-                                        // redirect user to course settings
-                                        /// ???
+                                        if ($this->cid!==null && $studipStatus===CourseStatus::getStatusDefinition(true)['administrator']){
+                                            // redirect user to course settings
+                                            /// ???
+                                        }
                                     }
                                 }
                             }
