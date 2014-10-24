@@ -5,7 +5,4 @@
  */
 ?>
 
-select 
-    count(1)
-from
-    `Form_<?php echo $courseid; ?>` FO limit 1;
+show tables like 'Form_<?php echo $courseid; ?>';

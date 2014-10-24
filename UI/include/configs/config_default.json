@@ -14,7 +14,6 @@
     "javascripts":[
         "javascript/retina.js",
         "javascript/jquery-2.0.3.min.js",
-        "javascript/keymaster.js",
-        "javascript/surprise.js"
+        "javascript/keymaster.js"
     ]
 }

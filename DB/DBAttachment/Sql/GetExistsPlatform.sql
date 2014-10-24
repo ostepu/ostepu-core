@@ -5,7 +5,4 @@
  */
 ?>
 
-select 
-    count(1)
-from
-    `Attachment` A limit 1;
+show tables like 'Attachment';
