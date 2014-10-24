@@ -253,6 +253,8 @@ Logger::Log("get_semester_url: ".$query, LogLevel::DEBUG, false, dirname(__FILE_
 Logger::Log("get_semester_message: ".$message, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
 Logger::Log("get_semester_result: ".$semester, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
             if ($message == 200 && $semester != "not found") {
+                if (substr($semester,0,2)==='WS')
+                    $semester = substr($semester,0,-2).'20'.substr($semester,-2);
                 return Course::createCourse(null,$title,$semester,1);
             }
         }
