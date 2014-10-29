@@ -43,6 +43,7 @@ class LGetSite
     private $_getUser = array();
     private $_getExercise = array();
     private $_getExerciseType = array();
+    private $_getExerciseFileType = array();
     private $_getApprovalCondition = array();
     private $_getMarking = array();
     private $_getSelectedSubmission = array();
@@ -74,6 +75,7 @@ class LGetSite
         $this->_getUser = CConfig::getLink($conf->getLinks(),"getUser");
         $this->_getExercise = CConfig::getLink($conf->getLinks(),"getExercise");
         $this->_getExerciseType = CConfig::getLink($conf->getLinks(),"getExerciseType");
+        $this->_getExerciseFileType = CConfig::getLink($conf->getLinks(),"getExerciseFileType");
         $this->_getApprovalCondition = CConfig::getLink($conf->getLinks(),"getApprovalCondition");
         $this->_getMarking = CConfig::getLink($conf->getLinks(),"getMarking");
         $this->_getSelectedSubmission = CConfig::getLink($conf->getLinks(),"getSelectedSubmission");
@@ -175,14 +177,8 @@ class LGetSite
         // get tutors
 
         // get all users with status 1,2,3 (tutor,lecturer,admin)
-        $URL = $this->_getUser->getAddress().'/user/course/'.$courseid.'/status/1';
+        $URL = $this->_getUser->getAddress().'/user/course/'.$courseid.'';
         $handler1 = Request_CreateRequest::createGet($URL, array(), '');
-
-        $URL = $this->_getUser->getAddress().'/user/course/'.$courseid.'/status/2';
-        $handler2 = Request_CreateRequest::createGet($URL, array(), '');
-
-        $URL = $this->_getUser->getAddress().'/user/course/'.$courseid.'/status/3';
-        $handler3 = Request_CreateRequest::createGet($URL, array(), '');
         
         // get markings
         $URL = $this->_getMarking->getAddress().'/marking/exercisesheet/'.$sheetid;
@@ -195,18 +191,16 @@ class LGetSite
 
         $multiRequestHandle = new Request_MultiRequest();
         $multiRequestHandle->addRequest($handler1);
-        $multiRequestHandle->addRequest($handler2);
-        $multiRequestHandle->addRequest($handler3);
         $multiRequestHandle->addRequest($handler4);
         $multiRequestHandle->addRequest($handler5);
 
         $answer = $multiRequestHandle->run();
 
-        $tutors = json_decode($answer[0]['content'], true);
-        $lecturers = json_decode($answer[1]['content'], true);
-        $admins = json_decode($answer[2]['content'], true);
-        $markings = json_decode($answer[3]['content'], true);
-        $submissions = json_decode($answer[4]['content'], true);
+        $users = json_decode($answer[0]['content'], true);
+        ///$lecturers = json_decode($answer[1]['content'], true);
+        ///$admins = json_decode($answer[2]['content'], true);
+        $markings = json_decode($answer[1]['content'], true);
+        $submissions = json_decode($answer[2]['content'], true);
 
         // obsolete ???
         /*// delete all super-admins from admin list
@@ -219,7 +213,16 @@ class LGetSite
             }
         }*/
 
-        $tutors = array_merge($tutors, $lecturers, $admins);
+        $students=array();
+        $tutors=array();
+        foreach ($users as $user){
+            if ($user['courses'][0]['status']==0){
+                $students[] = $user;
+            }elseif ($user['courses'][0]['status']>0){
+                $tutors[] = $user;
+            }
+        }
+        unset($users);
 
         $response['tutorAssignments'] = array();
 
@@ -254,6 +257,14 @@ class LGetSite
                     unset($marking['submission']['date']);
                     unset($marking['submission']['flag']);
                     unset($marking['submission']['selectedForGroup']);
+                    
+                    $marking['submission']['user']=null;
+                    foreach ($students as $student){
+                        if ($student['id']==$marking['submission']['leaderId']){
+                            $marking['submission']['user']=$student;
+                            break;
+                        }
+                    }
                     $tutorAssignment['submissions'][] = $marking['submission'];
 
                     // save ids of all assigned submission
@@ -278,6 +289,13 @@ class LGetSite
         foreach ($submissions as &$submission) {
             if (!in_array($submission['submissionId'], $assignedSubmissionIDs)) {
                 $submission['unassigned'] = true;
+                $submission['user']=null;
+                    foreach ($students as $student){
+                        if ($student['id']==$submission['leaderId']){
+                            $submission['user']=$student;
+                            break;
+                        }
+                    }
                 $unassignedSubmissions[] = $submission;
             }
         }
@@ -600,7 +618,13 @@ class LGetSite
 
         $URL = $this->_getExerciseType->getAddress().'/exercisetype';
         $handler6 = Request_CreateRequest::createGet($URL, array(), '');
-
+        
+        $URL = "{$this->_getUser->getAddress()}/user/course/{$courseid}/status/2";
+        $handler7 = Request_CreateRequest::createGet($URL, array(), '');
+        
+        $URL = "{$this->_getUser->getAddress()}/user/course/{$courseid}/status/3";
+        $handler8 = Request_CreateRequest::createGet($URL, array(), '');
+        
         $multiRequestHandle = new Request_MultiRequest();
         $multiRequestHandle->addRequest($handler1);
         $multiRequestHandle->addRequest($handler2);
@@ -608,6 +632,8 @@ class LGetSite
         $multiRequestHandle->addRequest($handler4);
         $multiRequestHandle->addRequest($handler5);
         $multiRequestHandle->addRequest($handler6);
+        $multiRequestHandle->addRequest($handler7);
+        $multiRequestHandle->addRequest($handler8);
 
         $answer = $multiRequestHandle->run();
 
@@ -617,6 +643,8 @@ class LGetSite
         $groups = json_decode($answer[3]['content'], true);
         $submissions = json_decode($answer[4]['content'], true);
         $possibleExerciseTypes = json_decode($answer[5]['content'], true);
+        $tutors = array_merge($tutors,json_decode($answer[6]['content'], true));
+        $tutors = array_merge($tutors,json_decode($answer[7]['content'], true));
 
         // order exercise types by id
         $exerciseTypes = array();
@@ -741,7 +769,7 @@ class LGetSite
      */
     public function markingToolTutor($userid, $courseid, $sheetid, $tutorid)
     {
-        $selector = function ($marking, $tutor, $statusid) {
+        $selector = function ($marking, $tutorid, $statusid) {
             if ($marking['tutorId'] == $tutorid) {
                 return true;
             }
@@ -1014,8 +1042,14 @@ class LGetSite
                 if (!isset($selectedSubmissionsCount[$key]['tutorMarkings'])){
                     $selectedSubmissionsCount[$key]['tutorMarkings']=1;
                 } else {
-                    $selectedSubmissionsCount[$key]['tutorMarkings']+=1;
+                    $selectedSubmissionsCount[$key]['tutorMarkings']++;
                 }  
+                
+                if (!isset($selectedSubmissionsCount[$key]['status'][$marking['status']])){
+                    $selectedSubmissionsCount[$key]['status'][$marking['status']]=1;
+                } else {
+                    $selectedSubmissionsCount[$key]['status'][$marking['status']]++;
+                }
             }
         }
         unset($markings);
@@ -1039,7 +1073,11 @@ class LGetSite
             $sheet['courseUserCount'] = count($courseUser);
             $sheet['selectedSubmissions'] = (isset($selectedSubmissionsCount[$sheet['id']]['selected']) ? $selectedSubmissionsCount[$sheet['id']]['selected'] : 0);
             $sheet['tutorMarkings'] = (isset($selectedSubmissionsCount[$sheet['id']]['tutorMarkings']) ? $selectedSubmissionsCount[$sheet['id']]['tutorMarkings'] : 0);
-
+            
+            if (isset($selectedSubmissionsCount[$sheet['id']]['status']))
+                foreach ($selectedSubmissionsCount[$sheet['id']]['status'] as $key => $value)
+                    $sheet['status'][$key] = $value;
+            
             foreach ($sheet['exercises'] as &$exercise) {
                 foreach ($exerciseTypes as $exerciseType) {
                     if ($exerciseType['id'] == $exercise['type']) {
