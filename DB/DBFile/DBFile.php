@@ -154,14 +154,6 @@ class DBFile
                                   )
                             );
 
-        // GET GetFile
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '(/file)/:fileid(/)',
-                         array( 
-                               $this,
-                               'getFile'
-                               )
-                         );
 
         // GET GetFileByHash
         $this->_app->get( 
@@ -171,10 +163,28 @@ class DBFile
                                'getFileByHash'
                                )
                          );
-
+                         
+        // GET GetFileByMimeType
+        $this->_app->get( 
+                         '/' . $this->getPrefix( ) . '/mimetype/:base(/:type)(/timestamp/begin/:begin/end/:end)(/)',
+                         array( 
+                               $this,
+                               'getFileByMimeType'
+                               )
+                         );
+                         
+        // GET GetFile
+        $this->_app->get( 
+                         '/' . $this->getPrefix( ) . '(/file)/:fileid(/)',
+                         array( 
+                               $this,
+                               'getFile'
+                               )
+                         );
+                         
         // GET GetAllFiles
         $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '(/file)(/)',
+                         '/' . $this->getPrefix( ) . '(/timestamp/begin/:begin/end/:end)(/)',
                          array( 
                                $this,
                                'getAllFiles'
@@ -410,12 +420,7 @@ class DBFile
     public function get( 
                         $functionName,
                         $sqlFile,
-                        $userid,
-                        $courseid,
-                        $esid,
-                        $eid,
-                        $fileid,
-                        $hash,
+                        $params=array(),
                         $singleResult = false,
                         $checkSession = true
                         )
@@ -426,28 +431,14 @@ class DBFile
                     );
 
         // checks whether incoming data has the correct data type
-        $hash = DBJson::mysql_real_escape_string( $hash );
-        DBJson::checkInput( 
-                           $this->_app,
-                           $userid == '' ? true : ctype_digit( $userid ),
-                           $courseid == '' ? true : ctype_digit( $courseid ),
-                           $esid == '' ? true : ctype_digit( $esid ),
-                           $eid == '' ? true : ctype_digit( $eid ),
-                           $fileid == '' ? true : ctype_digit( $fileid )
-                           );
+        foreach ($params as &$param)
+            $param = DBJson::mysql_real_escape_string( $param );
 
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
                                               $sqlFile,
-                                              array( 
-                                                    'userid' => $userid,
-                                                    'courseid' => $courseid,
-                                                    'esid' => $esid,
-                                                    'eid' => $eid,
-                                                    'fileid' => $fileid,
-                                                    'hash' => $hash
-                                                    ),
+                                              $params,
                                               $checkSession
                                               );
 
@@ -498,12 +489,7 @@ class DBFile
         $this->get( 
                    'GetFile',
                    dirname(__FILE__) . '/Sql/GetFile.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $fileid ) ? $fileid : '',
-                   isset( $hash ) ? $hash : '',
+                   array("fileid"=>$fileid),
                    true
                    );
     }
@@ -521,13 +507,17 @@ class DBFile
         $this->get( 
                    'GetFileByHash',
                    dirname(__FILE__) . '/Sql/GetFileByHash.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $fileid ) ? $fileid : '',
-                   isset( $hash ) ? $hash : '',
+                   array("hash"=>$hash),
                    true
+                   );
+    }
+    
+    public function getFileByMimeType( $base, $type=null, $begin=null, $end=null )
+    {
+        $this->get( 
+                   'GetFileByMimeType',
+                   dirname(__FILE__) . '/Sql/GetFileByMimeType.sql',
+                   array("base"=>$base,"type"=>$type,"begin"=>$begin,"end"=>$end)
                    );
     }
 
@@ -537,17 +527,12 @@ class DBFile
      * Called when this component receives an HTTP GET request to
      * /file(/) or /file/file(/).
      */
-    public function getAllFiles( )
+    public function getAllFiles( $begin=null, $end=null)
     {
         $this->get( 
                    'GetAllFiles',
                    dirname(__FILE__) . '/Sql/GetAllFiles.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $fileid ) ? $fileid : '',
-                   isset( $hash ) ? $hash : ''
+                   array("begin"=>$begin,"end"=>$end)
                    );
     }
     
@@ -562,12 +547,7 @@ class DBFile
         $this->get( 
                    'GetExistsPlatform',
                    dirname(__FILE__) . '/Sql/GetExistsPlatform.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $fileid ) ? $fileid : '',
-                   isset( $hash ) ? $hash : '',
+                   array(),
                    true,
                    false
                    );
