@@ -316,6 +316,7 @@ Logger::Log("create_user_status_data: ".$data, LogLevel::DEBUG, false, dirname(_
 
         // check if logged in in studip
         $studip = $this->checkUserInStudip($this->uid,$this->sid);
+        $studipStatus=null;
         if ($studip == true) {
 Logger::Log("inStudip", LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
 
@@ -340,6 +341,7 @@ Logger::Log("ostepuUser_data: ".$this->userData, LogLevel::DEBUG, false, dirname
                     
                     
                     $this->cid = $this->convertVidToCid($_GET['vid']);
+Logger::Log("cid: ".$this->cid , LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
                     if ($this->cid===null){
                         // create course       
                         $studipStatus = $this->getUserStatusInStudip($this->uid,$this->vid);
@@ -383,7 +385,8 @@ Logger::Log("createCourse>>".$_GET['vid'] , LogLevel::DEBUG, false, dirname(__FI
                     
                 // get the courseStatus for given course
                 $this->courseStatus = $this->findCourseStatus();
-
+Logger::Log("courseStatus: ".$this->courseStatus , LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+               
                 // if user has no status in course create it
                 if (!isset($this->courseStatus)) {
                     if ($studipStatus===null)
