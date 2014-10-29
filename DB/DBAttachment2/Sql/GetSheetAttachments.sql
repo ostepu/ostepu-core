@@ -23,7 +23,8 @@ concat(
     F.F_timeStamp,
     F.F_fileSize,
     F.F_comment,
-    F.F_hash
+    F.F_hash,
+    F.F_mimeType
 from
     Attachment<?php echo $pre; ?>_", @course ," A
     left join File F ON F.F_id = A.F_id

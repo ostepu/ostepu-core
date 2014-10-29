@@ -20,6 +20,7 @@ select
     F.F_fileSize,
     F.F_comment,
     F.F_hash,
+    F.F_mimeType,
     S.U_id,
     S.S_id,
     S.F_id_file,

@@ -35,6 +35,7 @@ select
     F.F_fileSize as F_fileSize_PRO1,
     F.F_comment as F_comment_PRO1,
     F.F_hash as F_hash_PRO1,
+    F.F_mimeType as F_mimeType_PRO1,
     concat('<?php echo $courseid; ?>','_',A2.A_id) as A_id_PRO2,
     A2.E_id as E_id_PRO2,
     F2.F_id as F_id_PRO2,
@@ -43,7 +44,8 @@ select
     F2.F_timeStamp as F_timeStamp_PRO2,
     F2.F_fileSize as F_fileSize_PRO2,
     F2.F_comment as F_comment_PRO2,
-    F2.F_hash as F_hash_PRO2
+    F2.F_hash as F_hash_PRO2,
+    F2.F_mimeType as F_mimeType_PRO2
 from
     `Process<?php echo $pre; ?>_<?php echo $courseid; ?>` PRO
         left join

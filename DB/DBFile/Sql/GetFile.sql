@@ -15,7 +15,8 @@ select
     F_timeStamp,
     F_fileSize,
     F_comment,
-    F_hash
+    F_hash,
+    F_mimeType
 from
     File
 where

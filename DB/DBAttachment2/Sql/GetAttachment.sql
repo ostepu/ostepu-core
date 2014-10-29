@@ -20,7 +20,8 @@ select
     F.F_timeStamp,
     F.F_fileSize,
     F.F_comment,
-    F.F_hash
+    F.F_hash,
+    F.F_mimeType
 from
     Attachment<?php echo $pre; ?>_<?php echo Attachment::getCourseFromAttachmentId($aid); ?> A
         left join

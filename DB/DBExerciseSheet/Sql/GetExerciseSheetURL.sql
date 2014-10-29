@@ -16,7 +16,8 @@ select
     F.F_timeStamp,
     F.F_fileSize,
     F.F_comment,
-    F.F_hash
+    F.F_hash,
+    F.F_mimeType
 from
     ExerciseSheet ES
         left join

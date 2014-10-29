@@ -27,6 +27,7 @@ select
     F.F_fileSize,
     F.F_hash,
     F.F_comment,
+    F.F_mimeType,
     EFT_id,
     EFT_text,
     S.U_id as U_id2,

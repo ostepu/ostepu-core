@@ -206,7 +206,7 @@ class File extends Object implements JsonSerializable
      */
     public function getComment( )
     {
-        return $this->body;
+        return $this->comment;
     }
 
     /**
@@ -218,7 +218,33 @@ class File extends Object implements JsonSerializable
     {
         $this->comment = $value;
     }
+    
+    
+    /**
+     * @var string $mimeType a file mime type
+     */
+    private $mimeType = null;
 
+    /**
+     * the $mimeType getter
+     *
+     * @return the value of $mimeType
+     */
+    public function getMimeType( )
+    {
+        return $this->mimeType;
+    }
+
+    /**
+     * the $mimeType setter
+     *
+     * @param string $value the new value for $mimeType
+     */
+    public function setMimeType( $value = null )
+    {
+        $this->mimeType = $value;
+    }
+    
     /**
      * Creates an File object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -230,6 +256,7 @@ class File extends Object implements JsonSerializable
      * @param string $fileSize The file size.
      * @param string $hash The hash.
      * @param string $comment The file comment.
+     * @param string $mimeType The file mime type.
      *
      * @return an file object
      */
@@ -240,7 +267,8 @@ class File extends Object implements JsonSerializable
                                       $timeStamp,
                                       $fileSize,
                                       $hash,
-                                      $comment = null
+                                      $comment = null,
+                                      $mimeType = null
                                       )
     {
         return new File( array( 
@@ -250,7 +278,8 @@ class File extends Object implements JsonSerializable
                                'timeStamp' => $timeStamp,
                                'fileSize' => $fileSize,
                                'hash' => $hash,
-                               'comment' => $comment
+                               'comment' => $comment,
+                               'mimeType' => $mimeType
                                ) );
     }
 
@@ -269,7 +298,8 @@ class File extends Object implements JsonSerializable
                      'F_fileSize' => 'fileSize',
                      'F_hash' => 'hash',
                      'F_body' => 'body',
-                     'F_comment' => 'comment'
+                     'F_comment' => 'comment',
+                     'F_mimeType' => 'mimeType'
                      );
     }
 
@@ -324,7 +354,13 @@ class File extends Object implements JsonSerializable
                                  'F_comment',
                                  DBJson::mysql_real_escape_string( $this->comment )
                                  );
-
+        if ( $this->mimeType != null )
+            $this->addInsertData( 
+                                 $values,
+                                 'F_mimeType',
+                                 DBJson::mysql_real_escape_string( $this->mimeType )
+                                 );
+                                 
         if ( $values != '' ){
             $values = substr( 
                              $values,
@@ -432,6 +468,8 @@ class File extends Object implements JsonSerializable
             $list['body'] = $this->body;
         if ( $this->comment !== null )
             $list['comment'] = $this->comment;
+        if ( $this->mimeType !== null )
+            $list['mimeType'] = $this->mimeType;
         return array_merge($list,parent::jsonSerialize( ));
     }
 
