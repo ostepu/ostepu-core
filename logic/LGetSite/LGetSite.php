@@ -796,7 +796,7 @@ class LGetSite
      */
     public function markingToolStatus($userid, $courseid, $sheetid, $statusid)
     {
-        $selector = function ($marking, $tutor, $statusid) {
+        $selector = function ($marking, $tutorid, $statusid) {
             if ($marking['status'] == $statusid) {
                 return true;
             }
@@ -822,7 +822,7 @@ class LGetSite
      */
     public function markingToolTutorStatus($userid, $courseid, $sheetid, $tutorid, $statusid)
     {
-        $selector = function ($marking, $tutor, $statusid) {
+        $selector = function ($marking, $tutorid, $statusid) {
             if (($marking['status'] == $statusid)
                 && ($marking['tutorId'] == $tutorid)) {
                 return true;
