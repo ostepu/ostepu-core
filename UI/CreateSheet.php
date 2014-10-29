@@ -144,13 +144,22 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                         $mimeTypesForm = explode(",", $subexercise['mime-type']);
                         foreach ($mimeTypesForm as &$mimeType) {
                             if ($mimeType=='')continue;
-                            if (FILE_TYPE::checkSupportedFileType(trim(strtolower($mimeType))) == false) {
+                            $mimeType = explode('.',trim(strtolower($mimeType)));
+                            $ending=isset($mimeType[1]) ? $mimeType[1] : null;
+                            $mimeType=$mimeType[0];
+                            
+                            if (FILE_TYPE::checkSupportedFileType($mimeType) == false) {
                                 $errormsg = "Sie haben eine nicht unterstützte Dateiendung verwendet.";
                                 array_push($notifications, MakeNotification('warning', $errormsg));
                                 $correctExercise = false;
                                 break;
                             } else { // if mime-type is supported add mimeTypes
-                                $mimeTypes = array_merge($mimeTypes, FILE_TYPE::getMimeTypeByFileEnding(trim(strtolower($mimeType))));
+                                $mimes = FILE_TYPE::getMimeTypeByFileEnding(trim(strtolower($mimeType)));
+                                if ($ending!=null)
+                                    foreach ($mimes as &$mime){
+                                        $mime.=' *.'.$ending;
+                                    }
+                                $mimeTypes = array_merge($mimeTypes, $mimes);
                             }
                         }
                     }
