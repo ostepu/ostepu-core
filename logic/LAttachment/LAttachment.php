@@ -68,7 +68,7 @@ class LAttachment
     public function __construct()
     {
         // runs the CConfig
-        $com = new CConfig( LAttachment::getPrefix( ) );
+        $com = new CConfig( LAttachment::getPrefix( ), dirname(__FILE__) );
 
         // runs the LAttachment
         if ( $com->used( ) ) return;
