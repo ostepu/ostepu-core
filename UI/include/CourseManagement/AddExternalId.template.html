@@ -1,3 +1,11 @@
+<?php
+if (isset($AddExternalIdNotificationElements)) {
+    foreach ($AddExternalIdNotificationElements as $notificationElement) {
+        print $notificationElement;
+    }
+}
+?>
+
 <input type="hidden" name="action" value="AddExternalId">
 <div class="content-element">
     <div class="content-header">
@@ -15,18 +23,22 @@
             <input class="form-field text-input long"
                    name="externalId"
                    id="externalId"
+                   placeholder="391e034db"
                 /></div>
                
             <div class="form-field right">
                 <input type="radio" name="externalType" id="externalType" checked="true" value="1"/>
                 <label for="externalType">Stud.IP</label><br>
                 
+                <div>
                 <input type="radio" name="externalType" id="externalType" value="2"/>
                 <label for="externalType">Sonstiges</label>
                 <input class="form-field text-input short"
                    name="externalTypeName"
                    id="externalTypeName"
+                   placeholder="S"
                 />
+                </div>
                 
             </div>
         </div>

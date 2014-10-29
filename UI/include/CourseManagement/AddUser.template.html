@@ -1,3 +1,11 @@
+<?php
+if (isset($AddUserNotificationElements)) {
+    foreach ($AddUserNotificationElements as $notificationElement) {
+        print $notificationElement;
+    }
+}
+?>
+
 <input type="hidden" name="action" value="AddUser">
 <div class="content-element">
     <div class="content-header">
@@ -16,6 +24,7 @@
             <input class="form-field text-input"
                    name="userName"
                    id="userName"
+                   placeholder="acfmr"
             />
             <div class="form-field left label bold new-line" for="tutorRightsRight">Rechte:</div>
             <div class="form-field left">

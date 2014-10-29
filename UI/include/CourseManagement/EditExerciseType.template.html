@@ -1,3 +1,11 @@
+<?php
+if (isset($EditExerciseTypeNotificationElements)) {
+    foreach ($EditExerciseTypeNotificationElements as $notificationElement) {
+        print $notificationElement;
+    }
+}
+?>
+
 <input type="hidden" name="action" value="EditExerciseType">
 <div class="content-element">
     <div class="content-header">
@@ -31,7 +39,8 @@
             <input class="form-field left text-input" 
                    name="exerciseTypeName" 
                    id="exerciseTypeName"
-                   maxlength="20"  />
+                   maxlength="20"  
+                   placeholder="Praxis"/>
         </div>
     </div>
 </div>

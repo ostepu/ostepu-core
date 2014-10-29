@@ -1,10 +1,17 @@
+<?php
+if (isset($GrantRightsNotificationElements)) {
+    foreach ($GrantRightsNotificationElements as $notificationElement) {
+        print $notificationElement;
+    }
+}
+?>
+
 <input type="hidden" name="action" value="GrantRights">
 <div class="content-element">
     <div class="content-header">
         <div class="content-title left uppercase">Rechte verändern</div>
         <button class="text-button info-color bold right">verändern</button>
     </div>
-
     <div class="content-body-wrapper">
         <div class="content-body left">
             <div class="content-description">
@@ -12,6 +19,9 @@
                 eines Nutzers zu verändern.
             </div>
             <label class="form-field left label bold" for="lecturerRightsPerson">Person auswählen:</label>
+            <div class="left" name="GrantRightsSortUsers" id="GrantRightsSortUsers" >
+                <a class="info-color" href="?cid=<?php echo $user['courses'][0]['course']['id']; ?>&sortUsers=userName#GrantRightsSortUsers">Nutzername</a>
+                <a class="info-color" href="?cid=<?php echo $user['courses'][0]['course']['id']; ?>&sortUsers=lastName#GrantRightsSortUsers">Nachname</a><br>
             <select class="form-field left text-input" name="userID" id="lecturerRightsPerson" size="10">
                 <?php
                     $studentsArea = '<optgroup label="Studenten">';
@@ -28,7 +38,7 @@
                     if(!empty($users)) {
 
                         foreach ($users as $user) {
-                            if (isset($rights[$user['statusName']])){
+                            if (!isset($rights[$user['statusName']])){
                                 $rights[$user['statusName']] = 1;
                             } else
                                 $rights[$user['statusName']]++;
@@ -89,11 +99,14 @@
                     }
                 ?>
             </select>
-            <?php foreach(CourseStatus::getStatusDefinition() as $statusType){
-                     $count = (isset($rights[$statusType]) ? $rights[$statusType] : 0); ?>
-                    <label><?php echo $statusType; ?>: <?php echo $count; ?></label><br>                     
-            <?php } ?>
+            </div>
             
+            <div class="left">
+            <?php foreach(CourseStatus::getStatusDefinition() as $statusType){
+                $count = (isset($rights[$statusType]) ? $rights[$statusType] : 0); ?>
+                <label><?php echo $statusType; ?>: <?php echo $count; ?></label><br>                     
+            <?php } ?>
+            </div>
             
             <div class="form-field left label bold new-line" for="tutorRightsRight">Rechte:</div>
             <div class="form-field left">

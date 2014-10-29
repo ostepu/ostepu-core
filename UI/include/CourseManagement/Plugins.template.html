@@ -1,3 +1,11 @@
+<?php
+if (isset($PluginsNotificationElements)) {
+    foreach ($PluginsNotificationElements as $notificationElement) {
+        print $notificationElement;
+    }
+}
+?>
+
 <?php if (isset($plugins) && !empty($plugins)){ ?>
 <input type="hidden" name="action" value="Plugins">
 <div class="content-element">

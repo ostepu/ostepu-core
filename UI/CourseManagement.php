@@ -16,6 +16,7 @@
 
 include_once 'include/Boilerplate.php';
 include_once '../Assistants/Structures.php';
+include_once '../Assistants/LArraySorter.php';
 include_once 'include/FormEvaluator.php';
 
 // load Plugins data from LogicController
@@ -47,7 +48,7 @@ if (isset($_POST['action'])) {
         $RequestError = false;
         if (count($externalId) == 0){
             $RequestError = true;
-            $notifications[] = MakeNotification("error", 'Wählen Sie einen Alias!');
+            $editExternalIdNotifications[] = MakeNotification("error", 'Wählen Sie einen Alias!');
         }
 
         if (!$RequestError){
@@ -58,7 +59,7 @@ if (isset($_POST['action'])) {
                 http_delete($URI, true, $messageNewAc);
                 if ($messageNewAc != "201") {
                     $RequestError = true;
-                    $notifications[] = MakeNotification("error", "Beim Entfernen ist ein Fehler aufgetreten!");
+                    $editExternalIdNotifications[] = MakeNotification("error", "Beim Entfernen ist ein Fehler aufgetreten!");
                     break;
                 }
             }
@@ -66,7 +67,7 @@ if (isset($_POST['action'])) {
  
         // show notification
         if ($RequestError == false) {
-            $notifications[] = MakeNotification("success", "Die Veranstaltung wurde bearbeitet!");
+            $editExternalIdNotifications[] = MakeNotification("success", "Die Veranstaltung wurde bearbeitet!");
         }
     
     } elseif ($_POST['action'] == "AddExternalId") {
@@ -76,17 +77,17 @@ if (isset($_POST['action'])) {
         $RequestError = false;
         if (strlen($externalId) == 0){
             $RequestError = true;
-            $notifications[] = MakeNotification("error", 'Geben Sie einen Alias für die Veranstaltung ein!');
+            $addExternalIdNotifications[] = MakeNotification("error", 'Geben Sie einen Alias für die Veranstaltung ein!');
         }
         
         if (strlen($externalType) == 0){
             $RequestError = true;
-            $notifications[] = MakeNotification("error", 'Kein Alias-Typ gefunden!');
+            $addExternalIdNotifications[] = MakeNotification("error", 'Kein Alias-Typ gefunden!');
         }
         
         if ($externalType == 2 && strlen($externalTypeName) == 0){
             $RequestError = true;
-            $notifications[] = MakeNotification("error", 'Geben Sie einen Alias-Präfix an!');
+            $addExternalIdNotifications[] = MakeNotification("error", 'Geben Sie einen Alias-Präfix an!');
         }
         
         if (!$RequestError){
@@ -99,13 +100,13 @@ if (isset($_POST['action'])) {
             http_post_data($URI, ExternalId::encodeExternalId($ext), true, $messageNewAc);
             if ($messageNewAc != "201") {
                 $RequestError = true;
-                $notifications[] = MakeNotification("error", "Beim Anlegen ist ein Fehler aufgetreten!");
+                $addExternalIdNotifications[] = MakeNotification("error", "Beim Anlegen ist ein Fehler aufgetreten!");
             }
         }
  
         // show notification
         if ($RequestError == false) {
-            $notifications[] = MakeNotification("success", "Die Veranstaltung wurde bearbeitet!");
+            $addExternalIdNotifications[] = MakeNotification("success", "Die Veranstaltung wurde bearbeitet!");
         }
     
     } elseif ($_POST['action'] == "Plugins") {
@@ -179,10 +180,10 @@ if (isset($_POST['action'])) {
 
         // show notification
         if ($RequestError == false) {
-            $notifications[] = MakeNotification("success", "Die Veranstaltung wurde bearbeitet!");
+            $pluginsNotifications[] = MakeNotification("success", "Die Erweiterungen wurden bearbeitet!");
         }
         else {
-            $notifications[] = MakeNotification("error", "Beim Speichern ist ein Fehler aufgetreten!");
+            $pluginsNotifications[] = MakeNotification("error", "Beim Bearbeiten ist ein Fehler aufgetreten!");
         }
     
     } elseif ($_POST['action'] == "CourseSettings") {
@@ -268,14 +269,14 @@ if (isset($_POST['action'])) {
 
             // show notification
             if ($message == "201" && $RequestError == false) {
-                $notifications[] = MakeNotification("success", "Die Veranstaltung wurde bearbeitet!");
+                $courseSettingsNotifications[] = MakeNotification("success", "Die Veranstaltung wurde bearbeitet!");
             }
             else {
-                $notifications[] = MakeNotification("error", "Beim Speichern ist ein Fehler aufgetreten!");
+                $courseSettingsNotifications[] = MakeNotification("error", "Beim Speichern ist ein Fehler aufgetreten!");
             }
         }
         else {
-            $notifications[] = MakeNotification("error", "Es wurden nicht alle Felder ausgefüllt!");
+            $courseSettingsNotifications[] = MakeNotification("error", "Es wurden nicht alle Felder ausgefüllt!");
         }
     } elseif ($_POST['action'] == "AddExerciseType") {
         // check if POST data is send
@@ -291,12 +292,12 @@ if (isset($_POST['action'])) {
 
             // show notification
             if ($message == "201") {
-                $notifications[] = MakeNotification("success", "Die Punkteart wurde erfolgreich angelegt!");
+                $addExerciseTypeNotifications[] = MakeNotification("success", "Die Punkteart wurde erfolgreich angelegt!");
             } else {
-                $notifications[] = MakeNotification("error", "Beim Speichern ist ein Fehler aufgetreten!");
+                $addExerciseTypeNotifications[] = MakeNotification("error", "Beim Speichern ist ein Fehler aufgetreten!");
             }
         } else {
-            $notifications[] = MakeNotification("error", "Es wurden nicht alle Felder ausgefüllt!");
+            $addExerciseTypeNotifications[] = MakeNotification("error", "Es wurden nicht alle Felder ausgefüllt!");
         }
     } elseif ($_POST['action'] == "EditExerciseType") {
         // check if POST data is send
@@ -313,12 +314,12 @@ if (isset($_POST['action'])) {
 
             // show notification
             if ($message == "201") {
-                $notifications[] = MakeNotification("success", "Die Punkteart wurde erfolgreich geändert!");
+                $editExerciseTypeNotifications[] = MakeNotification("success", "Die Punkteart wurde erfolgreich geändert!");
             } else {
-                $notifications[] = MakeNotification("error", "Beim Speichern ist ein Fehler aufgetreten!");
+                $editExerciseTypeNotifications[] = MakeNotification("error", "Beim Speichern ist ein Fehler aufgetreten!");
             }
         } else {
-            $notifications[] = MakeNotification("error", "Es wurden nicht alle Felder ausgefüllt!");
+            $editExerciseTypeNotifications[] = MakeNotification("error", "Es wurden nicht alle Felder ausgefüllt!");
         }
     } elseif ($_POST['action'] == "GrantRights") {
         // check if POST data is send
@@ -337,7 +338,7 @@ if (isset($_POST['action'])) {
 
                 // show notification
                 if ($message == "201") {
-                    $notifications[] = MakeNotification("success", "Die Rechte wurden erfolgreich vergeben!");
+                    $grantRightsNotifications[] = MakeNotification("success", "Die Rechte wurden erfolgreich vergeben!");
                 }
             } else {
                 // otherwise show conflict page
@@ -345,7 +346,7 @@ if (isset($_POST['action'])) {
                 exit();
             }
         } else {
-            $notifications[] = MakeNotification("error", "Es wurden nicht alle Felder ausgefüllt!");
+            $grantRightsNotifications[] = MakeNotification("error", "Es wurde kein Nutzer gewählt!");
         }
     } elseif ($_POST['action'] == "RevokeRights") {
         // check if POST data is send
@@ -362,7 +363,7 @@ if (isset($_POST['action'])) {
 
                 // show notification
                 if ($message == "201") {
-                    $notifications[] = MakeNotification("success", "Der Nutzer wurde aus der Veranstaltung entfernt!");
+                    $revokeRightsNotifications[] = MakeNotification("success", "Der Nutzer wurde aus der Veranstaltung entfernt!");
                 }
             } else {
                 // otherwise show conflict page
@@ -370,7 +371,7 @@ if (isset($_POST['action'])) {
                 exit();
             }
         } else {
-            $notifications[] = MakeNotification("error", "Es wurden nicht alle Felder ausgefüllt!");
+            $revokeRightsNotifications[] = MakeNotification("error", "Es wurde kein Nutzer gewählt!");
         }
     } elseif ($_POST['action'] == "AddUser") {
 
@@ -408,20 +409,22 @@ if (isset($_POST['action'])) {
                 http_post_data($URL, $newUser, true, $message);
 
                 if ($message == "201") {
-                    $notifications[] = MakeNotification('success',
+                    $addUserNotifications[] = MakeNotification('success',
                                                         'Der Nutzer wurde'
                                                         .' erfolgreich in die'
                                                         .' Veranstaltung eingetragen.');
                 } else {
-                    $notifications[] = MakeNotification('error',
+                    $addUserNotifications[] = MakeNotification('error',
                                                         'Beim Eintragen ist ein Fehler aufgetreten.');
                 }
             } else {
-                $notifications[] = MakeNotification('error',
+                $addUserNotifications[] = MakeNotification('error',
                                                     'Unbekannter Nutzer.');
             }                                        
         } else {
-            $notifications = $notifications + $f->notifications;
+            if (!isset($addUserNotifications))
+                $addUserNotifications = array();
+            $addUserNotifications = $addUserNotifications + $f->notifications;
         }
     } else {
         $notifications[] = MakeNotification('error',
@@ -433,6 +436,16 @@ if (isset($_POST['action'])) {
 $URI = $getSiteURI . "/coursemanagement/user/{$uid}/course/{$cid}";
 $courseManagement_data = http_get($URI, true);
 $courseManagement_data = json_decode($courseManagement_data, true);
+//var_dump($courseManagement_data['users']);return;
+if (isset($_GET['sortUsers'])){
+    if ($_GET['sortUsers']=='userName'){
+        $courseManagement_data['users'] = LArraySorter::orderby($courseManagement_data['users'], 'userName', SORT_ASC);
+    } elseif ($_GET['sortUsers']=='lastName'){
+        $courseManagement_data['users'] = LArraySorter::orderby($courseManagement_data['users'], 'lastName', SORT_DESC);
+    } else  
+        $courseManagement_data['users'] = LArraySorter::orderby($courseManagement_data['users'], 'lastName', SORT_DESC);
+} else
+    $courseManagement_data['users'] = LArraySorter::orderby($courseManagement_data['users'], 'lastName', SORT_DESC);
 
 $user_course_data = $courseManagement_data['user'];
 
@@ -456,33 +469,51 @@ $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
 // construct a content element for changing course settings
 $courseSettings = Template::WithTemplateFile('include/CourseManagement/CourseSettings.template.html');
 $courseSettings->bind($courseManagement_data);
+if (isset($courseSettingsNotifications))
+    $courseSettings->bind(array("CourseSettingsNotificationElements" => $courseSettingsNotifications));
 
 // construct a content element for plugins
 $plugins = Template::WithTemplateFile('include/CourseManagement/Plugins.template.html');
 $plugins->bind($plugins_data);
+if (isset($pluginsNotifications))
+    $plugins->bind(array("PluginsNotificationElements" => $pluginsNotifications));
 
 // construct a content element for adding exercise types
 $addExerciseType = Template::WithTemplateFile('include/CourseManagement/AddExerciseType.template.html');
+if (isset($addExerciseTypeNotifications))
+    $addExerciseType->bind(array("AddExerciseTypeNotificationElements" => $addExerciseTypeNotifications));
 
 // construct a content element for editing exercise types
 $editExerciseType = Template::WithTemplateFile('include/CourseManagement/EditExerciseType.template.html');
 $editExerciseType->bind($courseManagement_data);
+if (isset($editExerciseTypeNotifications))
+    $editExerciseType->bind(array("EditExerciseTypeNotificationElements" => $editExerciseTypeNotifications));
 
 // construct a content element for granting user-rights
 $grantRights = Template::WithTemplateFile('include/CourseManagement/GrantRights.template.html');
 $grantRights->bind($courseManagement_data);
+if (isset($grantRightsNotifications))
+    $grantRights->bind(array("GrantRightsNotificationElements" => $grantRightsNotifications));
 
 // construct a content element for taking away a user's user-rights
 $revokeRights = Template::WithTemplateFile('include/CourseManagement/RevokeRights.template.html');
 $revokeRights->bind($courseManagement_data);
+if (isset($revokeRightsNotifications))
+    $revokeRights->bind(array("RevokeRightsNotificationElements" => $revokeRightsNotifications));
 
 $editExternalId = Template::WithTemplateFile('include/CourseManagement/EditExternalId.template.html');
 $editExternalId->bind($externalid_data);
+if (isset($editExternalIdNotifications))
+    $editExternalId->bind(array("EditExternalIdNotificationElements" => $editExternalIdNotifications));
 
 $addExternalId = Template::WithTemplateFile('include/CourseManagement/AddExternalId.template.html');
-
+if (isset($addExternalIdNotifications))
+    $addExternalId->bind(array("AddExternalIdNotificationElements" => $addExternalIdNotifications));
+    
 // construct a content element for adding users
 $addUser = Template::WithTemplateFile('include/CourseManagement/AddUser.template.html');
+if (isset($addUserNotifications))
+    $addUser->bind(array("AddUserNotificationElements" => $addUserNotifications));
 
 /**
  * @todo combine the templates into a single file
