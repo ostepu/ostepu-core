@@ -14,9 +14,12 @@
     {"name":"postTransaction", "target":"DBTransaction", "links":[{"method":"POST", "path":"/transaction/exercisesheet/:sheetid" }]},
     {"name":"getTransaction", "target":"DBTransaction", "links":[]},
     {"name":"postZip", "target":"FSZip", "links":[]},
+    {"name":"postPdf", "target":"FSPdf", "links":[]},
     {"name":"postMarking", "target":"LMarking", "links":[]},
     {"name":"getMarking", "target":"DBMarking", "links":[]},
-    {"name":"getExercise", "target":"DBExercise", "links":[]}
+    {"name":"getGroup", "target":"DBGroup", "links":[]},
+    {"name":"getExercise", "target":"DBExercise", "links":[]},
+    {"name":"getSubmission", "target":"DBSubmission", "links":[]}
   ],
   "connector":[
     {"name":"request", "target":"CLocalObjectRequest"}
