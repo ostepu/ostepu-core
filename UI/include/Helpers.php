@@ -552,7 +552,8 @@ class FILE_TYPE
         'csv' => array('text/comma-separated-values'),
         'css' => array('text/css'),
         'js' => array('text/javascript', 'application/x-javascript'),
-        'txt' => array('text/plain','text/x-c++'));
+        'txt' => array('text/*'),
+        'img' => array('image/*'));
 
     /**
      * Check if FileType has a given MimeType.

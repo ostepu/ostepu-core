@@ -590,7 +590,9 @@ class DBExercise
                    isset( $eid ) ? $eid : '',
                    isset( $suid ) ? $suid : '',
                    isset( $mid ) ? $mid : '',
-                   $sub
+                   $sub,
+                   false,
+                   false
                    );
     }
     public function getSheetExercisesNoSubmission( 
@@ -600,7 +602,9 @@ class DBExercise
     {
         $this->getSheetExercises( 
                                  $esid,
-                                 $sub
+                                 $sub,
+                                 false,
+                                 false
                                  );
     }
 

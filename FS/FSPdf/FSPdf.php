@@ -121,16 +121,43 @@ class FSPdf
                          
         // POST PostPdfPermanent
         $this->_app->post( 
-                          '/' . FSPdf::$_baseDir . '(/)',
+                          '/:folder(/)',
                           array( 
                                 $this,
                                 'postPdf'
                                 )
                           );
 
+        // POST PostPdfFromFile
+        $this->_app->post( 
+                          '/:folder/:type/:a/:b/:c/:file(/)',
+                          array( 
+                                $this,
+                                'PostPdfFromFile'
+                                )
+                          );
+                          
+        // POST PostPdfFromFile
+        $this->_app->post( 
+                          '/:folder/file(/)',
+                          array( 
+                                $this,
+                                'PostPdfFromFile2'
+                                )
+                          );
+                          
+        // POST PostPdfFromFile
+        $this->_app->post( 
+                          '/:folder/file/merge(/)',
+                          array( 
+                                $this,
+                                'PostPdfFromFile3'
+                                )
+                          );
+                          
         // POST PostPdfTemporary
         $this->_app->post( 
-                          '/' . FSPdf::$_baseDir . '/:filename(/)',
+                          '/:folder/:filename(/)',
                           array( 
                                 $this,
                                 'postPdf'
@@ -139,7 +166,7 @@ class FSPdf
 
         // GET GetPdfData
         $this->_app->get( 
-                         '/' . FSPdf::$_baseDir . '/:a/:b/:c/:file(/)',
+                         '/:folder/:a/:b/:c/:file(/)',
                          array( 
                                $this,
                                'getPdfData'
@@ -148,7 +175,7 @@ class FSPdf
 
         // GET GetPdfDocument
         $this->_app->get( 
-                         '/' . FSPdf::$_baseDir . '/:a/:b/:c/:file/:filename(/)',
+                         '/:folder/:a/:b/:c/:file/:filename(/)',
                          array( 
                                $this,
                                'getPdfDocument'
@@ -157,7 +184,7 @@ class FSPdf
 
         // DELETE DeletePdf
         $this->_app->delete( 
-                            '/' . FSPdf::$_baseDir . '/:a/:b/:c/:file(/)',
+                            '/:folder/:a/:b/:c/:file(/)',
                             array( 
                                   $this,
                                   'deletePdf'
@@ -180,6 +207,7 @@ class FSPdf
      * @see http://wiki.spipu.net/doku.php
      */
     public function postPdf(
+                            $folder,
                             $filename = null
                             )
     {
@@ -190,7 +218,7 @@ class FSPdf
         
                 // generate pdf
         $filePath = FSPdf::generateFilePath( 
-                                            FSPdf::getBaseDir( ),
+                                            $folder,
                                             $name
                                             );
                                            
@@ -202,38 +230,14 @@ class FSPdf
             $form->FontSize = ($data->getFontSize()!==null ? $data->getFontSize() : '12');
             $form->TextColor = ($data->getTextColor()!=null ? $data->getTextColor() : 'black');*/
             
-            $pdf = new TCPDF( 
-                           ($data->getOrientation()!==null ? $data->getOrientation() : 'P'),
-                           'mm',
-                           ($data->getFormat()!==null ? $data->getFormat() : 'A4')
-                           );
-                           
-            $pdf->SetAutoPageBreak( true );
-
-            $pdf->SetTitle($data->getTitle()!==null ? $data->getTitle() : '');
-            $pdf->SetSubject($data->getSubject()!==null ? $data->getSubject() : '');
-            $pdf->SetAuthor($data->getAuthor()!==null ? $data->getAuthor() : '');
-            $pdf->SetCreator($data->getCreator()!==null ? $data->getCreator() : '');
-            $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-            $pdf->setPrintHeader(false);
-            $pdf->setPrintFooter(false);
-
-            $pdf->AddPage( );
-            $text=utf8_decode(htmlspecialchars_decode($data->getText()));
-        
-            $pdf->WriteHTML($text);
-
-            // stores the pdf binary data to $result
-            $result = $pdf->Output( 
-                                   '',
-                                   'S'
-                                   ); 
+            $result = FSPdf::createPdf($data);
 
             // writes the file to filesystem
             $file = fopen(
                           $this->config['DIR']['files'].'/'.$filePath,
                           'w'
                           );
+
             if ($file){
                 fwrite( 
                        $file,
@@ -274,6 +278,7 @@ class FSPdf
             $pdfFile = new File( );
             $pdfFile->setStatus(201);
             $pdfFile->setAddress( $filePath );
+            $pdfFile->setMimeType("application/pdf");
             
             if (file_exists($this->config['DIR']['files'].'/'.$filePath)){
                 $pdfFile->setFileSize( filesize( $this->config['DIR']['files'].'/'.$filePath ) );
@@ -283,7 +288,166 @@ class FSPdf
             $this->_app->response->setBody( File::encodeFile($pdfFile) );
         }
     }
+    
+    public function PostPdfFromFile($folder,$type, $a, $b, $c, $file)
+    {
+                
+        $name = sha1($type.'/'.$a.'/'.$b.'/'.$c.'/'.$file);
+        $targetPath = FSPdf::generateFilePath( 
+                                            $folder,
+                                            $name
+                                            );
+                                            
+        if (!file_exists( $this->config['DIR']['files'].'/'.$targetPath ) ){
+            $sourcePath = implode( '/',array_slice(array($type,$a,$b,$c,$file),0));
+            
+            FSPdf::generatepath( $this->config['DIR']['files'].'/'.dirname( $targetPath ) );
+            $body = file_get_contents($this->config['DIR']['files'].'/'.$sourcePath);
+            
+            $data = new Pdf();
+            $data->setText($body);
+            $result = FSPdf::createPdf($data);
+            
+            // writes the file to filesystem
+            $file = fopen(
+                          $this->config['DIR']['files'].'/'.$targetPath,
+                          'w'
+                          );
 
+            if ($file){
+                fwrite( 
+                       $file,
+                       $result
+                       );
+                fclose( $file );
+              
+            }else{
+                $fileObject = new File( );
+                $fileObject->addMessage("Datei konnte nicht im Dateisystem angelegt werden.");
+                $fileObject->setStatus(409);
+                Logger::Log( 
+                        'POST postPdf failed',
+                        LogLevel::ERROR
+                        );
+                $this->_app->response->setStatus( 409 );
+                $this->_app->response->setBody( File::encodeFile( $fileObject ) );
+                $this->_app->stop();
+            }
+        }
+        
+        $this->_app->response->setStatus( 201 );
+        {
+            $pdfFile = new File( );
+            $pdfFile->setStatus(201);
+            $pdfFile->setAddress( $targetPath );
+            $pdfFile->setMimeType("application/pdf");
+            
+            if (file_exists($this->config['DIR']['files'].'/'.$targetPath)){
+                $pdfFile->setFileSize( filesize( $this->config['DIR']['files'].'/'.$targetPath ) );
+                $hash = sha1(file_get_contents($this->config['DIR']['files'].'/'.$targetPath));   
+                $pdfFile->setHash( $hash );
+            }
+            $this->_app->response->setBody( File::encodeFile($pdfFile) );
+        }
+    }
+    
+    public function PostPdfFromFile2($folder)
+    {
+        // convert all file objects to pdf's
+    }
+    
+    public function PostPdfFromFile3($folder)
+    {
+        // merge all file objects to one pdf
+        $body = $this->_app->request->getBody( );
+        $files = File::decodeFile($body);
+        
+        if (!is_array($files)) $files = array($files);
+        
+        $hashArray = array( );
+        foreach ( $files as $part ){
+            if ( $part->getBody( ) !== null ){
+                $hashArray[] = $part->getBody( );
+                
+            } else 
+                $hashArray[] = $part->getAddress( ) . $part->getDisplayName( );
+        }
+        
+        $name = sha1( implode( 
+                              "\n",
+                              $hashArray
+                              ) );
+
+        $targetPath = FSPdf::generateFilePath( 
+                                            $folder,
+                                            $name
+                                            );
+                                            
+        if (true || !file_exists( $this->config['DIR']['files'].'/'.$targetPath ) ){
+        
+            $body="";
+            foreach($files as $part){
+                if ( $part->getBody( ) !== null ){
+                    // use body
+                    $body.=base64_decode( $part->getBody( ) ).'<br>';
+                } else {
+                    $file = $this->config['DIR']['files']. '/' . $part->getAddress( );
+                    if (file_exists($file)){
+                        $body.= file_get_contents($file).'<br>';
+                    } else {
+                        // failure
+                    }
+                }
+            }
+        ///echo $body;
+            FSPdf::generatepath( $this->config['DIR']['files'].'/'.dirname( $targetPath ) );
+            
+            $data = new Pdf();
+            $data->setText($body);
+            $result = FSPdf::createPdf($data);
+            
+            // writes the file to filesystem
+            $file = fopen(
+                          $this->config['DIR']['files'].'/'.$targetPath,
+                          'w'
+                          );
+
+            if ($file){
+                fwrite( 
+                       $file,
+                       $result
+                       );
+                fclose( $file );
+              
+            }else{
+                $fileObject = new File( );
+                $fileObject->addMessage("Datei konnte nicht im Dateisystem angelegt werden.");
+                $fileObject->setStatus(409);
+                Logger::Log( 
+                        'POST postPdf failed',
+                        LogLevel::ERROR
+                        );
+                $this->_app->response->setStatus( 409 );
+                $this->_app->response->setBody( File::encodeFile( $fileObject ) );
+                $this->_app->stop();
+            }
+        }
+        
+        $this->_app->response->setStatus( 201 );
+        {
+            $pdfFile = new File( );
+            $pdfFile->setStatus(201);
+            $pdfFile->setAddress( $targetPath );
+            $pdfFile->setMimeType("application/pdf");
+            
+            if (file_exists($this->config['DIR']['files'].'/'.$targetPath)){
+                $pdfFile->setFileSize( filesize( $this->config['DIR']['files'].'/'.$targetPath ) );
+                $hash = sha1(file_get_contents($this->config['DIR']['files'].'/'.$targetPath));   
+                $pdfFile->setHash( $hash );
+            }
+            $this->_app->response->setBody( File::encodeFile($pdfFile) );
+        }
+    }
     /**
      * Returns a file.
      *
@@ -293,13 +457,13 @@ class FSPdf
      * @param string $hash The hash of the file which should be returned.
      * @param string $filename A freely chosen filename of the returned file.
      */
-    public function getPdfDocument( 
+    public function getPdfDocument( $folder,
                                     $a, $b, $c, $file,
                                     $filename
                                     )
     {
 
-        $path = array(FSPdf::getBaseDir( ),$a,$b,$c,$file);
+        $path = array($folder,$a,$b,$c,$file);
 
         $filePath = implode( 
                             '/',
@@ -342,9 +506,9 @@ class FSPdf
      *
      * @param string $hash The hash of the requested file.
      */
-    public function getPdfData( $a, $b, $c, $file )
+    public function getPdfData( $folder,$a, $b, $c, $file )
     {
-        $path = array(FSPdf::getBaseDir( ),$a,$b,$c,$file);
+        $path = array($folder,$a,$b,$c,$file);
 
         $filePath = implode( 
                             '/',
@@ -362,6 +526,7 @@ class FSPdf
             $file->setAddress( $filePath );
             $file->setFileSize( filesize( $this->config['DIR']['files'].'/'.$filePath ) );
             $file->setHash( sha1_file( $this->config['DIR']['files'].'/'.$filePath ) );
+            $file->setMimeType("application/pdf");
             $this->_app->response->setBody( File::encodeFile( $file ) );
             $this->_app->response->setStatus( 200 );
             $this->_app->stop( );
@@ -381,9 +546,9 @@ class FSPdf
      *
      * @param string $hash The hash of the file which should be deleted.
      */
-    public function deletePdf( $a, $b, $c, $file )
+    public function deletePdf( $folder,$a, $b, $c, $file )
     {
-        $path = array(FSPdf::getBaseDir( ),$a,$b,$c,$file);
+        $path = array($folder,$a,$b,$c,$file);
 
         $filePath = implode( 
                             '/',
@@ -401,6 +566,7 @@ class FSPdf
             $file->setAddress( $filePath );
             $file->setFileSize( filesize( $this->config['DIR']['files'] . '/' . $filePath ) );
             $file->setHash( sha1_file( $this->config['DIR']['files'] . '/' . $filePath ) );
+            $file->setMimeType("application/pdf");
 
             // removes the file
             unlink( $this->config['DIR']['files'] . '/' . $filePath );
@@ -642,6 +808,37 @@ class FSPdf
             
         } else 
             return false;
+    }
+    
+    public static function createPdf($data)
+    {
+        $pdf = new TCPDF( 
+                       ($data->getOrientation()!==null ? $data->getOrientation() : 'P'),
+                       'mm',
+                       ($data->getFormat()!==null ? $data->getFormat() : 'A4')
+                       );
+                       
+        $pdf->SetAutoPageBreak( true );
+
+        $pdf->SetTitle($data->getTitle()!==null ? $data->getTitle() : '');
+        $pdf->SetSubject($data->getSubject()!==null ? $data->getSubject() : '');
+        $pdf->SetAuthor($data->getAuthor()!==null ? $data->getAuthor() : '');
+        $pdf->SetCreator($data->getCreator()!==null ? $data->getCreator() : '');
+        $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
+        $pdf->setPrintHeader(false);
+        $pdf->setPrintFooter(false);
+
+        $pdf->AddPage( );
+        $text=utf8_decode(htmlspecialchars_decode($data->getText()));
+    
+        $pdf->WriteHTML($text);
+
+        // stores the pdf binary data to $result
+        $result = $pdf->Output( 
+                               '',
+                               'S'
+                               ); 
+        return $result;
     }
 }
 

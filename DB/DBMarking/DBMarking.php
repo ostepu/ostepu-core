@@ -591,7 +591,7 @@ class DBMarking
             $this->_app->response->setBody( Marking::encodeMarking( $res ) );
     }
 
-    public function get( 
+    public function get(
                         $functionName,
                         $sqlFile,
                         $userid,

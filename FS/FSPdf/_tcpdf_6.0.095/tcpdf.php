@@ -16371,6 +16371,8 @@ class TCPDF {
 		// get CSS array defined at previous call
 		$matches = array();
         
+        $html=str_replace("\n",'<br>',$html);
+        
 		if (preg_match_all('/<cssarray>([^\<]*)<\/cssarray>/isU', $html, $matches) > 0) {
 			if (isset($matches[1][0])) {
 				$css = array_merge($css, json_decode($this->unhtmlentities($matches[1][0]), true));

@@ -65,7 +65,7 @@ class LExerciseType
     public function __construct()
     {
         // runs the CConfig
-        $com = new CConfig( LExerciseType::getPrefix( ) );
+        $com = new CConfig( LExerciseType::getPrefix( ), dirname(__FILE__) );
 
         // runs the LExerciseType
         if ( $com->used( ) ) return;

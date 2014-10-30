@@ -1,3 +1,11 @@
+<?php
+if (isset($CourseSettingsNotificationElements)) {
+    foreach ($CourseSettingsNotificationElements as $notificationElement) {
+        print $notificationElement;
+    }
+}
+?>
+
 <input type="hidden" name="action" value="CourseSettings">
 <div class="content-element">
     <div class="content-header">

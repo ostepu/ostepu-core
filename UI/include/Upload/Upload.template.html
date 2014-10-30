@@ -161,6 +161,14 @@
                     <input type="file"
                            class="button left"
                            name="file<?php echo $exercise['id']; ?>">
+                    <?php if (isset($exercise['fileTypes'])){ 
+                            $typesText = array();
+                            foreach ($exercise['fileTypes'] as $type)
+                                $typesText[] = $type['text']; 
+                            $typesText = implode(', ',$typesText);?>
+                        <div><?php echo $typesText; ?></div>
+                    <?php } ?>
+
                     <?php } ?>
                     <input type="hidden"
                            name="exercises[<?php echo $key; ?>][exerciseID]"

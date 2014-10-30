@@ -1,17 +1,28 @@
+<?php
+if (isset($RevokeRightsNotificationElements)) {
+    foreach ($RevokeRightsNotificationElements as $notificationElement) {
+        print $notificationElement;
+    }
+}
+?>
+
 <input type="hidden" name="action" value="RevokeRights">
 <div class="content-element">
     <div class="content-header">
         <div class="content-title left uppercase">Nutzer entfernen</div>
         <button class="text-button info-color bold right">entfernen</button>
     </div>
-
     <div class="content-body-wrapper">
         <div class="content-body left">
             <div class="content-description">
                 Wählen Sie die Person aus, welche aus der Veranstaltung entfernt werden soll.
+                
             </div>
-            <label class="form-field left label bold" for="lecturerRightsPerson">Person auswählen:</label>
-            <select class="form-field left text-input" name="userID" id="lecturerRightsPerson" size="10">
+            <label class="form-field left label bold" for="lecturerRevokeRightsPerson">Person auswählen:</label>
+            <div class="left" name="RevokeRightsSortUsers" id="RevokeRightsSortUsers">
+                <a class="info-color" href="?cid=<?php echo $user['courses'][0]['course']['id']; ?>&sortUsers=userName#RevokeRightsSortUsers">Nutzername</a>
+                <a class="info-color" href="?cid=<?php echo $user['courses'][0]['course']['id']; ?>&sortUsers=lastName#RevokeRightsSortUsers">Nachname</a><br>
+            <select class="form-field left text-input" name="userID" id="lecturerRevokeRightsPerson" size="10">
                 <?php
                     $studentsArea = '<optgroup label="Studenten">';
                     $tutorsArea = '<optgroup label="Tutoren">';
@@ -22,11 +33,16 @@
                     $emptyTutors = true;
                     $emptyLecturers = true;
                     $emptyAdmins = true;
+                    $rights = array();
 
                     if(!empty($users)) {
 
                         foreach ($users as $user) {
-
+                            if (!isset($rights[$user['statusName']])){
+                                $rights[$user['statusName']] = 1;
+                            } else
+                                $rights[$user['statusName']]++;
+                                
                             if ($user['statusName'] == "student") {
 
                                 $studentsArea .= '<option value="' . $user['id'] . '">' . $user['firstName'] . " ";
@@ -83,6 +99,14 @@
                     }
                 ?>
             </select>
+            </div>
+            
+            <div class="left">
+            <?php foreach(CourseStatus::getStatusDefinition() as $statusType){
+                $count = (isset($rights[$statusType]) ? $rights[$statusType] : 0); ?>
+                <label><?php echo $statusType; ?>: <?php echo $count; ?></label><br>                     
+            <?php } ?>
+            </div>
         </div>
     </div> <!-- end: content-body -->
 </div> <!-- end: content-wrapper -->

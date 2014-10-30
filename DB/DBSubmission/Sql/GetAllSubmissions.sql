@@ -18,6 +18,7 @@ select
     F.F_fileSize,
     F.F_comment,
     F.F_hash,
+    F.F_mimeType,
     S.U_id,
     S.S_id,
     S.F_id_file,
@@ -33,4 +34,20 @@ select
 from
     Submission S
     join File F on (S.F_id_file = F.F_id)
-left join SelectedSubmission SS on (S.S_id = SS.S_id_selected)
+<?php echo (!isset($selected) ? 'left' : ''); ?> join SelectedSubmission SS on (S.S_id = SS.S_id_selected)
+
+<?php if (isset($begin) && $begin!='' && isset($end) && $end!=''){ ?>
+    where
+    <?php if (isset($begin) && $begin!=''){ ?>
+        S.S_date>='<?php echo $begin; ?>' 
+    <?php } ?>
+
+    <?php if (isset($begin) && $begin!='' && isset($end) && $end!=''){ ?>
+        and 
+    <?php } ?>
+
+    <?php if (isset($end) && $end!=''){ ?>
+        S.S_date<='<?php echo $end; ?>'
+    <?php } ?>
+
+<?php } ?>

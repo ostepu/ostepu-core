@@ -247,13 +247,22 @@ class DBSubmission
 
         // GET GetAllSubmissions
         $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '(/submission)(/)',
+                         '/' . $this->getPrefix( ) . '(/date/begin/:begin/end/:end)(/)',
                          array( 
                                $this,
                                'getAllSubmissions'
                                )
                          );
-
+                         
+        // GET GetSelectedAllSubmissions
+        $this->_app->get( 
+                         '/' . $this->getPrefix( ) . '/selected(/date/begin/:begin/end/:end)(/)',
+                         array( 
+                               $this,
+                               'getSelectedAllSubmissions'
+                               )
+                         );
+                         
         // GET GetSelectedExerciseSubmissions
         $this->_app->get( 
                          '/' . $this->getPrefix( ) . '/exercise/:eid/selected(/)',
@@ -307,12 +316,7 @@ class DBSubmission
         $this->get( 
                    'GetExerciseSubmissions',
                    dirname(__FILE__) . '/Sql/GetExerciseSubmissions.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $mid ) ? $mid : ''
+                   array("eid"=>$eid)
                    );
     }
 
@@ -511,12 +515,7 @@ class DBSubmission
     public function get( 
                         $functionName,
                         $sqlFile,
-                        $userid,
-                        $courseid,
-                        $esid,
-                        $eid,
-                        $suid,
-                        $mid,
+                        $params=array(),
                         $singleResult = false,
                         $checkSession = true
                         )
@@ -527,28 +526,14 @@ class DBSubmission
                     );
 
         // checks whether incoming data has the correct data type
-        DBJson::checkInput( 
-                           $this->_app,
-                           $userid == '' ? true : ctype_digit( $userid ),
-                           $courseid == '' ? true : ctype_digit( $courseid ),
-                           $esid == '' ? true : ctype_digit( $esid ),
-                           $eid == '' ? true : ctype_digit( $eid ),
-                           $suid == '' ? true : ctype_digit( $suid ),
-                           $mid == '' ? true : ctype_digit( $mid )
-                           );
+        foreach ($params as &$param)
+            $param = DBJson::mysql_real_escape_string( $param );
 
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
                                               $sqlFile,
-                                              array( 
-                                                    'userid' => $userid,
-                                                    'courseid' => $courseid,
-                                                    'esid' => $esid,
-                                                    'eid' => $eid,
-                                                    'suid' => $suid,
-                                                    'mid' => $mid
-                                                    ),
+                                              $params,
                                               $checkSession
                                               );
 
@@ -592,18 +577,20 @@ class DBSubmission
      * Called when this component receives an HTTP GET request to
      * /submission/submission(/) or /submission(/).
      */
-    public function getAllSubmissions( )
+    public function getAllSubmissions( $begin = null, $end=null,$selected = null)
     {
         $this->get( 
                    'GetAllSubmissions',
                    dirname(__FILE__) . '/Sql/GetAllSubmissions.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $mid ) ? $mid : ''
+                   array("selected"=>$selected,"begin"=>$begin,"end"=>$end),
+                   false,
+                   false
                    );
+    }
+    
+    public function getSelectedAllSubmissions( $begin = null, $end=null)
+    {
+        $this->getAllSubmissions($begin,$end,'1');
     }
 
     /**
@@ -624,12 +611,7 @@ class DBSubmission
         $this->get( 
                    'GetGroupSubmissions',
                    dirname(__FILE__) . '/Sql/GetGroupSubmissions.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $mid ) ? $mid : ''
+                   array("userid"=>$userid,"esid"=>$esid)
                    );
     }
 
@@ -651,12 +633,7 @@ class DBSubmission
         $this->get( 
                    'GetGroupSelectedSubmissions',
                    dirname(__FILE__) . '/Sql/GetGroupSelectedSubmissions.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $mid ) ? $mid : ''
+                   array("userid"=>$userid,"esid"=>$esid)
                    );
     }
 
@@ -678,12 +655,7 @@ class DBSubmission
         $this->get( 
                    'GetGroupSelectedCourseSubmissions',
                    dirname(__FILE__) . '/Sql/GetGroupSelectedCourseSubmissions.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $mid ) ? $mid : ''
+                   array("userid"=>$userid,"courseid"=>$courseid)
                    );
     }
 
@@ -704,12 +676,7 @@ class DBSubmission
         $this->get( 
                    'GetGroupCourseSubmissions',
                    dirname(__FILE__) . '/Sql/GetGroupCourseSubmissions.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $mid ) ? $mid : ''
+                   array("userid"=>$userid,"courseid"=>$courseid)
                    );
     }
 
@@ -731,12 +698,7 @@ class DBSubmission
         $this->get( 
                    'GetGroupExerciseSubmissions',
                    dirname(__FILE__) . '/Sql/GetGroupExerciseSubmissions.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $mid ) ? $mid : ''
+                   array("userid"=>$userid,"eid"=>$eid)
                    );
     }
 
@@ -758,12 +720,7 @@ class DBSubmission
         $this->get( 
                    'GetGroupSelectedExerciseSubmissions',
                    dirname(__FILE__) . '/Sql/GetGroupSelectedExerciseSubmissions.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $mid ) ? $mid : ''
+                   array("userid"=>$userid,"eid"=>$eid)
                    );
     }
 
@@ -780,12 +737,7 @@ class DBSubmission
         $this->get( 
                    'GetSubmission',
                    dirname(__FILE__) . '/Sql/GetSubmission.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $mid ) ? $mid : '',
+                   array("suid"=>$suid),
                    true
                    );
     }
@@ -804,12 +756,7 @@ class DBSubmission
         $this->get( 
                    'GetSheetSubmissions',
                    dirname(__FILE__) . '/Sql/GetSheetSubmissions.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $mid ) ? $mid : ''
+                   array("esid"=>$esid)
                    );
     }
 
@@ -827,12 +774,7 @@ class DBSubmission
         $this->get( 
                    'GetSelectedSheetSubmissions',
                    dirname(__FILE__) . '/Sql/GetSelectedSheetSubmissions.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $mid ) ? $mid : ''
+                   array("esid"=>$esid)
                    );
     }
 
@@ -850,12 +792,7 @@ class DBSubmission
         $this->get( 
                    'GetSelectedExerciseSubmissions',
                    dirname(__FILE__) . '/Sql/GetSelectedExerciseSubmissions.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $mid ) ? $mid : ''
+                   array("eid"=>$eid)
                    );
     }
 
@@ -877,12 +814,7 @@ class DBSubmission
         $this->get( 
                    'GetUserExerciseSubmissions',
                    dirname(__FILE__) . '/Sql/GetUserExerciseSubmissions.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $mid ) ? $mid : ''
+                   array("userid"=>$userid,"eid"=>$eid)
                    );
     }
     
@@ -904,12 +836,7 @@ class DBSubmission
         $this->get( 
                    'GetUserSheetSubmissions',
                    dirname(__FILE__) . '/Sql/GetUserSheetSubmissions.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $mid ) ? $mid : ''
+                   array("userid"=>$userid,"esid"=>$esid)
                    );
     }
 
@@ -927,12 +854,7 @@ class DBSubmission
         $this->get( 
                    'GetCourseSubmissions',
                    dirname(__FILE__) . '/Sql/GetCourseSubmissions.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $mid ) ? $mid : ''
+                   array("courseid"=>$courseid)
                    );
     }
     
@@ -947,12 +869,7 @@ class DBSubmission
         $this->get( 
                    'GetExistsPlatform',
                    dirname(__FILE__) . '/Sql/GetExistsPlatform.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $mid ) ? $mid : '',
+                   array("userid"=>$userid,"courseid"=>$courseid),
                    true,
                    false
                    );
@@ -1069,6 +986,4 @@ class DBSubmission
             $this->_app->response->setBody( Platform::encodePlatform( $res ) );
     }
 }
-
- 
 ?>

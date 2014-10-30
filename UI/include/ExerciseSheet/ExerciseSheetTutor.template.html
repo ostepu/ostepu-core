@@ -14,6 +14,13 @@
                         (abgelaufen)
                     <?php endif; ?>
             </div>
+            <div class="info-color bold footer-text">
+                    <?php if (isset($sheet['status'])){
+                                $types = Marking::getStatusDefinition();
+                                foreach ($sheet['status'] as $key => $value){ ?>
+                                <?php echo $value.' '.$types[$key]['longName'];?>
+                    <?php }} ?>
+            </div>
             <div class="critical-color bold right">
                 <?php echo date('d.m.Y  -  H:i', $sheet['endDate']); ?>
             </div>
@@ -84,6 +91,17 @@
                     <li class="footer-text"><?php echo $sheet['courseUserCount']; ?> Studenten</li>
                     <li class="footer-text"><?php echo $sheet['selectedSubmissions']; ?> Einsendungen</li>
                     <li class="footer-text"><?php echo $sheet['tutorMarkings']; ?> Korrekturaufträge</li>
+                    <br>
+                    <?php if (isset($sheet['status'])){ ?>
+                    <li class="footer-text bold">Korrekturen:</li>
+                    <?php $types = Marking::getStatusDefinition();
+                    foreach ($sheet['status'] as $key => $value){ ?>
+                    <li class="footer-text">
+                    <button name="downloadCSV_<?php echo $key;?>" value="<?php echo $sheet['id']; ?>" class="text-button body-option-color footer-text" style="padding-left:0px">
+                    <?php echo $value.' '.$types[$key]['longName'];?> 
+                    </button></li>
+                    <?php }} ?>
+                    
             </div>
             <div class="content-body right">
                 <ol class="body-options body-option-color">

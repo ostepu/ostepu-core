@@ -83,7 +83,7 @@ class CConfig
         $scriptName = $_SERVER['SCRIPT_NAME'];
         $requestUri = $_SERVER['REQUEST_URI'];
         $path = str_replace('?' . (isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : ''), '', substr_replace($requestUri, '', 0, strlen((strpos($requestUri, $scriptName) !== false ? $scriptName : str_replace('\\', '', dirname($scriptName))))));
-    
+
     if ( strpos($path,'/control') === false  &&  strpos( 
                 $path,
                 '/info'
@@ -163,9 +163,9 @@ class CConfig
     
     public function instruction( $pre = array())
     {
-        $path = (isset($this->callPath) ? $this->callPath.'/' : '');
+        $path = ($this->callPath!=null ? $this->callPath.'/' : '');
         $path = str_replace("\\",'/',$path);
-        
+
         if (file_exists($path.'Component.json')){
             $this->_app->response->setStatus( 200 );
             $data = json_decode(file_get_contents($path.'Component.json'),true);
@@ -178,9 +178,9 @@ class CConfig
     
     public function commands( $pre = array() )
     {
-        if (file_exists($this->callPath.'/'.'Commands.json')){
+        if (file_exists(($this->callPath!=null ? $this->callPath.'/':'').'Commands.json')){
             $this->_app->response->setStatus( 200 );
-            $commands = json_decode(file_get_contents($this->callPath.'/'.'Commands.json'), true);
+            $commands = json_decode(file_get_contents(($this->callPath!=null ? $this->callPath.'/':'').'Commands.json'), true);
             $commands[] = array('method' => 'get', 'path' => '(/:pre+)/info/commands(/)');
             $commands[] = array('method' => 'get', 'path' => '(/:pre+)/info/links(/)');
             $commands[] = array('method' => 'get', 'path' => '(/:pre+)/info/:language(/)');

@@ -45,7 +45,7 @@
                             print $submission['submissionId'];
                             print '" value="';
                             print $submission['submissionId'] . '"/>';
-                            print $submission['submissionId'];
+                            print $submission['submissionId'].(isset($submission['user']['userName']) ? '('.$submission['user']['userName'].')' : '');
                             print '<br />';
                         endforeach;
                         ?>

@@ -65,7 +65,7 @@ class LCondition
     public function __construct()
     {
         // runs the CConfig
-        $com = new CConfig( LCondition::getPrefix( ) );
+        $com = new CConfig( LCondition::getPrefix( ), dirname(__FILE__) );
 
         // runs the LCondition
         if ( $com->used( ) ) return;

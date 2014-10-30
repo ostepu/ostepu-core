@@ -26,6 +26,8 @@ include_once '../Assistants/Logger.php';
          * @var array An array of elements that make up the pages contents
          */
         private $contentElements;
+        
+        public static $anchorName=0;
 
         /**
          * @var array defines all links in the document head
@@ -84,10 +86,11 @@ include_once '../Assistants/Logger.php';
 
             // define form
             if ($fileupload == false) {
-                $formstart = "<form action=\"{$target}\" method=\"POST\">";
+                $formstart = "<form id=\"".md5(HTMLWrapper::$anchorName)."\" name=\"".md5(HTMLWrapper::$anchorName)."\" action=\"{$target}#".md5(HTMLWrapper::$anchorName)."\" method=\"POST\">";
             } else {
-                $formstart = "<form action=\"{$target}\" method=\"POST\" enctype=\"multipart/form-data\">";
+                $formstart = "<form id=\"".md5(HTMLWrapper::$anchorName)."\" name=\"".md5(HTMLWrapper::$anchorName)."\" action=\"{$target}#".md5(HTMLWrapper::$anchorName)."\" method=\"POST\" enctype=\"multipart/form-data\">";
             }
+            HTMLWrapper::$anchorName++;
             $formend = "</form>";
 
             // insert formtags before and after the given range

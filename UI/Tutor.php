@@ -8,16 +8,27 @@
  * @author Ralf Busch
  */
 
-include_once 'include/Boilerplate.php';
+include_once dirname(__FILE__).'/include/Boilerplate.php';
+include_once dirname(__FILE__).'/../Assistants/Structures.php';
 
 if (isset($_POST['downloadAttachments'])) {
     downloadAttachmentsOfSheet($_POST['downloadAttachments']);
 }
  
+$types = Marking::getStatusDefinition();
+$status = null;
+foreach ($types as $type){
+    if (isset($_POST['downloadCSV_'.$type['id']])){
+        $status = $type['id'];
+        $_POST['downloadCSV']=$_POST['downloadCSV_'.$type['id']];
+        break;
+    }
+}
+
 if (isset($_POST['downloadCSV'])) {
     $sid = cleanInput($_POST['downloadCSV']);
-    $URI = $logicURI . '/tutor/user/' . $uid . '/exercisesheet/' . $sid;
-
+    $URI = $logicURI . '/tutor/user/' . $uid . '/exercisesheet/' . $sid.(isset($status) ? '/status/'.$status : '');
+//echo $URI;return;
     $csvFile = http_get($URI, true);
     $csvFile = json_decode($csvFile, true);
 

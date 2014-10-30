@@ -65,7 +65,7 @@ class LGroup
     public function __construct()
     {
         // runs the CConfig
-        $com = new CConfig( LGroup::getPrefix( ) );
+        $com = new CConfig( LGroup::getPrefix( ), dirname(__FILE__) );
 
         // runs the LGroup
         if ( $com->used( ) ) return;

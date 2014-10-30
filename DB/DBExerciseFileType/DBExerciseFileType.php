@@ -171,7 +171,16 @@ class DBExerciseFileType
                                'getExerciseExerciseFileTypes'
                                )
                          );
-
+                         
+        // GET GetSheetExerciseFileTypes
+        $this->_app->get( 
+                         '/' . $this->getPrefix( ) . '/exercisesheet/:esid(/)',
+                         array( 
+                               $this,
+                               'getSheetExerciseFileTypes'
+                               )
+                         );
+                         
         // GET GetAllExerciseFileTypes
         $this->_app->get( 
                          '/' . $this->getPrefix( ) . '(/exercisefiletype)(/)',
@@ -512,6 +521,28 @@ class DBExerciseFileType
         $this->get( 
                    'GetExerciseExerciseFileTypes',
                    dirname(__FILE__) . '/Sql/GetExerciseExerciseFileTypes.sql',
+                   isset( $userid ) ? $userid : '',
+                   isset( $courseid ) ? $courseid : '',
+                   isset( $esid ) ? $esid : '',
+                   isset( $eid ) ? $eid : '',
+                   isset( $etid ) ? $etid : '',
+                   isset( $eftid ) ? $eftid : ''
+                   );
+    }
+    
+     /**
+     * Returns all exercise-sheet exercise file types.
+     *
+     * Called when this component receives an HTTP GET request to
+     * exercisefiletype/exercisesheet/$esid(/).
+     *
+     * @param string $esid The id of the exercise-sheet that should be returned.
+     */
+    public function getSheetExerciseFileTypes( $eid )
+    {
+        $this->get( 
+                   'GetSheetExerciseFileTypes',
+                   dirname(__FILE__) . '/Sql/GetSheetExerciseFileTypes.sql',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
                    isset( $esid ) ? $esid : '',

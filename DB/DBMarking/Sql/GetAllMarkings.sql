@@ -27,7 +27,8 @@ SELECT
     F.F_timeStamp,
     F.F_fileSize,
     F.F_comment,
-    F.F_hash
+    F.F_hash,
+    F.F_mimeType
     <?php if ($sub==1){ ?>
     ,
     F2.F_id as F_id2,
@@ -37,6 +38,7 @@ SELECT
     F2.F_fileSize as F_fileSize2,
     F2.F_comment as F_comment2,
     F2.F_hash as F_hash2,
+    F2.F_mimeType as F_mimeType2,
     S.U_id as U_id2,
     S.S_id as S_id2,
     S.F_id_file as F_id_file2,

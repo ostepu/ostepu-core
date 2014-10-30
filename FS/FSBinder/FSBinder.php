@@ -14,6 +14,7 @@ include_once ( dirname(__FILE__) . '/../../Assistants/CConfig.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/Structures/Platform.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/Structures/File.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/MimeReader.php' );
 
 \Slim\Slim::registerAutoloader( );
 
@@ -190,6 +191,7 @@ class FSBinder
         $fileobject->setAddress( $filePath );
         $fileobject->setFileSize( filesize( $this->config['DIR']['files'].'/'.$filePath ) );
         $fileobject->setHash( sha1_file( $this->config['DIR']['files'].'/'.$filePath ) );
+        $fileobject->setMimeType(MimeReader::get_mime($this->config['DIR']['files'].'/'.$filePath));
 
         $this->_app->response->setBody( File::encodeFile( $fileobject ) );
         $this->_app->response->setStatus( 201 );
@@ -266,6 +268,7 @@ class FSBinder
             $file->setAddress( $filePath );
             $file->setFileSize( filesize( $this->config['DIR']['files'].'/'.$filePath ) );
             $file->setHash( sha1_file( $this->config['DIR']['files'].'/'.$filePath ) );
+            $file->setMimeType(MimeReader::get_mime($this->config['DIR']['files'].'/'.$filePath));
             $this->_app->response->setBody( File::encodeFile( $file ) );
             $this->_app->response->setStatus( 200 );
             $this->_app->stop( );
@@ -306,6 +309,7 @@ class FSBinder
             $file->setAddress( $filePath );
             $file->setFileSize( filesize( $this->config['DIR']['files'] . '/' . $filePath ) );
             $file->setHash( sha1_file( $this->config['DIR']['files'] . '/' . $filePath ) );
+            $file->setMimeType(MimeReader::get_mime($this->config['DIR']['files'].'/'.$filePath));
 
             // removes the file
             unlink( $this->config['DIR']['files'] . '/' . $filePath );

@@ -263,6 +263,7 @@ class FSZip
             $zipFile = new File( );
             $zipFile->setHash( $hash );
             $zipFile->setAddress( $filePath );
+            $zipFile->setMimeType("application/zip");
             
             if (file_exists($this->config['DIR']['files'].'/'.$filePath))
                 $zipFile->setFileSize( filesize( $this->config['DIR']['files'].'/'.$filePath ) );
@@ -348,6 +349,7 @@ class FSZip
             $file->setAddress( $filePath );
             $file->setFileSize( filesize( $this->config['DIR']['files'].'/'.$filePath ) );
             $file->setHash( sha1_file( $this->config['DIR']['files'].'/'.$filePath ) );
+            $file->setMimeType("application/zip");
             $this->_app->response->setBody( File::encodeFile( $file ) );
             $this->_app->response->setStatus( 200 );
             $this->_app->stop( );
@@ -387,6 +389,7 @@ class FSZip
             $file->setAddress( $filePath );
             $file->setFileSize( filesize( $this->config['DIR']['files'] . '/' . $filePath ) );
             $file->setHash( sha1_file( $this->config['DIR']['files'] . '/' . $filePath ) );
+            $file->setMimeType("application/zip");
 
             // removes the file
             unlink( $this->config['DIR']['files'] . '/' . $filePath );
