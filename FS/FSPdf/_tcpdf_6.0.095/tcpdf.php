@@ -16372,6 +16372,7 @@ class TCPDF {
 		$matches = array();
         
         $html=str_replace("\n",'<br>',$html);
+        $html=str_replace("\t",'    ',$html);
         
 		if (preg_match_all('/<cssarray>([^\<]*)<\/cssarray>/isU', $html, $matches) > 0) {
 			if (isset($matches[1][0])) {
