@@ -20,7 +20,7 @@ a {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 607px;
+    //width: 607px;
     display: inline;
 }
 

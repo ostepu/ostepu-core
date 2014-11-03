@@ -9,17 +9,20 @@
             if (isset($courses[0])) {
                 foreach ($courses as $course): 
             ?>
-                    <span class="left medium bold label new-line">
+                    
+                    <span class="left medium label bold new-line">
                         <?php print $statusName[$course['status']]; ?>
                     </span>
-                    <span class="left form-text course-list">
-                        <?php print $course['course']['name']; ?>
-                    </span>
-
+                    
                     <a href="<?php echo $sites[$course['status']], '?cid=', $course['course']['id']; ?>"
-                       class="body-option-color deny-button right form-text">
+                       class="left body-option-color form-text deny-button" style="padding-right: 10px"><!-- form-text-->
                         zur Veranstaltung
                     </a>
+                    
+                    <div class="left course-list form-text" ><!-- -->
+                        <?php print $course['course']['name'];?>
+                    </div>
+                    
             <?php 
                 endforeach; 
             }
