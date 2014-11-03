@@ -10,6 +10,22 @@
  */
 class LArraySorter
 {
+    public static function multidimensional_search($parents, $searched) {
+      if (empty($searched) || empty($parents)) {
+        return false;
+      }
+
+      foreach ($parents as $key => $value) {
+        $exists = true;
+        foreach ($searched as $skey => $svalue) {
+          $exists = ($exists && IsSet($parents[$key][$skey]) && $parents[$key][$skey] == $svalue);
+        }
+        if($exists){ return $key; }
+      }
+
+      return false;
+    } 
+    
     /**
      * Reverses an array.
      *
@@ -41,8 +57,9 @@ class LArraySorter
         foreach ($args as $n => $field) {
             if (is_string($field)) {
                 $tmp = array();
-                foreach ($data as $key => $row)
-                    $tmp[$key] = $row[$field];
+                foreach ($data as $key => $row){
+                    $tmp[$key] = strtolower($row[$field]);
+                }
                 $args[$n] = $tmp;
                 }
         }
