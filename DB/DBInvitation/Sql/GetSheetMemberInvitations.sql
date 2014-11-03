@@ -40,5 +40,5 @@ from
         join
     User U2 ON (I.U_id_leader = U2.U_id)
 where
-    I.ES_id = $esid
+    I.ES_id = '<?php echo $esid; ?>'
         and I.U_id_leader = '<?php echo $userid; ?>'

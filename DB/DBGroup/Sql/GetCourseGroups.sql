@@ -1,9 +1,9 @@
 <?php
 /**
- * @file GetSheetGroups.sql
- * gets a table for output, where all groups for a specific exercisesheet are listed
+ * @file GetCourseGroups.sql
+ * gets a table for output, where all groups for a specific course are listed
  * @author Till Uhlig
- * @param int \$esid a %Exercisesheet identifier
+ * @param int \$courseid a %course identifier
  * @result 
  * - U is the groupleader
  * - U2 are the members of the group without the leader
@@ -44,4 +44,4 @@ FROM
         and U2.U_id <> G.U_id_member
 WHERE
     G.U_id_leader = G2.U_id_leader
-        and G.ES_id = '<?php echo $esid; ?>'
+        and G.C_id = '<?php echo $courseid; ?>'

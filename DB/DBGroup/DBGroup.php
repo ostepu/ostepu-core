@@ -190,6 +190,15 @@ class DBGroup
                                'getSheetGroups'
                                )
                          );
+                         
+        // GET GetCourseGroups
+        $this->_app->get( 
+                         '/' . $this->getPrefix( ) . '/course/:courseid(/)',
+                         array( 
+                               $this,
+                               'getCourseGroups'
+                               )
+                         );
 
         // run Slim
         $this->_app->run( );
@@ -390,12 +399,7 @@ class DBGroup
     public function get( 
                         $functionName,
                         $sqlFile,
-                        $userid,
-                        $courseid,
-                        $esid,
-                        $eid,
-                        $suid,
-                        $mid,
+                        $params=array(),
                         $singleResult = false,
                         $checkSession = true
                         )
@@ -406,28 +410,14 @@ class DBGroup
                     );
 
         // checks whether incoming data has the correct data type
-        DBJson::checkInput( 
-                           $this->_app,
-                           $userid == '' ? true : ctype_digit( $userid ),
-                           $courseid == '' ? true : ctype_digit( $courseid ),
-                           $esid == '' ? true : ctype_digit( $esid ),
-                           $eid == '' ? true : ctype_digit( $eid ),
-                           $suid == '' ? true : ctype_digit( $suid ),
-                           $mid == '' ? true : ctype_digit( $mid )
-                           );
+        foreach ($params as &$param)
+            $param = DBJson::mysql_real_escape_string( $param );
 
         // starts a query, by using a given file
         $result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
                                               $sqlFile,
-                                              array( 
-                                                    'userid' => $userid,
-                                                    'courseid' => $courseid,
-                                                    'esid' => $esid,
-                                                    'eid' => $eid,
-                                                    'suid' => $suid,
-                                                    'mid' => $mid
-                                                    ),
+                                              $params,
                                               $checkSession
                                               );
 
@@ -478,12 +468,7 @@ class DBGroup
         $this->get( 
                    'GetUserGroups',
                    dirname(__FILE__) . '/Sql/GetUserGroups.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $mid ) ? $mid : ''
+                   array("userid"=>$userid)
                    );
     }
 
@@ -498,12 +483,7 @@ class DBGroup
         $this->get( 
                    'GetAllGroups',
                    dirname(__FILE__) . '/Sql/GetAllGroups.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $mid ) ? $mid : ''
+                   array("userid"=>$userid)
                    );
     }
 
@@ -525,12 +505,7 @@ class DBGroup
         $this->get( 
                    'GetUserSheetGroups',
                    dirname(__FILE__) . '/Sql/GetUserSheetGroups.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $mid ) ? $mid : '',
+                   array("userid"=>$userid,"esid"=>$esid),
                    true
                    );
     }
@@ -548,12 +523,18 @@ class DBGroup
         $this->get( 
                    'GetSheetGroups',
                    dirname(__FILE__) . '/Sql/GetSheetGroups.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $mid ) ? $mid : '',
+                   array("esid"=>$esid),
+                   false,
+                   false
+                   );
+    }
+    
+    public function getCourseGroups( $courseid )
+    {
+        $this->get( 
+                   'GetCourseGroups',
+                   dirname(__FILE__) . '/Sql/GetCourseGroups.sql',
+                   array("courseid"=>$courseid),
                    false,
                    false
                    );
@@ -570,12 +551,7 @@ class DBGroup
         $this->get( 
                    'GetExistsPlatform',
                    dirname(__FILE__) . '/Sql/GetExistsPlatform.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $mid ) ? $mid : '',
+                   array(),
                    true,
                    false
                    );

@@ -298,7 +298,23 @@ class DBSubmission
                                'getCourseSubmissions'
                                )
                          );
-
+        // GET GetCourseUserSubmissions
+        $this->_app->get( 
+                         '/' . $this->getPrefix( ) . '/course/:courseid/user/:userid(/)',
+                         array( 
+                               $this,
+                               'getCourseUserSubmissions'
+                               )
+                         );
+        // GET GetSelectedCourseUserSubmissions
+        $this->_app->get( 
+                         '/' . $this->getPrefix( ) . '/course/:courseid/user/:userid/selected(/)',
+                         array( 
+                               $this,
+                               'getSelectedCourseUserSubmissions'
+                               )
+                         );    
+                         
         // run Slim
         $this->_app->run( );
     }
@@ -839,7 +855,31 @@ class DBSubmission
                    array("userid"=>$userid,"esid"=>$esid)
                    );
     }
-
+    
+    public function getCourseUserSubmissions( 
+                                               $courseid,
+                                               $userid
+                                               )
+    {
+        $this->get( 
+                   'GetCourseUserSubmissions',
+                   dirname(__FILE__) . '/Sql/GetCourseUserSubmissions.sql',
+                   array("userid"=>$userid,"courseid"=>$courseid)
+                   );
+    }
+    
+    public function getSelectedCourseUserSubmissions( 
+                                               $courseid,
+                                               $userid
+                                               )
+    {
+        $this->get( 
+                   'GetSelectedCourseUserSubmissions',
+                   dirname(__FILE__) . '/Sql/GetSelectedCourseUserSubmissions.sql',
+                   array("userid"=>$userid,"courseid"=>$courseid)
+                   );
+    }
+    
     /**
      * Returns all course submissions (including overwritten ones) of a given course
      * of a specific exercise.
