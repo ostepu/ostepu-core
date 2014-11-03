@@ -309,8 +309,9 @@ if (isset($_POST['action'])) {
 }
 
 // load mainSettings data from GetSite
-$databaseURI = $getSiteURI . "/group/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
-$group_data = http_get($databaseURI, true);
+$URI = $getSiteURI . "/group/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
+///echo $URI;return;
+$group_data = http_get($URI, true);
 $group_data = json_decode($group_data, true);
 $group_data['filesystemURI'] = $filesystemURI;
 $group_data['uid'] = $uid;
@@ -354,11 +355,15 @@ if ($hasInvitations) {
 }
 
 // wrap all the elements in some HTML and show them on the page
-$w = new HTMLWrapper($h, $groupMembers, $groupManagement, $invitationsFromGroup, $invitationsToGroup);
+$w = new HTMLWrapper($h, $groupMembers, (isset($groupManagement) ? $groupManagement : null), (isset($invitationsFromGroup) ? $invitationsFromGroup : null), (isset($invitationsToGroup) ? $invitationsToGroup : null));
 $w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $groupMembers);
-$w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $groupManagement);
-$w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $invitationsFromGroup);
-$w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $invitationsToGroup);
+
+if (isset($groupManagement))
+    $w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $groupManagement);
+if (isset($invitationsFromGroup))
+    $w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $invitationsFromGroup);
+if (isset($invitationsToGroup))
+    $w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $invitationsToGroup);
 $w->set_config_file('include/configs/config_group.json');
 $w->show();
 
