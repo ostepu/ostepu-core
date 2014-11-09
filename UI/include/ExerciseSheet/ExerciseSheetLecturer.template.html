@@ -161,7 +161,7 @@ if (isset($SheetNotificationElements[$sheet['id']])) {
                         </a>
                     </li>
                 <?php endif; ?>
-                <li><!--<a href="CreateSheet.php">--> <a style="color:#b9b8b8"><s>Serie bearbeiten</s></a></li>
+                <li><a href="CreateSheet.php?cid=<?php echo $cid; ?>&sid=<?php echo $sheet['id']; ?>"> <!--<a style="color:#b9b8b8"><s>-->Serie bearbeiten<!--</s>--></a></li>
                 <?php
                     if ($sheet['hasAttachments']) {
                         print '<li>';
