@@ -394,8 +394,12 @@ class FSPdf
                     $file = $this->config['DIR']['files']. '/' . $part->getAddress( );
                     if (file_exists($file)){
                         $text = file_get_contents($file);
-                        $text = htmlentities(htmlentities(utf8_encode($text)));
-                        $body.= "<pre>".$text.'</pre><br>';
+                        if (mb_detect_encoding($text, 'UTF-8', true) === false) { 
+                            $text = utf8_encode($text); 
+                        }
+                        $text = htmlentities(htmlentities($text));
+
+                        $body.= $text.'<br>';
                     } else {
                         // failure
                     }
