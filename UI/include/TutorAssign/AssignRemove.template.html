@@ -1,8 +1,16 @@
-<input type="hidden" name="action" value="AssignRemove">
+<?php
+if (isset($AssignRemoveNotificationElements)) {
+    foreach ($AssignRemoveNotificationElements as $notificationElement) {
+        print $notificationElement;
+    }
+}
+?>
+
+<input type="hidden" name="action" value="<?php echo (!isset($_POST['action']) || $_POST['action'] != "AssignRemoveWarning") ? 'AssignRemoveWarning' : 'AssignRemove'; ?>">
 <div class="content-element">
     <div class="content-header">
         <div class="content-title left uppercase">Zuweisung aufheben</div>
-        <button class="text-button right bold critical-color">aufheben</button>
+        <button class="text-button<?php echo (!isset($_POST['action']) || $_POST['action'] != "AssignRemoveWarning") ? ' right' : '-simple  error-simple' ;?> bold critical-color">aufheben</button>
     </div>
 
     <div class="content-body-wrapper">
