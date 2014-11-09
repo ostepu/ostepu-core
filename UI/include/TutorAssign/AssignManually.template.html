@@ -1,12 +1,38 @@
+<?php
+if (isset($AssignManuallyNotificationElements)) {
+    foreach ($AssignManuallyNotificationElements as $notificationElement) {
+        print $notificationElement;
+    }
+}
+?>
+
 <input type="hidden" name="action" value="AssignManually">
 <div class="content-element">
     <div class="content-header">
         <div class="content-title left uppercase">Manuelle Zuweisung</div>
     </div>
-
-    <div class="content-body-wrapper">
+        
+    <div class="content-body-wrapper">  
+    
+    <div>
+    <?php 
+        $sortTypes = array('lastName' => 'Nachname','firstName' => 'Vorname','userName' => 'Nutzername');
+    ?>
+    <label class="left label bold new-line" for="sortUsers">Sortierung:</label> 
+    <select class="form-field left text-input" name="sortUsers" id="sortUsers">
+            <?php
+                foreach ($sortTypes as $key => $value) {
+                    echo "<option value='{$key}'".(isset($sortUsers) &&  $sortUsers==$key ? ' selected="selected"' : '').">{$value}</option>";
+                }
+            ?>
+    </select>
+    <button name="actionSortUsers" value="" class="left text-button-simple body-option-color">>></button>
+    </div>
+    
         <div class="content-body left">
-            <?php foreach ($tutorAssignments as $tutorAssignment): ?>
+        
+            <?php $statusList = CourseStatus::getStatusDefinition();
+                foreach ($tutorAssignments as $tutorAssignment): ?>
                 <div class="tutor-assign-element left">
                     <div class="tutor-assign-element-title">
                         <?php
@@ -26,8 +52,9 @@
                                 echo "unbekannter Kontrolleur";
                             } else {
                                 print isset($tutorAssignment['tutor']['firstName']) ? $tutorAssignment['tutor']['firstName'].' ' : '';
-                                print isset($tutorAssignment['tutor']['lastName']) ? $tutorAssignment['tutor']['lastName'].' ': '';    
-                                echo isset($tutorAssignment['tutor']['userName']) ? '('.$tutorAssignment['tutor']['userName'].')' : '';
+                                print isset($tutorAssignment['tutor']['lastName']) ? $tutorAssignment['tutor']['lastName'].' ': '';
+                                $status = isset($tutorAssignment['tutor']['courses'][0]['status']) ? $statusList[$tutorAssignment['tutor']['courses'][0]['status']] : '';
+                                echo isset($tutorAssignment['tutor']['userName']) ? '('.$tutorAssignment['tutor']['userName'].','.$status.')' : '';
                             }
                             print " (" . count($tutorAssignment['submissions']) . ")";
                         } else {
@@ -41,11 +68,13 @@
                     <div class="form-field checkbox-container">
                         <?php 
                         foreach ($tutorAssignment['submissions'] as $submission):
+
                             print '<input type="checkbox" name="';
                             print $submission['submissionId'];
                             print '" value="';
                             print $submission['submissionId'] . '"/>';
-                            print $submission['submissionId'].(isset($submission['user']['userName']) ? '('.$submission['user']['userName'].')' : '');
+                            $name = (isset($submission['user']['firstName']) && isset($submission['user']['lastName'])) ? $submission['user']['firstName'].' '.$submission['user']['lastName'].',': '';
+                            print $submission['submissionId'].(isset($submission['user']['userName']) ? ' ('.$name.$submission['user']['userName'].')' : '');
                             print '<br />';
                         endforeach;
                         ?>

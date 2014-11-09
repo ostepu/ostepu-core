@@ -28,11 +28,26 @@
                         print $user['id'] . '"';
                         print $user['id'] == $uploadUserID ? ' selected="selected"' : NULL;
                         print '>';
-                        print $user['firstName'] . " " . $user['lastName'];
+                        print $user['firstName'] . " " . $user['lastName'] . (isset($user['userName']) ? " ({$user['userName']})" : '' );
                         print '</option>';
                     }
                 ?>
             </select>
+            
+            <div>
+            <?php 
+                $sortTypes = array('lastName' => 'Nachname','firstName' => 'Vorname','userName' => 'Nutzername');
+            ?>
+            <label class="form-field left label bold new-line" for="sortUsers">Sortierung:</label> 
+            <select class="form-field left text-input" name="sortUsers" id="sortUsers">
+                    <?php
+                        foreach ($sortTypes as $key => $value) {
+                            echo "<option value='{$key}'".(isset($sortUsers) &&  $sortUsers==$key ? ' selected="selected"' : '').">{$value}</option>";
+                        }
+                    ?>
+            </select>
+            <button name="actionSortUsers" value="" class="left text-button-simple body-option-color">>></button>
+            </div>
 
             <?php
             if (count($sheets)>0){

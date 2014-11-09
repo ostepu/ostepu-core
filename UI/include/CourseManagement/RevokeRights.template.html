@@ -20,8 +20,6 @@ if (isset($RevokeRightsNotificationElements)) {
             </div>
             <label class="form-field left label bold" for="lecturerRevokeRightsPerson">Person auswählen:</label>
             <div class="left" name="RevokeRightsSortUsers" id="RevokeRightsSortUsers">
-                <a class="info-color" href="?cid=<?php echo $user['courses'][0]['course']['id']; ?>&sortUsers=userName#RevokeRightsSortUsers">Nutzername</a>
-                <a class="info-color" href="?cid=<?php echo $user['courses'][0]['course']['id']; ?>&sortUsers=lastName#RevokeRightsSortUsers">Nachname</a><br>
             <select class="form-field left text-input" name="userID" id="lecturerRevokeRightsPerson" size="10">
                 <?php
                     $studentsArea = '<optgroup label="Studenten">';
@@ -107,6 +105,22 @@ if (isset($RevokeRightsNotificationElements)) {
                 <label><?php echo $statusType; ?>: <?php echo $count; ?></label><br>                     
             <?php } ?>
             </div>
+            
+            <div>
+            <?php 
+                $sortTypes = array('lastName' => 'Nachname','firstName' => 'Vorname','userName' => 'Nutzername');
+            ?>
+            <label class="form-field left label bold new-line" for="sortUsers">Sortierung:</label> 
+            <select class="form-field left text-input" name="sortUsers" id="sortUsers">
+                    <?php
+                        foreach ($sortTypes as $key => $value) {
+                            echo "<option value='{$key}'".(isset($sortUsers) &&  $sortUsers==$key ? ' selected="selected"' : '').">{$value}</option>";
+                        }
+                    ?>
+            </select>
+            <button name="actionSortUsers" value="" class="left text-button-simple body-option-color">>></button>
+            </div>
+
         </div>
     </div> <!-- end: content-body -->
 </div> <!-- end: content-wrapper -->

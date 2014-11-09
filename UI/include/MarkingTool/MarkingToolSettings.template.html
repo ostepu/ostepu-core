@@ -65,6 +65,22 @@
                     }
                 ?>
             </select>
+            <?php 
+                $sortTypes = array('lastName' => 'Nachname','firstName' => 'Vorname','userName' => 'Nutzername');
+            ?>
+            <label class="form-field left label bold new-line" for="sortUsers">Sortierung:</label> 
+            <select class="form-field left text-input" name="sortUsers" id="sortUsers">
+                    <?php
+                        foreach ($sortTypes as $key => $value) {
+                            echo "<option value='{$key}'".(isset($sortUsers) &&  $sortUsers==$key ? ' selected="selected"' : '').">{$value}</option>";
+                        }
+                    ?>
+            </select>
+            
+                    <button name="downloadCSV" value="<?php echo $sheet['id']; ?>" class="text-button body-option-color footer-text" style="padding-left:0px">
+                        Korrekturarchiv erstellen
+                    </button>
         </div>
+        
     </div> <!-- end: content-body -->
 </div> <!-- end: content-wrapper -->
