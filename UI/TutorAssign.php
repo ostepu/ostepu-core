@@ -169,25 +169,4 @@ $w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $assignRemov
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
 
-function record_sort($records, $field, $reverse=false)
-{
-    $hash = array();
-   
-    foreach($records as $record)
-    {
-        $hash[$record[$field]] = $record;
-    }
-   
-    ($reverse)? krsort($hash) : ksort($hash);
-   
-    $records = array();
-   
-    foreach($hash as $record)
-    {
-        $records []= $record;
-    }
-   
-    return $records;
-}
-
 ?>
