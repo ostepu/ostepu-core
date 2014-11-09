@@ -168,7 +168,7 @@ class Marking extends Object implements JsonSerializable
      */
     public function setPoints( $value = null )
     {
-        $this->points = $value;
+        $this->points = str_replace(',','.',$value);
     }
 
     /**
@@ -345,63 +345,63 @@ class Marking extends Object implements JsonSerializable
     {
         $values = '';
 
-        if ( $this->id != null )
+        if ( $this->id !== null )
             $this->addInsertData( 
                                  $values,
                                  'M_id',
                                  DBJson::mysql_real_escape_string( $this->id )
                                  );
-        if ( $this->tutorId != null )
+        if ( $this->tutorId !== null )
             $this->addInsertData( 
                                  $values,
                                  'U_id_tutor',
                                  DBJson::mysql_real_escape_string( $this->tutorId )
                                  );
         if ( $this->file != null && 
-             $this->file->getFileId( ) != null )
+             $this->file->getFileId( ) !== null )
             $this->addInsertData( 
                                  $values,
                                  'F_id_file',
                                  DBJson::mysql_real_escape_string( $this->file->getFileId( ) )
                                  );
-        if ( $this->submission != null && 
+        if ( $this->submission !== null && 
              $this->submission->getId( ) !== null )
             $this->addInsertData( 
                                  $values,
                                  'S_id',
                                  DBJson::mysql_real_escape_string( $this->submission->getId( ) )
                                  );
-        if ( $this->tutorComment != null )
+        if ( $this->tutorComment !== null )
             $this->addInsertData( 
                                  $values,
                                  'M_tutorComment',
                                  DBJson::mysql_real_escape_string( $this->tutorComment )
                                  );
-        if ( $this->outstanding != null )
+        if ( $this->outstanding !== null )
             $this->addInsertData( 
                                  $values,
                                  'M_outstanding',
                                  DBJson::mysql_real_escape_string( $this->outstanding )
                                  );
-        if ( $this->status != null )
+        if ( $this->status !== null )
             $this->addInsertData( 
                                  $values,
                                  'M_status',
                                  DBJson::mysql_real_escape_string( $this->status )
                                  );
-        if ( $this->points != null )
+        if ( $this->points !== null )
             $this->addInsertData( 
                                  $values,
                                  'M_points',
                                  DBJson::mysql_real_escape_string( $this->points )
                                  );
-        if ( $this->date != null )
+        if ( $this->date !== null )
             $this->addInsertData( 
                                  $values,
                                  'M_date',
                                  DBJson::mysql_real_escape_string( $this->date )
                                  );
-        if ( $this->hideFile != null )
+        if ( $this->hideFile !== null )
             $this->addInsertData( 
                                  $values,
                                  'M_hideFile',
