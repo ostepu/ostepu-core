@@ -56,7 +56,7 @@ class Marking extends Object implements JsonSerializable
      */
     public function getSubmission( )
     {
-        return $submission;
+        return $this->submission;
     }
 
     /**
@@ -435,6 +435,11 @@ class Marking extends Object implements JsonSerializable
     public static function getStatusDefinition( )
     {
         return array( 
+                     array( 
+                         'id' => -1,
+                         'shortName' => 'nz',
+                         'longName' => 'nicht zugewiesen'
+                          ),
                      array( 
                            'id' => 0,
                            'shortName' => 'ne',
