@@ -898,6 +898,7 @@ class LTutor
                     
                         $markingId = $row[0];
                         $points = $row[1];        
+                        $points = str_replace(',','.',$points);
                         $markingFile = $row[7];                           
                         
                         // check if markingId exists in transaction

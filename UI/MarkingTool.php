@@ -281,10 +281,11 @@ if (isset($_POST['MarkingTool'])) {
                 $maxPoints = cleanInput($exercise['maxPoints']);
                 $submissionID = cleanInput($exercise['submissionID']);
                 $markingID = cleanInput($exercise['markingID']);
-
+                if (isset($exercise['points'])) $exercise['points'] = str_replace(',','.',$exercise['points']);
+                
                 $f = new FormEvaluator($exercise);
 
-                $f->checkIntegerForKey('points',
+                $f->checkNumberForKey('points',
                                        FormEvaluator::REQUIRED,
                                        'warning',
                                        'Ungültige Punktzahl.',
@@ -309,7 +310,7 @@ if (isset($_POST['MarkingTool'])) {
                     $foundValues = $f->foundValues;
 
                     $points = (isset($foundValues['points']) ? $foundValues['points'] : null);
-                    $tutorComment = (isset($foundValues['tutorComment']) ? $foundValues['tutorComment'] : null);
+                    $tutorComment = (isset($foundValues['tutorComment']) ? $foundValues['tutorComment'] : '');
                     $status = (isset($foundValues['status']) ? $foundValues['status'] : null);
 
                     if (!saveMarking($points, 
