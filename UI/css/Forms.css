@@ -123,11 +123,28 @@ button:hover {
     padding-left: 40px;
 }
 
+.text-button-simple {
+    font-family:'Lucida Sans Unicode', Helvetica, Arial, Verdana, sans-serif;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    background: none;
+    font-size: 100%;
+}
+
 .text-button::after {
     content: ' >';
 }
 
 .image-button {
+    border: 0;
+    margin: 0;
+    padding: 0;
+    padding-bottom: 2px;
+    background: none;
+}
+
+.image-button-simple {
     border: 0;
     margin: 0;
     padding: 0;
