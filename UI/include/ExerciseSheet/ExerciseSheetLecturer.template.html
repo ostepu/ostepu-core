@@ -19,6 +19,13 @@ foreach ($sheets as $sheet):
     // bool if endDate of sheet is greater than the actual date
     $isExpired = date('U') > date('U', $sheet['endDate']);
 ?>
+<?php
+if (isset($SheetNotificationElements[$sheet['id']])) {
+    foreach ($SheetNotificationElements[$sheet['id']] as $notificationElement) {
+        print $notificationElement;
+    }
+}
+?>
 <div class="content-element collapsible">
     <div class="content-header">
         <div class="content-title left uppercase">
@@ -33,7 +40,7 @@ foreach ($sheets as $sheet):
                 <?php if (isset($sheet['status'])){
                             $types = Marking::getStatusDefinition();
                             foreach ($sheet['status'] as $key => $value){ ?>
-                            <?php echo $value.' '.$types[$key]['longName'];?>
+                            <?php echo $value.' '.$types[LArraySorter::multidimensional_search($types, array('id'=>$key))]['longName'];?>
                 <?php }} ?>
         </div>
         <div class="critical-color bold right">
@@ -108,15 +115,24 @@ foreach ($sheets as $sheet):
                 <li class="footer-text"><?php echo $sheet['courseUserCount']; ?> Studenten</li>
                 <li class="footer-text"><?php echo $sheet['selectedSubmissions']; ?> Einsendungen</li>
                 <li class="footer-text"><?php echo $sheet['tutorMarkings']; ?> Korrekturaufträge</li>
-                <br>
                 <?php if (isset($sheet['status'])){ ?>
-                <li class="footer-text bold">Korrekturen:</li>
+                <br>
+                <li class="footer-text bold">meine Korrekturen:</li>
                 <?php $types = Marking::getStatusDefinition();
                 foreach ($sheet['status'] as $key => $value){ ?>
                 <li class="footer-text">
                 <button name="downloadCSV_<?php echo $key;?>" value="<?php echo $sheet['id']; ?>" class="text-button body-option-color footer-text" style="padding-left:0px">
-                <?php echo $value.' '.$types[$key]['longName'];?> 
+                <?php echo $value.' '.$types[LArraySorter::multidimensional_search($types, array('id'=>$key))]['longName'];?> 
                 </button></li>
+                <?php }} ?>
+                <?php if (isset($sheet['allStatus'])){ ?>
+                <br>
+                <li class="footer-text bold">alle Korrekturen:</li>
+                <?php $types = Marking::getStatusDefinition();
+                foreach ($sheet['allStatus'] as $key => $value){ ?>
+                <li class="footer-text">
+                <?php echo $value.' '.$types[LArraySorter::multidimensional_search($types, array('id'=>$key))]['longName'];?>
+                </li>
                 <?php }} ?>
         </div>
         <div class="content-body right">
@@ -193,7 +209,7 @@ foreach ($sheets as $sheet):
                 <li>
                 </li>
                 <li>
-                    <button title="Übungsserie löschen" name="deleteSheet" value="<?php echo $sheet['id']; ?>" class="critical-color text-button">
+                    <button title="Übungsserie löschen" name="<?php echo (!isset($_POST['deleteSheetWarning']) || (isset($_POST['deleteSheetWarning']) && $_POST['deleteSheetWarning'] != $sheet['id'])) ? 'deleteSheetWarning' : 'deleteSheet';?>" value="<?php echo $sheet['id']; ?>"class="text-button<?php echo (!isset($_POST['deleteSheetWarning']) || (isset($_POST['deleteSheetWarning']) && $_POST['deleteSheetWarning'] != $sheet['id'])) ? ' ' : '-simple  error-simple' ;?> bold critical-color">
                         Übungsserie löschen
                     </button>
                 </li>
