@@ -36,7 +36,16 @@
                             print $fileName;
                             print '?cid=';
                             print $user['courses'][0]['course']['id'];
-                            print '&sortby=userName">Matrikel</a>';
+                            print '&sortby=userName">Nutzername</a>';
+                        ?>
+                    </th>
+                    <th>
+                        <?php
+                            print '<a class="body-option-color plain" href="';
+                            print $fileName;
+                            print '?cid=';
+                            print $user['courses'][0]['course']['id'];
+                            print '&sortby=studentNumber">Matrikel</a>';
                         ?>
                     </th>
                     <th>
@@ -75,17 +84,26 @@
 
                         // firstName
                         print "<td>";
-                        print $user['firstName'];
+                        if (isset($user['firstName']))
+                            print $user['firstName'];
                         print "</td>";
 
                         // lastName
                         print "<td>";
-                        print $user['lastName'];
+                        if (isset($user['lastName']))
+                            print $user['lastName'];
                         print "</td>";
-
+                        
                         // userId
                         print "<td>";
-                        print $user['id'];
+                        if (isset($user['userName']))
+                            print $user['userName'];
+                        print "</td>";
+                        
+                        // studentNumber
+                        print "<td>";
+                        if (isset($user['studentNumber']))
+                            print $user['studentNumber'];
                         print "</td>";
 
                         // isApproved for all courses

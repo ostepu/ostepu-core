@@ -1,6 +1,6 @@
 <input type="hidden" 
        name="maxMarkingStatus" 
-       value="<?php echo count($markingStatus) - 1; ?>" />
+       value="<?php echo $markingStatus[count($markingStatus)-1]; ?>" />
 <?php
     if (!empty($groups)) {
     foreach ($groups as $group):
@@ -10,7 +10,7 @@
 <div class="content-element">
     <div class="content-header">
         <div class="content-title left uppercase">
-            <?php print $group['leader']['firstName'] . " " . $group['leader']['lastName']; ?>
+            <?php print $group['leader']['firstName'] . " " . $group['leader']['lastName'] . (isset($group['leader']['userName']) ? " ({$group['leader']['userName']})" : ''); ?>
         </div>
         <div class="info-color bold right">
             <button class="text-button info-color bold right" 
@@ -76,12 +76,12 @@
                             id="exerciseType"> 
                         <?php
                             foreach ($markingStatus as $status) {
-                                if (!isset($status['id'])) continue;
+                                if (!isset($status['id'])) $status['id'] = -1;
                                 if (!isset($status['longName'])) $status['longName'] = '???';
                                 
                                 print '<option value="';
                                 print $status['id'] . '" ';
-                                if (isset($exercise['submission']['marking']['status'])) {
+                                if (isset($exercise['submission']['marking']['status']) || ($status['id']==-1 && !isset($exercise['submission']['marking'])) || ($status['id']==0 && !isset($exercise['submission']))) {
                                     print $status['id'] == $exercise['submission']['marking']['status'] ? ' selected="selected"' : NULL;
                                 }
                                 print '>';
