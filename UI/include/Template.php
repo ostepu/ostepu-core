@@ -17,6 +17,7 @@ include_once '../Assistants/Logger.php';
 class Template
 {
     protected $template;
+    public $templateFile;
 
     protected $content;
 
@@ -39,13 +40,15 @@ class Template
      */
     public static function WithTemplateFile($fileName)
     {
-        $templateString = file_get_contents($fileName);
+        //$templateString = file_get_contents($fileName);
+        $t = new Template('');
+        $t->templateFile = $fileName;
 
-        if ($templateString === FALSE) {
+        /*if ($templateString === FALSE) {
             Logger::Log("Could not open file: " .  $fileName, LogLevel::WARNING);
-        }
+        }*/
 
-        $t = new Template($templateString);
+        //$t = new Template($templateString);
         return $t;
     }
 
@@ -93,7 +96,9 @@ class Template
         // evaluate the template as a php script
         // a closing php tag is needed before the template, so HTML can be
         // used in the template.
-        $success = eval("?>" . $this->template);
+        $success=true;
+        /*$success = eval("?>" . $this->template);*/
+        include($this->templateFile);
 
         // stop buffering and return the buffer's content
         $s = ob_get_contents();
