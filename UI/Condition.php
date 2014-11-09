@@ -35,9 +35,11 @@ if (isset($_POST['action'])) {
                 $newApprovalCondition = ApprovalCondition::createApprovalCondition($approvalConditionId, $cid, null, $percentage);
                 $newApprovalConditionSettings = ApprovalCondition::encodeApprovalCondition($newApprovalCondition);
                 $URI = $databaseURI . "/approvalcondition/approvalcondition/" . $approvalConditionId;
+                echo $newApprovalConditionSettings;echo $URI;
                 http_put_data($URI, $newApprovalConditionSettings, true, $message);
 
                 if ($message != "201") {
+                    $notifications[] = MakeNotification("error", "Fehler beim Speichern!");
                     $RequestError = true;
                 }
             }
@@ -74,14 +76,14 @@ if (isset($_GET['sortby'])) {
     switch ($sortBy) {
         case "firstName":
             function compare_firstName($a, $b) {
-                return strnatcmp($a['firstName'], $b['firstName']);
+                return strnatcmp(strtolower($a['firstName']), strtolower($b['firstName']));
             }
             usort($condition_data['users'], 'compare_firstName');
             break;
 
         case "lastName":
             function compare_lastName($a, $b) {
-                return strnatcmp($a['lastName'], $b['lastName']);
+                return strnatcmp(strtolower($a['lastName']), strtolower($b['lastName']));
             }
             usort($condition_data['users'], 'compare_lastName');
             break;
@@ -91,9 +93,20 @@ if (isset($_GET['sortby'])) {
          */
         case "userName":
             function compare_userName($a, $b) {
-                return $a['userName'] < $b['userName'];
+                    if (!isset($a['userName'])) return 0;
+                    if (!isset($b['userName'])) return 0;
+                return strnatcmp(strtolower($a['userName']), strtolower($b['userName']));
             }
             usort($condition_data['users'], 'compare_userName');
+            break;
+            
+        case "studentNumber":
+            function compare_studentNumber($a, $b) {
+                    if (!isset($a['studentNumber'])) return 0;
+                    if (!isset($b['studentNumber'])) return 0;
+                return $a['studentNumber'] < $b['studentNumber'];
+            }
+            usort($condition_data['users'], 'compare_studentNumber');
             break;
 
         case "isApproved":
@@ -103,6 +116,11 @@ if (isset($_GET['sortby'])) {
             usort($condition_data['users'], 'compare_isApproved');
             break;
     }
+} else {
+    function compare_lastName($a, $b) {
+        return strnatcmp(strtolower($a['lastName']), strtolower($b['lastName']));
+    }
+    usort($condition_data['users'], 'compare_lastName');
 }
 
 

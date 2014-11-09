@@ -325,6 +325,7 @@ if (isset($_POST['MarkingTool'])) {
 
                 } else {
                     $notifications = $notifications + $f->notifications;
+                    $RequestError = true;
                 }
             }
 
@@ -350,10 +351,74 @@ if (isset($tutorID)) {
 if (isset($statusID)) {
     $URI .= "/status/{$statusID}";
 }
+//echo "$URI";return;
 
 // load MarkingTool data from GetSite
-$markingTool_data = http_get($URI, true);
-$markingTool_data = json_decode($markingTool_data, true);
+$markingTool_data2 = http_get($URI, true);
+$markingTool_data = json_decode($markingTool_data2, true);
+
+// download csv-archive
+if (isset($_POST['downloadCSV'])) {
+    ///echo $markingTool_data2;return;
+    $markings = array();
+    $newMarkings=-1;
+    foreach ($markingTool_data['groups'] as $key => $group){
+        if (isset($group['exercises'])){
+            foreach ($group['exercises'] as $key2 => $exercise){
+                if (isset($exercise['submission'])){
+                    if (isset($exercise['submission']['marking'])){
+                    ///echo "found2";
+                        // submission + marking
+                        $tempMarking = Marking::decodeMarking(Marking::encodeMarking($exercise['submission']['marking']));
+                        $tempSubmission = Submission::decodeSubmission(Submission::encodeSubmission($exercise['submission']));
+                        $tempMarking->setSubmission($tempSubmission);
+                        $markings[] = $tempMarking;
+                    } else {
+                    ///echo "found";
+                        // no marking
+                        $tempMarking = Marking::createMarking($newMarkings,$uid,null,$exercise['submission']['id'],null,null,1,null,time(),null);
+                        $newMarkings--;
+                        $tempSubmission = Submission::decodeSubmission(Submission::encodeSubmission($exercise['submission']));
+                        $tempMarking->setSubmission($tempSubmission);
+                        $markings[] = $tempMarking;
+                    }
+                } else {
+                    // no submission
+                        $tempMarking = Marking::createMarking($newMarkings,$uid,null,null,null,null,1,null,time(),null);
+                        $tempSubmission = Submission::createSubmission( $newMarkings,$group['leader']['id'],null,$exercise['id'],null,null,time(),null,$group['leader']['id'],null);
+                        $newMarkings--;
+                        $tempMarking->setSubmission($tempSubmission);
+                        $markings[] = $tempMarking;
+                }
+            }
+        }
+    }
+    
+    foreach ($markings as $marking){
+        if ($marking->getFile()!==array() && $marking->getFile()!==null)
+            $marking->setFile();
+        if ($marking->getTutorComment() !== null)
+            $marking->setTutorComment();
+        if ($marking->getSubmission()!==array() && $marking->getSubmission()!==null && ($marking->getSubmission()->getFile()!==array() && $marking->getSubmission()->getFile()!==null))
+            $marking->getSubmission()->setFile();
+        if ($marking->getSubmission()!==array() && $marking->getSubmission()!==null && ($marking->getSubmission()->getComment()!==array() && $marking->getSubmission()->getComment()!==null))
+            $marking->getSubmission()->setComment();
+    }
+    echo Marking::encodeMarking($markings);return;
+}
+
+$dataList = array();
+foreach ($markingTool_data['groups'] as $key => $group)
+    $dataList[] = array('pos' => $key,'userName'=>$group['leader']['userName'],'lastName'=>$group['leader']['lastName'],'firstName'=>$group['leader']['firstName']);
+$sortTypes = array('lastName','firstName','userName');
+if (!isset($_POST['sortUsers'])) $_POST['sortUsers'] = null;
+$_POST['sortUsers'] = (in_array($_POST['sortUsers'],$sortTypes) ? $_POST['sortUsers'] : $sortTypes[0]);
+$dataList=LArraySorter::orderby($dataList, $_POST['sortUsers'], SORT_ASC);
+$tempData = array();
+foreach($dataList as $data)
+    $tempData[] = $markingTool_data['groups'][$data['pos']];
+$markingTool_data['groups'] = $tempData;
+
 $markingTool_data['filesystemURI'] = $filesystemURI;
 
 // adds the selected sheetID, tutorID and statusID
@@ -364,6 +429,10 @@ if (isset($tutorID)) {
 
 if (isset($statusID)) {
     $markingTool_data['statusID'] = $statusID;
+}
+
+if (isset($_POST['sortUsers'])) {
+    $markingTool_data['sortUsers'] = $_POST['sortUsers'];
 }
 
 $markingTool_data['URI'] = $URI;
