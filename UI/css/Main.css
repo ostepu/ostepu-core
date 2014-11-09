@@ -28,7 +28,7 @@ a.plain:after {
     content: none;
 }
 
-a:after {
+a.button:after {
     content: ' >';
 }
 
