@@ -16371,6 +16371,7 @@ class TCPDF {
 		// get CSS array defined at previous call
 		$matches = array();
         
+        $html=str_replace("\r\n",'<br>',$html);
         $html=str_replace("\n",'<br>',$html);
         $html=str_replace("\t",'    ',$html);
         
