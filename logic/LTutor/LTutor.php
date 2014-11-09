@@ -459,9 +459,13 @@ class LTutor
                     if (isset($submission['comment']))
                         $data.="Kommentar: {$submission['comment']}\n";
                         
+                    $data.="<pre>";
                     $newFileData->setBody(base64_encode($data));
                     $newFileSend[] = $newFileData;
                     $newFileSend[] = $newFile;
+                    $newFileData = new File();
+                    $newFileData->setBody(base64_encode("</pre>"));
+                    $newFileSend[] = $newFileData;
                     //echo File::encodeFile($newFileSend);
                     $answer = Request::routeRequest(
                                                     'POST',
@@ -679,9 +683,13 @@ class LTutor
                         if (isset($marking['submission']['comment']))
                             $data.="Kommentar: {$marking['submission']['comment']}\n";
                             
+                        $data.="<pre>";
                         $newFileData->setBody(base64_encode($data));
                         $newFileSend[] = $newFileData;
                         $newFileSend[] = $newFile;
+                        $newFileData = new File();
+                        $newFileData->setBody(base64_encode("</pre>"));
+                        $newFileSend[] = $newFileData;
                         //echo File::encodeFile($newFileSend);//return;
                         $answer = Request::routeRequest(
                                                         'POST',
