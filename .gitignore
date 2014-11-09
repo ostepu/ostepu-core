@@ -236,3 +236,24 @@ DB/CControl/CConfig.json
 DB/DBProcess/CConfig.json
 DB/DBAttachment2/processAttachment_CConfig.json
 DB/DBAttachment2/processWorkFiles_CConfig.json
+config.ini
+CConfig.json
+*.ini
+DB/DBUser/aa.txt
+DB/Sample.sql
+UI/KeineEinsendung.txt
+UI/texImages/14f3b0b6a234c7b1b563b105d2b01d2291928fde.90.png
+UI/texImages/4944ddb0c8bca804f486deedcebf26b3c0d578bf.90.png
+UI/texImages/9c2e92f410ac62d3f4290975b0059c81b19339e3.90.png
+UI/texImages/a78671727a83d034651e3baf1ff26935613a3d86.90.png
+UI/texImages/b454257736c07aa20aab3ac32f7fa2a30a52881f.90.png
+install/temp/data.zip
+logic/LFile/test.dat
+*CConfig.json
+DB/DBExerciseType/aa.txt
+logic/LOOP/samples/Hallo ÄÖÜ.java
+logic/LOOP/samples/Hallo2.java
+DB/Components2 - Kopie.sql
+logic/LOOP/samples/FalscherTyp.java
+DB/DBMarking/aa.txt
+aa.txt
