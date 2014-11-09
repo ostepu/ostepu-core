@@ -1,15 +1,25 @@
 <input type="submit" style="display: none" id="submitSheetButton">
-<input type="hidden" name="action" value="new">
 <div class="content-element collapsible">
     <div class="content-header">
         <div class="content-title left uppercase">Allgemeine Einstellungen</div>
         <div class="info-color bold right">
-            <a href="javascript:void(0)" id="submitSheet">Serie speichern</a>
+            <?php if (!isset($sid)){ ?>
+            <input type="hidden" name="action" value="new">
+            <a href="javascript:void(0)" id="submitSheet">Übungsserie anlegen</a>
+            <?php } else { ?>
+            <input type="hidden" name="action" value="edit">
+            <a href="javascript:void(0)" id="submitSheet">Änderungen speichern</a>
+            <?php } ?>
         </div>
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body left">
+        
+            <?php if (isset($sid)){ ?>
+            <input type="hidden" name="sheetId" value="<?php echo $sid; ?>" />
+            <?php } ?>
+            
             <label class="form-field left label bold" for="sheetName">Blattname:</label>
             <input class="form-field left text-input" name="sheetName" placeholder="Bonusserie"
             <?php if (isset($sheetName)) {?> value="<?php echo $sheetName; ?>" <?php } ?>
@@ -18,7 +28,7 @@
             <label class="form-field left label bold new-line" for="startDate">Bearbeitungsanfang:</label>
             <div id="datetimepicker1" class="input-append left date">
                 <input class="form-field text-input" data-format="dd.MM.yyyy - hh:mm"
-                <?php if (isset($startDate)) {?> value="<?php echo $startDate; ?>" <?php } ?>
+                <?php if (isset($startDate)) {?> value="<?php echo (ctype_digit($startDate) ? date('d.m.Y - H:i', $startDate) : $startDate); ?>" <?php } ?>
                 type="text" id="startDate" name="startDate"/>
                 <span class="add-on">
                   ...
@@ -28,19 +38,71 @@
             <label class="form-field left label bold new-line" for="endDate">Bearbeitungsende:</label>
             <div id="datetimepicker2" class="input-append left date">
                 <input class="form-field text-input" data-format="dd.MM.yyyy - hh:mm"
-                <?php if (isset($endDate)) {?> value="<?php echo $endDate; ?>" <?php } ?>
+                <?php if (isset($endDate)) {?> value="<?php echo (ctype_digit($endDate) ? date('d.m.Y - H:i', $endDate) : $endDate); ?>" <?php } ?>
                 type="text" id="endDate" name="endDate"/>
                 <span class="add-on">
                   ...
                 </span>
             </div>
 
-            <label class="form-field left label bold new-line" for="sheetPDF">Übungsblatt (PDF):</label>
-            <input class="left button" type="file" name="sheetPDF" value="Datei auswählen ..." />
+            <label class="form-field left label bold new-line" for="sheetPDF">Übungsblatt:</label>
+            
+            <span class="fileArea">
+                <input class="fileButton left button" type="file" name="sheetPDF" value="Datei auswählen ..." <?php echo (isset($sheetFile) ? 'style="display:none";' : '') ;?>/> 
+                <?php
+                if (isset($sheetFile['address']) && isset($sheetFile['displayName'])){
+                    $fileURL = "../FS/FSBinder/{$sheetFile['address']}/{$sheetFile['displayName']}";?>
+                <span class='content-body left divFile'>
+                    <?php if (isset($sheetFile['fileId'])){ ?>
+                    <input type="hidden" name="sheetPDFId" value="<?php echo $sheetFile['fileId']; ?>" />
+                    <?php } ?>
+                    <?php if (isset($sheetFile['address'])){ ?>
+                    <input type="hidden" name="sheetPDFAddress" value="<?php echo $sheetFile['address']; ?>" />
+                    <?php } ?>
+                    <?php if (isset($sheetFile['displayName'])){ ?>
+                    <input type="hidden" name="sheetPDFDisplayName" value="<?php echo $sheetFile['displayName']; ?>" />
+                    <?php } ?>
+                    <a href="<?php echo $fileURL; ?>" title="<?php echo $sheetFile['displayName']; ?>" class="plain" target="_blank">
+                        <img src="Images/Download.png" />
+                    </a>
+                    <a href="javascript:void(0);" title="Aufgabenblatt löschen" name="deleteSheetFile'" class="plain deleteFile">                                      
+                        <img src="Images/Delete.png">
+                        <?php if (isset($sheetFile)){ ?><span class="right warning-simple"></span><?php } ?>
+                    </a>
+                </span>
+                <?php } ?>
+            </span>
 
-            <label class="form-field left label bold new-line" for="sheetSolution">Musterlösung (PDF):</label>
-            <input class="left button" type="file" name="sheetSolution" value="Datei auswählen ..." /> <div class="content-body left">(optional)</div>
-
+            <label class="form-field left label bold new-line" for="sheetSolution">Musterlösung:</label>
+            
+            <span class="fileArea">
+                <input class="fileButton left button" type="file" name="sheetSolution" value="Datei auswählen ..." <?php echo (isset($sampleSolution['address']) && isset($sampleSolution['displayName']) ? 'style="display:none";' : '') ;?>/>
+                <?php
+                if (isset($sampleSolution['address']) && isset($sampleSolution['displayName'])){
+                    $fileURL = "../FS/FSBinder/{$sampleSolution['address']}/{$sampleSolution['displayName']}";?>
+                <div class='content-body left divFile'>
+                    <?php if (isset($sampleSolution['fileId'])){ ?>
+                    <input type="hidden" name="sheetSolutionId" value="<?php echo $sampleSolution['fileId']; ?>" />
+                    <?php } ?>
+                    <?php if (isset($sampleSolution['address'])){ ?>
+                    <input type="hidden" name="sheetSolutionAddress" value="<?php echo $sampleSolution['address']; ?>" />
+                    <?php } ?>
+                    <?php if (isset($sampleSolution['displayName'])){ ?>
+                    <input type="hidden" name="sheetSolutionDisplayName" value="<?php echo $sampleSolution['displayName']; ?>" />
+                    <?php } ?>
+                    <a href="<?php echo $fileURL; ?>" title="<?php echo $sampleSolution['displayName']; ?>" class="plain" target="_blank">
+                        <img src="Images/Download.png" />
+                    </a>
+                    <a href="javascript:void(0);" title="Musterlösung löschen" name="deleteSampleFile'" class="plain deleteFile">     
+                        <img src="Images/Delete.png">
+                        <?php if (isset($sampleSolution)){ ?><span class="right warning-simple"></span><?php } ?>
+                    </a>
+                </div>
+                <?php } ?>
+            </span>
+            
+            <div class="content-body left">(optional)</div>
+            
             <label class="form-field left label bold new-line" for="groupSize">Gruppenstärke:</label>
             <select class="form-field left text-input very-short" name="groupSize" id="groupSize">
                 <?php
@@ -63,3 +125,55 @@
         </div>
     </div> <!-- end: content-body -->
 </div> <!-- end: content-wrapper -->
+
+<?php
+if (isset($exercises)){
+    $tempExercises = array_merge(array(),$exercises);
+    $temp2Exercises=array();
+    $count=1;
+    while(count($tempExercises)>0){
+        $exerciseList = array('exercises'=>array());
+        $exerciseForms=array();
+                
+        foreach($tempExercises as $key => $exercise){
+            if ($exercise['link']==$count){
+                $exerciseList['exercises'][]=$exercise;
+            if (isset($forms)){
+                foreach ($forms as $form){
+                    if (!isset($form['exerciseId'])) continue;
+                    if ($form['exerciseId']==$exercise['id'])
+                        $exerciseForms[] = $form;
+                }
+            }
+                
+            } else {
+                $temp2Exercises[] = $exercise;
+            }
+        }
+        
+        $exerciseSettings = Template::WithTemplateFile('include/CreateSheet/ExerciseSettings.template.php');
+
+        if (!empty($exerciseForms))
+            $exerciseSettings->bind(array('forms'=>$exerciseForms));
+        
+        $count++;
+        $tempExercises=$temp2Exercises;
+        $temp2Exercises=array();
+        
+        $exerciseSettings->bind($exerciseList);
+        if (isset($cid))
+            $exerciseSettings->bind(array('cid'=>$cid));
+        if (isset($uid))
+            $exerciseSettings->bind(array('uid'=>$uid));
+        if (isset($sid))
+            $exerciseSettings->bind(array('sid'=>$sid));
+        if (isset($exerciseTypes))
+            $exerciseSettings->bind(array('exerciseTypes'=>$exerciseTypes));
+        if (isset($processors))
+            $exerciseSettings->bind(array('processors'=>$processors)); 
+        if (isset($processes))
+            $exerciseSettings->bind(array('processes'=>$processes));
+        $exerciseSettings->show();
+    }
+}
+?>

@@ -1,62 +1,180 @@
 <?php
 header('Content-Type: text/html; charset=utf-8');
-include_once dirname(__FILE__) . '/../../../Assistants/Structures.php';
+//include_once dirname(__FILE__) . '/../../../Assistants/Structures.php';
 include_once dirname(__FILE__) . '/../../../Assistants/Request.php';
-include_once dirname(__FILE__) . '/../Config.php';
+include dirname(__FILE__) . '/../Config.php';
+include_once dirname(__FILE__) . '/../Helpers.php';
 ?>
 <li>
-    <input class="form-field text-input very-short" name="exercises[0][subexercises][0][maxPoints]" placeholder="Punkte" id="exerciseMaxPoints" />
+    <input class="form-field text-input very-short" name="exercises[0][subexercises][0][maxPoints]" placeholder="Punkte" id="exerciseMaxPoints" <?php echo isset($maxPoints) ? "value='{$maxPoints}'" : ''?>/>
     <select class="form-field text-input short" name="exercises[0][subexercises][0][exerciseType]" id="exerciseType">
         <?php
-        session_start();
-        $courseid = null;
-        if (isset($_SESSION['JSCACHE'])) {
-            $cache = json_decode($_SESSION['JSCACHE'], true);
-
-            foreach ($cache as $excercisetype) {
-                $courseid = $excercisetype['courseId'];
-                print "<option value=\"".$excercisetype['exerciseTypeId']."\">".$excercisetype['name']."</option>";
-                print "<option value=\"".$excercisetype['exerciseTypeId']."b\">".$excercisetype['name']." (Bonus)</option>";
+        if (!isset($exerciseTypes)){
+            session_start();
+            $cid = null;
+            if (isset($_SESSION['JSCACHE'])) {
+                $exerciseTypes = json_decode($_SESSION['JSCACHE'], true);
+                if (isset($exerciseTypes[0]['courseId']))
+                    $cid = $exerciseTypes[0]['courseId'];
             }
         }
         
-        $forms = false;
-        $processes = false;
-        if ($courseid !== null){
-
-            $result = Request::get($serverURI.'/DB/DBForm/link/exists/course/' . $courseid,array(),'');
-
-            if ( $result['status'] === 200 )
-                $forms = true;
-                
-            $result = Request::get($serverURI.'/DB/DBProcess/link/exists/course/' . $courseid,array(),'');         
-            if ( $result['status'] === 200 )
-                $processes = true;
+        foreach ($exerciseTypes as $exerciseType) {
+            print "<option value=\"".$exerciseType['exerciseTypeId']."\" ".(isset($type) && $type==$exerciseType['exerciseTypeId'] && (!isset($bonus) || !$bonus)? "selected=\"selected\"" : '').">".$exerciseType['name']."</option>";
+            print "<option value=\"".$exerciseType['exerciseTypeId']."b\" ".(isset($type) && $type==$exerciseType['exerciseTypeId'] && isset($bonus) && $bonus? "selected=\"selected\"" : '').">".$exerciseType['name']." (Bonus)</option>";
         }
-        
+                
         ?>
     </select>
-    <input class="form-field text-input short mime-field" name="exercises[0][subexercises][0][mime-type]" value="" id="mime-type" title="Typ.Endung,..." placeholder="txt.java, pdf, zip, html, jpg, gif" />
-    <input class="button" type="file" name="exercises[0][subexercises][0][attachment]" value="Anhang auswählen ..." />
-                        <a href="javascript:void(0);" class="body-option-color deny-button delete-subtask right">Teilaufgabe löschen</a>
-                        
-                        
-                        
-                        
-                    <?php if ($forms || $processes) {?>   
-                    <div class="content-body-wrapper">
-                    <table border="0" style="width:100%">
-                    <?php  ?>
-                    <?php if ($forms){ ?>
-                    <tr><td><a href="javascript:void(0);" class="body-option-color very-short use-form">Eingabemaske verwenden</a></td></tr> 
-                    <?php } ?>
-                    
-                    <?php if ($processes){ ?>
-                    <tr><td><a href="javascript:void(0);" class="body-option-color very-short use-processor">Verarbeitung hinzufügen</a></td></tr>   
-                    <?php } ?>
-                    
-                    </table>
-                        </div>
-                    <?php } ?>
     
+    <?php 
+        $printTypes = array(); 
+        if (isset($fileTypes)) {
+            ///var_dump($fileTypes);
+            $mimeTypes = FILE_TYPE::$mimeType;
+            $tempPrintTypes=array();
+            
+            foreach ($fileTypes as $type) {
+                if (!isset($type['text'])) continue;
+                $parts = explode(' ', $type['text']);
+                
+                foreach ($mimeTypes as $key => $mimes){
+                    $found=false;
+                    foreach ($mimes as $mime) {
+                        if ($mime==$parts[0]){
+                            $parts[0] = $key;
+                            $found=true;
+                            break;
+                        }
+                    }
+                    if ($found) break;
+                }
+                
+                if (isset($parts[1])){
+                    $parts[1] = ltrim($parts[1],'*');
+                } else 
+                    $parts[1]='';
+                    
+                $tempPrintTypes[] = $parts[0].$parts[1];
+            }
+            
+            
+            foreach($tempPrintTypes as $type)
+                if (!in_array($type,$printTypes))
+                    $printTypes[] = $type;
+        }
+                
+    ?>
+    
+    <?php if (isset($id)){ ?>
+    <input type="hidden" name="exercises[0][subexercises][0][id]" value="<?php echo $id; ?>" />
+    <?php } ?>
+    
+    <input class="form-field text-input short mime-field" name="exercises[0][subexercises][0][mime-type]" id="mime-type" title="Typ.Endung,..." placeholder="txt.java, pdf, zip, html, jpg, gif" <?php echo isset($fileTypes) ? "value='".implode(', ',$printTypes)."'" : ''?>/>
+        
+    <span class="fileArea">
+        <input class="fileButton button" type="file" name="exercises[0][subexercises][0][attachment]" value="Anhang auswählen ..." <?php echo (isset($attachments[0]) ? 'style="display:none";' : '') ;?>/>
+        <?php
+        if (isset($attachments[0])){
+            $fileURL = "../FS/FSBinder/{$attachments[0]['address']}/{$attachments[0]['displayName']}";?>
+        <span class='divFile'>
+            <?php if (isset($attachments[0]['fileId'])){ ?>
+            <input type="hidden" name="exercises[0][subexercises][0][attachment][fileId]" value="<?php echo $attachments[0]['fileId']; ?>" />
+            <?php } ?>
+            <?php if (isset($attachments[0]['address'])){ ?>
+            <input type="hidden" name="exercises[0][subexercises][0][attachment][address]" value="<?php echo $attachments[0]['address']; ?>" />
+            <?php } ?>
+            <?php if (isset($attachments[0]['displayName'])){ ?>
+            <input type="hidden" name="exercises[0][subexercises][0][attachment][displayName]" value="<?php echo $attachments[0]['displayName']; ?>" />
+            <?php } ?>
+            <a href="<?php echo $fileURL; ?>" title="<?php echo $attachments[0]['displayName']; ?>" class="plain" target="_blank">
+                <img src="Images/Download.png" />
+            </a>
+            <a href="javascript:void(0);" title="Anhang löschen" name="deleteAttachmentFile" class="plain deleteFile">                                      
+                <img src="Images/Delete.png">
+                <?php if (isset($attachments[0])){ ?><span class="right warning-simple" ></span><?php } ?>
+            </a>
+        </span>
+        <?php } ?>
+    </span>
+    
+    <a href="javascript:void(0);" class="deny-button delete-subtask critical-color right">Teilaufgabe löschen<?php if (isset($id)){ ?><span class="right warning-simple"></span><?php } ?>  </a>
+                      
+                        
+    <?php
+    
+        $formsAllowed=false;
+        if (!isset($forms)){
+            $formsAllowed = false;
+            $result = Request::get($serverURI.'/DB/DBForm/link/exists/course/' . $cid,array(),'');
+            if ( $result['status'] === 200 )
+                $formsAllowed = true;
+        } else 
+            $formsAllowed=true;
+        
+        $processesAllowed=false;
+        if (!isset($processors)){
+            $processesAllowed = false;
+            $result = Request::get($serverURI.'/DB/DBProcess/link/exists/course/' . $cid,array(),'');
+            if ( $result['status'] === 200 )
+                $processesAllowed = true;
+        } else 
+            $processesAllowed=true;
+    ?>
+                        
+    <?php if ($formsAllowed || $processesAllowed) {?>   
+    <div class="content-body-wrapper">
+    <table border="0" style="width:100%">
+    <?php  ?>
+    <?php if ($formsAllowed){ ?>
+    <tr><td><a href="javascript:void(0);" class="body-option-color very-short use-form">Eingabemaske verwenden</a>
+    <?php
+        if (isset($forms)){
+            foreach($forms as $form){
+                $form = Template::WithTemplateFile('include/CreateSheet/Form/FormSettings.template.php');
+                if (isset($cid))
+                    $form->bind(array('cid'=>$cid));
+                if (isset($uid))
+                    $form->bind(array('uid'=>$uid));
+                if (isset($sid))
+                    $form->bind(array('sid'=>$sid));
+                if (isset($forms))
+                    $form->bind(array('forms'=>$forms));
+                if (isset($processes))
+                    $form->bind(array('processes'=>$processes));
+                if (isset($processors))
+                    $form->bind(array('processors'=>$processors));
+                $form->show();
+            }
+        }
+    ?>
+    </td></tr> 
+    <?php } ?>
+    
+    <?php if ($processesAllowed){ ?>
+    <?php
+        if (isset($processes)){
+            foreach($processes as $process){
+                $pro = Template::WithTemplateFile('include/CreateSheet/Processor/Processor.template.php');
+                if (isset($cid))
+                    $pro->bind(array('cid'=>$cid));
+                if (isset($uid))
+                    $pro->bind(array('uid'=>$uid));
+                if (isset($sid))
+                    $pro->bind(array('sid'=>$sid));
+                $pro->bind(array('process'=>$process));
+                $pro->bind(array('processors'=>$processors));
+                $pro->show();
+            }
+        }
+    ?>
+    <tr><td>
+    <a href="javascript:void(0);" class="body-option-color very-short use-processor">Verarbeitung hinzufügen</a>
+    </td></tr>   
+    <?php } ?>
+    
+    </table>
+        </div>
+    <?php } ?>
+    <hr noshade='noshade' size='5' style="border-radius: 5px;color: #b9b8b8;">
 </li>
