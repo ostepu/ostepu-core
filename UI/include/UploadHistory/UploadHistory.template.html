@@ -1,4 +1,22 @@
+<?php
+if (isset($UploadHistoryNotificationElements)) {
+    foreach ($UploadHistoryNotificationElements as $notificationElement) {
+        print $notificationElement;
+    }
+}
+?>
+
 <?php 
+    if (!isset($exercises)) return;
+    if (isset($_POST['sortUsers']))
+        echo "<input type='hidden' name='sortUsers' value='{$_POST['sortUsers']}'>";
+    if (isset($_POST['sheetID']))
+        echo "<input type='hidden' name='sheetID' value='{$_POST['sheetID']}'>";
+    if (isset($_POST['userID']))
+        echo "<input type='hidden' name='userID' value='{$_POST['userID']}'>";
+    if (isset($_POST['action']) && $_POST['action']=="ShowUploadHistory")
+        echo "<input type='hidden' name='action' value='{$_POST['action']}'>";
+        
     // bool if subtasks are printed
     $count=null;
     $namesOfExercises=array();
@@ -37,16 +55,25 @@
                             $noSubmission = false;
 
                             // prints the submission date
-                            print '<div class="form-field left bold new-line">';
+                            $selected = (isset($submission['selectedForGroup']) && $submission['selectedForGroup']==1) ? true : false;
+                            echo '<div class="form-field left bold new-line '. ($selected ? 'critical-color' : '') .'">';
                             print date('d.m.Y  -  H:i', $submission['date']);
-                            print '</div>';
+                            echo ($selected ? '<span class="critical-color medium"> (ausgewählt)</span>' : '');
+                            if (!$selected){ 
+                            $obj=array("id"=>$submission['id'], "leaderId"=>$submission['leaderId'], "exerciseId"=>$submission['exerciseId']);
+                            ?>
+                            <button name="updateSelectedSubmission" value="<?php echo htmlentities(json_encode($obj)); ?>" class="medium text-button-simple body-option-color footer-text">
+                            >>
+                            </button>
+                            <?php }
+                            print '</div>';                            
 
                             $displayName = $submission['file']['displayName'];
                             $fileAddress = $submission['file']['address'];
                             $fileSize = $submission['file']['fileSize'];
 
                             // prints the link for downloading the submission
-                            print '<a class="left body-option-color" href="';
+                            print '<a class="left '.($selected ? 'bold critical-color' : 'body-option-color').'" href="';
                             print  '../FS/FSBinder/' . $fileAddress . '/' . $displayName; //$filesystemURI
                             print '" title="';
                             print $displayName;
