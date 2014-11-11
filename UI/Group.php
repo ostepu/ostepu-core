@@ -317,7 +317,7 @@ $group_data['filesystemURI'] = $filesystemURI;
 $group_data['uid'] = $uid;
 
 $user_course_data = $group_data['user'];
-
+Authentication::checkRights(PRIVILEGE_LEVEL::ADMIN, $cid, $uid, $user_course_data);
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
