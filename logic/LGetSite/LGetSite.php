@@ -933,7 +933,6 @@ class LGetSite
         $answer = Request::custom('GET', $URL, array(), '');
         $submissions = json_decode($answer['content'], true);
         
-        
         $URL = "{$this->_getExerciseType->getAddress()}/exercisetype";
         $answer = Request::custom('GET', $URL, array(), '');
         $exerciseTypes = json_decode($answer['content'], true);
@@ -970,6 +969,9 @@ class LGetSite
         $this->flag = 1;
         $response['user'] = $this->userWithCourse($userid, $courseid);
         $response['exerciseTypes'] = $exerciseTypes;
+        
+        $exercisesheet['exercises'] = null;
+        $response['exerciseSheet'] = $exercisesheet;
 
         $this->app->response->setBody(json_encode($response));
     }
