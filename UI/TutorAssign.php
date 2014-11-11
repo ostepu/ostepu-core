@@ -110,7 +110,8 @@ foreach ($tutorAssign_data['tutorAssignments'] as $key2 => $tutorAssignment){
     $sortTypes = array('lastName','firstName','userName');
     if (!isset($_POST['sortUsers'])) $_POST['sortUsers'] = null;
     $_POST['sortUsers'] = (in_array($_POST['sortUsers'],$sortTypes) ? $_POST['sortUsers'] : $sortTypes[0]);
-    $dataList=LArraySorter::orderby($dataList, $_POST['sortUsers'], SORT_ASC);
+    $sortTypes = array('lastName','firstName','userName');
+    $dataList=LArraySorter::orderby($dataList, $_POST['sortUsers'], SORT_ASC,$sortTypes[(array_search($_POST['sortUsers'],$sortTypes)+1)%count($sortTypes)], SORT_ASC);
     $tempData = array();
     foreach($dataList as $data)
         $tempData[] = $tutorAssign_data['tutorAssignments'][$key2]['submissions'][$data['pos']];
