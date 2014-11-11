@@ -3,7 +3,18 @@
        value="<?php echo $markingStatus[count($markingStatus)-1]; ?>" />
 <?php
     if (!empty($groups)) {
+    $allOutputs = 0;
+    
     foreach ($groups as $group):
+    
+    $anz=0;
+    foreach ($group['exercises'] as $key => $exercise){
+        $eid = $exercise['id'];
+        if (!isset($exercise['submission']['marking']) && (isset($tutorID) && $tutorID!='all') && (!isset($statusID) || ($statusID!=-1 && $statusID!=0))) continue;
+        if (!isset($exercise['submission']) && ((isset($statusID) && $statusID!=0) || (isset($tutorID) && $tutorID!='all'))) continue;
+        $anz++;$allOutputs++;
+    }
+    if ($anz==0)continue;
 
     $leaderID = $group['leader']['id'];
 ?>
@@ -29,6 +40,8 @@
                     $isSubtask = false;
                     foreach ($group['exercises'] as $key => $exercise):
                     $eid = $exercise['id'];
+                    if (!isset($exercise['submission']['marking']) && (isset($tutorID) && $tutorID!='all') && (!isset($statusID) || ($statusID!=-1 && $statusID!=0))) continue;
+                    if (!isset($exercise['submission']) && ((isset($statusID) && $statusID!=0) || (isset($tutorID) && $tutorID!='all'))) continue;
                 ?>
                 <?php
                 // make a sublist if next exercise is not a main exercise
@@ -181,7 +194,10 @@
 </div> <!-- end: content-wrapper -->
 <?php
 endforeach;
-} else {
+
+}
+
+if (empty($groups) || $allOutputs==0){
 ?>
 <div class="content-element">
     <div class="content-header">

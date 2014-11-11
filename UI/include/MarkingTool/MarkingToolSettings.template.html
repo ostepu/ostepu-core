@@ -46,6 +46,8 @@
                     }
                 ?>
             </select>
+            <?php } else { ?>
+            <input type="hidden" name="tutorID" value="<?php echo $user['id'];?>">
             <?php } ?>
 
             <label class="form-field left label bold new-line" for="statusID">Korrekturstatus:</label> 

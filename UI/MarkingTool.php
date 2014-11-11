@@ -368,6 +368,9 @@ if (isset($_POST['downloadCSV'])) {
     foreach ($markingTool_data['groups'] as $key => $group){
         if (isset($group['exercises'])){
             foreach ($group['exercises'] as $key2 => $exercise){
+                if (!isset($exercise['submission']['marking']) && (isset($tutorID) && $tutorID!='all') && (!isset($statusID) || ($statusID!=-1 && $statusID!=0))) continue;
+                if (!isset($exercise['submission']) && ((isset($statusID) && $statusID!=0) || (isset($tutorID) && $tutorID!='all'))) continue;
+        
                 if (isset($exercise['submission'])){
                     if (isset($exercise['submission']['marking'])){
                     ///echo "found2";
@@ -416,7 +419,8 @@ foreach ($markingTool_data['groups'] as $key => $group)
 $sortTypes = array('lastName','firstName','userName');
 if (!isset($_POST['sortUsers'])) $_POST['sortUsers'] = null;
 $_POST['sortUsers'] = (in_array($_POST['sortUsers'],$sortTypes) ? $_POST['sortUsers'] : $sortTypes[0]);
-$dataList=LArraySorter::orderby($dataList, $_POST['sortUsers'], SORT_ASC);
+$sortTypes = array('lastName','firstName','userName');
+$dataList=LArraySorter::orderby($dataList, $_POST['sortUsers'], SORT_ASC, $sortTypes[(array_search($_POST['sortUsers'],$sortTypes)+1)%count($sortTypes)], SORT_ASC);
 $tempData = array();
 foreach($dataList as $data)
     $tempData[] = $markingTool_data['groups'][$data['pos']];
