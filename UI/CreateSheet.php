@@ -148,6 +148,7 @@ if ($correctExercise == true) {
     ///ExerciseSheet::encodeExerciseSheet($myExerciseSheet)
     $sheet_data = json_decode(ExerciseSheet::encodeExerciseSheet($myExerciseSheet),true);
 
+    $newExerciseId=-1;
     // create subtasks as exercise
 foreach ($validatedExercises as $key1 => $exercise) {
 
@@ -169,6 +170,11 @@ foreach ($validatedExercises as $key1 => $exercise) {
         
         // create exercise
         $exerciseId = (isset($subexercise['id']) ? $subexercise['id'] : null);
+        if ($exerciseId===null){
+            $exerciseId=$newExerciseId;
+            $newExerciseId--;
+        }
+        
         $subexerciseObj = Exercise::createExercise($exerciseId,$cid,$sheetId, $subexercise['maxPoints'],
                                                    $subexercise['exerciseType'],$key1+1,$bonus,$key2+1);
         
