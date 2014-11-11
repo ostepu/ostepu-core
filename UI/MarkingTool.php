@@ -341,6 +341,8 @@ if (isset($_POST['MarkingTool'])) {
     }
 }
 
+if (!isset($tutorID) && !isset($_POST['action']) && !isset($_POST['MarkingTool']))
+    $tutorID = $uid;
 
 // create URI for GetSite
 $URI = $getSiteURI . "/markingtool/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
@@ -439,7 +441,7 @@ if (isset($_POST['sortUsers'])) {
 $markingTool_data['URI'] = $URI;
 
 $user_course_data = $markingTool_data['user'];
-
+Authentication::checkRights(PRIVILEGE_LEVEL::TUTOR, $cid, $uid, $user_course_data);
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');

@@ -25,6 +25,7 @@
                 ?>
             </select>
 
+            <?php if (isset($user['courses'][0]['status']) && $user['courses'][0]['status']>=2){ ?>
             <label class="form-field left label bold new-line" for="tutorID">Kontrolleur:</label> 
             <select class="form-field left text-input" name="tutorID" id="tutorID">
                 <option value="all">Alle</option>
@@ -45,6 +46,7 @@
                     }
                 ?>
             </select>
+            <?php } ?>
 
             <label class="form-field left label bold new-line" for="statusID">Korrekturstatus:</label> 
             <select class="form-field left text-input" name="statusID" id="statusID">
@@ -78,7 +80,7 @@
             </select>
             
                     <button name="downloadCSV" value="<?php echo $sheet['id']; ?>" class="text-button body-option-color footer-text" style="padding-left:0px">
-                        Korrekturarchiv erstellen
+                        <s>Korrekturarchiv erstellen</s>
                     </button>
         </div>
         
