@@ -14,10 +14,10 @@
  * @todo you have to confirm your action before deleting coursestatus
  */
 
-include_once 'include/Boilerplate.php';
-include_once '../Assistants/Structures.php';
-include_once '../Assistants/LArraySorter.php';
-include_once 'include/FormEvaluator.php';
+include_once dirname(__FILE__) . '/include/Boilerplate.php';
+include_once dirname(__FILE__) . '/../Assistants/Structures.php';
+include_once dirname(__FILE__) . '/../Assistants/LArraySorter.php';
+include_once dirname(__FILE__) . '/include/FormEvaluator.php';
 
 // load Plugins data from LogicController
 $URI = $serverURI . "/logic/LExtension/link/extension";
@@ -40,6 +40,7 @@ foreach ($plugins_data['plugins'] as &$plugin){
     }  
 }
 
+if (!isset($_POST['actionSortUsers']))
 if (isset($_POST['action'])) {
         if ($_POST['action'] == "EditExternalId") {
         $externalId = (isset($_POST['externalId']) ? cleanInput($_POST['externalId']) : array());
@@ -437,15 +438,22 @@ $URI = $getSiteURI . "/coursemanagement/user/{$uid}/course/{$cid}";
 $courseManagement_data = http_get($URI, true);
 $courseManagement_data = json_decode($courseManagement_data, true);
 //var_dump($courseManagement_data['users']);return;
-if (isset($_GET['sortUsers'])){
-    if ($_GET['sortUsers']=='userName'){
-        $courseManagement_data['users'] = LArraySorter::orderby($courseManagement_data['users'], 'userName', SORT_ASC);
-    } elseif ($_GET['sortUsers']=='lastName'){
-        $courseManagement_data['users'] = LArraySorter::orderby($courseManagement_data['users'], 'lastName', SORT_DESC);
-    } else  
-        $courseManagement_data['users'] = LArraySorter::orderby($courseManagement_data['users'], 'lastName', SORT_DESC);
-} else
-    $courseManagement_data['users'] = LArraySorter::orderby($courseManagement_data['users'], 'lastName', SORT_DESC);
+$dataList = array();
+foreach ($courseManagement_data['users'] as $key => $user)
+    $dataList[] = array('pos' => $key,'userName'=>$user['userName'],'lastName'=>$user['lastName'],'firstName'=>$user['firstName']);
+$sortTypes = array('lastName','firstName','userName');
+if (!isset($_POST['sortUsers'])) $_POST['sortUsers'] = null;
+$_POST['sortUsers'] = (in_array($_POST['sortUsers'],$sortTypes) ? $_POST['sortUsers'] : $sortTypes[0]);
+$sortTypes = array('lastName','firstName','userName');
+$dataList=LArraySorter::orderby($dataList, $_POST['sortUsers'], SORT_ASC, $sortTypes[(array_search($_POST['sortUsers'],$sortTypes)+1)%count($sortTypes)], SORT_ASC);
+$tempData = array();
+foreach($dataList as $data)
+    $tempData[] = $courseManagement_data['users'][$data['pos']];
+$courseManagement_data['users'] = $tempData;
+
+if (isset($_POST['sortUsers'])) {
+    $courseManagement_data['sortUsers'] = $_POST['sortUsers'];
+}
 
 $user_course_data = $courseManagement_data['user'];
 

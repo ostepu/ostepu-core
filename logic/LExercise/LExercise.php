@@ -170,13 +170,19 @@ class LExercise
                         foreach($subexercise['attachments'] as &$attachment)
                             $attachment['exerciseId'] = $linkid;
                             
-                        $attachments = Attachment::encodeAttachment($subexercise['attachments']);
-
+                        $attachments = $subexercise['attachments'];
+                        $tempAttachments = array();
+                        foreach ($attachments as $attachment){
+                            $temp = Attachment::createAttachment(null,$attachment['exerciseId'],null,null);
+                            $temp->setFile($attachment);
+                            $tempAttachments[] = $temp;
+                        }
+                        
                         $res = Request::routeRequest( 
                                                         'POST',
                                                         '/attachment',
                                                         $header,
-                                                        $attachments,
+                                                        Attachment::encodeAttachment($tempAttachments),
                                                         $this->_postAttachment,
                                                         'attachment'
                                                         );

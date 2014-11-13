@@ -10,6 +10,7 @@
     margin-top: 10px;
     border-radius: 5px;
     font-weight: bold;
+    word-break: break-all;
 }
 
 .error {
@@ -37,4 +38,24 @@
     background-repeat: no-repeat;
     background-position: 8px 6px;
     background-size: 18px 18px;
+}
+
+.error-simple {
+    border: 3px dashed #DE3838;
+    color: #DE3838;
+}
+
+.warning-simple {
+    border: 3px dashed #f4ad32;
+    color: #f4ad32;
+}
+
+.success-simple {
+    border: 3px dashed #2DB22D;
+    color: #2DB22D;
+}
+
+.transparent-simple {
+    border: 3px dashed transparent;
+    color: transparent;
 }

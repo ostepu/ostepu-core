@@ -1,3 +1,11 @@
+<?php
+if (isset($AssignAutomaticallyNotificationElements)) {
+    foreach ($AssignAutomaticallyNotificationElements as $notificationElement) {
+        print $notificationElement;
+    }
+}
+?>
+
 <input type="hidden" name="action" value="AssignAutomatically">
 <div class="content-element">
     <div class="content-header">
@@ -10,11 +18,13 @@
             <label class="form-field left label bold new-line">
                 Unzugeordnete gruppenweise zuteilen an:
             </label>
-                <?php 
+
+                <?php $statusList = CourseStatus::getStatusDefinition();
                 foreach ($tutorAssignments as $tutorAssignment):
                     $tutorId = isset($tutorAssignment['tutor']['id']) ? $tutorAssignment['tutor']['id'] : null;
                     
                     if (isset($tutorAssignment['tutor']['id']) && $tutorAssignment['tutor']['userName'] != "unassigned"):
+                        echo "<div class='left'>";
                         print '<input type="checkbox" name="tutorIds[]" value="';
                         print $tutorId . '" id="';
                         print $tutorId . '" />';
@@ -23,10 +33,12 @@
                         print '<label for="';
                         print $tutorId . '" class="tutor-name">';
                         print isset($tutorAssignment['tutor']['firstName']) ? $tutorAssignment['tutor']['firstName'].' ' : '';
-                        print isset($tutorAssignment['tutor']['lastName']) ? $tutorAssignment['tutor']['lastName'].' ': '';    
-                        echo isset($tutorAssignment['tutor']['userName']) ? '('.$tutorAssignment['tutor']['userName'].') ' : '';
+                        print isset($tutorAssignment['tutor']['lastName']) ? $tutorAssignment['tutor']['lastName'].' ': '';
+                        $status = isset($tutorAssignment['tutor']['courses'][0]['status']) ? ','.$statusList[$tutorAssignment['tutor']['courses'][0]['status']] : '';
+                        echo isset($tutorAssignment['tutor']['userName']) ? '('.$tutorAssignment['tutor']['userName'].$status.')' : '';
                         print "(" . count($tutorAssignment['submissions']) . ")";
                         print '</label>';
+                        echo "</div>";
                     endif;
                 endforeach;
                 ?>

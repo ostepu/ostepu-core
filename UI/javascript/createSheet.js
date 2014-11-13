@@ -43,6 +43,8 @@ $(document).ready( function()
     $('.collapsible').children('.content-header').find('.delete-exercise').on("click",deleteExercise);
     $('.full-width-list').find('.delete-subtask').on("click",deleteSubtask);
     $('.interactive.add').children('.content-header').find('.add-exercise').on("click",addExercise);
+    
+    $('.deleteFile').on("click",deleteFile);
 
     $('#submitSheet').on("click", function(event) {
         $('#submitSheetButton').click();
@@ -61,8 +63,22 @@ $(document).ready( function()
     $('.form-input-checkbox').parent().find('.add-choice').on("click",addCheckbox);
     $('.form-input-checkbox').find('.delete-choice').on("click",removeCheckbox);
     
-    if ($('.delete-form').length>0)
-        $('.use-form').hide().fadeOut('fast');
+    var all2 = $('.use-form');
+    for (var i = 0; i < all2.length; i++) {
+        var target = $(all2[i]);
+        if (target.parent().find('.delete-form').length>0){
+            target.hide().fadeOut('fast');
+            target.parents('li').find('.mime-field').last().attr("disabled", "disabled"); 
+            var all3 = target.parent().find('.delete-choice');
+            if (all3.length == 1) {
+                for (var b = 0; b < all3.length; b++) {
+                    var choice = $(all3[b]);
+                    choice.fadeOut('fast');
+                }
+            }
+        }
+    }
+
     
     $('.use-form').on("click",useForm);
     $('.use-processor').on("click",useProcessor);
@@ -79,8 +95,29 @@ $(document).ready( function()
     $('.processor').children('.content-header').find('.delete-processor').on("click",deleteProcessor);*/
 
     $('.processor-type').on("change",loadProcessorTemplate);
-    $('.processor-type').change();
+    ///$('.processor-type').change();
+    
+    renumberExercises();
+    renameProcessor();
+    // activate ckeditor
+    var all = $('.ckeditor');
+    for (var i = 0; i < all.length; i++) {
+        var oldName = $(all[i]).attr('name');
+        CKEDITOR.inline( oldName );
+    }
 });
+
+function deleteFile(event) 
+{
+    var trig = $(this);
+    var container = trig.parents('.divFile');
+    var button = container.parent('.fileArea');
+    container.slideToggle('fast', function() {
+        container[0].parentNode.removeChild(container[0]);
+        //button.find('.fileButton').slideToggle('fast');
+        button.find('.fileButton').hide().fadeIn('fast');
+    });
+}
 
 /**
  * sets the current time

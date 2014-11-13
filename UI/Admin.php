@@ -10,6 +10,9 @@
 
 include_once dirname(__FILE__).'/include/Boilerplate.php';
 include_once dirname(__FILE__).'/../Assistants/Structures.php';
+include_once dirname(__FILE__).'/../Assistants/LArraySorter.php';
+
+$sheetNotifications = array();
 
 if (isset($_POST['action'])) {
     $types = Marking::getStatusDefinition();
@@ -33,14 +36,17 @@ if (isset($_POST['action'])) {
         $location = "../FS/FSBinder/{$zipfile['address']}/".$zipfile['displayName'];
         header("Location: {$location}");
     }
-    if ($_POST['action'] == "ExerciseSheetLecturer" && isset($_POST['deleteSheet'])) {
+    
+    if ($_POST['action'] == "ExerciseSheetLecturer" && isset($_POST['deleteSheetWarning'])) {
+        $sheetNotifications[$_POST['deleteSheetWarning']][] = MakeNotification("warning", "Soll die Übungsserie wirklich gelöscht werden?");
+    } elseif ($_POST['action'] == "ExerciseSheetLecturer" && isset($_POST['deleteSheet'])) {
         $URL = $logicURI . "/exercisesheet/exercisesheet/{$_POST['deleteSheet']}";
         $result = http_delete($URL, true, $message);
         
         if ($message == 201){
-            array_push($notifications, MakeNotification('success', 'Die Übungsserie wurde gelöscht.'));
+            $sheetNotifications[$_POST['deleteSheet']][] = MakeNotification('success', 'Die Übungsserie wurde gelöscht.');
         } else 
-            array_push($notifications, MakeNotification('warning', 'Die Übungsserie konnte nicht gelöscht werden.'));
+            $sheetNotifications[$_POST['deleteSheet']][] = MakeNotification('error', 'Die Übungsserie konnte nicht gelöscht werden.');
     }
 }
 
@@ -71,7 +77,9 @@ $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
 
 $t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetLecturer.template.html');
 $t->bind($admin_data);
-
+if (isset($sheetNotifications))
+    $t->bind(array("SheetNotificationElements" => $sheetNotifications));
+    
 $w = new HTMLWrapper($h, $t);
 $w->defineForm(basename(__FILE__)."?cid=".$cid, false, $t);
 $w->set_config_file('include/configs/config_admin_lecturer.json');

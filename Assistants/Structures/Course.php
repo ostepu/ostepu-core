@@ -193,25 +193,25 @@ class Course extends Object implements JsonSerializable
     {
         $values = '';
 
-        if ( $this->id != null )
+        if ( $this->id !== null )
             $this->addInsertData( 
                                  $values,
                                  'C_id',
                                  DBJson::mysql_real_escape_string( $this->id )
                                  );
-        if ( $this->name != null )
+        if ( $this->name !== null )
             $this->addInsertData( 
                                  $values,
                                  'C_name',
                                  DBJson::mysql_real_escape_string( $this->name )
                                  );
-        if ( $this->semester != null )
+        if ( $this->semester !== null )
             $this->addInsertData( 
                                  $values,
                                  'C_semester',
                                  DBJson::mysql_real_escape_string( $this->semester )
                                  );
-        if ( $this->defaultGroupSize != null )
+        if ( $this->defaultGroupSize !== null )
             $this->addInsertData( 
                                  $values,
                                  'C_defaultGroupSize',

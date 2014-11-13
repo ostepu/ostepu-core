@@ -115,6 +115,22 @@ function renameProcessor(){
         elem.attr('name', newName);
     }
     
+    var all = $('.processor-id');
+    for (var i = 0; i < all.length; i++) {
+        // add a new header text
+        var elem = $(all[i]);
+        var oldName = elem.attr('name');
+
+        var regex = /exercises\[(.+?)]\[.+?\]\[(.+?)]\[(.+?)]\[[0-9]+\]/gm;
+        var nameString = "exercises[$1][subexercises][$2][$3]["+ (i) +"]";
+
+        // match the regex and replace the numbers
+        var newName = oldName.replace(regex, nameString);
+
+        // set the new name
+        elem.attr('name', newName);
+    }
+    
     var all = $('.processor-type');
     for (var i = 0; i < all.length; i++) {
         var elem = $(all[i]);

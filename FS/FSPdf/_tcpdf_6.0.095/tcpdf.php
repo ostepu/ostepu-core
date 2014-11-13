@@ -16371,7 +16371,9 @@ class TCPDF {
 		// get CSS array defined at previous call
 		$matches = array();
         
+        $html=str_replace("\r\n",'<br>',$html);
         $html=str_replace("\n",'<br>',$html);
+        $html=str_replace("\t",'    ',$html);
         
 		if (preg_match_all('/<cssarray>([^\<]*)<\/cssarray>/isU', $html, $matches) > 0) {
 			if (isset($matches[1][0])) {

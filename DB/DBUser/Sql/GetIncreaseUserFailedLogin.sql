@@ -10,12 +10,8 @@
  * - C, the course data
  */
 ?>
- 
-UPDATE `User` SET U_failed_logins=U_failed_logins+1
-where U_id = '<?php echo $userid; ?>' or U_username = '<?php echo $userid; ?>' or U_externalId = '<?php echo $userid; ?>';
 
-UPDATE User
-SET U_flag = if (U_failed_logins>=10, 2, U_flag)
+UPDATE `User` SET U_failed_logins='<?php echo time(); ?>'
 where U_id = '<?php echo $userid; ?>' or U_username = '<?php echo $userid; ?>' or U_externalId = '<?php echo $userid; ?>';
 
 SELECT 

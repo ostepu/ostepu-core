@@ -59,7 +59,7 @@ class Authentication extends AbstractAuthentication
      * @param string $password
      * @return true if login is successful
      */
-    public function loginUser($username, $password)
+    public function loginUser($username, $password )
     {
         global $databaseURI;
         $databaseURL = "{$databaseURI}/user/user/{$username}";
@@ -69,6 +69,11 @@ class Authentication extends AbstractAuthentication
         // check if user exists
         if ($message != "404" && empty($user) == false) {
             // create passwordhash with salt as suffix
+            if (time()-$user['failedLogins']<15){
+            
+                $waitSeconds = 15-(time()-$user['failedLogins']);
+                return MakeNotification("error", "Die Anmeldung ist für {$waitSeconds} Sekunden gesperrt!!!");
+            }
             
             if (isset($user['salt'])){
                 $password = $this->hashData('sha256',$password.$user['salt']);

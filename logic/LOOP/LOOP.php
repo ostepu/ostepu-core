@@ -323,11 +323,14 @@ class LOOP
                             $return = '';
                             $param = implode(' ',$parameter);
                             if ($param!=''){
-                                $param=str_replace('$file',$filePath . '/' . $fileName,$param);
+                                $param=str_replace('$file',$fileName,$param);
                             } else
-                                $param = $filePath . '/' . $fileName;
-                                
+                                $param = $fileName;
+                             
+                            $pathOld = getcwd();
+                            chdir($filePath);                             
                             exec('(./start_cx '.$param.') 2>&1', $output, $return);
+                            chdir($pathOld);
                            
                             if (count($output)>0 && $output[count($output)-1] === '201'){
                                 // nothing
@@ -351,11 +354,15 @@ class LOOP
                             $return = '';
                             $param = implode(' ',$parameter);
                             if ($param!=''){
-                                $param=str_replace('$file',$filePath . '/' . $fileName,$param);
+                                $param=str_replace('$file',$fileName,$param);
                             } else
-                                $param = $filePath . '/' . $fileName;
+                                $param = $fileName;
                                 
+                            $pathOld = getcwd();
+                            chdir($filePath);
                             exec('(javac '.$param.') 2>&1', $output, $return);
+                            chdir($pathOld);
+                            
                             /*ob_start();
                             system('("C:/Program Files/Java/jdk1.8.0_05/bin/javac" '.$param.') 2>&1',$return);
                             $output=explode("\n",ob_get_contents());

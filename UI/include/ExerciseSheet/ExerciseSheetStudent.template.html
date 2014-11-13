@@ -80,7 +80,7 @@
                             <?php if (isset($exercise['submission']['marking']) && $isExpired): ?>
                                 <?php echo $exercise['submission']['marking']['status']; ?>
                             <?php elseif (isset($exercise['submission']) || (isset($exercise['submission']['marking']) && !$isExpired)): ?>
-                                unkontrolliert
+                                unkorrigiert
                             <?php else: ?>
                                 nicht eingesendet
                             <?php endif; ?>
@@ -123,13 +123,27 @@
                             <?php // creates a deleteSubmission icon for the submission (if it exists) ?>
                             <?php if (isset($exercise['submission']) 
                                       && !$isExpired
-                                      && $exercise['submission']['hideFile'] == "0"): ?>                                       
-                                    <button title="Einsendung löschen" name="deleteSubmission" value="<?php echo $exercise['submission']['id']; ?>" class="image-button">
+                                      && $exercise['submission']['hideFile'] == "0"): ?>    
+                                    <button title="Einsendung löschen" name="<?php echo (!isset($_POST['deleteSubmissionWarning']) || (isset($_POST['deleteSubmission']) && $_POST['deleteSubmission'] != $exercise['submission']['id'])) ? 'deleteSubmissionWarning' : 'deleteSubmission';?>" value="<?php echo $exercise['submission']['id']; ?>"class="image-button<?php echo (!isset($_POST['deleteSubmissionWarning']) || (isset($_POST['deleteSubmissionWarning']) && $_POST['deleteSubmissionWarning'] != $exercise['submission']['id'])) ? ' ' : '-simple  error-simple' ;?>">                                      
                                         <img src="Images/Delete.png">
                                     </button>
                             <?php endif; ?>
+                            
                         </div>
+                             
                     </li>
+                            
+                            <?php if (isset($exercise['submission']['marking']['tutorComment'])) { 
+                            $comment = $exercise['submission']['marking']['tutorComment'];//?>
+                            <div class="" style="margin-top:-10px;margin-bottom:0px;word-break: break-all;">
+                            <table border="0" style="width:auto">
+                            <tr><td class="medium">
+                            <span class="footer-text bold">Bemerkung: </span>
+                            </td><td class="wider">
+                            <span class="footer-text info-color"><?php echo $comment; ?></span>
+                            </td><tr></table></div>
+                            <?php } ?>
+ 
                     <?php
                     // close subexerciselist if next exercise is a new mainexercise or end of exercises is reached
                     if (isset($sheet['exercises'][$key+1]) && $sheet['exercises'][$key+1]['linkName'] == 1 && $isSubtask == true) {
@@ -178,7 +192,7 @@
                             <a style="color:#b9b8b8"><s><!--<a href="Group.php?sid=<?php echo $sheet['id'], '&cid=', $cid; ?>">-->
                         <?php } ?>
                         Gruppe verwalten
-                        </s></a>
+                        </s>></a>
                     </li>
 
                     <li>

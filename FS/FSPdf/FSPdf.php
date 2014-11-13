@@ -393,7 +393,13 @@ class FSPdf
                 } else {
                     $file = $this->config['DIR']['files']. '/' . $part->getAddress( );
                     if (file_exists($file)){
-                        $body.= file_get_contents($file).'<br>';
+                        $text = file_get_contents($file);
+                        if (mb_detect_encoding($text, 'UTF-8', true) === false) { 
+                            $text = utf8_encode($text); 
+                        }
+                        $text = htmlentities(htmlentities($text));
+
+                        $body.= $text.'<br>';
                     } else {
                         // failure
                     }
@@ -829,8 +835,8 @@ class FSPdf
         $pdf->setPrintFooter(false);
 
         $pdf->AddPage( );
-        $text=utf8_decode(htmlspecialchars_decode($data->getText()));
-    
+        $text=htmlspecialchars_decode($data->getText());
+
         $pdf->WriteHTML($text);
 
         // stores the pdf binary data to $result

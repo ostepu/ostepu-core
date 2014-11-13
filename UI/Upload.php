@@ -171,11 +171,30 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
 
 // load user data from the database
 $URL = $getSiteURI . "/upload/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
+///echo $URL;return;
 $upload_data = http_get($URL, true);
 $upload_data = json_decode($upload_data, true);
 $upload_data['filesystemURI'] = $filesystemURI;
 $upload_data['cid'] = $cid;
 $upload_data['sid'] = $sid;
+
+$user_course_data = $upload_data['user'];
+Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $user_course_data);
+
+if (isset($upload_data['exerciseSheet']['endDate']) && isset($upload_data['exerciseSheet']['startDate'])){
+    // bool if endDate of sheet is greater than the actual date
+    $isExpired = date('U') > date('U', $upload_data['exerciseSheet']['endDate']); 
+
+    // bool if startDate of sheet is greater than the actual date
+    $hasStarted = date('U') > date('U', $upload_data['exerciseSheet']['startDate']);
+    if ($isExpired){
+        set_error("Der Übungszeitraum ist am ".date('d.m.Y  -  H:i', $upload_data['exerciseSheet']['endDate'])." abgelaufen!");
+    } elseif (!$hasStarted){
+        set_error("Der Übungszeitraum beginnt am ".date('d.m.Y  -  H:i', $upload_data['exerciseSheet']['startDate'])."!");
+    }
+    
+} else
+    set_error("Kein Übungszeitraum gefunden!");
 
 //$formdata = file_get_contents('FormSample.json');
 $URL = $serverURI."/DB/DBForm/form/exercisesheet/{$sid}";

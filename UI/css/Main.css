@@ -20,7 +20,7 @@ a {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    width: 607px;
+    //width: 607px;
     display: inline;
 }
 
@@ -28,7 +28,7 @@ a.plain:after {
     content: none;
 }
 
-a:after {
+a.button:after {
     content: ' >';
 }
 

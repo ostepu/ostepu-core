@@ -25,6 +25,7 @@
                 ?>
             </select>
 
+            <?php if (isset($user['courses'][0]['status']) && $user['courses'][0]['status']>=2){ ?>
             <label class="form-field left label bold new-line" for="tutorID">Kontrolleur:</label> 
             <select class="form-field left text-input" name="tutorID" id="tutorID">
                 <option value="all">Alle</option>
@@ -45,6 +46,9 @@
                     }
                 ?>
             </select>
+            <?php } else { ?>
+            <input type="hidden" name="tutorID" value="<?php echo $user['id'];?>">
+            <?php } ?>
 
             <label class="form-field left label bold new-line" for="statusID">Korrekturstatus:</label> 
             <select class="form-field left text-input" name="statusID" id="statusID">
@@ -65,6 +69,22 @@
                     }
                 ?>
             </select>
+            <?php 
+                $sortTypes = array('lastName' => 'Nachname','firstName' => 'Vorname','userName' => 'Nutzername');
+            ?>
+            <label class="form-field left label bold new-line" for="sortUsers">Sortierung:</label> 
+            <select class="form-field left text-input" name="sortUsers" id="sortUsers">
+                    <?php
+                        foreach ($sortTypes as $key => $value) {
+                            echo "<option value='{$key}'".(isset($sortUsers) &&  $sortUsers==$key ? ' selected="selected"' : '').">{$value}</option>";
+                        }
+                    ?>
+            </select>
+            
+                    <button name="downloadCSV" value="<?php echo $sheet['id']; ?>" class="text-button body-option-color footer-text" style="padding-left:0px">
+                        <s>Korrekturarchiv erstellen</s>
+                    </button>
         </div>
+        
     </div> <!-- end: content-body -->
 </div> <!-- end: content-wrapper -->

@@ -32,8 +32,13 @@
                         print chr(96+$exercise['linkName']);
                         $add=chr(96+$exercise['linkName']);
                         $isSubtask = true;
-                    }
-                    ?>
+                    }?>
+                    
+                    <?php if (isset($exercise['maxPoints'])){ ?>
+                    <div class="info-color bold right">
+                    <?php echo $exercise['maxPoints']."P".(isset($exerciseTypes[$exercise['type']]) ? " {$exerciseTypes[$exercise['type']]['name']}" : '').(isset($exercise['bonus']) && $exercise['bonus'] ? ", Bonus" : '');?>
+                    </div>
+                    <?php } ?>
                     <input type="hidden"
                            name="exercises[<?php echo $key; ?>][name]"
                            value="<?php echo $exercise['link'].$add;?>">
@@ -69,11 +74,12 @@
                             <?php if (isset($sub['comment'])): ?>
                                 <br><div class="form-field wider left bold new-line">
                                     Kommentar der bisherigen Einsendung:
-                                </div> <br />
-                                <input type="text"
-                                        class="left wider form-field text-input"
-                                        value="<?php echo $sub['comment']; ?>"
-                                        disabled/>
+                                </div>                               
+                                <div class="left">
+                                    <?php
+                                    echo '<span style="white-space: pre;">'.str_replace(array(' ', "\r\n", "\n"), array(' ','<br>','<br>'), htmlspecialchars_decode($sub['comment'])).'</span>';
+                                    ?>
+                                </div>
                             <?php endif; ?>
                             <br><br>
                     <?php endif; ?>
@@ -89,7 +95,7 @@
 
             <div class="content-description left new-line" style="width:748px">
                 <?php
-                echo '<p style="white-space: pre;">'.str_replace(array(' ', "\n"), array(' ', '<br>'), htmlspecialchars_decode($form->getTask())).'</pre>';
+                echo '<span style="white-space: pre;">'.str_replace(array(' ', "\r\n", "\n"), array(' ', '<br>', '<br>'), htmlspecialchars_decode($form->getTask())).'</span>';
                 ?>
             </div>
             <?php }?>

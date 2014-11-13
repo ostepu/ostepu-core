@@ -102,12 +102,14 @@ if ($options['download'] == 'attachments') {
 
         $files = array();
         foreach ($markings as $marking) {
-            if (isset($marking['file']) && isset($marking['submission']['selectedForGroup']) && $marking['submission']['selectedForGroup']){                   
+            if (isset($marking['submission']['selectedForGroup']) && $marking['submission']['selectedForGroup']){                   
                 $exerciseId = $marking['submission']['exerciseId'];
                 
                 // marking
-                $marking['file']['displayName'] = "{$namesOfExercises[$exerciseId]}/K_{$marking['file']['hash']}_{$marking['file']['displayName']}";
-                $files[] = $marking['file'];
+                if (isset($marking['file'])){
+                    $marking['file']['displayName'] = "{$namesOfExercises[$exerciseId]}/K_{$marking['file']['hash']}_{$marking['file']['displayName']}";
+                    $files[] = $marking['file'];
+                }
                 
                 // submission
                 $marking['submission']['file']['displayName'] = "{$namesOfExercises[$exerciseId]}/{$marking['submission']['file']['hash']}_{$marking['submission']['file']['displayName']}";
@@ -139,7 +141,6 @@ if ($options['download'] == 'attachments') {
         }
 
         $fileString = json_encode($files);
-
         $zipfile = http_post_data($filesystemURI . '/zip',  $fileString, true);
         $zipfile = json_decode($zipfile, true);
 

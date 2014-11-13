@@ -33,11 +33,14 @@ if (isset($_POST['action'])) {
     // log in user and return result
     $signed = $auth->loginUser($input['username'], $input['password']);
 
-    if ($signed) {
+    if ($signed===true) {
         header('Location: ' . $input['back']);
         exit();
     } else {
-        $notifications[] = MakeNotification("error", "Die Anmeldung war fehlerhaft!");
+        if ($signed!==false){
+            $notifications[] = $signed;
+        } else 
+            $notifications[] = MakeNotification("error", "Die Anmeldung war fehlerhaft!");
     }
 } else {
     $notifications = array();

@@ -18,7 +18,7 @@
                     <?php if (isset($sheet['status'])){
                                 $types = Marking::getStatusDefinition();
                                 foreach ($sheet['status'] as $key => $value){ ?>
-                                <?php echo $value.' '.$types[$key]['longName'];?>
+                                <?php echo $value.' '.$types[LArraySorter::multidimensional_search($types, array('id'=>$key))]['longName'];?>
                     <?php }} ?>
             </div>
             <div class="critical-color bold right">
@@ -91,15 +91,24 @@
                     <li class="footer-text"><?php echo $sheet['courseUserCount']; ?> Studenten</li>
                     <li class="footer-text"><?php echo $sheet['selectedSubmissions']; ?> Einsendungen</li>
                     <li class="footer-text"><?php echo $sheet['tutorMarkings']; ?> Korrekturaufträge</li>
-                    <br>
                     <?php if (isset($sheet['status'])){ ?>
-                    <li class="footer-text bold">Korrekturen:</li>
+                    <br>
+                    <li class="footer-text bold">meine Korrekturen:</li>
                     <?php $types = Marking::getStatusDefinition();
                     foreach ($sheet['status'] as $key => $value){ ?>
                     <li class="footer-text">
                     <button name="downloadCSV_<?php echo $key;?>" value="<?php echo $sheet['id']; ?>" class="text-button body-option-color footer-text" style="padding-left:0px">
-                    <?php echo $value.' '.$types[$key]['longName'];?> 
+                    <?php echo $value.' '.$types[LArraySorter::multidimensional_search($types, array('id'=>$key))]['longName'];?> 
                     </button></li>
+                    <?php }} ?>
+                    <?php if (isset($sheet['allStatus'])){ ?>
+                    <br>
+                    <li class="footer-text bold">alle Korrekturen:</li>
+                    <?php $types = Marking::getStatusDefinition();
+                    foreach ($sheet['allStatus'] as $key => $value){ ?>
+                    <li class="footer-text">
+                    <?php echo $value.' '.$types[LArraySorter::multidimensional_search($types, array('id'=>$key))]['longName'];?>
+                    </li>
                     <?php }} ?>
                     
             </div>
@@ -157,6 +166,13 @@
                                                          '&sid=',
                                                          $sheet['id']; ?>">
                             Kontrolleurzuweisung
+                        </a>
+                    </li>
+                    <li>
+                        <a href="MarkingTool.php?cid=<?php echo $user['courses'][0]['course']['id'],
+                                                         '&sid=',
+                                                         $sheet['id']; ?>">
+                            Korrekturassistent
                         </a>
                     </li>
                 </ol>

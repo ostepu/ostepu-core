@@ -20,8 +20,6 @@ if (isset($GrantRightsNotificationElements)) {
             </div>
             <label class="form-field left label bold" for="lecturerRightsPerson">Person auswählen:</label>
             <div class="left" name="GrantRightsSortUsers" id="GrantRightsSortUsers" >
-                <a class="info-color" href="?cid=<?php echo $user['courses'][0]['course']['id']; ?>&sortUsers=userName#GrantRightsSortUsers">Nutzername</a>
-                <a class="info-color" href="?cid=<?php echo $user['courses'][0]['course']['id']; ?>&sortUsers=lastName#GrantRightsSortUsers">Nachname</a><br>
             <select class="form-field left text-input" name="userID" id="lecturerRightsPerson" size="10">
                 <?php
                     $studentsArea = '<optgroup label="Studenten">';
@@ -100,13 +98,28 @@ if (isset($GrantRightsNotificationElements)) {
                 ?>
             </select>
             </div>
-            
             <div class="left">
             <?php foreach(CourseStatus::getStatusDefinition() as $statusType){
                 $count = (isset($rights[$statusType]) ? $rights[$statusType] : 0); ?>
                 <label><?php echo $statusType; ?>: <?php echo $count; ?></label><br>                     
             <?php } ?>
             </div>
+            
+            <div>
+            <?php 
+                $sortTypes = array('lastName' => 'Nachname','firstName' => 'Vorname','userName' => 'Nutzername');
+            ?>
+            <label class="form-field left label bold new-line" for="sortUsers">Sortierung:</label> 
+            <select class="form-field left text-input" name="sortUsers" id="sortUsers">
+                    <?php
+                        foreach ($sortTypes as $key => $value) {
+                            echo "<option value='{$key}'".(isset($sortUsers) &&  $sortUsers==$key ? ' selected="selected"' : '').">{$value}</option>";
+                        }
+                    ?>
+            </select>
+            <button name="actionSortUsers" value="" class="left text-button-simple body-option-color">>></button>
+            </div>
+
             
             <div class="form-field left label bold new-line" for="tutorRightsRight">Rechte:</div>
             <div class="form-field left">

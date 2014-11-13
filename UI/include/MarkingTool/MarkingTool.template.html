@@ -1,16 +1,27 @@
 <input type="hidden" 
        name="maxMarkingStatus" 
-       value="<?php echo count($markingStatus) - 1; ?>" />
+       value="<?php echo $markingStatus[count($markingStatus)-1]; ?>" />
 <?php
     if (!empty($groups)) {
+    $allOutputs = 0;
+    
     foreach ($groups as $group):
+    
+    $anz=0;
+    foreach ($group['exercises'] as $key => $exercise){
+        $eid = $exercise['id'];
+        if (!isset($exercise['submission']['marking']) && (isset($tutorID) && $tutorID!='all') && (!isset($statusID) || ($statusID!=-1 && $statusID!=0))) continue;
+        if (!isset($exercise['submission']) && ((isset($statusID) && $statusID!=0) || (isset($tutorID) && $tutorID!='all'))) continue;
+        $anz++;$allOutputs++;
+    }
+    if ($anz==0)continue;
 
     $leaderID = $group['leader']['id'];
 ?>
 <div class="content-element">
     <div class="content-header">
         <div class="content-title left uppercase">
-            <?php print $group['leader']['firstName'] . " " . $group['leader']['lastName']; ?>
+            <?php print $group['leader']['firstName'] . " " . $group['leader']['lastName'] . (isset($group['leader']['userName']) ? " ({$group['leader']['userName']})" : ''); ?>
         </div>
         <div class="info-color bold right">
             <button class="text-button info-color bold right" 
@@ -29,6 +40,8 @@
                     $isSubtask = false;
                     foreach ($group['exercises'] as $key => $exercise):
                     $eid = $exercise['id'];
+                    if (!isset($exercise['submission']['marking']) && (isset($tutorID) && $tutorID!='all') && (!isset($statusID) || ($statusID!=-1 && $statusID!=0))) continue;
+                    if (!isset($exercise['submission']) && ((isset($statusID) && $statusID!=0) || (isset($tutorID) && $tutorID!='all'))) continue;
                 ?>
                 <?php
                 // make a sublist if next exercise is not a main exercise
@@ -76,12 +89,12 @@
                             id="exerciseType"> 
                         <?php
                             foreach ($markingStatus as $status) {
-                                if (!isset($status['id'])) continue;
+                                if (!isset($status['id'])) $status['id'] = -1;
                                 if (!isset($status['longName'])) $status['longName'] = '???';
                                 
                                 print '<option value="';
                                 print $status['id'] . '" ';
-                                if (isset($exercise['submission']['marking']['status'])) {
+                                if (isset($exercise['submission']['marking']['status']) || ($status['id']==-1 && !isset($exercise['submission']['marking'])) || ($status['id']==0 && !isset($exercise['submission']))) {
                                     print $status['id'] == $exercise['submission']['marking']['status'] ? ' selected="selected"' : NULL;
                                 }
                                 print '>';
@@ -181,7 +194,10 @@
 </div> <!-- end: content-wrapper -->
 <?php
 endforeach;
-} else {
+
+}
+
+if (empty($groups) || $allOutputs==0){
 ?>
 <div class="content-element">
     <div class="content-header">
