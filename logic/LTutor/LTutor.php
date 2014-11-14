@@ -1,4 +1,5 @@
 <?php
+set_time_limit(180);
 /**
  * @file LTutor.php Contains the LTutor class
  *
