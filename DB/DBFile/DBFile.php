@@ -382,7 +382,7 @@ class DBFile
 
             // checks the correctness of the query
             if ( $result['status'] >= 200 && 
-                 $result['status'] <= 299 ){
+                 $result['status'] <= 299 && isset($result['content'])){
                 $queryResult = Query::decodeQuery( $result['content'] );
 
                 // sets the new auto-increment id

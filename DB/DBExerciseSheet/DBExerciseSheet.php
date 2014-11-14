@@ -773,7 +773,7 @@ class DBExerciseSheet
              $result['status'] <= 299 && 
              ( !isset( $result2 ) || 
                ( $result2['status'] >= 200 && 
-                 $result2['status'] <= 299 ) ) ){
+                 $result2['status'] <= 299 ) && isset($result['content']) ) ){
             $query = Query::decodeQuery( $result['content'] );
 
             if ( $query->getNumRows( ) > 0 ){
