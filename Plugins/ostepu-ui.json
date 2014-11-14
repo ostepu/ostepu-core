@@ -1,11 +1,11 @@
 {
   "name":"OSTEPU-UI",
-  "version":"0.1",
+  "version":"0.2",
   "versionDate":"27.06.2014",
   "author":"",
   "sourceURL":"",
   "updateURL":"",
-  "requirements":[{"type":"plugin","name":"CORE","version":"0.1"}],
+  "requirements":[{"type":"plugin","name":"CORE","version":"0.2"}],
   "files":
     [
       {"path":"UI/"},

@@ -1,6 +1,6 @@
 <input type="hidden" 
        name="maxMarkingStatus" 
-       value="<?php echo $markingStatus[count($markingStatus)-1]; ?>" />
+       value="<?php echo $markingStatus[count($markingStatus)-1]['id']; ?>" />
 <?php
     if (!empty($groups)) {
     $allOutputs = 0;
@@ -66,7 +66,7 @@
                     <?php
                         print '<input class="form-field text-input very-short" name="';
                         print 'exercises[' . $leaderID . '][' . $eid . '][points]" value="';
-                        print isset($exercise['submission']['marking']) ? $exercise['submission']['marking']['points'] : 0;
+                        print isset($exercise['submission']['marking']['points']) ? $exercise['submission']['marking']['points'] : 0;
                         print '" id="exercisePoints" />';
                     ?>
 
@@ -94,8 +94,10 @@
                                 
                                 print '<option value="';
                                 print $status['id'] . '" ';
-                                if (isset($exercise['submission']['marking']['status']) || ($status['id']==-1 && !isset($exercise['submission']['marking'])) || ($status['id']==0 && !isset($exercise['submission']))) {
+                                if (isset($exercise['submission']['marking']['status'])) {
                                     print $status['id'] == $exercise['submission']['marking']['status'] ? ' selected="selected"' : NULL;
+                                } elseif (($status['id']==-1 && !isset($exercise['submission']['marking'])) || ($status['id']==0 && !isset($exercise['submission']))) {
+                                    print ' selected="selected"';
                                 }
                                 print '>';
                                 print $status['longName'];

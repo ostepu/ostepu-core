@@ -383,7 +383,7 @@ class FSPdf
                                             $name
                                             );
                                             
-        if (true || !file_exists( $this->config['DIR']['files'].'/'.$targetPath ) ){
+        if (!file_exists( $this->config['DIR']['files'].'/'.$targetPath ) ){
         
             $body="";
             foreach($files as $part){

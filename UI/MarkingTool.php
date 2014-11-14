@@ -11,7 +11,8 @@ include_once 'include/Boilerplate.php';
 include_once '../Assistants/Structures.php';
 include_once 'include/FormEvaluator.php';
 
-
+$timestamp = time();
+    
 /**
  * Creates a 'dummy file' in the database.
  *
@@ -21,7 +22,11 @@ function createDummyFile()
 {
     global $databaseURI;
     global $filesystemURI;
+    global $timestamp;
+    static $resultFile=null;
 
+    if ($resultFile!==null)
+        return $resultFile;
     /**
      * @todo Improve dummy file content.
      */
@@ -32,9 +37,9 @@ function createDummyFile()
 
     $data = base64_encode($data);
     $displayName = "Keine Einsendung";
-    $timestamp = time();
 
-    $file = array('timeStamp' => time(),
+
+    $file = array('timeStamp' => $timestamp,
                   'displayName' => $displayName,
                   'body' => $data);
 
@@ -59,6 +64,8 @@ function createDummyFile()
     if ($message != "201" && $message != "200") {
         return NULL;
     }
+    
+    $resultFile=$jsonFile;
 
     return $jsonFile;
 }
@@ -77,6 +84,7 @@ function createSubmission($leaderID, $eID)
 {
     global $databaseURI;
     global $filesystemURI;
+    global $timestamp;
 
     $jsonFile = createDummyFile();
 
@@ -91,7 +99,7 @@ function createSubmission($leaderID, $eID)
                                                       $eID,
                                                       null,
                                                       1,
-                                                      time(),
+                                                      $timestamp,
                                                       null,
                                                       null,
                                                       true);
@@ -144,23 +152,24 @@ function createMarking($points, $tutorComment, $status, $submissionID, $tutorID)
 {
     global $databaseURI;
     global $filesystemURI;
+    global $timestamp;
 
-    $jsonFile = createDummyFile();
+   /* $jsonFile = createDummyFile();
 
     if (!empty($jsonFile)) {
         $jsonFile = json_decode($jsonFile, true);
-        $fileID = $jsonFile['fileId'];
+        $fileID = $jsonFile['fileId'];*/
 
         // creates the new marking including the dummy file
         $newMarking = Marking::createMarking(null,
                                              $tutorID,
-                                             $fileID,
+                                             null,
                                              $submissionID,
                                              $tutorComment,
                                              null,
                                              $status,
                                              $points,
-                                             time(),
+                                             $timestamp,
                                              true);
 
         $newMarking = Marking::encodeMarking($newMarking);
@@ -170,9 +179,9 @@ function createMarking($points, $tutorComment, $status, $submissionID, $tutorID)
         if ($message != "201") {
             return NULL;
         }
-    } else {
+    /*} else {
         return NULL;
-    }
+    }*/
 
     return $marking;
 }
@@ -195,10 +204,11 @@ function createMarking($points, $tutorComment, $status, $submissionID, $tutorID)
 function saveMarking($points, $tutorComment, $status, $submissionID, $markingID, $leaderID, $tutorID, $eID)
 {
     global $databaseURI;
+    global $timestamp;
 
     // submission and marking already exist and don't 
     // need to be created before adding the marking data
-    if ($submissionID != -1 && $markingID != -1) {
+    if (($submissionID != -1 && $markingID != -1)) {
         $newMarking = Marking::createMarking($markingID, 
                                              null, 
                                              null, 
@@ -207,7 +217,7 @@ function saveMarking($points, $tutorComment, $status, $submissionID, $markingID,
                                              null,
                                              $status,
                                              $points,
-                                             time());
+                                             $timestamp);
 
         $newMarking = Marking::encodeMarking($newMarking);
         $URI = $databaseURI . "/marking/{$markingID}";
@@ -229,7 +239,7 @@ function saveMarking($points, $tutorComment, $status, $submissionID, $markingID,
         } else {
             return true;
         }
-    } elseif ($submissionID == -1 && $markingID == -1) {
+    } elseif (($submissionID == -1 && $markingID == -1)) {
         // neither the submission nor the marking exist - they both
         // need to be created before adding the marking data
 
@@ -341,7 +351,7 @@ if (isset($_POST['MarkingTool'])) {
     }
 }
 
-if (!isset($tutorID) && !isset($_POST['action']) && !isset($_POST['MarkingTool']))
+if (!isset($tutorID) && !isset($_POST['action']))
     $tutorID = $uid;
 
 // create URI for GetSite
@@ -382,7 +392,7 @@ if (isset($_POST['downloadCSV'])) {
                     } else {
                     ///echo "found";
                         // no marking
-                        $tempMarking = Marking::createMarking($newMarkings,$uid,null,$exercise['submission']['id'],null,null,1,null,time(),null);
+                        $tempMarking = Marking::createMarking($newMarkings,$uid,null,$exercise['submission']['id'],null,null,1,null,$timestamp,null);
                         $newMarkings--;
                         $tempSubmission = Submission::decodeSubmission(Submission::encodeSubmission($exercise['submission']));
                         $tempMarking->setSubmission($tempSubmission);
@@ -390,8 +400,8 @@ if (isset($_POST['downloadCSV'])) {
                     }
                 } else {
                     // no submission
-                        $tempMarking = Marking::createMarking($newMarkings,$uid,null,null,null,null,1,null,time(),null);
-                        $tempSubmission = Submission::createSubmission( $newMarkings,$group['leader']['id'],null,$exercise['id'],null,null,time(),null,$group['leader']['id'],null);
+                        $tempMarking = Marking::createMarking($newMarkings,$uid,null,null,null,null,1,null,$timestamp,null);
+                        $tempSubmission = Submission::createSubmission( $newMarkings,$group['leader']['id'],null,$exercise['id'],null,null,$timestamp,null,$group['leader']['id'],null);
                         $newMarkings--;
                         $tempMarking->setSubmission($tempSubmission);
                         $markings[] = $tempMarking;
@@ -462,8 +472,7 @@ $markingElement->bind($markingTool_data);
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $searchSettings, $markingElement);
-$w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $searchSettings);
-$w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $markingElement);
+$w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $searchSettings, $markingElement);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
 

@@ -448,7 +448,7 @@ class LGetSite
                     if (isset($submission['marking'])) {
                         $marking = $submission['marking'];
 
-                        $sheetPoints += $marking['points'];
+                        $sheetPoints += isset($marking['points']) ? $marking['points'] : 0 ;
 
                         $hasMarkings = true;
                     }
@@ -727,6 +727,7 @@ class LGetSite
                 $exerciseId = $submission['exerciseId'];
                 $exerciseIndex = $exerciseIndices[$exerciseId];
                 $studentId = $submission['studentId'];
+                //echo json_encode($submission['marking']);
 
                 // assign the submission to its group
                 $group = &$userGroups[$studentId];
@@ -1379,7 +1380,7 @@ class LGetSite
                 $studentMarkings[$studentID][$exerciseType] = 0;
             }
 
-            $studentMarkings[$studentID][$exerciseType] += $marking['points'];
+            $studentMarkings[$studentID][$exerciseType] += isset($marking['points']) ? $marking['points'] : 0;
         }
 
         foreach ($students as &$student) {
