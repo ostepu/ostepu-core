@@ -429,43 +429,43 @@ class Submission extends Object implements JsonSerializable
     {
         $values = '';
 
-        if ( $this->id != null )
+        if ( $this->id !== null )
             $this->addInsertData( 
                                  $values,
                                  'S_id',
                                  DBJson::mysql_real_escape_string( $this->id )
                                  );
-        if ( $this->studentId != null )
+        if ( $this->studentId !== null )
             $this->addInsertData( 
                                  $values,
                                  'U_id',
                                  DBJson::mysql_real_escape_string( $this->studentId )
                                  );
-        if ( $this->file != null )
+        if ( $this->file!=array() && $this->file !== null )
             $this->addInsertData( 
                                  $values,
                                  'F_id_file',
                                  DBJson::mysql_real_escape_string( $this->file->getFileId( ) )
                                  );
-        if ( $this->exerciseId != null )
+        if ( $this->exerciseId !== null )
             $this->addInsertData( 
                                  $values,
                                  'E_id',
                                  DBJson::mysql_real_escape_string( $this->exerciseId )
                                  );
-        if ( $this->comment != null )
+        if ( $this->comment !== null )
             $this->addInsertData( 
                                  $values,
                                  'S_comment',
                                  DBJson::mysql_real_escape_string( $this->comment )
                                  );
-        if ( $this->accepted != null )
+        if ( $this->accepted !== null )
             $this->addInsertData( 
                                  $values,
                                  'S_accepted',
                                  DBJson::mysql_real_escape_string( $this->accepted )
                                  );
-        if ( $this->date != null )
+        if ( $this->date !== null )
             $this->addInsertData( 
                                  $values,
                                  'S_date',
@@ -473,19 +473,19 @@ class Submission extends Object implements JsonSerializable
                                  );
 
         // if ($this->selectedForGroup != null) $this->addInsertData($values, 'S_selected', DBJson::mysql_real_escape_string($this->selectedForGroup));
-        if ( $this->flag != null )
+        if ( $this->flag !== null )
             $this->addInsertData( 
                                  $values,
                                  'S_flag',
                                  DBJson::mysql_real_escape_string( $this->flag )
                                  );
-        if ( $this->leaderId != null )
+        if ( $this->leaderId !== null )
             $this->addInsertData( 
                                  $values,
                                  'S_leaderId',
                                  DBJson::mysql_real_escape_string( $this->leaderId )
                                  );
-        if ( $this->hideFile != null )
+        if ( $this->hideFile !== null )
             $this->addInsertData( 
                                  $values,
                                  'S_hideFile',

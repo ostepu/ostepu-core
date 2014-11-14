@@ -312,49 +312,49 @@ class File extends Object implements JsonSerializable
     {
         $values = '';
 
-        if ( $this->fileId != null )
+        if ( $this->fileId !== null )
             $this->addInsertData( 
                                  $values,
                                  'F_id',
                                  DBJson::mysql_real_escape_string( $this->fileId )
                                  );
-        if ( $this->displayName != null )
+        if ( $this->displayName !== null )
             $this->addInsertData( 
                                  $values,
                                  'F_displayName',
                                  DBJson::mysql_real_escape_string( $this->displayName )
                                  );
-        if ( $this->address != null )
+        if ( $this->address !== null )
             $this->addInsertData( 
                                  $values,
                                  'F_address',
                                  DBJson::mysql_real_escape_string( $this->address )
                                  );
-        if ( $this->timeStamp != null )
+        if ( $this->timeStamp !== null )
             $this->addInsertData( 
                                  $values,
                                  'F_timeStamp',
                                  DBJson::mysql_real_escape_string( $this->timeStamp )
                                  );
-        if ( $this->fileSize != null )
+        if ( $this->fileSize !== null )
             $this->addInsertData( 
                                  $values,
                                  'F_fileSize',
                                  DBJson::mysql_real_escape_string( $this->fileSize )
                                  );
-        if ( $this->hash != null )
+        if ( $this->hash !== null )
             $this->addInsertData( 
                                  $values,
                                  'F_hash',
                                  DBJson::mysql_real_escape_string( $this->hash )
                                  );
-        if ( $this->comment != null )
+        if ( $this->comment !== null )
             $this->addInsertData( 
                                  $values,
                                  'F_comment',
                                  DBJson::mysql_real_escape_string( $this->comment )
                                  );
-        if ( $this->mimeType != null )
+        if ( $this->mimeType !== null )
             $this->addInsertData( 
                                  $values,
                                  'F_mimeType',
