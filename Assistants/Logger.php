@@ -56,6 +56,7 @@ class Logger
                                $trace = true,
                                $logFile = NULL)
     {
+        return;
         // if the function is called with the no prority don't log anything
         if ($logLevel == LogLevel::NONE) {
             return;
