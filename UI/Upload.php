@@ -212,6 +212,8 @@ foreach ($formdata as $value){
 }
 
 $user_course_data = $upload_data['user'];
+$menu = MakeNavigationElement($user_course_data,
+                              PRIVILEGE_LEVEL::STUDENT);
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
@@ -219,7 +221,8 @@ $h->bind($user_course_data);
 $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
                "backTitle" => "zur Veranstaltung",
                "backURL" => "Student.php?cid={$cid}",
-               "notificationElements" => $notifications));
+               "notificationElements" => $notifications,
+               "navigationElement" => $menu));
 
 
 /**

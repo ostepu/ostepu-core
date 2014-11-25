@@ -289,6 +289,8 @@ $mainSettings_data = json_decode($mainSettings_data, true);
 $mainSettings_data['plugins'] = $plugins_data;
 
 $user_course_data = $mainSettings_data['user'];
+$menu = MakeNavigationElement($user_course_data,
+                              PRIVILEGE_LEVEL::SUPER_ADMIN,true);
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
@@ -296,7 +298,8 @@ $h->bind($user_course_data);
 $h->bind(array("name" => "Einstellungen",
                "backTitle" => "Veranstaltungen",
                "backURL" => "index.php",
-               "notificationElements" => $notifications));
+               "notificationElements" => $notifications,
+               "navigationElement" => $menu));
 
 // construct a content element for creating new courses
 $createCourse = Template::WithTemplateFile('include/MainSettings/CreateCourse.template.html');

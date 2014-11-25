@@ -125,8 +125,7 @@ if (isset($_GET['sortby'])) {
 
 
  $menu = MakeNavigationElement($user_course_data,
-                               PRIVILEGE_LEVEL::ADMIN,
-                               true);
+                               PRIVILEGE_LEVEL::ADMIN,true);
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');

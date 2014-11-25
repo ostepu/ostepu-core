@@ -76,7 +76,8 @@ $menu = MakeNavigationElement($user_course_data,
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
 $h->bind(array("name" => (isset($user_course_data['courses'][0]['course']['name']) ? $user_course_data['courses'][0]['course']['name'] : null),
-               "notificationElements" => $notifications));
+               "notificationElements" => $notifications,
+               "navigationElement" => $menu));
 
 // construct a content element for uploading markings
 $tutorUpload = Template::WithTemplateFile('include/TutorUpload/TutorUpload.template.html');
