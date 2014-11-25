@@ -133,8 +133,8 @@
                              
                     </li>
                             
-                            <?php if (isset($exercise['submission']['marking']['tutorComment'])) { 
-                            $comment = $exercise['submission']['marking']['tutorComment'];//?>
+                            <?php if (isset($exercise['submission']['marking']['tutorComment']) && trim($exercise['submission']['marking']['tutorComment']) != '') { 
+                            $comment = trim($exercise['submission']['marking']['tutorComment']); ?>
                             <div class="" style="margin-top:-10px;margin-bottom:0px;word-break: break-all;">
                             <table border="0" style="width:auto">
                             <tr><td class="medium">
@@ -217,7 +217,7 @@
                     <?php endif; ?>
 
                     <?php // prints a link to download markings ?>
-                    <?php if ($sheet['hasMarkings'] && $isExpired): ?>
+                    <?php if (($sheet['hasMarkings'] || $sheet['hasSubmissions'] || $sheet['hasAttachments']) && $isExpired): ?>
                         <li>
                             <button name="downloadMarkings" value="<?php echo $sheet['id']; ?>" class="text-button body-option-color">
                             <!--<a style="color:#b9b8b8" class="text-button body-option-color"><s>-->
