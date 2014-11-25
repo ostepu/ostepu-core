@@ -1,22 +1,23 @@
-<?php if ($isSuperAdmin || $courseStatus > 1): ?>
 <ul id="navigation" class="navigation">
-<?php if ($isSuperAdmin): ?>
+<div class="">
+<?php if ($isSuperAdmin || $courseStatus > 1) { ?>
+<?php if ($isSuperAdmin){ ?>
     <li>
         <a href="MainSettings.php">Plattform verwalten</a>
     </li>
-<?php endif; ?>
-<?php if (!$switchDisabled && !$forIndex): ?>
-    <?php if ($requiredPrivilege == $courseStatus): ?>
+<?php } ?>
+<?php if (!$switchDisabled && !$forIndex) { ?>
+    <?php if ($requiredPrivilege == $courseStatus){ ?>
         <li>
             <a href="Student.php?cid=<?php echo $cid; ?>">Studentenrolle einnehmen</a>
         </li>
-        <?php else: ?>
+        <?php } else { ?>
         <li>
             <a href="<?php echo $sites[$courseStatus]; ?>?cid=<?php echo $cid; ?>">Studentenrolle verlassen</a>
         </li>
-    <?php endif; ?>
-<?php endif; ?>
-<?php if ($courseStatus == 3 /* PRIVILEGE_LEVEL::ADMIN */  && !$forIndex): ?>
+    <?php } ?>
+<?php } ?>
+<?php if ($courseStatus == 3 /* PRIVILEGE_LEVEL::ADMIN */  && !$forIndex) { ?>
     <li>
         <a href="CourseManagement.php?cid=<?php echo $cid; ?>">Kurs verwalten</a>
     </li>
@@ -26,6 +27,15 @@
     <li>
         <a href="UploadHistory.php?cid=<?php echo $cid; ?>">Einsendungsverlauf</a>
     </li>
-<?php endif; ?>
-</ul>
-<?php endif; ?>
+<?php } ?>
+<?php } ?>
+</div>
+    <div class="right medium">
+    <li>
+        <a class="log-out" href="AccountSettings.php">Account</a>
+    </li>
+    <li style="padding:0 0">
+        <a class="log-out" href="?action=logout">Ausloggen</a>
+    </li>
+    </div>
+    </ul>
