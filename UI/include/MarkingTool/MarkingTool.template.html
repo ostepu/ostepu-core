@@ -96,11 +96,11 @@ if (isset($GroupNotificationElements)) {
                        name="exercises[<?php echo $leaderID; ?>][<?php echo $eid; ?>][markingID]" 
                        value="<?php echo isset($exercise['submission']['marking']) ? $exercise['submission']['marking']['id'] : -1; ?>" />
 
-                    <?php /*if (isset($exercise['submission']['marking']['points'])) { ?>
+                    <?php if (isset($exercise['submission']['marking']['points'])) { ?>
                     <input type="hidden" 
                        name="exercises[<?php echo $leaderID; ?>][<?php echo $eid; ?>][oldPoints]" 
                        value="<?php echo $exercise['submission']['marking']['points']; ?>" />
-                    <?php } */?> 
+                    <?php } ?> 
                     
                     <?php
                         print '<input class="form-field text-input very-short" name="';
@@ -112,28 +112,15 @@ if (isset($GroupNotificationElements)) {
                     <div class="form-field label very-short" for="exercisePoints">
                         <?php
                             print '/ ' . $exercise['maxPoints'] . 'P';
-                            print $exercise['bonus'] ? ' (*)' : NULL;
+                            print $exercise['bonus'] ? ' (B)' : NULL;
                         ?>
                     </div>
-                    
-                    <?php /*if (isset($exercise['submission']['marking']['tutorComment'])) { ?>
-                    <input type="hidden" 
-                       name="exercises[<?php echo $leaderID; ?>][<?php echo $eid; ?>][oldTutorComment]" 
-                       value="<?php echo $exercise['submission']['marking']['tutorComment']; ?>" />
-                    <?php }*/ ?>  
-                    
-                    <?php
-                        print '<input class="form-field text-input" name="';
-                        print 'exercises[' . $leaderID . '][' . $eid . '][tutorComment]" value="';
-                        if (isset($exercise['submission']['marking']['tutorComment'])) print $exercise['submission']['marking']['tutorComment'];
-                        print '" id="markingComment" maxlength="255" />';
-                    ?>
 
-                    <?php /*if (isset($exercise['submission']['marking']['status'])) { ?>
+                    <?php if (isset($exercise['submission']['marking']['status'])) { ?>
                     <input type="hidden" 
                        name="exercises[<?php echo $leaderID; ?>][<?php echo $eid; ?>][oldStatus]" 
                        value="<?php echo $exercise['submission']['marking']['status']; ?>" />
-                    <?php }*/ ?>  
+                    <?php } ?>  
                     
                     <select class="form-field text-input short" 
                             name="exercises[<?php echo $leaderID; ?>][<?php echo $eid; ?>][status]" 
@@ -155,7 +142,20 @@ if (isset($GroupNotificationElements)) {
                             }
                         ?>
                     </select>
-
+                    
+                    <?php if (isset($exercise['submission']['marking']['tutorComment'])) { ?>
+                    <input type="hidden" 
+                       name="exercises[<?php echo $leaderID; ?>][<?php echo $eid; ?>][oldTutorComment]" 
+                       value="<?php echo $exercise['submission']['marking']['tutorComment']; ?>" />
+                    <?php } ?>  
+                    
+                    <?php
+                        print '<input class="form-field text-input" name="';
+                        print 'exercises[' . $leaderID . '][' . $eid . '][tutorComment]" value="';
+                        if (isset($exercise['submission']['marking']['tutorComment'])) print $exercise['submission']['marking']['tutorComment'];
+                        print '" id="markingComment" maxlength="255" />';
+                    ?>
+                    
                     <div class="exercise-sheet-images">
                         <?php
                             // creates a download icon for the submission (if it exists)

@@ -86,50 +86,50 @@ function createSubmission($leaderID, $eID)
     global $filesystemURI;
     global $timestamp;
 
-    $jsonFile = createDummyFile();
+    /*$jsonFile = createDummyFile();
 
     if (!empty($jsonFile)) {
         $jsonFile = json_decode($jsonFile, true);
-        $fileID = $jsonFile['fileId'];
+        $fileID = $jsonFile['fileId'];*/
 
-        // creates the new submission including the dummy file
-        $newSubmission = Submission::createSubmission(null,
-                                                      $leaderID,
-                                                      $fileID,
-                                                      $eID,
-                                                      null,
-                                                      1,
-                                                      $timestamp,
-                                                      null,
-                                                      null,
-                                                      true);
+    // creates the new submission including the dummy file
+    $newSubmission = Submission::createSubmission(null,
+                                                  $leaderID,
+                                                  null,
+                                                  $eID,
+                                                  null,
+                                                  1,
+                                                  $timestamp,
+                                                  null,
+                                                  null,
+                                                  true);
 
-        $newSubmission = Submission::encodeSubmission($newSubmission);
+    $newSubmission = Submission::encodeSubmission($newSubmission);
 
-        $URI = $databaseURI . "/submission";
-        $submission = http_post_data($URI, $newSubmission, true, $message);
+    $URI = $databaseURI . "/submission";
+    $submission = http_post_data($URI, $newSubmission, true, $message);
 
-        if ($message != "201") {
-            return NULL;
-        }
-
-        $submission = json_decode($submission, true);
-        $submissionID = $submission['id'];
-
-        // makes the currently created submission selected
-        updateSelectedSubmission($databaseURI,
-                                 $leaderID,
-                                 $submissionID,
-                                 $eID,
-                                 $message);
-
-        if ($message != "201") {
-            return NULL;
-        }
-
-    } else {
+    if ($message != "201") {
         return NULL;
     }
+
+    $submission = json_decode($submission, true);
+    $submissionID = $submission['id'];
+
+    // makes the currently created submission selected
+    updateSelectedSubmission($databaseURI,
+                             $leaderID,
+                             $submissionID,
+                             $eID,
+                             $message);
+
+    if ($message != "201") {
+        return NULL;
+    }
+
+    /*} else {
+        return NULL;
+    }*/
 
     return $submission;
 }
@@ -324,23 +324,23 @@ if (isset($_POST['MarkingTool'])) {
 
                 if ($f->evaluate(true)) {
                     $foundValues = $f->foundValues;
-                    $changed = true; 
+                    $changed = false; 
                     
                     $points = (isset($foundValues['points']) ? $foundValues['points'] : null);
-                    /*if ((!isset($exercise['oldPoints']) && $points!=null) || (isset($exercise['oldPoints']) && $points!=$exercise['oldPoints'])){
-                          $changed=true;echo "A";
-                    }*/
+                    if ((!isset($exercise['oldPoints']) && $points!=null) || (isset($exercise['oldPoints']) && $points!=$exercise['oldPoints'])){
+                          $changed=true;///echo "A";
+                    }
                     
                     $tutorComment = (isset($foundValues['tutorComment']) ? $foundValues['tutorComment'] : '');
                     if (isset($exercise['oldTutorComment'])) $exercise['oldTutorComment']=htmlspecialchars($exercise['oldTutorComment']);
-                   /* if ((!isset($exercise['oldTutorComment']) && isset($foundValues['tutorComment'])) || (isset($exercise['oldTutorComment']) && $tutorComment!=$exercise['oldTutorComment'])){
-                          $changed=true;echo "B";
-                    }*/
+                    if ((!isset($exercise['oldTutorComment']) && isset($foundValues['tutorComment'])) || (isset($exercise['oldTutorComment']) && $tutorComment!=$exercise['oldTutorComment'])){
+                          $changed=true;///echo "B";
+                    }
                           
                     $status = (isset($foundValues['status']) ? $foundValues['status'] : null);
-                    /*if ((!isset($exercise['oldStatus']) && isset($foundValues['status'])) || (isset($exercise['oldStatus']) && $status!=$exercise['oldStatus'])){
-                          $changed=true;echo "C";
-                    }*/
+                    if ((!isset($exercise['oldStatus']) && isset($foundValues['status'])) || (isset($exercise['oldStatus']) && $status!=$exercise['oldStatus'])){
+                          $changed=true;///echo "C";
+                    }
                           
                     if ($changed){
                         $hasChanged=true;
@@ -353,13 +353,13 @@ if (isset($_POST['MarkingTool'])) {
                                          $leaderID, 
                                          $uid, 
                                          $exerciseId)) {
-                            $RequestError = true;
+                            $RequestError = true;echo "FAIL";
                         }
                     }
 
                 } else {
-                    $GroupNotificationElements[$key] = $notifications + $f->notifications;
-                    $RequestError = true;
+                    //$GroupNotificationElements[$key] = $notifications + $f->notifications;
+                    //$RequestError = true;echo "OK";
                 }
             }
 
