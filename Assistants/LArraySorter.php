@@ -58,7 +58,7 @@ class LArraySorter
             if (is_string($field)) {
                 $tmp = array();
                 foreach ($data as $key => $row){
-                    $tmp[$key] = strtolower($row[$field]);
+                    $tmp[$key] = (isset($row[$field]) ? strtolower($row[$field]) : null);
                 }
                 $args[$n] = $tmp;
                 }
