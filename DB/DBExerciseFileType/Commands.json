@@ -1,6 +1,8 @@
 [
     {"method":"PUT", "path":"/exercisefiletype(/exercisefiletype)/:eftid(/)"},
     {"method":"DELETE", "path":"/exercisefiletype(/exercisefiletype)/:eftid(/)"},
+    {"method":"DELETE", "path":"/exercisefiletype/exercise/:eid(/)"},
+    {"method":"DELETE", "path":"/exercisefiletype/exercisesheet/:esid(/)"},
     {"method":"POST", "path":"/exercisefiletype(/)"},
     {"method":"GET", "path":"/exercisefiletype(/exercisefiletype)/:eftid(/)"},
     {"method":"GET", "path":"/exercisefiletype(/exercisefiletype)/exercise/:eid(/)"},

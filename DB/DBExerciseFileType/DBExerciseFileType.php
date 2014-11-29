@@ -144,7 +144,25 @@ class DBExerciseFileType
                                   'deleteExerciseFileType'
                                   )
                             );
-
+                            
+        // DELETE DeleteExerciseExerciseFileType
+        $this->_app->delete( 
+                            '/' . $this->getPrefix( ) . '/exercise/:eid(/)',
+                            array( 
+                                  $this,
+                                  'deleteExerciseExerciseFileType'
+                                  )
+                            );
+                            
+        // DELETE DeleteExerciseSheetExerciseFileType
+        $this->_app->delete( 
+                            '/' . $this->getPrefix( ) . '/exercisesheet/:esid(/)',
+                            array( 
+                                  $this,
+                                  'deleteExerciseSheetExerciseFileType'
+                                  )
+                            );
+                            
         // POST AddExerciseFileType
         $this->_app->post( 
                           '/' . $this->getPrefix( ) . '(/)',
@@ -311,7 +329,75 @@ class DBExerciseFileType
             $this->_app->stop( );
         }
     }
+    public function deleteExerciseExerciseFileType( $eid )
+    {
+        Logger::Log( 
+                    'starts DELETE DeleteExerciseExerciseFileType',
+                    LogLevel::DEBUG
+                    );
 
+        // starts a query, by using a given file
+        $result = DBRequest::getRoutedSqlFile( 
+                                              $this->query,
+                                              dirname(__FILE__) . '/Sql/DeleteExerciseExerciseFileType.sql',
+                                              array( 'eid' => $eid )
+                                              );
+
+        // checks the correctness of the query
+        if ( $result['status'] >= 200 && 
+             $result['status'] <= 299 ){
+
+            $this->_app->response->setStatus( 201 );
+            if ( isset( $result['headers']['Content-Type'] ) )
+                $this->_app->response->headers->set( 
+                                                    'Content-Type',
+                                                    $result['headers']['Content-Type']
+                                                    );
+            
+        } else {
+            Logger::Log( 
+                        'DELETE DeleteExerciseExerciseFileType failed',
+                        LogLevel::ERROR
+                        );
+            $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+            $this->_app->stop( );
+        }
+    }
+    public function deleteExerciseSheetExerciseFileType( $esid )
+    {
+        Logger::Log( 
+                    'starts DELETE DeleteExerciseSheetExerciseFileType',
+                    LogLevel::DEBUG
+                    );
+
+        // starts a query, by using a given file
+        $result = DBRequest::getRoutedSqlFile( 
+                                              $this->query,
+                                              dirname(__FILE__) . '/Sql/DeleteExerciseSheetExerciseFileType.sql',
+                                              array( 'esid' => $esid )
+                                              );
+
+        // checks the correctness of the query
+        if ( $result['status'] >= 200 && 
+             $result['status'] <= 299 ){
+
+            $this->_app->response->setStatus( 201 );
+            if ( isset( $result['headers']['Content-Type'] ) )
+                $this->_app->response->headers->set( 
+                                                    'Content-Type',
+                                                    $result['headers']['Content-Type']
+                                                    );
+            
+        } else {
+            Logger::Log( 
+                        'DELETE DeleteExerciseSheetExerciseFileType failed',
+                        LogLevel::ERROR
+                        );
+            $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+            $this->_app->stop( );
+        }
+    }
+    
     /**
      * Adds a new exercise type.
      *
