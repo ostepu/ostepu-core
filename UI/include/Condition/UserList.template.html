@@ -61,18 +61,13 @@
                         // prints all exercise types as header
                         foreach ($minimumPercentages as $percentage) {
                             print "<th colspan=\"2\">";
-
-                            /**
-                             * @todo Sort by exerciseType doesn't work yet.
-                             */
                             print '<a class="body-option-color plain" href="';
                             print $fileName;
                             print '?cid=';
                             print $user['courses'][0]['course']['id'];
-                            print '&sortby=isApproved">';
+                            print '&sortby=type&sortId='.$percentage['exerciseTypeId'].'">';
                             print $percentage['exerciseType'] . " (max. " . $percentage['maxPoints'] . "P)";
                             print '</a>';
-
                             print "</th>";
                         }
                     ?>
