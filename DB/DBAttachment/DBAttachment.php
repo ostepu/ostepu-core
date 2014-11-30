@@ -146,7 +146,25 @@ class DBAttachment
                                   'deleteAttachment'
                                   )
                             );
-
+                            
+        // DELETE DeleteExerciseAttachments
+        $this->_app->delete( 
+                            '/' . $this->getPrefix( ) . '/exercise/:eid(/)',
+                            array( 
+                                  $this,
+                                  'deleteExerciseAttachment'
+                                  )
+                            );
+                            
+        // DELETE DeleteExerciseFileAttachment
+        $this->_app->delete( 
+                            '/' . $this->getPrefix( ) . '/exercise/:eid/file/:fileid(/)',
+                            array( 
+                                  $this,
+                                  'deleteExerciseFileAttachment'
+                                  )
+                            );
+                            
         // POST AddAttachment
         $this->_app->post( 
                           '/' . $this->getPrefix( ) . '(/)',
@@ -312,7 +330,60 @@ class DBAttachment
             $this->_app->stop( );
         }
     }
+    
+    public function deleteExerciseAttachment( $eid )
+    {
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput( 
+                           $this->_app,
+                           ctype_digit( $eid )
+                           );
 
+        // starts a query, by using a given file
+        $result = DBRequest::getRoutedSqlFile( 
+                                              $this->query,
+                                              dirname(__FILE__) . '/Sql/DeleteExerciseAttachment.sql',
+                                              array( 'eid' => $eid )
+                                              );
+
+        // checks the correctness of the query
+        if ( $result['status'] >= 200 && 
+             $result['status'] <= 299 ){
+            $this->_app->response->setStatus( 201 );
+            
+        } else {
+            $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+            $this->_app->stop( );
+        }
+    }
+    
+    public function deleteExerciseFileAttachment( $eid, $fileid )
+    {
+        // checks whether incoming data has the correct data type
+        DBJson::checkInput( 
+                           $this->_app,
+                           ctype_digit( $eid ),
+                           ctype_digit( $fileid )
+                           );
+
+        // starts a query, by using a given file
+        $result = DBRequest::getRoutedSqlFile( 
+                                              $this->query,
+                                              dirname(__FILE__) . '/Sql/DeleteExerciseFileAttachment.sql',
+                                              array( 'eid' => $eid, 'fileid' => $fileid )
+                                              );
+
+        // checks the correctness of the query
+        if ( $result['status'] >= 200 && 
+             $result['status'] <= 299 ){
+            $this->_app->response->setStatus( 201 );
+            
+        } else {
+            $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+            $this->_app->stop( );
+        }
+    }
+    
     /**
      * Adds an attachment.
      *
