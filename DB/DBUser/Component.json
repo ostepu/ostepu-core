@@ -1,20 +1,55 @@
 {
-  "name":"DBUser",
-  "version":"1.0",
-  "classFile":"DBUser.php",
-  "className":"DBUser",
-  "files":[
-    {"path":".htaccess"},
-    {"path":"DBUser.php"},
-    {"path":"index.php"},
-    {"path":"Commands.json"},
-    {"path":"Sql/"}
-  ],
-  "links":[
-    {"name":"out", "target":"DBQuery", "links":[{"method":"POST", "path":"/query" }] },
-    {"name":"out2", "target":"DBQuery2", "links":[{"method":"POST", "path":"/query" }] }
-  ],
-  "connector":[
-    {"name":"request", "target":"CLocalObjectRequest"}
-  ]
+    "name": "DBUser",
+    "version": "1.0",
+    "classFile": "DBUser.php",
+    "className": "DBUser",
+    "files": [
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "DBUser.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "Sql/"
+        }
+    ],
+    "links": [
+        {
+            "name": "out",
+            "minQuantity": "1",
+            "maxQuantity": "1",
+            "target": "DBQuery",
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "/query"
+                }
+            ]
+        },
+        {
+            "name": "out2",
+            "minQuantity": "1",
+            "maxQuantity": "1",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "/query"
+                }
+            ]
+        }
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest"
+        }
+    ]
 }

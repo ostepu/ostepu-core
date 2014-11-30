@@ -1,16 +1,100 @@
 [
-    {"method":"PUT", "path":"/user(/user)/:userid(/)"},
-    {"method":"DELETE", "path":"/user(/user)/:userid(/)"},
-    {"method":"DELETE", "path":"/user(/user)/:userid/permanent(/)"},
-    {"method":"POST", "path":"/user(/)"},
-    {"method":"GET", "path":"/user(/user)(/)"},
-    {"method":"GET", "path":"/user(/user)/:userid/IncFailedLogin(/)"},
-    {"method":"GET", "path":"/user(/user)/:userid(/)"},
-    {"method":"GET", "path":"/user/course/:courseid/status/:statusid(/)"},
-    {"method":"GET", "path":"/user/course/:courseid(/)"},
-    {"method":"GET", "path":"/user/group/user/:userid/exercisesheet/:esid(/)"},
-    {"method":"GET", "path":"/user/status/:statusid(/)"},
-    {"method":"POST", "path":"/platform"},
-    {"method":"DELETE", "path":"/platform"},
-    {"method":"GET", "path":"/link/exists/platform"}
+    {
+        "name": "editUser",
+        "outputType": "User",
+        "inputType": "User",
+        "method": "PUT",
+        "path": "/user(/user)/:userid(/)"
+    },
+    {
+        "name": "removeUser",
+        "outputType": "User",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/user(/user)/:userid(/)"
+    },
+    {
+        "name": "removeUserPermanent",
+        "outputType": "User",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/user(/user)/:userid/permanent(/)"
+    },
+    {
+        "name": "addUser",
+        "outputType": "User",
+        "inputType": "User",
+        "method": "POST",
+        "path": "/user(/)"
+    },
+    {
+        "name": "getUsers",
+        "outputType": "User",
+        "inputType": "",
+        "method": "GET",
+        "path": "/user(/user)(/)"
+    },
+    {
+        "name": "getIncreaseUserFailedLogin",
+        "outputType": "User",
+        "inputType": "",
+        "method": "GET",
+        "path": "/user(/user)/:userid/IncFailedLogin(/)"
+    },
+    {
+        "name": "getUser",
+        "outputType": "User",
+        "inputType": "",
+        "method": "GET",
+        "path": "/user(/user)/:userid(/)"
+    },
+    {
+        "name": "getCourseUserByStatus",
+        "outputType": "User",
+        "inputType": "",
+        "method": "GET",
+        "path": "/user/course/:courseid/status/:statusid(/)"
+    },
+    {
+        "name": "getCourseMember",
+        "outputType": "User",
+        "inputType": "",
+        "method": "GET",
+        "path": "/user/course/:courseid(/)"
+    },
+    {
+        "name": "getGroupMember",
+        "outputType": "User",
+        "inputType": "",
+        "method": "GET",
+        "path": "/user/group/user/:userid/exercisesheet/:esid(/)"
+    },
+    {
+        "name": "getUserByStatus",
+        "outputType": "User",
+        "inputType": "",
+        "method": "GET",
+        "path": "/user/status/:statusid(/)"
+    },
+    {
+        "name": "addPlatform",
+        "outputType": "Platform",
+        "inputType": "Platform",
+        "method": "POST",
+        "path": "/platform"
+    },
+    {
+        "name": "deletePlatform",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/platform"
+    },
+    {
+        "name": "getExistsPlatform",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "GET",
+        "path": "/link/exists/platform"
+    }
 ]
