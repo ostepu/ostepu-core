@@ -54,18 +54,21 @@ class CacheManager
     
     public static function savePath()
     {
-        $text="digraph G {edge [splines=\"polyline\"];\n";
+        $text="digraph G {rankdir=TB;edge [splines=\"polyline\"];\n";
         $graphName="graph";
         $groups=array();
         foreach (self::$cachedPath as $path){
             $group='0';
-            if (substr($path->fromName,0,2)=='DB')$group='1';
+            if (strpos($path->fromURL,'/UI/')!==false)$group='1';
+            if (strpos($path->fromURL,'/logic/')!==false)$group='2';
+            if (strpos($path->fromURL,'/DB/')!==false)$group='3';
+            
             if (!isset($groups[$group])) $groups[$group] = array();
             $groups[$group][] = $path;
         }
         
         foreach ($groups as $key=>$list){
-        	//$text.="subgraph cluster_{$key} {\n";
+        	$text.="subgraph step{$key}{\n";//cluster_{$key}
 		
             foreach ($list as $path){
                 if ($path->fromName===null){
@@ -76,19 +79,8 @@ class CacheManager
                 }
             }
             
-           // $text.=" label = \"{$key}\";color=blue}\n";
+            $text.=" label = \"{$key}\";color=blue;style=dashed;rank = same;}\n";
         }
-        
-        /*foreach (self::$cachedPath as $path){
-            if ($path->fromName===null){
-                $text.="\"".$path->fromName."\" [style=\"invis\"];\n";
-                $graphName=$path->toName;
-            } else{
-                $group='0';
-                if (substr($path->fromName,0,2)=='DB')$group='1';
-                $text.="\"".$path->fromName."\" [shape=\"box\", group=\"".$group."\"];\n";
-            }
-        }*/
         
         foreach (self::$cachedPath as $path){
             $text.="\"".$path->fromName.'"->"'.$path->toName."\"[ label = \"".$path->toMethod."".implode("\n/",explode('/',$path->toURL))."\" ];\n";
