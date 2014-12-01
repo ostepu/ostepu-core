@@ -195,7 +195,7 @@ class Process extends Object implements JsonSerializable
             $this->addInsertData( 
                                  $values,
                                  'PRO_id',
-                                 DBJson::mysql_real_escape_string( $this->processId )
+                                 DBJson::mysql_real_escape_string( Process::getIdFromProcessId($this->processId) )
                                  );
         if ( $this->exercise !== null && $this->exercise->getId() !== null )
             $this->addInsertData( 
