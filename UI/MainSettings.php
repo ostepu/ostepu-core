@@ -236,15 +236,18 @@ if (isset($_POST['action'])) {
                 $newUserSettings = User::encodeUser($newUser);
 
                 $URI = $databaseURI . "/user";
-                http_post_data($URI, $newUserSettings, true, $message);
+                $answer=http_post_data($URI, $newUserSettings, true, $message);
 
                 if ($message == "201") {
-                    $notifications[] = MakeNotification("success",
-                                                         "Der Nutzer wurde erstellt!");
-                }
+                    $user = User::decodeUser($answer);
+                    if ($user->getStatus()== '201'){
+                        $notifications[] = MakeNotification("success", "Der Nutzer wurde erstellt!");
+                    } else
+                        $notifications[] = MakeNotification("error", "Der Nutzer wurde nicht erstellt!");
+                } else
+                        $notifications[] = MakeNotification("error", "Der Nutzer wurde nicht erstellt!");
             } else {
-                $notifications[] = MakeNotification("error",
-                                                    "Die Passwörter stimmen nicht überein!");
+                $notifications[] = MakeNotification("error", "Die Passwörter stimmen nicht überein!");
             }
         } else {
             $notifications = $notifications + $f->notifications;
