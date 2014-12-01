@@ -67,76 +67,78 @@ $condition_data = http_get($URL, true);
 $condition_data = json_decode($condition_data, true);
 
 $user_course_data = $condition_data['user'];
-function compare_lastName($a, $b) {
-    return strnatcmp(strtolower($a['lastName']), strtolower($b['lastName']));
-}
-usort($condition_data['users'], 'compare_lastName');
+if (isset($condition_data['users'])){
+    function compare_lastName($a, $b) {
+        return strnatcmp(strtolower($a['lastName']), strtolower($b['lastName']));
+    }
+    usort($condition_data['users'], 'compare_lastName');
 
-// manages table sort
-if (isset($_GET['sortby'])) {
-    $sortBy = cleanInput($_GET['sortby']);
+    // manages table sort
+    if (isset($_GET['sortby'])) {
+        $sortBy = cleanInput($_GET['sortby']);
 
-    switch ($sortBy) {
-        case "firstName":
-            $condition_data['users']=array_reverse($condition_data['users']);
-            function compare_firstName($a, $b) {
-                return strnatcmp(strtolower($a['firstName']), strtolower($b['firstName']));
-            }
-            usort($condition_data['users'], 'compare_firstName');
-            break;
-            
-        case "userName":
-            $condition_data['users']=array_reverse($condition_data['users']);
-            function compare_userName($a, $b) {
-                    if (!isset($a['userName'])) return 0;
-                    if (!isset($b['userName'])) return 0;
-                return strnatcmp(strtolower($a['userName']), strtolower($b['userName']));
-            }
-            usort($condition_data['users'], 'compare_userName');
-            break;
-            
-        case "studentNumber":
-            $condition_data['users']=array_reverse($condition_data['users']);
-            function compare_studentNumber($a, $b) {
-                    if (!isset($a['studentNumber'])) return 0;
-                    if (!isset($b['studentNumber'])) return 0;
-                return $a['studentNumber'] < $b['studentNumber'];
-            }
-            usort($condition_data['users'], 'compare_studentNumber');
-            break;
+        switch ($sortBy) {
+            case "firstName":
+                $condition_data['users']=array_reverse($condition_data['users']);
+                function compare_firstName($a, $b) {
+                    return strnatcmp(strtolower($a['firstName']), strtolower($b['firstName']));
+                }
+                usort($condition_data['users'], 'compare_firstName');
+                break;
+                
+            case "userName":
+                $condition_data['users']=array_reverse($condition_data['users']);
+                function compare_userName($a, $b) {
+                        if (!isset($a['userName'])) return 0;
+                        if (!isset($b['userName'])) return 0;
+                    return strnatcmp(strtolower($a['userName']), strtolower($b['userName']));
+                }
+                usort($condition_data['users'], 'compare_userName');
+                break;
+                
+            case "studentNumber":
+                $condition_data['users']=array_reverse($condition_data['users']);
+                function compare_studentNumber($a, $b) {
+                        if (!isset($a['studentNumber'])) return 0;
+                        if (!isset($b['studentNumber'])) return 0;
+                    return $a['studentNumber'] < $b['studentNumber'];
+                }
+                usort($condition_data['users'], 'compare_studentNumber');
+                break;
 
-        case "isApproved":
-            $condition_data['users']=array_reverse($condition_data['users']);
-            function compare_isApproved($a, $b) {
-                return strnatcmp($a['isApproved'], $b['isApproved']);
-            }
-            usort($condition_data['users'], 'compare_isApproved');
-            break;
-            
-        case "type":
-            $condition_data['users']=array_reverse($condition_data['users']);
-            function compare_type($a, $b) {
-                $type=cleanInput($_GET['sortId']);
-                $aId = null;
-                $bId = null;
-                if (isset($a['percentages']))
-                    foreach ($a['percentages'] as $key => $per)
-                        if ($per['exerciseTypeID']==$type){
-                           $aId = $key;break;
-                        }
-                        
-                if (isset($b['percentages']))
-                    foreach ($b['percentages'] as $key => $per)
-                        if ($per['exerciseTypeID']==$type){
-                           $bId = $key;break;
-                        }
-                if ($aId===null && $bId===null) return 0;
-                if ($aId!==null && $bId===null) return 1;
-                if ($aId===null && $bId!==null) return -1;
-                return strnatcmp($a['percentages'][$aId]['points'], $b['percentages'][$bId]['points']);
-            }
-            usort($condition_data['users'], 'compare_type');
-            break;
+            case "isApproved":
+                $condition_data['users']=array_reverse($condition_data['users']);
+                function compare_isApproved($a, $b) {
+                    return strnatcmp($a['isApproved'], $b['isApproved']);
+                }
+                usort($condition_data['users'], 'compare_isApproved');
+                break;
+                
+            case "type":
+                $condition_data['users']=array_reverse($condition_data['users']);
+                function compare_type($a, $b) {
+                    $type=cleanInput($_GET['sortId']);
+                    $aId = null;
+                    $bId = null;
+                    if (isset($a['percentages']))
+                        foreach ($a['percentages'] as $key => $per)
+                            if ($per['exerciseTypeID']==$type){
+                               $aId = $key;break;
+                            }
+                            
+                    if (isset($b['percentages']))
+                        foreach ($b['percentages'] as $key => $per)
+                            if ($per['exerciseTypeID']==$type){
+                               $bId = $key;break;
+                            }
+                    if ($aId===null && $bId===null) return 0;
+                    if ($aId!==null && $bId===null) return 1;
+                    if ($aId===null && $bId!==null) return -1;
+                    return strnatcmp($a['percentages'][$aId]['points'], $b['percentages'][$bId]['points']);
+                }
+                usort($condition_data['users'], 'compare_type');
+                break;
+        }
     }
 }
 
