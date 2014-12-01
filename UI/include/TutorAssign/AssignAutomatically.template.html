@@ -18,13 +18,13 @@ if (isset($AssignAutomaticallyNotificationElements)) {
             <label class="form-field left label bold new-line">
                 Unzugeordnete gruppenweise zuteilen an:
             </label>
-
+<div class="left">
                 <?php $statusList = CourseStatus::getStatusDefinition();
                 foreach ($tutorAssignments as $tutorAssignment):
                     $tutorId = isset($tutorAssignment['tutor']['id']) ? $tutorAssignment['tutor']['id'] : null;
                     
                     if (isset($tutorAssignment['tutor']['id']) && $tutorAssignment['tutor']['userName'] != "unassigned"):
-                        echo "<div class='left'>";
+                        echo "<div class=''>";
                         print '<input type="checkbox" name="tutorIds[]" value="';
                         print $tutorId . '" id="';
                         print $tutorId . '" />';
@@ -42,6 +42,7 @@ if (isset($AssignAutomaticallyNotificationElements)) {
                     endif;
                 endforeach;
                 ?>
+</div>
         </div>
     </div> <!-- end: content-body-wrapper -->
 </div> <!-- end: content-element -->
