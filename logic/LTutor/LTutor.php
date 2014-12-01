@@ -643,8 +643,10 @@ class LTutor
                     }
                     
                     // file
-                    $fileInfo = pathinfo($marking['submission']['file']['displayName']);
-                    $newFile = array_merge(array(),$marking['submission']['file']);
+                    if (isset($marking['submission']['file'])){
+                        $fileInfo = pathinfo($marking['submission']['file']['displayName']);
+                        $newFile = array_merge(array(),$marking['submission']['file']);
+                    }
                     $converted=false;
                     
                     if (isset($marking['file']))
@@ -687,37 +689,41 @@ class LTutor
                         $data.="<pre>";
                         $newFileData->setBody(base64_encode($data));
                         $newFileSend[] = $newFileData;
-                        $newFileSend[] = $newFile;
-                        $newFileData = new File();
-                        $newFileData->setBody(base64_encode("</pre>"));
-                        $newFileSend[] = $newFileData;
-                        //echo File::encodeFile($newFileSend);//return;
-                        $answer = Request::routeRequest(
-                                                        'POST',
-                                                        '/temppdf/file/merge',
-                                                        array(),
-                                                        File::encodeFile($newFileSend),
-                                                        $this->_postPdf,
-                                                        'pdf'
-                                                        );
+                        
+                        if (isset($newFile)){
+                            $newFileSend[] = $newFile;
+                            $newFileData = new File();
+                            $newFileData->setBody(base64_encode("</pre>"));
+                            $newFileSend[] = $newFileData;
+                            //echo File::encodeFile($newFileSend);//return;
+                            $answer = Request::routeRequest(
+                                                            'POST',
+                                                            '/temppdf/file/merge',
+                                                            array(),
+                                                            File::encodeFile($newFileSend),
+                                                            $this->_postPdf,
+                                                            'pdf'
+                                                            );
 
-                        if ($answer['status'] == 201 && isset($answer['content'])){
-                            $file = json_decode($answer['content'],true);
-                            /*$a = json_decode($answer['content'],true);
-                            $a['inp'] = htmlspecialchars($data);
-                            $a['submissionId'] = $marking['submission']['id'];
-                            $filesList[]=$a;*/
-                            $address = $file['address'];
-                            $newFile['address'] = $address;
-                            $newFile['displayName'] = $fileInfo['filename'].'.pdf';
-                            $sortedMarkings[$exerciseId][$key]['submission']['file']['conv'] = $newFile;
-                            $converted=true;
+                            if ($answer['status'] == 201 && isset($answer['content'])){
+                                $file = json_decode($answer['content'],true);
+                                /*$a = json_decode($answer['content'],true);
+                                $a['inp'] = htmlspecialchars($data);
+                                $a['submissionId'] = $marking['submission']['id'];
+                                $filesList[]=$a;*/
+                                $address = $file['address'];
+                                $newFile['address'] = $address;
+                                $newFile['displayName'] = $fileInfo['filename'].'.pdf';
+                                $sortedMarkings[$exerciseId][$key]['submission']['file']['conv'] = $newFile;
+                                $converted=true;
+                            }
                         }
                     }
                     
                     //$row[] = $namesOfExercises[$exerciseId].'/'.($converted ? 'K_' :'').$marking['id'].($fileInfo['extension']!='' ? '.'.$fileInfo['extension']:'');
                     //if (!$converted)
-                    $row[] = $namesOfExercises[$exerciseId].'/'.$marking['id'].'/'.$newFile['displayName'];
+                    if (isset($newFile))
+                        $row[] = $namesOfExercises[$exerciseId].'/'.$marking['id'].'/'.$newFile['displayName'];
 
                     $rows[] = $row;
                 }
@@ -780,7 +786,7 @@ class LTutor
                             
                         $submission = $marking['submission'];
 
-                        $newfile = $submission['file'];
+                        $newfile = (isset($submission['file']) ? $submission['file'] : null);
                         
                         if (isset($marking['file'])){
                             $newfile3 = $marking['file'];
@@ -796,10 +802,12 @@ class LTutor
                             $filesToZip[] = $newfile2;
                         }
                         
-                        $fileInfo = pathinfo($newfile['displayName']);
-                        //$newfile['displayName'] = $namesOfExercises[$exerciseId].'/'.$marking['id'].($fileInfo['extension']!='' ? '.'.$fileInfo['extension']:'');
-                        $newfile['displayName'] = $namesOfExercises[$exerciseId].'/'.$marking['id'].'/'.$newfile['displayName'];
-                        $filesToZip[] = $newfile;
+                        if (isset($newfile['displayName'])){
+                            $fileInfo = pathinfo($newfile['displayName']);
+                            //$newfile['displayName'] = $namesOfExercises[$exerciseId].'/'.$marking['id'].($fileInfo['extension']!='' ? '.'.$fileInfo['extension']:'');
+                            $newfile['displayName'] = $namesOfExercises[$exerciseId].'/'.$marking['id'].'/'.$newfile['displayName'];
+                            $filesToZip[] = $newfile;
+                        }
                     }
                 }
             }
