@@ -7,7 +7,7 @@
  ?>
 <div class="form-input-radio" style="margin:5px 0px;">
     <?php if (isset($choice['choiceId'])){ ?>
-    <input type="hidden" name="exercises[0][subexercises][0][choiceId][0]" value="<?php echo $choice['choiceId']; ?>" />
+    <input class="choice-id" type="hidden" name="exercises[0][subexercises][0][choiceId][0]" value="<?php echo $choice['choiceId']; ?>" />
     <?php } ?>
     
     <input type="radio" class="choice-input" name="exercises[0][subexercises][0][correct][0]"<?php echo (isset($choice['correct']) && $choice['correct']==1 ? " checked" : ''); ?>/>
