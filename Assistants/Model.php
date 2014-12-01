@@ -68,10 +68,12 @@ class Model
                 }
             }
             
-            $rawInput = @file_get_contents('php://input');
+            
+            $rawInput = \Slim\Environment::getInstance()->offsetGet('slim.input');
             if (!$rawInput) {
-                $rawInput = \Slim\Environment::getInstance()->offsetGet('slim.input');
+                $rawInput = @file_get_contents('php://input');
             }
+            ///Logger::Log('input>> '.$rawInput, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
             
             $arr = true;
             if (isset($selectedCommand['inputType']) && trim($selectedCommand['inputType'])!=''){
