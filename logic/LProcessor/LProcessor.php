@@ -318,28 +318,34 @@ class LProcessor
         $res = array( );
         foreach ( $processes as $process ){
             // create process
-            if ($process->getProcessId() === null){
-                $result = Request::routeRequest( 
-                                                'POST',
-                                                '/process',
-                                                array(),
-                                                Process::encodeProcess($process),
-                                                $this->_processorDb,
-                                                'process'
-                                                );
-                                                
-                if ( $result['status'] >= 200 && 
-                     $result['status'] <= 299 ){
+            $method='POST';
+            $URL='/process';
+            if ($process->getProcessId() !== null){
+               $method='PUT'; 
+               $URL = '/process/'.$process->getProcessId();
+            }
+        
+            $result = Request::routeRequest( 
+                                            $method,
+                                            $URL,
+                                            array(),
+                                            Process::encodeProcess($process),
+                                            $this->_processorDb,
+                                            'process'
+                                            );
 
-                    $queryResult = Process::decodeProcess($result['content']);
+            if ( $result['status'] >= 200 && 
+                 $result['status'] <= 299 ){
+
+                $queryResult = Process::decodeProcess($result['content']);
+                if ($process->getProcessId() === null)
                     $process->setProcessId($queryResult->getProcessId());
-                    $res[] = $process;
-                }
-                else{
-                    $res[] = null;
-                    $this->app->response->setStatus( 409 );
-                    continue;
-                }
+                $res[] = $process;
+            }
+            else{
+                $res[] = null;
+                $this->app->response->setStatus( 409 );
+                continue;
             }
             
             // create attachment

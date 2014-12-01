@@ -16,6 +16,14 @@ include_once dirname(__FILE__) . '/../Assistants/Structures.php';
 include_once dirname(__FILE__) . '/include/FormEvaluator.php';
 require_once(dirname(__FILE__).'/phplatex.php');
 
+function unmap($map, $id){
+    foreach ($map as $m){
+        if ($m[1]==$id)
+            return $m[2];
+    }
+    return null;
+}
+
 if (!isset($sid))
     $sid=null;
 if (!isset($cid))
@@ -49,8 +57,25 @@ if (isset($createsheetData['exerciseTypes'])) {
 
 
 
-
-
+// load exerciseSheet from DB, to check which element needs to be removed
+$sheet_data_old=null;
+if (isset($_POST['action'])){
+    $URL = $databaseURI . "/exercisesheet/exercisesheet/{$sid}/exercise";
+    $sheet_data_old = http_get($URL, true);
+    $sheet_data_old = json_decode($sheet_data_old, true);
+}
+$form_data_old=null;
+if (isset($_POST['action'])){
+    $URL = $serverURI."/DB/DBForm/form/exercisesheet/{$sid}";
+    $form_data_old = http_get($URL, true);
+    $form_data_old = json_decode($form_data_old, true);
+}
+$process_data_old=null;
+if (isset($_POST['action'])){
+    $URL = $serverURI."/DB/DBProcess/process/exercisesheet/{$sid}";
+    $process_data_old = http_get($URL, true);
+    $process_data_old = json_decode($process_data_old, true);
+}
 
 $timestamp = time();
 
@@ -71,7 +96,7 @@ if (isset($_POST['exercises']) == true && empty($_POST['exercises']) == false) {
             $mimeTypes = array();
             if (!isset($subexercise['type']) && isset($subexercise['mime-type'])){    
                 $mimeTypesForm = explode(",", $subexercise['mime-type']);
-                foreach ($mimeTypesForm as &$mimeType) {
+                foreach ($mimeTypesForm as $mimeType) {
                     if ($mimeType=='')continue;
                     $mimeType = explode('.',trim(strtolower($mimeType)));
                     $ending=isset($mimeType[1]) ? $mimeType[1] : null;
@@ -80,8 +105,8 @@ if (isset($_POST['exercises']) == true && empty($_POST['exercises']) == false) {
                     if (FILE_TYPE::checkSupportedFileType($mimeType) == false) {
                         $errormsg = "Sie haben eine nicht unterstützte Dateiendung verwendet.";
                         array_push($notifications, MakeNotification('warning', $errormsg));
-                        $correctExercise = false;
-                        break;
+                        $correctExercise = true;
+                        //break;
                     } else { // if mime-type is supported add mimeTypes
                         $mimes = FILE_TYPE::getMimeTypeByFileEnding(trim(strtolower($mimeType)));
                         foreach ($mimes as &$mime){
@@ -119,12 +144,13 @@ if ($correctExercise == true) {
     }
     
     // create exerciseSheet
+    $sheetId = (isset($_POST['sheetId']) ? $_POST['sheetId'] : (isset($sid) ? $sid : null));
     $sheetName = isset($_POST['sheetName']) ? $_POST['sheetName'] : null;
     $startDate = isset($_POST['startDate']) ? strtotime(str_replace(" - ", " ", isset($_POST['startDate'])?$_POST['startDate']:null)) : null;
     $endDate = isset($_POST['endDate']) ? strtotime(str_replace(" - ", " ", isset($_POST['endDate'])?$_POST['endDate']:null)) : null;
     $groupSize = isset($_POST['groupSize'])?$_POST['groupSize']:null;
 
-    $myExerciseSheet = ExerciseSheet::createExerciseSheet(NULL,$cid,$endDate,$startDate,$groupSize,NULL, NULL,$sheetName);
+    $myExerciseSheet = ExerciseSheet::createExerciseSheet($sheetId,$cid,$endDate,$startDate,$groupSize,NULL, NULL,$sheetName);
     $myExerciseSheet->setSheetFile($sheetPDFFile);
 
     // get sheetSolution if it exists
@@ -149,227 +175,230 @@ if ($correctExercise == true) {
     $sheet_data = json_decode(ExerciseSheet::encodeExerciseSheet($myExerciseSheet),true);
 
     $newExerciseId=-1;
-    // create subtasks as exercise
-foreach ($validatedExercises as $key1 => $exercise) {
-
-    // creation
     $exercises = array();
-    foreach ($exercise as $key2 => $subexercise) {
+    // create subtasks as exercise
+    foreach ($validatedExercises as $key1 => $exercise) {
 
-        // create subexercise object
-        $sheetId = (isset($_POST['sheetId']) ? $_POST['sheetId'] : (isset($sid) ? $sid : null));
+        // creation
+        foreach ($exercise as $key2 => &$subexercise) {
 
-        // set bonus
-        if (preg_match("#[0-9]+b$#", $subexercise['exerciseType']) == true) {
-            $bonus = "1";
-            // delete ending b from exerciseType if its bonus
-            $subexercise['exerciseType'] = rtrim($subexercise['exerciseType'], "b");
-        } else {
-            $bonus = "0";
-        }
-        
-        // create exercise
-        $exerciseId = (isset($subexercise['id']) ? $subexercise['id'] : null);
-        if ($exerciseId===null){
-            $exerciseId=$newExerciseId;
-            $newExerciseId--;
-        }
-        
-        $subexerciseObj = Exercise::createExercise($exerciseId,$cid,$sheetId, $subexercise['maxPoints'],
-                                                   $subexercise['exerciseType'],$key1+1,$bonus,$key2+1);
-        
-        // set FileTypes (only as an array with strings in it)
-        $subexerciseObj->setFileTypes($subexercise['mime-type']);
-        
-        // add attachement if given
-        if (isset($_FILES['exercises']['error'][$key1]['subexercises'][$key2]['attachment']) && $_FILES['exercises']['error'][$key1]['subexercises'][$key2]['attachment'] != 4) {
-            $filePath = $_FILES['exercises']['tmp_name'][$key1]['subexercises'][$key2]['attachment'];
-            $displayName = $_FILES['exercises']['name'][$key1]['subexercises'][$key2]['attachment'];
-            $attachments = array();
-            
-            $data = file_get_contents($filePath);
-            $data = base64_encode($data);
+            // create subexercise object
+            $sheetId = (isset($_POST['sheetId']) ? $_POST['sheetId'] : (isset($sid) ? $sid : null));
 
-            $attachementFile = File::createFile(NULL,$displayName,NULL,$timestamp,NULL,NULL,NULL);
-            $attachementFile->setBody($data);
+            // set bonus
+            if (preg_match("#[0-9]+b$#", $subexercise['exerciseType']) == true) {
+                $bonus = "1";
+                // delete ending b from exerciseType if its bonus
+                $subexercise['exerciseType'] = rtrim($subexercise['exerciseType'], "b");
+            } else {
+                $bonus = "0";
+            }
             
-            $subexerciseObj->setAttachments(array($attachementFile));
-        } elseif(isset($_POST['exercises'][$key1]['subexercises'][$key2]['attachment']['fileId'])) {
-            $attachementFile = File::createFile(NULL,null,NULL,null,NULL,NULL,NULL);
-            $attachementFile->setFileId(isset($_POST['exercises'][$key1]['subexercises'][$key2]['attachment']['fileId']) ? $_POST['exercises'][$key1]['subexercises'][$key2]['attachment']['fileId'] : null);
-            $attachementFile->setAddress(isset($_POST['exercises'][$key1]['subexercises'][$key2]['attachment']['address']) ? $_POST['exercises'][$key1]['subexercises'][$key2]['attachment']['address'] : null);
-            $attachementFile->setDisplayName(isset($_POST['exercises'][$key1]['subexercises'][$key2]['attachment']['displayName']) ? $_POST['exercises'][$key1]['subexercises'][$key2]['attachment']['displayName'] : null);
-            
-            $subexerciseObj->setAttachments(array($attachementFile));            
-        }
-        // add subexercise to exercises
-        array_push($exercises, $subexerciseObj);
-    }
-//echo "anz_exercises: ".count($exercises);
-//var_dump($exercises);
-    /// Exercise::encodeExercise($exercises);
-    $sheet_data['exercises'] = json_decode(Exercise::encodeExercise($exercises),true);
-                    
-    #region create_forms
-    ##########################
-    ### begin create_forms ###
-    ##########################
-    // create form data
-    $forms = array();
-//var_dump($exercises);
-    foreach ($exercise as $key2 => $subexercise) {  
-        if (isset($subexercise['type'])){
-        //var_dump($subexercise['type']);
+            // create exercise
             $exerciseId = (isset($subexercise['id']) ? $subexercise['id'] : null);
-            //var_dump($exerciseId); 
-            $task = html_entity_decode(isset($subexercise['task']) ? $subexercise['task'] : '');
-            $solution = html_entity_decode(isset($subexercise['solution']) ? $subexercise['solution'] : '');
-
-            // inline math-tex
-            $first='<span class="math-tex">';
-            $second='</span>';
-            $pos = strpos ( $task , $first );
-            while ($pos!==false){
-                $pos2 = strpos ( $task , $second );
-                if ($pos2 !== false){
-                    $mathTex = substr($task, $pos+strlen($first), $pos2-$pos-strlen($first));
-                    $replace = false;$replace = texify('$'.$mathTex.'$');
-                    if ($replace===false)
-                        $replace = '<img src="http://latex.codecogs.com/gif.latex?'.rawurlencode($mathTex).'">';
-                    $task = substr($task,0,$pos).$replace.substr($task,$pos2+strlen($second));
-                }
-                $pos = strpos ( $task , $first, $pos+strlen($first)+strlen($second) );
+            if ($exerciseId===null){
+                $exerciseId=$newExerciseId;
+                $newExerciseId--;
             }
-            $pos = strpos ( $solution , $first );
-            while ($pos!==false){
-                $pos2 = strpos ( $solution , $second );
-                if ($pos2 !== false){
-                    $mathTex = substr($solution, $pos+strlen($first), $pos2-$pos-strlen($first));
-                    $replace = false;$replace = texify('$'.$mathTex.'$');
-                    if ($replace===false)
-                        $replace = '<img src="http://latex.codecogs.com/gif.latex?'.rawurlencode($mathTex).'">';
-                    $solution = substr($solution,0,$pos).$replace.substr($solution,$pos2+strlen($second));
-                }
-                $pos = strpos ( $solution , $first, $pos+strlen($first)+strlen($second) );
-            }   
+            $subexercise['id']=$exerciseId;
             
-            $formId = (isset($subexercise['formId']) ? $subexercise['formId'] : null);
+            $subexerciseObj = Exercise::createExercise($exerciseId,$cid,$sheetId, $subexercise['maxPoints'],
+                                                       $subexercise['exerciseType'],$key1+1,$bonus,$key2+1);
             
-            $form = Form::createForm(
-                               $formId,
-                               $exerciseId,
-                               $solution,
-                               $task,
-                               isset($subexercise['type']) ? $subexercise['type'] : null
-                              );
-                              
-            $choiceText = $subexercise['choice'];
-            $choices = array();
-            foreach ($choiceText as $tempKey => $choiceData) {
-                $choice = new Choice();
-                $choice->SetText($choiceData); 
-                $choices[$tempKey] = $choice;
-            }
+            // set FileTypes (only as an array with strings in it)
+            $subexerciseObj->setFileTypes($subexercise['mime-type']);
             
-            if (isset($subexercise['correct'])){
-                $choiceCorrect = $subexercise['correct'];
-                foreach ($choiceCorrect as $tempKey => $choiceData) {
-                    if (isset($choices[$tempKey]))                          
-                        $choices[$tempKey]->setCorrect(1);                   
-                }
-            }
-            
-            $choices = array_values( $choices );
-            
-            $form->setChoices($choices);
-            $forms[] = $form;
-        }
-    }
-
-    $forms = json_decode(Form::encodeForm($forms),true);
-    
-    ########################
-    ### end create_forms ###
-    ########################
-    #endregion
-    
-    #region create_processors
-    ###############################
-    ### begin create_processors ###
-    ###############################
-    
-    // create processor data
-    $processors = array();
-    foreach ($exercise as $key2 => $subexercise) {
-        if (isset($subexercise['processorType'])){                                        
-            
-            $tempProcessors = array();
-            
-            $processorType = $subexercise['processorType'];
-            
-            foreach ($processorType as $tempKey => $Data) {
-                $processor = new Process();
-                $processor->setExercise(Exercise::decodeExercise(Exercise::encodeExercise($subexercise)));
-                $component = new Component();
-                $component->setId($Data);
-                $processor->SetTarget($component); 
-                $processor->SetProcessId(isset($subexercise['processorId'][$tempKey]) ? $subexercise['processorId'][$tempKey] : null);
+            // add attachement if given
+            if (isset($_FILES['exercises']['error'][$key1]['subexercises'][$key2]['attachment']) && $_FILES['exercises']['error'][$key1]['subexercises'][$key2]['attachment'] != 4) {
+                $filePath = $_FILES['exercises']['tmp_name'][$key1]['subexercises'][$key2]['attachment'];
+                $displayName = $_FILES['exercises']['name'][$key1]['subexercises'][$key2]['attachment'];
+                $attachments = array();
                 
-                // add attachement if given
-                if (isset($_FILES['exercises']) && isset($_FILES['exercises']['error']) && isset($_FILES['exercises']['error'][$key1]) && isset($_FILES['exercises']['error'][$key1]['subexercises']) && isset($_FILES['exercises']['error'][$key1]['subexercises'][$key2]) && isset($_FILES['exercises']['error'][$key1]['subexercises'][$key2]['processAttachment']) && isset($_FILES['exercises']['error'][$key1]['subexercises'][$key2]['processAttachment'][$tempKey]))
-                if ($_FILES['exercises']['error'][$key1]['subexercises'][$key2]['processAttachment'][$tempKey] != 4) {
-                    $filePath = $_FILES['exercises']['tmp_name'][$key1]['subexercises'][$key2]['processAttachment'][$tempKey];
-                    $displayName = $_FILES['exercises']['name'][$key1]['subexercises'][$key2]['processAttachment'][$tempKey];
-                    $attachments = array();
+                $data = file_get_contents($filePath);
+                $data = base64_encode($data);
+
+                $attachementFile = File::createFile(NULL,$displayName,NULL,$timestamp,NULL,NULL,NULL);
+                $attachementFile->setBody($data);
+                
+                $subexerciseObj->setAttachments(array($attachementFile));
+            } elseif(isset($_POST['exercises'][$key1]['subexercises'][$key2]['attachment']['fileId'])) {
+                $attachementFile = File::createFile(NULL,null,NULL,null,NULL,NULL,NULL);
+                $attachementFile->setFileId(isset($_POST['exercises'][$key1]['subexercises'][$key2]['attachment']['fileId']) ? $_POST['exercises'][$key1]['subexercises'][$key2]['attachment']['fileId'] : null);
+                $attachementFile->setAddress(isset($_POST['exercises'][$key1]['subexercises'][$key2]['attachment']['address']) ? $_POST['exercises'][$key1]['subexercises'][$key2]['attachment']['address'] : null);
+                $attachementFile->setDisplayName(isset($_POST['exercises'][$key1]['subexercises'][$key2]['attachment']['displayName']) ? $_POST['exercises'][$key1]['subexercises'][$key2]['attachment']['displayName'] : null);
+                
+                $subexerciseObj->setAttachments(array($attachementFile));            
+            }
+            // add subexercise to exercises
+            array_push($exercises, $subexerciseObj);
+        }
+        
+        #region create_forms
+        ##########################
+        ### begin create_forms ###
+        ##########################
+        // create form data
+        $forms = array();
+        foreach ($exercise as $key2 => $subexercise) {  
+            if (isset($subexercise['type'])){
+                $exerciseId = (isset($subexercise['id']) ? $subexercise['id'] : null);
+                $task = html_entity_decode(isset($subexercise['task']) ? $subexercise['task'] : '');
+                $solution = html_entity_decode(isset($subexercise['solution']) ? $subexercise['solution'] : '');
+
+                // inline math-tex
+                $first='<span class="math-tex">';
+                $second='</span>';
+                $pos = strpos ( $task , $first );
+                while ($pos!==false){
+                    $pos2 = strpos ( $task , $second );
+                    if ($pos2 !== false){
+                        $mathTex = substr($task, $pos+strlen($first), $pos2-$pos-strlen($first));
+                        $replace = false;$replace = texify('$'.$mathTex.'$');
+                        if ($replace===false)
+                            $replace = '<img src="http://latex.codecogs.com/gif.latex?'.rawurlencode($mathTex).'">';
+                        $task = substr($task,0,$pos).$replace.substr($task,$pos2+strlen($second));
+                    }
+                    $pos = strpos ( $task , $first, $pos+strlen($first)+strlen($second) );
+                }
+                $pos = strpos ( $solution , $first );
+                while ($pos!==false){
+                    $pos2 = strpos ( $solution , $second );
+                    if ($pos2 !== false){
+                        $mathTex = substr($solution, $pos+strlen($first), $pos2-$pos-strlen($first));
+                        $replace = false;$replace = texify('$'.$mathTex.'$');
+                        if ($replace===false)
+                            $replace = '<img src="http://latex.codecogs.com/gif.latex?'.rawurlencode($mathTex).'">';
+                        $solution = substr($solution,0,$pos).$replace.substr($solution,$pos2+strlen($second));
+                    }
+                    $pos = strpos ( $solution , $first, $pos+strlen($first)+strlen($second) );
+                }   
+                
+                $formId = (isset($subexercise['formId']) ? $subexercise['formId'] : null);
+                
+                $form = Form::createForm(
+                                   $formId,
+                                   $exerciseId,
+                                   $solution,
+                                   $task,
+                                   isset($subexercise['type']) ? $subexercise['type'] : null
+                                  );
+                                  
+                $choiceText = $subexercise['choice'];
+                $choices = array();
+                foreach ($choiceText as $tempKey => $choiceData) {
+                    $choice = new Choice();
+                    $choice->SetText($choiceData); 
+                    $choices[$tempKey] = $choice;
+                }
+                
+                if (isset($subexercise['correct'])){
+                    $choiceCorrect = $subexercise['correct'];
+                    foreach ($choiceCorrect as $tempKey => $choiceData) {
+                        if (isset($choices[$tempKey]))                          
+                            $choices[$tempKey]->setCorrect(1);                   
+                    }
+                }
+                
+                if (isset($subexercise['choiceId'])){
+                    $choiceIds = $subexercise['choiceId'];
+                    foreach ($choiceIds as $tempKey => $choiceData) {
+                        if (isset($choices[$tempKey]))                          
+                            $choices[$tempKey]->setChoiceId($choiceData);                   
+                    }
+                }
+                $choices = array_values( $choices );
+                
+                $form->setChoices($choices);
+                $forms[] = $form;
+            }
+        }
+
+        $forms = json_decode(Form::encodeForm($forms),true);
+        
+        ########################
+        ### end create_forms ###
+        ########################
+        #endregion
+        
+        #region create_processors
+        ###############################
+        ### begin create_processors ###
+        ###############################
+        
+        // create processor data
+        $processors = array();
+        foreach ($exercise as $key2 => $subexercise) {
+            if (isset($subexercise['processorType'])){                                        
+                
+                $tempProcessors = array();
+                
+                $processorType = $subexercise['processorType'];
+                
+                foreach ($processorType as $tempKey => $Data) {
+                    $processor = new Process();
+                    $processor->setExercise(Exercise::decodeExercise(Exercise::encodeExercise($subexercise)));
+                    $component = new Component();
+                    $component->setId($Data);
+                    $processor->SetTarget($component); 
+                    $processor->SetProcessId(isset($subexercise['processorId'][$tempKey]) ? $subexercise['processorId'][$tempKey] : null);
                     
-                    foreach ($filePath as $attachKey => $attachPath){
-                    $data = file_get_contents($attachPath);
-                    $data = base64_encode($data);
-                    
-                    $attachment = new Attachment();
-                    $attachementFile = File::createFile(NULL,$displayName[$attachKey],NULL,$timestamp,NULL,NULL,NULL);
-                    $attachementFile->setBody($data);
-                    $attachment->setFile($attachementFile);
-                    $attachments[] = $attachment;
+                    // add attachement if given
+                    if (isset($_FILES['exercises']) && isset($_FILES['exercises']['error']) && isset($_FILES['exercises']['error'][$key1]) && isset($_FILES['exercises']['error'][$key1]['subexercises']) && isset($_FILES['exercises']['error'][$key1]['subexercises'][$key2]) && isset($_FILES['exercises']['error'][$key1]['subexercises'][$key2]['processAttachment']) && isset($_FILES['exercises']['error'][$key1]['subexercises'][$key2]['processAttachment'][$tempKey]))
+                    if ($_FILES['exercises']['error'][$key1]['subexercises'][$key2]['processAttachment'][$tempKey] != 4) {
+                        $filePath = $_FILES['exercises']['tmp_name'][$key1]['subexercises'][$key2]['processAttachment'][$tempKey];
+                        $displayName = $_FILES['exercises']['name'][$key1]['subexercises'][$key2]['processAttachment'][$tempKey];
+                        $attachments = array();
+                        
+                        foreach ($filePath as $attachKey => $attachPath){
+                        $data = file_get_contents($attachPath);
+                        $data = base64_encode($data);
+                        
+                        $attachment = new Attachment();
+                        $attachementFile = File::createFile(NULL,$displayName[$attachKey],NULL,$timestamp,NULL,NULL,NULL);
+                        $attachementFile->setBody($data);
+                        $attachment->setFile($attachementFile);
+                        $attachments[] = $attachment;
+                        }
+                        
+                        $processor->setAttachment($attachments);
                     }
                     
-                    $processor->setAttachment($attachments);
+                    $tempProcessors[$tempKey] = $processor;
                 }
                 
-                $tempProcessors[$tempKey] = $processor;
-            }
-            
-            if (isset($subexercise['processorParameterList']) && !empty($subexercise['processorParameterList']) && $subexercise['processorParameterList'] !== ''){
-                $processorParameter = $subexercise['processorParameterList'];
-                foreach ($processorParameter as $tempKey => $Data) {
-                    $Data2 = array();
-                    foreach ($Data as &$dat)
-                        if ($dat!=='')
-                            $Data2[] = $dat;
-                        
-                    if (isset($tempProcessors[$tempKey]))
-                        $tempProcessors[$tempKey]->setParameter(implode(' ',array_values($Data2)));                   
+                if (isset($subexercise['processorParameterList']) && !empty($subexercise['processorParameterList']) && $subexercise['processorParameterList'] !== ''){
+                    $processorParameter = $subexercise['processorParameterList'];
+                    foreach ($processorParameter as $tempKey => $Data) {
+                        $Data2 = array();
+                        foreach ($Data as &$dat)
+                            if ($dat!=='')
+                                $Data2[] = $dat;
+                            
+                        if (isset($tempProcessors[$tempKey]))
+                            $tempProcessors[$tempKey]->setParameter(implode(' ',array_values($Data2)));                   
+                    }
                 }
-            }
 
-            $processors = array_merge($processors,$tempProcessors);
+                $processors = array_merge($processors,$tempProcessors);
+            }
         }
+
+        $processes = json_decode(Process::encodeProcess($processors),true);
+
+        #############################
+        ### end create_processors ###
+        #############################
+        #endregion
+        
     }
 
-    $processes = json_decode(Process::encodeProcess($processors),true);
+    $sheet_data['exercises'] = json_decode(Exercise::encodeExercise($exercises),true);
+}
 
-    #############################
-    ### end create_processors ###
-    #############################
-    #endregion
-    
-}
-}
-    
-    
-    
-    
-if (isset($_POST['action']) && $_POST['action'] == "new") {
+
+
+
+if (isset($_POST['action'])) {// && $_POST['action'] == "new"
     $timestamp = time();
     $errorInSent=false;
 
@@ -400,20 +429,20 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                            'warning',
                            'Ungültige Gruppenstärke.',
                            array('min' => 0,'max' => $maxgroup));
-    $f->checkArrayOfArraysForKey('exercises',
+    /*$f->checkArrayOfArraysForKey('exercises',
                                  FormEvaluator::REQUIRED,
                                  'warning',
-                                 'Bitte erstellen Sie mindestens eine Aufgabe.');
+                                 'Bitte erstellen Sie mindestens eine Aufgabe.');*/
 
     // check if startDate is not later than endDate and if it matches format
     $correctDates = true;
-    if (strtotime(str_replace(" - ", " ", $_POST['startDate'])) > strtotime(str_replace(" - ", " ", $_POST['endDate']))
+    /*if (strtotime(str_replace(" - ", " ", $_POST['startDate'])) > strtotime(str_replace(" - ", " ", $_POST['endDate']))
         || !preg_match("#^\d\d.\d\d.\d\d\d\d - \d\d:\d\d$#", $_POST['startDate'])
         || !preg_match("#^\d\d.\d\d.\d\d\d\d - \d\d:\d\d$#", $_POST['endDate'])) {
         $correctDates = false;
         $errormsg = "Überprüfen Sie Bearbeitungsanfang sowie Bearbeitungsende!";
         array_push($notifications, MakeNotification('warning', $errormsg));
-    }
+    }*/
 
     // check if sheetPDF is given
     $noFile = false;
@@ -425,8 +454,8 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
 
     // validate subtasks
     $correctExercise = true;
-    $validatedExercises = array();
-    if (isset($_POST['exercises']) == true && empty($_POST['exercises']) == false) {
+    //$validatedExercises = array();
+    /*if (isset($_POST['exercises']) == true && empty($_POST['exercises']) == false) {
         foreach ($_POST['exercises'] as $key1 => $exercise) {
             if ($correctExercise == false) {
                 break;
@@ -500,51 +529,16 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                 break;
             }
         }
-    }
+    }*/
 
     // only if validation was correct
-    $ready = $f->evaluate(true);
+    //$ready = $f->evaluate(true);
+    $ready=true;
     if ($ready == true && $noFile == false && $correctExercise == true && $correctDates == true) {
-        // get sheetPDF
-        if (!$_FILES['sheetPDF']['error'] == 4){
-            $filePath = $_FILES['sheetPDF']['tmp_name'];
-            $displayName = $_FILES['sheetPDF']['name'];
-            $data = file_get_contents($filePath);
-            $data = base64_encode($data);
-            $sheetPDFFile = File::createFile(NULL,$displayName,NULL,$timestamp,NULL,NULL,NULL);
-            $sheetPDFFile->setBody($data);
-        }
-        else{
-            $sheetPDFFile = null;
-        }
-        
-
-        
-        // create exerciseSheet
-        $foundValues = $f->foundValues;
-        $sheetName = $foundValues['sheetName'];
-        $startDate = strtotime(str_replace(" - ", " ", $foundValues['startDate']));
-        $endDate = strtotime(str_replace(" - ", " ", $foundValues['endDate']));
-        $groupSize = $foundValues['groupSize'];
-
-        $myExerciseSheet = ExerciseSheet::createExerciseSheet(NULL,$cid,$endDate,$startDate,$groupSize,NULL, NULL,$sheetName);
-        $myExerciseSheet->setSheetFile($sheetPDFFile);
-
-        // get sheetSolution if it exists
-        if ($_FILES['sheetSolution']['error'] != 4) {
-            $filePath = $_FILES['sheetSolution']['tmp_name'];
-            $displayName = $_FILES['sheetSolution']['name'];
-            $data = file_get_contents($filePath);
-            $data = base64_encode($data);
-
-            $sheetSolutionFile = File::createFile(NULL,$displayName,NULL,$timestamp,NULL,NULL,NULL);
-            $sheetSolutionFile->setBody($data);
-            $myExerciseSheet->setSampleSolution($sheetSolutionFile);
-        }
 
         // encode to JSON
         $myExerciseSheetJSON = ExerciseSheet::encodeExerciseSheet($myExerciseSheet);
-
+        
         // Post ExcercisSheet to logic Controllers to create it and get saved data
         $output = http_post_data($logicURI."/exercisesheet", $myExerciseSheetJSON, true, $message);
         $output = json_decode($output, true);
@@ -552,237 +546,175 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
 
         // create subtasks as exercise
         if ($message == 201) {
-            foreach ($validatedExercises as $key1 => $exercise) {
-
-                // creation
-                $exercises = array();
-                foreach ($exercise as $key2 => $subexercise) {
-
-                    // create subexercise object
-                    if (isset($output['id'])) {
-                        $id = $output['id'];
-                        $sid=$id;
+            if (isset($output['id'])) {
+                    $id = $output['id'];
+                    $sid=$id;
+            }
+            
+            if ($sheet_data_old!==null){
+                // get removed exercises
+                if (isset($sheet_data_old['exercises'])){
+                    function comp_func_cr($a, $b) {if (!isset($b['id'])) return 1; if ($a['id'] === $b['id']) return 0; return ($a['id'] > $b['id'])? 1:-1; }
+                    
+                    $oldExercises = $sheet_data_old['exercises'];
+                    foreach ($oldExercises as $ex){
+                        if (isset($ex['attachments'])){
+                            $oldAttachments = $ex['attachments'];
+                        
+                            foreach ($sheet_data['exercises'] as $ex2){
+                                if ($ex2['id'] == $ex['id']){
+                                    if (!isset($ex2['attachments'])) $ex2['attachments'] = array();
+                                    $result = array_udiff($oldAttachments, $ex2['attachments'],"comp_func_cr");
+                                        foreach ($result as $del){
+                                            if (!isset($del['fileId'])) continue;
+                                            $URL = $databaseURI . "/attachment/exercise/{$ex['id']}/file/{$del['fileId']}";
+                                            ///echo $URL;
+                                            $removed = http_delete($URL, true);
+                                            if (isset($removed['status']) && $removed['status']==201){
+                                                // removed
+                                            } else {
+                                                // isn't removed
+                                            }
+                                        }
+                                    break;
+                                }
+                            }
+                        }
                     }
 
-                    // set bonus
-                    if (preg_match("#[0-9]+b$#", $subexercise['exerciseType']) == true) {
-                        $bonus = "1";
-                        // delete ending b from exerciseType if its bonus
-                        $subexercise['exerciseType'] = rtrim($subexercise['exerciseType'], "b");
+                    $result = array_udiff($oldExercises, $sheet_data['exercises'],"comp_func_cr");
+                    // remove exercises
+                    foreach ($result as $ex){
+                        $URL = $databaseURI . "/exercise/exercise/{$ex['id']}";
+                        $removed = http_delete($URL, true);
+                        if (isset($removed['status']) && $removed['status']==201){
+                            // removed
+                        } else {
+                            // isn't removed
+                        }
+                    }
+                }
+            }
+    
+            $sheetId = (isset($_POST['sheetId']) ? $_POST['sheetId'] : (isset($sid) ? $sid : null));
+            $URL = $databaseURI . "/exercisefiletype/exercisesheet/{$sheetId}";
+            $removed = http_delete($URL, true);
+            
+            $exerciseMap = array();
+            foreach ($exercises as $key => &$exercise){
+                $exercise->setSheetId($sheetId);
+                $exerciseMap[$key] = array($key, $exercise->getId());
+                if ($exercise->getId()<0)
+                    $exercise->setId(null);
+            }
+
+            // Post Excercise to logic Controller to create it
+            $exercisesJSON = Exercise::encodeExercise($exercises);
+            ///echo $exercisesJSON;
+            $output2 = http_post_data($logicURI."/exercise", $exercisesJSON, true, $message);
+            if ($message == 201) {
+               
+            
+            $exercises2 = Exercise::decodeExercise($output2);
+            foreach ($exercises2 as $key => &$exercise2){
+                if ($exercises[$key]->getId()!==null){
+                    $exerciseMap[$key][] = $exercises[$key]->getId();
+                } else 
+                    $exerciseMap[$key][] = $exercise2->getId();
+                if ($exercise2->getId()!==null)
+                    $exercises[$key]->setId($exercise2->getId());
+            }
+                                         
+            #region create_forms
+            ##########################
+            ### begin create_forms ###
+            ##########################
+            if ($errorInSent == false) {
+                $formMap = array();
+                foreach ($forms as &$form){
+                    if (!isset($form['formId'])) $form['formId'] = null;
+                    $formMap[$key] = array($key, $form['formId']);
+                    if ($form['formId']<0)
+                        $form['formId']=null;
+                    $form['exerciseId'] = unmap($exerciseMap,$form['exerciseId']);
+                }
+                
+                function comp_func2($a, $b) {if (!isset($b['formId'])) return 1; if ($a['formId'] === $b['formId']) return 0; return ($a['formId'] > $b['formId'])? 1:-1; }   
+                $result = array_udiff($form_data_old, $forms,"comp_func2");
+                // remove exercises
+                foreach ($result as $ex){
+                    $URL = $databaseURI . "/form/{$ex['formId']}";
+                    $removed = http_delete($URL, true);
+                    if (isset($removed['status']) && $removed['status']==201){
+                        // removed
                     } else {
-                        $bonus = "0";
+                        // isn't removed
                     }
-                    
-                    // create exercise
-                    $subexerciseObj = Exercise::createExercise(NULL,$cid,$id, $subexercise['maxPoints'],
-                                                               $subexercise['exerciseType'],$key1+1,$bonus,$key2+1);
-                    
-                    // set FileTypes (only as an array with strings in it)
-                    $subexerciseObj->setFileTypes($subexercise['mime-type']);
-                    
-                    // add attachement if given
-                    if (isset($_FILES['exercises']) && isset($_FILES['exercises']['error']) && isset($_FILES['exercises']['error'][$key1]) && isset($_FILES['exercises']['error'][$key1]['subexercises']) && isset($_FILES['exercises']['error'][$key1]['subexercises'][$key2]) && isset($_FILES['exercises']['error'][$key1]['subexercises'][$key2]['attachment']))
-                    if ($_FILES['exercises']['error'][$key1]['subexercises'][$key2]['attachment'] != 4) {
-                        $filePath = $_FILES['exercises']['tmp_name'][$key1]['subexercises'][$key2]['attachment'];
-                        $displayName = $_FILES['exercises']['name'][$key1]['subexercises'][$key2]['attachment'];
-                        $attachments = array();
-                        
-                        $data = file_get_contents($filePath);
-                        $data = base64_encode($data);
-
-                        $attachementFile = File::createFile(NULL,$displayName,NULL,$timestamp,NULL,NULL,NULL);
-                        $attachementFile->setBody($data);
-                        
-                        $subexerciseObj->setAttachments(array($attachementFile));
-                    }
-                    
-                    // add subexercise to exercises
-                    array_push($exercises, $subexerciseObj);
-                }
-
-                // Post Excercise to logic Controller to create it
-                $exercisesJSON = Exercise::encodeExercise($exercises);
-
-                $output2 = http_post_data($logicURI."/exercise", $exercisesJSON, true, $message);
-                $exercises = array();
-                if ($message != 201) {
-                    $errorInSent = true;
-                    break;
                 }
                 
-                $exercises = Exercise::decodeExercise($output2);
-                                
-                #region create_forms
-                ##########################
-                ### begin create_forms ###
-                ##########################
-                
-                // create form data
-                $forms = array();
-                $i=0;
-                foreach ($exercise as $key2 => $subexercise) {
-                    if (isset($subexercise['type'])){
-                                
-                        $task = html_entity_decode(isset($subexercise['task']) ? $subexercise['task'] : '');
-                        $solution = html_entity_decode(isset($subexercise['solution']) ? $subexercise['solution'] : '');
-
-                        // inline math-tex
-                        $first='<span class="math-tex">';
-                        $second='</span>';
-                        $pos = strpos ( $task , $first );
-                        while ($pos!==false){
-                            $pos2 = strpos ( $task , $second );
-                            if ($pos2 !== false){
-                                $mathTex = substr($task, $pos+strlen($first), $pos2-$pos-strlen($first));
-                                $replace = false;$replace = texify('$'.$mathTex.'$');
-                                if ($replace===false)
-                                    $replace = '<img src="http://latex.codecogs.com/gif.latex?'.rawurlencode($mathTex).'">';
-                                $task = substr($task,0,$pos).$replace.substr($task,$pos2+strlen($second));
-                            }
-                            $pos = strpos ( $task , $first, $pos+strlen($first)+strlen($second) );
-                        }
-                        $pos = strpos ( $solution , $first );
-                        while ($pos!==false){
-                            $pos2 = strpos ( $solution , $second );
-                            if ($pos2 !== false){
-                                $mathTex = substr($solution, $pos+strlen($first), $pos2-$pos-strlen($first));
-                                $replace = false;$replace = texify('$'.$mathTex.'$');
-                                if ($replace===false)
-                                    $replace = '<img src="http://latex.codecogs.com/gif.latex?'.rawurlencode($mathTex).'">';
-                                $solution = substr($solution,0,$pos).$replace.substr($solution,$pos2+strlen($second));
-                            }
-                            $pos = strpos ( $solution , $first, $pos+strlen($first)+strlen($second) );
-                        }   
-                        
-                        $form = Form::createForm(
-                                           null,
-                                           $exercises[$i]->getId(),
-                                           $solution,
-                                           $task,
-                                           isset($subexercise['type']) ? $subexercise['type'] : null
-                                          );
-                                          
-                        $choiceText = $subexercise['choice'];
-                        $choices = array();
-                        foreach ($choiceText as $tempKey => $choiceData) {
-                            $choice = new Choice();
-                            $choice->SetText($choiceData); 
-                            $choices[$tempKey] = $choice;
-                        }
-                        
-                        if (isset($subexercise['correct'])){
-                            $choiceCorrect = $subexercise['correct'];
-                            foreach ($choiceCorrect as $tempKey => $choiceData) {
-                                if (isset($choices[$tempKey]))                          
-                                    $choices[$tempKey]->setCorrect(1);                   
-                            }
-                        }
-                        
-                        $choices = array_values( $choices );
-                        
-                        $form->setChoices($choices);
-                        $forms[] = $form;
-                    }
-                    $i++;
-                }
-
                 if (!empty($forms)){
                     // upload forms
                     $URL = $serverURI."/logic/LForm/form";
+                    ///echo Form::encodeForm($forms);
                     http_post_data($URL, Form::encodeForm($forms), true, $message);
                     if ($message != 201) {
                         $errorInSent = true;
-                        break;
+                    }
+                }
+            }
+            
+            ########################
+            ### end create_forms ###
+            ########################
+            #endregion
+            
+            #region create_processors
+            ###############################
+            ### begin create_processors ###
+            ###############################
+            if ($errorInSent == false) {
+                $processesMap = array();
+                foreach ($processes as &$process){
+                    if (!isset($process['processId'])) $process['processId'] = null;
+                    $processesMap[$key] = array($key, $process['processId']);
+                    if ($process['processId']<0)
+                        $process['processId']=null;
+                    $process['exercise']['id'] = unmap($exerciseMap,$process['exercise']['id']);
+                }
+                
+                function comp_func3($a, $b) {if (!isset($b['processId'])) return 1; if ($a['processId'] === $b['processId']) return 0; return ($a['processId'] > $b['processId'])? 1:-1; }   
+                $result = array_udiff($process_data_old, $processes,"comp_func3");
+                // remove exercises
+                foreach ($result as $ex){
+                    $URL = $databaseURI . "/process/{$ex['processId']}";
+                    $removed = http_delete($URL, true);
+                    if (isset($removed['status']) && $removed['status']==201){
+                        // removed
+                    } else {
+                        // isn't removed
                     }
                 }
                 
-               // return;return;return;
-                ########################
-                ### end create_forms ###
-                ########################
-                #endregion
-                
-                #region create_processors
-                ###############################
-                ### begin create_processors ###
-                ###############################
-                
-                // create processor data
-                $processors = array();
-                $i=0;
-                foreach ($exercise as $key2 => $subexercise) {
-                    if (isset($subexercise['processorType'])){                                        
-                        
-                        $tempProcessors = array();
-                        
-                        $processorType = $subexercise['processorType'];
-                        
-                        foreach ($processorType as $tempKey => $Data) {
-                            $processor = new Process();
-                            $processor->setExercise($exercises[$i]);
-                            $component = new Component();
-                            $component->setId($Data);
-                            $processor->SetTarget($component); 
-                            
-                            // add attachement if given
-                            if (isset($_FILES['exercises']) && isset($_FILES['exercises']['error']) && isset($_FILES['exercises']['error'][$key1]) && isset($_FILES['exercises']['error'][$key1]['subexercises']) && isset($_FILES['exercises']['error'][$key1]['subexercises'][$key2]) && isset($_FILES['exercises']['error'][$key1]['subexercises'][$key2]['processAttachment']) && isset($_FILES['exercises']['error'][$key1]['subexercises'][$key2]['processAttachment'][$tempKey]))
-                            if ($_FILES['exercises']['error'][$key1]['subexercises'][$key2]['processAttachment'][$tempKey] != 4) {
-                                $filePath = $_FILES['exercises']['tmp_name'][$key1]['subexercises'][$key2]['processAttachment'][$tempKey];
-                                $displayName = $_FILES['exercises']['name'][$key1]['subexercises'][$key2]['processAttachment'][$tempKey];
-                                $attachments = array();
-                                
-                                foreach ($filePath as $attachKey => $attachPath){
-                                $data = file_get_contents($attachPath);
-                                $data = base64_encode($data);
-                                
-                                $attachment = new Attachment();
-                                $attachementFile = File::createFile(NULL,$displayName[$attachKey],NULL,$timestamp,NULL,NULL,NULL);
-                                $attachementFile->setBody($data);
-                                $attachment->setFile($attachementFile);
-                                $attachments[] = $attachment;
-                                }
-                                
-                                $processor->setAttachment($attachments);
-                            }
-                            
-                            $tempProcessors[$tempKey] = $processor;
-                        }
-                        
-                        if (isset($subexercise['processorParameterList']) && !empty($subexercise['processorParameterList']) && $subexercise['processorParameterList'] !== ''){
-                            $processorParameter = $subexercise['processorParameterList'];
-                            foreach ($processorParameter as $tempKey => $Data) {
-                                $Data2 = array();
-                                foreach ($Data as &$dat)
-                                    if ($dat!=='')
-                                        $Data2[] = $dat;
-                                    
-                                if (isset($tempProcessors[$tempKey]))
-                                    $tempProcessors[$tempKey]->setParameter(implode(' ',array_values($Data2)));                   
-                            }
-                        }
-
-                        $processors = array_merge($processors,$tempProcessors);
-                    }
-                    $i++;
-                }
-
-                if (!empty($processors)){
+                if (!empty($processes)){
                     // upload processors
                     $URL = $serverURI."/logic/LProcessor/process";
-                    http_post_data($URL, Process::encodeProcess($processors), true, $message);
+                    http_post_data($URL, Process::encodeProcess($processes), true, $message);
 
                     if ($message != 201) {
                         $errorInSent = true; 
-                        break;
                     }
                 }
-                
-                #############################
-                ### end create_processors ###
-                #############################
-                #endregion
-                
             }
+            
+            #############################
+            ### end create_processors ###
+            #############################
+            #endregion
+
+            } else {
+                $errorInSent = true;
+            }
+            
             if ($errorInSent == false) {
                 $errormsg = "Die Serie wurde erstellt.";
                 array_push($notifications, MakeNotification('success', $errormsg));
@@ -791,7 +723,8 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
                 array_push($notifications, MakeNotification('error', $errormsg));
 
                 // delete exercisesheet if exercises are going wrong
-                http_delete($logicURI.'/DB/exercisesheet/exercisesheet/'.$output['id'], true, $message);
+                if ($_POST['action']=='new')
+                    http_delete($logicURI.'/DB/exercisesheet/exercisesheet/'.$output['id'], true, $message);
             }
         } else {
             $errormsg = "Beim Erstellen ist ein Fehler aufgetreten.";
@@ -802,27 +735,25 @@ if (isset($_POST['action']) && $_POST['action'] == "new") {
     }
 }
 
-///var_dump($_POST);
 if (isset($sid)){
-    if (!isset($_POST['action']) || $_POST['action']=='new'){
-        //if (!isset($sheet_data)){
-        $URL = $databaseURI . "/exercisesheet/exercisesheet/{$sid}/exercise";
-        $sheet = http_get($URL, true);
-        $sheet = json_decode($sheet, true);
-        $sheet_data=$sheet;
-            ///var_dump($sheet);
-        //}
-
-    }
+    $URL = $databaseURI . "/exercisesheet/exercisesheet/{$sid}/exercise";
+    $sheet_data = http_get($URL, true);
+    $sheet_data = json_decode($sheet_data, true);
 }
 
+Authentication::checkRights(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $createsheetData['user']);
+
+$menu = MakeNavigationElement($createsheetData['user'],
+                              PRIVILEGE_LEVEL::LECTURER,true);
+                              
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($createsheetData['user']);
 $h->bind(array("name" => $createsheetData['user']['courses'][0]['course']['name'],
-               "notificationElements" => $notifications));
+               "notificationElements" => $notifications,
+               "navigationElement" => $menu));
 
-Authentication::checkRights(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $createsheetData['user']);
+
 
 $sheetSettings = Template::WithTemplateFile('include/CreateSheet/SheetSettings.template.html');
 $createExercise = Template::WithTemplateFile('include/CreateSheet/CreateExercise.template.html');
@@ -836,13 +767,13 @@ if (isset($uid))
 if (isset($sid)){
     $sheetSettings->bind(array('sid'=>$sid));
     
-    if (!isset($_POST['action']) || $_POST['action']=='new'){
+   // if (!isset($_POST['action']) || $_POST['action']=='new'){
         $result = http_get($serverURI."/DB/DBForm/form/exercisesheet/{$sid}",true);
         $forms = json_decode($result,true);
         
         $result = http_get($serverURI."/DB/DBProcess/process/exercisesheet/{$sid}",true);
         $processes = json_decode($result,true);
-    }
+   // }
 }
 
 if (isset($processes))

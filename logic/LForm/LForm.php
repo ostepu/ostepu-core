@@ -310,18 +310,78 @@ class LForm
             $choices[] = $form->getChoices();
             $form->setChoices(null);
         }
-
+        
+        $method='POST';
+        $URL='/form';
+        if ($form->getFormId() !== null){
+           $method='PUT'; 
+           $URL = '/form/'.$form->getFormId();
+        }
+        
+        $resForms = array();
+        foreach ( $forms as $form ){
         $result = Request::routeRequest( 
-                                        'POST',
-                                        '/form',
-                                        $this->app->request->headers->all( ),
-                                        Form::encodeForm($forms),
+                                        $method,
+                                        $URL,
+                                        array(),
+                                        Form::encodeForm($form),
                                         $this->_form,
                                         'form'
                                         );
+            // checks the correctness of the query
+            if ( $result['status'] >= 200 && 
+                 $result['status'] <= 299 && isset($result['content'])){
+                 $newform = Form::decodeForm($result['content']);
+                 if ($form->getFormId() === null)
+                    $form->setFormId($newform->getFormId());
+                $resForms[] = $form; 
+            } else {
+                $f = new Form();
+                $f->setStatus(409);
+                $resForms[] = $f;
+            }
+        }
+        $forms = $resForms;
+        
+        $i=0;
+        foreach ( $choices as &$choicelist ){
+            foreach ( $choicelist as &$choice ){
+                if ($forms[$i]->getFormId() !== null){
+                    $formId = $forms[$i]->getFormId();
+                    $choice->setFormId($formId);
+                    
+                    $method='POST';
+                    $URL='/choice';
+                    if ($choice->getChoiceId() !== null){
+                       $method='PUT'; 
+                       $URL = '/choice/'.$choice->getChoiceId();
+                    }
+                    $result = Request::routeRequest( 
+                                                    $method,
+                                                    $URL,
+                                                    array(),
+                                                    Choice::encodeChoice($choice),
+                                                    $this->_choice,
+                                                    'choice'
+                                                    );
+                                                    
+                    if ( $result['status'] >= 200 && 
+                        $result['status'] <= 299 ){
+                        $newchoice = Choice::decodeChoice($result['content']);
+                        if ($choice->getChoiceId() === null)
+                            $choice->setChoiceId($newchoice->getChoiceId());
+                        $choice->setStatus(201);
+                    } else {
+                        $choice->setStatus(409);
+                    }
+                }
+            }
+            $forms[$i]->setChoices($choicelist);
+            $i++; 
+        }
                                     
         // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
+        /*if ( $result['status'] >= 200 && 
              $result['status'] <= 299 && isset($result['content'])){
             $newforms = Form::decodeForm($result['content']);
             if ( !is_array( $newforms ) )
@@ -329,7 +389,8 @@ class LForm
                 
             $i=0;    
             foreach ($forms as &$form){
-                $form->setFormId($newforms[$i]->getFormId());
+                if ($form->getFormId() === null)
+                    $form->setFormId($newforms[$i]->getFormId());
                 $i++;
             }            
 
@@ -343,6 +404,7 @@ class LForm
             $i++; 
             }
             $choices = $sendChoices;
+            
             $result = Request::routeRequest( 
                                             'POST',
                                             '/choice',
@@ -396,7 +458,7 @@ class LForm
         } else {
             $res[] = null;
             $this->app->response->setStatus( 409 );
-        }
+        }*/
            
         if ($this->app->response->getStatus( ) != 201)
             Logger::Log( 
