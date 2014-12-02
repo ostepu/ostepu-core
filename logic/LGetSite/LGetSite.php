@@ -420,80 +420,81 @@ class LGetSite
             $exerciseTypes[$exerciseType['id']] = $exerciseType;
         }
 
-        foreach ($sheets as &$sheet) {
-            $sheetPoints = 0;
-            $maxSheetPoints = 0;
+        if (isset($sheets)){
+            foreach ($sheets as &$sheet) {
+                $sheetPoints = 0;
+                $maxSheetPoints = 0;
 
-            $hasAttachments = false;
-            $hasMarkings = false;
-            $hasSubmissions = false;
+                $hasAttachments = false;
+                $hasMarkings = false;
+                $hasSubmissions = false;
 
-            // add group to the sheet
-            if (isset($groupsBySheet[$sheet['id']])) {
-                $group = $groupsBySheet[$sheet['id']];
-                $sheet['group'] = $group;
-            } else {
-                $sheet['group'] = array();
-            }
+                // add group to the sheet
+                if (isset($groupsBySheet[$sheet['id']])) {
+                    $group = $groupsBySheet[$sheet['id']];
+                    $sheet['group'] = $group;
+                } else {
+                    $sheet['group'] = array();
+                }
 
-            // prepare exercises
-            foreach ($sheet['exercises'] as &$exercise) {
-                $isBonus = isset($exercise['bonus']) ? $exercise['bonus'] : null;
-                $maxSheetPoints += ($isBonus == null || $isBonus == '0') ? $exercise['maxPoints'] : 0;
-                $exerciseID = $exercise['id'];
+                // prepare exercises
+                foreach ($sheet['exercises'] as &$exercise) {
+                    $isBonus = isset($exercise['bonus']) ? $exercise['bonus'] : null;
+                    $maxSheetPoints += ($isBonus == null || $isBonus == '0') ? $exercise['maxPoints'] : 0;
+                    $exerciseID = $exercise['id'];
 
-                // add submission to exercise
-                if (isset($submissionsByExercise[$exerciseID])) {
-                    $submission = &$submissionsByExercise[$exerciseID];
+                    // add submission to exercise
+                    if (isset($submissionsByExercise[$exerciseID])) {
+                        $submission = &$submissionsByExercise[$exerciseID];
 
-                    if (!isset($submission['hideFile']))
-                        $hasSubmissions=true;
-                        
-                    if (isset($submission['marking'])) {
-                        $marking = $submission['marking'];
+                        if (!isset($submission['hideFile']))
+                            $hasSubmissions=true;
+                            
+                        if (isset($submission['marking'])) {
+                            $marking = $submission['marking'];
 
-                        $sheetPoints += isset($marking['points']) ? $marking['points'] : 0 ;
+                            $sheetPoints += isset($marking['points']) ? $marking['points'] : 0 ;
 
-                        if (!isset($submission['marking']['hideFile']))
-                            $hasMarkings = true;
+                            if (!isset($submission['marking']['hideFile']))
+                                $hasMarkings = true;
+                        }
+
+                        $exercise['submission'] = $submission;
                     }
 
-                    $exercise['submission'] = $submission;
+                    // add attachments to exercise
+                    if (count($exercise['attachments']) > 0) {
+                        $exercise['attachment'] = $exercise['attachments'][0];
+                        $hasAttachments = true;
+                    }
+
+                    unset($exercise['attachments']);
+
+                    // add type name to exercise
+                    $typeID = $exercise['type'];
+                    if (isset($exerciseTypes[$typeID])) {
+                        $exercise['typeName'] = $exerciseTypes[$typeID]['name'];
+                    } else {
+                        $exercise['typeName'] = "unknown type";
+                    }
                 }
 
-                // add attachments to exercise
-                if (count($exercise['attachments']) > 0) {
-                    $exercise['attachment'] = $exercise['attachments'][0];
-                    $hasAttachments = true;
-                }
-
-                unset($exercise['attachments']);
-
-                // add type name to exercise
-                $typeID = $exercise['type'];
-                if (isset($exerciseTypes[$typeID])) {
-                    $exercise['typeName'] = $exerciseTypes[$typeID]['name'];
+                $sheet['hasMarkings'] = $hasMarkings;
+                $sheet['hasAttachments'] = $hasAttachments;
+                $sheet['hasSubmissions'] = $hasSubmissions;
+                $sheet['maxPoints'] = $maxSheetPoints;
+                $sheet['points'] = $sheetPoints;
+                if ($maxSheetPoints != 0) {
+                    $percentage = round($sheetPoints / $maxSheetPoints * 100, 2);
+                    $sheet['percentage'] = $percentage;
                 } else {
-                    $exercise['typeName'] = "unknown type";
+                    $sheet['percentage'] = 100;
                 }
             }
-
-            $sheet['hasMarkings'] = $hasMarkings;
-            $sheet['hasAttachments'] = $hasAttachments;
-            $sheet['hasSubmissions'] = $hasSubmissions;
-            $sheet['maxPoints'] = $maxSheetPoints;
-            $sheet['points'] = $sheetPoints;
-            if ($maxSheetPoints != 0) {
-                $percentage = round($sheetPoints / $maxSheetPoints * 100, 2);
-                $sheet['percentage'] = $percentage;
-            } else {
-                $sheet['percentage'] = 100;
-            }
+            $response['sheets'] = $sheets;
         }
 
         $this->flag = 1;
-
-        $response['sheets'] = $sheets;
         $response['user'] = $this->userWithCourse($userid, $courseid);
 
         $this->app->response->setBody(json_encode($response));
