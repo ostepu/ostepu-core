@@ -456,16 +456,16 @@ if (isset($_POST['sortUsers'])) {
 }
 
 $user_course_data = $courseManagement_data['user'];
+Authentication::checkRights(PRIVILEGE_LEVEL::ADMIN, $cid, $uid, $user_course_data);
+$menu = MakeNavigationElement($user_course_data,
+                              PRIVILEGE_LEVEL::ADMIN,
+                              true);
 
 // load externalId data
 $URI = $serverURI . "/DB/DBExternalId/externalid/course/{$cid}";
 $externalid_data = array();
 $externalid_data['externalId'] = http_get($URI, true);
 $externalid_data['externalId'] = json_decode($externalid_data['externalId'], true);
-
-$menu = MakeNavigationElement($user_course_data,
-                              PRIVILEGE_LEVEL::ADMIN,
-                              true);
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');

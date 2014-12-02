@@ -67,6 +67,10 @@ $condition_data = http_get($URL, true);
 $condition_data = json_decode($condition_data, true);
 
 $user_course_data = $condition_data['user'];
+Authentication::checkRights(PRIVILEGE_LEVEL::ADMIN, $cid, $uid, $user_course_data);
+$menu = MakeNavigationElement($user_course_data,
+                               PRIVILEGE_LEVEL::ADMIN,true);
+
 if (isset($condition_data['users'])){
     function compare_lastName($a, $b) {
         return strnatcmp(strtolower($a['lastName']), strtolower($b['lastName']));
@@ -141,9 +145,6 @@ if (isset($condition_data['users'])){
         }
     }
 }
-
-$menu = MakeNavigationElement($user_course_data,
-                               PRIVILEGE_LEVEL::ADMIN,true);
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');

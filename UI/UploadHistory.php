@@ -79,7 +79,7 @@ if (isset($_POST['sortUsers']))
     $uploadHistoryOptions_data['sortUsers'] = $_POST['sortUsers'];
 
 $user_course_data = $uploadHistoryOptions_data['user'];
-
+Authentication::checkRights(PRIVILEGE_LEVEL::ADMIN, $cid, $uid, $user_course_data);
 $menu = MakeNavigationElement($user_course_data,
                               PRIVILEGE_LEVEL::ADMIN,
                               true);
