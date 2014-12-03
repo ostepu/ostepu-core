@@ -432,6 +432,7 @@ if (isset($_POST['downloadCSV'])) {
                     // no submission
                         $tempMarking = Marking::createMarking($newMarkings,$uid,null,null,null,null,1,null,$timestamp,null);
                         $tempSubmission = Submission::createSubmission( $newMarkings,$group['leader']['id'],null,$exercise['id'],null,null,$timestamp,null,$group['leader']['id'],null);
+                        $tempSubmission->setSelectedForGroup(1);
                         $newMarkings--;
                         $tempMarking->setSubmission($tempSubmission);
                         $markings[] = $tempMarking;
@@ -450,7 +451,16 @@ if (isset($_POST['downloadCSV'])) {
         if ($marking->getSubmission()!==array() && $marking->getSubmission()!==null && ($marking->getSubmission()->getComment()!==array() && $marking->getSubmission()->getComment()!==null))
             $marking->getSubmission()->setComment();
     }
-    echo Marking::encodeMarking($markings);return;
+    ///echo Marking::encodeMarking($markings);return;
+    $URI = $logicURI . '/tutor/archive/user/' . $uid . '/exercisesheet/' . $sid;
+    $csvFile = http_post_data($URI, Marking::encodeMarking($markings), true);
+    $csvFile = json_decode($csvFile, true);
+
+    if (isset($csvFile['address']) && isset($csvFile['displayName'])){
+        $fileAddress = $csvFile['address'];
+        $displayName = $csvFile['displayName'];
+        header("Location: ../FS/FSBinder/{$fileAddress}/{$displayName}");
+    }
 }
 
 $dataList = array();
