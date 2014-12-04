@@ -58,7 +58,6 @@ if (isset($UploadHistoryNotificationElements)) {
                             $selected = (isset($submission['selectedForGroup']) && $submission['selectedForGroup']==1) ? true : false;
                             echo '<div class="form-field left bold new-line '. ($selected ? 'critical-color' : '') .'">';
                             print date('d.m.Y  -  H:i', $submission['date']);
-                            echo ($selected ? '<span class="critical-color medium"> (ausgewählt)</span>' : '');
                             if (!$selected){ 
                             $obj=array("id"=>$submission['id'], "leaderId"=>$submission['leaderId'], "exerciseId"=>$submission['exerciseId']);
                             ?>

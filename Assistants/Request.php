@@ -11,6 +11,7 @@ require_once( dirname(__FILE__) . '/CConfig.php' );
 include_once( dirname(__FILE__) . '/Request/CreateRequest.php' );   
 include_once( dirname(__FILE__) . '/Request/MultiRequest.php' );   
 include_once( dirname(__FILE__) . '/Logger.php' );
+include_once( dirname(__FILE__) . '/CacheManager.php' );
 
 /**
  * the Request class offers functions to get results of POST,GET,PUT.DELETE and 
@@ -85,29 +86,23 @@ class Request
         $begin = microtime(true);
         
         $done = false;
-///Logger::Log($method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
 
-        if (false && !CConfig::$onload && strpos($target,'http://localhost/')===0 && file_exists(dirname(__FILE__) . '/request_cconfig.json')){
+        if (!CConfig::$onload && strpos($target,'http://localhost/')===0 && file_exists(dirname(__FILE__) . '/request_cconfig.json')){
             if (Request::$components==null){
                 Request::$components=CConfig::loadStaticConfig('','',dirname(__FILE__),'request_cconfig.json');
             }
-            ///Logger::Log('<<possible>>', LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
 
             $coms = Request::$components->getLinks();
             if ($coms!=null){      
                 if (!is_array($coms)) $coms = array($coms);
                 
                 $e = strlen(rtrim($_SERVER['DOCUMENT_ROOT'],'/'));
-                ///Logger::Log("e: ".$e, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
                 $f = substr(str_replace("\\","/",dirname(__FILE__)),$e);
-                ///Logger::Log("f: ".$f, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
                 $g = substr(str_replace("\\","/",$_SERVER['SCRIPT_FILENAME']),$e);
-                ///Logger::Log("g: ".$g, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
 
                 $a=0;
                 for (;$a<strlen($g) && $a<strlen($f) && $f[$a] == $g[$a];$a++){}
                 $h = substr(str_replace("\\","/",$_SERVER['PHP_SELF']),0,$a-1);
-                ///Logger::Log("h: ".$h, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
                 foreach ($coms as $com){
                     if ($com->getPrefix() === null || $com->getLocalPath()==null || $com->getClassFile()==null || $com->getClassName()==null) {
                         Logger::Log('nodata: '.$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
@@ -115,100 +110,107 @@ class Request
                     }
                     
                     $url = 'http://localhost'.$h.'/'.$com->getLocalPath();
-                    ///Logger::Log("url: ".$url, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
                         
                     if (strpos($target,$url.'/')===0){
                         $result = array();
                         $tar = dirname(__FILE__).'/../'.$com->getLocalPath().'/'.$com->getClassFile();
                         $tar=str_replace("\\","/",$tar);
                         if (!file_exists($tar)) continue;
-                        ///Logger::Log($method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
                         
                         $add = substr($target,strlen($url));
-                        $args = array(
-                                      'REQUEST_METHOD' => $method,
-                                      'PATH_INFO' => $add,
-                                      'slim.input' => $content);
-                                                        
-                        if (isset($_SERVER['HTTP_SESSION']))
-                            $args['HTTP_SESSION'] = $_SERVER['HTTP_SESSION'];   
-                        if (isset($_SERVER['HTTP_USER']))
-                            $args['HTTP_USER'] = $_SERVER['HTTP_USER'];
-                            
-                        if ($authbool){
-                            if (isset($_SESSION['UID'])){
-                                $args['HTTP_USER'] = $_SESSION['UID'];
-                                $_SERVER['HTTP_USER'] = $_SESSION['UID'];
-                            }
-                            if (isset($_SESSION['SESSION'])){
-                                $args['HTTP_SESSION'] = $_SESSION['SESSION'];
-                                $_SERVER['HTTP_SESSION'] = $_SESSION['SESSION'];
-                            }
-                            
-                            if ($sessiondelete) {
-                                if (isset($_SERVER['REQUEST_TIME'])){
-                                    $args['HTTP_DATE'] = $_SERVER['REQUEST_TIME'];
-                                    $_SERVER['HTTP_DATE'] = $_SERVER['REQUEST_TIME'];
+                        $cachedData = CacheManager::getCachedDataByURL(basename($tar),$add, $method);
+                        if ($cachedData!==null){
+                            $result['content'] = $cachedData->content;
+                            $result['status'] = $cachedData->status;
+                            Logger::Log('out>> '.$method.' '.$add, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+                        } else {
+                            $args = array(
+                                          'REQUEST_METHOD' => $method,
+                                          'PATH_INFO' => $add,
+                                          'slim.input' => $content);
+                                                            
+                            if (isset($_SERVER['HTTP_SESSION']))
+                                $args['HTTP_SESSION'] = $_SERVER['HTTP_SESSION'];   
+                            if (isset($_SERVER['HTTP_USER']))
+                                $args['HTTP_USER'] = $_SERVER['HTTP_USER'];
+                                
+                            if ($authbool){
+                                if (isset($_SESSION['UID'])){
+                                    $args['HTTP_USER'] = $_SESSION['UID'];
+                                    $_SERVER['HTTP_USER'] = $_SESSION['UID'];
                                 }
-                            } else {
-                                if (isset($_SESSION['LASTACTIVE'])){
-                                    $args['HTTP_DATE'] = $_SESSION['LASTACTIVE'];
-                                    $_SERVER['HTTP_DATE'] = $_SESSION['LASTACTIVE'];
+                                if (isset($_SESSION['SESSION'])){
+                                    $args['HTTP_SESSION'] = $_SESSION['SESSION'];
+                                    $_SERVER['HTTP_SESSION'] = $_SESSION['SESSION'];
                                 }
-                            }
-                        }              
-                        
-                        if (isset($_SERVER['HTTP_DATE']))
-                            $args['HTTP_DATE'] = $_SERVER['HTTP_DATE'];
+                                
+                                if ($sessiondelete) {
+                                    if (isset($_SERVER['REQUEST_TIME'])){
+                                        $args['HTTP_DATE'] = $_SERVER['REQUEST_TIME'];
+                                        $_SERVER['HTTP_DATE'] = $_SERVER['REQUEST_TIME'];
+                                    }
+                                } else {
+                                    if (isset($_SESSION['LASTACTIVE'])){
+                                        $args['HTTP_DATE'] = $_SESSION['LASTACTIVE'];
+                                        $_SERVER['HTTP_DATE'] = $_SESSION['LASTACTIVE'];
+                                    }
+                                }
+                            }              
                             
-                        $oldArgs = array('REQUEST_METHOD' => \Slim\Environment::getInstance()->offsetGet('REQUEST_METHOD'),
-                                         'PATH_INFO' => \Slim\Environment::getInstance()->offsetGet('PATH_INFO'),
-                                         'slim.input' => \Slim\Environment::getInstance()->offsetGet('slim.input'),
-                                         'HTTP_DATE' => \Slim\Environment::getInstance()->offsetGet('HTTP_DATE'),
-                                         'HTTP_USER' => \Slim\Environment::getInstance()->offsetGet('HTTP_USER'),
-                                         'HTTP_SESSION' => \Slim\Environment::getInstance()->offsetGet('HTTP_SESSION'),
-                                         'REQUEST_TIME' => \Slim\Environment::getInstance()->offsetGet('REQUEST_TIME'));
-                                         
-                        $oldRequestURI = $_SERVER['REQUEST_URI'];
-                        $oldScriptName = $_SERVER['SCRIPT_NAME'];
-                        $_SERVER['REQUEST_URI'] = $tar.$add;
-                        $_SERVER['SCRIPT_NAME'] = $tar;
-                        $_SERVER['QUERY_STRING']='';
-                        \Slim\Environment::mock($args);
-                        include_once($tar);
-                        
-                        $oldStatus = http_response_code();
-                        $oldHeader = array_merge(array(),headers_list());
-                        header_remove(); 
-                        http_response_code(0);
-                       
-                        $name = $com->getClassName();
-
-                        ob_start();
-                        
-                        new $name();  
-                        if (isset($obj))
-                            unset($obj);                        
-                        $result['content'] = ob_get_contents();
-                        ob_end_clean(); 
-                        
-                        ///Logger::Log($method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+                            if (isset($_SERVER['HTTP_DATE']))
+                                $args['HTTP_DATE'] = $_SERVER['HTTP_DATE'];
+                                
+                            $oldArgs = array('REQUEST_METHOD' => \Slim\Environment::getInstance()->offsetGet('REQUEST_METHOD'),
+                                             'PATH_INFO' => \Slim\Environment::getInstance()->offsetGet('PATH_INFO'),
+                                             'slim.input' => \Slim\Environment::getInstance()->offsetGet('slim.input'),
+                                             'HTTP_DATE' => \Slim\Environment::getInstance()->offsetGet('HTTP_DATE'),
+                                             'HTTP_USER' => \Slim\Environment::getInstance()->offsetGet('HTTP_USER'),
+                                             'HTTP_SESSION' => \Slim\Environment::getInstance()->offsetGet('HTTP_SESSION'),
+                                             'REQUEST_TIME' => \Slim\Environment::getInstance()->offsetGet('REQUEST_TIME'));
+                                             
+                            $oldRequestURI = $_SERVER['REQUEST_URI'];
+                            $oldScriptName = $_SERVER['SCRIPT_NAME'];
+                            $_SERVER['REQUEST_URI'] = $tar.$add;
+                            $_SERVER['SCRIPT_NAME'] = $tar;
+                            $_SERVER['QUERY_STRING']='';
+                            $_SERVER['REQUEST_METHOD']=$method;
+                            \Slim\Environment::mock($args);
+                            include_once($tar);
                             
-                        $result['headers'] = array_merge(array(),Request::http_parse_headers_short(headers_list())); 
-                        ///foreach ($result['headers'] as $key => $value)
-                        ///    Logger::Log($key.'__'.$value, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
-                        header_remove();        
+                            $oldStatus = http_response_code();
+                            $oldHeader = array_merge(array(),headers_list());
+                            header_remove(); 
+                            http_response_code(0);
+                           
+                            $name = $com->getClassName();
 
-                        $result['status'] = http_response_code();
-                        $_SERVER['REQUEST_URI'] = $oldRequestURI;
-                        $_SERVER['SCRIPT_NAME'] = $oldScriptName;
+                            ob_start();
+                            
+                            new $name();  
+                            if (isset($obj))
+                                unset($obj);                        
+                            $result['content'] = ob_get_contents();
+                            ob_end_clean(); 
+                                
+                            $result['headers'] = array_merge(array(),Request::http_parse_headers_short(headers_list()));
+                            header_remove();        
+
+                            $result['status'] = http_response_code();
+                            $_SERVER['REQUEST_URI'] = $oldRequestURI;
+                            $_SERVER['SCRIPT_NAME'] = $oldScriptName;
+                            
+                            \Slim\Environment::mock($oldArgs);
+                            $_SERVER['REQUEST_METHOD'] = $oldArgs['REQUEST_METHOD'];
+                            http_response_code($oldStatus);
+                            
+                            header('Content-Type: text/html; charset=utf-8');
+                            foreach ($oldHeader as $head)
+                                header($head);
+                                
+                            CacheManager::cacheData($com->getClassName().$add, $result['content'], $result['status'], $method);
+                            ///Logger::Log('in<< '.$method.' '.$com->getClassName().$add, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
                         
-                        \Slim\Environment::mock($oldArgs);
-                        http_response_code($oldStatus);
-                        
-                        header('Content-Type: text/html; charset=utf-8');
-                        foreach ($oldHeader as $head)
-                            header($head);
+                        }
 
                         $done=true;
                         break;

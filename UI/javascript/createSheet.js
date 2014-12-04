@@ -99,6 +99,7 @@ $(document).ready( function()
     
     renumberExercises();
     renameProcessor();
+    rename();
     // activate ckeditor
     var all = $('.ckeditor');
     for (var i = 0; i < all.length; i++) {

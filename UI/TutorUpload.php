@@ -67,16 +67,17 @@ $tutorUpload_data['cid'] = $cid;
 $tutorUpload_data['sid'] = $sid;
 
 $user_course_data = $tutorUpload_data['user'];
-
+Authentication::checkRights(PRIVILEGE_LEVEL::TUTOR, $cid, $uid, $user_course_data);
 $menu = MakeNavigationElement($user_course_data,
-                              PRIVILEGE_LEVEL::ADMIN,
+                              PRIVILEGE_LEVEL::TUTOR,
                               true);
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
 $h->bind(array("name" => (isset($user_course_data['courses'][0]['course']['name']) ? $user_course_data['courses'][0]['course']['name'] : null),
-               "notificationElements" => $notifications));
+               "notificationElements" => $notifications,
+               "navigationElement" => $menu));
 
 // construct a content element for uploading markings
 $tutorUpload = Template::WithTemplateFile('include/TutorUpload/TutorUpload.template.html');

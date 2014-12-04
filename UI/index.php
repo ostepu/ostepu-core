@@ -20,9 +20,8 @@ if (is_null($user)) {
 }
 
 $menu = MakeNavigationElement($user,
-                              PRIVILEGE_LEVEL::LECTURER,
-                              true,
-                              true);
+                              PRIVILEGE_LEVEL::STUDENT,true,true
+                              );
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');

@@ -161,36 +161,57 @@ class CConfig
         }
     }
     
-    public function instruction( $pre = array())
+    public function instruction( $pre = array(), $returnData=false)
     {
         $path = ($this->callPath!=null ? $this->callPath.'/' : '');
         $path = str_replace("\\",'/',$path);
 
         if (file_exists($path.'Component.json')){
-            $this->_app->response->setStatus( 200 );
+            if (!$returnData)
+                $this->_app->response->setStatus( 200 );
             $data = json_decode(file_get_contents($path.'Component.json'),true);
-            $this->_app->response->setBody( json_encode((isset($data['links']) ? $data['links'] : array())) );
+            if ($returnData){
+                return $data;
+            } else 
+                $this->_app->response->setBody( json_encode((isset($data['links']) ? $data['links'] : array())) );
         }else{
-            $this->_app->response->setStatus( 404 );
-            $this->_app->response->setBody( '' );
+            if ($returnData){
+                return array();
+            } else {
+                $this->_app->response->setStatus( 404 );
+                $this->_app->response->setBody( '' );
+            }
         }
     }
     
-    public function commands( $pre = array() )
+    public function commands( $pre = array(), $nativeOnly=false, $returnData=false )
     {
         if (file_exists(($this->callPath!=null ? $this->callPath.'/':'').'Commands.json')){
-            $this->_app->response->setStatus( 200 );
+            if (!$returnData)
+                $this->_app->response->setStatus( 200 );
+            
             $commands = json_decode(file_get_contents(($this->callPath!=null ? $this->callPath.'/':'').'Commands.json'), true);
-            $commands[] = array('method' => 'get', 'path' => '(/:pre+)/info/commands(/)');
-            $commands[] = array('method' => 'get', 'path' => '(/:pre+)/info/links(/)');
-            $commands[] = array('method' => 'get', 'path' => '(/:pre+)/info/:language(/)');
-            $commands[] = array('method' => 'post', 'path' => '(/:pre+)/control');
-            $commands[] = array('method' => 'get', 'path' => '(/:pre+)/control');
-            $this->_app->response->setBody( json_encode($commands) );
+            
+            if (!$nativeOnly){
+                $commands[] = array('method' => 'get', 'path' => '(/:pre+)/info/commands(/)');
+                $commands[] = array('method' => 'get', 'path' => '(/:pre+)/info/links(/)');
+                $commands[] = array('method' => 'get', 'path' => '(/:pre+)/info/:language(/)');
+                $commands[] = array('method' => 'post', 'path' => '(/:pre+)/control');
+                $commands[] = array('method' => 'get', 'path' => '(/:pre+)/control');
+            }
+            
+            if ($returnData){
+                return $commands;
+            } else
+                $this->_app->response->setBody( json_encode($commands) );
 
         }else{
-            $this->_app->response->setStatus( 404 );
-            $this->_app->response->setBody( '' );
+            if ($returnData){
+                return array();
+            } else {
+                $this->_app->response->setStatus( 404 );
+                $this->_app->response->setBody( '' );
+            }
         }
     }
 

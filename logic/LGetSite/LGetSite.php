@@ -420,74 +420,81 @@ class LGetSite
             $exerciseTypes[$exerciseType['id']] = $exerciseType;
         }
 
-        foreach ($sheets as &$sheet) {
-            $sheetPoints = 0;
-            $maxSheetPoints = 0;
+        if (isset($sheets)){
+            foreach ($sheets as &$sheet) {
+                $sheetPoints = 0;
+                $maxSheetPoints = 0;
 
-            $hasAttachments = false;
-            $hasMarkings = false;
+                $hasAttachments = false;
+                $hasMarkings = false;
+                $hasSubmissions = false;
 
-            // add group to the sheet
-            if (isset($groupsBySheet[$sheet['id']])) {
-                $group = $groupsBySheet[$sheet['id']];
-                $sheet['group'] = $group;
-            } else {
-                $sheet['group'] = array();
-            }
+                // add group to the sheet
+                if (isset($groupsBySheet[$sheet['id']])) {
+                    $group = $groupsBySheet[$sheet['id']];
+                    $sheet['group'] = $group;
+                } else {
+                    $sheet['group'] = array();
+                }
 
-            // prepare exercises
-            foreach ($sheet['exercises'] as &$exercise) {
-                $isBonus = isset($exercise['bonus']) ? $exercise['bonus'] : null;
-                $maxSheetPoints += ($isBonus == null || $isBonus == '0') ? $exercise['maxPoints'] : 0;
-                $exerciseID = $exercise['id'];
+                // prepare exercises
+                foreach ($sheet['exercises'] as &$exercise) {
+                    $isBonus = isset($exercise['bonus']) ? $exercise['bonus'] : null;
+                    $maxSheetPoints += ($isBonus == null || $isBonus == '0') ? $exercise['maxPoints'] : 0;
+                    $exerciseID = $exercise['id'];
 
-                // add submission to exercise
-                if (isset($submissionsByExercise[$exerciseID])) {
-                    $submission = &$submissionsByExercise[$exerciseID];
+                    // add submission to exercise
+                    if (isset($submissionsByExercise[$exerciseID])) {
+                        $submission = &$submissionsByExercise[$exerciseID];
 
-                    if (isset($submission['marking'])) {
-                        $marking = $submission['marking'];
+                        if (!isset($submission['hideFile']))
+                            $hasSubmissions=true;
+                            
+                        if (isset($submission['marking'])) {
+                            $marking = $submission['marking'];
 
-                        $sheetPoints += isset($marking['points']) ? $marking['points'] : 0 ;
+                            $sheetPoints += isset($marking['points']) ? $marking['points'] : 0 ;
 
-                        $hasMarkings = true;
+                            if (!isset($submission['marking']['hideFile']))
+                                $hasMarkings = true;
+                        }
+
+                        $exercise['submission'] = $submission;
                     }
 
-                    $exercise['submission'] = $submission;
+                    // add attachments to exercise
+                    if (count($exercise['attachments']) > 0) {
+                        $exercise['attachment'] = $exercise['attachments'][0];
+                        $hasAttachments = true;
+                    }
+
+                    unset($exercise['attachments']);
+
+                    // add type name to exercise
+                    $typeID = $exercise['type'];
+                    if (isset($exerciseTypes[$typeID])) {
+                        $exercise['typeName'] = $exerciseTypes[$typeID]['name'];
+                    } else {
+                        $exercise['typeName'] = "unknown type";
+                    }
                 }
 
-                // add attachments to exercise
-                if (count($exercise['attachments']) > 0) {
-                    $exercise['attachment'] = $exercise['attachments'][0];
-                    $hasAttachments = true;
-                }
-
-                unset($exercise['attachments']);
-
-                // add type name to exercise
-                $typeID = $exercise['type'];
-                if (isset($exerciseTypes[$typeID])) {
-                    $exercise['typeName'] = $exerciseTypes[$typeID]['name'];
+                $sheet['hasMarkings'] = $hasMarkings;
+                $sheet['hasAttachments'] = $hasAttachments;
+                $sheet['hasSubmissions'] = $hasSubmissions;
+                $sheet['maxPoints'] = $maxSheetPoints;
+                $sheet['points'] = $sheetPoints;
+                if ($maxSheetPoints != 0) {
+                    $percentage = round($sheetPoints / $maxSheetPoints * 100, 2);
+                    $sheet['percentage'] = $percentage;
                 } else {
-                    $exercise['typeName'] = "unknown type";
+                    $sheet['percentage'] = 100;
                 }
             }
-
-            $sheet['hasMarkings'] = $hasMarkings;
-            $sheet['hasAttachments'] = $hasAttachments;
-            $sheet['maxPoints'] = $maxSheetPoints;
-            $sheet['points'] = $sheetPoints;
-            if ($maxSheetPoints != 0) {
-                $percentage = round($sheetPoints / $maxSheetPoints * 100, 2);
-                $sheet['percentage'] = $percentage;
-            } else {
-                $sheet['percentage'] = 100;
-            }
+            $response['sheets'] = $sheets;
         }
 
         $this->flag = 1;
-
-        $response['sheets'] = $sheets;
         $response['user'] = $this->userWithCourse($userid, $courseid);
 
         $this->app->response->setBody(json_encode($response));
@@ -646,19 +653,43 @@ class LGetSite
         $possibleExerciseTypes = json_decode($answer[5]['content'], true);
         $tutors = array_merge($tutors,json_decode($answer[6]['content'], true));
         $tutors = array_merge($tutors,json_decode($answer[7]['content'], true));
-
+                
         // order exercise types by id
         $exerciseTypes = array();
         foreach ($possibleExerciseTypes as $exerciseType) {
             $exerciseTypes[$exerciseType['id']] = $exerciseType;
         }
 
+        
+        $namesOfExercises = array();
         // find the current sheet and it's exercises
         foreach ($sheets as &$sheet) {
             $thisSheetId = $sheet['id'];
 
             if ($thisSheetId == $sheetid) {
                 $thisExerciseSheet = $sheet;
+                        // create exercise names
+                //an array to descripe the subtasks
+                $alphabet = range('a', 'z');
+                $count = 0;
+                
+                $count=null;
+                if (isset($sheet['exercises'])){
+                    $exercises = $sheet['exercises'];
+                    foreach ($exercises as $key => $exercise){
+                        $exerciseId = $exercise['id'];
+
+                        if ($count===null || $exercises[$count]['link'] != $exercise['link']){
+                            $count=$key;
+                            $namesOfExercises[$exerciseId] = $exercise['link'];
+                            $subtask = 0;
+                        }else{
+                            $subtask++;
+                            $namesOfExercises[$exerciseId] = $exercise['link'].$alphabet[$subtask];
+                            $namesOfExercises[$exercises[$count]['id']] = $exercises[$count]['link'].$alphabet[0];
+                        }
+                    }
+                }
             }
 
             unset($sheet['exercises']);
@@ -724,37 +755,51 @@ class LGetSite
 
             // filter out markings by the tutor with id $tutorid
             if (($shouldfilter == false) || $selector($submission, $tutorid, $statusid)) {
+                //echo json_encode($submission);
                 $exerciseId = $submission['exerciseId'];
                 $exerciseIndex = $exerciseIndices[$exerciseId];
                 $studentId = $submission['studentId'];
-                //echo json_encode($submission['marking']);
 
                 // assign the submission to its group
                 $group = &$userGroups[$studentId];
                 $groupExercises = &$group['exercises'];
                 $groupExercises[$exerciseIndex]['submission'] = $submission;
-
                 $leaderId = &$group['leader']['id'];
                 $filteredGroups[$leaderId] = &$group;
+            } else {
+                $exerciseId = $submission['exerciseId'];
+                $exerciseIndex = $exerciseIndices[$exerciseId];
+                $studentId = $submission['studentId'];
+                $group = &$userGroups[$studentId];
+                $groupExercises = &$group['exercises'];
+                unset($groupExercises[$exerciseIndex]);
             }
         }
         
         if ($statusid==='0'){
             // remove groups with submissions
+            $tempGroups=array();
             foreach ($groups as $key => $group){
+                $temp2Groups=array();
                 foreach ($group['exercises'] as $key2 => $exercise){
-                    if (isset($exercise['submission'])){
-                        unset($groups[$key]['exercises'][$key2]);
-                        break;
+                    if (!isset($exercise['submission']) || (isset($exercise['submission']['marking']['status']) && $exercise['submission']['marking']['status']==='0')){
+                        $temp2Groups[] = $exercise;
                     }
                 }
+                
+                if (!empty($temp2Groups)){
+                    $group['exercises']=$temp2Groups;
+                    $tempGroups[] = $group;
+                }
             }
+            $groups=$tempGroups;
         }
 
         $response['groups'] = ($shouldfilter == true && $statusid!=='0') ? array_values($filteredGroups) : $groups;
         $response['tutors'] = $tutors;
         $response['exerciseSheets'] = $sheets;
         $response['markingStatus'] = Marking::getStatusDefinition();
+        $response['namesOfExercises'] = $namesOfExercises;
 
         $this->flag = 1;
         $response['user'] = $this->userWithCourse($userid, $courseid);
@@ -815,7 +860,9 @@ class LGetSite
     public function markingToolStatus($userid, $courseid, $sheetid, $statusid)
     {
         $selector = function ($submission, $tutorid, $statusid) {
-            if ((isset($submission['marking']['status']) && $submission['marking']['status'] == $statusid) || ($statusid == -1 && !isset($submission['marking']))) {
+            if ((isset($submission['marking']['status']) && $submission['marking']['status'] === $statusid)) {
+                return true;
+            } elseif (($statusid == -1 && !isset($submission['marking']))) {;
                 return true;
             }
 
@@ -841,7 +888,7 @@ class LGetSite
     public function markingToolTutorStatus($userid, $courseid, $sheetid, $tutorid, $statusid)
     {
         $selector = function ($submission, $tutorid, $statusid) {
-            if (isset($submission['marking']) && ($submission['marking']['status'] == $statusid)
+            if (isset($submission['marking']) && ($submission['marking']['status'] === $statusid)
                 && ($submission['marking']['tutorId'] == $tutorid)) {
                 return true;
             }
@@ -936,7 +983,12 @@ class LGetSite
         
         $URL = "{$this->_getExerciseType->getAddress()}/exercisetype";
         $answer = Request::custom('GET', $URL, array(), '');
-        $exerciseTypes = json_decode($answer['content'], true);
+        $possibleExerciseTypes = json_decode($answer['content'], true);
+        
+        $exerciseTypes = array();
+        foreach ($possibleExerciseTypes as $exerciseType) {
+            $exerciseTypes[$exerciseType['id']] = $exerciseType;
+        }
 
         if (isset($submissions) == false) {
             $submissions = array();
@@ -1108,44 +1160,46 @@ class LGetSite
             }
         unset($markings);
 
-        foreach ($sheets as $key => &$sheet) {
+        if (isset($sheets)){
+            foreach ($sheets as $key => &$sheet) {
 
-            $hasAttachments = false;
-            foreach ($sheet['exercises'] as &$exercise) {
-            
-                // add attachments to exercise
-                if (count($exercise['attachments']) > 0) {
-                    $exercise['attachment'] = $exercise['attachments'][0];
-                    $hasAttachments = true;
-                    break;
+                $hasAttachments = false;
+                foreach ($sheet['exercises'] as &$exercise) {
+                
+                    // add attachments to exercise
+                    if (count($exercise['attachments']) > 0) {
+                        $exercise['attachment'] = $exercise['attachments'][0];
+                        $hasAttachments = true;
+                        break;
+                    }
                 }
-            }
 
-            $sheet['hasAttachments'] = $hasAttachments;
+                $sheet['hasAttachments'] = $hasAttachments;
 
-            // adds counts for the additional information in the footer
-            $sheet['courseUserCount'] = count($courseUser);
-            $sheet['selectedSubmissions'] = (isset($selectedSubmissionsCount[$sheet['id']]['selected']) ? $selectedSubmissionsCount[$sheet['id']]['selected'] : 0);
-            $sheet['tutorMarkings'] = (isset($selectedSubmissionsCount[$sheet['id']]['tutorMarkings']) ? $selectedSubmissionsCount[$sheet['id']]['tutorMarkings'] : 0);
-            
-            if (isset($selectedSubmissionsCount[$sheet['id']]['status']))
-                foreach ($selectedSubmissionsCount[$sheet['id']]['status'] as $key => $value)
-                    $sheet['status'][$key] = $value;
-                    
-            if (isset($selectedSubmissionsCount[$sheet['id']]['allStatus']))
-                foreach ($selectedSubmissionsCount[$sheet['id']]['allStatus'] as $key => $value)
-                    $sheet['allStatus'][$key] = $value;
-                    
-            foreach ($sheet['exercises'] as &$exercise) {
-                foreach ($exerciseTypes as $exerciseType) {
-                    if ($exerciseType['id'] == $exercise['type']) {
-                        $exercise['typeName'] = $exerciseType['name'];
+                // adds counts for the additional information in the footer
+                $sheet['courseUserCount'] = count($courseUser);
+                $sheet['selectedSubmissions'] = (isset($selectedSubmissionsCount[$sheet['id']]['selected']) ? $selectedSubmissionsCount[$sheet['id']]['selected'] : 0);
+                $sheet['tutorMarkings'] = (isset($selectedSubmissionsCount[$sheet['id']]['tutorMarkings']) ? $selectedSubmissionsCount[$sheet['id']]['tutorMarkings'] : 0);
+                
+                if (isset($selectedSubmissionsCount[$sheet['id']]['status']))
+                    foreach ($selectedSubmissionsCount[$sheet['id']]['status'] as $key => $value)
+                        $sheet['status'][$key] = $value;
+                        
+                if (isset($selectedSubmissionsCount[$sheet['id']]['allStatus']))
+                    foreach ($selectedSubmissionsCount[$sheet['id']]['allStatus'] as $key => $value)
+                        $sheet['allStatus'][$key] = $value;
+                        
+                foreach ($sheet['exercises'] as &$exercise) {
+                    foreach ($exerciseTypes as $exerciseType) {
+                        if ($exerciseType['id'] == $exercise['type']) {
+                            $exercise['typeName'] = $exerciseType['name'];
+                        }
                     }
                 }
             }
-        }
 
-        $response['sheets'] = $sheets;
+            $response['sheets'] = $sheets;
+        }
 
         $this->flag = 1;
         $response['user'] = $this->userWithCourse($userid, $courseid);
@@ -1383,9 +1437,14 @@ class LGetSite
             $studentMarkings[$studentID][$exerciseType] += isset($marking['points']) ? $marking['points'] : 0;
         }
 
-        foreach ($students as &$student) {
-            unset($student['courses']);
-            unset($student['attachments']);
+        $resultStudents = array();
+        foreach ($students as $student) {
+            if (!isset($student['id'])) continue;
+            
+            if (isset($student['courses']))
+                unset($student['courses']);
+            if (isset($student['attachments']))
+                unset($student['attachments']);
             $student['percentages'] = array();
 
             $allApproved = true;
@@ -1413,18 +1472,18 @@ class LGetSite
                         $thisPercentage['isApproved'] = true;
                         $thisPercentage['maxPoints'] = 0;
 
-                        if (isset($studentMarkings[$student['id']])
+                        if (isset($student['id']) && isset($studentMarkings[$student['id']])
                             && isset($studentMarkings[$student['id']][$typeID])) {
                             $points = $studentMarkings[$student['id']][$typeID];
                             $thisPercentage['points'] = $points;
-                        } else {
+                        } elseif (isset($student['id'])) {
                             $thisPercentage['points'] = 0;
                         }
                     } else {
 
                         // check if there are points for this
                         // student-exerciseType combination
-                        if (isset($studentMarkings[$student['id']])
+                        if (isset($student['id']) && isset($studentMarkings[$student['id']])
                             && isset($studentMarkings[$student['id']][$typeID])) {
                             // the user has points for this exercise type
 
@@ -1442,7 +1501,7 @@ class LGetSite
 
                             $thisPercentage['isApproved'] = $typeApproved;
                             $thisPercentage['percentage'] = round($percentage * 100, 2);
-                        } else {
+                        } elseif (isset($student['id']))  {
 
                             // there are no points for the user for this
                             // exercise type
@@ -1464,11 +1523,15 @@ class LGetSite
             }
 
             $student['isApproved'] = $allApproved;
+            $resultStudents[] = $student;
         }
+        $students = $resultStudents;
 
         $this->flag = 1;
         $response['user'] = $this->userWithCourse($userid, $courseid);
-        $response['users'] = $students;
+        
+        if (isset($students))
+            $response['users'] = $students;
 
         $response['minimumPercentages'] = array_values($approvalconditionsByType);
 

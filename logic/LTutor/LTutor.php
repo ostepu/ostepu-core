@@ -194,6 +194,10 @@ class LTutor
         //Get zip
         $this->app->get('/'.$this->getPrefix().'/user/:userid/exercisesheet/:sheetid(/status/:status)(/)',
                 array($this, 'getZip'));
+                
+        //Post zip
+        $this->app->post('/'.$this->getPrefix().'/archive/user/:userid/exercisesheet/:sheetid(/)',
+                array($this, 'postTutorArchive'));
 
         //uploadZip
         $this->app->post('/'.$this->getPrefix().'/user/:userid/exercisesheet/:sheetid(/)', array($this, 'uploadZip'));
@@ -505,39 +509,28 @@ class LTutor
      * @param $userid an integer identifies the user (tutor)
      * @param $sheetid an integer identifies the exercisesheet
      */
-    public function getZip($userid, $sheetid, $status=null)
+    public function postTutorArchive($userid, $sheetid)
+    {
+        $answer = $this->generateTutorArchive($userid, $sheetid, json_decode($this->app->request->getBody(), true));
+        $this->app->response->setStatus($answer['status']);
+        $this->app->response->setBody($answer['content']);
+    }
+    
+    public function generateTutorArchive($userid, $sheetid, $markings)
     {
         $multiRequestHandle = new Request_MultiRequest();
-        $filesList=array();
-        
-        //request to database to get the markings
-        $handler = Request_CreateRequest::createCustom('GET', $this->_getMarking[0]->getAddress().'/marking/exercisesheet/'.$sheetid.'/tutor/'.$userid, array(),"");
-        $multiRequestHandle->addRequest($handler);
-        
         //request to database to get the exercise sheets
         $handler = Request_CreateRequest::createCustom('GET', $this->_getExercise[0]->getAddress().'/exercise/exercisesheet/'.$sheetid, array(),"");
         $multiRequestHandle->addRequest($handler);
-        
         $handler = Request_CreateRequest::createCustom('GET', $this->_getGroup[0]->getAddress().'/group/exercisesheet/'.$sheetid, array(),"");
         $multiRequestHandle->addRequest($handler);
         
         $answer = $multiRequestHandle->run();
         if (count($answer)< 2 || !isset($answer[0]['status']) || $answer[0]['status']!=200 || !isset($answer[0]['content']) || !isset($answer[1]['status']) || $answer[1]['status']!=200 || !isset($answer[1]['content'])){
-            $this->app->response->setStatus(404);
-            $this->app->stop();
+            return array('status'=>404,'content'=>'');
         }
-
-        $markings = json_decode($answer[0]['content'], true);
-        if (isset($status)){
-            $marks=array();
-            foreach($markings as $marking)
-                if (isset($marking['status']) && $marking['status'] == $status)
-                    $marks[] = $marking;
-            $markings=$marks;
-        }            
-        
-        $exercises = json_decode($answer[1]['content'], true);
-        $groups = json_decode($answer[2]['content'], true);
+        $exercises = json_decode($answer[0]['content'], true);
+        $groups = json_decode($answer[1]['content'], true);
         
         $count = 0;
         //an array to descripe the subtasks
@@ -550,7 +543,7 @@ class LTutor
         $ExerciseData = array();
         $ExerciseData['userId'] = $userid;
         $ExerciseData['markings'] = array();
-
+        
         //exercises with informations of marking and submissions
         //sorted by exercise ID and checked of existence
         foreach( $markings as $marking){
@@ -643,8 +636,10 @@ class LTutor
                     }
                     
                     // file
-                    $fileInfo = pathinfo($marking['submission']['file']['displayName']);
-                    $newFile = array_merge(array(),$marking['submission']['file']);
+                    if (isset($marking['submission']['file'])){
+                        $fileInfo = pathinfo($marking['submission']['file']['displayName']);
+                        $newFile = array_merge(array(),$marking['submission']['file']);
+                    }
                     $converted=false;
                     
                     if (isset($marking['file']))
@@ -687,37 +682,41 @@ class LTutor
                         $data.="<pre>";
                         $newFileData->setBody(base64_encode($data));
                         $newFileSend[] = $newFileData;
-                        $newFileSend[] = $newFile;
-                        $newFileData = new File();
-                        $newFileData->setBody(base64_encode("</pre>"));
-                        $newFileSend[] = $newFileData;
-                        //echo File::encodeFile($newFileSend);//return;
-                        $answer = Request::routeRequest(
-                                                        'POST',
-                                                        '/temppdf/file/merge',
-                                                        array(),
-                                                        File::encodeFile($newFileSend),
-                                                        $this->_postPdf,
-                                                        'pdf'
-                                                        );
+                        
+                        if (isset($newFile)){
+                            $newFileSend[] = $newFile;
+                            $newFileData = new File();
+                            $newFileData->setBody(base64_encode("</pre>"));
+                            $newFileSend[] = $newFileData;
+                            //echo File::encodeFile($newFileSend);//return;
+                            $answer = Request::routeRequest(
+                                                            'POST',
+                                                            '/temppdf/file/merge',
+                                                            array(),
+                                                            File::encodeFile($newFileSend),
+                                                            $this->_postPdf,
+                                                            'pdf'
+                                                            );
 
-                        if ($answer['status'] == 201 && isset($answer['content'])){
-                            $file = json_decode($answer['content'],true);
-                            /*$a = json_decode($answer['content'],true);
-                            $a['inp'] = htmlspecialchars($data);
-                            $a['submissionId'] = $marking['submission']['id'];
-                            $filesList[]=$a;*/
-                            $address = $file['address'];
-                            $newFile['address'] = $address;
-                            $newFile['displayName'] = $fileInfo['filename'].'.pdf';
-                            $sortedMarkings[$exerciseId][$key]['submission']['file']['conv'] = $newFile;
-                            $converted=true;
+                            if ($answer['status'] == 201 && isset($answer['content'])){
+                                $file = json_decode($answer['content'],true);
+                                /*$a = json_decode($answer['content'],true);
+                                $a['inp'] = htmlspecialchars($data);
+                                $a['submissionId'] = $marking['submission']['id'];
+                                $filesList[]=$a;*/
+                                $address = $file['address'];
+                                $newFile['address'] = $address;
+                                $newFile['displayName'] = $fileInfo['filename'].'.pdf';
+                                $sortedMarkings[$exerciseId][$key]['submission']['file']['conv'] = $newFile;
+                                $converted=true;
+                            }
                         }
                     }
                     
                     //$row[] = $namesOfExercises[$exerciseId].'/'.($converted ? 'K_' :'').$marking['id'].($fileInfo['extension']!='' ? '.'.$fileInfo['extension']:'');
                     //if (!$converted)
-                    $row[] = $namesOfExercises[$exerciseId].'/'.$marking['id'].'/'.$newFile['displayName'];
+                    if (isset($newFile))
+                        $row[] = $namesOfExercises[$exerciseId].'/'.$marking['id'].'/'.$newFile['displayName'];
 
                     $rows[] = $row;
                 }
@@ -780,7 +779,7 @@ class LTutor
                             
                         $submission = $marking['submission'];
 
-                        $newfile = $submission['file'];
+                        $newfile = (isset($submission['file']) ? $submission['file'] : null);
                         
                         if (isset($marking['file'])){
                             $newfile3 = $marking['file'];
@@ -796,10 +795,12 @@ class LTutor
                             $filesToZip[] = $newfile2;
                         }
                         
-                        $fileInfo = pathinfo($newfile['displayName']);
-                        //$newfile['displayName'] = $namesOfExercises[$exerciseId].'/'.$marking['id'].($fileInfo['extension']!='' ? '.'.$fileInfo['extension']:'');
-                        $newfile['displayName'] = $namesOfExercises[$exerciseId].'/'.$marking['id'].'/'.$newfile['displayName'];
-                        $filesToZip[] = $newfile;
+                        if (isset($newfile['displayName'])){
+                            $fileInfo = pathinfo($newfile['displayName']);
+                            //$newfile['displayName'] = $namesOfExercises[$exerciseId].'/'.$marking['id'].($fileInfo['extension']!='' ? '.'.$fileInfo['extension']:'');
+                            $newfile['displayName'] = $namesOfExercises[$exerciseId].'/'.$marking['id'].'/'.$newfile['displayName'];
+                            $filesToZip[] = $newfile;
+                        }
                     }
                 }
             }
@@ -829,19 +830,42 @@ class LTutor
             if ( $result['status'] == 201){
                 $ff = File::decodeFile($result['content']);
                 $ff->setDisplayName($transaction->getTransactionId().'.zip');
-                
-                //if (isset($result['headers']['Content-Type']))
-                //  $this->app->response->headers->set('Content-Type', $result['headers']['Content-Type']);
-            
-                //if (isset($result['headers']['Content-Disposition']))
-                    //$this->app->response->headers->set('Content-Disposition', $result['headers']['Content-Disposition']);
-                $this->app->response->setBody(File::encodeFile($ff));
-                ///$this->app->response->setBody(json_encode($filesList));
-                $this->app->response->setStatus(201);
+                return array('status'=>201,'content'=>File::encodeFile($ff));
             } else 
-                $this->app->response->setStatus(409);
+                return array('status'=>409,'content'=>'');
         } else 
-            $this->app->response->setStatus(409);
+             return array('status'=>409,'content'=>'');
+        
+    }
+    
+    public function getZip($userid, $sheetid, $status=null)
+    {
+        $multiRequestHandle = new Request_MultiRequest();
+        $filesList=array();
+        
+        //request to database to get the markings
+        $handler = Request_CreateRequest::createCustom('GET', $this->_getMarking[0]->getAddress().'/marking/exercisesheet/'.$sheetid.'/tutor/'.$userid, array(),"");
+        $multiRequestHandle->addRequest($handler);
+        
+        $answer = $multiRequestHandle->run();
+        if (count($answer)< 1 || !isset($answer[0]['status']) || $answer[0]['status']!=200 || !isset($answer[0]['content'])){
+            $this->app->response->setStatus(404);
+            $this->app->response->setBody('');
+            $this->app->stop();
+        }
+
+        $markings = json_decode($answer[0]['content'], true);
+        if (isset($status)){
+            $marks=array();
+            foreach($markings as $marking)
+                if (isset($marking['status']) && $marking['status'] == $status)
+                    $marks[] = $marking;
+            $markings=$marks;
+        }            
+
+        $answer = generateTutorArchive($userid, $sheetid, $markings);
+        $this->app->response->setStatus($answer['status']);
+        $this->app->response->setBody($answer['content']);
     }
 
     public function uploadZip($userid, $sheetid)
@@ -943,7 +967,7 @@ class LTutor
                             
                             // create new marking object
                             $marking = array(
-                                    'id' => $markingId,
+                                    'id' => ($markingId<0 ? null : $markingId),
                                     'points' => $points,
                                     'outstanding' => $row[3],
                                     'tutorId' => $userid,

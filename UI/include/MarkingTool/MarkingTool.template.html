@@ -1,20 +1,45 @@
+<?php
+$leaderID = $group['leader']['id'];
+
+if (isset($GroupNotificationElements)) {
+    foreach ($GroupNotificationElements as $notificationElement) {
+        print $notificationElement;
+    }
+}
+?>
+
 <input type="hidden" 
        name="maxMarkingStatus" 
        value="<?php echo $markingStatus[count($markingStatus)-1]['id']; ?>" />
+<input type="hidden" name="action" value="ShowMarkingTool">
+
+<?php if (isset($tutorID)){ ?>
+<input type="hidden" name="tutorID" value="<?php echo $tutorID; ?>">
+<?php } ?>
+
+<?php if (isset($sheetID)){ ?>
+<input type="hidden" name="sheetID" value="<?php echo $sheetID; ?>">
+<?php } ?>
+
+<?php if (isset($statusID)){ ?>
+<input type="hidden" name="statusID" value="<?php echo $statusID; ?>">
+<?php } ?>
+
 <?php
-    if (!empty($groups)) {
+    /*if (!empty($groups)) {
     $allOutputs = 0;
     
-    foreach ($groups as $group):
+    foreach ($groups as $group) {*/
     
-    $anz=0;
+    /*$anz=0;
     foreach ($group['exercises'] as $key => $exercise){
         $eid = $exercise['id'];
         if (!isset($exercise['submission']['marking']) && (isset($tutorID) && $tutorID!='all') && (!isset($statusID) || ($statusID!=-1 && $statusID!=0))) continue;
         if (!isset($exercise['submission']) && ((isset($statusID) && $statusID!=0) || (isset($tutorID) && $tutorID!='all'))) continue;
-        $anz++;$allOutputs++;
+        $anz++;
+        $allOutputs++;
     }
-    if ($anz==0)continue;
+    if ($anz==0)continue;*/
 
     $leaderID = $group['leader']['id'];
 ?>
@@ -42,6 +67,7 @@
                     $eid = $exercise['id'];
                     if (!isset($exercise['submission']['marking']) && (isset($tutorID) && $tutorID!='all') && (!isset($statusID) || ($statusID!=-1 && $statusID!=0))) continue;
                     if (!isset($exercise['submission']) && ((isset($statusID) && $statusID!=0) || (isset($tutorID) && $tutorID!='all'))) continue;
+                
                 ?>
                 <?php
                 // make a sublist if next exercise is not a main exercise
@@ -50,7 +76,14 @@
                     print "<li class=\"subexercise-list\"><ol>";
                 }
                 ?>
-                <li>
+                <ol>
+                
+               <div class="left very-short"><?php echo $namesOfExercises[$eid]; ?></div>
+                <?php /*if (isset($group['leader']['firstName']) && isset($group['leader']['lastName'])) { ?>
+                <input type="hidden" 
+                   name="exercises[<?php echo $leaderID; ?>][<?php echo $eid; ?>][user]" 
+                   value="<?php echo $group['leader']['firstName'].' '.$group['leader']['lastName']; ?>" />
+                <?php }*/ ?>
                 <input type="hidden" 
                        name="exercises[<?php echo $leaderID; ?>][<?php echo $eid; ?>][maxPoints]" 
                        value="<?php if (isset($exercise['maxPoints'])) echo $exercise['maxPoints']; ?>" />
@@ -63,27 +96,32 @@
                        name="exercises[<?php echo $leaderID; ?>][<?php echo $eid; ?>][markingID]" 
                        value="<?php echo isset($exercise['submission']['marking']) ? $exercise['submission']['marking']['id'] : -1; ?>" />
 
+                    <?php if (isset($exercise['submission']['marking']['points'])) { ?>
+                    <input type="hidden" 
+                       name="exercises[<?php echo $leaderID; ?>][<?php echo $eid; ?>][oldPoints]" 
+                       value="<?php echo $exercise['submission']['marking']['points']; ?>" />
+                    <?php } ?> 
+                    
                     <?php
                         print '<input class="form-field text-input very-short" name="';
                         print 'exercises[' . $leaderID . '][' . $eid . '][points]" value="';
-                        print isset($exercise['submission']['marking']['points']) ? $exercise['submission']['marking']['points'] : 0;
+                        print isset($exercise['submission']['marking']['points']) ? $exercise['submission']['marking']['points'] : '';
                         print '" id="exercisePoints" />';
                     ?>
 
-                    <div class="form-field label short" for="exercisePoints">
+                    <div class="form-field label very-short" for="exercisePoints">
                         <?php
                             print '/ ' . $exercise['maxPoints'] . 'P';
-                            print $exercise['bonus'] ? ' (*)' : NULL;
+                            print $exercise['bonus'] ? ' (B)' : NULL;
                         ?>
                     </div>
 
-                    <?php
-                        print '<input class="form-field text-input" name="';
-                        print 'exercises[' . $leaderID . '][' . $eid . '][tutorComment]" value="';
-                        if (isset($exercise['submission']['marking']['tutorComment'])) print $exercise['submission']['marking']['tutorComment'];
-                        print '" id="markingComment" maxlength="255" />';
-                    ?>
-
+                    <?php if (isset($exercise['submission']['marking']['status'])) { ?>
+                    <input type="hidden" 
+                       name="exercises[<?php echo $leaderID; ?>][<?php echo $eid; ?>][oldStatus]" 
+                       value="<?php echo $exercise['submission']['marking']['status']; ?>" />
+                    <?php } ?>  
+                    
                     <select class="form-field text-input short" 
                             name="exercises[<?php echo $leaderID; ?>][<?php echo $eid; ?>][status]" 
                             id="exerciseType"> 
@@ -91,11 +129,10 @@
                             foreach ($markingStatus as $status) {
                                 if (!isset($status['id'])) $status['id'] = -1;
                                 if (!isset($status['longName'])) $status['longName'] = '???';
-                                
                                 print '<option value="';
                                 print $status['id'] . '" ';
                                 if (isset($exercise['submission']['marking']['status'])) {
-                                    print $status['id'] == $exercise['submission']['marking']['status'] ? ' selected="selected"' : NULL;
+                                    print ($status['id'] == $exercise['submission']['marking']['status']) ? ' selected="selected"' : NULL;
                                 } elseif (($status['id']==-1 && !isset($exercise['submission']['marking'])) || ($status['id']==0 && !isset($exercise['submission']))) {
                                     print ' selected="selected"';
                                 }
@@ -105,7 +142,20 @@
                             }
                         ?>
                     </select>
-
+                    
+                    <?php if (isset($exercise['submission']['marking']['tutorComment'])) { ?>
+                    <input type="hidden" 
+                       name="exercises[<?php echo $leaderID; ?>][<?php echo $eid; ?>][oldTutorComment]" 
+                       value="<?php echo $exercise['submission']['marking']['tutorComment']; ?>" />
+                    <?php } ?>  
+                    
+                    <?php
+                        print '<input class="form-field text-input" name="';
+                        print 'exercises[' . $leaderID . '][' . $eid . '][tutorComment]" value="';
+                        if (isset($exercise['submission']['marking']['tutorComment'])) print $exercise['submission']['marking']['tutorComment'];
+                        print '" id="markingComment" maxlength="255" />';
+                    ?>
+                    
                     <div class="exercise-sheet-images">
                         <?php
                             // creates a download icon for the submission (if it exists)
@@ -162,7 +212,7 @@
                                 }
                             }
                         ?>
-                </li>
+                </ol>
                 <?php
                 // close subexerciselist if next exercise is a new mainexercise or end of exercises is reached
                 if (isset($group['exercises'][$key+1]) && $group['exercises'][$key+1]['linkName'] == 1 && $isSubtask == true) {
@@ -195,11 +245,11 @@
     ?>
 </div> <!-- end: content-wrapper -->
 <?php
-endforeach;
+//}
 
-}
+//}
 
-if (empty($groups) || $allOutputs==0){
+/*if (empty($groups) || $allOutputs==0){
 ?>
 <div class="content-element">
     <div class="content-header">
@@ -213,5 +263,5 @@ if (empty($groups) || $allOutputs==0){
     </div> <!-- end: content-body -->
 </div> <!-- end: content-wrapper -->
 <?php
-}
+}*/
 ?>

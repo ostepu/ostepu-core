@@ -89,18 +89,6 @@ class LExercise
         // POST AddExercise
         $this->app->post('/'.$this->getPrefix().'(/)', array($this, 'addExercise'));
 
-        // GET GetExercise
-        $this->app->get('/'.$this->getPrefix().'/exercise/:exerciseid(/)',
-                        array ($this, 'getExercise'));
-
-        // DELETE DeleteExercise
-        $this->app->delete('/'.$this->getPrefix().'/exercise/:exerciseid(/)',
-                        array($this, 'deleteExercise'));
-
-        // PUT EditExercise
-        $this->app->put('/'.$this->getPrefix().'/exercise/:exerciseid(/)',
-                        array($this, 'editExercise'));
-
         // run Slim
         $this->app->run();
     }
@@ -121,32 +109,6 @@ class LExercise
 
         if (isset($body) == true && empty($body) == false) {
             foreach ($body as $subexercise) {
-                //upload attachement if it exists
-                /*if (isset($subexercise['attachments']) == true && empty($subexercise['attachments']) == false) {
-                    // get attachments
-                    $attachmentFiles = Attachment::encodeAttachment($subexercise['attachments']);
-                    
-                    $result = Request::routeRequest( 
-                                                    'POST',
-                                                    '/file',
-                                                    $header,
-                                                    $attachmentFiles,
-                                                    $_postFile,
-                                                    'file'
-                                                    );
-
-                    // checks the correctness of the query
-                    if ( $result['status'] >= 200 && 
-                         $result['status'] <= 299 ){
-                        $queryResult = Course::decodeCourse( $result['content'] );
-                        
-                        
-                    } else {
-                        $allright = false;
-                        break;
-                    }
-                }*/
-
                 // create exercise in DB
                 if (isset($subexercise['fileTypes'])){
                     $FileTypesArrayTemp = $subexercise['fileTypes'];
@@ -155,11 +117,22 @@ class LExercise
                 
                 $subexerciseJSON = json_encode($subexercise);
                 $URL = $this->lURL.'/DB/exercise';
-                $subexerciseAnswer = Request::custom('POST', $URL, $header, $subexerciseJSON);
+                $method='POST';
+                if (isset($subexercise['id']) && $subexercise['id'] !== null){
+                   $method='PUT'; 
+                   $URL = $this->lURL.'/DB/exercise/'.$subexercise['id'];
+                }
+                $subexerciseAnswer = Request::custom($method, $URL, $header, $subexerciseJSON);
 
                 if ($subexerciseAnswer['status'] == 201) {
                     $subexerciseOutput = json_decode($subexerciseAnswer['content'], true);
-                    $result[] = Exercise::decodeExercise($subexerciseAnswer['content']);
+                    
+                    if (isset($subexercise['id'])){
+                        $result[] = $subexercise;
+                        $subexerciseOutput = $subexercise;
+                    } else {
+                        $result[] = Exercise::decodeExercise($subexerciseAnswer['content']);
+                    }
                     
                     if (isset($subexerciseOutput['id'])) {
                         $linkid = $subexerciseOutput['id'];
@@ -200,12 +173,12 @@ class LExercise
                     // create ExerciseFileTypes
                     if (isset($FileTypesArrayTemp) && !empty($FileTypesArrayTemp)){
                         foreach ($FileTypesArrayTemp as $fileType) {
-                            $myExerciseFileType = ExerciseFileType::createExerciseFileType(NULL,$fileType,$linkid);
+                            $myExerciseFileType = ExerciseFileType::createExerciseFileType(NULL,$fileType['text'],$linkid);
                             $myExerciseFileTypeJSON = ExerciseFileType::encodeExerciseFileType($myExerciseFileType);
                             $URL = $this->lURL."/DB/exercisefiletype";
-                            $AttachmentAnswer = Request::custom('POST', $URL, $header, $myExerciseFileTypeJSON);
+                            $FileTypesAnswer = Request::custom('POST', $URL, $header, $myExerciseFileTypeJSON);
 
-                            if ($AttachmentAnswer['status'] != 201) {
+                            if ($FileTypesAnswer['status'] != 201) {
                                 $allright = false;
                                 break;
                             }
@@ -228,66 +201,6 @@ class LExercise
         } else {
             $this->app->response->setStatus(409);
         }
-    }
-
-    /**
-     * Returns a single exercise.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /exercise/exercise/$exerciseid(/).
-     *
-     * @param int $exerciseid The id of the exercise that should be returned.
-     */
-    public function getExercise($exerciseid) {
-        /*$header = $this->app->request->headers->all();
-        $body = $this->app->request->getBody();
-        $URL = $this->lURL.'/DB/exercise/'.$exerciseid;
-        //request to database
-        $answer = Request::custom('GET', $URL, $header, $body);
-        //set response
-        $this->app->response->setBody($answer['content']);
-        $this->app->response->setStatus($answer['status']);*/
-    }
-
-    /**
-     * Deletes an exercise.
-     *
-     * Called when this component receives an HTTP DELETE request to
-     * /exercise/exercise/$exerciseid(/).
-     *
-     * @param int $exerciseid The id of the exercise that is beeing deleted.
-     */
-    public function deleteExercise($exerciseid){
-        /*$header = $this->app->request->headers->all();
-        $URL = $this->lURL.'/DB/exercise/exercise/'.$exerciseid;
-        // request to database
-        
-        // ???
-        print_r($URL);
-        
-        $answer = Request::custom('DELETE', $URL, $header, "");
-        $this->app->response->setStatus($answer['status']);*/
-    }
-
-    /**
-     * Edits an exercise.
-     *
-     * Called when this component receives an HTTP PUT request to
-     * /exercise/exercise/$exerciseid(/).
-     * The request body should contain a JSON object representing the exercise's new
-     * attributes.
-     *
-     * @param int $exerciseid The id of the exercise that is beeing updated.
-     */
-    public function editExercise($exerciseid){
-        /*$header = $this->app->request->headers->all();
-        $body = $this->app->request->getBody();
-        $URL = $this->lURL.'/DB/exercise/'.$exerciseid;
-        // request to database
-        $answer = Request::custom('PUT', $URL, $header, $body);
-        // set response
-        $this->app->response->setBody($answer['content']);
-        $this->app->response->setStatus($answer['status']);*/
     }
 }
 ?>

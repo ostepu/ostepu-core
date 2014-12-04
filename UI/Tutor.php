@@ -28,7 +28,7 @@ foreach ($types as $type){
 if (isset($_POST['downloadCSV'])) {
     $sid = cleanInput($_POST['downloadCSV']);
     $URI = $logicURI . '/tutor/user/' . $uid . '/exercisesheet/' . $sid.(isset($status) ? '/status/'.$status : '');
-//echo $URI;return;
+
     $csvFile = http_get($URI, true);
     $csvFile = json_decode($csvFile, true);
 
@@ -39,8 +39,6 @@ if (isset($_POST['downloadCSV'])) {
     }
 }
 
-$requiredPrivilege = PRIVILEGE_LEVEL::TUTOR;
-
 // load tutor data from GetSite
 $URI = $getSiteURI . "/tutor/user/{$uid}/course/{$cid}";
 $tutor_data = http_get($URI, true);
@@ -48,18 +46,20 @@ $tutor_data = json_decode($tutor_data, true);
 $tutor_data['filesystemURI'] = $filesystemURI;
 $tutor_data['cid'] = $cid;
 
-$user_course_data = $tutor_data['user'];
-
 // check userrights for course
+$user_course_data = $tutor_data['user'];
 Authentication::checkRights(PRIVILEGE_LEVEL::TUTOR, $cid, $uid, $user_course_data);
-
+$menu = MakeNavigationElement($user_course_data,
+                              PRIVILEGE_LEVEL::TUTOR);
+                              
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
 $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
                "backTitle" => "Veranstaltung wechseln",
                "backURL" => "index.php",
-               "notificationElements" => $notifications));
+               "notificationElements" => $notifications,
+               "navigationElement" => $menu));
 
 $t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetTutor.template.html');
 $t->bind($tutor_data);

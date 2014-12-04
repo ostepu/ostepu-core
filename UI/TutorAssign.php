@@ -138,12 +138,16 @@ if (isset($_POST['sortUsers'])) {
 
 // check userrights for course
 Authentication::checkRights(1, $cid, $uid, $user_course_data);
+Authentication::checkRights(PRIVILEGE_LEVEL::TUTOR, $cid, $uid, $user_course_data);
+$menu = MakeNavigationElement($user_course_data,
+                              PRIVILEGE_LEVEL::TUTOR,true);
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
 $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
-               "notificationElements" => $notifications));
+               "notificationElements" => $notifications,
+               "navigationElement" => $menu));
 
 // construct a content element for assigning tutors automatically
 $assignAutomatically = Template::WithTemplateFile('include/TutorAssign/AssignAutomatically.template.html');

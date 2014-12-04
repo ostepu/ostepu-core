@@ -106,14 +106,16 @@ if ($options['download'] == 'attachments') {
                 $exerciseId = $marking['submission']['exerciseId'];
                 
                 // marking
-                if (isset($marking['file'])){
+                if (isset($marking['file']) && !isset($marking['hideFile'])){
                     $marking['file']['displayName'] = "{$namesOfExercises[$exerciseId]}/K_{$marking['file']['hash']}_{$marking['file']['displayName']}";
                     $files[] = $marking['file'];
                 }
                 
                 // submission
-                $marking['submission']['file']['displayName'] = "{$namesOfExercises[$exerciseId]}/{$marking['submission']['file']['hash']}_{$marking['submission']['file']['displayName']}";
-                $files[] = $marking['submission']['file']; 
+                if (isset($marking['submission']['file']) && !isset($marking['submission']['hideFile'])){
+                    $marking['submission']['file']['displayName'] = "{$namesOfExercises[$exerciseId]}/{$marking['submission']['file']['hash']}_{$marking['submission']['file']['displayName']}";
+                    $files[] = $marking['submission']['file']; 
+                }
                 
                 // attachments
                 if (isset($attachments[$exerciseId])){

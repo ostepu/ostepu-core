@@ -148,74 +148,52 @@ class LExerciseSheet
         
         // if sheetFile is given
         if (isset($body['sheetFile']) == true && empty($body['sheetFile']) == false) {
-            // get sheetfile
-            $sheetfile = json_encode($body['sheetFile']);
-
-            // set URL for requests to filesystem
-            $URL = $this->lURL.'/FS/file';
-
-            // upload sheetfile
-            $sheetanswer = Request::custom('POST', $URL, array(), $sheetfile);
+            $sheetanswer = Request::routeRequest( 
+                                                'POST',
+                                                '/file',
+                                                array(),
+                                                json_encode($body['sheetFile']),
+                                                $this->_postFile,
+                                                'file'
+                                                );  
             if($sheetanswer['status'] == 201) {
-                $URL = $this->lURL.'/DB/file';
-                $sheetanswer2 = Request::custom('POST', $URL, array(), $sheetanswer['content']);
-
-                // if file already exists
-                if($sheetanswer2['status'] != 201) {
-                    $sheetFSContent = json_decode($sheetanswer['content'], true);
-                    $sheetanswer2 = Request::custom('GET', $URL.'/hash/'.$sheetFSContent['hash'], array(), "");
-                    if ($sheetanswer2['status'] == 200) {
-                        $id = json_decode($sheetanswer2['content'], true);
-                        $body['sheetFile'] = $id;
-                    }
-                } elseif ($sheetanswer2['status'] == 201) {
-                    $id = json_decode($sheetanswer2['content'], true);
-                    $body['sheetFile'] = $id;
-                }
+                $body['sheetFile'] = json_decode($sheetanswer['content'],true);
             } else {
                 $this->app->response->setStatus(409);
-            } 
-        } else {
-            $this->app->response->setStatus(409);
+            }
         }
 
         // if sampleSolution is given
         if (isset($body['sampleSolution']) == true && empty($body['sampleSolution']) == false) {
-            // get sampleSolution
-            $sheetfile = json_encode($body['sampleSolution']);
-
-            // set URL for requests to filesystem
-            $URL = $this->lURL.'/FS/file';
-
-            // upload sampleSolution
-            $sheetanswer = Request::custom('POST', $URL, array(), $sheetfile);
+            $sheetanswer = Request::routeRequest( 
+                                                'POST',
+                                                '/file',
+                                                array(),
+                                                json_encode($body['sampleSolution']),
+                                                $this->_postFile,
+                                                'file'
+                                                );  
             if($sheetanswer['status'] == 201) {
-                $URL = $this->lURL.'/DB/file';
-                $sheetanswer2 = Request::custom('POST', $URL, array(), $sheetanswer['content']);
-
-                // if file already exists
-                if($sheetanswer2['status'] != 201) {
-                    $sheetFSContent = json_decode($sheetanswer['content'], true);
-                    $sheetanswer2 = Request::custom('GET', $URL.'/hash/'.$sheetFSContent['hash'], array(), "");
-                    if ($sheetanswer2['status'] == 200) {
-                        $id = json_decode($sheetanswer2['content'], true);
-                        $body['sampleSolution'] = $id;
-                    }
-                } elseif ($sheetanswer2['status'] == 201) {
-                    $id = json_decode($sheetanswer2['content'], true);
-                    $body['sampleSolution'] = $id;
-                }
+                $body['sampleSolution'] = json_decode($sheetanswer['content'],true);
             } else {
                 $this->app->response->setStatus(409);
-            } 
-        } else {
-            $this->app->response->setStatus(409);
+            }
         }
 
         // create ExerciseSheet
         $URL = $this->lURL.'/DB/exercisesheet';
-        $CreateSheetDB = Request::custom('POST', $URL, array(), json_encode($body));
-        $this->app->response->setBody($CreateSheetDB['content']);
+        $method='POST';
+        if (isset($body['id']) && $body['id'] !== null){
+           $method='PUT'; 
+           $URL = $this->lURL.'/DB/exercisesheet/'.$body['id'];
+        }
+
+        $CreateSheetDB = Request::custom($method, $URL, array(), json_encode($body));
+        if (isset($body['id']) && $body['id'] !== null){
+            $this->app->response->setBody(json_encode($body));
+        } else {
+            $this->app->response->setBody($CreateSheetDB['content']);
+        }
         $this->app->response->setStatus($CreateSheetDB['status']);
     }
 
@@ -335,21 +313,34 @@ class LExerciseSheet
      *
      * @param int $sheetid The id of the exercise sheet that should be returned.
      */
-    public function getExerciseSheetCourse($courseid){
-        $URL = $this->lURL.'/DB/exercisesheet/course/'.$courseid;
-        $answer = Request::custom('GET', $URL, array(), "");
+    public function getExerciseSheetCourse($courseid)
+    {
+        $sheetanswer = Request::routeRequest( 
+                                            'GET',
+                                            '/exercisesheet/course/'.$courseid,
+                                            array(),
+                                            '',
+                                            $this->_getExerciseSheet,
+                                            'exercisesheet'
+                                            );  
+                                        
+        if($sheetanswer['status'] == 200) {
+            $body['sampleSolution'] = json_decode($sheetanswer['content'],true);
 
-        $sheets = json_decode($answer['content'], true);
+            $sheets = json_decode($sheetanswer['content'], true);
 
-        // latest sheets on top
-        if (is_array($sheets)) {
-            $sheets = LArraySorter::reverse($sheets);
+            // latest sheets on top
+            if (is_array($sheets)) {
+                $sheets = LArraySorter::reverse($sheets);
+            }
+
+            $sheets = json_encode($sheets);
+
+            $this->app->response->setBody($sheets);
+            $this->app->response->setStatus(200);
+        } else {
+            $this->app->response->setStatus(409);
         }
-
-        $sheets = json_encode($sheets);
-
-        $this->app->response->setBody($sheets);
-        $this->app->response->setStatus($answer['status']);
     }
 
     /**
@@ -360,27 +351,41 @@ class LExerciseSheet
      *
      * @param int $sheetid The id of the exercise sheet that should be returned.
      */
-    public function getExerciseSheetCourseExercise($courseid){
-        $URL = $this->lURL.'/DB/exercisesheet/course/'.$courseid.'/exercise';
-        $answer = Request::custom('GET', $URL, array(), "");
+    public function getExerciseSheetCourseExercise($courseid)
+    {
+        $sheetanswer = Request::routeRequest( 
+                                            'GET',
+                                            '/exercisesheet/course/'.$courseid.'/exercise',
+                                            array(),
+                                            '',
+                                            $this->_getExerciseSheet,
+                                            'exercisesheet'
+                                            );  
+                                        
+        if($sheetanswer['status'] == 200) {
+            $body['sampleSolution'] = json_decode($sheetanswer['content'],true);
 
-        $sheets = json_decode($answer['content'], true);
-        // latest sheets on top
-        if (is_array($sheets)) {
-            $sheets = LArraySorter::reverse($sheets);
+            $sheets = json_decode($sheetanswer['content'], true);
 
-            // sort exercises by link = exerercises and linkName = subexercise ascendingly
-            foreach ($sheets as &$sheet) {
-                if (isset($sheet['exercises']) && is_array($sheet['exercises'])) {
-                    $sheet['exercises'] = LArraySorter::orderBy($sheet['exercises'], 'link', SORT_ASC, 'linkName', SORT_ASC);
+            // latest sheets on top
+            if (is_array($sheets)) {
+                $sheets = LArraySorter::reverse($sheets);
+
+                // sort exercises by link = exerercises and linkName = subexercise ascendingly
+                foreach ($sheets as &$sheet) {
+                    if (isset($sheet['exercises']) && is_array($sheet['exercises'])) {
+                        $sheet['exercises'] = LArraySorter::orderBy($sheet['exercises'], 'link', SORT_ASC, 'linkName', SORT_ASC);
+                    }
                 }
             }
+
+            $sheets = json_encode($sheets);
+
+            $this->app->response->setBody($sheets);
+            $this->app->response->setStatus(200);
+        } else {
+            $this->app->response->setStatus(409);
         }
-
-        $sheets = json_encode($sheets);
-
-        $this->app->response->setBody($sheets);
-        $this->app->response->setStatus($answer['status']);
     }
 
     /**

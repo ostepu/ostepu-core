@@ -22,7 +22,7 @@ header('Content-Type: text/html; charset=utf-8'); $choiceId = 0;?>
                         }
                     }
                 
-                    $exercises = LArraySorter::orderBy($exercises,'id',SORT_ASC);
+                    $exercises = LArraySorter::orderBy($exercises,'linkName',SORT_ASC);
                     foreach ($exercises as $key => $exercise){
                         $subtask = Template::WithTemplateFile('include/CreateSheet/Subtask.template.php');
                         $subtask->bind($exercise);

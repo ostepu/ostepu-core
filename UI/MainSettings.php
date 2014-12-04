@@ -236,15 +236,18 @@ if (isset($_POST['action'])) {
                 $newUserSettings = User::encodeUser($newUser);
 
                 $URI = $databaseURI . "/user";
-                http_post_data($URI, $newUserSettings, true, $message);
+                $answer=http_post_data($URI, $newUserSettings, true, $message);
 
                 if ($message == "201") {
-                    $notifications[] = MakeNotification("success",
-                                                         "Der Nutzer wurde erstellt!");
-                }
+                    $user = User::decodeUser($answer);
+                    if ($user->getStatus()== '201'){
+                        $notifications[] = MakeNotification("success", "Der Nutzer wurde erstellt!");
+                    } else
+                        $notifications[] = MakeNotification("error", "Der Nutzer wurde nicht erstellt!");
+                } else
+                        $notifications[] = MakeNotification("error", "Der Nutzer wurde nicht erstellt!");
             } else {
-                $notifications[] = MakeNotification("error",
-                                                    "Die Passwörter stimmen nicht überein!");
+                $notifications[] = MakeNotification("error", "Die Passwörter stimmen nicht überein!");
             }
         } else {
             $notifications = $notifications + $f->notifications;
@@ -289,6 +292,9 @@ $mainSettings_data = json_decode($mainSettings_data, true);
 $mainSettings_data['plugins'] = $plugins_data;
 
 $user_course_data = $mainSettings_data['user'];
+Authentication::checkRights(PRIVILEGE_LEVEL::SUPER_ADMIN, null, $uid, $user_course_data);
+$menu = MakeNavigationElement($user_course_data,
+                              PRIVILEGE_LEVEL::SUPER_ADMIN,true);
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
@@ -296,7 +302,8 @@ $h->bind($user_course_data);
 $h->bind(array("name" => "Einstellungen",
                "backTitle" => "Veranstaltungen",
                "backURL" => "index.php",
-               "notificationElements" => $notifications));
+               "notificationElements" => $notifications,
+               "navigationElement" => $menu));
 
 // construct a content element for creating new courses
 $createCourse = Template::WithTemplateFile('include/MainSettings/CreateCourse.template.html');

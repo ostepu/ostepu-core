@@ -273,9 +273,9 @@ function MakeNavigationElement($user,
 
     $isSuperAdmin = isset($user['isSuperAdmin']) ? ($user['isSuperAdmin'] == 1) : null;
 
-    if ($forIndex == true && $isSuperAdmin == false) {
+    /*if ($forIndex == true && $isSuperAdmin == false) {
         return "";
-    }
+    }*/
 
     $courseStatus = null;
     if (isset($courses[0]) && isset($courses[0]['status']))
@@ -351,15 +351,17 @@ function saveFileInDatabase($databaseURI,
                             &$message)
 {
     $URL = $databaseURI . '/file';
+//echo json_encode($file);
     $jsonFile = http_post_data($URL, json_encode($file), true, $message);
-
+///echo "OK: ".$jsonFile;
     if ($message != "201") {
         //POST failed, check if the file already exists
         $hash = $file['hash'];
         $URL = $databaseURI . '/file/hash/' . $hash;
         $jsonFile = http_get($URL, true, $message);
+        ///echo "hash: ".$jsonFile;
     }
-
+///echo "<br>";
     return $jsonFile;
 }
 
@@ -452,7 +454,7 @@ function updateSelectedSubmission($databaseURI,
  * @param string &$message A reference to a variable that will contain the HTTP
  * status code on return.
  *
- * @return string On success rturns a json object, representing the selected
+ * @return string On success returns a json object, representing the selected
  * submission in the database. NULL otherwise.
  */
 function submitFile($databaseURI,
@@ -490,7 +492,7 @@ function downloadAttachmentsOfSheet($sheetId)
 {
     $sid = cleanInput($sheetId);
     
-    $tokenString = "{$sid}_{$uid}_AttachmentsDownload";
+    $tokenString = "{$sid}_AttachmentsDownload";
     $token = md5($tokenString);
 
     if (!isset($_SESSION['downloads'][$token])) {

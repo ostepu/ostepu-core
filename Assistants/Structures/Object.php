@@ -119,7 +119,11 @@ abstract class Object
                                      $c
                                      )
     {
-        $a .= ',' . $b . '=\'' . $c . '\'';
+        if ($c===null){
+            $c='NULL';
+        }else
+            $c='\'' . $c . '\'';
+        $a .= ',' . $b . '='.$c.' ';
     }
 }
 

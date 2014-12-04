@@ -58,7 +58,7 @@ class StudIPAuthentication extends AbstractAuthentication
         
         if (isset($_GET['uid'])) {
             $this->uid = cleanInput($_GET['uid']);
-Logger::Log("uid: ".$this->uid , LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+///Logger::Log("uid: ".$this->uid , LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
         }
         
         if (isset($_GET['uid'])) {
@@ -66,16 +66,16 @@ Logger::Log("uid: ".$this->uid , LogLevel::DEBUG, false, dirname(__FILE__) . '/.
         }
         if (isset($_GET['sid'])) {
             $this->sid = cleanInput($_GET['sid']);
-Logger::Log("sid: ".$this->sid , LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+///Logger::Log("sid: ".$this->sid , LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
         }
         if (isset($_GET['vid'])) {
             $this->vid = cleanInput($_GET['vid']);
-Logger::Log("vid: ".$this->vid , LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+///Logger::Log("vid: ".$this->vid , LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
         }
         
         if (isset($_GET['cid'])) {
             $this->cid = cleanInput($_GET['cid']);
-Logger::Log("cid: ".$this->cid , LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+///Logger::Log("cid: ".$this->cid , LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
             // if cid is not numeric
             if (!is_numeric($this->cid)) {
                 set_error("409");
@@ -139,9 +139,9 @@ Logger::Log("cid: ".$this->cid , LogLevel::DEBUG, false, dirname(__FILE__) . '/.
         $query = StudIPAuthentication::$StudipAPI . "/request.php?cmd=check_user&uid={$uid}&sid={$sid}";
         $check = http_get($query, false, $message);
         ///$check = "OK";$message=200;
-Logger::Log("check_user_url: ".$query, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
-Logger::Log("check_user_message: ".$message, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
-Logger::Log("check_user_result: ".$check, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+///Logger::Log("check_user_url: ".$query, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+///Logger::Log("check_user_message: ".$message, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+///Logger::Log("check_user_result: ".$check, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
         if ($message==200)
             return $check == "OK";
         
@@ -193,9 +193,9 @@ Logger::Log("check_user_result: ".$check, LogLevel::DEBUG, false, dirname(__FILE
         $query = StudIPAuthentication::$StudipAPI . "/request.php?cmd=get_user&uid={$uid}";
         $getUserData = http_get($query, false, $message);
         ///$getUserData = "Till:Uhlig:-:hash:acfmr:211203809";$message=200;
-Logger::Log("get_user_url: ".$query, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
-Logger::Log("get_user_message: ".$message, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
-Logger::Log("get_user_result: ".$getUserData, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+///Logger::Log("get_user_url: ".$query, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+///Logger::Log("get_user_message: ".$message, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+///Logger::Log("get_user_result: ".$getUserData, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
         if ($message == 200 && $getUserData != "not found") {
             // convert output to our user structure
             $getUserData = explode(":", utf8_encode($getUserData));
@@ -221,9 +221,9 @@ Logger::Log("get_user_result: ".$getUserData, LogLevel::DEBUG, false, dirname(__
         $query = StudIPAuthentication::$StudipAPI . "/request.php?cmd=get_user_status&uid={$uid}&vid={$vid}";
         $status = http_get($query, false, $message);
         ///$status = "dozent";$message=200;
-Logger::Log("get_user_status_url: ".$query, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
-Logger::Log("get_user_status_message: ".$message, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
-Logger::Log("get_user_status_result: ".$status, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+///Logger::Log("get_user_status_url: ".$query, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+///Logger::Log("get_user_status_message: ".$message, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+///Logger::Log("get_user_status_result: ".$status, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
         if($message==200)
             return $this->getOSTEPUStatus($status);
 
@@ -242,16 +242,16 @@ Logger::Log("get_user_status_result: ".$status, LogLevel::DEBUG, false, dirname(
         $query = StudIPAuthentication::$StudipAPI . "/request.php?cmd=get_title&vid={$vid}";
         $title = http_get($query, false, $message);
         ///$title = "Veranstaltung";$message=200;
-Logger::Log("get_title_url: ".$query, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
-Logger::Log("get_title_message: ".$message, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
-Logger::Log("get_title_result: ".$title, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+///Logger::Log("get_title_url: ".$query, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+///Logger::Log("get_title_message: ".$message, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+///Logger::Log("get_title_result: ".$title, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
         if ($message == 200 && $title != "not found") {
             $query = StudIPAuthentication::$StudipAPI . "/request.php?cmd=get_semester&vid={$vid}";
             $semester = http_get($query, false, $message);
             ///$semester="SS 2015";$message=200;
-Logger::Log("get_semester_url: ".$query, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
-Logger::Log("get_semester_message: ".$message, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
-Logger::Log("get_semester_result: ".$semester, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+///Logger::Log("get_semester_url: ".$query, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+///Logger::Log("get_semester_message: ".$message, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+///Logger::Log("get_semester_result: ".$semester, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
             if ($message == 200 && $semester != "not found") {
                 if (substr($semester,0,2)==='WS')
                     $semester = substr($semester,0,-2).'20'.substr($semester,-2);
@@ -275,9 +275,13 @@ Logger::Log("get_semester_result: ".$semester, LogLevel::DEBUG, false, dirname(_
 
         $url = "{$databaseURI}/user";
         $message = null;
-        http_post_data($url, $data, false, $message);
-
-        return $message == "201";
+        $answer = http_post_data($url, $data, false, $message);
+        if ($message=='201'){
+            $user = User::decodeUser($answer);
+            if ($user->getStatus()== '201')
+                return true;
+        }
+        return false;
     }
 
     /**
@@ -296,9 +300,9 @@ Logger::Log("get_semester_result: ".$semester, LogLevel::DEBUG, false, dirname(_
         $url = "{$databaseURI}/coursestatus";
         $message=null;
         http_post_data($url, $data, true, $message);
-Logger::Log("create_user_status_url: ".$url, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
-Logger::Log("create_user_status_message: ".$message, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
-Logger::Log("create_user_status_data: ".$data, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+///Logger::Log("create_user_status_url: ".$url, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+///Logger::Log("create_user_status_message: ".$message, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+///Logger::Log("create_user_status_data: ".$data, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
         return $message == "201";
     }
 
@@ -318,14 +322,14 @@ Logger::Log("create_user_status_data: ".$data, LogLevel::DEBUG, false, dirname(_
         $studip = $this->checkUserInStudip($this->uid,$this->sid);
         $studipStatus=null;
         if ($studip == true) {
-Logger::Log("inStudip", LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+///Logger::Log("inStudip", LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
 
             $url = "{$databaseURI}/user/user/{$username}";
             $message=null;
             $this->userData = http_get($url, false, $message);
-Logger::Log("ostepuUser_url: ".$url, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
-Logger::Log("ostepuUser_message: ".$message, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
-Logger::Log("ostepuUser_data: ".$this->userData, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+///Logger::Log("ostepuUser_url: ".$url, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+///Logger::Log("ostepuUser_message: ".$message, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+///Logger::Log("ostepuUser_data: ".$this->userData, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
             $this->userData = json_decode($this->userData, true);
             // check if user exists in our system
             if ($message != "404" && empty($this->userData) == false) {
@@ -341,12 +345,12 @@ Logger::Log("ostepuUser_data: ".$this->userData, LogLevel::DEBUG, false, dirname
                     
                     
                     $this->cid = $this->convertVidToCid($_GET['vid']);
-Logger::Log("cid: ".$this->cid , LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+///Logger::Log("cid: ".$this->cid , LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
                     if ($this->cid===null){
                         // create course       
                         $studipStatus = $this->getUserStatusInStudip($this->uid,$this->vid);
                         if ($studipStatus===CourseStatus::getStatusDefinition(true)['administrator']){
-Logger::Log("createCourse>>".$_GET['vid'] , LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+///Logger::Log("createCourse>>".$_GET['vid'] , LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
                             $courseObject = $this->getCourseInStudip($this->vid);
                             if ($courseObject!==null){
                                 $url = "{$logicURI}/course";
@@ -385,14 +389,14 @@ Logger::Log("createCourse>>".$_GET['vid'] , LogLevel::DEBUG, false, dirname(__FI
                     
                 // get the courseStatus for given course
                 $this->courseStatus = $this->findCourseStatus();
-Logger::Log("courseStatus: ".$this->courseStatus , LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+///Logger::Log("courseStatus: ".$this->courseStatus , LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
                
                 // if user has no status in course create it
                 if (!isset($this->courseStatus)) {
                     if ($studipStatus===null)
                         $studipStatus = $this->getUserStatusInStudip($this->uid,$this->vid);
                     if ($studipStatus!==null){
-Logger::Log("createCourseStatus" , LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+///Logger::Log("createCourseStatus" , LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
                         $CourseStatusResponse = $this->createCourseStatus($this->userData['id'],$this->cid,$studipStatus);
 
                         // set courseStatus to studipStatus only if status is created in DB successfully
@@ -409,7 +413,7 @@ Logger::Log("createCourseStatus" , LogLevel::DEBUG, false, dirname(__FILE__) . '
 
                 // if user is a valid user
                 if ($newUser != "not found") {
-Logger::Log("creatUser: ".json_encode($newUser), LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+///Logger::Log("creatUser: ".json_encode($newUser), LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
                     $response = $this->createUser($newUser);
 
                     // if successful try to login new user

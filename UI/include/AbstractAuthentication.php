@@ -173,6 +173,8 @@ abstract class AbstractAuthentication
      */
     public static function checkRights($minimum, $cid, $uid, $data)
     {
+        if (isset($data['isSuperAdmin']) && $data['isSuperAdmin']=='1') return;
+        
         // check if user exists in course
         if ($data !== array()) {
             // find the right course

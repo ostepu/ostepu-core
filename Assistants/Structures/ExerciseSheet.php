@@ -351,56 +351,64 @@ class ExerciseSheet extends Object implements JsonSerializable
     {
         $values = '';
 
-        if ( $this->id != null )
+        if ( $this->id !== null )
             $this->addInsertData( 
                                  $values,
                                  'ES_id',
                                  DBJson::mysql_real_escape_string( $this->id )
                                  );
-        if ( $this->courseId != null )
+        if ( $this->courseId !== null )
             $this->addInsertData( 
                                  $values,
                                  'C_id',
                                  DBJson::mysql_real_escape_string( $this->courseId )
                                  );
-        if ( $this->endDate != null )
+        if ( $this->endDate !== null )
             $this->addInsertData( 
                                  $values,
                                  'ES_endDate',
                                  DBJson::mysql_real_escape_string( $this->endDate )
                                  );
-        if ( $this->startDate != null )
+        if ( $this->startDate !== null )
             $this->addInsertData( 
                                  $values,
                                  'ES_startDate',
                                  DBJson::mysql_real_escape_string( $this->startDate )
                                  );
-        if ( $this->groupSize != null )
+        if ( $this->groupSize !== null )
             $this->addInsertData( 
                                  $values,
                                  'ES_groupSize',
                                  DBJson::mysql_real_escape_string( $this->groupSize )
                                  );
-        if ( $this->sheetName != null )
+        if ( $this->sheetName !== null )
             $this->addInsertData( 
                                  $values,
                                  'ES_name',
                                  DBJson::mysql_real_escape_string( $this->sheetName )
                                  );
-        if ( $this->sheetFile != null && 
-             $this->sheetFile->getFileId( ) != null )
-            $this->addInsertData( 
-                                 $values,
-                                 'F_id_file',
-                                 DBJson::mysql_real_escape_string( $this->sheetFile->getFileId( ) )
-                                 );
-        if ( $this->sampleSolution != null && 
-             $this->sampleSolution->getFileId( ) != null )
-            $this->addInsertData( 
-                                 $values,
-                                 'F_id_sampleSolution',
-                                 DBJson::mysql_real_escape_string( $this->sampleSolution->getFileId( ) )
-                                 );
+                                 
+        $sFId = null;
+        if ( $this->sheetFile!==array() && $this->sheetFile !== null && 
+             $this->sheetFile->getFileId( ) !== null )
+            $sFId = $this->sheetFile->getFileId( );
+            
+        $this->addInsertData( 
+                             $values,
+                             'F_id_file',
+                             DBJson::mysql_real_escape_string( $sFId )
+                             );
+                             
+        $sSFId = null;       
+        if ( $this->sampleSolution!==array() && $this->sampleSolution !== null && 
+             $this->sampleSolution->getFileId( ) !== null )
+            $sSFId = $this->sampleSolution->getFileId( );
+            
+        $this->addInsertData( 
+                             $values,
+                             'F_id_sampleSolution',
+                             DBJson::mysql_real_escape_string( $sSFId )
+                             );
 
         if ( $values != '' ){
             $values = substr( 

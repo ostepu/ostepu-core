@@ -21,6 +21,9 @@
 
 
 <div class="form-input-input" style="margin:5px 0px;">
+<?php if (isset($form['choices'][0]['choiceId'])){ ?>
+<input type="hidden" class="choice-id" name="exercises[0][subexercises][0][choiceId][0]" value="<?php echo $form['choices'][0]['choiceId']; ?>" />
+<?php } ?>
 <input type="hidden" class="choice-input" name="exercises[0][subexercises][0][correct][0]" value="1">
 <input class="form-field input-choice-text" style="width:100%" name="exercises[0][subexercises][0][choice][0]" value="<?php echo (isset($form['choices'][0]['text']) ? $form['choices'][0]['text'] : ''); ?>" placeholder="Musterlösung"/>    
 </div>

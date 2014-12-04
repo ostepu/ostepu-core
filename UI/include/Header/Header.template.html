@@ -1,41 +1,84 @@
-<div id="header" class="header">
-    <div class="course-info left">
-        <div class="course-title uppercase">
+<div id="header" class="header" style="">
+    <div class="course-info left" style="">
+        <div class="course-title uppercase" style="">
             <?php print $name; ?>
         </div>
         <?php if (isset($backURL) && isset($backTitle) && !is_null($backURL)
-            && !is_null($backTitle)): ?>
+            && !is_null($backTitle)){ ?>
             <a class="change-course" href="<?php echo $backURL; ?>">
                 <?php print $backTitle; ?>
             </a>
-        <?php elseif (!isset($hideBackLink)): ?>
+        <?php } elseif (!isset($hideBackLink)) { ?>
             <a class="change-course" href="
                 <?php echo PRIVILEGE_LEVEL::$SITES[$courses[0]['status']] . "?cid=" . $courses[0]['course']['id']; ?>
             ">
                 zur Veranstaltung
             </a>
-        <?php endif; ?>
+        <?php } ?>
     </div>
     <div class="course-extra-info left">
         <?php echo isset($extraInfo) ? $extraInfo : NULL; ?>
     </div>
-    <div class="user-info right">
-        <div class="user-name">
-            <?php
-            if (isset($firstName) && isset($lastName)) {
-                print $firstName . ' ' . $lastName;
+    
+    <?php if (isset($courses[0]['status']) && (int) $courses[0]['status']===0){
+            if (isset($sheets)){
+                $points = array();
+                if (!empty($sheets)){
+                    foreach ($sheets as $sheet){
+                        $isExpired = date('U') > date('U', $sheet['endDate']); 
+
+                        // bool if startDate of sheet is greater than the actual date
+                        $hasStarted = date('U') > date('U', $sheet['startDate']);
+                        if (!$hasStarted) continue;
+                        foreach ($sheet['exercises'] as $key => $exercise){
+                            if (!isset($exercise['typeName'])) continue;
+                            if (!isset($points[$exercise['typeName']])) $points[$exercise['typeName']]=array(0,0);
+                            
+                            // increase max points of type if not bonus
+                            if (!isset($exercise['bonus']) || !$exercise['bonus'])
+                                $points[$exercise['typeName']][1]+=$exercise['maxPoints'];
+                            
+                            // increase points of type if marking exists and sheet has expired
+                            if ($isExpired && isset($exercise['submission']['marking']['points']))
+                                $points[$exercise['typeName']][0]+=$exercise['submission']['marking']['points'];
+                        }
+                    }
+
+                    ?>
+                    <div>
+<table class="wider" style=""><tr><td>
+                    <div class="left" style="">
+                    <?php foreach ($points as $key => $value)echo $key.":<br>"; ?>
+                    </div>
+                    
+                    <div class="left" style="text-align:right;">
+                    <?php foreach ($points as $key => $value)echo $value[0]."<br>";?>
+                    </div>
+                    
+                    <div class="left" style="text-align:center;">
+                    <?php foreach ($points as $key => $value)echo "/<br>"; ?>
+                    </div>
+                    
+                    <div class="left" style="text-align:right;">
+                    <?php foreach ($points as $key => $value)echo $value[1]."<br>";?>
+                    </div>
+                    
+                    <div class="left" style="text-align:right;">
+                    <?php foreach ($points as $key => $value){
+                            $percent = 0;
+                            if ($value[1]!=0)
+                                $percent = round((double) $value[0]*100.0/$value[1],0);
+                            echo "&nbsp;(".$percent."%)<br>";
+                          }?>
+                    </div></td></tr><tr><td>
+                   <div class="footer-text bold left" style=";clear:left">*kann vom Schlussergebnis<br>abweichen</div>
+                   </td></tr></table></div>
+                <?php
+                }
             }
-            ?>
-        </div>
-        <div class="user-id">
-            <?php echo isset($userName) ? $userName : NULL; ?>
-        </div>
-        <?php if (!isset($hideLogoutLink)): ?>
-            <a class="log-out" href="AccountSettings.php">Account</a><br />
-            <a class="log-out" href="?action=logout">Ausloggen</a>
-        <?php endif; ?>
-    </div>
-</div>
+        }
+    ?>
+</div> 
 
 <?php echo isset($navigationElement) ? $navigationElement : NULL; ?>
 

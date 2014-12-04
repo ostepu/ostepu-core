@@ -426,7 +426,7 @@ class User extends Object implements JsonSerializable
                                       $flag,
                                       $password,
                                       $salt,
-                                      $failedLogins,
+                                      $failedLogins = 0,
                                       $externalId = null,
                                       $studentNumber = null,
                                       $isSuperAdmin = null,

@@ -58,10 +58,7 @@ $admin_data['filesystemURI'] = $filesystemURI;
 $admin_data['cid'] = $cid;
 
 $user_course_data = $admin_data['user'];
-
-
 Authentication::checkRights(PRIVILEGE_LEVEL::ADMIN, $cid, $uid, $user_course_data);
-
 $menu = MakeNavigationElement($user_course_data,
                               PRIVILEGE_LEVEL::ADMIN);
 
