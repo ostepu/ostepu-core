@@ -6,8 +6,4 @@
  * @result ET_id, ET_name
  */
 ?>
- 
-select 
-    ET_id, ET_name
-from
-    ExerciseType
+CALL `DBExerciseTypeGetAllExerciseTypes`();

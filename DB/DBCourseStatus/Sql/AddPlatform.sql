@@ -52,3 +52,6 @@ FROM ExerciseSheet E
 WHERE E.C_id = NEW.C_id;
 end if;
 end;
+<?php include $sqlPath.'/procedures/GetMemberRight.sql'; ?>
+<?php include $sqlPath.'/procedures/GetMemberRights.sql'; ?>
+<?php include $sqlPath.'/procedures/GetCourseRights.sql'; ?>

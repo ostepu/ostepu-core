@@ -64,3 +64,5 @@ if (NEW.ES_groupSize is NULL) then
 SIGNAL sqlstate '23000' set message_text = 'no corresponding course for exercisesheet';
 END if;
 end;
+<?php include $sqlPath.'/procedures/GetCourseSheets.sql'; ?>
+<?php include $sqlPath.'/procedures/GetCourseExercises.sql'; ?>
