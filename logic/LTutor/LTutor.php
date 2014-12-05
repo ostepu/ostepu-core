@@ -863,7 +863,7 @@ class LTutor
             $markings=$marks;
         }            
 
-        $answer = generateTutorArchive($userid, $sheetid, $markings);
+        $answer = $this->generateTutorArchive($userid, $sheetid, $markings);
         $this->app->response->setStatus($answer['status']);
         $this->app->response->setBody($answer['content']);
     }
