@@ -203,7 +203,7 @@ class Query extends Object implements JsonSerializable
      * @param $data an assoc array with the object informations
      */
     public function __construct( $data = array( ) )
-    {
+    {   if ($data==array()) return;
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
                 if ($key=='response'){

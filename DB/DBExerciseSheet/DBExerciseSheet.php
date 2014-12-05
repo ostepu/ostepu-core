@@ -775,7 +775,7 @@ class DBExerciseSheet
                ( $result2['status'] >= 200 && 
                  $result2['status'] <= 299 ) && isset($result['content']) ) ){
             $query = Query::decodeQuery( $result['content'] );
-
+            if (is_array($query)) $query=$query[0];
             if ( $query->getNumRows( ) > 0 ){
                 $data = $query->getResponse( );
 
@@ -828,6 +828,7 @@ class DBExerciseSheet
                               $options
                               ) ){
                     $query = Query::decodeQuery( $result2['content'] );
+                    if (is_array($query)) $query=$query[0];
                     $data = $query->getResponse( );
 
                     $exercises = DBJson::getObjectsByAttributes( 

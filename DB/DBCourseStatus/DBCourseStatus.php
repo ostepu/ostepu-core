@@ -424,6 +424,7 @@ class DBCourseStatus
         if ( $result['status'] >= 200 && 
              $result['status'] <= 299 ){
             $query = Query::decodeQuery( $result['content'] );
+            if (is_array($query)) $query = $query[0];
 
             if ( $query->getNumRows( ) > 0 ){
                 $res = User::ExtractCourseStatus( 

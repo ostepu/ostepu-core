@@ -96,13 +96,16 @@ class DBUser
     public function get( $functionName,$sqlFile,$params=array(),$singleResult = false, $checkSession = true )
     {
         $positive = function($input, $singleResult) {
-            $input = $input[count($input)-1];
-            $result = Model::isEmpty();
-            if ( $input->getNumRows( ) > 0 ){
-                // extract user data from db answer
-                $result['content'] = User::ExtractUser( $input->getResponse( ), $singleResult);
-                $result['status'] = 200;            
+            //$input = $input[count($input)-1];
+            $result = Model::isEmpty();$result['content']=array();
+            foreach ($input as $inp){
+                if ( $inp->getNumRows( ) > 0 ){
+                    // extract user data from db answer
+                    $result['content'] = array_merge($result['content'], User::ExtractUser( $inp->getResponse( ), $singleResult));
+                }
             }
+            
+            if ($result['content']!=array()) $result['status'] = 200;  
             return $result;
         };
         
