@@ -29,6 +29,7 @@
     },
     {
         "name": "getUsers",
+        "callback": "getMatch",
         "outputType": "User",
         "inputType": "",
         "method": "GET",
@@ -36,6 +37,7 @@
     },
     {
         "name": "getIncreaseUserFailedLogin",
+        "callback": "getMatchSingle",
         "outputType": "User",
         "inputType": "",
         "method": "GET",
@@ -43,6 +45,7 @@
     },
     {
         "name": "getUser",
+        "callback": "getMatchSingle",
         "outputType": "User",
         "inputType": "",
         "method": "GET",
@@ -50,6 +53,7 @@
     },
     {
         "name": "getCourseUserByStatus",
+        "callback": "getMatch",
         "outputType": "User",
         "inputType": "",
         "method": "GET",
@@ -57,6 +61,7 @@
     },
     {
         "name": "getCourseMember",
+        "callback": "getMatch",
         "outputType": "User",
         "inputType": "",
         "method": "GET",
@@ -64,6 +69,7 @@
     },
     {
         "name": "getGroupMember",
+        "callback": "getMatch",
         "outputType": "User",
         "inputType": "",
         "method": "GET",
@@ -71,6 +77,7 @@
     },
     {
         "name": "getUserByStatus",
+        "callback": "getMatch",
         "outputType": "User",
         "inputType": "",
         "method": "GET",
@@ -92,6 +99,7 @@
     },
     {
         "name": "getExistsPlatform",
+        "callback": "getMatchSingle",
         "outputType": "Platform",
         "inputType": "",
         "method": "GET",

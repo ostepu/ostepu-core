@@ -62,3 +62,5 @@ end;
 <?php include $sqlPath.'/procedures/GetCourseUserByStatus.sql'; ?>
 <?php include $sqlPath.'/procedures/GetGroupMember.sql'; ?>
 <?php include $sqlPath.'/procedures/GetCourseMember.sql'; ?>
+<?php include $sqlPath.'/procedures/GetIncreaseUserFailedLogin.sql'; ?>
+<?php include $sqlPath.'/procedures/GetExistsPlatform.sql'; ?>

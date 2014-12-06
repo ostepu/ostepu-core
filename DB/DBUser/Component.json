@@ -23,8 +23,6 @@
     "links": [
         {
             "name": "out",
-            "minQuantity": "1",
-            "maxQuantity": "1",
             "target": "DBQuery",
             "links": [
                 {
@@ -35,13 +33,91 @@
         },
         {
             "name": "out2",
-            "minQuantity": "1",
-            "maxQuantity": "1",
             "target": "DBQuery2",
             "links": [
                 {
                     "method": "POST",
                     "path": "/query"
+                }
+            ]
+        },
+        {
+            "name": "getUser",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBUserGetUser/:userid"
+                }
+            ]
+        },
+        {
+            "name": "getUsers",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBUserGetUsers"
+                }
+            ]
+        },
+        {
+            "name": "getCourseMember",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBUserGetCourseMember/:courseid"
+                }
+            ]
+        },
+        {
+            "name": "getGroupMember",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBUserGetGroupMember/:esid/:userid"
+                }
+            ]
+        },
+        {
+            "name": "getUserByStatus",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBUserGetUserByStatus/:statusid"
+                }
+            ]
+        },
+        {
+            "name": "getCourseUserByStatus",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBUserGetUserByStatus/:courseid/:statusid"
+                }
+            ]
+        },
+        {
+            "name": "getIncreaseUserFailedLogin",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBUserGetIncreaseUserFailedLogin"
+                }
+            ]
+        },
+        {
+            "name": "getExistsPlatform",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBUserGetExistsPlatform"
                 }
             ]
         }
