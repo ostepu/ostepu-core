@@ -23,6 +23,7 @@ class Model
      */
     private $_conf = null;
     private $_class = null;
+    private $_com = null;
     
     public function __construct( $prefix, $path, $class )
     {
@@ -40,15 +41,13 @@ class Model
         if ( $com->used( ) ) return;
             $conf = $com->loadConfig( );
         $this->_conf=$conf;
-        /*$this->_app->response->headers->set( 
-                                            'Content-Type',
-                                            'application/json'
-                                            );*/
+        $this->_com=$com;
         $commands = $com->commands(array(),true,true);
         $router = new \Slim\Router();
         foreach ($commands as $command){
-            $route = new \Slim\Route($command['path'],array($this->_class,$command['name']),false);
+            $route = new \Slim\Route($command['path'],array($this->_class,(isset($command['callback']) ? $command['callback'] : $command['name'])),false);
             $route->via(strtoupper($command['method']));
+            $route->setName($command['name']);
             $router->map($route);
         }
         
@@ -59,15 +58,13 @@ class Model
         
         if (count($matches)>0){
             $matches = $matches[0];
-
             $selectedCommand=null;
             foreach ($commands as $command){
-                if ($command['name'] === $matches->getCallable()[1]){
+                if ($command['name'] === $matches->getName()){
                     $selectedCommand = $command;
                     break;
                 }
             }
-            
             
             $rawInput = \Slim\Environment::getInstance()->offsetGet('slim.input');
             if (!$rawInput) {
@@ -85,18 +82,19 @@ class Model
                     $arr = false;
                 }
             }
-            
+
             // call method
+            $params = $matches->getParams();
             if (isset($selectedCommand['inputType']) && trim($selectedCommand['inputType'])!='' && isset($rawInput)){
                 $result=array("status"=>201,"content"=>array());
                 foreach($rawInput as $input){
-                    $res = call_user_func_array($matches->getCallable(), array_merge(array("input"=>$input),$matches->getParams()));
+                    $res = call_user_func_array($matches->getCallable(), array($selectedCommand['name'],"input"=>$input,$params));
                     if (is_callable(array($res['content'],'setStatus')))
                         $res['content']->setStatus($res['status']);
                     $result["content"][] = $res['content'];
                 }
             } else {
-                $result = call_user_func_array($matches->getCallable(), array_merge(array("input"=>$rawInput),$matches->getParams()));
+                $result = call_user_func_array($matches->getCallable(), array($selectedCommand['name'],"input"=>$rawInput,$params));
             }
             
             if (isset($selectedCommand['outputType']) && trim($selectedCommand['outputType'])!=''){
@@ -112,6 +110,7 @@ class Model
                     
                     $result['content'] = call_user_func_array('\\'.$outputType.'::encode'.$outputType, array($result['content']));
                 }
+                header('Content-Type: application/json');                                            
             } else {
                 if (isset( $result['content']) )
                     $result['content'] = json_encode($result['content']);
@@ -129,9 +128,11 @@ class Model
             http_response_code(200); 
     }
     
-    public function call($linkName, $params, $body, $returnType=null){
+    public function call($linkName, $params, $body, $positiveStatus, callable $positiveMethod, $positiveParams, callable $negativeMethod, $negativeParams, $returnType=null)
+    {
+   // public function call($linkName, $params, $body, $returnType=null){
         $link=CConfig::getLink($this->_conf->getLinks( ),$linkName);
-        $instructions = $this->_conf->instruction(array(),true);
+        $instructions = $this->_com->instruction(array(),true)['links'];
         $selectedInstruction=null;
         foreach($instructions as $instruction){
             if ($instruction['name']==$linkName){
@@ -143,27 +144,26 @@ class Model
         $order = $selectedInstruction['links'][0]['path'];
         foreach ($params as $key=>$param)
             $order = str_replace( ':'.$key, $param, $order);
-        
+//echo $selectedInstruction['links'][0]['method'].' '.$order;
         $result = Request::routeRequest( 
                                         $selectedInstruction['links'][0]['method'],
                                         $order,
                                         array(),
                                         $body,
-                                        $link
+                                        $link,
+                                        $link->getPrefix()
                                         );    
-                                        
-        if ( $result['status'] >= 200 && 
-             $result['status'] <= 299 ){
+                      
+        if ( $result['status'] == $positiveStatus ){
              
             if ($returnType!==null){
                 $result['content'] = call_user_func_array('\\'.$returnType.'::decode'.$returnType, array($result['content']));
                 if ( !is_array( $result['content'] ) )
                     $result['content'] = array( $result['content'] );
             }
-        } else {
-            $result['content']=array();
+            return call_user_func_array($positiveMethod, array_merge(array("input"=>$result['content']),$positiveParams));
         }
-        return $result;
+        return call_user_func_array($negativeMethod, $negativeParams);
     }
     
     public function callSqlTemplate($linkName, $file, $params, $positiveStatus, callable $positiveMethod, $positiveParams, callable $negativeMethod, $negativeParams, $checkSession=true)
@@ -178,14 +178,12 @@ class Model
                                               );
 
         // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
-             $result['status'] <= 299 ){
+        if ( $result['status'] == $positiveStatus){
             $queryResult = Query::decodeQuery( $result['content'] );
             if (!is_array($queryResult)) $queryResult = array($queryResult);
             return call_user_func_array($positiveMethod, array_merge(array("input"=>$queryResult),$positiveParams));
-        } else {
-            return call_user_func_array($negativeMethod, $negativeParams);
         }
+        return call_user_func_array($negativeMethod, $negativeParams);
     }
     
     public static function createAnswer($status=200, $content=''){
