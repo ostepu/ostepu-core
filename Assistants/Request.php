@@ -118,7 +118,7 @@ class Request
                         if (!file_exists($tar)) continue;
                         
                         $add = substr($target,strlen($url));
-                        $cachedData = CacheManager::getCachedDataByURL(basename($tar),$add, $method);
+                        $cachedData = CacheManager::getCachedDataByURL($com->getTargetName(),$add, $method);
                         if ($cachedData!==null){
                             $result['content'] = $cachedData->content;
                             $result['status'] = $cachedData->status;
