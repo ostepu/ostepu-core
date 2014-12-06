@@ -115,7 +115,7 @@ class DBQuery2
                          
         // GET ProcedureResult
         $this->_app->map( 
-                          '(/:name)/query/procedure/:procedure/:params+',
+                          '(/:name)/query/procedure/:procedure(/:params+)',
                           array( 
                                 $this,
                                 'procedureResult'
@@ -161,7 +161,7 @@ class DBQuery2
     {
         return "'{$a}'";
     }
-    public function procedureResult( $name = '', $procedure, $params )
+    public function procedureResult( $name = '', $procedure, $params = array() )
     {
         $this->loadConfig($name);       
         $config = parse_ini_file( 
@@ -169,7 +169,7 @@ class DBQuery2
                                 TRUE
                                 );
                                 
-        $sql = "CALL `{$procedure}`(".implode(',',array_map(array($this,'generateParam'), $params)).")";
+        $sql = "CALL `{$procedure}`(".implode(',',array_map(array($this,'generateParam'), $params)).");";
         $answer = DBRequest::request2( 
                                            $sql,
                                            false,
