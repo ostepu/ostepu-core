@@ -112,15 +112,24 @@ class DBQuery2
                                'getExistsPlatform'
                                )
                          );
-
-        // POST,GET,PUT QueryResult
+                         
+        // GET ProcedureResult
+        $this->_app->map( 
+                          '(/:name)/procedure/:procedure/params+',
+                          array( 
+                                $this,
+                                'procedureResult'
+                                )
+                          )->via('GET');
+                          
+        // POST,GET QueryResult
         $this->_app->map( 
                           '(/:name)/' . $this->getPrefix( ) . '(/)',
                           array( 
                                 $this,
                                 'queryResult'
                                 )
-                          )->via('GET','POST','PUT');
+                          )->via('GET','POST');
 
         // run Slim
         $this->_app->run( );
@@ -148,6 +157,93 @@ class DBQuery2
      * Called when this component receives an HTTP GET, an HTTP PUT or an HTTP POST
      * request to /query/.
      */
+    public function procedureResult( $name = '', $procedure, $params )
+    {
+        $this->loadConfig($name);       
+        $config = parse_ini_file( 
+                                dirname(__FILE__).'/config'.($name!='' ? '_'.$name : '').'.ini',
+                                TRUE
+                                );
+                                
+        function generateParam($a)
+        {
+            return "'{$a}'";
+        }
+        $sql = "CALL `{$procedure}`(".implode(',',array_map('generateParam', $params)).")";
+        $answer = DBRequest::request2( 
+                                           $sql,
+                                           false,
+                                           $config
+                                     );
+                                           
+        $this->_app->response->setStatus( 200 );
+        $result = array();
+             
+        foreach ($answer as $query_result){
+            $obj = new Query( );
+            
+        if ( $query_result['errno'] != 0 ){
+            if ( isset($query_result['errno']) && $query_result['errno'] != 0 )
+                Logger::Log( 
+                            'GET queryResult failed errno: ' . $query_result['errno'] . ' error: ' . $query_result['error'],
+                            LogLevel::ERROR
+                            );
+
+            if ( !isset($query_result['content']) || !$query_result['content'] )
+                Logger::Log( 
+                            'GET queryResult failed, no content',
+                            LogLevel::ERROR
+                            );
+
+            if ( isset($query_result['errno']) && $query_result['errno'] == 401 ){
+                $this->_app->response->setStatus( 401 );
+                
+            } else 
+                $this->_app->response->setStatus( 409 );
+            
+        }elseif ( gettype( $query_result['content'] ) == 'boolean' ){
+            $obj->setResponse( array( ) );
+            if ( isset( $query_result['affectedRows'] ) )
+                $obj->setAffectedRows( $query_result['affectedRows'] );
+            if ( isset( $query_result['insertId'] ) )
+                $obj->setInsertId( $query_result['insertId'] );
+            if ( isset( $query_result['errno'] ) )
+                $obj->setErrno( $query_result['errno'] );
+            if ( isset( $query_result['numRows'] ) )
+                $obj->setNumRows( $query_result['numRows'] );
+
+          if ( isset( $query_result['errno'] ) && $query_result['errno']>0 ){
+          $this->_app->response->setStatus( 409 );
+          }
+          else
+            $this->_app->response->setStatus( 200 );
+            
+        } else {
+            $data = array( );
+            if ( isset( $query_result['numRows'] ) && 
+                 $query_result['numRows'] > 0 ){
+                $data = DBJson::getRows2( $query_result['content'] );
+            }
+
+            $obj->setResponse( $data );
+            if ( isset( $query_result['affectedRows'] ) )
+                $obj->setAffectedRows( $query_result['affectedRows'] );
+            if ( isset( $query_result['insertId'] ) )
+                $obj->setInsertId( $query_result['insertId'] );
+            if ( isset( $query_result['errno'] ) )
+                $obj->setErrno( $query_result['errno'] );
+            if ( isset( $query_result['numRows'] ) )
+                $obj->setNumRows( $query_result['numRows'] );
+
+            
+            $this->_app->response->setStatus( 200 );
+        }
+        $result[]=$obj;
+        }
+        if (count($result)==1) $result = $result[0];        
+        $this->_app->response->setBody( Query::encodeQuery( $result ) );
+    }
+    
     public function queryResult( $name = '' )
     {
         Logger::Log( 
