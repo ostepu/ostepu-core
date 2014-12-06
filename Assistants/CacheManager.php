@@ -54,7 +54,7 @@ class CacheManager
     
     public static function savePath()
     {
-        $text="digraph G {rankdir=TB;edge [splines=\"polyline\"];\n";
+        /*$text="digraph G {rankdir=TB;edge [splines=\"polyline\"];\n";
         $graphName="graph";
         $groups=array();
         foreach (self::$cachedPath as $path){
@@ -87,18 +87,34 @@ class CacheManager
         }
         $text.="\n}";
         
-        file_put_contents(dirname(__FILE__).'/../path/'.$graphName.'.gv',$text);
+        file_put_contents(dirname(__FILE__).'/../path/'.$graphName.'.gv',$text);*/
+        
+        $treePath = '/tmp/cache';
+        $componentTag = self::$cachedPath[0]->toName;
+        $uriTag = self::generateETag(self::$cachedPath[0]->toURL);
+        self::generatepath($treePath.'/trees/'.$componentTag);
+        $tree = array();
+        foreach (self::$cachedPath as $path){
+            if ($path->fromName===null) continue;
+            if (!isset($tree[$path->fromName])) $tree[$path->fromName]=array();
+            $tree[$path->fromName][] = array('name'=>$path->toName,'uri'=>$path->toURL);
+            //$text.="\"".$path->fromName.'"->"'.$path->toName."\"[ label = \"".$path->toMethod."".implode("\n/",explode('/',$path->toURL))."\" ];\n";
+        }
+        file_put_contents($treePath.'/trees/'.$componentTag.'/'.$uriTag,json_encode($tree));
     }
     
     public static function getCachedDataByURL($Base, $URI, $method)
     {
         /*$URL = $Base. $URI;
+        $fromName = basename(dirname($_SERVER['SCRIPT_NAME']));
         if (self::$begin===null){
             self::$begin = $_SERVER['REQUEST_METHOD'].$_SERVER['REQUEST_URI'];
-            self::$cachedPath[] = new PathObject(null,null,null,basename($_SERVER['SCRIPT_NAME']),$_SERVER['SCRIPT_NAME'],$_SERVER['REQUEST_METHOD']);
+            self::$cachedPath[] = new PathObject(null,null,null,$fromName,$_SERVER['SCRIPT_NAME'],$_SERVER['REQUEST_METHOD']);
         }
         
-        self::$cachedPath[] = new PathObject(basename($_SERVER['SCRIPT_NAME']),$_SERVER['SCRIPT_NAME'],$_SERVER['REQUEST_METHOD'],$Base, $URI,$method);
+        self::$cachedPath[] = new PathObject($fromName,$_SERVER['SCRIPT_NAME'],$_SERVER['REQUEST_METHOD'],$Base, $URI,$method);
+        
+        if (strpos($URI,'/UI/')!==false) {return null;}
         if (strtoupper($method)!='GET') return null;
         $uTag = md5($URL);
         if (isset($cachedData[$uTag]))
@@ -111,10 +127,16 @@ class CacheManager
         /*if (self::$begin!==null && self::$begin==$_SERVER['REQUEST_METHOD'].$_SERVER['REQUEST_URI']){
             self::savePath();
         }
-        
-        if (strtoupper($method)!='GET') $content=null;
+
+        if (strpos($URL,'/UI/')!==false) {$content=null;}
+        //if (strtoupper($method)!='GET') $content=null;
         $uTag = md5($URL);
-        $cachedData[$uTag] = new DataObject($content,$status);*/
+        $cachedData[$uTag] = new DataObject($content,$status);
+        $treePath = '/tmp/cache';
+        $componentTag = basename(dirname($_SERVER['SCRIPT_NAME']));
+        $eTag = self::generateETag($content);;
+        self::generatepath($treePath.'/data/'.$componentTag);
+        file_put_contents($treePath.'/data/'.$componentTag.'/'.$eTag,json_encode($content));*/
     }
     
     public static function generateETag($data)
@@ -156,5 +178,29 @@ class CacheManager
         mkdir(dirname($file));
         file_put_contents($file,$data);
     }*/
+    
+    /**
+     * Creates the path in the filesystem, if necessary.
+     *
+     * @param string $path The path which should be created.
+     * @see http://php.net/manual/de/function.mkdir.php#83265
+     */
+    public static function generatepath( $path, $mode = 0755 )
+    {
+        $path = rtrim(preg_replace(array("/\\\\/", "/\/{2,}/"), "/", $path), "/");
+        $e = explode("/", ltrim($path, "/"));
+        if(substr($path, 0, 1) == "/") {
+            $e[0] = "/".$e[0];
+        }
+        $c = count($e);
+        $cp = $e[0];
+        for($i = 1; $i < $c; $i++) {
+            if(!is_dir($cp) && !@mkdir($cp, $mode)) {
+                return false;
+            }
+            $cp .= "/".$e[$i];
+        }
+        return @mkdir($path, $mode);
+    }
 }
 ?>
