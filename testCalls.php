@@ -10,8 +10,8 @@ $listOfCalls = array('http://localhost/uebungsplattform/DB/DBUser/user/course/2/
 for($i=0;$i<$anz;$i++){
 $begin = microtime(true);
 //'http://localhost/uebungsplattform/logic/LGetSite/admin/user/'.$i.'/course/2'
-$list= array(1,2,25,26,27);
-$answ = Request::get('http://localhost/uebungsplattform/DB/DBExerciseSheet/exercisesheet/course/'.($list[$i%5]).'/exercise',array(),'',false,false);
+$list= array(25,26,27);
+$answ = Request::get('http://localhost/uebungsplattform/DB/DBExerciseSheet/exercisesheet/course/'.($list[$i%3]).'/exercise',array(),'',false,false);
 $sum+=microtime(true) - $begin;
 if ($i+1<$anz)
     foreach($listOfCalls as $call)

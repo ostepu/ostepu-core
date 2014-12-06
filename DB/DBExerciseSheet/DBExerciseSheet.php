@@ -750,22 +750,38 @@ class DBExerciseSheet
                            );
 
         // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
+        /*$result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
                                               dirname(__FILE__).'/Sql/GetCourseSheets.sql',
                                               array( 'courseid' => $courseid )
-                                              );
+                                              );*/
+        $result = Request::routeRequest( 
+                                        'GET',
+                                        '/query/procedure/DBExerciseSheetGetCourseSheets/'.$courseid,
+                                        array(),
+                                        '',
+                                        $this->query,
+                                        'query'
+                                        );
 
         // checks the exercise option
         if ( in_array( 
                       'exercise',
                       $options
                       ) ){
-            $result2 = DBRequest::getRoutedSqlFile( 
+            /*$result2 = DBRequest::getRoutedSqlFile( 
                                                    $this->query,
                                                    dirname(__FILE__).'/Sql/GetCourseExercises.sql',
                                                    array( 'courseid' => $courseid )
-                                                   );
+                                                   );*/
+            $result2 = Request::routeRequest( 
+                                            'GET',
+                                            '/query/procedure/DBExerciseSheetGetCourseExercises/'.$courseid,
+                                            array(),
+                                            '',
+                                            $this->query,
+                                            'query'
+                                            );
         }
 
         // checks the correctness of the query

@@ -115,7 +115,7 @@ class DBQuery2
                          
         // GET ProcedureResult
         $this->_app->map( 
-                          '(/:name)/procedure/:procedure/params+',
+                          '(/:name)/query/procedure/:procedure/:params+',
                           array( 
                                 $this,
                                 'procedureResult'
@@ -157,6 +157,10 @@ class DBQuery2
      * Called when this component receives an HTTP GET, an HTTP PUT or an HTTP POST
      * request to /query/.
      */
+    public function generateParam($a)
+    {
+        return "'{$a}'";
+    }
     public function procedureResult( $name = '', $procedure, $params )
     {
         $this->loadConfig($name);       
@@ -165,11 +169,7 @@ class DBQuery2
                                 TRUE
                                 );
                                 
-        function generateParam($a)
-        {
-            return "'{$a}'";
-        }
-        $sql = "CALL `{$procedure}`(".implode(',',array_map('generateParam', $params)).")";
+        $sql = "CALL `{$procedure}`(".implode(',',array_map(array($this,'generateParam'), $params)).")";
         $answer = DBRequest::request2( 
                                            $sql,
                                            false,
