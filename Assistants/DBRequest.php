@@ -327,7 +327,7 @@ class DBRequest
                                             $checkSession = true
                                             )
     {
-
+        $vars['sqlPath'] = dirname($sqlFile);
         // generates the variable content
         extract( 
                 $vars,
