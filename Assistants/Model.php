@@ -50,12 +50,12 @@ class Model
             $route->setName($command['name']);
             $router->map($route);
         }
-        
+
         $scriptName = $_SERVER['SCRIPT_NAME'];
         $requestUri = $_SERVER['REQUEST_URI'];
         $path = str_replace('?' . (isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : ''), '', substr_replace($requestUri, '', 0, strlen((strpos($requestUri, $scriptName) !== false ? $scriptName : str_replace('\\', '', dirname($scriptName))))));
         $matches = $router->getMatchedRoutes(strtoupper($_SERVER['REQUEST_METHOD']), $path);
-        
+
         if (count($matches)>0){
             $matches = $matches[0];
             $selectedCommand=null;

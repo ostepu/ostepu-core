@@ -97,7 +97,7 @@
             "links": [
                 {
                     "method": "GET",
-                    "path": "/query/procedure/DBUserGetUserByStatus/:courseid/:statusid"
+                    "path": "/query/procedure/DBUserGetCourseUserByStatus/:courseid/:statusid"
                 }
             ]
         },

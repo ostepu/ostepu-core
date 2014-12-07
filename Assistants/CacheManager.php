@@ -21,6 +21,13 @@ class PathObject
         $this->toName = $_toName;
         $this->toURL = $_toURL;
         $this->toMethod = $_toMethod;
+        /*Logger::Log("_fromName: ".$_fromName, LogLevel::DEBUG, false, dirname(__FILE__) . '/../cache.log');
+        Logger::Log("_fromURL: ".$_fromURL, LogLevel::DEBUG, false, dirname(__FILE__) . '/../cache.log');
+        Logger::Log("_fromMethod: ".$_fromMethod, LogLevel::DEBUG, false, dirname(__FILE__) . '/../cache.log');
+        Logger::Log("_toName: ".$_toName, LogLevel::DEBUG, false, dirname(__FILE__) . '/../cache.log');
+        Logger::Log("_toURL: ".$_toURL, LogLevel::DEBUG, false, dirname(__FILE__) . '/../cache.log');
+        Logger::Log("_toMethod: ".$_toMethod, LogLevel::DEBUG, false, dirname(__FILE__) . '/../cache.log');
+        Logger::Log("", LogLevel::DEBUG, false, dirname(__FILE__) . '/../cache.log');*/
     }
     
     public $fromName = null;
@@ -51,9 +58,12 @@ class CacheManager
     private static $cachedData = array();
     private static $cachedPath = array();
     private static $begin = null;
+    private static $activeTree = false;
+    private static $changedTree = false;
     
     public static function savePath()
     {
+        if (self::$changedTree) return;
         /*$text="digraph G {rankdir=TB;edge [splines=\"polyline\"];\n";
         $graphName="graph";
         $groups=array();
@@ -91,52 +101,70 @@ class CacheManager
         
         $treePath = '/tmp/cache';
         $componentTag = self::$cachedPath[0]->toName;
-        $uriTag = self::generateETag(self::$cachedPath[0]->toURL);
-        self::generatepath($treePath.'/trees/'.$componentTag);
+        if ($componentTag=='BEGIN')$componentTag = self::$cachedPath[1]->toName;
+        
+        self::generatepath($treePath.'/tree/'.$componentTag);
         $tree = array();
         foreach (self::$cachedPath as $path){
-            if ($path->fromName===null) continue;
+            if ($path->fromMethod!='GET') continue;
+            if ($path->toMethod!='GET') continue;
             if (!isset($tree[$path->fromName])) $tree[$path->fromName]=array();
-            $tree[$path->fromName][] = array('name'=>$path->toName,'uri'=>$path->toURL);
-            //$text.="\"".$path->fromName.'"->"'.$path->toName."\"[ label = \"".$path->toMethod."".implode("\n/",explode('/',$path->toURL))."\" ];\n";
+            $uTag = self::generateETag($path->toURL);
+            $eTag = isset(self::$cachedData[$uTag]) ? self::$cachedData[$uTag]->content : null;
+            if ($eTag!==null) $eTag = self::generateETag($eTag);
+            $tree[$path->fromName][] = array('name'=>$path->toName,'url'=>$path->toURL,'method'=>$path->toMethod,'eTag'=>$eTag);
         }
-        file_put_contents($treePath.'/trees/'.$componentTag.'/'.$uriTag,json_encode($tree));
+
+        $uTag = self::generateETag(self::generateURL());
+        if (self::$cachedPath[0]->fromName=='BEGIN')$uTag = self::generateETag(self::$cachedPath[0]->toURL);
+        if (self::$cachedPath[0]->fromName=='')$uTag = self::generateETag(self::$cachedPath[1]->toURL);
+        file_put_contents($treePath.'/tree/'.$componentTag.'/'.$uTag,json_encode($tree));
     }
     
-    public static function getCachedDataByURL($Base, $URI, $method)
+    public static function generateURL()
     {
-        /*$URL = $Base. $URI;
+        return $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
+    }
+    
+    public static function getCachedDataByURL($Name, $URL, $method)
+    {
+        //if (strpos($_SERVER['SCRIPT_NAME'],'/UI/')!==false) {return null;}
+        
         $fromName = basename(dirname($_SERVER['SCRIPT_NAME']));
+        if (strpos($_SERVER['SCRIPT_NAME'],'/UI/')!==false) $fromName='BEGIN';
+        if ($fromName=='') $fromName='BEGIN';
         if (self::$begin===null){
-            self::$begin = $_SERVER['REQUEST_METHOD'].$_SERVER['REQUEST_URI'];
+            self::$begin = $_SERVER['REQUEST_METHOD'].self::generateURL();
             self::$cachedPath[] = new PathObject(null,null,null,$fromName,$_SERVER['SCRIPT_NAME'],$_SERVER['REQUEST_METHOD']);
         }
+        self::$cachedPath[] = new PathObject($fromName,self::generateURL(),$_SERVER['REQUEST_METHOD'],$Name, $URL,$method);
         
-        self::$cachedPath[] = new PathObject($fromName,$_SERVER['SCRIPT_NAME'],$_SERVER['REQUEST_METHOD'],$Base, $URI,$method);
-        
-        if (strpos($URI,'/UI/')!==false) {return null;}
         if (strtoupper($method)!='GET') return null;
         $uTag = md5($URL);
-        if (isset($cachedData[$uTag]))
-            return $cachedData[$uTag];*/
+        if (isset(self::$cachedData[$uTag]))
+            return self::$cachedData[$uTag];
+
         return null;
     }
     
-    public static function cacheData($URL, $content, $status, $method)
-    {
-        /*if (self::$begin!==null && self::$begin==$_SERVER['REQUEST_METHOD'].$_SERVER['REQUEST_URI']){
+    public static function cacheData($Name, $URL, $content, $status, $method)
+    { 
+        if (strpos($URL,'/UI/')===false && strtoupper($method)=='GET'){
+            $uTag = md5($URL);
+
+            if (!isset(self::$cachedData[$uTag])){
+                self::$cachedData[$uTag] = new DataObject($content,$status);
+                $treePath = '/tmp/cache';
+                $componentTag = $Name;
+                $eTag = self::generateETag($content);
+                self::generatepath($treePath.'/data/'.$componentTag);
+                file_put_contents($treePath.'/data/'.$componentTag.'/'.$eTag,json_encode($content));
+            }
+        }
+        
+        if (self::$begin!==null && self::$begin==$_SERVER['REQUEST_METHOD'].self::generateURL()){
             self::savePath();
         }
-
-        if (strpos($URL,'/UI/')!==false) {$content=null;}
-        //if (strtoupper($method)!='GET') $content=null;
-        $uTag = md5($URL);
-        $cachedData[$uTag] = new DataObject($content,$status);
-        $treePath = '/tmp/cache';
-        $componentTag = basename(dirname($_SERVER['SCRIPT_NAME']));
-        $eTag = self::generateETag($content);;
-        self::generatepath($treePath.'/data/'.$componentTag);
-        file_put_contents($treePath.'/data/'.$componentTag.'/'.$eTag,json_encode($content));*/
     }
     
     public static function generateETag($data)
@@ -149,35 +177,53 @@ class CacheManager
     public static function setETag($data)
     {
         $eTag=self::generateETag($data);
-        header('ETag: "' . $eTag . '"');
+        header('ETag: ' . $eTag . '');
     }
     
-    /*public static function getKnownETags($componentName, $URL)
+    public static function getTree($Name, $URL, $method)
     {
-        $folder = dirname(__FILE__).'/../../cache/'.md5($componentName.' '.$URL);
-        if (is_dir($folder)){
-            return scandir($folder);
-        } else
-           return array();
+        if (self::$activeTree) return;
+        if (strtoupper($method)!='GET') return;
+        // search tree
+        $treePath = '/tmp/cache';
+        $uTag = md5($URL);
+        $componentTag = $Name;
+        if (file_exists($treePath.'/tree/'.$componentTag.'/'.$uTag)){
+            self::$activeTree=true;
+            $uriTag = self::generateETag($URL);
+            $list = json_decode(file_get_contents($treePath.'/tree/'.$componentTag.'/'.$uTag),true);
+
+            $sources = array();
+            $pos = array($Name);
+            for ($i=0;$i<count($pos);$i++){
+                foreach ($list[$pos[$i]] as $call){
+                    if (!isset($list[$call['name']])){
+                        $sources[] = $call;
+                    } else 
+                        $pos[] = $call['name'];
+                }
+            }
+
+            // call sources
+            $allOK = true;
+            $temp = self::$cachedPath;
+            foreach ($sources as $source){
+                $answ = Request::get($source['url'], array(),  '', true);
+                if (!isset($answ['headers']['Etag']) || $answ['headers']['Etag']!=$source['eTag']){
+                    $allOK = false;
+                }
+            }
+            self::$cachedPath=$temp;
+            
+            if ($allOK){
+                self::$changedTree=true;
+                if (isset($list['BEGIN'])){
+                    $data = file_get_contents($treePath.'/data/'.$list['BEGIN'][0]['name'].'/'.$list['BEGIN'][0]['eTag']);
+                    self::cacheData($list['BEGIN'][0]['name'], $list['BEGIN'][0]['url'], json_decode($data), 200, $list['BEGIN'][0]['method']);
+                }
+            }
+        }
     }
-    
-    public static function getCachedData($componentName, $URL, $eTag)
-    {
-        $file = dirname(__FILE__).'/../../cache/'.md5($componentName.' '.$URL).'/'.$eTag;
-        if (file_exists($file)){
-            return file_get_contents($file);
-        } else
-            return null;        
-    }
-    
-    public static function cacheData($componentName, $URL, $data, $eTag=null)
-    {
-        if ($eTag===null)
-            $eTag = self::generateETag($data);
-        $file = dirname(__FILE__).'/../../cache/'.md5($componentName.' '.$URL).'/'.$eTag;
-        mkdir(dirname($file));
-        file_put_contents($file,$data);
-    }*/
     
     /**
      * Creates the path in the filesystem, if necessary.

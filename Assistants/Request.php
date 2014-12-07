@@ -108,9 +108,9 @@ class Request
                         Logger::Log('nodata: '.$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
                         continue;
                     }
-                    
                     $url = 'http://localhost'.$h.'/'.$com->getLocalPath();
                         
+
                     if (strpos($target,$url.'/')===0){
                         $result = array();
                         $tar = dirname(__FILE__).'/../'.$com->getLocalPath().'/'.$com->getClassFile();
@@ -118,11 +118,14 @@ class Request
                         if (!file_exists($tar)) continue;
                         
                         $add = substr($target,strlen($url));
-                        $cachedData = CacheManager::getCachedDataByURL($com->getTargetName(),$add, $method);
+                        //CacheManager::generateURL()
+                        //basename(dirname($_SERVER['SCRIPT_NAME']))
+                        CacheManager::getTree($com->getTargetName(), $target, $_SERVER['REQUEST_METHOD']);
+                        $cachedData = CacheManager::getCachedDataByURL($com->getTargetName(), $target, $method);
                         if ($cachedData!==null){
                             $result['content'] = $cachedData->content;
                             $result['status'] = $cachedData->status;
-                            Logger::Log('out>> '.$method.' '.$add, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+                            ///Logger::Log('out>> '.$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
                         } else {
                             $args = array(
                                           'REQUEST_METHOD' => $method,
@@ -159,6 +162,7 @@ class Request
                             
                             if (isset($_SERVER['HTTP_DATE']))
                                 $args['HTTP_DATE'] = $_SERVER['HTTP_DATE'];
+                            Logger::Log(json_encode($args), LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
                                 
                             $oldArgs = array('REQUEST_METHOD' => \Slim\Environment::getInstance()->offsetGet('REQUEST_METHOD'),
                                              'PATH_INFO' => \Slim\Environment::getInstance()->offsetGet('PATH_INFO'),
@@ -170,8 +174,12 @@ class Request
                                              
                             $oldRequestURI = $_SERVER['REQUEST_URI'];
                             $oldScriptName = $_SERVER['SCRIPT_NAME'];
-                            $_SERVER['REQUEST_URI'] = $tar.$add;
-                            $_SERVER['SCRIPT_NAME'] = $tar;
+                            ///$oldRedirectURL = $_SERVER['REDIRECT_URL'];
+                            ///echo "old: ".$_SERVER['REQUEST_URI']."\n";
+                            $_SERVER['REQUEST_URI'] = substr($target,strlen('http://localhost/')-1);//$tar.$add;
+                            ///$_SERVER['REDIRECT_URL']= substr($target,strlen('http://localhost/')-1);
+                            ///echo "mein: ".substr($target,strlen('http://localhost/')-1)."\n";
+                            $_SERVER['SCRIPT_NAME'] = $h.'/'.$com->getLocalPath().'/'.$com->getClassFile(); //$tar;
                             $_SERVER['QUERY_STRING']='';
                             $_SERVER['REQUEST_METHOD']=$method;
                             \Slim\Environment::mock($args);
@@ -191,6 +199,7 @@ class Request
                                 unset($obj);                        
                             $result['content'] = ob_get_contents();
                             ob_end_clean(); 
+                            CacheManager::setETag($result['content']);
                                 
                             $result['headers'] = array_merge(array(),Request::http_parse_headers_short(headers_list()));
                             header_remove();        
@@ -198,6 +207,7 @@ class Request
                             $result['status'] = http_response_code();
                             $_SERVER['REQUEST_URI'] = $oldRequestURI;
                             $_SERVER['SCRIPT_NAME'] = $oldScriptName;
+                            ///$_SERVER['REDIRECT_URL'] = $oldRedirectURL;
                             
                             \Slim\Environment::mock($oldArgs);
                             $_SERVER['REQUEST_METHOD'] = $oldArgs['REQUEST_METHOD'];
@@ -207,7 +217,7 @@ class Request
                             foreach ($oldHeader as $head)
                                 header($head);
                                 
-                            CacheManager::cacheData($com->getClassName().$add, $result['content'], $result['status'], $method);
+                            //CacheManager::cacheData($com->getTargetName(), $target, $result['content'], $result['status'], $method);
                             ///Logger::Log('in<< '.$method.' '.$com->getClassName().$add, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
                         
                         }
@@ -242,6 +252,7 @@ class Request
             curl_close($ch);                                                                            
         }
 
+        CacheManager::cacheData($com->getTargetName(), $target, $result['content'], $result['status'], $method);
         Logger::Log($target . ' ' . (round((microtime(true) - $begin),2)). 's', LogLevel::DEBUG, false, dirname(__FILE__) . '/../executionTime.log');
         return $result; 
     }
