@@ -121,7 +121,7 @@ class Request
                         //CacheManager::generateURL()
                         //basename(dirname($_SERVER['SCRIPT_NAME']))
                         CacheManager::getTree($com->getTargetName(), $target, $_SERVER['REQUEST_METHOD']);
-                        $cachedData = CacheManager::getCachedDataByURL($com->getTargetName(), $target, $method);
+                        $cachedData = CacheManager::getCachedDataByURL($com->getTargetName(), $target, $add, $method);
                         if ($cachedData!==null){
                             $result['content'] = $cachedData->content;
                             $result['status'] = $cachedData->status;
@@ -162,7 +162,6 @@ class Request
                             
                             if (isset($_SERVER['HTTP_DATE']))
                                 $args['HTTP_DATE'] = $_SERVER['HTTP_DATE'];
-                            Logger::Log(json_encode($args), LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
                                 
                             $oldArgs = array('REQUEST_METHOD' => \Slim\Environment::getInstance()->offsetGet('REQUEST_METHOD'),
                                              'PATH_INFO' => \Slim\Environment::getInstance()->offsetGet('PATH_INFO'),

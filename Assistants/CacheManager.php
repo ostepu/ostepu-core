@@ -11,8 +11,7 @@ include_once ( dirname(__FILE__) . '/DBJson.php' );
 
 class PathObject
 {
-    ///private static $maxID = 0;
-    public function __construct( $_fromName, $_fromURL, $_fromMethod, $_toName, $_toURL, $_toMethod)
+    public function __construct( $_fromName, $_fromURL, $_fromMethod, $_toName, $_toURL, $_toURI, $_toMethod)
     {
         ///$this->id = self::$maxID;self::$maxID++;
         $this->fromName = $_fromName;
@@ -20,14 +19,8 @@ class PathObject
         $this->fromMethod = $_fromMethod;
         $this->toName = $_toName;
         $this->toURL = $_toURL;
+        $this->toURI = $_toURI;
         $this->toMethod = $_toMethod;
-        /*Logger::Log("_fromName: ".$_fromName, LogLevel::DEBUG, false, dirname(__FILE__) . '/../cache.log');
-        Logger::Log("_fromURL: ".$_fromURL, LogLevel::DEBUG, false, dirname(__FILE__) . '/../cache.log');
-        Logger::Log("_fromMethod: ".$_fromMethod, LogLevel::DEBUG, false, dirname(__FILE__) . '/../cache.log');
-        Logger::Log("_toName: ".$_toName, LogLevel::DEBUG, false, dirname(__FILE__) . '/../cache.log');
-        Logger::Log("_toURL: ".$_toURL, LogLevel::DEBUG, false, dirname(__FILE__) . '/../cache.log');
-        Logger::Log("_toMethod: ".$_toMethod, LogLevel::DEBUG, false, dirname(__FILE__) . '/../cache.log');
-        Logger::Log("", LogLevel::DEBUG, false, dirname(__FILE__) . '/../cache.log');*/
     }
     
     public $fromName = null;
@@ -35,8 +28,8 @@ class PathObject
     public $fromMethod = null;
     public $toName = null;
     public $toURL = null;
+    public $toURI = null;
     public $toMethod = null;
-    ///public $id = null;
 }
 
 class DataObject
@@ -63,8 +56,7 @@ class CacheManager
     
     public static function savePath()
     {
-        if (self::$changedTree) return;
-        /*$text="digraph G {rankdir=TB;edge [splines=\"polyline\"];\n";
+        $text="digraph G {rankdir=TB;edge [splines=\"polyline\"];\n";
         $graphName="graph";
         $groups=array();
         foreach (self::$cachedPath as $path){
@@ -81,11 +73,23 @@ class CacheManager
         	$text.="subgraph step{$key}{\n";//cluster_{$key}
 		
             foreach ($list as $path){
-                if ($path->fromName===null){
-                    $text.="\"".$path->fromName."\" [style=\"invis\"];\n";
-                    $graphName=$path->toName;
+            $toName = $path->toName;
+            $fromName = $path->fromName;
+            if ($path->toName=='BEGIN')
+                $toName = basename($path->toURL);
+            if ($path->fromName=='BEGIN')
+                $fromName = basename($path->fromURL);
+            $fromName = basename(explode('?',$fromName)[0]);
+            $toName = basename(explode('?',$toName)[0]);
+            $fromName = basename($fromName);
+            $toName = basename($toName);
+            if ($fromName=='')$fromName=null;
+            if ($toName=='')$toName=null;
+                if ($fromName===null){
+                    $text.="\"".$fromName."\" [style=\"invis\"];\n";
+                    $graphName=$toName;
                 } else{
-                    $text.="\"".$path->fromName."\" [shape=\"box\"];\n";
+                    $text.="\"".$fromName."\" [shape=\"box\"];\n";
                 }
             }
             
@@ -93,11 +97,29 @@ class CacheManager
         }
         
         foreach (self::$cachedPath as $path){
-            $text.="\"".$path->fromName.'"->"'.$path->toName."\"[ label = \"".$path->toMethod."".implode("\n/",explode('/',$path->toURL))."\" ];\n";
+            $url = $path->toURI;
+            $ll = implode("\n/",explode('/',$url));
+            $toName = $path->toName;
+            $fromName = $path->fromName;
+            if ($path->toName!='BEGIN')
+                $ll="";
+            if ($path->toName=='BEGIN')
+                $toName = basename($path->toURL);
+            if ($path->fromName=='BEGIN')
+                $fromName = basename($path->fromURL);
+            $fromName = basename(explode('?',$fromName)[0]);
+            $toName = basename(explode('?',$toName)[0]);
+            $fromName = basename($fromName);
+            $toName = basename($toName);
+            if ($fromName=='')$fromName=null;
+            if ($toName=='')$toName=null;
+            $text.="\"".$fromName.'"->"'.$toName."\"[ label = \"".$path->toMethod."".$ll."\" ];\n";
         }
         $text.="\n}";
         
-        file_put_contents(dirname(__FILE__).'/../path/'.$graphName.'.gv',$text);*/
+        file_put_contents(dirname(__FILE__).'/../path/'.$graphName.'.gv',$text);
+        if (self::$changedTree) return;
+        
         
         $treePath = '/tmp/cache';
         $componentTag = self::$cachedPath[0]->toName;
@@ -126,7 +148,7 @@ class CacheManager
         return $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
     }
     
-    public static function getCachedDataByURL($Name, $URL, $method)
+    public static function getCachedDataByURL($Name, $URL, $URI, $method)
     {
         //if (strpos($_SERVER['SCRIPT_NAME'],'/UI/')!==false) {return null;}
         
@@ -135,9 +157,9 @@ class CacheManager
         if ($fromName=='') $fromName='BEGIN';
         if (self::$begin===null){
             self::$begin = $_SERVER['REQUEST_METHOD'].self::generateURL();
-            self::$cachedPath[] = new PathObject(null,null,null,$fromName,$_SERVER['SCRIPT_NAME'],$_SERVER['REQUEST_METHOD']);
+            self::$cachedPath[] = new PathObject(null,null,null,$fromName,$_SERVER['SCRIPT_NAME'], $_SERVER['REQUEST_URI'],$_SERVER['REQUEST_METHOD']);
         }
-        self::$cachedPath[] = new PathObject($fromName,self::generateURL(),$_SERVER['REQUEST_METHOD'],$Name, $URL,$method);
+        self::$cachedPath[] = new PathObject($fromName,self::generateURL(),$_SERVER['REQUEST_METHOD'],$Name, $URL, $URI,$method);
         
         if (strtoupper($method)!='GET') return null;
         $uTag = md5($URL);
@@ -157,8 +179,10 @@ class CacheManager
                 $treePath = '/tmp/cache';
                 $componentTag = $Name;
                 $eTag = self::generateETag($content);
-                self::generatepath($treePath.'/data/'.$componentTag);
-                file_put_contents($treePath.'/data/'.$componentTag.'/'.$eTag,json_encode($content));
+                if (!file_exists($treePath.'/data/'.$componentTag.'/'.$eTag)){
+                    self::generatepath($treePath.'/data/'.$componentTag);
+                    file_put_contents($treePath.'/data/'.$componentTag.'/'.$eTag,json_encode($content));
+                }
             }
         }
         
@@ -221,6 +245,9 @@ class CacheManager
                     $data = file_get_contents($treePath.'/data/'.$list['BEGIN'][0]['name'].'/'.$list['BEGIN'][0]['eTag']);
                     self::cacheData($list['BEGIN'][0]['name'], $list['BEGIN'][0]['url'], json_decode($data), 200, $list['BEGIN'][0]['method']);
                 }
+            } else {
+                // remove tree
+                unlink(realpath($treePath.'/tree/'.$componentTag.'/'.$uTag));
             }
         }
     }
