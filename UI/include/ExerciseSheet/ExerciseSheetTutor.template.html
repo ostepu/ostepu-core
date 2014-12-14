@@ -7,37 +7,35 @@
            // bool if endDate of sheet is greater than the actual date ?>
     <?php $isExpired = date('U') > date('U', $sheet['endDate']); ?>
     <div class="content-element collapsible">
-        <div class="content-header">
-            <div class="content-title left uppercase">
-                    <?php echo $sheet['sheetName'], " "; ?>
-                    <?php if ($isExpired): ?>
-                        (abgelaufen)
-                    <?php endif; ?>
-            </div>
-            <div class="info-color bold footer-text">
-                    <?php if (isset($sheet['status'])){
-                                $types = Marking::getStatusDefinition();
-                                foreach ($sheet['status'] as $key => $value){ ?>
-                                <?php echo $value.' '.$types[LArraySorter::multidimensional_search($types, array('id'=>$key))]['longName'];?>
-                    <?php }} ?>
-            </div>
-            <div class="critical-color bold right">
-                <?php echo date('d.m.Y  -  H:i', $sheet['endDate']); ?>
-            </div>
-            <div class="info-color bold right">
-                <?php echo date('d.m.Y  -  H:i', $sheet['startDate']).' bis&nbsp;'; ?>
-            </div>
-            
-            <div class="exercise-sheet-info info-color bold right">
-                <?php 
-                    /**
-                     * @todo Number of submissions without markings still needs to be 
-                     *       calculated in GetSite.
-                     */
-                ?>
-                <?php if (isset($sheet['exerciseSheetInfo'])) echo $sheet['exerciseSheetInfo'], ' unkorrigiert'; ?>
-            </div>
+    <div class="content-header">
+        <div class="content-title left uppercase">
+            <?php
+                print $sheet['sheetName'];
+                if ($isExpired) {
+                    print ' (abgelaufen)';
+                }
+            ?>
         </div>
+        
+        <div class="right">
+            <span class="info-color bold">
+                    <?php echo date('d.m.Y  -  H:i', $sheet['startDate']).' bis'; ?>
+            </span>
+            
+            <span class="critical-color bold">
+                <?php print date('d.m.Y  -  H:i', $sheet['endDate']); ?>
+            </span>
+        </div>
+        
+        <div class="info-color bold footer-text right" style="margin-left:10px">
+                <?php if (isset($sheet['status'])){
+                            $types = Marking::getStatusDefinition();
+                            foreach ($sheet['status'] as $key => $value){ ?>
+                            <?php echo $value.' '.$types[LArraySorter::multidimensional_search($types, array('id'=>$key))]['longName'];?>
+                <?php }} ?>
+        </div>
+        
+    </div>
 
         <div class="content-body-wrapper">
             <div class="content-body left">
@@ -97,9 +95,9 @@
                     <?php $types = Marking::getStatusDefinition();
                     foreach ($sheet['status'] as $key => $value){ ?>
                     <li class="footer-text">
-                    <button name="downloadCSV_<?php echo $key;?>" value="<?php echo $sheet['id']; ?>" class="text-button body-option-color footer-text" style="padding-left:0px">
+                    <a href="Download.php?cid=<?php echo $cid; ?>&downloadCSV_<?php echo $key;?>=<?php echo $sheet['id']; ?>" class="download text-button body-option-color footer-text" style="padding-left:0px">
                     <?php echo $value.' '.$types[LArraySorter::multidimensional_search($types, array('id'=>$key))]['longName'];?> 
-                    </button></li>
+                    </a></li>
                     <?php }} ?>
                     <?php if (isset($sheet['allStatus'])){ ?>
                     <br>
@@ -119,7 +117,7 @@
                             <?php $displayName = $sheet['sampleSolution']['displayName']; ?>
                             <?php $fileAddress = $sheet['sampleSolution']['address']; ?>
                             <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
-                            <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
+                            <a class="text-button" href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
                                 Musterlösung
                             </a>
                         </li>
@@ -130,46 +128,38 @@
                         <?php $displayName = $sheet['sheetFile']['displayName']; ?>
                         <?php $fileAddress = $sheet['sheetFile']['address']; ?>
                         <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
-                        <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
+                        <a class="text-button" href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
                             Aufgabenblatt
                         </a>
                     </li>
                     <?php } ?>
 
                     <?php // prints a link to download attachments ?>
-                    <?php if ($sheet['hasAttachments']): ?>
+                    <?php if ($sheet['hasAttachments']){ ?>
                         <li>
-                            <button name="downloadAttachments" value="<?php echo $sheet['id']; ?>" class="text-button body-option-color">
+                            <a href="Download.php?cid=<?php echo $cid; ?>&downloadAttachments=<?php echo $sheet['id']; ?>" class="download text-button body-option-color">
                                 Alle Anhänge herunterladen
-                            </button>
+                            </a>
                         </li>
-                    <?php endif; ?>
+                    <?php } ?>
                     
                     <?php if (isset($sheet['tutorMarkings']) && $sheet['tutorMarkings']>0){ ?>
                     <li>
-                        <button name="downloadCSV" value="<?php echo $sheet['id']; ?>" class="text-button body-option-color">
+                        <a href="Download.php?cid=<?php echo $cid; ?>&downloadCSV=<?php echo $sheet['id']; ?>" class="download text-button body-option-color">
                             Einsendungen herunterladen
-                        </button>
-                    </li>
-
-                    <li>
-                        <a href="TutorUpload.php?cid=<?php echo $user['courses'][0]['course']['id'],
-                                                         '&sid=',
-                                                         $sheet['id']; ?>">
-                            Korrekturen hochladen
                         </a>
                     </li>
                     <?php } ?>
                     
                     <li>
-                        <a href="TutorAssign.php?cid=<?php echo $user['courses'][0]['course']['id'],
+                        <a class="text-button" href="TutorAssign.php?cid=<?php echo $user['courses'][0]['course']['id'],
                                                          '&sid=',
                                                          $sheet['id']; ?>">
                             Kontrolleurzuweisung
                         </a>
                     </li>
                     <li>
-                        <a href="MarkingTool.php?cid=<?php echo $user['courses'][0]['course']['id'],
+                        <a class="text-button" href="MarkingTool.php?cid=<?php echo $user['courses'][0]['course']['id'],
                                                          '&sid=',
                                                          $sheet['id']; ?>">
                             Korrekturassistent
