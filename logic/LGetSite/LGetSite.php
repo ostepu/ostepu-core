@@ -122,8 +122,8 @@ class LGetSite
                         array($this, 'upload'));
 
         //GET TutorUpload
-        $this->app->get('/tutorupload/user/:userid/course/:courseid/exercisesheet/:sheetid(/)',
-                        array($this, 'upload'));
+        $this->app->get('/tutorupload/user/:userid/course/:courseid(/)',
+                        array($this, 'tutorUpload'));
 
         //GET MarkingTool
         $this->app->get('/markingtool/user/:userid/course/:courseid/exercisesheet/:sheetid(/)',
@@ -175,8 +175,6 @@ class LGetSite
         $response = array();
         $assignedSubmissionIDs = array();
 
-        // get tutors
-
         // get all users with status 1,2,3 (tutor,lecturer,admin)
         $URL = $this->_getUser->getAddress().'/user/course/'.$courseid.'';
         $handler1 = Request_CreateRequest::createGet($URL, array(), '');
@@ -189,30 +187,57 @@ class LGetSite
         $URL = $this->_getSelectedSubmission->getAddress().'/selectedsubmission/exercisesheet/'.$sheetid;
         $handler5 = Request_CreateRequest::createGet($URL, array(), '');
         
+        $URL = $this->lURL . '/exercisesheet/course/' . $courseid.'/exercise';
+        $handler6 = Request_CreateRequest::createGet($URL, array(), '');
+        
 
         $multiRequestHandle = new Request_MultiRequest();
         $multiRequestHandle->addRequest($handler1);
         $multiRequestHandle->addRequest($handler4);
         $multiRequestHandle->addRequest($handler5);
+        $multiRequestHandle->addRequest($handler6);
 
         $answer = $multiRequestHandle->run();
 
         $users = json_decode($answer[0]['content'], true);
-        ///$lecturers = json_decode($answer[1]['content'], true);
-        ///$admins = json_decode($answer[2]['content'], true);
         $markings = json_decode($answer[1]['content'], true);
         $submissions = json_decode($answer[2]['content'], true);
+        $exerciseSheets = json_decode($answer[3]['content'], true);
+        unset($answer);unset($multiRequestHandle);
+        
+        $namesOfExercises = array();
+        // find the current sheet and it's exercises
+        foreach ($exerciseSheets as &$sheet) {
+            $thisSheetId = $sheet['id'];
 
-        // obsolete ???
-        /*// delete all super-admins from admin list
-        if (!empty($admins)) {
-            foreach ($admins as $key => $value) {
-                if ($value['isSuperAdmin'] == 1) {
-                    unset($admins[$key]);
-                    break;
+            if ($thisSheetId == $sheetid) {
+                $thisExerciseSheet = $sheet;
+                        // create exercise names
+                //an array to descripe the subtasks
+                $alphabet = range('a', 'z');
+                $count = 0;
+                
+                $count=null;
+                if (isset($sheet['exercises'])){
+                    $exercises = $sheet['exercises'];
+                    foreach ($exercises as $key => $exercise){
+                        $exerciseId = $exercise['id'];
+
+                        if ($count===null || $exercises[$count]['link'] != $exercise['link']){
+                            $count=$key;
+                            $namesOfExercises[$exerciseId] = $exercise['link'];
+                            $subtask = 0;
+                        }else{
+                            $subtask++;
+                            $namesOfExercises[$exerciseId] = $exercise['link'].$alphabet[$subtask];
+                            $namesOfExercises[$exercises[$count]['id']] = $exercises[$count]['link'].$alphabet[0];
+                        }
+                    }
                 }
             }
-        }*/
+
+            unset($sheet['exercises']);
+        }
 
         $students=array();
         $tutors=array();
@@ -248,8 +273,8 @@ class LGetSite
                 if (!isset($tutorAssignment['tutor']['id']) || $marking['tutorId'] == $tutorAssignment['tutor']['id']) {
 
                     // rename 'id' to 'submissionId'
-                    $marking['submission']['submissionId'] = $marking['submission']['id'];
-                    unset($marking['submission']['id']);
+                    //$marking['submission']['id'] = $marking['submission']['id'];
+                    //unset($marking['submission']['id']);
 
                     // remove unnecessary information
                     unset($marking['submission']['file']);
@@ -266,10 +291,11 @@ class LGetSite
                             break;
                         }
                     }
+                    $marking['submission']['markingId'] = $marking['id'];
                     $tutorAssignment['submissions'][] = $marking['submission'];
 
                     // save ids of all assigned submission
-                    $assignedSubmissionIDs[] = $marking['submission']['submissionId'];
+                    $assignedSubmissionIDs[] = $marking['submission']['id'];
                     break;
                 }
             }
@@ -286,9 +312,10 @@ class LGetSite
 
         $unassignedSubmissions = array();
 
-
         foreach ($submissions as &$submission) {
-            if (!in_array($submission['submissionId'], $assignedSubmissionIDs)) {
+            $submission['id'] = $submission['submissionId'];
+            unset($submission['submissionId']);
+            if (!in_array($submission['id'], $assignedSubmissionIDs)) {
                 $submission['unassigned'] = true;
                 $submission['user']=null;
                     foreach ($students as $student){
@@ -300,11 +327,62 @@ class LGetSite
                 $unassignedSubmissions[] = $submission;
             }
         }
+        
+        // generate proposals for tutors by using the markings from last exercise sheet
+        if (count($unassignedSubmissions)>0){
+            $lastSid = null;
+            for ($i=0; $i<count($exerciseSheets);$i++){
+                if ($exerciseSheets[$i]['id'] == $sheetid){
+                    if ($i<count($exerciseSheets)-1){
+                        $lastSid = $exerciseSheets[$i+1]['id'];
+                        break;
+                    }
+                }
+            }
+
+            if ($lastSid!==null){
+                $URL = $this->_getMarking->getAddress().'/marking/exercisesheet/'.$lastSid;
+                $handler1 = Request_CreateRequest::createGet($URL, array(), '');
+                $multiRequestHandle = new Request_MultiRequest();
+                $multiRequestHandle->addRequest($handler1);
+                $answer = $multiRequestHandle->run();
+
+                $lastMarkings = json_decode($answer[0]['content'], true);
+                unset($answer);unset($multiRequestHandle);
+                $lastTutorUser = array();
+                foreach ($lastMarkings as $marking){
+                    ///echo $marking['submission']['id'].' '.$marking['submission']['leaderId'].' '.$marking['tutorId'].' '.(isset($marking['submission']['selectedForGroup'])?$marking['submission']['selectedForGroup']:'')."\n";
+                    if (isset($marking['tutorId']) && isset($marking['submission']['leaderId']) && isset($marking['submission']['selectedForGroup']) && $marking['submission']['selectedForGroup']){
+                        $tutorId = $marking['tutorId'];
+                        $leaderId = $marking['submission']['leaderId'];
+                        if (!isset($lastTutorUser[$tutorId])) 
+                            $lastTutorUser[$tutorId]=array();
+                        if (!in_array($leaderId,$lastTutorUser[$tutorId]))
+                            $lastTutorUser[$tutorId][] = $leaderId;
+                    }
+                }
+                
+                unset($lastMarkings);
+                foreach ($response['tutorAssignments'] as &$tutorAssignment ) {
+                    if (!isset($tutorAssignment['tutor']['id'])) continue;
+                    if (!isset($lastTutorUser[$tutorAssignment['tutor']['id']])) continue;
+                    foreach ($unassignedSubmissions as $submission){
+                        if (in_array($submission['leaderId'],$lastTutorUser[$tutorAssignment['tutor']['id']])){
+                            if (!isset($tutorAssignment['proposalSubmissions']))$tutorAssignment['proposalSubmissions']=array();
+                            $tutorAssignment['proposalSubmissions'][] = $submission;
+                            unset($submission);
+                        }
+                    }
+                }
+            }
+        }
+        
 
         $newTutorAssignment = array('tutor' => $virtualTutor,
                                     'submissions' => $unassignedSubmissions);
 
         $response['tutorAssignments'][] = $newTutorAssignment;
+        $response['namesOfExercises'] = $namesOfExercises;
 
 
         $this->flag = 1;
@@ -447,7 +525,7 @@ class LGetSite
                     if (isset($submissionsByExercise[$exerciseID])) {
                         $submission = &$submissionsByExercise[$exerciseID];
 
-                        if (!isset($submission['hideFile']))
+                        if (!isset($submission['hideFile']) || !$submission['hideFile'])
                             $hasSubmissions=true;
                             
                         if (isset($submission['marking'])) {
@@ -455,7 +533,7 @@ class LGetSite
 
                             $sheetPoints += isset($marking['points']) ? $marking['points'] : 0 ;
 
-                            if (!isset($submission['marking']['hideFile']))
+                            if (!isset($submission['marking']['hideFile']) || !$submission['marking']['hideFile'])
                                 $hasMarkings = true;
                         }
 
@@ -524,11 +602,11 @@ class LGetSite
         $user = json_decode($answer['content'], true);
 
         $response = array('id' =>  $user['id'],
-                          'userName'=>  $user['userName'],
-                          'firstName'=>  $user['firstName'],
-                          'lastName'=>  $user['lastName'],
-                          'flag'=>  $user['flag'],
-                          'email'=>  $user['email'],
+                          'userName'=>  isset($user['email']) ? $user['userName'] : null,
+                          'firstName'=>  isset($user['email']) ? $user['firstName'] : null,
+                          'lastName'=>  isset($user['email']) ? $user['lastName'] : null,
+                          'flag'=>  isset($user['email']) ? $user['flag'] : null,
+                          'email'=>  isset($user['email']) ? $user['email'] : null,
                           'courses'=>  array());
 
         foreach ($user['courses'] as $course) {
@@ -970,6 +1048,15 @@ class LGetSite
      *
      * @author Florian Lücke.
      */
+    public function tutorUpload($userid, $courseid)
+    {
+        $response = array();
+        $this->flag = 1;
+        $response['user'] = $this->userWithCourse($userid, $courseid);
+
+        $this->app->response->setBody(json_encode($response));
+    }
+    
     public function upload($userid, $courseid, $sheetid)
     {
         // loads all exercises of an exercise sheet
@@ -1014,6 +1101,7 @@ class LGetSite
             }
         }
 
+        $response = array();
         $response['exercises'] = $exercises;
         if (isset($exercisesheet['sheetName'])) {
             $response['sheetName'] = $exercisesheet['sheetName'];
