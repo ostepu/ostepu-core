@@ -15,8 +15,132 @@ include_once dirname(__FILE__) . '/../Assistants/LArraySorter.php';
 
 if (!isset($_POST['actionSortUsers']))
 if (isset($_POST['action'])) {
+
+    if (isset($_POST['action']) && $_POST['action'] == "AssignManually") {
+    
+        // automatically assigns all unassigned proposed submissions to tutors
+        if (isset($_POST['actionAssignAllProposals'])){
+            // load user data from the database
+            $URL = $getSiteURI . "/tutorassign/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
+            $tutorAssign_data = http_get($URL, true);
+            $tutorAssign_data = json_decode($tutorAssign_data, true);
+            $markings = array();
+            if (!empty($tutorAssign_data['tutorAssignments'])) {
+                foreach ($tutorAssign_data['tutorAssignments'] as $tutorAssignment) {
+                    if (isset($tutorAssignment['proposalSubmissions'])){
+                        foreach ($tutorAssignment['proposalSubmissions'] as $submission){
+                            $sub = Submission::decodeSubmission(Submission::encodeSubmission($submission));
+                            $marking = new Marking();
+                            $marking->setSubmission($sub);
+                            $marking->setStatus(1);
+                            $marking->setTutorId($tutorAssignment['tutor']['id']);
+                            $markings[] = $marking;
+                        }
+                    }
+                }
+            }
+                        
+            $URI = $serverURI . "/logic/LMarking/marking";
+            http_post_data($URI, Marking::encodeMarking($markings), true, $message);
+
+            if ($message == "201" || $message == "200") {
+                $msg = "Die Zuweisungen wurden erfolgreich geändert.";
+                $assignManuallyNotifications[] = MakeNotification("success", $msg);
+            } else {
+                $msg = "Bei der Zuweisung ist ein Fehler aufgetreten.";
+                $assignManuallyNotifications[] = MakeNotification("error", $msg);
+            }        
+        }
+        
+        // assigns manually chosen submissions to the selected tutor
+        if (isset($_POST['actionAssignManually'])){
+            $f = new FormEvaluator($_POST);
+
+            $f->checkIntegerForKey('tutorId',
+                                   FormEvaluator::REQUIRED,
+                                   'warning',
+                                   'Ungültiger Tutor.');
+                                           
+            $f->checkArrayOfArraysForKey('assign',
+                                       FormEvaluator::REQUIRED,
+                                       'warning',
+                                       'Ungültige Auswahl.');
+
+            if ($f->evaluate(true)) {
+                // extracts the php POST data
+                $foundValues = $f->foundValues;
+                $selectedTutorID = $foundValues['tutorId'];
+                $assigns=cleanInput($_POST['assign']);
+                $markings = array();
+                foreach($assigns as $owner => $ass){
+                    $markingList = isset($ass['marking']) ? $ass['marking'] : array();
+                    $proposals = isset($ass['proposal']) ? $ass['proposal'] : array();
+
+                    // change assignment only if different source and target
+                    if ($owner!=$selectedTutorID){
+                        foreach ($markingList as $markingId => $subs){
+                            $subs = $subs[0];
+                            $sub = new Submission();
+                            $sub->setId($subs);
+                            if ($owner==-1){
+                                // from unassigned to tutor (creates new marking)
+                                $marking = new Marking();
+                                $marking->setSubmission($sub);
+                                $marking->setStatus(1);
+                                $marking->setTutorId($selectedTutorID);
+                                $markings[] = $marking;
+                            } else {
+                                if ($selectedTutorID==-1){
+                                    // remove assignment from tutor (removes the specified marking)
+                                    $URI = $serverURI . "/logic/LMarking/marking/marking/".$markingId;
+                                    http_delete($URI, true, $message);
+                                } else {
+                                    // move assignment from tutor to tutor
+                                    $marking = new Marking();
+                                    $marking->setId($markingId);
+                                    $marking->setTutorId($selectedTutorID);
+                                    $markings[] = $marking;
+                                }
+                            }
+                        }
+                    }
+                    
+                    // "unassigned" can't obtain proposals (-1 -> "unassiged")
+                    if ($selectedTutorID!=-1){
+                        foreach ($proposals as $props){
+                            // assign to selected tutor
+                            $sub = new Submission();
+                            $sub->setId($props);
+                            $marking = new Marking();
+                            $marking->setSubmission($sub);
+                            $marking->setStatus(1);
+                            $marking->setTutorId($selectedTutorID);
+                            $markings[] = $marking;
+                        }
+                    }
+                }
+                
+                $URI = $serverURI . "/logic/LMarking/marking";
+                http_post_data($URI, Marking::encodeMarking($markings), true, $message);
+
+                if ($message == "201" || $message == "200") {
+                    $msg = "Die Zuweisungen wurden erfolgreich geändert.";
+                    $assignManuallyNotifications[] = MakeNotification("success", $msg);
+                } else {
+                    $msg = "Bei der Zuweisung ist ein Fehler aufgetreten.";
+                    $assignManuallyNotifications[] = MakeNotification("error", $msg);
+                }         
+            }  else {
+                if (!isset($assignManuallyNotifications))
+                    $assignManuallyNotifications = array();
+                $assignManuallyNotifications = $assignManuallyNotifications + $f->notifications;
+            }
+        }
+    }
+    
+    
     // automatically assigns all unassigned submissions to the selected tutors
-    if ($_POST['action'] == "AssignAutomatically") {
+    if (isset($_POST['action']) && $_POST['action'] == "AssignAutomatically") {
 
         $f = new FormEvaluator($_POST);
 
@@ -49,9 +173,6 @@ if (isset($_POST['action'])) {
                 foreach ($tutorAssign_data['tutorAssignments'] as $tutorAssignment) {
                     if ($tutorAssignment['tutor']['userName'] == "unassigned") {
                         foreach ($tutorAssignment['submissions'] as $submission) {
-                            $submission['id'] = $submission['submissionId'];
-
-                            unset($submission['submissionId']);
                             unset($submission['unassigned']);
 
                             $data['unassigned'][] = $submission;
@@ -102,8 +223,24 @@ $tutorAssign_data = http_get($URL, true);
 $tutorAssign_data = json_decode($tutorAssign_data, true);
 
 foreach ($tutorAssign_data['tutorAssignments'] as $key2 => $tutorAssignment){
-    if (count($tutorAssign_data['tutorAssignments'][$key2]['submissions'])<=0) continue;
-    $assignments = $tutorAssignment['submissions'];
+    if (count($tutorAssign_data['tutorAssignments'][$key2]['submissions'])>0){
+        $assignments = $tutorAssignment['submissions'];
+        $dataList = array();
+        foreach ($assignments as $key => $submission)
+            $dataList[] = array('pos' => $key,'userName'=>$submission['user']['userName'],'lastName'=>$submission['user']['lastName'],'firstName'=>$submission['user']['firstName']);
+        $sortTypes = array('lastName','firstName','userName');
+        if (!isset($_POST['sortUsers'])) $_POST['sortUsers'] = null;
+        $_POST['sortUsers'] = (in_array($_POST['sortUsers'],$sortTypes) ? $_POST['sortUsers'] : $sortTypes[0]);
+        $sortTypes = array('lastName','firstName','userName');
+        $dataList=LArraySorter::orderby($dataList, $_POST['sortUsers'], SORT_ASC,$sortTypes[(array_search($_POST['sortUsers'],$sortTypes)+1)%count($sortTypes)], SORT_ASC);
+        $tempData = array();
+        foreach($dataList as $data)
+            $tempData[] = $tutorAssign_data['tutorAssignments'][$key2]['submissions'][$data['pos']];
+            
+        $tutorAssign_data['tutorAssignments'][$key2]['submissions'] = $tempData;
+    }
+    if (!isset($tutorAssign_data['tutorAssignments'][$key2]['proposalSubmissions'])) continue;
+    $assignments = $tutorAssignment['proposalSubmissions'];
     $dataList = array();
     foreach ($assignments as $key => $submission)
         $dataList[] = array('pos' => $key,'userName'=>$submission['user']['userName'],'lastName'=>$submission['user']['lastName'],'firstName'=>$submission['user']['firstName']);
@@ -114,9 +251,10 @@ foreach ($tutorAssign_data['tutorAssignments'] as $key2 => $tutorAssignment){
     $dataList=LArraySorter::orderby($dataList, $_POST['sortUsers'], SORT_ASC,$sortTypes[(array_search($_POST['sortUsers'],$sortTypes)+1)%count($sortTypes)], SORT_ASC);
     $tempData = array();
     foreach($dataList as $data)
-        $tempData[] = $tutorAssign_data['tutorAssignments'][$key2]['submissions'][$data['pos']];
+        $tempData[] = $tutorAssign_data['tutorAssignments'][$key2]['proposalSubmissions'][$data['pos']];
         
-    $tutorAssign_data['tutorAssignments'][$key2]['submissions'] = $tempData;
+    $tutorAssign_data['tutorAssignments'][$key2]['proposalSubmissions'] = $tempData;
+
 }
 
 function custom_sort($a,$b) {
@@ -159,7 +297,7 @@ if (isset($assignAutomaticallyNotifications))
 $assignManually = Template::WithTemplateFile('include/TutorAssign/AssignManually.template.html');
 $assignManually->bind($tutorAssign_data);
 if (isset($assignManuallyNotifications))
-    $assignRemove->bind(array("AssignManuallyNotificationElements" => $assignManuallyNotifications));
+    $assignManually->bind(array("AssignManuallyNotificationElements" => $assignManuallyNotifications));
 
 // construct a content element for removing assignments from tutors
 $assignRemove = Template::WithTemplateFile('include/TutorAssign/AssignRemove.template.html');
@@ -171,7 +309,8 @@ $w = new HTMLWrapper($h, $assignAutomatically, $assignManually, $assignRemove);
 $w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $assignAutomatically);
 $w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $assignManually);
 $w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $assignRemove);
-$w->set_config_file('include/configs/config_default.json');
+$w->set_config_file('include/configs/config_tutor_assign.json');
+//$w->set_config_file('include/configs/config_default.json');
 $w->show();
 
 ?>
