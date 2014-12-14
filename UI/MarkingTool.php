@@ -12,63 +12,6 @@ include_once '../Assistants/Structures.php';
 include_once 'include/FormEvaluator.php';
 
 $timestamp = time();
-    
-/**
- * Creates a 'dummy file' in the database.
- *
- * @return Returns the file on success, NULL otherwise 
- */
-function createDummyFile()
-{
-    global $databaseURI;
-    global $filesystemURI;
-    global $timestamp;
-    static $resultFile=null;
-
-    if ($resultFile!==null)
-        return $resultFile;
-    /**
-     * @todo Improve dummy file content.
-     */
-
-    // creates the dummy file
-    $data = 'KeineEinsendung.txt';
-    $handle = fopen($data, 'w');
-
-    $data = base64_encode($data);
-    $displayName = "Keine Einsendung";
-
-
-    $file = array('timeStamp' => $timestamp,
-                  'displayName' => $displayName,
-                  'body' => $data);
-
-    // uploads the file to the filesystem
-    $URL = $filesystemURI . '/file';
-    $jsonFile = http_post_data($URL,
-                               json_encode($file),
-                               true,
-                               $message);
-
-    if ($message != "201") {
-        return NULL;
-    }
-
-    // saves a reference to the file in the database.
-    $fileObj = json_decode($jsonFile, true);
-
-    $jsonFile = saveFileInDatabase($databaseURI,
-                                   $fileObj,
-                                   $message);
-
-    if ($message != "201" && $message != "200") {
-        return NULL;
-    }
-    
-    $resultFile=$jsonFile;
-
-    return $jsonFile;
-}
 
 /**
  * Creates a submission.
@@ -85,12 +28,6 @@ function createSubmission($leaderID, $eID)
     global $databaseURI;
     global $filesystemURI;
     global $timestamp;
-
-    /*$jsonFile = createDummyFile();
-
-    if (!empty($jsonFile)) {
-        $jsonFile = json_decode($jsonFile, true);
-        $fileID = $jsonFile['fileId'];*/
 
     // creates the new submission including the dummy file
     $newSubmission = Submission::createSubmission(null,
@@ -127,10 +64,6 @@ function createSubmission($leaderID, $eID)
         return NULL;
     }
 
-    /*} else {
-        return NULL;
-    }*/
-
     return $submission;
 }
 
@@ -154,12 +87,6 @@ function createMarking($points, $tutorComment, $status, $submissionID, $tutorID)
     global $filesystemURI;
     global $timestamp;
 
-   /* $jsonFile = createDummyFile();
-
-    if (!empty($jsonFile)) {
-        $jsonFile = json_decode($jsonFile, true);
-        $fileID = $jsonFile['fileId'];*/
-
         // creates the new marking including the dummy file
         $newMarking = Marking::createMarking(null,
                                              $tutorID,
@@ -179,9 +106,6 @@ function createMarking($points, $tutorComment, $status, $submissionID, $tutorID)
         if ($message != "201") {
             return NULL;
         }
-    /*} else {
-        return NULL;
-    }*/
 
     return $marking;
 }
@@ -264,19 +188,32 @@ function saveMarking($points, $tutorComment, $status, $submissionID, $markingID,
 // changes search settings
 if (isset($_POST['action']) && $_POST['action'] == "ShowMarkingTool") {
     //if (isset($_POST['sheetID']) && isset($_POST['tutorID']) && isset($_POST['statusID'])) {
-        if (isset($_POST['sheetID']))
+    if (isset($_POST['sheetID']))
         $sid = cleanInput($_POST['sheetID']);
 
-        if (isset($_POST['tutorID']))
+    if (isset($_POST['tutorID']))
         if ($_POST['tutorID'] != "all") {
             $tutorID = cleanInput($_POST['tutorID']);
         }
-if (isset($_POST['statusID']))
+    if (isset($_POST['statusID']))
         if ($_POST['statusID'] != "all") {
             $statusID = cleanInput($_POST['statusID']);
         }
     //}
 }
+
+if (isset($_GET['downloadCSV'])) {
+    $sid = cleanInput($_GET['downloadCSV']);
+}
+if (isset($_GET['tutorID'])){
+    if ($_GET['tutorID'] != "all") {
+        $tutorID = cleanInput($_GET['tutorID']);
+    }
+}
+if (isset($_GET['statusID']))
+    if ($_GET['statusID'] != "all") {
+        $statusID = cleanInput($_GET['statusID']);
+    }
 
 // saves marking changes of a groups
 $GroupNotificationElements=array();
@@ -381,7 +318,7 @@ if (isset($_POST['MarkingTool'])) {
     }
 }
 
-if (!isset($tutorID) && !isset($_POST['action']))
+if (!isset($tutorID) && !isset($_POST['action']) && !isset($_GET['downloadCSV']))
     $tutorID = $uid;
 
 // create URI for GetSite
@@ -394,75 +331,13 @@ if (isset($tutorID)) {
 if (isset($statusID)) {
     $URI .= "/status/{$statusID}";
 }
-///echo "$URI";return;
 
 // load MarkingTool data from GetSite
 $markingTool_data = http_get($URI, true);
 $markingTool_data = json_decode($markingTool_data, true);
 
-// download csv-archive
-if (isset($_POST['downloadCSV'])) {
-    ///echo $markingTool_data2;return;
-    $markings = array();
-    $newMarkings=-1;
-    foreach ($markingTool_data['groups'] as $key => $group){
-        if (isset($group['exercises'])){
-            foreach ($group['exercises'] as $key2 => $exercise){
-                if (!isset($exercise['submission']['marking']) && (isset($tutorID) && $tutorID!='all') && (!isset($statusID) || ($statusID!=-1 && $statusID!=0))) continue;
-                if (!isset($exercise['submission']) && ((isset($statusID) && $statusID!=0) || (isset($tutorID) && $tutorID!='all'))) continue;
-        
-                if (isset($exercise['submission'])){
-                    if (isset($exercise['submission']['marking'])){
-                    ///echo "found2";
-                        // submission + marking
-                        $tempMarking = Marking::decodeMarking(Marking::encodeMarking($exercise['submission']['marking']));
-                        $tempSubmission = Submission::decodeSubmission(Submission::encodeSubmission($exercise['submission']));
-                        $tempMarking->setSubmission($tempSubmission);
-                        $markings[] = $tempMarking;
-                    } else {
-                    ///echo "found";
-                        // no marking
-                        $tempMarking = Marking::createMarking($newMarkings,$uid,null,$exercise['submission']['id'],null,null,1,null,$timestamp,null);
-                        $newMarkings--;
-                        $tempSubmission = Submission::decodeSubmission(Submission::encodeSubmission($exercise['submission']));
-                        $tempMarking->setSubmission($tempSubmission);
-                        $markings[] = $tempMarking;
-                    }
-                } else {
-                    // no submission
-                        $tempMarking = Marking::createMarking($newMarkings,$uid,null,null,null,null,1,null,$timestamp,null);
-                        $tempSubmission = Submission::createSubmission( $newMarkings,$group['leader']['id'],null,$exercise['id'],null,null,$timestamp,null,$group['leader']['id'],null);
-                        $tempSubmission->setSelectedForGroup(1);
-                        $newMarkings--;
-                        $tempMarking->setSubmission($tempSubmission);
-                        $markings[] = $tempMarking;
-                }
-            }
-        }
-    }
-    
-    foreach ($markings as $marking){
-        if ($marking->getFile()!==array() && $marking->getFile()!==null)
-            $marking->setFile();
-        if ($marking->getTutorComment() !== null)
-            $marking->setTutorComment();
-        if ($marking->getSubmission()!==array() && $marking->getSubmission()!==null && ($marking->getSubmission()->getFile()!==array() && $marking->getSubmission()->getFile()!==null))
-            $marking->getSubmission()->setFile();
-        if ($marking->getSubmission()!==array() && $marking->getSubmission()!==null && ($marking->getSubmission()->getComment()!==array() && $marking->getSubmission()->getComment()!==null))
-            $marking->getSubmission()->setComment();
-    }
-    ///echo Marking::encodeMarking($markings);return;
-    $URI = $logicURI . '/tutor/archive/user/' . $uid . '/exercisesheet/' . $sid;
-    $csvFile = http_post_data($URI, Marking::encodeMarking($markings), true);
-    $csvFile = json_decode($csvFile, true);
-
-    if (isset($csvFile['address']) && isset($csvFile['displayName'])){
-        $fileAddress = $csvFile['address'];
-        $displayName = $csvFile['displayName'];
-        header("Location: ../FS/FSBinder/{$fileAddress}/{$displayName}");
-    }
-}
-
+// sort users by given sort-mode
+if (isset($_GET['sortUsers'])) $_POST['sortUsers'] = cleanInput($_GET['sortUsers']);
 $dataList = array();
 foreach ($markingTool_data['groups'] as $key => $group)
     $dataList[] = array('pos' => $key,'userName'=>$group['leader']['userName'],'lastName'=>$group['leader']['lastName'],'firstName'=>$group['leader']['firstName']);
@@ -475,6 +350,50 @@ $tempData = array();
 foreach($dataList as $data)
     $tempData[] = $markingTool_data['groups'][$data['pos']];
 $markingTool_data['groups'] = $tempData;
+
+// download csv-archive
+if (isset($_GET['downloadCSV'])) {
+    $markings = array();
+    $newMarkings=-1;
+    foreach ($markingTool_data['groups'] as $key => $group){
+        if (isset($group['exercises'])){
+            foreach ($group['exercises'] as $key2 => $exercise){
+                if (!isset($exercise['submission']['marking']) && (isset($tutorID) && $tutorID!='all') && (!isset($statusID) || ($statusID!=-1 && $statusID!=0))) continue;
+                if (!isset($exercise['submission']) && ((isset($statusID) && $statusID!=0) || (isset($tutorID) && $tutorID!='all'))) continue;
+        
+                if (isset($exercise['submission'])){
+                    if (isset($exercise['submission']['marking'])){
+                        // submission + marking
+                        $tempMarking = Marking::decodeMarking(Marking::encodeMarking($exercise['submission']['marking']));
+                        $tempSubmission = Submission::decodeSubmission(Submission::encodeSubmission($exercise['submission']));
+                        $tempMarking->setSubmission($tempSubmission);
+                        $markings[] = $tempMarking;
+                    } else {
+                        // no marking
+                        $tempMarking = Marking::createMarking($newMarkings,$uid,null,$exercise['submission']['id'],null,null,1,null,$timestamp,null);
+                        $newMarkings--;
+                        $tempSubmission = Submission::decodeSubmission(Submission::encodeSubmission($exercise['submission']));
+                        $tempMarking->setSubmission($tempSubmission);
+                        $markings[] = $tempMarking;
+                    }
+                } else {
+                    // no submission
+                    $tempMarking = Marking::createMarking($newMarkings,$uid,null,null,null,null,1,null,$timestamp,null);
+                    $tempSubmission = Submission::createSubmission($newMarkings ,$group['leader']['id'],null,$exercise['id'],null,null,$timestamp,null,$group['leader']['id'],null);
+                    $tempSubmission->setSelectedForGroup(1);
+                    $newMarkings--;
+                    $tempMarking->setSubmission($tempSubmission);
+                    $markings[] = $tempMarking;
+                }
+            }
+        }
+    }
+
+    $URI = $logicURI . '/tutor/archive/user/' . $uid . '/exercisesheet/' . $sid.'/withnames';
+    $csvFile = http_post_data($URI, Marking::encodeMarking($markings), true);
+    echo $csvFile;
+    exit(0);
+}
 
 $markingTool_data['filesystemURI'] = $filesystemURI;
 
@@ -493,6 +412,7 @@ if (isset($_POST['sortUsers'])) {
 }
 
 $markingTool_data['URI'] = $URI;
+$markingTool_data['cid'] = $cid;
 
 $user_course_data = $markingTool_data['user'];
 Authentication::checkRights(PRIVILEGE_LEVEL::TUTOR, $cid, $uid, $user_course_data);
@@ -539,6 +459,15 @@ $groups = $markingTool_data['groups'];
         $w->insert($markingElement);
         $w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $markingElement);
     }
+    if ($allOutputs==0){
+        $markingElement = Template::WithTemplateFile('include/MarkingTool/MarkingToolEmpty.template.html');
+        $markingElement->bind($markingTool_data);
+        $w->insert($markingElement);
+    }
+} else {
+        $markingElement = Template::WithTemplateFile('include/MarkingTool/MarkingToolEmpty.template.html');
+        $markingElement->bind($markingTool_data);
+        $w->insert($markingElement);
 }
 
 if (!empty($GroupNotificationElements)){
@@ -549,7 +478,7 @@ if (!empty($GroupNotificationElements)){
 $h->bind(array("notificationElements" => $notifications));
 
 $w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $searchSettings);
-$w->set_config_file('include/configs/config_default.json');
+$w->set_config_file('include/configs/config_marking_tool.json');
 $w->show();
 
 ?>
