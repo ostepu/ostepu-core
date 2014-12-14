@@ -26,21 +26,6 @@ if (isset($GroupNotificationElements)) {
 <?php } ?>
 
 <?php
-    /*if (!empty($groups)) {
-    $allOutputs = 0;
-    
-    foreach ($groups as $group) {*/
-    
-    /*$anz=0;
-    foreach ($group['exercises'] as $key => $exercise){
-        $eid = $exercise['id'];
-        if (!isset($exercise['submission']['marking']) && (isset($tutorID) && $tutorID!='all') && (!isset($statusID) || ($statusID!=-1 && $statusID!=0))) continue;
-        if (!isset($exercise['submission']) && ((isset($statusID) && $statusID!=0) || (isset($tutorID) && $tutorID!='all'))) continue;
-        $anz++;
-        $allOutputs++;
-    }
-    if ($anz==0)continue;*/
-
     $leaderID = $group['leader']['id'];
 ?>
 <div class="content-element">
@@ -82,8 +67,8 @@ if (isset($GroupNotificationElements)) {
                 <?php /*if (isset($group['leader']['firstName']) && isset($group['leader']['lastName'])) { ?>
                 <input type="hidden" 
                    name="exercises[<?php echo $leaderID; ?>][<?php echo $eid; ?>][user]" 
-                   value="<?php echo $group['leader']['firstName'].' '.$group['leader']['lastName']; ?>" />
-                <?php }*/ ?>
+                   value="<?php echo $group['leader']['firstName'].' '.$group['leader']['lastName']; }*/?>
+                
                 <input type="hidden" 
                        name="exercises[<?php echo $leaderID; ?>][<?php echo $eid; ?>][maxPoints]" 
                        value="<?php if (isset($exercise['maxPoints'])) echo $exercise['maxPoints']; ?>" />
@@ -96,11 +81,12 @@ if (isset($GroupNotificationElements)) {
                        name="exercises[<?php echo $leaderID; ?>][<?php echo $eid; ?>][markingID]" 
                        value="<?php echo isset($exercise['submission']['marking']) ? $exercise['submission']['marking']['id'] : -1; ?>" />
 
-                    <?php if (isset($exercise['submission']['marking']['points'])) { ?>
+                    <?php  if (isset($exercise['submission']['marking']['points'])) { ?>
                     <input type="hidden" 
                        name="exercises[<?php echo $leaderID; ?>][<?php echo $eid; ?>][oldPoints]" 
                        value="<?php echo $exercise['submission']['marking']['points']; ?>" />
-                    <?php } ?> 
+                    <?php }  ?> 
+                    
                     
                     <?php
                         print '<input class="form-field text-input very-short" name="';
@@ -244,24 +230,3 @@ if (isset($GroupNotificationElements)) {
         }
     ?>
 </div> <!-- end: content-wrapper -->
-<?php
-//}
-
-//}
-
-/*if (empty($groups) || $allOutputs==0){
-?>
-<div class="content-element">
-    <div class="content-header">
-        <div class="content-title left uppercase">Ergebnis</div>
-    </div>
-
-    <div class="content-body-wrapper">
-        <div class="content-body left">
-            Zu Ihrer Auswahl sind keine Einsendungen vorhanden.
-        </div>
-    </div> <!-- end: content-body -->
-</div> <!-- end: content-wrapper -->
-<?php
-}*/
-?>
