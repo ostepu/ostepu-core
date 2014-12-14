@@ -1,5 +1,5 @@
 <ul id="navigation" class="navigation">
-<div class="">
+<!--<div class="">-->
 <?php if ($isSuperAdmin || $courseStatus > 1) { ?>
 <?php if ($isSuperAdmin){ ?>
     <li>
@@ -18,6 +18,9 @@
     <?php } ?>
 <?php } ?>
 <?php if ($courseStatus == 3 /* PRIVILEGE_LEVEL::ADMIN */  && !$forIndex) { ?>
+<?php } ?>
+
+<?php if ($courseStatus == 3 /* PRIVILEGE_LEVEL::ADMIN */  && !$forIndex) { ?>
     <li>
         <a href="CourseManagement.php?cid=<?php echo $cid; ?>">Kurs verwalten</a>
     </li>
@@ -29,13 +32,19 @@
     </li>
 <?php } ?>
 <?php } ?>
-</div>
-    <div class="right medium">
+
+<?php if ($courseStatus >= 1 /* PRIVILEGE_LEVEL::TUTOR */  && !$forIndex) { ?>
+    <li>
+        <a href="TutorUpload.php?cid=<?php echo $cid; ?>">Korrekturen hochladen</a>
+    </li>
+<?php } ?>
+<!--</div>-->
+    <span class="right medium">
     <li>
         <a class="log-out" href="AccountSettings.php">Account</a>
     </li>
     <li style="padding:0 0">
         <a class="log-out" href="?action=logout">Ausloggen</a>
     </li>
-    </div>
+    </span>
     </ul>
