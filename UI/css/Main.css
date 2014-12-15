@@ -274,3 +274,7 @@ ol.full-width-exercise-list .secondLevel li:before {
 .right {
     float: right;
 }
+
+.top    { display:table-cell;vertical-align:top; }
+.middle  { display:table-cell; vertical-align:middle;}
+.bottom   { display:table-cell;vertical-align:bottom; }
