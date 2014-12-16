@@ -117,16 +117,22 @@ class Request
                         $tar=str_replace("\\","/",$tar);
                         if (!file_exists($tar)) continue;
                         
+                        ///Logger::Log("**".json_encode(CacheManager::$tree), LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+                        ///Logger::Log("##".json_encode(CacheManager::$cachedPath), LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+                        ///Logger::Log("++".$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+                        
                         $add = substr($target,strlen($url));
-                        //CacheManager::generateURL()
-                        //basename(dirname($_SERVER['SCRIPT_NAME']))
-                        CacheManager::getTree($com->getTargetName(), $target, $_SERVER['REQUEST_METHOD']);
+                        CacheManager::begin($com->getTargetName(), $target, $add, $method);
+                        CacheManager::getTree($com->getTargetName(), $target, $method);
                         $cachedData = CacheManager::getCachedDataByURL($com->getTargetName(), $target, $add, $method);
                         if ($cachedData!==null){
                             $result['content'] = $cachedData->content;
                             $result['status'] = $cachedData->status;
                             ///Logger::Log('out>> '.$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+                            CacheManager::cacheData($com->getTargetName(), $target, $result['content'], $result['status'], $method);
                         } else {
+                            CacheManager::addPath($com->getTargetName(), $target, $add, $method);
+                            ///CacheManager::addPath($com->getTargetName(), $target, $add, $method);
                             $args = array(
                                           'REQUEST_METHOD' => $method,
                                           'PATH_INFO' => $add,
@@ -216,11 +222,12 @@ class Request
                             foreach ($oldHeader as $head)
                                 header($head);
                                 
-                            //CacheManager::cacheData($com->getTargetName(), $target, $result['content'], $result['status'], $method);
+                            CacheManager::cacheData($com->getTargetName(), $target, $result['content'], $result['status'], $method);
                             ///Logger::Log('in<< '.$method.' '.$com->getClassName().$add, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
                         
                         }
 
+                        //CacheManager::cacheData($com->getTargetName(), $target, $result['content'], $result['status'], $method);
                         $done=true;
                         break;
                     }
@@ -230,6 +237,7 @@ class Request
 
         if (!$done){
             // creates a custom request
+            
             Logger::Log("--".$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
             
             $ch = Request_CreateRequest::createCustom($method,$target,$header,$content, $authbool, $sessiondelete)->get();
@@ -248,10 +256,10 @@ class Request
             
             // sets the received status code
             $result['status'] = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            curl_close($ch);                                                                            
+            curl_close($ch);                                      
+            //CacheManager::cacheData($com->getTargetName(), $target, $result['content'], $result['status'], $method);            
         }
 
-        CacheManager::cacheData($com->getTargetName(), $target, $result['content'], $result['status'], $method);
         Logger::Log($target . ' ' . (round((microtime(true) - $begin),2)). 's', LogLevel::DEBUG, false, dirname(__FILE__) . '/../executionTime.log');
         return $result; 
     }

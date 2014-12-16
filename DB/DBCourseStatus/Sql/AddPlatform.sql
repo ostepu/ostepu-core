@@ -55,3 +55,4 @@ end;
 <?php include $sqlPath.'/procedures/GetMemberRight.sql'; ?>
 <?php include $sqlPath.'/procedures/GetMemberRights.sql'; ?>
 <?php include $sqlPath.'/procedures/GetCourseRights.sql'; ?>
+<?php include $sqlPath.'/procedures/GetExistsPlatform.sql'; ?>

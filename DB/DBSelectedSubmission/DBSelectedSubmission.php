@@ -578,45 +578,32 @@ class DBSelectedSubmission
 
     public function get( 
                         $functionName,
-                        $sqlFile,
-                        $userid,
-                        $courseid,
-                        $esid,
-                        $eid,
-                        $suid,
-                        $mid,
+                        $params=array(),
                         $singleResult = false,
                         $checkSession = true
                         )
     {
-        Logger::Log( 
-                    'starts GET ' . $functionName,
-                    LogLevel::DEBUG
-                    );
-
         // checks whether incoming data has the correct data type
-        $userid = DBJson::mysql_real_escape_string( $userid );
-        $courseid = DBJson::mysql_real_escape_string( $courseid );
-        $esid = DBJson::mysql_real_escape_string( $esid );
-        $eid = DBJson::mysql_real_escape_string( $eid );
-        $suid = DBJson::mysql_real_escape_string( $suid );
-        $mid = DBJson::mysql_real_escape_string( $mid );
+        $params = DBJson::mysql_real_escape_string( $params );
+        foreach($params as $param)
+            $functionName.='/'.$param;
 
         // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
+        /*$result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
                                               $sqlFile,
-                                              array( 
-                                                    'userid' => $userid,
-                                                    'courseid' => $courseid,
-                                                    'esid' => $esid,
-                                                    'eid' => $eid,
-                                                    'suid' => $suid,
-                                                    'mid' => $mid
-                                                    ),
+                                              $params,
                                               $checkSession
-                                              );
-
+                                              );*/
+        $result = Request::routeRequest( 
+                                        'GET',
+                                        '/query/procedure/'.$functionName,
+                                        array(),
+                                        '',
+                                        $this->query2,
+                                        'query'
+                                        );
+                                        
         // checks the correctness of the query
         if ( $result['status'] >= 200 && 
              $result['status'] <= 299 ){
@@ -662,14 +649,8 @@ class DBSelectedSubmission
     public function getExerciseSelected( $eid )
     {
         $this->get( 
-                   'GetExerciseSelected',
-                   dirname(__FILE__) . '/Sql/GetExerciseSelected.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $mid ) ? $mid : ''
+                   'DBSelectedSubmissionGetExerciseSelected',
+                   array("eid"=>$eid)
                    );
     }
 
@@ -684,14 +665,8 @@ class DBSelectedSubmission
     public function getSheetSelected( $esid )
     {
         $this->get( 
-                   'GetSheetSelected',
-                   dirname(__FILE__) . '/Sql/GetSheetSelected.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $mid ) ? $mid : ''
+                   'DBSelectedSubmissionGetSheetSelected',
+                   array("esid"=>$esid)
                    );
     }
     
@@ -706,14 +681,8 @@ class DBSelectedSubmission
     public function getCourseSelected( $courseid )
     {
         $this->get( 
-                   'GetCourseSelected',
-                   dirname(__FILE__) . '/Sql/GetCourseSelected.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $mid ) ? $mid : ''
+                   'DBSelectedSubmissionGetCourseSelected',
+                   array("courseid"=>$courseid)
                    );
     }
     
@@ -726,14 +695,8 @@ class DBSelectedSubmission
     public function getExistsPlatform( )
     {
         $this->get( 
-                   'GetExistsPlatform',
-                   dirname(__FILE__) . '/Sql/GetExistsPlatform.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $mid ) ? $mid : '',
+                   'DBSelectedSubmissionGetExistsPlatform',
+                   array(),
                    true,
                    false
                    );

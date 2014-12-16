@@ -378,47 +378,32 @@ class DBCourseStatus
 
     public function get( 
                         $functionName,
-                        $sqlFile,
-                        $userid,
-                        $courseid,
-                        $esid,
-                        $eid,
-                        $suid,
-                        $mid,
+                        $params=array(),
                         $singleResult = false,
                         $checkSession = true
                         )
     {
-        Logger::Log( 
-                    'starts GET ' . $functionName,
-                    LogLevel::DEBUG
-                    );
-
         // checks whether incoming data has the correct data type
-        DBJson::checkInput( 
-                           $this->_app,
-                           $userid == '' ? true : ctype_digit( $userid ),
-                           $courseid == '' ? true : ctype_digit( $courseid ),
-                           $esid == '' ? true : ctype_digit( $esid ),
-                           $eid == '' ? true : ctype_digit( $eid ),
-                           $suid == '' ? true : ctype_digit( $suid ),
-                           $mid == '' ? true : ctype_digit( $mid )
-                           );
+        $params = DBJson::mysql_real_escape_string( $params );
+        foreach($params as $param)
+            $functionName.='/'.$param;
 
         // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
+        /*$result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
                                               $sqlFile,
-                                              array( 
-                                                    'userid' => $userid,
-                                                    'courseid' => $courseid,
-                                                    'esid' => $esid,
-                                                    'eid' => $eid,
-                                                    'suid' => $suid,
-                                                    'mid' => $mid
-                                                    ),
+                                              $params,
                                               $checkSession
-                                              );
+                                              );*/
+                                             // echo '/query/procedure/'.$functionName;return;
+        $result = Request::routeRequest( 
+                                        'GET',
+                                        '/query/procedure/'.$functionName,
+                                        array(),
+                                        '',
+                                        $this->query2,
+                                        'query'
+                                        );
 
         // checks the correctness of the query
         if ( $result['status'] >= 200 && 
@@ -445,11 +430,7 @@ class DBCourseStatus
             } else 
                 $result['status'] = 404;
         }
-
-        Logger::Log( 
-                    'GET ' . $functionName . ' failed',
-                    LogLevel::ERROR
-                    );
+        
         $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
         $this->_app->response->setBody( User::encodeUser( new User( ) ) );
         $this->_app->stop( );
@@ -470,14 +451,8 @@ class DBCourseStatus
                                    )
     {
         $this->get( 
-                   'GetMemberRight',
-                   dirname(__FILE__) . '/Sql/GetMemberRight.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $mid ) ? $mid : '',
+                   'DBCourseStatusGetMemberRight',
+                   array("courseid"=>$courseid,"userid"=>$userid),
                    true
                    );
     }
@@ -493,14 +468,8 @@ class DBCourseStatus
     public function getMemberRights( $userid )
     {
         $this->get( 
-                   'GetMemberRights',
-                   dirname(__FILE__) . '/Sql/GetMemberRights.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $mid ) ? $mid : ''
+                   'DBCourseStatusGetMemberRights',
+                   array("userid"=>$userid)
                    );
     }
 
@@ -515,14 +484,8 @@ class DBCourseStatus
     public function getCourseRights( $courseid )
     {
         $this->get( 
-                   'GetCourseRights',
-                   dirname(__FILE__) . '/Sql/GetCourseRights.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $mid ) ? $mid : ''
+                   'DBCourseStatusGetCourseRights',
+                   array("courseid"=>$courseid)
                    );
     }
     
@@ -535,14 +498,8 @@ class DBCourseStatus
     public function getExistsPlatform( )
     {
         $this->get( 
-                   'GetExistsPlatform',
-                   dirname(__FILE__) . '/Sql/GetExistsPlatform.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $mid ) ? $mid : '',
+                   'DBCourseStatusGetExistsPlatform',
+                   array(),
                    true,
                    false
                    );

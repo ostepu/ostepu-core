@@ -779,7 +779,7 @@ class DBExerciseSheet
                                             '/query/procedure/DBExerciseSheetGetCourseExercises/'.$courseid,
                                             array(),
                                             '',
-                                            $this->query,
+                                            $this->query2,
                                             'query'
                                             );
         }

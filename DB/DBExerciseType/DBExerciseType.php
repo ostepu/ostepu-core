@@ -371,47 +371,31 @@ class DBExerciseType
 
     public function get( 
                         $functionName,
-                        $sqlFile,
-                        $userid,
-                        $courseid,
-                        $esid,
-                        $eid,
-                        $etid,
-                        $mid,
+                        $params=array(),
                         $singleResult = false,
                         $checkSession = true
                         )
     {
-        Logger::Log( 
-                    'starts GET ' . $functionName,
-                    LogLevel::DEBUG
-                    );
-
         // checks whether incoming data has the correct data type
-        DBJson::checkInput( 
-                           $this->_app,
-                           $userid == '' ? true : ctype_digit( $userid ),
-                           $courseid == '' ? true : ctype_digit( $courseid ),
-                           $esid == '' ? true : ctype_digit( $esid ),
-                           $eid == '' ? true : ctype_digit( $eid ),
-                           $etid == '' ? true : ctype_digit( $etid ),
-                           $mid == '' ? true : ctype_digit( $mid )
-                           );
+        $params = DBJson::mysql_real_escape_string( $params );
+        foreach($params as $param)
+            $functionName.='/'.$param;
 
         // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
+        /*$result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
                                               $sqlFile,
-                                              array( 
-                                                    'userid' => $userid,
-                                                    'courseid' => $courseid,
-                                                    'esid' => $esid,
-                                                    'eid' => $eid,
-                                                    'etid' => $etid,
-                                                    'mid' => $mid
-                                                    ),
+                                              $params,
                                               $checkSession
-                                              );
+                                              );*/
+        $result = Request::routeRequest( 
+                                        'GET',
+                                        '/query/procedure/'.$functionName,
+                                        array(),
+                                        '',
+                                        $this->query2,
+                                        'query'
+                                        );
 
         // checks the correctness of the query
         if ( $result['status'] >= 200 && 
@@ -439,10 +423,6 @@ class DBExerciseType
                 $result['status'] = 404;
         }
 
-        Logger::Log( 
-                    'GET ' . $functionName . ' failed',
-                    LogLevel::ERROR
-                    );
         $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
         $this->_app->response->setBody( ExerciseType::encodeExerciseType( new ExerciseType( ) ) );
         $this->_app->stop( );
@@ -457,14 +437,8 @@ class DBExerciseType
     public function getAllExerciseTypes( )
     {
         $this->get( 
-                   'GetAllExerciseTypes',
-                   dirname(__FILE__) . '/Sql/GetAllExerciseTypes.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $etid ) ? $etid : '',
-                   isset( $mid ) ? $mid : ''
+                   'DBExerciseTypeGetAllExerciseTypes',
+                   array()
                    );
     }
 
@@ -479,14 +453,8 @@ class DBExerciseType
     public function getExerciseType( $etid )
     {
         $this->get( 
-                   'GetExerciseType',
-                   dirname(__FILE__) . '/Sql/GetExerciseType.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $etid ) ? $etid : '',
-                   isset( $mid ) ? $mid : '',
+                   'DBExerciseTypeGetExerciseType',
+                   array("etid"=>$etid),
                    true
                    );
     }
@@ -500,14 +468,8 @@ class DBExerciseType
     public function getExistsPlatform( )
     {
         $this->get( 
-                   'GetExistsPlatform',
-                   dirname(__FILE__) . '/Sql/GetExistsPlatform.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $etid ) ? $etid : '',
-                   isset( $mid ) ? $mid : '',
+                   'DBExerciseTypeGetExistsPlatform',
+                   array(),
                    true,
                    false
                    );

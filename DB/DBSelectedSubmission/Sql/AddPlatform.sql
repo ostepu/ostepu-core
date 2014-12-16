@@ -94,3 +94,6 @@ SIGNAL sqlstate '45001' set message_text = 'no corresponding exercise';
 END if;
 END;
 <?php include $sqlPath.'/procedures/GetCourseSelected.sql'; ?>
+<?php include $sqlPath.'/procedures/GetExerciseSelected.sql'; ?>
+<?php include $sqlPath.'/procedures/GetSheetSelected.sql'; ?>
+<?php include $sqlPath.'/procedures/GetExistsPlatform.sql'; ?>

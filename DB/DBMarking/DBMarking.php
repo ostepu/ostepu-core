@@ -593,53 +593,32 @@ class DBMarking
 
     public function get(
                         $functionName,
-                        $sqlFile,
-                        $userid,
-                        $cid,
-                        $esid,
-                        $eid,
-                        $suid,
-                        $mid,
-                        $sub,
+                        $params,
                         $singleResult = false,
                         $checkSession = true
                         )
     {
-        Logger::Log( 
-                    'starts GET ' . $functionName,
-                    LogLevel::DEBUG
-                    );
-
         // checks whether incoming data has the correct data type
-        DBJson::checkInput( 
-                           $this->_app,
-                           $userid == '' ? true : ctype_digit( $userid ),
-                           $cid == '' ? true : ctype_digit( $cid ),
-                           $esid == '' ? true : ctype_digit( $esid ),
-                           $eid == '' ? true : ctype_digit( $eid ),
-                           $suid == '' ? true : ctype_digit( $suid ),
-                           $mid == '' ? true : ctype_digit( $mid )
-                           );
-
-
-        if ( $sub != 1 )
-            $sub = 0;
+        $params = DBJson::mysql_real_escape_string( $params );
+        foreach($params as $param)
+            $functionName.='/'.$param;
 
         // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
+        /*$result = DBRequest::getRoutedSqlFile( 
                                               $this->query,
                                               $sqlFile,
-                                              array( 
-                                                    'userid' => $userid,
-                                                    'cid' => $cid,
-                                                    'esid' => $esid,
-                                                    'eid' => $eid,
-                                                    'suid' => $suid,
-                                                    'mid' => $mid,
-                                                    'sub' => $sub
-                                                    ),
+                                              $params,
                                               $checkSession
-                                              );
+                                              );*/
+
+        $result = Request::routeRequest( 
+                                        'GET',
+                                        '/query/procedure/'.$functionName,
+                                        array(),
+                                        '',
+                                        $this->query2,
+                                        'query'
+                                        );
 
         // checks the correctness of the query
         if ( $result['status'] >= 200 && 
@@ -682,24 +661,20 @@ class DBMarking
      * Called when this component receives an HTTP GET request to
      * /marking(/) or /marking/marking(/).
      */
-    public function getAllMarkings( $sub = 1 )
+    public function getAllMarkings( )
     {
         $this->get( 
-                   'GetAllMarkings',
-                   dirname(__FILE__) . '/Sql/GetAllMarkings.sql',
-                   '',
-                   '',
-                   '',
-                   '',
-                   '',
-                   '',
-                   $sub
+                   'DBMarkingGetAllMarkings',
+                   array()
                    );
     }
 
-    public function getAllMarkingsNoSubmission( $sub = 0 )
+    public function getAllMarkingsNoSubmission( )
     {
-        $this->getAllMarkings( $sub );
+        $this->get( 
+                   'DBMarkingGetAllMarkingsNoSubmission',
+                   array()
+                   );
     }
 
     /**
@@ -711,34 +686,25 @@ class DBMarking
      * @param int $mid The id of the marking that should be returned.
      */
     public function getMarking( 
-                               $mid,
-                               $sub = 1
+                               $mid
                                )
     {
         $this->get( 
-                   'GetMarking',
-                   dirname(__FILE__) . '/Sql/GetMarking.sql',
-                   '',
-                   '',
-                   '',
-                   '',
-                   '',
-                   $mid,
-                   $sub,
+                   'DBMarkingGetMarking',
+                   array("mid"=>$mid),
                    true
                    );
     }
 
     public function getMarkingNoSubmission( 
-                                           $mid,
-                                           $sub = 0
+                                           $mid
                                            )
     {
-        $this->getMarking( 
-                          $mid,
-                          $sub,
-                          true
-                          );
+        $this->get( 
+                   'DBMarkingGetMarkingNoSubmission',
+                   array("mid"=>$mid),
+                   true
+                   );
     }
 
     /**
@@ -750,34 +716,25 @@ class DBMarking
      * @param int $suid The id of the submission.
      */
     public function getSubmissionMarking( 
-                                         $suid,
-                                         $sub = 1
+                                         $suid
                                          )
     {
         $this->get( 
-                   'GetSubmissionMarking',
-                   dirname(__FILE__) . '/Sql/GetSubmissionMarking.sql',
-                   '',
-                   '',
-                   '',
-                   '',
-                   $suid,
-                   '',
-                   $sub,
+                   'DBMarkingGetSubmissionMarking',
+                   array("suid"=>$suid),
                    true
                    );
     }
 
     public function getSubmissionMarkingNoSubmission( 
-                                                     $suid,
-                                                     $sub = 0
+                                                     $suid
                                                      )
     {
-        $this->getSubmissionMarking( 
-                                    $suid,
-                                    $sub,
-                                    true
-                                    );
+        $this->get( 
+                   'DBMarkingGetSubmissionMarkingNoSubmission',
+                   array("suid"=>$suid),
+                   true
+                   );
     }
 
     /**
@@ -789,32 +746,23 @@ class DBMarking
      * @param int $eid The id of the exercise.
      */
     public function getExerciseMarkings( 
-                                        $eid,
-                                        $sub = 1
+                                        $eid
                                         )
     {
         $this->get( 
-                   'GetExerciseMarkings',
-                   dirname(__FILE__) . '/Sql/GetExerciseMarkings.sql',
-                   '',
-                   '',
-                   '',
-                   $eid,
-                   '',
-                   '',
-                   $sub
+                   'DBMarkingGetExerciseMarkings',
+                   array("eid"=>$eid)
                    );
     }
 
     public function getExerciseMarkingsNoSubmission( 
-                                                    $eid,
-                                                    $sub = 0
+                                                    $eid
                                                     )
     {
-        $this->getExerciseMarkings( 
-                                   $eid,
-                                   $sub
-                                   );
+        $this->get( 
+                   'DBMarkingGetExerciseMarkingsNoSubmission',
+                   array("eid"=>$eid)
+                   );
     }
 
     /**
@@ -826,32 +774,23 @@ class DBMarking
      * @param int $esid The id of the exercise sheet.
      */
     public function getSheetMarkings( 
-                                     $esid,
-                                     $sub = 1
+                                     $esid
                                      )
     {
         $this->get( 
-                   'GetSheetMarkings',
-                   dirname(__FILE__) . '/Sql/GetSheetMarkings.sql',
-                   '',
-                   '',
-                   $esid,
-                   '',
-                   '',
-                   '',
-                   $sub
+                   'DBMarkingGetSheetMarkings',
+                   array("esid"=>$esid)
                    );
     }
 
     public function getSheetMarkingsNoSubmission( 
-                                                 $esid,
-                                                 $sub = 0
+                                                 $esid
                                                  )
     {
-        $this->getSheetMarkings( 
-                                $esid,
-                                $sub
-                                );
+        $this->get( 
+                   'DBMarkingGetSheetMarkingsNoSubmission',
+                   array("esid"=>$esid)
+                   );
     }
 
     /**
@@ -863,32 +802,23 @@ class DBMarking
      * @param int $cid The id of the course.
      */
     public function getCourseMarkings( 
-                                      $cid,
-                                      $sub = 1
+                                      $cid
                                       )
     {
         $this->get( 
-                   'GetCourseMarkings',
-                   dirname(__FILE__) . '/Sql/GetCourseMarkings.sql',
-                   '',
-                   $cid,
-                   '',
-                   '',
-                   '',
-                   '',
-                   $sub
+                   'DBMarkingGetCourseMarkings',
+                   array("cid"=>$cid)
                    );
     }
 
     public function getCourseMarkingsNoSubmission( 
-                                                  $cid,
-                                                  $sub = 0
+                                                  $cid
                                                   )
     {
-        $this->getCourseMarkings( 
-                                 $cid,
-                                 $sub
-                                 );
+        $this->get( 
+                   'DBMarkingGetCourseMarkingsNoSubmission',
+                   array("cid"=>$cid)
+                   );
     }
 
     /**
@@ -902,20 +832,12 @@ class DBMarking
      */
     public function getUserGroupMarkings( 
                                          $esid,
-                                         $userid,
-                                         $sub = 1
+                                         $userid
                                          )
     {
         $this->get( 
-                   'GetUserGroupMarkings',
-                   dirname(__FILE__) . '/Sql/GetUserGroupMarkings.sql',
-                   $userid,
-                   '',
-                   $esid,
-                   '',
-                   '',
-                   '',
-                   $sub
+                   'DBMarkingGetUserGroupMarkings',
+                   array("esid"=>$esid,"userid"=>$userid)
                    );
     }
 
@@ -925,11 +847,10 @@ class DBMarking
                                                      $sub = 0
                                                      )
     {
-        $this->getUserGroupMarkings( 
-                                    $esid,
-                                    $userid,
-                                    $sub
-                                    );
+        $this->get( 
+                   'DBMarkingGetUserGroupMarkingsNoSubmission',
+                   array("esid"=>$esid,"userid"=>$userid)
+                   );
     }
 
     /**
@@ -945,34 +866,24 @@ class DBMarking
      */
     public function getTutorSheetMarkings( 
                                           $esid,
-                                          $userid,
-                                          $sub = 1
+                                          $userid
                                           )
     {
         $this->get( 
-                   'GetTutorSheetMarkings',
-                   dirname(__FILE__) . '/Sql/GetTutorSheetMarkings.sql',
-                   $userid,
-                   '',
-                   $esid,
-                   '',
-                   '',
-                   '',
-                   $sub
+                   'DBMarkingGetTutorSheetMarkings',
+                   array("esid"=>$esid,"userid"=>$userid)
                    );
     }
 
     public function getTutorSheetMarkingsNoSubmission( 
                                                       $esid,
-                                                      $userid,
-                                                      $sub = 0
+                                                      $userid
                                                       )
     {
-        $this->getTutorSheetMarkings( 
-                                     $esid,
-                                     $userid,
-                                     $sub
-                                     );
+        $this->get( 
+                   'DBMarkingGetTutorSheetMarkingsNoSubmission',
+                   array("esid"=>$esid,"userid"=>$userid)
+                   );
     }
 
     /**
@@ -988,34 +899,24 @@ class DBMarking
      */
     public function getTutorCourseMarkings( 
                                           $cid,
-                                          $userid,
-                                          $sub = 1
+                                          $userid
                                           )
     {
         $this->get( 
-                   'GetTutorCourseMarkings',
-                   dirname(__FILE__) . '/Sql/GetTutorCourseMarkings.sql',
-                   $userid,
-                   $cid,
-                   '',
-                   '',
-                   '',
-                   '',
-                   $sub
+                   'DBMarkingGetTutorCourseMarkings',
+                   array("cid"=>$cid,"userid"=>$userid)
                    );
     }
 
     public function getTutorCourseMarkingsNoSubmission( 
                                                       $cid,
-                                                      $userid,
-                                                      $sub = 0
+                                                      $userid
                                                       )
     {
-        $this->getTutorCourseMarkings( 
-                                     $courseid,
-                                     $userid,
-                                     $sub
-                                     );
+        $this->get( 
+                   'DBMarkingGetTutorCourseMarkingsNoSubmission',
+                   array("cid"=>$cid,"userid"=>$userid)
+                   );
     }
     
     /**
@@ -1031,34 +932,24 @@ class DBMarking
      */
     public function getTutorExerciseMarkings( 
                                              $eid,
-                                             $userid,
-                                             $sub = 1
+                                             $userid
                                              )
     {
         $this->get( 
-                   'GetTutorExerciseMarkings',
-                   dirname(__FILE__) . '/Sql/GetTutorExerciseMarkings.sql',
-                   $userid,
-                   '',
-                   '',
-                   $eid,
-                   '',
-                   '',
-                   $sub
+                   'DBMarkingGetTutorExerciseMarkings',
+                   array("eid"=>$eid,"userid"=>$userid)
                    );
     }
 
     public function getTutorExerciseMarkingsNoSubmission( 
                                                          $eid,
-                                                         $userid,
-                                                         $sub = 0
+                                                         $userid
                                                          )
     {
-        $this->getTutorExerciseMarkings( 
-                                        $eid,
-                                        $userid,
-                                        $sub
-                                        );
+        $this->get( 
+                   'DBMarkingGetTutorExerciseMarkingsNoSubmission',
+                   array("eid"=>$eid,"userid"=>$userid)
+                   );
     }
     
     /**
@@ -1070,15 +961,8 @@ class DBMarking
     public function getExistsPlatform( )
     {
         $this->get( 
-                   'GetExistsPlatform',
-                   dirname(__FILE__) . '/Sql/GetExistsPlatform.sql',
-                   '',
-                   '',
-                   '',
-                   '',
-                   '',
-                   '',
-                   0,
+                   'DBMarkingGetExistsPlatform',
+                   array(),
                    true,
                    false
                    );
