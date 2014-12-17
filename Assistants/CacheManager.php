@@ -13,8 +13,6 @@ class PathObject
 {
     public function __construct( $_fromName, $_fromURL, $_fromMethod, $_toName, $_toURL, $_toURI, $_toMethod)
     {
-        ///$this->id = self::$maxID;self::$maxID++;
-        
         $_fromName = basename(explode('?',$_fromName)[0]);
         $_toName = basename(explode('?',$_toName)[0]);
         $this->fromName = $_fromName;
@@ -59,7 +57,7 @@ class CacheManager
     private static $changedTree = false;
     
     public static function savePath()
-    {
+    {   return;return;return;
         $text="digraph G {rankdir=TB;edge [splines=\"polyline\"];\n";
         $graphName="graph";
         $groups=array();
@@ -293,12 +291,30 @@ class CacheManager
             // call sources
             $allOK = true;
             //$temp = self::$cachedPath;
+            $RequestList=array();
             foreach ($sources as $source){
-                $answ = Request::get($source['url'], array(),  '', true);
-                if (!isset($answ['headers']['Etag']) || $answ['headers']['Etag']!=$source['eTag']){
+                //$answ = Request::get($source['url'], array(),  '', true);
+                $RequestList[]=$source['url'];
+                /*if (!isset($answ['headers']['Etag']) || $answ['headers']['Etag']!=$source['eTag']){
+                    $allOK = false;
+                }*/
+            }
+            ///Logger::Log(implode("\n",$RequestList), LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+            $answers = Request::post('http://localhost/uebungsplattform/DB/DBQuery2/query/procedure/multi', array(),  implode("\n",$RequestList), true);
+            //Logger::Log($answers['content'], LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+            $answers = Query::decodeQuery($answers['content']);
+            
+            $i=0;
+            foreach ($sources as $source){
+                //$answ=$answers[$i];
+                $gg=array($answers[$i],$answers[$i+1]);
+                $eTag = CacheManager::generateETag(Query::encodeQuery($gg));//$answ['headers']['Etag']//!isset($answ['headers']['Etag']) || 
+                if ($eTag!=$source['eTag']){
                     $allOK = false;
                 }
+                $i+=2;
             }
+            
             //self::$cachedPath=$temp;
             
             //return null;

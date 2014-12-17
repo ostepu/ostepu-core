@@ -113,6 +113,15 @@ class DBQuery2
                                )
                          );
                          
+        // POST QueryResult
+        $this->_app->map( 
+                          '(/:name)/query(/)',
+                          array( 
+                                $this,
+                                'queryResult'
+                                )
+                          )->via('POST','GET');
+                         
         // GET ProcedureResult
         $this->_app->map( 
                           '(/:name)/query/procedure/:procedure(/:params+)',
@@ -122,14 +131,14 @@ class DBQuery2
                                 )
                           )->via('GET');
                           
-        // POST,GET QueryResult
+        // POST MultiProcedureResult
         $this->_app->map( 
-                          '(/:name)/' . $this->getPrefix( ) . '(/)',
+                          '(/:name)/query/procedure/multi(/)',
                           array( 
                                 $this,
-                                'queryResult'
+                                'multiProcedureResult'
                                 )
-                          )->via('GET','POST');
+                          )->via('POST');
 
         // run Slim
         $this->_app->run( );
@@ -161,6 +170,103 @@ class DBQuery2
     {
         return "'{$a}'";
     }
+    public function generateQuery($procedure, $params)
+    {
+        return "CALL `{$procedure}`(".implode(',',array_map(array($this,'generateParam'), $params)).");";
+    }
+    
+    public function multiProcedureResult($name='')
+    {
+        $this->loadConfig($name);       
+        $config = parse_ini_file( 
+                                dirname(__FILE__).'/config'.($name!='' ? '_'.$name : '').'.ini',
+                                TRUE
+                                );
+        $querys = $this->_app->request->getBody( );
+        $sql='';
+        $querys=explode("\n",$querys);
+        foreach ($querys as $query){
+            $query=explode('/query/procedure',$query)[1];
+            $params = explode('/',$query);
+            array_shift($params);
+            $procedure=array_shift($params);
+            $sql.=$this->generateQuery($procedure,$params);
+        }
+        
+        $answer = DBRequest::request2( 
+                                           $sql,
+                                           false,
+                                           $config
+                                     );
+                                           
+        $this->_app->response->setStatus( 200 );
+        $result = array();
+             
+        foreach ($answer as $query_result){
+            $obj = new Query( );
+            
+        if ( $query_result['errno'] != 0 ){
+            if ( isset($query_result['errno']) && $query_result['errno'] != 0 )
+                Logger::Log( 
+                            'GET queryResult failed errno: ' . $query_result['errno'] . ' error: ' . $query_result['error'],
+                            LogLevel::ERROR
+                            );
+
+            if ( !isset($query_result['content']) || !$query_result['content'] )
+                Logger::Log( 
+                            'GET queryResult failed, no content',
+                            LogLevel::ERROR
+                            );
+
+            if ( isset($query_result['errno']) && $query_result['errno'] == 401 ){
+                $this->_app->response->setStatus( 401 );
+                
+            } else 
+                $this->_app->response->setStatus( 409 );
+            
+        }elseif ( gettype( $query_result['content'] ) == 'boolean' ){
+            $obj->setResponse( array( ) );
+            if ( isset( $query_result['affectedRows'] ) )
+                $obj->setAffectedRows( $query_result['affectedRows'] );
+            if ( isset( $query_result['insertId'] ) )
+                $obj->setInsertId( $query_result['insertId'] );
+            if ( isset( $query_result['errno'] ) )
+                $obj->setErrno( $query_result['errno'] );
+            if ( isset( $query_result['numRows'] ) )
+                $obj->setNumRows( $query_result['numRows'] );
+
+          if ( isset( $query_result['errno'] ) && $query_result['errno']>0 ){
+          $this->_app->response->setStatus( 409 );
+          }
+          else
+            $this->_app->response->setStatus( 200 );
+            
+        } else {
+            $data = array( );
+            if ( isset( $query_result['numRows'] ) && 
+                 $query_result['numRows'] > 0 ){
+                $data = DBJson::getRows2( $query_result['content'] );
+            }
+
+            $obj->setResponse( $data );
+            if ( isset( $query_result['affectedRows'] ) )
+                $obj->setAffectedRows( $query_result['affectedRows'] );
+            if ( isset( $query_result['insertId'] ) )
+                $obj->setInsertId( $query_result['insertId'] );
+            if ( isset( $query_result['errno'] ) )
+                $obj->setErrno( $query_result['errno'] );
+            if ( isset( $query_result['numRows'] ) )
+                $obj->setNumRows( $query_result['numRows'] );
+
+            
+            $this->_app->response->setStatus( 200 );
+        }
+        $result[]=$obj;
+        }
+        if (count($result)==1) $result = $result[0];        
+        $this->_app->response->setBody( Query::encodeQuery( $result ) );
+    }
+
     public function procedureResult( $name = '', $procedure, $params = array() )
     {
         $this->loadConfig($name);       
@@ -169,7 +275,7 @@ class DBQuery2
                                 TRUE
                                 );
                                 
-        $sql = "CALL `{$procedure}`(".implode(',',array_map(array($this,'generateParam'), $params)).");";
+        $sql = $this->generateQuery($procedure,$params);
         $answer = DBRequest::request2( 
                                            $sql,
                                            false,
