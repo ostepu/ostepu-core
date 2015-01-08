@@ -36,19 +36,23 @@ if (isset($SheetNotificationElements[$sheet['id']])) {
                 }
             ?>
         </div>
-        <div class="info-color bold footer-text">
+        
+        <div class="right">
+            <span class="info-color bold">
+                    <?php echo date('d.m.Y  -  H:i', $sheet['startDate']).' bis'; ?>
+            </span>
+            
+            <span class="critical-color bold">
+                <?php print date('d.m.Y  -  H:i', $sheet['endDate']); ?>
+            </span>
+        </div>
+        
+        <div class="info-color bold footer-text right" style="margin-left:10px">
                 <?php if (isset($sheet['status'])){
                             $types = Marking::getStatusDefinition();
                             foreach ($sheet['status'] as $key => $value){ ?>
                             <?php echo $value.' '.$types[LArraySorter::multidimensional_search($types, array('id'=>$key))]['longName'];?>
                 <?php }} ?>
-        </div>
-        <div class="critical-color bold right">
-            <?php print date('d.m.Y  -  H:i', $sheet['endDate']); ?>
-        </div>
-        
-        <div class="info-color bold right">
-                <?php echo date('d.m.Y  -  H:i', $sheet['startDate']).' bis&nbsp;'; ?>
         </div>
     </div>
 
@@ -121,9 +125,9 @@ if (isset($SheetNotificationElements[$sheet['id']])) {
                 <?php $types = Marking::getStatusDefinition();
                 foreach ($sheet['status'] as $key => $value){ ?>
                 <li class="footer-text">
-                <button name="downloadCSV_<?php echo $key;?>" value="<?php echo $sheet['id']; ?>" class="text-button body-option-color footer-text" style="padding-left:0px">
+                <a href="Download.php?cid=<?php echo $cid; ?>&downloadCSV_<?php echo $key;?>=<?php echo $sheet['id']; ?>" class="download text-button body-option-color footer-text" style="padding-left:0px">
                 <?php echo $value.' '.$types[LArraySorter::multidimensional_search($types, array('id'=>$key))]['longName'];?> 
-                </button></li>
+                </a></li>
                 <?php }} ?>
                 <?php if (isset($sheet['allStatus'])){ ?>
                 <br>
@@ -144,7 +148,7 @@ if (isset($SheetNotificationElements[$sheet['id']])) {
                     <?php $fileAddress = $sheet['sheetFile']['address']; ?>
                     <?php $fileURL = '../FS/FSBinder/' . $fileAddress
                                                     . '/' . $displayName; ?>
-                    <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; /*{$filesystemURI}*/ ?>"
+                    <a class="text-button" href="<?php echo $fileURL; ?>" title="<?php echo $displayName; /*{$filesystemURI}*/ ?>"
                         target="_blank">
                         Aufgabenblatt
                     </a>
@@ -156,51 +160,36 @@ if (isset($SheetNotificationElements[$sheet['id']])) {
                         <?php $displayName = $sheet['sampleSolution']['displayName']; ?>
                         <?php $fileAddress = $sheet['sampleSolution']['address']; ?>
                         <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/ ?>
-                        <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
+                        <a class="text-button" href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
                             Musterlösung
                         </a>
                     </li>
                 <?php endif; ?>
-                <li><a href="CreateSheet.php?cid=<?php echo $cid; ?>&sid=<?php echo $sheet['id']; ?>"> <!--<a style="color:#b9b8b8"><s>-->Serie bearbeiten<!--</s>--></a></li>
-                <?php
-                    if ($sheet['hasAttachments']) {
-                        print '<li>';
-                        print '<button name="downloadAttachments" value="';
-                        print $sheet['id'];
-                        print '" class="text-button body-option-color">';
-                        print 'Alle Anhänge herunterladen';
-                        print '</button>';
-                        print '</li>';
-                    }
-                ?>
+                <li><a class="text-button" href="CreateSheet.php?cid=<?php echo $cid; ?>&sid=<?php echo $sheet['id']; ?>"> <!--<a style="color:#b9b8b8"><s>-->Serie bearbeiten<!--</s>--></a></li>
+                <?php if ($sheet['hasAttachments']){ ?>
+                    <li>
+                        <a href="Download.php?cid=<?php echo $cid; ?>&downloadAttachments=<?php echo $sheet['id']; ?>" class="download text-button body-option-color">
+                            Alle Anhänge herunterladen
+                        </a>
+                    </li>
+                <?php } ?>
                 
                 <?php if (isset($sheet['tutorMarkings']) && $sheet['tutorMarkings']>0){ ?>
-                <?php
-                    print '<li>';
-                    print '<button name="downloadCSV" value="';
-                    print $sheet['id'];
-                    print '" class="text-button body-option-color">';
-                    print 'Einsendungen herunterladen';
-                    print '</button>';
-                    print '</li>';
-                ?>
-                <li>
-                    <a href="TutorUpload.php?cid=<?php echo $user['courses'][0]['course']['id'],
-                                                     '&sid=',
-                                                     $sheet['id']; ?>">
-                        Korrekturen hochladen
-                    </a>
-                </li>
+                    <li>
+                        <a href="Download.php?cid=<?php echo $cid; ?>&downloadCSV=<?php echo $sheet['id']; ?>" class="download text-button body-option-color">
+                            Einsendungen herunterladen
+                        </a>
+                    </li>                
                 <?php } ?>
                 <li>
-                    <a href="TutorAssign.php?cid=<?php echo $user['courses'][0]['course']['id'],
+                    <a class="text-button" href="TutorAssign.php?cid=<?php echo $user['courses'][0]['course']['id'],
                                                      '&sid=',
                                                      $sheet['id']; ?>">
                         Kontrolleurzuweisung
                     </a>
                 </li>
                 <li>
-                    <a href="MarkingTool.php?cid=<?php echo $user['courses'][0]['course']['id'],
+                    <a class="text-button" href="MarkingTool.php?cid=<?php echo $user['courses'][0]['course']['id'],
                                                      '&sid=',
                                                      $sheet['id']; ?>">
                         Korrekturassistent

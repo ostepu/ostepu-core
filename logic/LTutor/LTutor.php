@@ -68,6 +68,7 @@ class LTutor
     private $_getExercise = array();
     private $_getGroup = array();
     private $_getSubmission = array();
+    private $_postSubmission = array();
 
     /**
      * REST actions
@@ -141,6 +142,10 @@ class LTutor
                                                         $this->_conf->getLinks( ),
                                                         'getSubmission'
                                                         ) );
+        $this->_postSubmission = array( CConfig::getLink( 
+                                                        $this->_conf->getLinks( ),
+                                                        'postSubmission'
+                                                        ) );
                                                         
         // initialize lURL
         $this->lURL = $this->query->getAddress();
@@ -199,8 +204,12 @@ class LTutor
         $this->app->post('/'.$this->getPrefix().'/archive/user/:userid/exercisesheet/:sheetid(/)',
                 array($this, 'postTutorArchive'));
 
+        //Post zip
+        $this->app->post('/'.$this->getPrefix().'/archive/user/:userid/exercisesheet/:sheetid/withnames(/)',
+                array($this, 'postTutorArchiveWithNames'));
+                
         //uploadZip
-        $this->app->post('/'.$this->getPrefix().'/user/:userid/exercisesheet/:sheetid(/)', array($this, 'uploadZip'));
+        $this->app->post('/'.$this->getPrefix().'/user/:userid/course/:courseid(/)', array($this, 'uploadZip'));
 
         //run Slim
         $this->app->run();
@@ -516,7 +525,14 @@ class LTutor
         $this->app->response->setBody($answer['content']);
     }
     
-    public function generateTutorArchive($userid, $sheetid, $markings)
+    public function postTutorArchiveWithNames($userid, $sheetid)
+    {
+        $answer = $this->generateTutorArchive($userid, $sheetid, json_decode($this->app->request->getBody(), true), true);
+        $this->app->response->setStatus($answer['status']);
+        $this->app->response->setBody($answer['content']);
+    }
+    
+    public function generateTutorArchive($userid, $sheetid, $markings, $withNames=false)
     {
         $multiRequestHandle = new Request_MultiRequest();
         //request to database to get the exercise sheets
@@ -543,7 +559,7 @@ class LTutor
         $ExerciseData = array();
         $ExerciseData['userId'] = $userid;
         $ExerciseData['markings'] = array();
-        
+
         //exercises with informations of marking and submissions
         //sorted by exercise ID and checked of existence
         foreach( $markings as $marking){
@@ -557,9 +573,16 @@ class LTutor
                 $exerciseIdWithExistingMarkings[] = $id;
             }
         }
-  
+        
+        $defaultOrder = array('ID','NAME','USERNAME','POINTS','MAXPOINTS','OUTSTANDING','STATUS','TUTORCOMMENT','STUDENTCOMMENT','FILE');
+
+        $courseid=null;
         $count=null;
         foreach ($exercises as $key => $exercise){
+            if ($courseid===null){
+                $courseid = $exercise['courseId'];
+            }
+            
             $exerciseId = $exercise['id'];
 
             if ($count===null || $exercises[$count]['link'] != $exercise['link']){
@@ -576,67 +599,79 @@ class LTutor
         //formating, create the layout of the CSV-file for the tutor
         //first two rows of an exercise are the heads of the table
         foreach ($exercises as $exercise){
-            $firstRow = array();
-            $secondRow = array();
-            $row = array();
             
             if (!isset($exercise['id'])) continue;
             $exerciseId = $exercise['id'];
 
+            // adds the exercise name
+            $firstRow = array();
             $firstRow[] = '--'.$namesOfExercises[$exerciseId];
-                
-            // $firstRow[] = $exerciseId; /// obsolete???
-            $secondRow[] = '--ID';
-            $secondRow[] = 'Points';
-            $secondRow[] = 'MaxPoints';
-            $secondRow[] = 'Outstanding?';
-            $secondRow[] = 'Status';
-            $secondRow[] = 'TutorComment';
-            $secondRow[] = 'StudentComment';
-            $secondRow[] = 'File';
 
             //formating, write known informations of the markings in the CSV-file
             //after the second row to each exercise
             if(in_array($exerciseId, $exerciseIdWithExistingMarkings)){
-                $rows[] = $firstRow;
-                $rows[] = $secondRow;
+                $tempRows = array();
+                $collumns = array('ID','POINTS','MAXPOINTS','OUTSTANDING','STATUS','TUTORCOMMENT','STUDENTCOMMENT','FILE');
                 foreach($sortedMarkings[$exerciseId] as $key => $marking){
                     $row = array();
                     //MarkingId
                     if (!isset($marking['id'])) continue;
-                    $row[] = $marking['id'];
+                    $row['ID'] = isset($marking['id']) ? $marking['id'] : null;
                     
                     $ExerciseData['markings'][$marking['id']] = array();
                     $ExerciseData['markings'][$marking['id']]['sheetId'] = $exercise['sheetId'];
                     $ExerciseData['markings'][$marking['id']]['courseId'] = $exercise['courseId'];
-                    $ExerciseData['markings'][$marking['id']]['exerciseId'] = $exerciseId;                    
+                    $ExerciseData['markings'][$marking['id']]['exerciseId'] = $exerciseId; 
+                    
+                    // Username + Name
+                    if ($withNames && isset($marking['submission']['studentId'])){
+                        foreach ($groups as $group){
+                            $user = array_merge(array($group['leader']),isset($group['members']) ? $group['members'] : array());
+                            $found=false;
+                            foreach ($user as $us){
+                                if ($us['id'] == $marking['submission']['studentId']){
+                                    $member = $us;
+                                    $row['NAME']=(isset($member['firstName']) ? $member['firstName'] : '-').' '.(isset($member['lastName']) ? $member['lastName'] : '' );
+                                    $collumns[] = 'NAME';
+                                    $row['USERNAME']=(isset($member['userName']) ? $member['userName'] : '');
+                                    $collumns[] = 'USERNAME';
+                                    $row['STUDENTID']=(isset($member['id']) ? $member['id'] : null);
+                                    $ExerciseData['markings'][$marking['id']]['studentId'] = (isset($member['id']) ? $member['id'] : null);
+                                    $ExerciseData['markings'][$marking['id']]['leaderId'] = (isset($group['leader']['id']) ? $group['leader']['id'] : null);
+                                    $found=true;
+                                    break;
+                                }
+                            }
+                            if ($found) break;
+                        }
+                    }                 
                     
                     //Points
-                    $row[] = (isset($marking['points']) ? $marking['points'] : '0');
+                    $row['POINTS'] = (isset($marking['points']) ? $marking['points'] : '0');
 
                     //MaxPoints
-                    $row[] = (isset($exercise['maxPoints']) ? $exercise['maxPoints'] : '0');
+                    $row['MAXPOINTS'] = (isset($exercise['maxPoints']) ? $exercise['maxPoints'] : '0');
                     $ExerciseData['markings'][$marking['id']]['maxPoints'] = (isset($exercise['maxPoints']) ? $exercise['maxPoints'] : '0');
                     
                     $ExerciseData['markings'][$marking['id']]['submissionId'] = $marking['submission']['id'];
                     
                     //Outstanding
-                    $row[] = (isset($marking['outstanding']) ? $marking['outstanding'] : '');
-
+                    $row['OUTSTANDING'] = (isset($marking['outstanding']) ? $marking['outstanding'] : '');
+                    
                     //Status
-                    $row[] = (isset($marking['status']) ? $marking['status'] : '0');
+                    $row['STATUS'] = (isset($marking['status']) ? $marking['status'] : '0');
 
                     //TutorComment
-                    $row[] = (isset($marking['tutorComment']) ? $marking['tutorComment'] : '');
-
+                    $row['TUTORCOMMENT'] = (isset($marking['tutorComment']) ? $marking['tutorComment'] : '');
+                    
                     //StudentComment
                     if (isset($marking['submission'])){
                         $submission = $marking['submission'];
-                        $row[] = (isset($submission['comment']) ? $submission['comment'] : '');
+                        $row['STUDENTCOMMENT'] = (isset($submission['comment']) ? $submission['comment'] : '');
                     }
-                    
+                                        
                     // file
-                    if (isset($marking['submission']['file'])){
+                    if (isset($marking['submission']['file']['displayName'])){
                         $fileInfo = pathinfo($marking['submission']['file']['displayName']);
                         $newFile = array_merge(array(),$marking['submission']['file']);
                     }
@@ -715,13 +750,37 @@ class LTutor
                     
                     //$row[] = $namesOfExercises[$exerciseId].'/'.($converted ? 'K_' :'').$marking['id'].($fileInfo['extension']!='' ? '.'.$fileInfo['extension']:'');
                     //if (!$converted)
-                    if (isset($newFile))
-                        $row[] = $namesOfExercises[$exerciseId].'/'.$marking['id'].'/'.$newFile['displayName'];
+                    if (isset($newFile['displayName'])){
+                        $row['FILE'] = $namesOfExercises[$exerciseId].'/'.$marking['id'].'/'.$newFile['displayName'];
+                    }
 
-                    $rows[] = $row;
+                    $tempRows[] = $row;
                 }
                 
                 //an empty row after an exercise
+                $rows[] = $firstRow;
+                $secondRow=array();
+                $i=0;
+                foreach ($defaultOrder as $coll){
+                    if (in_array($coll, $collumns)){
+                        $secondRow[] = ($i==0?'--':'').strtoupper($coll);
+                        $i++;
+                    }
+                }
+                    
+                $rows[] = $secondRow;
+                foreach ($tempRows as $rr){
+                    $row=array();
+                    foreach ($defaultOrder as $coll){
+                        if (in_array($coll, $collumns) && isset($rr[$coll])){
+                            $row[] = $rr[$coll];
+                        } elseif (in_array($coll, $collumns)){
+                            $row[] = '';
+                        }
+                    }
+                    $rows[] = $row;
+                }
+                
                 $rows[] = array();
             }
 
@@ -734,7 +793,7 @@ class LTutor
         $transaction = Transaction::createTransaction(
                                                       null,
                                                       (time() + (30 * 24 * 60 * 60)),
-                                                      'TutorCSV_'.$userid.'_'.$sheetid,
+                                                      'TutorCSV_'.$userid.'_'.$courseid,
                                                       json_encode($ExerciseData)
                                                       );
         $result = Request::routeRequest(
@@ -758,7 +817,7 @@ class LTutor
             array_unshift($rows,$transactionRow);
 
             //this is the true writing of the CSV-file named [tutorname]_[sheetid].csv
-            $CSV = fopen($tempDir.'/'.$sheetid.'.csv', 'w'); // $user['lastName'].'_'.
+            $CSV = fopen($tempDir.'/Liste.csv', 'w'); // $user['lastName'].'_'.
 
             foreach($rows as $row){
                 fputcsv($CSV, $row, ';','"');
@@ -781,13 +840,13 @@ class LTutor
 
                         $newfile = (isset($submission['file']) ? $submission['file'] : null);
                         
-                        if (isset($marking['file'])){
+                        if (isset($marking['file']['displayName'])){
                             $newfile3 = $marking['file'];
                             $fileInfo = pathinfo($newfile3['displayName']);
                             //$newfile3['displayName'] = $namesOfExercises[$exerciseId].'/K_'.$marking['id'].($fileInfo['extension']!='' ? '.'.$fileInfo['extension']:'');
                             $newfile3['displayName'] = $namesOfExercises[$exerciseId].'/'.$marking['id'].'/'.$newfile3['displayName'];
                             $filesToZip[] = $newfile3;
-                        } elseif (isset($newfile['conv'])){
+                        } elseif (isset($newfile['conv']['displayName'])){
                             $newfile2 = $newfile['conv'];
                             $fileInfo = pathinfo($newfile2['displayName']);
                             //$newfile2['displayName'] = $namesOfExercises[$exerciseId].'/K_'.$marking['id'].($fileInfo['extension']!='' ? '.'.$fileInfo['extension']:'');
@@ -806,9 +865,9 @@ class LTutor
             }
 
             //push the .csv-file to the array
-            $path = $tempDir.'/'.$sheetid.'.csv';//$user['lastName'].'_'.
+            $path = $tempDir.'/Liste.csv';//$user['lastName'].'_'.
             $csvFile = array(
-                        'displayName' => $sheetid.'.csv', //$user['lastName'].'_'.
+                        'displayName' => 'Liste.csv', //$user['lastName'].'_'.
                         'body' => base64_encode(file_get_contents($path))
                     );
             $filesToZip[] = $csvFile;
@@ -863,12 +922,12 @@ class LTutor
             $markings=$marks;
         }            
 
-        $answer = generateTutorArchive($userid, $sheetid, $markings);
+        $answer = $this->generateTutorArchive($userid, $sheetid, $markings);
         $this->app->response->setStatus($answer['status']);
         $this->app->response->setBody($answer['content']);
     }
 
-    public function uploadZip($userid, $sheetid)
+    public function uploadZip($userid, $courseid)
     {                        
         // error array of strings
         $errors = array();
@@ -876,7 +935,7 @@ class LTutor
         $tempDir = $this->tempdir($this->config['DIR']['temp'], 'extractZip', $mode=0775);
 
         $body = json_decode($this->app->request->getBody(), true); //1 file-Object        
-        $filename = $tempDir.'/'.$sheetid.'.zip';
+        $filename = $tempDir.'/'.$courseid.'.zip';
         file_put_contents($filename, base64_decode($body['body']));
         unset($body);
         
@@ -891,8 +950,8 @@ class LTutor
         $files = $tempDir.'/files';
         
         // check if csv file exists
-        if (file_exists($files.'/'.$sheetid.'.csv')){
-            $csv = fopen($files.'/'.$sheetid.'.csv', "r");
+        if (file_exists($files.'/Liste.csv')){
+            $csv = fopen($files.'/Liste.csv', "r");
             
             if (($transactionId = fgetcsv($csv,0,';')) === false){
                 fclose($csv);
@@ -905,7 +964,7 @@ class LTutor
 
             $result = Request::routeRequest(
                                             'GET',
-                                            '/transaction/authentication/TutorCSV_'.$userid.'_'.$sheetid.'/transaction/'.$transactionId[0],
+                                            '/transaction/authentication/TutorCSV_'.$userid.'_'.$courseid.'/transaction/'.$transactionId[0],
                                             array(),
                                             '',
                                             $this->_getTransaction,
@@ -916,15 +975,26 @@ class LTutor
                 $transaction = Transaction::decodeTransaction($result['content']);
                 $transaction = json_decode($transaction->getContent(),true);
                 unset($result);
-                                        
+                
+                $defaultOrder = array('ID','NAME','USERNAME','POINTS','MAXPOINTS','OUTSTANDING','STATUS','TUTORCOMMENT','STUDENTCOMMENT','FILE');
+                $currectOrder = $defaultOrder;
+                
                 $markings = array();
                 while (($row = fgetcsv($csv,0,';')) !== false){
-                    if(count($row)>=8 && $row[0] != "" && substr($row[0],0,2)!='--'){
+                    if (substr($row[0],0,2)=='--'){
+                        $row[0] = substr($row[0],2);
+                        if (in_array(strtoupper($row[0]),$defaultOrder)){
+                            $currectOrder = array();
+                            foreach ($row as $ro){
+                                $currectOrder[strtoupper($ro)] = count($currectOrder);
+                            }
+                        }                    
+                    } elseif(implode('',$row) != '' && substr($row[0],0,2)!='--'){
                     
-                        $markingId = $row[0];
-                        $points = $row[1];        
+                        $markingId = isset($currectOrder['ID']) ? $row[$currectOrder['ID']] : null;
+                        $points = isset($currectOrder['POINTS']) ? $row[$currectOrder['POINTS']] : null;       
                         $points = str_replace(',','.',$points);
-                        $markingFile = $row[7];                           
+                        $markingFile = isset($currectOrder['FILE']) ? $row[$currectOrder['FILE']] : null;                         
                         
                         // check if markingId exists in transaction
                         if (!isset($transaction['markings'][$markingId])){
@@ -936,7 +1006,7 @@ class LTutor
                             $this->app->response->setBody(json_encode($errors));
                             $this->app->stop();
                         }
-                        
+                        ///var_dump($transaction['markings'][$markingId]);
                         $markingData = $transaction['markings'][$markingId];
                         
                         // checks whether the points are less or equal to the maximum points
@@ -965,18 +1035,65 @@ class LTutor
                                 $file = null;
                             }
                             
+                            if (isset($transaction['markings'][$markingId]['submissionId']) && $transaction['markings'][$markingId]['submissionId']<0){
+                                // create new submission object
+                                $submissionId = $transaction['markings'][$markingId]['submissionId'];
+                                $studentId = $transaction['markings'][$markingId]['studentId'];
+                                $exerciseId = $transaction['markings'][$markingId]['exerciseId'];
+                                $submission = Submission::createSubmission( 
+                                                                            null,
+                                                                            $studentId,
+                                                                            null,
+                                                                            $exerciseId,
+                                                                            null,
+                                                                            1,
+                                                                            time(),
+                                                                            null,
+                                                                            $leaderId,
+                                                                            1
+                                                                            );
+                                $submission->setSelectedForGroup('1');
+                                ///echo json_encode($submission);return;
+                                $result = Request::routeRequest(
+                                                                'POST',
+                                                                '/submission',
+                                                                array(),
+                                                                json_encode($submission),
+                                                                $this->_postSubmission,
+                                                                'submission'
+                                                                );
+
+                                if ($result['status'] == 201) {
+                                    $transaction['markings'][$markingId]['submissionId'] = json_decode($result['content'],true)['id'];
+                                }
+                            }
+                            
                             // create new marking object
-                            $marking = array(
+                            $marking = Marking::createMarking( 
+                                                             $markingId<0 ? null : $markingId,
+                                                             $userid,
+                                                             null,
+                                                             $transaction['markings'][$markingId]['submissionId'],
+                                                             isset($currectOrder['TUTORCOMMENT']) ? $row[$currectOrder['TUTORCOMMENT']] : null,
+                                                             isset($currectOrder['OUTSTANDING']) ? $row[$currectOrder['OUTSTANDING']] : null,
+                                                             isset($currectOrder['STATUS']) ? $row[$currectOrder['STATUS']] : null,
+                                                             $points,
+                                                             time(),
+                                                             $file==null ? 1 : 0
+                                                             );
+                            $marking->setFile($file);
+                            
+                            /*array(
                                     'id' => ($markingId<0 ? null : $markingId),
                                     'points' => $points,
-                                    'outstanding' => $row[3],
+                                    'outstanding' => isset($currectOrder['OUTSTANDING']) ? $row[$currectOrder['OUTSTANDING']] : null,
                                     'tutorId' => $userid,
-                                    'tutorComment' => $row[5],
+                                    'tutorComment' => isset($currectOrder['TUTORCOMMENT']) ? $row[$currectOrder['TUTORCOMMENT']] : null,
                                     'file' => $file,
-                                    'status' => $row[4],
+                                    'status' => isset($currectOrder['STATUS']) ? $row[$currectOrder['STATUS']] : null,
                                     'date' => time(),
-                                    'hideFile' => ($file==null ? 1 : 0)
-                                    );
+                                    'hideFile' => 
+                                    );*/
 
                             $markings[] = $marking;
 
@@ -990,7 +1107,7 @@ class LTutor
                         }
                     }
                 }
-
+                ///echo json_encode($markings); return;
                 //request to database to edit the markings
                 $result = Request::routeRequest(
                                                 'POST',

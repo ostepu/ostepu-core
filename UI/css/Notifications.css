@@ -45,6 +45,10 @@
     color: #DE3838;
 }
 
+.error-color {
+    color: #DE3838;
+}
+
 .warning-simple {
     border: 3px dashed #f4ad32;
     color: #f4ad32;
@@ -53,6 +57,17 @@
 .success-simple {
     border: 3px dashed #2DB22D;
     color: #2DB22D;
+}
+
+.success-color {
+    color: #2DB22D;
+}
+
+.info-simple {
+    color: #2b648f;
+    font-weight: bold;
+    border: 1px solid #2b648f;
+    border-radius: 5px;
 }
 
 .transparent-simple {

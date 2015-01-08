@@ -19,7 +19,8 @@
     {"name":"getMarking", "target":"DBMarking", "links":[]},
     {"name":"getGroup", "target":"DBGroup", "links":[]},
     {"name":"getExercise", "target":"DBExercise", "links":[]},
-    {"name":"getSubmission", "target":"DBSubmission", "links":[]}
+    {"name":"getSubmission", "target":"DBSubmission", "links":[]},
+    {"name":"postSubmission", "target":"LSubmission", "links":[]}
   ],
   "connector":[
     {"name":"request", "target":"CLocalObjectRequest"}

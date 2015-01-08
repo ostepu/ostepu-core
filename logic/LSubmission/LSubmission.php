@@ -136,7 +136,7 @@ class LSubmission
         
         $submission = Submission::decodeSubmission($body);
         $file = $submission->getFile();
-        if (!isset($file)) $file = new File();
+        if (!isset($file) || $file==array()) $file = new File();
         if ($file->getTimeStamp()===null) $file->setTimeStamp(time());
 ///echo File::encodeFile($file);return;   
         // upload file to filesystem        
@@ -148,7 +148,7 @@ class LSubmission
                                         $this->_file,
                                         'file'
                                         );     
-//var_dump($result);                                
+///var_dump($result);                                
 ///echo $result['content'];return;       
         if ( $result['status'] >= 200 && 
              $result['status'] <= 299 ){
@@ -162,7 +162,7 @@ class LSubmission
 
             // upload submission to database
             if ($submission->getId()===null){
-//echo Submission::encodeSubmission($submission);
+//echo Submission::encodeSubmission($submission);return;
             $result = Request::routeRequest( 
                                     'POST',
                                     '/submission',

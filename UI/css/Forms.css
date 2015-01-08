@@ -58,11 +58,15 @@
 .checkbox-container {
     border: 2px solid #ccc;
     margin-top: 2px;
-    height: 140px;
+    height: 250px;
     color: #000000;
     font-size: 80%;
     background: #ffffff;
     overflow-y: scroll;
+}
+
+.proposal{
+    color: #6F6F6F;
 }
 
 .form-text {
@@ -133,7 +137,7 @@ button:hover {
 }
 
 .text-button::after {
-    content: '';
+    content: ' >';
 }
 
 .image-button {

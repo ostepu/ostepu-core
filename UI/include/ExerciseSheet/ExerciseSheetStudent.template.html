@@ -14,7 +14,7 @@
            */
 
            // bool if endDate of sheet is greater than the actual date
-           $isExpired = date('U') > date('U', $sheet['endDate']); 
+           $isExpired = date('U') > date('U', $sheet['endDate']);
 
            // bool if startDate of sheet is greater than the actual date
            $hasStarted = date('U') > date('U', $sheet['startDate']);
@@ -210,20 +210,18 @@
                     <?php // prints a link to download attachments ?>
                     <?php if ($sheet['hasAttachments']): ?>
                         <li>
-                            <button name="downloadAttachments" value="<?php echo $sheet['id']; ?>" class="text-button body-option-color">
+                            <a href="Download.php?cid=<?php echo $cid; ?>&downloadAttachments=<?php echo $sheet['id']; ?>" class="download text-button body-option-color">
                                 Alle Anhänge herunterladen
-                            </button>
+                            </a>
                         </li>
                     <?php endif; ?>
 
                     <?php // prints a link to download markings ?>
                     <?php if (($sheet['hasMarkings'] || $sheet['hasSubmissions'] || $sheet['hasAttachments']) && $isExpired): ?>
                         <li>
-                            <button name="downloadMarkings" value="<?php echo $sheet['id']; ?>" class="text-button body-option-color">
-                            <!--<a style="color:#b9b8b8" class="text-button body-option-color"><s>-->
+                            <a href="Download.php?cid=<?php echo $cid; ?>&downloadMarkings=<?php echo $sheet['id']; ?>" class="download text-button body-option-color">
                                 Alles herunterladen
-                            <!--</s></a>-->
-                            </button>
+                            </a>
                         </li>
                     <?php endif; ?>
                 </ol>

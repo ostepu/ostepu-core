@@ -37,8 +37,8 @@ if (isset($_POST['action']) && $_POST['action'] == 'TutorUpload') {
                 $file = json_encode($file);
 
                 // sends the JSON object to the logic
-                $URI = $logicURI . "/tutor/user/{$uid}/exercisesheet/{$sid}";
-                
+                $URI = $logicURI . "/tutor/user/{$uid}/course/{$cid}";
+                ///echo $file;echo $URI;return;
                 $error = http_post_data($URI, $file, true, $message);
 
                 if ($message == "201" || $message == "200") {
@@ -59,12 +59,11 @@ if (isset($_POST['action']) && $_POST['action'] == 'TutorUpload') {
 }
 
 // load tutorUpload data from GetSite
-$URL = $getSiteURI . "/tutorupload/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
+$URL = $getSiteURI . "/tutorupload/user/{$uid}/course/{$cid}";
 $tutorUpload_data = http_get($URL, true);
 $tutorUpload_data = json_decode($tutorUpload_data, true);
 $tutorUpload_data['filesystemURI'] = $filesystemURI;
 $tutorUpload_data['cid'] = $cid;
-$tutorUpload_data['sid'] = $sid;
 
 $user_course_data = $tutorUpload_data['user'];
 Authentication::checkRights(PRIVILEGE_LEVEL::TUTOR, $cid, $uid, $user_course_data);

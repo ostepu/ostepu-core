@@ -14,29 +14,7 @@ include_once dirname(__FILE__).'/../Assistants/LArraySorter.php';
 
 $sheetNotifications = array();
 
-if (isset($_POST['action'])) {
-    $types = Marking::getStatusDefinition();
-    $status = null;
-    foreach ($types as $type){
-        if (isset($_POST['downloadCSV_'.$type['id']])){
-            $status = $type['id'];
-            $_POST['downloadCSV']=$_POST['downloadCSV_'.$type['id']];
-            break;
-        }
-    }
-    
-    if ($_POST['action'] == "ExerciseSheetLecturer" && isset($_POST['downloadAttachments'])) {
-        downloadAttachmentsOfSheet($_POST['downloadAttachments']);
-    }
-    if ($_POST['action'] == "ExerciseSheetLecturer" && isset($_POST['downloadCSV'])) {
-        $sid = cleanInput($_POST['downloadCSV']);
-        $location = $logicURI . '/tutor/user/' . $uid . '/exercisesheet/' . $sid.(isset($status) ? '/status/'.$status : '');
-        $result = http_get($location, true);
-        $zipfile = json_decode($result, true);
-        $location = "../FS/FSBinder/{$zipfile['address']}/".$zipfile['displayName'];
-        header("Location: {$location}");
-    }
-    
+if (isset($_POST['action'])) {     
     if ($_POST['action'] == "ExerciseSheetLecturer" && isset($_POST['deleteSheetWarning'])) {
         $sheetNotifications[$_POST['deleteSheetWarning']][] = MakeNotification("warning", "Soll die Übungsserie wirklich gelöscht werden?");
     } elseif ($_POST['action'] == "ExerciseSheetLecturer" && isset($_POST['deleteSheet'])) {
