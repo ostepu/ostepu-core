@@ -33,12 +33,11 @@
                         $add=chr(96+$exercise['linkName']);
                         $isSubtask = true;
                     }?>
-                    
                     <?php if (isset($exercise['maxPoints'])){ ?>
-                    <div class="info-color bold right">
+                    <div class="wider info-color right" align="right">
                     <?php echo $exercise['maxPoints']."P".(isset($exerciseTypes[$exercise['type']]) ? " {$exerciseTypes[$exercise['type']]['name']}" : '').(isset($exercise['bonus']) && $exercise['bonus'] ? ", Bonus" : '');?>
                     </div>
-                    <?php } ?>
+                    <?php } ?>                    
                     <input type="hidden"
                            name="exercises[<?php echo $key; ?>][name]"
                            value="<?php echo $exercise['link'].$add;?>">

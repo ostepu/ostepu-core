@@ -11,10 +11,7 @@ include_once 'include/Boilerplate.php';
 
 $sheetNotifications = array();
 
-if (isset($_POST['downloadAttachments'])) {
-    downloadAttachmentsOfSheet($_POST['downloadAttachments']);
-
-} elseif (isset($_POST['deleteSubmissionWarning'])) {
+if (isset($_POST['deleteSubmissionWarning'])) {
     $notifications[] = MakeNotification("warning", "Soll die Einsendung wirklich gelöscht werden?");
 } elseif (isset($_POST['deleteSubmission'])) {
     $suid = cleanInput($_POST['deleteSubmission']);

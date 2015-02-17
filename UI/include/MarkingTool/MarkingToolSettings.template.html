@@ -81,9 +81,9 @@
                     ?>
             </select>
             
-                    <button name="downloadCSV" value="<?php echo $sheet['id']; ?>" class="text-button body-option-color footer-text" style="padding-left:0px">
-                        <s>Korrekturarchiv erstellen</s>
-                    </button>
+            <a href="MarkingTool.php?cid=<?php echo $cid; ?>&downloadCSV=<?php echo $sheetID; ?>&statusID=<?php echo isset($statusID) ? $statusID : 'all'; ?>&tutorID=<?php echo isset($tutorID) ? $tutorID : 'all'; ?>" class="download text-button body-option-color footer-text" style="padding-left:0px">
+                Korrekturarchiv erstellen
+            </a>
         </div>
         
     </div> <!-- end: content-body -->

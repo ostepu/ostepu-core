@@ -90,7 +90,6 @@ a.button:after {
 }
 
 .content-title {
-    width: 400px;
     font-size: 130%;
 }
 
@@ -274,3 +273,7 @@ ol.full-width-exercise-list .secondLevel li:before {
 .right {
     float: right;
 }
+
+.top    { display:table-cell;vertical-align:top; }
+.middle  { display:table-cell; vertical-align:middle;}
+.bottom   { display:table-cell;vertical-align:bottom; }

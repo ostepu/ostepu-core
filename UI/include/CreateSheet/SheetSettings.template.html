@@ -1,14 +1,17 @@
 <input type="submit" style="display: none" id="submitSheetButton">
+<a class="button critical-color bold " href="CreateSheet.php?cid=<?php echo $cid; ?>&sid=<?php echo $sid; ?>">Abbrechen</a>
+
 <div class="content-element collapsible">
     <div class="content-header">
         <div class="content-title left uppercase">Allgemeine Einstellungen</div>
         <div class="info-color bold right">
             <?php if (!isset($sid)){ ?>
             <input type="hidden" name="action" value="new">
-            <a href="javascript:void(0)" id="submitSheet">Übungsserie anlegen</a>
+            <a class="button" href="javascript:void(0)" id="submitSheet">Übungsserie anlegen</a>
             <?php } else { ?>
             <input type="hidden" name="action" value="edit">
-            <a href="javascript:void(0)" id="submitSheet">Änderungen speichern</a>
+            <!--<input class="button text-button info-color" type="reset" value="Abbrechen">-->
+            <a class="button text-button" href="javascript:void(0)" id="submitSheet">Änderungen speichern</a>
             <?php } ?>
         </div>
     </div>

@@ -5,16 +5,25 @@
         </div>
         <?php if (isset($backURL) && isset($backTitle) && !is_null($backURL)
             && !is_null($backTitle)){ ?>
+            <div class="">
             <a class="change-course" href="<?php echo $backURL; ?>">
                 <?php print $backTitle; ?>
             </a>
+            </div>
         <?php } elseif (!isset($hideBackLink)) { ?>
+            <div class="">
             <a class="change-course" href="
                 <?php echo PRIVILEGE_LEVEL::$SITES[$courses[0]['status']] . "?cid=" . $courses[0]['course']['id']; ?>
             ">
                 zur Veranstaltung
             </a>
+            </div>
         <?php } ?>
+       <div class="footer-text left" style="margin-top:5px">
+        <?php if (isset($firstName) && isset($lastName)) {
+                  print $firstName . ' ' . $lastName.(isset($userName) ? ' ('.$userName.')' : '');    
+              }?>
+       </div>
     </div>
     <div class="course-extra-info left">
         <?php echo isset($extraInfo) ? $extraInfo : NULL; ?>
@@ -71,13 +80,14 @@
                             echo "&nbsp;(".$percent."%)<br>";
                           }?>
                     </div></td></tr><tr><td>
-                   <div class="footer-text bold left" style=";clear:left">*kann vom Schlussergebnis<br>abweichen</div>
+                   <div class="footer-text left" style="clear:left;">*kann vom Schlussergebnis<br>abweichen</div>
                    </td></tr></table></div>
                 <?php
                 }
             }
         }
     ?>
+    
 </div> 
 
 <?php echo isset($navigationElement) ? $navigationElement : NULL; ?>
