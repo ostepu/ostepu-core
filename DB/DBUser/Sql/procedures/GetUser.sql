@@ -1,7 +1,9 @@
 DROP PROCEDURE IF EXISTS `DBUserGetUser`;
 CREATE PROCEDURE `DBUserGetUser` (IN userid varchar(120))
+READS SQL DATA
 begin
-SELECT 
+SET @s = concat("
+select SQL_CACHE
     U.U_id,
     U.U_username,
     U.U_firstName,
@@ -28,5 +30,8 @@ FROM
         left join
     Course C ON (CS.C_id = C.C_id)
 WHERE
-    U.U_id like userid or U.U_username = userid or U_externalId = userid;
+    U.U_id like '",userid,"' or U.U_username = '",userid,"' or U_externalId = '",userid,"';");
+PREPARE stmt1 FROM @s;
+EXECUTE stmt1;
+DEALLOCATE PREPARE stmt1;
 end;

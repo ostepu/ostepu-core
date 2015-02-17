@@ -21,12 +21,12 @@ CREATE TABLE IF NOT EXISTS `Marking` (
   CONSTRAINT `fk_Marking_Submission1`
     FOREIGN KEY (`S_id`)
     REFERENCES `Submission` (`S_id`)
-    ON DELETE RESTRICT
+    ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `fk_Marking_User1`
     FOREIGN KEY (`U_id_tutor`)
     REFERENCES `User` (`U_id`)
-    ON DELETE RESTRICT
+    ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `fk_Marking_File1`
     FOREIGN KEY (`F_id_file`)
@@ -51,12 +51,16 @@ CREATE TABLE IF NOT EXISTS `Marking` (
 ENGINE = InnoDB
 AUTO_INCREMENT = 1;
 
-ALTER TABLE `Marking` MODIFY `M_points` FLOAT;
-ALTER TABLE `Marking` MODIFY `M_tutorComment` VARCHAR(255);
-
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+ALTER TABLE `Marking` MODIFY `M_points` FLOAT;
+ALTER TABLE `Marking` MODIFY `M_tutorComment` VARCHAR(255);
+ALTER TABLE `marking` DROP FOREIGN KEY `fk_Marking_User1`; 
+ALTER TABLE `marking` ADD CONSTRAINT `fk_Marking_User1` FOREIGN KEY (`U_id_tutor`) REFERENCES `user`(`U_id`) ON DELETE CASCADE ON UPDATE CASCADE; 
+ALTER TABLE `marking` DROP FOREIGN KEY `fk_Marking_Submission1`; 
+ALTER TABLE `marking` ADD CONSTRAINT `fk_Marking_Submission1` FOREIGN KEY (`S_id`) REFERENCES `submission`(`S_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 DROP TRIGGER IF EXISTS `Marking_BINS`;
 CREATE TRIGGER `Marking_BINS` BEFORE INSERT ON `Marking` FOR EACH ROW
@@ -96,3 +100,13 @@ SIGNAL sqlstate '45001' set message_text = 'no corresponding submission';
 END if;
 END;
 <?php include $sqlPath.'/procedures/GetCourseMarkings.sql'; ?>
+<?php include $sqlPath.'/procedures/GetAllMarkings.sql'; ?>
+<?php include $sqlPath.'/procedures/GetExerciseMarkings.sql'; ?>
+<?php include $sqlPath.'/procedures/GetMarking.sql'; ?>
+<?php include $sqlPath.'/procedures/GetSheetMarkings.sql'; ?>
+<?php include $sqlPath.'/procedures/GetSubmissionMarking.sql'; ?>
+<?php include $sqlPath.'/procedures/GetTutorCourseMarkings.sql'; ?>
+<?php include $sqlPath.'/procedures/GetTutorExerciseMarkings.sql'; ?>
+<?php include $sqlPath.'/procedures/GetTutorSheetMarkings.sql'; ?>
+<?php include $sqlPath.'/procedures/GetUserGroupMarkings.sql'; ?>
+<?php include $sqlPath.'/procedures/GetExistsPlatform.sql'; ?>

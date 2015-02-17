@@ -1,7 +1,9 @@
 DROP PROCEDURE IF EXISTS `DBMarkingGetCourseMarkings`;
-CREATE PROCEDURE `DBMarkingGetCourseMarkings` (IN courseid varchar(120))
+CREATE PROCEDURE `DBMarkingGetCourseMarkings` (IN courseid INT,IN sub varchar(12))
+READS SQL DATA
 begin
-SELECT 
+SET @s = concat("
+SELECT SQL_CACHE
     M.M_id,
     M.U_id_tutor,
     M.S_id,
@@ -41,16 +43,19 @@ SELECT
     S.ES_id as ES_id2
 from
     ExerciseSheet ES
-    join
+        join
     Marking M ON (ES.ES_id = M.ES_id)
         join
-    Submission S ON (M.S_id = S.S_id)
-        left join
     SelectedSubmission SS ON (M.S_id = SS.S_id_selected)
+        left join
+    Submission S ON ('",sub,"'<>'nosubmission' and M.S_id = S.S_id)
         left join
     File F ON (F.F_id = M.F_id_file)
         left join 
     File F2 ON (F2.F_id = S.F_id_file)
 where
-    ES.C_id = courseid;
+    ES.C_id = '",courseid,"';");
+PREPARE stmt1 FROM @s;
+EXECUTE stmt1;
+DEALLOCATE PREPARE stmt1;
 end;

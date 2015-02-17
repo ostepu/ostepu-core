@@ -1,7 +1,9 @@
 DROP PROCEDURE IF EXISTS `DBCourseStatusGetMemberRights`;
-CREATE PROCEDURE `DBCourseStatusGetMemberRights` (IN userid varchar(120))
+CREATE PROCEDURE `DBCourseStatusGetMemberRights` (IN userid INT)
+READS SQL DATA
 begin
-select 
+SET @s = concat("
+select SQL_CACHE 
     U.U_id,
     U.U_username,
     U.U_firstName,
@@ -26,5 +28,8 @@ from
     User U
        ON (U.U_id = CS.U_id)
 WHERE
-    CS.U_id = userid;
+    CS.U_id = '",userid,"';");
+PREPARE stmt1 FROM @s;
+EXECUTE stmt1;
+DEALLOCATE PREPARE stmt1;
 end;

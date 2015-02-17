@@ -1,7 +1,9 @@
 DROP PROCEDURE IF EXISTS `DBUserGetCourseMember`;
-CREATE PROCEDURE `DBUserGetCourseMember` (IN courseid varchar(120))
+CREATE PROCEDURE `DBUserGetCourseMember` (IN courseid INT)
+READS SQL DATA
 begin
-SELECT 
+SET @s = concat("
+select SQL_CACHE
     U.U_id,
     U.U_username,
     U.U_firstName,
@@ -28,5 +30,8 @@ FROM
         left join
     Course C ON (CS.C_id = C.C_id)
 WHERE
-    CS.C_id = courseid;
+    CS.C_id = '",courseid,"';");
+PREPARE stmt1 FROM @s;
+EXECUTE stmt1;
+DEALLOCATE PREPARE stmt1;
 end;

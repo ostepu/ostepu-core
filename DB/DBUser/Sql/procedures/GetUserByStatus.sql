@@ -1,7 +1,9 @@
 DROP PROCEDURE IF EXISTS `DBUserGetUserByStatus`;
 CREATE PROCEDURE `DBUserGetUserByStatus` (IN statusid INT)
+READS SQL DATA
 begin
-SELECT 
+SET @s = concat("
+select SQL_CACHE
     U.U_id,
     U.U_username,
     U.U_firstName,
@@ -27,5 +29,8 @@ FROM
     CourseStatus CS ON (U.U_id = CS.U_id)
         left join
     Course C ON (CS.C_id = C.C_id)
-where CS.CS_status = statusid;
+where CS.CS_status = '",statusid,"';");
+PREPARE stmt1 FROM @s;
+EXECUTE stmt1;
+DEALLOCATE PREPARE stmt1;
 end;

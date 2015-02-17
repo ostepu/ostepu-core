@@ -1,5 +1,6 @@
 DROP PROCEDURE IF EXISTS `DBUserGetIncreaseUserFailedLogin`;
 CREATE PROCEDURE `DBUserGetIncreaseUserFailedLogin` (IN userid varchar(120))
+READS SQL DATA
 begin
 UPDATE `User` SET U_failed_logins=UNIX_TIMESTAMP(NOW())
 where U_id = userid or U_username = userid or U_externalId = userid;

@@ -1,7 +1,9 @@
 DROP PROCEDURE IF EXISTS `DBExerciseSheetGetCourseSheets`;
-CREATE PROCEDURE `DBExerciseSheetGetCourseSheets` (IN courseid varchar(120))
+CREATE PROCEDURE `DBExerciseSheetGetCourseSheets` (IN courseid INT)
+READS SQL DATA
 begin
-select 
+SET @s = concat("
+select SQL_CACHE
     ES.ES_id,
     ES.C_id,
     ES.ES_endDate,
@@ -30,5 +32,8 @@ from
         left join
     File F2 ON (F2.F_id = ES.F_id_sampleSolution)
 where
-    ES.C_id = courseid;
+    ES.C_id = '",courseid,"';");
+PREPARE stmt1 FROM @s;
+EXECUTE stmt1;
+DEALLOCATE PREPARE stmt1;
 end;

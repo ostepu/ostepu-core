@@ -45,12 +45,12 @@ CREATE TABLE IF NOT EXISTS `Submission` (
 ENGINE = InnoDB
 AUTO_INCREMENT = 1;
 
-ALTER TABLE `Submission` MODIFY `S_comment` VARCHAR(255);
-ALTER TABLE `Submission` MODIFY `F_id_file` INT NULL;
-
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+ALTER TABLE `Submission` MODIFY `S_comment` VARCHAR(255);
+ALTER TABLE `Submission` MODIFY `F_id_file` INT NULL;
 
 DROP TRIGGER IF EXISTS `Submission_BINS`;
 CREATE TRIGGER `Submission_BINS` BEFORE INSERT ON `Submission` FOR EACH ROW
@@ -89,3 +89,21 @@ if (NEW.S_leaderId is NULL) then
 SIGNAL sqlstate '23000' set message_text = 'no corresponding group leader';
 END if;
 END;
+<?php include $sqlPath.'/procedures/GetAllSubmissions.sql'; ?>
+<?php include $sqlPath.'/procedures/GetCourseSubmissions.sql'; ?>
+<?php include $sqlPath.'/procedures/GetCourseUserSubmissions.sql'; ?>
+<?php include $sqlPath.'/procedures/GetSelectedCourseUserSubmissions.sql'; ?>
+<?php include $sqlPath.'/procedures/GetExerciseSubmissions.sql'; ?>
+<?php include $sqlPath.'/procedures/GetSelectedExerciseSubmissions.sql'; ?>
+<?php include $sqlPath.'/procedures/GetSheetSubmissions.sql'; ?>
+<?php include $sqlPath.'/procedures/GetSelectedSheetSubmissions.sql'; ?>
+<?php include $sqlPath.'/procedures/GetGroupCourseSubmissions.sql'; ?>
+<?php include $sqlPath.'/procedures/GetGroupExerciseSubmissions.sql'; ?>
+<?php include $sqlPath.'/procedures/GetGroupSelectedCourseSubmissions.sql'; ?>
+<?php include $sqlPath.'/procedures/GetGroupSelectedExerciseSubmissions.sql'; ?>
+<?php include $sqlPath.'/procedures/GetGroupSelectedSubmissions.sql'; ?>
+<?php include $sqlPath.'/procedures/GetGroupSubmissions.sql'; ?>
+<?php include $sqlPath.'/procedures/GetSubmission.sql'; ?>
+<?php include $sqlPath.'/procedures/GetUserExerciseSubmissions.sql'; ?>
+<?php include $sqlPath.'/procedures/GetUserSheetSubmissions.sql'; ?>
+<?php include $sqlPath.'/procedures/GetExistsPlatform.sql'; ?>

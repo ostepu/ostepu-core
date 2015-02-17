@@ -37,11 +37,11 @@ CREATE TABLE IF NOT EXISTS `Exercise` (
 ENGINE = InnoDB
 AUTO_INCREMENT = 1;
 
-ALTER TABLE `Exercise` MODIFY `E_maxPoints` DECIMAL(3) NULL DEFAULT 0;
-
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+ALTER TABLE `Exercise` MODIFY `E_maxPoints` DECIMAL(3) NULL DEFAULT 0;
 
 DROP TRIGGER IF EXISTS `Exercise_BINS`;
 CREATE TRIGGER `Exercise_BINS` BEFORE INSERT ON `Exercise` FOR EACH ROW
@@ -70,3 +70,8 @@ if (NEW.C_id is NULL) then
 SIGNAL sqlstate '45001' set message_text = 'no corresponding exercisesheet';
 END if;
 END;
+<?php include $sqlPath.'/procedures/GetExercise.sql'; ?>
+<?php include $sqlPath.'/procedures/GetAllExercises.sql'; ?>
+<?php include $sqlPath.'/procedures/GetCourseExercises.sql'; ?>
+<?php include $sqlPath.'/procedures/GetSheetExercises.sql'; ?>
+<?php include $sqlPath.'/procedures/GetExistsPlatform.sql'; ?>

@@ -1,7 +1,9 @@
 DROP PROCEDURE IF EXISTS `DBUserGetGroupMember`;
-CREATE PROCEDURE `DBUserGetGroupMember` (IN esid varchar(120),IN userid varchar(120))
+CREATE PROCEDURE `DBUserGetGroupMember` (IN esid INT,IN userid varchar(120))
+READS SQL DATA
 begin
-SELECT 
+SET @s = concat("
+select SQL_CACHE
     U.U_id,
     U.U_username,
     U.U_firstName,
@@ -33,7 +35,10 @@ FROM
     left join CourseStatus CS ON (U.U_id = CS.U_id)
     left join Course C ON (CS.C_id = C.C_id)) ON U.U_id = G2.U_id_leader
 WHERE
-    (U2.U_id like userid
-        or U2.U_username = userid or U2.U_externalId = userid)
-        and G.ES_id = esid;
+    (U2.U_id like '",userid,"'
+        or U2.U_username = '",userid,"' or U2.U_externalId = '",userid,"')
+        and G.ES_id = '",esid,"';");
+PREPARE stmt1 FROM @s;
+EXECUTE stmt1;
+DEALLOCATE PREPARE stmt1;
 end;

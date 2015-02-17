@@ -25,3 +25,7 @@ AUTO_INCREMENT = 1;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+<?php include $sqlPath.'/procedures/GetApprovalCondition.sql'; ?>
+<?php include $sqlPath.'/procedures/GetAllApprovalConditions.sql'; ?>
+<?php include $sqlPath.'/procedures/GetCourseApprovalConditions.sql'; ?>
+<?php include $sqlPath.'/procedures/GetExistsPlatform.sql'; ?>

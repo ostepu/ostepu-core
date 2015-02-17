@@ -88,3 +88,9 @@ where U_id = OLD.U_id_leader;
 end if;*/
 ?>
 end;
+<?php include $sqlPath.'/procedures/GetAllGroups.sql'; ?>
+<?php include $sqlPath.'/procedures/GetCourseGroups.sql'; ?>
+<?php include $sqlPath.'/procedures/GetSheetGroups.sql'; ?>
+<?php include $sqlPath.'/procedures/GetUserGroups.sql'; ?>
+<?php include $sqlPath.'/procedures/GetUserSheetGroup.sql'; ?>
+<?php include $sqlPath.'/procedures/GetExistsPlatform.sql'; ?>

@@ -1,7 +1,9 @@
 DROP PROCEDURE IF EXISTS `DBExerciseSheetGetCourseExercises`;
-CREATE PROCEDURE `DBExerciseSheetGetCourseExercises` (IN courseid varchar(120))
+CREATE PROCEDURE `DBExerciseSheetGetCourseExercises` (IN courseid INT)
+READS SQL DATA
 begin
-select 
+SET @s = concat("
+select SQL_CACHE
     E.E_id,
     E.ES_id,
     E.ET_id,
@@ -32,11 +34,16 @@ from
             left join
     ExerciseFileType EFT ON E.E_id = EFT.E_id
         left join
-    (Attachment A
-    natural join File F) ON E.E_id = A.E_id
+    Attachment A  ON E.E_id = A.E_id
+    	left join 
+    File F on A.F_id = F.F_id
         left join
-    (Submission S
-    join SelectedSubmission SS ON S.S_id = SS.S_id_selected) ON S.E_id = E.E_id
+    Submission S  ON S.E_id = E.E_id
+    	join 
+    SelectedSubmission SS ON S.S_id = SS.S_id_selected
 where
-    E.C_id = courseid;
+    E.C_id = '",courseid,"';");
+PREPARE stmt1 FROM @s;
+EXECUTE stmt1;
+DEALLOCATE PREPARE stmt1;
 end;
