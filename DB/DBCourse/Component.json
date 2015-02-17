@@ -1,20 +1,81 @@
 {
-  "name":"DBCourse",
-  "version":"1.0",
-  "classFile":"DBCourse.php",
-  "className":"DBCourse",
-  "files":[
-    {"path":".htaccess"},
-    {"path":"DBCourse.php"},
-    {"path":"index.php"},
-    {"path":"Commands.json"},
-    {"path":"Sql/"}
-  ],
-  "links":[
-    {"name":"out", "target":"DBQuery", "links":[{"method":"POST", "path":"/query" }] },
-    {"name":"out2", "target":"DBQuery2", "links":[{"method":"POST", "path":"/query" }] }
-  ],
-  "connector":[
-    {"name":"request", "target":"CLocalObjectRequest"}
-  ]
+    "name": "DBCourse",
+    "version": "1.0",
+    "classFile": "DBCourse.php",
+    "className": "DBCourse",
+    "files": [
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "DBCourse.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "Sql/"
+        }
+    ],
+    "links": [
+        {
+            "name": "out2",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "/query"
+                }
+            ]
+        },
+        {
+            "name": "getCourse",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBCourseGetCourse/:courseid"
+                }
+            ]
+        },
+        {
+            "name": "getAllCourses",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBCourseGetAllCourses"
+                }
+            ]
+        },
+        {
+            "name": "getUserCourses",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBCourseGetUserCourses/:userid"
+                }
+            ]
+        },
+        {
+            "name": "getExistsPlatform",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBCourseGetExistsPlatform"
+                }
+            ]
+        }
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest"
+        }
+    ]
 }
