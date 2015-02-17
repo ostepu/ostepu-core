@@ -1,20 +1,101 @@
 {
-  "name":"DBExerciseType",
-  "version":"1.0",
-  "classFile":"DBExerciseType.php",
-  "className":"DBExerciseType",
-  "files":[
-    {"path":".htaccess"},
-    {"path":"DBExerciseType.php"},
-    {"path":"index.php"},
-    {"path":"Commands.json"},
-    {"path":"Sql/"}
-  ],
-  "links":[
-    {"name":"out", "target":"DBQuery", "links":[{"method":"POST", "path":"/query" }] },
-    {"name":"out2", "target":"DBQuery2", "links":[{"method":"POST", "path":"/query" }] }
-  ],
-  "connector":[
-    {"name":"request", "target":"CLocalObjectRequest"}
-  ]
+    "name": "DBExerciseType",
+    "version": "1.0",
+    "classFile": "DBExerciseType.php",
+    "className": "DBExerciseType",
+    "files": [
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "DBExerciseType.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "Sql/"
+        }
+    ],
+    "links": [
+        {
+            "name": "out",
+            "target": "DBQuery",
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "/query"
+                }
+            ]
+        },
+        {
+            "name": "out2",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "/query"
+                }
+            ]
+        },
+        {
+            "name": "getUser",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBUserGetUser/:userid"
+                }
+            ]
+        },
+        {
+            "name": "getUsers",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBUserGetUsers"
+                }
+            ]
+        },
+        {
+            "name": "getExerciseType",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBExerciseTypeGetExerciseType/:etid"
+                }
+            ]
+        },
+        {
+            "name": "getAllExerciseTypes",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBExerciseTypeGetAllExerciseTypes"
+                }
+            ]
+        },
+        {
+            "name": "getExistsPlatform",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBExerciseTypeGetExistsPlatform"
+                }
+            ]
+        }
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest"
+        }
+    ]
 }

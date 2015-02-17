@@ -1,13 +1,85 @@
 [
-    {"method":"PUT", "path":"/group/user/:userid/exercisesheet/:esid(/)"},
-    {"method":"DELETE", "path":"/group/user/:userid/exercisesheet/:esid(/)"},
-    {"method":"POST", "path":"/group(/)"},
-    {"method":"GET", "path":"/group/user/:userid(/)"},
-    {"method":"GET", "path":"/group(/group)(/)"},
-    {"method":"GET", "path":"/group/user/:userid/exercisesheet/:esid(/)"},
-    {"method":"GET", "path":"/group/exercisesheet/:esid(/)"},
-    {"method":"POST", "path":"/platform"},
-    {"method":"DELETE", "path":"/platform"},
-    {"method":"GET", "path":"/link/exists/platform"}
-    
+    {
+        "name": "editGroup",
+        "outputType": "Group",
+        "inputType": "Group",
+        "method": "PUT",
+        "path": "/group/user/:userid/exercisesheet/:esid(/)"
+    },
+    {
+        "name": "deleteGroup",
+        "outputType": "Group",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/group/user/:userid/exercisesheet/:esid(/)"
+    },
+    {
+        "name": "addGroup",
+        "outputType": "Group",
+        "inputType": "Group",
+        "method": "POST",
+        "path": "/group(/)"
+    },
+    {
+        "name": "getUserGroups",
+        "callback": "getMatch",
+        "outputType": "Group",
+        "inputType": "",
+        "method": "GET",
+        "path": "/group/user/:userid(/)"
+    },
+    {
+        "name": "getAllGroups",
+        "callback": "getMatch",
+        "outputType": "Group",
+        "inputType": "",
+        "method": "GET",
+        "path": "/group(/group)(/)"
+    },
+    {
+        "name": "getUserSheetGroup",
+        "callback": "getMatchSingle",
+        "outputType": "Group",
+        "inputType": "",
+        "method": "GET",
+        "path": "/group/user/:userid/exercisesheet/:esid(/)"
+    },
+    {
+        "name": "getSheetGroups",
+        "callback": "getMatch",
+        "outputType": "Group",
+        "inputType": "",
+        "method": "GET",
+        "path": "/group/exercisesheet/:esid(/)"
+    },
+    {
+        "name": "getCourseGroups",
+        "callback": "getMatch",
+        "outputType": "Group",
+        "inputType": "",
+        "method": "GET",
+        "path": "/group/course/:courseid(/)"
+    },
+    {
+        "name": "addPlatform",
+        "outputType": "Platform",
+        "inputType": "Platform",
+        "method": "POST",
+        "path": "/platform"
+    },
+    {
+        "name": "deletePlatform",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/platform"
+    },
+    {
+        "name": "getExistsPlatform",
+        "callback": "getMatchSingle",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "GET",
+        "path": "/link/exists/platform"
+    }
 ]

@@ -1,13 +1,83 @@
 [
-    {"method":"PUT", "path":"/session(/session)/:seid(/)"},
-    {"method":"DELETE", "path":"/session(/session)/:seid(/)"},
-    {"method":"PUT", "path":"/session/user/:userid(/)"},
-    {"method":"DELETE", "path":"/session/user/:userid(/)"},
-    {"method":"POST", "path":"/session(/)"},
-    {"method":"", "path":"/session/user/:userid(/)"},
-    {"method":"", "path":"/session(/session)/:seid(/)"},
-    {"method":"", "path":"/session(/session)(/)"},
-    {"method":"POST", "path":"/platform"},
-    {"method":"DELETE", "path":"/platform"},
-    {"method":"GET", "path":"/link/exists/platform"}
+    {
+        "name": "editSession",
+        "outputType": "Session",
+        "inputType": "Session",
+        "method": "PUT",
+        "path": "/session(/session)/:seid(/)"
+    },
+    {
+        "name": "deleteSession",
+        "outputType": "Session",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/session(/session)/:seid(/)"
+    },
+    {
+        "name": "editUserSession",
+        "outputType": "Session",
+        "inputType": "Session",
+        "method": "PUT",
+        "path": "/session/user/:userid(/)"
+    },
+    {
+        "name": "deleteUserSession",
+        "outputType": "Session",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/session/user/:userid(/)"
+    },
+    {
+        "name": "addSession",
+        "outputType": "Session",
+        "inputType": "Session",
+        "method": "POST",
+        "path": "/session(/)"
+    },
+    {
+        "name": "getAllSessions",
+        "callback": "getMatch",
+        "outputType": "Session",
+        "inputType": "",
+        "method": "GET",
+        "path": "/session(/session)(/)"
+    },
+    {
+        "name": "getUserSession",
+        "callback": "getMatchSingle",
+        "outputType": "Session",
+        "inputType": "",
+        "method": "GET",
+        "path": "/session/user/:userid(/)"
+    },
+    {
+        "name": "getSessionUser",
+        "callback": "getMatchSingle",
+        "outputType": "Session",
+        "inputType": "",
+        "method": "GET",
+        "path": "/session(/session)/:seid(/)"
+    },
+    {
+        "name": "addPlatform",
+        "outputType": "Platform",
+        "inputType": "Platform",
+        "method": "POST",
+        "path": "/platform"
+    },
+    {
+        "name": "deletePlatform",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/platform"
+    },
+    {
+        "name": "getExistsPlatform",
+        "callback": "getMatchSingle",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "GET",
+        "path": "/link/exists/platform"
+    }
 ]

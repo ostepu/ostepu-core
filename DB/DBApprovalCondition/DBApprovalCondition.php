@@ -10,61 +10,13 @@
  * @date 2013-2014
  */
 
-require_once ( dirname(__FILE__) . '/../../Assistants/Slim/Slim.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Structures.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Request.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/DBJson.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/CConfig.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
-
-\Slim\Slim::registerAutoloader( );
+include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );
 
 /**
  * A class, to abstract the "ApprovalCondition" table from database
  */
 class DBApprovalCondition
 {
-
-    /**
-     * @var Slim $_app the slim object
-     */
-    private $_app = null;
-
-    /**
-     * @var Component $_conf the component data object
-     */
-    private $_conf = null;
-
-    /**
-     * @var Link[] $query a list of links to a query component
-     */
-    private $query = array( );
-    private $query2 = array( );
-
-    /**
-     * @var string $_prefix the prefixes, the class works with (comma separated)
-     */
-    private static $_prefix = 'approvalcondition';
-
-    /**
-     * the $_prefix getter
-     *
-     * @return the value of $_prefix
-     */
-    public static function getPrefix( )
-    {
-        return DBApprovalCondition::$_prefix;
-    }
-
-    /**
-     * the $_prefix setter
-     *
-     * @param string $value the new value for $_prefix
-     */
-    public static function setPrefix( $value )
-    {
-        DBApprovalCondition::$_prefix = $value;
-    }
 
     /**
      * REST actions
@@ -74,116 +26,12 @@ class DBApprovalCondition
      *
      * @param Component $conf component data
      */
+    private $_component = null;
     public function __construct( )
     {
-        // runs the CConfig
-        $com = new CConfig( DBApprovalCondition::getPrefix( ), dirname(__FILE__) );
-
-        // runs the DBApprovalCondition
-        if ( $com->used( ) ) return;
-            $conf = $com->loadConfig( );
-            
-        // initialize component
-        $this->_conf = $conf;
-        $this->query = array( CConfig::getLink( 
-                                               $conf->getLinks( ),
-                                               'out'
-                                               ) );
-        $this->query2 = array( CConfig::getLink( 
-                                               $conf->getLinks( ),
-                                               'out2'
-                                               ) );
-
-        // initialize slim
-        $this->_app = new \Slim\Slim( array('debug' => true) );
-        $this->_app->response->headers->set( 
-                                            'Content-Type',
-                                            'application/json'
-                                            );
-                                            
-        // POST AddPlatform
-        $this->_app->post( 
-                         '/platform',
-                         array( 
-                               $this,
-                               'addPlatform'
-                               )
-                         );
-                         
-        // DELETE DeletePlatform
-        $this->_app->delete( 
-                         '/platform',
-                         array( 
-                               $this,
-                               'deletePlatform'
-                               )
-                         );
-                         
-        // GET GetExistsPlatform
-        $this->_app->get( 
-                         '/link/exists/platform',
-                         array( 
-                               $this,
-                               'getExistsPlatform'
-                               )
-                         );
-                         
-        // PUT EditApprovalCondition
-        $this->_app->put( 
-                         '/' . $this->getPrefix( ) . '(/approvalcondition)/:apid(/)',
-                         array( 
-                               $this,
-                               'editApprovalCondition'
-                               )
-                         );
-
-        // DELETE DeleteApprovalCondition
-        $this->_app->delete( 
-                            '/' . $this->getPrefix( ) . '(/approvalcondition)/:apid(/)',
-                            array( 
-                                  $this,
-                                  'deleteApprovalCondition'
-                                  )
-                            );
-
-        // POST AddApprovalCondition
-        $this->_app->post( 
-                          '/' . $this->getPrefix( ) . '(/)',
-                          array( 
-                                $this,
-                                'addApprovalCondition'
-                                )
-                          );
-
-        // GET GetApprovalCondition
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '(/approvalcondition)/:apid(/)',
-                         array( 
-                               $this,
-                               'getApprovalCondition'
-                               )
-                         );
-
-        // GET GetAllApprovalConditions
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '(/approvalcondition)(/)',
-                         array( 
-                               $this,
-                               'getAllApprovalConditions'
-                               )
-                         );
-
-        // GET GetCourseApprovalConditions
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/course/:courseid(/)',
-                         array( 
-                               $this,
-                               'getCourseApprovalConditions'
-                               )
-                         );
-
-        // run Slim
-        $this->_app->run( );
+        $component = new Model('approvalcondition', dirname(__FILE__), $this);
+        $this->_component=$component;
+        $component->run();
     }
 
     /**
@@ -196,63 +44,9 @@ class DBApprovalCondition
      *
      * @param int $apid The id of the approvalCondition that is beeing updated.
      */
-    public function editApprovalCondition( $apid )
+    public function editApprovalCondition( $callName, $input, $params = array() )
     {
-        Logger::Log( 
-                    'starts PUT EditApprovalCondition',
-                    LogLevel::DEBUG
-                    );
-
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput( 
-                           $this->_app,
-                           ctype_digit( $apid )
-                           );
-
-        // decode the received approval condition data, as an object
-        $insert = ApprovalCondition::decodeApprovalCondition( $this->_app->request->getBody( ) );
-
-        // always been an array
-        $arr = true;
-        if ( !is_array( $insert ) ){
-            $insert = array( $insert );
-            $arr = false;
-        }
-
-        foreach ( $insert as $in ){
-
-            // generates the update data for the object
-            $data = $in->getInsertData( );
-
-            // starts a query, by using a given file
-            $result = DBRequest::getRoutedSqlFile( 
-                                                  $this->query,
-                                                  dirname(__FILE__) . '/Sql/EditApprovalCondition.sql',
-                                                  array( 
-                                                        'apid' => $apid,
-                                                        'values' => $data
-                                                        )
-                                                  );
-
-            // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
-                 $result['status'] <= 299 ){
-                $this->_app->response->setStatus( 201 );
-                if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
-                                                        'Content-Type',
-                                                        $result['headers']['Content-Type']
-                                                        );
-                
-            } else {
-                Logger::Log( 
-                            'PUT EditApprovalCondition failed',
-                            LogLevel::ERROR
-                            );
-                $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-                $this->_app->stop( );
-            }
-        }
+        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/EditApprovalCondition.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new ApprovalCondition()),'Model::isProblem',array(new ApprovalCondition()));
     }
 
     /**
@@ -263,45 +57,9 @@ class DBApprovalCondition
      *
      * @param int $apid The id of the approvalCondition that is beeing deleted.
      */
-    public function deleteApprovalCondition( $apid )
+    public function deleteApprovalCondition( $callName, $input, $params = array() )
     {
-        Logger::Log( 
-                    'starts DELETE DeleteApprovalCondition',
-                    LogLevel::DEBUG
-                    );
-
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput( 
-                           $this->_app,
-                           ctype_digit( $apid )
-                           );
-
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
-                                              $this->query,
-                                              dirname(__FILE__) . '/Sql/DeleteApprovalCondition.sql',
-                                              array( 'apid' => $apid )
-                                              );
-
-        // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
-             $result['status'] <= 299 ){
-
-            $this->_app->response->setStatus( 201 );
-            if ( isset( $result['headers']['Content-Type'] ) )
-                $this->_app->response->headers->set( 
-                                                    'Content-Type',
-                                                    $result['headers']['Content-Type']
-                                                    );
-            
-        } else {
-            Logger::Log( 
-                        'DELETE DeleteApprovalCondition failed',
-                        LogLevel::ERROR
-                        );
-            $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-            $this->_app->stop( );
-        }
+        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/DeleteApprovalCondition.sql',$params,201,'Model::isCreated',array(new ApprovalCondition()),'Model::isProblem',array(new ApprovalCondition()));  
     }
 
     /**
@@ -312,240 +70,43 @@ class DBApprovalCondition
      * The request body should contain a JSON object representing the
      * approvalCondition's attributes.
      */
-    public function addApprovalCondition( )
+    public function addApprovalCondition( $callName, $input, $params = array() )
     {
-        Logger::Log( 
-                    'starts POST AddApprovalCondition',
-                    LogLevel::DEBUG
-                    );
+        $positive = function($input) {
+            // sets the new auto-increment id
+            $obj = new ApprovalCondition( );
+            $obj->setId( $input[0]->getInsertId( ) );
+            return array("status"=>201,"content"=>$obj);
+        };
+        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/AddApprovalCondition.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new ApprovalCondition()));
+    }
 
-        // decode the received approval condition data, as an object
-        $insert = ApprovalCondition::decodeApprovalCondition( $this->_app->request->getBody( ) );
-
-        // always been an array
-        $arr = true;
-        if ( !is_array( $insert ) ){
-            $insert = array( $insert );
-            $arr = false;
-        }
-
-        // this array contains the indices of the inserted objects
-        $res = array( );
-        foreach ( $insert as $in ){
-
-            // generates the insert data for the object
-            $data = $in->getInsertData( );
-
-            // starts a query, by using a given file
-            $result = DBRequest::getRoutedSqlFile( 
-                                                  $this->query,
-                                                  dirname(__FILE__) . '/Sql/AddApprovalCondition.sql',
-                                                  array( 'values' => $data )
-                                                  );
-
-            // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
-                 $result['status'] <= 299 ){
-                $queryResult = Query::decodeQuery( $result['content'] );
-
-                // sets the new auto-increment id
-                $obj = new ApprovalCondition( );
-                $obj->setId( $queryResult->getInsertId( ) );
-
-                $res[] = $obj;
-                $this->_app->response->setStatus( 201 );
-                if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
-                                                        'Content-Type',
-                                                        $result['headers']['Content-Type']
-                                                        );
-                
-            } else {
-                Logger::Log( 
-                            'POST AddApprovalCondition failed',
-                            LogLevel::ERROR
-                            );
-                $this->_app->response->setBody( ApprovalCondition::encodeApprovalCondition( $res ) );
-                $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-                $this->_app->stop( );
+    public function get( $functionName, $linkName, $params=array(),$singleResult = false, $checkSession = true )
+    {
+        $positive = function($input, $singleResult) {
+            //$input = $input[count($input)-1];
+            $result = Model::isEmpty();$result['content']=array();
+            foreach ($input as $inp){
+                if ( $inp->getNumRows( ) > 0 ){
+                    // extract approvalcondition data from db answer
+                    $result['content'] = array_merge($result['content'], ApprovalCondition::ExtractApprovalCondition( $inp->getResponse( ), $singleResult));
+                    $result['status'] = 200;
+                }
             }
-        }
-
-        if ( !$arr && 
-             count( $res ) == 1 ){
-            $this->_app->response->setBody( ApprovalCondition::encodeApprovalCondition( $res[0] ) );
-            
-        } else 
-            $this->_app->response->setBody( ApprovalCondition::encodeApprovalCondition( $res ) );
+            return $result;
+        };
+        
+        $params = DBJson::mysql_real_escape_string( $params );
+        return $this->_component->call($linkName, $params, '', 200, $positive, array($singleResult), 'Model::isProblem', array(), 'Query');
     }
 
-    public function get( 
-                        $functionName,
-                        $sqlFile,
-                        $userid,
-                        $courseid,
-                        $esid,
-                        $eid,
-                        $suid,
-                        $apid,
-                        $singleResult = false,
-                        $checkSession = true
-                        )
+    public function getMatch($callName, $input, $params = array())
     {
-        Logger::Log( 
-                    'starts GET ' . $functionName,
-                    LogLevel::DEBUG
-                    );
-
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput( 
-                           $this->_app,
-                           $userid == '' ? true : ctype_digit( $userid ),
-                           $courseid == '' ? true : ctype_digit( $courseid ),
-                           $esid == '' ? true : ctype_digit( $esid ),
-                           $eid == '' ? true : ctype_digit( $eid ),
-                           $suid == '' ? true : ctype_digit( $suid ),
-                           $apid == '' ? true : ctype_digit( $apid )
-                           );
-
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
-                                              $this->query,
-                                              $sqlFile,
-                                              array( 
-                                                    'userid' => $userid,
-                                                    'courseid' => $courseid,
-                                                    'esid' => $esid,
-                                                    'eid' => $eid,
-                                                    'suid' => $suid,
-                                                    'apid' => $apid
-                                                    ),
-                                              $checkSession
-                                              );
-
-        // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
-             $result['status'] <= 299 ){
-            $query = Query::decodeQuery( $result['content'] );
-            
-            if (is_array($query))
-            $query = $query[count($query)-1];
-            
-            if ( $query->getNumRows( ) > 0 ){
-                $res = ApprovalCondition::ExtractApprovalCondition( 
-                                                                   $query->getResponse( ),
-                                                                   $singleResult
-                                                                   );
-                $this->_app->response->setBody( ApprovalCondition::encodeApprovalCondition( $res ) );
-
-                $this->_app->response->setStatus( 200 );
-                if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
-                                                        'Content-Type',
-                                                        $result['headers']['Content-Type']
-                                                        );
-
-                $this->_app->stop( );
-                
-            } else 
-                $result['status'] = 404;
-        }
-
-        Logger::Log( 
-                    'GET ' . $functionName . ' failed',
-                    LogLevel::ERROR
-                    );
-        $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-        $this->_app->response->setBody( ApprovalCondition::encodeApprovalCondition( new ApprovalCondition( ) ) );
-        $this->_app->stop( );
+        return $this->get($callName,$callName,$params);
     }
-
-    /**
-     * Returns all minimum requirements for being able to take part in an exam.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /approvalcondition(/) or /approvalcondition/approvalcondition(/).
-     */
-    public function getAllApprovalConditions( )
+    public function getMatchSingle($callName, $input, $params = array())
     {
-        $this->get( 
-                   'GetAllApprovalConditions',
-                   dirname(__FILE__) . '/Sql/GetAllApprovalConditions.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $apid ) ? $apid : ''
-                   );
-    }
-
-    /**
-     * Returns a minimum requirement for being able to take part in an exam.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /approvalcondition/$apid(/) or /approvalcondition/approvalcondition/$apid(/).
-     *
-     * @param int $apid The id of the approvalCondition that should be returned.
-     */
-    public function getApprovalCondition( $apid )
-    {
-        $this->get( 
-                   'GetApprovalCondition',
-                   dirname(__FILE__) . '/Sql/GetApprovalCondition.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $apid ) ? $apid : '',
-                   true
-                   );
-    }
-
-    /**
-     * Returns the minimum requirements for being able to take part in an exam
-     * regarding a specific course.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /approvalcondition/course/$courseid(/).
-     *
-     * @param int $course The id of the course.
-     */
-    public function getCourseApprovalConditions( $courseid )
-    {
-        $this->get( 
-                   'GetCourseApprovalConditions',
-                   dirname(__FILE__) . '/Sql/GetCourseApprovalConditions.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $apid ) ? $apid : ''
-                   );
-    }
-    
-    /**
-     * Returns status code 200, if this component is correctly installed for the platform
-     *
-     * Called when this component receives an HTTP GET request to
-     * /link/exists/platform.
-     */
-    public function getExistsPlatform( )
-    {
-        $this->get( 
-                   'GetExistsPlatform',
-                   dirname(__FILE__) . '/Sql/GetExistsPlatform.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $suid ) ? $suid : '',
-                   isset( $apid ) ? $apid : '',
-                   true,
-                   false
-                   );
+        return $this->get($callName,$callName,$params,true,false);
     }
     
     /**
@@ -554,42 +115,9 @@ class DBApprovalCondition
      * Called when this component receives an HTTP DELETE request to
      * /platform.
      */
-    public function deletePlatform( )
+    public function deletePlatform( $callName, $input, $params = array())
     {
-        Logger::Log( 
-                    'starts DELETE DeletePlatform',
-                    LogLevel::DEBUG
-                    );
-
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
-                                              $this->query2,
-                                              dirname(__FILE__) . '/Sql/DeletePlatform.sql',
-                                              array( ),
-                                              false
-                                              );
-
-        // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
-             $result['status'] <= 299 ){
-
-            $this->_app->response->setStatus( 201 );
-            $this->_app->response->setBody( '' );
-            if ( isset( $result['headers']['Content-Type'] ) )
-                $this->_app->response->headers->set( 
-                                                    'Content-Type',
-                                                    $result['headers']['Content-Type']
-                                                    );
-            
-        } else {
-            Logger::Log( 
-                        'DELETE DeletePlatform failed',
-                        LogLevel::ERROR
-                        );
-            $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-            $this->_app->response->setBody( '' );
-            $this->_app->stop( );
-        }
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),200,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
     
     /**
@@ -598,65 +126,9 @@ class DBApprovalCondition
      * Called when this component receives an HTTP POST request to
      * /platform.
      */
-    public function addPlatform( )
+    public function addPlatform( $callName, $input, $params = array())
     {
-        Logger::Log( 
-                    'starts POST AddPlatform',
-                    LogLevel::DEBUG
-                    );
-
-        // decode the received course data, as an object
-        $insert = Platform::decodePlatform( $this->_app->request->getBody( ) );
-
-        // always been an array
-        $arr = true;
-        if ( !is_array( $insert ) ){
-            $insert = array( $insert );
-            $arr = false;
-        }
-
-        // this array contains the indices of the inserted objects
-        $res = array( );
-        foreach ( $insert as $in ){
-        
-            // starts a query, by using a given file
-            $result = DBRequest::getRoutedSqlFile( 
-                                                  $this->query2,
-                                                  dirname(__FILE__) . '/Sql/AddPlatform.sql',
-                                                  array( 'object' => $in ),
-                                                  false
-                                                  );
-
-            // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
-                 $result['status'] <= 299 ){
-                $queryResult = Query::decodeQuery( $result['content'] );
-
-                $res[] = $in;
-                $this->_app->response->setStatus( 201 );
-                if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
-                                                        'Content-Type',
-                                                        $result['headers']['Content-Type']
-                                                        );
-                
-            } else {
-                Logger::Log( 
-                            'POST AddPlatform failed',
-                            LogLevel::ERROR
-                            );
-                $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-                $this->_app->response->setBody( Platform::encodePlatform( $res ) );
-                $this->_app->stop( );
-            }
-        }
-
-        if ( !$arr && 
-             count( $res ) == 1 ){
-            $this->_app->response->setBody( Platform::encodePlatform( $res[0] ) );
-            
-        } else 
-            $this->_app->response->setBody( Platform::encodePlatform( $res ) );
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),200,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
 }
 

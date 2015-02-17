@@ -1,11 +1,69 @@
 [
-    {"method":"PUT", "path":"/coursestatus/course/:courseid/user/:userid(/)"},
-    {"method":"DELETE", "path":"/coursestatus/course/:courseid/user/:userid(/)"},
-    {"method":"POST", "path":"/coursestatus(/)"},
-    {"method":"GET", "path":"/coursestatus/course/:courseid/user/:userid(/)"},
-    {"method":"GET", "path":"/coursestatus/user/:userid(/)"},
-    {"method":"GET", "path":"/coursestatus/course/:courseid(/)"},
-    {"method":"POST", "path":"/platform"},
-    {"method":"DELETE", "path":"/platform"},
-    {"method":"GET", "path":"/link/exists/platform"}
+    {
+        "name": "editMemberRight",
+        "outputType": "CourseStatus",
+        "inputType": "User",
+        "method": "PUT",
+        "path": "/coursestatus/course/:courseid/user/:userid(/)"
+    },
+    {
+        "name": "removeCourseMember",
+        "outputType": "CourseStatus",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/coursestatus/course/:courseid/user/:userid(/)"
+    },
+    {
+        "name": "addCourseMember",
+        "outputType": "CourseStatus",
+        "inputType": "User",
+        "method": "POST",
+        "path": "/coursestatus(/)"
+    },
+    {
+        "name": "getMemberRight",
+        "callback": "getMatchSingle",
+        "outputType": "CourseStatus",
+        "inputType": "",
+        "method": "GET",
+        "path": "/coursestatus/course/:courseid/user/:userid(/)"
+    },
+    {
+        "name": "getMemberRights",
+        "callback": "getMatch",
+        "outputType": "CourseStatus",
+        "inputType": "",
+        "method": "GET",
+        "path": "/coursestatus/user/:userid(/)"
+    },
+    {
+        "name": "getCourseRights",
+        "callback": "getMatch",
+        "outputType": "CourseStatus",
+        "inputType": "",
+        "method": "GET",
+        "path": "/coursestatus/course/:courseid(/)"
+    },
+    {
+        "name": "addPlatform",
+        "outputType": "Platform",
+        "inputType": "Platform",
+        "method": "POST",
+        "path": "/platform"
+    },
+    {
+        "name": "deletePlatform",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/platform"
+    },
+    {
+        "name": "getExistsPlatform",
+        "callback": "getMatchSingle",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "GET",
+        "path": "/link/exists/platform"
+    }
 ]

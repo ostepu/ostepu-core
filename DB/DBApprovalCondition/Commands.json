@@ -1,11 +1,69 @@
 [
-    {"method":"PUT", "path":"/approvalcondition(/approvalcondition)/:apid(/)"},
-    {"method":"DELETE", "path":"/approvalcondition(/approvalcondition)/:apid(/)"},
-    {"method":"POST", "path":"/approvalcondition(/)"},
-    {"method":"GET", "path":"/approvalcondition(/approvalcondition)/:apid(/)"},
-    {"method":"GET", "path":"/approvalcondition(/approvalcondition)(/)"},
-    {"method":"GET", "path":"/approvalcondition/course/:courseid(/)"},
-    {"method":"POST", "path":"/platform"},
-    {"method":"DELETE", "path":"/platform"},
-    {"method":"GET", "path":"/link/exists/platform"}
+    {
+        "name": "editApprovalCondition",
+        "outputType": "ApprovalCondition",
+        "inputType": "ApprovalCondition",
+        "method": "PUT",
+        "path": "/approvalcondition(/approvalcondition)/:apid(/)"
+    },
+    {
+        "name": "deleteApprovalCondition",
+        "outputType": "ApprovalCondition",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/approvalcondition(/approvalcondition)/:apid(/)"
+    },
+    {
+        "name": "addApprovalCondition",
+        "outputType": "ApprovalCondition",
+        "inputType": "ApprovalCondition",
+        "method": "POST",
+        "path": "/approvalcondition(/)"
+    },
+    {
+        "name": "getApprovalCondition",
+        "callback": "getMatchSingle",
+        "outputType": "ApprovalCondition",
+        "inputType": "",
+        "method": "GET",
+        "path": "/approvalcondition(/approvalcondition)/:apid(/)"
+    },
+    {
+        "name": "getAllApprovalConditions",
+        "callback": "getMatch",
+        "outputType": "ApprovalCondition",
+        "inputType": "",
+        "method": "GET",
+        "path": "/approvalcondition(/approvalcondition)(/)"
+    },
+    {
+        "name": "getCourseApprovalConditions",
+        "callback": "getMatch",
+        "outputType": "ApprovalCondition",
+        "inputType": "",
+        "method": "GET",
+        "path": "/approvalcondition/course/:courseid(/)"
+    },
+    {
+        "name": "addPlatform",
+        "outputType": "Platform",
+        "inputType": "Platform",
+        "method": "POST",
+        "path": "/platform"
+    },
+    {
+        "name": "deletePlatform",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/platform"
+    },
+    {
+        "name": "getExistsPlatform",
+        "callback": "getMatchSingle",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "GET",
+        "path": "/link/exists/platform"
+    }
 ]

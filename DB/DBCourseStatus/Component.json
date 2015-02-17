@@ -1,20 +1,91 @@
 {
-  "name":"DBCourseStatus",
-  "version":"1.0",
-  "classFile":"DBCourseStatus.php",
-  "className":"DBCourseStatus",
-  "files":[
-    {"path":".htaccess"},
-    {"path":"DBCourseStatus.php"},
-    {"path":"index.php"},
-    {"path":"Commands.json"},
-    {"path":"Sql/"}
-  ],
-  "links":[
-    {"name":"out", "target":"DBQuery", "links":[{"method":"POST", "path":"/query" }] },
-    {"name":"out2", "target":"DBQuery2", "links":[{"method":"POST", "path":"/query" }] }
-  ],
-  "connector":[
-    {"name":"request", "target":"CLocalObjectRequest"}
-  ]
+    "name": "DBCourseStatus",
+    "version": "1.0",
+    "classFile": "DBCourseStatus.php",
+    "className": "DBCourseStatus",
+    "files": [
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "DBCourseStatus.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "Sql/"
+        }
+    ],
+    "links": [
+        {
+            "name": "out",
+            "target": "DBQuery",
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "/query"
+                }
+            ]
+        },
+        {
+            "name": "out2",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "/query"
+                }
+            ]
+        },
+        {
+            "name": "getMemberRight",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBCourseStatusGetMemberRight/:courseid/:userid"
+                }
+            ]
+        },
+        {
+            "name": "getMemberRights",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBCourseStatusGetMemberRights/:userid"
+                }
+            ]
+        },
+        {
+            "name": "getCourseRights",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBCourseStatusGetCourseRights/:courseid"
+                }
+            ]
+        },
+        {
+            "name": "getExistsPlatform",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBUserGetExistsPlatform"
+                }
+            ]
+        }
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest"
+        }
+    ]
 }

@@ -7,6 +7,7 @@
  * @example DB/DBUser/UserSample.json
  * @date 2013-2014
  */
+
 include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );
 
 /**
@@ -41,10 +42,9 @@ class DBUser
      *
      * @param string $userid The id or the username of the user that is being updated.
      */
-    public function editUser( $callName, $params = array())
+    public function editUser( $callName, $input, $params = array() )
     {
-        $userid = DBJson::mysql_real_escape_string( $userid );
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/EditUser.sql',array_merge($params,array('values' => $input->getInsertData( ))),200,'Model::isCreated',array(new User()),'Model::isProblem',array(new User()));
+        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/EditUser.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new User()),'Model::isProblem',array(new User()));
     }
 
     /**
@@ -55,10 +55,9 @@ class DBUser
      *
      * @param string $userid The id or the username of the user that is being deleted.
      */
-    public function removeUser( $callName, $params = array())
+    public function removeUser( $callName, $input, $params = array() )
     {
-        $userid = DBJson::mysql_real_escape_string( $userid );
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/DeleteUser.sql',$params,200,'Model::isCreated',array(new User()),'Model::isProblem',array(new User()));  
+        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/DeleteUser.sql',$params,201,'Model::isCreated',array(new User()),'Model::isProblem',array(new User()));  
     }
 
     /**
@@ -69,10 +68,9 @@ class DBUser
      *
      * @param string $userid The id or the username of the user that is being deleted.
      */
-    public function removeUserPermanent( $callName, $params = array())
+    public function removeUserPermanent( $callName, $input, $params = array() )
     {
-        $userid = DBJson::mysql_real_escape_string( $userid );
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/DeleteUserPermanent.sql',$params,200,'Model::isCreated',array(new User()),'Model::isProblem',array(new User()));
+        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/DeleteUserPermanent.sql',$params,201,'Model::isCreated',array(new User()),'Model::isProblem',array(new User()));
     }
 
     /**
@@ -82,7 +80,7 @@ class DBUser
      * /user(/).
      * The request body should contain a JSON object representing the new user.
      */
-    public function addUser( $callName, $input, $params = array())
+    public function addUser( $callName, $input, $params = array() )
     {
         $positive = function($input) {
             // sets the new auto-increment id
@@ -90,7 +88,7 @@ class DBUser
             $obj->setId( $input[0]->getInsertId( ) );
             return array("status"=>201,"content"=>$obj);
         };
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/AddUser.sql',array( 'values' => $input->getInsertData( )),200,$positive,array(),'Model::isProblem',array(new User()));
+        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/AddUser.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new User()));
     }
 
     public function get( $functionName, $linkName, $params=array(),$singleResult = false, $checkSession = true )

@@ -1,20 +1,111 @@
 {
-  "name":"DBGroup",
-  "version":"1.0",
-  "classFile":"DBGroup.php",
-  "className":"DBGroup",
-  "files":[
-    {"path":".htaccess"},
-    {"path":"DBGroup.php"},
-    {"path":"index.php"},
-    {"path":"Commands.json"},
-    {"path":"Sql/"}
-  ],
-  "links":[
-    {"name":"out", "target":"DBQuery", "links":[{"method":"POST", "path":"/query" }] },
-    {"name":"out2", "target":"DBQuery2", "links":[{"method":"POST", "path":"/query" }] }
-  ],
-  "connector":[
-    {"name":"request", "target":"CLocalObjectRequest"}
-  ]
+    "name": "DBGroup",
+    "version": "1.0",
+    "classFile": "DBGroup.php",
+    "className": "DBGroup",
+    "files": [
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "DBGroup.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "Sql/"
+        }
+    ],
+    "links": [
+        {
+            "name": "out",
+            "target": "DBQuery",
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "/query"
+                }
+            ]
+        },
+        {
+            "name": "out2",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "/query"
+                }
+            ]
+        },
+        {
+            "name": "getUserGroups",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBGroupGetUserGroups/:userid"
+                }
+            ]
+        },
+        {
+            "name": "getSheetGroups",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBGroupGetSheetGroups/:esid"
+                }
+            ]
+        },
+        {
+            "name": "getUserSheetGroup",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBGroupGetUserSheetGroups/:userid/:esid"
+                }
+            ]
+        },
+        {
+            "name": "getCourseGroups",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBGroupGetCourseGroups/:courseid"
+                }
+            ]
+        },
+        {
+            "name": "getAllGroups",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBAllGetUserGroups"
+                }
+            ]
+        },
+        {
+            "name": "getExistsPlatform",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBGroupGetExistsPlatform"
+                }
+            ]
+        }
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest"
+        }
+    ]
 }
