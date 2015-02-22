@@ -20,7 +20,7 @@
         "method": "GET",
         "path": "/query/procedure/:procedure(/:params+)"
     },
-        {
+    {
         "name": "addPlatform",
         "outputType": "Platform",
         "inputType": "Platform",

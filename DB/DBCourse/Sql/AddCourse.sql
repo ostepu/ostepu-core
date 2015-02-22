@@ -8,4 +8,4 @@
  */
 ?>
  
-INSERT INTO Course SET <?php echo $values; ?>
+INSERT INTO Course SET <?php echo $values; ?>;

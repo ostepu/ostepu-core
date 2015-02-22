@@ -80,6 +80,16 @@
                     "path": "/query/procedure/DBApprovalConditionGetExistsPlatform"
                 }
             ]
+        },
+        {
+            "name": "getSamplesInfo",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBApprovalConditionGetExistsPlatform"
+                }
+            ]
         }
     ],
     "connector": [

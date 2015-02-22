@@ -1,11 +1,91 @@
 [
-    {"method":"put", "path":"/file(/file)/:fileid(/)" },
-    {"method":"delete", "path":"/file(/file)/:fileid(/)" },
-    {"method":"post", "path":"/file(/)" },
-    {"method":"get", "path":"/file(/file)/:fileid(/)" },
-    {"method":"get", "path":"/file/hash/:hash(/)" },
-    {"method":"get", "path":"/file(/file)(/)" },
-    {"method":"POST", "path":"/platform"},
-    {"method":"DELETE", "path":"/platform"},
-    {"method":"GET", "path":"/link/exists/platform"}
+    {
+        "name": "editFile",
+        "outputType": "File",
+        "inputType": "File",
+        "method": "PUT",
+        "path": "/file(/file)/:fileid(/)"
+    },
+    {
+        "name": "removeFile",
+        "outputType": "File",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/file(/file)/:fileid(/)"
+    },
+    {
+        "name": "addFile",
+        "outputType": "File",
+        "inputType": "File",
+        "method": "POST",
+        "path": "/file(/)"
+    },
+    {
+        "name": "getFile",
+        "callback": "getMatchSingle",
+        "outputType": "File",
+        "inputType": "",
+        "method": "GET",
+        "path": "/file(/file)/:fileid(/)"
+    },
+    {
+        "name": "getFileByHash",
+        "callback": "getMatchSingle",
+        "outputType": "File",
+        "inputType": "",
+        "method": "GET",
+        "path": "/file/hash/:hash(/)"
+    },
+    {
+        "name": "getAllFiles",
+        "callback": "getMatch",
+        "outputType": "File",
+        "inputType": "",
+        "method": "GET",
+        "path": "/file(/timestamp/begin/:beginStamp/end/:endStamp)(/)"
+    },
+    {
+        "name": "getFileByMimeType",
+        "callback": "getMatch",
+        "outputType": "File",
+        "inputType": "",
+        "method": "GET",
+        "path": "/file/mimetype/:base(/:type)(/timestamp/begin/:beginSttamp/end/:endStamp)(/)"
+    },
+    {
+        "name": "addPlatform",
+        "outputType": "Platform",
+        "inputType": "Platform",
+        "method": "POST",
+        "path": "/platform"
+    },
+    {
+        "name": "deletePlatform",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/platform"
+    },
+    {
+        "name": "getExistsPlatform",
+        "callback": "getMatchSingle",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "GET",
+        "path": "/link/exists/platform"
+    },
+    {
+        "name": "getSamplesInfo",
+        "outputType": "",
+        "inputType": "",
+        "method": "GET",
+        "path": "/samples"
+    },
+    {
+        "name": "postSamples",
+        "outputType": "",
+        "inputType": "",
+        "method": "POST",
+        "path": "/samples/:amount"
+    }
 ]

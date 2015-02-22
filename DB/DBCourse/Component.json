@@ -70,6 +70,16 @@
                     "path": "/query/procedure/DBCourseGetExistsPlatform"
                 }
             ]
+        },
+        {
+            "name": "getSamplesInfo",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBCourseGetExistsPlatform"
+                }
+            ]
         }
     ],
     "connector": [

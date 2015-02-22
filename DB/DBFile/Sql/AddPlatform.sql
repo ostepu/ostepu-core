@@ -23,3 +23,8 @@ SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 ALTER TABLE `File` ADD `F_mimeType` VARCHAR(255);
+<?php include $sqlPath.'/procedures/GetFile.sql'; ?>
+<?php include $sqlPath.'/procedures/GetAllFiles.sql'; ?>
+<?php include $sqlPath.'/procedures/GetFileByHash.sql'; ?>
+<?php include $sqlPath.'/procedures/GetFileByMimeType.sql'; ?>
+<?php include $sqlPath.'/procedures/GetExistsPlatform.sql'; ?>

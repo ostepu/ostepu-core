@@ -117,7 +117,7 @@
         "path": "/submission/exercise/:eid/selected(/)"
     },
     {
-         "name": "getSheetSubmissions",
+        "name": "getSheetSubmissions",
         "callback": "getMatch",
         "outputType": "Submission",
         "inputType": "",

@@ -1,11 +1,69 @@
 [
-    {"method":"PUT", "path":"/externalid(/externalid)/:exid(/)"},
-    {"method":"DELETE", "path":"/externalid(/externalid)/:exid(/)"},
-    {"method":"POST", "path":"/externalid(/)"},
-    {"method":"GET", "path":"/externalid(/externalid)/:exid(/)"},
-    {"method":"GET", "path":"/externalid(/externalid)(/)"},
-    {"method":"GET", "path":"/externalid/course/:courseid(/)"},
-    {"method":"POST", "path":"/platform"},
-    {"method":"DELETE", "path":"/platform"},
-    {"method":"GET", "path":"/link/exists/platform"}    
+    {
+        "name": "editExternalId",
+        "outputType": "ExternalId",
+        "inputType": "ExternalId",
+        "method": "PUT",
+        "path": "/externalid(/externalid)/:exid(/)"
+    },
+    {
+        "name": "deleteExternalId",
+        "outputType": "ExternalId",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/externalid(/externalid)/:exid(/)"
+    },
+    {
+        "name": "addExternalId",
+        "outputType": "ExternalId",
+        "inputType": "ExternalId",
+        "method": "POST",
+        "path": "/externalid(/)"
+    },
+    {
+        "name": "getExternalId",
+        "callback": "getMatchSingle",
+        "outputType": "ExternalId",
+        "inputType": "",
+        "method": "GET",
+        "path": "/externalid(/externalid)/:exid(/)"
+    },
+    {
+        "name": "getAllExternalIds",
+        "callback": "getMatch",
+        "outputType": "ExternalId",
+        "inputType": "",
+        "method": "GET",
+        "path": "/externalid(/externalid)(/)"
+    },
+    {
+        "name": "getCourseExternalIds",
+        "callback": "getMatch",
+        "outputType": "ExternalId",
+        "inputType": "",
+        "method": "GET",
+        "path": "/externalid/course/:courseid(/)"
+    },
+    {
+        "name": "addPlatform",
+        "outputType": "Platform",
+        "inputType": "Platform",
+        "method": "POST",
+        "path": "/platform"
+    },
+    {
+        "name": "deletePlatform",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/platform"
+    },
+    {
+        "name": "getExistsPlatform",
+        "callback": "getMatchSingle",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "GET",
+        "path": "/link/exists/platform"
+    }
 ]

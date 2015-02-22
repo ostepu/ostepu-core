@@ -18,3 +18,7 @@ AUTO_INCREMENT = 1;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+<?php include $sqlPath.'/procedures/GetExternalId.sql'; ?>
+<?php include $sqlPath.'/procedures/GetAllExternalIds.sql'; ?>
+<?php include $sqlPath.'/procedures/GetCourseExternalIds.sql'; ?>
+<?php include $sqlPath.'/procedures/GetExistsPlatform.sql'; ?>

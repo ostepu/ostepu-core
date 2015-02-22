@@ -10,61 +10,13 @@
  * @date 2013-2014
  */
 
-require_once ( dirname(__FILE__) . '/../../Assistants/Slim/Slim.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Structures.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Request.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/DBJson.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/CConfig.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
-
-\Slim\Slim::registerAutoloader( );
+include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );
 
 /**
  * A class, to abstract the "File" table from database
  */
 class DBFile
 {
-
-    /**
-     * @var Slim $_app the slim object
-     */
-    private $_app = null;
-
-    /**
-     * @var Component $_conf the component data object
-     */
-    private $_conf = null;
-
-    /**
-     * @var Link[] $query a list of links to a query component
-     */
-    private $query = array( );
-    private $query2 = array( );
-
-    /**
-     * @var string $_prefix the prefixes, the class works with (comma separated)
-     */
-    private static $_prefix = 'file';
-
-    /**
-     * the $_prefix getter
-     *
-     * @return the value of $_prefix
-     */
-    public static function getPrefix( )
-    {
-        return DBFile::$_prefix;
-    }
-
-    /**
-     * the $_prefix setter
-     *
-     * @param string $value the new value for $_prefix
-     */
-    public static function setPrefix( $value )
-    {
-        DBFile::$_prefix = $value;
-    }
 
     /**
      * REST actions
@@ -74,125 +26,12 @@ class DBFile
      *
      * @param Component $conf component data
      */
+    private $_component = null;
     public function __construct( )
     {
-        // runs the CConfig
-        $com = new CConfig( DBFile::getPrefix( ), dirname(__FILE__) );
-
-        // runs the DBFile
-        if ( $com->used( ) ) return;
-            $conf = $com->loadConfig( );
-            
-        // initialize component
-        $this->_conf = $conf;
-        $this->query = array( CConfig::getLink( 
-                                               $conf->getLinks( ),
-                                               'out'
-                                               ) );
-        $this->query2 = array( CConfig::getLink( 
-                                               $conf->getLinks( ),
-                                               'out2'
-                                               ) );
-
-        // initialize slim
-        $this->_app = new \Slim\Slim( );
-        $this->_app->response->headers->set( 
-                                            'Content-Type',
-                                            'application/json'
-                                            );
-        // POST AddPlatform
-        $this->_app->post( 
-                         '/platform',
-                         array( 
-                               $this,
-                               'addPlatform'
-                               )
-                         );
-                         
-        // DELETE DeletePlatform
-        $this->_app->delete( 
-                         '/platform',
-                         array( 
-                               $this,
-                               'deletePlatform'
-                               )
-                         );
-                         
-        // GET GetExistsPlatform
-        $this->_app->get( 
-                         '/link/exists/platform',
-                         array( 
-                               $this,
-                               'getExistsPlatform'
-                               )
-                         );
-                         
-        // PUT EditFile
-        $this->_app->put( 
-                         '/' . $this->getPrefix( ) . '(/file)/:fileid(/)',
-                         array( 
-                               $this,
-                               'editFile'
-                               )
-                         );
-
-        // POST AddFile
-        $this->_app->post( 
-                          '/' . $this->getPrefix( ) . '(/)',
-                          array( 
-                                $this,
-                                'addFile'
-                                )
-                          );
-
-        // DELETE RemoveFile
-        $this->_app->delete( 
-                            '/' . $this->getPrefix( ) . '(/file)/:fileid(/)',
-                            array( 
-                                  $this,
-                                  'removeFile'
-                                  )
-                            );
-
-
-        // GET GetFileByHash
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/hash/:hash(/)',
-                         array( 
-                               $this,
-                               'getFileByHash'
-                               )
-                         );
-                         
-        // GET GetFileByMimeType
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/mimetype/:base(/:type)(/timestamp/begin/:begin/end/:end)(/)',
-                         array( 
-                               $this,
-                               'getFileByMimeType'
-                               )
-                         );
-                         
-        // GET GetFile
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '(/file)/:fileid(/)',
-                         array( 
-                               $this,
-                               'getFile'
-                               )
-                         );
-                         
-        // GET GetAllFiles
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '(/timestamp/begin/:begin/end/:end)(/)',
-                         array( 
-                               $this,
-                               'getAllFiles'
-                               )
-                         );
-
-        // run Slim
-        $this->_app->run( );
+        $component = new Model('file', dirname(__FILE__), $this);
+        $this->_component=$component;
+        $component->run();
     }
 
     /**
@@ -205,63 +44,9 @@ class DBFile
      *
      * @param string $fileid The id of the file that is being updated.
      */
-    public function editFile( $fileid )
+    public function editFile( $callName, $input, $params = array() )
     {
-        Logger::Log( 
-                    'starts PUT EditFile',
-                    LogLevel::DEBUG
-                    );
-
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput( 
-                           $this->_app,
-                           ctype_digit( $fileid )
-                           );
-
-        // decode the received file data, as an object
-        $insert = File::decodeFile( $this->_app->request->getBody( ) );
-
-        // always been an array
-        $arr = true;
-        if ( !is_array( $insert ) ){
-            $insert = array( $insert );
-            $arr = false;
-        }
-
-        foreach ( $insert as $in ){
-
-            // generates the update data for the object
-            $data = $in->getInsertData( );
-
-            // starts a query, by using a given file
-            $result = DBRequest::getRoutedSqlFile( 
-                                                  $this->query,
-                                                  dirname(__FILE__) . '/Sql/EditFile.sql',
-                                                  array( 
-                                                        'fileid' => $fileid,
-                                                        'values' => $data
-                                                        )
-                                                  );
-
-            // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
-                 $result['status'] <= 299 ){
-                $this->_app->response->setStatus( 201 );
-                if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
-                                                        'Content-Type',
-                                                        $result['headers']['Content-Type']
-                                                        );
-                
-            } else {
-                Logger::Log( 
-                            'PUT EditFile failed',
-                            LogLevel::ERROR
-                            );
-                $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-                $this->_app->stop( );
-            }
-        }
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/EditFile.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new File()),'Model::isProblem',array(new File()));
     }
 
     /**
@@ -272,73 +57,9 @@ class DBFile
      *
      * @param string $fileid The id of the file that is being deleted.
      */
-    public function removeFile( $fileid )
+    public function removeFile( $callName, $input, $params = array() )
     {
-        Logger::Log( 
-                    'starts DELETE RemoveFile',
-                    LogLevel::DEBUG
-                    );
-
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput( 
-                           $this->_app,
-                           ctype_digit( $fileid )
-                           );
-
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
-                                              $this->query2,
-                                              dirname(__FILE__) . '/Sql/DeleteFile.sql',
-                                              array( 'fileid' => $fileid )
-                                              );
-
-        // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
-             $result['status'] <= 299 ){
-            $query = Query::decodeQuery( $result['content'] );
-
-            $data = $query[count($query)-1]->getResponse();
-
-            // generates an assoc array of an file by using a defined list of
-            // its attributes
-            $file = DBJson::getResultObjectsByAttributes( 
-                                                         $data,
-                                                         File::getDBPrimaryKey( ),
-                                                         File::getDBConvert( )
-                                                         );
-
-            // only one object as result
-            if ( count( $file ) > 0 )
-                $file = $file[0];
-
-            if ( $file !== null ){
-                $this->_app->response->setBody( File::encodeFile( $file ) );
-                $this->_app->response->setStatus( 201 );
-                if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
-                                                        'Content-Type',
-                                                        $result['headers']['Content-Type']
-                                                        );
-                
-            } else {
-                Logger::Log( 
-                            'DELETE RemoveFile failed (no file in db)',
-                            LogLevel::ERROR
-                            );
-                $this->_app->response->setBody( File::encodeFile( new File( ) ) );
-                $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-                $this->_app->stop( );
-            }
-            
-        } else {
-            Logger::Log( 
-                        'DELETE RemoveFile failed',
-                        LogLevel::ERROR
-                        );
-            $this->_app->response->setBody( File::encodeFile( new File( ) ) );
-            $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-            $this->_app->stop( );
-        }
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteFile.sql',$params,201,'Model::isCreated',array(new File()),'Model::isProblem',array(new File()));  
     }
 
     /**
@@ -349,252 +70,54 @@ class DBFile
      * The request body should contain a JSON object representing the file's
      * attributes.
      */
-    public function addFile( )
+    public function addFile( $callName, $input, $params = array() )
     {
-        Logger::Log( 
-                    'starts POST AddFile',
-                    LogLevel::DEBUG
-                    );
+        $positive = function($input) {
+            // sets the new auto-increment id
+            $obj = new File( );
+            $obj->setFileId( $input[0]->getInsertId( ) );
+            return array("status"=>201,"content"=>$obj);
+        };
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddFile.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new File()));
+    }
 
-        // decode the received file data, as an object
-        $insert = File::decodeFile( $this->_app->request->getBody( ) );
-
-        // always been an array
-        $arr = true;
-        if ( !is_array( $insert ) ){
-            $insert = array( $insert );
-            $arr = false;
-        }
-
-        // this array contains the indices of the inserted objects
-        $res = array( );
-        foreach ( $insert as $in ){
-
-            // generates the insert data for the object
-            $data = $in->getInsertData( );
-
-            // starts a query, by using a given file
-            $result = DBRequest::getRoutedSqlFile( 
-                                                  $this->query,
-                                                  dirname(__FILE__) . '/Sql/AddFile.sql',
-                                                  array( 'values' => $data )
-                                                  );
-
-            // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
-                 $result['status'] <= 299 && isset($result['content'])){
-                $queryResult = Query::decodeQuery( $result['content'] );
-
-                // sets the new auto-increment id
-                // $obj = new File();
-                $in->setFileId( $queryResult->getInsertId( ) );
-                $in->setBody( null );
-
-                $res[] = $in;
-                $this->_app->response->setStatus( 201 );
-                if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
-                                                        'Content-Type',
-                                                        $result['headers']['Content-Type']
-                                                        );
-                
-            } else {
-                Logger::Log( 
-                            'POST AddFile failed',
-                            LogLevel::ERROR
-                            );
-                $this->_app->response->setBody( File::encodeFile( $res ) );
-                $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-                $this->_app->stop( );
+    public function get( $functionName, $linkName, $params=array(),$singleResult = false, $checkSession = true )
+    {
+        $positive = function($input, $singleResult) {
+            //$input = $input[count($input)-1];
+            $result = Model::isEmpty();$result['content']=array();
+            foreach ($input as $inp){
+                if ( $inp->getNumRows( ) > 0 ){
+                    // extract File data from db answer
+                    $result['content'] = array_merge($result['content'], File::ExtractFile( $inp->getResponse( ), $singleResult));
+                    $result['status'] = 200;
+                }
             }
-        }
-
-        if ( !$arr && 
-             count( $res ) == 1 ){
-            $this->_app->response->setBody( File::encodeFile( $res[0] ) );
-            
-        } else 
-            $this->_app->response->setBody( File::encodeFile( $res ) );
+            return $result;
+        };
+        
+        $params = DBJson::mysql_real_escape_string( $params );
+        return $this->_component->call($linkName, $params, '', 200, $positive, array($singleResult), 'Model::isProblem', array(), 'Query');
     }
 
-    public function get( 
-                        $functionName,
-                        $sqlFile,
-                        $params=array(),
-                        $singleResult = false,
-                        $checkSession = true
-                        )
+    public function getMatch($callName, $input, $params = array())
     {
-        Logger::Log( 
-                    'starts GET ' . $functionName,
-                    LogLevel::DEBUG
-                    );
-
-        // checks whether incoming data has the correct data type
-        foreach ($params as &$param)
-            $param = DBJson::mysql_real_escape_string( $param );
-
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
-                                              $this->query,
-                                              $sqlFile,
-                                              $params,
-                                              $checkSession
-                                              );
-
-        // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
-             $result['status'] <= 299 ){
-            $query = Query::decodeQuery( $result['content'] );
-
-            if ( $query->getNumRows( ) > 0 ){
-                $res = File::ExtractFile( 
-                                         $query->getResponse( ),
-                                         $singleResult
-                                         );
-                $this->_app->response->setBody( File::encodeFile( $res ) );
-
-                $this->_app->response->setStatus( 200 );
-                if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
-                                                        'Content-Type',
-                                                        $result['headers']['Content-Type']
-                                                        );
-
-                $this->_app->stop( );
-                
-            } else 
-                $result['status'] = 404;
-        }
-
-        Logger::Log( 
-                    'GET ' . $functionName . ' failed',
-                    LogLevel::ERROR
-                    );
-        $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-        $this->_app->response->setBody( File::encodeFile( new File( ) ) );
-        $this->_app->stop( );
+        return $this->get($callName,$callName,$params);
     }
-
-    /**
-     * Returns a file.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /file/$fileid(/) or /file/file/$fileid(/).
-     *
-     * @param string $file The id of the file that should be returned.
-     */
-    public function getFile( $fileid )
+    public function getMatchSingle($callName, $input, $params = array())
     {
-        $this->get( 
-                   'GetFile',
-                   dirname(__FILE__) . '/Sql/GetFile.sql',
-                   array("fileid"=>$fileid),
-                   true
-                   );
-    }
-
-    /**
-     * Returns a file identified by a given hash.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /file/hash/$hash(/).
-     *
-     * @param string $hash The hash of the file that should be returned.
-     */
-    public function getFileByHash( $hash )
-    {
-        $this->get( 
-                   'GetFileByHash',
-                   dirname(__FILE__) . '/Sql/GetFileByHash.sql',
-                   array("hash"=>$hash),
-                   true
-                   );
+        return $this->get($callName,$callName,$params,true,false);
     }
     
-    public function getFileByMimeType( $base, $type=null, $begin=null, $end=null )
-    {
-        $this->get( 
-                   'GetFileByMimeType',
-                   dirname(__FILE__) . '/Sql/GetFileByMimeType.sql',
-                   array("base"=>$base,"type"=>$type,"begin"=>$begin,"end"=>$end)
-                   );
-    }
-
-    /**
-     * Returns all files.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /file(/) or /file/file(/).
-     */
-    public function getAllFiles( $begin=null, $end=null)
-    {
-        $this->get( 
-                   'GetAllFiles',
-                   dirname(__FILE__) . '/Sql/GetAllFiles.sql',
-                   array("begin"=>$begin,"end"=>$end)
-                   );
-    }
-    
-    /**
-     * Returns status code 200, if this component is correctly installed for the platform
-     *
-     * Called when this component receives an HTTP GET request to
-     * /link/exists/platform.
-     */
-    public function getExistsPlatform( )
-    {
-        $this->get( 
-                   'GetExistsPlatform',
-                   dirname(__FILE__) . '/Sql/GetExistsPlatform.sql',
-                   array(),
-                   true,
-                   false
-                   );
-    }
-    
-    /**
+        /**
      * Removes the component from the platform
      *
      * Called when this component receives an HTTP DELETE request to
      * /platform.
      */
-    public function deletePlatform( )
+    public function deletePlatform( $callName, $input, $params = array())
     {
-        Logger::Log( 
-                    'starts DELETE DeletePlatform',
-                    LogLevel::DEBUG
-                    );
-
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
-                                              $this->query2,
-                                              dirname(__FILE__) . '/Sql/DeletePlatform.sql',
-                                              array( ),
-                                              false
-                                              );
-
-        // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
-             $result['status'] <= 299 ){
-
-            $this->_app->response->setStatus( 201 );
-            $this->_app->response->setBody( '' );
-            if ( isset( $result['headers']['Content-Type'] ) )
-                $this->_app->response->headers->set( 
-                                                    'Content-Type',
-                                                    $result['headers']['Content-Type']
-                                                    );
-            
-        } else {
-            Logger::Log( 
-                        'DELETE DeletePlatform failed',
-                        LogLevel::ERROR
-                        );
-            $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-            $this->_app->response->setBody( '' );
-            $this->_app->stop( );
-        }
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),200,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
     
     /**
@@ -603,65 +126,48 @@ class DBFile
      * Called when this component receives an HTTP POST request to
      * /platform.
      */
-    public function addPlatform( )
+    public function addPlatform( $callName, $input, $params = array())
     {
-        Logger::Log( 
-                    'starts POST AddPlatform',
-                    LogLevel::DEBUG
-                    );
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),200,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+    }
 
-        // decode the received course data, as an object
-        $insert = Platform::decodePlatform( $this->_app->request->getBody( ) );
-
-        // always been an array
-        $arr = true;
-        if ( !is_array( $insert ) ){
-            $insert = array( $insert );
-            $arr = false;
-        }
-
-        // this array contains the indices of the inserted objects
-        $res = array( );
-        foreach ( $insert as $in ){
+   public function getSamplesInfo( $callName, $input, $params = array() )
+    {
+        $positive = function($input) {
+            $result = Model::isEmpty();$result['content']=array();
+            foreach ($input as $inp){
+                if ( $inp->getNumRows( ) > 0 ){
+                    foreach($inp->getResponse( ) as $key => $value)
+                        foreach($value as $key2 => $value2){
+                            $result['content'][] = $value2;
+                        }
+                    $result['status'] = 200;
+                }
+            }
+            return $result;
+        };
         
-            // starts a query, by using a given file
-            $result = DBRequest::getRoutedSqlFile( 
-                                                  $this->query2,
-                                                  dirname(__FILE__) . '/Sql/AddPlatform.sql',
-                                                  array( 'object' => $in ),
-                                                  false
-                                                  );
+        $params = DBJson::mysql_real_escape_string( $params );
+        return $this->_component->call($callName, $params, '', 200, $positive,  array(), 'Model::isProblem', array(), 'Query');
+    }
 
-            // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
-                 $result['status'] <= 299 ){
-                $queryResult = Query::decodeQuery( $result['content'] );
-
-                $res[] = $in;
-                $this->_app->response->setStatus( 201 );
-                if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
-                                                        'Content-Type',
-                                                        $result['headers']['Content-Type']
-                                                        );
-                
-            } else {
-                Logger::Log( 
-                            'POST AddPlatform failed',
-                            LogLevel::ERROR
-                            );
-                $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-                $this->_app->response->setBody( Platform::encodePlatform( $res ) );
-                $this->_app->stop( );
+    public function postSamples( $callName, $input, $params = array() )
+    {
+        set_time_limit(0);
+        $sql=array();
+        for($i=1;$i<=$params['amount'];$i++){
+            $rr=md5($i);
+            $obj = File::createFile($i,$rr,"/".$rr.".txt",time(),rand(1,100000),$rr);
+            $sql[]="INSERT IGNORE INTO File SET ".$obj->getInsertData( ).";";
+            if ($i%1000===0){
+                $this->_component->callSql('out2',implode('',$sql),201,'Model::isCreated',array(),'Model::isProblem',array(new File()));
+                unset($sql);
+                $sql=array();
             }
         }
-
-        if ( !$arr && 
-             count( $res ) == 1 ){
-            $this->_app->response->setBody( Platform::encodePlatform( $res[0] ) );
-            
-        } else 
-            $this->_app->response->setBody( Platform::encodePlatform( $res ) );
+        if (count($sql)>0)
+            $this->_component->callSql('out2',implode('',$sql),201,'Model::isCreated',array(),'Model::isProblem',array(new File()));
+        return Model::isCreated();
     }
 }
 ?>

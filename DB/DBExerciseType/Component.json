@@ -90,6 +90,16 @@
                     "path": "/query/procedure/DBExerciseTypeGetExistsPlatform"
                 }
             ]
+        },
+        {
+            "name": "getSamplesInfo",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBExerciseTypeGetExistsPlatform"
+                }
+            ]
         }
     ],
     "connector": [

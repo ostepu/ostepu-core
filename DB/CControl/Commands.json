@@ -6,6 +6,7 @@
     {"method":"put", "path":"/component/:componentid(/)" },
     {"method":"delete", "path":"/component/:componentid(/)" },
     {"method":"post", "path":"/component(/)" },
+    {"method":"get", "path":"/tableReferences(/)" },
     {"method":"get", "path":"/component/:componentid(/)" },
     {"method":"get", "path":"/definition(/)" },
     {"method":"get", "path":"/definition/:componentid(/)" },

@@ -1,13 +1,91 @@
 [
-    {"method":"PUT", "path":"/exercisefiletype(/exercisefiletype)/:eftid(/)"},
-    {"method":"DELETE", "path":"/exercisefiletype(/exercisefiletype)/:eftid(/)"},
-    {"method":"DELETE", "path":"/exercisefiletype/exercise/:eid(/)"},
-    {"method":"DELETE", "path":"/exercisefiletype/exercisesheet/:esid(/)"},
-    {"method":"POST", "path":"/exercisefiletype(/)"},
-    {"method":"GET", "path":"/exercisefiletype(/exercisefiletype)/:eftid(/)"},
-    {"method":"GET", "path":"/exercisefiletype(/exercisefiletype)/exercise/:eid(/)"},
-    {"method":"GET", "path":"/exercisefiletype(/exercisefiletype)(/)"},
-    {"method":"POST", "path":"/platform"},
-    {"method":"DELETE", "path":"/platform"},
-    {"method":"GET", "path":"/link/exists/platform"}    
+    {
+        "name": "editExerciseFileType",
+        "outputType": "ExerciseFileType",
+        "inputType": "ExerciseFileType",
+        "method": "PUT",
+        "path": "/exercisefiletype(/exercisefiletype)/:eftid(/)"
+    },
+    {
+        "name": "deleteExerciseFileType",
+        "outputType": "ExerciseFileType",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/exercisefiletype(/exercisefiletype)/:eftid(/)"
+    },
+    {
+        "name": "deleteExerciseExerciseFileType",
+        "outputType": "ExerciseFileType",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/exercisefiletype/exercise/:eid(/)"
+    },
+    {
+        "name": "deleteExerciseSheetExerciseFileType",
+        "outputType": "ExerciseFileType",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/exercisefiletype/exercisesheet/:esid(/)"
+    },
+    {
+        "name": "addExerciseFileType",
+        "outputType": "ExerciseFileType",
+        "inputType": "ExerciseFileType",
+        "method": "POST",
+        "path": "/exercisefiletype(/)"
+    },
+    {
+        "name": "getExerciseFileType",
+        "callback": "getMatchSingle",
+        "outputType": "ExerciseFileType",
+        "inputType": "",
+        "method": "GET",
+        "path": "/exercisefiletype(/exercisefiletype)/:eftid(/)"
+    },
+    {
+        "name": "getExerciseExerciseFileTypes",
+        "callback": "getMatch",
+        "outputType": "ExerciseFileType",
+        "inputType": "",
+        "method": "GET",
+        "path": "/exercisefiletype(/exercisefiletype)/exercise/:eid(/)"
+    },
+    {
+        "name": "getSheetExerciseFileTypes",
+        "callback": "getMatch",
+        "outputType": "ExerciseFileType",
+        "inputType": "",
+        "method": "GET",
+        "path": "/exercisefiletype(/exercisefiletype)/exercisesheet/:esid(/)"
+    },
+    {
+        "name": "getAllExerciseFileTypes",
+        "callback": "getMatch",
+        "outputType": "ExerciseFileType",
+        "inputType": "",
+        "method": "GET",
+        "path": "/exercisefiletype(/exercisefiletype)(/)"
+    },
+    {
+        "name": "addPlatform",
+        "outputType": "Platform",
+        "inputType": "Platform",
+        "method": "POST",
+        "path": "/platform"
+    },
+    {
+        "name": "deletePlatform",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/platform"
+    },
+    {
+        "name": "getExistsPlatform",
+        "callback": "getMatchSingle",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "GET",
+        "path": "/link/exists/platform"
+    }
 ]

@@ -104,5 +104,19 @@
         "inputType": "",
         "method": "GET",
         "path": "/link/exists/platform"
+    },
+    {
+        "name": "getSamplesInfo",
+        "outputType": "",
+        "inputType": "",
+        "method": "GET",
+        "path": "/samples"
+    },
+    {
+        "name": "postSamples",
+        "outputType": "",
+        "inputType": "",
+        "method": "POST",
+        "path": "/samples/:amount"
     }
 ]

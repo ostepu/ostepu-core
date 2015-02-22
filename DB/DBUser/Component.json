@@ -120,6 +120,16 @@
                     "path": "/query/procedure/DBUserGetExistsPlatform"
                 }
             ]
+        },
+        {
+            "name": "getSamplesInfo",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBUserGetExistsPlatform"
+                }
+            ]
         }
     ],
     "connector": [

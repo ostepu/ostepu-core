@@ -19,3 +19,8 @@ AUTO_INCREMENT = 1;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+<?php include $sqlPath.'/procedures/GetExerciseFileType.sql'; ?>
+<?php include $sqlPath.'/procedures/GetAllExerciseFileTypes.sql'; ?>
+<?php include $sqlPath.'/procedures/GetExerciseExerciseFileTypes.sql'; ?>
+<?php include $sqlPath.'/procedures/GetSheetExerciseFileTypes.sql'; ?>
+<?php include $sqlPath.'/procedures/GetExistsPlatform.sql'; ?>

@@ -17,6 +17,7 @@ include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );
  */
 class DBCourse
 {
+    
     /**
      * REST actions
      *
@@ -56,7 +57,7 @@ class DBCourse
      *
      * @param int $courseid The id of the course that is being deleted.
      */
-    public function deleteCourse( $courseid )
+    public function deleteCourse( $callName, $input, $params = array() )
     {
         return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteCourse.sql',$params,201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));  
     }
@@ -69,7 +70,7 @@ class DBCourse
      * The request body should contain a JSON object representing the course's
      * attributes.
      */
-    public function addCourse( )
+    public function addCourse( $callName, $input, $params = array() )
     {
         $positive = function($input) {
             // sets the new auto-increment id
@@ -128,6 +129,44 @@ class DBCourse
     public function addPlatform( $callName, $input, $params = array())
     {
         return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),200,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+    }
+    
+    public function getSamplesInfo( $callName, $input, $params = array() )
+    {
+        $positive = function($input) {
+            $result = Model::isEmpty();$result['content']=array();
+            foreach ($input as $inp){
+                if ( $inp->getNumRows( ) > 0 ){
+                    foreach($inp->getResponse( ) as $key => $value)
+                        foreach($value as $key2 => $value2){
+                            $result['content'][] = $value2;
+                        }
+                    $result['status'] = 200;
+                }
+            }
+            return $result;
+        };
+        
+        $params = DBJson::mysql_real_escape_string( $params );
+        return $this->_component->call($callName, $params, '', 200, $positive,  array(), 'Model::isProblem', array(), 'Query');
+    }
+    
+    public function postSamples( $callName, $input, $params = array() )
+    {   
+        set_time_limit(0);
+        $sql=array();
+        for($i=1;$i<=$params['amount'];$i++){
+            $rr = md5($i);
+            $obj = Course::createCourse($i,$rr,"WS 2014/2015",1);
+            $sql[]="insert ignore into Course SET ".$obj->getInsertData( ).";";
+            if ($i%1000==0){
+                $this->_component->callSql('out2',implode('',$sql),201,'Model::isCreated',array(),'Model::isProblem',array(new File()));
+                $sql=array();
+            }
+        }
+        $this->_component->callSql('out2',implode('',$sql),201,'Model::isCreated',array(),'Model::isProblem',array(new File()));
+        
+        return Model::isCreated();
     }
 }
 
