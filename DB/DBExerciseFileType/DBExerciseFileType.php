@@ -6,7 +6,7 @@
  *
  * @author Till Uhlig
  * @example DB/DBExerciseFileType/ExerciseFileTypeSample.json
- * @date 2013-2014
+ * @date 2013-2015
  */
 
 include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );
@@ -126,7 +126,7 @@ class DBExerciseFileType
      */
     public function deletePlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),200,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
     
     /**
@@ -137,7 +137,7 @@ class DBExerciseFileType
      */
     public function addPlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),200,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
 }
 ?>

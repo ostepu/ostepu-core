@@ -1,12 +1,81 @@
 [
-    {"method":"PUT", "path":"/exercisesheet(/exercisesheet)/:esid(/)"},
-    {"method":"DELETE", "path":"/exercisesheet(/exercisesheet)/:esid(/)"},
-    {"method":"POST", "path":"/exercisesheet(/)"},
-    {"method":"GET", "path":"/exercisesheet(/exercisesheet)/:esid/url(/)"},
-    {"method":"GET", "path":"/exercisesheet/course/:courseid/url(/)"},
-    {"method":"GET", "path":"/exercisesheet/course/:courseid+(/)"},
-    {"method":"GET", "path":"/exercisesheet(/exercisesheet)/:esid+(/)"},
-    {"method":"POST", "path":"/platform"},
-    {"method":"DELETE", "path":"/platform"},
-    {"method":"GET", "path":"/link/exists/platform"}    
+    {
+        "name": "editExerciseSheet",
+        "outputType": "ExerciseSheet",
+        "inputType": "ExerciseSheet",
+        "method": "PUT",
+        "path": "/exercisesheet(/exercisesheet)/:esid(/)"
+    },
+    {
+        "name": "deleteExerciseSheet",
+        "outputType": "ExerciseSheet",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/exercisesheet(/exercisesheet)/:esid(/)"
+    },
+    {
+        "name": "addExerciseSheet",
+        "outputType": "ExerciseSheet",
+        "inputType": "ExerciseSheet",
+        "method": "POST",
+        "path": "/exercisesheet(/)"
+    },
+    {
+        "name": "getExerciseSheetURL",
+        "callback": "getMatchSingleURL",
+        "outputType": "File",
+        "inputType": "",
+        "method": "GET",
+        "path": "/exercisesheet(/exercisesheet)/:esid/url(/)"
+    },
+    {
+        "name": "getCourseSheetURLs",
+        "callback": "getMatchURL",
+        "outputType": "File",
+        "inputType": "",
+        "method": "GET",
+        "path": "/exercisesheet/course/:courseid/url(/)"
+    },
+    {
+        "name": "getCourseSheets",
+        "outputType": "ExerciseSheet",
+        "inputType": "",
+        "method": "GET",
+        "path": "/exercisesheet/course/:courseid(/:exercise)(/)"
+    },
+    {
+        "name": "getExerciseSheet",
+        "outputType": "ExerciseSheet",
+        "inputType": "",
+        "method": "GET",
+        "path": "/exercisesheet(/exercisesheet)/:esid(/:exercise)(/)"
+    },
+    {
+        "name": "addPlatform",
+        "outputType": "Platform",
+        "inputType": "Platform",
+        "method": "POST",
+        "path": "/platform"
+    },
+    {
+        "name": "deletePlatform",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/platform"
+    },
+    {
+        "name": "getSamplesInfo",
+        "outputType": "",
+        "inputType": "",
+        "method": "GET",
+        "path": "/samples"
+    },
+    {
+        "name": "postSamples",
+        "outputType": "Query",
+        "inputType": "",
+        "method": "POST",
+        "path": "/samples/course/:courseAmount/user/:userAmount"
+    }
 ]

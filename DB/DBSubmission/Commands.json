@@ -161,5 +161,19 @@
         "inputType": "",
         "method": "GET",
         "path": "/link/exists/platform"
+    },
+    {
+        "name": "getSamplesInfo",
+        "outputType": "",
+        "inputType": "",
+        "method": "GET",
+        "path": "/samples"
+    },
+    {
+        "name": "postSamples",
+        "outputType": "Query",
+        "inputType": "",
+        "method": "POST",
+        "path": "/samples/course/:courseAmount/user/:userAmount"
     }
 ]

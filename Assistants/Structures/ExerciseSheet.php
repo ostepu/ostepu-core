@@ -542,6 +542,78 @@ class ExerciseSheet extends Object implements JsonSerializable
             $list['sheetName'] = $this->sheetName;
         return array_merge($list,parent::jsonSerialize( ));
     }
+    
+    public static function ExtractExerciseSheet( 
+                                                 $data,
+                                                 $singleResult = false,
+                                                 $SheetExtension = '',
+                                                 $SheetFileExtension = '',
+                                                 $SheetSolutionExtension = '',
+                                                 $isResult = true
+                                                 )
+    {
+
+        // generates an assoc array of an exercise sheet by using a defined list of its attributes
+        $exerciseSheet = DBJson::getObjectsByAttributes( 
+                                                        $data,
+                                                        ExerciseSheet::getDBPrimaryKey( ),
+                                                        ExerciseSheet::getDBConvert( ),
+                                                        $SheetExtension
+                                                        );
+
+        // generates an assoc array of an file by using a defined list of its attributes
+        $exerciseSheetFile = DBJson::getObjectsByAttributes( 
+                                                            $data,
+                                                            File::getDBPrimaryKey( ),
+                                                            File::getDBConvert( ),
+                                                            $SheetFileExtension
+                                                            );
+
+        // generates an assoc array of an file by using a defined list of its attributes
+        $sampleSolutions = DBJson::getObjectsByAttributes( 
+                                                          $data,
+                                                          File::getDBPrimaryKey( ),
+                                                          File::getDBConvert( ),
+                                                          $SheetSolutionExtension.'2'
+                                                          );
+
+        // concatenates the exercise sheet and the associated sample solution
+        $res = DBJson::concatObjectListsSingleResult( 
+                                                     $data,
+                                                     $exerciseSheet,
+                                                     ExerciseSheet::getDBPrimaryKey( ),
+                                                     ExerciseSheet::getDBConvert( )['F_id_file'],
+                                                     $exerciseSheetFile,
+                                                     File::getDBPrimaryKey( ),
+                                                     $SheetFileExtension,
+                                                     $SheetExtension
+                                                     );
+
+        // concatenates the exercise sheet and the associated exercise sheet file
+        $res = DBJson::concatObjectListsSingleResult( 
+                                                     $data,
+                                                     $res,
+                                                     ExerciseSheet::getDBPrimaryKey( ),
+                                                     ExerciseSheet::getDBConvert( )['F_id_sampleSolution'],
+                                                     $sampleSolutions,
+                                                     File::getDBPrimaryKey( ),
+                                                     $SheetSolutionExtension.'2',
+                                                     $SheetExtension
+                                                     );
+        if ($isResult){
+            // to reindex
+            $res = array_merge( $res );
+            
+            if ( $singleResult == true ){
+
+                // only one object as result
+                if ( count( $res ) > 0 )
+                    $res = $res[0];
+            }
+        }
+
+        return $res;
+    }
 }
 
  

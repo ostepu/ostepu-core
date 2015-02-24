@@ -5,7 +5,7 @@
  * @author Till Uhlig
  * @author Felix Schmidt
  * @example DB/DBUser/UserSample.json
- * @date 2013-2014
+ * @date 2013-2015
  */
 
 include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );
@@ -127,7 +127,7 @@ class DBUser
      */
     public function deletePlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),200,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
     
     /**
@@ -138,7 +138,7 @@ class DBUser
      */
     public function addPlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),200,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
     
     public function getSamplesInfo( $callName, $input, $params = array() )
@@ -162,21 +162,9 @@ class DBUser
     }
     
     public function postSamples( $callName, $input, $params = array() )
-    {
+    {   
         set_time_limit(0);
-        $sql=array();
-        for($i=1;$i<=$params['amount'];$i++){
-            $rr = md5($i);
-            $obj = User::createUser($i,$rr,$rr,$rr,$rr,$rr,1,'','');
-            $sql[]="insert ignore into User SET ".$obj->getInsertData( ).";";
-            if ($i%1000==0){
-                $this->_component->callSql('out2',implode('',$sql),201,'Model::isCreated',array(),'Model::isProblem',array(new File()));
-                $sql=array();
-            }
-        }
-        $this->_component->callSql('out2',implode('',$sql),201,'Model::isCreated',array(),'Model::isProblem',array(new File()));
-        
-        return Model::isCreated();
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/Samples.sql',$params,201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));  
     }
 }
 ?>

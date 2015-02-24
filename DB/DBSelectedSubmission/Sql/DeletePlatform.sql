@@ -10,3 +10,7 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 DROP TRIGGER IF EXISTS `SelectedSubmission_BINS`;
 DROP TRIGGER IF EXISTS `SelectedSubmission_BUPD`;
+DROP PROCEDURE IF EXISTS `DBSelectedSubmissionGetSheetSelected`;
+DROP PROCEDURE IF EXISTS `DBSelectedSubmissionGetCourseSelected`;
+DROP PROCEDURE IF EXISTS `DBSelectedSubmissionGetExerciseSelected`;
+DROP PROCEDURE IF EXISTS `DBSelectedSubmissionGetExistsPlatform`;

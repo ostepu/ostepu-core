@@ -1,18 +1,9 @@
-<?php
-/**
- * @file GetSheetExercises.sql
- * gets all exercise sheet exercises from %Exercise table
- * @author Till Uhlig
- * @param int \$esid an %ExerciseSheet identifier
- * @result 
- * - E, the exercise data
- * - F, the submission file
- * - S, the submission data
- * - SS, the selected submission data
- */
-?>
- 
-select 
+DROP PROCEDURE IF EXISTS `DBExerciseSheetGetSheetExercises`;
+CREATE PROCEDURE `DBExerciseSheetGetSheetExercises` (IN esid INT)
+READS SQL DATA
+begin
+SET @s = concat("
+select SQL_CACHE
     E.E_id,
     E.ES_id,
     E.ET_id,
@@ -49,4 +40,8 @@ from
     (Submission S
     join SelectedSubmission SS ON S.S_id = SS.S_id_selected) ON S.E_id = E.E_id
 where
-    E.ES_id = '<?php echo $esid; ?>'
+    E.ES_id = '",esid,"';");
+PREPARE stmt1 FROM @s;
+EXECUTE stmt1;
+DEALLOCATE PREPARE stmt1;
+end;

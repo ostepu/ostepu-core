@@ -7,7 +7,7 @@
  * @author Till Uhlig
  * @author Felix Schmidt
  * @example DB/DBSession/SessionSample.json
- * @date 2013-2014
+ * @date 2013-2015
  */
 
 include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );
@@ -150,7 +150,7 @@ class DBSession
      */
     public function deletePlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),200,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
     
     /**
@@ -161,7 +161,7 @@ class DBSession
      */
     public function addPlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),200,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
     
     public function getSamplesInfo( $callName, $input, $params = array() )

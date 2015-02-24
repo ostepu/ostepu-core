@@ -83,9 +83,9 @@
     },
     {
         "name": "postSamples",
-        "outputType": "",
+        "outputType": "Query",
         "inputType": "",
         "method": "POST",
-        "path": "/samples/:amount"
+        "path": "/samples/course/:courseAmount/user/:userAmount"
     }
 ]

@@ -1,16 +1,9 @@
-<?php
-/**
- * @file GetAllInvitations.sql
- * gets a table for output, where all invitations are listed
- * @author Till Uhlig
- * @param 
- * @result 
- * - U is the groupleader who invites
- * - U2 are the members of the Invitation without the leader
- */
-?>
-
-SELECT 
+DROP PROCEDURE IF EXISTS `DBInvitationGetSheetInvitations`;
+CREATE PROCEDURE `DBInvitationGetSheetInvitations` (IN esid INT)
+READS SQL DATA
+begin
+SET @s = concat("
+select SQL_CACHE
     U.U_id,
     U.U_username,
     U.U_firstName,
@@ -38,3 +31,9 @@ from
     User U ON (I.U_id_member = U.U_id)
         join
     User U2 ON (I.U_id_leader = U2.U_id)
+where
+    I.ES_id = '",esid,"';");
+PREPARE stmt1 FROM @s;
+EXECUTE stmt1;
+DEALLOCATE PREPARE stmt1;
+end;

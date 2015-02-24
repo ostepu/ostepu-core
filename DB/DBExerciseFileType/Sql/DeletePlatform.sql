@@ -9,3 +9,8 @@ SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 DROP TRIGGER IF EXISTS `ExerciseType_BDEL`;
+DROP PROCEDURE IF EXISTS `DBExerciseFileTypeGetExerciseFileType`;
+DROP PROCEDURE IF EXISTS `DBExerciseFileTypeGetExistsPlatform`;
+DROP PROCEDURE IF EXISTS `DBExerciseFileTypeGetSheetExerciseFileTypes`;
+DROP PROCEDURE IF EXISTS `DBExerciseFileTypeGetAllExerciseFileTypes`;
+DROP PROCEDURE IF EXISTS `DBExerciseFileTypeGetExerciseExerciseFileTypes`;

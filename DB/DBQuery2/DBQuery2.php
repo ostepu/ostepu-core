@@ -5,7 +5,7 @@
  * @file DBQuery2.php contains the DBQuery2 class
  *
  * @author Till Uhlig
- * @date 2014
+ * @date 2014-2015
  */
 
 include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );
@@ -342,20 +342,12 @@ class DBQuery2
      * /link/exists/platform.
      */
     public function getExistsPlatform( $callName, $input, $params = array() )
-    {
-        Logger::Log( 
-                    'starts GET GetExistsPlatform',
-                    LogLevel::DEBUG
-                    );
-                    
-        $this->loadConfig($name);           
-        if (!file_exists(dirname(__FILE__) . '/config'.($name!='' ? '_'.$name : '').'.ini')){
-            $this->_app->response->setStatus( 409 );
-            $this->_app->stop();
+    {         
+        if (!file_exists(dirname(__FILE__) . '/config.ini')){
+            return Model::isProblem();
         }
        
-        $this->_app->response->setStatus( 200 );
-        $this->_app->response->setBody( '' );   
+        return Model::isOK();
     }
     
     /**
@@ -372,15 +364,12 @@ class DBQuery2
                     );
           
         $this->loadConfig($name);  
-        $configFile = dirname(__FILE__) . '/config'.($name!='' ? '_'.$name : '').'.ini';
+        $configFile = dirname(__FILE__) . '/config.ini';
         if (file_exists($configFile) && !unlink($configFile)){
-            $this->_app->response->setStatus( 409 );
-            $this->_app->stop();
+            return Model::isProblem();
         }
         
-        $this->_app->response->setStatus( 201 );
-        $this->_app->response->setBody( '' );
-
+        return Model::isCreated();
     }
     
     /**
@@ -396,9 +385,10 @@ class DBQuery2
                     LogLevel::DEBUG
                     );
                     
-        $this->loadConfig($name);
+        //$this->loadConfig($name);
         // decode the received course data, as an object
-        $insert = Platform::decodePlatform( $this->_app->request->getBody( ) );
+        $insert = $input;
+        $result=Model::isOK();
 
         // always been an array
         $arr = true;
@@ -411,7 +401,7 @@ class DBQuery2
         $res = array( );
         foreach ( $insert as $in ){
         
-            $file = dirname(__FILE__) . '/config'.($name!='' ? '_'.$name : '').'.ini';
+            $file = dirname(__FILE__) . '/config.ini';
             $text = "[DB]\n".
                     "db_path = \"".str_replace(array("\\","\""),array("\\\\","\\\""),$in->getDatabaseUrl())."\"\n".
                     "db_user = \"".str_replace(array("\\","\""),array("\\\\","\\\""),$in->getDatabaseOperatorUser())."\"\n".
@@ -427,22 +417,16 @@ class DBQuery2
                             LogLevel::ERROR
                             );
 
-                $this->_app->response->setStatus( 409 );
-                $this->_app->stop();
+                $result=Model::isProblem();
             }   
 
             $platform = new Platform();
             $platform->setStatus(201);
             $res[] = $platform;
-            $this->_app->response->setStatus( 201 );            
+            $result=Model::isCreated();            
         }
-
-        if ( !$arr && 
-             count( $res ) == 1 ){
-            $this->_app->response->setBody( Platform::encodePlatform( $res[0] ) );
-            
-        } else 
-            $this->_app->response->setBody( Platform::encodePlatform( $res ) );
+        $return['content'] = $res;
+        return $return;
     }
 }
 

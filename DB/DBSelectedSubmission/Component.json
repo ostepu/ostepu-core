@@ -1,20 +1,101 @@
 {
-  "name":"DBSelectedSubmission",
-  "version":"1.0",
-  "classFile":"DBSelectedSubmission.php",
-  "className":"DBSelectedSubmission",
-  "files":[
-    {"path":".htaccess"},
-    {"path":"DBSelectedSubmission.php"},
-    {"path":"index.php"},
-    {"path":"Commands.json"},
-    {"path":"Sql/"}
-  ],
-  "links":[
-    {"name":"out", "target":"DBQuery", "links":[{"method":"POST", "path":"/query" }] },
-    {"name":"out2", "target":"DBQuery2", "links":[{"method":"POST", "path":"/query" }] }
-  ],
-  "connector":[
-    {"name":"request", "target":"CLocalObjectRequest"}
-  ]
+    "name": "DBSelectedSubmission",
+    "version": "1.0",
+    "classFile": "DBSelectedSubmission.php",
+    "className": "DBSelectedSubmission",
+    "files": [
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "DBSelectedSubmission.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "Sql/"
+        }
+    ],
+    "links": [
+        {
+            "name": "out",
+            "target": "DBQuery",
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "/query"
+                }
+            ]
+        },
+        {
+            "name": "out2",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "/query"
+                }
+            ]
+        },
+        {
+            "name": "getCourseSelected",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBSelectedSubmissionGetCourseSelected/:courseid"
+                }
+            ]
+        },
+        {
+            "name": "getExerciseSelected",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBSelectedSubmissionGetExerciseSelected/:eid"
+                }
+            ]
+        },
+        {
+            "name": "getSheetSelected",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBSelectedSubmissionGetSheetSelected/:esid"
+                }
+            ]
+        },
+        {
+            "name": "getExistsPlatform",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBCourseGetExistsPlatform"
+                }
+            ]
+        },
+        {
+            "name": "getSamplesInfo",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBCourseGetExistsPlatform"
+                }
+            ]
+        }
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest"
+        }
+    ]
 }

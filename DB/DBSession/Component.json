@@ -80,6 +80,16 @@
                     "path": "/query/procedure/DBSessionGetExistsPlatform"
                 }
             ]
+        },
+        {
+            "name": "getSamplesInfo",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBSessionGetExistsPlatform"
+                }
+            ]
         }
     ],
     "connector": [

@@ -7,7 +7,7 @@
  * @author Till Uhlig
  * @example DB/CControl/LinkSample.json
  * @example DB/CControl/ComponentSample.json
- * @date 2013-2014
+ * @date 2013-2015
  */
 
 require_once ( dirname(__FILE__) . '/../../Assistants/Slim/Slim.php' );
@@ -101,6 +101,15 @@ class CControl
                          array( 
                                $this,
                                'getExistsPlatform'
+                               )
+                         );
+                         
+        // GET GetTableReferences
+        $this->_app->get( 
+                         '/tableReferences',
+                         array( 
+                               $this,
+                               'getTableReferences'
                                )
                          );
 
@@ -868,6 +877,54 @@ class CControl
         }
     }
     
+    public function getTableReferences( )
+    {
+        Logger::Log( 
+                    'starts GET GetTableReferences',
+                    LogLevel::DEBUG
+                    );
+                    
+        if (!file_exists(dirname(__FILE__).'/config.ini')){
+            $this->_app->response->setStatus( 409 );
+            $this->_app->stop();
+        }
+
+        $conf = parse_ini_file(dirname(__FILE__).'/config.ini',TRUE);
+        // starts a query
+        ob_start();
+        eval("?>" .  file_get_contents( dirname(__FILE__) . '/Sql/GetTableReferences.sql' ));
+        $sql = ob_get_contents();
+        ob_end_clean();
+        $result = DBRequest::request( 
+                                     $sql,
+                                     false,
+                                     $conf
+                                     );
+
+        // checks the correctness of the query
+        if ( (!isset($result['errno']) || !$result['errno']) && 
+             $result['content'] ){
+            $data = DBJson::getRows( $result['content'] );
+            $res = array();
+            foreach ($data as $dat){
+                if (!isset($res))
+                    $res[$dat['table_name']] = array();
+                $res[$dat['table_name']][] = $dat['referenced_table_name'];
+            }
+            
+            $this->_app->response->setStatus( 200 );
+            $this->_app->response->setBody( json_encode($res) );
+            
+        } else {
+            Logger::Log( 
+                        'GET GetTableReferences failed',
+                        LogLevel::ERROR
+                        );
+            $this->_app->response->setStatus( 409 );
+            $this->_app->response->setBody( '' );
+            $this->_app->stop( );
+        }
+    }
     /**
      * Removes the component from the platform
      *

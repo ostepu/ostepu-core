@@ -1,17 +1,9 @@
-<?php
-/**
- * @file GetExerciseSheet.sql
- * gets an specified exercise sheet
- * @author Till Uhlig
- * @param int \$esid an %ExerchiseSheet identifier
- * @result 
- * - ES, the exercise sheet data
- * - F, the exercise sheet file
- * - F2, the sample solution file
- */
-?>
- 
-select 
+DROP PROCEDURE IF EXISTS `DBExerciseSheetGetExerciseSheet`;
+CREATE PROCEDURE `DBExerciseSheetGetExerciseSheet` (IN esid INT)
+READS SQL DATA
+begin
+SET @s = concat("
+select SQL_CACHE
     ES.ES_id,
     ES.C_id,
     ES.ES_endDate,
@@ -40,4 +32,8 @@ from
         left join
     File F2 ON (F2.F_id = ES.F_id_sampleSolution)
 where
-    ES.ES_id = '<?php echo $esid; ?>'
+    ES.ES_id = '",esid,"';");
+PREPARE stmt1 FROM @s;
+EXECUTE stmt1;
+DEALLOCATE PREPARE stmt1;
+end;
