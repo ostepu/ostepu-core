@@ -23,6 +23,7 @@ SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 ALTER TABLE `File` ADD `F_mimeType` VARCHAR(255);
+ALTER TABLE `File` CHANGE `F_timeStamp` `F_timeStamp` INT UNSIGNED NULL DEFAULT '0';
 <?php include $sqlPath.'/procedures/GetFile.sql'; ?>
 <?php include $sqlPath.'/procedures/GetAllFiles.sql'; ?>
 <?php include $sqlPath.'/procedures/GetFileByHash.sql'; ?>
