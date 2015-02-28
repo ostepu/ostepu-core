@@ -3,7 +3,7 @@
 require_once(dirname(__FILE__) . "/phpfastcache/2.4.2/base.php");
 
 // OK, setup your cache
-phpFastCache::$storage = "auto";
+phpFastCache::$storage = "files";//memcache
 phpFastCache::$config = array(
 	"storage"   =>  phpFastCache::$storage,
 	/*
@@ -15,11 +15,18 @@ phpFastCache::$config = array(
 	"htaccess"      => true,
 	"path"      =>  "",
 
-	"memcache"        =>  array(
+	"memcached"        =>  array(
 		array("127.0.0.1",11211,1),
 		//  array("new.host.ip",11211,1),
 	),
-
+    "memcache"        =>  array(
+		array("127.0.0.1",11211,1),
+		//  array("new.host.ip",11211,1),
+	),
+	"server"        =>  array(
+		array("127.0.0.1",11211,1),
+		//  array("new.host.ip",11211,1),
+	),
 	"redis"         =>  array(
 		"host"  => "127.0.0.1",
 		"port"  =>  "",
@@ -31,7 +38,7 @@ phpFastCache::$config = array(
 	"extensions"    =>  array(),
 );
 
-
+phpFastCache::setup(phpFastCache::$config);
 // temporary disabled phpFastCache
 phpFastCache::$disabled = false;
 
