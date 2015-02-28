@@ -47,9 +47,8 @@ SELECT C.C_id, @row := @row + 1,
                        FLOOR(1 + (RAND() * 4)),
                        NULL
 FROM Course C,
-
     (SELECT 1
-     FROM generator LIMIT 5) AS Q;
+     FROM generator LIMIT 10) AS Q;
 
 
 DROP VIEW generator;

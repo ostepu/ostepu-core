@@ -51,7 +51,7 @@ FROM
                     generator B,
                               generator C,
                                         generator D,
-                                                  generator E LIMIT <?php echo ($userAmount*15*8); ?>) AS Q;
+                                                  generator E LIMIT <?php echo ($userAmount*10*30); ?>) AS Q;
 
 
 DROP VIEW generator;
