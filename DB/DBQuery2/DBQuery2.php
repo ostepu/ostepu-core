@@ -170,8 +170,7 @@ class DBQuery2
         $result = Model::isOK();$result['content']=array();
         $sql = $this->generateQuery($procedure,$params);
         $answer = DBRequest::request2( 
-                                           //"set profiling=1; ".$sql." show profiles;",
-                                           $sql,//."select 'next';",
+                                           $sql,
                                            false,
                                            $config
                                      );        

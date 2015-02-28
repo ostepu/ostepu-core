@@ -20,25 +20,15 @@ select SQL_CACHE
     F.F_comment,
     F.F_mimeType,
     EFT_id,
-    EFT_text,
-    S.U_id as U_id2,
-    S.S_id as S_id2,
-    S.F_id_file as F_id_file2,
-    S.S_comment as S_comment2,
-    S.S_date as S_date2,
-    SS.S_id_selected as S_selected2,
-    S.S_accepted as S_accepted2,
-    S.E_id as E_id2
+    EFT_text
 from
     Exercise E
             left join
     ExerciseFileType EFT ON E.E_id = EFT.E_id
         left join
-    (Attachment A
-    natural join File F) ON E.E_id = A.E_id
-        left join
-    (Submission S
-    join SelectedSubmission SS ON S.S_id = SS.S_id_selected) ON S.E_id = E.E_id
+    Attachment A ON E.E_id = A.E_id
+        left join 
+    File F on A.F_id = F.F_id
 where
     E.ES_id = '",esid,"';");
 PREPARE stmt1 FROM @s;
