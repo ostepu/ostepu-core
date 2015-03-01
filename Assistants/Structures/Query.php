@@ -204,13 +204,13 @@ class Query extends Object implements JsonSerializable
      */
     public function __construct( $data = array( ) )
     {   if ($data==array()) return;
-        foreach ( $data AS $key => $value ){
+        foreach ( $data AS $key => &$value ){
             if ( isset( $key ) ){
                 if ($key=='response'){
                     $this->{
                         $key
                         
-                    } = json_decode(json_encode($value),true);
+                    } = $value;//json_decode(json_encode($value),true);
                 } else {
                     $func = 'set' . strtoupper($key[0]).substr($key,1);
                     $methodVariable = array($this, $func);
@@ -220,6 +220,7 @@ class Query extends Object implements JsonSerializable
                         $this->{$key} = $value;
                 }
             }
+            unset($value);
         }
     }
 
@@ -251,7 +252,7 @@ class Query extends Object implements JsonSerializable
                                        )
     {
     
-            if ( $decode && 
+           /* if ( $decode && 
              $data == null )
             $data = '{}';
 
@@ -265,9 +266,9 @@ class Query extends Object implements JsonSerializable
             return $result;
             
         } else 
-            return new Query( $data );
+            return new Query( $data );*/
             
-        /*if ( $decode && 
+        if ( $decode && 
              $data == null )
             $data = '{}';
 
@@ -277,12 +278,45 @@ class Query extends Object implements JsonSerializable
                                 true
                                 );
 
-        $obj = new Query( );
         if ( is_array( $data ) && 
              !isset( $data['response'] ) && 
              !isset( $data['request'] ) && 
              !isset( $data['insertId'] ) ){
-            
+            $result = array( );
+            foreach ( $data AS $key => &$value ){
+                $obj = new Query( );
+                if ( isset( $value['request'] ) ){
+                    $obj->setRequest( $value['request'] );
+                    unset($value['request']);
+                }
+                if ( isset( $value['response'] ) ){
+                    $obj->setResponse( json_decode($value['response'],true) );
+                    unset($value['response']);
+                }
+                if ( isset( $value['affectedRows'] ) ){
+                    $obj->setAffectedRows( $value['affectedRows'] );
+                    unset($value['affectedRows']);
+                }
+                if ( isset( $value['insertId'] ) ){
+                    $obj->setInsertId( $value['insertId'] );
+                    unset($value['insertId']);
+                }
+                if ( isset( $value['errno'] ) ){
+                    $obj->setErrno( $value['errno'] );
+                    unset($value['errno']);
+                }
+                if ( isset( $value['numRows'] ) ){
+                    $obj->setNumRows( $value['numRows'] );
+                    unset($value['numRows']);
+                }
+                if ( isset( $value['checkSession'] ) ){
+                    $obj->setCheckSession( $value['checkSession'] );
+                    unset($value['checkSession']);
+                }
+                $result[] = $obj;
+                unset($value);
+            }
+            return $result;
         } else {
             $obj = new Query( );
             if ( isset( $data['request'] ) )
@@ -299,7 +333,7 @@ class Query extends Object implements JsonSerializable
                 $obj->setNumRows( $data['numRows'] );
             if ( isset( $data['checkSession'] ) )
                 $obj->setCheckSession( $data['checkSession'] );
-        }*/
+        }
         return $obj;
     }
 
@@ -314,7 +348,7 @@ class Query extends Object implements JsonSerializable
         if ( $this->request !== null )
             $list['request'] = $this->request;
         if ( $this->response !== array( ) )
-            $list['response'] = $this->response;
+            $list['response'] = json_encode($this->response);
         if ( $this->affectedRows !== null )
             $list['affectedRows'] = $this->affectedRows;
         if ( $this->insertId !== null )
