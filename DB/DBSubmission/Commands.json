@@ -141,6 +141,22 @@
         "path": "/submission/course/:courseid(/)"
     },
     {
+        "name": "getCourseUserSubmissions",
+        "callback": "getMatch",
+        "outputType": "Submission",
+        "inputType": "",
+        "method": "GET",
+        "path": "/submission/course/:courseid/user/:userid(/)"
+    },
+    {
+        "name": "getSelectedCourseUserSubmissions",
+        "callback": "getMatch",
+        "outputType": "Submission",
+        "inputType": "",
+        "method": "GET",
+        "path": "/submission/course/:courseid/user/:userid/selected(/)"
+    },
+    {
         "name": "addPlatform",
         "outputType": "Platform",
         "inputType": "Platform",

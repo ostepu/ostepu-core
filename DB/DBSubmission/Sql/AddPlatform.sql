@@ -51,9 +51,9 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 ALTER TABLE `Submission` MODIFY `S_comment` VARCHAR(255);
 ALTER TABLE `Submission` MODIFY `F_id_file` INT NULL;
-ALTER TABLE `Submission` CHANGE `S_date` `S_date` INT UNSIGNED NULL DEFAULT '0';
-ALTER TABLE `Submission` CHANGE `S_flag` `S_flag` TINYINT NULL DEFAULT '1';
-ALTER TABLE `Submission` CHANGE `S_hideFile` `S_hideFile` TINYINT NULL DEFAULT '0';
+ALTER TABLE `Submission` CHANGE `S_date` `S_date` INT UNSIGNED NOT NULL DEFAULT 0;
+ALTER TABLE `Submission` CHANGE `S_flag` `S_flag` TINYINT NOT NULL DEFAULT 1;
+ALTER TABLE `Submission` CHANGE `S_hideFile` `S_hideFile` TINYINT NOT NULL DEFAULT 0;
 
 DROP TRIGGER IF EXISTS `Submission_BINS`;
 CREATE TRIGGER `Submission_BINS` BEFORE INSERT ON `Submission` FOR EACH ROW
@@ -63,9 +63,11 @@ CREATE TRIGGER `Submission_BINS` BEFORE INSERT ON `Submission` FOR EACH ROW
 @author Lisa*/
 ?>
 BEGIN
+if (NEW.ES_id is NULL) then
 SET NEW.ES_id = (select E.ES_id from Exercise E where E.E_id = NEW.E_id limit 1);
 if (NEW.ES_id is NULL) then
 SIGNAL sqlstate '23000' set message_text = 'no corresponding exercisesheet';
+END if;
 END if;
 
 SET NEW.S_leaderId = (SELECT G.U_id_member FROM `Group` G WHERE G.U_id_leader = NEW.U_id and G.ES_id = NEW.ES_id limit 1);
@@ -82,9 +84,11 @@ CREATE TRIGGER `Submission_BUPD` BEFORE UPDATE ON `Submission` FOR EACH ROW
 @author Lisa*/
 ?>
 BEGIN
+if (NEW.ES_id is NULL) then
 SET NEW.ES_id = (select E.ES_id from Exercise E where E.E_id = NEW.E_id limit 1);
 if (NEW.ES_id is NULL) then
 SIGNAL sqlstate '23000' set message_text = 'no corresponding exercisesheet';
+END if;
 END if;
 
 SET NEW.S_leaderId = (SELECT G.U_id_member FROM `Group` G WHERE G.U_id_leader = NEW.U_id and G.ES_id = NEW.ES_id limit 1);
