@@ -138,7 +138,7 @@ class DBExerciseSheet
                 foreach ($input as $inp){
                     if ( $inp->getNumRows( ) > 0 ){
                         // extract Course data from db answer
-                        $result['content'] = array_merge($result['content'], Exercise::ExtractExercise( $inp->getResponse( )));
+                        $result['content'] = Exercise::ExtractExercise( $inp->getResponse( ),false,'','','','',false);
                         $data = array_merge($data,$inp->getResponse( ));
                         $result['status'] = 200;
                     }
@@ -153,9 +153,10 @@ class DBExerciseSheet
                                                                    Exercise::getDBPrimaryKey( )
                                                                    );
 
+                //$result['content'] = array_values($result['content'] );
                 $result['content'] = array_merge( $result['content'] );
-                if ( count( $result['content'] ) > 0 )
-                    $result['content'] = $result['content'][0];
+                if (count($result['content'])>0)
+                    $result['content']=$result['content'][0];
                 return $result;
             };
         
@@ -168,8 +169,6 @@ class DBExerciseSheet
             }
             
             if ($exercise===null){
-                if ( count( $result['content'] ) > 0 )
-                    $result['content'] = $result['content'][0];
                 return $result;
             }
             return $this->_component->call('getSheetExercises', array("esid"=>$esid), '', 200, $getExercises, array("sheet"=>$result['content']), 'Model::isProblem', array(), 'Query');;
@@ -188,7 +187,7 @@ class DBExerciseSheet
                 foreach ($input as $inp){
                     if ( $inp->getNumRows( ) > 0 ){
                         // extract Course data from db answer
-                        $result['content'] = array_merge($result['content'], Exercise::ExtractExercise( $inp->getResponse( )));
+                        $result['content'] = Exercise::ExtractExercise( $inp->getResponse( ),false,'','','','',false);
                         $data = array_merge($data,$inp->getResponse( ));
                         $result['status'] = 200;
                     }

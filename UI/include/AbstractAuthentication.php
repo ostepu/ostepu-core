@@ -176,15 +176,17 @@ abstract class AbstractAuthentication
         if (isset($data['isSuperAdmin']) && $data['isSuperAdmin']=='1') return;
         
         // check if user exists in course
-        if ($data !== array()) {
+        if ($data !== array() && $data !== null) {
             // find the right course
             $status = -1;
-            foreach ($data['courses'] as $element) {
-                if ($element['course']['id'] == $cid) {
-                    $status = $element['status'];
-                    break;
+            if ($data!==null)
+                foreach ($data['courses'] as $element) {
+                    if ($element['course']['id'] == $cid) {
+                        $status = $element['status'];
+                        break;
+                    }
                 }
-            }
+
             // check if minimum right is given
             if ($status < $minimum) {
                 set_error("403");
