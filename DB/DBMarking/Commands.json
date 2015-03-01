@@ -68,6 +68,14 @@
         "path": "/marking/exercisesheet/:esid/user/:userid(/:sub)(/)"
     },
     {
+        "name": "getCourseUserGroupMarkings",
+        "callback": "getMatch",
+        "outputType": "Marking",
+        "inputType": "",
+        "method": "GET",
+        "path": "/marking/course/:courseid/user/:userid(/:sub)(/)"
+    },
+    {
         "name": "getTutorSheetMarkings",
         "callback": "getMatch",
         "outputType": "Marking",

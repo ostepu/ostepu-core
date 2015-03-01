@@ -142,6 +142,16 @@
             ]
         },
         {
+            "name": "getCourseUserGroupMarkings",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBMarkingGetCourseUserGroupMarkings/:courseid/:userid/:sub"
+                }
+            ]
+        },
+        {
             "name": "getExistsPlatform",
             "target": "DBQuery2",
             "links": [
