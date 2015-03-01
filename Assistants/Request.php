@@ -86,12 +86,11 @@ class Request
         $begin = microtime(true);
         
         $done = false;
-
         if (!CConfig::$onload && strpos($target,'http://localhost/')===0 && file_exists(dirname(__FILE__) . '/request_cconfig.json')){
             if (Request::$components==null){
                 Request::$components=CConfig::loadStaticConfig('','',dirname(__FILE__),'request_cconfig.json');
             }
-
+            
             $coms = Request::$components->getLinks();
             if ($coms!=null){      
                 if (!is_array($coms)) $coms = array($coms);
@@ -109,30 +108,23 @@ class Request
                         continue;
                     }
                     $url = 'http://localhost'.$h.'/'.$com->getLocalPath();
-                        
 
                     if (strpos($target,$url.'/')===0){
                         $result = array();
                         $tar = dirname(__FILE__).'/../'.$com->getLocalPath().'/'.$com->getClassFile();
                         $tar=str_replace("\\","/",$tar);
                         if (!file_exists($tar)) continue;
-                        
-                        ///Logger::Log("**".json_encode(CacheManager::$tree), LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
-                        ///Logger::Log("##".json_encode(CacheManager::$cachedPath), LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
-                        ///Logger::Log("++".$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
-                        
                         $add = substr($target,strlen($url));
-                        CacheManager::begin($com->getTargetName(), $target, $add, $method);
-                        CacheManager::getTree($com->getTargetName(), $target, $method);
-                        $cachedData = CacheManager::getCachedDataByURL($com->getTargetName(), $target, $add, $method);
+                        
+                        $sid = CacheManager::getNextSid();
+                        CacheManager::getTree($sid, $target, $method);
+                        $cachedData = CacheManager::getCachedDataByURL($sid, $target, $method);
                         if ($cachedData!==null){
                             $result['content'] = $cachedData->content;
                             $result['status'] = $cachedData->status;
                             ///Logger::Log('out>> '.$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
-                            CacheManager::cacheData($com->getTargetName(), $target, $result['content'], $result['status'], $method);
+                            CacheManager::cacheData($sid, $com->getTargetName(), $target, $result['content'], $result['status'], $method);
                         } else {
-                            CacheManager::addPath($com->getTargetName(), $target, $add, $method);
-                            ///CacheManager::addPath($com->getTargetName(), $target, $add, $method);
                             $args = array(
                                           'REQUEST_METHOD' => $method,
                                           'PATH_INFO' => $add,
@@ -196,23 +188,26 @@ class Request
                             http_response_code(0);
                            
                             $name = $com->getClassName();
-
                             ob_start();
                             
-                            new $name();  
+                            $obj = new $name();  
                             if (isset($obj))
                                 unset($obj);                        
                             $result['content'] = ob_get_contents();
-                            ob_end_clean(); 
                             CacheManager::setETag($result['content']);
-                                
                             $result['headers'] = array_merge(array(),Request::http_parse_headers_short(headers_list()));
-                            header_remove();        
+                            header_remove();
+                            if (!isset($result['headers']['CacheSid'])){
+                                $newSid = CacheManager::getNextSid();
+                                $result['headers']['CacheSid'] = $newSid;
+                            }
+                            ob_end_clean();
+                            //header_remove();            
 
                             $result['status'] = http_response_code();
                             $_SERVER['REQUEST_URI'] = $oldRequestURI;
                             $_SERVER['SCRIPT_NAME'] = $oldScriptName;
-                            ///$_SERVER['REDIRECT_URL'] = $oldRedirectURL;
+                            //$_SERVER['REDIRECT_URL'] = $oldRedirectURL;
                             
                             \Slim\Environment::mock($oldArgs);
                             $_SERVER['REQUEST_METHOD'] = $oldArgs['REQUEST_METHOD'];
@@ -221,13 +216,15 @@ class Request
                             header('Content-Type: text/html; charset=utf-8');
                             foreach ($oldHeader as $head)
                                 header($head);
-                                
-                            CacheManager::cacheData($com->getTargetName(), $target, $result['content'], $result['status'], $method);
+
+                            CacheManager::setCacheSid($sid);
+                            
+                            CacheManager::addPath($sid, (isset($result['headers']['Cachesid']) ? $result['headers']['Cachesid'] : null), $com->getTargetName(), $target, $method);
+                            CacheManager::cacheData($sid, $com->getTargetName(), $target, $result['content'], $result['status'], $method);
                             ///Logger::Log('in<< '.$method.' '.$com->getClassName().$add, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
                         
                         }
 
-                        //CacheManager::cacheData($com->getTargetName(), $target, $result['content'], $result['status'], $method);
                         $done=true;
                         break;
                     }
@@ -256,8 +253,7 @@ class Request
             
             // sets the received status code
             $result['status'] = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            curl_close($ch);                                      
-            //CacheManager::cacheData($com->getTargetName(), $target, $result['content'], $result['status'], $method);            
+            curl_close($ch);           
         }
 
         Logger::Log($target . ' ' . (round((microtime(true) - $begin),2)). 's', LogLevel::DEBUG, false, dirname(__FILE__) . '/../executionTime.log');
