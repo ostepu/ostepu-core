@@ -1,0 +1,62 @@
+{
+    "name": "LSamples",
+    "version": "1.0",
+    "classFile": "LSamples.php",
+    "className": "LSamples",
+    "files": [
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "LSamples.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        }
+    ],
+    "links": [
+        {
+            "name": "getSamplesInfo",
+            "target": "GET_\\\/samples\\\/info",
+            "targetConditionType":"RegEx",
+            "targetConditionRoot":"Command",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/samples/info"
+                }
+            ]
+        },
+        {
+            "name": "postSamples",
+            "target": "POST_\\\/samples\\\/",
+            "targetConditionType":"RegEx",
+            "targetConditionRoot":"Command",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/samples/:amount"
+                }
+            ]
+        },
+        {
+            "name": "getTableReferences",
+            "target": "CControl",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/tableReferences"
+                }
+            ]
+        }
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest"
+        }
+    ]
+}
