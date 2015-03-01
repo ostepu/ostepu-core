@@ -43,6 +43,16 @@ class Installation
         return array_pop($args);
     }
     
+    /*
+     * @param array $components The array which will be filtered.
+     * @param string $type '', 'RegEx'
+     * @param string $root '', 'Command', 'ComponentName'
+     */
+    public static function filterComponents($components, $type, $root)
+    {
+        
+    }
+    
     public static function PlattformZusammenstellen($data)
     {   
         // hier aus den Daten ein Plattform-Objekt zusammenstellen

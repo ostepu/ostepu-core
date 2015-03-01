@@ -427,6 +427,15 @@ class Installer
                                     if (!isset($link['target'])) $link['target'] = '';
                                     if (!is_array($link['target'])) $link['target'] = array($link['target']);
                                     
+                                    $filteredComponents = array();
+                                    if (!isset($link['targetConditionRoot'])){
+                                        foreach ($ComponentListInput as $key => $value){
+                                            
+                                        }
+                                    } elseif($link['targetConditionRoot'] == 'Command'){
+                                        
+                                    }
+                                    
                                     foreach ($link['target'] as $tar){// $tar -> der Name der Zielkomponente
                                         if (!isset($ComponentListInput[$tar])) continue;
                                         foreach ($ComponentListInput[$tar] as $target){
