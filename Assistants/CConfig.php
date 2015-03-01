@@ -91,7 +91,7 @@ class CConfig
                 //echo $scriptName."\n".$requestUri."\n".$path."\nNOT\n";
                 } else {
                 //echo $path."\nPOSSIBLE\n";
-            $this->_app = new \Slim\Slim( array('debug' => true) );
+            $this->_app = new \Slim\Slim( array('debug' => false) );
 
             $this->_app->response->headers->set( 
                                                 'Content-Type',
@@ -99,13 +99,13 @@ class CConfig
                                                 );
                                                 
             // GET Commands
-            $this->_app->get( 
+            $this->_app->map( 
                               '(/:pre+)/info/commands(/)',
                               array( 
                                     $this,
                                     'commands'
                                     )
-                              );
+                              )->via('GET','OPTIONS');
 
             // GET Instruction
             $this->_app->get( 
@@ -152,9 +152,12 @@ class CConfig
     
     public function info( $pre = array(), $language = 'de')
     {
-        if (file_exists('info/'.$language)){
+        $path = ($this->callPath!=null ? $this->callPath.'/' : '');
+        $path = str_replace("\\",'/',$path);
+        
+        if (file_exists($path.'info/'.$language)){
             $this->_app->response->setStatus( 200 );
-            $this->_app->response->setBody( file_get_contents('info/'.$language) );
+            $this->_app->response->setBody( file_get_contents($path.'info/'.$language) );
         }else{
             $this->_app->response->setStatus( 404 );
             $this->_app->response->setBody( '' );
