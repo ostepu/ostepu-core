@@ -321,8 +321,10 @@ class Query extends Object implements JsonSerializable
             $obj = new Query( );
             if ( isset( $data['request'] ) )
                 $obj->setRequest( $data['request'] );
-            if ( isset( $data['response'] ) )
-                $obj->setResponse( $data['response'] );
+            if ( isset( $data['response'] ) ){
+                $obj->setResponse( json_decode($data['response'],true) );
+                    unset($data['response']);
+            }
             if ( isset( $data['affectedRows'] ) )
                 $obj->setAffectedRows( $data['affectedRows'] );
             if ( isset( $data['insertId'] ) )
