@@ -4,7 +4,7 @@ header('Content-type: text/html');
 include('Assistants/Request.php');
 
 
-$list = array('http://localhost/uebungsplattform/logic/LGetSite/student/user/2/course/2','http://localhost/uebungsplattform/logic/LGetSite/tutorassign/user/2/course/2/exercisesheet/14','http://localhost/uebungsplattform/logic/LGetSite/uploadhistoryoptions/user/2/course/2','http://localhost/uebungsplattform/logic/LGetSite/tutorupload/user/2/course/2','http://localhost/uebungsplattform/logic/LGetSite/markingtool/user/2/course/33/exercisesheet/14','http://localhost/uebungsplattform/logic/LGetSite/coursemanagement/user/2/course/33','http://localhost/uebungsplattform/logic/LGetSite/condition/user/2/course/2','http://localhost/uebungsplattform/logic/LGetSite/admin/user/2/course/2');
+$list = array('http://localhost/uebungsplattform/logic/LGetSite/student/user/2/course/2','http://localhost/uebungsplattform/logic/LGetSite/tutorassign/user/2/course/2/exercisesheet/14','http://localhost/uebungsplattform/logic/LGetSite/uploadhistoryoptions/user/2/course/2','http://localhost/uebungsplattform/logic/LGetSite/tutorupload/user/2/course/2','http://localhost/uebungsplattform/logic/LGetSite/markingtool/user/2/course/33/exercisesheet/14','http://localhost/uebungsplattform/logic/LGetSite/coursemanagement/user/2/course/33','http://localhost/uebungsplattform/logic/LGetSite/condition/user/2/course/2','http://localhost/uebungsplattform/logic/LGetSite/admin/user/2/course/2','http://localhost/uebungsplattform/logic/LGetSite/lecturer/user/2/course/2','http://localhost/uebungsplattform/logic/LGetSite/tutor/user/2/course/2');
 //$list = array('http://localhost/uebungsplattform/logic/LGetSite/markingtool/user/2/course/2/exercisesheet/14');
 
 $list2 = array_merge(array(),$list);
