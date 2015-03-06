@@ -96,21 +96,6 @@ if (NEW.S_leaderId is NULL) then
 SIGNAL sqlstate '23000' set message_text = 'no corresponding group leader';
 END if;
 END;
-<?php include $sqlPath.'/procedures/GetAllSubmissions.sql'; ?>
-<?php include $sqlPath.'/procedures/GetCourseSubmissions.sql'; ?>
-<?php include $sqlPath.'/procedures/GetCourseUserSubmissions.sql'; ?>
-<?php include $sqlPath.'/procedures/GetSelectedCourseUserSubmissions.sql'; ?>
-<?php include $sqlPath.'/procedures/GetExerciseSubmissions.sql'; ?>
-<?php include $sqlPath.'/procedures/GetSelectedExerciseSubmissions.sql'; ?>
-<?php include $sqlPath.'/procedures/GetSheetSubmissions.sql'; ?>
-<?php include $sqlPath.'/procedures/GetSelectedSheetSubmissions.sql'; ?>
-<?php include $sqlPath.'/procedures/GetGroupCourseSubmissions.sql'; ?>
-<?php include $sqlPath.'/procedures/GetGroupExerciseSubmissions.sql'; ?>
-<?php include $sqlPath.'/procedures/GetGroupSelectedCourseSubmissions.sql'; ?>
-<?php include $sqlPath.'/procedures/GetGroupSelectedExerciseSubmissions.sql'; ?>
-<?php include $sqlPath.'/procedures/GetGroupSelectedSubmissions.sql'; ?>
-<?php include $sqlPath.'/procedures/GetGroupSubmissions.sql'; ?>
-<?php include $sqlPath.'/procedures/GetSubmission.sql'; ?>
-<?php include $sqlPath.'/procedures/GetUserExerciseSubmissions.sql'; ?>
-<?php include $sqlPath.'/procedures/GetUserSheetSubmissions.sql'; ?>
-<?php include $sqlPath.'/procedures/GetExistsPlatform.sql'; ?>
+
+<?php if (is_dir($sqlPath.'/procedures')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/procedures/'.$inp);}},scandir($sqlPath.'/procedures'),array_pad(array(),count(scandir($sqlPath.'/procedures')),$sqlPath));?>
+<?php if (is_dir($sqlPath.'/migrations')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/migrations/'.$inp);}},scandir($sqlPath.'/migrations'),array_pad(array(),count(scandir($sqlPath.'/migrations')),$sqlPath));?>

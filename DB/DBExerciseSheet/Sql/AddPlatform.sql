@@ -68,10 +68,6 @@ if (NEW.ES_groupSize is NULL) then
 SIGNAL sqlstate '23000' set message_text = 'no corresponding course for exercisesheet';
 END if;
 end;
-<?php include $sqlPath.'/procedures/GetCourseExercises.sql'; ?>
-<?php include $sqlPath.'/procedures/GetCourseSheets.sql'; ?>
-<?php include $sqlPath.'/procedures/GetCourseSheetURLs.sql'; ?>
-<?php include $sqlPath.'/procedures/GetExerciseSheet.sql'; ?>
-<?php include $sqlPath.'/procedures/GetExerciseSheetURL.sql'; ?>
-<?php include $sqlPath.'/procedures/GetSheetExercises.sql'; ?>
-<?php include $sqlPath.'/procedures/GetExistsPlatform.sql'; ?>
+
+<?php if (is_dir($sqlPath.'/procedures')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/procedures/'.$inp);}},scandir($sqlPath.'/procedures'),array_pad(array(),count(scandir($sqlPath.'/procedures')),$sqlPath));?>
+<?php if (is_dir($sqlPath.'/migrations')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/migrations/'.$inp);}},scandir($sqlPath.'/migrations'),array_pad(array(),count(scandir($sqlPath.'/migrations')),$sqlPath));?>

@@ -71,8 +71,6 @@ if (NEW.C_id is NULL) then
 SIGNAL sqlstate '45001' set message_text = 'no corresponding exercisesheet';
 END if;
 END;
-<?php include $sqlPath.'/procedures/GetExercise.sql'; ?>
-<?php include $sqlPath.'/procedures/GetAllExercises.sql'; ?>
-<?php include $sqlPath.'/procedures/GetCourseExercises.sql'; ?>
-<?php include $sqlPath.'/procedures/GetSheetExercises.sql'; ?>
-<?php include $sqlPath.'/procedures/GetExistsPlatform.sql'; ?>
+
+<?php if (is_dir($sqlPath.'/procedures')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/procedures/'.$inp);}},scandir($sqlPath.'/procedures'),array_pad(array(),count(scandir($sqlPath.'/procedures')),$sqlPath));?>
+<?php if (is_dir($sqlPath.'/migrations')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/migrations/'.$inp);}},scandir($sqlPath.'/migrations'),array_pad(array(),count(scandir($sqlPath.'/migrations')),$sqlPath));?>

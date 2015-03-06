@@ -54,7 +54,6 @@ update User
 set U_failed_logins = 0
 where U_id = NEW.U_id;
 end;
-<?php include $sqlPath.'/procedures/GetUserSession.sql'; ?>
-<?php include $sqlPath.'/procedures/GetSessionUser.sql'; ?>
-<?php include $sqlPath.'/procedures/GetAllSessions.sql'; ?>
-<?php include $sqlPath.'/procedures/GetExistsPlatform.sql'; ?>
+
+<?php if (is_dir($sqlPath.'/procedures')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/procedures/'.$inp);}},scandir($sqlPath.'/procedures'),array_pad(array(),count(scandir($sqlPath.'/procedures')),$sqlPath));?>
+<?php if (is_dir($sqlPath.'/migrations')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/migrations/'.$inp);}},scandir($sqlPath.'/migrations'),array_pad(array(),count(scandir($sqlPath.'/migrations')),$sqlPath));?>

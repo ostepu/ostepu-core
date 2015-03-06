@@ -119,15 +119,5 @@ SIGNAL sqlstate '45001' set message_text = 'no corresponding submission';
 END if;
 END if;
 END;
-<?php include $sqlPath.'/procedures/GetCourseMarkings.sql'; ?>
-<?php include $sqlPath.'/procedures/GetAllMarkings.sql'; ?>
-<?php include $sqlPath.'/procedures/GetExerciseMarkings.sql'; ?>
-<?php include $sqlPath.'/procedures/GetMarking.sql'; ?>
-<?php include $sqlPath.'/procedures/GetSheetMarkings.sql'; ?>
-<?php include $sqlPath.'/procedures/GetSubmissionMarking.sql'; ?>
-<?php include $sqlPath.'/procedures/GetTutorCourseMarkings.sql'; ?>
-<?php include $sqlPath.'/procedures/GetTutorExerciseMarkings.sql'; ?>
-<?php include $sqlPath.'/procedures/GetTutorSheetMarkings.sql'; ?>
-<?php include $sqlPath.'/procedures/GetUserGroupMarkings.sql'; ?>
-<?php include $sqlPath.'/procedures/GetCourseUserGroupMarkings.sql'; ?>
-<?php include $sqlPath.'/procedures/GetExistsPlatform.sql'; ?>
+<?php if (is_dir($sqlPath.'/procedures')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/procedures/'.$inp);}},scandir($sqlPath.'/procedures'),array_pad(array(),count(scandir($sqlPath.'/procedures')),$sqlPath));?>
+<?php if (is_dir($sqlPath.'/migrations')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/migrations/'.$inp);}},scandir($sqlPath.'/migrations'),array_pad(array(),count(scandir($sqlPath.'/migrations')),$sqlPath));?>
