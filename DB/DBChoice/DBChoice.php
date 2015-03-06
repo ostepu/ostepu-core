@@ -492,7 +492,7 @@ class DBChoice
 
             if (is_array($query))
             $query = $query[count($query)-1];
-            
+
             if ( $query->getNumRows( ) > 0 ){
                 $res = Choice::ExtractChoice( 
                                          $query->getResponse( ),

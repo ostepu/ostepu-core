@@ -84,7 +84,6 @@ class DBCourse
     public function get( $functionName, $linkName, $params=array(),$singleResult = false, $checkSession = true )
     {
         $positive = function($input, $singleResult) {
-            //$input = $input[count($input)-1];
             $result = Model::isEmpty();$result['content']=array();
             foreach ($input as $inp){
                 if ( $inp->getNumRows( ) > 0 ){

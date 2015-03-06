@@ -264,12 +264,11 @@ class DBRequest
         $query_result[] = $result;
     }
     else{
-        ///$begin = microtime(true);
         do {
             $result=array();
+            $res=null;
             if ($res = mysqli_use_result( $dbconn )) {
                 $hash='';
-                
                 $result['content']  = DBJson::getRows2( $res, $hash );
                 $result['hash'] = $hash;
                 $result['numRows'] = count($result['content']);
@@ -284,8 +283,7 @@ class DBRequest
             else
             {
                 $hash='';
-                
-                $result['content'] = $res;
+                $result['content'] = null;
                 $result['hash'] = $hash;
                 $result['affectedRows'] = mysqli_affected_rows( $dbconn );
                 $result['insertId'] = mysqli_insert_id( $dbconn);
@@ -296,7 +294,6 @@ class DBRequest
 
             $query_result[] = $result;
         } while (mysqli_more_results($dbconn) && mysqli_next_result($dbconn));
-        ///echo '__getQuery:'.round(microtime(true) - $begin,2).'s';
     }
         // closes the connection and returns the result
         mysqli_close( $dbconn );
