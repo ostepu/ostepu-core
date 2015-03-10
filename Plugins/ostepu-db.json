@@ -34,6 +34,7 @@
       {"conf":"DB/DBProcess/Component.json"},
       {"conf":"DB/DBSelectedSubmission/Component.json"},
       {"conf":"DB/DBSession/Component.json"},
+      {"conf":"DB/DBSetting/Component.json"},
       {"conf":"DB/DBSubmission/Component.json"},
       {"conf":"DB/DBTransaction/Component.json"},
       {"conf":"DB/DBUser/Component.json"},

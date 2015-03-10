@@ -1,0 +1,21 @@
+{
+  "name":"DBSetting",
+  "version":"1.0",
+  "classFile":"DBSetting.php",
+  "className":"DBSetting",
+  "files":[
+    {"path":".htaccess"},
+    {"path":"DBSetting.php"},
+    {"path":"index.php"},
+    {"path":"Commands.json"},
+    {"path":"Sql/"}
+  ],
+  "links":[
+    {"name":"out", "target":"DBQuery2", "links":[{"method":"POST", "path":"/query" }] }
+  ],
+  "connector":[
+    {"name":"deleteCourse", "target":"LCourse"},
+    {"name":"postCourse", "target":"LCourse"},
+    {"name":"request", "target":"CLocalObjectRequest"}
+  ]
+}
