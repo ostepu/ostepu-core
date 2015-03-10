@@ -156,6 +156,7 @@ class LCourse
             if ( $result['status'] >= 200 && 
                  $result['status'] <= 299 ){
                 $queryResult = Course::decodeCourse( $result['content'] );
+                if (is_array($queryResult)){$queryResult=$queryResult[0];}
 
                 // sets the new auto-increment id
                 $course->setId( $queryResult->getId( ) );
