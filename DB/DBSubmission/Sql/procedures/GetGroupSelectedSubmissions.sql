@@ -1,5 +1,5 @@
 DROP PROCEDURE IF EXISTS `DBSubmissionGetGroupSelectedSubmissions`;
-CREATE PROCEDURE `DBSubmissionGetGroupSubmissions` (IN userid INT,IN esid INT)
+CREATE PROCEDURE `DBSubmissionGetGroupSelectedSubmissions` (IN userid INT,IN esid INT)
 READS SQL DATA
 begin
 SET @s = concat("
