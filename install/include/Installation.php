@@ -617,11 +617,11 @@ class Installation
         if (!$fail && !$userExists){
             $oldName = $data['DB']['db_name'];
             $data['DB']['db_name'] = null;
-            $sql = "GRANT ALTER ROUTINE,CREATE ROUTINE,EXECUTE,ALTER,SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,TRIGGER ".
+            $sql = "GRANT CREATE VIEW,EXECUTE,ALTER ROUTINE,CREATE ROUTINE,SHOW VIEW,CREATE TEMPORARY TABLES,INDEX,ALTER,SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,TRIGGER ".
                     "ON `{$oldName}`.* ".
                     "TO '{$data['DB']['db_user_operator']}'@'%' ".
                     "IDENTIFIED BY '{$data['DB']['db_passwd_operator']}';";
-            $sql.= "GRANT ALTER ROUTINE,CREATE ROUTINE,EXECUTE,ALTER,SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,TRIGGER ".
+            $sql.= "GRANT CREATE VIEW,EXECUTE,ALTER ROUTINE,CREATE ROUTINE,SHOW VIEW,CREATE TEMPORARY TABLES,INDEX,ALTER,SELECT,INSERT,UPDATE,DELETE,CREATE,DROP,TRIGGER ".
                     "ON `{$oldName}`.* ".
                     "TO '{$data['DB']['db_user_operator']}'@'localhost' ".
                     "IDENTIFIED BY '{$data['DB']['db_passwd_operator']}';";

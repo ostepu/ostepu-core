@@ -143,6 +143,31 @@ class Course extends Object implements JsonSerializable
     }
 
     /**
+     * @var int $defaultGroupSize the default size of groups in the course
+     */
+    private $settings = null;
+
+    /**
+     * the $settings getter
+     *
+     * @return the value of $settings
+     */
+    public function getSettings( )
+    {
+        return $this->settings;
+    }
+
+    /**
+     * the $settings setter
+     *
+     * @param int $value the new value for $settings
+     */
+    public function setSettings( $value = null )
+    {
+        $this->settings = $value;
+    }
+    
+    /**
      * Creates an Course object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
      *
@@ -180,7 +205,8 @@ class Course extends Object implements JsonSerializable
                      'C_name' => 'name',
                      'C_semester' => 'semester',
                      'C_defaultGroupSize' => 'defaultGroupSize',
-                     'C_exerciseSheets' => 'exerciseSheets'
+                     'C_exerciseSheets' => 'exerciseSheets',
+                     'C_settings' => 'settings'
                      );
     }
 
@@ -329,6 +355,8 @@ class Course extends Object implements JsonSerializable
             $list['exerciseSheets'] = $this->exerciseSheets;
         if ( $this->defaultGroupSize !== null )
             $list['defaultGroupSize'] = $this->defaultGroupSize;
+        if ( $this->settings !== null && $this->settings !== array() )
+            $list['settings'] = $this->settings;
             
         return array_merge($list,parent::jsonSerialize( ));
     }
@@ -350,6 +378,14 @@ class Course extends Object implements JsonSerializable
                                                   Course::getDBConvert( ),
                                                   $CourseExtension
                                                   );
+                                                  
+        // generates an assoc array of settings by using a defined list of
+        // its attributes
+        $settings = DBJson::getObjectsByAttributes( 
+                                                  $data,
+                                                  Setting::getDBPrimaryKey( ),
+                                                  Setting::getDBConvert( )
+                                                  );
 
         // generates an assoc array of exercise sheets by using a defined list of
         // its attributes
@@ -359,11 +395,21 @@ class Course extends Object implements JsonSerializable
                                                          array( ExerciseSheet::getDBPrimaryKey( ) => ExerciseSheet::getDBConvert( )[ExerciseSheet::getDBPrimaryKey( )] ),
                                                          $SheetExtension
                                                          );
-
+                                                         
+        // concatenates the courses and the associated settings
+        $res = DBJson::concatObjectLists( 
+                                                     $data,
+                                                     $courses,
+                                                     Course::getDBPrimaryKey( ),
+                                                     Course::getDBConvert( )['C_settings'],
+                                                     $settings,
+                                                     Setting::getDBPrimaryKey( )
+                                                     );
+                                                     
         // concatenates the courses and the associated exercise sheet IDs
         $res = DBJson::concatResultObjectListAsArray( 
                                                      $data,
-                                                     $courses,
+                                                     $res,
                                                      Course::getDBPrimaryKey( ),
                                                      Course::getDBConvert( )['C_exerciseSheets'],
                                                      $exerciseSheets,

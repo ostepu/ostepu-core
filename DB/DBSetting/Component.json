@@ -1,11 +1,11 @@
 {
-  "name":"DBTransaction",
+  "name":"DBSetting",
   "version":"1.0",
-  "classFile":"DBTransaction.php",
-  "className":"DBTransaction",
+  "classFile":"DBSetting.php",
+  "className":"DBSetting",
   "files":[
     {"path":".htaccess"},
-    {"path":"DBTransaction.php"},
+    {"path":"DBSetting.php"},
     {"path":"index.php"},
     {"path":"Commands.json"},
     {"path":"Sql/"}
