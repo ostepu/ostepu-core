@@ -671,6 +671,7 @@ class LTutor
                     }
                                         
                     // file
+                    $newFile = null;
                     if (isset($marking['submission']['file']['displayName'])){
                         $fileInfo = pathinfo($marking['submission']['file']['displayName']);
                         $newFile = array_merge(array(),$marking['submission']['file']);
