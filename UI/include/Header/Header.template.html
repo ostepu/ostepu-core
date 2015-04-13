@@ -48,7 +48,7 @@
                                 $points[$exercise['typeName']][1]+=$exercise['maxPoints'];
                             
                             // increase points of type if marking exists and sheet has expired
-                            if ($isExpired && isset($exercise['submission']['marking']['points']))
+                            if ($isExpired && isset($exercise['submission']['marking']['points']) && isset($exercise['submission']['accepted']) && $exercise['submission']['accepted'] == 1)
                                 $points[$exercise['typeName']][0]+=$exercise['submission']['marking']['points'];
                         }
                     }

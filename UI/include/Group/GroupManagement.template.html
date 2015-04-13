@@ -71,18 +71,36 @@
 
                                 // prints the name of the member
                                 print '<div class="group-member-name left">';
-                                print $user['firstName'] . ' ' . $user['lastName'] . ' ';
+                                if (isset($user['firstName'])){
+                                    print $user['firstName'];
+                                } else
+                                    print "";
+                                print " ";
+                                if (isset($user['lastName'])){
+                                    print $user['lastName'];
+                                } else
+                                    print "";
+                                
+                                if (isset($user['userName'])){
+                                    print " (".$user['userName'].")";
+                                } else
+                                    print "???";
+                                print " ";
                                 print '</div>';
 
                                 $displayName = $submission['file']['displayName'];
                                 $fileAddress = $submission['file']['address'];
+                                $fileSize = $submission['file']['fileSize'];
+                                $date = $submission['date'];
 
                                 // prints a link for downloading the submission
                                 print '<a class="left body-option-color" href="';
                                 print '../FS/FSBinder/' . $fileAddress . '/' . $displayName; //$filesystemURI
                                 print '" title="';
                                 print $displayName;
-                                print '" target="_blank">Einsendung ansehen</a>';
+                                print '" target="_blank">Einsendung ansehen';
+                                print ' (' . date('d.m.Y  -  H:i', $date). ', ' . formatBytes($fileSize) . ') ';
+                                print '</a>';
                             endif;
                         endif;
                     endforeach;

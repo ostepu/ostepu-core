@@ -26,7 +26,21 @@
                     print '<li class="bold">';
                     $leader = $group['leader'];
 
-                    print $leader['firstName'] . " " . $leader['lastName'];
+                    if (isset($leader['firstName'])){
+                        print $leader['firstName'];
+                    } else
+                        print "";
+                    print " ";
+                    if (isset($leader['lastName'])){
+                        print $leader['lastName'];
+                    } else
+                        print "";
+                    
+                    if (isset($leader['userName'])){
+                        print " (".$leader['userName'].")";
+                    } else
+                        print "???";
+                                    
                     print ' (Gruppenführer)';
                     print '</li>';
 
@@ -34,7 +48,21 @@
                     // prints group members
                     foreach ($group['members'] as $member) {
                         print "<li>";
-                        print $member['firstName'] . " " . $member['lastName'];
+                        
+                        if (isset($member['firstName'])){
+                            print $member['firstName'];
+                        } else
+                            print "";
+                        print " ";
+                        if (isset($member['lastName'])){
+                            print $member['lastName'];
+                        } else
+                            print "";
+                        
+                        if (isset($member['userName'])){
+                            print " (".$member['userName'].")";
+                        } else
+                            print "???";
 
                         if ($isLeader) {
                             print '<button name="removeMember" value="';

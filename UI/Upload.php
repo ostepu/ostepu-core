@@ -21,7 +21,6 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
     $URL = $databaseURI . '/group/user/' . $uid . '/exercisesheet/' . $sid;
     $group = http_get($URL, true);
     $group = json_decode($group, true);
-    
 
     if (!isset($group['leader'])) {
         $errormsg = "500: Internal Server Error. <br />Zur Zeit können keine Aufgaben eingesendet werden.";
@@ -176,6 +175,13 @@ $upload_data = json_decode($upload_data, true);
 $upload_data['filesystemURI'] = $filesystemURI;
 $upload_data['cid'] = $cid;
 $upload_data['sid'] = $sid;
+
+if (!isset($group)){
+    $URL = $databaseURI . "/group/user/{$uid}/exercisesheet/{$sid}";
+    $group = http_get($URL, true);
+    $group = json_decode($group, true);
+    $upload_data['group'] = $group;
+}
 
 $user_course_data = $upload_data['user'];
 Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $user_course_data);

@@ -6,7 +6,7 @@
                 $anyoneStarted=true;
                 break;
             }
-    
+                
     if (!empty($sheets) && $anyoneStarted): ?>
     <?php foreach ($sheets as $sheet):?>
     <?php /**
@@ -19,6 +19,19 @@
            // bool if startDate of sheet is greater than the actual date
            $hasStarted = date('U') > date('U', $sheet['startDate']);
            if (!$hasStarted) continue;
+           
+            $groupMember = array();
+            if (isset($sheet['group']['members']))
+                $groupMember = array_merge($groupMember,$sheet['group']['members']);
+            if (isset($sheet['group']['leader']))
+                $groupMember = array_merge($groupMember,array($sheet['group']['leader']));
+            $m=array();
+            foreach ($groupMember as $mem){
+                if (isset($mem['id']))
+                    $m[$mem['id']] = $mem;
+            }
+            $groupMember = $m;
+            unset($m);
            ?>
     <div class="content-element collapsible">
         <div class="content-header">
@@ -68,27 +81,31 @@
                             <?php // prints the achieved and the maximum points ?>
                             <?php if (isset($exercise['submission']['marking'])
                                      && $isExpired
-                                     && $exercise['submission']['marking']['statusId'] >= 2): ?>
-                                <?php echo $exercise['submission']['marking']['points']; ?>
-                            <?php else: ?>
+                                     && $exercise['submission']['marking']['statusId'] >= 2
+                                     && isset($exercise['submission']['accepted']) 
+                                     && $exercise['submission']['accepted'] == 1){
+                                     echo $exercise['submission']['marking']['points']; 
+                                } else { ?>
                                 -
-                            <?php endif; ?>
+                            <?php } ?>
                             / <?php echo $exercise['maxPoints']; ?> P
                         </div>
 
                         <div class="exercise-status">
-                            <?php if (isset($exercise['submission']['marking']) && $isExpired): ?>
+                            <?php if (isset($exercise['submission']) && (!isset($exercise['submission']['accepted']) || $exercise['submission']['accepted'] == 0)){ ?>
+                                nicht akzeptiert
+                            <?php } elseif (isset($exercise['submission']['marking']) && $isExpired) { ?>
                                 <?php echo $exercise['submission']['marking']['status']; ?>
-                            <?php elseif (isset($exercise['submission']) || (isset($exercise['submission']['marking']) && !$isExpired)): ?>
+                            <?php } elseif (isset($exercise['submission']) || (isset($exercise['submission']['marking']) && !$isExpired)) { ?>
                                 unkorrigiert
-                            <?php else: ?>
+                            <?php } else { ?>
                                 nicht eingesendet
-                            <?php endif; ?>
+                            <?php } ?>
                         </div>
 
                         <div class="exercise-sheet-images">
                             <?php // creates a downloadAttachment icon for the exercise (if it exists) ?>
-                            <?php if(isset($exercise['attachment'])): ?>
+                            <?php if(isset($exercise['attachment'])) { ?>
                                 <?php $displayName = $exercise['attachment']['displayName']; ?>
                                 <?php $fileAddress = $exercise['attachment']['address']; ?>
                                 <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}";/*{$filesystemURI}*/ ?>
@@ -96,7 +113,7 @@
                                 <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" class="plain" target="_blank">
                                     <img src="Images/Attachment.png" />
                                 </a>
-                            <?php endif; ?>
+                            <?php } ?>
 
                             <?php // creates a download icon for the submission (if it exists) ?>
                             <?php if(isset($exercise['submission']) && $exercise['submission']['hideFile'] == "0"): ?>
@@ -107,6 +124,12 @@
                                 <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" class="plain" target="_blank">
                                     <img src="Images/Download.png" />
                                 </a>
+                            <?php if (count($groupMember)>1){
+                                    if (isset($exercise['submission']['studentId']) && isset($groupMember[$exercise['submission']['studentId']]['userName'])){
+                                        print '('.$groupMember[$exercise['submission']['studentId']]['userName'].')';
+                                    } else
+                                        print "(???)";
+                                } ?>
                             <?php endif; ?>
 
                             <?php // creates a downloadCorrection icon for the marking (if it exists) ?>
@@ -121,7 +144,8 @@
                             <?php endif; ?>
 
                             <?php // creates a deleteSubmission icon for the submission (if it exists) ?>
-                            <?php if (isset($exercise['submission']) 
+                            <?php if (isset($exercise['submission']['studentId']) 
+                                      && $exercise['submission']['studentId'] == $uid
                                       && !$isExpired
                                       && $exercise['submission']['hideFile'] == "0"): ?>    
                                     <button title="Einsendung löschen" name="<?php echo (!isset($_POST['deleteSubmissionWarning']) || (isset($_POST['deleteSubmission']) && $_POST['deleteSubmission'] != $exercise['submission']['id'])) ? 'deleteSubmissionWarning' : 'deleteSubmission';?>" value="<?php echo $exercise['submission']['id']; ?>"class="image-button<?php echo (!isset($_POST['deleteSubmissionWarning']) || (isset($_POST['deleteSubmissionWarning']) && $_POST['deleteSubmissionWarning'] != $exercise['submission']['id'])) ? ' ' : '-simple  error-simple' ;?>">                                      
@@ -187,12 +211,14 @@
                         <?php 
                         if ($isExpired){
                         ?>
-                            <a style="color:#b9b8b8"><s>
-                        <?php } else { ?>
-                            <a style="color:#b9b8b8"><s><!--<a href="Group.php?sid=<?php echo $sheet['id'], '&cid=', $cid; ?>">-->
-                        <?php } ?>
+                            <a style="color:#b9b8b8">
                         Gruppe verwalten
-                        </s>></a>
+                            </a>
+                        <?php } else { ?>
+                            <a href="Group.php?sid=<?php echo $sheet['id'], '&cid=', $cid; ?>">
+                        Gruppe verwalten
+                            </a>
+                        <?php } ?>
                     </li>
 
                     <li>
@@ -224,6 +250,18 @@
                             </a>
                         </li>
                     <?php endif; ?>
+                    
+                    <li>
+                        <?php if ($isExpired){ ?>
+                            <a style="color:#b9b8b8">
+                                Einsendungsverlauf
+                            </a>
+                        <?php } else { ?>
+                            <a href="UploadHistory.php?cid=<?php echo $cid; ?>&sid=<?php echo $sheet['id']; ?>&action=ShowUploadHistory">
+                                Einsendungsverlauf
+                            </a>
+                        <?php } ?>
+                    </li>
                 </ol>
             </div>
         </div> <!-- end: content-body-wrapper -->
@@ -235,11 +273,14 @@
                     <li class="footer-text bold">
                         In Gruppe mit:
                     </li>
-                    <?php foreach ($sheet['group']['members'] as $member): ?>
-                        <li class="footer-text">
-                            <?php echo $member['firstName'], " ", $member['lastName']; ?>
-                        </li>
-                    <?php endforeach; ?>
+                    <?php 
+                        foreach ($groupMember as $key => $member){ 
+                            if (isset($user['userName']) && $member['userName'] == $user['userName']) continue;
+                        ?>
+                            <li class="footer-text">
+                                <?php echo $member['firstName'], " ", $member['lastName']; ?>
+                            </li>
+                    <?php }; ?>
                 </ol>
             </div>
         <?php endif; ?>

@@ -33,7 +33,7 @@ from
         and G2.ES_id = G.ES_id)
         join
     (Submission S
-    join Exercise E ON (S.E_id = E.E_id and E.C_id = '",courseid,"')) ON (G2.U_id_leader = S.U_id)
+    join Exercise E ON (S.E_id = E.E_id and E.C_id = '",courseid,"')) ON (G2.ES_id = E.ES_id and G2.U_id_leader = S.U_id)
         left join
     File F ON (S.F_id_file = F.F_id)
         left join

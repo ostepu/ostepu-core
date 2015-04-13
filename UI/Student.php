@@ -8,6 +8,7 @@
  * @author Ralf Busch
  */
 include_once 'include/Boilerplate.php';
+include_once '../Assistants/Structures.php';
 
 $sheetNotifications = array();
 
@@ -25,8 +26,13 @@ if (isset($_POST['deleteSubmissionWarning'])) {
     if ($submission['studentId'] == $uid) {
         $URI = $databaseURI . "/selectedsubmission/submission/" . $suid;
         http_delete($URI, true, $message);
-
-        if ($message == "201") {
+        
+        // todo: treat the case if the previous operation failed
+        $submissionUpdate = Submission::createSubmission($suid,null,null,null,null,null,null,0);
+        $URI = $databaseURI . "/submission/submission/" . $suid;
+        http_put_data($URI, Submission::encodeSubmission($submissionUpdate), true, $message2);
+        
+        if ($message == "201" && $message2 == 201) {
             $notifications[] = MakeNotification("success", "Die Einsendung wurde gelöscht!");
         } else {
             $notifications[] = MakeNotification("error", "Beim Löschen ist ein Fehler aufgetreten!");
@@ -44,7 +50,6 @@ $student_data = json_decode($student_data, true);
 $student_data['filesystemURI'] = $filesystemURI;
 $student_data['cid'] = $cid;
 $student_data['uid'] = $uid;
-
 $user_course_data = $student_data['user'];
 
 // check userrights for course
@@ -65,6 +70,7 @@ $h->bind($student_data);
                
 $t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetStudent.template.html');
 $t->bind($student_data);
+$t->bind(array('uid'=>$uid));
 
 $w = new HTMLWrapper($h, $t);
 $w->defineForm(basename(__FILE__)."?cid=".$cid, false, $t);

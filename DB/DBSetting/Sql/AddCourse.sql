@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS `Setting<?php echo $pre; ?>_<?php echo $object->getId
   `SET_id` INT NOT NULL AUTO_INCREMENT,
   `SET_name` VARCHAR(255) NOT NULL,
   `SET_state` VARCHAR(255) NOT NULL,
+  `SET_type` VARCHAR(255) NOT NULL,
   PRIMARY KEY (`SET_id`),
   UNIQUE INDEX `SET_id_UNIQUE` USING BTREE (`SET_id` ASC),
   UNIQUE INDEX `SET_name_UNIQUE` USING BTREE (`SET_name` ASC))

@@ -317,13 +317,42 @@ $group_data['filesystemURI'] = $filesystemURI;
 $group_data['uid'] = $uid;
 
 $user_course_data = $group_data['user'];
-Authentication::checkRights(PRIVILEGE_LEVEL::ADMIN, $cid, $uid, $user_course_data);
+Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $user_course_data);
+
+if (isset($group_data['exerciseSheet']['endDate']) && isset($group_data['exerciseSheet']['startDate'])){
+    // bool if endDate of sheet is greater than the actual date
+    $isExpired = date('U') > date('U', $group_data['exerciseSheet']['endDate']); 
+
+    // bool if startDate of sheet is greater than the actual date
+    $hasStarted = date('U') > date('U', $group_data['exerciseSheet']['startDate']);
+    if ($isExpired){
+        set_error("Der Übungszeitraum ist am ".date('d.m.Y  -  H:i', $group_data['exerciseSheet']['endDate'])." abgelaufen!");
+    } elseif (!$hasStarted){
+        set_error("Der Übungszeitraum beginnt am ".date('d.m.Y  -  H:i', $group_data['exerciseSheet']['startDate'])."!");
+    }
+    
+} else
+    set_error("Kein Übungszeitraum gefunden!");
+
+
+$user_course_data = $group_data['user'];
+$menu = MakeNavigationElement($user_course_data,
+                              PRIVILEGE_LEVEL::STUDENT);
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
 $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
-               "notificationElements" => $notifications));
+               "backTitle" => "zur Veranstaltung",
+               "backURL" => "Student.php?cid={$cid}",
+               "notificationElements" => $notifications,
+               "navigationElement" => $menu));
+
+/*// construct a new header
+$h = Template::WithTemplateFile('include/Header/Header.template.html');
+$h->bind($user_course_data);
+$h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
+               "notificationElements" => $notifications));*/
 
 $isInGroup = (!empty($group_data['group']['members']) || !empty($group_data['invitationsFromGroup']));
 $isLeader = $group_data['group']['leader']['id'] == $uid;
@@ -355,7 +384,7 @@ if ($hasInvitations) {
 }
 
 // wrap all the elements in some HTML and show them on the page
-$w = new HTMLWrapper($h, $groupMembers, (isset($groupManagement) ? $groupManagement : null), (isset($invitationsFromGroup) ? $invitationsFromGroup : null), (isset($invitationsToGroup) ? $invitationsToGroup : null));
+$w = new HTMLWrapper($h, $groupMembers, (isset($invitationsToGroup) ? $invitationsToGroup : null), (isset($groupManagement) ? $groupManagement : null), (isset($invitationsFromGroup) ? $invitationsFromGroup : null));
 $w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $groupMembers);
 
 if (isset($groupManagement))
