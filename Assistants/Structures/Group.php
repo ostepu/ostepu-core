@@ -125,8 +125,7 @@ class Group extends Object implements JsonSerializable
         return array( 
                      'U_member' => 'members',
                      'U_leader' => 'leader',
-                     'ES_id' => 'sheetId',
-        
+                     'ES_id' => 'sheetId'
                      );
     }
 
