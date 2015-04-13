@@ -42,6 +42,31 @@ class Setting extends Object implements JsonSerializable
     }
     
     /**
+     * @var string $type db type of the Setting
+     */
+    private $type = null;
+
+    /**
+     * the $type getter
+     *
+     * @return the value of $type
+     */
+    public function getType( )
+    {
+        return $self::getNameFromSettingName($this->type);
+    }
+
+    /**
+     * the $type setter
+     *
+     * @param string $value the new value for $type
+     */
+    public function setType( $value = null )
+    {
+        $this->type = $value;
+    }
+    
+    /**
      * @var string $id db id of the Setting
      */
     private $id = null;
@@ -134,13 +159,15 @@ class Setting extends Object implements JsonSerializable
     public static function createSetting( 
                                             $settingId,
                                             $settingName,
-                                            $state
+                                            $state='',
+                                            $type='text'
                                             )
     {
         return new Setting( array( 
                                      'id' => $settingId,
                                      'name' => $settingName,
-                                     'state' => $state
+                                     'state' => $state,
+                                     'type' => $type
                                      ) );
     }
 
@@ -154,7 +181,8 @@ class Setting extends Object implements JsonSerializable
         return array( 
                      'SET_id' => 'id',
                      'SET_name' => 'name',
-                     'SET_state' => 'state'
+                     'SET_state' => 'state',
+                     'SET_type' => 'type'
                      );
     }
 
@@ -167,22 +195,28 @@ class Setting extends Object implements JsonSerializable
     {
         $values = '';
         
-        if ( $this->id != null )
+        if ( $this->id !== null )
             $this->addInsertData( 
                                  $values,
                                  'SET_id',
                                  DBJson::mysql_real_escape_string( $this->id )
                                  );
-        if ( $this->name != null )
+        if ( $this->name !== null )
             $this->addInsertData( 
                                  $values,
                                  'SET_name',
                                  DBJson::mysql_real_escape_string( $this->name )
                                  );
-        if ( $this->state != null )
+        if ( $this->state !== null )
             $this->addInsertData( 
                                  $values,
                                  'SET_state',
+                                 DBJson::mysql_real_escape_string( $this->state )
+                                 );
+        if ( $this->type !== null )
+            $this->addInsertData( 
+                                 $values,
+                                 'SET_type',
                                  DBJson::mysql_real_escape_string( $this->state )
                                  );
 
@@ -202,7 +236,7 @@ class Setting extends Object implements JsonSerializable
      */
     public static function getDbPrimaryKey( )
     {
-        return'SET_id';
+        return 'SET_id';
     }
 
     /**
@@ -281,6 +315,8 @@ class Setting extends Object implements JsonSerializable
             $list['name'] = $this->name;
         if ( $this->state !== null )
             $list['state'] = $this->state;
+        if ( $this->type !== null )
+            $list['type'] = $this->type;
         return array_merge($list,parent::jsonSerialize( ));
     }
 
