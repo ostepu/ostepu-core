@@ -185,6 +185,32 @@ function saveMarking($points, $tutorComment, $status, $submissionID, $markingID,
     }
 }
 
+function updateSubmission($submissionId, $accepted)
+{
+    global $databaseURI;
+    global $timestamp;
+    $newSubmission = Submission::createSubmission( 
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    $accepted,
+                                                    null,
+                                                    null
+                                                    );
+
+    $newSubmission = Submission::encodeSubmission($newSubmission);
+    $URI = $databaseURI . "/submission/{$submissionId}";
+    http_put_data($URI, $newSubmission, true, $message);
+
+    if ($message != 201) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
 // changes search settings
 if (isset($_POST['action']) && $_POST['action'] == "ShowMarkingTool") {
     //if (isset($_POST['sheetID']) && isset($_POST['tutorID']) && isset($_POST['statusID'])) {
@@ -226,8 +252,10 @@ if (isset($_POST['MarkingTool'])) {
         if ($key == $leaderID) {
 
             // bool which is true if any error occured
-            $RequestError = false;
-            $hasChanged=false;
+            $RequestErrorMarking = false;
+            $RequestErrorSubmission = false;
+            $hasChangedMarking=false;
+            $hasChangedSubmission=false;
 
             foreach ($exercises as $exerciseId => $exercise) {
                 $maxPoints = cleanInput($exercise['maxPoints']);
@@ -239,7 +267,7 @@ if (isset($_POST['MarkingTool'])) {
                 $f = new FormEvaluator($exercise);
 
                 $f->checkNumberForKey('points',
-                                       FormEvaluator::REQUIRED,
+                                       FormEvaluator::OPTIONAL,
                                        'warning',
                                        'Ungültige Punktzahl.',
                                        array('min' => 0, 'max' => $maxPoints));
@@ -258,6 +286,12 @@ if (isset($_POST['MarkingTool'])) {
                                        'warning',
                                        'Ungültiger Status.',
                                        array('min' => 0, 'max' => $maxMarkingStatus));
+                                       
+                $f->checkIntegerForKey('accepted',
+                                       FormEvaluator::OPTIONAL,
+                                       'warning',
+                                       'Ungültige Akzeptanz.',
+                                       array('min' => 0, 'max' => 1));
 
                 if ($f->evaluate(true)) {
                     $foundValues = $f->foundValues;
@@ -280,7 +314,7 @@ if (isset($_POST['MarkingTool'])) {
                     }
                           
                     if ($changed){
-                        $hasChanged=true;
+                        $hasChangedMarking=true;
 
                         if (!saveMarking($points, 
                                          $tutorComment, 
@@ -290,26 +324,56 @@ if (isset($_POST['MarkingTool'])) {
                                          $leaderID, 
                                          $uid, 
                                          $exerciseId)) {
-                            $RequestError = true;echo "FAIL";
+                            $RequestErrorMarking = true;//echo "FAIL";
                         }
                     }
+                    
+                    // check for changed submission attributes
+                    $changed=false;
+                    $accepted = (isset($foundValues['accepted']) ? $foundValues['accepted'] : 0);
+                    if ((!isset($exercise['oldAccepted']) && isset($foundValues['accepted'])) || (isset($exercise['oldAccepted']) && $accepted!=$exercise['oldAccepted'])){
+                          $changed=true;///echo "D";
+                    }
+                    
+                    if ($changed){
+                        $hasChangedSubmission=true;
 
+                        if (!updateSubmission($submissionID, $accepted)) {
+                            $RequestErrorSubmission = true;//echo "FAIL";
+                        }
+                    }
+                    
                 } else {
                     //$GroupNotificationElements[$key] = $notifications + $f->notifications;
-                    //$RequestError = true;echo "OK";
+                    //$RequestErrorMarking = true;echo "OK";
                 }
             }
 
-            if ($hasChanged){
-                if ($RequestError) {
+            if ($hasChangedMarking){
+                if ($RequestErrorMarking) {
                     //$msg = "Beim Speichern für ".$userName." ist ein Fehler aufgetreten.";
-                    $msg = "Beim Speichern ist ein Fehler aufgetreten.";
+                    $msg = "Beim Speichern der Korrektur ist ein Fehler aufgetreten.";
                     if (!isset($GroupNotificationElements[$key])) $GroupNotificationElements[$key]=array();
                     $GroupNotificationElements[$key][] = MakeNotification("error", $msg);
                     
                 } else {
                     //$msg = "Die Korrektur für ".$userName." wurde erfolgreich gespeichert.";
-                    $msg = "Die Korrektur wurde erfolgreich gespeichert.";
+                    $msg = "Die Korrektur wurde erfolgreich geändert.";
+                    if (!isset($GroupNotificationElements[$key])) $GroupNotificationElements[$key]=array();
+                    $GroupNotificationElements[$key][] = MakeNotification("success", $msg);
+                }
+            }
+            
+            if ($hasChangedSubmission){
+                if ($RequestErrorSubmission) {
+                    //$msg = "Beim Speichern für ".$userName." ist ein Fehler aufgetreten.";
+                    $msg = "Beim Speichern der Einsendung ist ein Fehler aufgetreten.";
+                    if (!isset($GroupNotificationElements[$key])) $GroupNotificationElements[$key]=array();
+                    $GroupNotificationElements[$key][] = MakeNotification("error", $msg);
+                    
+                } else {
+                    //$msg = "Die Korrektur für ".$userName." wurde erfolgreich gespeichert.";
+                    $msg = "Die Einsendung wurde erfolgreich geändert.";
                     if (!isset($GroupNotificationElements[$key])) $GroupNotificationElements[$key]=array();
                     $GroupNotificationElements[$key][] = MakeNotification("success", $msg);
                 }
