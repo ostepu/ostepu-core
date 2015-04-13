@@ -16,7 +16,21 @@ if (isset($UploadHistoryNotificationElements)) {
         echo "<input type='hidden' name='userID' value='{$_POST['userID']}'>";
     if (isset($_POST['action']) && $_POST['action']=="ShowUploadHistory")
         echo "<input type='hidden' name='action' value='{$_POST['action']}'>";
-        
+      
+    if (isset($user['courses'][0]['status'])){   
+        $courseStatus = $user['courses'][0]['status'];
+    } else
+        $courseStatus =  -1;
+    
+    $groupMember = array();
+    if (isset($group)){
+        $groupMember2 = array_merge(array(),$group['members'],array($group['leader']));
+        foreach ($groupMember2 as $mem){
+            $groupMember[$mem['id']] = $mem;
+        }
+        unset($groupMember2);
+    }
+    
     // bool if subtasks are printed
     $count=null;
     $namesOfExercises=array();
@@ -52,6 +66,11 @@ if (isset($UploadHistoryNotificationElements)) {
                 if (!empty($submissionHistory[$key])) {
                     foreach ($submissionHistory[$key] as $submission) {
                         if ($submission['hideFile'] == "0") {
+                            if (isset($submission['flag']) && $submission['flag']==0 && !$courseStatus>=1 /* PRIVILEGE_LEVEL::TUTOR */)
+                                continue;
+                            if (!$courseStatus>=1 /* PRIVILEGE_LEVEL::TUTOR */ && $submission['studentId']!=$_POST['userID'])
+                                continue;
+                                
                             $noSubmission = false;
 
                             // prints the submission date
@@ -60,11 +79,23 @@ if (isset($UploadHistoryNotificationElements)) {
                             print date('d.m.Y  -  H:i', $submission['date']);
                             if (!$selected){ 
                             $obj=array("id"=>$submission['id'], "leaderId"=>$submission['leaderId'], "exerciseId"=>$submission['exerciseId']);
+                                if (count($groupMember)==1 || $_POST['userID']==$group['leader']['id']){
                             ?>
                             <button name="updateSelectedSubmission" value="<?php echo htmlentities(json_encode($obj)); ?>" class="medium text-button-simple body-option-color footer-text">
                             >>
                             </button>
-                            <?php }
+                            <?php 
+                                }
+                            } else {
+                                if (count($groupMember)==1 || $_POST['userID']==$group['leader']['id']){
+                            ?>
+                            <button name="" value="" class="medium text-button-simple critical-color footer-text">
+                            >>
+                            </button>
+                            <?php 
+                                }
+                            } ?>
+                            <?php
                             print '</div>';                            
 
                             $displayName = $submission['file']['displayName'];
@@ -72,13 +103,38 @@ if (isset($UploadHistoryNotificationElements)) {
                             $fileSize = $submission['file']['fileSize'];
 
                             // prints the link for downloading the submission
-                            print '<a class="left '.($selected ? 'bold critical-color' : 'body-option-color').'" href="';
+                            print '<a class="wider left '.($selected ? 'bold critical-color' : 'body-option-color').'" href="';
                             print  '../FS/FSBinder/' . $fileAddress . '/' . $displayName; //$filesystemURI
                             print '" title="';
                             print $displayName;
                             print '" target="_blank">Einsendung ansehen';
                             print ' (' . formatBytes($fileSize) . ') ';
                             print '</a>';
+                            
+                            if (isset($submission['flag']) && $submission['flag']==0){
+                                print '<span class="footer-text critical-color right">gelöscht</span>';
+                            }
+                            
+                            if ($courseStatus>=1 /* PRIVILEGE_LEVEL::TUTOR */){
+                                if (isset($submission['studentId']) && isset($groupMember[$submission['studentId']]) && count($groupMember)>1){
+                                    print '<span class="footer-text info-color left" style="padding-left: 20px">';
+                                    if (isset($groupMember[$submission['studentId']]['firstName'])){
+                                        print $groupMember[$submission['studentId']]['firstName'];
+                                    } else
+                                        print "";
+                                    print " ";
+                                    if (isset($groupMember[$submission['studentId']]['lastName'])){
+                                        print $groupMember[$submission['studentId']]['lastName'];
+                                    } else
+                                        print "";
+                                    
+                                    if (isset($groupMember[$submission['studentId']]['userName'])){
+                                        print " (".$groupMember[$submission['studentId']]['userName'].")";
+                                    } else
+                                        print "???";
+                                    print '</span>';
+                                }
+                            }
                         }
                     }
                 }
