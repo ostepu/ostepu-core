@@ -188,7 +188,6 @@ function saveMarking($points, $tutorComment, $status, $submissionID, $markingID,
 function updateSubmission($submissionId, $accepted)
 {
     global $databaseURI;
-    global $timestamp;
     $newSubmission = Submission::createSubmission( 
                                                     null,
                                                     null,
@@ -282,7 +281,7 @@ if (isset($_POST['MarkingTool'])) {
                  * @todo get maxStatusID for FormEvaluator.
                  */
                 $f->checkIntegerForKey('status',
-                                       FormEvaluator::REQUIRED,
+                                       FormEvaluator::OPTIONAL,
                                        'warning',
                                        'Ungültiger Status.',
                                        array('min' => 0, 'max' => $maxMarkingStatus));
