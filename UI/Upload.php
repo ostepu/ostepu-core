@@ -28,6 +28,27 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
                                             $errormsg);
         Logger::Log('error', "No group set for user {$uid} in course {$cid}!");
     } else {
+        
+        $URL = $databaseURI . '/exercisesheet/exercisesheet/' . $sid;
+        $sheet = http_get($URL, true);
+        $sheet = json_decode($sheet, true);
+        
+        $isExpired=null;
+        $hasStarted=null;
+        if (isset($sheet['endDate']) && isset($sheet['startDate'])){
+            // bool if endDate of sheet is greater than the actual date
+            $isExpired = date('U') > date('U', $sheet['endDate']); 
+
+            // bool if startDate of sheet is greater than the actual date
+            $hasStarted = date('U') > date('U', $sheet['startDate']);
+            if ($isExpired){
+                // empty
+            } elseif (!$hasStarted){
+                set_error("Der Übungszeitraum beginnt am ".date('d.m.Y  -  H:i', $sheet['startDate'])."!");
+            }
+            
+        } else
+            set_error("Kein Übungszeitraum gefunden!");
 
         $leaderId = $group['leader']['id'];
 
@@ -88,6 +109,10 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
                     $uploadSubmission->setFile($uploadFile);
                     $uploadSubmission->setExerciseName(isset($exercise['name']) ? $exercise['name'] : null);
                     $uploadSubmission->setSelectedForGroup('1');
+                    
+                    if ($isExpired){
+                        $uploadSubmission->setAccepted(0);
+                    }
 
                     $URL = $serverURI.'/logic/LProcessor/submission';
 ///echo Submission::encodeSubmission($uploadSubmission);return;
@@ -162,6 +187,12 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
                     $msg = "Aufgabe ".$exercise['name']." wurde erfolgreich eingesendet.<br>".$errormsg;
                     $notifications[] = MakeNotification('success',
                                                         $msg);
+                                                        
+                    if ($isExpired){
+                        $msg = "Aufgabe ".$exercise['name']." wurde verspätet eingesendet!";
+                        $notifications[] = MakeNotification('warning',
+                                                            $msg);    
+                    }
                 }
             }
         }
@@ -186,6 +217,8 @@ if (!isset($group)){
 
 $user_course_data = $upload_data['user'];
 Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $user_course_data);
+$isExpired=null;
+$hasStarted=null;
 
 if (isset($upload_data['exerciseSheet']['endDate']) && isset($upload_data['exerciseSheet']['startDate'])){
     // bool if endDate of sheet is greater than the actual date
@@ -194,7 +227,12 @@ if (isset($upload_data['exerciseSheet']['endDate']) && isset($upload_data['exerc
     // bool if startDate of sheet is greater than the actual date
     $hasStarted = date('U') > date('U', $upload_data['exerciseSheet']['startDate']);
     if ($isExpired){
-        set_error("Der Übungszeitraum ist am ".date('d.m.Y  -  H:i', $upload_data['exerciseSheet']['endDate'])." abgelaufen!");
+        ///set_error("Der Übungszeitraum ist am ".date('d.m.Y  -  H:i', $upload_data['exerciseSheet']['endDate'])." abgelaufen!");
+        $msg = "Der Übungszeitraum ist am ".date('d.m.Y  -  H:i', $upload_data['exerciseSheet']['endDate'])." abgelaufen!<br>".
+               "Eine verspätete Einsendung muss von einem Administrator akzeptiert werden, ansonsten wird diese nicht <br> gewertet. ".
+               "Die vergebenen Punkte einer bereits bewerteten Einsendung gehen beim Überschreiben verloren.";
+        $notifications[] = MakeNotification('warning',
+                                            $msg);
     } elseif (!$hasStarted){
         set_error("Der Übungszeitraum beginnt am ".date('d.m.Y  -  H:i', $upload_data['exerciseSheet']['startDate'])."!");
     }
@@ -217,6 +255,8 @@ foreach ($formdata as $value){
     }
 }
 
+$upload_data['hasStarted'] = $hasStarted;
+$upload_data['isExpired'] = $isExpired;
 $user_course_data = $upload_data['user'];
 $menu = MakeNavigationElement($user_course_data,
                               PRIVILEGE_LEVEL::STUDENT);

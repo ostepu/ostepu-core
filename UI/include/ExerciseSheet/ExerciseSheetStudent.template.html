@@ -196,72 +196,95 @@
                         </li>
                     <?php endif; ?>
 
-                    <li>
-                        <?php if (isset($sheet['sheetFile']['address'])){?>
+                    <?php if (!isset($sheet['sheetFile']['address'])){?>                        
+                        <!--<li>
+                            <a style="color:#b9b8b8">
+                                Aufgabenblatt
+                            </a>
+                        </li>-->
+                    <?php } else { ?>
                         <?php $displayName = $sheet['sheetFile']['displayName']; ?>
                         <?php $fileAddress = $sheet['sheetFile']['address']; ?>
-                        <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
-                        <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
-                            Aufgabenblatt
-                        </a>
-                        <?php } ?>
-                    </li>
+                        <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>     
+                        <li>
+                            <a class="text-button" href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
+                                Aufgabenblatt
+                            </a>
+                        </li>
+                    <?php } ?>
                     
-                    <li>
-                        <?php 
-                        if ($isExpired){
-                        ?>
+                    <?php if ($isExpired){ ?> 
+                        <!--<li>
                             <a style="color:#b9b8b8">
-                        Gruppe verwalten
+                                Gruppe verwalten
                             </a>
-                        <?php } else { ?>
-                            <a href="Group.php?sid=<?php echo $sheet['id'], '&cid=', $cid; ?>">
-                        Gruppe verwalten
+                        </li>-->
+                    <?php } else { ?>
+                        <li>
+                            <a class="text-button" href="Group.php?sid=<?php echo $sheet['id'], '&cid=', $cid; ?>">
+                                Gruppe verwalten
                             </a>
-                        <?php } ?>
-                    </li>
+                        </li>
+                    <?php } ?>
 
-                    <li>
-                        <?php 
-                        if ($isExpired){
-                        ?>
-                            <a style="color:#b9b8b8">
-                        <?php } else { ?>
-                            <a href="Upload.php?cid=<?php echo $cid; ?>&sid=<?php echo $sheet['id']; ?>" title="Upload">
-                        <?php } ?>
-                            Aufgaben hochladen
+
+                    <?php if ($isExpired){?>
+                        <li>
+                            <a class="text-button" href="Upload.php?cid=<?php echo $cid; ?>&sid=<?php echo $sheet['id']; ?>" title="Upload">
+                                Aufgaben hochladen
                             </a>
-                    </li>
+                        </li>
+                    <?php } else { ?>
+                        <li>
+                            <a class="text-button" href="Upload.php?cid=<?php echo $cid; ?>&sid=<?php echo $sheet['id']; ?>" title="Upload">
+                                Aufgaben hochladen
+                            </a>
+                        </li>
+                    <?php } ?>
 
                     <?php // prints a link to download attachments ?>
-                    <?php if ($sheet['hasAttachments']): ?>
+                    <?php if (!$sheet['hasAttachments']){ ?>
+                        <!--<li>
+                            <a style="color:#b9b8b8">
+                                Alle Anhänge herunterladen
+                            </a>
+                        </li>-->
+                    <?php } else { ?>
                         <li>
                             <a href="Download.php?cid=<?php echo $cid; ?>&downloadAttachments=<?php echo $sheet['id']; ?>" class="download text-button body-option-color">
                                 Alle Anhänge herunterladen
                             </a>
                         </li>
-                    <?php endif; ?>
+                    <?php } ?>
 
                     <?php // prints a link to download markings ?>
-                    <?php if (($sheet['hasMarkings'] || $sheet['hasSubmissions'] || $sheet['hasAttachments']) && $isExpired): ?>
+                    <?php if (!(($sheet['hasMarkings'] || $sheet['hasSubmissions'] || $sheet['hasAttachments']) && $isExpired)){ ?>
+                        <!--<li>
+                            <a style="color:#b9b8b8">
+                                Alles herunterladen
+                            </a>
+                        </li>-->
+                    <?php } else { ?>
                         <li>
                             <a href="Download.php?cid=<?php echo $cid; ?>&downloadMarkings=<?php echo $sheet['id']; ?>" class="download text-button body-option-color">
                                 Alles herunterladen
                             </a>
                         </li>
-                    <?php endif; ?>
-                    
+                    <?php } ?>
+
+                    <?php if ($isExpired){ ?>                    
+                    <!--<li>
+                        <a style="color:#b9b8b8">
+                            Einsendungsverlauf
+                        </a>
+                    </li>-->
+                    <?php } else { ?>                   
                     <li>
-                        <?php if ($isExpired){ ?>
-                            <a style="color:#b9b8b8">
-                                Einsendungsverlauf
-                            </a>
-                        <?php } else { ?>
-                            <a href="UploadHistory.php?cid=<?php echo $cid; ?>&sid=<?php echo $sheet['id']; ?>&action=ShowUploadHistory">
-                                Einsendungsverlauf
-                            </a>
-                        <?php } ?>
+                        <a class="text-button" href="UploadHistory.php?cid=<?php echo $cid; ?>&sid=<?php echo $sheet['id']; ?>&action=ShowUploadHistory">
+                            Einsendungsverlauf
+                        </a>
                     </li>
+                    <?php } ?>
                 </ol>
             </div>
         </div> <!-- end: content-body-wrapper -->
