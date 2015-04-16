@@ -511,31 +511,31 @@ class User extends Object implements JsonSerializable
     {
         $values = '';
 
-        if ( $this->id != null )
+        if ( $this->id !== null )
             $this->addInsertData( 
                                  $values,
                                  'U_id',
                                  DBJson::mysql_real_escape_string( $this->id )
                                  );
-        if ( $this->userName != null )
+        if ( $this->userName !== null )
             $this->addInsertData( 
                                  $values,
                                  'U_username',
                                  DBJson::mysql_real_escape_string( $this->userName )
                                  );
-        if ( $this->email != null )
+        if ( $this->email !== null )
             $this->addInsertData( 
                                  $values,
                                  'U_email',
                                  DBJson::mysql_real_escape_string( $this->email )
                                  );
-        if ( $this->firstName != null )
+        if ( $this->firstName !== null )
             $this->addInsertData( 
                                  $values,
                                  'U_firstName',
                                  DBJson::mysql_real_escape_string( $this->firstName )
                                  );
-        if ( $this->lastName != null )
+        if ( $this->lastName !== null )
             $this->addInsertData( 
                                  $values,
                                  'U_lastName',
@@ -553,19 +553,19 @@ class User extends Object implements JsonSerializable
                                  'U_flag',
                                  DBJson::mysql_real_escape_string( $this->flag )
                                  );
-        if ( $this->password != null )
+        if ( $this->password !== null )
             $this->addInsertData( 
                                  $values,
                                  'U_password',
                                  DBJson::mysql_real_escape_string( $this->password )
                                  );
-        if ( $this->salt != null )
+        if ( $this->salt !== null )
             $this->addInsertData( 
                                  $values,
                                  'U_salt',
                                  DBJson::mysql_real_escape_string( $this->salt )
                                  );
-        if ( $this->failedLogins != null )
+        if ( $this->failedLogins !== null )
             $this->addInsertData( 
                                  $values,
                                  'U_failed_logins',
@@ -577,19 +577,19 @@ class User extends Object implements JsonSerializable
                                  'U_externalId',
                                  DBJson::mysql_real_escape_string( $this->externalId )
                                  );
-        if ( $this->studentNumber != null )
+        if ( $this->studentNumber !== null )
             $this->addInsertData( 
                                  $values,
                                  'U_studentNumber',
                                  DBJson::mysql_real_escape_string( $this->studentNumber )
                                  );
-        if ( $this->isSuperAdmin != null )
+        if ( $this->isSuperAdmin !== null )
             $this->addInsertData( 
                                  $values,
                                  'U_isSuperAdmin',
                                  DBJson::mysql_real_escape_string( $this->isSuperAdmin )
                                  );
-        if ( $this->comment != null )
+        if ( $this->comment !== null )
             $this->addInsertData( 
                                  $values,
                                  'U_comment',

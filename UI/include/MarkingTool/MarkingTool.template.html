@@ -87,6 +87,7 @@ if (isset($GroupNotificationElements)) {
                        value="<?php echo $exercise['submission']['marking']['points']; ?>" />
                     <?php }  ?> 
                     
+                    <?php if (isset($exercise['submission'])){ ?>
                     <span class="">
                         <input type="checkbox" class="" value="1" id="accepted" name="exercises[<?php echo $leaderID; ?>][<?php echo $eid; ?>][accepted]"<?php echo (isset($exercise['submission']['accepted']) && $exercise['submission']['accepted']==1 ? " checked" : ''); ?>/>
                         <?php  if (isset($exercise['submission']['accepted'])) { ?>
@@ -95,6 +96,7 @@ if (isset($GroupNotificationElements)) {
                            value="<?php echo $exercise['submission']['accepted']; ?>" />
                         <?php }  ?> 
                     </span>
+                    <?php } ?>
                         
                     <?php
                         print '<input class="form-field text-input very-short" name="';
