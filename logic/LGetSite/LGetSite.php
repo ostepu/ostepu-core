@@ -407,7 +407,7 @@ class LGetSite
         $URL = $this->lURL . '/exercisesheet/course/' . $courseid . '/exercise';
         $handler1 = Request_CreateRequest::createGet($URL, array(), '');
 
-        $URL = $this->_getSubmission->getAddress().'/submission'.'/course/' . $courseid . '/user/' . $userid . '/selected';
+        $URL = $this->_getSubmission->getAddress().'/submission/group/user/' . $userid .'/course/' . $courseid . '/selected';
         $handler2 = Request_CreateRequest::createGet($URL, array(), '');
 
         $URL = $this->_getMarking->getAddress().'/marking/course/' . $courseid;
@@ -450,9 +450,9 @@ class LGetSite
 
         // order submissions by exercise
         $submissionsByExercise = array();
-        foreach ($submissions as &$submission) {
+        foreach ($submissions as $submission) {
             $exerciseId = $submission['exerciseId'];
-            $submissionsByExercise[$exerciseId] = &$submission;
+            $submissionsByExercise[$exerciseId] = $submission;
         }
 
         // add markings to the submissions
@@ -531,6 +531,7 @@ class LGetSite
                         if (isset($submission['marking'])) {
                             $marking = $submission['marking'];
 
+                        if (isset($submission['accepted']) && $submission['accepted'] == 1)
                             $sheetPoints += isset($marking['points']) ? $marking['points'] : 0 ;
 
                             if (!isset($submission['marking']['hideFile']) || !$submission['marking']['hideFile'])
@@ -997,7 +998,7 @@ class LGetSite
 
         // load all submissions for every exercise of the exerciseSheet
         if(!empty($exercises)) {
-            $URL = $this->_getSubmission->getAddress().'/submission/user/'.$uploaduserid.'/exercisesheet/'.$sheetid;
+            $URL = $this->_getSubmission->getAddress().'/submission/group/user/'.$uploaduserid.'/exercisesheet/'.$sheetid;
             $answer = Request::custom('GET', $URL, array(), '');
             $answer = json_decode($answer['content'], true);
             $submissions = array();
@@ -1009,7 +1010,23 @@ class LGetSite
                 }
             }
         }
-
+        
+        function compare_submissionTimeStamp($a, $b) {
+             return strnatcmp($b['date'], $a['date']);
+        }
+        
+        // sort submissions by time stamp
+        foreach ($submissions as $key => $submissionList){
+            usort($submissionList, 'compare_submissionTimeStamp');
+            $submissions[$key] = $submissionList;
+        }
+        
+        //Get the Group of the User for the given sheet
+        $URL = "{$this->_getGroup->getAddress()}/group/user/{$uploaduserid}/exercisesheet/{$sheetid}";
+        $answer = Request::custom('GET', $URL, array(), '');
+        $group = json_decode($answer['content'], true);
+        
+        $response['group'] = $group;
         $response['submissionHistory'] = $submissions;
 
         $this->flag = 1;
@@ -1344,26 +1361,28 @@ class LGetSite
         foreach ($submissions as $submission) {
             $userId = $submission['studentId'];
             $exerciseId = $submission['exerciseId'];
+            
+            if (isset($submission['flag']) && $submission['flag']==1){
+                if (isset($exerciseUserSubmissions[$exerciseId]) == false) {
+                    $exerciseUserSubmissions[$exerciseId] = array();
+                }
 
-            if (isset($exerciseUserSubmissions[$exerciseId]) == false) {
-                $exerciseUserSubmissions[$exerciseId] = array();
-            }
-
-            if (isset($exerciseUserSubmissions[$exerciseId][$userId]) == false) {
-                $user = &$usersById[$userId];
-                $userSubmission = array('user' => $user,
-                                        'submission' => $submission);
-                $exerciseUserSubmissions[$exerciseId][$userId] = $userSubmission;
-            } else {
-                $lastUserSubmission = $exerciseUserSubmissions[$exerciseId][$userId];
-                if ($lastUserSubmission['submission']['date'] < $submission['date']) {
-
-                    // smaller date means less seconds since refrence date
-                    // so $lastSubmission is older
+                if (isset($exerciseUserSubmissions[$exerciseId][$userId]) == false) {
                     $user = &$usersById[$userId];
                     $userSubmission = array('user' => $user,
                                             'submission' => $submission);
                     $exerciseUserSubmissions[$exerciseId][$userId] = $userSubmission;
+                } else {
+                    $lastUserSubmission = $exerciseUserSubmissions[$exerciseId][$userId];
+                    if ($lastUserSubmission['submission']['date'] < $submission['date']) {
+
+                        // smaller date means less seconds since refrence date
+                        // so $lastSubmission is older
+                        $user = &$usersById[$userId];
+                        $userSubmission = array('user' => $user,
+                                                'submission' => $submission);
+                        $exerciseUserSubmissions[$exerciseId][$userId] = $userSubmission;
+                    }
                 }
             }
         }
@@ -1383,6 +1402,11 @@ class LGetSite
         $response['invitationsFromGroup'] = $invited;
         $response['invitationsToGroup'] = $invitations;
         $response['exercises'] = $exercises;
+        
+        if (isset($sheet['exercises']))
+            unset($sheet['exercises']);
+    
+        $response['exerciseSheet'] = $sheet;
         $response['group'] = $group;
         $response['groupSize'] = $sheet['groupSize'];
 
@@ -1421,7 +1445,11 @@ class LGetSite
 
         $URL = $this->_getUser->getAddress() . '/user/course/'.$courseid.'/status/0';
         $handler = Request_CreateRequest::createCustom('GET', $URL, array(),'');
-        $multiRequestHandle->addRequest($handler);
+        $multiRequestHandle->addRequest($handler);  
+
+        $URL = $this->_getGroup->getAddress().'/group/course/' . $courseid;
+        $handler = Request_CreateRequest::createGet($URL, array(), '');
+        $multiRequestHandle->addRequest($handler);        
         
         $answer = $multiRequestHandle->run();
         
@@ -1429,6 +1457,7 @@ class LGetSite
         $exercises = json_decode($answer[1]['content'], true);
         $approvalconditions = json_decode($answer[2]['content'], true);
         $students = json_decode($answer[3]['content'], true);
+        $groups = json_decode($answer[4]['content'], true);
 
         // preprocess the data to make it quicker to get specific values
         $exerciseTypes = array();
@@ -1503,6 +1532,15 @@ class LGetSite
             if (isset($marking['submission']['selectedForGroup']) && $marking['submission']['selectedForGroup'] == 1)
                 $allMarkings[] = $marking;
         }
+        unset($markings);
+        
+        $allGroups = array();
+        foreach ($groups as $group){
+            if (!isset($allGroups[$group['sheetId']]))
+                $allGroups[$group['sheetId']] = array();
+            $allGroups[$group['sheetId']][$group['leader']['id']] = $group;
+        }
+        unset($groups);
 
         // done preprocessing
         // actual computation starts here
@@ -1511,18 +1549,32 @@ class LGetSite
         $studentMarkings = array();
         foreach ($allMarkings as $marking) {
             $studentID = $marking['submission']['studentId'];
-            if (!isset($studentMarkings[$studentID])) {
+            $leaderID = $marking['submission']['leaderId'];
+            if (!isset($studentMarkings[$studentID]))
                 $studentMarkings[$studentID] = array();
-            }
+            if (!isset($marking['submission']['accepted']) || $marking['submission']['accepted']==0)
+                continue;
 
             $exerciseID = $marking['submission']['exerciseId'];
+            $sheetID = $marking['submission']['exerciseSheetId'];
             $exerciseType = $exercisesById[$exerciseID]['type'];
 
-            if (!isset($studentMarkings[$studentID][$exerciseType])) {
+            if (!isset($studentMarkings[$studentID][$exerciseType]))
                 $studentMarkings[$studentID][$exerciseType] = 0;
-            }
 
             $studentMarkings[$studentID][$exerciseType] += isset($marking['points']) ? $marking['points'] : 0;
+            
+            if (isset($allGroups[$sheetID][$leaderID])){
+                $group = $allGroups[$sheetID][$leaderID];
+                foreach ($group['members'] as $member){
+                    if (!isset($studentMarkings[$member['id']]))
+                        $studentMarkings[$member['id']] = array();
+                    if (!isset($studentMarkings[$member['id']][$exerciseType]))
+                        $studentMarkings[$member['id']][$exerciseType] = 0;
+                    
+                    $studentMarkings[$member['id']][$exerciseType] += isset($marking['points']) ? $marking['points'] : 0;
+                }
+            }
         }
 
         $resultStudents = array();
@@ -1617,7 +1669,7 @@ class LGetSite
 
         $this->flag = 1;
         $response['user'] = $this->userWithCourse($userid, $courseid);
-        
+
         if (isset($students))
             $response['users'] = $students;
 

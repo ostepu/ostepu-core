@@ -36,6 +36,7 @@ include_once ( dirname( __FILE__ ) . '/Structures/Process.php' );
 include_once ( dirname( __FILE__ ) . '/Structures/Query.php' );
 include_once ( dirname( __FILE__ ) . '/Structures/SelectedSubmission.php' );
 include_once ( dirname( __FILE__ ) . '/Structures/Session.php' );
+include_once ( dirname( __FILE__ ) . '/Structures/Setting.php' );
 include_once ( dirname( __FILE__ ) . '/Structures/Submission.php' );
 include_once ( dirname( __FILE__ ) . '/Structures/Transaction.php' );
 include_once ( dirname( __FILE__ ) . '/Structures/TutorAssignment.php' );

@@ -1,5 +1,7 @@
 <input type="submit" style="display: none" id="submitSheetButton">
+<?php if (isset($sid) && isset($cid)) { ?>
 <a class="button critical-color bold " href="CreateSheet.php?cid=<?php echo $cid; ?>&sid=<?php echo $sid; ?>">Abbrechen</a>
+<?php } ?>
 
 <div class="content-element collapsible">
     <div class="content-header">

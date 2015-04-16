@@ -7,7 +7,22 @@
         <div class="content-body left">
             <?php 
             if (isset($courses[0])) {
-                foreach ($courses as $course): 
+                $currentSemester = null;
+                foreach ($courses as $course){
+                    if ($course['course']['semester']!=$currentSemester){
+                        $currentSemester=$course['course']['semester'];
+                        if ($currentSemester!==null){
+                        ?>
+                           </span>
+                        <?php
+                        }
+                           
+                    ?>  <span class="content-element">
+                        <span class="left label bold new-line content-title uppercase info-color">
+                            <?php echo $currentSemester;?>
+                        </span>
+                    <?php
+                    }
             ?>
                     
                     <span class="left medium label bold new-line">
@@ -15,16 +30,19 @@
                     </span>
                     
                     <a href="<?php echo $sites[$course['status']], '?cid=', $course['course']['id']; ?>"
-                       class="left body-option-color form-text deny-button" style="padding-right: 10px"><!-- form-text-->
+                       class="left body-option-color form-text deny-button" style="padding-right: 10px">
                         zur Veranstaltung
                     </a>
                     
-                    <div class="left course-list form-text" ><!-- -->
+                    <div class="left course-list form-text" >
                         <?php print $course['course']['name'];?>
                     </div>
                     
             <?php 
-                endforeach; 
+                }
+            ?>
+                </span>
+            <?php
             }
             else {
                 print "Sie sind in keinem Kurs eingetragen.";

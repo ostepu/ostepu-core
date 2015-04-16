@@ -1,0 +1,11 @@
+[
+    {    "method":"put", "path":"(/:pre)/setting/setting/:setid" },
+    {    "method":"delete", "path":"(/:pre)/setting/setting/:setid" },
+    {    "method":"post", "path":"(/:pre)/setting/course/:courseid" },
+    {    "method":"get", "path":"(/:pre)/link/exists/course/:courseid" },
+    {    "method":"get", "path":"(/:pre)/setting/course/:courseid" },
+    {    "method":"get", "path":"(/:pre)/setting/setting/:setid" },
+    {    "method":"get", "path":"(/:pre)/setting/course/:courseid/name/:setname" },
+    {    "method":"delete", "path":"(/:pre)/course" },
+    {    "method":"post", "path":"(/:pre)/course/:courseid" }
+]

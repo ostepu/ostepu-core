@@ -16,9 +16,21 @@
                 <?php
                 foreach ($invitationsToGroup as $invitation):
                     print "<li>";
-                    print $invitation['leader']['firstName'];
+                    if (isset($invitation['leader']['firstName'])){
+                        print $invitation['leader']['firstName'];
+                    } else
+                        print "";
                     print " ";
-                    print $invitation['leader']['lastName'];
+                    if (isset($invitation['leader']['lastName'])){
+                        print $invitation['leader']['lastName'];
+                    } else
+                        print "";
+                    
+                    if (isset($invitation['leader']['userName'])){
+                        print " (".$invitation['leader']['userName'].")";
+                    } else
+                        print "???";
+                    
                         print '<button name="denyInvitation" class="right text-button body-option-color" value="';
                         print $invitation['leader']['id'];
                         print '">ablehnen</button>';

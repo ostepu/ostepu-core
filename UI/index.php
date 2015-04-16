@@ -8,7 +8,8 @@
  * @author Ralf Busch
  */
 
-include_once 'include/Boilerplate.php';
+include_once dirname(__FILE__) . '/include/Boilerplate.php';
+include_once dirname(__FILE__) . '/../Assistants/LArraySorter.php';
 
 // load user data from the database
 $databaseURI = $databaseURI . "/user/user/{$uid}";
@@ -31,6 +32,17 @@ $h->bind(array("name" => "Übungsplattform",
                "notificationElements" => $notifications,
                "navigationElement" => $menu));
 
+// sort courses by semester
+if (isset($user['courses']) && is_array($user['courses'])){
+    foreach ($user['courses'] as &$course){
+        $course['semesterInt'] = substr($course['course']['semester'],-4)*2;
+        if (substr($course['course']['semester'],0,2)=='WS')
+            $course['semesterInt']--;
+        
+    }
+    $user['courses'] = LArraySorter::orderBy($user['courses'], 'semesterInt', SORT_DESC, 'name', SORT_ASC);
+}
+               
 $pageData = array('uid' => isset($user['id']) ? $user['id'] : null,
                   'courses' => isset($user['courses']) ? $user['courses'] : null,
                   'sites' => PRIVILEGE_LEVEL::$SITES,

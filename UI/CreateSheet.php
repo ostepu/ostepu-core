@@ -716,10 +716,10 @@ if (isset($_POST['action'])) {// && $_POST['action'] == "new"
             }
             
             if ($errorInSent == false) {
-                $errormsg = "Die Serie wurde erstellt.";
+                $errormsg = "Die Serie wurde ".($_POST['action']=='edit' ? 'bearbeitet' : 'erstellt').".";
                 array_push($notifications, MakeNotification('success', $errormsg));
             } else {
-                $errormsg = "Beim Erstellen ist ein Fehler aufgetreten.";
+                $errormsg = "Beim ".($_POST['action']=='edit' ? 'Bearbeiten' : 'Erstellen')." ist ein Fehler aufgetreten.";
                 array_push($notifications, MakeNotification('error', $errormsg));
 
                 // delete exercisesheet if exercises are going wrong
@@ -727,7 +727,7 @@ if (isset($_POST['action'])) {// && $_POST['action'] == "new"
                     http_delete($logicURI.'/DB/exercisesheet/exercisesheet/'.$output['id'], true, $message);
             }
         } else {
-            $errormsg = "Beim Erstellen ist ein Fehler aufgetreten.";
+            $errormsg = "Beim ".($_POST['action']=='edit' ? 'Bearbeiten' : 'Erstellen')." ist ein Fehler aufgetreten.";
             array_push($notifications, MakeNotification('error', $errormsg));
         }
     }  else {

@@ -420,7 +420,8 @@ function updateSelectedSubmission($databaseURI,
                                   $leaderId,
                                   $submissionId,
                                   $exerciseId,
-                                  &$message)
+                                  &$message,
+                                  $newFlag=null)
 {
     $selectedSubmission = SelectedSubmission::createSelectedSubmission($leaderId,
                                                                        $submissionId,
@@ -430,6 +431,7 @@ function updateSelectedSubmission($databaseURI,
                                          json_encode($selectedSubmission),
                                          true,
                                          $message);
+        
     if ($message != "201") {
         $URL = $databaseURI . '/selectedsubmission/leader/' . $leaderId
                . '/exercise/' . $exerciseId;
@@ -439,6 +441,21 @@ function updateSelectedSubmission($databaseURI,
                                             $message);
     }
 
+    if ($newFlag!==null){
+        // todo: treat the case if the previous operation failed
+        if ($submissionId===null){
+            $ret = Submission::decodeSubmission($returnedSubmission);
+            $submissionId = $ret->getId();
+        }
+
+        $URL = $databaseURI . '/submission/submission/'.$submissionId;
+        $submissionUpdate = Submission::createSubmission($submissionId,null,null,null,null,null,null,$newFlag);
+        $returnedSubmission2 = http_put_data($URL,
+                                             json_encode($submissionUpdate),
+                                             true,
+                                             $message2);   
+    }
+    
     return $returnedSubmission;
 }
 

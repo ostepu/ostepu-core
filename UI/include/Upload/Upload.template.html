@@ -16,6 +16,19 @@
     </button>
 
     <?php     
+    $groupMember = array();
+    if (isset($group['members']))
+        $groupMember = array_merge($groupMember,$group['members']);
+    if (isset($group['leader']))
+        $groupMember = array_merge($groupMember,array($group['leader']));
+    $m=array();
+    foreach ($groupMember as $mem){
+        if (isset($mem['id']))
+            $m[$mem['id']] = $mem;
+    }
+    $groupMember = $m;
+    unset($m);
+            
     // bool if subtasks are printed
     $isSubtask = false;
     foreach($exercises as $key => $exercise): 
@@ -69,6 +82,12 @@
                                 <?php echo formatBytes($file['fileSize']); ?>
                                 )
                             </a>
+                            <?php if (count($groupMember)>1){
+                                if (isset($exercise['selectedSubmission']['studentId']) && isset($groupMember[$exercise['selectedSubmission']['studentId']]['userName'])){
+                                    print '('.$groupMember[$exercise['selectedSubmission']['studentId']]['userName'].')';
+                                } else
+                                    print "(???)";
+                            } ?>
 
                             <?php if (isset($sub['comment']) && trim($sub['comment'])!=''): ?>
                                 <br><div class="form-field wider left bold new-line">
