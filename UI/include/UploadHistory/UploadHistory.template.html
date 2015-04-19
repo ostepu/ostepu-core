@@ -68,9 +68,8 @@ if (isset($UploadHistoryNotificationElements)) {
                         if ($submission['hideFile'] == "0") {
                             if (isset($submission['flag']) && $submission['flag']==0 && !$courseStatus>=1 /* PRIVILEGE_LEVEL::TUTOR */)
                                 continue;
-                            if (!$courseStatus>=1 /* PRIVILEGE_LEVEL::TUTOR */ && $submission['studentId']!=$_POST['userID'])
-                                continue;
-                                
+                            //if (!$courseStatus>=1 /* PRIVILEGE_LEVEL::TUTOR */ && $submission['studentId']!=$_POST['userID'])
+                            //    continue;
                             $noSubmission = false;
 
                             // prints the submission date
@@ -103,19 +102,28 @@ if (isset($UploadHistoryNotificationElements)) {
                             $fileSize = $submission['file']['fileSize'];
 
                             // prints the link for downloading the submission
-                            print '<a class="wider left '.($selected ? 'bold critical-color' : 'body-option-color').'" href="';
+                            /*print '<a class="wider left '.($selected ? 'bold critical-color' : 'body-option-color').'" href="';
                             print  '../FS/FSBinder/' . $fileAddress . '/' . $displayName; //$filesystemURI
                             print '" title="';
                             print $displayName;
-                            print '" target="_blank">Einsendung ansehen';
+                            print '" target="_blank">Einsendung ansehen';*/
+                            $fileURL = '../FS/FSBinder/' . $fileAddress . '/' . $displayName;
+                            print '<span class="wider left '.($selected ? 'bold critical-color' : 'body-option-color').'">';
+                            print '<div class="exercise-sheet-images">';
+                            print '<a href="'.$fileURL.'" title="'.$displayName.'" class="plain" target="_blank">';
+                            print '        <img src="Images/Download.png" />';
                             print ' (' . formatBytes($fileSize) . ') ';
                             print '</a>';
+                            print '</div>';
+                            print '</span>';
+                            //print '</a>';
+                            
                             
                             if (isset($submission['flag']) && $submission['flag']==0){
                                 print '<span class="footer-text critical-color right">gelöscht</span>';
                             }
                             
-                            if ($courseStatus>=1 /* PRIVILEGE_LEVEL::TUTOR */){
+                            //if ($courseStatus>=1 /* PRIVILEGE_LEVEL::TUTOR */){
                                 if (isset($submission['studentId']) && isset($groupMember[$submission['studentId']]) && count($groupMember)>1){
                                     print '<span class="footer-text info-color left" style="padding-left: 20px">';
                                     if (isset($groupMember[$submission['studentId']]['firstName'])){
@@ -134,7 +142,7 @@ if (isset($UploadHistoryNotificationElements)) {
                                         print "???";
                                     print '</span>';
                                 }
-                            }
+                            //}
                         }
                     }
                 }
