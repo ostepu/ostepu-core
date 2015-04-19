@@ -87,13 +87,15 @@ include_once dirname(__FILE__) . '/../Helpers.php';
             <?php if (isset($attachments[0]['displayName'])){ ?>
             <input type="hidden" name="exercises[0][subexercises][0][attachment][displayName]" value="<?php echo $attachments[0]['displayName']; ?>" />
             <?php } ?>
-            <a href="<?php echo $fileURL; ?>" title="<?php echo $attachments[0]['displayName']; ?>" class="plain" target="_blank">
-                <img src="Images/Download.png" />
-            </a>
-            <a href="javascript:void(0);" title="Anhang löschen" name="deleteAttachmentFile" class="plain deleteFile">                                      
-                <img src="Images/Delete.png">
-                <?php if (isset($attachments[0])){ ?><span class="right warning-simple" ></span><?php } ?>
-            </a>
+            <div class="exercise-sheet-images">
+                <a href="<?php echo $fileURL; ?>" title="<?php echo $attachments[0]['displayName']; ?>" class="plain" target="_blank">
+                    <img src="Images/Download.png" />
+                </a>
+                <a href="javascript:void(0);" title="Anhang löschen" name="deleteAttachmentFile" class="plain deleteFile">                                      
+                    <img src="Images/Delete.png">
+                    <?php if (isset($attachments[0])){ ?><span class="right warning-simple" ></span><?php } ?>
+                </a>
+            </div>
         </span>
         <?php } ?>
     </span>
