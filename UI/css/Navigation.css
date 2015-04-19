@@ -11,7 +11,8 @@ ul.navigation {
     overflow: auto;
     padding: 7px 40px;
     /* color 1, var 1 */
-    background-color: #6b9cc1;
+    background-color: #FFF;
+    border: 3px solid #81AB2E;
     border-radius: 5px;
 }
 
@@ -29,5 +30,5 @@ ul.navigation a {
 }
 
 .navigation a:hover {
-    color: #ffffff;
+    color: #81AB2E;
 }
