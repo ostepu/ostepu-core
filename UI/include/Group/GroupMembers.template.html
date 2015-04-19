@@ -77,7 +77,20 @@
                     foreach ($invitationsFromGroup as $invitationFromGroup) {
                         $member = $invitationFromGroup['member'];
                         print "<li>Ausstehend: ";
-                        print $member['firstName'] . " " . $member['lastName'];
+                        if (isset($member['firstName'])){
+                            print $member['firstName'];
+                        } else
+                            print "";
+                        print " ";
+                        if (isset($member['lastName'])){
+                            print $member['lastName'];
+                        } else
+                            print "";
+                        
+                        if (isset($member['userName'])){
+                            print " (".$member['userName'].")";
+                        } else
+                            print "???";
 
                         if ($isLeader) {
                             print '<button name="removeInvitation" value="';
