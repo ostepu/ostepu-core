@@ -71,6 +71,7 @@
 
                                 // prints the name of the member
                                 print '<div class="group-member-name left">';
+                                
                                 if (isset($user['firstName'])){
                                     print $user['firstName'];
                                 } else
@@ -86,7 +87,6 @@
                                 } else
                                     print "???";
                                 print " ";
-                                print '</div>';
 
                                 $displayName = $submission['file']['displayName'];
                                 $fileAddress = $submission['file']['address'];
@@ -94,13 +94,16 @@
                                 $date = $submission['date'];
 
                                 // prints a link for downloading the submission
-                                print '<a class="left body-option-color" href="';
-                                print '../FS/FSBinder/' . $fileAddress . '/' . $displayName; //$filesystemURI
-                                print '" title="';
-                                print $displayName;
-                                print '" target="_blank">Einsendung ansehen';
-                                print ' (' . date('d.m.Y  -  H:i', $date). ', ' . formatBytes($fileSize) . ') ';
+                                $fileURL = '../FS/FSBinder/' . $fileAddress . '/' . $displayName;
+                                print '<div class="plain exercise-sheet-images">';
+                                print '<span class="body-option-color">';
+                                print '<a href="'.$fileURL.'" title="'.$displayName.'" class="plain" target="_blank">';
+                                print '        <img src="Images/Download.png" />';
+                                print ' (' . formatBytes($fileSize) . ') ';
                                 print '</a>';
+                                print '</span>';
+                                print '</div>';
+                                print '</div>';
                             endif;
                         endif;
                     endforeach;
