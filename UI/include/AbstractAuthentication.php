@@ -230,4 +230,3 @@ abstract class AbstractAuthentication
         return $this->hashData("sha256", $password . $salt);
     }
 }
-?>

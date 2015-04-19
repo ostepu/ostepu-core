@@ -32,7 +32,6 @@ if (isset($form['choices'])){
         $radio->show();
     }
 }
-?>
       
 <a href="javascript:void(0);" class="body-option-color add-choice left">Auswahl hinzufügen</a>
             

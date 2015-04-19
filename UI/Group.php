@@ -395,5 +395,3 @@ if (isset($invitationsToGroup))
     $w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $invitationsToGroup);
 $w->set_config_file('include/configs/config_group.json');
 $w->show();
-
-?>

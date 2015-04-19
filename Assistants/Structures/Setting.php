@@ -363,4 +363,3 @@ class Setting extends Object implements JsonSerializable
 }
 
  
-?>

@@ -114,4 +114,3 @@ if (!$simple) {
     }
 }
 #endregion PlugInsInstallieren
-?>

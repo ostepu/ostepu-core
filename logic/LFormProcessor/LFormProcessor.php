@@ -560,4 +560,3 @@ class LFormProcessor
             $this->app->response->setBody( Process::encodeProcess( $res ) );
     }
 }
-?>

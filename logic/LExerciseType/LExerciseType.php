@@ -194,4 +194,3 @@ class LExerciseType
         $this->app->response->setBody($answer['content']);
     }
 }
-?>

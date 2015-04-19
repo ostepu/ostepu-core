@@ -51,5 +51,3 @@ class Sprachen
             return '???';
     }
 }
-
-?>

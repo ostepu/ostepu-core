@@ -44,5 +44,3 @@ if (isset($_GET['suid'])) {
 // global $logicURI;
 // global $filesystemURI;
 // global $getSiteURI;
-
-?>

@@ -141,4 +141,3 @@ class Request_MultiRequest
         return true;
     }
 }
-?>

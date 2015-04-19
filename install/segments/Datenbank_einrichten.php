@@ -32,4 +32,3 @@ if (!$simple)
         echo $text;
     }
 #endregion Datenbank_einrichten
-?>

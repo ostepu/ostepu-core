@@ -376,4 +376,3 @@ class CControlTest extends PHPUnit_Framework_TestCase
         // no test available
     }
 }
-?>

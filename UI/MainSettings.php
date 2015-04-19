@@ -338,4 +338,3 @@ $w->defineForm(basename(__FILE__), false, $deleteUser);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
 
-?>

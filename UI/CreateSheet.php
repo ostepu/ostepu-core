@@ -791,4 +791,3 @@ $w = new HTMLWrapper($h, $sheetSettings, $createExercise);
 $w->defineForm(basename(__FILE__)."?cid=".$cid.(isset($sid) ? "&sid={$sid}" : ''), true, $sheetSettings, $createExercise);
 $w->set_config_file('include/configs/config_createSheet.json');
 $w->show();
-?>

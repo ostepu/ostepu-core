@@ -85,4 +85,3 @@ $tutorUpload->bind($tutorUpload_data);
 $w = new HTMLWrapper($h, $tutorUpload);
 $w->set_config_file('include/configs/config_upload_exercise.json');
 $w->show();
-?>

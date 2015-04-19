@@ -48,4 +48,3 @@ $gesamtzeit+=$value['time'];
 
 echo "\ntotal:        " . str_pad($summe, 8, " ", STR_PAD_LEFT). "\n";
 echo "average time: " . str_pad((round($gesamtzeit/$summe,2)), 8, " ", STR_PAD_LEFT). "s\n";
-?>

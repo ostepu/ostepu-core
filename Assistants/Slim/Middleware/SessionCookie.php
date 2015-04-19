@@ -208,4 +208,3 @@ class SessionCookie extends \Slim\Middleware
         return true;
     }
 }
-?>

@@ -50,4 +50,3 @@ class DBControl extends Controller
         DBControl::$_prefix = $value;
     }
 } 
-?>

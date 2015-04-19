@@ -19,4 +19,3 @@ if (!$simple)
         echo $text;
     }
 #endregion Benutzerschnittstelle_einrichten
-?>

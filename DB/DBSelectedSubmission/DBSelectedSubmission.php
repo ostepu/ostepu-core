@@ -852,4 +852,3 @@ class DBSelectedSubmission
 }
 
  
-?>

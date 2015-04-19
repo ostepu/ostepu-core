@@ -717,4 +717,3 @@ class Installation
       return $files; 
     } 
 }
-?>

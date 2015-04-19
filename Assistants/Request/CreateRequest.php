@@ -180,4 +180,3 @@ class Request_CreateRequest
                                                     $sessiondelete); 
     }
 }
-?>

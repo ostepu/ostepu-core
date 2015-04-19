@@ -27,4 +27,3 @@ if (!$simple)
         echo $text;
     }
 #endregion Grundeinstellungen_ausgeben
-?>

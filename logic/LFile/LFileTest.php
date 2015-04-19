@@ -207,4 +207,3 @@ class LFileTest extends PHPUnit_Framework_TestCase
 }
 
 $com = new LFileTest();
-?>

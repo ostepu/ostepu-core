@@ -343,4 +343,3 @@ class DBQuery
             $this->_app->response->setBody( Platform::encodePlatform( $res ) );
     }
 }
-?>

@@ -805,4 +805,3 @@ class Installer
 
 // create a new instance of Installer class 
 new Installer((isset($argv) ? $argv : null));
-?>

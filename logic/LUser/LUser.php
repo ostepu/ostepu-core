@@ -196,4 +196,3 @@ class LUser
         $this->app->response->setBody($answer['content']);
     }
 }
-?>

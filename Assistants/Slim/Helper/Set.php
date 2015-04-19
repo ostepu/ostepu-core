@@ -244,4 +244,3 @@ class Set implements \ArrayAccess, \Countable, \IteratorAggregate
         };
     }
 }
-?>

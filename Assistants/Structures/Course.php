@@ -431,4 +431,3 @@ class Course extends Object implements JsonSerializable
 }
 
  
-?>

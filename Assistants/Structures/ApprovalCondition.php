@@ -334,4 +334,3 @@ class ApprovalCondition extends Object implements JsonSerializable
 }
 
  
-?>

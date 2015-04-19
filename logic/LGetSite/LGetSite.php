@@ -1777,4 +1777,3 @@ class LGetSite
         $this->app->response->setBody(json_encode($response));
     }
 }
-?>

@@ -46,7 +46,6 @@ if (!isset($processors)){
 }
 
 if (isset($processors)){
-?>
 
 <tr><td>
         <div class="content-element processor" style="outline:2px solid #b9b8b8;border-radius: 0px;margin: 0px;">
@@ -98,7 +97,6 @@ if (isset($processors)){
 
 <?php
 } else {
-?>
 <tr><td>
         <div class="content-element processor" style="outline:2px solid #b9b8b8;border-radius: 0px;margin: 0px;">
                         
@@ -118,4 +116,3 @@ if (isset($processors)){
           </td></tr>
 <?php
 }
-?>

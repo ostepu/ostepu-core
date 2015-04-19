@@ -57,4 +57,3 @@ $w = new HTMLWrapper($h, $courseSelect);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
 
-?>
