@@ -23,7 +23,8 @@ abstract class AbstractAuthentication
      * @var SiteKey as Password for all Hashfunctions
      * TODO make configurable
      */
-    protected $siteKey = "b67dc54e7d03a9afcd16915a55edbad2d20a954562c482de3863456f01a0dee4";
+    protected $siteKey = null;
+    protected $defaultSiteKey = "b67dc54e7d03a9afcd16915a55edbad2d20a954562c482de3863456f01a0dee4";
 
     /**
      * Generates a random string.
@@ -47,6 +48,15 @@ abstract class AbstractAuthentication
      */
     protected function hashData($method, $data)
     {
+        global $globalSiteKey;
+        
+        if (!isset($this->siteKey)){
+            if (isset($globalSiteKey)){
+                $this->siteKey = $globalSiteKey;
+            } else 
+                $this->siteKey = $defaultSiteKey;
+        }
+        
         return hash_hmac($method, $data, $this->siteKey);
     }
 
@@ -222,4 +232,3 @@ abstract class AbstractAuthentication
         return $this->hashData("sha256", $password . $salt);
     }
 }
-?>

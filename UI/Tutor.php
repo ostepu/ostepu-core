@@ -41,4 +41,3 @@ $w->defineForm(basename(__FILE__)."?cid=".$cid, false, $t);
 $w->set_config_file('include/configs/config_student_tutor.json');
 $w->show();
 
-?>

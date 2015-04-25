@@ -1,7 +1,7 @@
 <?php
 #region Datenbank_einrichten   
 if (!$simple)
-    if ($selected_menu === 1){
+    if ($selected_menu === 1 && false){ /// ausgeblendet
         $text='';
         $text .= "<tr><td colspan='2'>".Sprachen::Get('componentLinkage','description')."</td></tr>";
 
@@ -17,7 +17,7 @@ if (!$simple)
     }
     
 if (!$simple)
-    if ($selected_menu === 1){
+    if ($selected_menu === 1 && false){ /// ausgeblendet
         $text='';
         $text .= "<tr><td colspan='2'>".Sprachen::Get('componentAvailability','description')."</td></tr>";
 
@@ -32,4 +32,3 @@ if (!$simple)
         echo $text;
     }
 #endregion Datenbank_einrichten
-?>

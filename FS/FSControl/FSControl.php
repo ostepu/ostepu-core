@@ -48,4 +48,3 @@ class FSControl extends Controller3
         FSControl::$_prefix = $value;
     }
 } 
-?>

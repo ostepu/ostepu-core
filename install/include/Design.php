@@ -157,5 +157,3 @@ class Design
         return round(pow(1024, $base - floor($base)), 2) . ' ' . $suffixes[floor($base)] . "B";
     }
 }
-
-?>

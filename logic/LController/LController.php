@@ -158,4 +158,3 @@ class LController
             $this->app->response->headers->set('Content-Disposition', $answer['headers']['Content-Disposition']);
     }
 }
-?>

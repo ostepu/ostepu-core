@@ -1302,5 +1302,3 @@ class LTutor
     }
 
 }
-
-?>

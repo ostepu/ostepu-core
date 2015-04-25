@@ -92,4 +92,3 @@ class MethodOverride extends \Slim\Middleware
         $this->next->call();
     }
 }
-?>

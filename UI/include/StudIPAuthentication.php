@@ -426,4 +426,3 @@ class StudIPAuthentication extends AbstractAuthentication
         return false;
     }
 }
-?>

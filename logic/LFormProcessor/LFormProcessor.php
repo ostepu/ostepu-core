@@ -12,6 +12,7 @@ include_once dirname(__FILE__) . '/../../Assistants/CConfig.php';
 include_once dirname(__FILE__) . '/../../Assistants/DBJson.php';
 include_once dirname(__FILE__) . '/../../Assistants/Structures.php';
 include_once dirname(__FILE__) . '/../../Assistants/DefaultNormalizer.php';
+include_once dirname(__FILE__) . '/../../Assistants/LArraySorter.php';
 
 \Slim\Slim::registerAutoloader();
 
@@ -311,6 +312,9 @@ class LFormProcessor
         $header = $this->app->request->headers->all();
         $body = $this->app->request->getBody();
         $process = Process::decodeProcess($body);
+        
+        $markingStatus = Marking::getStatusDefinition();
+        
         // always been an array
         $arr = true;
         if ( !is_array( $process ) ){
@@ -517,7 +521,7 @@ class LFormProcessor
                                                                  null,
                                                                  null,
                                                                  null,
-                                                                 Marking::getStatusDefinition()[3]['id'],
+                                                                 $markingStatus[LArraySorter::multidimensional_search($markingStatus, array('id'=>3))]['longName'],
                                                                  $points,
                                                                  ($submission->getDate()!==null ? $submission->getDate() : time())
                                                                  );
@@ -560,4 +564,3 @@ class LFormProcessor
             $this->app->response->setBody( Process::encodeProcess( $res ) );
     }
 }
-?>

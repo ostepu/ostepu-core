@@ -77,4 +77,3 @@ $w = new HTMLWrapper($h, $userLogin);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
 
-?>

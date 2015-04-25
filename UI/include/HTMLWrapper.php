@@ -183,4 +183,3 @@ include_once '../Assistants/Logger.php';
         }
     }
 }
-?>

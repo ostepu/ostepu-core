@@ -659,5 +659,3 @@ class Exercise extends Object implements JsonSerializable
         return $res;
     }
 }
-
-?>

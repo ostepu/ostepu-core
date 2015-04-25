@@ -70,6 +70,7 @@ class DBCourse
      * The request body should contain a JSON object representing the course's
      * attributes.
      */
+
     public function addCourse( $callName, $input, $params = array() )
     {
         $positive = function($input) {
@@ -156,6 +157,3 @@ class DBCourse
         return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/Samples.sql',$params,201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));  
     }
 }
-
- 
-?>

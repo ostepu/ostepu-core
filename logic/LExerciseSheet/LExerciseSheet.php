@@ -485,4 +485,3 @@ class LExerciseSheet
         $this->app->response->setBody( ExerciseSheet::encodeExerciseSheet( $res ) );
     }
 }
-?>

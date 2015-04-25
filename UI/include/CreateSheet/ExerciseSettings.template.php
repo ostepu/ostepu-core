@@ -1,6 +1,8 @@
 <?php 
 include_once dirname(__FILE__) . '/../../../Assistants/LArraySorter.php';
-header('Content-Type: text/html; charset=utf-8'); $choiceId = 0;?>
+header('Content-Type: text/html; charset=utf-8'); 
+$choiceId = 0; // obsolete???
+?>
         
 <div class="content-element collapsible">
     <div class="content-header">

@@ -500,4 +500,3 @@ class LForm
         // not implemented
     }
 }
-?>

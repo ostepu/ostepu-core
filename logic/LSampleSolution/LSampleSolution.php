@@ -199,4 +199,3 @@ $com = new CConfig(LSampleSolution::getPrefix());
  */
 if (!$com->used())
     new LSampleSolution($com->loadConfig());
-?>

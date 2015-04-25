@@ -12,5 +12,3 @@ if ($invalidLogin == true || $shouldLogOut == true) {
     // the user's login is no longer valid or he requested to be logged out
     Authentication::logoutUser();
 }
-
-?>

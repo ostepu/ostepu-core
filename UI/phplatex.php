@@ -106,4 +106,3 @@ function texify($string,$dpi='90', $r=0.0,$g=0.0,$b=0.0, $br=1.0,$bg=1.0,$bb=1.0
   phplatex_cleantmp($tfn,$heredir);
   return '<img style="'.$verticalalign.'" title="'.$stralt.'" alt="LaTeX formula: '.$stralt.'" src="texImages/'.$strhash.'.'.$imgfmt.'">';
 } 
-?>

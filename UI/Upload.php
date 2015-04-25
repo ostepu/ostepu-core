@@ -288,4 +288,3 @@ $t->bind($upload_data);
 $w = new HTMLWrapper($h, $t);
 $w->set_config_file('include/configs/config_upload_exercise.json');
 $w->show();
-?>

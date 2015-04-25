@@ -430,4 +430,3 @@ class DBQuery2
 }
 
  
-?>

@@ -27,4 +27,3 @@ class DefaultNormalizer
         return utf8_decode($text); 
     }
 }
-?>

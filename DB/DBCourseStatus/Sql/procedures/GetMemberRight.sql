@@ -18,7 +18,8 @@ select SQL_CACHE
     C.C_id,
     C.C_name,
     C.C_semester,
-    C.C_defaultGroupSize
+    C.C_defaultGroupSize,
+    S.*
 from
 
     CourseStatus CS 
@@ -27,6 +28,8 @@ from
  join
     User U
        ON (U.U_id = CS.U_id)
+        left join 
+    Setting_<?php echo $courseid; ?> S ON (1)
 WHERE
     CS.U_id = '",userid,"' and CS.C_id = '",courseid,"';");
 PREPARE stmt1 FROM @s;

@@ -397,7 +397,7 @@ class Course extends Object implements JsonSerializable
                                                          );
                                                          
         // concatenates the courses and the associated settings
-        $res = DBJson::concatObjectLists( 
+        $res = DBJson::concatObjectListResult( 
                                                      $data,
                                                      $courses,
                                                      Course::getDBPrimaryKey( ),
@@ -431,4 +431,3 @@ class Course extends Object implements JsonSerializable
 }
 
  
-?>

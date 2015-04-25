@@ -235,8 +235,8 @@ class Model
     public static function isEmpty($content=null){
         return self::createAnswer(404,$content);
     }
+
     public static function isRejected($content=null){
         return self::createAnswer(401,$content);
     }
 }
-?>

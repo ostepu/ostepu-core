@@ -313,4 +313,3 @@ $w->set_config_file('include/configs/config_tutor_assign.json');
 //$w->set_config_file('include/configs/config_default.json');
 $w->show();
 
-?>

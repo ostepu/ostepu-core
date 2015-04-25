@@ -111,4 +111,3 @@ class Template
         return $s;
     }
 }
-?>

@@ -376,5 +376,3 @@ class Choice extends Object implements JsonSerializable
         return $res;
     }
 }
-
-?>
