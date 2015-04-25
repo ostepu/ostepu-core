@@ -997,14 +997,30 @@ class LGetSite
         }
 
         // load all submissions for every exercise of the exerciseSheet
+        $submissions = array();
+        $markings = array();
         if(!empty($exercises)) {
             $URL = $this->_getSubmission->getAddress().'/submission/group/user/'.$uploaduserid.'/exercisesheet/'.$sheetid;
             $answer = Request::custom('GET', $URL, array(), '');
             $answer = json_decode($answer['content'], true);
-            $submissions = array();
+            $URL = $this->_getMarking->getAddress().'/marking/exercisesheet/'.$sheetid.'/user/'.$uploaduserid;
+            $answer2 = Request::custom('GET', $URL, array(), '');
+            $answer2 = json_decode($answer2['content'], true);
+            
             if(!empty($answer)) {
                 foreach ($answer as $submission){
                     if (isset($submission['exerciseId'])){
+                        if (!empty($answer2)){
+                            foreach ($answer2 as $key => $marking){
+                                if (isset($marking['submission']['id'])){
+                                    unset($marking['submission']);
+                                    $submission['marking'] = $marking;
+                                    unset($answer2[$key]);
+                                    break;
+                                }
+                            }
+                        }
+                        
                         $submissions[$submission['exerciseId']][] = $submission;
                     }
                 }
