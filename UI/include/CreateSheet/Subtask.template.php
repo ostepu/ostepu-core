@@ -4,6 +4,8 @@ header('Content-Type: text/html; charset=utf-8');
 include_once dirname(__FILE__) . '/../../../Assistants/Request.php';
 include dirname(__FILE__) . '/../Config.php';
 include_once dirname(__FILE__) . '/../Helpers.php';
+?>
+
 <li>
     <input class="form-field text-input very-short" name="exercises[0][subexercises][0][maxPoints]" placeholder="Punkte" id="exerciseMaxPoints" <?php echo isset($maxPoints) ? "value='{$maxPoints}'" : ''?>/>
     <select class="form-field text-input short" name="exercises[0][subexercises][0][exerciseType]" id="exerciseType">
