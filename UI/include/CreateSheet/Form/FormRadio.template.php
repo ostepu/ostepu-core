@@ -10,8 +10,8 @@
 <input type="hidden" name="exercises[0][subexercises][0][formId]" value="<?php echo $form['formId']; ?>" />
 <?php } ?>
 <label class="short label bold" for="task">Aufgabenstellung:</label>
-<textarea name="exercises[0][subexercises][0][task]"
-                              class="reset form-field task-field ckeditor"
+<!--ckeditor--><textarea name="exercises[0][subexercises][0][task]"
+                              class="reset form-field task-field"
                               rows="5"
                               style="width:100%;"
                               maxlength="2500">
@@ -32,12 +32,13 @@ if (isset($form['choices'])){
         $radio->show();
     }
 }
+?>
       
 <a href="javascript:void(0);" class="body-option-color add-choice left">Auswahl hinzufügen</a>
             
 <br><br><label class="short label bold" for="solution">Lösungsbegründung:</label>
-<textarea name="exercises[0][subexercises][0][solution]"
-                              class="form-field ckeditor"
+<!--ckeditor--><textarea name="exercises[0][subexercises][0][solution]"
+                              class="form-field"
                               rows="5"
                               style="width:100%"
                               maxlength="2500">
