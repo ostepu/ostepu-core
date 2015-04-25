@@ -336,27 +336,32 @@ class DBCourse
             // generates the insert data for the object
             $data = $in->getInsertData( );
 
-            if ($in->getId()!==null){
+            /*if ($in->getId()!==null){
                 $res[] = $in;
                 $this->_app->response->setStatus( 201 );
                 continue;
-            }
+            }*/
             
             // starts a query, by using a given file
             $result = DBRequest::getRoutedSqlFile( 
                                                   $this->query,
                                                   dirname(__FILE__) . '/Sql/AddCourse.sql',
-                                                  array( 'values' => $data )
+                                                  array( 'values' => $data, 'in' => $in )
                                                   );
 
             // checks the correctness of the query
             if ( $result['status'] >= 200 && 
                  $result['status'] <= 299 ){
                 $queryResult = Query::decodeQuery( $result['content'] );
-
+                $queryResult = $queryResult[count($queryResult)-1];
+                $id = 0;
+                $resp =$queryResult->getResponse();
+                if (isset($resp[0]['@a']))
+                    $id = $resp[0]['@a'];
+                
                 // sets the new auto-increment id
                 $obj = new Course( );
-                $obj->setId( $queryResult->getInsertId( ) );
+                $obj->setId( ($queryResult->getInsertId( )==0 ? $id : $queryResult->getInsertId( )) );
 
                 $res[] = $obj;
                 $this->_app->response->setStatus( 201 );
@@ -663,4 +668,3 @@ class DBCourse
 }
 
  
-?>

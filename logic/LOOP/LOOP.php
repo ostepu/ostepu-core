@@ -503,4 +503,3 @@ class LOOP
         return $path;
     }
 }
-?>

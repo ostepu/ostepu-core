@@ -102,4 +102,3 @@ class Headers extends \Slim\Helper\Set
         return $key;
     }
 }
-?>

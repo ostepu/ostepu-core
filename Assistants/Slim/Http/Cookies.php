@@ -89,4 +89,3 @@ class Cookies extends \Slim\Helper\Set
         $this->set($key, array_replace($this->defaults, $settings));
     }
 }
-?>

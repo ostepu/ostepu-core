@@ -261,5 +261,3 @@ class Pdf extends Object implements JsonSerializable
         return array_merge($list,parent::jsonSerialize( ));
     }
 }
-
-?>

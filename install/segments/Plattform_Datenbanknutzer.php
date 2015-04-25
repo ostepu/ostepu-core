@@ -17,4 +17,3 @@ if (!$simple)
         echo $text;
     }
 #endregion
-?>

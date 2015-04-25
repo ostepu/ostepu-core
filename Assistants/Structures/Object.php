@@ -126,5 +126,3 @@ abstract class Object
         $a .= ',' . $b . '='.$c.' ';
     }
 }
-
-?>

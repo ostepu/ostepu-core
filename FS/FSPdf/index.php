@@ -11,4 +11,3 @@
 require_once ( dirname( __FILE__ ) . '/FSPdf.php' );
 
 new FSPdf();
-?>

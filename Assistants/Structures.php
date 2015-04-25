@@ -42,4 +42,3 @@ include_once ( dirname( __FILE__ ) . '/Structures/Transaction.php' );
 include_once ( dirname( __FILE__ ) . '/Structures/TutorAssignment.php' );
 include_once ( dirname( __FILE__ ) . '/Structures/User.php' );
  
-?>

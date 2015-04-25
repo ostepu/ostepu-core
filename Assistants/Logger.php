@@ -173,5 +173,3 @@ abstract class LogLevel
                           self::ERROR => 'ERROR',
                           self::DEBUG => 'DEBUG');
 }
-
-?>

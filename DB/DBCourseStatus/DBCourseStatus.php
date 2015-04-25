@@ -660,4 +660,3 @@ class DBCourseStatus
 }
 
  
-?>

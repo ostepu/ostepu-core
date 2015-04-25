@@ -16,4 +16,3 @@ if (!$simple)
         echo Design::erstelleBlock($simple, Sprachen::Get('extensions','title'), $text);
     }
 #endregion Prüfung_der_Erweiterungen_ausgeben
-?>

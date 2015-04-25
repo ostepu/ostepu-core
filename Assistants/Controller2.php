@@ -226,4 +226,3 @@ class Controller2
 }
 
  
-?>

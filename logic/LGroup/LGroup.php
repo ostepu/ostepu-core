@@ -188,4 +188,3 @@ class LGroup
         $this->app->response->setBody($answer['content']);
     }
 }
-?>

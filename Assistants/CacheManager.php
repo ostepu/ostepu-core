@@ -157,4 +157,3 @@ class CacheManager
         file_put_contents($file,$data);
     }*/
 }
-?>

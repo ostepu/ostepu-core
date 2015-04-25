@@ -237,4 +237,3 @@ class Zugang
             return array();
     }
 }
-?>

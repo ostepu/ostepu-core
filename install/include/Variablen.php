@@ -117,4 +117,3 @@ class Variablen
             $data['PLUG'][$var] = null;
     }
 }
-?>

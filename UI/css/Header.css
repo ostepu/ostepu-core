@@ -11,9 +11,15 @@
     border-bottom-left-radius: 5px;
     border-bottom-right-radius: 5px;
     /* color 1 */
-    background-color: #2b648f;
-    color: #ffffff;
+    background-color: #FFF;
+    color: #000;
+    border: 3px solid #81AB2E;
     padding: 20px 40px;
+    display: block;
+    background-position: 99% 10%;
+    background-image: url('../Images/head_logo_hover.jpg');
+    background-repeat: no-repeat;
+    background-size: 168px 88px;
 }
 
 .course-title {
@@ -22,7 +28,7 @@
 }
 
 .course-info {
-    color: #ffffff;
+    color: #6F6F6F;
     font-size: 90%;
     width: 475px;
 }

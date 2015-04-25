@@ -326,4 +326,3 @@ class LMarking
         $this->app->response->setStatus($answer['status']);*/
     }
 }
-?>

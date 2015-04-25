@@ -15,4 +15,3 @@ if (!$simple)
         echo Design::erstelleBlock($simple, Sprachen::Get('modules','title'), $text);
     }
 #endregion Modulprüfung_ausgeben
-?>

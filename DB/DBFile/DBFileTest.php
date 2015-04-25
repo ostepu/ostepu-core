@@ -318,4 +318,3 @@ class DBFileTest extends PHPUnit_Framework_TestCase
                               );
     }
 }
-?>

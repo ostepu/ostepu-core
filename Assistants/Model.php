@@ -204,4 +204,3 @@ class Model
         return self::createAnswer(404,$content);
     }
 }
-?>

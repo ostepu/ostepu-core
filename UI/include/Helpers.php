@@ -596,5 +596,3 @@ class FILE_TYPE
         return self::$mimeType[$end];
     }
 }
-
-?>

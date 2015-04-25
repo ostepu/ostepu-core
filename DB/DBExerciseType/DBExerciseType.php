@@ -625,4 +625,3 @@ class DBExerciseType
 }
 
  
-?>

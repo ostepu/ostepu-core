@@ -1299,5 +1299,3 @@ class LTutor
     }
 
 }
-
-?>

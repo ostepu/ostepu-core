@@ -22,4 +22,3 @@ if (!$simple)
 
     }
 #endregion Komponenten_erstellen
-?>

@@ -630,4 +630,3 @@ class DBMarkingTest extends PHPUnit_Framework_TestCase
                               );
     }
 }
-?>

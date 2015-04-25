@@ -11,4 +11,3 @@
 require_once ( dirname( __FILE__ ) . '/CAbstract.php' );
 
 new CAbstract();
-?>
