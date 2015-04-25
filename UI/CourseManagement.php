@@ -538,6 +538,6 @@ $w->defineForm(basename(__FILE__)."?cid=".$cid, false, $revokeRights);
 $w->defineForm(basename(__FILE__)."?cid=".$cid, false, $addUser);
 $w->defineForm(basename(__FILE__)."?cid=".$cid, false, $editExternalId);
 $w->defineForm(basename(__FILE__)."?cid=".$cid, false, $addExternalId);
-$w->set_config_file('include/configs/config_default.json');
+$w->set_config_file('include/configs/config_course_management.json');
 $w->show();
 
