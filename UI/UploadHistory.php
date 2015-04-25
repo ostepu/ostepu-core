@@ -86,6 +86,9 @@ $menu = MakeNavigationElement($user_course_data,
                               PRIVILEGE_LEVEL::STUDENT,
                               true);
                               
+$isExpired=null;
+$hasStarted=null;
+
 if ($courseStatus<=0 /* PRIVILEGE_LEVEL::STUDENT */){
     // extract the correct sheet
     $sheet=null;
@@ -134,6 +137,8 @@ if (isset($_POST['action'])) {
             $uploadHistory_data = http_get($URL, true);
             $uploadHistory_data = json_decode($uploadHistory_data, true);
             $uploadHistory_data['filesystemURI'] = $filesystemURI;
+            $uploadHistory_data['hasStarted'] = $hasStarted;
+            $uploadHistory_data['isExpired'] = $isExpired;
         }
     }
 }
