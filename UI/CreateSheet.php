@@ -123,6 +123,9 @@ if (isset($_POST['exercises']) == true && empty($_POST['exercises']) == false) {
     }
 }
 
+
+$forms = array();
+$processors = array();
 if (isset($_POST['action']))
 if ($correctExercise == true) {
     // get sheetPDF
@@ -180,33 +183,33 @@ if ($correctExercise == true) {
     foreach ($validatedExercises as $key1 => $exercise) {
 
         // creation
-        foreach ($exercise as $key2 => &$subexercise) {
+        foreach ($exercise as $key2 => $subexercise) {
 
             // create subexercise object
             $sheetId = (isset($_POST['sheetId']) ? $_POST['sheetId'] : (isset($sid) ? $sid : null));
 
             // set bonus
-            if (preg_match("#[0-9]+b$#", $subexercise['exerciseType']) == true) {
+            if (preg_match("#[0-9]+b$#", $exercise[$key2]['exerciseType']) == true) {
                 $bonus = "1";
                 // delete ending b from exerciseType if its bonus
-                $subexercise['exerciseType'] = rtrim($subexercise['exerciseType'], "b");
+                $exercise[$key2]['exerciseType'] = rtrim($exercise[$key2]['exerciseType'], "b");
             } else {
                 $bonus = "0";
             }
             
             // create exercise
-            $exerciseId = (isset($subexercise['id']) ? $subexercise['id'] : null);
+            $exerciseId = (isset($exercise[$key2]['id']) ? $exercise[$key2]['id'] : null);
             if ($exerciseId===null){
                 $exerciseId=$newExerciseId;
                 $newExerciseId--;
             }
-            $subexercise['id']=$exerciseId;
+            $exercise[$key2]['id']=$exerciseId;
             
-            $subexerciseObj = Exercise::createExercise($exerciseId,$cid,$sheetId, $subexercise['maxPoints'],
-                                                       $subexercise['exerciseType'],$key1+1,$bonus,$key2+1);
+            $subexerciseObj = Exercise::createExercise($exerciseId,$cid,$sheetId, $exercise[$key2]['maxPoints'],
+                                                       $exercise[$key2]['exerciseType'],$key1+1,$bonus,$key2+1);
             
             // set FileTypes (only as an array with strings in it)
-            $subexerciseObj->setFileTypes($subexercise['mime-type']);
+            $subexerciseObj->setFileTypes($exercise[$key2]['mime-type']);
             
             // add attachement if given
             if (isset($_FILES['exercises']['error'][$key1]['subexercises'][$key2]['attachment']) && $_FILES['exercises']['error'][$key1]['subexercises'][$key2]['attachment'] != 4) {
@@ -232,14 +235,13 @@ if ($correctExercise == true) {
             // add subexercise to exercises
             array_push($exercises, $subexerciseObj);
         }
-        
+
         #region create_forms
         ##########################
         ### begin create_forms ###
         ##########################
         // create form data
-        $forms = array();
-        foreach ($exercise as $key2 => $subexercise) {  
+        foreach ($exercise as $key2 => $subexercise) {
             if (isset($subexercise['type'])){
                 $exerciseId = (isset($subexercise['id']) ? $subexercise['id'] : null);
                 $task = html_entity_decode(isset($subexercise['task']) ? $subexercise['task'] : '');
@@ -326,7 +328,6 @@ if ($correctExercise == true) {
         ###############################
         
         // create processor data
-        $processors = array();
         foreach ($exercise as $key2 => $subexercise) {
             if (isset($subexercise['processorType'])){                                        
                 
@@ -394,7 +395,6 @@ if ($correctExercise == true) {
 
     $sheet_data['exercises'] = json_decode(Exercise::encodeExercise($exercises),true);
 }
-
 
 
 
@@ -630,13 +630,12 @@ if (isset($_POST['action'])) {// && $_POST['action'] == "new"
             ### begin create_forms ###
             ##########################
             if ($errorInSent == false) {
-                $formMap = array();
-                foreach ($forms as &$form){
-                    if (!isset($form['formId'])) $form['formId'] = null;
-                    $formMap[$key] = array($key, $form['formId']);
-                    if ($form['formId']<0)
-                        $form['formId']=null;
-                    $form['exerciseId'] = unmap($exerciseMap,$form['exerciseId']);
+                foreach ($forms as $key3 => $form){
+                    if (!isset($forms[$key3]['formId'])) $forms[$key3]['formId'] = null;
+                    ///$formMap[$key] = array($key, $forms[$key3]['formId']);
+                    if ($forms[$key3]['formId']<0)
+                        $forms[$key3]['formId']=null;
+                    $forms[$key3]['exerciseId'] = unmap($exerciseMap,$forms[$key3]['exerciseId']);
                 }
                 
                 function comp_func2($a, $b) {if (!isset($b['formId'])) return 1; if ($a['formId'] === $b['formId']) return 0; return ($a['formId'] > $b['formId'])? 1:-1; }   
@@ -651,7 +650,7 @@ if (isset($_POST['action'])) {// && $_POST['action'] == "new"
                         // isn't removed
                     }
                 }
-                
+
                 if (!empty($forms)){
                     // upload forms
                     $URL = $serverURI."/logic/LForm/form";
