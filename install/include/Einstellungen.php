@@ -214,5 +214,3 @@ class Einstellungen
         return @mkdir($path, $mode);
     }
 }
-
-?>

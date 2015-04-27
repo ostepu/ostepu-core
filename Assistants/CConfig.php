@@ -496,4 +496,3 @@ class CConfig
     }
 }
  
-?>

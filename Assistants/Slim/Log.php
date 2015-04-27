@@ -347,4 +347,3 @@ class Log
         return strtr($message, $replace);
     }
 }
-?>

@@ -21,4 +21,3 @@ Logger::Log(
             'end DBUser',
             LogLevel::DEBUG
             );
-?>

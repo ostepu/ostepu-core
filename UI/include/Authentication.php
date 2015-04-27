@@ -94,4 +94,3 @@ class Authentication extends AbstractAuthentication
         return false;
     }
 }
-?>

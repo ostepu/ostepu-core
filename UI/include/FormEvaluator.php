@@ -697,5 +697,3 @@ class FormEvaluator {
         return $this;
     }
 }
-
-?>

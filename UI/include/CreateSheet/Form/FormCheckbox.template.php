@@ -10,8 +10,8 @@
 <input type="hidden" name="exercises[0][subexercises][0][formId]" value="<?php echo $form['formId']; ?>" />
 <?php } ?>
 <label class="short label bold" for="task">Aufgabenstellung:</label>
-<textarea name="exercises[0][subexercises][0][task]"
-                              class="form-field task-field ckeditor"
+<!--ckeditor--><textarea name="exercises[0][subexercises][0][task]"
+                              class="form-field task-field"
                               rows="5"
                               style="width:100%"
                               maxlength="2500">
@@ -38,8 +38,8 @@ if (isset($form['choices'])){
 
 <br><br>
 <label class="short label bold" for="solution">Lösungsbegründung:</label>
-<textarea name="exercises[0][subexercises][0][solution]"
-          class="form-field ckeditor"
+<!--ckeditor--><textarea name="exercises[0][subexercises][0][solution]"
+          class="form-field"
           rows="5"
           style="width:100%"
           maxlength="2500">

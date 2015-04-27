@@ -67,13 +67,15 @@
                     <?php if (isset($sheetFile['displayName'])){ ?>
                     <input type="hidden" name="sheetPDFDisplayName" value="<?php echo $sheetFile['displayName']; ?>" />
                     <?php } ?>
-                    <a href="<?php echo $fileURL; ?>" title="<?php echo $sheetFile['displayName']; ?>" class="plain" target="_blank">
-                        <img src="Images/Download.png" />
-                    </a>
-                    <a href="javascript:void(0);" title="Aufgabenblatt löschen" name="deleteSheetFile'" class="plain deleteFile">                                      
-                        <img src="Images/Delete.png">
-                        <?php if (isset($sheetFile)){ ?><span class="right warning-simple"></span><?php } ?>
-                    </a>
+                    <div class="exercise-sheet-images">
+                        <a href="<?php echo $fileURL; ?>" title="<?php echo $sheetFile['displayName']; ?>" class="plain" target="_blank">
+                            <img src="Images/Download.png" />
+                        </a>
+                        <a href="javascript:void(0);" title="Aufgabenblatt löschen" name="deleteSheetFile'" class="plain deleteFile">                                      
+                            <img src="Images/Delete.png">
+                            <?php if (isset($sheetFile)){ ?><span class="right warning-simple"></span><?php } ?>
+                        </a>
+                    </div>
                 </span>
                 <?php } ?>
             </span>
@@ -97,13 +99,15 @@
                     <?php if (isset($sampleSolution['displayName'])){ ?>
                     <input type="hidden" name="sheetSolutionDisplayName" value="<?php echo $sampleSolution['displayName']; ?>" />
                     <?php } ?>
-                    <a href="<?php echo $fileURL; ?>" title="<?php echo $sampleSolution['displayName']; ?>" class="plain" target="_blank">
-                        <img src="Images/Download.png" />
-                    </a>
-                    <a href="javascript:void(0);" title="Musterlösung löschen" name="deleteSampleFile'" class="plain deleteFile">     
-                        <img src="Images/Delete.png">
-                        <?php if (isset($sampleSolution)){ ?><span class="right warning-simple"></span><?php } ?>
-                    </a>
+                    <div class="exercise-sheet-images">
+                        <a href="<?php echo $fileURL; ?>" title="<?php echo $sampleSolution['displayName']; ?>" class="plain" target="_blank">
+                            <img src="Images/Download.png" />
+                        </a>
+                        <a href="javascript:void(0);" title="Musterlösung löschen" name="deleteSampleFile'" class="plain deleteFile">     
+                            <img src="Images/Delete.png">
+                            <?php if (isset($sampleSolution)){ ?><span class="right warning-simple"></span><?php } ?>
+                        </a>
+                    </div>
                 </div>
                 <?php } ?>
             </span>

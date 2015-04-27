@@ -526,4 +526,3 @@ class LFormPredecessor
             $this->app->response->setBody( Process::encodeProcess( $res ) );
     }
 }
-?>

@@ -36,5 +36,3 @@ $h->bind(array("name" => "Übungsplattform",
 $w = new HTMLWrapper($h);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
-
-?>

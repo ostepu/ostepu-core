@@ -422,5 +422,3 @@ class Platform extends Object implements JsonSerializable
         return array();
     }
 }
-
-?>

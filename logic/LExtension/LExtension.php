@@ -421,4 +421,3 @@ class LExtension
         $this->app->response->setBody( Component::encodeComponent( $this->_extension ) );
     }
 }
-?>

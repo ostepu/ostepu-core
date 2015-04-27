@@ -527,8 +527,13 @@ class Installation
         foreach ($text as &$tt){
             if (substr(trim($tt),0,10)==='$serverURI'){
                 $tt='$serverURI'. " = '{$data['PL']['url']}';";
+            } else
+            if (substr(trim($tt),0,14)==='$globalSiteKey'){
+                $tt='$globalSiteKey'. " = '{$data['UI']['siteKey']}';";
             }
         }
+        
+        
         $text = implode("\n",$text);
         if (!@file_put_contents(dirname(__FILE__).'/../'.$file,$text)){ $fail = true;$error='UI-Konfigurationsdatei, kein Schreiben möglich!';return;}
     }
@@ -578,8 +583,9 @@ class Installation
             $oldName = $data['DB']['db_name'];
             $data['DB']['db_name'] = null;
             $sql = "DROP USER '{$data['DB']['db_user_operator']}'@'%';";
-            $sql .= "DROP USER '{$data['DB']['db_user_operator']}'@'localhost';";
+            $sql2 = "DROP USER '{$data['DB']['db_user_operator']}'@'localhost';";
             $result = DBRequest::request2($sql, false, $data);
+            $result = DBRequest::request2($sql2, false, $data);
             /*if ($result["errno"] !== 0){
                 $fail = true; $errno = $result["errno"];$error = isset($result["error"]) ? $result["error"] : '';
             }*/
@@ -711,4 +717,3 @@ class Installation
       return $files; 
     } 
 }
-?>

@@ -68,4 +68,3 @@ class LArraySorter
         return array_pop($args);
     }
 }
-?>

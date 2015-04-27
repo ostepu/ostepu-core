@@ -543,5 +543,3 @@ $h->bind(array("notificationElements" => $notifications));
 $w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $searchSettings);
 $w->set_config_file('include/configs/config_marking_tool.json');
 $w->show();
-
-?>

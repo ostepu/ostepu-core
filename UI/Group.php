@@ -232,7 +232,7 @@ if (isset($_POST['action'])) {
                 $user_data = json_decode($user_data, true);
 
                 // invites the user to the current group
-                if (empty($user_data) || $user_data['id'] == $uid) {
+                if (!isset($user_data['id']) || empty($user_data) || $user_data['id'] == $uid) {
                     $notifications[] = MakeNotification("error", "Ungültiges Kürzel.");
                 } else {
                     $memberID = $user_data['id'];
@@ -395,5 +395,3 @@ if (isset($invitationsToGroup))
     $w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $invitationsToGroup);
 $w->set_config_file('include/configs/config_group.json');
 $w->show();
-
-?>

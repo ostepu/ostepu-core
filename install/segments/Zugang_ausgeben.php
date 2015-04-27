@@ -21,4 +21,3 @@ if (!$simple)
         echo $text;
     }
 #endregion Zugang_ausgeben
-?>

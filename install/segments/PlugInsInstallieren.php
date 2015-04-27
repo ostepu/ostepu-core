@@ -15,8 +15,8 @@ if (!$simple) {
         $text='';
         $text .= "<tr><td colspan='2'>".Sprachen::Get('packages','description')."</td></tr>";
         
-        $text .= Design::erstelleZeile($simple, Sprachen::Get('packages','installSelected'), 'e', '', 'v', Design::erstelleSubmitButton('actionInstallPlugins',Sprachen::Get('main','install')), 'h');
-        $text .= Design::erstelleZeile($simple, Sprachen::Get('packages','uninstallSelected'), 'e', '', 'v', Design::erstelleSubmitButton('actionUninstallPlugins',Sprachen::Get('main','uninstall')), 'h');
+        /// ausgeblendet /// $text .= Design::erstelleZeile($simple, Sprachen::Get('packages','installSelected'), 'e', '', 'v', Design::erstelleSubmitButton('actionInstallPlugins',Sprachen::Get('main','install')), 'h');
+        /// ausgeblendet /// $text .= Design::erstelleZeile($simple, Sprachen::Get('packages','uninstallSelected'), 'e', '', 'v', Design::erstelleSubmitButton('actionUninstallPlugins',Sprachen::Get('main','uninstall')), 'h');
         
         // hier die möglichen Erweiterungen ausgeben, zudem noch die Daten dieser Erweiterungen       
         foreach ($pluginFiles as $plug){
@@ -27,7 +27,8 @@ if (!$simple) {
             $voraussetzungen = $dat['requirements'];
             if (!is_array($voraussetzungen)) $voraussetzungen = array($voraussetzungen);
 
-            $text .= Design::erstelleZeile($simple, "{$name} v{$dat['version']}", 'e', Design::erstelleAuswahl($simple, $data['PLUG']['plug_install_'.$name], 'data[PLUG][plug_install_'.$name.']', $plug, null, true), 'v');
+            /// ausgeblendet /// $text .= Design::erstelleZeile($simple, "{$name} v{$dat['version']}", 'e', Design::erstelleAuswahl($simple, $data['PLUG']['plug_install_'.$name], 'data[PLUG][plug_install_'.$name.']', $plug, null, true), 'v');  
+            $text .= Design::erstelleZeile($simple, "{$name} v{$dat['version']}", 'e', '', 'v');
             
             $isInstalled=false;
             foreach($installedPlugins as $instPlug){
@@ -113,4 +114,3 @@ if (!$simple) {
     }
 }
 #endregion PlugInsInstallieren
-?>

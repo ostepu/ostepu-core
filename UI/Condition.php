@@ -166,4 +166,3 @@ $w->defineForm(basename(__FILE__)."?cid=".$cid, false, $setCondition);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
 
-?>

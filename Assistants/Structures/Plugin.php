@@ -371,5 +371,3 @@ class Plugin extends Object implements JsonSerializable
         return array();
     }
 }
-
-?>

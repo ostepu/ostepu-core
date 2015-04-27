@@ -14,8 +14,6 @@
     {"name":"out", "target":"DBQuery2", "links":[{"method":"POST", "path":"/query" }] }
   ],
   "connector":[
-    {"name":"deleteCourse", "target":"LCourse"},
-    {"name":"postCourse", "target":"LCourse"},
     {"name":"request", "target":"CLocalObjectRequest"}
   ]
 }

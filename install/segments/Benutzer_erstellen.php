@@ -25,4 +25,3 @@ if (!$simple)
         echo $text;
     }
 #endregion Benutzer_erstellen
-?>

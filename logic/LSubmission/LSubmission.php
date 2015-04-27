@@ -415,4 +415,3 @@ class LSubmission
         $this->app->response->setStatus($answer['status']);*/
     }
 }
-?>

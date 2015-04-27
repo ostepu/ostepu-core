@@ -50,4 +50,3 @@ class CFilter extends Controller2
         CFilter::$_prefix = $value;
     }
 } 
-?>

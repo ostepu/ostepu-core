@@ -312,4 +312,3 @@ class LCourse
         $this->app->response->setBody($answer['content']);
     }
 }
-?>

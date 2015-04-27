@@ -386,4 +386,3 @@ class DBSessionTest extends PHPUnit_Framework_TestCase
                               );
     }
 }
-?>

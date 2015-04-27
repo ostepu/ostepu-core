@@ -165,4 +165,3 @@ if (isset($_GET['downloadAttachments'])) {
     echo $zipfile;
     exit(0);
 }
-?>

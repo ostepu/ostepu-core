@@ -13,7 +13,7 @@ body {
 
 a {
     text-decoration: none;
-    color: #FFFFFF;
+    color: #2B648F;
 }
 
 .course-list {
@@ -117,7 +117,7 @@ a.button:after {
     font-size: 80%;
     display: inline;
     margin-right: 10px;
-    color: #959494;
+    color: #6F6F6F;
 }
 
 ol {

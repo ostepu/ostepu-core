@@ -254,4 +254,3 @@ class ExerciseType extends Object implements JsonSerializable
 }
 
  
-?>

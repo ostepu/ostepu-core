@@ -166,7 +166,7 @@ class Installer
                 Einstellungen::umbenennenEinstellungen($selected_server,$data['SV']['name']);
 
         // check which menu is selected
-        $menuItems = array(5,0,1,6,2,3,4);
+        $menuItems = array(0,1,6,2,3,4);// 5, // ausgeblendet
         $menuTypes = array(0,0,0,0,0,1,1);
         $selected_menu = intval(isset($_POST['selected_menu']) ? $_POST['selected_menu'] : $menuItems[0]);
         
@@ -398,7 +398,7 @@ class Installer
                 }
                 //var_dump($ComponentListInput);
                 
-                $sql = "START TRANSACTION;SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;TRUNCATE TABLE `ComponentLinkage`;TRUNCATE TABLE `Component`;SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;COMMIT;";
+                $sql = "START TRANSACTION;SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;TRUNCATE TABLE `ComponentLinkage`;SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;COMMIT;";//TRUNCATE TABLE `Component`;
                 DBRequest::request2($sql, false, $data, true);
                 
                 $sql = "START TRANSACTION;SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;INSERT INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ";
@@ -805,4 +805,3 @@ class Installer
 
 // create a new instance of Installer class 
 new Installer((isset($argv) ? $argv : null));
-?>

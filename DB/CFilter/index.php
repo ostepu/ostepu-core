@@ -17,4 +17,3 @@ $com = new CConfig( CFilter::getPrefix( ) );
 // runs the CFilter
 if ( !$com->used( ) )
     new CFilter( $com->loadConfig( ) );
-?>

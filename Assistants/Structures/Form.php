@@ -469,5 +469,3 @@ class Form extends Object implements JsonSerializable
         return $res;
     }
 }
-
-?>

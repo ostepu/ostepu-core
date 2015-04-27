@@ -835,4 +835,3 @@ class DBChoice
             $this->_app->response->setBody( Course::encodeCourse( $res ) );
     }
 }
-?>
