@@ -65,6 +65,9 @@ class DBRequest
             $query_result['error'] = mysql_error( );
             return $query_result;
         }
+
+	// use UTF8
+	mysql_query("SET NAMES 'utf8'");
         
         // selects the database
         if ($config['DB']['db_name'] !== null)
@@ -72,7 +75,7 @@ class DBRequest
 
         // check session
         ///if (error_reporting() & E_NOTICE)
-        ///    $checkSession = false; // remove the comment this line to disable the session examination
+            $checkSession = false; // remove the comment this line to disable the session examination
         
         // Storing whether or not a session condition is not satisfied
         $sessionFail = false;
@@ -201,11 +204,14 @@ class DBRequest
             return $query_result;
         }
 
+	// use UTF8
+	mysqli_set_charset($dbconn,"utf8");
+
         $currentTime = $_SERVER['REQUEST_TIME'];
 
         // check session
         ///if (error_reporting() & E_NOTICE)
-        ///    $checkSession = false; // remove the comment this line to disable the session examination
+            $checkSession = false; // remove the comment this line to disable the session examination
         
         // Storing whether or not a session condition is not satisfied
         $sessionFail = false;
