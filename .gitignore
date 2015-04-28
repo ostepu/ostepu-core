@@ -6,3 +6,4 @@ path/
 *CConfig.json
 *.ini
 Assistants/Test/
+.project
