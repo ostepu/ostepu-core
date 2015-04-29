@@ -90,7 +90,7 @@ class DBUser
             $obj->setId( $input[0]->getInsertId( ) );
             return array("status"=>201,"content"=>$obj);
         };
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/AddUser.sql',array( 'values' => $input->getInsertData( )),200,$positive,array(),'Model::isProblem',array(new User()));
+        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/AddUser.sql',array( 'values' => $input->getInsertData( )),200,$positive,array(),'Model::isProblem',array(new User()),false);
     }
 
     public function get( $functionName,$sqlFile,$params=array(),$singleResult = false, $checkSession = true )
