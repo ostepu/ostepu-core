@@ -304,30 +304,32 @@ class LForm
 
         // this array contains the indices of the inserted objects
         $res = array( );
-        
         $choices = array();
-        foreach ( $forms as &$form ){
+        foreach ( $forms as $key => $form ){
             $choices[] = $form->getChoices();
-            $form->setChoices(null);
+            $forms[$key]->setChoices(null);
         }
-        
-        $method='POST';
-        $URL='/form';
-        if ($form->getFormId() !== null){
-           $method='PUT'; 
-           $URL = '/form/'.$form->getFormId();
-        }
-        
+               
         $resForms = array();
+        
         foreach ( $forms as $form ){
-        $result = Request::routeRequest( 
-                                        $method,
-                                        $URL,
-                                        array(),
-                                        Form::encodeForm($form),
-                                        $this->_form,
-                                        'form'
-                                        );
+            
+            $method='POST';
+            $URL='/form';
+            if ($form->getFormId() !== null){
+               $method='PUT'; 
+               $URL = '/form/'.$form->getFormId();
+            }
+            
+            $result = Request::routeRequest( 
+                                            $method,
+                                            $URL,
+                                            array(),
+                                            Form::encodeForm($form),
+                                            $this->_form,
+                                            'form'
+                                            );
+
             // checks the correctness of the query
             if ( $result['status'] >= 200 && 
                  $result['status'] <= 299 && isset($result['content'])){
@@ -345,14 +347,14 @@ class LForm
         
         $i=0;
         foreach ( $choices as &$choicelist ){
-            foreach ( $choicelist as &$choice ){
+            foreach ( $choicelist as $key2 => $choice ){
                 if ($forms[$i]->getFormId() !== null){
                     $formId = $forms[$i]->getFormId();
-                    $choice->setFormId($formId);
+                    $choicelist[$key2]->setFormId($formId);
                     
                     $method='POST';
                     $URL='/choice';
-                    if ($choice->getChoiceId() !== null){
+                    if ($choicelist[$key2]->getChoiceId() !== null){
                        $method='PUT'; 
                        $URL = '/choice/'.$choice->getChoiceId();
                     }
@@ -360,7 +362,7 @@ class LForm
                                                     $method,
                                                     $URL,
                                                     array(),
-                                                    Choice::encodeChoice($choice),
+                                                    Choice::encodeChoice($choicelist[$key2]),
                                                     $this->_choice,
                                                     'choice'
                                                     );
@@ -368,11 +370,11 @@ class LForm
                     if ( $result['status'] >= 200 && 
                         $result['status'] <= 299 ){
                         $newchoice = Choice::decodeChoice($result['content']);
-                        if ($choice->getChoiceId() === null)
-                            $choice->setChoiceId($newchoice->getChoiceId());
-                        $choice->setStatus(201);
+                        if ($choicelist[$key2]->getChoiceId() === null)
+                            $choicelist[$key2]->setChoiceId($newchoice->getChoiceId());
+                        $choicelist[$key2]->setStatus(201);
                     } else {
-                        $choice->setStatus(409);
+                        $choicelist[$key2]->setStatus(409);
                     }
                 }
             }
