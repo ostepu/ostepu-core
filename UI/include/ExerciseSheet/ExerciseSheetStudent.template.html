@@ -219,7 +219,7 @@
                                 Gruppe verwalten
                             </a>
                         </li>-->
-                    <?php } else { ?>
+                    <?php } elseif(isset($sheet['groupSize']) && $sheet['groupSize']>1) { ?>
                         <li>
                             <a class="text-button" href="Group.php?sid=<?php echo $sheet['id'], '&cid=', $cid; ?>">
                                 Gruppe verwalten
