@@ -61,6 +61,14 @@ if (isset($_POST['action'])) {
     }
 }
 
+if (isset($_GET['downloadConditionCsv'])) {
+    $cid = cleanInput($_GET['downloadConditionCsv']);
+}
+
+if (isset($_GET['downloadConditionPdf'])) {
+    $cid = cleanInput($_GET['downloadConditionPdf']);
+}
+
 // load user data from the database
 $URL = $getSiteURI . "/condition/user/{$uid}/course/{$cid}";
 $condition_data = http_get($URL, true);
@@ -146,6 +154,93 @@ if (isset($condition_data['users'])){
     }
 }
 
+// download csv-archive
+if (isset($_GET['downloadConditionCsv']) || isset($_GET['downloadConditionPdf'])) {
+    $rows = array();
+    $firstRow = array('FirstName','LastName','UserName','IsApproved');//,'STUDENTNUMBER'
+
+    // percentage for each exerciseType
+    foreach ($condition_data['minimumPercentages'] as $percentage){
+        $firstRow[] = $percentage['exerciseType'].' (P)';
+        $firstRow[] = $percentage['exerciseType'].' (%)';
+    }
+    $rows[] = $firstRow;
+    
+    foreach($condition_data['users'] as $user){
+        $row = array();
+        
+        // firstName
+        if (isset($user['firstName'])){
+            $row[] = $user['firstName'];
+        } else 
+            $row[] = '';
+
+        // lastName
+        if (isset($user['lastName'])){
+            $row[] = $user['lastName'];
+        } else 
+            $row[] = '';
+        
+        // userId
+        if (isset($user['userName'])){
+            $row[] = $user['userName'];
+        } else 
+            $row[] = '';
+        
+        // studentNumber
+        /*if (isset($user['studentNumber'])){
+            $row[] = $user['studentNumber'];
+        } else 
+            $row[] = '';*/
+
+        // isApproved for all courses
+        $row[] = $user['isApproved']?"Ja":"Nein";
+
+        // percentage for each exerciseType
+        foreach ($user['percentages'] as $percentage) {
+                // achieved percentage and points
+                $row[] = $percentage['points'];
+                $row[] = $percentage['percentage'] . "%";
+        }
+        $rows[] = $row;
+    }
+    
+    $file = new File();
+    if (isset($_GET['downloadConditionPdf'])){
+        $text = '<table>';
+        foreach ($rows as $row){
+            $text .= '<tr>';
+            foreach ($row as $r){
+                $text .= '<td>'.$r.'</td>';
+            }
+            $text .= '</tr>';
+        }
+        $text .= '</table>';
+        
+        $pdf = Pdf::createPdf($text,'L');        
+        $file = http_post_data($filesystemURI . '/pdf',  Pdf::encodePdf($pdf), true);
+        $file = File::decodeFile($file);
+        $file->setDisplayName('conditions.pdf');
+        $file = File::encodeFile($file);
+    } elseif (isset($_GET['downloadConditionCsv'])){        
+        $csv = Csv::createCsv($rows);
+        $file = http_post_data($filesystemURI . '/csv',  Csv::encodeCsv($csv), true);
+        $file = File::decodeFile($file);
+        $file->setDisplayName('conditions.csv');
+        $file = File::encodeFile($file);
+    }
+    
+    echo $file;
+    exit(0);
+}
+
+if (isset($_GET['sortby'])) {
+    $condition_data['sortby'] = $_GET['sortby'];
+}
+if (isset($_GET['sortId'])) {
+    $condition_data['sortId'] = $_GET['sortId'];
+}
+    
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
@@ -163,6 +258,6 @@ $userList->bind($condition_data);
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $setCondition, $userList);
 $w->defineForm(basename(__FILE__)."?cid=".$cid, false, $setCondition);
-$w->set_config_file('include/configs/config_default.json');
+$w->set_config_file('include/configs/config_condition.json');
 $w->show();
 

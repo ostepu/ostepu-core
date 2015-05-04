@@ -1,13 +1,22 @@
+<?php
+    $fileName = "Condition.php";
+?>
 <div class="content-element">
     <div class="content-header">
         <div class="content-title left uppercase">Studentenliste</div>
+        <div class="info-color bold right">
+            <a href="<?php echo $fileName; ?>?downloadConditionCsv=<?php echo $user['courses'][0]['course']['id']; ?><?php echo (isset($sortby)?'&sortby='.$sortby:'')?><?php echo (isset($sortId)?'&sortId='.$sortId:'')?>" class="download text-button body-option-color">
+                CSV erstellen
+            </a>
+            <a href="<?php echo $fileName; ?>?downloadConditionPdf=<?php echo $user['courses'][0]['course']['id']; ?><?php echo (isset($sortby)?'&sortby='.$sortby:'')?><?php echo (isset($sortId)?'&sortId='.$sortId:'')?>" class="download text-button body-option-color">
+                PDF erstellen
+            </a>
+        </div>
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body left">
             <?php
-                $fileName = "Condition.php";
-
                 if (isset($users[0])) {
             ?>
             <table>
