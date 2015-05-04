@@ -367,7 +367,7 @@ class Installation
     
         if (!$fail){
             // die /platform Befehle auslösen
-            $list = array('DB/DBApprovalCondition','DB/DBAttachment','DB/DBCourse','DB/DBCourseStatus','DB/DBExercise','DB/DBExerciseFileType','DB/DBExerciseSheet','DB/DBExerciseType','DB/DBExternalId','DB/DBFile','DB/DBGroup','DB/DBInvitation','DB/DBMarking','DB/DBSelectedSubmission','DB/DBSession','DB/DBSubmission','DB/DBUser','FS/FSFile','FS/FSPdf','FS/FSZip','FS/FSBinder','logic/LTutor');
+            $list = array('DB/DBApprovalCondition','DB/DBAttachment','DB/DBCourse','DB/DBCourseStatus','DB/DBExercise','DB/DBExerciseFileType','DB/DBExerciseSheet','DB/DBExerciseType','DB/DBExternalId','DB/DBFile','DB/DBGroup','DB/DBInvitation','DB/DBMarking','DB/DBSelectedSubmission','DB/DBSession','DB/DBSubmission','DB/DBUser','FS/FSFile','FS/FSCsv','FS/FSPdf','FS/FSZip','FS/FSBinder','logic/LTutor');
             
             $platform = Installation::PlattformZusammenstellen($data);
             

@@ -11,7 +11,7 @@
     {"path":"index.php"}
   ],
   "links":[
-    {"name":"out", "target":["FSFile","FSZip","FSPdf"], "links":[] }
+    {"name":"out", "target":["FSFile","FSZip","FSPdf","FSCsv"], "links":[] }
   ],
   "connector":[
     {"name":"request", "target":"CLocalObjectRequest"}

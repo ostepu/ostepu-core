@@ -17,6 +17,7 @@
       {"conf":"FS/FSControl/Component.json"},
       {"conf":"FS/FSFile/Component.json"},
       {"conf":"FS/FSPdf/Component.json"},
+      {"conf":"FS/FSCsv/Component.json"},
       {"conf":"FS/FSZip/Component.json"}
     ]
 }
