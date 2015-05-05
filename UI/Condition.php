@@ -208,12 +208,16 @@ if (isset($_GET['downloadConditionCsv']) || isset($_GET['downloadConditionPdf'])
     $file = new File();
     if (isset($_GET['downloadConditionPdf'])){
         $text = '<table>';
-        foreach ($rows as $row){
-            $text .= '<tr>';
+        foreach ($rows as $key => $row){
+            if ($key==0){$text .= '<tr style="font-weight: bold;">';} 
+            else 
+            {$text .= '<tr>';}
             foreach ($row as $r){
                 $text .= '<td>'.$r.'</td>';
             }
-            $text .= '</tr>';
+            if ($key==0){$text .= '</tr>';} 
+            else 
+            {$text .= '</tr>';}
         }
         $text .= '</table>';
         

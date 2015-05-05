@@ -6,10 +6,10 @@
         <div class="content-title left uppercase">Studentenliste</div>
         <div class="info-color bold right">
             <a href="<?php echo $fileName; ?>?downloadConditionCsv=<?php echo $user['courses'][0]['course']['id']; ?><?php echo (isset($sortby)?'&sortby='.$sortby:'')?><?php echo (isset($sortId)?'&sortId='.$sortId:'')?>" class="download text-button body-option-color">
-                CSV erstellen
+                CSV
             </a>
             <a href="<?php echo $fileName; ?>?downloadConditionPdf=<?php echo $user['courses'][0]['course']['id']; ?><?php echo (isset($sortby)?'&sortby='.$sortby:'')?><?php echo (isset($sortId)?'&sortId='.$sortId:'')?>" class="download text-button body-option-color">
-                PDF erstellen
+                PDF
             </a>
         </div>
     </div>
@@ -48,7 +48,7 @@
                             print '&sortby=userName">Nutzername</a>';
                         ?>
                     </th>
-                    <th>
+                    <!--<th>
                         <?php
                             print '<a class="body-option-color plain" href="';
                             print $fileName;
@@ -56,7 +56,7 @@
                             print $user['courses'][0]['course']['id'];
                             print '&sortby=studentNumber">Matrikel</a>';
                         ?>
-                    </th>
+                    </th>-->
                     <th>
                         <?php
                             print '<a class="body-option-color plain" href="';
@@ -105,10 +105,10 @@
                         print "</td>";
                         
                         // studentNumber
-                        print "<td>";
+                        /*print "<td>";
                         if (isset($user['studentNumber']))
                             print $user['studentNumber'];
-                        print "</td>";
+                        print "</td>";*/
 
                         // isApproved for all courses
                         print "<td";
