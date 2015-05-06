@@ -10,7 +10,39 @@
     </div>
 
     <div class="content-body-wrapper">
-        <div class="content-body left">
+        <?php if (isset($allowApplyGroup) && $allowApplyGroup == 1) { ?>
+        <div class="content-body left"> 
+            <div class="content-description">
+                Sie können die Gruppenstruktur der letzten Übungsserie übernehmen.
+                <ol class="invitation-list">
+                    <?php foreach ($lastGroup['members'] as $member) {
+                        print "<li>";
+                        if (isset($member['firstName'])){
+                            print $member['firstName'];
+                        } else
+                            print "";
+                        print " ";
+                        if (isset($member['lastName'])){
+                            print $member['lastName'];
+                        } else
+                            print "";
+                        
+                        if (isset($member['userName'])){
+                            print " (".$member['userName'].")";
+                        } else
+                            print "???";
+                        print "</li>";
+                        print "<input type='hidden' name='members[]' value='{$member['id']}'>";
+                    } ?>
+                    <button name="applyGroup" value="1" class="right text-button body-option-color">
+                    Gruppe übernehmen
+                    </button>
+                </ol>
+            </div>
+        </div><hr>
+        <?php } ?>
+        
+        <div class="content-body left">           
             <div class="content-description">
                 <?php if ($emptyGroupMembers > 0): ?>
                 Geben Sie hier die Kürzel der Nutzer an, welche der Gruppe beitreten sollen.
