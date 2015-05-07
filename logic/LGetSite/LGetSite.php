@@ -1458,7 +1458,7 @@ class LGetSite
         $response['allowApplyGroup'] = 0;
         if ((!isset($group['members']) || count($group['members'])==0) 
                 && $lastGroup !== null 
-                && $sheet['groupSize'] == $lastSheet['groupSize'] 
+                && $sheet['groupSize'] >= $lastSheet['groupSize'] 
                 && $lastGroup['leader']['id'] == $userid 
                 && isset($lastGroup['members']) 
                 && count($lastGroup['members']) >0 
