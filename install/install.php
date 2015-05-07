@@ -266,6 +266,21 @@ class Installer
                 $output['actionInstallPlatform'] = $installPlatformResult;
             }
         }
+        
+        // install courses
+        $installCourses = false;
+        $installCoursesResult = array();
+        if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInstallCourses'])) && !$installFail){
+            $installCourses = true;
+            $installCoursesResult = Zugang::Ermitteln('actionInstallCourses','Installation::installiereVeranstaltungen',$data, $fail, $errno, $error);
+            
+            if ($simple){
+                $installCoursesResult['fail'] = $fail;
+                $installCoursesResult['errno'] = $errno;
+                $installCoursesResult['error'] = $error;
+                $output['actionInstallPlatform'] = $installCoursesResult;
+            }
+        }
 
         // install components file
         $installComponentFile = false;
@@ -696,6 +711,9 @@ class Installer
                         
         if (file_exists(dirname(__FILE__) . '/segments/PlattformEinrichten.php'))
             require_once dirname(__FILE__) . '/segments/PlattformEinrichten.php';
+                        
+        if (file_exists(dirname(__FILE__) . '/segments/VeranstaltungenEinrichten.php'))
+            require_once dirname(__FILE__) . '/segments/VeranstaltungenEinrichten.php';
          
         if (file_exists(dirname(__FILE__) . '/segments/Benutzer_erstellen.php'))
             require_once dirname(__FILE__) . '/segments/Benutzer_erstellen.php';

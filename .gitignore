@@ -7,3 +7,5 @@ Assistants/hyperlight
 *.ini
 path/
 ostepu/
+Assistants/Test/
+.project

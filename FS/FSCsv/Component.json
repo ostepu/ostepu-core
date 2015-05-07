@@ -1,0 +1,15 @@
+{
+  "name":"FSCsv",
+  "version":"1.0",
+  "classFile":"FSCsv.php",
+  "className":"FSCsv",
+  "files":[
+    {"path":".htaccess"},
+    {"path":"FSCsv.php"},
+    {"path":"Commands.json"},
+    {"path":"index.php"}
+  ],
+  "connector":[
+    {"name":"request", "target":"CLocalObjectRequest"}
+  ]
+}

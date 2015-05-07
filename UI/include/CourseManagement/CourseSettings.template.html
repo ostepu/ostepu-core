@@ -87,25 +87,30 @@ if (isset($CourseSettingsNotificationElements)) {
                         echo $setting['name'];
                         echo "</label>";
                         if ($setting['type']==='TIMESTAMP'){
-                            $Date = ($setting['state']!=0 ? $setting['state'] : null);
+                            $data = ($setting['state']!=0 ? $setting['state'] : null);
                             ?>
                             <div class="datetimepicker input-append left date">
                                 <input class="form-field text-input" data-format="dd.MM.yyyy - hh:mm"
-                                <?php if (isset($Date)) {?> value="<?php echo (ctype_digit($Date) ? date('d.m.Y - H:i', $Date) : $Date); ?>" <?php } ?>
-                                type="text" id="Date; ?>" name="setting_<?php echo $setting['id']; ?>"/>
+                                <?php if (isset($Date)) {?> value="<?php echo (ctype_digit($data) ? date('d.m.Y - H:i', $data) : $data); ?>" <?php } ?>
+                                type="text" id="data; ?>" name="setting_<?php echo $setting['id']; ?>"/>
                                 <span class="add-on">
                                   ...
                                 </span>
                             </div>
                             <?php
                         } elseif ($setting['type']==='BOOL'){
-                        
+                            ?>
+                              <select name="setting_<?php echo $setting['id']; ?>" size="1">
+                                <option value="1">Ja</option>
+                                <option value="0">Nein</option>
+                             </select>
+                             <?php
                         } elseif ($setting['type']==='INT' || $setting['type']==='STRING'){
-                            $Date = ($setting['state']!=0 ? $setting['state'] : null);
+                            $data = ($setting['state']!=0 ? $setting['state'] : null);
                             ?>
                             <input class="form-field text-input"
-                                <?php if (isset($Date)) {?> value="<?php echo $Date; ?>" <?php } ?>
-                                type="text" id="Date; ?>" name="setting_<?php echo $setting['id']; ?>"/>
+                                <?php if (isset($data)) {?> value="<?php echo $data; ?>" <?php } ?>
+                                type="text" id="data; ?>" name="setting_<?php echo $setting['id']; ?>"/>
                             <?php
                         }
                     }

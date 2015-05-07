@@ -1,0 +1,20 @@
+{
+    "title" : "Übungsplattform",
+    "content":"text/html",
+    "charset":"utf-8",
+    "stylesheets":[
+        "css/CSSReset.css",
+        "css/Main.css",
+        "css/Exercises.css",
+        "css/Header.css",
+        "css/Forms.css",
+        "css/Navigation.css",
+        "css/Notifications.css"
+    ],
+    "javascripts":[
+        "javascript/retina.js",
+        "javascript/jquery-2.0.3.min.js",
+        "javascript/keymaster.js",
+        "javascript/download.js"
+    ]
+}

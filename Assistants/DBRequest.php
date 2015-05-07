@@ -65,6 +65,9 @@ class DBRequest
             $query_result['error'] = mysql_error( );
             return $query_result;
         }
+
+	// use UTF8
+	mysql_query("SET NAMES 'utf8'");
         
         // selects the database
         if ($config['DB']['db_name'] !== null)
@@ -194,6 +197,9 @@ class DBRequest
             $query_result['errno'] = 10;
             return $query_result;
         }
+
+	// use UTF8
+	mysqli_set_charset($dbconn,"utf8");
 
         $currentTime = $_SERVER['REQUEST_TIME'];
 
