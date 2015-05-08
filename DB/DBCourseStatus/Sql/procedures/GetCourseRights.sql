@@ -28,7 +28,7 @@ from
     User U
        ON (U.U_id = CS.U_id)
         left join 
-    Setting_<?php echo $courseid; ?> S ON (1)
+    Setting_",courseid," S ON (1)
 WHERE
     CS.C_id = '",courseid,"';");
 PREPARE stmt1 FROM @s;
