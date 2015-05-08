@@ -75,11 +75,18 @@ class DBCourse
     {
         $positive = function($input) {
             // sets the new auto-increment id
+            $id = 0;
+            $queryResult = $input[count($input)-1];
+            $resp =$queryResult->getResponse();
+            if (isset($resp[0]['@a']))
+                $id = $resp[0]['@a'];
+            
+            // sets the new auto-increment id
             $obj = new Course( );
-            $obj->setId( $input[0]->getInsertId( ) );
+            $obj->setId( ($input[0]->getInsertId( )==0 ? $id : $input[0]->getInsertId( )) );
             return array("status"=>201,"content"=>$obj);
         };
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddCourse.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new Course()));
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddCourse.sql',array( 'values' => $input->getInsertData( ), 'in' => $input),201,$positive,array(),'Model::isProblem',array(new Course()));
     }
 
     public function get( $functionName, $linkName, $params=array(),$singleResult = false, $checkSession = true )
