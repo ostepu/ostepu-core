@@ -47,9 +47,9 @@ class DBExerciseSheet
      *
      * @param int $esid The id of the exercise sheet that is being updated.
      */
-    public function editExerciseSheet( $esid )
+    public function editExerciseSheet( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/EditCourse.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/EditExerciseSheet.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));
     }
 
     /**
@@ -60,9 +60,9 @@ class DBExerciseSheet
      *
      * @param int $esid The id of the exercise sheet that is being deleted.
      */
-    public function deleteExerciseSheet( $esid )
+    public function deleteExerciseSheet( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteCourse.sql',$params,201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));  
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteExerciseSheet.sql',$params,201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));  
     }
 
     /**
@@ -73,7 +73,7 @@ class DBExerciseSheet
      * The request body should contain a JSON object representing the exercise
      * sheet's attributes.
      */
-    public function addExerciseSheet( )
+    public function addExerciseSheet( $callName, $input, $params = array() )
     {
         $positive = function($input) {
             // sets the new auto-increment id
@@ -81,7 +81,7 @@ class DBExerciseSheet
             $obj->setId( $input[0]->getInsertId( ) );
             return array("status"=>201,"content"=>$obj);
         };
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddCourse.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new Course()));
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddExerciseSheet.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new Course()));
     }
 
     public function getURL( $functionName, $linkName, $params=array(),$singleResult = false, $checkSession = true )

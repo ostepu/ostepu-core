@@ -79,7 +79,7 @@ class DBExerciseFileType
      * The request body should contain a JSON object representing the
      * new exercise file type's attributes.
      */
-    public function addExerciseFileType( )
+    public function addExerciseFileType( $callName, $input, $params = array() )
     {
         $positive = function($input) {
             // sets the new auto-increment id
