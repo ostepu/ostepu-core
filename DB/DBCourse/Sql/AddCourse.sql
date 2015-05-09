@@ -12,7 +12,7 @@ INSERT IGNORE INTO Course
 SET <?php echo $values; ?> ON DUPLICATE KEY UPDATE <?php echo $values; ?>;
 SET @a = <?php if ($in->getId()!==null){echo "'".$in->getId()."';";} else echo "LAST_INSERT_ID();"; ?>
 
-<?php if ($in->getId()===null){ ?>
+<?php if (false && $in->getId()===null){ ?>
 SET @statement = 
 concat("INSERT IGNORE INTO Setting_",@a," (SET_name, SET_state, SET_type)
 VALUES ('RegistrationPeriodEnd', '0' ,'TIMESTAMP');");
