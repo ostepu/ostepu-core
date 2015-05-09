@@ -63,12 +63,12 @@ class DBExerciseFileType
     
     public function deleteExerciseExerciseFileType( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteExerciseFileType.sql',$params,201,'Model::isCreated',array(new ExerciseFileType()),'Model::isProblem',array(new ExerciseFileType()));  
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteExerciseExerciseFileType.sql',$params,201,'Model::isCreated',array(new ExerciseFileType()),'Model::isProblem',array(new ExerciseFileType()));  
     }
     
     public function deleteExerciseSheetExerciseFileType( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteExerciseFileType.sql',$params,201,'Model::isCreated',array(new ExerciseFileType()),'Model::isProblem',array(new ExerciseFileType()));  
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteExerciseSheetExerciseFileType.sql',$params,201,'Model::isCreated',array(new ExerciseFileType()),'Model::isProblem',array(new ExerciseFileType()));  
     }
     
     /**

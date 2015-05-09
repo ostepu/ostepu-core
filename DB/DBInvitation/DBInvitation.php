@@ -46,11 +46,7 @@ class DBInvitation
      * @param int $esid The id of the exercise sheet the group belongs to.
      * @param int $memberid The id of the user that is invited.
      */
-    public function editInvitation( 
-                                   $userid,
-                                   $esid,
-                                   $memberid
-                                   )
+    public function editInvitation( $callName, $input, $params = array() )
     {
         return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/EditInvitation.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new Invitation()),'Model::isProblem',array(new Invitation()));
     }
@@ -65,11 +61,7 @@ class DBInvitation
      * @param int $esid The id of the exercise sheet the group belongs to.
      * @param int $memberid The id of the user that is invited.
      */
-    public function deleteInvitation( 
-                                     $userid,
-                                     $esid,
-                                     $memberid
-                                     )
+    public function deleteInvitation( $callName, $input, $params = array() )
     {
         return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteInvitation.sql',$params,201,'Model::isCreated',array(new Invitation()),'Model::isProblem',array(new Invitation()));  
     }
@@ -82,7 +74,7 @@ class DBInvitation
      * The request body should contain a JSON object representing the
      * invitations's attributes.
      */
-    public function addInvitation( )
+    public function addInvitation( $callName, $input, $params = array() )
     {
         $positive = function($input) {
             // sets the new auto-increment id

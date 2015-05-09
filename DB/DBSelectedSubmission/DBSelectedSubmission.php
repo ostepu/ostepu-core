@@ -60,7 +60,7 @@ class DBSelectedSubmission
      */
     public function editSubmissionSelectedSubmission( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/EditSelectedSubmission.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new SelectedSubmission()),'Model::isProblem',array(new SelectedSubmission()));
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/EditSubmissionSelectedSubmission.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new SelectedSubmission()),'Model::isProblem',array(new SelectedSubmission()));
     }
 
     /**
@@ -88,7 +88,7 @@ class DBSelectedSubmission
      */
     public function deleteUserSheetSelectedSubmission($callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteSelectedSubmission.sql',$params,201,'Model::isCreated',array(new SelectedSubmission()),'Model::isProblem',array(new SelectedSubmission()));  
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteUserSheetSelectedSubmission.sql',$params,201,'Model::isCreated',array(new SelectedSubmission()),'Model::isProblem',array(new SelectedSubmission()));  
     }
 
     /**
@@ -101,7 +101,7 @@ class DBSelectedSubmission
      */
     public function deleteSubmissionSelectedSubmission( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteSelectedSubmission.sql',$params,201,'Model::isCreated',array(new SelectedSubmission()),'Model::isProblem',array(new SelectedSubmission()));  
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteSubmissionSelectedSubmission.sql',$params,201,'Model::isCreated',array(new SelectedSubmission()),'Model::isProblem',array(new SelectedSubmission()));  
     }
 
     /**
