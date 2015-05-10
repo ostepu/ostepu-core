@@ -92,7 +92,7 @@
             ]
         },
         {
-            "name": "getMemberLeaderInvitations",
+            "name": "getSheetMemberInvitations",
             "target": "DBQuery2",
             "links": [
                 {
