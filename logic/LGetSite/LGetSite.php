@@ -1221,6 +1221,8 @@ class LGetSite
         $selectedSubmissionsCount = null;
         foreach($selectedSubs as $subs){
             $key = $subs['exerciseSheetId'];
+            $eid = $subs['exerciseId'];
+            $userId = $subs['leaderId'];
             if (!isset($selectedSubmissionsCount[$key]))
                 $selectedSubmissionsCount[$key] = array();
                 
@@ -1228,6 +1230,16 @@ class LGetSite
                 $selectedSubmissionsCount[$key]['selected']=1;
             } else {
                 $selectedSubmissionsCount[$key]['selected']+=1;
+            }
+            
+            if (!isset($selectedSubmissionsCount[$key]['submissionsCount']))
+                $selectedSubmissionsCount[$key]['submissionsCount'] = array();
+            
+            if (!isset($selectedSubmissionsCount[$key]['submissionsCount'][$eid]))
+                $selectedSubmissionsCount[$key]['submissionsCount'][$eid] = array();
+                        
+            if (!isset($selectedSubmissionsCount[$key]['submissionsCount'][$eid][$userId])){
+                $selectedSubmissionsCount[$key]['submissionsCount'][$eid][] = $userId;
             }
         }
         unset($selectedSubs);
@@ -1299,6 +1311,7 @@ class LGetSite
 
                 // adds counts for the additional information in the footer
                 $sheet['courseUserCount'] = count($courseUser);
+                $sheet['submissionStats'] = $selectedSubmissionsCount[$sheet['id']]['submissionsCount'];
                 $sheet['selectedSubmissions'] = (isset($selectedSubmissionsCount[$sheet['id']]['selected']) ? $selectedSubmissionsCount[$sheet['id']]['selected'] : 0);
                 $sheet['tutorMarkings'] = (isset($selectedSubmissionsCount[$sheet['id']]['tutorMarkings']) ? $selectedSubmissionsCount[$sheet['id']]['tutorMarkings'] : 0);
                 
