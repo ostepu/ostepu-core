@@ -43,6 +43,7 @@
                     <?php 
                     // bool if subtasks are printed
                     $isSubtask = false;
+                    $studentsCount=array();
                     foreach ($sheet['exercises'] as $key => $exercise){ 
                         $eid = $exercise['id'];
                     ?>
@@ -76,6 +77,7 @@
                     </li>
                     <div class="stats-block">
                         <span class="bold">Einsendungen:</span>
+                        <?php $studentsCount = array_merge($studentsCount,(isset($sheet['submissionStats'][$eid]) ? $sheet['submissionStats'][$eid] : array() )); ?>
                         <span class=""><?php echo (isset($sheet['submissionStats'][$eid]) ? count($sheet['submissionStats'][$eid]) : 0 ); ?> Einsendungen</span>
                     </div>
                 
@@ -93,8 +95,9 @@
                 </ol>
                     <li class="footer-text bold">alle Einsendungen:</li>
                     <!--<li class="footer-text"><?php echo $sheet['courseUserCount']; ?> Studenten</li>-->
+                    <li class="footer-text"><?php echo count(array_unique($studentsCount)) ?> Studenten</li>
                     <li class="footer-text"><?php echo $sheet['selectedSubmissions']; ?> Einsendungen</li>
-                    <li class="footer-text"><?php echo $sheet['tutorMarkings']; ?> Korrekturaufträge</li>
+                    <!--<li class="footer-text"><?php echo $sheet['tutorMarkings']; ?> Korrekturaufträge</li-->
                     <?php if (isset($sheet['status'])){ ?>
                     <br>
                     <li class="footer-text bold">meine Korrekturen:</li>
