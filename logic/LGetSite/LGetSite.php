@@ -1311,7 +1311,7 @@ class LGetSite
 
                 // adds counts for the additional information in the footer
                 $sheet['courseUserCount'] = count($courseUser);
-                $sheet['submissionStats'] = $selectedSubmissionsCount[$sheet['id']]['submissionsCount'];
+                $sheet['submissionStats'] = (isset($selectedSubmissionsCount[$sheet['id']]['submissionsCount']) ? $selectedSubmissionsCount[$sheet['id']]['submissionsCount'] : null);
                 $sheet['selectedSubmissions'] = (isset($selectedSubmissionsCount[$sheet['id']]['selected']) ? $selectedSubmissionsCount[$sheet['id']]['selected'] : 0);
                 $sheet['tutorMarkings'] = (isset($selectedSubmissionsCount[$sheet['id']]['tutorMarkings']) ? $selectedSubmissionsCount[$sheet['id']]['tutorMarkings'] : 0);
                 
