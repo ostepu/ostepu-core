@@ -62,7 +62,9 @@ if (isset($SheetNotificationElements[$sheet['id']])) {
                 <?php
                 // bool if subtasks are printed
                 $isSubtask = false;
-                foreach ($sheet['exercises'] as $key => $exercise):
+                $studentsCount=array();
+                foreach ($sheet['exercises'] as $key => $exercise) {
+                    $eid = $exercise['id'];
                 ?>
                 <?php
                 // make a sublist if next exercise is not a main exercise
@@ -101,7 +103,14 @@ if (isset($SheetNotificationElements[$sheet['id']])) {
                             print '</div>';
                         }
                     ?>
+                    
                 </li>
+                <div class="stats-block">
+                    <span class="bold">Einsendungen:</span>
+                    <?php $studentsCount = array_merge($studentsCount,(isset($sheet['submissionStats'][$eid]) ? $sheet['submissionStats'][$eid] : array() )); ?>
+                    <span class=""><?php echo (isset($sheet['submissionStats'][$eid]) ? count($sheet['submissionStats'][$eid]) : 0 ); ?> Einsendungen</span>
+                </div>
+                
                 <?php
                 // close subexerciselist if next exercise is a new mainexercise or end of exercises is reached
                 if (isset($sheet['exercises'][$key+1]) && $sheet['exercises'][$key+1]['linkName'] == 1 && $isSubtask == true) {
@@ -112,13 +121,14 @@ if (isset($SheetNotificationElements[$sheet['id']])) {
                     print "</ol></li>";
                 }
                 ?>
-                <?php endforeach; ?>
+                <?php } ?>
                 
             </ol>
-                <li class="footer-text bold">Einsendungen:</li>
-                <li class="footer-text"><?php echo $sheet['courseUserCount']; ?> Studenten</li>
+                <li class="footer-text bold">alle Einsendungen:</li>
+                <!--<li class="footer-text"><?php echo $sheet['courseUserCount']; ?> Studenten</li>-->
+                <li class="footer-text"><?php echo count(array_unique($studentsCount)) ?> Studenten</li>
                 <li class="footer-text"><?php echo $sheet['selectedSubmissions']; ?> Einsendungen</li>
-                <li class="footer-text"><?php echo $sheet['tutorMarkings']; ?> Korrekturaufträge</li>
+                <!--<li class="footer-text"><?php echo $sheet['tutorMarkings']; ?> Korrekturaufträge</li>-->
                 <?php if (isset($sheet['status'])){ ?>
                 <br>
                 <li class="footer-text bold">meine Korrekturen:</li>
