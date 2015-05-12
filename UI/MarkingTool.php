@@ -134,7 +134,7 @@ function saveMarking($points, $tutorComment, $status, $submissionID, $markingID,
     // need to be created before adding the marking data
     if (($submissionID != -1 && $markingID != -1)) {
         $newMarking = Marking::createMarking($markingID, 
-                                             null, 
+                                             $tutorID, 
                                              null, 
                                              null,
                                              $tutorComment,
@@ -496,6 +496,17 @@ $searchSettings->bind($markingTool_data);
 $w = new HTMLWrapper($h, $searchSettings);
 
 if (!empty($markingTool_data['groups'])) {
+// find selected sheet
+$selectedSheet=null;
+foreach ($markingTool_data['exerciseSheets'] as $sheet){
+    if (!isset($sheet['id'])) continue;
+    if ($sheet['id'] == $sid){
+        $selectedSheet = $sheet;
+        break;
+    }
+}
+
+    
 $allOutputs = 0;
 $groups = $markingTool_data['groups'];
 //unset($markingTool_data['groups']);
@@ -513,6 +524,7 @@ $groups = $markingTool_data['groups'];
     
         $markingElement = Template::WithTemplateFile('include/MarkingTool/MarkingTool.template.html');
         $markingElement->bind($markingTool_data);
+        $markingElement->bind(array('selectedSheet'=>$selectedSheet));
         $markingElement->bind(array('group'=>$group));
         if (isset($GroupNotificationElements[$group['leader']['id']])){
             $markingElement->bind(array('GroupNotificationElements'=>$GroupNotificationElements[$group['leader']['id']]));
