@@ -367,7 +367,7 @@ class LFormPredecessor
                                         case('isnumeric'):
                                             if (!@preg_match("%^-?([0-9])+([,]([0-9])+)?$%",DefaultNormalizer::normalizeText($choice->getText()))){
                                                 $fail = true;
-                                                $pro->addMessage('"'.$choice->getText().'" ist keine gültige Zahl.');
+                                                $pro->addMessage('"'.$choice->getText().'" ist keine gültige Zahl. <br>Bsp.: 0,00');
                                             }
                                             break;
                                         case('isdigit'):
