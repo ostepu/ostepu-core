@@ -365,7 +365,7 @@ class LFormPredecessor
                                     
                                     switch($param){
                                         case('isnumeric'):
-                                            if (!@preg_match("%^-?([0-9])+([\.|,]([0-9])+)?$%",DefaultNormalizer::normalizeText($choice->getText()))){
+                                            if (!@preg_match("%^-?([0-9])+([,]([0-9])+)?$%",DefaultNormalizer::normalizeText($choice->getText()))){
                                                 $fail = true;
                                                 $pro->addMessage('"'.$choice->getText().'" ist keine gültige Zahl.');
                                             }
