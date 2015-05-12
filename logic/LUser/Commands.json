@@ -1,7 +1,7 @@
 [
-    {    "method":"PUT", "path":"/user/user/:userid/right(/)" },
-    {    "method":"POST", "path":"/user(/)" },
-    {    "method":"PUT", "path":"/user/user/:userid(/)" },
-    {    "method":"GET", "path":"/user/user(/)" },
-    {    "method":"GET", "path":"/user/user/:userid(/)" }
+    {    "method":"PUT", "path":"/user/user/:userid/right" },
+    {    "method":"POST", "path":"/user" },
+    {    "method":"PUT", "path":"/user/user/:userid" },
+    {    "method":"GET", "path":"/user/user" },
+    {    "method":"GET", "path":"/user/user/:userid" }
 ]

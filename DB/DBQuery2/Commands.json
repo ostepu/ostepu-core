@@ -4,7 +4,7 @@
         "outputType": "Query",
         "inputType": "Query",
         "method": "POST",
-        "path": "/query(/)"
+        "path": "/query"
     },
     {
         "name": "postMultiGetRequest",

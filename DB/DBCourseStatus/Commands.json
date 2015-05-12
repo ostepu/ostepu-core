@@ -4,21 +4,21 @@
         "outputType": "CourseStatus",
         "inputType": "User",
         "method": "PUT",
-        "path": "/coursestatus/course/:courseid/user/:userid(/)"
+        "path": "/coursestatus/course/:courseid/user/:userid"
     },
     {
         "name": "removeCourseMember",
         "outputType": "CourseStatus",
         "inputType": "",
         "method": "DELETE",
-        "path": "/coursestatus/course/:courseid/user/:userid(/)"
+        "path": "/coursestatus/course/:courseid/user/:userid"
     },
     {
         "name": "addCourseMember",
         "outputType": "CourseStatus",
         "inputType": "User",
         "method": "POST",
-        "path": "/coursestatus(/)"
+        "path": "/coursestatus"
     },
     {
         "name": "getMemberRight",
@@ -26,7 +26,7 @@
         "outputType": "CourseStatus",
         "inputType": "",
         "method": "GET",
-        "path": "/coursestatus/course/:courseid/user/:userid(/)"
+        "path": "/coursestatus/course/:courseid/user/:userid"
     },
     {
         "name": "getMemberRights",
@@ -34,7 +34,7 @@
         "outputType": "CourseStatus",
         "inputType": "",
         "method": "GET",
-        "path": "/coursestatus/user/:userid(/)"
+        "path": "/coursestatus/user/:userid"
     },
     {
         "name": "getCourseRights",
@@ -42,7 +42,7 @@
         "outputType": "CourseStatus",
         "inputType": "",
         "method": "GET",
-        "path": "/coursestatus/course/:courseid(/)"
+        "path": "/coursestatus/course/:courseid"
     },
     {
         "name": "addPlatform",

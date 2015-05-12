@@ -4,28 +4,28 @@
         "outputType": "User",
         "inputType": "User",
         "method": "PUT",
-        "path": "/user(/user)/:userid(/)"
+        "path": "/user(/user)/:userid"
     },
     {
         "name": "removeUser",
         "outputType": "User",
         "inputType": "",
         "method": "DELETE",
-        "path": "/user(/user)/:userid(/)"
+        "path": "/user(/user)/:userid"
     },
     {
         "name": "removeUserPermanent",
         "outputType": "User",
         "inputType": "",
         "method": "DELETE",
-        "path": "/user(/user)/:userid/permanent(/)"
+        "path": "/user(/user)/:userid/permanent"
     },
     {
         "name": "addUser",
         "outputType": "User",
         "inputType": "User",
         "method": "POST",
-        "path": "/user(/)"
+        "path": "/user"
     },
     {
         "name": "getUsers",
@@ -33,7 +33,7 @@
         "outputType": "User",
         "inputType": "",
         "method": "GET",
-        "path": "/user(/user)(/)"
+        "path": "/user(/user)"
     },
     {
         "name": "getIncreaseUserFailedLogin",
@@ -41,7 +41,7 @@
         "outputType": "User",
         "inputType": "",
         "method": "GET",
-        "path": "/user(/user)/:userid/IncFailedLogin(/)"
+        "path": "/user(/user)/:userid/IncFailedLogin"
     },
     {
         "name": "getUser",
@@ -49,7 +49,7 @@
         "outputType": "User",
         "inputType": "",
         "method": "GET",
-        "path": "/user(/user)/:userid(/)"
+        "path": "/user(/user)/:userid"
     },
     {
         "name": "getCourseUserByStatus",
@@ -57,7 +57,7 @@
         "outputType": "User",
         "inputType": "",
         "method": "GET",
-        "path": "/user/course/:courseid/status/:statusid(/)"
+        "path": "/user/course/:courseid/status/:statusid"
     },
     {
         "name": "getCourseMember",
@@ -65,7 +65,7 @@
         "outputType": "User",
         "inputType": "",
         "method": "GET",
-        "path": "/user/course/:courseid(/)"
+        "path": "/user/course/:courseid"
     },
     {
         "name": "getGroupMember",
@@ -73,7 +73,7 @@
         "outputType": "User",
         "inputType": "",
         "method": "GET",
-        "path": "/user/group/user/:userid/exercisesheet/:esid(/)"
+        "path": "/user/group/user/:userid/exercisesheet/:esid"
     },
     {
         "name": "getUserByStatus",
@@ -81,7 +81,7 @@
         "outputType": "User",
         "inputType": "",
         "method": "GET",
-        "path": "/user/status/:statusid(/)"
+        "path": "/user/status/:statusid"
     },
     {
         "name": "addPlatform",

@@ -4,42 +4,42 @@
         "outputType": "SelectedSubmission",
         "inputType": "SelectedSubmission",
         "method": "PUT",
-        "path": "/selectedsubmission/leader/:userid/exercise/:eid(/)"
+        "path": "/selectedsubmission/leader/:userid/exercise/:eid"
     },
     {
         "name": "deleteSelectedSubmission",
         "outputType": "SelectedSubmission",
         "inputType": "",
         "method": "DELETE",
-        "path": "/selectedsubmission/leader/:userid/exercise/:eid(/)"
+        "path": "/selectedsubmission/leader/:userid/exercise/:eid"
     },
     {
         "name": "editSubmissionSelectedSubmission",
         "outputType": "SelectedSubmission",
         "inputType": "SelectedSubmission",
         "method": "PUT",
-        "path": "/selectedsubmission/submission/:suid(/)"
+        "path": "/selectedsubmission/submission/:suid"
     },
     {
         "name": "deleteSubmissionSelectedSubmission",
         "outputType": "SelectedSubmission",
         "inputType": "",
         "method": "DELETE",
-        "path": "/selectedsubmission/submission/:suid(/)"
+        "path": "/selectedsubmission/submission/:suid"
     },
     {
         "name": "deleteUserSheetSelectedSubmission",
         "outputType": "SelectedSubmission",
         "inputType": "",
         "method": "DELETE",
-        "path": "/selectedsubmission/user/:userid/exercisesheet/:esid(/)"
+        "path": "/selectedsubmission/user/:userid/exercisesheet/:esid"
     },
     {
         "name": "addSelectedSubmission",
         "outputType": "SelectedSubmission",
         "inputType": "SelectedSubmission",
         "method": "POST",
-        "path": "/selectedsubmission(/)"
+        "path": "/selectedsubmission"
     },
     {
         "name": "getExerciseSelected",
@@ -47,7 +47,7 @@
         "outputType": "SelectedSubmission",
         "inputType": "",
         "method": "GET",
-        "path": "/selectedsubmission/exercise/:eid(/)"
+        "path": "/selectedsubmission/exercise/:eid"
     },
     {
         "name": "getSheetSelected",
@@ -55,7 +55,7 @@
         "outputType": "SelectedSubmission",
         "inputType": "",
         "method": "GET",
-        "path": "/selectedsubmission/exercisesheet/:esid(/)"
+        "path": "/selectedsubmission/exercisesheet/:esid"
     },
     {
         "name": "getCourseSelected",
@@ -63,7 +63,7 @@
         "outputType": "SelectedSubmission",
         "inputType": "",
         "method": "GET",
-        "path": "/selectedsubmission/course/:courseid(/)"
+        "path": "/selectedsubmission/course/:courseid"
     },
     {
         "name": "addPlatform",

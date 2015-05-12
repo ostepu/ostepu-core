@@ -4,21 +4,21 @@
         "outputType": "Group",
         "inputType": "Group",
         "method": "PUT",
-        "path": "/group/user/:userid/exercisesheet/:esid(/)"
+        "path": "/group/user/:userid/exercisesheet/:esid"
     },
     {
         "name": "deleteGroup",
         "outputType": "Group",
         "inputType": "",
         "method": "DELETE",
-        "path": "/group/user/:userid/exercisesheet/:esid(/)"
+        "path": "/group/user/:userid/exercisesheet/:esid"
     },
     {
         "name": "addGroup",
         "outputType": "Group",
         "inputType": "Group",
         "method": "POST",
-        "path": "/group(/)"
+        "path": "/group"
     },
     {
         "name": "getUserGroups",
@@ -26,7 +26,7 @@
         "outputType": "Group",
         "inputType": "",
         "method": "GET",
-        "path": "/group/user/:userid(/)"
+        "path": "/group/user/:userid"
     },
     {
         "name": "getAllGroups",
@@ -34,7 +34,7 @@
         "outputType": "Group",
         "inputType": "",
         "method": "GET",
-        "path": "/group(/group)(/)"
+        "path": "/group(/group)"
     },
     {
         "name": "getUserSheetGroup",
@@ -42,7 +42,7 @@
         "outputType": "Group",
         "inputType": "",
         "method": "GET",
-        "path": "/group/user/:userid/exercisesheet/:esid(/)"
+        "path": "/group/user/:userid/exercisesheet/:esid"
     },
     {
         "name": "getSheetGroups",
@@ -50,7 +50,7 @@
         "outputType": "Group",
         "inputType": "",
         "method": "GET",
-        "path": "/group/exercisesheet/:esid(/)"
+        "path": "/group/exercisesheet/:esid"
     },
     {
         "name": "getCourseGroups",
@@ -58,7 +58,7 @@
         "outputType": "Group",
         "inputType": "",
         "method": "GET",
-        "path": "/group/course/:courseid(/)"
+        "path": "/group/course/:courseid"
     },
     {
         "name": "addPlatform",

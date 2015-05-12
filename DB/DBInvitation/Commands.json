@@ -4,21 +4,21 @@
         "outputType": "Invitation",
         "inputType": "Invitation",
         "method": "PUT",
-        "path": "/invitation/user/:userid/exercisesheet/:esid/user/:memberid(/)"
+        "path": "/invitation/user/:userid/exercisesheet/:esid/user/:memberid"
     },
     {
         "name": "deleteInvitation",
         "outputType": "Invitation",
         "inputType": "",
         "method": "DELETE",
-        "path": "/invitation/user/:userid/exercisesheet/:esid/user/:memberid(/)"
+        "path": "/invitation/user/:userid/exercisesheet/:esid/user/:memberid"
     },
     {
         "name": "addInvitation",
         "outputType": "Invitation",
         "inputType": "Invitation",
         "method": "POST",
-        "path": "/invitation(/)"
+        "path": "/invitation"
     },
     {
         "name": "getLeaderInvitations",
@@ -26,7 +26,7 @@
         "outputType": "Invitation",
         "inputType": "",
         "method": "GET",
-        "path": "/invitation/leader/user/:userid(/)"
+        "path": "/invitation/leader/user/:userid"
     },
     {
         "name": "getMemberInvitations",
@@ -34,7 +34,7 @@
         "outputType": "Invitation",
         "inputType": "",
         "method": "GET",
-        "path": "/invitation/member/user/:userid(/)"
+        "path": "/invitation/member/user/:userid"
     },
     {
         "name": "getAllInvitations",
@@ -42,7 +42,7 @@
         "outputType": "Invitation",
         "inputType": "",
         "method": "GET",
-        "path": "/invitation(/invitation)(/)"
+        "path": "/invitation(/invitation)"
     },
     {
         "name": "getSheetLeaderInvitations",
@@ -50,7 +50,7 @@
         "outputType": "Invitation",
         "inputType": "",
         "method": "GET",
-        "path": "/invitation/leader/exercisesheet/:esid/user/:userid(/)"
+        "path": "/invitation/leader/exercisesheet/:esid/user/:userid"
     },
     {
         "name": "getSheetMemberInvitations",
@@ -58,7 +58,7 @@
         "outputType": "Invitation",
         "inputType": "",
         "method": "GET",
-        "path": "/invitation/member/exercisesheet/:esid/user/:userid(/)"
+        "path": "/invitation/member/exercisesheet/:esid/user/:userid"
     },
     {
         "name": "getSheetInvitations",
@@ -66,7 +66,7 @@
         "outputType": "Invitation",
         "inputType": "",
         "method": "GET",
-        "path": "/invitation/exercisesheet/:esid(/)"
+        "path": "/invitation/exercisesheet/:esid"
     },
     {
         "name": "addPlatform",

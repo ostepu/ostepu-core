@@ -4,21 +4,21 @@
         "outputType": "ExerciseSheet",
         "inputType": "ExerciseSheet",
         "method": "PUT",
-        "path": "/exercisesheet(/exercisesheet)/:esid(/)"
+        "path": "/exercisesheet(/exercisesheet)/:esid"
     },
     {
         "name": "deleteExerciseSheet",
         "outputType": "ExerciseSheet",
         "inputType": "",
         "method": "DELETE",
-        "path": "/exercisesheet(/exercisesheet)/:esid(/)"
+        "path": "/exercisesheet(/exercisesheet)/:esid"
     },
     {
         "name": "addExerciseSheet",
         "outputType": "ExerciseSheet",
         "inputType": "ExerciseSheet",
         "method": "POST",
-        "path": "/exercisesheet(/)"
+        "path": "/exercisesheet"
     },
     {
         "name": "getExerciseSheetURL",
@@ -26,7 +26,7 @@
         "outputType": "File",
         "inputType": "",
         "method": "GET",
-        "path": "/exercisesheet(/exercisesheet)/:esid/url(/)"
+        "path": "/exercisesheet(/exercisesheet)/:esid/url"
     },
     {
         "name": "getCourseSheetURLs",
@@ -34,21 +34,21 @@
         "outputType": "File",
         "inputType": "",
         "method": "GET",
-        "path": "/exercisesheet/course/:courseid/url(/)"
+        "path": "/exercisesheet/course/:courseid/url"
     },
     {
         "name": "getCourseSheets",
         "outputType": "ExerciseSheet",
         "inputType": "",
         "method": "GET",
-        "path": "/exercisesheet/course/:courseid(/:exercise)(/)"
+        "path": "/exercisesheet/course/:courseid(/:exercise)"
     },
     {
         "name": "getExerciseSheet",
         "outputType": "ExerciseSheet",
         "inputType": "",
         "method": "GET",
-        "path": "/exercisesheet(/exercisesheet)/:esid(/:exercise)(/)"
+        "path": "/exercisesheet(/exercisesheet)/:esid(/:exercise)"
     },
     {
         "name": "addPlatform",

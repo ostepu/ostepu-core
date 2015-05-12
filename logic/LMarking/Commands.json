@@ -1,7 +1,7 @@
 [
-    {    "method":"POST", "path":"/marking(/)" },
-    {    "method":"GET", "path":"/marking/marking/:markingid(/)" },
-    {    "method":"DELETE", "path":"/marking/marking/:markingid(/)" },
-    {    "method":"PUT", "path":"/marking/marking/:markingid(/)" },
-    {    "method":"PUT", "path":"/marking/marking/:markingid/status(/)" }
+    {    "method":"POST", "path":"/marking" },
+    {    "method":"GET", "path":"/marking/marking/:markingid" },
+    {    "method":"DELETE", "path":"/marking/marking/:markingid" },
+    {    "method":"PUT", "path":"/marking/marking/:markingid" },
+    {    "method":"PUT", "path":"/marking/marking/:markingid/status" }
 ]

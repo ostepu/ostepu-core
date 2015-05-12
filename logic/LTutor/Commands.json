@@ -1,6 +1,6 @@
 [
-    {    "method":"POST", "path":"/tutor/auto/exercise/course/:courseid/exercisesheet/:sheetid(/)" },
-    {    "method":"POST", "path":"/tutor/auto/group/course/:courseid/exercisesheet/:sheetid(/)" },
-    {    "method":"GET", "path":"/tutor/user/:userid/exercisesheet/:sheetid(/)" },
-    {    "method":"POST", "path":"/tutor/user/:userid/course/:courseid(/)" }
+    {    "method":"POST", "path":"/tutor/auto/exercise/course/:courseid/exercisesheet/:sheetid" },
+    {    "method":"POST", "path":"/tutor/auto/group/course/:courseid/exercisesheet/:sheetid" },
+    {    "method":"GET", "path":"/tutor/user/:userid/exercisesheet/:sheetid" },
+    {    "method":"POST", "path":"/tutor/user/:userid/course/:courseid" }
 ]

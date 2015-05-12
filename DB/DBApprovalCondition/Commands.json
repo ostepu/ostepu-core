@@ -4,21 +4,21 @@
         "outputType": "ApprovalCondition",
         "inputType": "ApprovalCondition",
         "method": "PUT",
-        "path": "/approvalcondition(/approvalcondition)/:apid(/)"
+        "path": "/approvalcondition(/approvalcondition)/:apid"
     },
     {
         "name": "deleteApprovalCondition",
         "outputType": "ApprovalCondition",
         "inputType": "",
         "method": "DELETE",
-        "path": "/approvalcondition(/approvalcondition)/:apid(/)"
+        "path": "/approvalcondition(/approvalcondition)/:apid"
     },
     {
         "name": "addApprovalCondition",
         "outputType": "ApprovalCondition",
         "inputType": "ApprovalCondition",
         "method": "POST",
-        "path": "/approvalcondition(/)"
+        "path": "/approvalcondition"
     },
     {
         "name": "getApprovalCondition",
@@ -26,7 +26,7 @@
         "outputType": "ApprovalCondition",
         "inputType": "",
         "method": "GET",
-        "path": "/approvalcondition(/approvalcondition)/:apid(/)"
+        "path": "/approvalcondition(/approvalcondition)/:apid"
     },
     {
         "name": "getAllApprovalConditions",
@@ -34,7 +34,7 @@
         "outputType": "ApprovalCondition",
         "inputType": "",
         "method": "GET",
-        "path": "/approvalcondition(/approvalcondition)(/)"
+        "path": "/approvalcondition(/approvalcondition)"
     },
     {
         "name": "getCourseApprovalConditions",
@@ -42,7 +42,7 @@
         "outputType": "ApprovalCondition",
         "inputType": "",
         "method": "GET",
-        "path": "/approvalcondition/course/:courseid(/)"
+        "path": "/approvalcondition/course/:courseid"
     },
     {
         "name": "addPlatform",

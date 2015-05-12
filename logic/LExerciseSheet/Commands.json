@@ -1,10 +1,10 @@
 [
-    {    "method":"POST", "path":"/exercisesheet(/)" },
-    {    "method":"PUT", "path":"/exercisesheet/exercisesheet/:sheetid(/)" },
-    {    "method":"GET", "path":"/exercisesheet/exercisesheet/:sheetid/url(/)" },
-    {    "method":"GET", "path":"/exercisesheet/exercisesheet/:sheetid(/)" },
-    {    "method":"GET", "path":"/exercisesheet/exercisesheet/:sheetid/exercise(/)" },
-    {    "method":"GET", "path":"/exercisesheet/course/:courseid(/)" },
-    {    "method":"GET", "path":"/exercisesheet/course/:courseid/exercise(/)" },
-    {    "method":"GET", "path":"/exercisesheet/exercisesheet/:sheetid(/)" }
+    {    "method":"POST", "path":"/exercisesheet" },
+    {    "method":"PUT", "path":"/exercisesheet/exercisesheet/:sheetid" },
+    {    "method":"GET", "path":"/exercisesheet/exercisesheet/:sheetid/url" },
+    {    "method":"GET", "path":"/exercisesheet/exercisesheet/:sheetid" },
+    {    "method":"GET", "path":"/exercisesheet/exercisesheet/:sheetid/exercise" },
+    {    "method":"GET", "path":"/exercisesheet/course/:courseid" },
+    {    "method":"GET", "path":"/exercisesheet/course/:courseid/exercise" },
+    {    "method":"GET", "path":"/exercisesheet/exercisesheet/:sheetid" }
 ]

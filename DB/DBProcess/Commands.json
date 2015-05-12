@@ -1,12 +1,12 @@
 [
     {    "method":"post", "path":"(/:pre)/course" },
     {    "method":"delete", "path":"(/:pre)/course(/course)/:courseid" },
-    {    "method":"put", "path":"(/:pre)/process(/process)/:processid(/)" },
-    {    "method":"delete", "path":"(/:pre)/process(/process)/:processid(/)" },
-    {    "method":"post", "path":"(/:pre)/process(/)" },
-    {    "method":"get", "path":"(/:pre)/process(/process)/:processid(/)" },
-    {    "method":"get", "path":"(/:pre)/process/course/:courseid(/)" },
-    {    "method":"get", "path":"(/:pre)/link/exists/course/:courseid(/)" },
-    {    "method":"get", "path":"(/:pre)/process/exercisesheet/:esid(/)" },
-    {    "method":"get", "path":"(/:pre)/process/exercise/:eid(/)" }
+    {    "method":"put", "path":"(/:pre)/process(/process)/:processid" },
+    {    "method":"delete", "path":"(/:pre)/process(/process)/:processid" },
+    {    "method":"post", "path":"(/:pre)/process" },
+    {    "method":"get", "path":"(/:pre)/process(/process)/:processid" },
+    {    "method":"get", "path":"(/:pre)/process/course/:courseid" },
+    {    "method":"get", "path":"(/:pre)/link/exists/course/:courseid" },
+    {    "method":"get", "path":"(/:pre)/process/exercisesheet/:esid" },
+    {    "method":"get", "path":"(/:pre)/process/exercise/:eid" }
 ]

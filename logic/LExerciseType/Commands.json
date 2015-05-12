@@ -1,5 +1,5 @@
 [
-    {"method":"POST", "path":"/condition(/)" },
-    {"method":"PUT", "path":"/condition/course/:courseid(/)" },
-    {"method":"GET", "path":"/condition/course/:courseid/user/:userid(/)" }
+    {"method":"POST", "path":"/condition" },
+    {"method":"PUT", "path":"/condition/course/:courseid" },
+    {"method":"GET", "path":"/condition/course/:courseid/user/:userid" }
 ]

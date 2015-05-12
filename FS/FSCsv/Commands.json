@@ -1,8 +1,8 @@
 [
-    {    "method":"post", "path":"/csv(/)" },
-    {    "method":"post", "path":"/csv/:filename(/)" },
-    {    "method":"delete", "path":"/csv/:hash(/)" },
-    {    "method":"get", "path":"/csv/:hash(/)" },
-    {    "method":"get", "path":"/csv/:hash/:filename(/)" }
+    {    "method":"post", "path":"/csv" },
+    {    "method":"post", "path":"/csv/:filename" },
+    {    "method":"delete", "path":"/csv/:hash" },
+    {    "method":"get", "path":"/csv/:hash" },
+    {    "method":"get", "path":"/csv/:hash/:filename" }
     
 ]

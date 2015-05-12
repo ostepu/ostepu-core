@@ -4,35 +4,35 @@
         "outputType": "ExerciseFileType",
         "inputType": "ExerciseFileType",
         "method": "PUT",
-        "path": "/exercisefiletype(/exercisefiletype)/:eftid(/)"
+        "path": "/exercisefiletype(/exercisefiletype)/:eftid"
     },
     {
         "name": "deleteExerciseFileType",
         "outputType": "ExerciseFileType",
         "inputType": "",
         "method": "DELETE",
-        "path": "/exercisefiletype(/exercisefiletype)/:eftid(/)"
+        "path": "/exercisefiletype(/exercisefiletype)/:eftid"
     },
     {
         "name": "deleteExerciseExerciseFileType",
         "outputType": "ExerciseFileType",
         "inputType": "",
         "method": "DELETE",
-        "path": "/exercisefiletype/exercise/:eid(/)"
+        "path": "/exercisefiletype/exercise/:eid"
     },
     {
         "name": "deleteExerciseSheetExerciseFileType",
         "outputType": "ExerciseFileType",
         "inputType": "",
         "method": "DELETE",
-        "path": "/exercisefiletype/exercisesheet/:esid(/)"
+        "path": "/exercisefiletype/exercisesheet/:esid"
     },
     {
         "name": "addExerciseFileType",
         "outputType": "ExerciseFileType",
         "inputType": "ExerciseFileType",
         "method": "POST",
-        "path": "/exercisefiletype(/)"
+        "path": "/exercisefiletype"
     },
     {
         "name": "getExerciseFileType",
@@ -40,7 +40,7 @@
         "outputType": "ExerciseFileType",
         "inputType": "",
         "method": "GET",
-        "path": "/exercisefiletype(/exercisefiletype)/:eftid(/)"
+        "path": "/exercisefiletype(/exercisefiletype)/:eftid"
     },
     {
         "name": "getExerciseExerciseFileTypes",
@@ -48,7 +48,7 @@
         "outputType": "ExerciseFileType",
         "inputType": "",
         "method": "GET",
-        "path": "/exercisefiletype(/exercisefiletype)/exercise/:eid(/)"
+        "path": "/exercisefiletype(/exercisefiletype)/exercise/:eid"
     },
     {
         "name": "getSheetExerciseFileTypes",
@@ -56,7 +56,7 @@
         "outputType": "ExerciseFileType",
         "inputType": "",
         "method": "GET",
-        "path": "/exercisefiletype(/exercisefiletype)/exercisesheet/:esid(/)"
+        "path": "/exercisefiletype(/exercisefiletype)/exercisesheet/:esid"
     },
     {
         "name": "getAllExerciseFileTypes",
@@ -64,7 +64,7 @@
         "outputType": "ExerciseFileType",
         "inputType": "",
         "method": "GET",
-        "path": "/exercisefiletype(/exercisefiletype)(/)"
+        "path": "/exercisefiletype(/exercisefiletype)"
     },
     {
         "name": "addPlatform",

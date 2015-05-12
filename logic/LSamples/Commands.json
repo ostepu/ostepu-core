@@ -4,6 +4,6 @@
         "outputType": "",
         "inputType": "",
         "method": "POST",
-        "path": "/samples/course/:courseAmount(/)"
+        "path": "/samples/course/:courseAmount"
     }
 ]

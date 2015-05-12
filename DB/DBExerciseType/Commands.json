@@ -4,21 +4,21 @@
         "outputType": "ExerciseType",
         "inputType": "ExerciseType",
         "method": "PUT",
-        "path": "/exercisetype(/exercisetype)/:etid(/)"
+        "path": "/exercisetype(/exercisetype)/:etid"
     },
     {
         "name": "deleteExerciseType",
         "outputType": "ExerciseType",
         "inputType": "",
         "method": "DELETE",
-        "path": "/exercisetype(/exercisetype)/:etid(/)"
+        "path": "/exercisetype(/exercisetype)/:etid"
     },
     {
         "name": "addExerciseType",
         "outputType": "ExerciseType",
         "inputType": "ExerciseType",
         "method": "POST",
-        "path": "/exercisetype(/)"
+        "path": "/exercisetype"
     },
     {
         "name": "getExerciseType",
@@ -26,7 +26,7 @@
         "outputType": "ExerciseType",
         "inputType": "",
         "method": "GET",
-        "path": "/exercisetype(/exercisetype)/:etid(/)"
+        "path": "/exercisetype(/exercisetype)/:etid"
     },
     {
         "name": "getAllExerciseTypes",
@@ -34,7 +34,7 @@
         "outputType": "ExerciseType",
         "inputType": "",
         "method": "GET",
-        "path": "/exercisetype(/exercisetype)(/)"
+        "path": "/exercisetype(/exercisetype)"
     },
     {
         "name": "addPlatform",

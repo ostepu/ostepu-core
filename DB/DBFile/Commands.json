@@ -4,21 +4,21 @@
         "outputType": "File",
         "inputType": "File",
         "method": "PUT",
-        "path": "/file(/file)/:fileid(/)"
+        "path": "/file(/file)/:fileid"
     },
     {
         "name": "removeFile",
         "outputType": "File",
         "inputType": "",
         "method": "DELETE",
-        "path": "/file(/file)/:fileid(/)"
+        "path": "/file(/file)/:fileid"
     },
     {
         "name": "addFile",
         "outputType": "File",
         "inputType": "File",
         "method": "POST",
-        "path": "/file(/)"
+        "path": "/file"
     },
     {
         "name": "getFile",
@@ -26,7 +26,7 @@
         "outputType": "File",
         "inputType": "",
         "method": "GET",
-        "path": "/file(/file)/:fileid(/)"
+        "path": "/file(/file)/:fileid"
     },
     {
         "name": "getFileByHash",
@@ -34,7 +34,7 @@
         "outputType": "File",
         "inputType": "",
         "method": "GET",
-        "path": "/file/hash/:hash(/)"
+        "path": "/file/hash/:hash"
     },
     {
         "name": "getAllFiles",
@@ -42,7 +42,7 @@
         "outputType": "File",
         "inputType": "",
         "method": "GET",
-        "path": "/file(/timestamp/begin/:beginStamp/end/:endStamp)(/)"
+        "path": "/file(/timestamp/begin/:beginStamp/end/:endStamp)"
     },
     {
         "name": "getFileByMimeType",
@@ -50,7 +50,7 @@
         "outputType": "File",
         "inputType": "",
         "method": "GET",
-        "path": "/file/mimetype/:base(/:type)(/timestamp/begin/:beginSttamp/end/:endStamp)(/)"
+        "path": "/file/mimetype/:base(/:type)(/timestamp/begin/:beginSttamp/end/:endStamp)"
     },
     {
         "name": "addPlatform",

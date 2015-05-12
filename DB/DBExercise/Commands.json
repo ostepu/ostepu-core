@@ -4,21 +4,21 @@
         "outputType": "Exercise",
         "inputType": "Exercise",
         "method": "PUT",
-        "path": "/exercise(/exercise)/:eid(/)"
+        "path": "/exercise(/exercise)/:eid"
     },
     {
         "name": "deleteExercise",
         "outputType": "Exercise",
         "inputType": "",
         "method": "DELETE",
-        "path": "/exercise(/exercise)/:eid(/)"
+        "path": "/exercise(/exercise)/:eid"
     },
     {
         "name": "addExercise",
         "outputType": "Exercise",
         "inputType": "Exercise",
         "method": "POST",
-        "path": "/exercise(/)"
+        "path": "/exercise"
     },
     {
         "name": "getAllExercises",
@@ -26,7 +26,7 @@
         "outputType": "Exercise",
         "inputType": "",
         "method": "GET",
-        "path": "/exercise(/exercise)(/:sub)(/)"
+        "path": "/exercise(/exercise)(/:sub)"
     },
     {
         "name": "getSheetExercises",
@@ -34,7 +34,7 @@
         "outputType": "Exercise",
         "inputType": "",
         "method": "GET",
-        "path": "/exercise/exercisesheet/:esid(/:sub)(/)"
+        "path": "/exercise/exercisesheet/:esid(/:sub)"
     },
     {
         "name": "getCourseExercises",
@@ -42,7 +42,7 @@
         "outputType": "Exercise",
         "inputType": "",
         "method": "GET",
-        "path": "/exercise/course/:courseid(/:sub)(/)"
+        "path": "/exercise/course/:courseid(/:sub)"
     },
     {
         "name": "getExercise",
@@ -50,7 +50,7 @@
         "outputType": "Exercise",
         "inputType": "",
         "method": "GET",
-        "path": "/exercise(/exercise)/:eid(/:sub)(/)"
+        "path": "/exercise(/exercise)/:eid(/:sub)"
     },
     {
         "name": "addPlatform",

@@ -4,21 +4,21 @@
         "outputType": "Submission",
         "inputType": "Submission",
         "method": "PUT",
-        "path": "/submission(/submission)/:suid(/)"
+        "path": "/submission(/submission)/:suid"
     },
     {
         "name": "deleteSubmission",
         "outputType": "Submission",
         "inputType": "",
         "method": "DELETE",
-        "path": "/submission(/submission)/:suid(/)"
+        "path": "/submission(/submission)/:suid"
     },
     {
         "name": "addSubmission",
         "outputType": "Submission",
         "inputType": "Submission",
         "method": "POST",
-        "path": "/submission(/)"
+        "path": "/submission"
     },
     {
         "name": "getExerciseSubmissions",
@@ -26,7 +26,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "path": "/submission/exercise/:eid(/)"
+        "path": "/submission/exercise/:eid"
     },
     {
         "name": "getUserExerciseSubmissions",
@@ -34,7 +34,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "path": "/submission/user/:userid/exercise/:eid(/)"
+        "path": "/submission/user/:userid/exercise/:eid"
     },
     {
         "name": "getUserSheetSubmissions",
@@ -42,7 +42,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "path": "/submission/user/:userid/exercisesheet/:esid(/)"
+        "path": "/submission/user/:userid/exercisesheet/:esid"
     },
     {
         "name": "getGroupSubmissions",
@@ -50,7 +50,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "path": "/submission/group/user/:userid/exercisesheet/:esid(/)"
+        "path": "/submission/group/user/:userid/exercisesheet/:esid"
     },
     {
         "name": "getGroupSelectedSubmissions",
@@ -58,7 +58,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "path": "/submission/group/user/:userid/exercisesheet/:esid/selected(/)"
+        "path": "/submission/group/user/:userid/exercisesheet/:esid/selected"
     },
     {
         "name": "getGroupExerciseSubmissions",
@@ -66,7 +66,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "path": "/submission/group/user/:userid/exercise/:eid(/)"
+        "path": "/submission/group/user/:userid/exercise/:eid"
     },
     {
         "name": "getGroupSelectedExerciseSubmissions",
@@ -74,7 +74,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "path": "/submission/group/user/:userid/exercise/:eid/selected(/)"
+        "path": "/submission/group/user/:userid/exercise/:eid/selected"
     },
     {
         "name": "getGroupSelectedCourseSubmissions",
@@ -82,7 +82,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "path": "/submission/group/user/:userid/course/:courseid/selected(/)"
+        "path": "/submission/group/user/:userid/course/:courseid/selected"
     },
     {
         "name": "getGroupCourseSubmissions",
@@ -90,7 +90,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "path": "/submission/group/user/:userid/course/:courseid(/)"
+        "path": "/submission/group/user/:userid/course/:courseid"
     },
     {
         "name": "getSelectedSheetSubmissions",
@@ -98,7 +98,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "path": "/submission/exercisesheet/:esid/selected(/)"
+        "path": "/submission/exercisesheet/:esid/selected"
     },
     {
         "name": "getAllSubmissions",
@@ -106,7 +106,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "path": "/submission(/submission)(:selected)(/date/begin/:beginStamp/end/:endStamp)(/)"
+        "path": "/submission(/submission)(:selected)(/date/begin/:beginStamp/end/:endStamp)"
     },
     {
         "name": "getSelectedExerciseSubmissions",
@@ -114,7 +114,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "path": "/submission/exercise/:eid/selected(/)"
+        "path": "/submission/exercise/:eid/selected"
     },
     {
         "name": "getSheetSubmissions",
@@ -122,7 +122,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "path": "/submission/exercisesheet/:esid(/)"
+        "path": "/submission/exercisesheet/:esid"
     },
     {
         "name": "getSubmission",
@@ -130,7 +130,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "path": "/submission(/submission)/:suid(/)"
+        "path": "/submission(/submission)/:suid"
     },
     {
         "name": "getCourseSubmissions",
@@ -138,7 +138,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "path": "/submission/course/:courseid(/)"
+        "path": "/submission/course/:courseid"
     },
     {
         "name": "getCourseUserSubmissions",
@@ -146,7 +146,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "path": "/submission/course/:courseid/user/:userid(/)"
+        "path": "/submission/course/:courseid/user/:userid"
     },
     {
         "name": "getSelectedCourseUserSubmissions",
@@ -154,7 +154,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "path": "/submission/course/:courseid/user/:userid/selected(/)"
+        "path": "/submission/course/:courseid/user/:userid/selected"
     },
     {
         "name": "addPlatform",

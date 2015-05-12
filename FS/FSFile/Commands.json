@@ -1,7 +1,7 @@
 [
-    {    "method":"post", "path":"/file(/)" },
-    {    "method":"delete", "path":"/file/:hash(/)" },
-    {    "method":"get", "path":"/file/:hash(/)" },
-    {    "method":"get", "path":"/file/:hash/:filename(/)" }
+    {    "method":"post", "path":"/file" },
+    {    "method":"delete", "path":"/file/:hash" },
+    {    "method":"get", "path":"/file/:hash" },
+    {    "method":"get", "path":"/file/:hash/:filename" }
     
 ]

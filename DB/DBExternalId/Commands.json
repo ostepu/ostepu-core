@@ -4,21 +4,21 @@
         "outputType": "ExternalId",
         "inputType": "ExternalId",
         "method": "PUT",
-        "path": "/externalid(/externalid)/:exid(/)"
+        "path": "/externalid(/externalid)/:exid"
     },
     {
         "name": "deleteExternalId",
         "outputType": "ExternalId",
         "inputType": "",
         "method": "DELETE",
-        "path": "/externalid(/externalid)/:exid(/)"
+        "path": "/externalid(/externalid)/:exid"
     },
     {
         "name": "addExternalId",
         "outputType": "ExternalId",
         "inputType": "ExternalId",
         "method": "POST",
-        "path": "/externalid(/)"
+        "path": "/externalid"
     },
     {
         "name": "getExternalId",
@@ -26,7 +26,7 @@
         "outputType": "ExternalId",
         "inputType": "",
         "method": "GET",
-        "path": "/externalid(/externalid)/:exid(/)"
+        "path": "/externalid(/externalid)/:exid"
     },
     {
         "name": "getAllExternalIds",
@@ -34,7 +34,7 @@
         "outputType": "ExternalId",
         "inputType": "",
         "method": "GET",
-        "path": "/externalid(/externalid)(/)"
+        "path": "/externalid(/externalid)"
     },
     {
         "name": "getCourseExternalIds",
@@ -42,7 +42,7 @@
         "outputType": "ExternalId",
         "inputType": "",
         "method": "GET",
-        "path": "/externalid/course/:courseid(/)"
+        "path": "/externalid/course/:courseid"
     },
     {
         "name": "addPlatform",
