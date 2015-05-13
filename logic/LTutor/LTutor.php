@@ -751,6 +751,8 @@ class LTutor
                     //$row[] = $namesOfExercises[$exerciseId].'/'.($converted ? 'K_' :'').$marking['id'].($fileInfo['extension']!='' ? '.'.$fileInfo['extension']:'');
                     //if (!$converted)
                     if (isset($newFile['displayName'])){
+                        if (isset($marking['submission']['file']['displayName']) && $newFile['displayName'] == $marking['submission']['file']['displayName'])
+                            $newFile['displayName'] = 'K_'.$newFile['displayName'];
                         $row['FILE'] = $namesOfExercises[$exerciseId].'/'.$marking['id'].'/'.$newFile['displayName'];
                     }
 
@@ -843,12 +845,20 @@ class LTutor
                         if (isset($marking['file']['displayName'])){
                             $newfile3 = $marking['file'];
                             $fileInfo = pathinfo($newfile3['displayName']);
+                            
+                            if (isset($newfile['displayName']) && $newfile['displayName'] == $newfile3['displayName'])
+                                $newfile3['displayName'] = 'K_'.$newfile3['displayName'];
+                            
                             //$newfile3['displayName'] = $namesOfExercises[$exerciseId].'/K_'.$marking['id'].($fileInfo['extension']!='' ? '.'.$fileInfo['extension']:'');
                             $newfile3['displayName'] = $namesOfExercises[$exerciseId].'/'.$marking['id'].'/'.$newfile3['displayName'];
                             $filesToZip[] = $newfile3;
                         } elseif (isset($newfile['conv']['displayName'])){
                             $newfile2 = $newfile['conv'];
                             $fileInfo = pathinfo($newfile2['displayName']);
+                            
+                            if (isset($newfile['displayName']) && $newfile['displayName'] == $newfile2['displayName'])
+                                $newfile2['displayName'] = 'K_'.$newfile2['displayName'];
+                            
                             //$newfile2['displayName'] = $namesOfExercises[$exerciseId].'/K_'.$marking['id'].($fileInfo['extension']!='' ? '.'.$fileInfo['extension']:'');
                             $newfile2['displayName'] = $namesOfExercises[$exerciseId].'/'.$marking['id'].'/'.$newfile2['displayName'];
                             $filesToZip[] = $newfile2;

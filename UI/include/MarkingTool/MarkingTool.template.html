@@ -99,7 +99,7 @@ if (isset($GroupNotificationElements)) {
                     <?php } ?>
                         
                     <?php
-                        print '<input class="form-field text-input very-short" name="';
+                        print '<input class="form-field text-input very-short" placeholder="Punkte" name="';
                         print 'exercises[' . $leaderID . '][' . $eid . '][points]" value="';
                         print isset($exercise['submission']['marking']['points']) ? $exercise['submission']['marking']['points'] : '';
                         print '" id="exercisePoints" />';
@@ -146,7 +146,7 @@ if (isset($GroupNotificationElements)) {
                     <?php } ?>  
                     
                     <?php
-                        print '<input class="form-field text-input" name="';
+                        print '<input class="form-field text-input short" placeholder="Ihr Kommentar" name="';
                         print 'exercises[' . $leaderID . '][' . $eid . '][tutorComment]" value="';
                         if (isset($exercise['submission']['marking']['tutorComment'])) print $exercise['submission']['marking']['tutorComment'];
                         print '" id="markingComment" maxlength="255" />';
@@ -206,6 +206,26 @@ if (isset($GroupNotificationElements)) {
                                     print 'Komm.';
                                     print '</a>';
                                 }
+                            }
+                        ?>
+                        
+                        <?php
+                            // print deviation from closing date
+                            if (isset($exercise['submission']['date']) && isset($selectedSheet['endDate']) && $exercise['submission']['date'] > $selectedSheet['endDate']){
+                        ?>
+                            <span class="critical-color footer-text">
+                                <?php
+                                    $datetime1 = new DateTime('@'.$selectedSheet['endDate']);
+                                    $datetime2 = new DateTime('@'.$exercise['submission']['date']);
+                                    $interval = $datetime1->diff($datetime2);
+                                    if ($interval->format("%a")>100){
+                                        echo "> +100d";
+                                    } else {
+                                       echo $interval->format("+%ad %H:%I:%S");
+                                    }
+                                ?>
+                            </span>
+                        <?php
                             }
                         ?>
                                                                         

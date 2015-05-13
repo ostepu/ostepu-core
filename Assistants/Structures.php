@@ -18,6 +18,7 @@ include_once ( dirname( __FILE__ ) . '/Structures/Choice.php' );
 include_once ( dirname( __FILE__ ) . '/Structures/Component.php' );
 include_once ( dirname( __FILE__ ) . '/Structures/Course.php' );
 include_once ( dirname( __FILE__ ) . '/Structures/CourseStatus.php' );
+include_once ( dirname( __FILE__ ) . '/Structures/Csv.php' );
 include_once ( dirname( __FILE__ ) . '/Structures/Exercise.php' );
 include_once ( dirname( __FILE__ ) . '/Structures/ExerciseFileType.php' );
 include_once ( dirname( __FILE__ ) . '/Structures/ExerciseSheet.php' );

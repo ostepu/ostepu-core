@@ -361,13 +361,69 @@ class Installation
         return $res;
     }
     
+    public static function installiereVeranstaltungen($data, &$fail, &$errno, &$error)
+    {
+        $res = array();
+    
+        if (!$fail){
+            // die /course Befehle der LCourse auslösen
+            
+            // alle Veranstaltungen abrufen
+            $multiRequestHandle = new Request_MultiRequest();
+            $handler = Request_CreateRequest::createGet($data['PL']['url'].'/DB/DBCourse/course',array(),'');
+            $multiRequestHandle->addRequest($handler);            
+            $result = $multiRequestHandle->run();
+            if (isset($result[0]['content']) && isset($result[0]['status']) && $result[0]['status'] === 200){
+                // /course ausloesen
+                $courses = Course::decodeCourse($result[0]['content']);
+                if (!is_array($courses)) $courses = array($courses);
+                
+                $multiRequestHandle = new Request_MultiRequest();
+                foreach($courses as $course){
+                    $handler = Request_CreateRequest::createPost($data['PL']['url'].'/logic/LCourse/course',array(),Course::encodeCourse($course));
+                    $multiRequestHandle->addRequest($handler);   
+                }        
+                $answer = $multiRequestHandle->run();
+                //var_dump($courses);
+                
+                $i=0;
+                foreach($courses as $course){            
+                    $result = $answer[$i];
+                    $res[$course->getId()] = array();
+                        $res[$course->getId()]['course'] = $course;
+                    if (isset($result['content']) && isset($result['status']) && $result['status'] === 201){
+                        $res[$course->getId()]['status'] = 201;
+                    } else {
+                        $res[$course->getId()]['status'] = 409;
+                        $fail = true;
+                        if (isset($result['status'])){
+                            $errno = $result['status'];
+                            $res[$course->getId()]['status'] = $result['status'];
+                        }
+                    }
+                    $i++;
+                    if ($i>=count($result)) break;
+                }
+                
+            } else {
+                $fail = true;
+                $error = "GET /DB/DBCourse/course konnte nicht aufgerufen werden oder es gibt keine Veranstaltungen.";
+                if (isset($result[0]['status'])){
+                    $errno = $result[0]['status'];
+                }
+            }
+        }
+        
+        return $res;
+    }
+    
     public static function installierePlattform($data, &$fail, &$errno, &$error)
     {
         $res = array();
     
         if (!$fail){
             // die /platform Befehle auslösen
-            $list = array('DB/DBApprovalCondition','DB/DBAttachment','DB/DBCourse','DB/DBCourseStatus','DB/DBExercise','DB/DBExerciseFileType','DB/DBExerciseSheet','DB/DBExerciseType','DB/DBExternalId','DB/DBFile','DB/DBGroup','DB/DBInvitation','DB/DBMarking','DB/DBSelectedSubmission','DB/DBSession','DB/DBSubmission','DB/DBUser','FS/FSFile','FS/FSPdf','FS/FSZip','FS/FSBinder','logic/LTutor');
+            $list = array('DB/DBApprovalCondition','DB/DBAttachment','DB/DBCourse','DB/DBCourseStatus','DB/DBExercise','DB/DBExerciseFileType','DB/DBExerciseSheet','DB/DBExerciseType','DB/DBExternalId','DB/DBFile','DB/DBGroup','DB/DBInvitation','DB/DBMarking','DB/DBSelectedSubmission','DB/DBSession','DB/DBSubmission','DB/DBUser','FS/FSFile','FS/FSCsv','FS/FSPdf','FS/FSZip','FS/FSBinder','logic/LTutor');
             
             $platform = Installation::PlattformZusammenstellen($data);
             

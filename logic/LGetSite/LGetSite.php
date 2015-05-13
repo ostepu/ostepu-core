@@ -1221,6 +1221,8 @@ class LGetSite
         $selectedSubmissionsCount = null;
         foreach($selectedSubs as $subs){
             $key = $subs['exerciseSheetId'];
+            $eid = $subs['exerciseId'];
+            $userId = $subs['leaderId'];
             if (!isset($selectedSubmissionsCount[$key]))
                 $selectedSubmissionsCount[$key] = array();
                 
@@ -1228,6 +1230,16 @@ class LGetSite
                 $selectedSubmissionsCount[$key]['selected']=1;
             } else {
                 $selectedSubmissionsCount[$key]['selected']+=1;
+            }
+            
+            if (!isset($selectedSubmissionsCount[$key]['submissionsCount']))
+                $selectedSubmissionsCount[$key]['submissionsCount'] = array();
+            
+            if (!isset($selectedSubmissionsCount[$key]['submissionsCount'][$eid]))
+                $selectedSubmissionsCount[$key]['submissionsCount'][$eid] = array();
+                        
+            if (!isset($selectedSubmissionsCount[$key]['submissionsCount'][$eid][$userId])){
+                $selectedSubmissionsCount[$key]['submissionsCount'][$eid][] = $userId;
             }
         }
         unset($selectedSubs);
@@ -1299,6 +1311,7 @@ class LGetSite
 
                 // adds counts for the additional information in the footer
                 $sheet['courseUserCount'] = count($courseUser);
+                $sheet['submissionStats'] = (isset($selectedSubmissionsCount[$sheet['id']]['submissionsCount']) ? $selectedSubmissionsCount[$sheet['id']]['submissionsCount'] : null);
                 $sheet['selectedSubmissions'] = (isset($selectedSubmissionsCount[$sheet['id']]['selected']) ? $selectedSubmissionsCount[$sheet['id']]['selected'] : 0);
                 $sheet['tutorMarkings'] = (isset($selectedSubmissionsCount[$sheet['id']]['tutorMarkings']) ? $selectedSubmissionsCount[$sheet['id']]['tutorMarkings'] : 0);
                 
@@ -1343,39 +1356,68 @@ class LGetSite
         $URL = "{$this->_getGroup->getAddress()}/group/user/{$userid}/exercisesheet/{$sheetid}";
         $answer = Request::custom('GET', $URL, array(), '');
         $group = json_decode($answer['content'], true);
+        unset($answer);
 
         //Get the maximum Groupsize of the sheet
         $URL = "{$this->lURL}/exercisesheet/exercisesheet/{$sheetid}/exercise";
         $answer = Request::custom('GET', $URL, array(), '');
         $sheet = json_decode($answer['content'], true);
+        unset($answer);
 
         $exercises = &$sheet['exercises'];
+        
+        // compute the group from sheet before
+        $URL = "{$this->lURL}/exercisesheet/course/{$courseid}";
+        $answer = Request::custom('GET', $URL, array(), '');
+        $courseSheets = json_decode($answer['content'], true);
+        unset($answer);
+        
+        $lastSheet = null;
+        foreach ($courseSheets as $key => $sh){
+            if ($sheet['id'] == $sh['id']){
+                if (isset($courseSheets[$key+1]))
+                    $lastSheet = $courseSheets[$key+1];
+                break;
+            }
+        }
+        unset($courseSheets);
+        
+        $lastGroup = null;
+        if ($lastSheet !== null && isset($lastSheet['id'])){
+            $URL = "{$this->_getGroup->getAddress()}/group/user/{$userid}/exercisesheet/{$lastSheet['id']}";
+            $answer = Request::custom('GET', $URL, array(), '');
+            $lastGroup = json_decode($answer['content'], true);
+            unset($answer);
+        }
 
         $URL = "{$this->_getSubmission->getAddress()}/submission/group/user/{$userid}/exercisesheet/{$sheetid}";
         $answer = Request::custom('GET', $URL, array(), '');
         $submissions = json_decode($answer['content'], true);
+        unset($answer);
 
         $URL = "{$this->_getInvitation->getAddress()}/invitation/leader/exercisesheet/{$sheetid}/user/{$userid}";
         $answer = Request::custom('GET', $URL, array(), '');
         $invited = json_decode($answer['content'], true);
+        unset($answer);
 //var_dump($invited);
         $URL = "{$this->_getInvitation->getAddress()}/invitation/member/exercisesheet/{$sheetid}/user/{$userid}";
         $answer = Request::custom('GET', $URL, array(), '');
         $invitations = json_decode($answer['content'], true);
+        unset($answer);
 ///var_dump($invitations);
-        // oder users by id
+        // order users by id
         $usersById = array();
         $leaderId = $group['leader']['id'];
         $usersById[$leaderId] = &$group['leader'];
         foreach ($group['members'] as &$member) {
-            $userId = $member['id'];
-            $usersById[$userId] = &$member;
+            $uId = $member['id'];
+            $usersById[$uId] = &$member;
         }
 
         // order submissions by exercise and user, only take latest
         $exerciseUserSubmissions = array();
         foreach ($submissions as $submission) {
-            $userId = $submission['studentId'];
+            $uId = $submission['studentId'];
             $exerciseId = $submission['exerciseId'];
             
             if (isset($submission['flag']) && $submission['flag']==1){
@@ -1383,21 +1425,21 @@ class LGetSite
                     $exerciseUserSubmissions[$exerciseId] = array();
                 }
 
-                if (isset($exerciseUserSubmissions[$exerciseId][$userId]) == false) {
-                    $user = &$usersById[$userId];
+                if (isset($exerciseUserSubmissions[$exerciseId][$uId]) == false) {
+                    $user = &$usersById[$uId];
                     $userSubmission = array('user' => $user,
                                             'submission' => $submission);
-                    $exerciseUserSubmissions[$exerciseId][$userId] = $userSubmission;
+                    $exerciseUserSubmissions[$exerciseId][$uId] = $userSubmission;
                 } else {
-                    $lastUserSubmission = $exerciseUserSubmissions[$exerciseId][$userId];
+                    $lastUserSubmission = $exerciseUserSubmissions[$exerciseId][$uId];
                     if ($lastUserSubmission['submission']['date'] < $submission['date']) {
 
                         // smaller date means less seconds since refrence date
                         // so $lastSubmission is older
-                        $user = &$usersById[$userId];
+                        $user = &$usersById[$uId];
                         $userSubmission = array('user' => $user,
                                                 'submission' => $submission);
-                        $exerciseUserSubmissions[$exerciseId][$userId] = $userSubmission;
+                        $exerciseUserSubmissions[$exerciseId][$uId] = $userSubmission;
                     }
                 }
             }
@@ -1425,6 +1467,18 @@ class LGetSite
         $response['exerciseSheet'] = $sheet;
         $response['group'] = $group;
         $response['groupSize'] = $sheet['groupSize'];
+        $response['lastGroup'] = $lastGroup;
+        $response['allowApplyGroup'] = 0;
+        if ((!isset($group['members']) || count($group['members'])==0) 
+                && $lastGroup !== null 
+                && $sheet['groupSize'] >= $lastSheet['groupSize'] 
+                && $lastGroup['leader']['id'] == $userid 
+                && isset($lastGroup['members']) 
+                && count($lastGroup['members']) >0 
+                && count($invited)==0 
+                && count($invitations)==0){
+            $response['allowApplyGroup']=1;
+        }
 
         $this->flag = 1;
         $response['user'] = $this->userWithCourse($userid, $courseid);

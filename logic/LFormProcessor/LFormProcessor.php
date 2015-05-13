@@ -12,7 +12,6 @@ include_once dirname(__FILE__) . '/../../Assistants/CConfig.php';
 include_once dirname(__FILE__) . '/../../Assistants/DBJson.php';
 include_once dirname(__FILE__) . '/../../Assistants/Structures.php';
 include_once dirname(__FILE__) . '/../../Assistants/DefaultNormalizer.php';
-include_once dirname(__FILE__) . '/../../Assistants/LArraySorter.php';
 
 \Slim\Slim::registerAutoloader();
 
@@ -313,8 +312,6 @@ class LFormProcessor
         $body = $this->app->request->getBody();
         $process = Process::decodeProcess($body);
         
-        $markingStatus = Marking::getStatusDefinition();
-        
         // always been an array
         $arr = true;
         if ( !is_array( $process ) ){
@@ -461,31 +458,39 @@ class LFormProcessor
                                     $answer2.= $chosen->getText().'<br>';
                         
                             $Text=  "<h1>AUFGABE {$exerciseName}</h1>".
-                                    "<hr>".
-                                    "<p>".
-                                    "<h2>Aufgabenstellung:</h2>".
-                                    $forms->getTask().
-                                    "</p>".
-                                    "<p>".
+                                    "<hr>";
+                                    
+                            if ($forms->getTask()!==null && trim($forms->getTask()) != ''){
+                                $Text.= "<p>".
+                                        "<h2>Aufgabenstellung:</h2>".
+                                        $forms->getTask().
+                                        "</p>";
+                            }
+                                    
+                            $Text.= "<p>".
                                     "<h2>Antwort:</h2>".
                                     "<span style=\"color: ".($points===0 ? 'red' : 'black')."\">".
                                     $answer.
                                     "</span></p>";
+
                             if ($points===0){
                                 $Text.= "<p>".
                                         "<h2>L&ouml;sung:</h2><span style=\"color: green\">".
                                         $answer2.
                                         "</span></p>";
                             }
-                                    
-                            $Text.= "<p>".
-                                    "<h2>L&ouml;sungsbegr&uuml;ndung:</h2>".
-                                    $forms->getSolution().
-                                    "</p>".
-                                    "<p style=\"text-align: center;\">".
+                            
+                            if ($forms->getSolution()!==null && trim($forms->getSolution()) != ''){
+                                $Text.= "<p>".
+                                        "<h2>L&ouml;sungsbegr&uuml;ndung:</h2>".
+                                        $forms->getSolution().
+                                        "</p>";
+                            }
+                            
+                            $Text.= "<p style=\"text-align: center;\">".
                                     "<h2><span style=\"color: red\">{$points}P</span></h2>".
                                     "</p>";
-                                    
+                            
                             $pdf = Pdf::createPdf($Text);
 //echo Pdf::encodePdf($pdf);return;
                             $result = Request::routeRequest( 
@@ -521,7 +526,7 @@ class LFormProcessor
                                                                  null,
                                                                  null,
                                                                  null,
-                                                                 $markingStatus[LArraySorter::multidimensional_search($markingStatus, array('id'=>3))]['longName'],
+                                                                 3,
                                                                  $points,
                                                                  ($submission->getDate()!==null ? $submission->getDate() : time())
                                                                  );

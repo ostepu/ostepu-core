@@ -213,8 +213,68 @@ if (isset($_POST['action'])) {
         }
     }
 
+    // apply last group
+    if ($_POST['action'] == "InviteGroup" && isset($_POST['applyGroup'])) {
+        $RequestError = false;
+        
+        if (isset($_POST['members'])) {
+            // invite old members
+            foreach ($_POST['members'] as $member){
+                $newInvitation = Invitation::encodeInvitation(Invitation::createInvitation($uid, $member, $sid));
+                $URI = $databaseURI . "/invitation";
+                http_post_data($URI, $newInvitation, true, $message);
+
+                if ($message != "201") {
+                    $RequestError=true;
+                }
+            }
+            if (!$RequestError){
+                $notifications[] = MakeNotification("success", "Gruppenmitglieder wurden eingeladen!");
+                // accept invitations
+                foreach ($_POST['members'] as $member){
+                    
+                    // adds the user to the group
+                    $newGroupSettings = Group::encodeGroup(Group::createGroup($uid, $member, $sid));
+                    $URI = $databaseURI . "/group/user/{$member}/exercisesheet/{$sid}";
+                    $answ = http_put_data($URI, $newGroupSettings, true, $message);
+                    if ($message != "201") {
+                        $RequestError = true;
+                        continue;
+                    }
+                    
+                    // deletes the invitation
+                    $URI = $databaseURI . "/invitation/user/{$uid}/exercisesheet/{$sid}/user/{$member}";
+                    http_delete($URI, true, $message);
+
+                    if ($message != "201") {
+                        $RequestError = true;
+                        continue;
+                    }
+
+                    // deletes all selectedSubmissions
+                    if (!removeSelectedSubmission($member, $sid)) {
+                        $RequestError = true;
+                        continue;
+                    }
+                }
+                
+                if (!$RequestError){
+                    $notifications[] = MakeNotification("success", "Gruppenmitglieder sind beigetreten!");
+                } else {
+                    $notifications[] = MakeNotification("error", "Mindestens ein Nutzer konnte der Gruppe nicht beitreten!");
+                }
+        
+            } else {
+               $notifications[] = MakeNotification("error", "Mindestens ein Nutzer konnte nicht eingeladen werden!");
+            }
+        } else {
+            $notifications[] = MakeNotification("error", "Beim übernehmen der Gruppe ist ein Fehler aufgetreten!");
+            $RequestError = true;
+        }
+    }
+    
     // invites users to the group
-    if ($_POST['action'] == "InviteGroup") {
+    if ($_POST['action'] == "InviteGroup" && !isset($_POST['applyGroup'])) {
         if (isset($_POST['userName'])) {
             foreach ($_POST['userName'] as $key => $memberName) {
                 

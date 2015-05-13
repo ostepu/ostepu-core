@@ -275,23 +275,12 @@ class Course extends Object implements JsonSerializable
 
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
-                if ( $key == 'exerciseSheets' ){
-                    $this->{
-                        $key
-                        
-                    } = ExerciseSheet::decodeExerciseSheet( 
-                                                           $value,
-                                                           false
-                                                           );
-                    
-                } else {
-                    $func = 'set' . strtoupper($key[0]).substr($key,1);
-                    $methodVariable = array($this, $func);
-                    if (is_callable($methodVariable)){
-                        $this->$func($value);
-                    } else
-                        $this->{$key} = $value;
-                }
+                $func = 'set' . strtoupper($key[0]).substr($key,1);
+                $methodVariable = array($this, $func);
+                if (is_callable($methodVariable)){
+                    $this->$func($value);
+                } else
+                    $this->{$key} = $value;
             }
         }
     }

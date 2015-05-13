@@ -219,7 +219,7 @@
                                 Gruppe verwalten
                             </a>
                         </li>-->
-                    <?php } else { ?>
+                    <?php } elseif(isset($sheet['groupSize']) && $sheet['groupSize']>1) { ?>
                         <li>
                             <a class="text-button" href="Group.php?sid=<?php echo $sheet['id'], '&cid=', $cid; ?>">
                                 Gruppe verwalten
@@ -236,7 +236,7 @@
                         </li>
                     <?php } else { ?>
                         <li>
-                            <a class="text-button" href="Upload.php?cid=<?php echo $cid; ?>&sid=<?php echo $sheet['id']; ?>" title="Upload">
+                            <a class="text-button bold" href="Upload.php?cid=<?php echo $cid; ?>&sid=<?php echo $sheet['id']; ?>" title="Upload">
                                 Aufgaben hochladen
                             </a>
                         </li>

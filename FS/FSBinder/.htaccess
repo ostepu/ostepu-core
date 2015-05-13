@@ -1,6 +1,6 @@
 RewriteEngine On
 RewriteCond %{HTTP_HOST} !^localhost$
 RewriteCond %{REQUEST_METHOD} !^GET$ [OR]
-RewriteCond %{THE_REQUEST} !(.)*\/FSBinder\/(file|zip|pdf)\/([0-9,a-f])\/([0-9,a-f])\/([0-9,a-f])\/([0-9,a-f])+\/(.+)\.(.+)
+RewriteCond %{THE_REQUEST} !(.)*\/FSBinder\/(file|zip|pdf|csv)\/([0-9,a-f])\/([0-9,a-f])\/([0-9,a-f])\/([0-9,a-f])+\/(.+)\.(.+)
 RewriteRule ^ - [F]
 RewriteRule ^ index.php [QSA,L]

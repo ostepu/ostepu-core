@@ -365,9 +365,9 @@ class LFormPredecessor
                                     
                                     switch($param){
                                         case('isnumeric'):
-                                            if (!@preg_match("%^-?([0-9])+([\.|,]([0-9])+)?$%",DefaultNormalizer::normalizeText($choice->getText()))){
+                                            if (!@preg_match("%^-?([0-9])+([,]([0-9])+)?$%",DefaultNormalizer::normalizeText($choice->getText()))){
                                                 $fail = true;
-                                                $pro->addMessage('"'.$choice->getText().'" ist keine gültige Zahl.');
+                                                $pro->addMessage('"'.$choice->getText().'" ist keine gültige Zahl. <br>Bsp.: 0,00');
                                             }
                                             break;
                                         case('isdigit'):
@@ -450,12 +450,16 @@ class LFormPredecessor
                                     $answer.= $this->ChoiceIdToText(DBJson::mysql_real_escape_string($chosen->getText()), $forms->getChoices()).'<br>';
                         
                             $Text =  "<h1>AUFGABE {$exerciseName}</h1>".
-                                    "<hr>".
-                                    "<p>".
-                                    "<h2>Aufgabenstellung:</h2>".
-                                    $forms->getTask().
-                                    "</p>".
-                                    "<p>".
+                                    "<hr>";
+                                    
+                            if ($forms->getTask()!==null && trim($forms->getTask()) != ''){
+                                $Text.= "<p>".
+                                        "<h2>Aufgabenstellung:</h2>".
+                                        $forms->getTask().
+                                        "</p>";
+                            }
+                                    
+                            $Text.= "<p>".
                                     "<h2>Antwort:</h2>".
                                     $answer.
                                     "</p>";
