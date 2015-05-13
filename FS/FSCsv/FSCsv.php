@@ -623,7 +623,7 @@ class FSCsv
         
         $tempDir = $this->tempdir($this->config['DIR']['temp'], 'createCSV', $mode=0775);
         $path = $tempDir.'/maxmemory';
-        $csv = fopen($path.':'. (5*1024*1024), 'w+');
+        $csv = fopen($path, 'w+');
 
         foreach($data->getRows() as $row){
             fputcsv($csv, $row, ';','"');
