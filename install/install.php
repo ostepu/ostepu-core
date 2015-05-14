@@ -134,18 +134,31 @@ class Installer
         echo json_encode(Installer::checkModules(null,$dat,$dat,$dat));
     }
     
-    public function CallInstall($simple = false)
+    public function CallInstall($console = false)
     {
     
         $output = array();
         $installFail = false;
+        $simple=false;
+        
         if (isset($_POST['data']))
             $data = $_POST['data'];
+        
+        if (isset($_POST['simple']))
+            $simple=true;
 
         Variablen::Initialisieren($data);
         $data['P']['masterPassword'] = (isset($data['P']['masterPassword']) ? $data['P']['masterPassword'] : '');
-
-        if (isset($_POST['actionInstall'])) $_POST['action'] = 'install';
+        
+        if (isset($_POST['update'])) 
+            $_POST['action'] = 'update';
+        
+        if (isset($_POST['actionInstall'])) 
+            $_POST['action'] = 'install';
+        
+        if (isset($_POST['actionUpdate'])) 
+            $_POST['action'] = 'update';
+        
         if (!isset($data['PL']['language']))
             $data['PL']['language'] = 'de';
             
@@ -212,83 +225,106 @@ class Installer
         Einstellungen::ladeEinstellungen($server,$data);
         Variablen::Einsetzen($data);
         
+        if ($console)
+            $data['ZV']['zv_type'] = 'local';
+        
         if ($simple)
             $data['ZV']['zv_type'] = 'local';
-
+        
+        if (isset($_POST['action']))
+            $data['action'] = $_POST['action'];
+        
+        $p = dirname(__FILE__) . '/segments';
+        Einstellungen::generatepath($p);
+        if ($handle = opendir($p)) {
+            $segs = array();
+            while (false !== ($file = @readdir($handle))) {
+                if ($file=='.' || $file=='..') continue;
+                $segs[] = $file;
+            }
+            foreach($segs as $seg)
+                include dirname(__FILE__) . '/segments/'.$seg;
+            @closedir($handle);
+        }
+            
+        
         $fail = false;
         $errno = null;
         $error = null;
         
+        if ($simple)
+            $selected_menu = -1;
+        
         $modules = array();
-        if ($selected_menu === 0 || ($simple && isset($_POST['actionCheckModules']))){
+        if ((isset($_POST['action']) && ($_POST['action'] === 'install' || $_POST['action'] === 'update')) || $selected_menu === 0 || ($console && isset($_POST['actionCheckModules']))){
             // check if apache modules are existing
             $modules = Zugang::Ermitteln('actionCheckModules','Installer::callCheckModules',$data, $fail, $errno, $error);
-            
-            if ($simple)
+
+            if ($console && !$simple)
                 $output['actionCheckModules'] = $modules;
         }
         
         $extensions = array();
-        if ($selected_menu === 0 || ($simple && isset($_POST['actionCheckExtensions']))){
+        if ((isset($_POST['action']) && ($_POST['action'] === 'install' || $_POST['action'] === 'update')) || $selected_menu === 0 || ($console && isset($_POST['actionCheckExtensions']))){
             // check if php extensions are existing
             $extensions = Zugang::Ermitteln('actionCheckExtensions','Installer::checkExtensions',$data, $fail, $errno, $error);
-            
-            if ($simple)
+            $installFail = $fail;
+            if ($console && !$simple)
                 $output['actionCheckExtensions'] = $extensions;
         }
 
+        // install UI conf file
+        $installUiFile = false;
+        if (((isset($_POST['action']) && ($_POST['action'] === 'install' || $_POST['action'] === 'update')) || isset($_POST['actionInstallUIConf'])) && !$installFail && isset($data['UI']['conf']) && $data['UI']['conf']!==''){
+            $installUiFile = true;
+            Zugang::Ermitteln('actionInstallUIConf','Installation::installiereUIKonfigurationsdatei',$data, $fail, $errno, $error);
+            $installFail = $fail;
+            if ($console && !$simple){
+                $result = array();
+                $result['fail'] = $fail;
+                $result['errno'] = $errno;
+                $result['error'] = $error;
+                $output['actionInstallUIConf'] = $result;
+            }
+        }
+        
+        // install DB operator
+        $installDBOperator = false;
+        if (((isset($_POST['action']) && ($_POST['action'] === 'install' || $_POST['action'] === 'update')) || isset($_POST['actionInstallDBOperator'])) && !$installFail){
+            $installDBOperator = true;
+            Zugang::Ermitteln('actionInstallDBOperator','Installation::installiereDBOperator',$data, $fail, $errno, $error);
+            $installFail = $fail;
+            if ($console && !$simple){
+                $result = array();
+                $result['fail'] = $fail;
+                $result['errno'] = $errno;
+                $result['error'] = $error;
+                $output['actionInstallDBOperator'] = $result;
+            }
+        }
+        
         // install init
         $installInit = false;
         $installInitResult = array();
-        if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInstallInit'])) && !$installFail){
+        if (((isset($_POST['action']) && ($_POST['action'] === 'install' || $_POST['action'] === 'update')) || isset($_POST['actionInstallInit'])) && !$installFail){
             $installInit = true;
             $installInitResult = Zugang::Ermitteln('actionInstallInit','Installation::installiereInit',$data, $fail, $errno, $error);
-            
-            if ($simple){
+            $installFail = $fail;
+            if ($console && !$simple){
                 $installInitResult['fail'] = $fail;
                 $installInitResult['errno'] = $errno;
                 $installInitResult['error'] = $error;
                 $output['actionInstallInit'] = $installInitResult;
             }
         }
-        
-        // install platform
-        $installPlatform = false;
-        $installPlatformResult = array();
-        if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInstallPlatform'])) && !$installFail){
-            $installPlatform = true;
-            $installPlatformResult = Zugang::Ermitteln('actionInstallPlatform','Installation::installierePlattform',$data, $fail, $errno, $error);
-            
-            if ($simple){
-                $installPlatformResult['fail'] = $fail;
-                $installPlatformResult['errno'] = $errno;
-                $installPlatformResult['error'] = $error;
-                $output['actionInstallPlatform'] = $installPlatformResult;
-            }
-        }
-        
-        // install courses
-        $installCourses = false;
-        $installCoursesResult = array();
-        if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInstallCourses'])) && !$installFail){
-            $installCourses = true;
-            $installCoursesResult = Zugang::Ermitteln('actionInstallCourses','Installation::installiereVeranstaltungen',$data, $fail, $errno, $error);
-            
-            if ($simple){
-                $installCoursesResult['fail'] = $fail;
-                $installCoursesResult['errno'] = $errno;
-                $installCoursesResult['error'] = $error;
-                $output['actionInstallPlatform'] = $installCoursesResult;
-            }
-        }
-
+          
         // install components file
         $installComponentFile = false;
-        if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInstallComponents'])) && !$installFail){
+        if (isset($_POST['actionInstallComponents']) && !$installFail){
             $installComponentFile = true;
             Zugang::Ermitteln('actionInstallComponents','Installation::installiereKomponentendatei',$data, $fail, $errno, $error);
-
-            if ($simple){
+            $installFail = $fail;
+            if ($console && !$simple){
                 $result = array();
                 $result['fail'] = $fail;
                 $result['errno'] = $errno;
@@ -300,11 +336,12 @@ class Installer
         // install component definitions
         $installComponentDefs = false;
         $installComponentDefsResult = array();
-        if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInstallComponentDefs'])) && !$installFail){
+        if (((isset($_POST['action']) && ($_POST['action'] === 'install' || $_POST['action'] === 'update')) || isset($_POST['actionInstallComponentDefs'])) && !$installFail){
             $installComponentDefs = true;
             
-            if ($simple){
+            if ($console && !$simple){
                 $installComponentDefsResult = Zugang::Ermitteln('actionInstallComponentDefs','Installation::installiereKomponentenDefinitionen',$data, $fail, $errno, $error);
+                $installFail = $fail;
                 $result['fail'] = $fail;
                 $result['errno'] = $errno;
                 $result['error'] = $error;
@@ -503,62 +540,47 @@ class Installer
                 DBRequest::request2($sql, false, $data, true);
                 $installComponentDefsResult['components'] = $ComponentListInput;
             }
+            $installFail = $fail;
         }
-        
-        // install UI conf file
-        $installUiFile = false;
-        if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInstallUIConf'])) && !$installFail && isset($data['UI']['conf']) && $data['UI']['conf']!==''){
-            $installUiFile = true;
-            Zugang::Ermitteln('actionInstallUIConf','Installation::installiereUIKonfigurationsdatei',$data, $fail, $errno, $error);
 
-            if ($simple){
-                $result = array();
-                $result['fail'] = $fail;
-                $result['errno'] = $errno;
-                $result['error'] = $error;
-                $output['actionInstallUIConf'] = $result;
-            }
-        }
-        
-        // install DB operator
-        $installDBOperator = false;
-        if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInstallDBOperator'])) && !$installFail){
-            $installDBOperator = true;
-            Zugang::Ermitteln('actionInstallDBOperator','Installation::installiereDBOperator',$data, $fail, $errno, $error);
-            
-            if ($simple){
-                $result = array();
-                $result['fail'] = $fail;
-                $result['errno'] = $errno;
-                $result['error'] = $error;
-                $output['actionInstallDBOperator'] = $result;
-            }
-        }
-        
         // install plugins
         $installPlugins = false;
         $installPluginsResult = array();
-        if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInstallPlugins'])) && !$installFail){
+        if (((isset($_POST['action']) && ($_POST['action'] === 'install' || $_POST['action'] === 'update')) || isset($_POST['actionInstallPlugins'])) && !$installFail){
             $installPlugins = true;
             $installPluginsResult = Installation::initialisierePlugins($data, $fail, $errno, $error);
+            $installFail = $fail;
+            if ($console && !$simple){
+                $componentsResult['fail'] = $fail;
+                $componentsResult['errno'] = $errno;
+                $componentsResult['error'] = $error;
+                $output['actionInstallPlugins'] = $installPluginsResult;
+            }
         }
         
         // uninstall plugins
         $uninstallPlugins = false;
         $uninstallPluginsResult = array();
-        if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionUninstallPlugins'])) && !$installFail){
+        if (((isset($_POST['action']) && ($_POST['action'] === 'install' || $_POST['action'] === 'update')) || isset($_POST['actionUninstallPlugins'])) && !$installFail){
             $uninstallPlugins = true;
             $uninstallPluginsResult = Installation::deinitialisierePlugins($data, $fail, $errno, $error);
+            $installFail = $fail;
+            if ($console && !$simple){
+                $componentsResult['fail'] = $fail;
+                $componentsResult['errno'] = $errno;
+                $componentsResult['error'] = $error;
+                $output['actionUninstallPlugins'] = $uninstallPluginsResult;
+            }
         }
         
         // init components
         $initComponents = false;
         $componentsResult = array();
-        if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInitComponents'])) && !$installFail && isset($data['PL']['init']) && $data['PL']['init']!==''){
+        if (((isset($_POST['action']) && ($_POST['action'] === 'install' || $_POST['action'] === 'update')) || isset($_POST['actionInitComponents'])) && !$installFail && isset($data['PL']['init']) && $data['PL']['init']!==''){
             $initComponents = true;
             $componentsResult = Zugang::Ermitteln('actionInitComponents','Installation::initialisiereKomponenten',$data, $fail, $errno, $error);
-            
-            if ($simple){
+            $installFail = $fail;
+            if ($console && !$simple){
                 $componentsResult['fail'] = $fail;
                 $componentsResult['errno'] = $errno;
                 $componentsResult['error'] = $error;
@@ -566,13 +588,43 @@ class Installer
             }
         }
         
+        // install platform
+        $installPlatform = false;
+        $installPlatformResult = array();
+        if (((isset($_POST['action']) && ($_POST['action'] === 'install' || $_POST['action'] === 'update')) || isset($_POST['actionInstallPlatform'])) && !$installFail){
+            $installPlatform = true;
+            $installPlatformResult = Zugang::Ermitteln('actionInstallPlatform','Installation::installierePlattform',$data, $fail, $errno, $error);
+            $installFail = $fail;
+            if ($console && !$simple){
+                $installPlatformResult['fail'] = $fail;
+                $installPlatformResult['errno'] = $errno;
+                $installPlatformResult['error'] = $error;
+                $output['actionInstallPlatform'] = $installPlatformResult;
+            }
+        }
+        
+        // install courses
+        $installCourses = false;
+        $installCoursesResult = array();
+        if (((isset($_POST['action']) && ($_POST['action'] === 'install' || $_POST['action'] === 'update')) || isset($_POST['actionInstallCourses'])) && !$installFail){
+            $installCourses = true;
+            $installCoursesResult = Zugang::Ermitteln('actionInstallCourses','Installation::installiereVeranstaltungen',$data, $fail, $errno, $error);
+            $installFail = $fail;
+            if ($console && !$simple){
+                $installCoursesResult['fail'] = $fail;
+                $installCoursesResult['errno'] = $errno;
+                $installCoursesResult['error'] = $error;
+                $output['actionInstallPlatform'] = $installCoursesResult;
+            }
+        }
+
         // install super admin
         $installSuperAdmin = false;
-        if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionInstallSuperAdmin'])) && !$installFail){
+        if (isset($_POST['actionInstallSuperAdmin']) && !$installFail){
             $installSuperAdmin = true;
             Zugang::Ermitteln('actionInstallSuperAdmin','Installation::installiereSuperAdmin',$data, $fail, $errno, $error);
-            
-            if ($simple){
+            $installFail = $fail;
+            if ($console && !$simple){
                 $result = array();
                 $result['fail'] = $fail;
                 $result['errno'] = $errno;
@@ -582,15 +634,15 @@ class Installer
         }
         
         $installedPlugins = array();
-        if ($selected_menu === 6 || ($simple && isset($_POST['actionCheckPlugins']))){
+        if ($selected_menu === 6 || ($console && isset($_POST['actionCheckPlugins']))){
             // check installed plugins
             $installedPlugins = Zugang::Ermitteln('actionCheckPlugins','Installation::checkPlugins',$data, $fail, $errno, $error);
-            
-            if ($simple)
+            $installFail = $fail;
+            if ($console)
                 $output['actionCheckPlugins'] = $installedPlugins;
         }
         
-        if (!$simple){
+        if (!$console && !$simple){
             // select language - german
             if (isset($_POST['actionSelectGerman']) || isset($_POST['actionSelectGerman_x'])){
                 $data['PL']['language'] = 'de';
@@ -623,14 +675,14 @@ class Installer
             
             echo "<tr><th height='10'></th></tr>";
             echo "<tr><td class='v'>".Design::erstelleSubmitButtonFlach('actionAddServer','OK',Sprachen::Get('main','addServer'))."</td></tr>";
-            echo Design::erstelleVersteckteEingabezeile($simple, $selected_server, 'selected_server', null);
+            echo Design::erstelleVersteckteEingabezeile($console, $selected_server, 'selected_server', null);
             
             // master-Passwort abfragen
             echo "<tr><th height='10'></th></tr>";
 
 
             echo "<tr><td class='e'>".Sprachen::Get('main','masterPassword')."</td></tr>";
-            echo "<tr><td class='v'>".Design::erstellePasswortzeile($simple, $data['P']['masterPassword'], 'data[P][masterPassword]', $data['P']['masterPassword'])."</td></tr>";
+            echo "<tr><td class='v'>".Design::erstellePasswortzeile($console, $data['P']['masterPassword'], 'data[P][masterPassword]', $data['P']['masterPassword'])."</td></tr>";
             echo "</table>";
 
             echo "</div";
@@ -658,59 +710,66 @@ class Installer
         }
         
         #region Sprachwahl
-        if (!$simple){
+        if (!$console && !$simple){
             echo "<input type='hidden' name='data[PL][language]' value='{$data['PL']['language']}'>";
             echo "<div align='center'>".Design::erstelleSubmitButtonGrafisch('actionSelectGerman', './images/de.gif', 32 , 22).Design::erstelleSubmitButtonGrafisch('actionSelectEnglish', './images/en.gif', 32 , 22)."</div>";
         }
         #endregion Sprachwahl
 
         if (file_exists(dirname(__FILE__) . '/segments/Zugang_ausgeben.php'))
-            require_once dirname(__FILE__) . '/segments/Zugang_ausgeben.php';
+            include dirname(__FILE__) . '/segments/Zugang_ausgeben.php';
          
         if (file_exists(dirname(__FILE__) . '/segments/Modulpruefung_ausgeben.php'))
-        require_once dirname(__FILE__) . '/segments/Modulpruefung_ausgeben.php';
+            include dirname(__FILE__) . '/segments/Modulpruefung_ausgeben.php';
          
         if (file_exists(dirname(__FILE__) . '/segments/Pruefung_der_Erweiterungen_ausgeben.php'))
-        require_once dirname(__FILE__) . '/segments/Pruefung_der_Erweiterungen_ausgeben.php';
+            include dirname(__FILE__) . '/segments/Pruefung_der_Erweiterungen_ausgeben.php';
          
         if (file_exists(dirname(__FILE__) . '/segments/Plattform_Datenbanknutzer.php'))
-        require_once dirname(__FILE__) . '/segments/Plattform_Datenbanknutzer.php';
+            include dirname(__FILE__) . '/segments/Plattform_Datenbanknutzer.php';
          
         if (file_exists(dirname(__FILE__) . '/segments/Grundinformationen.php'))
-        require_once dirname(__FILE__) . '/segments/Grundinformationen.php';
+            include dirname(__FILE__) . '/segments/Grundinformationen.php';
          
         if (file_exists(dirname(__FILE__) . '/segments/Grundeinstellungen_ausgeben.php'))
-            require_once dirname(__FILE__) . '/segments/Grundeinstellungen_ausgeben.php';
+            include dirname(__FILE__) . '/segments/Grundeinstellungen_ausgeben.php';
             
         if (file_exists(dirname(__FILE__) . '/segments/PlugInsInstallieren.php'))
-            require_once dirname(__FILE__) . '/segments/PlugInsInstallieren.php';
+            include dirname(__FILE__) . '/segments/PlugInsInstallieren.php';
             
         if (file_exists(dirname(__FILE__) . '/segments/Datenbank_informationen.php'))
-            require_once dirname(__FILE__) . '/segments/Datenbank_informationen.php';
+            include dirname(__FILE__) . '/segments/Datenbank_informationen.php';
 
         if (file_exists(dirname(__FILE__) . '/segments/Datenbank_einrichten.php'))
-            require_once dirname(__FILE__) . '/segments/Datenbank_einrichten.php';
+            include dirname(__FILE__) . '/segments/Datenbank_einrichten.php';
             
         if (file_exists(dirname(__FILE__) . '/segments/Komponenten_erstellen.php'))
-            require_once dirname(__FILE__) . '/segments/Komponenten_erstellen.php';
+            include dirname(__FILE__) . '/segments/Komponenten_erstellen.php';
                      
         if (file_exists(dirname(__FILE__) . '/segments/Benutzerschnittstelle_einrichten.php'))
-            require_once dirname(__FILE__) . '/segments/Benutzerschnittstelle_einrichten.php';
+            include dirname(__FILE__) . '/segments/Benutzerschnittstelle_einrichten.php';
             
         if (file_exists(dirname(__FILE__) . '/segments/Komponenten.php'))
-            require_once dirname(__FILE__) . '/segments/Komponenten.php';
+            include dirname(__FILE__) . '/segments/Komponenten.php';
                         
         if (file_exists(dirname(__FILE__) . '/segments/PlattformEinrichten.php'))
-            require_once dirname(__FILE__) . '/segments/PlattformEinrichten.php';
+            include dirname(__FILE__) . '/segments/PlattformEinrichten.php';
                         
         if (file_exists(dirname(__FILE__) . '/segments/VeranstaltungenEinrichten.php'))
-            require_once dirname(__FILE__) . '/segments/VeranstaltungenEinrichten.php';
+            include dirname(__FILE__) . '/segments/VeranstaltungenEinrichten.php';
          
         if (file_exists(dirname(__FILE__) . '/segments/Benutzer_erstellen.php'))
-            require_once dirname(__FILE__) . '/segments/Benutzer_erstellen.php';
+            include dirname(__FILE__) . '/segments/Benutzer_erstellen.php';
+        
+        if ($simple){
+             if ($installFail){
+                 echo "0";
+             } else
+                 echo "1";
+        }
             
 
-        if (!$simple){
+        if (!$console && !$simple){
             if (($selected_menu === 2 || $selected_menu === 3 || $selected_menu === 4) && false){
                 echo "<table border='0' cellpadding='3' width='600'>";
                 echo "<tr><td class='h'><div align='center'><input type='submit' name='actionInstall' value=' ".Sprachen::Get('main','installAll')." '></div></td></tr>";
@@ -813,10 +872,10 @@ class Installer
             echo "</div>";
         }
         
-        if ($simple)
+        if ($console && !$simple)
             echo json_encode($output);
         
-        if (!$simple)
+        if (!$console && !$simple)
             Einstellungen::speichereEinstellungen($server,$data);
     }
 }

@@ -64,19 +64,21 @@ class Installation
     public static function installiereInit($data, &$fail, &$errno, &$error)
     {
         // Datenbank einrichten
-        if (!$fail && (isset($data['DB']['db_override']) && $data['DB']['db_override'] === 'override')){
-           $sql = "DROP SCHEMA IF EXISTS `".$data['DB']['db_name']."`;";
-           $oldName = $data['DB']['db_name'];
-           $data['DB']['db_name'] = null;
-           $result = DBRequest::request($sql, false, $data);
-           if ($result["errno"] !== 0){
-                $fail = true; $errno = $result["errno"];$error = isset($result["error"]) ? $result["error"] : '';
-           }
-           $data['DB']['db_name'] = $oldName;
+        if (!isset($data['action']) || $data['action']!='update'){
+            if (!$fail && (isset($data['DB']['db_override']) && $data['DB']['db_override'] === 'override')){
+               $sql = "DROP SCHEMA IF EXISTS `".$data['DB']['db_name']."`;";
+               $oldName = $data['DB']['db_name'];
+               $data['DB']['db_name'] = null;
+               $result = DBRequest::request($sql, false, $data);
+               if ($result["errno"] !== 0){
+                    $fail = true; $errno = $result["errno"];$error = isset($result["error"]) ? $result["error"] : '';
+               }
+               $data['DB']['db_name'] = $oldName;
+            }
         }
        
         if (!$fail){ 
-            $add = ((isset($data['DB']['db_ignore']) && $data['DB']['db_ignore'] === 'ignore') ? 'IF NOT EXISTS ' : '');
+            $add = (((isset($data['DB']['db_ignore']) && $data['DB']['db_ignore'] === 'ignore') || (isset($data['action']) && $data['action']=='update')) ? 'IF NOT EXISTS ' : '');
             $sql = "CREATE SCHEMA {$add}`".$data['DB']['db_name']."` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;";
             $oldName = $data['DB']['db_name'];
             $data['DB']['db_name'] = null;
@@ -122,7 +124,7 @@ class Installation
         $serverFiles = array();
         Einstellungen::$path = dirname(__FILE__) . '/../config';
         Einstellungen::generatepath(Einstellungen::$path);
-        if ($handle = opendir(dirname(__FILE__) . '/../config')) {
+        if ($handle = opendir(Einstellungen::$path)) {
             while (false !== ($file = readdir($handle))) {
                 if ($file=='.' || $file=='..') continue;
                 $serverFiles[] = $file;
@@ -635,7 +637,7 @@ class Installation
     
     public static function installiereDBOperator($data, &$fail, &$errno, &$error)
     {
-        if (!$fail && isset($data['DB']['db_user_override_operator']) && $data['DB']['db_user_override_operator'] === 'override'){
+        if (!$fail && ((isset($data['action']) && $data['action']=='update') ||isset($data['DB']['db_user_override_operator']) && $data['DB']['db_user_override_operator'] === 'override')){
             $oldName = $data['DB']['db_name'];
             $data['DB']['db_name'] = null;
             $sql = "DROP USER '{$data['DB']['db_user_operator']}'@'%';";
