@@ -116,6 +116,32 @@ class Einstellungen
             $accessAllowed = false;
         } else
             Variablen::EinsetzenDirekt($konfiguration,$data);
+        
+        ///////////////////////////
+        $data['P']['masterPassword'] = (isset($data['P']['masterPassword']) ? $data['P']['masterPassword'] : '');
+        
+        if (isset($_POST['update'])) 
+            $_POST['action'] = 'update';
+        
+        if (isset($_POST['actionInstall'])) 
+            $_POST['action'] = 'install';
+        
+        if (isset($_POST['actionUpdate'])) 
+            $_POST['action'] = 'update';
+        
+        if (!isset($data['PL']['language']))
+            $data['PL']['language'] = 'de';
+            
+        if (!isset($data['PL']['init']))
+            $data['PL']['init'] = 'DB/CControl';
+            
+        if (isset($data['PL']['url'])) $data['PL']['url'] = rtrim($data['PL']['url'], '/');
+        if (isset($data['PL']['urlExtern'])) $data['PL']['urlExtern'] = rtrim($data['PL']['urlExtern'], '/');
+        if (isset($data['PL']['temp'])) $data['PL']['temp'] = rtrim($data['PL']['temp'], '/');
+        if (isset($data['PL']['files'])) $data['PL']['files'] = rtrim($data['PL']['files'], '/');
+        if (isset($data['PL']['init'])) $data['PL']['init'] = rtrim($data['PL']['init'], '/');
+        ///////////////////////////
+        
         return $data;
     }
     

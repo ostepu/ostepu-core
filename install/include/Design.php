@@ -48,10 +48,27 @@ class Design
     
     public static function erstelleBlock($console, $name, $data)
     {
-        $result = "<h2>{$name}</h2><table border='0' cellpadding='3' width='600'>";
-        $result .= "<colgroup><col width='200'><col width='300'><col width='100'></colgroup>";
-        $result.=$data;
-        $result.="</table><br/>";
+        if (!$console){
+            $result = "<h2>{$name}</h2><table border='0' cellpadding='3' width='600'>";
+            $result .= "<colgroup><col width='200'><col width='300'><col width='100'></colgroup>";
+            $result .= $data;
+            $result .= "</table><br/>";
+        } else {
+            $result = "<<<{$name}>>>\n";
+            $result .= $data;
+            $result .= "\n";
+
+        }
+        return $result;
+    }
+    
+    public static function erstelleBeschreibung($console, $description)
+    {
+        if (!$console){
+            $result = "<tr><td colspan='2'>".$description."</td></tr>";
+        } else {
+            $result = '';
+        }
         return $result;
     }
     
@@ -67,7 +84,11 @@ class Design
         if ($variable == null)
             $variable = $default;
         
-        $result = "<input style='width:100%' type='text' name='{$variablenName}' value='".($variable != null? $variable : $default)."'>";
+        $result = '';
+        
+        if (!$console)
+            $result = "<input style='width:100%' type='text' name='{$variablenName}' value='".($variable != null? $variable : $default)."'>";
+        
         return $result;
     }
     
@@ -128,22 +149,26 @@ class Design
     
     public static function erstellePasswortzeile($console, $variable, $variablenName, $default, $save=false)
     {
-        $result = "<input style='width:100%' type='password' name='{$variablenName}' value='".(isset($variable) ? $variable : $default)."'>";
+        $result = '';
+        
+        if (!$console)
+            $result = "<input style='width:100%' type='password' name='{$variablenName}' value='".(isset($variable) ? $variable : $default)."'>";
+        
         return $result;
     }
     
-    public static function erstelleInstallationszeile($console, &$installFail, $fail, $errno, $error)
+    public static function erstelleInstallationszeile($console, $fail, $errno, $error)
     {
         if (!$console){
             if ($fail === true){
-                $installFail = true;
+                //$installFail = true;
                 return Design::erstelleZeile($console, Sprachen::Get('main','installation'), 'e', '', 'v', "<div align ='center'><font color='red'>".Sprachen::Get('main','fail'). (($errno!=null && $errno!='') ? " ({$errno})" : '') ."<br> {$error}</font></align>", 'v');
             } else{
                 return Design::erstelleZeile($console, Sprachen::Get('main','installation'), 'e', '', 'v', '<div align ="center">'.Sprachen::Get('main','ok').'</align>', 'v');
             }
         } else {
             if ($fail === true){
-                $installFail = true;
+                //$installFail = true;
                 return Design::erstelleZeile($console, Sprachen::Get('main','installation'), 'e', '', 'v', Sprachen::Get('main','fail'). (($errno!=null && $errno!='') ? " ({$errno})" : '') ." {$error}", 'v');
             } else{
                 return Design::erstelleZeile($console, Sprachen::Get('main','installation'), 'e', '', 'v', Sprachen::Get('main','ok'), 'v');
