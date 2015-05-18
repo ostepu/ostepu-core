@@ -182,6 +182,8 @@ class Installer
 
         // check which menu is selected
         $selected_menu = intval(isset($_POST['selected_menu']) ? $_POST['selected_menu'] : self::$menuItems[0]);
+        if (isset($_POST['action']) && $_POST['action']=='update')
+            $selected_menu = -1;
         
         // check server configs
         $serverFiles = Installation::GibServerDateien();
@@ -313,7 +315,14 @@ class Installer
             
             echo "<html><head>";
             echo "<link rel='stylesheet' type='text/css' href='css/format.css'>";
-            echo "</head><body><div class='center'><h1>".Sprachen::Get('main','title'.$selected_menu)."</h1></br>";
+            $titleText=Sprachen::Get('main','title'.$selected_menu);
+            
+            if ($selected_menu==-1){
+                if (isset($_POST['action']))
+                    $titleText=Sprachen::Get('main','title'.$_POST['action']);
+            }
+            
+            echo "</head><body><div class='center'><h1>".$titleText."</h1></br>";
 
             echo "<form action='' method='post' autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false'>";
             echo "<table border='0'><tr>";
@@ -329,15 +338,20 @@ class Installer
             }
             
             echo "<tr><th height='10'></th></tr>";
-            echo "<tr><td class='v'>".Design::erstelleSubmitButtonFlach('actionAddServer','OK',Sprachen::Get('main','addServer'))."</td></tr>";
+            echo "<tr><td class='v'>".Design::erstelleSubmitButtonFlach('actionAddServer','OK',Sprachen::Get('main','addServer').">")."</td></tr>";
             echo Design::erstelleVersteckteEingabezeile($console, $selected_server, 'selected_server', null);
             
-            // master-Passwort abfragen
             echo "<tr><th height='10'></th></tr>";
 
-
+            // master-Passwort abfragen
             echo "<tr><td class='e'>".Sprachen::Get('main','masterPassword')."</td></tr>";
             echo "<tr><td class='v'>".Design::erstellePasswortzeile($console, $data['P']['masterPassword'], 'data[P][masterPassword]', $data['P']['masterPassword'])."</td></tr>";
+            
+            echo "<tr><th height='20'></th></tr>";
+            
+            // update-Button
+            echo "<tr><td class='v'>".Design::erstelleSubmitButtonFlach('update','OK',Sprachen::Get('main','simpleUpdate').">")."</td></tr>";
+            
             echo "</table>";
 
             echo "</div";

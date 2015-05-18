@@ -71,7 +71,7 @@ class PlattformDatenbanknutzer
                 $fail = true; $errno = $result["errno"];$error = isset($result["error"]) ? $result["error"] : '';
             } else {
                 $result = DBJson::getRows($result['content']);
-                if (count($result)>0 && isset($result[0]['exists']) && $result[0]['exists'] === '1') {
+                if (count($result)>0 && isset($result[0]['exists']) && $result[0]['exists']>0) {
                     $userExists = true;
                 }
             }

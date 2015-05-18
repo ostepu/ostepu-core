@@ -48,13 +48,15 @@ class Design
     
     public static function erstelleBlock($console, $name, $data)
     {
+        $result = '';
         if (!$console){
-            $result = "<h2>{$name}</h2><table border='0' cellpadding='3' width='600'>";
+            $result .= "<h2>{$name}</h2>";
+            $result .= "<table border='0' cellpadding='3' width='600'>";
             $result .= "<colgroup><col width='200'><col width='300'><col width='100'></colgroup>";
             $result .= $data;
             $result .= "</table><br/>";
         } else {
-            $result = "<<<{$name}>>>\n";
+            $result .= "<<<{$name}>>>\n";
             $result .= $data;
             $result .= "\n";
 
