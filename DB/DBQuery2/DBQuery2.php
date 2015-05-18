@@ -286,8 +286,9 @@ class DBQuery2
             if ( isset($query_result['errno']) && $query_result['errno'] == 401 ){
                 $result = Model::isRejected();
                 
-            } else 
+            } else {
                 $result = Model::isProblem();
+            }
             
         }elseif ( gettype( $query_result['content'] ) == 'boolean' ){
             $obj->setResponse( array( ) );
@@ -301,10 +302,11 @@ class DBQuery2
                 $obj->setNumRows( $query_result['numRows'] );
 
           if ( isset( $query_result['errno'] ) && $query_result['errno']>0 ){
-          $result = Model::isProblem();
+            $result = Model::isProblem();
           }
-          else
-            $result = Model::isOK();
+          else {
+            $result = Model::isCreated();
+          }
             
         } else {
             $data = array( );
@@ -323,8 +325,13 @@ class DBQuery2
             if ( isset( $query_result['numRows'] ) )
                 $obj->setNumRows( $query_result['numRows'] );
 
-            
-            $result = Model::isOK();
+          if ( isset( $query_result['errno'] ) && $query_result['errno']>0 ){
+            $result = Model::isProblem();
+          }
+          else {
+            $result = Model::isCreated();
+          }
+            //$result = Model::isOK();
         }
         $res[]=$obj;
         }
