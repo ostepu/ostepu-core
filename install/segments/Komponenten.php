@@ -195,9 +195,9 @@ class Komponenten
             if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details')
                 $text .= Design::erstelleZeile($console, '', '', '', '', '' , '');
             
-            $text .= Design::erstelleZeile($console, Sprachen::Get('components','installedComponents'), 'e', '', 'v', $installedComponents, 'v_c');
-            $text .= Design::erstelleZeile($console, Sprachen::Get('components','installedLinks'), 'e', '', 'v', $installedLinks, 'v_c');
-            $text .= Design::erstelleZeile($console, Sprachen::Get('components','installedCommands'), 'e', '', 'v',$installedCommands, 'v_c');
+            $text .= Design::erstelleZeile($console, Sprachen::Get('components','installedComponents'), 'e', '', 'v', $installedComponents, 'v');
+            $text .= Design::erstelleZeile($console, Sprachen::Get('components','installedLinks'), 'e', '', 'v', $installedLinks, 'v');
+            $text .= Design::erstelleZeile($console, Sprachen::Get('components','installedCommands'), 'e', '', 'v',$installedCommands, 'v');
 
             $text .= Design::erstelleInstallationszeile($console, $fail, $errno, $error); 
         }

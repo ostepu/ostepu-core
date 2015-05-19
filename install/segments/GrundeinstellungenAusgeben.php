@@ -9,7 +9,7 @@ class GrundeinstellungenAusgeben
     public static $rank = 75;
     public static $enabledShow = true;
     
-    public static $onEvents = array('install'=>array('name'=>'installInit','event'=>array('actionInstallInit','install')));
+    public static $onEvents = array('install'=>array('name'=>'installInit','event'=>array('actionInstallInit','install','update')));
     
     
     public static function init($console, &$data, &$fail, &$errno, &$error)
