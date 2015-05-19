@@ -100,7 +100,8 @@ class Model
                     if (is_callable(array($res['content'],'setStatus')))
                         $res['content']->setStatus($res['status']);
                     $result["content"][] = $res['content'];
-                    $result["status"] = $res['status']; // eingefuegt
+                    if (isset($res['status']))
+                        $result["status"] = $res['status']; // eingefuegt
                 }
             } else {
                 $result = call_user_func_array($matches->getCallable(), array($selectedCommand['name'],"input"=>$rawInput,$params));
