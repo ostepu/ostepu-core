@@ -116,7 +116,7 @@ class DBSelectedSubmission
         $positive = function($input) {
             // sets the new auto-increment id
             $obj = new SelectedSubmission( );
-            $obj->setId( $input[0]->getInsertId( ) );
+            //$obj->setId( $input[0]->getInsertId( ) );
             return array("status"=>201,"content"=>$obj);
         };
         return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddSelectedSubmission.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new SelectedSubmission()));
