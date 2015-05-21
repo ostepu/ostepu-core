@@ -80,14 +80,16 @@ class PlugInsInstallieren
             $text .= Design::erstelleZeile($console, "{$name} v{$dat['version']}", 'e', ((self::$onEvents['install']['enabledInstall'] || self::$onEvents['uninstall']['enabledInstall']) ? Design::erstelleAuswahl($console, $data['PLUG']['plug_install_'.$name], 'data[PLUG][plug_install_'.$name.']', $plug, null, true) : ''), 'v');  
             
             $isInstalled=false;
-            foreach($installedPlugins as $instPlug){
-                if ($name == $instPlug['name']){
-                    if (isset($instPlug['version'])){
-                        $text .= Design::erstelleZeile($console, Sprachen::Get('packages','currentVersion') , 'v', 'v'.$instPlug['version'] , 'v'); 
-                    } else 
-                        $text .= Design::erstelleZeile($console, Sprachen::Get('packages','currentVersion') , 'v', '???' , 'v');
-                    $isInstalled=true;
-                    break;
+            if (isset($installedPlugins)){
+                foreach($installedPlugins as $instPlug){
+                    if ($name == $instPlug['name']){
+                        if (isset($instPlug['version'])){
+                            $text .= Design::erstelleZeile($console, Sprachen::Get('packages','currentVersion') , 'v', 'v'.$instPlug['version'] , 'v'); 
+                        } else 
+                            $text .= Design::erstelleZeile($console, Sprachen::Get('packages','currentVersion') , 'v', '???' , 'v');
+                        $isInstalled=true;
+                        break;
+                    }
                 }
             }
             
