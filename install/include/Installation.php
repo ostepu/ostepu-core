@@ -66,12 +66,16 @@ class Installation
         $serverFiles = array();
         Einstellungen::$path = dirname(__FILE__) . '/../config';
         Einstellungen::generatepath(Einstellungen::$path);
-        if ($handle = opendir(Einstellungen::$path)) {
-            while (false !== ($file = readdir($handle))) {
-                if ($file=='.' || $file=='..') continue;
-                $serverFiles[] = $file;
+        if (is_dir(Einstellungen::$path)) {
+            if ($handle = opendir(Einstellungen::$path)) {
+                while (false !== ($file = readdir($handle))) {
+                    if ($file=='.' || $file=='..') continue;
+                    $serverFiles[] = $file;
+                }
+                closedir($handle);
             }
-            closedir($handle);
+        } else {
+            return array();
         }
         return $serverFiles;
     }
