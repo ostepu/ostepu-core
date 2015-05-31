@@ -41,7 +41,7 @@ class Installer
     private $argv = null;
     private $segments = array();
     
-    public static $menuItems = array(5,0,1,6,2,3,4);
+    public static $menuItems = array(0,1,6,2,3,4); // 5, // ausgeblendet
     public static $menuTypes = array(0,0,0,0,0,1,1);
     
     /**
