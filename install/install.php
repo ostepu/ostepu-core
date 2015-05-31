@@ -41,7 +41,7 @@ class Installer
     private $argv = null;
     private $segments = array();
     
-    public static $menuItems = array(0,1,6,2,3,4);// 5, // ausgeblendet
+    public static $menuItems = array(5,0,1,6,2,3,4);
     public static $menuTypes = array(0,0,0,0,0,1,1);
     
     /**
@@ -344,8 +344,9 @@ class Installer
             echo "<tr><th height='10'></th></tr>";
 
             // master-Passwort abfragen
-            echo "<tr><td class='e'>".Sprachen::Get('main','masterPassword')."</td></tr>";
+            /*echo "<tr><td class='e'>".Sprachen::Get('main','masterPassword')."</td></tr>";
             echo "<tr><td class='v'>".Design::erstellePasswortzeile($console, $data['P']['masterPassword'], 'data[P][masterPassword]', $data['P']['masterPassword'])."</td></tr>";
+            */
             
             echo "<tr><th height='20'></th></tr>";
             
@@ -448,6 +449,9 @@ class Installer
             echo "<table border='0'>";
             echo "<tr><td class='e'>".Sprachen::Get('general_informations','url')."</td></tr>";
             echo "<tr><td>".$data['PL']['url']."</td></tr>";
+            echo "<tr><th></th></tr>";
+            echo "<tr><td class='e'>".Sprachen::Get('general_informations','localPath')."</td></tr>";
+            echo "<tr><td>".$data['PL']['localPath']."</td></tr>";
             echo "<tr><th></th></tr>";
             echo "<tr><td class='e'>".Sprachen::Get('general_informations','urlExtern')."</td></tr>";
             echo "<tr><td>".$data['PL']['urlExtern']."</td></tr>";

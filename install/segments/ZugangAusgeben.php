@@ -7,7 +7,7 @@ class ZugangAusgeben
     public static $installed = false;
     public static $page = 5;
     public static $rank = 50;
-    public static $enabledShow = false;
+    public static $enabledShow = true;
     public static $enabledInstall = false;
     
     public static $onEvents = array();
