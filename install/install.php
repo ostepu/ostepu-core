@@ -421,7 +421,7 @@ class Installer
                 $a = Design::erstelleSubmitButtonFlach('selected_menu',$item, Sprachen::Get('main','back')).'<br><font size=1>('.Sprachen::Get('main','title'.$item).')</font>';
             }
             
-            if (array_search($selected_menu,self::$menuItems)<count(self::$menuItems)-1){
+            if ($selected_menu>=0 && array_search($selected_menu,self::$menuItems)<count(self::$menuItems)-1){
                 $item = self::$menuItems[array_search($selected_menu,self::$menuItems)+1];
                 $b = Design::erstelleSubmitButtonFlach('selected_menu',$item, Sprachen::Get('main','next')).'<br><font size=1>('.Sprachen::Get('main','title'.$item).')</font>';
             }
