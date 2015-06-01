@@ -41,12 +41,12 @@ class VeranstaltungenEinrichten
         $content = $result['content'];
         
         if (self::$installed){
-            if (!$console){
+            if (!$console && isset($data['C']['c_details']) && $data['C']['c_details'] === 'details'){
                 foreach ($content as $courseid => $dat){
                     $text .= "<tr><td class='e' rowspan='1'>({$dat['course']->getId()}) {$dat['course']->getSemester()}</td><td class='v'>{$dat['course']->getName()}</td><td class='e'><div align ='center'>".((isset($dat['status']) && $dat['status']===201) ? Sprachen::Get('main','ok') : "<font color='red'>".Sprachen::Get('main','fail')." ({$dat['status']})</font>")."</align></td></tr>";
                 }
             } else 
-                $text .= Design::erstelleZeile($console, Sprachen::Get('courses','countCourses'), 'e', count($content) , 'v');
+                $text .= Design::erstelleZeile($console, Sprachen::Get('courses','countCourses'), 'e', count($content) , 'v_c');
             $text .= Design::erstelleInstallationszeile($console, $fail, $errno, $error);
         }
 

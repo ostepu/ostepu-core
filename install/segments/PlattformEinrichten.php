@@ -41,12 +41,12 @@ class PlattformEinrichten
         $content = $result['content'];
         
         if (self::$installed){
-            if (!$console){
+            if (!$console && isset($data['PL']['pl_details']) && $data['PL']['pl_details'] === 'details'){
                 foreach ($content as $component => $dat){
                     $text .= "<tr><td class='e' rowspan='1'>{$component}</td><td class='v'></td><td class='e'><div align ='center'>".((isset($dat['status']) && $dat['status']===201) ? Sprachen::Get('main','ok') : "<font color='red'>".Sprachen::Get('main','fail')." ({$dat['status']})</font>")."</align></td></tr>";
                 }
             } else {
-                $text .= Design::erstelleZeile($console, Sprachen::Get('platform','countComponents'), 'e', count($content), 'v');
+                $text .= Design::erstelleZeile($console, Sprachen::Get('platform','countComponents'), 'e', count($content), 'v_c');
             }
             $text .= Design::erstelleInstallationszeile($console, $fail, $errno, $error);
         }
