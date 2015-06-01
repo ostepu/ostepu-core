@@ -105,14 +105,14 @@ class LFile
                                 )
                           );
                           
-        // POST PathFile
+        /*// POST PathFile
         $this->_app->post( 
                           '/' . LFile::$_baseDir . '/:path(/)',
                           array( 
                                 $this,
                                 'postPathFile'
                                 )
-                          );
+                          );*/
                                                       
         // DELETE File
         $this->_app->delete( 
