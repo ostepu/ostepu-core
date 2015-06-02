@@ -23,6 +23,8 @@ class Komponenten
     
     public static function show($console, $result, $data)
     {
+        $isUpdate = (isset($data['action']) && $data['action']=='update') ? true : false;
+        
         $text='';
         if (!$console){
             $text .= Design::erstelleBeschreibung($console,Sprachen::Get('components','description'));
@@ -102,7 +104,7 @@ class Komponenten
                 }
                 
                 $countCommands = count(isset($component['commands']) ? $component['commands'] : array());
-                if (isset($component['init']) && isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details')
+                if (isset($component['init']) && isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details' && !$isUpdate)
                     $text .= "<tr><td class='e' rowspan='{$countLinks}'>{$componentName}</td><td class='v'>{$component['init']->getAddress()}</td><td class='e'><div align ='center'>".($component['init']->getStatus() === 201 ? Sprachen::Get('main','ok') : "<font color='red'>".Sprachen::Get('main','fail')." ({$component['init']->getStatus()})</font>")."</align></td></tr>";
                 
                 if (isset($component['init']) && $component['init']->getStatus() === 201){
@@ -110,7 +112,7 @@ class Komponenten
                     $installedLinks+=count(isset($component['links']) ? $component['links'] : array());
                     $installedCommands+=$countCommands;
                     
-                    if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details')
+                    if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details' && !$isUpdate)
                         $text .= "<tr><td class='v' colspan='2'>".Sprachen::Get('components','installedCalls').": {$countCommands}</td></tr>";
                 
                     $links = array();
@@ -159,12 +161,12 @@ class Komponenten
                                     if ($notRoutable) break;
                                 }
                                 
-                                if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details')
+                                if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details' && !$isUpdate)
                                     $text .= "<tr><td class='v'>{$link->getName()}</td><td class='e'><div align ='center'>".(!$notRoutable ? Sprachen::Get('main','ok') : '<font color="red">'.Sprachen::Get('components','notRoutable').'</font>')."</align></td></tr>";
                             }
                         }
                         
-                        if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details')
+                        if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details' && !$isUpdate)
                             $text .= "<tr><td class='v'>{$link->getName()}".(!$linkFound ? " (<font color='red'>".Sprachen::Get('components','unknown')."</font>)" : '')."</td><td class='v'>{$link->getTargetName()}</td></tr>"; 
                     
                         $lastLink = $link->getName();
@@ -184,7 +186,7 @@ class Komponenten
                                 }
                             }
                             if (!$found){
-                                if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details')
+                                if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details' && !$isUpdate)
                                     $text .= "<tr><td class='v'>{$callList['name']}</td><td class='e'><font color='red'>".Sprachen::Get('components','unallocated')."</font></td></tr>";
                             }
                         }
@@ -192,7 +194,7 @@ class Komponenten
                 }
             }
             
-            if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details')
+            if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details' && !$isUpdate)
                 $text .= Design::erstelleZeile($console, '', '', '', '', '' , '');
             
             $text .= Design::erstelleZeile($console, Sprachen::Get('components','installedComponents'), 'e', '', 'v', $installedComponents, 'v');

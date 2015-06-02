@@ -12,11 +12,11 @@
                 <?php
                 $liste = array(
                                 'isprintable' => 'druckbare Zeichen',
-                                'isalpha' => 'Buchstaben (A-Z, a-z)',
+                                'isalpha' => 'Buchstaben (A..Z, a..z)',
                                 'isalphanum' => 'Buchstaben+Ziffern',
-                                'isnumeric' => 'Zahl (0-9,)',
-                                'ishex' => 'Hexadezimalziffern (A-F, a-f, 0-9)',
-                                'isdigit' => 'Ziffern (0-9)');
+                                'isnumeric' => 'Zahl (-0..9,)',
+                                'ishex' => 'Hexadezimalziffern (A..F, a..f, 0..9)',
+                                'isdigit' => 'Ziffern (0..9)');
                 
                 $i=0;
                 $params = array();
