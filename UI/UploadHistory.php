@@ -9,6 +9,7 @@
  */
 
 include_once 'include/Boilerplate.php';
+include_once '../Assistants/Language.php';
 
 if (isset($_POST['sheetID']))
     $sid = $_POST['sheetID'];

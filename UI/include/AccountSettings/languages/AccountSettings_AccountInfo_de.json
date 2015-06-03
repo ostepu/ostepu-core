@@ -1,0 +1,9 @@
+{
+    "main": {
+        "title": "Eigene Daten",
+        "firstName": "Vorname",
+        "lastName": "Nachname",
+        "email": "E-Mail",
+        "userName": "Login"
+    }
+}

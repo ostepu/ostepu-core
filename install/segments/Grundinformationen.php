@@ -28,18 +28,18 @@ class Grundinformationen
     public static function show($console, $result, $data)
     {
         $text = '';
-        $text .= Design::erstelleBeschreibung($console,Sprachen::Get('general_informations','description'));
+        $text .= Design::erstelleBeschreibung($console,Language::Get('general_informations','description'));
          
         if (!$console){
-            $text .= Design::erstelleZeile($console, Sprachen::Get('general_informations','server_name'), 'e', Design::erstelleEingabezeile($console, $data['SV']['name'], 'data[SV][name]', $data['SV']['name'], false), 'v');
-            $text .= Design::erstelleZeile($console, Sprachen::Get('general_informations','url'), 'e', Design::erstelleEingabezeile($console, $data['PL']['url'], 'data[PL][url]', 'http://localhost/uebungsplattform', true), 'v');
-            $text .= Design::erstelleZeile($console, Sprachen::Get('general_informations','localPath'), 'e', Design::erstelleEingabezeile($console, $data['PL']['localPath'], 'data[PL][localPath]', '/var/www/uebungsplattform', true), 'v');
-            $text .= Design::erstelleZeile($console, Sprachen::Get('general_informations','urlExtern'), 'e', Design::erstelleEingabezeile($console, $data['PL']['urlExtern'], 'data[PL][urlExtern]', 'http://localhost/uebungsplattform', true), 'v');
-            $text .= Design::erstelleZeile($console, Sprachen::Get('general_informations','temp'), 'e', Design::erstelleEingabezeile($console, $data['PL']['temp'], 'data[PL][temp]', '/var/www/temp', true), 'v');
-            $text .= Design::erstelleZeile($console, Sprachen::Get('general_informations','files'), 'e', Design::erstelleEingabezeile($console, $data['PL']['files'], 'data[PL][files]', '/var/www/files', true), 'v');
+            $text .= Design::erstelleZeile($console, Language::Get('general_informations','server_name'), 'e', Design::erstelleEingabezeile($console, $data['SV']['name'], 'data[SV][name]', $data['SV']['name'], false), 'v');
+            $text .= Design::erstelleZeile($console, Language::Get('general_informations','url'), 'e', Design::erstelleEingabezeile($console, $data['PL']['url'], 'data[PL][url]', 'http://localhost/uebungsplattform', true), 'v');
+            $text .= Design::erstelleZeile($console, Language::Get('general_informations','localPath'), 'e', Design::erstelleEingabezeile($console, $data['PL']['localPath'], 'data[PL][localPath]', '/var/www/uebungsplattform', true), 'v');
+            $text .= Design::erstelleZeile($console, Language::Get('general_informations','urlExtern'), 'e', Design::erstelleEingabezeile($console, $data['PL']['urlExtern'], 'data[PL][urlExtern]', 'http://localhost/uebungsplattform', true), 'v');
+            $text .= Design::erstelleZeile($console, Language::Get('general_informations','temp'), 'e', Design::erstelleEingabezeile($console, $data['PL']['temp'], 'data[PL][temp]', '/var/www/temp', true), 'v');
+            $text .= Design::erstelleZeile($console, Language::Get('general_informations','files'), 'e', Design::erstelleEingabezeile($console, $data['PL']['files'], 'data[PL][files]', '/var/www/files', true), 'v');
         }
         
-        echo Design::erstelleBlock($console, Sprachen::Get('general_informations','title'), $text);
+        echo Design::erstelleBlock($console, Language::Get('general_informations','title'), $text);
         return null;
     }
     

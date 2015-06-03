@@ -164,16 +164,16 @@ class Design
         if (!$console){
             if ($fail === true){
                 //$installFail = true;
-                return Design::erstelleZeile($console, Sprachen::Get('main','installation'), 'e', '', 'v', "<div align ='center'><font color='red'>".Sprachen::Get('main','fail'). (($errno!=null && $errno!='') ? " ({$errno})" : '') ."<br> {$error}</font></align>", 'v');
+                return Design::erstelleZeile($console, Language::Get('main','installation'), 'e', '', 'v', "<div align ='center'><font color='red'>".Language::Get('main','fail'). (($errno!=null && $errno!='') ? " ({$errno})" : '') ."<br> {$error}</font></align>", 'v');
             } else{
-                return Design::erstelleZeile($console, Sprachen::Get('main','installation'), 'e', '', 'v', '<div align ="center">'.Sprachen::Get('main','ok').'</align>', 'v');
+                return Design::erstelleZeile($console, Language::Get('main','installation'), 'e', '', 'v', '<div align ="center">'.Language::Get('main','ok').'</align>', 'v');
             }
         } else {
             if ($fail === true){
                 //$installFail = true;
-                return Design::erstelleZeile($console, Sprachen::Get('main','installation'), 'e', '', 'v', Sprachen::Get('main','fail'). (($errno!=null && $errno!='') ? " ({$errno})" : '') ." {$error}", 'v');
+                return Design::erstelleZeile($console, Language::Get('main','installation'), 'e', '', 'v', Language::Get('main','fail'). (($errno!=null && $errno!='') ? " ({$errno})" : '') ." {$error}", 'v');
             } else{
-                return Design::erstelleZeile($console, Sprachen::Get('main','installation'), 'e', '', 'v', Sprachen::Get('main','ok'), 'v');
+                return Design::erstelleZeile($console, Language::Get('main','installation'), 'e', '', 'v', Language::Get('main','ok'), 'v');
             }
         }
     }
@@ -181,14 +181,14 @@ class Design
     public static function erstelleSubmitButton($var, $text = null)
     {
         if ($text === null)
-            $text = Sprachen::Get('main','install');
+            $text = Language::Get('main','install');
         return "<input type='submit' name='{$var}' value=' {$text} '>";
     }
     
     public static function erstelleSubmitButtonFlach($varName, $value, $text = null)
     {
         if ($text === null)
-            $text = Sprachen::Get('main','install');
+            $text = Language::Get('main','install');
         return "<button class='text-button info-color bold' name='{$varName}' value='{$value}'>{$text}</button>";
     }
     

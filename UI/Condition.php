@@ -10,6 +10,7 @@
 
 include_once 'include/Boilerplate.php';
 include_once '../Assistants/Structures.php';
+include_once '../Assistants/Language.php';
 
 $notifications = array();
 

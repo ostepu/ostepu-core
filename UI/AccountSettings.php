@@ -10,6 +10,7 @@
 
 include_once 'include/Boilerplate.php';
 include_once '../Assistants/Structures.php';
+include_once '../Assistants/Language.php';
 include_once 'include/FormEvaluator.php';
 
 if (isset($_POST['action'])) {

@@ -1,0 +1,9 @@
+{
+    "main": {
+        "exercise": "AUFGABE",
+        "notAccepted": "nicht akzeptiert",
+        "uncorrected": "unkorrigiert",
+        "removed": "gel&ouml;scht",
+        "noSubmissions": "Keine Einsendungen vorhanden."
+    }
+}

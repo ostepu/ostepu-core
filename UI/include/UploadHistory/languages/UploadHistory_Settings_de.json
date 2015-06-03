@@ -1,0 +1,12 @@
+{
+    "main": {
+        "title": "Einsendungsverlauf ansehen",
+        "execute": "Einsendungen anzeigen",
+        "chooseStudent": "Studenten ausw&auml;hlen",
+        "firstName": "Vorname",
+        "lastName": "Nachname",
+        "userName": "Nutzername",
+        "chooseSheet": "Serie ausw&auml;hlen",
+        "sorting": "Sortierung"
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "main": {
+        "title": "Studentenliste",
+        "createCSV": "CSV",
+        "createPDF": "PDF",
+        "firstName": "Vorname",
+        "lastName": "Nachname",
+        "userName": "Nutzername",
+        "studentNumber": "Matrikel",
+        "approval": "Zulassung",
+        "noData": "Es sind noch keine Daten vorhanden.",
+        "isApproved": "Ja",
+        "isNotApproved": "Nein",
+        "maxPoints": "max."
+    }
+}

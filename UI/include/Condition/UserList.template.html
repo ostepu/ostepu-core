@@ -1,15 +1,17 @@
+<?php $langTemplate='Condition_UserList';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <?php
     $fileName = "Condition.php";
 ?>
 <div class="content-element">
     <div class="content-header">
-        <div class="content-title left uppercase">Studentenliste</div>
+        <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
         <div class="info-color bold right">
             <a href="<?php echo $fileName; ?>?downloadConditionCsv=<?php echo $user['courses'][0]['course']['id']; ?><?php echo (isset($sortby)?'&sortby='.$sortby:'')?><?php echo (isset($sortId)?'&sortId='.$sortId:'')?>" class="download text-button body-option-color">
-                CSV
+                <?php echo Language::Get('main','createCSV', $langTemplate); ?>
             </a>
             <a href="<?php echo $fileName; ?>?downloadConditionPdf=<?php echo $user['courses'][0]['course']['id']; ?><?php echo (isset($sortby)?'&sortby='.$sortby:'')?><?php echo (isset($sortId)?'&sortId='.$sortId:'')?>" class="download text-button body-option-color">
-                PDF
+                <?php echo Language::Get('main','createPDF', $langTemplate); ?>
             </a>
         </div>
     </div>
@@ -27,7 +29,7 @@
                             print $fileName;
                             print '?cid=';
                             print $user['courses'][0]['course']['id'];
-                            print '&sortby=firstName">Vorname</a>';
+                            print '&sortby=firstName">'.Language::Get('main','firstName', $langTemplate).'</a>';
                         ?>
                     </th>
                     <th>
@@ -36,7 +38,7 @@
                             print $fileName;
                             print '?cid=';
                             print $user['courses'][0]['course']['id'];
-                            print '&sortby=lastName">Nachname</a>';
+                            print '&sortby=lastName">'.Language::Get('main','lastName', $langTemplate).'</a>';
                         ?>
                     </th>
                     <th>
@@ -45,7 +47,7 @@
                             print $fileName;
                             print '?cid=';
                             print $user['courses'][0]['course']['id'];
-                            print '&sortby=userName">Nutzername</a>';
+                            print '&sortby=userName">'.Language::Get('main','userName', $langTemplate).'</a>';
                         ?>
                     </th>
                     <!--<th>
@@ -54,7 +56,7 @@
                             print $fileName;
                             print '?cid=';
                             print $user['courses'][0]['course']['id'];
-                            print '&sortby=studentNumber">Matrikel</a>';
+                            print '&sortby=studentNumber">'.Language::Get('main','studentNumber', $langTemplate).'</a>';
                         ?>
                     </th>-->
                     <th>
@@ -63,7 +65,7 @@
                             print $fileName;
                             print '?cid=';
                             print $user['courses'][0]['course']['id'];
-                            print '&sortby=isApproved">Zulassung</a>';
+                            print '&sortby=isApproved">'.Language::Get('main','approval', $langTemplate).'</a>';
                         ?>
                     </th>
                     <?php
@@ -75,7 +77,7 @@
                             print '?cid=';
                             print $user['courses'][0]['course']['id'];
                             print '&sortby=type&sortId='.$percentage['exerciseTypeId'].'">';
-                            print $percentage['exerciseType'] . " (max. " . $percentage['maxPoints'] . "P)";
+                            print $percentage['exerciseType'] . " (".Language::Get('main','maxPoints', $langTemplate)." " . $percentage['maxPoints'] . "P)";
                             print '</a>';
                             print "</th>";
                         }
@@ -114,7 +116,7 @@
                         print "<td";
                         print $user['isApproved']?"":" class=\"critical-color\"";
                         print ">";
-                        print $user['isApproved']?"Ja":"Nein";
+                        print $user['isApproved']? Language::Get('main','isApproved', $langTemplate) : Language::Get('main','isNotApproved', $langTemplate) ;
                         print "</td>";
 
                         // percentage for each exerciseType
@@ -136,7 +138,7 @@
             <?php
                 }
             else {
-                print "Es sind noch keine Daten vorhanden.";
+                echo Language::Get('main','noData', $langTemplate);
             }
             ?>
         </div>
