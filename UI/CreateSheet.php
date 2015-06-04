@@ -13,8 +13,9 @@
 
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
+include_once dirname(__FILE__) . '/../Assistants/Language.php';
 include_once dirname(__FILE__) . '/include/FormEvaluator.php';
-require_once(dirname(__FILE__).'/phplatex.php');
+require_once dirname(__FILE__).'/phplatex.php';
 
 function unmap($map, $id){
     foreach ($map as $m){

@@ -1,0 +1,9 @@
+{
+    "main": {
+        "execute": "speichern",
+        "points": "Punkte",
+        "tutorComment": "Ihr Kommentar",
+        "studentComment": "Komm.",
+        "additionalMembers": "Weitere Gruppenmitglieder"
+    }
+}

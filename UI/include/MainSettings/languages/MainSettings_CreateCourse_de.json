@@ -1,0 +1,12 @@
+{
+    "main": {
+        "title": "Neue Veranstaltung anlegen",
+        "execute": "anlegen",
+        "description": "",
+        "courseName": "Veranstaltungsname",
+        "semester": "Semester",
+        "defaultGroupSize": "Max. Gruppengr&ouml;&szlig;e (Standardwert)",
+        "defaultExerciseTypes": "Zugelassene Punktearten",
+        "plugins": "Erweiterungen"
+    }
+}

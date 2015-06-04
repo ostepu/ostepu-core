@@ -1,3 +1,5 @@
+<?php $langTemplate='CourseManagement_AddExerciseType';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <?php
 if (isset($AddExerciseTypeNotificationElements)) {
     foreach ($AddExerciseTypeNotificationElements as $notificationElement) {
@@ -9,18 +11,16 @@ if (isset($AddExerciseTypeNotificationElements)) {
 <input type="hidden" name="action" value="AddExerciseType">
 <div class="content-element">
     <div class="content-header">
-        <div class="content-title left uppercase">Punkteart hinzufügen</div>
-        <button class="text-button info-color bold right">hinzufügen</button>
+        <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
+        <button class="text-button info-color bold right"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body left">
             <div class="content-description">
-                Geben Sie hier den Namen der neuen Punkteart an. Um die Punkteart im Kurs zu
-                verwenden, muss sie oben in den Veranstaltungseinstellungen ausgewählt werden.
-                Bitte beachten Sie die maximale Länge von 20 Zeichen.
+                <?php echo Language::Get('main','description', $langTemplate); ?>
             </div>
-            <label class="form-field left label bold" for="exerciseTypeName">Name der Punkteart:</label>
+            <label class="form-field left label bold" for="exerciseTypeName"><?php echo Language::Get('main','exerciseTypeName', $langTemplate); ?>:</label>
             <input class="form-field text-input" 
                    name="exerciseTypeName" 
                    id="exerciseTypeName" 

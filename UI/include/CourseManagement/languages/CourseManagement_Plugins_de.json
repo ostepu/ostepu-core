@@ -1,0 +1,9 @@
+{
+    "main": {
+        "title": "Erweiterungen",
+        "execute": "speichern",
+        "description": "Hier k&ouml;nnen Erweiterungen zugeschalten werden.",
+        "plugins": "Erweiterungen",
+        "unknown": "unbekannt"
+    }
+}

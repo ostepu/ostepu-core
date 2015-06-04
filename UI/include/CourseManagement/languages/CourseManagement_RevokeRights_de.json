@@ -1,0 +1,20 @@
+{
+    "main": {
+        "title": "Nutzer entfernen",
+        "execute": "entfernen",
+        "description": "W&auml;hlen Sie die Person aus, welche aus der Veranstaltung entfernt werden soll.",
+        "selectUser": "Person ausw&auml;hlen",
+        "students": "Studenten",
+        "tutors": "Tutoren",
+        "dozents": "Dozenten",
+        "admins": "Administratoren",
+        "noStudents": "Keine Studenten",
+        "noTutors": "Keine Tutoren",
+        "noDozents": "Keine Dozenten",
+        "noAdmins": "Keine Administratoren",
+        "lastName": "Nachname",
+        "firstName": "Vorname",
+        "userName": "Nutzername",
+        "sorting": "Sortierung"
+    }
+}

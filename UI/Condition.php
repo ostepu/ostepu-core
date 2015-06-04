@@ -8,9 +8,9 @@
  * @author Ralf Busch
  */
 
-include_once 'include/Boilerplate.php';
-include_once '../Assistants/Structures.php';
-include_once '../Assistants/Language.php';
+include_once dirname(__FILE__) . '/include/Boilerplate.php';
+include_once dirname(__FILE__) . '/../Assistants/Structures.php';
+include_once dirname(__FILE__) . '/../Assistants/Language.php';
 
 $notifications = array();
 

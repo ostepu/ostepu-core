@@ -1,3 +1,5 @@
+<?php $langTemplate='Header';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <div id="header" class="header" style="">
     <div class="course-info left" style="">
         <div class="course-title uppercase" style="">
@@ -15,7 +17,7 @@
             <a class="change-course" href="
                 <?php echo PRIVILEGE_LEVEL::$SITES[$courses[0]['status']] . "?cid=" . $courses[0]['course']['id']; ?>
             ">
-                zur Veranstaltung
+                <?php echo Language::Get('main','change-course', $langTemplate); ?>
             </a>
             </div>
         <?php } ?>
@@ -80,7 +82,7 @@
                             echo "&nbsp;(".$percent."%)<br>";
                           }?>
                     </div></td></tr><tr><td>
-                   <div class="footer-text left" style="clear:left;">*kann vom Schlussergebnis<br>abweichen</div>
+                   <div class="footer-text left" style="clear:left;"><?php echo Language::Get('main','pointsInfo', $langTemplate); ?></div>
                    </td></tr></table></div>
                 <?php
                 }

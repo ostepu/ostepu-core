@@ -1,0 +1,8 @@
+{
+    "main": {
+        "title": "Nutzer l&ouml;schen",
+        "execute": "l&ouml;schen",
+        "description": "Geben Sie hier das K&uuml;rzel der Person ein, welche komplett aus der &uuml;bungsplattform entfernt werden soll. Achtung: Diese Aktion kann nicht widerrufen werden!",
+        "userName": "K&uuml;rzel der Person"
+    }
+}

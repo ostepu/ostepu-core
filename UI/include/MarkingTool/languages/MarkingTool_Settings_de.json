@@ -1,0 +1,15 @@
+{
+    "main": {
+        "title": "Suchfilter",
+        "execute": "Einsendungen anzeigen",
+        "selectSheet": "Serie ausw&auml;hlen",
+        "tutor": "Kontrolleur",
+        "all": "Alle",
+        "status": "Korrekturstatus",
+        "sorting": "Sortierung",
+        "createArchive": "Korrekturarchiv erstellen",
+        "lastName": "Nachname",
+        "firstName": "Vorname",
+        "userName": "Nutzername"
+    }
+}

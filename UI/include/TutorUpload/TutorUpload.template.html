@@ -1,22 +1,23 @@
+<?php $langTemplate='TutorUpload';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <form action="TutorUpload.php?cid=<?php echo $cid; ?>" method="POST" enctype="multipart/form-data">
     <input type="hidden" name="action" value="TutorUpload">
     <div class="content-element">
         <div class="content-header">
             <div class="content-title left uppercase">
-                <?php /// if (isset($sheetName)) echo $sheetName; ?>
+                <?php echo Language::Get('main','title', $langTemplate); ?>
             </div>
             <button class="text-button info-color bold right">
-                absenden
+                <?php echo Language::Get('main','execute', $langTemplate); ?>
             </button>
         </div>
         <div class="content-body-wrapper">
             <div class="content-body left">
                 <div class="content-description">
-                    Geben Sie hier den Speicherort der *.zip-Datei mit den korrigierten Einsendungen
-                    an und klicken Sie anschließend auf "absenden", um die Einsendungen hochzuladen.
+                    <?php echo Language::Get('main','description', $langTemplate); ?>
                 </div>
                 <label class="short left label bold new-line">
-                    Datei (*.zip):
+                    <?php echo Language::Get('main','zipFilter', $langTemplate); ?> (*.zip):
                 </label>
                 <input type="file" class="button left" name="MarkingFile">
             </div>

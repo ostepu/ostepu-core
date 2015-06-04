@@ -1,0 +1,11 @@
+{
+    "main": {
+        "title": "Einladungen zum Beitritt versenden",
+        "execute": "versenden",
+        "applyGroupDescription": "Sie k&ouml;nnen die Gruppenstruktur der letzten &uuml;bungsserie &uuml;bernehmen.",
+        "applyGroup": "Gruppe &uuml;bernehmen",
+        "emptyGroupDescription": "Geben Sie hier die K&uuml;rzel der Nutzer an, welche der Gruppe beitreten sollen. Diese erhalten dann eine Einladung, welche sie annehmen m&uuml;ssen, um ein Mitglied der Gruppe zu werden.<br>Die maximale Gruppengr&ouml;&szlig;e f&uuml;r diese Serie betr&auml;gt",
+        "fullGroupDescription": "Es k&ouml;nnen keine weiteren Nutzer mehr hinzugef&uuml;gt werden, da die maximale Gruppengr&ouml;&szlig;e bereits erreicht wurde.",
+        "userName": "K&uuml;rzel"
+    }
+}

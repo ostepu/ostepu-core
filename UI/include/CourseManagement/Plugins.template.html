@@ -1,3 +1,5 @@
+<?php $langTemplate='CourseManagement_Plugins';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <?php
 if (isset($PluginsNotificationElements)) {
     foreach ($PluginsNotificationElements as $notificationElement) {
@@ -10,21 +12,21 @@ if (isset($PluginsNotificationElements)) {
 <input type="hidden" name="action" value="Plugins">
 <div class="content-element">
     <div class="content-header">
-        <div class="content-title left uppercase">Erweiterungen</div>
+        <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
         <div class="info-color bold right">
-            <button class="text-button info-color bold right">speichern</button>
+            <button class="text-button info-color bold right"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
         </div>
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body left">
             <div class="content-description">
-                Hier können Erweiterungen zugeschalten werden.
+                <?php echo Language::Get('main','description', $langTemplate); ?>
             </div>
            
 
             <label class="form-field left label bold new-line" for="defaultPlugins">
-                Erweiterungen:
+                <?php echo Language::Get('main','plugins', $langTemplate); ?>:
             </label>
             <div class="form-field left checkbox-container">
                 <?php 
@@ -34,7 +36,7 @@ if (isset($PluginsNotificationElements)) {
                         print '"';
                         print isset($plugin['isInstalled'])?' checked="true"':NULL;
                         print ' />';
-                        print (isset($plugin['targetName']) ? $plugin['targetName'] : 'unbekannt');
+                        print (isset($plugin['targetName']) ? $plugin['targetName'] : Language::Get('main','unknown', $langTemplate));
                         print '<br />';
                     endforeach;
                 ?>

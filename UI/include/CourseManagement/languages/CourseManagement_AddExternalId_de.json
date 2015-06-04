@@ -1,0 +1,10 @@
+{
+    "main": {
+        "title": "Externe Veranstaltung hinzuf&uuml;gen",
+        "execute": "hinzuf&uuml;gen",
+        "description": "Hier k&ouml;nnen Veranstaltungs-IDs anderer Plattformen zugewiesen werden.",
+        "alias": "Alias",
+        "studipId": "Stud.IP",
+        "otherId": "Sonstiges"
+    }
+}

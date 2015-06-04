@@ -10,6 +10,7 @@
 
 include_once dirname(__FILE__).'/include/Boilerplate.php';
 include_once dirname(__FILE__).'/../Assistants/Structures.php';
+include_once dirname(__FILE__) . '/../Assistants/Language.php';
 
 // load tutor data from GetSite
 $URI = $getSiteURI . "/tutor/user/{$uid}/course/{$cid}";

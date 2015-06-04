@@ -7,9 +7,10 @@
  * @author Ralf Busch
  */
 ///echo count($_REQUEST['exercises'],COUNT_RECURSIVE);
-include_once 'include/Boilerplate.php';
-include_once '../Assistants/Structures.php';
-include_once 'include/FormEvaluator.php';
+include_once dirname(__FILE__) . '/include/Boilerplate.php';
+include_once dirname(__FILE__) . '/../Assistants/Structures.php';
+include_once dirname(__FILE__) . '/../Assistants/Language.php';
+include_once dirname(__FILE__) . '/include/FormEvaluator.php';
 
 $timestamp = time();
 

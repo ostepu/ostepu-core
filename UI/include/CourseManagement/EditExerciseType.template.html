@@ -1,3 +1,5 @@
+<?php $langTemplate='CourseManagement_EditExerciseType';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <?php
 if (isset($EditExerciseTypeNotificationElements)) {
     foreach ($EditExerciseTypeNotificationElements as $notificationElement) {
@@ -9,18 +11,16 @@ if (isset($EditExerciseTypeNotificationElements)) {
 <input type="hidden" name="action" value="EditExerciseType">
 <div class="content-element">
     <div class="content-header">
-        <div class="content-title left uppercase">Punkteart ändern</div>
-        <button class="text-button info-color bold right">verändern</button>
+        <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
+        <button class="text-button info-color bold right"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body left">
             <div class="content-description">
-                Wählen Sie die gewünschte Punkteart aus und vergeben Sie anschließend
-                einen neuen Namen. Achtung: Die Änderung betrifft alle Veranstaltungen
-                der Übungsplattform!
+                <?php echo Language::Get('main','description', $langTemplate); ?>
             </div>
-            <label class="form-field left label bold" for="exerciseTypeID">Punkteart:</label>
+            <label class="form-field left label bold" for="exerciseTypeID"><?php echo Language::Get('main','exerciseType', $langTemplate); ?>:</label>
             <select class="form-field left text-input" name="exerciseTypeID" id="exerciseTypeID" size="10">
             <?php
                 if(!empty($exerciseTypes)) {
@@ -35,7 +35,7 @@ if (isset($EditExerciseTypeNotificationElements)) {
             ?>
             </select>
             
-            <label class="form-field left label bold new-line" for="exerciseTypeName">Neuer Name:</label>
+            <label class="form-field left label bold new-line" for="exerciseTypeName"><?php echo Language::Get('main','exerciseTypeName', $langTemplate); ?>:</label>
             <input class="form-field left text-input" 
                    name="exerciseTypeName" 
                    id="exerciseTypeName"
