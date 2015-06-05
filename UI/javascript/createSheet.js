@@ -13,9 +13,9 @@ $(document).ready( function()
     $('.collapsible').children('.content-header').on("click",collapseElement);
 
     $.fn.datetimepicker.dates['de'] = {
-        days: ["Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag", "Montag"],
-        daysShort: ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So", "Mo"],
-        daysMin: ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So", "Mo"],
+        days: ["Sontag","Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag", "Sonntag"],
+        daysShort: ["So","Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"],
+        daysMin: ["So","Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"],
         months: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
         monthsShort: ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"],
         today: "Heute"
@@ -25,12 +25,14 @@ $(document).ready( function()
       language: 'de',
       pick12HourFormat: false,
       pickSeconds: false,
+      weekStart: 1
     });
 
     $('#datetimepicker2').datetimepicker({
       language: 'de',
       pick12HourFormat: false,
       pickSeconds: false,
+      weekStart: 1
     });
 
     setCurrentTimeData();
