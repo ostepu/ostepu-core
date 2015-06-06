@@ -1,0 +1,49 @@
+{
+    "name": "DBBeispiel",           "Kommentar": "ein eindeutiger Name für diese Komponente",
+    "version": "1.0",
+    "classFile": "DBBeispiel.php",
+    "className": "DBBeispiel",      "Kommentar": "muss mit dem Klassennamen der DBBeispiel.php übereinstimmen",
+    "files": [
+        {"path": ".htaccess",       "Kommentar": "regelt den Zugang zur Komponente"},
+        {"path": "DBBeispiel.php",  "Kommentar": "hier befindet sich die Hauptklasse"},
+        {"path": "index.php"},
+        {"path": "Commands.json",   "Kommentar": "diese Datei enthält die angebotenen Aufrufe"},
+        {"path": "Sql/",            "Kommentar": "ein ganzer Ordner soll rekursiv dazu gehören"}
+    ],
+    
+    "Kommentar": "hier kommen Verbindungen zu anderen Komponente",
+    "links": [
+        {
+            "name": "out",              "Kommentar": "ein Name um diesen Link über Funktionen anzusprechen",
+            "target": "DBQuery2",       "Kommentar": "der Name der Zielkomponente",
+            "links": [
+                {
+                    "method": "POST",         "Kommentar": "der Aufruftyp",
+                    "path": "/query/:abc",    "Kommentar": "der erwartete Aufrufbefehl"
+                }
+            ]
+        },
+        {
+            "Kommentar": "Aufruf einer stored-procedure, wobei Informationen zu einer Veranstaltung abgerufen werden",
+            "name": "getCourse",             
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBCourseGetCourse/:courseid"
+                }
+            ]
+        }
+    ],
+    
+    "Kommentar": "hier kommen Verbindungen anderer Komponenten zu uns",
+    "connector": [
+        {
+            "Kommentar": "der Name unseres Ausgangs, an welchen wir uns bei der anderen Komponenten anhängen wollen",
+            "name": "request",
+            
+            "Kommentar": "der Name der Komponente, welche uns aufrufen soll",
+            "target": "CLocalObjectRequest"
+        }
+    ]
+}

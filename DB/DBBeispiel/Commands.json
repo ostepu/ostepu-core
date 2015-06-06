@@ -1,0 +1,17 @@
+[
+    {
+        "name": "getDaten",              "Kommentar": "der Name des Befehls",
+        "outputType": "BEISPIEL",        "Kommentar": "der erwartete Ausgabetyp dieses Befehls",
+        "inputType": "BEISPIEL",         "Kommentar": "der erwartete Eingabetyp dieses Befehls",
+        "method": "GET",                 "Kommentar": "GET|PUT|POST|DELETE, entsprechend der HTTP Methoden",
+        "path": "/beispiel/course/:cid", "Kommentar": "der Aufrufpfad für diesen befehl"
+    },
+    {
+        "name": "getCourse",
+        "callback": "getMatchSingle",
+        "outputType": "Course",
+        "inputType": "",
+        "method": "GET",
+        "path": "/course(/course)/:courseid"
+    }
+]
