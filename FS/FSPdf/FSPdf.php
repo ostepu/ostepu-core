@@ -224,11 +224,6 @@ class FSPdf
                                            
         if (!file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
             FSPdf::generatepath( $this->config['DIR']['files'].'/'.dirname( $filePath ) );
-
-           /* $form = new Formatierung();
-            $form->Font = ($data->getFont()!==null ? $data->getFont() : 'times');
-            $form->FontSize = ($data->getFontSize()!==null ? $data->getFontSize() : '12');
-            $form->TextColor = ($data->getTextColor()!=null ? $data->getTextColor() : 'black');*/
             
             $result = FSPdf::createPdf($data);
 
