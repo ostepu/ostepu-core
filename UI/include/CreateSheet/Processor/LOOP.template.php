@@ -1,3 +1,6 @@
+<?php include_once dirname(__FILE__) . '/../../../../Assistants/Language.php'; ?>
+<?php $langTemplate='Processor_LOOP';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <?php
 /**
  * @file LOOP.template.php
@@ -14,7 +17,7 @@
                     $liste = array(
                                     'java' => 'Java',
                                     'cx' => 'Cx',
-                                    'custom' => 'Benutzerdefiniert');
+                                    'custom' => Language::Get('main','custom', $langTemplate));
                     
                     $i=0;
                     $params = array();
@@ -22,7 +25,7 @@
                         $params = explode(' ',$process['parameter']);
                     ?>
                     <td colspan="6">
-                        <label class="label bold" for="">Anwendung:</label>
+                        <label class="label bold" for=""><?php echo Language::Get('main','executable', $langTemplate); ?>:</label>
                     </td>
                     <td>
                         <select class="parameter-choice" style="width:auto" name="exercises[0][subexercises][0][processorParameterList][0][]">
@@ -36,7 +39,7 @@
 
                 <tr>
                     <td colspan="6">
-                        <label class="label bold">Parameter: </label>
+                        <label class="label bold"><?php echo Language::Get('main','parameters', $langTemplate); ?>: </label>
                     </td>
                     <td>
                         <input type="text" class="parameter-choice wider" name="exercises[0][subexercises][0][processorParameterList][0][]" value="<?php echo (count($params)>0 ? implode(' ',$params) : '$file'); ?>"/>

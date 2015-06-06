@@ -1,3 +1,6 @@
+<?php include_once dirname(__FILE__) . '/../../../../Assistants/Language.php'; ?>
+<?php $langTemplate='Processor_Processor';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <?php
 /**
  * @file Processor.template.php
@@ -51,16 +54,16 @@ if (isset($processors)){
 <tr><td>
         <div class="content-element processor" style="outline:2px solid #b9b8b8;border-radius: 0px;margin: 0px;">
         <div class="content-header">
-            <div class="content-title left uppercase">Verarbeitung</div>
+            <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
         <div class="critical-color right">
-                <a href="javascript:void(0);" class="delete-processor">Verarbeitung löschen<?php if (isset($process['processId'])){ ?><span class="right warning-simple"></span><?php } ?></a>
+                <a href="javascript:void(0);" class="delete-processor"><?php echo Language::Get('main','removeProcessor', $langTemplate); ?><?php if (isset($process['processId'])){ ?><span class="right warning-simple"></span><?php } ?></a>
             </div>
         </div>
         
 
         <div class="content-body-wrapper">
             <div class="content-body left"> </div>
-            <label class="short left label bold" for="exerciseType">Modul:</label>
+            <label class="short left label bold" for="exerciseType"><?php echo Language::Get('main','selectProcessor', $langTemplate); ?>:</label>
             <?php if (isset($process['processId'])){?>
             <input type="hidden" class="processor-id" name="exercises[0][subexercises][0][processorId][0]" value="<?php echo $process['processId']; ?>" />
             <?php } ?>  
@@ -104,16 +107,16 @@ if (isset($processors)){
         <div class="content-element processor" style="outline:2px solid #b9b8b8;border-radius: 0px;margin: 0px;">
                         
         <div class="content-header">
-            <div class="content-title left uppercase">Verarbeitung</div>
+            <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
         <div class="critical-color right">
-                <a href="javascript:void(0);" class="delete-processor">Verarbeitung löschen</a>
+                <a href="javascript:void(0);" class="delete-processor"><?php echo Language::Get('main','removeProcessor', $langTemplate); ?></a>
             </div>
         </div>
                 <div class="content-body-wrapper">
         
             <div class="content-body left"> </div>
             
-        keine Module
+        <?php echo Language::Get('main','noData', $langTemplate); ?>
       
         </div></div>
           </td></tr>

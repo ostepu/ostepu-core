@@ -1,3 +1,6 @@
+<?php include_once dirname(__FILE__) . '/../../../Assistants/Language.php'; ?>
+<?php $langTemplate='CreateSheet_Subtask';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <?php
 header('Content-Type: text/html; charset=utf-8');
 //include_once dirname(__FILE__) . '/../../../Assistants/Structures.php';
@@ -7,7 +10,7 @@ include_once dirname(__FILE__) . '/../Helpers.php';
 ?>
 
 <li>
-    <input class="form-field text-input very-short" name="exercises[0][subexercises][0][maxPoints]" placeholder="Punkte" id="exerciseMaxPoints" <?php echo isset($maxPoints) ? "value='{$maxPoints}'" : ''?>/>
+    <input class="form-field text-input very-short" name="exercises[0][subexercises][0][maxPoints]" placeholder="<?php echo Language::Get('main','points', $langTemplate); ?>" id="exerciseMaxPoints" <?php echo isset($maxPoints) ? "value='{$maxPoints}'" : ''?>/>
     <select class="form-field text-input short" name="exercises[0][subexercises][0][exerciseType]" id="exerciseType">
         <?php
         if (!isset($exerciseTypes)){
@@ -22,7 +25,7 @@ include_once dirname(__FILE__) . '/../Helpers.php';
         
         foreach ($exerciseTypes as $exerciseType) {
             print "<option value=\"".$exerciseType['exerciseTypeId']."\" ".(isset($type) && $type==$exerciseType['exerciseTypeId'] && (!isset($bonus) || !$bonus)? "selected=\"selected\"" : '').">".$exerciseType['name']."</option>";
-            print "<option value=\"".$exerciseType['exerciseTypeId']."b\" ".(isset($type) && $type==$exerciseType['exerciseTypeId'] && isset($bonus) && $bonus? "selected=\"selected\"" : '').">".$exerciseType['name']." (Bonus)</option>";
+            print "<option value=\"".$exerciseType['exerciseTypeId']."b\" ".(isset($type) && $type==$exerciseType['exerciseTypeId'] && isset($bonus) && $bonus? "selected=\"selected\"" : '').">".$exerciseType['name']." (".Language::Get('main','bonus', $langTemplate).")</option>";
         }
                 
         ?>
@@ -71,10 +74,10 @@ include_once dirname(__FILE__) . '/../Helpers.php';
     <input type="hidden" name="exercises[0][subexercises][0][id]" value="<?php echo $id; ?>" />
     <?php } ?>
     
-    <input class="form-field text-input short mime-field" name="exercises[0][subexercises][0][mime-type]" id="mime-type" title="Typ.Endung,..." placeholder="txt.java, pdf, zip, html, jpg, gif" <?php echo isset($fileTypes) ? "value='".implode(', ',$printTypes)."'" : ''?>/>
+    <input class="form-field text-input short mime-field" name="exercises[0][subexercises][0][mime-type]" id="mime-type" title="<?php echo Language::Get('main','mimeDescription', $langTemplate); ?>,..." placeholder="txt.java, pdf, zip, html, jpg, gif" <?php echo isset($fileTypes) ? "value='".implode(', ',$printTypes)."'" : ''?>/>
         
     <span class="fileArea">
-        <input class="fileButton button" type="file" name="exercises[0][subexercises][0][attachment]" value="Anhang auswählen ..." <?php echo (isset($attachments[0]) ? 'style="display:none";' : '') ;?>/>
+        <input class="fileButton button" type="file" name="exercises[0][subexercises][0][attachment]" value="<?php echo Language::Get('main','selectAttachment', $langTemplate); ?> ..." <?php echo (isset($attachments[0]) ? 'style="display:none";' : '') ;?>/>
         <?php
         if (isset($attachments[0])){
             $fileURL = "../FS/FSBinder/{$attachments[0]['address']}/{$attachments[0]['displayName']}";?>
@@ -92,7 +95,7 @@ include_once dirname(__FILE__) . '/../Helpers.php';
                 <a href="<?php echo $fileURL; ?>" title="<?php echo $attachments[0]['displayName']; ?>" class="plain" target="_blank">
                     <img src="Images/Download.png" />
                 </a>
-                <a href="javascript:void(0);" title="Anhang löschen" name="deleteAttachmentFile" class="plain deleteFile">                                      
+                <a href="javascript:void(0);" title="<?php echo Language::Get('main','removeAttachment', $langTemplate); ?> ..." name="deleteAttachmentFile" class="plain deleteFile">                                      
                     <img src="Images/Delete.png">
                     <?php if (isset($attachments[0])){ ?><span class="right warning-simple" ></span><?php } ?>
                 </a>
@@ -101,7 +104,7 @@ include_once dirname(__FILE__) . '/../Helpers.php';
         <?php } ?>
     </span>
     
-    <a href="javascript:void(0);" class="deny-button delete-subtask critical-color right">Teilaufgabe löschen<?php if (isset($id)){ ?><span class="right warning-simple"></span><?php } ?>  </a>
+    <a href="javascript:void(0);" class="deny-button delete-subtask critical-color right"><?php echo Language::Get('main','removeSubtask', $langTemplate); ?><?php if (isset($id)){ ?><span class="right warning-simple"></span><?php } ?>  </a>
                       
                         
     <?php
@@ -130,7 +133,7 @@ include_once dirname(__FILE__) . '/../Helpers.php';
     <table border="0" style="width:100%">
     <?php  ?>
     <?php if ($formsAllowed){ ?>
-    <tr><td><a href="javascript:void(0);" class="body-option-color very-short use-form">Eingabemaske verwenden</a>
+    <tr><td><a href="javascript:void(0);" class="body-option-color very-short use-form"><?php echo Language::Get('main','useForm', $langTemplate); ?></a>
     <?php
         if (isset($forms)){
             foreach($forms as $form){
@@ -172,7 +175,7 @@ include_once dirname(__FILE__) . '/../Helpers.php';
         }
     ?>
     <tr><td>
-    <a href="javascript:void(0);" class="body-option-color very-short use-processor">Verarbeitung hinzufügen</a>
+    <a href="javascript:void(0);" class="body-option-color very-short use-processor"><?php echo Language::Get('main','useProcessor', $langTemplate); ?></a>
     </td></tr>   
     <?php } ?>
     

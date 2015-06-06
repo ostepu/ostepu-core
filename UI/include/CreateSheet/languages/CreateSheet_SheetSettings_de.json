@@ -1,0 +1,18 @@
+{
+    "main": {
+        "title": "Allgemeine Einstellungen",
+        "submitSheet": "Übungsserie anlegen",
+        "abort": "Abbrechen",
+        "saveChanges": "Änderungen speichern",
+        "sheetName": "Blattname",
+        "startDate": "Bearbeitungsanfang",
+        "endDate": "Bearbeitungsende",
+        "optional": "optional",
+        "sheetFile": "Übungsblatt",
+        "removeSheetFile": "Aufgabenblatt löschen",
+        "sampleSolution": "Musterlösung",
+        "selectFile": "Datei auswählen",
+        "removeSolutionFile": "Musterlösung löschen",
+        "groupSize": "Gruppenstärke"
+    }
+}

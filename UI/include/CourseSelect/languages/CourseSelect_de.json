@@ -1,15 +1,7 @@
 {
     "main": {
-        "title": "",
-        "execute": "",
-        "description": "",
-        "": "",
-        "": "",
-        "": "",
-        "": "",
-        "": "",
-        "": "",
-        "": "",
-        "": ""
+        "title": "Veranstaltungsübersicht",
+        "enterCourse": "zur Veranstaltung",
+        "noData": "Sie sind in keinem Kurs eingetragen."
     }
 }

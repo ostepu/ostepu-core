@@ -1,0 +1,8 @@
+{
+    "main": {
+        "normal": "Normal",
+        "distance": "Ähnlichkeit in %",
+        "regularExpression": "regulärer Ausdruck",
+        "compare": "Vergleich"
+    }
+}

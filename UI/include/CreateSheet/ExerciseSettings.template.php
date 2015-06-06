@@ -1,3 +1,6 @@
+<?php include_once dirname(__FILE__) . '/../../../Assistants/Language.php'; ?>
+<?php $langTemplate='CreateSheet_ExerciseSettings';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <?php 
 include_once dirname(__FILE__) . '/../../../Assistants/LArraySorter.php';
 header('Content-Type: text/html; charset=utf-8'); 
@@ -6,9 +9,9 @@ $choiceId = 0; // obsolete???
         
 <div class="content-element collapsible">
     <div class="content-header">
-        <div class="content-title left uppercase">Aufgabe <?php echo isset($exercises[0]['link']) ? $exercises[0]['link'] : '???' ?></div>
+        <div class="content-title left uppercase"><?php echo Language::Get('main','exercise', $langTemplate); ?> <?php echo isset($exercises[0]['link']) ? $exercises[0]['link'] : '???' ?></div>
         <div class="critical-color bold right">
-            <a href="javascript:void(0);" class="delete-exercise">Aufgabe löschen<?php if (isset($exercises)){ ?><span class="right warning-simple"></span><?php } ?></a>
+            <a href="javascript:void(0);" class="delete-exercise"><?php echo Language::Get('main','removeExercise', $langTemplate); ?><?php if (isset($exercises)){ ?><span class="right warning-simple"></span><?php } ?></a>
         </div>
     </div>
 
@@ -65,7 +68,7 @@ $choiceId = 0; // obsolete???
             ?>
             
                 <li class="skip-item">
-                    <a href="javascript:void(0);" class="body-option-color right deny-button skip-list-item">Teilaufgabe hinzufügen</a>
+                    <a href="javascript:void(0);" class="body-option-color right deny-button skip-list-item"><?php echo Language::Get('main','addSubtask', $langTemplate); ?></a>
                 </li>
             </ol>
         </div>
