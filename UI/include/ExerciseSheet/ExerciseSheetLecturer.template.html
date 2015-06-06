@@ -1,9 +1,11 @@
+<?php $langTemplate='ExerciseSheet';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <input type="hidden" name="action" value="ExerciseSheetLecturer">
 <div class="content-element interactive add">
     <div class="content-header">
-        <div class="content-title left uppercase">Neue Serie</div>
+        <div class="content-title left uppercase"><?php echo Language::Get('main','createSheetTitle', $langTemplate); ?></div>
         <div class="info-color bold right">
-            <?php print "<a href=\"CreateSheet.php?cid={$cid}\" class=\"exercise-sheet-end bold right\" id=\"target\">Serie anlegen</a>"; ?>
+            <?php print "<a href=\"CreateSheet.php?cid={$cid}\" class=\"exercise-sheet-end bold right\" id=\"target\">".Language::Get('main','createSheetExecute', $langTemplate)."</a>"; ?>
         </div>
     </div>
 </div> <!-- end: content-element -->
@@ -32,14 +34,14 @@ if (isset($SheetNotificationElements[$sheet['id']])) {
             <?php
                 print $sheet['sheetName'];
                 if ($isExpired) {
-                    print ' (abgelaufen)';
+                    print ' ('.Language::Get('sheet','isExpired', $langTemplate).')';
                 }
             ?>
         </div>
         
         <div class="right">
             <span class="info-color bold">
-                    <?php echo date('d.m.Y  -  H:i', $sheet['startDate']).' bis'; ?>
+                    <?php echo date('d.m.Y  -  H:i', $sheet['startDate']).' '.Language::Get('sheet','to', $langTemplate); ?>
             </span>
             
             <span class="critical-color bold">
@@ -77,11 +79,11 @@ if (isset($SheetNotificationElements[$sheet['id']])) {
                     <div class="exercise-type">
                         <?php
                             print $exercise['typeName'];
-                            print $exercise['bonus'] ? ' (B)' : NULL;
+                            print $exercise['bonus'] ? ' ('.Language::Get('sheet','bonus', $langTemplate).')' : NULL;
                         ?>
                     </div>
                     <div class="exercise-points">
-                        <?php print $exercise['maxPoints'] . ' P'; ?>
+                        <?php print $exercise['maxPoints'] . ' '.Language::Get('sheet','points', $langTemplate); ?>
                     </div>
                     <?php
                         // creates a downloadAttachment icon for the exercise (if it exists)
@@ -106,9 +108,9 @@ if (isset($SheetNotificationElements[$sheet['id']])) {
                     
                 </li>
                 <div class="stats-block">
-                    <span class="bold">Einsendungen:</span>
+                    <span class="bold"><?php echo Language::Get('sheet','totalSubmissions', $langTemplate); ?>:</span>
                     <?php $studentsCount = array_merge($studentsCount,(isset($sheet['submissionStats'][$eid]) ? $sheet['submissionStats'][$eid] : array() )); ?>
-                    <span class=""><?php echo (isset($sheet['submissionStats'][$eid]) ? count($sheet['submissionStats'][$eid]) : 0 ); ?> Einsendungen</span>
+                    <span class=""><?php echo (isset($sheet['submissionStats'][$eid]) ? count($sheet['submissionStats'][$eid]) : 0 ); ?> <?php echo Language::Get('sheet','submissions', $langTemplate); ?></span>
                 </div>
                 
                 <?php
@@ -124,14 +126,14 @@ if (isset($SheetNotificationElements[$sheet['id']])) {
                 <?php } ?>
                 
             </ol>
-                <li class="footer-text bold">alle Einsendungen:</li>
+                <li class="footer-text bold"><?php echo Language::Get('sheet','allSubmissions', $langTemplate); ?>:</li>
                 <!--<li class="footer-text"><?php echo $sheet['courseUserCount']; ?> Studenten</li>-->
-                <li class="footer-text"><?php echo count(array_unique($studentsCount)) ?> Studenten</li>
-                <li class="footer-text"><?php echo $sheet['selectedSubmissions']; ?> Einsendungen</li>
+                <li class="footer-text"><?php echo count(array_unique($studentsCount)) ?> <?php echo Language::Get('sheet','totalStudents', $langTemplate); ?></li>
+                <li class="footer-text"><?php echo $sheet['selectedSubmissions']; ?> <?php echo Language::Get('sheet','selectedSubmissions', $langTemplate); ?></li>
                 <!--<li class="footer-text"><?php echo $sheet['tutorMarkings']; ?> Korrekturaufträge</li>-->
                 <?php if (isset($sheet['status'])){ ?>
                 <br>
-                <li class="footer-text bold">meine Korrekturen:</li>
+                <li class="footer-text bold"><?php echo Language::Get('sheet','tutorMarkings', $langTemplate); ?>:</li>
                 <?php $types = Marking::getStatusDefinition();
                 foreach ($sheet['status'] as $key => $value){ ?>
                 <li class="footer-text">
@@ -141,7 +143,7 @@ if (isset($SheetNotificationElements[$sheet['id']])) {
                 <?php }} ?>
                 <?php if (isset($sheet['allStatus'])){ ?>
                 <br>
-                <li class="footer-text bold">alle Korrekturen:</li>
+                <li class="footer-text bold"><?php echo Language::Get('sheet','allMarkings', $langTemplate); ?>:</li>
                 <?php $types = Marking::getStatusDefinition();
                 foreach ($sheet['allStatus'] as $key => $value){ ?>
                 <li class="footer-text">
@@ -160,7 +162,7 @@ if (isset($SheetNotificationElements[$sheet['id']])) {
                                                     . '/' . $displayName; ?>
                     <a class="text-button" href="<?php echo $fileURL; ?>" title="<?php echo $displayName; /*{$filesystemURI}*/ ?>"
                         target="_blank">
-                        Aufgabenblatt
+                        <?php echo Language::Get('sheetMenu','sheetFile', $langTemplate); ?>
                     </a>
                 </li>
                     <?php } ?>
@@ -171,7 +173,7 @@ if (isset($SheetNotificationElements[$sheet['id']])) {
                         <?php $fileAddress = $sheet['sampleSolution']['address']; ?>
                         <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/ ?>
                         <a class="text-button" href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
-                            Musterlösung
+                            <?php echo Language::Get('sheetMenu','sampleSolution', $langTemplate); ?>
                         </a>
                     </li>
                 <?php endif; ?>
@@ -179,7 +181,7 @@ if (isset($SheetNotificationElements[$sheet['id']])) {
                 <?php if ($sheet['hasAttachments']){ ?>
                     <li>
                         <a href="Download.php?cid=<?php echo $cid; ?>&downloadAttachments=<?php echo $sheet['id']; ?>" class="download text-button body-option-color">
-                            Alle Anhänge herunterladen
+                            <?php echo Language::Get('sheetMenu','downloadAttachments', $langTemplate); ?>
                         </a>
                     </li>
                 <?php } ?>
@@ -187,7 +189,7 @@ if (isset($SheetNotificationElements[$sheet['id']])) {
                 <?php if (isset($sheet['tutorMarkings']) && $sheet['tutorMarkings']>0){ ?>
                     <li>
                         <a href="Download.php?cid=<?php echo $cid; ?>&downloadCSV=<?php echo $sheet['id']; ?>" class="download text-button body-option-color">
-                            Einsendungen herunterladen
+                            <?php echo Language::Get('sheetMenu','downloadTutorMarkings', $langTemplate); ?>
                         </a>
                     </li>                
                 <?php } ?>
@@ -195,21 +197,21 @@ if (isset($SheetNotificationElements[$sheet['id']])) {
                     <a class="text-button" href="TutorAssign.php?cid=<?php echo $user['courses'][0]['course']['id'],
                                                      '&sid=',
                                                      $sheet['id']; ?>">
-                        Kontrolleurzuweisung
+                        <?php echo Language::Get('sheetMenu','tutorAssign', $langTemplate); ?>
                     </a>
                 </li>
                 <li>
                     <a class="text-button" href="MarkingTool.php?cid=<?php echo $user['courses'][0]['course']['id'],
                                                      '&sid=',
                                                      $sheet['id']; ?>">
-                        Korrekturassistent
+                        <?php echo Language::Get('sheetMenu','markingTool', $langTemplate); ?>
                     </a>
                 </li>
                 <li>
                 </li>
                 <li>
                     <button title="Übungsserie löschen" name="<?php echo (!isset($_POST['deleteSheetWarning']) || (isset($_POST['deleteSheetWarning']) && $_POST['deleteSheetWarning'] != $sheet['id'])) ? 'deleteSheetWarning' : 'deleteSheet';?>" value="<?php echo $sheet['id']; ?>"class="text-button<?php echo (!isset($_POST['deleteSheetWarning']) || (isset($_POST['deleteSheetWarning']) && $_POST['deleteSheetWarning'] != $sheet['id'])) ? ' ' : '-simple  error-simple' ;?> bold critical-color">
-                        Übungsserie löschen
+                        <?php echo Language::Get('sheetMenu','deleteSheet', $langTemplate); ?>
                     </button>
                 </li>
                        
@@ -224,12 +226,12 @@ endforeach;
 ?>
 <div class="content-element">
     <div class="content-header">
-        <div class="content-title left uppercase">Hinweis</div>
+        <div class="content-title left uppercase"><?php echo Language::Get('main','info', $langTemplate); ?></div>
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body left">
-            Es sind noch keine Aufgabenblätter vorhanden.
+            <?php echo Language::Get('main','noSheets', $langTemplate); ?>
         </div>
     </div> <!-- end: content-body -->
 </div> <!-- end: content-wrapper -->

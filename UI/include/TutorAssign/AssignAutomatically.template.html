@@ -1,3 +1,5 @@
+<?php $langTemplate='TutorAssign_Automatically';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <?php
 if (isset($AssignAutomaticallyNotificationElements)) {
     foreach ($AssignAutomaticallyNotificationElements as $notificationElement) {
@@ -9,14 +11,14 @@ if (isset($AssignAutomaticallyNotificationElements)) {
 <input type="hidden" name="action" value="AssignAutomatically">
 <div class="content-element">
     <div class="content-header">
-        <div class="content-title left uppercase">Automatische Zuweisung</div>
-        <button class="text-button right bold info-color">zuweisen</button>
+        <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
+        <button class="text-button right bold info-color"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body left">
             <label class="form-field left label bold new-line">
-                Unzugeordnete gruppenweise zuteilen an:
+                <?php echo Language::Get('main','assignInGroups', $langTemplate); ?>:
             </label>
 <div class="left">
                 <?php $statusList = CourseStatus::getStatusDefinition();

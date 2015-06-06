@@ -1,15 +1,7 @@
 {
     "main": {
-        "title": "",
-        "execute": "",
-        "description": "",
-        "": "",
-        "": "",
-        "": "",
-        "": "",
-        "": "",
-        "": "",
-        "": "",
-        "": ""
+        "title": "Automatische Zuweisung",
+        "execute": "zuweisen",
+        "assignInGroups": "Unzugeordnete gruppenweise zuteilen an"
     }
 }

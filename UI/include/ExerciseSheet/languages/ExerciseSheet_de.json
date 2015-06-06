@@ -1,0 +1,39 @@
+{
+    "main": {
+        "createSheetTitle": "Neue Serie",
+        "createSheetExecute": "Serie anlegen",
+        "info": "Hinweis",
+        "noSheets": "Es sind noch keine Aufgabenblätter vorhanden."
+    },
+    "sheet": {
+        "isExpired": "abgelaufen",
+        "to": "bis",
+        "bonus": "B",
+        "points": "P",
+        "totalSubmissions": "Einsendungen",
+        "submissions": "Einsendungen",
+        "allSubmissions": "alle Einsendungen",
+        "totalStudents": "Studenten",
+        "selectedSubmissions": "Einsendungen",
+        "tutorMarkings": "meine Korrekturen",
+        "allMarkings": "alle Korrekturen",
+        "groupMembers": "In Gruppe mit",
+        "comment": "Bemerkung",
+        "notAccepted": "nicht akzeptiert",
+        "notCorrected": "unkorrigiert",
+        "notSubmitted": "nicht eingesendet"
+    },
+    "sheetMenu":{
+        "sheetFile": "Aufgabenblatt",
+        "sampleSolution": "Musterl&ouml;sung",
+        "downloadAttachments": "Alle Anh&auml;nge herunterladen",
+        "downloadTutorMarkings": "Einsendungen herunterladen",
+        "tutorAssign": "Kontrolleurzuweisung",
+        "markingTool": "Korrekturassistent",
+        "deleteSheet": "&Uuml;bungsserie l&ouml;schen",
+        "manageGroup": "Gruppe verwalten",
+        "uploadSubmission": "Aufgaben hochladen",
+        "downloadStudentContent": "Alles herunterladen",
+        "uploadHistory": "Einsendungsverlauf"
+    }
+}
