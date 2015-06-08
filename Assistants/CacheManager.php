@@ -129,7 +129,9 @@ class CacheManager
                 array_shift($add);
                 array_shift($add);
                 array_shift($add);
-                $add = "/".implode("/\n",$add);
+                array_shift($add);
+                array_shift($add);
+                $add = "/".implode("\n/",$add);
                 $text.="\"".$fromName.'"->"'.$path->toName."\"[ label = \"".$path->toMethod."\n".$add."\" ];\n";
             }
             $text.="\n}";
