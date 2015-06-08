@@ -408,14 +408,8 @@ $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
                "notificationElements" => $notifications,
                "navigationElement" => $menu));
 
-/*// construct a new header
-$h = Template::WithTemplateFile('include/Header/Header.template.html');
-$h->bind($user_course_data);
-$h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
-               "notificationElements" => $notifications));*/
-
 $isInGroup = (!empty($group_data['group']['members']) || !empty($group_data['invitationsFromGroup']));
-$isLeader = $group_data['group']['leader']['id'] == $uid;
+$isLeader = isset($group_data['group']['leader']['id']) && $group_data['group']['leader']['id'] == $uid;
 $hasInvitations = !empty($group_data['invitationsToGroup']);
 
 $group_data['isInGroup'] = $isInGroup;

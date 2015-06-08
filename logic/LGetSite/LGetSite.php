@@ -1406,12 +1406,15 @@ class LGetSite
         unset($answer);
 ///var_dump($invitations);
         // order users by id
+        
         $usersById = array();
-        $leaderId = $group['leader']['id'];
-        $usersById[$leaderId] = &$group['leader'];
-        foreach ($group['members'] as &$member) {
-            $uId = $member['id'];
-            $usersById[$uId] = &$member;
+        if (isset($group['leader']['id'])){
+            $leaderId = $group['leader']['id'];
+            $usersById[$leaderId] = &$group['leader'];
+            foreach ($group['members'] as &$member) {
+                $uId = $member['id'];
+                $usersById[$uId] = &$member;
+            }
         }
 
         // order submissions by exercise and user, only take latest
@@ -1472,7 +1475,7 @@ class LGetSite
         if ((!isset($group['members']) || count($group['members'])==0) 
                 && $lastGroup !== null 
                 && $sheet['groupSize'] >= $lastSheet['groupSize'] 
-                && $lastGroup['leader']['id'] == $userid 
+                && (isset($lastGroup['leader']['id']) && $lastGroup['leader']['id'] == $userid)
                 && isset($lastGroup['members']) 
                 && count($lastGroup['members']) >0 
                 && count($invited)==0 
