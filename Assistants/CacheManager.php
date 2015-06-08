@@ -54,6 +54,9 @@ class CacheManager
     private static $enabled = false;
     private static $maxSid = -1;
     
+    // true = die dot-Graphen werden erstellt, false = die grafische Ausgabe der Graphen erfolgt nicht
+    private static $generateTree = false;
+    
     public static function getToPathBySid($sid)
     {
         if ($sid===null) return null;
@@ -101,30 +104,62 @@ class CacheManager
     
     public static function savePath()
     {
-        if (!self::$enabled) return;
         asort(self::$cachedPath);
         
-       /* $text="digraph G {rankdir=TB;edge [splines=\"polyline\"];\n";
-        $graphName="graph";
-        
-        $graphName = $_SERVER['SCRIPT_NAME'];
-        $graphName = basename(explode('?',$graphName)[0]);
-        
-        $beginDone=false;
-        foreach (self::$cachedPath as $key => $path){
-            $fromName = self::getToPathBySid($path->fromSid);
+        if (self::$generateTree){
+            // lange Variante
+            $text="digraph G {rankdir=TB;edge [splines=\"polyline\"];\n";
+            $graphName="graph";
+            
+            $graphName = $_SERVER['SCRIPT_NAME'];
+            $graphName = basename(explode('?',$graphName)[0]);
+            
+            $beginDone=false;
+            foreach (self::$cachedPath as $key => $path){
+                $fromName = self::getToPathBySid($path->fromSid);
 
-            if ($fromName===null){
-                $fromName = 'BEGIN';
-            } else
-                $fromName = $fromName->toName;
-            $text.="\"".$fromName.'"->"'.$path->toName."\"[ label = \"".$path->toMethod."\" ];\n";
+                if ($fromName===null){
+                    $fromName = 'BEGIN';
+                } else
+                    $fromName = $fromName->toName;
+                
+                $add = $path->toURL;
+                $add = explode("/",$add);
+                array_shift($add);
+                array_shift($add);
+                array_shift($add);
+                array_shift($add);
+                $add = "/".implode("/\n",$add);
+                $text.="\"".$fromName.'"->"'.$path->toName."\"[ label = \"".$path->toMethod."\n".$add."\" ];\n";
+            }
+            $text.="\n}";
+            file_put_contents(dirname(__FILE__).'/../path/'.$graphName.'.gv',$text);
+            
+            // kurze Variante
+            $text="digraph G {rankdir=TB;edge [splines=\"polyline\"];\n";
+            $graphName="graph";
+            
+            $graphName = $_SERVER['SCRIPT_NAME'];
+            $graphName = basename(explode('?',$graphName)[0]);
+            
+            $beginDone=false;
+            foreach (self::$cachedPath as $key => $path){
+                $fromName = self::getToPathBySid($path->fromSid);
+
+                if ($fromName===null){
+                    $fromName = 'BEGIN';
+                } else
+                    $fromName = $fromName->toName;
+                
+                $text.="\"".$fromName.'"->"'.$path->toName."\"[ label = \"".$path->toMethod."\" ];\n";
+            }
+            $text.="\n}";
+            file_put_contents(dirname(__FILE__).'/../path/'.$graphName.'.short.gv',$text);
         }
-        $text.="\n}";
-        file_put_contents(dirname(__FILE__).'/../path/'.$graphName.'.gv',$text);*/
         
         if (self::$changedTree) return;
-                
+        if (!self::$enabled) return;
+        
         $tree = array();
         foreach (self::$cachedPath as $key => $path){
             if ($path->toMethod!='GET') continue;
@@ -141,7 +176,7 @@ class CacheManager
     
     public static function generateURL()
     {
-        if (!self::$enabled) return null;
+        ///if (!self::$enabled) return null;
         return $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
     }
     
@@ -159,13 +194,13 @@ class CacheManager
     
     public static function addPath($sid, $toSid, $Name, $URL, $method)
     {
-        if (!self::$enabled) return null;
+        if (!self::$enabled && !self::$generateTree) return null;
         self::$cachedPath[$sid] = new PathObject($sid, $toSid, $Name, $URL ,$method);
     }
     
     public static function cacheData($sid, $Name, $URL, $content, $status, $method)
     {
-        if (!self::$enabled) return null;
+        //if (!self::$enabled) return null;
         if (strpos($URL,'/UI/')===false && strtoupper($method)=='GET'){
             $uTag = md5($URL);
 
@@ -184,7 +219,7 @@ class CacheManager
     
     public static function cacheDataSimple($sid, $Name, $URL, $content, $status, $method)
     {
-        if (!self::$enabled) return null;
+        //if (!self::$enabled) return null;
         if (strpos($URL,'/UI/')===false && strtoupper($method)=='GET'){
             $uTag = md5($URL);
 
@@ -202,7 +237,7 @@ class CacheManager
     
     public static function generateETag($data)
     {
-        if (!self::$enabled) return null;
+        ///if (!self::$enabled) return null;
         if (!is_string($data))
             $data = json_encode($data);
         return md5($data);
@@ -210,20 +245,20 @@ class CacheManager
     
     public static function setETag($data)
     {
-        if (!self::$enabled) return null;
+        ///if (!self::$enabled) return null;
         $eTag=self::generateETag($data);
         header('ETag: ' . $eTag . '');
     }
     
     public static function setCacheSid($sid)
     {
-        if (!self::$enabled) return null;
+        ///if (!self::$enabled) return null;
         header('Cachesid: ' . $sid . '');
     }
     
     public static function getTree($sid, $URL, $method)
     {
-        if (!self::$enabled) return;
+        ///if (!self::$enabled) return;
         if (self::$activeTree) return;
         if (self::$tree!=null) return;
         if (strtoupper($method)!='GET') return;
