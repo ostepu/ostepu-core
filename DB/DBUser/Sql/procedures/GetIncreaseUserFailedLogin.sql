@@ -18,6 +18,7 @@ SELECT
     U.U_failed_logins,
     U.U_externalId,
     U.U_studentNumber,
+    U.U_lang,
     CS.CS_status,
     C.C_id,
     C.C_name,

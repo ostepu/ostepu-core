@@ -394,6 +394,31 @@ class User extends Object implements JsonSerializable
     {
         $this->comment = $value;
     }
+    
+    /**
+     * @var string $lang the selected language
+     */
+    private $lang = null;
+
+    /**
+     * the $lang getter
+     *
+     * @return the value of $lang
+     */
+    public function getLang( )
+    {
+        return $this->lang;
+    }
+
+    /**
+     * the $lang setter
+     *
+     * @param string $value the new value for $lang
+     */
+    public function setLang( $value = null )
+    {
+        $this->lang = $value;
+    }
 
     /**
      * Creates an User object, for database post(insert) and put(update).
@@ -413,6 +438,7 @@ class User extends Object implements JsonSerializable
      * @param string $studentNumber The student number.
      * @param string $isSuperAdmin The super admin flag.
      * @param string $comment The user comment.
+     * @param string $lang The language.
      *
      * @return an user object
      */
@@ -430,7 +456,8 @@ class User extends Object implements JsonSerializable
                                       $externalId = null,
                                       $studentNumber = null,
                                       $isSuperAdmin = null,
-                                      $comment = null
+                                      $comment = null,
+                                      $lang = null
                                       )
     {
         return new User( array( 
@@ -447,7 +474,8 @@ class User extends Object implements JsonSerializable
                                'externalId' => $externalId,
                                'studentNumber' => $studentNumber,
                                'isSuperAdmin' => $isSuperAdmin,
-                               'comment' => $comment
+                               'comment' => $comment,
+                               'lang' => $lang
                                ) );
     }
 
@@ -498,7 +526,8 @@ class User extends Object implements JsonSerializable
                      'U_studentNumber' => 'studentNumber',
                      'U_externalId' => 'externalId',
                      'U_isSuperAdmin' => 'isSuperAdmin',
-                     'U_comment' => 'comment'
+                     'U_comment' => 'comment',
+                     'U_lang' => 'lang'
                      );
     }
 
@@ -594,6 +623,12 @@ class User extends Object implements JsonSerializable
                                  $values,
                                  'U_comment',
                                  DBJson::mysql_real_escape_string( $this->comment )
+                                 );
+        if ( $this->lang !== null )
+            $this->addInsertData( 
+                                 $values,
+                                 'U_Lang',
+                                 DBJson::mysql_real_escape_string( $this->lang )
                                  );
 
         if ( $values != '' ){
@@ -788,6 +823,8 @@ class User extends Object implements JsonSerializable
             $list['isSuperAdmin'] = $this->isSuperAdmin;
         if ( $this->comment !== null )
             $list['comment'] = $this->comment;
+        if ( $this->lang !== null )
+            $list['lang'] = $this->lang;
         return array_merge($list,parent::jsonSerialize( ));
     }
 
