@@ -1,3 +1,5 @@
+<?php $langTemplate='TutorAssign_Manually';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <?php
 if (isset($AssignManuallyNotificationElements)) {
     foreach ($AssignManuallyNotificationElements as $notificationElement) {
@@ -9,17 +11,17 @@ if (isset($AssignManuallyNotificationElements)) {
 <input type="hidden" name="action" value="AssignManually">
 <div class="content-element">
     <div class="content-header">
-        <div class="content-title left uppercase">Manuelle Zuweisung</div>
-        <button name="actionAssignManually" value="" class="text-button right bold info-color">zuweisen</button>
+        <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
+        <button name="actionAssignManually" value="" class="text-button right bold info-color"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
     </div>
         
     <div class="content-body-wrapper">  
     
         <div class="content-body left">
         <?php 
-            $sortTypes = array('lastName' => 'Nachname','firstName' => 'Vorname','userName' => 'Nutzername');
+            $sortTypes = array('lastName' => Language::Get('main','lastName', $langTemplate),'firstName' => Language::Get('main','firstName', $langTemplate),'userName' => Language::Get('main','userName', $langTemplate));
         ?>
-        <label class="left label bold new-line" for="sortUsers">Sortierung:</label> 
+        <label class="left label bold new-line" for="sortUsers"><?php echo Language::Get('main','sorting', $langTemplate); ?>:</label> 
         <select class="form-field left text-input" name="sortUsers" id="sortUsers">
                 <?php
                     foreach ($sortTypes as $key => $value) {
@@ -54,7 +56,7 @@ if (isset($AssignManuallyNotificationElements)) {
 
                         if ($tutorAssignment['tutor']['userName'] != "unassigned") {
                             if (!isset($tutorAssignment['tutor']['id'])){
-                                echo "unbekannter Kontrolleur";
+                                echo Language::Get('main','unknownTutor', $langTemplate);
                             } else {
                                 print isset($tutorAssignment['tutor']['firstName']) ? $tutorAssignment['tutor']['firstName'].' ' : '';
                                 print isset($tutorAssignment['tutor']['lastName']) ? $tutorAssignment['tutor']['lastName'].' ': '';
@@ -63,7 +65,7 @@ if (isset($AssignManuallyNotificationElements)) {
                             }
                             print " (" . count($tutorAssignment['submissions']) . ")";
                         } else {
-                            print "Unzugeordnet ";
+                            print Language::Get('main','notAssigned', $langTemplate)." ";
                             print "(" . count($tutorAssignment['submissions']) . ")";
                         }
 
@@ -95,7 +97,7 @@ if (isset($AssignManuallyNotificationElements)) {
 
                 if ($tutorAssignment['tutor']['userName'] != "unassigned") {
                     if (!isset($tutorAssignment['tutor']['id'])){
-                        echo "unbekannter Kontrolleur";
+                        echo Language::Get('main','unknownTutor', $langTemplate);
                     } else {
                         print isset($tutorAssignment['tutor']['firstName']) ? $tutorAssignment['tutor']['firstName'].' ' : '';
                         print isset($tutorAssignment['tutor']['lastName']) ? $tutorAssignment['tutor']['lastName'].' ': '';
@@ -104,7 +106,7 @@ if (isset($AssignManuallyNotificationElements)) {
                     }
                     print " (" . count($tutorAssignment['submissions']) . ")";
                 } else {
-                    print "Unzugeordnet ";
+                    print Language::Get('main','notAssigned', $langTemplate)." ";
                     print "(" . count($tutorAssignment['submissions']) . ")";
                 }
 
@@ -112,13 +114,13 @@ if (isset($AssignManuallyNotificationElements)) {
                 ?>
             </div>
             <div class="form-field checkbox-container">
-                <a href="javascript:void(0)" class="text-button bold info-color selectAll">Alle</a>
+                <a href="javascript:void(0)" class="text-button bold info-color selectAll"><?php echo Language::Get('main','all', $langTemplate); ?></a>
                 
                 <?php if (isset($tutorAssignment['proposalSubmissions'])) { ?>
-                <a href="javascript:void(0)" class="text-button bold info-color selectAllProposals">Vorschläge</a>
+                <a href="javascript:void(0)" class="text-button bold info-color selectAllProposals"><?php echo Language::Get('main','proposals', $langTemplate); ?></a>
                 <?php } ?>
                 
-                <a href="javascript:void(0)" class="text-button bold info-color selectNothing">Keine</a><br>
+                <a href="javascript:void(0)" class="text-button bold info-color selectNothing"><?php echo Language::Get('main','nothing', $langTemplate); ?></a><br>
                 
                 <?php 
                 $tutId=null;
@@ -166,7 +168,7 @@ if (isset($AssignManuallyNotificationElements)) {
     </div>  <!--end: content-body-wrapper -->
 
         <?php if ($proposedSubmissions) { ?>
-            <button name="actionAssignAllProposals" value="" class="text-button right bold info-color">alle Vorschläge zuweisen</button>
+            <button name="actionAssignAllProposals" value="" class="text-button right bold info-color"><?php echo Language::Get('main','assignAllProposals', $langTemplate); ?></button>
         <?php } ?>
     
 </div>  <!--end: content-element -->

@@ -1,40 +1,41 @@
-<input type="hidden" name="action" value="SetAccountInfo">
+<?php $langTemplate='AccountSettings_AccountInfo';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <div class="content-element">
     <div class="content-header">
-        <div class="content-title left uppercase">Eigene Daten</div>
+        <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
         <div class="info-color bold right">
-            <button class="text-button info-color bold right">ändern</button>
+            <button class="text-button info-color bold right"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
         </div>
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body left">
             <div class="form-field left bold">
-                Vorname:
+                <?php echo Language::Get('main','firstName', $langTemplate); ?>:
             </div>
             <div class="form-field left">
                 <?php echo (isset($firstName) ? $firstName : '-'); ?>
             </div>
             <div class="form-field left bold new-line">
-                Nachname:
+                <?php echo Language::Get('main','lastName', $langTemplate); ?>:
             </div>
             <div class="form-field left">
                 <?php echo (isset($lastName) ? $lastName : '-'); ?>
             </div>
             <div class="form-field left bold new-line">
-                E-Mail:
+                <?php echo Language::Get('main','email', $langTemplate); ?>:
             </div>
             <div class="form-field left">
                 <?php echo (isset($email) ? $email : '-'); ?>
             </div>
             <div class="form-field left bold new-line">
-                Login:
+                <?php echo Language::Get('main','userName', $langTemplate); ?>:
             </div>
             <div class="form-field left">
                 <?php echo (isset($userName) ? $userName : '-'); ?>
             </div>
             <div class="form-field left bold new-line">
-                Sprache:
+                <?php echo Language::Get('main','language', $langTemplate); ?>:
             </div>
             <div class="form-field left">
             <select class="form-field left text-input" name="language" id="language" size="1">

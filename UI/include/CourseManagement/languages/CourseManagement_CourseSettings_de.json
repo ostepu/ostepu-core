@@ -1,0 +1,13 @@
+{
+    "main": {
+        "title": "Veranstaltungseinstellungen",
+        "execute": "speichern",
+        "description": "Hier k&ouml;nnen die Grunddaten der aktuellen Veranstaltung ver&auml;ndert werden.",
+        "courseName": "Veranstaltungsname",
+        "semester": "Semester",
+        "defaultGroupSize": "Max. Gruppengr&ouml;&szlig;e (Standardwert)",
+        "defaultExerciseTypes": "Zugela&szlig;ene Punktearten",
+        "yes": "Ja",
+        "no": "Nein"
+    }
+}

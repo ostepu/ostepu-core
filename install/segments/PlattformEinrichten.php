@@ -23,11 +23,11 @@ class PlattformEinrichten
     public static function show($console, $result, $data)
     {
         $text='';
-        $text .= Design::erstelleBeschreibung($console,Sprachen::Get('platform','description'));    
+        $text .= Design::erstelleBeschreibung($console,Language::Get('platform','description'));    
 
         if (!$console){
-            $text .= Design::erstelleZeile($console, Sprachen::Get('platform','createTables'), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0]), 'h');
-            $text .= Design::erstelleZeile($console, Sprachen::Get('platform','details'), 'e', Design::erstelleAuswahl($console, $data['PL']['pl_details'], 'data[PL][pl_details]', 'details', null), 'v');
+            $text .= Design::erstelleZeile($console, Language::Get('platform','createTables'), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0]), 'h');
+            $text .= Design::erstelleZeile($console, Language::Get('platform','details'), 'e', Design::erstelleAuswahl($console, $data['PL']['pl_details'], 'data[PL][pl_details]', 'details', null), 'v');
         }
         
         if (isset($result[self::$onEvents['install']['name']]) && $result[self::$onEvents['install']['name']]!=null){
@@ -43,15 +43,15 @@ class PlattformEinrichten
         if (self::$installed){
             if (!$console && isset($data['PL']['pl_details']) && $data['PL']['pl_details'] === 'details'){
                 foreach ($content as $component => $dat){
-                    $text .= "<tr><td class='e' rowspan='1'>{$component}</td><td class='v'></td><td class='e'><div align ='center'>".((isset($dat['status']) && $dat['status']===201) ? Sprachen::Get('main','ok') : "<font color='red'>".Sprachen::Get('main','fail')." ({$dat['status']})</font>")."</align></td></tr>";
+                    $text .= "<tr><td class='e' rowspan='1'>{$component}</td><td class='v'></td><td class='e'><div align ='center'>".((isset($dat['status']) && $dat['status']===201) ? Language::Get('main','ok') : "<font color='red'>".Language::Get('main','fail')." ({$dat['status']})</font>")."</align></td></tr>";
                 }
             } else {
-                $text .= Design::erstelleZeile($console, Sprachen::Get('platform','countComponents'), 'e', count($content), 'v_c');
+                $text .= Design::erstelleZeile($console, Language::Get('platform','countComponents'), 'e', count($content), 'v_c');
             }
             $text .= Design::erstelleInstallationszeile($console, $fail, $errno, $error);
         }
 
-        echo Design::erstelleBlock($console, Sprachen::Get('platform','title'), $text);
+        echo Design::erstelleBlock($console, Language::Get('platform','title'), $text);
         return null;
     }
     

@@ -1,0 +1,11 @@
+{
+    "main": {
+        "title": "Gruppen&uuml;bersicht",
+        "execute": "verlassen",
+        "description": "Achtung: Wenn Sie die Gruppe verlassen, werden Ihre bisherigen Einsendungen gel&ouml;scht.",
+        "groupLeader": "Gruppenf&uuml;hrer",
+        "removeMember": "aus Gruppe entfernen",
+        "removeInvitation": "Einladung zur&uuml;cknehmen",
+        "noGroup": "Sie befinden sich in keiner Gruppe."
+    }
+}

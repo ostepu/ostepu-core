@@ -1,19 +1,18 @@
+<?php $langTemplate='MainSettings_SetAdmin';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <input type="hidden" name="action" value="SetAdmin">
 <div class="content-element">
     <div class="content-header">
-        <div class="content-title left uppercase">Admin ernennen</div>
-        <button class="text-button info-color bold right">ernennen</button>
+        <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
+        <button class="text-button info-color bold right"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body left">
             <div class="content-description">
-                Wählen Sie eine Veranstaltung aus und geben Sie anschließend
-                das Kürzel der Person ein, welche in dieser Veranstaltung zum
-                Admin ernannt werden soll. Die Person muss bereits in der 
-                Übungsplattform eingetragen sein.
+                <?php echo Language::Get('main','description', $langTemplate); ?>
             </div>
-            <label class="form-field left label bold" for="courseID">Veranstaltung:</label>
+            <label class="form-field left label bold" for="courseID"><?php echo Language::Get('main','course', $langTemplate); ?>:</label>
             <select class="form-field left text-input" name="courseID" id="courseID" size="10">
             <?php
                 if(!empty($courses)) {
@@ -28,7 +27,7 @@
             ?>
             </select>
             
-            <label class="form-field left label bold new-line" for="userName">Kürzel:</label>
+            <label class="form-field left label bold new-line" for="userName"><?php echo Language::Get('main','userName', $langTemplate); ?>:</label>
             <input class="form-field left text-input" name="userName" id="userName" />
             </div>
         </div>

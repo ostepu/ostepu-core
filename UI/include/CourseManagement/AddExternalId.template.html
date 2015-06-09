@@ -1,3 +1,5 @@
+<?php $langTemplate='CourseManagement_AddExternalId';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <?php
 if (isset($AddExternalIdNotificationElements)) {
     foreach ($AddExternalIdNotificationElements as $notificationElement) {
@@ -9,17 +11,17 @@ if (isset($AddExternalIdNotificationElements)) {
 <input type="hidden" name="action" value="AddExternalId">
 <div class="content-element">
     <div class="content-header">
-        <div class="content-title left uppercase">Externe Veranstaltung hinzufügen</div>
-        <button class="text-button info-color bold right">hinzufügen</button>
+        <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
+        <button class="text-button info-color bold right"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body left">
             <div class="content-description">
-                Hier können Veranstaltungs-IDs anderer Plattformen zugewiesen werden.
+                <?php echo Language::Get('main','description', $langTemplate); ?>
             </div>
  
-            <div class="form-field left label bold new-line">Alias:
+            <div class="form-field left label bold new-line"><?php echo Language::Get('main','alias', $langTemplate); ?>:
             <input class="form-field text-input long"
                    name="externalId"
                    id="externalId"
@@ -28,11 +30,11 @@ if (isset($AddExternalIdNotificationElements)) {
                
             <div class="form-field right">
                 <input type="radio" name="externalType" id="externalType" checked="true" value="1"/>
-                <label for="externalType">Stud.IP</label><br>
+                <label for="externalType"><?php echo Language::Get('main','studipId', $langTemplate); ?></label><br>
                 
                 <div>
                 <input type="radio" name="externalType" id="externalType" value="2"/>
-                <label for="externalType">Sonstiges</label>
+                <label for="externalType"><?php echo Language::Get('main','otherId', $langTemplate); ?></label>
                 <input class="form-field text-input short"
                    name="externalTypeName"
                    id="externalTypeName"

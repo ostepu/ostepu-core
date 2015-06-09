@@ -1,3 +1,6 @@
+<?php include_once dirname(__FILE__) . '/../../../../Assistants/Language.php'; ?>
+<?php $langTemplate='Form';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <?php
 /**
  * @file FormCheckbox.template.php
@@ -9,7 +12,7 @@
 <?php if (isset($form['formId'])){ ?>
 <input type="hidden" name="exercises[0][subexercises][0][formId]" value="<?php echo $form['formId']; ?>" />
 <?php } ?>
-<label class="short label bold" for="task">Aufgabenstellung:</label>
+<label class="short label bold" for="task"><?php echo Language::Get('main','task', $langTemplate); ?>:</label>
 <!--ckeditor--><textarea name="exercises[0][subexercises][0][task]"
                               class="form-field task-field"
                               rows="5"
@@ -34,10 +37,10 @@ if (isset($form['choices'])){
 }
 ?>
  
-<a href="javascript:void(0);" class="body-option-color add-choice left">Auswahl hinzufügen</a>
+<a href="javascript:void(0);" class="body-option-color add-choice left"><?php echo Language::Get('main','addChoice', $langTemplate); ?></a>
 
 <br><br>
-<label class="short label bold" for="solution">Lösungsbegründung:</label>
+<label class="short label bold" for="solution"><?php echo Language::Get('main','solution', $langTemplate); ?>:</label>
 <!--ckeditor--><textarea name="exercises[0][subexercises][0][solution]"
           class="form-field"
           rows="5"

@@ -1,15 +1,16 @@
+<?php $langTemplate='Group_InvitationsToGroup';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <input type="hidden" name="action" value="ManageInvitations">
 <div class="content-element">
     <div class="content-header">
-        <div class="content-title left">Einladungen zu anderen Gruppen</div>
+        <div class="content-title left"><?php echo Language::Get('main','title', $langTemplate); ?></div>
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body left">
             <?php if ($isInGroup): ?>
                 <div class="content-description">
-                    Um eine Einladung von einer anderen Gruppe anzunehmen, müssen Sie 
-                    zuerst die aktuelle Gruppe verlassen.
+                    <?php echo Language::Get('main','description', $langTemplate); ?>
                 </div>
             <?php endif; ?>
             <ol class="exercise-list invitation-list">
@@ -33,11 +34,11 @@
                     
                         print '<button name="denyInvitation" class="right text-button body-option-color" value="';
                         print $invitation['leader']['id'];
-                        print '">ablehnen</button>';
+                        print '">'.Language::Get('main','deny', $langTemplate).'</button>';
                     if (!$isInGroup):
                         print '<button name="acceptInvitation" class="right text-button body-option-color" value="';
                         print $invitation['leader']['id'];
-                        print '">annehmen</button>';
+                        print '">'.Language::Get('main','accept', $langTemplate).'</button>';
                     endif;
                     print "</li>";
                 endforeach;

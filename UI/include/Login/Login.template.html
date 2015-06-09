@@ -1,3 +1,5 @@
+<?php $langTemplate='Login';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <form action="Login.php" method="POST">
 <?php if (isset($backURL)): ?>
     <input type="hidden" name="back" value="<?php echo $backURL; ?>">
@@ -5,19 +7,19 @@
 <input type="hidden" name="action" value="login">
 <div class="content-element">
     <div class="content-header">
-        <div class="content-title left uppercase">Login</div>
-        <button class="right text-button info-color bold">anmelden</button>
+        <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
+        <button class="right text-button info-color bold"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body left">
-            <label class="form-field left label bold new-line" for="username">Nutzername:</label>
+            <label class="form-field left label bold new-line" for="username"><?php echo Language::Get('main','userName', $langTemplate); ?>:</label>
             <input class="form-field left text-input" name="username" id="username" />
 
-            <label class="form-field left label bold new-line" for="password">Passwort:</label>
+            <label class="form-field left label bold new-line" for="password"><?php echo Language::Get('main','password', $langTemplate); ?>:</label>
             <input class="form-field left text-input" type="password" name="password" id="password" />
 
-            <!--<label class="form-field left label bold new-line" for="permanentLogin">Eingeloggt bleiben:</label>
+            <!--<label class="form-field left label bold new-line" for="permanentLogin"><?php echo Language::Get('main','permanentLogin', $langTemplate); ?>:</label>
             <input class="form-field left" type="checkbox" name="permanentLogin" id="permanentLogin" />-->
         </div>
     </div> <!-- end: content-body -->

@@ -1,0 +1,24 @@
+{
+    "main": {
+        "title": "Rechte ver&auml;ndern",
+        "execute": "ver&auml;ndern",
+        "description": "W&auml;hlen Sie die Person und anschlie&szlig;end die gew&uuml;nschten Rechte aus, um die Berechtigungen eines Nutzers zu ver&auml;ndern.",
+        "selectUser": "Person ausw&auml;hlen",
+        "students": "Studenten",
+        "tutors": "Tutoren",
+        "dozents": "Dozenten",
+        "admins": "Administratoren",
+        "noStudents": "Keine Studenten",
+        "noTutors": "Keine Tutoren",
+        "noDozents": "Keine Dozenten",
+        "noAdmins": "Keine Administratoren",
+        "lastName": "Nachname",
+        "firstName": "Vorname",
+        "userName": "Nutzername",
+        "sorting": "Sortierung",
+        "rights": "Rechte",
+        "student": "Student",
+        "tutor": "Tutor",
+        "dozent": "Dozent"
+    }
+}

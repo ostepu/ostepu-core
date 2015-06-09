@@ -24,9 +24,9 @@ class PlattformDatenbanknutzer
         $text='';        
         
         if (!$console){
-            $text .= Design::erstelleBeschreibung($console,Sprachen::Get('createDatabasePlatformUser','description'));            
-            $text .= Design::erstelleZeile($console, Sprachen::Get('createDatabasePlatformUser','db_user_override_operator'), 'e', Design::erstelleAuswahl($console, $data['DB']['db_user_override_operator'], 'data[DB][db_user_override_operator]', 'override', null, true), 'v');
-            $text .= Design::erstelleZeile($console, Sprachen::Get('createDatabasePlatformUser','createUser'), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0], Sprachen::Get('main','create')), 'h');
+            $text .= Design::erstelleBeschreibung($console,Language::Get('createDatabasePlatformUser','description'));            
+            $text .= Design::erstelleZeile($console, Language::Get('createDatabasePlatformUser','db_user_override_operator'), 'e', Design::erstelleAuswahl($console, $data['DB']['db_user_override_operator'], 'data[DB][db_user_override_operator]', 'override', null, true), 'v');
+            $text .= Design::erstelleZeile($console, Language::Get('createDatabasePlatformUser','createUser'), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0], Language::Get('main','create')), 'h');
         }
         
         if (isset($result[self::$onEvents['install']['name']]) && $result[self::$onEvents['install']['name']]!=null){
@@ -41,7 +41,7 @@ class PlattformDatenbanknutzer
         if (self::$installed)
             $text .= Design::erstelleInstallationszeile($console, $fail, $errno, $error); 
 
-        echo Design::erstelleBlock($console, Sprachen::Get('createDatabasePlatformUser','title'), $text);
+        echo Design::erstelleBlock($console, Language::Get('createDatabasePlatformUser','title'), $text);
         return null;
     }
     

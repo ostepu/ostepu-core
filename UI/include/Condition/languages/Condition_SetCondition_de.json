@@ -1,0 +1,9 @@
+{
+    "main": {
+        "title": "Zulassungsbedingungen",
+        "execute": "speichern",
+        "description": "Geben Sie die Zahlenangaben in Prozent pro m&ouml;glicher Punkteart an, welche für die Zulassung notwendig sind.",
+        "noApprovalConditions": "Dem Kurs wurden noch keine Punktearten zugewiesen.",
+        "inPercent": "Angabe in %"
+    }
+}

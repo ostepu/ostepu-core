@@ -23,7 +23,7 @@ class KomponentenErstellen
         $text='';
         
         if (!$console)
-            $text .= Design::erstelleBeschreibung($console,Sprachen::Get('generateComponents','description'));
+            $text .= Design::erstelleBeschreibung($console,Language::Get('generateComponents','description'));
         
         if (isset($result[self::$onEvents['install']['name']]) && $result[self::$onEvents['install']['name']]!=null){
            $result =  $result[self::$onEvents['install']['name']];
@@ -36,18 +36,18 @@ class KomponentenErstellen
         $content = $result['content'];
         
         if (!$console)
-            $text .= Design::erstelleZeile($console, Sprachen::Get('generateComponents','generateComponents'), 'e', '','v',Design::erstelleSubmitButton(self::$onEvents['install']['event'][0]), 'h');
+            $text .= Design::erstelleZeile($console, Language::Get('generateComponents','generateComponents'), 'e', '','v',Design::erstelleSubmitButton(self::$onEvents['install']['event'][0]), 'h');
 
         if (self::$installed){         
             if (isset($content['components'])){
-                $text .= Design::erstelleZeile($console, Sprachen::Get('generateComponents','numberComponents'), 'v', $content['componentsCount'],'v');
-                $text .= Design::erstelleZeile($console, Sprachen::Get('generateComponents','numberLinks'), 'v', $content['linksCount'],'v');
+                $text .= Design::erstelleZeile($console, Language::Get('generateComponents','numberComponents'), 'v', $content['componentsCount'],'v');
+                $text .= Design::erstelleZeile($console, Language::Get('generateComponents','numberLinks'), 'v', $content['linksCount'],'v');
             }
 
             $text .= Design::erstelleInstallationszeile($console, $fail, $errno, $error); 
         }
 
-        echo Design::erstelleBlock($console, Sprachen::Get('generateComponents','title'), $text);
+        echo Design::erstelleBlock($console, Language::Get('generateComponents','title'), $text);
         return null;
     }
     

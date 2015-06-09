@@ -1,19 +1,20 @@
+<?php $langTemplate='MainSettings_DeleteUser';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <input type="hidden" name="action" value="DeleteUser">
 <div class="content-element">
     <div class="content-header">
-        <div class="content-title left uppercase">Nutzer löschen</div>
+        <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
         <div class="info-color bold right">
-            <button class="text-button critical-color bold right">löschen</button>
+            <button class="text-button critical-color bold right"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
         </div>
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body left">
             <div class="content-description">
-                Geben Sie hier das Kürzel der Person ein, welche komplett aus der Übungsplattform
-                entfernt werden soll. Achtung: Diese Aktion kann nicht widerrufen werden!
+                <?php echo Language::Get('main','description', $langTemplate); ?>
             </div>
-            <label class="form-field left label bold" for="userName">Kürzel der Person:</label>
+            <label class="form-field left label bold" for="userName"><?php echo Language::Get('main','userName', $langTemplate); ?>:</label>
             <input class="form-field text-input" name="userName" id="userName" />
         </div>
     </div> <!-- end: content-body -->

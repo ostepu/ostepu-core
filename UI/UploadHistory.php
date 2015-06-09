@@ -8,7 +8,8 @@
  * @author Ralf Busch
  */
 
-include_once 'include/Boilerplate.php';
+include_once dirname(__FILE__) . '/include/Boilerplate.php';
+include_once dirname(__FILE__) . '/../Assistants/Language.php';
 
 if (isset($_POST['sheetID']))
     $sid = $_POST['sheetID'];

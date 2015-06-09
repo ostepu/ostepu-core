@@ -54,12 +54,12 @@ class PlugInsInstallieren
             closedir($handle);
         }
         $text='';
-        $text .= Design::erstelleBeschreibung($console,Sprachen::Get('packages','description'));
+        $text .= Design::erstelleBeschreibung($console,Language::Get('packages','description'));
         
         if (self::$onEvents['install']['enabledInstall'])
-            $text .= Design::erstelleZeile($console, Sprachen::Get('packages','installSelected'), 'e', '', 'v', Design::erstelleSubmitButton(self::$installPlugins,Sprachen::Get('main','install')), 'h');
+            $text .= Design::erstelleZeile($console, Language::Get('packages','installSelected'), 'e', '', 'v', Design::erstelleSubmitButton(self::$installPlugins,Language::Get('main','install')), 'h');
         if (self::$onEvents['uninstall']['enabledInstall'])
-            $text .= Design::erstelleZeile($console, Sprachen::Get('packages','uninstallSelected'), 'e', '', 'v', Design::erstelleSubmitButton(self::$uninstallPlugins,Sprachen::Get('main','uninstall')), 'h');
+            $text .= Design::erstelleZeile($console, Language::Get('packages','uninstallSelected'), 'e', '', 'v', Design::erstelleSubmitButton(self::$uninstallPlugins,Language::Get('main','uninstall')), 'h');
         
         if (isset($result[self::$onEvents['check']['name']]) && $result[self::$onEvents['check']['name']]!=null){
            $result =  $result[self::$onEvents['check']['name']];
@@ -84,9 +84,9 @@ class PlugInsInstallieren
                 foreach($installedPlugins as $instPlug){
                     if ($name == $instPlug['name']){
                         if (isset($instPlug['version'])){
-                            $text .= Design::erstelleZeile($console, Sprachen::Get('packages','currentVersion') , 'v', 'v'.$instPlug['version'] , 'v'); 
+                            $text .= Design::erstelleZeile($console, Language::Get('packages','currentVersion') , 'v', 'v'.$instPlug['version'] , 'v'); 
                         } else 
-                            $text .= Design::erstelleZeile($console, Sprachen::Get('packages','currentVersion') , 'v', '???' , 'v');
+                            $text .= Design::erstelleZeile($console, Language::Get('packages','currentVersion') , 'v', '???' , 'v');
                         $isInstalled=true;
                         break;
                     }
@@ -94,7 +94,7 @@ class PlugInsInstallieren
             }
             
             if (!$isInstalled)
-                $text .= Design::erstelleZeile($console, Sprachen::Get('packages','currentVersion') , 'v', '---' , 'v');
+                $text .= Design::erstelleZeile($console, Language::Get('packages','currentVersion') , 'v', '---' , 'v');
             
             $vorText = '';
             foreach ($voraussetzungen as $vor){
@@ -105,7 +105,7 @@ class PlugInsInstallieren
             } else 
                 $vorText = substr($vorText,0,-2);
             
-            $text .= Design::erstelleZeile($console, Sprachen::Get('packages','requirements') , 'v', $vorText , 'v');
+            $text .= Design::erstelleZeile($console, Language::Get('packages','requirements') , 'v', $vorText , 'v');
             
             $file = dirname(__FILE__) . '/../../Plugins/'.$plug;
             $fileCount=0;
@@ -130,15 +130,15 @@ class PlugInsInstallieren
                 $componentCount = count($componentFiles);
             }
               
-            $text .= Design::erstelleZeile($console, Sprachen::Get('packages','numberComponents') , 'v', $componentCount , 'v');        
-            $text .= Design::erstelleZeile($console, Sprachen::Get('packages','numberFiles') , 'v', $fileCount , 'v');
-            $text .= Design::erstelleZeile($console, Sprachen::Get('packages','size') , 'v', Design::formatBytes($fileSize) , 'v');
+            $text .= Design::erstelleZeile($console, Language::Get('packages','numberComponents') , 'v', $componentCount , 'v');        
+            $text .= Design::erstelleZeile($console, Language::Get('packages','numberFiles') , 'v', $fileCount , 'v');
+            $text .= Design::erstelleZeile($console, Language::Get('packages','size') , 'v', Design::formatBytes($fileSize) , 'v');
         }
         
         /*if ($installPlugins){
             if ($installPluginsResult !=null)
                 foreach ($installPluginsResult as $component){
-                   // $text .= "<tr><td class='e' rowspan='1'>{$component}</td><td class='v'></td><td class='e'><div align ='center'>".((isset($dat['status']) && $dat['status']===201) ? Sprachen::Get('main','ok') : "<font color='red'>".Sprachen::Get('main','fail')." ({$dat['status']})</font>")."</align></td></tr>";
+                   // $text .= "<tr><td class='e' rowspan='1'>{$component}</td><td class='v'></td><td class='e'><div align ='center'>".((isset($dat['status']) && $dat['status']===201) ? Language::Get('main','ok') : "<font color='red'>".Language::Get('main','fail')." ({$dat['status']})</font>")."</align></td></tr>";
                 }
             $text .= Design::erstelleInstallationszeile($console, $fail, $errno, $error);
         }
@@ -146,13 +146,13 @@ class PlugInsInstallieren
         if ($uninstallPlugins){
             if ($uninstallPluginsResult !=null)
                 foreach ($uninstallPluginsResult as $component){
-                   // $text .= "<tr><td class='e' rowspan='1'>{$component}</td><td class='v'></td><td class='e'><div align ='center'>".((isset($dat['status']) && $dat['status']===201) ? Sprachen::Get('main','ok') : "<font color='red'>".Sprachen::Get('main','fail')." ({$dat['status']})</font>")."</align></td></tr>";
+                   // $text .= "<tr><td class='e' rowspan='1'>{$component}</td><td class='v'></td><td class='e'><div align ='center'>".((isset($dat['status']) && $dat['status']===201) ? Language::Get('main','ok') : "<font color='red'>".Language::Get('main','fail')." ({$dat['status']})</font>")."</align></td></tr>";
                 }
                 
             $text .= Design::erstelleInstallationszeile($console, $fail, $errno, $error);
         }*/
         
-        echo Design::erstelleBlock($console, Sprachen::Get('packages','title'), $text);
+        echo Design::erstelleBlock($console, Language::Get('packages','title'), $text);
         return null;
     }
     

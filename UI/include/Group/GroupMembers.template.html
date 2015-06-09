@@ -1,13 +1,15 @@
+<?php $langTemplate='Group_GroupMembers';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <input type="hidden" name="action" value="RemoveGroupMember">
 <div class="content-element">
     <div class="content-header">
-        <div class="content-title left">Gruppenübersicht</div>
+        <div class="content-title left"><?php echo Language::Get('main','title', $langTemplate); ?></div>
         <?php if ($isInGroup): ?>
         <button 
             name="leaveGroup" 
             value="<?php echo $group['leader']['id']; ?>" 
             class="right text-button critical-color bold">
-            verlassen
+            <?php echo Language::Get('main','execute', $langTemplate); ?>
         </button>
         <?php endif; ?>
     </div>
@@ -16,7 +18,7 @@
         <div class="content-body left">
             <?php if ($isInGroup): ?>
             <div class="content-description">
-                Achtung: Wenn Sie die Gruppe verlassen, werden Ihre bisherigen Einsendungen gelöscht.
+                <?php echo Language::Get('main','description', $langTemplate); ?>
             </div>
             <?php endif; ?>
             <?php if ($isInGroup): ?>
@@ -41,7 +43,7 @@
                     } else
                         print "???";
                                     
-                    print ' (Gruppenführer)';
+                    print ' ('.Language::Get('main','groupLeader', $langTemplate).')';
                     print '</li>';
 
 
@@ -67,7 +69,7 @@
                         if ($isLeader) {
                             print '<button name="removeMember" value="';
                             print $member['id'];
-                            print '" class="right text-button body-option-color">aus Gruppe entfernen</button>';
+                            print '" class="right text-button body-option-color">'.Language::Get('main','removeMember', $langTemplate).'</button>';
                         }
 
                         print "</li>";
@@ -95,7 +97,7 @@
                         if ($isLeader) {
                             print '<button name="removeInvitation" value="';
                             print $member['id'];
-                            print '" class="right text-button body-option-color">Einladung zurücknehmen</button>';
+                            print '" class="right text-button body-option-color">'.Language::Get('main','removeInvitation', $langTemplate).'</button>';
                         }
 
                         print "</li>";
@@ -103,7 +105,7 @@
                 ?>
             </ol>
             <?php else: ?>
-                Sie befinden sich in keiner Gruppe.
+                <?php echo Language::Get('main','noGroup', $langTemplate); ?>
             <?php endif; ?>
         </div>
     </div> <!-- end: content-body-wrapper -->

@@ -1,3 +1,5 @@
+<?php $langTemplate='CourseManagement_AddUser';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <?php
 if (isset($AddUserNotificationElements)) {
     foreach ($AddUserNotificationElements as $notificationElement) {
@@ -9,31 +11,29 @@ if (isset($AddUserNotificationElements)) {
 <input type="hidden" name="action" value="AddUser">
 <div class="content-element">
     <div class="content-header">
-        <div class="content-title left uppercase">Nutzer hinzufügen</div>
-        <button class="text-button info-color bold right">hinzufügen</button>
+        <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
+        <button class="text-button info-color bold right"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body left">
             <div class="content-description">
-                Geben Sie das Kürzel und die gewünschten Rechte der Person ein, welche 
-                zur Veranstaltung hinzugefügt werden soll. Die Person muss bereits 
-                in der Übungsplattform eingetragen sein.
+                <?php echo Language::Get('main','description', $langTemplate); ?>
             </div>
-            <label class="form-field left label bold" for="userName">Kürzel der Person:</label>
+            <label class="form-field left label bold" for="userName"><?php echo Language::Get('main','userName', $langTemplate); ?>:</label>
             <input class="form-field text-input"
                    name="userName"
                    id="userName"
                    placeholder="acfmr"
             />
-            <div class="form-field left label bold new-line" for="tutorRightsRight">Rechte:</div>
+            <div class="form-field left label bold new-line" for="tutorRightsRight"><?php echo Language::Get('main','rights', $langTemplate); ?>:</div>
             <div class="form-field left">
                 <input type="radio" name="rights" id="grantStudentRights" checked="true" value="0"/>
-                <label for="grantStudentRights"> Student</label>
+                <label for="grantStudentRights"> <?php echo Language::Get('main','student', $langTemplate); ?></label>
                 <input type="radio" name="rights" id="grantTutorRights" value="1"/>
-                <label for="grantTutorRights"> Tutor</label>
+                <label for="grantTutorRights"> <?php echo Language::Get('main','tutor', $langTemplate); ?></label>
                 <input type="radio" name="rights" id="grantLecturerRights" value="2"/>
-                <label for="grantLecturerRights"> Dozent</label>
+                <label for="grantLecturerRights"> <?php echo Language::Get('main','dozent', $langTemplate); ?></label>
             </div>
         </div>
     </div>

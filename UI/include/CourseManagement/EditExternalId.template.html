@@ -1,3 +1,5 @@
+<?php $langTemplate='CourseManagement_EditExternalId';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <?php
 if (isset($EditExternalIdNotificationElements)) {
     foreach ($EditExternalIdNotificationElements as $notificationElement) {
@@ -9,14 +11,14 @@ if (isset($EditExternalIdNotificationElements)) {
 <input type="hidden" name="action" value="EditExternalId">
 <div class="content-element">
     <div class="content-header">
-        <div class="content-title left uppercase">Externe Veranstaltung entfernen</div>
-        <button class="text-button info-color bold right">entfernen</button>
+        <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
+        <button class="text-button info-color bold right"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body left">
             <div class="content-description">
-                Hier können Veranstaltungs-IDs anderer Plattformen entfernt werden.
+                <?php echo Language::Get('main','description', $langTemplate); ?>
             </div>
             <?php if (isset($externalId)) { 
             if (count($externalId)>0){
@@ -30,16 +32,16 @@ if (isset($EditExternalIdNotificationElements)) {
             echo "<tr><td width='0%'><input type='checkbox' name='externalId' id='externalId' value='{$extern['id']}'/></td><td width='10%'>";
             switch($begin){
                 case 'S':
-                    echo 'Stud.IP';break;
+                    echo Language::Get('main','studipId', $langTemplate);break;
                 default:
-                    echo 'Sonstiges';break;
+                    echo Language::Get('main','otherId', $langTemplate);break;
             }
             echo "</td><td width='*'>{$extern['id']}</td></tr>";            
             } ?>
             </table>
             <?php 
             } else {
-                echo "keine Vorhanden";
+                echo Language::Get('main','noData', $langTemplate);
             }
             } ?>
         </div>

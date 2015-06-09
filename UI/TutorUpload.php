@@ -8,9 +8,11 @@
  * @author Ralf Busch
  */
 
-include_once 'include/Boilerplate.php';
-include_once '../Assistants/Structures.php';
-include_once '../Assistants/MimeReader.php';
+include_once dirname(__FILE__) . '/include/Boilerplate.php';
+include_once dirname(__FILE__) . '/../Assistants/Structures.php';
+include_once dirname(__FILE__) . '/../Assistants/Language.php';
+include_once dirname(__FILE__) . '/../Assistants/MimeReader.php';
+include_once dirname(__FILE__) . '/../Assistants/Language.php';
 
 if (isset($_POST['action']) && $_POST['action'] == 'TutorUpload') {
     if (isset($_FILES['MarkingFile'])) {

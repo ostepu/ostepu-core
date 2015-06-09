@@ -1,3 +1,5 @@
+<?php $langTemplate='UploadHistory_Group';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <?php
 if (isset($UploadHistoryGroupNotificationElements)) {
     foreach ($UploadHistoryGroupNotificationElements as $notificationElement) {
@@ -9,7 +11,7 @@ if (isset($UploadHistoryGroupNotificationElements)) {
 <?php if (isset($group['members']) && count($group['members'])>0) { ?>
 <div class="content-element">
     <div class="content-header">
-        <div class="content-title left">Gruppenübersicht</div>
+        <div class="content-title left"><?php echo Language::Get('main','title', $langTemplate); ?></div>
     </div>
 
     <div class="content-body-wrapper">
@@ -35,7 +37,7 @@ if (isset($UploadHistoryGroupNotificationElements)) {
                 } else
                     print "???";
                                 
-                print ' (Gruppenführer)';
+                print ' ('.Language::Get('main','groupLeader', $langTemplate).')';
                 print '</li>';
 
 

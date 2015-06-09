@@ -1,19 +1,21 @@
+<?php $langTemplate='UploadHistory_Settings';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <input type="hidden" name="action" value="ShowUploadHistory">
 <div class="content-element">
     <div class="content-header">
-        <div class="content-title left uppercase">Einsendungsverlauf ansehen</div>
+        <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
         <div class="info-color bold right">
         <?php
         if (count($sheets)>0){
         ?>
-            <button class="text-button info-color bold right">Einsendungen anzeigen</button>
+            <button class="text-button info-color bold right"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
         <?php } ?>
         </div>
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body left">
-            <label class="form-field left label bold" for="Student">Studenten auswählen:</label>
+            <label class="form-field left label bold" for="Student"><?php echo Language::Get('main','chooseStudent', $langTemplate); ?>:</label>
             <select class="form-field left text-input" name="userID" id="Student" size="10">
                 <?php
                     foreach ($users as $user) {
@@ -36,9 +38,9 @@
             
             <div>
             <?php 
-                $sortTypes = array('lastName' => 'Nachname','firstName' => 'Vorname','userName' => 'Nutzername');
+                $sortTypes = array('lastName' => Language::Get('main','lastName', $langTemplate),'firstName' => Language::Get('main','firstName', $langTemplate),'userName' => Language::Get('main','userName', $langTemplate));
             ?>
-            <label class="form-field left label bold new-line" for="sortUsers">Sortierung:</label> 
+            <label class="form-field left label bold new-line" for="sortUsers"><?php echo Language::Get('main','sorting', $langTemplate); ?>:</label> 
             <select class="form-field left text-input" name="sortUsers" id="sortUsers">
                     <?php
                         foreach ($sortTypes as $key => $value) {
@@ -52,7 +54,7 @@
             <?php
             if (count($sheets)>0){
             ?>
-                <label class="form-field left label bold new-line" for="ExerciseSheet">Serie auswählen:</label>
+                <label class="form-field left label bold new-line" for="ExerciseSheet"><?php echo Language::Get('main','chooseSheet', $langTemplate); ?>:</label>
                 <select class="form-field left text-input" name="sheetID" id="ExerciseSheet">
                     <?php
                         foreach ($sheets as $sheet) {

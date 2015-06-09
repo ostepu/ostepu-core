@@ -1,0 +1,11 @@
+{
+    "main": {
+        "title": "Eigene Daten",
+        "execute": "ändern",
+        "firstName": "Vorname",
+        "lastName": "Nachname",
+        "email": "E-Mail",
+        "userName": "Login",
+        "language": "Sprache"
+    }
+}

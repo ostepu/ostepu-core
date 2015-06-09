@@ -1,0 +1,9 @@
+{
+    "main": {
+        "title": "Admin ernennen",
+        "execute": "ernennen",
+        "description": "W&auml;hlen Sie eine Veranstaltung aus und geben Sie anschlie&szlig;end das K&uuml;rzel der Person ein, welche in dieser Veranstaltung zum Admin ernannt werden soll. Die Person muss bereits in der &uuml;bungsplattform eingetragen sein.",
+        "course": "Veranstaltung",
+        "userName": "K&uuml;rzel"
+    }
+}

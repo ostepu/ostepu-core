@@ -1,3 +1,5 @@
+<?php $langTemplate='UploadHistory';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <?php
 include_once dirname(__FILE__).'/../../../Assistants/LArraySorter.php';
 
@@ -42,12 +44,12 @@ if (isset($UploadHistoryNotificationElements)) {
 
         if ($count===null || $exercises[$count]['link'] != $exercise['link']){
             $count=$key;
-            $namesOfExercises[$exerciseId] = 'AUFGABE '.$exercise['link'];
+            $namesOfExercises[$exerciseId] = Language::Get('main','exercise', $langTemplate).' '.$exercise['link'];
             $subtask = 0;
         }else{
             $subtask++;
-            $namesOfExercises[$exerciseId] = 'AUFGABE '.$exercise['link'].$alphabet[$subtask];
-            $namesOfExercises[$exercises[$count]['id']] = 'AUFGABE '.$exercises[$count]['link'].$alphabet[0];
+            $namesOfExercises[$exerciseId] = Language::Get('main','exercise', $langTemplate).' '.$exercise['link'].$alphabet[$subtask];
+            $namesOfExercises[$exercises[$count]['id']] = Language::Get('main','exercise', $langTemplate).' '.$exercises[$count]['link'].$alphabet[0];
         }
     }
     
@@ -136,11 +138,11 @@ echo '<span class="content-body-wrapper">';
                             
                             echo '<div class="short" style="padding-left: 20px">';
                             if (!isset($submission['accepted']) || $submission['accepted'] == 0){
-                                echo 'nicht akzeptiert';
+                                echo Language::Get('main','notAccepted', $langTemplate);
                             } elseif (isset($submission['marking']) && ($isExpired || $courseStatus>=1 /* PRIVILEGE_LEVEL::TUTOR */)) {
                                 echo $markingStatus[LArraySorter::multidimensional_search($markingStatus, array('id'=>$submission['marking']['status']))]['longName'];
                             } else {
-                                echo 'unkorrigiert';
+                                echo Language::Get('main','uncorrected', $langTemplate);
                             }
                             echo '</div>';
                             
@@ -150,7 +152,7 @@ echo '<span class="content-body-wrapper">';
                             
                             
                             if (isset($submission['flag']) && $submission['flag']==0){
-                                print '<span class="footer-text critical-color right">gelöscht</span>';
+                                print '<span class="footer-text critical-color right">'.Language::Get('main','removed', $langTemplate).'</span>';
                             }
                             
                             //if ($courseStatus>=1 /* PRIVILEGE_LEVEL::TUTOR */){
@@ -179,7 +181,7 @@ echo '</span>';
                 }
 
                 if ($noSubmission) {
-                    print 'Keine Einsendungen vorhanden.';
+                    echo Language::Get('main','noSubmissions', $langTemplate);
                 }
             ?>
         </div>

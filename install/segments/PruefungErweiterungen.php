@@ -20,7 +20,7 @@ class PruefungErweiterungen
     public static function show($console, $result, $data)
     {
         $text = '';
-        $text .= Design::erstelleBeschreibung($console,Sprachen::Get('extensions','description'));
+        $text .= Design::erstelleBeschreibung($console,Language::Get('extensions','description'));
         
         if (isset($result[self::$onEvents['check']['name']]) && $result[self::$onEvents['check']['name']]!=null){
            $result =  $result[self::$onEvents['check']['name']];
@@ -35,14 +35,14 @@ class PruefungErweiterungen
         if ($content!=null){
             foreach ($content as $extensionName => $status){
                 if (!$console){
-                    $text .= Design::erstelleZeile($console, $extensionName, 'e', ($status ? Sprachen::Get('main','ok') : "<font color='red'>".Sprachen::Get('main','fail')."</font>"), 'v');
+                    $text .= Design::erstelleZeile($console, $extensionName, 'e', ($status ? Language::Get('main','ok') : "<font color='red'>".Language::Get('main','fail')."</font>"), 'v');
                 } else 
-                    $text .= $extensionName.' '.($status ? Sprachen::Get('main','ok') : Sprachen::Get('main','fail'))."\n";
+                    $text .= $extensionName.' '.($status ? Language::Get('main','ok') : Language::Get('main','fail'))."\n";
             }
         } else 
-            $text .= Design::erstelleZeile($console, "<font color='red'>".Sprachen::Get('main','fail')."</font>", 'e');
+            $text .= Design::erstelleZeile($console, "<font color='red'>".Language::Get('main','fail')."</font>", 'e');
 
-        echo Design::erstelleBlock($console, Sprachen::Get('extensions','title'), $text);
+        echo Design::erstelleBlock($console, Language::Get('extensions','title'), $text);
         return null;
     }
     
