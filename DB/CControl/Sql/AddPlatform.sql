@@ -18,7 +18,11 @@ begin
       FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = @database and TABLE_NAME = theTable and COLUMN_NAME = theAttrName;
      
     if ((select count(*) from `ColData`)=0) then
-        SET @s = concat('ALTER TABLE ',theTable,' ADD `',theAttrName,'` ',theType,' ',isNullable,' DEFAULT ',theDefault,'');
+        set @c2 = theDefault;
+        if (@c2 <> 'NULL') then
+            set @c2 = concat('\'',@c2,'\'');
+        end if;
+        SET @s = concat('ALTER TABLE ',theTable,' ADD `',theAttrName,'` ',theType,' ',isNullable,' DEFAULT ',@c2,'');
         PREPARE stmt1 FROM @s;
         EXECUTE stmt1;
         DEALLOCATE PREPARE stmt1;

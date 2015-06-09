@@ -60,11 +60,11 @@ ALTER TABLE `Marking` ADD CONSTRAINT `fk_Marking_User1` FOREIGN KEY (`U_id_tutor
 ALTER TABLE `Marking` DROP FOREIGN KEY `fk_Marking_Submission1`; 
 ALTER TABLE `Marking` ADD CONSTRAINT `fk_Marking_Submission1` FOREIGN KEY (`S_id`) REFERENCES `submission`(`S_id`) ON DELETE CASCADE ON UPDATE CASCADE;*/
 
-CALL `alter_table_attribute`('Marking', 'M_points', 'FLOAT', 'NULL', '0');
-CALL `alter_table_attribute`('Marking', 'M_tutorComment', 'VARCHAR(255)', 'NULL', 'NULL');
-CALL `alter_table_attribute`('Marking', 'M_status', 'TINYINT', 'NOT NULL', '0');
-CALL `alter_table_attribute`('Marking', 'M_date', 'TINYINT', 'NOT NULL', '0');
-CALL `alter_table_attribute`('Marking', 'M_hideFile', 'INTEGER UNSIGNED', 'NOT NULL', '0');
+ALTER IGNORE TABLE `Marking` MODIFY COLUMN M_points FLOAT NULL DEFAULT 0;
+ALTER IGNORE TABLE `Marking` MODIFY COLUMN M_tutorComment VARCHAR(252) NULL;
+ALTER IGNORE TABLE `Marking` MODIFY COLUMN M_status TINYINT NOT NULL DEFAULT 0;
+ALTER IGNORE TABLE `Marking` MODIFY COLUMN M_date TINYINT NOT NULL DEFAULT 0;
+ALTER IGNORE TABLE `Marking` MODIFY COLUMN M_hideFile INT UNSIGNED NULL DEFAULT 0;
 
 DROP TRIGGER IF EXISTS `Marking_BINS`;
 CREATE TRIGGER `Marking_BINS` BEFORE INSERT ON `Marking` FOR EACH ROW
