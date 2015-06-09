@@ -602,13 +602,17 @@ class LGetSite
         $answer = Request::custom('GET', $URL, array(), '');
         $user = json_decode($answer['content'], true);
 
-        $response = array('id' =>  $user['id'],
+        /*$response = array('id' =>  $user['id'],
                           'userName'=>  isset($user['email']) ? $user['userName'] : null,
                           'firstName'=>  isset($user['email']) ? $user['firstName'] : null,
                           'lastName'=>  isset($user['email']) ? $user['lastName'] : null,
                           'flag'=>  isset($user['email']) ? $user['flag'] : null,
                           'email'=>  isset($user['email']) ? $user['email'] : null,
-                          'courses'=>  array());
+                          'courses'=>  array());*/
+                          
+        $response = $user;
+        $response['courses'] = array();
+            
 
         foreach ($user['courses'] as $course) {
             $newCourse = array('status' => $course['status'],
@@ -645,7 +649,8 @@ class LGetSite
         $answer = Request::custom('GET', $URL, array(), '');
         $response['user'] = json_decode($answer['content'], true);
 
-        unset($response['user']['courses']);
+        if (isset($response['user']['courses']))
+            unset($response['user']['courses']);
 
         foreach ($user['courses'] as $course) {
             $newCourse = array('status' => $course['status'],
