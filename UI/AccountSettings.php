@@ -79,6 +79,30 @@ if (isset($_POST['action'])) {
         } else {
             $notifications = $notifications + $f->notifications;
         }
+    } else if ($_POST['action'] == "SetAccountInfo") {
+        $f = new FormEvaluator($_POST);
+
+        $f->checkStringForKey('language',
+                              FormEvaluator::OPTIONAL,
+                              'warning',
+                              '???.');
+
+        if($f->evaluate(true)) {
+
+            $foundValues = $f->foundValues;
+            $language = $foundValues['language'];
+
+            $newUserSettings = User::encodeUser(User::createUser($uid, null, null, null, null, null, null, 
+                                                null, null, null, null, null, null, null, $language));
+            $URI = $databaseURI . "/user/" . $uid;
+            http_put_data($URI, $newUserSettings, true, $message);
+
+            if ($message == "201") {
+                $notifications[] = MakeNotification("success", "Die Sprache wurde geändert!");
+            }
+        } else {
+            $notifications = $notifications + $f->notifications;
+        }
     }
 }
 
@@ -109,6 +133,7 @@ $changePassword->bind($accountSettings_data);
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $accountInfo, $changePassword);
 $w->defineForm(basename(__FILE__), false, $changePassword);
+$w->defineForm(basename(__FILE__), false, $accountInfo);
 $w->set_config_file('include/configs/config_default.json');
 $w->show();
 

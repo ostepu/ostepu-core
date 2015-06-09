@@ -1,6 +1,10 @@
+<input type="hidden" name="action" value="SetAccountInfo">
 <div class="content-element">
     <div class="content-header">
         <div class="content-title left uppercase">Eigene Daten</div>
+        <div class="info-color bold right">
+            <button class="text-button info-color bold right">ändern</button>
+        </div>
     </div>
 
     <div class="content-body-wrapper">
@@ -28,6 +32,24 @@
             </div>
             <div class="form-field left">
                 <?php echo (isset($userName) ? $userName : '-'); ?>
+            </div>
+            <div class="form-field left bold new-line">
+                Sprache:
+            </div>
+            <div class="form-field left">
+            <select class="form-field left text-input" name="language" id="language" size="1">
+                <?php
+                    $langs = array("Englisch"=>"en", "Deutsch"=>"de");
+                    foreach ($langs as $key => $l) {                        
+                        print '<option value="';
+                        print $l . '"';
+                        print $l == $lang ? ' selected="selected"' : NULL;
+                        print '>';
+                        print $key;
+                        print '</option>';
+                    }
+                ?>
+            </select>
             </div>
         </div>
     </div> <!-- end: content-body-wrapper -->
