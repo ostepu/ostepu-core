@@ -49,11 +49,11 @@ SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
-ALTER TABLE `Submission` MODIFY `S_comment` VARCHAR(255);
-ALTER TABLE `Submission` MODIFY `F_id_file` INT NULL;
-ALTER TABLE `Submission` CHANGE `S_date` `S_date` INT UNSIGNED NOT NULL DEFAULT 0;
-ALTER TABLE `Submission` CHANGE `S_flag` `S_flag` TINYINT NOT NULL DEFAULT 1;
-ALTER TABLE `Submission` CHANGE `S_hideFile` `S_hideFile` TINYINT NOT NULL DEFAULT 0;
+CALL `alter_table_attribute`('Submission', 'S_comment', 'VARCHAR(255)', 'NULL', 'NULL');
+CALL `alter_table_attribute`('Submission', 'F_id_file', 'INT', 'NULL', 'NULL');
+CALL `alter_table_attribute`('Submission', 'S_date', 'INT UNSIGNED', 'NOT NULL', '0');
+CALL `alter_table_attribute`('Submission', 'S_flag', 'TINYINT', 'NOT NULL', '1');
+CALL `alter_table_attribute`('Submission', 'S_hideFile', 'TINYINT', 'NOT NULL', '0');
 
 DROP TRIGGER IF EXISTS `Submission_BINS`;
 CREATE TRIGGER `Submission_BINS` BEFORE INSERT ON `Submission` FOR EACH ROW

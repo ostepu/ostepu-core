@@ -27,10 +27,8 @@ SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
-<?php if (is_dir($sqlPath.'/procedures')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/procedures/'.$inp);}},scandir($sqlPath.'/procedures'),array_pad(array(),count(scandir($sqlPath.'/procedures')),$sqlPath));?>
-<?php if (is_dir($sqlPath.'/migrations')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/migrations/'.$inp);}},scandir($sqlPath.'/migrations'),array_pad(array(),count(scandir($sqlPath.'/migrations')),$sqlPath));?>
-ALTER TABLE `User` CHANGE `U_flag` `U_flag` TINYINT NULL DEFAULT '1';
-ALTER TABLE `User` CHANGE `U_isSuperAdmin` `U_isSuperAdmin` TINYINT NULL DEFAULT '0';
+CALL `alter_table_attribute`('User', 'U_flag', 'TINYINT', 'NULL', '1');
+CALL `alter_table_attribute`('User', 'U_isSuperAdmin', 'TINYINT', 'NULL', '0');
 
 DROP TRIGGER IF EXISTS `User_BUPD`;
 CREATE TRIGGER `User_BUPD` BEFORE UPDATE ON `User` FOR EACH ROW
@@ -61,11 +59,6 @@ If NEW.U_flag != 1
 then delete from `Session` where NEW.U_id = U_id;
 end if;
 end; 
-<?php include $sqlPath.'/procedures/GetUser.sql'; ?>
-<?php include $sqlPath.'/procedures/GetUsers.sql'; ?>
-<?php include $sqlPath.'/procedures/GetUserByStatus.sql'; ?>
-<?php include $sqlPath.'/procedures/GetCourseUserByStatus.sql'; ?>
-<?php include $sqlPath.'/procedures/GetGroupMember.sql'; ?>
-<?php include $sqlPath.'/procedures/GetCourseMember.sql'; ?>
-<?php include $sqlPath.'/procedures/GetIncreaseUserFailedLogin.sql'; ?>
-<?php include $sqlPath.'/procedures/GetExistsPlatform.sql'; ?>
+
+<?php if (is_dir($sqlPath.'/procedures')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/procedures/'.$inp);}},scandir($sqlPath.'/procedures'),array_pad(array(),count(scandir($sqlPath.'/procedures')),$sqlPath));?>
+<?php if (is_dir($sqlPath.'/migrations')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/migrations/'.$inp);}},scandir($sqlPath.'/migrations'),array_pad(array(),count(scandir($sqlPath.'/migrations')),$sqlPath));?>

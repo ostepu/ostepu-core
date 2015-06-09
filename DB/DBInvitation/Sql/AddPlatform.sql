@@ -32,7 +32,7 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 DROP TRIGGER IF EXISTS `Invitation_BINS`;
 CREATE TRIGGER `Invitation_BINS` BEFORE INSERT ON `Invitation` FOR EACH ROW
 <?php
-/*check if maximal groupsize is reached
+/*checks if max groupsize is reached
 @if not insert into invitation
 @author Lisa*/
 ?>

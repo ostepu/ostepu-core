@@ -55,24 +55,16 @@ SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
-/*set @database = Database();
-CREATE TEMPORARY TABLE `ColData`
-SELECT COLUMN_NAME as 'Name', DATA_TYPE as 'Type', IS_NULLABLE as 'Nullable', COLUMN_DEFAULT as 'Default'
-  FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = @database and TABLE_NAME = 'Marking';*/
-
-/*if ((select count(*) from `ColData` where `Name` = `M_points`)>0) then
-
-END if;*/
-ALTER TABLE `Marking` MODIFY `M_points` FLOAT;
-ALTER TABLE `Marking` MODIFY `M_tutorComment` VARCHAR(255);
 /*ALTER TABLE `Marking` DROP FOREIGN KEY `fk_Marking_User1`; 
 ALTER TABLE `Marking` ADD CONSTRAINT `fk_Marking_User1` FOREIGN KEY (`U_id_tutor`) REFERENCES `user`(`U_id`) ON DELETE CASCADE ON UPDATE CASCADE; 
 ALTER TABLE `Marking` DROP FOREIGN KEY `fk_Marking_Submission1`; 
-ALTER TABLE `Marking` ADD CONSTRAINT `fk_Marking_Submission1` FOREIGN KEY (`S_id`) REFERENCES `submission`(`S_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `Marking` ADD CONSTRAINT `fk_Marking_Submission1` FOREIGN KEY (`S_id`) REFERENCES `submission`(`S_id`) ON DELETE CASCADE ON UPDATE CASCADE;*/
 
-ALTER TABLE `Marking` CHANGE `M_status` `M_status` TINYINT NOT NULL DEFAULT 0;
-ALTER TABLE `Marking` CHANGE `M_date` `M_date` INT UNSIGNED NOT NULL DEFAULT 0;
-ALTER TABLE `Marking` CHANGE `M_hideFile` `M_hideFile` TINYINT NOT NULL DEFAULT 0;*/
+CALL `alter_table_attribute`('Marking', 'M_points', 'FLOAT', 'NULL', '0');
+CALL `alter_table_attribute`('Marking', 'M_tutorComment', 'VARCHAR(255)', 'NULL', 'NULL');
+CALL `alter_table_attribute`('Marking', 'M_status', 'TINYINT', 'NOT NULL', '0');
+CALL `alter_table_attribute`('Marking', 'M_date', 'TINYINT', 'NOT NULL', '0');
+CALL `alter_table_attribute`('Marking', 'M_hideFile', 'INTEGER UNSIGNED', 'NOT NULL', '0');
 
 DROP TRIGGER IF EXISTS `Marking_BINS`;
 CREATE TRIGGER `Marking_BINS` BEFORE INSERT ON `Marking` FOR EACH ROW
