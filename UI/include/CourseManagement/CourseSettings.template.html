@@ -94,7 +94,7 @@ if (isset($CourseSettingsNotificationElements)) {
                             <div class="datetimepicker input-append left date">
                                 <input class="form-field text-input" data-format="dd.MM.yyyy - hh:mm"
                                 <?php if (isset($Date)) {?> value="<?php echo (ctype_digit($data) ? date('d.m.Y - H:i', $data) : $data); ?>" <?php } ?>
-                                type="text" id="data; ?>" name="setting_<?php echo $setting['id']; ?>"/>
+                                type="text" id="datetimepicker" name="setting_<?php echo $setting['id']; ?>"/>
                                 <span class="add-on">
                                   ...
                                 </span>
@@ -102,17 +102,21 @@ if (isset($CourseSettingsNotificationElements)) {
                             <?php
                         } elseif ($setting['type']==='BOOL'){
                             ?>
+                            <div>
                               <select name="setting_<?php echo $setting['id']; ?>" size="1">
                                 <option value="1"><?php echo Language::Get('main','yes', $langTemplate); ?></option>
                                 <option value="0"><?php echo Language::Get('main','no', $langTemplate); ?></option>
                              </select>
+                            </div>
                              <?php
                         } elseif ($setting['type']==='INT' || $setting['type']==='STRING'){
                             $data = ($setting['state']!=0 ? $setting['state'] : null);
                             ?>
+                            <div>
                             <input class="form-field text-input"
                                 <?php if (isset($data)) {?> value="<?php echo $data; ?>" <?php } ?>
                                 type="text" id="data; ?>" name="setting_<?php echo $setting['id']; ?>"/>
+                            </div>
                             <?php
                         }
                     }
