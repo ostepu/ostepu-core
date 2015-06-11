@@ -12,13 +12,14 @@ require_once( dirname(__FILE__) . '/phpfastcache/phpfastcache.php');
 
 class PathObject
 {
-    public function __construct( $_fromSid, $_toSid,$_toName, $_toURL, $_toMethod)
+    public function __construct( $_fromSid, $_toSid,$_toName, $_toURL, $_toMethod, $_toStatus)
     {
         $this->fromSid = $_fromSid;
         $this->toSid = $_toSid;
         $this->toName = $_toName;
         $this->toURL = $_toURL;
         $this->toMethod = $_toMethod;
+        $this->toStatus = $_toStatus;
     }
     
     public $fromSid = null;
@@ -26,7 +27,9 @@ class PathObject
     public $toName = null;
     public $toURL = null;
     public $toMethod = null;
+    public $toStatus = null;
     public $eTag = null;
+    
 }
 
 class DataObject
@@ -53,9 +56,11 @@ class CacheManager
     private static $changedTree = false;
     private static $enabled = false;
     private static $maxSid = -1;
+    private static $rootNode = null;
+    private static $currentBaseSID = 0;
     
     // true = die dot-Graphen werden erstellt, false = die grafische Ausgabe der Graphen erfolgt nicht
-    private static $generateTree = false;
+    private static $makeTree = false;
     
     public static function getToPathBySid($sid)
     {
@@ -70,6 +75,17 @@ class CacheManager
     
     public static function getNextSid()
     {
+        $header = array_merge(array(),Request::http_parse_headers_short(headers_list()));
+        
+        $id=null;
+        if (isset($header['Cachesid'])){
+            $id = intval($header['Cachesid']);
+           
+            if (self::$currentBaseSID!==$id)
+                return $id;
+        }
+            
+        if ($id===self::$currentBaseSID) self::$currentBaseSID = self::$maxSid+1;
         self::$maxSid=self::$maxSid+1;
         return self::$maxSid;
     }
@@ -102,49 +118,28 @@ class CacheManager
         self::$maxSid = -1;
     }
     
-    public static function savePath()
+    public static function savePath($URL,$method)
     {
         asort(self::$cachedPath);
         
-        if (self::$generateTree){
-            // lange Variante
+        if (self::$makeTree){
+                        
             $text="digraph G {rankdir=TB;edge [splines=\"polyline\"];\n";
             $graphName="graph";
             
             $graphName = $_SERVER['SCRIPT_NAME'];
             $graphName = basename(explode('?',$graphName)[0]);
             
-            $beginDone=false;
-            foreach (self::$cachedPath as $key => $path){
-                $fromName = self::getToPathBySid($path->fromSid);
-
-                if ($fromName===null){
-                    $fromName = 'BEGIN';
-                } else
-                    $fromName = $fromName->toName;
-                
-                $add = $path->toURL;
-                $add = explode("/",$add);
-                array_shift($add);
-                array_shift($add);
-                array_shift($add);
-                array_shift($add);
-                array_shift($add);
-                array_shift($add);
-                $add = "/".implode("\n/",$add);
-                $text.="\"".$fromName.'"->"'.$path->toName."\"[ label = \"".$path->toMethod."\n".$add."\" ];\n";
-            }
-            $text.="\n}";
-            file_put_contents(dirname(__FILE__).'/../path/'.$graphName.'.gv',$text);
+            $dir = substr($graphName,0,strlen($graphName));
+            if (!is_dir(dirname(__FILE__).'/../path/'.$dir))
+                mkdir(dirname(__FILE__).'/../path/'.$dir, 0755);
             
             // kurze Variante
             $text="digraph G {rankdir=TB;edge [splines=\"polyline\"];\n";
-            $graphName="graph";
-            
-            $graphName = $_SERVER['SCRIPT_NAME'];
-            $graphName = basename(explode('?',$graphName)[0]);
             
             $beginDone=false;
+            $Nodes = array();
+            $edgeText = '';
             foreach (self::$cachedPath as $key => $path){
                 $fromName = self::getToPathBySid($path->fromSid);
 
@@ -153,10 +148,40 @@ class CacheManager
                 } else
                     $fromName = $fromName->toName;
                 
-                $text.="\"".$fromName.'"->"'.$path->toName."\"[ label = \"".$path->toMethod."\" ];\n";
+                if (!isset($Nodes[$path->toName.'_'.$path->toSid]))
+                    $Nodes[$path->toName.'_'.$path->toSid] = array();
+                
+                if (!isset($Nodes[$fromName.'_'.$path->fromSid]))
+                    $Nodes[$fromName.'_'.$path->fromSid] = array();
+                
+                if (!isset($Nodes[$fromName.'_'.$path->fromSid]['name']))
+                    $Nodes[$fromName.'_'.$path->fromSid]['name'] = $fromName;
+                
+                if (!isset($Nodes[$path->toName.'_'.$path->toSid]['name']))
+                    $Nodes[$path->toName.'_'.$path->toSid]['name'] = $path->toName;
+                
+                if (!isset($Nodes[$path->toName.'_'.$path->toSid]['status']))
+                    $Nodes[$path->toName.'_'.$path->toSid]['status'] = $path->toStatus;
+                               
+                
+                $edgeText.="\"".$fromName.'_'.$path->fromSid.'"->"'.$path->toName.'_'.$path->toSid."\"[ label = \"".$path->toMethod."\" ];\n";
             }
+                        
+            $nodeText = '';
+            foreach ($Nodes as $key=>$node){
+                $add = "";
+                if (isset($node['status']) && ($node['status']<200 || $node['status']>299))
+                    $add = "color = \"red\" fontcolor=\"red\" ";
+                $text.="\"".$key."\" [ ".$add."label=\"".$node['name']."\" id=\"$key\" ]; \n";
+            }
+            
+            $text.= "{".$nodeText."}";
+            $text.= $edgeText;
+
             $text.="\n}";
-            file_put_contents(dirname(__FILE__).'/../path/'.$graphName.'.short.gv',$text);
+            
+            if (trim($dir)!='')
+                file_put_contents(dirname(__FILE__).'/../path/'.$dir.'/'.$dir.'.short.gv',$text);
         }
         
         if (self::$changedTree) return;
@@ -185,7 +210,7 @@ class CacheManager
     public static function getCachedDataByURL($sid, $URL, $method)
     {
         if (!self::$enabled) return null;
-        if (strtoupper($method)!='GET') return null;
+        if (strtoupper($method)!='GET') return null; // ?????? 
         
         $uTag = md5($URL);
         if (isset(self::$cachedData[$uTag]))
@@ -194,35 +219,70 @@ class CacheManager
         return null;
     }
     
-    public static function addPath($sid, $toSid, $Name, $URL, $method)
+    public static function addPath($sid, $toSid, $Name, $URL, $method, $status)
     {
-        if (!self::$enabled && !self::$generateTree) return null;
-        self::$cachedPath[$sid] = new PathObject($sid, $toSid, $Name, $URL ,$method);
+        if (!self::$enabled && !self::$makeTree) return null;
+        self::$cachedPath[$toSid] = new PathObject($sid, $toSid, $Name, $URL ,$method, $status);
+    }
+    
+    public static function setRoot()
+    {
+        $graphName = $_SERVER['SCRIPT_NAME'];
+        $graphName = basename(explode('?',$graphName)[0]);
+        self::$rootNode = new PathObject(null, null, $graphName, null ,null, null);
     }
     
     public static function cacheData($sid, $Name, $URL, $content, $status, $method)
     {
         //if (!self::$enabled) return null;
-        if (strpos($URL,'/UI/')===false && strtoupper($method)=='GET'){
+        if (strpos($URL,'/UI/')===false && strtoupper($method)=='GET'){ // ??????
             $uTag = md5($URL);
 
             if (!isset(self::$cachedData[$uTag])){
                 self::$cachedData[$uTag] = new DataObject($content,$status);
                 $eTag = self::generateETag($content);
-                if ($sid==0)
+                if ($sid===self::$currentBaseSID)
                     self::storeData('data_'.$eTag,$content);
             }
         }
-
-        if ($sid===0){
-            self::savePath();
+        
+        if ($sid===self::$currentBaseSID){
+            self::finishRequest($sid, 'BEGIN', null, $content, $status, null, null);
+            self::savePath($URL,$method);
         }
+    }
+    
+    public static function finishRequest($sid, $Name, $inURL, $outContent, $outStatus, $inMethod, $inContent)
+    {
+        if (!self::$makeTree) return;
+        
+        // speichere Knotendaten
+        $data = array();
+        $data['inURL'] = $inURL;
+        $data['outStatus'] = $outStatus;
+        $data['inMethod'] = $inMethod;
+        $data['outContent'] = $outContent;
+        $data['inContent'] = $inContent;
+        $data['name'] = $Name;
+        $dir = self::$rootNode->toName;
+        $dir = substr($dir,0,strlen($dir));
+        
+        // es gab einen Fehler
+        if (trim($dir)=='') return;
+        
+        if (!is_dir(dirname(__FILE__).'/../path'))
+            mkdir(dirname(__FILE__).'/../path', 0755);
+        
+        if (!is_dir(dirname(__FILE__).'/../path/'.$dir))
+            mkdir(dirname(__FILE__).'/../path/'.$dir, 0755);
+        
+        if (trim($dir)!='')
+            file_put_contents(dirname(__FILE__).'/../path/'.$dir.'/'.$Name.'_'.$sid.'.json',json_encode($data));
     }
     
     public static function cacheDataSimple($sid, $Name, $URL, $content, $status, $method)
     {
-        //if (!self::$enabled) return null;
-        if (strpos($URL,'/UI/')===false && strtoupper($method)=='GET'){
+        if (self::$enabled && strpos($URL,'/UI/')===false && strtoupper($method)=='GET'){ // ??????
             $uTag = md5($URL);
 
             if (!isset(self::$cachedData[$uTag])){
@@ -232,14 +292,14 @@ class CacheManager
             }
         }
         
-        if ($sid===0){
-            self::savePath();
+        if ((self::$enabled || self::$makeTree) && $sid===self::$currentBaseSID){
+            self::finishRequest($sid, 'BEGIN', null, $content, $status, null, null);
+            self::savePath($URL,$method);
         }
     }
     
     public static function generateETag($data)
     {
-        ///if (!self::$enabled) return null;
         if (!is_string($data))
             $data = json_encode($data);
         return md5($data);
@@ -247,14 +307,12 @@ class CacheManager
     
     public static function setETag($data)
     {
-        ///if (!self::$enabled) return null;
         $eTag=self::generateETag($data);
         header('ETag: ' . $eTag . '');
     }
     
     public static function setCacheSid($sid)
     {
-        ///if (!self::$enabled) return null;
         header('Cachesid: ' . $sid . '');
     }
     
@@ -263,11 +321,14 @@ class CacheManager
         ///if (!self::$enabled) return;
         if (self::$activeTree) return;
         if (self::$tree!=null) return;
-        if (strtoupper($method)!='GET') return;
+        if (strtoupper($method)!='GET' && !self::$makeTree) return;
         
         $uTag = md5($URL);
         self::$activeTree=true;
         self::$changedTree=true;
+        
+        self::setRoot();
+        
         $uriTag = self::generateETag($URL);
         $list = self::loadData('tree_'.$uTag);
         if ($list===null) {
@@ -325,7 +386,7 @@ class CacheManager
     private static $cache = null;
     public static function storeData($key, $value)
     {
-        if (!self::$enabled) return;
+        if (!self::$enabled) return null;
         if (self::$cache===null){
             phpFastCache::setup(phpFastCache::$config);
             self::$cache = phpFastCache();

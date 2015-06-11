@@ -197,9 +197,9 @@ class Request
                             CacheManager::setETag($result['content']);
                             $result['headers'] = array_merge(array(),Request::http_parse_headers_short(headers_list()));
                             header_remove();
-                            if (!isset($result['headers']['CacheSid'])){
+                            if (!isset($result['headers']['Cachesid'])){
                                 $newSid = CacheManager::getNextSid();
-                                $result['headers']['CacheSid'] = $newSid;
+                                $result['headers']['Cachesid'] = $newSid;
                             }
                             ob_end_clean();
                             //header_remove();            
@@ -219,7 +219,9 @@ class Request
 
                             CacheManager::setCacheSid($sid);
                             
-                            CacheManager::addPath($sid, (isset($result['headers']['Cachesid']) ? $result['headers']['Cachesid'] : null), $com->getTargetName(), $target, $method);
+                            $targetSid = (isset($result['headers']['Cachesid']) ? $result['headers']['Cachesid'] : null);
+                            CacheManager::addPath($sid, $targetSid, $com->getTargetName(), $target, $method, $result['status']);
+                            CacheManager::finishRequest($targetSid, $com->getTargetName(), $target, $result['content'], $result['status'], $method, $content);
                             CacheManager::cacheData($sid, $com->getTargetName(), $target, $result['content'], $result['status'], $method);
                             ///Logger::Log('in<< '.$method.' '.$com->getClassName().$add, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
                         
