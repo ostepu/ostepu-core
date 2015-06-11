@@ -74,7 +74,7 @@ if (isset($processors)){
                     if ($link->getId() === null || $link->getName() === null) continue;
         ?>
                     <option value="<?php echo $link->getId(); ?>"<?php echo (isset($process['target']['id']) && $process['target']['id']==$link->getId() ? " selected=\"selected\"" : '' ); ?>><?php echo $link->getName(); ?></option>
-        <?php       if (isset($process['target']['id']) && $process['target']['id']==$link->getId())
+        <?php       if ($selectedComponent===NULL || (isset($process['target']['id']) && $process['target']['id']==$link->getId()))
                         $selectedComponent=$link;
                }
         ?>
@@ -82,7 +82,7 @@ if (isset($processors)){
     </select>
     <br><br>
     <?php
-        if (isset($process)){
+        if (isset($process) && isset($selectedComponent)){
             $pro = Template::WithTemplateFile('include/CreateSheet/Processor/'.$selectedComponent->getName().'.template.php');
             if (isset($cid))
                 $pro->bind(array('cid'=>$cid));
