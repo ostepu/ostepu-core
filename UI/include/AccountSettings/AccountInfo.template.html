@@ -40,7 +40,7 @@
             <div class="form-field left">
             <select class="form-field left text-input" name="language" id="language" size="1">
                 <?php
-                    $langs = array("Englisch"=>"en", "Deutsch"=>"de");
+                    $langs = array(Language::Get('main','english', $langTemplate)=>"en", Language::Get('main','german', $langTemplate)=>"de");
                     foreach ($langs as $key => $l) {                        
                         print '<option value="';
                         print $l . '"';

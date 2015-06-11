@@ -6,6 +6,8 @@
         "lastName": "Nachname",
         "email": "E-Mail",
         "userName": "Login",
-        "language": "Sprache"
+        "language": "Sprache",
+        "english": "Englisch",
+        "german": "Deutsch"
     }
 }
