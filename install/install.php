@@ -17,10 +17,10 @@ include_once dirname(__FILE__) . '/../Assistants/Request.php';
 include_once dirname(__FILE__) . '/../Assistants/DBRequest.php';
 include_once dirname(__FILE__) . '/../Assistants/DBJson.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
+include_once dirname(__FILE__) . '/include/Einstellungen.php';
 include_once dirname(__FILE__) . '/include/Design.php';
 include_once dirname(__FILE__) . '/include/Installation.php';
 include_once dirname(__FILE__) . '/../Assistants/Language.php';
-include_once dirname(__FILE__) . '/include/Einstellungen.php';
 include_once dirname(__FILE__) . '/include/Variablen.php';
 include_once dirname(__FILE__) . '/include/Zugang.php';
 
