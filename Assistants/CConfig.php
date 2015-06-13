@@ -155,9 +155,9 @@ class CConfig
         $path = ($this->callPath!=null ? $this->callPath.'/' : '');
         $path = str_replace("\\",'/',$path);
         
-        if (file_exists($path.'info/'.$language)){
+        if (file_exists($path.'info/'.$language.'.md')){
             $this->_app->response->setStatus( 200 );
-            $this->_app->response->setBody( file_get_contents($path.'info/'.$language) );
+            $this->_app->response->setBody( file_get_contents($path.'info/'.$language.'.md') );
         }else{
             $this->_app->response->setStatus( 404 );
             $this->_app->response->setBody( '' );
