@@ -82,30 +82,32 @@ if (isset($CourseSettingsNotificationElements)) {
                 ?>
             </div>
         </div>
-        <div class="content-body left">
+        <div class="content-body left">            
             <?php if (isset($course['settings'])){
                     foreach($course['settings'] as $setting){
                         echo '<label class="form-field left label bold new-line" for="">';
                         echo $setting['name'];
                         echo "</label>";
                         if ($setting['type']==='TIMESTAMP'){
-                            $data = ($setting['state']!=0 ? $setting['state'] : null);
+                            $data = ($setting['state']!==0 ? $setting['state'] : null);
                             ?>
-                            <div class="datetimepicker input-append left date">
+                            <div id="datetimepicker<?php echo $setting['id']; ?>" class="dtpicker input-append left date">
                                 <input class="form-field text-input" data-format="dd.MM.yyyy - hh:mm"
-                                <?php if (isset($Date)) {?> value="<?php echo (ctype_digit($data) ? date('d.m.Y - H:i', $data) : $data); ?>" <?php } ?>
-                                type="text" id="datetimepicker" name="setting_<?php echo $setting['id']; ?>"/>
+                                <?php if (isset($data)) {?> value="<?php echo (ctype_digit($data) ? date('d.m.Y - H:i', $data) : $data); ?>" <?php } ?>
+                                 type="text" name="setting[<?php echo $setting['id']; ?>][value]"/>
                                 <span class="add-on">
                                   ...
                                 </span>
                             </div>
+                            <input type="hidden" name="setting[<?php echo $setting['id']; ?>][type]" value="DATE">
                             <?php
                         } elseif ($setting['type']==='BOOL'){
                             ?>
                             <div>
-                              <select name="setting_<?php echo $setting['id']; ?>" size="1">
-                                <option value="1"><?php echo Language::Get('main','yes', $langTemplate); ?></option>
-                                <option value="0"><?php echo Language::Get('main','no', $langTemplate); ?></option>
+                              <input type="hidden" name="setting[<?php echo $setting['id']; ?>][type]" value="TEXT">
+                              <select name="setting[<?php echo $setting['id']; ?>][value]" size="1">
+                                <option value="1" <?php echo ($setting['state'] == 1 ?"selected=\"selected\"":''); ?>><?php echo Language::Get('main','yes', $langTemplate); ?></option>
+                                <option value="0" <?php echo ($setting['state'] == 0 ?"selected=\"selected\"":''); ?>><?php echo Language::Get('main','no', $langTemplate); ?></option>
                              </select>
                             </div>
                              <?php
@@ -113,9 +115,10 @@ if (isset($CourseSettingsNotificationElements)) {
                             $data = ($setting['state']!=0 ? $setting['state'] : null);
                             ?>
                             <div>
-                            <input class="form-field text-input"
-                                <?php if (isset($data)) {?> value="<?php echo $data; ?>" <?php } ?>
-                                type="text" id="data; ?>" name="setting_<?php echo $setting['id']; ?>"/>
+                                <input type="hidden" name="setting[<?php echo $setting['id']; ?>][type]" value="TEXT">
+                                <input class="form-field text-input"
+                                    <?php if (isset($data)) {?> value="<?php echo $data; ?>" <?php } ?>
+                                    type="text" id="data; ?>" name="setting[<?php echo $setting['id']; ?>][value]"/>
                             </div>
                             <?php
                         }

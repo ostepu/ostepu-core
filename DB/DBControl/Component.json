@@ -11,7 +11,7 @@
     {"path":"Controller.php"}
   ],
   "links":[
-    {"name":"out", "target":["DBCourse","DBUser","DBAttachment","DBExercise","DBExerciseSheet","DBExerciseType","DBFile","DBSession","DBExternalId","DBApprovalCondition","DBGroup","DBInvitation","DBMarking","DBCourseStatus","DBSelectedSubmission","DBSubmission","DBExerciseFileType","CControl","DBForm","DBProcess"], "links":[] }
+    {"name":"out", "target":["DBCourse","DBUser","DBAttachment","DBExercise","DBExerciseSheet","DBExerciseType","DBFile","DBSession","DBExternalId","DBApprovalCondition","DBGroup","DBInvitation","DBMarking","DBCourseStatus","DBSelectedSubmission","DBSubmission","DBExerciseFileType","CControl","DBForm","DBProcess","DBSetting"], "links":[] }
   ],
   "connector":[
     {"name":"request", "target":"CLocalObjectRequest"}

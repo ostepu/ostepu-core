@@ -159,8 +159,8 @@ class Setting extends Object implements JsonSerializable
     public static function createSetting( 
                                             $settingId,
                                             $settingName,
-                                            $state='',
-                                            $type='text'
+                                            $state=null,
+                                            $type=null
                                             )
     {
         return new Setting( array( 
@@ -199,7 +199,7 @@ class Setting extends Object implements JsonSerializable
             $this->addInsertData( 
                                  $values,
                                  'SET_id',
-                                 DBJson::mysql_real_escape_string( $this->id )
+                                 DBJson::mysql_real_escape_string( self::getIdFromSettingId($this->id) )
                                  );
         if ( $this->name !== null )
             $this->addInsertData( 
@@ -327,19 +327,9 @@ class Setting extends Object implements JsonSerializable
                                              $isResult = true
                                              )
     {
-
-        // generates an assoc array of files by using a defined list of
-        // its attributes
-        $files = DBJson::getObjectsByAttributes( 
-                                                $data,
-                                                File::getDBPrimaryKey( ),
-                                                File::getDBConvert( ),
-                                                $FileExtension
-                                                );
-
         // generates an assoc array of Settings by using a defined list of
         // its attributes
-        $Settings = DBJson::getObjectsByAttributes( 
+        $res = DBJson::getObjectsByAttributes( 
                                                       $data,
                                                       Setting::getDBPrimaryKey( ),
                                                       Setting::getDBConvert( ),

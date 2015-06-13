@@ -9,7 +9,10 @@ select SQL_CACHE
     C.C_semester,
     C.C_defaultGroupSize,
     ES.ES_id,
-    S.*
+    concat(",courseid,",'_',S.SET_id) as SET_id,
+    S.SET_name,
+    S.SET_state,
+    S.SET_type
 from
     Course C
         left join
