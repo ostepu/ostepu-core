@@ -4,21 +4,12 @@
     "classFile": "DBSession.php",
     "className": "DBSession",
     "files": [
-        {
-            "path": ".htaccess"
-        },
-        {
-            "path": "DBSession.php"
-        },
-        {
-            "path": "index.php"
-        },
-        {
-            "path": "Commands.json"
-        },
-        {
-            "path": "Sql/"
-        }
+        {"path": ".htaccess"},
+        {"path": "DBSession.php"},
+        {"path": "index.php"},
+        {"path": "Commands.json"},
+        {"path": "Sql/"},
+        {"path": "info/"}
     ],
     "links": [
         {
