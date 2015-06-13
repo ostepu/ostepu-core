@@ -167,6 +167,19 @@ class Course extends Object implements JsonSerializable
         $this->settings = $value;
     }
     
+    
+    public function containsSetting( $obj, $settingName )
+    {
+        $settings = $obj->getSettings();
+        $settingName = strtoupper($settingName);
+        foreach ($settings as $set){
+            if (strtoupper($set->getName()) == $settingName)
+                return $set->getState();
+        }
+        
+        return null;
+    }
+    
     /**
      * Creates an Course object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.

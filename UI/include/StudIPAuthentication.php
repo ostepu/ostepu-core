@@ -317,7 +317,7 @@ class StudIPAuthentication extends AbstractAuthentication
         $url = "{$databaseURI}/course/course/{$cid}";
         $message=null;
         $data = http_get($url, false, $message);
-        $data = json_decode($this->userData, true);
+        $data = Course::decodeCourse($data);
         if ($data === array()) return null;
         return $data;
     }
@@ -421,10 +421,13 @@ class StudIPAuthentication extends AbstractAuthentication
                             exit(); 
                         }
                         
-                        if (isset($courseData['settings']['RegistrationPeriodEnd']) && $courseData['settings']['RegistrationPeriodEnd']!=0 && $courseData['settings']['RegistrationPeriodEnd']<time()){
-                            // no registration allowed
-                            set_error("Eine Anmeldung ist nicht möglich!<br>Ablaufdatum: ".date('d.m.Y - H:i', $courseData['settings']['RegistrationPeriodEnd']));
-                            exit(); 
+                        if ($courseData->getSettings()!==null){
+                            $end = Course::containsSetting($courseData,'RegistrationPeriodEnd');
+                            if ($end !== null && $end != 0 && $end<time()){
+                                // no registration allowed
+                                set_error("Eine Anmeldung ist nicht möglich!<br>Ablaufdatum: ".date('d.m.Y - H:i', $courseData['settings']['RegistrationPeriodEnd']));
+                                exit(); 
+                            }
                         }
                             
                         $CourseStatusResponse = $this->createCourseStatus($this->userData['id'],$this->cid,$studipStatus);
