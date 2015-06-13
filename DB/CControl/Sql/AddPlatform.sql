@@ -9,6 +9,28 @@ begin
      END IF;
 end;
 
+DROP PROCEDURE IF EXISTS `execute_if_column_not_exists`;
+CREATE PROCEDURE `execute_if_column_not_exists` (in theTable varchar(128), in theColumnName varchar(128), in theStatement varchar(255))
+begin
+    set @database = Database();
+    IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = @database and TABLE_NAME = theTable and COLUMN_NAME = theColumnName) = 0) THEN
+       SET @s = theStatement;
+       PREPARE stmt FROM @s;
+       EXECUTE stmt;
+     END IF;
+end;
+
+DROP PROCEDURE IF EXISTS `execute_if_column_exists`;
+CREATE PROCEDURE `execute_if_column_exists` (in theTable varchar(128), in theColumnName varchar(128), in theStatement varchar(255))
+begin
+    set @database = Database();
+    IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = @database and TABLE_NAME = theTable and COLUMN_NAME = theColumnName) > 0) THEN
+       SET @s = theStatement;
+       PREPARE stmt FROM @s;
+       EXECUTE stmt;
+     END IF;
+end;
+
 DROP PROCEDURE IF EXISTS `alter_table_attribute`;
 CREATE PROCEDURE `alter_table_attribute` (in theTable varchar(128), in theAttrName varchar(128), in theType varchar(128), in isNullable varchar(128), in theDefault varchar(128))
 begin
