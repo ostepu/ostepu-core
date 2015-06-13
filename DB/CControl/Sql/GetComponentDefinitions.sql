@@ -8,6 +8,7 @@ select
     CL.CL_name,
     CL.CO_id_target,
     CL.CL_relevanz,
+    CL.CL_priority,
     CL.CO_id_target,
     CL.CO_id_owner,
     CO2.CO_name as CL_targetName,
@@ -19,3 +20,4 @@ from
     ComponentLinkage CL ON CO.CO_id = CL.CO_id_owner
         left join
     Component CO2 ON CO2.CO_id = CL.CO_id_target
+ORDER BY CL_priority asc, CL_id asc

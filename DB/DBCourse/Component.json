@@ -86,6 +86,7 @@
         {
             "name": "request",
             "target": "CLocalObjectRequest"
-        }
+        },
+        {"name":"postCourse", "target":"LCourse", "priority":300}
     ]
 }

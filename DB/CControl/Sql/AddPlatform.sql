@@ -9,6 +9,17 @@ begin
      END IF;
 end;
 
+DROP PROCEDURE IF EXISTS `execute_if_table_exists`;
+CREATE PROCEDURE `execute_if_table_exists` (in theTable varchar(128), in theStatement varchar(255))
+begin
+    set @database = Database();
+    IF((SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = @database and TABLE_NAME = theTable) > 0) THEN
+       SET @s = theStatement;
+       PREPARE stmt FROM @s;
+       EXECUTE stmt;
+     END IF;
+end;
+
 DROP PROCEDURE IF EXISTS `execute_if_column_not_exists`;
 CREATE PROCEDURE `execute_if_column_not_exists` (in theTable varchar(128), in theColumnName varchar(128), in theStatement varchar(255))
 begin
@@ -112,6 +123,8 @@ CREATE TABLE IF NOT EXISTS `ComponentLinkage` (
     ON UPDATE CASCADE)
 ENGINE = InnoDB
 AUTO_INCREMENT = 1;
+
+call execute_if_column_not_exists('ComponentLinkage','CL_priority','ALTER TABLE `ComponentLinkage` ADD COLUMN CL_priority int NOT NULL DEFAULT 100;');
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

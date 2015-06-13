@@ -170,7 +170,6 @@ class KomponentenErstellen
         $sql = "START TRANSACTION;SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;";
         $sql .=implode('',$setDBNames);
         unset($setDBNames);
-        $sql .= " INSERT INTO `ComponentLinkage` (`CO_id_owner`, `CL_name`, `CL_relevanz`, `CO_id_target`) VALUES ";
         $links = array();
         
         foreach ($ComponentListInput as $key2 => $ComNames){
@@ -191,23 +190,26 @@ class KomponentenErstellen
                                     if (!isset($target['dbName'])) continue;
                                     if ($input['link_type']=='local'){
                                         if ($input['urlExtern'] == $target['urlExtern']){
-                                            $l = "(@{$input['dbName']}, '{$link['name']}', '".(isset($input['relevanz']) ? $input['relevanz'] : '')."', @{$target['dbName']})\n";
-                                           // echo $l.'<br>';
-                                            $links[] = $l;
+                                            
+                                            $priority = (isset($input['priority']) ? ", CL_priority = {$input['priority']}" : '');
+                                            $relevanz = (isset($input['relevanz']) ? $input['relevanz'] : '');
+                                            $sql .= " INSERT INTO `ComponentLinkage` SET CO_id_owner = @{$input['dbName']}, CL_name = '{$link['name']}', CL_relevanz = '{$relevanz}', CO_id_target = @{$target['dbName']} {$priority};";
+                                            $links[] = 1;
                                         }
                                     } elseif ($input['link_type']=='full'){
                                         if ($input['urlExtern'] == $target['urlExtern'] || (isset($target['link_availability']) && $target['link_availability']=='full')){
-                                        
-                                            $l = "(@{$input['dbName']}, '{$link['name']}', '".(isset($input['relevanz']) ? $input['relevanz'] : '')."', @{$target['dbName']})\n";
-                                           // echo $l.'<br>';
-                                            $links[] = $l;
+
+                                            $priority = (isset($input['priority']) ? ", CL_priority = {$input['priority']}" : '');
+                                            $relevanz = (isset($input['relevanz']) ? $input['relevanz'] : '');
+                                            $sql .= " INSERT INTO `ComponentLinkage` SET CO_id_owner = @{$input['dbName']}, CL_name = '{$link['name']}', CL_relevanz = '{$relevanz}', CO_id_target = @{$target['dbName']} {$priority};";
+                                            $links[] = 1;
                                         }
                                     }
                                 }
                             }
                         }
                         
-                    if (isset($input['connector']))
+                    if (isset($input['connector'])){
                         foreach ($input['connector'] as $link){
                             if (!isset($link['target'])) $link['target'] = '';
                             if (!is_array($link['target'])) $link['target'] = array($link['target']);
@@ -219,27 +221,31 @@ class KomponentenErstellen
                                     if (!isset($target['dbName'])) continue;
                                     if ($input['link_type']=='local'){
                                         if ($input['urlExtern'] == $target['urlExtern']){
-                                            $l = "(@{$target['dbName']}, '{$link['name']}', '".(isset($input['relevanz']) ? $input['relevanz'] : '')."', @{$input['dbName']})\n";
-                                            $links[] = $l;
+                                            
+                                            $priority = (isset($link['priority']) ? ", CL_priority = {$link['priority']}" : '');
+                                            $relevanz = (isset($link['relevanz']) ? $link['relevanz'] : '');
+                                            $sql .= " INSERT INTO `ComponentLinkage` SET CO_id_owner = @{$target['dbName']}, CL_name = '{$link['name']}', CL_relevanz = '{$relevanz}', CO_id_target = @{$input['dbName']} {$priority};";
+                                            $links[] = 1;
                                         }
                                     } elseif ($input['link_type']=='full'){
                                         if ($input['urlExtern'] == $target['urlExtern'] || (isset($input['link_availability']) && $input['link_availability']=='full')){
-                                        
-                                            $l = "(@{$target['dbName']}, '{$link['name']}', '".(isset($input['relevanz']) ? $input['relevanz'] : '')."', @{$input['dbName']})\n";
-                                            $links[] = $l;
+                                            
+                                            $priority = (isset($link['priority']) ? ", CL_priority = {$link['priority']}" : '');
+                                            $relevanz = (isset($link['relevanz']) ? $link['relevanz'] : '');
+                                            $sql .= " INSERT INTO `ComponentLinkage` SET CO_id_owner = @{$target['dbName']}, CL_name = '{$link['name']}', CL_relevanz = '{$relevanz}', CO_id_target = @{$input['dbName']} {$priority};";
+                                            $links[] = 1;
                                         }
                                     }
                                 }
                             }
                         }
+                    }
                 }
             }
         }
         
         $installComponentDefsResult['linksCount'] = count($links);
-        $sql.=implode(',',$links);
-        unset($links);
-        $sql .= "; SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;COMMIT;";
+        $sql .= " SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;COMMIT;";
         DBRequest::request2($sql, false, $data, true);
         $installComponentDefsResult['components'] = $ComponentListInput;
         return $installComponentDefsResult;

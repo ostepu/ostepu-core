@@ -9,6 +9,7 @@ select
     CL.CO_id_target,
     CL.CO_id_owner,
     CL.CL_relevanz,
+    CL.CL_priority,
     CO2.CO_name as CL_targetName,
     CO2.CO_address as CL_address,
     CO2.CO_option as CL_option
@@ -21,3 +22,4 @@ from
 where
     CO.CO_id = '<?php echo $componentid; ?>'
         or CO.CO_name = '<?php echo $componentid; ?>'
+ORDER BY CL_priority asc, CL_id asc
