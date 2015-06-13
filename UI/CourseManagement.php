@@ -438,7 +438,7 @@ if (isset($_POST['action'])) {
 $URI = $getSiteURI . "/coursemanagement/user/{$uid}/course/{$cid}";
 $courseManagement_data = http_get($URI, true);
 $courseManagement_data = json_decode($courseManagement_data, true);
-//var_dump($courseManagement_data['users']);return;
+
 $dataList = array();
 foreach ($courseManagement_data['users'] as $key => $user)
     $dataList[] = array('pos' => $key,'userName'=>$user['userName'],'lastName'=>$user['lastName'],'firstName'=>$user['firstName']);
@@ -457,6 +457,11 @@ if (isset($_POST['sortUsers'])) {
 }
 
 $user_course_data = $courseManagement_data['user'];
+
+if (isset($user_course_data['user']['lang'])){
+    Language::setPreferedLanguage($user_course_data['user']['lang']);
+}
+
 Authentication::checkRights(PRIVILEGE_LEVEL::ADMIN, $cid, $uid, $user_course_data);
 $menu = MakeNavigationElement($user_course_data,
                               PRIVILEGE_LEVEL::ADMIN,

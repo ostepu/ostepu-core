@@ -96,6 +96,7 @@ if (isset($_POST['action'])) {
             $newUserSettings = User::encodeUser(User::createUser($uid, null, null, null, null, null, null, 
                                                 null, null, null, null, null, null, null, $language));
             $URI = $databaseURI . "/user/" . $uid;
+            
             http_put_data($URI, $newUserSettings, true, $message);
 
             if ($message == "201") {
@@ -112,8 +113,10 @@ $databaseURI = $getSiteURI . "/accountsettings/user/{$uid}";
 $accountSettings_data = http_get($databaseURI, true);
 $accountSettings_data = json_decode($accountSettings_data, true);
 
-// ??? obsolete
-//$user_course_data = $accountSettings_data['user'];
+
+if (isset($accountSettings_data['lang'])){
+    Language::setPreferedLanguage($accountSettings_data['lang']);
+}
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');

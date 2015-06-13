@@ -378,6 +378,11 @@ $group_data['filesystemURI'] = $filesystemURI;
 $group_data['uid'] = $uid;
 
 $user_course_data = $group_data['user'];
+
+if (isset($user_course_data['user']['lang'])){
+    Language::setPreferedLanguage($user_course_data['user']['lang']);
+}
+
 Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $user_course_data);
 
 if (isset($group_data['exerciseSheet']['endDate']) && isset($group_data['exerciseSheet']['startDate'])){

@@ -753,7 +753,9 @@ $h->bind(array("name" => $createsheetData['user']['courses'][0]['course']['name'
                "notificationElements" => $notifications,
                "navigationElement" => $menu));
 
-
+if (isset($createsheetData['user']['lang'])){
+    Language::setPreferedLanguage($createsheetData['user']['lang']);
+}
 
 $sheetSettings = Template::WithTemplateFile('include/CreateSheet/SheetSettings.template.html');
 $createExercise = Template::WithTemplateFile('include/CreateSheet/CreateExercise.template.html');

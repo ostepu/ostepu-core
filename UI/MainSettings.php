@@ -293,6 +293,11 @@ $mainSettings_data = json_decode($mainSettings_data, true);
 $mainSettings_data['plugins'] = $plugins_data;
 
 $user_course_data = $mainSettings_data['user'];
+
+if (isset($user_course_data['user']['lang'])){
+    Language::setPreferedLanguage($user_course_data['user']['lang']);
+}
+
 Authentication::checkRights(PRIVILEGE_LEVEL::SUPER_ADMIN, null, $uid, $user_course_data);
 $menu = MakeNavigationElement($user_course_data,
                               PRIVILEGE_LEVEL::SUPER_ADMIN,true);

@@ -76,6 +76,11 @@ $condition_data = http_get($URL, true);
 $condition_data = json_decode($condition_data, true);
 
 $user_course_data = $condition_data['user'];
+
+if (isset($user_course_data['user']['lang'])){
+    Language::setPreferedLanguage($user_course_data['user']['lang']);
+}
+
 Authentication::checkRights(PRIVILEGE_LEVEL::ADMIN, $cid, $uid, $user_course_data);
 $menu = MakeNavigationElement($user_course_data,
                                PRIVILEGE_LEVEL::ADMIN,true);

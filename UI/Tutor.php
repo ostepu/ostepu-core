@@ -21,6 +21,11 @@ $tutor_data['cid'] = $cid;
 
 // check userrights for course
 $user_course_data = $tutor_data['user'];
+
+if (isset($user_course_data['user']['lang'])){
+    Language::setPreferedLanguage($user_course_data['user']['lang']);
+}
+
 Authentication::checkRights(PRIVILEGE_LEVEL::TUTOR, $cid, $uid, $user_course_data);
 $menu = MakeNavigationElement($user_course_data,
                               PRIVILEGE_LEVEL::TUTOR);

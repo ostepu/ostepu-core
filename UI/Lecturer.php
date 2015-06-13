@@ -38,6 +38,10 @@ $lecturer_data['cid'] = $cid;
 
 $user_course_data = $lecturer_data['user'];
 
+if (isset($lecturer_data['user']['lang'])){
+    Language::setPreferedLanguage($lecturer_data['user']['lang']);
+}
+
 // check userrights for course
 Authentication::checkRights(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $user_course_data);
 

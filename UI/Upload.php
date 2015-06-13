@@ -216,6 +216,11 @@ if (!isset($group)){
 }
 
 $user_course_data = $upload_data['user'];
+
+if (isset($user_course_data['user']['lang'])){
+    Language::setPreferedLanguage($user_course_data['user']['lang']);
+}
+
 Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $user_course_data);
 $isExpired=null;
 $hasStarted=null;

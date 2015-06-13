@@ -271,6 +271,10 @@ usort($tutorAssign_data['tutorAssignments'], "custom_sort");
 
 $user_course_data = $tutorAssign_data['user'];
 
+if (isset($user_course_data['user']['lang'])){
+    Language::setPreferedLanguage($user_course_data['user']['lang']);
+}
+
 if (isset($_POST['sortUsers'])) {
     $tutorAssign_data['sortUsers'] = $_POST['sortUsers'];
 }
