@@ -12,10 +12,16 @@ class Language
 {
     public static $language = array();
     public static $selectedLanguage = null;
+    public static $preferedLanguage = null;
     
     public static $defaultLanguage = array();
     public static $selectedDefaultLanguage = null;
     public static $default = 'de';
+    
+    public static function setPreferedLanguage($lang)
+    {
+        self::$preferedLanguage = $lang;
+    }
     
     public static function loadLanguageFile($lang, $name='default', $type='json', $path='')
     {
@@ -26,44 +32,48 @@ class Language
     {
         $nameAdd = ($name == 'default') ? '' : $name.'_';
             
-        if (Language::$selectedDefaultLanguage==null || Language::$selectedDefaultLanguage != Language::$default || !isset(Language::$defaultLanguage[$name])){
-            if (file_exists($path.'languages/'.$nameAdd.Language::$default.'.'.$type)){
-                if (!isset(Language::$defaultLanguage[$name]))
-                    Language::$defaultLanguage[$name] = array();
+        if (self::$selectedDefaultLanguage==null || self::$selectedDefaultLanguage != self::$default || !isset(self::$defaultLanguage[$name])){
+            if (file_exists($path.'languages/'.$nameAdd.self::$default.'.'.$type)){
+                if (!isset(self::$defaultLanguage[$name]))
+                    self::$defaultLanguage[$name] = array();
                 
                 if ($type == 'ini'){
-                    Language::$defaultLanguage[$name] = parse_ini_file( 
-                                              $path.'languages/'.$nameAdd.Language::$default.'.'.$type,
+                    self::$defaultLanguage[$name] = parse_ini_file( 
+                                              $path.'languages/'.$nameAdd.self::$default.'.'.$type,
                                               TRUE
                                               );
-                    Language::$selectedDefaultLanguage = Language::$default;
+                    self::$selectedDefaultLanguage = self::$default;
                 } elseif ($type == 'json') {
-                    Language::$defaultLanguage[$name] = json_decode( 
-                                              file_get_contents($path.'languages/'.$nameAdd.Language::$default.'.'.$type),
+                    self::$defaultLanguage[$name] = json_decode( 
+                                              file_get_contents($path.'languages/'.$nameAdd.self::$default.'.'.$type),
                                               TRUE
                                               );
-                    Language::$selectedDefaultLanguage = Language::$default;
+                    self::$selectedDefaultLanguage = self::$default;
                 }
             }
         }
     
-        if (Language::$selectedLanguage === $lang || $lang === null || isset(Language::$language[$name])) return;
+        if (self::$selectedLanguage === $lang || $lang === null || isset(self::$language[$name])) return;
+        if (self::$preferedLanguage !== null && file_exists($path.'languages/'.$nameAdd.self::$preferedLanguage.'.'.$type)){
+            $lang = self::$preferedLanguage;
+        }
+        
         if (file_exists($path.'languages/'.$nameAdd.$lang.'.'.$type)){
-            if (!isset(Language::$language[$name]))
-                Language::$language[$name] = array();
+            if (!isset(self::$language[$name]))
+                self::$language[$name] = array();
             
             if ($type == 'ini'){
-                Language::$language[$name] = parse_ini_file( 
+                self::$language[$name] = parse_ini_file( 
                                           $path.'languages/'.$nameAdd.$lang.'.'.$type,
                                           TRUE
                                           );
-                Language::$selectedLanguage = $lang;
+                self::$selectedLanguage = $lang;
             } elseif ($type == 'json') {
-                Language::$language[$name] = json_decode( 
+                self::$language[$name] = json_decode( 
                                           file_get_contents($path.'languages/'.$nameAdd.$lang.'.'.$type),
                                           TRUE
                                           );
-                Language::$selectedLanguage = $lang;
+                self::$selectedLanguage = $lang;
             }
             
         }
@@ -71,10 +81,10 @@ class Language
     
     public static function Get($area, $cell, $name='default')
     {        
-        if (Language::$selectedLanguage != null && isset(Language::$language[$name]) && isset(Language::$language[$name][$area]) && isset(Language::$language[$name][$area][$cell])){
-            return Language::$language[$name][$area][$cell];
-        } elseif (Language::$selectedDefaultLanguage != null && isset(Language::$defaultLanguage[$name]) && isset(Language::$defaultLanguage[$name][$area]) && isset(Language::$defaultLanguage[$name][$area][$cell])){
-            return Language::$defaultLanguage[$name][$area][$cell];
+        if (self::$selectedLanguage != null && isset(self::$language[$name]) && isset(self::$language[$name][$area]) && isset(self::$language[$name][$area][$cell])){
+            return self::$language[$name][$area][$cell];
+        } elseif (self::$selectedDefaultLanguage != null && isset(self::$defaultLanguage[$name]) && isset(self::$defaultLanguage[$name][$area]) && isset(self::$defaultLanguage[$name][$area][$cell])){
+            return self::$defaultLanguage[$name][$area][$cell];
         } else
             return '???';
     }
