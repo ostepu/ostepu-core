@@ -4,21 +4,12 @@
     "classFile": "DBExternalId.php",
     "className": "DBExternalId",
     "files": [
-        {
-            "path": ".htaccess"
-        },
-        {
-            "path": "DBExternalId.php"
-        },
-        {
-            "path": "index.php"
-        },
-        {
-            "path": "Commands.json"
-        },
-        {
-            "path": "Sql/"
-        }
+        {"path": ".htaccess"},
+        {"path": "DBExternalId.php"},
+        {"path": "index.php"},
+        {"path": "Commands.json"},
+        {"path": "Sql/"},
+        {"path": "info/"}
     ],
     "links": [
         {

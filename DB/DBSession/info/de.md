@@ -25,6 +25,7 @@ Zu dieser Tabelle gehört die `Session` Datenstruktur.
 |addPlatform|Platform|Platform|POST<br>/platform|installiert dies zugehörige Tabelle und die Prozeduren für diese Plattform|
 |deletePlatform|-|Platform|DELETE<br>/platform|entfernt die Tabelle und Prozeduren aus der Plattform|
 |getExistsPlatform|-|Platform|GET<br>/link/exists/platform| prüft, ob die Tabelle und die Prozeduren existieren |
+|getSamplesInfo|-|-|GET<br>/samples| ??? |
 
 #### Ausgänge
 userid = die ID eines Nutzers oder ein Nuzername (`User`)

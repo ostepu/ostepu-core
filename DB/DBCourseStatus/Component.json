@@ -4,21 +4,12 @@
     "classFile": "DBCourseStatus.php",
     "className": "DBCourseStatus",
     "files": [
-        {
-            "path": ".htaccess"
-        },
-        {
-            "path": "DBCourseStatus.php"
-        },
-        {
-            "path": "index.php"
-        },
-        {
-            "path": "Commands.json"
-        },
-        {
-            "path": "Sql/"
-        }
+        {"path": ".htaccess"},
+        {"path": "DBCourseStatus.php"},
+        {"path": "index.php"},
+        {"path": "Commands.json"},
+        {"path": "Sql/"},
+        {"path": "info/"}
     ],
     "links": [
         {
