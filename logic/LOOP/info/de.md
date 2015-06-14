@@ -3,7 +3,7 @@ dabei bietet sie im wesentlichen die Möglichkeit Java Einsendungen zu compilier
 im Fehlerfall abzulehnen.
 
 #### Eingänge
-courseid = eine Veranstaltungs ID (`Course`)
+- courseid = eine Veranstaltungs ID (`Course`)
 
 | Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
 | :----------- |:-----------:| :---------:| :----- | :----------- |
@@ -13,9 +13,9 @@ courseid = eine Veranstaltungs ID (`Course`)
 | PostProcess |Process|Process|POST /process| verarbeitet die eingehende Einsendung |
 
 #### Ausgänge
-courseid = eine Veranstaltungs ID (`Course`)
-processid = die ID eines Prozesses (`Process`)
-componentid = die ID einer Komponente (`Component`)
+- courseid = eine Veranstaltungs ID (`Course`)
+- processid = die ID eines Prozesses (`Process`)
+- componentid = die ID einer Komponente (`Component`)
 
 | Bezeichnung  | Ziel  | Verwendung | Beschreibung |
 | :----------- |:----- | :--------- | :----------- |

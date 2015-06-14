@@ -16,8 +16,8 @@ Zu dieser Tabelle gehört die `CourseStatus` Datenstruktur.
 Teile dieser Datenstruktur werden in der `User` Datenstruktur verwaltet.
 
 #### Eingänge
-courseid = eine Veranstaltungs ID (`Course`)
-userid = die ID eines Nutzers (`User`)
+- courseid = eine Veranstaltungs ID (`Course`)
+- userid = die ID eines Nutzers (`User`)
 
 | Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
 | :----------- |:-----------:| :---------:| :----- | :----------- |
@@ -33,8 +33,8 @@ userid = die ID eines Nutzers (`User`)
 |getSamplesInfo|-|-|GET<br>/samples| ??? |
 
 #### Ausgänge
-courseid = eine Veranstaltungs ID (`Course`)
-userid = die ID eines Nutzers (`User`)
+- courseid = eine Veranstaltungs ID (`Course`)
+- userid = die ID eines Nutzers (`User`)
 
 | Bezeichnung  | Ziel  | Verwendung | Beschreibung |
 | :----------- |:----- | :--------- | :----------- |

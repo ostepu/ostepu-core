@@ -20,9 +20,9 @@ Gruppe zugeordnet ist.
 Zu dieser Tabelle gehört die `Group` Datenstruktur.
 
 #### Eingänge
-userid = die ID eines Nutzers (`User`)
-courseid = die ID einer Veranstlatung (`Course`)
-esid = die ID einer Übungsserie (`ExerciseSheet`)
+- userid = die ID eines Nutzers (`User`)
+- courseid = die ID einer Veranstlatung (`Course`)
+- esid = die ID einer Übungsserie (`ExerciseSheet`)
 
 | Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
 | :----------- |:-----------:| :---------:| :----- | :----------- |
@@ -39,9 +39,9 @@ esid = die ID einer Übungsserie (`ExerciseSheet`)
 |getExistsPlatform|-|Platform|GET<br>/link/exists/platform| prüft, ob die Tabelle und die Prozeduren existieren |
 
 #### Ausgänge
-userid = die ID eines Nutzers (`User`)
-courseid = die ID einer Veranstlatung (`Course`)
-esid = die ID einer Übungsserie (`ExerciseSheet`)
+- userid = die ID eines Nutzers (`User`)
+- courseid = die ID einer Veranstlatung (`Course`)
+- esid = die ID einer Übungsserie (`ExerciseSheet`)
 
 | Bezeichnung  | Ziel  | Verwendung | Beschreibung |
 | :----------- |:----- | :--------- | :----------- |

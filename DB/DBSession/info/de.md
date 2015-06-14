@@ -12,8 +12,8 @@ Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt.
 Zu dieser Tabelle gehört die `Session` Datenstruktur.
 
 #### Eingänge
-userid = die ID eines Nutzers oder ein Nuzername (`User`)
-seid = die ID einer Sitzung (`Session`)
+- userid = die ID eines Nutzers oder ein Nuzername (`User`)
+- seid = die ID einer Sitzung (`Session`)
 
 | Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
 | :----------- |:-----------:| :---------:| :----- | :----------- |
@@ -31,8 +31,8 @@ seid = die ID einer Sitzung (`Session`)
 |getSamplesInfo|-|-|GET<br>/samples| ??? |
 
 #### Ausgänge
-userid = die ID eines Nutzers oder ein Nuzername (`User`)
-seid = die ID einer Sitzung (`Session`)
+- userid = die ID eines Nutzers oder ein Nuzername (`User`)
+- seid = die ID einer Sitzung (`Session`)
 
 | Bezeichnung  | Ziel  | Verwendung | Beschreibung |
 | :----------- |:----- | :--------- | :----------- |

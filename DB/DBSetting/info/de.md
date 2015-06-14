@@ -16,7 +16,7 @@ Möglicherweise tragen andere Komponenten selbstständig hier Einstellungen für
 Zu dieser Tabelle gehört die `Session` Datenstruktur.
 
 #### Eingänge
-courseid = eine Veranstaltungs ID (`Course`)
+- courseid = eine Veranstaltungs ID (`Course`)
 
 | Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
 | :----------- |:-----------:| :---------:| :----- | :----------- |
@@ -33,7 +33,7 @@ courseid = eine Veranstaltungs ID (`Course`)
 ||||||
 
 #### Ausgänge
-courseid = eine Veranstaltungs ID (`Course`)
+- courseid = eine Veranstaltungs ID (`Course`)
 
 | Bezeichnung  | Ziel  | Verwendung | Beschreibung |
 | :----------- |:----- | :--------- | :----------- |

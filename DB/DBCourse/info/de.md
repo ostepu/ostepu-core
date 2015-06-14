@@ -23,8 +23,8 @@ Dazu muss der `POST /course` Aufruf möglicherweise zweifach an diese Komponente
 |AllowLateSubmissions|BOOL|Soll festlegen, ob Studenten verspätet Einsendungen einreichen können. 0 = Nein, 1 = Ja|1|
 
 #### Eingänge
-courseid = eine Veranstaltungs ID (`Course`)
-userid = die ID eines Nutzers (`User`)
+- courseid = eine Veranstaltungs ID (`Course`)
+- userid = die ID eines Nutzers (`User`)
 
 | Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
 | :----------- |:-----------:| :---------:| :----- | :----------- |
@@ -41,8 +41,8 @@ userid = die ID eines Nutzers (`User`)
 |postSamples|-|Query|POST<br>/samples/course/:courseAmount<br>/user/:userAmount| erzeugt Zufallsdaten (courseAmount = Anzahl der Veranstaltungen, userAmount = Anzahl der Nutzer), anhand der Vorgabe |
 
 #### Ausgänge
-courseid = eine Veranstaltungs ID (`Course`)
-userid = die ID eines Nutzers (`User`)
+- courseid = eine Veranstaltungs ID (`Course`)
+- userid = die ID eines Nutzers (`User`)
 
 | Bezeichnung  | Ziel  | Verwendung | Beschreibung |
 | :----------- |:----- | :--------- | :----------- |

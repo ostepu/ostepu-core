@@ -14,8 +14,8 @@ Die externe ID wird für den Zugang übers StudIP verwendet.
 Zu dieser Tabelle gehört die `ExternalId` Datenstruktur.
 
 #### Eingänge
-courseid = die ID einer Veranstlatung (`Course`)
-exid = die ID einer externen ID (`ExternalId`)
+- courseid = die ID einer Veranstlatung (`Course`)
+- exid = die ID einer externen ID (`ExternalId`)
 
 | Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
 | :----------- |:-----------:| :---------:| :----- | :----------- |
@@ -30,8 +30,8 @@ exid = die ID einer externen ID (`ExternalId`)
 |getExistsPlatform|-|Platform|GET<br>/link/exists/platform| prüft, ob die Tabelle und die Prozeduren existieren |
 
 #### Ausgänge
-courseid = die ID einer Veranstlatung (`Course`)
-exid = die ID einer externen ID (`ExternalId`)
+- courseid = die ID einer Veranstlatung (`Course`)
+- exid = die ID einer externen ID (`ExternalId`)
 
 | Bezeichnung  | Ziel  | Verwendung | Beschreibung |
 | :----------- |:----- | :--------- | :----------- |

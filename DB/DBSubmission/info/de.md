@@ -21,14 +21,14 @@ Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt.
 Zu dieser Tabelle gehört die `Submission` Datenstruktur.
 
 #### Eingänge
-courseid = eine Veranstaltungs ID (`Course`)
-userid = die ID eines Nutzerkontos (`User`)
-esid = die ID einer Übungsserie (`ExerciseSheet`)
-eid = die ID einer Aufgabe (`Exercise`)
-suid = die ID einer Einsendung (`Submission`)
-beginStamp = der Anfangsstempel (Unix-Zeitstempel)
-endStamp = der Endstempel (Unix-Zeitstempel)
-selected = bestimmt, ob nur selektierte (`SelectedSubmission`) zurückgegeben werden sollen ('selected' = Ja, sonst = Nein)
+- courseid = eine Veranstaltungs ID (`Course`)
+- userid = die ID eines Nutzerkontos (`User`)
+- esid = die ID einer Übungsserie (`ExerciseSheet`)
+- eid = die ID einer Aufgabe (`Exercise`)
+- suid = die ID einer Einsendung (`Submission`)
+- beginStamp = der Anfangsstempel (Unix-Zeitstempel)
+- endStamp = der Endstempel (Unix-Zeitstempel)
+- selected = bestimmt, ob nur selektierte (`SelectedSubmission`) zurückgegeben werden sollen ('selected' = Ja, sonst = Nein)
 
 | Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
 | :----------- |:-----------:| :---------:| :----- | :----------- |
@@ -59,14 +59,14 @@ selected = bestimmt, ob nur selektierte (`SelectedSubmission`) zurückgegeben we
 |postSamples|-|Query|POST<br>/samples/course/:courseAmount<br>/user/:userAmount| erzeugt Zufallsdaten (courseAmount = Anzahl der Veranstaltungen, userAmount = Anzahl der Nutzer), anhand der Vorgabe |
 
 #### Ausgänge
-courseid = eine Veranstaltungs ID (`Course`)
-userid = die ID eines Nutzerkontos (`User`)
-esid = die ID einer Übungsserie (`ExerciseSheet`)
-eid = die ID einer Aufgabe (`Exercise`)
-suid = die ID einer Einsendung (`Submission`)
-beginStamp = der Anfangsstempel (Unix-Zeitstempel)
-endStamp = der Endstempel (Unix-Zeitstempel)
-selected = bestimmt, ob nur selektierte (`SelectedSubmission`) zurückgegeben werden sollen ('selected' = Ja, sonst = Nein)
+- courseid = eine Veranstaltungs ID (`Course`)
+- userid = die ID eines Nutzerkontos (`User`)
+- esid = die ID einer Übungsserie (`ExerciseSheet`)
+- eid = die ID einer Aufgabe (`Exercise`)
+- suid = die ID einer Einsendung (`Submission`)
+- beginStamp = der Anfangsstempel (Unix-Zeitstempel)
+- endStamp = der Endstempel (Unix-Zeitstempel)
+- selected = bestimmt, ob nur selektierte (`SelectedSubmission`) zurückgegeben werden sollen ('selected' = Ja, sonst = Nein)
 
 | Bezeichnung  | Ziel  | Verwendung | Beschreibung |
 | :----------- |:----- | :--------- | :----------- |

@@ -25,10 +25,10 @@ Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt.
 Zu dieser Tabelle gehört die `User` Datenstruktur.
 
 #### Eingänge
-courseid = eine Veranstaltungs ID (`Course`)
-userid = die ID eines Nutzers oder ein Nuzername (`User`)
-statusid = die ID eines Veranstaltungsstatus (siehe `DBCourseStatus::getStatusDefinition()`)
-esid = die ID einer Übungsserie (`ExerciseSheet`)
+- courseid = eine Veranstaltungs ID (`Course`)
+- userid = die ID eines Nutzers oder ein Nuzername (`User`)
+- statusid = die ID eines Veranstaltungsstatus (siehe `DBCourseStatus::getStatusDefinition()`)
+- esid = die ID einer Übungsserie (`ExerciseSheet`)
 
 | Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
 | :----------- |:-----------:| :---------:| :----- | :----------- |
@@ -50,10 +50,10 @@ esid = die ID einer Übungsserie (`ExerciseSheet`)
 |postSamples|-|Query|POST<br>/samples/course/:courseAmount<br>/user/:userAmount| erzeugt Zufallsdaten (courseAmount = Anzahl der Veranstaltungen, userAmount = Anzahl der Nutzer), anhand der Vorgabe |
 
 #### Ausgänge
-courseid = eine Veranstaltungs ID (`Course`)
-userid = die ID eines Nutzers oder ein Nuzername (`User`)
-statusid = die ID eines Veranstaltungsstatus (siehe `DBCourseStatus::getStatusDefinition()`)
-esid = die ID einer Übungsserie (`ExerciseSheet`)
+- courseid = eine Veranstaltungs ID (`Course`)
+- userid = die ID eines Nutzers oder ein Nuzername (`User`)
+- statusid = die ID eines Veranstaltungsstatus (siehe `DBCourseStatus::getStatusDefinition()`)
+- esid = die ID einer Übungsserie (`ExerciseSheet`)
 
 | Bezeichnung  | Ziel  | Verwendung | Beschreibung |
 | :----------- |:----- | :--------- | :----------- |

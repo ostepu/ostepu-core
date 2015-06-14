@@ -14,8 +14,8 @@ Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt.
 Zu dieser Tabelle gehört die `ApprovalCondition` Datenstruktur.
 
 #### Eingänge
-courseid = eine Veranstaltungs ID (`Course`)
-apid = die ID einer Zulassungsbedingung (`ApprovalCondition`)
+- courseid = eine Veranstaltungs ID (`Course`)
+- apid = die ID einer Zulassungsbedingung (`ApprovalCondition`)
 
 | Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
 | :----------- |:-----------:| :---------:| :----- | :----------- |
@@ -32,8 +32,8 @@ apid = die ID einer Zulassungsbedingung (`ApprovalCondition`)
 |postSamples|-|Query|POST<br>/samples/:amount| erzeugt Zufallsdaten (amount = Anzahl der Datensätze) |
 
 #### Ausgänge
-courseid = eine Veranstaltungs ID (`Course`)
-apid = die ID einer Zulassungsbedingung (`ApprovalCondition`)
+- courseid = eine Veranstaltungs ID (`Course`)
+- apid = die ID einer Zulassungsbedingung (`ApprovalCondition`)
 
 | Bezeichnung  | Ziel  | Verwendung | Beschreibung |
 | :----------- |:----- | :--------- | :----------- |

@@ -1,7 +1,7 @@
 
 
 #### Eingänge
-courseid = eine Veranstaltungs ID (`Course`)
+- courseid = eine Veranstaltungs ID (`Course`)
 
 | Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
 | :----------- |:-----------:| :---------:| :----- | :----------- |
@@ -12,9 +12,9 @@ courseid = eine Veranstaltungs ID (`Course`)
 |GetExistsCourse|-|Course|GET /link/exists/course/:courseid| prüft, ob diese Komponente für diese Veranstaltung korrekt installiert ist |
 
 #### Ausgänge
-courseid = eine Veranstaltungs ID (`Course`)
-processid = die ID eines Prozesses (`Process`)
-componentid = die ID einer Komponente (`Component`)
+- courseid = eine Veranstaltungs ID (`Course`)
+- processid = die ID eines Prozesses (`Process`)
+- componentid = die ID einer Komponente (`Component`)
 
 | Bezeichnung  | Ziel  | Verwendung | Beschreibung |
 | :----------- |:----- | :--------- | :----------- |

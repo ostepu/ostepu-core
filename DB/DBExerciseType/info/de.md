@@ -12,7 +12,7 @@ Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt.
 Zu dieser Tabelle gehört die `ExerciseType` Datenstruktur.
 
 #### Eingänge
-etid = eine Aufgabetyp ID (`ExerciseType`)
+- etid = eine Aufgabetyp ID (`ExerciseType`)
 
 | Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
 | :----------- |:-----------:| :---------:| :----- | :----------- |
@@ -28,7 +28,7 @@ etid = eine Aufgabetyp ID (`ExerciseType`)
 |postSamples|-|Query|POST<br>/samples/:amount| erzeugt Zufallsdaten (amount = Anzahl der Einträge) |
 
 #### Ausgänge
-etid = eine Aufgabetyp ID (`ExerciseType`)
+- etid = eine Aufgabetyp ID (`ExerciseType`)
 
 | Bezeichnung  | Ziel  | Verwendung | Beschreibung |
 | :----------- |:----- | :--------- | :----------- |

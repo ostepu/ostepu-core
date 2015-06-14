@@ -22,13 +22,13 @@ Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt.
 Zu dieser Tabelle gehört die `Marking` Datenstruktur.
 
 #### Eingänge
-courseid = eine Veranstaltungs ID (`Course`)
-userid = eine Veranstaltungs ID (`User`)
-sub = bestimmt, ob keine Einsendungen mit zurückgegeben werden sollen ('nosubmission' = keine Einsendungen, sonst = mit Einsendungen)
-mid = die ID einer Korrektur (`Marking`)
-eid = die ID einer Aufgabe (`Exercise`)
-esid = die ID einer Übungsserie (`ExerciseSheet`)
-suid = die ID einer Einsendung (`Submission`)
+- courseid = eine Veranstaltungs ID (`Course`)
+- userid = eine Veranstaltungs ID (`User`)
+- sub = bestimmt, ob keine Einsendungen mit zurückgegeben werden sollen ('nosubmission' = keine Einsendungen, sonst = mit Einsendungen)
+- mid = die ID einer Korrektur (`Marking`)
+- eid = die ID einer Aufgabe (`Exercise`)
+- esid = die ID einer Übungsserie (`ExerciseSheet`)
+- suid = die ID einer Einsendung (`Submission`)
 
 | Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
 | :----------- |:-----------:| :---------:| :----- | :----------- |
@@ -53,13 +53,13 @@ suid = die ID einer Einsendung (`Submission`)
 |postSamples|-|Query|POST<br>/samples/course/:courseAmount<br>/user/:userAmount| erzeugt Zufallsdaten (courseAmount = Anzahl der Veranstaltungen, userAmount = Anzahl der Nutzer), anhand der Vorgabe |
 
 #### Ausgänge
-courseid = eine Veranstaltungs ID (`Course`)
-userid = eine Veranstaltungs ID (`User`)
-sub = bestimmt, ob keine Einsendungen mit zurückgegeben werden sollen ('nosubmission' = keine Einsendungen, sonst = mit Einsendungen)
-mid = die ID einer Korrektur (`Marking`)
-eid = die ID einer Aufgabe (`Exercise`)
-esid = die ID einer Übungsserie (`ExerciseSheet`)
-suid = die ID einer Einsendung (`Submission`)
+- courseid = eine Veranstaltungs ID (`Course`)
+- userid = eine Veranstaltungs ID (`User`)
+- sub = bestimmt, ob keine Einsendungen mit zurückgegeben werden sollen ('nosubmission' = keine Einsendungen, sonst = mit Einsendungen)
+- mid = die ID einer Korrektur (`Marking`)
+- eid = die ID einer Aufgabe (`Exercise`)
+- esid = die ID einer Übungsserie (`ExerciseSheet`)
+- suid = die ID einer Einsendung (`Submission`)
 
 | Bezeichnung  | Ziel  | Verwendung | Beschreibung |
 | :----------- |:----- | :--------- | :----------- |
