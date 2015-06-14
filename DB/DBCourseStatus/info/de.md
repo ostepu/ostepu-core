@@ -16,12 +16,12 @@ Teile dieser Datenstruktur werden in der `User` Datenstruktur verwaltet.
 #### Eingänge
 | Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
 | :----------- |:-----------:| :---------:| :----- | :----------- |
-|editMemberRight|User|CourseStatus|PUT /coursestatus/course/:courseid/user/:userid| ??? |
-|removeCourseMember|-|CourseStatus|DELETE /coursestatus/course/:courseid/user/:userid| ??? |
-|addCourseMember|User|CourseStatus|POST /coursestatus| ??? |
-|getMemberRight|-|CourseStatus|GET /coursestatus/course/:courseid/user/:userid| ??? |
-|getMemberRights|-|CourseStatus|GET /coursestatus/user/:userid| ??? |
-|getCourseRights|-|CourseStatus|GET /coursestatus/course/:courseid| ??? |
+|editMemberRight|User|CourseStatus|PUT<br>/coursestatus/course/:courseid<br>/user/:userid| ??? |
+|removeCourseMember|-|CourseStatus|DELETE<br>/coursestatus/course/:courseid<br>/user/:userid| ??? |
+|addCourseMember|User|CourseStatus|POST<br>/coursestatus| ??? |
+|getMemberRight|-|CourseStatus|GET<br>/coursestatus/course/:courseid<br>/user/:userid| ??? |
+|getMemberRights|-|CourseStatus|GET<br>/coursestatus/user/:userid| ??? |
+|getCourseRights|-|CourseStatus|GET<br>/coursestatus/course/:courseid| ??? |
 |addPlatform|Platform|Platform|POST<br>/platform|installiert dies zugehörige Tabelle und die Prozeduren für diese Plattform|
 |deletePlatform|-|Platform|DELETE<br>/platform|entfernt die Tabelle und Prozeduren aus der Plattform|
 |getExistsPlatform|-|Platform|GET<br>/link/exists/platform| prüft, ob die Tabelle und die Prozeduren existieren |
@@ -33,13 +33,13 @@ userid = die ID eines Nutzers (`User`)
 
 | Bezeichnung  | Ziel  | Verwendung | Beschreibung |
 | :----------- |:----- | :--------- | :----------- |
-|out2|DBQuery2|POST<br>/query| wird für EDIT, DELETE und POST SQL-Templates verwendet |
-|out|DBQuery|POST<br>/query| wird für EDIT, DELETE und POST SQL-Templates verwendet |
-|getMemberRight|DBQuery2|GET /query/procedure/DBCourseStatusGetMemberRight/:courseid/:userid| ??? |
-|getMemberRights|DBQuery2|GET /query/procedure/DBCourseStatusGetMemberRights/:userid| ??? |
-|getCourseRights|DBQuery2|GET /query/procedure/DBCourseStatusGetCourseRights/:courseid| ??? |
-|getExistsPlatform|DBQuery2|GET /query/procedure/DBFileGetExistsPlatform| Prozeduraufruf |
-|getSamplesInfo|DBQuery2|GET /query/procedure/DBFileGetExistsPlatform| Prozeduraufruf |
+|out2|DBQuery2|POST<br>/query| wird für EDIT, DELETE<br>und POST<br>SQL-Templates verwendet |
+|out|DBQuery|POST<br>/query| wird für EDIT, DELETE<br>und POST<br>SQL-Templates verwendet |
+|getMemberRight|DBQuery2|GET<br>/query/procedure<br>/DBCourseStatusGetMemberRight/:courseid/:userid| Prozeduraufruf |
+|getMemberRights|DBQuery2|GET<br>/query/procedure<br>/DBCourseStatusGetMemberRights/:userid| Prozeduraufruf |
+|getCourseRights|DBQuery2|GET<br>/query/procedure<br>/DBCourseStatusGetCourseRights/:courseid| Prozeduraufruf |
+|getExistsPlatform|DBQuery2|GET<br>/query/procedure<br>/DBCourseStatusGetExistsPlatform| Prozeduraufruf |
+|getSamplesInfo|DBQuery2|GET<br>/query/procedure<br>/DBCourseStatusGetExistsPlatform| Prozeduraufruf |
 
 #### Anbindungen
 | Bezeichnung  | Ziel  | Priorität | Beschreibung |

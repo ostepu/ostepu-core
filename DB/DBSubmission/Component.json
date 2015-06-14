@@ -4,21 +4,12 @@
     "classFile": "DBSubmission.php",
     "className": "DBSubmission",
     "files": [
-        {
-            "path": ".htaccess"
-        },
-        {
-            "path": "DBSubmission.php"
-        },
-        {
-            "path": "index.php"
-        },
-        {
-            "path": "Commands.json"
-        },
-        {
-            "path": "Sql/"
-        }
+        {"path": ".htaccess"},
+        {"path": "DBSubmission.php"},
+        {"path": "index.php"},
+        {"path": "Commands.json"},
+        {"path": "Sql/"},
+        {"path": "info/"}
     ],
     "links": [
         {

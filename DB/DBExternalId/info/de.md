@@ -16,12 +16,12 @@ Zu dieser Tabelle gehört die `ExternalId` Datenstruktur.
 #### Eingänge
 | Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
 | :----------- |:-----------:| :---------:| :----- | :----------- |
-|editExternalId|ExternalId|ExternalId|PUT /externalid(/externalid)/:exid| ??? |
-|deleteExternalId|-|ExternalId|DELETE /externalid(/externalid)/:exid| ??? |
-|addExternalId|ExternalId|ExternalId|POST /externalid| ??? |
-|getExternalId|-|ExternalId|GET /externalid(/externalid)/:exid| ??? |
-|getAllExternalIds|-|ExternalId|GET /externalid(/externalid)| ??? |
-|getCourseExternalIds|-|ExternalId|GET /externalid/course/:courseid| ??? |
+|editExternalId|ExternalId|ExternalId|PUT<br>/externalid(/externalid)/:exid| ??? |
+|deleteExternalId|-|ExternalId|DELETE<br>/externalid(/externalid)/:exid| ??? |
+|addExternalId|ExternalId|ExternalId|POST<br>/externalid| ??? |
+|getExternalId|-|ExternalId|GET<br>/externalid(/externalid)/:exid| ??? |
+|getAllExternalIds|-|ExternalId|GET<br>/externalid(/externalid)| ??? |
+|getCourseExternalIds|-|ExternalId|GET<br>/externalid/course/:courseid| ??? |
 |addPlatform|Platform|Platform|POST<br>/platform|installiert dies zugehörige Tabelle und die Prozeduren für diese Plattform|
 |deletePlatform|-|Platform|DELETE<br>/platform|entfernt die Tabelle und Prozeduren aus der Plattform|
 |getExistsPlatform|-|Platform|GET<br>/link/exists/platform| prüft, ob die Tabelle und die Prozeduren existieren |
@@ -32,12 +32,12 @@ exid = die ID einer externen ID (`ExternalId`)
 
 | Bezeichnung  | Ziel  | Verwendung | Beschreibung |
 | :----------- |:----- | :--------- | :----------- |
-|out2|DBQuery2|POST<br>/query| wird für EDIT, DELETE und POST SQL-Templates verwendet |
-|out2|DBQuery|POST<br>/query| wird für EDIT, DELETE und POST SQL-Templates verwendet |
-|getExternalId|DBQuery2|GET /query/procedure/DBExternalIdGetExternalId/:exid| ??? |
-|getAllExternalIds|DBQuery2|GET /query/procedure/DBExternalIdGetAllExternalIds| ??? |
-|getCourseExternalIds|DBQuery2|GET /query/procedure/DBExternalIdGetCourseExternalIds/:courseid| ??? |
-|getExistsPlatform|DBQuery2|GET /query/procedure/DBFileGetExistsPlatform| Prozeduraufruf |
+|out2|DBQuery2|POST<br>/query| wird für EDIT, DELETE<br>und POST<br>SQL-Templates verwendet |
+|out2|DBQuery|POST<br>/query| wird für EDIT, DELETE<br>und POST<br>SQL-Templates verwendet |
+|getExternalId|DBQuery2|GET<br>/query/procedure<br>/DBExternalIdGetExternalId/:exid| Prozeduraufruf |
+|getAllExternalIds|DBQuery2|GET<br>/query/procedure<br>/DBExternalIdGetAllExternalIds| Prozeduraufruf |
+|getCourseExternalIds|DBQuery2|GET<br>/query/procedure<br>/DBExternalIdGetCourseExternalIds/:courseid| Prozeduraufruf |
+|getExistsPlatform|DBQuery2|GET<br>/query/procedure<br>/DBExternalIdGetExistsPlatform| Prozeduraufruf |
 
 #### Anbindungen
 | Bezeichnung  | Ziel  | Priorität | Beschreibung |

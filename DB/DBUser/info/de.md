@@ -34,7 +34,7 @@ Zu dieser Tabelle gehört die `User` Datenstruktur.
 |getUsers|-|User|GET<br>/user(/user)| ??? |
 |getIncreaseUserFailedLogin|-|User|GET<br>/user(/user)/:userid/IncFailedLogin| setzt `U_failed_logins` auf den aktuellen Zeitstempel |
 |getUser|-|User|GET<br>/user(/user)/:userid| ??? |
-|getCourseUserByStatus|-|User|GET<br>/user/course/:courseid/status/:statusid| ??? |
+|getCourseUserByStatus|-|User|GET<br>/user/course/:courseid/<br>status/:statusid| ??? |
 |getCourseMember|-|User|GET<br>/user/course/:courseid| ??? |
 |getGroupMember|-|User|GET<br>/user/group/user/:userid<br>/exercisesheet/:esid| ??? |
 |getUserByStatus|-|User|GET<br>/user/status/:statusid| ??? |
@@ -52,17 +52,17 @@ esid = die ID einer Übungsserie (`ExerciseSheet`)
 
 | Bezeichnung  | Ziel  | Verwendung | Beschreibung |
 | :----------- |:----- | :--------- | :----------- |
-|out2|DBQuery2|POST<br>/query| wird für EDIT, DELETE und POST SQL-Templates verwendet |
-|out|DBQuery|POST<br>/query| wird für EDIT, DELETE und POST SQL-Templates verwendet |
-|getUser|DBQuery2|GET<br>/query/procedure/DBUserGetUser/:userid| ??? |
-|getUsers|DBQuery2|GET<br>/query/procedure/DBUserGetUsers| ??? |
-|getCourseMember|DBQuery2|GET<br>/query/procedure/DBUserGetCourseMember/:courseid| ??? |
-|getGroupMember|DBQuery2|GET<br>/query/procedure/DBUserGetGroupMember/:esid/:userid| ??? |
-|getUserByStatus|DBQuery2|GET<br>/query/procedure/DBUserGetUserByStatus/:statusid| ??? |
-|getCourseUserByStatus|DBQuery2|GET<br>/query/procedure/DBUserGetCourseUserByStatus/:courseid/:statusid| ??? |
+|out2|DBQuery2|POST<br>/query| wird für EDIT, DELETE<br>und POST<br>SQL-Templates verwendet |
+|out|DBQuery|POST<br>/query| wird für EDIT, DELETE<br>und POST<br>SQL-Templates verwendet |
+|getUser|DBQuery2|GET<br>/query/procedure<br>/DBUserGetUser/:userid| ??? |
+|getUsers|DBQuery2|GET<br>/query/procedure<br>/DBUserGetUsers| ??? |
+|getCourseMember|DBQuery2|GET<br>/query/procedure<br>/DBUserGetCourseMember/:courseid| ??? |
+|getGroupMember|DBQuery2|GET<br>/query/procedure<br>/DBUserGetGroupMember/:esid/:userid| ??? |
+|getUserByStatus|DBQuery2|GET<br>/query/procedure<br>/DBUserGetUserByStatus/:statusid| ??? |
+|getCourseUserByStatus|DBQuery2|GET<br>/query/procedure<br>/DBUserGetCourseUserByStatus/:courseid/:statusid| ??? |
 |getIncreaseUserFailedLogin|DBQuery2|GET<br>/query/procedure<br>/DBUserGetIncreaseUserFailedLogin/:userid| ??? |
-|getExistsPlatform|DBQuery2|GET /query/procedure/DBUserGetExistsPlatform| Prozeduraufruf |
-|getSamplesInfo|DBQuery2|GET /query/procedure/DBUserGetExistsPlatform| Prozeduraufruf |
+|getExistsPlatform|DBQuery2|GET<br>/query/procedure<br>/DBUserGetExistsPlatform| Prozeduraufruf |
+|getSamplesInfo|DBQuery2|GET<br>/query/procedure<br>/DBUserGetExistsPlatform| Prozeduraufruf |
 
 #### Anbindungen
 | Bezeichnung  | Ziel  | Priorität | Beschreibung |

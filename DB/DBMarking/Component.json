@@ -4,21 +4,12 @@
     "classFile": "DBMarking.php",
     "className": "DBMarking",
     "files": [
-        {
-            "path": ".htaccess"
-        },
-        {
-            "path": "DBMarking.php"
-        },
-        {
-            "path": "index.php"
-        },
-        {
-            "path": "Commands.json"
-        },
-        {
-            "path": "Sql/"
-        }
+        {"path": ".htaccess"},
+        {"path": "DBMarking.php"},
+        {"path": "index.php"},
+        {"path": "Commands.json"},
+        {"path": "Sql/"},
+        {"path": "info/"}
     ],
     "links": [
         {

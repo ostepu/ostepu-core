@@ -22,14 +22,14 @@ Zu dieser Tabelle gehört die `Group` Datenstruktur.
 #### Eingänge
 | Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
 | :----------- |:-----------:| :---------:| :----- | :----------- |
-|editGroup|Group|Group|PUT /group/user/:userid/exercisesheet/:esid| ??? |
-|deleteGroup|-|Group|DELETE /group/user/:userid/exercisesheet/:esid| ??? |
-|addGroup|Group|Group|POST /group| ??? |
-|getUserGroups|-|Group|GET /group/user/:userid| ??? |
-|getAllGroups|-|Group|GET /group(/group)| ??? |
-|getUserSheetGroup|-|Group|GET /group/user/:userid/exercisesheet/:esid| ??? |
-|getSheetGroups|-|Group|GET /group/exercisesheet/:esid| ??? |
-|getCourseGroups|-|Group|GET /group/course/:courseid| ??? |
+|editGroup|Group|Group|PUT<br>/group/user/:userid/exercisesheet/:esid| ??? |
+|deleteGroup|-|Group|DELETE<br>/group/user/:userid/exercisesheet/:esid| ??? |
+|addGroup|Group|Group|POST<br>/group| ??? |
+|getUserGroups|-|Group|GET<br>/group/user/:userid| ??? |
+|getAllGroups|-|Group|GET<br>/group(/group)| ??? |
+|getUserSheetGroup|-|Group|GET<br>/group/user/:userid/exercisesheet/:esid| ??? |
+|getSheetGroups|-|Group|GET<br>/group/exercisesheet/:esid| ??? |
+|getCourseGroups|-|Group|GET<br>/group/course/:courseid| ??? |
 |addPlatform|Platform|Platform|POST<br>/platform|installiert dies zugehörige Tabelle und die Prozeduren für diese Plattform|
 |deletePlatform|-|Platform|DELETE<br>/platform|entfernt die Tabelle und Prozeduren aus der Plattform|
 |getExistsPlatform|-|Platform|GET<br>/link/exists/platform| prüft, ob die Tabelle und die Prozeduren existieren |
@@ -41,14 +41,14 @@ esid = die ID einer Übungsserie (`ExerciseSheet`)
 
 | Bezeichnung  | Ziel  | Verwendung | Beschreibung |
 | :----------- |:----- | :--------- | :----------- |
-|out2|DBQuery2|POST<br>/query| wird für EDIT, DELETE und POST SQL-Templates verwendet |
-|out2|DBQuery|POST<br>/query| wird für EDIT, DELETE und POST SQL-Templates verwendet |
-|getUserGroups|DBQuery|GET /query/procedure/DBGroupGetUserGroups/:userid| ??? |
-|getSheetGroups|DBQuery|GET /query/procedure/DBGroupGetSheetGroups/:esid| ??? |
-|getUserSheetGroup|DBQuery|GET /query/procedure/DBGroupGetUserSheetGroups/:userid/:esid| ??? |
-|getCourseGroups|DBQuery|GET /query/procedure/DBGroupGetCourseGroups/:courseid| ??? |
-|getAllGroups|DBQuery|GET /query/procedure/DBAllGetAllGroups| ??? |
-|getExistsPlatform|DBQuery2|GET /query/procedure/DBFileGetExistsPlatform| Prozeduraufruf |
+|out2|DBQuery2|POST<br>/query| wird für EDIT, DELETE<br>und POST<br>SQL-Templates verwendet |
+|out2|DBQuery|POST<br>/query| wird für EDIT, DELETE<br>und POST<br>SQL-Templates verwendet |
+|getUserGroups|DBQuery|GET<br>/query/procedure<br>/DBGroupGetUserGroups/:userid| Prozeduraufruf |
+|getSheetGroups|DBQuery|GET<br>/query/procedure<br>/DBGroupGetSheetGroups/:esid| Prozeduraufruf |
+|getUserSheetGroup|DBQuery|GET<br>/query/procedure<br>/DBGroupGetUserSheetGroups/:userid/:esid| Prozeduraufruf |
+|getCourseGroups|DBQuery|GET<br>/query/procedure<br>/DBGroupGetCourseGroups/:courseid| Prozeduraufruf |
+|getAllGroups|DBQuery|GET<br>/query/procedure<br>/DBGroupGetAllGroups| Prozeduraufruf |
+|getExistsPlatform|DBQuery2|GET<br>/query/procedure<br>/DBGroupGetExistsPlatform| Prozeduraufruf |
 
 #### Anbindungen
 | Bezeichnung  | Ziel  | Priorität | Beschreibung |

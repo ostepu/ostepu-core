@@ -34,7 +34,7 @@ Dazu muss der `POST /course` Aufruf möglicherweise zweifach an diese Komponente
 |addPlatform|Platform|Platform|POST<br>/platform|installiert die zugehörige Tabelle und die Prozeduren für diese Plattform|
 |deletePlatform|-|Platform|DELETE<br>/platform|entfernt die Tabelle und Prozeduren aus der Plattform|
 |getExistsPlatform|-|Platform|GET<br>/link/exists/platform| prüft, ob die Tabelle und die Prozeduren existieren |
-|getSamplesInfo|-|-|GET /samples|???|
+|getSamplesInfo|-|-|GET<br>/samples|???|
 |postSamples|-|Query|POST<br>/samples/course/:courseAmount<br>/user/:userAmount| erzeugt Zufallsdaten (courseAmount = Anzahl der Veranstaltungen, userAmount = Anzahl der Nutzer), anhand der Vorgabe |
 
 #### Ausgänge
@@ -43,17 +43,17 @@ userid = die ID eines Nutzers (`User`)
 
 | Bezeichnung  | Ziel  | Verwendung | Beschreibung |
 | :----------- |:----- | :--------- | :----------- |
-|out2|DBQuery2|POST /query| wird für EDIT, DELETE und POST SQL-Templates verwendet |
-|getCourse|DBQuery2|GET /query/procedure/DBCourseGetCourse/:courseid| Prozeduraufruf |
-|getAllCourses|DBQuery2|GET /query/procedure/DBCourseGetAllCourses| Prozeduraufruf |
-|getUserCourses|DBQuery2|GET /query/procedure/DBCourseGetUserCourses/:userid| Prozeduraufruf |
-|getExistsPlatform|DBQuery2|GET /query/procedure/DBCourseGetExistsPlatform| Prozeduraufruf |
-|getSamplesInfo|DBQuery2|GET /query/procedure/DBCourseGetExistsPlatform| Prozeduraufruf |
+|out2|DBQuery2|POST<br>/query| wird für EDIT, DELETE<br>und POST<br>SQL-Templates verwendet |
+|getCourse|DBQuery2|GET<br>/query/procedure<br>/DBCourseGetCourse/:courseid| Prozeduraufruf |
+|getAllCourses|DBQuery2|GET<br>/query/procedure<br>/DBCourseGetAllCourses| Prozeduraufruf |
+|getUserCourses|DBQuery2|GET<br>/query/procedure<br>/DBCourseGetUserCourses/:userid| Prozeduraufruf |
+|getExistsPlatform|DBQuery2|GET<br>/query/procedure<br>/DBCourseGetExistsPlatform| Prozeduraufruf |
+|getSamplesInfo|DBQuery2|GET<br>/query/procedure<br>/DBCourseGetExistsPlatform| Prozeduraufruf |
 
 #### Anbindungen
 | Bezeichnung  | Ziel  | Priorität | Beschreibung |
 | :----------- |:----- | :--------:| :------------|
 |request|CLocalObjectRequest|-| damit DBCourse als lokales Objekt aufgerufen werden kann |
-|postCourse|LCourse|300| damit erzwingen wir einen erneuten POST /course Aufruf, nachdem alle mit diesem Ausgang verbundenen Verbindungen aufgerufen wurden |
+|postCourse|LCourse|300| damit erzwingen wir einen erneuten POST<br>/course Aufruf, nachdem alle mit diesem Ausgang verbundenen Verbindungen aufgerufen wurden |
 
 Stand 13.06.2015

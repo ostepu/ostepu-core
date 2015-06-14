@@ -20,13 +20,13 @@ Zu dieser Tabelle gehört die `File` Datenstruktur.
 #### Eingänge
 | Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
 | :----------- |:-----------:| :---------:| :----- | :----------- |
-|editFile|File|File|PUT /file(/file)/:fileid| ??? |
-|removeFile|-|File|DELETE /file(/file)/:fileid| ??? |
-|addFile|File|File|POST /file| ??? |
-|getFile|-|File|GET /file(/file)/:fileid| ??? |
-|getFileByHash|-|File|GET /file/hash/:hash| ??? |
-|getAllFiles|-|File|GET /file(/timestamp/begin/:beginStamp/end/:endStamp)| ??? |
-|getFileByMimeType|-|File|GET /file/mimetype/:base(/:type)(/timestamp/begin/:beginSttamp/end/:endStamp)| ??? |
+|editFile|File|File|PUT<br>/file(/file)/:fileid| ??? |
+|removeFile|-|File|DELETE<br>/file(/file)/:fileid| ??? |
+|addFile|File|File|POST<br>/file| ??? |
+|getFile|-|File|GET<br>/file(/file)/:fileid| ??? |
+|getFileByHash|-|File|GET<br>/file/hash/:hash| ??? |
+|getAllFiles|-|File|GET<br>/file(/timestamp/begin/:beginStamp/end/:endStamp)| ??? |
+|getFileByMimeType|-|File|GET<br>/file/mimetype/:base(/:type)(/timestamp/begin/:beginSttamp/end/:endStamp)| ??? |
 |addPlatform|Platform|Platform|POST<br>/platform|installiert dies zugehörige Tabelle und die Prozeduren für diese Plattform|
 |deletePlatform|-|Platform|DELETE<br>/platform|entfernt die Tabelle und Prozeduren aus der Plattform|
 |getExistsPlatform|-|Platform|GET<br>/link/exists/platform| prüft, ob die Tabelle und die Prozeduren existieren |
@@ -44,14 +44,14 @@ type = der explizite Typ eines MimeType Bsp.: c++, pdf
 
 | Bezeichnung  | Ziel  | Verwendung | Beschreibung |
 | :----------- |:----- | :--------- | :----------- |
-|out2|DBQuery2|POST<br>/query| wird für EDIT, DELETE und POST SQL-Templates verwendet |
-|out|DBQuery|POST<br>/query| wird für EDIT, DELETE und POST SQL-Templates verwendet |
-|getFile|DBQuery2|GET /query/procedure/DBFileGetFile/:fileid| Prozeduraufruf |
-|getAllFiles|DBQuery2|GET /query/procedure/DBFileGetAllFiles/:beginStamp/:endStamp| Prozeduraufruf |
-|getFileByHash|DBQuery2|GET /query/procedure/DBFileGetFileByHash/:hash| Prozeduraufruf |
-|getFileByMimeType|DBQuery2|GET /query/procedure/DBFileGetFileByMimeType/:base/:type/:beginStamp/:endStamp| Prozeduraufruf |
-|getExistsPlatform|DBQuery2|GET /query/procedure/DBFileGetExistsPlatform| Prozeduraufruf |
-|getSamplesInfo|DBQuery2|GET /query/procedure/DBFileGetExistsPlatform| Prozeduraufruf |
+|out2|DBQuery2|POST<br>/query| wird für EDIT, DELETE<br>und POST<br>SQL-Templates verwendet |
+|out|DBQuery|POST<br>/query| wird für EDIT, DELETE<br>und POST<br>SQL-Templates verwendet |
+|getFile|DBQuery2|GET<br>/query/procedure<br>/DBFileGetFile/:fileid| Prozeduraufruf |
+|getAllFiles|DBQuery2|GET<br>/query/procedure<br>/DBFileGetAllFiles/:beginStamp/:endStamp| Prozeduraufruf |
+|getFileByHash|DBQuery2|GET<br>/query/procedure<br>/DBFileGetFileByHash/:hash| Prozeduraufruf |
+|getFileByMimeType|DBQuery2|GET<br>/query/procedure<br>/DBFileGetFileByMimeType/:base/:type/:beginStamp/:endStamp| Prozeduraufruf |
+|getExistsPlatform|DBQuery2|GET<br>/query/procedure<br>/DBFileGetExistsPlatform| Prozeduraufruf |
+|getSamplesInfo|DBQuery2|GET<br>/query/procedure<br>/DBFileGetExistsPlatform| Prozeduraufruf |
 
 #### Anbindungen
 | Bezeichnung  | Ziel  | Priorität | Beschreibung |
