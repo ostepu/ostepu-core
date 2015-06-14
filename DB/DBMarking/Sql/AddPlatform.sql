@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS `Marking` (
   `F_id_file` INT NULL,
   `S_id` INT NOT NULL,
   `M_tutorComment` VARCHAR(255) NULL,
-  `M_outstanding` TINYINT(1) NULL DEFAULT false,
+  `M_outstanding` TINYINT(1) NULL DEFAULT 0,
   `M_status` TINYINT NOT NULL DEFAULT 0,
   `M_points` FLOAT NULL DEFAULT 0,
   `M_date` INT UNSIGNED NULL DEFAULT 0,
