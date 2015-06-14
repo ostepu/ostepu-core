@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS `File` (
   `F_id` INT NOT NULL AUTO_INCREMENT,
   `F_displayName` VARCHAR(255) NULL,
   `F_address` CHAR(55) NOT NULL,
-  `F_timeStamp` INT UNSIGNED NULL DEFAULT 0,
+  `F_timeStamp` BIGINT NULL DEFAULT 0,
   `F_fileSize` INT NULL DEFAULT 0,
   `F_hash` CHAR(40) NULL,
   `F_comment` VARCHAR(255) NULL,

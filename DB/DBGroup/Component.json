@@ -78,7 +78,7 @@
             "links": [
                 {
                     "method": "GET",
-                    "path": "/query/procedure/DBAllGetAllGroups"
+                    "path": "/query/procedure/DBGroupGetAllGroups"
                 }
             ]
         },

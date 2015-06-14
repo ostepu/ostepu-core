@@ -106,7 +106,7 @@
         "outputType": "Submission",
         "inputType": "",
         "method": "GET",
-        "path": "/submission(/submission)(:selected)(/date/begin/:beginStamp/end/:endStamp)"
+        "path": "/submission(/submission)(/:selected)(/date/begin/:beginStamp/end/:endStamp)"
     },
     {
         "name": "getSelectedExerciseSubmissions",

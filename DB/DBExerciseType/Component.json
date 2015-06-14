@@ -4,21 +4,12 @@
     "classFile": "DBExerciseType.php",
     "className": "DBExerciseType",
     "files": [
-        {
-            "path": ".htaccess"
-        },
-        {
-            "path": "DBExerciseType.php"
-        },
-        {
-            "path": "index.php"
-        },
-        {
-            "path": "Commands.json"
-        },
-        {
-            "path": "Sql/"
-        }
+        {"path": ".htaccess"},
+        {"path": "DBExerciseType.php"},
+        {"path": "index.php"},
+        {"path": "Commands.json"},
+        {"path": "Sql/"},
+        {"path": "info/"}
     ],
     "links": [
         {
@@ -38,26 +29,6 @@
                 {
                     "method": "POST",
                     "path": "/query"
-                }
-            ]
-        },
-        {
-            "name": "getUser",
-            "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBUserGetUser/:userid"
-                }
-            ]
-        },
-        {
-            "name": "getUsers",
-            "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBUserGetUsers"
                 }
             ]
         },
