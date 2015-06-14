@@ -23,6 +23,9 @@ Dazu muss der `POST /course` Aufruf möglicherweise zweifach an diese Komponente
 |AllowLateSubmissions|BOOL|Soll festlegen, ob Studenten verspätet Einsendungen einreichen können. 0 = Nein, 1 = Ja|1|
 
 #### Eingänge
+courseid = eine Veranstaltungs ID (`Course`)
+userid = die ID eines Nutzers (`User`)
+
 | Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
 | :----------- |:-----------:| :---------:| :----- | :----------- |
 |editCourse|Course|Course|PUT<br>/course(/course)/:courseid|verändert eine existierende Veranstaltung|

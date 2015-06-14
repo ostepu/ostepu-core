@@ -5,26 +5,32 @@ Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt.
 
 | Spalte        | Struktur  | Beschreibung | Besonderheit |
 | :------       |:---------:| :------------| -----------: |
-|U_id_leader|INT NOT NULL| ??? |-|
-|S_id_selected|INT NOT NULL| ??? |UNIQUE|
-|E_id|INT NOT NULL| ??? |-|
-|ES_id|INT NULL| ??? |-|
+|U_id_leader|INT NOT NULL| ein Verweis auf ein Nutzerkonto, welches die Gruppe repräsentiert |-|
+|S_id_selected|INT NOT NULL| ein Verweis auf die ausgewählte Einsendung |UNIQUE|
+|E_id|INT NOT NULL| ein Verweis auf die zugehörige Aufgabe |-|
+|ES_id|INT NULL| ein Verweis auf die Übungsserie |-|
 
 #### Datenstruktur
 Zu dieser Tabelle gehört die `SelectedSubmission` Datenstruktur.
 
 #### Eingänge
+courseid = eine Veranstaltungs ID (`Course`)
+userid = die ID eines Nutzerkontos (`User`)
+esid = die ID einer Übungsserie (`ExerciseSheet`)
+eid = die ID einer Aufgabe (`Exercise`)
+suid = die ID einer Einsendung (`Submission`)
+
 | Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
 | :----------- |:-----------:| :---------:| :----- | :----------- |
-|editSelectedSubmission|SelectedSubmission|SelectedSubmission|PUT<br>/selectedsubmission/leader/:userid/exercise/:eid| ??? |
-|deleteSelectedSubmission|-|SelectedSubmission|DELETE<br>/selectedsubmission/leader/:userid/exercise/:eid| ??? |
-|editSubmissionSelectedSubmission|SelectedSubmission|SelectedSubmission|PUT<br>/selectedsubmission/submission/:suid| ??? |
-|deleteSubmissionSelectedSubmission|-|SelectedSubmission|DELETE<br>/selectedsubmission/submission/:suid| ??? |
-|deleteUserSheetSelectedSubmission|-|SelectedSubmission|DELETE<br>/selectedsubmission/user/:userid/exercisesheet/:esid| ??? |
-|addSelectedSubmission|SelectedSubmission|SelectedSubmission|POST<br>/selectedsubmission| ??? |
-|getExerciseSelected|-|SelectedSubmission|GET<br>/selectedsubmission/exercise/:eid| ??? |
-|getSheetSelected|-|SelectedSubmission|GET<br>/selectedsubmission/exercisesheet/:esid| ??? |
-|getCourseSelected|-|SelectedSubmission|GET<br>/selectedsubmission/course/:courseid| ??? |
+|editSelectedSubmission|SelectedSubmission|SelectedSubmission|PUT<br>/selectedsubmission/leader/:userid/exercise/:eid| editiert einen Auswahleintrag |
+|deleteSelectedSubmission|-|SelectedSubmission|DELETE<br>/selectedsubmission/leader/:userid/exercise/:eid| entfernt eine Auswahl |
+|editSubmissionSelectedSubmission|SelectedSubmission|SelectedSubmission|PUT<br>/selectedsubmission/submission/:suid| editiert einen Auswahleintrag |
+|deleteSubmissionSelectedSubmission|-|SelectedSubmission|DELETE<br>/selectedsubmission/submission/:suid| entfernt eine Auswahl |
+|deleteUserSheetSelectedSubmission|-|SelectedSubmission|DELETE<br>/selectedsubmission/user/:userid/exercisesheet/:esid| entfernt alle Auswahleinträge der Einsendungen eines Nutzers für eine Veranstaltung |
+|addSelectedSubmission|SelectedSubmission|SelectedSubmission|POST<br>/selectedsubmission| fügt eine neue Auswahl ein |
+|getExerciseSelected|-|SelectedSubmission|GET<br>/selectedsubmission/exercise/:eid| liefert alle Auswahleinträge einer Aufgabe |
+|getSheetSelected|-|SelectedSubmission|GET<br>/selectedsubmission/exercisesheet/:esid| liefert alle Auswahleinträge einer Übungsserie |
+|getCourseSelected|-|SelectedSubmission|GET<br>/selectedsubmission/course/:courseid| liefert alle Auswahleinträge einer Veranstaltung |
 |addPlatform|Platform|Platform|POST<br>/platform|installiert dies zugehörige Tabelle und die Prozeduren für diese Plattform|
 |deletePlatform|-|Platform|DELETE<br>/platform|entfernt die Tabelle und Prozeduren aus der Plattform|
 |getExistsPlatform|-|Platform|GET<br>/link/exists/platform| prüft, ob die Tabelle und die Prozeduren existieren |

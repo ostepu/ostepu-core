@@ -5,13 +5,15 @@ Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt.
 
 | Spalte        | Struktur  | Beschreibung | Besonderheit |
 | :------       |:---------:| :------------| -----------: |
-|ET_id|INT NOT NULL| ??? |AUTO_INCREMENT,<br>UNIQUE|
-|ET_name|VARCHAR(45) NOT NULL| ??? |-|
+|ET_id|INT NOT NULL| die ID des Bewertungstyps |AUTO_INCREMENT,<br>UNIQUE|
+|ET_name|VARCHAR(45) NOT NULL| ein Bezeichner, Bsp.: Theorie, Praxis |-|
 
 #### Datenstruktur
 Zu dieser Tabelle gehört die `ExerciseType` Datenstruktur.
 
 #### Eingänge
+etid = eine Aufgabetyp ID (`ExerciseType`)
+
 | Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
 | :----------- |:-----------:| :---------:| :----- | :----------- |
 |editExerciseType|ExerciseType|ExerciseType|PUT<br>/exercisetype(/exercisetype)/:etid| ??? |

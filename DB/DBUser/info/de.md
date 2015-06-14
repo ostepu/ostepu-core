@@ -25,19 +25,24 @@ Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt.
 Zu dieser Tabelle gehört die `User` Datenstruktur.
 
 #### Eingänge
+courseid = eine Veranstaltungs ID (`Course`)
+userid = die ID eines Nutzers oder ein Nuzername (`User`)
+statusid = die ID eines Veranstaltungsstatus (siehe `DBCourseStatus::getStatusDefinition()`)
+esid = die ID einer Übungsserie (`ExerciseSheet`)
+
 | Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
 | :----------- |:-----------:| :---------:| :----- | :----------- |
 |editUser|User|User|PUT<br>/user(/user)/:userid| editiert ein vorhandenes Nutzerkonto |
 |removeUser|-|User|DELETE<br>/user(/user)/:userid| setzt U_flag = 0 und löst damit das Entfernen der persönlichen Nutzerdaten aus (entfernt das Nutzerkonto nicht), zusätzlich wird eine eventuell aktive Session entfernt |
 |removeUserPermanent|-|User|DELETE<br>/user(/user)/:userid/permanent| entfernt das Nutzerkonto entgültig mit allen Konsequenzen (eventuell sind Einsendungen und damit auch Gruppenmitglieder betroffen) |
 |addUser|User|User|POST<br>/user| fügt eine neues Nutzerkonto ein |
-|getUsers|-|User|GET<br>/user(/user)| ??? |
+|getUsers|-|User|GET<br>/user(/user)| liefert alle existierenden Nutzerkonten (gesperrte und aktive)|
 |getIncreaseUserFailedLogin|-|User|GET<br>/user(/user)/:userid/IncFailedLogin| setzt `U_failed_logins` auf den aktuellen Zeitstempel |
-|getUser|-|User|GET<br>/user(/user)/:userid| ??? |
-|getCourseUserByStatus|-|User|GET<br>/user/course/:courseid/<br>status/:statusid| ??? |
-|getCourseMember|-|User|GET<br>/user/course/:courseid| ??? |
-|getGroupMember|-|User|GET<br>/user/group/user/:userid<br>/exercisesheet/:esid| ??? |
-|getUserByStatus|-|User|GET<br>/user/status/:statusid| ??? |
+|getUser|-|User|GET<br>/user(/user)/:userid| liefert einen einzelnen Nutzer |
+|getCourseUserByStatus|-|User|GET<br>/user/course/:courseid/<br>status/:statusid| liefert Nutzerdaten, mit einem bestimmten Status (siehe CourseStatus::getStatusDefinition()) in dieser Veranstaltung |
+|getCourseMember|-|User|GET<br>/user/course/:courseid| liefert alle Nutzer zu einer Veranstaltung |
+|getGroupMember|-|User|GET<br>/user/group/user/:userid<br>/exercisesheet/:esid| liefert alle Gruppenangehörigen eines Nutzers in einer bestimmten Übungsserie (dabei ist es egal, ob dieser Nutzer Gruppenführer oder Mitglied ist) |
+|getUserByStatus|-|User|GET<br>/user/status/:statusid| liefert Nutzerdaten, mit einem bestimmten Status (siehe CourseStatus::getStatusDefinition()), für alle Veranstaltungen |
 |addPlatform|Platform|Platform|POST<br>/platform|installiert dies zugehörige Tabelle und die Prozeduren für diese Plattform|
 |deletePlatform|-|Platform|DELETE<br>/platform|entfernt die Tabelle und Prozeduren aus der Plattform|
 |getExistsPlatform|-|Platform|GET<br>/link/exists/platform| prüft, ob die Tabelle und die Prozeduren existieren |
@@ -54,13 +59,13 @@ esid = die ID einer Übungsserie (`ExerciseSheet`)
 | :----------- |:----- | :--------- | :----------- |
 |out2|DBQuery2|POST<br>/query| wird für EDIT, DELETE<br>und POST<br>SQL-Templates verwendet |
 |out|DBQuery|POST<br>/query| wird für EDIT, DELETE<br>und POST<br>SQL-Templates verwendet |
-|getUser|DBQuery2|GET<br>/query/procedure<br>/DBUserGetUser/:userid| ??? |
-|getUsers|DBQuery2|GET<br>/query/procedure<br>/DBUserGetUsers| ??? |
-|getCourseMember|DBQuery2|GET<br>/query/procedure<br>/DBUserGetCourseMember/:courseid| ??? |
-|getGroupMember|DBQuery2|GET<br>/query/procedure<br>/DBUserGetGroupMember/:esid/:userid| ??? |
-|getUserByStatus|DBQuery2|GET<br>/query/procedure<br>/DBUserGetUserByStatus/:statusid| ??? |
-|getCourseUserByStatus|DBQuery2|GET<br>/query/procedure<br>/DBUserGetCourseUserByStatus/:courseid/:statusid| ??? |
-|getIncreaseUserFailedLogin|DBQuery2|GET<br>/query/procedure<br>/DBUserGetIncreaseUserFailedLogin/:userid| ??? |
+|getUser|DBQuery2|GET<br>/query/procedure<br>/DBUserGetUser/:userid| Prozeduraufruf |
+|getUsers|DBQuery2|GET<br>/query/procedure<br>/DBUserGetUsers| Prozeduraufruf |
+|getCourseMember|DBQuery2|GET<br>/query/procedure<br>/DBUserGetCourseMember/:courseid| Prozeduraufruf |
+|getGroupMember|DBQuery2|GET<br>/query/procedure<br>/DBUserGetGroupMember/:esid/:userid| Prozeduraufruf |
+|getUserByStatus|DBQuery2|GET<br>/query/procedure<br>/DBUserGetUserByStatus/:statusid| Prozeduraufruf |
+|getCourseUserByStatus|DBQuery2|GET<br>/query/procedure<br>/DBUserGetCourseUserByStatus/:courseid/:statusid| Prozeduraufruf |
+|getIncreaseUserFailedLogin|DBQuery2|GET<br>/query/procedure<br>/DBUserGetIncreaseUserFailedLogin/:userid| Prozeduraufruf |
 |getExistsPlatform|DBQuery2|GET<br>/query/procedure<br>/DBUserGetExistsPlatform| Prozeduraufruf |
 |getSamplesInfo|DBQuery2|GET<br>/query/procedure<br>/DBUserGetExistsPlatform| Prozeduraufruf |
 

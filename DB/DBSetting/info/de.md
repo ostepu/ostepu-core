@@ -1,5 +1,5 @@
 #### Datenbank
-Die DBSetting ermöglicht den Zugriff auf die `SETTING_X` TabelleN der Datenbank, dabei sollen
+Die DBSetting ermöglicht den Zugriff auf die `SETTING_X` Tabellen der Datenbank, dabei sollen
 Veranstaltungseinstellungen verwaltet werden.
 Dazu wird bei einem `POST /course` Aufruf die nachstehende Tabelle erzeugt (X = ID der Veranstaltung).
 
@@ -16,6 +16,8 @@ Möglicherweise tragen andere Komponenten selbstständig hier Einstellungen für
 Zu dieser Tabelle gehört die `Session` Datenstruktur.
 
 #### Eingänge
+courseid = eine Veranstaltungs ID (`Course`)
+
 | Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
 | :----------- |:-----------:| :---------:| :----- | :----------- |
 ||||||
@@ -49,5 +51,7 @@ courseid = eine Veranstaltungs ID (`Course`)
 | Bezeichnung  | Ziel  | Priorität | Beschreibung |
 | :----------- |:----- | :--------:| :------------|
 |request|CLocalObjectRequest|-| damit DBSetting als lokales Objekt aufgerufen werden kann |
+|postCourse|LCourse|150| damit wir beim Erstellen einer neuen Veranstaltung aufgerufen werden |
+|deleteCourse|LCourse|150| damit wir beim Entfernen einer Veranstaltung aufgerufen werden |
 
 Stand 13.06.2015

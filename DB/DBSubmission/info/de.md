@@ -5,45 +5,53 @@ Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt.
 
 | Spalte        | Struktur  | Beschreibung | Besonderheit |
 | :------       |:---------:| :------------| -----------: |
-|U_id|INT NOT NULL| ??? |-|
-|S_id|INT NOT NULL| ??? |AUTO_INCREMENT,<br>UNIQUE|
-|F_id_file|INT NULL| ??? |-|
-|S_comment|VARCHAR(255) NULL| ??? |-|
-|S_date|INT UNSIGNED NOT NULL DEFAULT 0| ??? |-|
-|S_accepted|TINYINT(1) NOT NULL DEFAULT false| ??? |-|
-|E_id|INT NOT NULL| ??? |-|
-|ES_id|INT NULL| ??? |-|
-|S_flag|TINYINT NOT NULL DEFAULT 1| ??? |-|
-|S_leaderId|INT NULL| ??? |-|
-|S_hideFile|TINYINT NOT NULL DEFAULT 0| ??? |-|
+|U_id|INT NOT NULL| ein Verweis auf den Nutzer (`User`), dem die Einsendung gehört (hat sie eingeschickt) |-|
+|S_id|INT NOT NULL| die ID der Einsendung |AUTO_INCREMENT,<br>UNIQUE|
+|F_id_file|INT NULL| ein Verweis auf den Eintrag der Datei (`File`) |-|
+|S_comment|VARCHAR(255) NULL| der Kommentar des Einsenders |-|
+|S_date|INT UNSIGNED NOT NULL DEFAULT 0| der Einsendezeitpunkt als Unix-Zeitstempel |-|
+|S_accepted|TINYINT(1) NOT NULL DEFAULT false| eine Einsendung kann als nicht-akzeptiert markiert werden (wenn sie beispielsweise verspätet eingesendet wurde). 1 = akzeptiert, Student erhält die Punkte, 0 = nicht akzeptiert |-|
+|E_id|INT NOT NULL| ein Verweis auf die zugehörige Aufgabe (`Exercise`) |-|
+|ES_id|INT NULL| ein Verweis auf die Übungsserie (`ExerciseSheet`) |-|
+|S_flag|TINYINT NOT NULL DEFAULT 1| hier kann der Status der Einsendung vermerkt werden (1 = normal, 0 = gelöscht (für den Studenten nichtmehr sichtbar, aber für Admins)) |-|
+|S_leaderId|INT NULL| ein Verweis auf das Nutzerkonto des Gruppenführers |-|
+|S_hideFile|TINYINT NOT NULL DEFAULT 0| ein Einsendung kann ausgeblendet werden, wenn beispielweise ein manuelle Nachkorrektur vorgenommen wurde (1 = ausgeblendet, 0 = sichtbar) |-|
 
 #### Datenstruktur
 Zu dieser Tabelle gehört die `Submission` Datenstruktur.
 
 #### Eingänge
+courseid = eine Veranstaltungs ID (`Course`)
+userid = die ID eines Nutzerkontos (`User`)
+esid = die ID einer Übungsserie (`ExerciseSheet`)
+eid = die ID einer Aufgabe (`Exercise`)
+suid = die ID einer Einsendung (`Submission`)
+beginStamp = der Anfangsstempel (Unix-Zeitstempel)
+endStamp = der Endstempel (Unix-Zeitstempel)
+selected = bestimmt, ob nur selektierte (`SelectedSubmission`) zurückgegeben werden sollen ('selected' = Ja, sonst = Nein)
+
 | Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
 | :----------- |:-----------:| :---------:| :----- | :----------- |
-|editSubmission|Submission|Submission|PUT<br>/submission(/submission)/:suid| ??? |
-|deleteSubmission|-|Submission|DELETE<br>/submission(/submission)/:suid| ??? |
-|addSubmission|Submission|Submission|POST<br>/submission| ??? |
-|getExerciseSubmissions|-|Submission|GET<br>/submission/exercise/:eid| ??? |
-|getUserExerciseSubmissions|-|Submission|GET<br>/submission/user/:userid/exercise/:eid| ??? |
-|getUserSheetSubmissions|-|Submission|GET<br>/submission/user/:userid/exercisesheet/:esid| ??? |
-|getGroupSubmissions|-|Submission|GET<br>/submission/group/user/:userid/exercisesheet/:esid| ??? |
-|getGroupSelectedSubmissions|-|Submission|GET<br>/submission/group/user/:userid/exercisesheet/:esid/selected| ??? |
-|getGroupExerciseSubmissions|-|Submission|GET<br>/submission/group/user/:userid/exercise/:eid| ??? |
-|getGroupSelectedExerciseSubmissions|-|Submission|GET<br>/submission/group/user/:userid/exercise/:eid/selected| ??? |
-|getGroupSelectedCourseSubmissions|-|Submission|GET<br>/submission/group/user/:userid/course/:courseid/selected| ??? |
-|getGroupCourseSubmissions|-|Submission|GET<br>/submission/group/user/:userid/course/:courseid| ??? |
-|getSelectedSheetSubmissions|-|Submission|GET<br>/submission/exercisesheet/:esid/selected| ??? |
-|getAllSubmissions|-|Submission|GET<br>/submission(/submission)(/:selected)(/date/begin/:beginStamp/end/:endStamp)| ??? |
-|getSelectedExerciseSubmissions|-|Submission|GET<br>/submission/exercise/:eid/selected| ??? |
-|getSheetSubmissions|-|Submission|GET<br>/submission/exercisesheet/:esid| ??? |
-|getSubmission|-|Submission|GET<br>/submission(/submission)/:suid| ??? |
-|getCourseSubmissions|-|Submission|GET<br>/submission/course/:courseid| ??? |
-|getCourseUserSubmissions|-|Submission|GET<br>/submission/course/:courseid/user/:userid| ??? |
-|getSelectedCourseUserSubmissions|-|Submission|GET<br>| ??? |
-||-|Submission|GET<br>/submission/course/:courseid/user/:userid/selected| ??? |
+|editSubmission|Submission|Submission|PUT<br>/submission(/submission)/:suid| editiert eine existierende Einsendung |
+|deleteSubmission|-|Submission|DELETE<br>/submission(/submission)/:suid| entfernt eine Einsendung (damit werden auch Korrekturen entfernt und vergebene Punkte) |
+|addSubmission|Submission|Submission|POST<br>/submission| fügt eine neue Einsendung ein |
+|getExerciseSubmissions|-|Submission|GET<br>/submission/exercise/:eid| gibt alle Einsendungen zu einer Aufgabe zurück |
+|getUserExerciseSubmissions|-|Submission|GET<br>/submission/user/:userid/exercise/:eid| gibt alle Einsendungen eines Nutzers zu einer Aufgabe zurück |
+|getUserSheetSubmissions|-|Submission|GET<br>/submission/user/:userid/exercisesheet/:esid| gibt alle Einsendungen eines Nutzers zu einer Übungsserie zurück |
+|getGroupSubmissions|-|Submission|GET<br>/submission/group/user/:userid/exercisesheet/:esid| liefert alle Einsendungen einer Gruppe (anhand der NutzerId eines Gruppenmitglieds und der Übungsserie) |
+|getGroupSelectedSubmissions|-|Submission|GET<br>/submission/group/user/:userid/exercisesheet/:esid/selected| liefert nur die selektierten Einsendungen einer Gruppe (nur diese gehen in die Bewertung ein) |
+|getGroupExerciseSubmissions|-|Submission|GET<br>/submission/group/user/:userid/exercise/:eid| gibt die Einsendungen einer Gruppe zu einer Aufgabe |
+|getGroupSelectedExerciseSubmissions|-|Submission|GET<br>/submission/group/user/:userid/exercise/:eid/selected| gibt die selektierten Einsendungen einer Gruppe zu einer Aufgabe |
+|getGroupSelectedCourseSubmissions|-|Submission|GET<br>/submission/group/user/:userid/course/:courseid/selected| gibt die selektierten Einsendungen einer Gruppe zu einer Veranstaltung |
+|getGroupCourseSubmissions|-|Submission|GET<br>/submission/group/user/:userid/course/:courseid| gibt die Einsendungen einer Gruppe zu einer Veranstaltung |
+|getSelectedSheetSubmissions|-|Submission|GET<br>/submission/exercisesheet/:esid/selected| gibt alle selektierten Einsendungen einer Übungsserie |
+|getAllSubmissions|-|Submission|GET<br>/submission(/submission)(/:selected)(/date/begin/:beginStamp/end/:endStamp)| liefert alle Einsendungen (für alle Veranstaltungen), es kann aber ein bestimmter Zeitraum eingegrenzt und sich auf selektierte Einsendungen festgelegt werden |
+|getSelectedExerciseSubmissions|-|Submission|GET<br>/submission/exercise/:eid/selected| gibt alle selektierten Einsendungen einer Aufgabe |
+|getSheetSubmissions|-|Submission|GET<br>/submission/exercisesheet/:esid| gibt alle Einsendungen einer Übungsserie |
+|getSubmission|-|Submission|GET<br>/submission(/submission)/:suid| liefert eine einzelne Einsendung |
+|getCourseSubmissions|-|Submission|GET<br>/submission/course/:courseid| gibt alle selektierten Einsendungen einer Veranstaltung |
+|getCourseUserSubmissions|-|Submission|GET<br>/submission/course/:courseid/user/:userid| gibt alle Einsendungen eines Nutzers in einer Veranstaltung |
+|getSelectedCourseUserSubmissions|-|Submission|GET<br>/submission/course/:courseid/user/:userid/selected| gibt alle selektierten Einsendungen eines Nutzers in einer Veranstaltung |
 |addPlatform|Platform|Platform|POST<br>/platform|installiert dies zugehörige Tabelle und die Prozeduren für diese Plattform|
 |deletePlatform|-|Platform|DELETE<br>/platform|entfernt die Tabelle und Prozeduren aus der Plattform|
 |getExistsPlatform|-|Platform|GET<br>/link/exists/platform| prüft, ob die Tabelle und die Prozeduren existieren |

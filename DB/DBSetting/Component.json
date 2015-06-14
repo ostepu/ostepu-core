@@ -8,7 +8,8 @@
     {"path":"DBSetting.php"},
     {"path":"index.php"},
     {"path":"Commands.json"},
-    {"path":"Sql/"}
+    {"path":"Sql/"},
+    {"path":"info/"}
   ],
   "links":[
     {"name":"out", "target":"DBQuery2", "links":[{"method":"POST", "path":"/query" }] }

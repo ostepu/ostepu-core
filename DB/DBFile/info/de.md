@@ -18,15 +18,23 @@ Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt.
 Zu dieser Tabelle gehört die `File` Datenstruktur.
 
 #### Eingänge
+courseid = eine Veranstaltungs ID (`Course`)
+fileid = die ID einer Datei (`File`)
+beginStamp = der Anfangsstempel (Unix-Zeitstempel)
+endStamp = der Endstempel (Unix-Zeitstempel)
+hash = der Hashwert einer Datei
+base = die Basis eines MimeType Bsp.: text, application
+type = der explizite Typ eines MimeType Bsp.: c++, pdf
+
 | Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
 | :----------- |:-----------:| :---------:| :----- | :----------- |
-|editFile|File|File|PUT<br>/file(/file)/:fileid| ??? |
-|removeFile|-|File|DELETE<br>/file(/file)/:fileid| ??? |
-|addFile|File|File|POST<br>/file| ??? |
-|getFile|-|File|GET<br>/file(/file)/:fileid| ??? |
-|getFileByHash|-|File|GET<br>/file/hash/:hash| ??? |
-|getAllFiles|-|File|GET<br>/file(/timestamp/begin/:beginStamp/end/:endStamp)| ??? |
-|getFileByMimeType|-|File|GET<br>/file/mimetype/:base(/:type)(/timestamp/begin/:beginSttamp/end/:endStamp)| ??? |
+|editFile|File|File|PUT<br>/file(/file)/:fileid| editiert einen Dateieintrag |
+|removeFile|-|File|DELETE<br>/file(/file)/:fileid| entfernt einen Dateieintrag (geht nur, wenn nichts auf diesen Eintrag verweist). Achtung: entfernt die Datei nicht physisch aus dem Dateisystem. |
+|addFile|File|File|POST<br>/file| fügt einen neuen Eintrag ein |
+|getFile|-|File|GET<br>/file(/file)/:fileid| liefert eine einzelne Datei |
+|getFileByHash|-|File|GET<br>/file/hash/:hash| liefert eine Datei anhand ihres md5 Hash |
+|getAllFiles|-|File|GET<br>/file(/timestamp/begin/:beginStamp/end/:endStamp)| liefert alle Dateien (für alle Veranstaltungen), es kann ein Zeitraum angegeben werden |
+|getFileByMimeType|-|File|GET<br>/file/mimetype/:base(/:type)(/timestamp/begin/:beginSttamp/end/:endStamp)| es werden Dateien anhand eines mimeType gewählt (siehe `Assistans/MimeReader.php`), zusätzlich kann ein Zeitraum angegeben werden |
 |addPlatform|Platform|Platform|POST<br>/platform|installiert dies zugehörige Tabelle und die Prozeduren für diese Plattform|
 |deletePlatform|-|Platform|DELETE<br>/platform|entfernt die Tabelle und Prozeduren aus der Plattform|
 |getExistsPlatform|-|Platform|GET<br>/link/exists/platform| prüft, ob die Tabelle und die Prozeduren existieren |

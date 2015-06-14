@@ -12,6 +12,9 @@ Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt.
 Zu dieser Tabelle gehört die `Session` Datenstruktur.
 
 #### Eingänge
+userid = die ID eines Nutzers oder ein Nuzername (`User`)
+seid = die ID einer Sitzung (`Session`)
+
 | Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
 | :----------- |:-----------:| :---------:| :----- | :----------- |
 |editSession|Session|Session|PUT<br>/session(/session)/:seid| editiert eine existierende Sitzung |

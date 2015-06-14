@@ -5,23 +5,26 @@ Dazu wird bei einem `POST /platform` Aufruf die nachstehende Tabelle erzeugt.
 
 | Spalte        | Struktur  | Beschreibung | Besonderheit |
 | :------       |:---------:| :------------| -----------: |
-|AC_id|INT NOT NULL| ??? |AUTO_INCREMENT,<br>UNIQUE|
-|C_id|INT NOT NULL| ??? |-|
-|ET_id|INT NOT NULL| ??? |-|
-|AC_percentage|FLOAT NOT NULL DEFAULT 0| ??? |-|
+|AC_id|INT NOT NULL| die ID der Zulassungsbedingung |AUTO_INCREMENT,<br>UNIQUE|
+|C_id|INT NOT NULL| ein Verweis auf die zugehörige Veranstaltung (`Course`) |-|
+|ET_id|INT NOT NULL| ein Verweis auf einen Aufgabentyp (`ExerciseType`) |-|
+|AC_percentage|FLOAT NOT NULL DEFAULT 0| die zu erreichenden Punkte in Prozent. Bsp.: 0.5 für 50% |-|
 
 #### Datenstruktur
 Zu dieser Tabelle gehört die `ApprovalCondition` Datenstruktur.
 
 #### Eingänge
+courseid = eine Veranstaltungs ID (`Course`)
+apid = die ID einer Zulassungsbedingung (`ApprovalCondition`)
+
 | Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
 | :----------- |:-----------:| :---------:| :----- | :----------- |
-|editApprovalCondition|ApprovalCondition|ApprovalCondition|PUT<br>/approvalcondition(/approvalcondition)/:apid| ??? |
-|deleteApprovalCondition|-|ApprovalCondition|DELETE<br>/approvalcondition(/approvalcondition)/:apid| ??? |
-|addApprovalCondition|ApprovalCondition|ApprovalCondition|POST<br>/approvalcondition| ??? |
-|getApprovalCondition|-|ApprovalCondition|GET<br>/approvalcondition(/approvalcondition)/:apid| ??? |
-|getAllApprovalConditions|-|ApprovalCondition|GET<br>/approvalcondition(/approvalcondition)| ??? |
-|getCourseApprovalConditions|-|ApprovalCondition|GET<br>/approvalcondition/course/:courseid| ??? |
+|editApprovalCondition|ApprovalCondition|ApprovalCondition|PUT<br>/approvalcondition(/approvalcondition)/:apid| verändert eine existierende Zulassungsbedingung |
+|deleteApprovalCondition|-|ApprovalCondition|DELETE<br>/approvalcondition(/approvalcondition)/:apid| entfernt einen Zulassungseintrag |
+|addApprovalCondition|ApprovalCondition|ApprovalCondition|POST<br>/approvalcondition| fügt eine neue Zulassungsbedingung ein |
+|getApprovalCondition|-|ApprovalCondition|GET<br>/approvalcondition(/approvalcondition)/:apid| gibt eine einzelne Zulassungsbedingung aus |
+|getAllApprovalConditions|-|ApprovalCondition|GET<br>/approvalcondition(/approvalcondition)| gibt alle Zulassungsbedingungen aus (für alle Veranstaltungen) |
+|getCourseApprovalConditions|-|ApprovalCondition|GET<br>/approvalcondition/course/:courseid| liefert die Zulassungsbedingungen einer einzelnen Veranstaltung |
 |addPlatform|Platform|Platform|POST<br>/platform|installiert dies zugehörige Tabelle und die Prozeduren für diese Plattform|
 |deletePlatform|-|Platform|DELETE<br>/platform|entfernt die Tabelle und Prozeduren aus der Plattform|
 |getExistsPlatform|-|Platform|GET<br>/link/exists/platform| prüft, ob die Tabelle und die Prozeduren existieren |
