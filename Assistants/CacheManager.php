@@ -62,6 +62,16 @@ class CacheManager
     // true = die dot-Graphen werden erstellt, false = die grafische Ausgabe der Graphen erfolgt nicht
     private static $makeTree = false;
     
+    public static function enableMakeTree()
+    {
+        self::$makeTree = true;
+    }
+    
+    public static function disableMakeTree()
+    {
+        self::$makeTree = false;
+    }
+    
     public static function getToPathBySid($sid)
     {
         if ($sid===null) return null;
@@ -247,12 +257,12 @@ class CacheManager
         }
         
         if ($sid===self::$currentBaseSID){
-            self::finishRequest($sid, 'BEGIN', null, $content, $status, null, null);
+            self::finishRequest($sid, null, 'BEGIN', null, $content, $status, null, null);
             self::savePath($URL,$method);
         }
     }
     
-    public static function finishRequest($sid, $Name, $inURL, $outContent, $outStatus, $inMethod, $inContent)
+    public static function finishRequest($sid, $path, $Name, $inURL, $outContent, $outStatus, $inMethod, $inContent)
     {
         if (!self::$makeTree) return;
         
@@ -278,6 +288,15 @@ class CacheManager
         
         if (trim($dir)!='')
             file_put_contents(dirname(__FILE__).'/../path/'.$dir.'/'.$Name.'_'.$sid.'.json',json_encode($data));
+        
+        // speichere die Beschreibungsdatei
+        $path = dirname(__FILE__).'/../..'.$path;
+        if (isset($path)){
+            $mdFile = $path.'/info/de.md';
+            $mdFileResult = dirname(__FILE__).'/../path/'.$dir.'/'.$Name.'.md';
+            if (!file_exists($mdFileResult) && file_exists($mdFile))
+                file_put_contents($mdFileResult,file_get_contents($mdFile));
+        }
     }
     
     public static function cacheDataSimple($sid, $Name, $URL, $content, $status, $method)
@@ -293,7 +312,7 @@ class CacheManager
         }
         
         if ((self::$enabled || self::$makeTree) && $sid===self::$currentBaseSID){
-            self::finishRequest($sid, 'BEGIN', null, $content, $status, null, null);
+            self::finishRequest($sid, null, 'BEGIN', null, $content, $status, null, null);
             self::savePath($URL,$method);
         }
     }

@@ -221,7 +221,7 @@ class Request
                             
                             $targetSid = (isset($result['headers']['Cachesid']) ? $result['headers']['Cachesid'] : null);
                             CacheManager::addPath($sid, $targetSid, $com->getTargetName(), $target, $method, $result['status']);
-                            CacheManager::finishRequest($targetSid, $com->getTargetName(), $target, $result['content'], $result['status'], $method, $content);
+                            CacheManager::finishRequest($targetSid, $h.'/'.$com->getLocalPath(), $com->getTargetName(), $target, $result['content'], $result['status'], $method, $content);
                             CacheManager::cacheData($sid, $com->getTargetName(), $target, $result['content'], $result['status'], $method);
                             ///Logger::Log('in<< '.$method.' '.$com->getClassName().$add, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
                         
