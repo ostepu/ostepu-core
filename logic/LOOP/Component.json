@@ -19,7 +19,7 @@
     {"name":"getProcess", "target":"DBProcessList", "links":[{"method":"GET", "path":"/process/course/:courseid/component/:componentid" }] }
   ],
   "connector":[
-    {"name":"extension", "target":"LExtension", "priority":150},
+    {"name":"extension", "target":"LExtension"},
     {"name":"request", "target":"CLocalObjectRequest"}
   ]
 }

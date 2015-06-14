@@ -109,7 +109,7 @@ class LOOP
                                )
                          );
                          
-        // POST DeleteCourse
+        // DELETE DeleteCourse
         // entfernt die Komponente aus der Veranstaltung
         $this->app->delete( 
                          '/course/:courseid(/)',
