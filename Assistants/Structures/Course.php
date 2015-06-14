@@ -172,7 +172,9 @@ class Course extends Object implements JsonSerializable
     {
         $settings = $obj->getSettings();
         $settingName = strtoupper($settingName);
+        
         foreach ($settings as $set){
+            
             if (strtoupper($set->getName()) == $settingName)
                 return $set->getState();
         }
@@ -288,12 +290,23 @@ class Course extends Object implements JsonSerializable
 
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
-                $func = 'set' . strtoupper($key[0]).substr($key,1);
-                $methodVariable = array($this, $func);
-                if (is_callable($methodVariable)){
-                    $this->$func($value);
-                } else
-                    $this->{$key} = $value;
+                if ( $key == 'settings' ){
+                    $this->{
+                        $key
+                        
+                    } = Setting::decodeSetting( 
+                                                 $value,
+                                                 false
+                                                 );
+                    
+                } else {
+                    $func = 'set' . strtoupper($key[0]).substr($key,1);
+                    $methodVariable = array($this, $func);
+                    if (is_callable($methodVariable)){
+                        $this->$func($value);
+                    } else
+                        $this->{$key} = $value;
+                }
             }
         }
     }

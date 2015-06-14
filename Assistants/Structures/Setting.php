@@ -28,7 +28,7 @@ class Setting extends Object implements JsonSerializable
      */
     public function getName( )
     {
-        return $self::getNameFromSettingName($this->name);
+        return $this->name;
     }
 
     /**
@@ -53,7 +53,7 @@ class Setting extends Object implements JsonSerializable
      */
     public function getType( )
     {
-        return $self::getNameFromSettingName($this->type);
+        return $this->type;
     }
 
     /**

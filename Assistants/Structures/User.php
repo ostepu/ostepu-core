@@ -864,14 +864,30 @@ class User extends Object implements JsonSerializable
                                                   Course::getDBConvert( ),
                                                   $CourseExtension
                                                   );
-
+                                                  
+        $settings = DBJson::getObjectsByAttributes( 
+                                                  $data,
+                                                  Setting::getDBPrimaryKey( ),
+                                                  Setting::getDBConvert( )
+                                                  );
+                                                  
+        // concatenates the courses and the associated settings
+        $res = DBJson::concatObjectListResult( 
+                                         $data,
+                                         $courses,
+                                         Course::getDBPrimaryKey( ),
+                                         Course::getDBConvert( )['C_settings'],
+                                         $settings,
+                                         Setting::getDBPrimaryKey( )
+                                         );
+                                                     
         // concatenates the course stats and the associated courses
         $res = DBJson::concatObjectListsSingleResult( 
                                                      $data,
                                                      $courseStatus,
                                                      CourseStatus::getDBPrimaryKey( ),
                                                      CourseStatus::getDBConvert( )['CS_course'],
-                                                     $courses,
+                                                     $res,
                                                      Course::getDBPrimaryKey( ),
                                                      $CourseExtension,
                                                      $CourseStatusExtension

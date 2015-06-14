@@ -230,12 +230,22 @@
                     <?php } ?>
 
 
-                    <?php if ($isExpired){?>
-                        <li>
-                            <a class="text-button" href="Upload.php?cid=<?php echo $cid; ?>&sid=<?php echo $sheet['id']; ?>" title="Upload">
-                                <?php echo Language::Get('sheetMenu','uploadSubmission', $langTemplate); ?>
-                            </a>
-                        </li>
+                    <?php if ($isExpired){
+                            $allowed = 0;
+                    
+                            if (isset($user['courses'][0]['course'])){
+                                $obj = Course::decodeCourse(Course::encodeCourse($user['courses'][0]['course']));
+                                $allowed = Course::containsSetting($obj,'AllowLateSubmissions');
+                            }
+                        
+                            if ($allowed  === null || $allowed==1){
+                    ?>
+                                <li>
+                                    <a class="text-button" href="Upload.php?cid=<?php echo $cid; ?>&sid=<?php echo $sheet['id']; ?>" title="Upload">
+                                        <?php echo Language::Get('sheetMenu','uploadSubmission', $langTemplate); ?>
+                                    </a>
+                                </li>
+                        <?php } ?>
                     <?php } else { ?>
                         <li>
                             <a class="text-button bold" href="Upload.php?cid=<?php echo $cid; ?>&sid=<?php echo $sheet['id']; ?>" title="Upload">
