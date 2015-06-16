@@ -89,7 +89,7 @@ if (isset($CourseSettingsNotificationElements)) {
                         echo $setting['name'];
                         echo "</label>";
                         if ($setting['type']==='TIMESTAMP'){
-                            $data = ($setting['state']!==0 ? $setting['state'] : null);
+                            $data = ($setting['state']!=0 ? $setting['state'] : null);
                             ?>
                             <div id="datetimepicker<?php echo $setting['id']; ?>" class="dtpicker input-append left date">
                                 <input class="form-field text-input" data-format="dd.MM.yyyy - hh:mm"

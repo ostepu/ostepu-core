@@ -314,6 +314,8 @@ class StudIPAuthentication extends AbstractAuthentication
      */
     public function getCourseData($cid)
     {
+        global $databaseURI;
+        
         $url = "{$databaseURI}/course/course/{$cid}";
         $message=null;
         $data = http_get($url, false, $message);
@@ -425,7 +427,7 @@ class StudIPAuthentication extends AbstractAuthentication
                             $end = Course::containsSetting($courseData,'RegistrationPeriodEnd');
                             if ($end !== null && $end != 0 && $end<time()){
                                 // no registration allowed
-                                set_error("Eine Anmeldung ist nicht möglich!<br>Ablaufdatum: ".date('d.m.Y - H:i', $courseData['settings']['RegistrationPeriodEnd']));
+                                set_error("Eine Anmeldung ist nicht möglich!!! Ablaufdatum: ".date('d.m.Y - H:i', $end));
                                 exit(); 
                             }
                         }

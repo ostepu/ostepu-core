@@ -1,5 +1,5 @@
 DROP PROCEDURE IF EXISTS `DBExternalIdGetExternalId`;
-CREATE PROCEDURE `DBExternalIdGetExternalId` (IN exid INT)
+CREATE PROCEDURE `DBExternalIdGetExternalId` (IN exid VARCHAR(255))
 READS SQL DATA
 begin
 SET @s = concat("
