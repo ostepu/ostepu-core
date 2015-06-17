@@ -222,7 +222,7 @@ class Installer
             $selected_server=$server;
         
         $server=$selected_server;
-        ///$data['SV']['name'] = $server;
+        $data['SV']['name'] = $server;
         
         Einstellungen::ladeEinstellungen($server,$data);
         Variablen::Einsetzen($data);
@@ -235,12 +235,12 @@ class Installer
         
         if (isset($_POST['action']))
             $data['action'] = $_POST['action'];
-        
+
         $this->loadSegments();           
         foreach($this->segments as $segs){
             $segs::init($console, $data, $fail, $errno, $error);
         }
-
+        
         
         $fail = false;
         $errno = null;
