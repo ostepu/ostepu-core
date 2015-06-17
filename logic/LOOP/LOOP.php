@@ -422,12 +422,6 @@ class LOOP
                             exec('(javac '.$param.') 2>&1', $output, $return);
                             chdir($pathOld);
                             
-                            // wurde zum Testen für Windows verwendet (entspricht dem von oben)
-                            /*ob_start();
-                            system('("C:/Program Files/Java/jdk1.8.0_05/bin/javac" '.$param.') 2>&1',$return);
-                            $output=explode("\n",ob_get_contents());
-                            ob_end_clean();*/
-                            
                             if ($return == 0){
                                 // wenn wir als Antwort eine 0 erhalten, konnte alles problemlos 
                                 // kompiliert werden
