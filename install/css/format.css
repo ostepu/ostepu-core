@@ -28,6 +28,9 @@ hr {width: 600px; background-color: #cccccc; border: 0px; height: 1px; color: #0
     background: none;
     font-size: 100%;
 }
+.break {
+    word-break: break-all;
+}
 button:focus {outline: none;}
 button:hover {cursor: pointer;}
 .info-color, .info-color a {color: #2b648f;}

@@ -1,0 +1,20 @@
+{
+    "main": {
+        "execute": "alle absenden"
+    },
+    "submission": {
+        "execute": "alle absenden",
+        "downloadCurrentSubmission": "Herunterladen",
+        "currentStudentComment": "Kommentar der bisherigen Einsendung",
+        "comment": "Kommentar",
+        "file": "Datei",
+        "exercise": "AUFGABE",
+        "currentSubmission": "bisherige Einsendung",
+        "points": "P",
+        "bonus": "Bonus"
+    },
+    "forms": {
+        "task": "Aufgabenstellung",
+        "answer": "Antwort"
+    }
+}

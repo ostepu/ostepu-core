@@ -1,3 +1,5 @@
+<?php $langTemplate='ExerciseSheet';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <?php 
     $anyoneStarted=false;
     if (!empty($sheets))
@@ -38,7 +40,7 @@
             <div class="content-title left uppercase">
                 <?php echo $sheet['sheetName'], " "; ?>
                 <?php if ($isExpired): ?>
-                    (abgelaufen)
+                    (<?php echo Language::Get('sheet','isExpired', $langTemplate); ?>)
                 <?php endif; ?>
             </div>
                
@@ -47,7 +49,7 @@
             </div>
             <div class="info-color bold right">
             <?php if (!$isExpired){ ?>
-                <?php echo date('d.m.Y  -  H:i', $sheet['startDate']).' bis&nbsp;'; ?>
+                <?php echo date('d.m.Y  -  H:i', $sheet['startDate']).' '.Language::Get('sheet','to', $langTemplate).'&nbsp;'; ?>
                 <?php } ?>
             </div>
             
@@ -74,7 +76,7 @@
                     <li>
                         <div class="exercise-type">
                             <?php echo $exercise['typeName']; ?>
-                            <?php echo $exercise['bonus'] ? ' (B)' : ''; ?>
+                            <?php echo $exercise['bonus'] ? ' ('.Language::Get('sheet','bonus', $langTemplate).')' : ''; ?>
                         </div>
 
                         <div class="exercise-points">
@@ -88,18 +90,18 @@
                                 } else { ?>
                                 -
                             <?php } ?>
-                            / <?php echo $exercise['maxPoints']; ?> P
+                            / <?php echo $exercise['maxPoints']; ?> <?php echo Language::Get('sheet','points', $langTemplate); ?>
                         </div>
 
                         <div class="exercise-status">
                             <?php if (isset($exercise['submission']) && (!isset($exercise['submission']['accepted']) || $exercise['submission']['accepted'] == 0)){ ?>
-                                nicht akzeptiert
+                                <?php echo Language::Get('sheet','notAccepted', $langTemplate); ?>
                             <?php } elseif (isset($exercise['submission']['marking']) && $isExpired) { ?>
                                 <?php echo $exercise['submission']['marking']['status']; ?>
                             <?php } elseif (isset($exercise['submission']) || (isset($exercise['submission']['marking']) && !$isExpired)) { ?>
-                                unkorrigiert
+                                <?php echo Language::Get('sheet','notCorrected', $langTemplate); ?>
                             <?php } else { ?>
-                                nicht eingesendet
+                                <?php echo Language::Get('sheet','notSubmitted', $langTemplate); ?>
                             <?php } ?>
                         </div>
 
@@ -162,7 +164,7 @@
                             <div class="" style="margin-top:-10px;margin-bottom:0px;word-break: break-all;">
                             <table border="0" style="width:auto">
                             <tr><td class="medium">
-                            <span class="footer-text bold">Bemerkung: </span>
+                            <span class="footer-text bold"><?php echo Language::Get('sheet','comment', $langTemplate); ?>: </span>
                             </td><td class="wider">
                             <span class="footer-text info-color"><?php echo $comment; ?></span>
                             </td><tr></table></div>
@@ -191,7 +193,7 @@
                         <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
                         <li>
                             <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
-                                Musterlösung
+                                <?php echo Language::Get('sheetMenu','sampleSolution', $langTemplate); ?>
                             </a>
                         </li>
                     <?php endif; ?>
@@ -199,7 +201,7 @@
                     <?php if (!isset($sheet['sheetFile']['address'])){?>                        
                         <!--<li>
                             <a style="color:#b9b8b8">
-                                Aufgabenblatt
+                                <?php echo Language::Get('sheetMenu','sheetFile', $langTemplate); ?>
                             </a>
                         </li>-->
                     <?php } else { ?>
@@ -208,7 +210,7 @@
                         <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>     
                         <li>
                             <a class="text-button" href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
-                                Aufgabenblatt
+                                <?php echo Language::Get('sheetMenu','sheetFile', $langTemplate); ?>
                             </a>
                         </li>
                     <?php } ?>
@@ -216,28 +218,38 @@
                     <?php if ($isExpired){ ?> 
                         <!--<li>
                             <a style="color:#b9b8b8">
-                                Gruppe verwalten
+                                <?php echo Language::Get('sheetMenu','manageGroup', $langTemplate); ?>
                             </a>
                         </li>-->
                     <?php } elseif(isset($sheet['groupSize']) && $sheet['groupSize']>1) { ?>
                         <li>
                             <a class="text-button" href="Group.php?sid=<?php echo $sheet['id'], '&cid=', $cid; ?>">
-                                Gruppe verwalten
+                                <?php echo Language::Get('sheetMenu','manageGroup', $langTemplate); ?>
                             </a>
                         </li>
                     <?php } ?>
 
 
-                    <?php if ($isExpired){?>
-                        <li>
-                            <a class="text-button" href="Upload.php?cid=<?php echo $cid; ?>&sid=<?php echo $sheet['id']; ?>" title="Upload">
-                                Aufgaben hochladen
-                            </a>
-                        </li>
+                    <?php if ($isExpired){
+                            $allowed = 0;
+                    
+                            if (isset($user['courses'][0]['course'])){
+                                $obj = Course::decodeCourse(Course::encodeCourse($user['courses'][0]['course']));
+                                $allowed = Course::containsSetting($obj,'AllowLateSubmissions');
+                            }
+                        
+                            if ($allowed  === null || $allowed==1){
+                    ?>
+                                <li>
+                                    <a class="text-button" href="Upload.php?cid=<?php echo $cid; ?>&sid=<?php echo $sheet['id']; ?>" title="Upload">
+                                        <?php echo Language::Get('sheetMenu','uploadSubmission', $langTemplate); ?>
+                                    </a>
+                                </li>
+                        <?php } ?>
                     <?php } else { ?>
                         <li>
                             <a class="text-button bold" href="Upload.php?cid=<?php echo $cid; ?>&sid=<?php echo $sheet['id']; ?>" title="Upload">
-                                Aufgaben hochladen
+                                <?php echo Language::Get('sheetMenu','uploadSubmission', $langTemplate); ?>
                             </a>
                         </li>
                     <?php } ?>
@@ -246,13 +258,13 @@
                     <?php if (!$sheet['hasAttachments']){ ?>
                         <!--<li>
                             <a style="color:#b9b8b8">
-                                Alle Anhänge herunterladen
+                                <?php echo Language::Get('sheetMenu','downloadAttachments', $langTemplate); ?>
                             </a>
                         </li>-->
                     <?php } else { ?>
                         <li>
                             <a href="Download.php?cid=<?php echo $cid; ?>&downloadAttachments=<?php echo $sheet['id']; ?>" class="download text-button body-option-color">
-                                Alle Anhänge herunterladen
+                                <?php echo Language::Get('sheetMenu','downloadAttachments', $langTemplate); ?>
                             </a>
                         </li>
                     <?php } ?>
@@ -261,13 +273,13 @@
                     <?php if (!(($sheet['hasMarkings'] || $sheet['hasSubmissions'] || $sheet['hasAttachments']) && $isExpired)){ ?>
                         <!--<li>
                             <a style="color:#b9b8b8">
-                                Alles herunterladen
+                                <?php echo Language::Get('sheetMenu','downloadStudentContent', $langTemplate); ?>
                             </a>
                         </li>-->
                     <?php } else { ?>
                         <li>
                             <a href="Download.php?cid=<?php echo $cid; ?>&downloadMarkings=<?php echo $sheet['id']; ?>" class="download text-button body-option-color">
-                                Alles herunterladen
+                                <?php echo Language::Get('sheetMenu','downloadStudentContent', $langTemplate); ?>
                             </a>
                         </li>
                     <?php } ?>
@@ -275,13 +287,13 @@
                     <?php if ($isExpired){ ?>                    
                     <!--<li>
                         <a style="color:#b9b8b8">
-                            Einsendungsverlauf
+                            <?php echo Language::Get('sheetMenu','uploadHistory', $langTemplate); ?>
                         </a>
                     </li>-->
                     <?php } else { ?>                   
                     <li>
                         <a class="text-button" href="UploadHistory.php?cid=<?php echo $cid; ?>&sid=<?php echo $sheet['id']; ?>&action=ShowUploadHistory">
-                            Einsendungsverlauf
+                            <?php echo Language::Get('sheetMenu','uploadHistory', $langTemplate); ?>
                         </a>
                     </li>
                     <?php } ?>
@@ -294,7 +306,7 @@
             <div class="content-footer">
                 <ol>
                     <li class="footer-text bold">
-                        In Gruppe mit:
+                        <?php echo Language::Get('sheet','groupMembers', $langTemplate); ?>:
                     </li>
                     <?php 
                         foreach ($groupMember as $key => $member){ 
@@ -312,12 +324,12 @@
 <?php else: ?>
     <div class="content-element">
         <div class="content-header">
-            <div class="content-title left uppercase">Hinweis</div>
+            <div class="content-title left uppercase"><?php echo Language::Get('main','info', $langTemplate); ?></div>
         </div>
 
         <div class="content-body-wrapper">
             <div class="content-body left">
-                Es sind noch keine Aufgabenblätter vorhanden.
+                <?php echo Language::Get('main','noSheets', $langTemplate); ?>
             </div>
         </div> <!-- end: content-body -->
     </div> <!-- end: content-wrapper -->

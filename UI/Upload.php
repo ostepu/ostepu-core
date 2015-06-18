@@ -8,8 +8,9 @@
  * @author Ralf Busch
  */
 
-include_once 'include/Boilerplate.php';
-include_once '../Assistants/Structures.php';
+include_once dirname(__FILE__) . '/include/Boilerplate.php';
+include_once dirname(__FILE__) . '/../Assistants/Structures.php';
+include_once dirname(__FILE__) . '/../Assistants/Language.php';
 
 if (isset($_POST['action']) && $_POST['action'] == 'submit') {
     // handle uploading files
@@ -215,6 +216,11 @@ if (!isset($group)){
 }
 
 $user_course_data = $upload_data['user'];
+
+if (isset($user_course_data['user']['lang'])){
+    Language::setPreferedLanguage($user_course_data['user']['lang']);
+}
+
 Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $user_course_data);
 $isExpired=null;
 $hasStarted=null;
@@ -226,12 +232,24 @@ if (isset($upload_data['exerciseSheet']['endDate']) && isset($upload_data['exerc
     // bool if startDate of sheet is greater than the actual date
     $hasStarted = date('U') > date('U', $upload_data['exerciseSheet']['startDate']);
     if ($isExpired){
+        $allowed = 0;
+
+        if (isset($user_course_data['user']['courses'][0]['course'])){
+            $obj = Course::decodeCourse(Course::encodeCourse($user_course_data['user']['courses'][0]['course']));
+            $allowed = Course::containsSetting($obj,'AllowLateSubmissions');
+        }
+        
         ///set_error("Der Übungszeitraum ist am ".date('d.m.Y  -  H:i', $upload_data['exerciseSheet']['endDate'])." abgelaufen!");
-        $msg = "Der Übungszeitraum ist am ".date('d.m.Y  -  H:i', $upload_data['exerciseSheet']['endDate'])." abgelaufen!<br>".
-               "Eine verspätete Einsendung muss von einem Administrator akzeptiert werden, ansonsten wird diese nicht <br> gewertet. ".
-               "Die vergebenen Punkte einer bereits bewerteten Einsendung gehen beim Überschreiben verloren.";
-        $notifications[] = MakeNotification('warning',
-                                            $msg);
+        if ($allowed  === null || $allowed==1){
+            $msg = "Der Übungszeitraum ist am ".date('d.m.Y  -  H:i', $upload_data['exerciseSheet']['endDate'])." abgelaufen!<br>".
+                   "Eine verspätete Einsendung muss von einem Administrator akzeptiert werden, ansonsten wird diese nicht <br> gewertet. ".
+                   "Die vergebenen Punkte einer bereits bewerteten Einsendung gehen beim Überschreiben verloren.";
+            $notifications[] = MakeNotification('warning',
+                                                $msg);
+        } else {
+            set_error("Der Übungszeitraum ist am ".date('d.m.Y  -  H:i', $upload_data['exerciseSheet']['endDate'])." abgelaufen!");
+        }
+        
     } elseif (!$hasStarted){
         set_error("Der Übungszeitraum beginnt am ".date('d.m.Y  -  H:i', $upload_data['exerciseSheet']['startDate'])."!");
     }

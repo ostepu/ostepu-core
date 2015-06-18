@@ -1,0 +1,8 @@
+{
+    "main": {
+        "title": "Verarbeitung",
+        "removeProcessor": "Verarbeitung löschen",
+        "selectProcessor": "Modul",
+        "noData": "keine Module"
+    }
+}

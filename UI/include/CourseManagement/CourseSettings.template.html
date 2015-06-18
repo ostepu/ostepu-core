@@ -1,3 +1,5 @@
+<?php $langTemplate='CourseManagement_CourseSettings';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <?php
 if (isset($CourseSettingsNotificationElements)) {
     foreach ($CourseSettingsNotificationElements as $notificationElement) {
@@ -9,25 +11,25 @@ if (isset($CourseSettingsNotificationElements)) {
 <input type="hidden" name="action" value="CourseSettings">
 <div class="content-element">
     <div class="content-header">
-        <div class="content-title left uppercase">Veranstaltungseinstellungen</div>
+        <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
         <div class="info-color bold right">
-            <button class="text-button info-color bold right">speichern</button>
+            <button class="text-button info-color bold right"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
         </div>
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body left">
             <div class="content-description">
-                Hier können die Grunddaten der aktuellen Veranstaltung verändert werden.
+                <?php echo Language::Get('main','description', $langTemplate); ?>
             </div>
-            <label class="form-field left label bold" for="courseName">Veranstaltungsname:</label>
+            <label class="form-field left label bold" for="courseName"><?php echo Language::Get('main','courseName', $langTemplate); ?>:</label>
             <input class="form-field left text-input" 
                    name="courseName" 
                    value="<?php echo $course['name']; ?>" 
                    id="courseName"
                    maxlength="255" />
 
-            <label class="form-field left label bold new-line" for="semester">Semester:</label>
+            <label class="form-field left label bold new-line" for="semester"><?php echo Language::Get('main','semester', $langTemplate); ?>:</label>
             <select class="form-field left text-input short" name="semester" id="semester">
                 <?php
                     // Dynamically creates a list of possible semesters beginning
@@ -58,13 +60,13 @@ if (isset($CourseSettingsNotificationElements)) {
             </select>
 
             <label class="form-field left label bold new-line" for="defaultGroupSize">
-                Max. Gruppengröße (Standardwert):
+                <?php echo Language::Get('main','defaultGroupSize', $langTemplate); ?>:
             </label>
             <input class="form-field left text-input short" name="defaultGroupSize"
             value="<?php echo $course['defaultGroupSize']; ?>" id="defaultGroupSize" maxlength="3" />
 
             <label class="form-field left label bold new-line" for="defaultExerciseTypes">
-                Zugelassene Punktearten:
+                <?php echo Language::Get('main','defaultExerciseTypes', $langTemplate); ?>:
             </label>
             <div class="form-field left checkbox-container">
                 <?php 
@@ -80,7 +82,7 @@ if (isset($CourseSettingsNotificationElements)) {
                 ?>
             </div>
         </div>
-        <div class="content-body left">
+        <div class="content-body left">            
             <?php if (isset($course['settings'])){
                     foreach($course['settings'] as $setting){
                         echo '<label class="form-field left label bold new-line" for="">';
@@ -89,28 +91,35 @@ if (isset($CourseSettingsNotificationElements)) {
                         if ($setting['type']==='TIMESTAMP'){
                             $data = ($setting['state']!=0 ? $setting['state'] : null);
                             ?>
-                            <div class="datetimepicker input-append left date">
+                            <div id="datetimepicker<?php echo $setting['id']; ?>" class="dtpicker input-append left date">
                                 <input class="form-field text-input" data-format="dd.MM.yyyy - hh:mm"
-                                <?php if (isset($Date)) {?> value="<?php echo (ctype_digit($data) ? date('d.m.Y - H:i', $data) : $data); ?>" <?php } ?>
-                                type="text" id="data; ?>" name="setting_<?php echo $setting['id']; ?>"/>
+                                <?php if (isset($data)) {?> value="<?php echo (ctype_digit($data) ? date('d.m.Y - H:i', $data) : $data); ?>" <?php } ?>
+                                 type="text" name="setting[<?php echo $setting['id']; ?>][value]"/>
                                 <span class="add-on">
                                   ...
                                 </span>
                             </div>
+                            <input type="hidden" name="setting[<?php echo $setting['id']; ?>][type]" value="DATE">
                             <?php
                         } elseif ($setting['type']==='BOOL'){
                             ?>
-                              <select name="setting_<?php echo $setting['id']; ?>" size="1">
-                                <option value="1">Ja</option>
-                                <option value="0">Nein</option>
+                            <div>
+                              <input type="hidden" name="setting[<?php echo $setting['id']; ?>][type]" value="TEXT">
+                              <select name="setting[<?php echo $setting['id']; ?>][value]" size="1">
+                                <option value="1" <?php echo ($setting['state'] == 1 ?"selected=\"selected\"":''); ?>><?php echo Language::Get('main','yes', $langTemplate); ?></option>
+                                <option value="0" <?php echo ($setting['state'] == 0 ?"selected=\"selected\"":''); ?>><?php echo Language::Get('main','no', $langTemplate); ?></option>
                              </select>
+                            </div>
                              <?php
                         } elseif ($setting['type']==='INT' || $setting['type']==='STRING'){
                             $data = ($setting['state']!=0 ? $setting['state'] : null);
                             ?>
-                            <input class="form-field text-input"
-                                <?php if (isset($data)) {?> value="<?php echo $data; ?>" <?php } ?>
-                                type="text" id="data; ?>" name="setting_<?php echo $setting['id']; ?>"/>
+                            <div>
+                                <input type="hidden" name="setting[<?php echo $setting['id']; ?>][type]" value="TEXT">
+                                <input class="form-field text-input"
+                                    <?php if (isset($data)) {?> value="<?php echo $data; ?>" <?php } ?>
+                                    type="text" id="data; ?>" name="setting[<?php echo $setting['id']; ?>][value]"/>
+                            </div>
                             <?php
                         }
                     }

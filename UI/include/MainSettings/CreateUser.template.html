@@ -1,19 +1,20 @@
+<?php $langTemplate='MainSettings_CreateUser';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <input type="hidden" name="action" value="CreateUser">
 <div class="content-element">
     <div class="content-header">
-        <div class="content-title left uppercase">Neuen Nutzer anlegen</div>
+        <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
         <div class="info-color bold right">
-            <button class="text-button info-color bold right">anlegen</button>
+            <button class="text-button info-color bold right"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
         </div>
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body left">
             <div class="content-description">
-                Hier können Sie einen neuen Benutzer anlegen. Beachten Sie, dass das
-                Passwort eine Mindestlänge von 6 Zeichen besitzen muss.
+                <?php echo Language::Get('main','description', $langTemplate); ?>
             </div>
-            <label class="form-field left label bold new-line"for="lastName">Nachname:</label>
+            <label class="form-field left label bold new-line"for="lastName"><?php echo Language::Get('main','lastName', $langTemplate); ?>:</label>
             <?php if (isset($lastName)): ?>
                 <input class="form-field left text-input"
                        name="lastName"
@@ -27,7 +28,7 @@
                        maxlength="255" />
             <?php endif; ?>
 
-            <label class="form-field left label bold new-line" for="firstName">Vorname:</label>
+            <label class="form-field left label bold new-line" for="firstName"><?php echo Language::Get('main','firstName', $langTemplate); ?>:</label>
             <?php if (isset($firstName)): ?>
                 <input class="form-field left text-input"
                        name="firstName"
@@ -41,7 +42,7 @@
                        maxlength="255" />
             <?php endif; ?>
 
-            <label class="form-field left label bold new-line" for="email">Email (optional):</label>
+            <label class="form-field left label bold new-line" for="email"><?php echo Language::Get('main','email', $langTemplate); ?>:</label>
             <?php if (isset($email)): ?>
                 <input class="form-field left text-input"
                        name="email"
@@ -55,7 +56,7 @@
                        maxlength="255" />
             <?php endif; ?>
 
-            <label class="form-field left label bold new-line" for="userName">Login / Kürzel:</label>
+            <label class="form-field left label bold new-line" for="userName"><?php echo Language::Get('main','userName', $langTemplate); ?>:</label>
             <?php if (isset($userName)): ?>
                 <input class="form-field left text-input"
                        name="userName"
@@ -69,10 +70,10 @@
                        maxlength="255" />
             <?php endif; ?>
 
-            <label class="form-field left label bold new-line" for="password">Passwort:</label>
+            <label class="form-field left label bold new-line" for="password"><?php echo Language::Get('main','password', $langTemplate); ?>:</label>
             <input class="form-field left text-input" type="password" name="password" id="password" />
 
-            <label class="form-field left label bold new-line" for="passwordRepeat">Passwort wiederholen:</label>
+            <label class="form-field left label bold new-line" for="passwordRepeat"><?php echo Language::Get('main','passwordRepeat', $langTemplate); ?>:</label>
             <input class="form-field left text-input" type="password" name="passwordRepeat" id="passwordRepeat" />
         </div>
     </div> <!-- end: content-body -->

@@ -1,3 +1,5 @@
+<?php $langTemplate='TutorAssign_Remove';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <?php
 if (isset($AssignRemoveNotificationElements)) {
     foreach ($AssignRemoveNotificationElements as $notificationElement) {
@@ -9,14 +11,13 @@ if (isset($AssignRemoveNotificationElements)) {
 <input type="hidden" name="action" value="<?php echo (!isset($_POST['action']) || $_POST['action'] != "AssignRemoveWarning") ? 'AssignRemoveWarning' : 'AssignRemove'; ?>">
 <div class="content-element">
     <div class="content-header">
-        <div class="content-title left uppercase">Zuweisung aufheben</div>
-        <button class="text-button<?php echo (!isset($_POST['action']) || $_POST['action'] != "AssignRemoveWarning") ? ' right' : '-simple  error-simple' ;?> bold critical-color">aufheben</button>
+        <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
+        <button class="text-button<?php echo (!isset($_POST['action']) || $_POST['action'] != "AssignRemoveWarning") ? ' right' : '-simple  error-simple' ;?> bold critical-color"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
     </div>
 
     <div class="content-body-wrapper">
         <div class="content-body left">
-            Alle Gruppen werden zu "Unzugeordnet" zugeteilt. Alle bereits kontrollierten Aufgaben
-            und Punkte des Übungsblatts werden gelöscht!
+            <?php echo Language::Get('main','content', $langTemplate); ?>
         </div>
     </div> <!-- end: content-body-wrapper -->
 </div> <!-- end: content-element -->

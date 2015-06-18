@@ -28,8 +28,8 @@ class MySQLInfo // der Name der Klasse muss mit dem Dateinamen uebereinstimmen
     public static function show($console, $result, $data)
     {
         $text='';     
-        $text .= Design::erstelleBeschreibung($console,Sprachen::Get('mySQLInfo','description'));   
-        echo Design::erstelleBlock($console, Sprachen::Get('mySQLInfo','title'), $text);
+        $text .= Design::erstelleBeschreibung($console,Language::Get('mySQLInfo','description'));   
+        echo Design::erstelleBlock($console, Language::Get('mySQLInfo','title'), $text);
     }
     
     public static function install($data, &$fail, &$errno, &$error)

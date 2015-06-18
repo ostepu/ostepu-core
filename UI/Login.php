@@ -11,6 +11,7 @@ include_once dirname(__FILE__) . '/include/Authentication.php';
 include_once dirname(__FILE__) . '/include/HTMLWrapper.php';
 include_once dirname(__FILE__) . '/include/Template.php';
 include_once dirname(__FILE__) . '/../Assistants/Logger.php';
+include_once dirname(__FILE__) . '/../Assistants/Language.php';
 include_once dirname(__FILE__) . '/include/Helpers.php';
 
 $auth = new Authentication();

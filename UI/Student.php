@@ -7,8 +7,9 @@
  * @author Florian Lücke
  * @author Ralf Busch
  */
-include_once 'include/Boilerplate.php';
-include_once '../Assistants/Structures.php';
+include_once dirname(__FILE__) . '/include/Boilerplate.php';
+include_once dirname(__FILE__) . '/../Assistants/Structures.php';
+include_once dirname(__FILE__) . '/../Assistants/Language.php';
 
 $sheetNotifications = array();
 
@@ -51,6 +52,10 @@ $student_data['filesystemURI'] = $filesystemURI;
 $student_data['cid'] = $cid;
 $student_data['uid'] = $uid;
 $user_course_data = $student_data['user'];
+
+if (isset($user_course_data['user']['lang'])){
+    Language::setPreferedLanguage($user_course_data['user']['lang']);
+}
 
 // check userrights for course
 Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $user_course_data);

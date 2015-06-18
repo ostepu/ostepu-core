@@ -602,13 +602,17 @@ class LGetSite
         $answer = Request::custom('GET', $URL, array(), '');
         $user = json_decode($answer['content'], true);
 
-        $response = array('id' =>  $user['id'],
+        /*$response = array('id' =>  $user['id'],
                           'userName'=>  isset($user['email']) ? $user['userName'] : null,
                           'firstName'=>  isset($user['email']) ? $user['firstName'] : null,
                           'lastName'=>  isset($user['email']) ? $user['lastName'] : null,
                           'flag'=>  isset($user['email']) ? $user['flag'] : null,
                           'email'=>  isset($user['email']) ? $user['email'] : null,
-                          'courses'=>  array());
+                          'courses'=>  array());*/
+                          
+        $response = $user;
+        $response['courses'] = array();
+            
 
         foreach ($user['courses'] as $course) {
             $newCourse = array('status' => $course['status'],
@@ -645,7 +649,8 @@ class LGetSite
         $answer = Request::custom('GET', $URL, array(), '');
         $response['user'] = json_decode($answer['content'], true);
 
-        unset($response['user']['courses']);
+        if (isset($response['user']['courses']))
+            unset($response['user']['courses']);
 
         foreach ($user['courses'] as $course) {
             $newCourse = array('status' => $course['status'],
@@ -1406,12 +1411,15 @@ class LGetSite
         unset($answer);
 ///var_dump($invitations);
         // order users by id
+        
         $usersById = array();
-        $leaderId = $group['leader']['id'];
-        $usersById[$leaderId] = &$group['leader'];
-        foreach ($group['members'] as &$member) {
-            $uId = $member['id'];
-            $usersById[$uId] = &$member;
+        if (isset($group['leader']['id'])){
+            $leaderId = $group['leader']['id'];
+            $usersById[$leaderId] = &$group['leader'];
+            foreach ($group['members'] as &$member) {
+                $uId = $member['id'];
+                $usersById[$uId] = &$member;
+            }
         }
 
         // order submissions by exercise and user, only take latest
@@ -1472,7 +1480,7 @@ class LGetSite
         if ((!isset($group['members']) || count($group['members'])==0) 
                 && $lastGroup !== null 
                 && $sheet['groupSize'] >= $lastSheet['groupSize'] 
-                && $lastGroup['leader']['id'] == $userid 
+                && (isset($lastGroup['leader']['id']) && $lastGroup['leader']['id'] == $userid)
                 && isset($lastGroup['members']) 
                 && count($lastGroup['members']) >0 
                 && count($invited)==0 

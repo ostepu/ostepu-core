@@ -4,21 +4,12 @@
     "classFile": "DBGroup.php",
     "className": "DBGroup",
     "files": [
-        {
-            "path": ".htaccess"
-        },
-        {
-            "path": "DBGroup.php"
-        },
-        {
-            "path": "index.php"
-        },
-        {
-            "path": "Commands.json"
-        },
-        {
-            "path": "Sql/"
-        }
+        {"path": ".htaccess"},
+        {"path": "DBGroup.php"},
+        {"path": "index.php"},
+        {"path": "Commands.json"},
+        {"path": "Sql/"},
+        {"path": "info/"}
     ],
     "links": [
         {
@@ -87,7 +78,7 @@
             "links": [
                 {
                     "method": "GET",
-                    "path": "/query/procedure/DBAllGetUserGroups"
+                    "path": "/query/procedure/DBGroupGetAllGroups"
                 }
             ]
         },

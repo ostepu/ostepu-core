@@ -1,3 +1,6 @@
+<?php include_once dirname(__FILE__) . '/../../../../Assistants/Language.php'; ?>
+<?php $langTemplate='Processor_LFormProcessor';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <?php
 /**
  * @file LFormProcessor.template.php
@@ -12,9 +15,9 @@
                 <tr>
                     <?php
                     $liste = array(
-                                    '' => 'Normal',
-                                    'distance1' => 'Ähnlichkeit in %',
-                                    'regularExpression' => 'regulärer Ausdruck');
+                                    '' => Language::Get('main','normal', $langTemplate),
+                                    'distance1' => Language::Get('main','distance', $langTemplate),
+                                    'regularExpression' => Language::Get('main','regularExpression', $langTemplate));
                     
                     $i=0;
                     $params = array();
@@ -22,7 +25,7 @@
                         $params = explode(' ',$process['parameter']);
                     ?>
                     <td>
-                        <label class="label bold" for="">Vergleich:</label>
+                        <label class="label bold" for=""><?php echo Language::Get('main','compare', $langTemplate); ?>:</label>
                     </td>
                     <td>
                         <select class="parameter-choice" style="width:auto" name="exercises[0][subexercises][0][processorParameterList][0][]">

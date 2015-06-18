@@ -1,0 +1,13 @@
+{
+    "main": {
+        "mainSettings": "Plattform verwalten",
+        "student": "Studentenrolle einnehmen",
+        "leaveStudent": "Studentenrolle verlassen",
+        "courseManagement": "Kurs verwalten",
+        "condition": "Zulassungsbedingungen",
+        "uploadHistory": "Einsendungsverlauf",
+        "tutorUpload": "Korrekturen hochladen",
+        "accountSettings": "Account",
+        "log-out": "Ausloggen"
+    }
+}

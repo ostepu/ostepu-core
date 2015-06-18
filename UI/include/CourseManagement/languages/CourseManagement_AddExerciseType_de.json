@@ -1,0 +1,8 @@
+{
+    "main": {
+        "title": "Punkteart hinzuf&uuml;gen",
+        "execute": "hinzuf&uuml;gen",
+        "description": "Geben Sie hier den Namen der neuen Punkteart an. Um die Punkteart im Kurs zu verwenden, mu&szlig; sie oben in den Veranstaltungseinstellungen ausgew&auml;hlt werden. Bitte beachten Sie die maximale L&auml;nge von 20 Zeichen.",
+        "exerciseTypeName": "Name der Punkteart"
+    }
+}

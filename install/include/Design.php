@@ -8,10 +8,50 @@
  * @date 2014
  */
  
- require_once dirname(__FILE__) . '/Einstellungen.php';
+ //require_once dirname(__FILE__) . '/Einstellungen.php';
  
 class Design
 {
+    public static function erstelleZeileShort()
+    {
+        $args = func_get_args();
+        $console = array_shift($args);
+        $text = '';
+        $result = '';
+        
+        if (count($args)%2!=0)
+            $args[] = '';
+        
+        if (!$console){
+            $addToLast = '';
+            if (count($args)<=4)
+                $addToLast = ' colspan="2" ';
+            if (count($args)<=2)
+                $addToLast = ' colspan="3" ';
+            
+            $result = '<tr>';
+            foreach($args as $pos => $data){
+                if ($pos%2===0){
+                    $text = $data;
+                } else {
+                    $result.="<td ".($pos==count($args)-1 ? $addToLast : '')."class='{$data}'>{$text}</td>";
+                }
+            }
+            $result.='</tr>';
+        } else {
+            foreach($args as $pos => $data){
+                if ($pos%2===0){
+                    $text = $data;
+                } else {
+                    $result.=" {$text}";
+                }
+            }
+            $result.="\n";         
+        }
+        
+        return trim($result,' ');
+    }
+    
     public static function erstelleZeile()
     {
         $args = func_get_args();
@@ -23,6 +63,7 @@ class Design
             $args[] = '';
         
         if (!$console){
+            
             $result = '<tr>';
             foreach($args as $pos => $data){
                 if ($pos%2===0){
@@ -91,6 +132,37 @@ class Design
         if (!$console)
             $result = "<input style='width:100%' type='text' name='{$variablenName}' value='".($variable != null? $variable : $default)."'>";
         
+        return $result;
+    }
+    
+    public static function erstelleEingabebereich($console, &$variable, $variablenName, $default, $save=false)
+    {
+        if ($save == true && $variable == null){
+            $variable = Einstellungen::Get($variablenName, $default);
+        } 
+        
+        if ($save == true && $variable != null)
+            Einstellungen::Set($variablenName, $variable);
+            
+        if ($variable == null)
+            $variable = $default;
+        
+        $result = '';
+ 
+        if (!$console)
+            $result = self::zeichneEingabebereich($console, $variablenName, ($variable != null? $variable : $default)); 
+
+        return $result;
+    }
+    
+    public static function zeichneEingabebereich($console, $variablenName, $text)
+    {
+        $result = '';
+        if (!$console){
+            $result .= "<textarea rows='10' cols='100' style='width:100%' name='{$variablenName}'>";
+            $result .= $text;
+            $result .="</textarea>";
+        }
         return $result;
     }
     
@@ -164,16 +236,16 @@ class Design
         if (!$console){
             if ($fail === true){
                 //$installFail = true;
-                return Design::erstelleZeile($console, Sprachen::Get('main','installation'), 'e', '', 'v', "<div align ='center'><font color='red'>".Sprachen::Get('main','fail'). (($errno!=null && $errno!='') ? " ({$errno})" : '') ."<br> {$error}</font></align>", 'v');
+                return Design::erstelleZeile($console, Language::Get('main','installation'), 'e', '', 'v', "<div align ='center'><font color='red'>".Language::Get('main','fail'). (($errno!=null && $errno!='') ? " ({$errno})" : '') ."<br> {$error}</font></align>", 'v');
             } else{
-                return Design::erstelleZeile($console, Sprachen::Get('main','installation'), 'e', '', 'v', '<div align ="center">'.Sprachen::Get('main','ok').'</align>', 'v');
+                return Design::erstelleZeile($console, Language::Get('main','installation'), 'e', '', 'v', '<div align ="center">'.Language::Get('main','ok').'</align>', 'v');
             }
         } else {
             if ($fail === true){
                 //$installFail = true;
-                return Design::erstelleZeile($console, Sprachen::Get('main','installation'), 'e', '', 'v', Sprachen::Get('main','fail'). (($errno!=null && $errno!='') ? " ({$errno})" : '') ." {$error}", 'v');
+                return Design::erstelleZeile($console, Language::Get('main','installation'), 'e', '', 'v', Language::Get('main','fail'). (($errno!=null && $errno!='') ? " ({$errno})" : '') ." {$error}", 'v');
             } else{
-                return Design::erstelleZeile($console, Sprachen::Get('main','installation'), 'e', '', 'v', Sprachen::Get('main','ok'), 'v');
+                return Design::erstelleZeile($console, Language::Get('main','installation'), 'e', '', 'v', Language::Get('main','ok'), 'v');
             }
         }
     }
@@ -181,14 +253,14 @@ class Design
     public static function erstelleSubmitButton($var, $text = null)
     {
         if ($text === null)
-            $text = Sprachen::Get('main','install');
+            $text = Language::Get('main','install');
         return "<input type='submit' name='{$var}' value=' {$text} '>";
     }
     
     public static function erstelleSubmitButtonFlach($varName, $value, $text = null)
     {
         if ($text === null)
-            $text = Sprachen::Get('main','install');
+            $text = Language::Get('main','install');
         return "<button class='text-button info-color bold' name='{$varName}' value='{$value}'>{$text}</button>";
     }
     

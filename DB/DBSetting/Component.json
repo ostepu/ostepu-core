@@ -8,12 +8,15 @@
     {"path":"DBSetting.php"},
     {"path":"index.php"},
     {"path":"Commands.json"},
-    {"path":"Sql/"}
+    {"path":"Sql/"},
+    {"path":"info/"}
   ],
   "links":[
     {"name":"out", "target":"DBQuery2", "links":[{"method":"POST", "path":"/query" }] }
   ],
   "connector":[
-    {"name":"request", "target":"CLocalObjectRequest"}
+    {"name":"request", "target":"CLocalObjectRequest"},
+    {"name":"postCourse", "target":"LCourse", "priority":150},
+    {"name":"deleteCourse", "target":"LCourse", "priority":150}
   ]
 }

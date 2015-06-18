@@ -13,8 +13,8 @@ $(document).ready( function()
         monthsShort: ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dez"],
         today: "Heute"
     };
-    
-    var all2 = $('.datetimepicker');
+        
+    var all2 = $('.dtpicker');
     for (var i = 0; i < all2.length; i++) {
         var target = $(all2[i]);
         target.datetimepicker({
@@ -23,12 +23,5 @@ $(document).ready( function()
           pickSeconds: false,
           weekStart: 1
         });
-        
-        var picker = target.data('datetimepicker');
-        var localDate = picker.getLocalDate();
-
-        if (!target.child('Date').val()) {
-            picker.setLocalDate(new Date(localDate.getYear()+1900, localDate.getMonth(), localDate.getDate(), 0, 0));
-        }
     }
 });

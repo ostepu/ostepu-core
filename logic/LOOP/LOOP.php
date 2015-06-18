@@ -79,24 +79,28 @@ class LOOP
 
         // runs the LOOP
         if ( $com->used( ) ) return;
-            $conf = $com->loadConfig( );
+            $conf = $com->loadConfig( ); // lädt die Daten der CConfig.json
             
         // initialize slim    
         $this->app = new \Slim\Slim(array('debug' => true));
         $this->app->response->headers->set('Content-Type', 'application/json');
 
         // initialize component
+        
+        // hier werden die Verknüpfungen aus der CConfig.json ausgelesen (entsprechend ihrem Namen)
         $this->_conf = $conf;
-        $this->_pdf = CConfig::getLinks($conf->getLinks(),"pdf");
+        $this->_pdf = CConfig::getLinks($conf->getLinks(),"pdf"); // wird nicht genutzt, theoretisch koennten hier PDFs erzeugt werden
+         // für POST /course zum eintragen als Verarbeitung (wird dann in CreateSheet aufgelistet)
         $this->_postProcess = CConfig::getLinks($conf->getLinks(),"postProcess");
-        $this->_deleteProcess = CConfig::getLinks($conf->getLinks(),"deleteProcess");
-        $this->_getProcess = CConfig::getLinks($conf->getLinks(),"getProcess");
+        $this->_deleteProcess = CConfig::getLinks($conf->getLinks(),"deleteProcess"); // für DELETE /course/xyz
+        $this->_getProcess = CConfig::getLinks($conf->getLinks(),"getProcess"); // GET /link/exists/course/:courseid
 
         // POST PostProcess
         $this->app->map('/'.$this->getPrefix().'(/)',
                         array($this, 'postProcess'))->via('POST');
                         
         // POST AddCourse
+        // fügt die Komponente der Veranstaltung hinzu (Daten kommen im Anfragekörper)
         $this->app->post( 
                          '/course(/)',
                          array( 
@@ -105,7 +109,8 @@ class LOOP
                                )
                          );
                          
-        // POST DeleteCourse
+        // DELETE DeleteCourse
+        // entfernt die Komponente aus der Veranstaltung
         $this->app->delete( 
                          '/course/:courseid(/)',
                          array( 
@@ -115,6 +120,7 @@ class LOOP
                          );
                          
         // GET GetExistsCourse
+        // zum Prüfen, ob diese Kompoenten korrekt installiert wurde (existiert Tabelleneintrag, konf-Dateien etc.)
         $this->app->get( 
                          '/link/exists/course/:courseid(/)',
                          array( 
@@ -146,12 +152,15 @@ class LOOP
                                         'process'
                                         );
                                         
+        // wenn es einen Eintrag für die Komponente als Verarbeitung gibt, kann diese gelöscht werden
         if (isset($result['status']) && $result['status'] >= 200 && $result['status'] <= 299 && isset($result['content']) && $this->_conf !== null){
         
+            // ermittelt die VerarbeitungsID dieser Komponente
             $process = Process::decodeProcess($result['content']);
             if (is_array($process)) $process = $process[0];
             $deleteId = $process->getProcessId();
             
+            // nun kann der Eintrag entfernt werden
             $result = Request::routeRequest( 
                                             'DELETE',
                                             '/process/process/' . $deleteId,
@@ -160,12 +169,14 @@ class LOOP
                                             $this->_deleteProcess,
                                             'process'
                                             );
-                                            
+                                              
             if (isset($result['status']) && $result['status'] === 201 && isset($result['content']) && $this->_conf !== null){
+                // Eintrag konnte erfolgreich entfernt werden
                 $this->app->response->setStatus( 201 );
                 $this->app->stop();
             }
             
+            // der Eintrag konnte nicht entfernt werden
             $this->app->response->setStatus( 409 );
             $this->app->stop();
         }
@@ -188,11 +199,16 @@ class LOOP
 
         $body = $this->app->request->getBody();
         
+        // die Daten der Veranstaltung kommen über den Aufrufkörper rein
         $courses = Course::decodeCourse($body);
         $processes = array();
         if (!is_array($courses)) $courses = array($courses);
         
+        // wenn die Komponente direkt in mehrere Veranstaltungen eingetragen werden soll,
+        // wird das Eintragen für alle vorgenommen
         foreach ($courses as $course){
+            
+            // ab hier wird der neue Eintrag zusammengestellt
             $process = new Process();
             
             $exercise = new Exercise();
@@ -205,9 +221,11 @@ class LOOP
             
             $process->setTarget($component);
             
+            // und nun wird gesammelt
             $processes[] = $process;
         }
     
+        // die erstellten Einträge können nun an den Zuständigen geschickt werden
         foreach ( $this->_postProcess as $_link ){
             $result = Request::routeRequest( 
                                             'POST',
@@ -221,7 +239,7 @@ class LOOP
             // checks the correctness of the query
             if ( $result['status'] >= 200 && 
                  $result['status'] <= 299 ){
-
+                // wenn der Erstellvorgang erfolgreich war, können wir dies melden
                 $this->app->response->setStatus( 201 );
                 if ( isset( $result['headers']['Content-Type'] ) )
                     $this->app->response->headers->set( 
@@ -230,7 +248,8 @@ class LOOP
                                                         );
                 
             } else {
-            
+                // der Eintrag konnte nicht erstellt werden
+                
                /* if ($courses->getId()!==null){
                     $this->deleteCourse($courses->getId());
                 }*/
@@ -239,12 +258,16 @@ class LOOP
                             'POST AddCourse failed',
                             LogLevel::ERROR
                             );
+                            
+                // gibt den Status der "Erstellanfrage" zurück oder eine 409 und zusätzlich
+                // das eingehende Veranstaltungsobjekt
                 $this->app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
                 $this->app->response->setBody( Course::encodeCourse( $courses ) );
                 $this->app->stop( );
             }
         }
         
+        // die bearbeiteten Veranstaltungen können nun zur Ausgabe hinzugefügt werden
         $this->app->response->setBody( Course::encodeCourse( $courses ) );
     }
    
@@ -258,6 +281,8 @@ class LOOP
      */
     public function getExistsCourse($courseid)
     {
+        // hier soll geprüft werden, ob ein entsprechender Eintrag für diese Komponente in der referenzierten Prozesstabelle besteht,
+        // ob sie also als Verarbeitung registriert ist (dazu wird die ID dieser Komponente verwendet ($this->_conf->getId()))
         $result = Request::routeRequest( 
                                         'GET',
                                         '/process/course/'.$courseid.'/component/'.$this->_conf->getId(),
@@ -267,11 +292,14 @@ class LOOP
                                         'process'
                                         );
                        
+        // wenn etwas für die ID dieser Komponente von der DB geantwortet wird, ist die Installation korrekt bzw. vorhanden.
         if (isset($result['status']) && $result['status'] >= 200 && $result['status'] <= 299 && isset($result['content']) && $this->_conf !== null && $this->_conf->getId() !== null){
             $this->app->response->setStatus( 200 );
             $this->app->stop();
         }
                                         
+        // die Datenbank hat keinen Eintrag für diese Komponente geliefert oder ein sonstiger Fehler ist aufgetreten, daher
+        // gilt die Installation als nicht vorhanden/korrekt
         $this->app->response->setStatus( 409 );
     }
    
@@ -283,12 +311,16 @@ class LOOP
      */
     public function postProcess()
     {
+        // hier werden Einsendungen verarbeitet
+        
         $this->app->response->setStatus( 201 );
            
         $body = $this->app->request->getBody();
         $process = Process::decodeProcess($body);
         
         // always been an array
+        // es ist einfacher, wenn man sicherstellt, dass die Eingabedaten als Liste für foreach verarbeitet
+        // werden können, um Abstürze bei übergebenen Einzelobjekten zu vermeiden
         $arr = true;
         if ( !is_array( $process ) ){
             $process = array( $process );
@@ -296,48 +328,68 @@ class LOOP
         }
 
         $res = array( );
+        
+        // behandelt jede eingehende Einsendung
         foreach ( $process as $pro ){
             $eid = $pro->getExercise()->getId();
 
-            $file = $pro->getRawSubmission()->getFile();
+            $file = $pro->getRawSubmission()->getFile(); // die unverarbeitete Einsendung (Dateiinhalt im body oder Adresse)
             $timestamp = $file->getTimeStamp();
+            
+            // der Eingangsstempel müsste natürlich schon existieren, ansonsten gilt dieser als Eingangszeitpunkt (wird nicht verwendet)
             if ($timestamp === null) 
                 $timestamp = time();
             
+            // es muss eine Einsendung vorhanden sein, welche bearbeitet werden kann
             if ($file !== null){
                 $fileName = $file->getDisplayName();
-                $file = base64_decode($file->getBody());
+                $file = base64_decode($file->getBody()); // gibt den Inhalt der Einsendung an $file
               
+                // es muss ein Einsendungsinhalt vorhanden sein
                 if ($file !== null){
                     $fail = false;
                     
+                    // eindeutigen temporären Ordner für diesen Vorgang erstellen und den Inhalt dort platzieren
                     $fileHash = sha1($file);
                     $filePath = $this->tempdir('/tmp/', $fileHash);
                     file_put_contents($filePath . '/' . $fileName, $file);  
 
+                    // der $pro->getParameter() wurden beim Erstellen der Verarbeitung festgelegt und enthält
+                    // sowohl den aufzurufenden Compiler als auch weitere Aufrufparameter
                     $parameter = explode(' ',strtolower($pro->getParameter()));
                     if (count($parameter)>=2){
                         $type = array_shift($parameter);
+                        
                         if ($type == 'cx'){
+                            // behandelt Einsendungen für den cx Compiler
                             $output = array();
                             $return = '';
+                            
+                            // ersetzt $file durch den Dateinamen der Einsendung und generiert
+                            // die zusätzlichen Aufrufparameter für den Compiler
                             $param = implode(' ',$parameter);
                             if ($param!=''){
                                 $param=str_replace('$file',$fileName,$param);
                             } else
                                 $param = $fileName;
                              
+                            // passt das Arbeitsverzeichnis an und führt das Skript für den
+                            // cx Compiler aus
                             $pathOld = getcwd();
                             chdir($filePath);                             
                             exec('(./start_cx '.$param.') 2>&1', $output, $return);
                             chdir($pathOld);
                            
                             if (count($output)>0 && $output[count($output)-1] === '201'){
-                                // nothing
+                                // wenn wir als Antwort eine 201 vom Skript erhalten, konnte alles problemlos 
+                                // kompiliert werden
                                 $pro->setStatus(201);
                             }
                             else{
+                                // ansonsten gab es ein Problem, also einen Fehlerstatus zurückgeben
                                 $pro->setStatus(409);
+                                
+                                // die Antwort des Compilers wird nun noch für die Ausgabe der Fehlermeldung angepasst
                                 if (count($output)>0){
                                 $text = '';
                                     unset($output[count($output)-1]);
@@ -350,58 +402,70 @@ class LOOP
                                 $this->app->response->setStatus( 409 );
                             }
                         } elseif ($type == 'java'){
+                            // behandelt Einsendungen für den Java Compiler
+                            
                             $output = array();
                             $return = '';
+                            
+                            // ersetzt $file durch den Dateinamen der Einsendung und generiert
+                            // die zusätzlichen Aufrufparameter für den Compiler
                             $param = implode(' ',$parameter);
                             if ($param!=''){
                                 $param=str_replace('$file',$fileName,$param);
                             } else
                                 $param = $fileName;
-                                
+                               
+                            // passt das Arbeitsverzeichnis an und führt das Skript für den
+                            // java Compiler (javac) aus. Die Ausgabe erfolgt dabei in $return                       
                             $pathOld = getcwd();
                             chdir($filePath);
                             exec('(javac '.$param.') 2>&1', $output, $return);
                             chdir($pathOld);
                             
-                            /*ob_start();
-                            system('("C:/Program Files/Java/jdk1.8.0_05/bin/javac" '.$param.') 2>&1',$return);
-                            $output=explode("\n",ob_get_contents());
-                            ob_end_clean();*/
-                            
                             if ($return == 0){
-                                // nothing
+                                // wenn wir als Antwort eine 0 erhalten, konnte alles problemlos 
+                                // kompiliert werden
                                 $pro->setStatus(201);
                             }
                             else{
+                                // ansonsten gab es ein Problem, also einen Fehlerstatus zurückgeben
                                 $pro->setStatus(409);
+                                
+                                // die Antwort des Compilers muss nun noch Studentengerecht zusammengebaut werden
+                                // für die Fehlermeldung
                                 if (count($output)>0){
                                     $text = '';
                                     $outputList = array();
+                                    
+                                    // entfernt störende Zeichen
                                     foreach($output as $out){
                                         $out = trim(trim($out),'^');
                                         if ($out=='') continue;
                                         $outputList[] = $out;
                                     }
                                     
+                                    // nur die ersten 7 Fehler und die Zusammenfassung am Ende (2 Zeilen) behalten
                                     if (count($outputList)>10){
                                         $outputList[7] = '...';
                                         for ($i=8;$i<count($outputList)-2;$i++)
                                             $outputList[$i]='';
                                     }
                                     
+                                    // nur nichtleere Ausgabezeilen werden zur Aufgabe zusammengefasst
                                     foreach($outputList as $out){
                                         if ($out=='') continue;
                                         $text.=$out."\n";
                                     }
                                     
-                                    
-                                        
+                                    // die fertige Fehlermeldung dem Prozessobjekt übergeben    
                                     $pro->addMessage($text);
                                 }
                                 $this->app->response->setStatus( 409 );
                             }
                             
                         } elseif ($type == 'custom'){
+                            // es können natürlich auch individuelle Programmaufrufe damit konfiguriert werden
+                            // dabei liefern die Parameter auch das aufzurufende Programm mit (Gefahr???)
                             $output = array();
                             $return = '';
                             $param = implode(' ',$parameter);
@@ -442,18 +506,24 @@ class LOOP
                         }
                         
                     } else {
-                        // no parameter
+                        // es wurden womöglich nicht genug Parameter übergeben
+                        // er verlangt mindestens den Compiler und einen Parameter
+                        // Bsp.: java $file
                     }
                     
+                    // nachdem die Einsendung bearbeitet wurde, kann das temporäre
+                    // Verzeichnis mit Inhalt entfernt werden
                     $this->deleteDir($filePath);
                     
+                    // das Prozessobjekt kann nun zur Ausgabe hinzugefügt werden
                     $res[] = $pro;          
                     continue;
                 }
             }                             
         }
 
- 
+        // wenn nur ein einzelnes Objekt als Eingabe kam, wir auch nur ein Einzelobjekt
+        // zurückgegeben, ansonsten eine Liste
         if ( !$arr && 
              count( $res ) == 1 ){
             $this->app->response->setBody( Process::encodeProcess( $res[0] ) );
@@ -469,12 +539,14 @@ class LOOP
      */
     public static function generatepath( $path )
     {
+        // erzeugt einen Ordner
         if (!is_dir($path))          
             mkdir( $path , 0775, true);
     }
     
     public function deleteDir($path)
     {
+        // entfernt einen Ordner und zuvor alle enthaltenen Dateien
         if (is_dir($path) === true) {
             $files = array_diff(scandir($path), array('.', '..'));
 
@@ -493,6 +565,7 @@ class LOOP
     
     public function tempdir($dir, $prefix='', $mode=0775)
     {
+        // erzeugt ein eindeutiges Verzeichnis
         if (substr($dir, -1) != '/') $dir .= '/';
 
         do

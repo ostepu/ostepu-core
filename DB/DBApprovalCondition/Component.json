@@ -4,21 +4,12 @@
     "classFile": "DBApprovalCondition.php",
     "className": "DBApprovalCondition",
     "files": [
-        {
-            "path": ".htaccess"
-        },
-        {
-            "path": "DBApprovalCondition.php"
-        },
-        {
-            "path": "index.php"
-        },
-        {
-            "path": "Commands.json"
-        },
-        {
-            "path": "Sql/"
-        }
+        {"path": ".htaccess"},
+        {"path": "DBApprovalCondition.php"},
+        {"path": "index.php"},
+        {"path": "Commands.json"},
+        {"path": "Sql/"},
+        {"path": "info/"}
     ],
     "links": [
         {

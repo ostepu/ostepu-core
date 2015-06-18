@@ -26,13 +26,13 @@ class GrundeinstellungenAusgeben
     {
         $text = '';
         if (!$console){
-            $text .= Design::erstelleBeschreibung($console,Sprachen::Get('general_settings','description'));   
+            $text .= Design::erstelleBeschreibung($console,Language::Get('general_settings','description'));   
             
-            $text .= Design::erstelleZeile($console, Sprachen::Get('general_settings','init'), 'e', '', 'v', Design::erstelleSubmitButton('actionInstallInit'), 'h');
-            $text .= Design::erstelleZeile($console, Sprachen::Get('database','db_override'), 'e', Design::erstelleAuswahl($console, $data['DB']['db_override'], 'data[DB][db_override]', 'override', null, true), 'v');
-            $text .= Design::erstelleZeile($console, Sprachen::Get('database','db_ignore'), 'e', Design::erstelleAuswahl($console, $data['DB']['db_ignore'], 'data[DB][db_ignore]', 'ignore', null, true), 'v');
+            $text .= Design::erstelleZeile($console, Language::Get('general_settings','init'), 'e', '', 'v', Design::erstelleSubmitButton('actionInstallInit'), 'h');
+            $text .= Design::erstelleZeile($console, Language::Get('database','db_override'), 'e', Design::erstelleAuswahl($console, $data['DB']['db_override'], 'data[DB][db_override]', 'override', null, true), 'v');
+            $text .= Design::erstelleZeile($console, Language::Get('database','db_ignore'), 'e', Design::erstelleAuswahl($console, $data['DB']['db_ignore'], 'data[DB][db_ignore]', 'ignore', null, true), 'v');
 
-            $text .= Design::erstelleZeile($console, Sprachen::Get('general_settings','details'), 'e', Design::erstelleAuswahl($console, $data['PL']['pl_main_details'], 'data[PL][pl_main_details]', 'details', null, true), 'v');
+            $text .= Design::erstelleZeile($console, Language::Get('general_settings','details'), 'e', Design::erstelleAuswahl($console, $data['PL']['pl_main_details'], 'data[PL][pl_main_details]', 'details', null, true), 'v');
         }
         
         if (isset($result[self::$onEvents['install']['name']]) && $result[self::$onEvents['install']['name']]!=null){
@@ -49,16 +49,16 @@ class GrundeinstellungenAusgeben
             if ($data['PL']['pl_main_details'] == 'details'){
                 foreach ($content as $component => $dat){
                     if (!$console){
-                        $text .= "<tr><td class='e' rowspan='1'>{$component}</td><td class='v'></td><td class='e'><div align ='center'>".((isset($dat['status']) && $dat['status']===201) ? Sprachen::Get('main','ok') : "<font color='red'>".Sprachen::Get('main','fail')." ({$dat['status']})</font>")."</align></td></tr>";
+                        $text .= "<tr><td class='e' rowspan='1'>{$component}</td><td class='v'></td><td class='e'><div align ='center'>".((isset($dat['status']) && $dat['status']===201) ? Language::Get('main','ok') : "<font color='red'>".Language::Get('main','fail')." ({$dat['status']})</font>")."</align></td></tr>";
                     } else 
-                        $text .= "{$component}: ".((isset($dat['status']) && $dat['status']===201) ? Sprachen::Get('main','ok') : Sprachen::Get('main','fail')." ({$dat['status']})");
+                        $text .= "{$component}: ".((isset($dat['status']) && $dat['status']===201) ? Language::Get('main','ok') : Language::Get('main','fail')." ({$dat['status']})");
                 }
             }
             
             $text .= Design::erstelleInstallationszeile($console, $fail, $errno, $error);
         }
 
-        echo Design::erstelleBlock($console, Sprachen::Get('general_settings','title'), $text);
+        echo Design::erstelleBlock($console, Language::Get('general_settings','title'), $text);
         return null;
     }
     

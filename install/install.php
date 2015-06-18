@@ -10,19 +10,19 @@ set_time_limit(0);
 define('ISCLI', PHP_SAPI === 'cli'); 
 
 if (!constant('ISCLI'))
-    require_once dirname(__FILE__) . '/../Assistants/Slim/Slim.php';
-require_once dirname(__FILE__) . '/../Assistants/Slim/Route.php';
+    include_once dirname(__FILE__) . '/../Assistants/Slim/Slim.php';
+include_once dirname(__FILE__) . '/../Assistants/Slim/Route.php';
 
-require_once dirname(__FILE__) . '/../Assistants/Request.php';
-require_once dirname(__FILE__) . '/../Assistants/DBRequest.php';
-require_once dirname(__FILE__) . '/../Assistants/DBJson.php';
-require_once dirname(__FILE__) . '/../Assistants/Structures.php';
-require_once dirname(__FILE__) . '/include/Design.php';
-require_once dirname(__FILE__) . '/include/Installation.php';
-require_once dirname(__FILE__) . '/include/Sprachen.php';
-require_once dirname(__FILE__) . '/include/Einstellungen.php';
-require_once dirname(__FILE__) . '/include/Variablen.php';
-require_once dirname(__FILE__) . '/include/Zugang.php';
+include_once dirname(__FILE__) . '/../Assistants/Request.php';
+include_once dirname(__FILE__) . '/../Assistants/DBRequest.php';
+include_once dirname(__FILE__) . '/../Assistants/DBJson.php';
+include_once dirname(__FILE__) . '/../Assistants/Structures.php';
+include_once dirname(__FILE__) . '/include/Einstellungen.php';
+include_once dirname(__FILE__) . '/include/Design.php';
+include_once dirname(__FILE__) . '/include/Installation.php';
+include_once dirname(__FILE__) . '/../Assistants/Language.php';
+include_once dirname(__FILE__) . '/include/Variablen.php';
+include_once dirname(__FILE__) . '/include/Zugang.php';
 
 if (!constant('ISCLI'))
     \Slim\Slim::registerAutoloader();
@@ -222,7 +222,7 @@ class Installer
             $selected_server=$server;
         
         $server=$selected_server;
-        ///$data['SV']['name'] = $server;
+        $data['SV']['name'] = $server;
         
         Einstellungen::ladeEinstellungen($server,$data);
         Variablen::Einsetzen($data);
@@ -235,12 +235,12 @@ class Installer
         
         if (isset($_POST['action']))
             $data['action'] = $_POST['action'];
-        
+
         $this->loadSegments();           
         foreach($this->segments as $segs){
             $segs::init($console, $data, $fail, $errno, $error);
         }
-
+        
         
         $fail = false;
         $errno = null;
@@ -311,15 +311,15 @@ class Installer
             }
         
             // load language
-            Sprachen::ladeSprache($data['PL']['language']);
+            Language::loadLanguage($data['PL']['language'], 'default', 'ini');
             
             echo "<html><head>";
             echo "<link rel='stylesheet' type='text/css' href='css/format.css'>";
-            $titleText=Sprachen::Get('main','title'.$selected_menu);
+            $titleText=Language::Get('main','title'.$selected_menu);
             
             if ($selected_menu==-1){
                 if (isset($_POST['action']))
-                    $titleText=Sprachen::Get('main','title'.$_POST['action']);
+                    $titleText=Language::Get('main','title'.$_POST['action']);
             }
             
             echo "</head><body><div class='center'><h1>".$titleText."</h1></br>";
@@ -331,27 +331,27 @@ class Installer
             echo "<div style='width:150px;word-break: break-all;'>";
             // Serverliste ausgeben
             echo "<table border='0'>";
-            echo "<tr><td class='e'>".Sprachen::Get('main','serverList')."</td></tr>";
+            echo "<tr><td class='e'>".Language::Get('main','serverList')."</td></tr>";
             foreach($serverFiles as $serverFile){
                 $file = pathinfo($serverFile)['filename'];
                 echo "<tr><td class='v'>".Design::erstelleSubmitButtonFlach('server',$file,($server == $file ? '<font color="maroon">'.$file.'</font>' : $file))."</td></tr>";
             }
             
             echo "<tr><th height='10'></th></tr>";
-            echo "<tr><td class='v'>".Design::erstelleSubmitButtonFlach('actionAddServer','OK',Sprachen::Get('main','addServer').">")."</td></tr>";
+            echo "<tr><td class='v'>".Design::erstelleSubmitButtonFlach('actionAddServer','OK',Language::Get('main','addServer').">")."</td></tr>";
             echo Design::erstelleVersteckteEingabezeile($console, $selected_server, 'selected_server', null);
             
             echo "<tr><th height='10'></th></tr>";
 
             // master-Passwort abfragen
-            /*echo "<tr><td class='e'>".Sprachen::Get('main','masterPassword')."</td></tr>";
+            /*echo "<tr><td class='e'>".Language::Get('main','masterPassword')."</td></tr>";
             echo "<tr><td class='v'>".Design::erstellePasswortzeile($console, $data['P']['masterPassword'], 'data[P][masterPassword]', $data['P']['masterPassword'])."</td></tr>";
             */
             
             echo "<tr><th height='20'></th></tr>";
             
             // update-Button
-            echo "<tr><td class='v'>".Design::erstelleSubmitButtonFlach('update','OK',Sprachen::Get('main','simpleUpdate').">")."</td></tr>";
+            echo "<tr><td class='v'>".Design::erstelleSubmitButtonFlach('update','OK',Language::Get('main','simpleUpdate').">")."</td></tr>";
             
             echo "</table>";
 
@@ -372,7 +372,7 @@ class Installer
                 if ($i%5==0 && $i>0) $text .= "<tr>";
                 $item = self::$menuItems[$i];
                 $type = self::$menuTypes[$i];
-                $text .= "<td class='".($type==0?'h':'k')."'><div align='center'>".Design::erstelleSubmitButtonFlach('selected_menu',$item,($selected_menu == $item ? '<font color="maroon">'.Sprachen::Get('main','title'.$item).'</font>' : Sprachen::Get('main','title'.$item)))."</div></td>";
+                $text .= "<td class='".($type==0?'h':'k')."'><div align='center'>".Design::erstelleSubmitButtonFlach('selected_menu',$item,($selected_menu == $item ? '<font color="maroon">'.Language::Get('main','title'.$item).'</font>' : Language::Get('main','title'.$item)))."</div></td>";
             }
             $text .= "</tr></table>";
             echo $text;
@@ -409,7 +409,7 @@ class Installer
         if (!$console && !$simple){
             if (($selected_menu === 2 || $selected_menu === 3 || $selected_menu === 4) && false){
                 echo "<table border='0' cellpadding='3' width='600'>";
-                echo "<tr><td class='h'><div align='center'><input type='submit' name='actionInstall' value=' ".Sprachen::Get('main','installAll')." '></div></td></tr>";
+                echo "<tr><td class='h'><div align='center'><input type='submit' name='actionInstall' value=' ".Language::Get('main','installAll')." '></div></td></tr>";
                 echo "</table><br />";
             }
                         
@@ -418,12 +418,12 @@ class Installer
             $a='';$b='';
             if (array_search($selected_menu,self::$menuItems)>0){
                 $item = self::$menuItems[array_search($selected_menu,self::$menuItems)-1];
-                $a = Design::erstelleSubmitButtonFlach('selected_menu',$item, Sprachen::Get('main','back')).'<br><font size=1>('.Sprachen::Get('main','title'.$item).')</font>';
+                $a = Design::erstelleSubmitButtonFlach('selected_menu',$item, Language::Get('main','back')).'<br><font size=1>('.Language::Get('main','title'.$item).')</font>';
             }
             
             if ($selected_menu>=0 && array_search($selected_menu,self::$menuItems)<count(self::$menuItems)-1){
                 $item = self::$menuItems[array_search($selected_menu,self::$menuItems)+1];
-                $b = Design::erstelleSubmitButtonFlach('selected_menu',$item, Sprachen::Get('main','next')).'<br><font size=1>('.Sprachen::Get('main','title'.$item).')</font>';
+                $b = Design::erstelleSubmitButtonFlach('selected_menu',$item, Language::Get('main','next')).'<br><font size=1>('.Language::Get('main','title'.$item).')</font>';
             }
             
             echo "<table border='0' cellpadding='3' width='600'>";
@@ -447,29 +447,29 @@ class Installer
             
             echo "<div style='width:150px;word-break: break-all;'>";
             echo "<table border='0'>";
-            echo "<tr><td class='e'>".Sprachen::Get('general_informations','url')."</td></tr>";
+            echo "<tr><td class='e'>".Language::Get('general_informations','url')."</td></tr>";
             echo "<tr><td>".$data['PL']['url']."</td></tr>";
             echo "<tr><th></th></tr>";
-            echo "<tr><td class='e'>".Sprachen::Get('general_informations','localPath')."</td></tr>";
+            echo "<tr><td class='e'>".Language::Get('general_informations','localPath')."</td></tr>";
             echo "<tr><td>".$data['PL']['localPath']."</td></tr>";
             echo "<tr><th></th></tr>";
-            echo "<tr><td class='e'>".Sprachen::Get('general_informations','urlExtern')."</td></tr>";
+            echo "<tr><td class='e'>".Language::Get('general_informations','urlExtern')."</td></tr>";
             echo "<tr><td>".$data['PL']['urlExtern']."</td></tr>";
             echo "<tr><th></th></tr>";
-            echo "<tr><td class='e'>".Sprachen::Get('database_informations','db_name')."</td></tr>";
+            echo "<tr><td class='e'>".Language::Get('database_informations','db_name')."</td></tr>";
             echo "<tr><td>".$data['DB']['db_name']."</td></tr>";
             echo "<tr><th></th></tr>";
-            echo "<tr><td class='e'>".Sprachen::Get('database_informations','db_path')."</td></tr>";
+            echo "<tr><td class='e'>".Language::Get('database_informations','db_path')."</td></tr>";
             echo "<tr><td>".$data['DB']['db_path']."</td></tr>";
             echo "<tr><th></th></tr>";
-            echo "<tr><td class='e'>".Sprachen::Get('databaseAdmin','db_user')."</td></tr>";
+            echo "<tr><td class='e'>".Language::Get('databaseAdmin','db_user')."</td></tr>";
             echo "<tr><td>".$data['DB']['db_user']."</td></tr>";
             echo "<tr><th></th></tr>";
-            echo "<tr><td class='e'>".Sprachen::Get('databasePlatformUser','db_user_operator')."</td></tr>";
+            echo "<tr><td class='e'>".Language::Get('databasePlatformUser','db_user_operator')."</td></tr>";
             echo "<tr><td>".$data['DB']['db_user_operator']."</td></tr>";
-            echo "<tr><td class='e'>".Sprachen::Get('general_informations','temp')."</td></tr>";
+            echo "<tr><td class='e'>".Language::Get('general_informations','temp')."</td></tr>";
             echo "<tr><td>".$data['PL']['temp']."</td></tr>";
-            echo "<tr><td class='e'>".Sprachen::Get('general_informations','files')."</td></tr>";
+            echo "<tr><td class='e'>".Language::Get('general_informations','files')."</td></tr>";
             echo "<tr><td>".$data['PL']['files']."</td></tr>";
             echo "</table>";
             echo "</div";

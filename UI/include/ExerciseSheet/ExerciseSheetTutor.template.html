@@ -1,3 +1,5 @@
+<?php $langTemplate='ExerciseSheet';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <?php if (!empty($sheets)): ?>
     <?php foreach ($sheets as $sheet):?>
     <?php /**
@@ -12,14 +14,14 @@
             <?php
                 print $sheet['sheetName'];
                 if ($isExpired) {
-                    print ' (abgelaufen)';
+                    print ' ('.Language::Get('sheet','isExpired', $langTemplate).')';
                 }
             ?>
         </div>
         
         <div class="right">
             <span class="info-color bold">
-                    <?php echo date('d.m.Y  -  H:i', $sheet['startDate']).' bis'; ?>
+                    <?php echo date('d.m.Y  -  H:i', $sheet['startDate']).' '.Language::Get('sheet','to', $langTemplate); ?>
             </span>
             
             <span class="critical-color bold">
@@ -57,10 +59,10 @@
                     <li>
                         <div class="exercise-type">
                             <?php echo $exercise['typeName']; ?>
-                            <?php echo $exercise['bonus'] ? ' (B)' : ''; ?>
+                            <?php echo $exercise['bonus'] ? ' ('.Language::Get('sheet','bonus', $langTemplate).')' : ''; ?>
                         </div>
                         <div class="exercise-points">
-                            <?php echo $exercise['maxPoints'];?> P
+                            <?php echo $exercise['maxPoints'];?> <?php echo Language::Get('sheet','points', $langTemplate); ?>
                         </div>
                         <div class="exercise-sheet-images">
                         <?php // creates a downloadAttachment icon for the exercise (if it exists) ?>
@@ -76,9 +78,9 @@
                         </div>
                     </li>
                     <div class="stats-block">
-                        <span class="bold">Einsendungen:</span>
+                        <span class="bold"><?php echo Language::Get('sheet','totalSubmissions', $langTemplate); ?>:</span>
                         <?php $studentsCount = array_merge($studentsCount,(isset($sheet['submissionStats'][$eid]) ? $sheet['submissionStats'][$eid] : array() )); ?>
-                        <span class=""><?php echo (isset($sheet['submissionStats'][$eid]) ? count($sheet['submissionStats'][$eid]) : 0 ); ?> Einsendungen</span>
+                        <span class=""><?php echo (isset($sheet['submissionStats'][$eid]) ? count($sheet['submissionStats'][$eid]) : 0 ); ?> <?php echo Language::Get('sheet','submissions', $langTemplate); ?></span>
                     </div>
                 
                     <?php
@@ -93,14 +95,14 @@
                     ?>
                     <?php } ?>
                 </ol>
-                    <li class="footer-text bold">alle Einsendungen:</li>
+                    <li class="footer-text bold"><?php echo Language::Get('sheet','allSubmissions', $langTemplate); ?>:</li>
                     <!--<li class="footer-text"><?php echo $sheet['courseUserCount']; ?> Studenten</li>-->
-                    <li class="footer-text"><?php echo count(array_unique($studentsCount)) ?> Studenten</li>
-                    <li class="footer-text"><?php echo $sheet['selectedSubmissions']; ?> Einsendungen</li>
+                    <li class="footer-text"><?php echo count(array_unique($studentsCount)) ?> <?php echo Language::Get('sheet','totalStudents', $langTemplate); ?></li>
+                    <li class="footer-text"><?php echo $sheet['selectedSubmissions']; ?> <?php echo Language::Get('sheet','selectedSubmissions', $langTemplate); ?></li>
                     <!--<li class="footer-text"><?php echo $sheet['tutorMarkings']; ?> Korrekturaufträge</li-->
                     <?php if (isset($sheet['status'])){ ?>
                     <br>
-                    <li class="footer-text bold">meine Korrekturen:</li>
+                    <li class="footer-text bold"><?php echo Language::Get('sheet','tutorMarkings', $langTemplate); ?>:</li>
                     <?php $types = Marking::getStatusDefinition();
                     foreach ($sheet['status'] as $key => $value){ ?>
                     <li class="footer-text">
@@ -110,7 +112,7 @@
                     <?php }} ?>
                     <?php if (isset($sheet['allStatus'])){ ?>
                     <br>
-                    <li class="footer-text bold">alle Korrekturen:</li>
+                    <li class="footer-text bold"><?php echo Language::Get('sheet','allMarkings', $langTemplate); ?>:</li>
                     <?php $types = Marking::getStatusDefinition();
                     foreach ($sheet['allStatus'] as $key => $value){ ?>
                     <li class="footer-text">
@@ -127,7 +129,7 @@
                             <?php $fileAddress = $sheet['sampleSolution']['address']; ?>
                             <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
                             <a class="text-button" href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
-                                Musterlösung
+                                <?php echo Language::Get('sheetMenu','sampleSolution', $langTemplate); ?>
                             </a>
                         </li>
                     <?php endif; ?>
@@ -138,7 +140,7 @@
                         <?php $fileAddress = $sheet['sheetFile']['address']; ?>
                         <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
                         <a class="text-button" href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
-                            Aufgabenblatt
+                            <?php echo Language::Get('sheetMenu','sheetFile', $langTemplate); ?>
                         </a>
                     </li>
                     <?php } ?>
@@ -147,7 +149,7 @@
                     <?php if ($sheet['hasAttachments']){ ?>
                         <li>
                             <a href="Download.php?cid=<?php echo $cid; ?>&downloadAttachments=<?php echo $sheet['id']; ?>" class="download text-button body-option-color">
-                                Alle Anhänge herunterladen
+                                <?php echo Language::Get('sheetMenu','downloadAttachments', $langTemplate); ?>
                             </a>
                         </li>
                     <?php } ?>
@@ -155,7 +157,7 @@
                     <?php if (isset($sheet['tutorMarkings']) && $sheet['tutorMarkings']>0){ ?>
                     <li>
                         <a href="Download.php?cid=<?php echo $cid; ?>&downloadCSV=<?php echo $sheet['id']; ?>" class="download text-button body-option-color">
-                            Einsendungen herunterladen
+                            <?php echo Language::Get('sheetMenu','downloadTutorMarkings', $langTemplate); ?>
                         </a>
                     </li>
                     <?php } ?>
@@ -164,14 +166,14 @@
                         <a class="text-button" href="TutorAssign.php?cid=<?php echo $user['courses'][0]['course']['id'],
                                                          '&sid=',
                                                          $sheet['id']; ?>">
-                            Kontrolleurzuweisung
+                            <?php echo Language::Get('sheetMenu','tutorAssign', $langTemplate); ?>
                         </a>
                     </li>
                     <li>
                         <a class="text-button" href="MarkingTool.php?cid=<?php echo $user['courses'][0]['course']['id'],
                                                          '&sid=',
                                                          $sheet['id']; ?>">
-                            Korrekturassistent
+                            <?php echo Language::Get('sheetMenu','markingTool', $langTemplate); ?>
                         </a>
                     </li>
                 </ol>
@@ -183,12 +185,12 @@
 <?php else: ?>
     <div class="content-element">
         <div class="content-header">
-            <div class="content-title left uppercase">Hinweis</div>
+            <div class="content-title left uppercase"><?php echo Language::Get('main','info', $langTemplate); ?></div>
         </div>
 
         <div class="content-body-wrapper">
             <div class="content-body left">
-                Es sind noch keine Aufgabenblätter vorhanden.
+                <?php echo Language::Get('main','noSheets', $langTemplate); ?>
             </div>
         </div> <!-- end: content-body -->
     </div> <!-- end: content-wrapper -->

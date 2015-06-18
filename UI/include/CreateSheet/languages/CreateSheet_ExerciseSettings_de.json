@@ -1,0 +1,7 @@
+{
+    "main": {
+        "exercise": "Aufgabe",
+        "removeExercise": "Aufgabe löschen",
+        "addSubtask": "Teilaufgabe hinzufügen"
+    }
+}

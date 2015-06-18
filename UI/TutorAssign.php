@@ -11,6 +11,7 @@
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/include/FormEvaluator.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
+include_once dirname(__FILE__) . '/../Assistants/Language.php';
 include_once dirname(__FILE__) . '/../Assistants/LArraySorter.php';
 
 if (!isset($_POST['actionSortUsers']))
@@ -269,6 +270,10 @@ function custom_sort($a,$b) {
 usort($tutorAssign_data['tutorAssignments'], "custom_sort");
 
 $user_course_data = $tutorAssign_data['user'];
+
+if (isset($user_course_data['user']['lang'])){
+    Language::setPreferedLanguage($user_course_data['user']['lang']);
+}
 
 if (isset($_POST['sortUsers'])) {
     $tutorAssign_data['sortUsers'] = $_POST['sortUsers'];

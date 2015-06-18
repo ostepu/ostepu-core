@@ -1,0 +1,9 @@
+{
+    "main": {
+        "title": "Login",
+        "execute": "anmelden",
+        "userName": "Nutzername",
+        "password": "Passwort",
+        "permanentLogin": "Eingeloggt bleiben"
+    }
+}

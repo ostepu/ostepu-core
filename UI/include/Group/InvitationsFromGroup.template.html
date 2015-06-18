@@ -1,11 +1,13 @@
+<?php $langTemplate='Group_InvitationsFromGroup';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <input type="hidden" name="action" value="InviteGroup">
 <?php $emptyGroupMembers = $groupSize - count($group['members']) - count($invitationsFromGroup) - 1; ?>
 
 <div class="content-element">
     <div class="content-header">
-        <div class="content-title left">Einladungen zum Beitritt versenden</div>
+        <div class="content-title left"><?php echo Language::Get('main','title', $langTemplate); ?></div>
         <?php if ($emptyGroupMembers > 0) { ?>
-        <button class="right text-button info-color bold">versenden</button>
+        <button class="right text-button info-color bold"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
         <?php } ?>
     </div>
 
@@ -13,7 +15,7 @@
         <?php if (isset($allowApplyGroup) && $allowApplyGroup == 1) { ?>
         <div class="content-body left"> 
             <div class="content-description">
-                Sie können die Gruppenstruktur der letzten Übungsserie übernehmen.
+                <?php echo Language::Get('main','applyGroupDescription', $langTemplate); ?>
                 <ol class="invitation-list">
                     <?php foreach ($lastGroup['members'] as $member) {
                         print "<li>";
@@ -35,7 +37,7 @@
                         print "<input type='hidden' name='members[]' value='{$member['id']}'>";
                     } ?>
                     <button name="applyGroup" value="1" class="right text-button body-option-color">
-                    Gruppe übernehmen
+                    <?php echo Language::Get('main','applyGroup', $langTemplate); ?>
                     </button>
                 </ol>
             </div>
@@ -45,19 +47,14 @@
         <div class="content-body left">           
             <div class="content-description">
                 <?php if ($emptyGroupMembers > 0): ?>
-                Geben Sie hier die Kürzel der Nutzer an, welche der Gruppe beitreten sollen.
-                Diese erhalten dann eine Einladung, welche sie annehmen müssen, um ein Mitglied
-                der Gruppe zu werden.
-
-                Die maximale Gruppengröße für diese Serie beträgt <span class="bold critical-color"><?php echo $groupSize; ?></span>.
+                <?php echo Language::Get('main','emptyGroupDescription', $langTemplate); ?> <span class="bold critical-color"><?php echo $groupSize; ?></span>.
                 <?php else: ?>
-                Es können keine weiteren Nutzer mehr hinzugefügt werden, da die maximale
-                Gruppengröße bereits erreicht wurde.
+                <?php echo Language::Get('main','fullGroupDescription', $langTemplate); ?>
                 <?php endif; ?>
             </div>
             <?php for ($i = 0; $i < $emptyGroupMembers; $i++): ?>
                 <label class="short left label bold new-line">
-                    Kürzel:
+                    <?php echo Language::Get('main','userName', $langTemplate); ?>:
                 </label>
                 <input class="form-field left text-input" type="text" name="userName[]" />
             <?php endfor; ?>

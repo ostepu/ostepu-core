@@ -10,6 +10,7 @@
 
 include_once dirname(__FILE__).'/include/Boilerplate.php';
 include_once dirname(__FILE__).'/../Assistants/Structures.php';
+include_once dirname(__FILE__).'/../Assistants/Language.php';
 include_once dirname(__FILE__).'/../Assistants/LArraySorter.php';
 
 $sheetNotifications = array();
@@ -36,6 +37,10 @@ $lecturer_data['filesystemURI'] = $filesystemURI;
 $lecturer_data['cid'] = $cid;
 
 $user_course_data = $lecturer_data['user'];
+
+if (isset($lecturer_data['user']['lang'])){
+    Language::setPreferedLanguage($lecturer_data['user']['lang']);
+}
 
 // check userrights for course
 Authentication::checkRights(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $user_course_data);

@@ -6,6 +6,7 @@
  */
 
 include_once 'include/Boilerplate.php';
+include_once dirname(__FILE__) . '/../Assistants/Language.php';
 
 if (isset($_GET['msg'])) {
   $msg = cleanInput($_GET['msg']);

@@ -1,3 +1,6 @@
+<?php include_once dirname(__FILE__) . '/../../../../Assistants/Language.php'; ?>
+<?php $langTemplate='Form_Settings';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <?php
 /**
  * @file FormSettings.template.php
@@ -8,9 +11,9 @@
         <div class="content-element form" style="outline:2px solid #b9b8b8;border-radius: 0px;margin: 0px;">
                         
             <div class="content-header">
-                <div class="content-title left uppercase">Eingabemaske</div>
+                <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
                 <div class="critical-color right">
-                    <a href="javascript:void(0);" class="delete-form">Eingabemaske löschen<?php if (isset($forms[0]['formId'])){ ?><span class="right warning-simple"></span><?php } ?></a>
+                    <a href="javascript:void(0);" class="delete-form"><?php echo Language::Get('main','execute', $langTemplate); ?><?php if (isset($forms[0]['formId'])){ ?><span class="right warning-simple"></span><?php } ?></a>
                 </div>
             </div>
             
@@ -18,9 +21,9 @@
             <div class="content-body-wrapper">
             <?php if (!isset($forms)){ ?>
                 <div class="content-body left">
-                    <a href="javascript:void(0);" class="body-option-color left deny-button use-input">Eingabezeile</a><br><br>
-                    <a href="javascript:void(0);" class="body-option-color left deny-button use-radio">Einfachauswahl</a><br><br>
-                    <a href="javascript:void(0);" class="body-option-color left deny-button use-checkbox">Mehrfachauswahl</a>
+                    <a href="javascript:void(0);" class="body-option-color left deny-button use-input"><?php echo Language::Get('main','input', $langTemplate); ?></a><br><br>
+                    <a href="javascript:void(0);" class="body-option-color left deny-button use-radio"><?php echo Language::Get('main','radio', $langTemplate); ?></a><br><br>
+                    <a href="javascript:void(0);" class="body-option-color left deny-button use-checkbox"><?php echo Language::Get('main','checkbox', $langTemplate); ?></a>
                 </div>
             <?php } ?>
             <?php

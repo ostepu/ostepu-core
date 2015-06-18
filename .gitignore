@@ -1,6 +1,5 @@
 *.swp
 .DS_Store
-Assistants/parsedown/
 Assistants/Test/
 Assistants/hyperlight
 *CConfig.json

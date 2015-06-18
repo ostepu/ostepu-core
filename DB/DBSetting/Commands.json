@@ -6,6 +6,6 @@
     {    "method":"get", "path":"(/:pre)/setting/course/:courseid" },
     {    "method":"get", "path":"(/:pre)/setting/setting/:setid" },
     {    "method":"get", "path":"(/:pre)/setting/course/:courseid/name/:setname" },
-    {    "method":"delete", "path":"(/:pre)/course" },
-    {    "method":"post", "path":"(/:pre)/course/:courseid" }
+    {    "method":"delete", "path":"(/:pre)/course/:courseid" },
+    {    "method":"post", "path":"(/:pre)/course" }
 ]

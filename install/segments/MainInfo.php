@@ -35,12 +35,12 @@ class MainInfo
         $failure=false;
         Einstellungen::$path = dirname(__FILE__) . '/../config';
         if (!is_dir(Einstellungen::$path) || !is_writable(__FILE__)) {
-            $text .= Design::erstelleZeile($console, Sprachen::Get('mainInfo','notWritable'), 'error');
+            $text .= Design::erstelleZeile($console, Language::Get('mainInfo','notWritable'), 'error');
             $failure = true;
         }        
         
         if ($failure)
-            echo Design::erstelleBlock($console, Sprachen::Get('mainInfo','title'), $text);
+            echo Design::erstelleBlock($console, Language::Get('mainInfo','title'), $text);
     }
     
     public static function install($data, &$fail, &$errno, &$error)

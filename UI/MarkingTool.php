@@ -7,9 +7,10 @@
  * @author Ralf Busch
  */
 ///echo count($_REQUEST['exercises'],COUNT_RECURSIVE);
-include_once 'include/Boilerplate.php';
-include_once '../Assistants/Structures.php';
-include_once 'include/FormEvaluator.php';
+include_once dirname(__FILE__) . '/include/Boilerplate.php';
+include_once dirname(__FILE__) . '/../Assistants/Structures.php';
+include_once dirname(__FILE__) . '/../Assistants/Language.php';
+include_once dirname(__FILE__) . '/include/FormEvaluator.php';
 
 $timestamp = time();
 
@@ -478,6 +479,11 @@ $markingTool_data['URI'] = $URI;
 $markingTool_data['cid'] = $cid;
 
 $user_course_data = $markingTool_data['user'];
+
+if (isset($user_course_data['user']['lang'])){
+    Language::setPreferedLanguage($user_course_data['user']['lang']);
+}
+
 Authentication::checkRights(PRIVILEGE_LEVEL::TUTOR, $cid, $uid, $user_course_data);
 $menu = MakeNavigationElement($user_course_data,
                               PRIVILEGE_LEVEL::TUTOR,true);

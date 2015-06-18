@@ -16,6 +16,10 @@ $databaseURI = $databaseURI . "/user/user/{$uid}";
 $user = http_get($databaseURI, false);
 $user = json_decode($user, true);
 
+if (isset($user['lang'])){
+    Language::setPreferedLanguage($user['lang']);
+}
+
 if (is_null($user)) {
     $user = array();
 }

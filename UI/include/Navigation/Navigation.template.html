@@ -1,19 +1,21 @@
+<?php $langTemplate='Navigation';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <ul id="navigation" class="navigation">
 <!--<div class="">-->
 <?php if ($isSuperAdmin || $courseStatus > 1) { ?>
 <?php if ($isSuperAdmin){ ?>
     <li>
-        <a href="MainSettings.php">Plattform verwalten</a>
+        <a href="MainSettings.php"><?php echo Language::Get('main','mainSettings', $langTemplate); ?></a>
     </li>
 <?php } ?>
 <?php if (!$switchDisabled && !$forIndex) { ?>
     <?php if ($requiredPrivilege == $courseStatus){ ?>
         <li>
-            <a href="Student.php?cid=<?php echo $cid; ?>">Studentenrolle einnehmen</a>
+            <a href="Student.php?cid=<?php echo $cid; ?>"><?php echo Language::Get('main','student', $langTemplate); ?></a>
         </li>
     <?php } else { ?>
         <li>
-            <a href="<?php echo $sites[$courseStatus]; ?>?cid=<?php echo $cid; ?>">Studentenrolle verlassen</a>
+            <a href="<?php echo $sites[$courseStatus]; ?>?cid=<?php echo $cid; ?>"><?php echo Language::Get('main','leaveStudent', $langTemplate); ?></a>
         </li>
     <?php } ?>
 <?php } ?>
@@ -22,29 +24,29 @@
 
 <?php if ($courseStatus == 3 /* PRIVILEGE_LEVEL::ADMIN */  && !$forIndex) { ?>
     <li>
-        <a href="CourseManagement.php?cid=<?php echo $cid; ?>">Kurs verwalten</a>
+        <a href="CourseManagement.php?cid=<?php echo $cid; ?>"><?php echo Language::Get('main','courseManagement', $langTemplate); ?></a>
     </li>
     <li>
-        <a href="Condition.php?cid=<?php echo $cid; ?>">Zulassungsbedingungen</a>
+        <a href="Condition.php?cid=<?php echo $cid; ?>"><?php echo Language::Get('main','condition', $langTemplate); ?></a>
     </li>
     <li>
-        <a href="UploadHistory.php?cid=<?php echo $cid; ?>">Einsendungsverlauf</a>
+        <a href="UploadHistory.php?cid=<?php echo $cid; ?>"><?php echo Language::Get('main','uploadHistory', $langTemplate); ?></a>
     </li>
 <?php } ?>
 <?php } ?>
 
 <?php if ($courseStatus >= 1 /* PRIVILEGE_LEVEL::TUTOR */  && !$forIndex) { ?>
     <li>
-        <a href="TutorUpload.php?cid=<?php echo $cid; ?>">Korrekturen hochladen</a>
+        <a href="TutorUpload.php?cid=<?php echo $cid; ?>"><?php echo Language::Get('main','tutorUpload', $langTemplate); ?></a>
     </li>
 <?php } ?>
 <!--</div>-->
     <span class="right medium">
     <li>
-        <a class="log-out" href="AccountSettings.php">Account</a>
+        <a class="log-out" href="AccountSettings.php"><?php echo Language::Get('main','accountSettings', $langTemplate); ?></a>
     </li>
     <li style="padding:0 0">
-        <a class="log-out" href="?action=logout">Ausloggen</a>
+        <a class="log-out" href="?action=logout"><?php echo Language::Get('main','log-out', $langTemplate); ?></a>
     </li>
     </span>
     </ul>

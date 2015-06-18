@@ -305,6 +305,24 @@ class StudIPAuthentication extends AbstractAuthentication
 ///Logger::Log("create_user_status_data: ".$data, LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
         return $message == "201";
     }
+    
+    /**
+     * Give course data
+     *
+     * @param string $courseID CourseID
+     * @return course data
+     */
+    public function getCourseData($cid)
+    {
+        global $databaseURI;
+        
+        $url = "{$databaseURI}/course/course/{$cid}";
+        $message=null;
+        $data = http_get($url, false, $message);
+        $data = Course::decodeCourse($data);
+        if ($data === array()) return null;
+        return $data;
+    }
 
     /**
      * Logs in a user.
@@ -397,6 +415,23 @@ class StudIPAuthentication extends AbstractAuthentication
                         $studipStatus = $this->getUserStatusInStudip($this->uid,$this->vid);
                     if ($studipStatus!==null){
 ///Logger::Log("createCourseStatus" , LogLevel::DEBUG, false, dirname(__FILE__) . '/../../auth.log');
+                        // check whether an registration is allowed
+                        $courseData = $this->getCourseData($this->cid);
+                        if ($courseData===null){
+                            // no course data
+                            set_error("Keine Veranstaltung gefunden!");
+                            exit(); 
+                        }
+                        
+                        if ($courseData->getSettings()!==null){
+                            $end = Course::containsSetting($courseData,'RegistrationPeriodEnd');
+                            if ($end !== null && $end != 0 && $end<time()){
+                                // no registration allowed
+                                set_error("Eine Anmeldung ist nicht möglich!!! Ablaufdatum: ".date('d.m.Y - H:i', $end));
+                                exit(); 
+                            }
+                        }
+                            
                         $CourseStatusResponse = $this->createCourseStatus($this->userData['id'],$this->cid,$studipStatus);
 
                         // set courseStatus to studipStatus only if status is created in DB successfully

@@ -1,3 +1,6 @@
+<?php include_once dirname(__FILE__) . '/../../../../Assistants/Language.php'; ?>
+<?php $langTemplate='Processor_LFormPredecessor';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <?php
 /**
  * @file LFormProcessor.template.php
@@ -11,12 +14,12 @@
             <table border="0" style="width:100%">          
                 <?php
                 $liste = array(
-                                'isprintable' => 'druckbare Zeichen',
-                                'isalpha' => 'Buchstaben (A..Z, a..z)',
-                                'isalphanum' => 'Buchstaben+Ziffern',
-                                'isnumeric' => 'Zahl (-0..9,)',
-                                'ishex' => 'Hexadezimalziffern (A..F, a..f, 0..9)',
-                                'isdigit' => 'Ziffern (0..9)');
+                                'isprintable' => Language::Get('main','isprintable', $langTemplate),
+                                'isalpha' => Language::Get('main','isalpha', $langTemplate),
+                                'isalphanum' => Language::Get('main','isalphanum', $langTemplate),
+                                'isnumeric' => Language::Get('main','isnumeric', $langTemplate),
+                                'ishex' => Language::Get('main','ishex', $langTemplate),
+                                'isdigit' => Language::Get('main','isdigit', $langTemplate));
                 
                 $i=0;
                 $params = array();
@@ -46,7 +49,7 @@
                 
                 <tr>
                     <td colspan="6">
-                        <label class="label bold">regulärer Ausdruck: </label>
+                        <label class="label bold"><?php echo Language::Get('main','regularExpression', $langTemplate); ?>: </label>
                         <input type="text" class="parameter-choice" name="exercises[0][subexercises][0][processorParameterList][0][]" value="<?php echo implode(' ',$params); ?>" placeholder="%^([0-9]{5})$%" />
                     </td>
                 </tr>

@@ -1,0 +1,7 @@
+{
+    "main": {
+        "title": "Zuweisung aufheben",
+        "execute": "aufheben",
+        "content": "Alle Gruppen werden zu \"Unzugeordnet\" zugeteilt. Alle bereits kontrollierten Aufgaben und Punkte des &Uuml;bungsblatts werden gel&ouml;scht!"
+    }
+}

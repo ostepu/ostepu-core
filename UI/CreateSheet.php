@@ -13,8 +13,9 @@
 
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
+include_once dirname(__FILE__) . '/../Assistants/Language.php';
 include_once dirname(__FILE__) . '/include/FormEvaluator.php';
-require_once(dirname(__FILE__).'/phplatex.php');
+require_once dirname(__FILE__).'/phplatex.php';
 
 function unmap($map, $id){
     foreach ($map as $m){
@@ -752,7 +753,9 @@ $h->bind(array("name" => $createsheetData['user']['courses'][0]['course']['name'
                "notificationElements" => $notifications,
                "navigationElement" => $menu));
 
-
+if (isset($createsheetData['user']['lang'])){
+    Language::setPreferedLanguage($createsheetData['user']['lang']);
+}
 
 $sheetSettings = Template::WithTemplateFile('include/CreateSheet/SheetSettings.template.html');
 $createExercise = Template::WithTemplateFile('include/CreateSheet/CreateExercise.template.html');

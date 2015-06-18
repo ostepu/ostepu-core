@@ -1,0 +1,13 @@
+{
+    "main": {
+        "title": "Neuen Nutzer anlegen",
+        "execute": "anlegen",
+        "description": "Hier k&ouml;nnen Sie einen neuen Benutzer anlegen. Beachten Sie, dass das Passwort eine Mindestl&auml;nge von 6 Zeichen besitzen muss.",
+        "lastName": "Nachname",
+        "firstName": "Vorname",
+        "email": "Email (optional)",
+        "userName": "Login / K&uuml;rzel",
+        "password": "Passwort",
+        "passwordRepeat": "Passwort wiederholen"
+    }
+}

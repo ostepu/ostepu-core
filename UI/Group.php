@@ -9,6 +9,7 @@
  */
 
 include_once 'include/Boilerplate.php';
+include_once dirname(__FILE__) . '/../Assistants/Language.php';
 
 /**
  * Removes a user from a group.
@@ -377,6 +378,11 @@ $group_data['filesystemURI'] = $filesystemURI;
 $group_data['uid'] = $uid;
 
 $user_course_data = $group_data['user'];
+
+if (isset($user_course_data['user']['lang'])){
+    Language::setPreferedLanguage($user_course_data['user']['lang']);
+}
+
 Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $user_course_data);
 
 if (isset($group_data['exerciseSheet']['endDate']) && isset($group_data['exerciseSheet']['startDate'])){
@@ -408,14 +414,8 @@ $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
                "notificationElements" => $notifications,
                "navigationElement" => $menu));
 
-/*// construct a new header
-$h = Template::WithTemplateFile('include/Header/Header.template.html');
-$h->bind($user_course_data);
-$h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
-               "notificationElements" => $notifications));*/
-
 $isInGroup = (!empty($group_data['group']['members']) || !empty($group_data['invitationsFromGroup']));
-$isLeader = $group_data['group']['leader']['id'] == $uid;
+$isLeader = isset($group_data['group']['leader']['id']) && $group_data['group']['leader']['id'] == $uid;
 $hasInvitations = !empty($group_data['invitationsToGroup']);
 
 $group_data['isInGroup'] = $isInGroup;

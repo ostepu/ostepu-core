@@ -18,6 +18,7 @@ select SQL_CACHE
     U.U_studentNumber,
     U.U_isSuperAdmin,
     U.U_comment,
+    U.U_lang,
     CS.CS_status,
     C.C_id,
     C.C_name,

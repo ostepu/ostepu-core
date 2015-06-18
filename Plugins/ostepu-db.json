@@ -17,6 +17,7 @@
       {"conf":"DB/DBApprovalCondition/Component.json"},
       {"conf":"DB/DBAttachment/Component.json"},
       {"conf":"DB/DBAttachment2/Component.json"},
+      {"conf":"DB/DBBeispiel/Component.json"},
       {"conf":"DB/DBChoice/Component.json"},
       {"conf":"DB/DBControl/Component.json"},
       {"conf":"DB/DBCourse/Component.json"},

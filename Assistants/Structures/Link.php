@@ -231,6 +231,18 @@ class Link extends Object implements JsonSerializable
     {
         $this->localPath = $value;
     }
+    
+    // default: 100, low value = high priority, high value = low priority
+    private $priority = null;
+    public function getPriority( )
+    {
+        return $this->priority;
+    }
+    public function setPriority( $value = null )
+    {
+        $this->priority = $value;
+    }
+    
     /**
      * Creates an Link object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -248,7 +260,8 @@ class Link extends Object implements JsonSerializable
                                       $owner,
                                       $target,
                                       $name,
-                                      $relevanz
+                                      $relevanz,
+                                      $priority = 100
                                       )
     {
         return new Link( array( 
@@ -256,7 +269,8 @@ class Link extends Object implements JsonSerializable
                                'owner' => $owner,
                                'target' => $target,
                                'name' => $name,
-                               'relevanz' => $relevanz
+                               'relevanz' => $relevanz,
+                               'priority' => $priority
                                ) );
     }
 
@@ -297,7 +311,8 @@ class Link extends Object implements JsonSerializable
                      'CO_id_owner' => 'owner',
                      'CO_id_target' => 'target',
                      'CL_relevanz' => 'relevanz',
-                     'CL_targetName' => 'targetName'
+                     'CL_targetName' => 'targetName',
+                     'CL_priority' => 'priority'
                      );
     }
 
@@ -339,6 +354,12 @@ class Link extends Object implements JsonSerializable
                                  $values,
                                  'CL_relevanz',
                                  DBJson::mysql_real_escape_string( $this->relevanz )
+                                 );
+        if ( $this->priority != null )
+            $this->addInsertData( 
+                                 $values,
+                                 'CL_priority',
+                                 DBJson::mysql_real_escape_string( $this->priority )
                                  );
 
         if ( $values != '' ){
@@ -420,6 +441,8 @@ class Link extends Object implements JsonSerializable
             $list['target'] = $this->target;
         if ( $this->prefix !== null )
             $list['prefix'] = $this->prefix;
+        if ( $this->priority !== null )
+            $list['priority'] = $this->priority;
         if ( $this->owner !== null )
             $list['owner'] = $this->owner;
         if ( $this->relevanz !== null )

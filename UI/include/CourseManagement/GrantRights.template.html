@@ -1,3 +1,5 @@
+<?php $langTemplate='CourseManagement_GrantRights';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <?php
 if (isset($GrantRightsNotificationElements)) {
     foreach ($GrantRightsNotificationElements as $notificationElement) {
@@ -9,23 +11,22 @@ if (isset($GrantRightsNotificationElements)) {
 <input type="hidden" name="action" value="GrantRights">
 <div class="content-element">
     <div class="content-header">
-        <div class="content-title left uppercase">Rechte verändern</div>
-        <button class="text-button info-color bold right">verändern</button>
+        <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
+        <button class="text-button info-color bold right"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
     </div>
     <div class="content-body-wrapper">
         <div class="content-body left">
             <div class="content-description">
-                Wählen Sie die Person und anschließend die gewünschten Rechte aus, um die Berechtigungen 
-                eines Nutzers zu verändern.
+                <?php echo Language::Get('main','description', $langTemplate); ?>
             </div>
-            <label class="form-field left label bold" for="lecturerRightsPerson">Person auswählen:</label>
+            <label class="form-field left label bold" for="lecturerRightsPerson"><?php echo Language::Get('main','selectUser', $langTemplate); ?>:</label>
             <div class="left" name="GrantRightsSortUsers" id="GrantRightsSortUsers" >
             <select class="form-field left text-input" name="userID" id="lecturerRightsPerson" size="10">
                 <?php
-                    $studentsArea = '<optgroup label="Studenten">';
-                    $tutorsArea = '<optgroup label="Tutoren">';
-                    $lecturersArea = '<optgroup label="Dozenten">';
-                    $adminsArea = '<optgroup label="Administratoren">';
+                    $studentsArea = '<optgroup label="'.Language::Get('main','students', $langTemplate).'">';
+                    $tutorsArea = '<optgroup label="'.Language::Get('main','tutors', $langTemplate).'">';
+                    $lecturersArea = '<optgroup label="'.Language::Get('main','dozents', $langTemplate).'">';
+                    $adminsArea = '<optgroup label="'.Language::Get('main','admins', $langTemplate).'">';
 
                     $emptyStudents = true;
                     $emptyTutors = true;
@@ -74,25 +75,25 @@ if (isset($GrantRightsNotificationElements)) {
                         if ($emptyStudents == false) {
                             print $studentsArea . '</optgroup>';
                         } else {
-                            print '<optgroup label="Keine Studenten"></optgroup>';
+                            print '<optgroup label="'.Language::Get('main','noStudents', $langTemplate).'"></optgroup>';
                         }
 
                         if ($emptyTutors == false) {
                             print $tutorsArea . '</optgroup>';
                         } else {
-                            print '<optgroup label="Keine Tutoren"></optgroup>';
+                            print '<optgroup label="'.Language::Get('main','noTutors', $langTemplate).'"></optgroup>';
                         }
 
                         if ($emptyLecturers == false) {
                             print $lecturersArea . '</optgroup>';
                         } else {
-                            print '<optgroup label="Keine Dozenten"></optgroup>';
+                            print '<optgroup label="'.Language::Get('main','noDozents', $langTemplate).'"></optgroup>';
                         }
 
                         if ($emptyAdmins == false) {
                             print $adminsArea . '</optgroup>';
                         } else {
-                            print '<optgroup label="Keine Administratoren"></optgroup>';
+                            print '<optgroup label="'.Language::Get('main','noAdmins', $langTemplate).'"></optgroup>';
                         }
                     }
                 ?>
@@ -107,9 +108,9 @@ if (isset($GrantRightsNotificationElements)) {
             
             <div>
             <?php 
-                $sortTypes = array('lastName' => 'Nachname','firstName' => 'Vorname','userName' => 'Nutzername');
+                $sortTypes = array('lastName' => Language::Get('main','lastName', $langTemplate),'firstName' => Language::Get('main','firstName', $langTemplate),'userName' => Language::Get('main','userName', $langTemplate));
             ?>
-            <label class="form-field left label bold new-line" for="sortUsers">Sortierung:</label> 
+            <label class="form-field left label bold new-line" for="sortUsers"><?php echo Language::Get('main','sorting', $langTemplate); ?>:</label> 
             <select class="form-field left text-input" name="sortUsers" id="sortUsers">
                     <?php
                         foreach ($sortTypes as $key => $value) {
@@ -121,14 +122,14 @@ if (isset($GrantRightsNotificationElements)) {
             </div>
 
             
-            <div class="form-field left label bold new-line" for="tutorRightsRight">Rechte:</div>
+            <div class="form-field left label bold new-line" for="tutorRightsRight"><?php echo Language::Get('main','rights', $langTemplate); ?>:</div>
             <div class="form-field left">
                 <input type="radio" name="Rights" id="grantStudentRights" checked="true" value="0"/>
-                <label for="grantStudentRights"> Student</label>
+                <label for="grantStudentRights"> <?php echo Language::Get('main','student', $langTemplate); ?></label>
                 <input type="radio" name="Rights" id="grantTutorRights" value="1"/>
-                <label for="grantTutorRights"> Tutor</label>
+                <label for="grantTutorRights"> <?php echo Language::Get('main','tutor', $langTemplate); ?></label>
                 <input type="radio" name="Rights" id="grantLecturerRights" value="2"/>
-                <label for="grantLecturerRights"> Dozent</label>
+                <label for="grantLecturerRights"> <?php echo Language::Get('main','dozent', $langTemplate); ?></label>
             </div>
         </div>
     </div> <!-- end: content-body -->

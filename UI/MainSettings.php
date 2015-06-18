@@ -14,9 +14,10 @@
  * @todo unset $_POST on success
  */
 
-include_once 'include/Boilerplate.php';
-include_once '../Assistants/Structures.php';
-include_once 'include/FormEvaluator.php';
+include_once dirname(__FILE__) . '/include/Boilerplate.php';
+include_once dirname(__FILE__) . '/../Assistants/Structures.php';
+include_once dirname(__FILE__) . '/../Assistants/Language.php';
+include_once dirname(__FILE__) . '/include/FormEvaluator.php';
 
 // load Plugins data from LogicController
 $URI = $serverURI . "/logic/LExtension/link/extension";
@@ -292,6 +293,11 @@ $mainSettings_data = json_decode($mainSettings_data, true);
 $mainSettings_data['plugins'] = $plugins_data;
 
 $user_course_data = $mainSettings_data['user'];
+
+if (isset($user_course_data['user']['lang'])){
+    Language::setPreferedLanguage($user_course_data['user']['lang']);
+}
+
 Authentication::checkRights(PRIVILEGE_LEVEL::SUPER_ADMIN, null, $uid, $user_course_data);
 $menu = MakeNavigationElement($user_course_data,
                               PRIVILEGE_LEVEL::SUPER_ADMIN,true);

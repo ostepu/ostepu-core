@@ -393,8 +393,8 @@ class DBSetting
                     );
 
         $pre = DBJson::mysql_real_escape_string( $pre );
-        $setid = DBJson::mysql_real_escape_string( $setid );
-        $courseid = DBJson::mysql_real_escape_string( $courseid );
+        //$setid = DBJson::mysql_real_escape_string( $setid );
+        //$courseid = DBJson::mysql_real_escape_string( $courseid );
         $setname = DBJson::mysql_real_escape_string( $setname );
 
         // starts a query, by using a given file

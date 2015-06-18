@@ -4,21 +4,12 @@
     "classFile": "DBUser.php",
     "className": "DBUser",
     "files": [
-        {
-            "path": ".htaccess"
-        },
-        {
-            "path": "DBUser.php"
-        },
-        {
-            "path": "index.php"
-        },
-        {
-            "path": "Commands.json"
-        },
-        {
-            "path": "Sql/"
-        }
+        {"path": ".htaccess"},
+        {"path": "DBUser.php"},
+        {"path": "index.php"},
+        {"path": "Commands.json"},
+        {"path": "Sql/"},
+        {"path": "info/"}
     ],
     "links": [
         {
@@ -107,7 +98,7 @@
             "links": [
                 {
                     "method": "GET",
-                    "path": "/query/procedure/DBUserGetIncreaseUserFailedLogin"
+                    "path": "/query/procedure/DBUserGetIncreaseUserFailedLogin/:userid"
                 }
             ]
         },

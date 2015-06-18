@@ -1,3 +1,6 @@
+<?php include_once dirname(__FILE__) . '/../../../../Assistants/Language.php'; ?>
+<?php $langTemplate='Form_AddChoice';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <?php
 /**
  * @file FormAddCheckbox.template.php
@@ -11,10 +14,10 @@
     <?php } ?>
     
     <input type="checkbox" class="choice-input" name="exercises[0][subexercises][0][correct][0]"<?php echo (isset($choice['correct']) && $choice['correct']==1 ? " checked" : ''); ?>/>
-    <input class="form-field input-choice-text" name="exercises[0][subexercises][0][choice][0]" value="<?php echo (isset($choice['text']) ? $choice['text'] : ''); ?>" placeholder="Auswahltext"/>    
+    <input class="form-field input-choice-text" name="exercises[0][subexercises][0][choice][0]" value="<?php echo (isset($choice['text']) ? $choice['text'] : ''); ?>" placeholder="<?php echo Language::Get('main','choicePlaceholder', $langTemplate); ?>"/>    
     <a href="javascript:void(0);" class="critical-color deny-button delete-choice center">
         <div class="left">
-            Auswahlmöglichkeit löschen
+            <?php echo Language::Get('main','removeChoice', $langTemplate); ?>
             <span class=" right<?php if (isset($choice['choiceId'])){ ?> warning-simple<?php } else { ?> transparent-simple<?php } ?>"></span>
         </div>
     </a>   

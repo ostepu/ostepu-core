@@ -16,6 +16,7 @@
 
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
+include_once dirname(__FILE__) . '/../Assistants/Language.php';
 include_once dirname(__FILE__) . '/../Assistants/LArraySorter.php';
 include_once dirname(__FILE__) . '/include/FormEvaluator.php';
 
@@ -40,9 +41,8 @@ foreach ($plugins_data['plugins'] as &$plugin){
     }  
 }
 
-if (!isset($_POST['actionSortUsers']))
-if (isset($_POST['action'])) {
-        if ($_POST['action'] == "EditExternalId") {
+if (!isset($_POST['actionSortUsers']) && isset($_POST['action'])) {
+    if ($_POST['action'] == "EditExternalId") {
         $externalId = (isset($_POST['externalId']) ? cleanInput($_POST['externalId']) : array());
         if (!is_array($externalId)) $externalId = array($externalId);
         
@@ -190,7 +190,65 @@ if (isset($_POST['action'])) {
     } elseif ($_POST['action'] == "CourseSettings") {
         // check if POST data is send
         if(isset($_POST['courseName']) && isset($_POST['semester']) && isset($_POST['defaultGroupSize'])) {
+            
+            ######################
+            ### begin settings ###
+            ######################
+            #region settings
+            
+            $RequestError = false;
+            
+            if (isset($_POST['setting'])){
+                foreach ($_POST['setting'] as $key => $params){
+                    if (!isset($params['type']) || !isset($params['value'])){
+                        $courseSettingsNotifications[] = MakeNotification("error", "Fehlerhafte übermittlung!");
+                        continue;
+                    }
+                        
+                    $value = $params['value'];
+                    $type = $params['type'];
+                    if (strtoupper($type) === 'TEXT'){
+                        // nothing
+                    } elseif (strtoupper($type) === 'DATE'){
+                        if (trim($value) == '')
+                            $value = 0;
+                        $value = strtotime(str_replace(" - ", " ", $value));                        
+                    } else {
+                        $courseSettingsNotifications[] = MakeNotification("error", "Unbekannter Typ wurde übermittelt!");
+                        continue;
+                    }
+                    
+                    // create new setting and edit existing one
+                    $newSetting = Setting::encodeSetting(Setting::createSetting($key,null,$value));
+                    $URI = $databaseURI . "/setting/setting/{$key}";
+                    $courseManagement_data = http_put_data($URI, $newSetting, true, $message);
 
+                    // show notification
+                    if ($message == "201" && $RequestError == false) {
+                        // nothing
+                    }
+                    else {
+                        $courseSettingsNotifications[] = MakeNotification("error", "Beim Speichern der Einstellungen ist ein Fehler aufgetreten!");
+                        $RequestError = true;
+                        break;
+                    }
+                }
+                
+                if (!$RequestError){
+                    $courseSettingsNotifications[] = MakeNotification("success", "Die Einstellungen wurde bearbeitet!");
+                }
+            }
+            
+            ####################
+            ### end settings ###
+            ####################
+            #endregion settings
+            
+            #############################
+            ### begin course_settings ###
+            #############################
+            #region course_settings
+            
             // bool which is true if any error occured
             $RequestError = false;
 
@@ -275,6 +333,12 @@ if (isset($_POST['action'])) {
             else {
                 $courseSettingsNotifications[] = MakeNotification("error", "Beim Speichern ist ein Fehler aufgetreten!");
             }
+            
+            ###########################
+            ### end course_settings ###
+            ###########################
+            #endregion course_settings
+            
         }
         else {
             $courseSettingsNotifications[] = MakeNotification("error", "Es wurden nicht alle Felder ausgefüllt!");
@@ -437,7 +501,7 @@ if (isset($_POST['action'])) {
 $URI = $getSiteURI . "/coursemanagement/user/{$uid}/course/{$cid}";
 $courseManagement_data = http_get($URI, true);
 $courseManagement_data = json_decode($courseManagement_data, true);
-//var_dump($courseManagement_data['users']);return;
+
 $dataList = array();
 foreach ($courseManagement_data['users'] as $key => $user)
     $dataList[] = array('pos' => $key,'userName'=>$user['userName'],'lastName'=>$user['lastName'],'firstName'=>$user['firstName']);
@@ -456,6 +520,11 @@ if (isset($_POST['sortUsers'])) {
 }
 
 $user_course_data = $courseManagement_data['user'];
+
+if (isset($user_course_data['user']['lang'])){
+    Language::setPreferedLanguage($user_course_data['user']['lang']);
+}
+
 Authentication::checkRights(PRIVILEGE_LEVEL::ADMIN, $cid, $uid, $user_course_data);
 $menu = MakeNavigationElement($user_course_data,
                               PRIVILEGE_LEVEL::ADMIN,

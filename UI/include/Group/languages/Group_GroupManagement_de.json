@@ -1,0 +1,10 @@
+{
+    "main": {
+        "title": "Gruppeneinsendungen verwalten",
+        "execute": "speichern",
+        "memberDescription": "Hier sehen Sie die Einsendungen der Gruppe, welche kontrolliert werden sollen. Nur der Gruppenf&uuml;hrer kann Einsendungen ausw&auml;hlen.",
+        "leaderDescription": "W&auml;hlen Sie f&uuml;r jede Aufgabe aus, welche Einsendung der verschiedenen Gruppenmitglieder jeweils kontrolliert werden soll.",
+        "noSelectedSubmission": "Keine ausgew&auml;hlten Einsendungen vorhanden",
+        "noSubmission": "Keine Einsendungen vorhanden."
+    }
+}

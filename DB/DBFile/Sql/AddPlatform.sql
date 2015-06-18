@@ -22,8 +22,8 @@ SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
-ALTER TABLE `File` ADD `F_mimeType` VARCHAR(255);
-ALTER TABLE `File` CHANGE `F_timeStamp` `F_timeStamp` INT UNSIGNED NULL DEFAULT '0';
+ALTER IGNORE TABLE `File` MODIFY COLUMN F_mimeType VARCHAR(255) NULL;
+ALTER IGNORE TABLE `File` MODIFY COLUMN F_timeStamp INT UNSIGNED NULL DEFAULT 0;
 
 <?php if (is_dir($sqlPath.'/procedures')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/procedures/'.$inp);}},scandir($sqlPath.'/procedures'),array_pad(array(),count(scandir($sqlPath.'/procedures')),$sqlPath));?>
 <?php if (is_dir($sqlPath.'/migrations')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/migrations/'.$inp);}},scandir($sqlPath.'/migrations'),array_pad(array(),count(scandir($sqlPath.'/migrations')),$sqlPath));?>

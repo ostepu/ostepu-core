@@ -1,0 +1,8 @@
+{
+    "main": {
+        "title": "",
+        "description": "Geben Sie hier den Speicherort der *.zip-Datei mit den korrigierten Einsendungen an und klicken Sie anschlie&szlig;end auf \"absenden\", um die Einsendungen hochzuladen.",
+        "execute": "absenden",
+        "zipFilter": "Datei"
+    }
+}

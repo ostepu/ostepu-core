@@ -1,0 +1,10 @@
+{
+    "main": {
+        "title": "Externe Veranstaltung entfernen",
+        "execute": "entfernen",
+        "description": "Hier k&ouml;nnen Veranstaltungs-IDs anderer Plattformen entfernt werden.",
+        "noData": "keine Vorhanden",
+        "otherId": "Sonstiges",
+        "studipId": "Stud.IP"
+    }
+}

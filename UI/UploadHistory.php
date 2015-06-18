@@ -8,7 +8,8 @@
  * @author Ralf Busch
  */
 
-include_once 'include/Boilerplate.php';
+include_once dirname(__FILE__) . '/include/Boilerplate.php';
+include_once dirname(__FILE__) . '/../Assistants/Language.php';
 
 if (isset($_POST['sheetID']))
     $sid = $_POST['sheetID'];
@@ -72,6 +73,10 @@ if (isset($_POST['sortUsers']))
     $uploadHistoryOptions_data['sortUsers'] = $_POST['sortUsers'];
 
 $user_course_data = $uploadHistoryOptions_data['user'];
+
+if (isset($user_course_data['user']['lang'])){
+    Language::setPreferedLanguage($user_course_data['user']['lang']);
+}
 
 if (isset($user_course_data['courses'][0]['status'])){   
     $courseStatus = $user_course_data['courses'][0]['status'];

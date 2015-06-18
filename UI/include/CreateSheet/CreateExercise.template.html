@@ -1,8 +1,10 @@
+<?php $langTemplate='CreateSheet_CreateExercise';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <div class="content-element interactive add">
     <div class="content-header">
-        <div class="content-title left uppercase">Aufgabe hinzufügen</div>
+        <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
         <div class="info-color bold right">
-            <a href="javascript:void(0);" class="add-exercise" id="function">hinzufügen</a>
+            <a href="javascript:void(0);" class="add-exercise" id="function"><?php echo Language::Get('main','execute', $langTemplate); ?></a>
         </div>   
     </div>
 </div> <!-- end: content-wrapper -->

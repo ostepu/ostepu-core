@@ -1,3 +1,5 @@
+<?php $langTemplate='MarkingTool';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
+
 <?php
 $leaderID = $group['leader']['id'];
 
@@ -37,7 +39,7 @@ if (isset($GroupNotificationElements)) {
             <button class="text-button info-color bold right" 
                     name="MarkingTool"
                     value="<?php echo $leaderID; ?>">
-                    speichern
+                    <?php echo Language::Get('main','execute', $langTemplate); ?>
             </button>
         </div>
     </div>
@@ -99,7 +101,7 @@ if (isset($GroupNotificationElements)) {
                     <?php } ?>
                         
                     <?php
-                        print '<input class="form-field text-input very-short" placeholder="Punkte" name="';
+                        print '<input class="form-field text-input very-short" placeholder="'.Language::Get('main','points', $langTemplate).'" name="';
                         print 'exercises[' . $leaderID . '][' . $eid . '][points]" value="';
                         print isset($exercise['submission']['marking']['points']) ? $exercise['submission']['marking']['points'] : '';
                         print '" id="exercisePoints" />';
@@ -146,7 +148,7 @@ if (isset($GroupNotificationElements)) {
                     <?php } ?>  
                     
                     <?php
-                        print '<input class="form-field text-input short" placeholder="Ihr Kommentar" name="';
+                        print '<input class="form-field text-input short" placeholder="'.Language::Get('main','tutorComment', $langTemplate).'" name="';
                         print 'exercises[' . $leaderID . '][' . $eid . '][tutorComment]" value="';
                         if (isset($exercise['submission']['marking']['tutorComment'])) print $exercise['submission']['marking']['tutorComment'];
                         print '" id="markingComment" maxlength="255" />';
@@ -203,7 +205,7 @@ if (isset($GroupNotificationElements)) {
                                     print '<a href="javascript:alert(\'';
                                     print $studentComment;
                                     print '\')" class="body-option-color">';
-                                    print 'Komm.';
+                                    print Language::Get('main','studentComment', $langTemplate);
                                     print '</a>';
                                 }
                             }
@@ -250,7 +252,7 @@ if (isset($GroupNotificationElements)) {
         if (isset($group['members'][0])) {
             print '<div class="content-footer">';
             print '<ol>';
-            print '<li class="footer-text bold">Weitere Gruppenmitglieder:</li>';
+            print '<li class="footer-text bold">'.Language::Get('main','additionalMembers', $langTemplate).':</li>';
             foreach ($group['members'] as $member):
                 print '<li class="footer-text">';
                 print $member['firstName'] . " " . $member['lastName'];

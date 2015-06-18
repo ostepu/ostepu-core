@@ -23,11 +23,11 @@ class VeranstaltungenEinrichten
     public static function show($console, $result, $data)
     {
         $text='';
-        $text .= Design::erstelleBeschreibung($console,Sprachen::Get('courses','description'));  
+        $text .= Design::erstelleBeschreibung($console,Language::Get('courses','description'));  
 
         if (!$console){
-            $text .= Design::erstelleZeile($console, Sprachen::Get('courses','createTables'), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0]), 'h');
-            $text .= Design::erstelleZeile($console, Sprachen::Get('courses','details'), 'e', Design::erstelleAuswahl($console, $data['C']['c_details'], 'data[C][c_details]', 'details', null), 'v');
+            $text .= Design::erstelleZeile($console, Language::Get('courses','createTables'), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0]), 'h');
+            $text .= Design::erstelleZeile($console, Language::Get('courses','details'), 'e', Design::erstelleAuswahl($console, $data['C']['c_details'], 'data[C][c_details]', 'details', null), 'v');
         }
         
         if (isset($result[self::$onEvents['install']['name']]) && $result[self::$onEvents['install']['name']]!=null){
@@ -43,14 +43,14 @@ class VeranstaltungenEinrichten
         if (self::$installed){
             if (!$console && isset($data['C']['c_details']) && $data['C']['c_details'] === 'details'){
                 foreach ($content as $courseid => $dat){
-                    $text .= "<tr><td class='e' rowspan='1'>({$dat['course']->getId()}) {$dat['course']->getSemester()}</td><td class='v'>{$dat['course']->getName()}</td><td class='e'><div align ='center'>".((isset($dat['status']) && $dat['status']===201) ? Sprachen::Get('main','ok') : "<font color='red'>".Sprachen::Get('main','fail')." ({$dat['status']})</font>")."</align></td></tr>";
+                    $text .= "<tr><td class='e' rowspan='1'>({$dat['course']->getId()}) {$dat['course']->getSemester()}</td><td class='v'>{$dat['course']->getName()}</td><td class='e'><div align ='center'>".((isset($dat['status']) && $dat['status']===201) ? Language::Get('main','ok') : "<font color='red'>".Language::Get('main','fail')." ({$dat['status']})</font>")."</align></td></tr>";
                 }
             } else 
-                $text .= Design::erstelleZeile($console, Sprachen::Get('courses','countCourses'), 'e', count($content) , 'v_c');
+                $text .= Design::erstelleZeile($console, Language::Get('courses','countCourses'), 'e', count($content) , 'v_c');
             $text .= Design::erstelleInstallationszeile($console, $fail, $errno, $error);
         }
 
-        echo Design::erstelleBlock($console, Sprachen::Get('courses','title'), $text);
+        echo Design::erstelleBlock($console, Language::Get('courses','title'), $text);
         return null;
     }
     
