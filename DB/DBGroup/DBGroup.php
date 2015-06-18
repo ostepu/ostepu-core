@@ -7,65 +7,16 @@
  * @author Till Uhlig
  * @author Felix Schmidt
  * @example DB/DBGroup/GroupSample.json
- * @date 2013-2014
+ * @date 2013-2015
  */
 
-require_once ( dirname(__FILE__) . '/../../Assistants/Slim/Slim.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Structures.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Request.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/DBJson.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/DBRequest.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/CConfig.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
-
-\Slim\Slim::registerAutoloader( );
+include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );
 
 /**
  * A class, to abstract the "Group" table from database
  */
 class DBGroup
 {
-
-    /**
-     * @var Slim $_app the slim object
-     */
-    private $_app = null;
-
-    /**
-     * @var Component $_conf the component data object
-     */
-    private $_conf = null;
-
-    /**
-     * @var Link[] $query a list of links to a query component
-     */
-    private $query = array( );
-    private $query2 = array( );
-
-    /**
-     * @var string $_prefix the prefixes, the class works with (comma separated)
-     */
-    private static $_prefix = 'group';
-
-    /**
-     * the $_prefix getter
-     *
-     * @return the value of $_prefix
-     */
-    public static function getPrefix( )
-    {
-        return DBGroup::$_prefix;
-    }
-
-    /**
-     * the $_prefix setter
-     *
-     * @param string $value the new value for $_prefix
-     */
-    public static function setPrefix( $value )
-    {
-        DBGroup::$_prefix = $value;
-    }
 
     /**
      * REST actions
@@ -75,133 +26,12 @@ class DBGroup
      *
      * @param Component $conf component data
      */
+    private $_component = null;
     public function __construct( )
     {
-        // runs the CConfig
-        $com = new CConfig( DBGroup::getPrefix( ), dirname(__FILE__) );
-
-        // runs the DBGroup
-        if ( $com->used( ) ) return;
-            $conf = $com->loadConfig( );
-            
-        // initialize component
-        $this->_conf = $conf;
-        $this->query = array( CConfig::getLink( 
-                                               $conf->getLinks( ),
-                                               'out'
-                                               ) );
-        $this->query2 = array( CConfig::getLink( 
-                                               $conf->getLinks( ),
-                                               'out2'
-                                               ) );
-
-        // initialize slim
-        $this->_app = new \Slim\Slim( );
-        $this->_app->response->headers->set( 
-                                            'Content-Type',
-                                            'application/json'
-                                            );
-        // POST AddPlatform
-        $this->_app->post( 
-                         '/platform',
-                         array( 
-                               $this,
-                               'addPlatform'
-                               )
-                         );
-                         
-        // DELETE DeletePlatform
-        $this->_app->delete( 
-                         '/platform',
-                         array( 
-                               $this,
-                               'deletePlatform'
-                               )
-                         );
-                         
-        // GET GetExistsPlatform
-        $this->_app->get( 
-                         '/link/exists/platform',
-                         array( 
-                               $this,
-                               'getExistsPlatform'
-                               )
-                         );
-                         
-        // PUT EditGroup
-        $this->_app->put( 
-                         '/' . $this->getPrefix( ) . '/user/:userid/exercisesheet/:esid(/)',
-                         array( 
-                               $this,
-                               'editGroup'
-                               )
-                         );
-
-        // DELETE DeleteGroup
-        $this->_app->delete( 
-                            '/' . $this->getPrefix( ) . '/user/:userid/exercisesheet/:esid(/)',
-                            array( 
-                                  $this,
-                                  'deleteGroup'
-                                  )
-                            );
-
-        // POST AddGroup
-        $this->_app->post( 
-                          '/' . $this->getPrefix( ) . '(/)',
-                          array( 
-                                $this,
-                                'addGroup'
-                                )
-                          );
-
-        // GET GetUserGroups
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/user/:userid(/)',
-                         array( 
-                               $this,
-                               'getUserGroups'
-                               )
-                         );
-
-        // GET GetAllGroups
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '(/group)(/)',
-                         array( 
-                               $this,
-                               'getAllGroups'
-                               )
-                         );
-
-        // GET GetUserSheetGroups
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/user/:userid/exercisesheet/:esid(/)',
-                         array( 
-                               $this,
-                               'getUserSheetGroups'
-                               )
-                         );
-
-        // GET GetSheetGroups
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/exercisesheet/:esid(/)',
-                         array( 
-                               $this,
-                               'getSheetGroups'
-                               )
-                         );
-                         
-        // GET GetCourseGroups
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/course/:courseid(/)',
-                         array( 
-                               $this,
-                               'getCourseGroups'
-                               )
-                         );
-
-        // run Slim
-        $this->_app->run( );
+        $component = new Model('group', dirname(__FILE__), $this);
+        $this->_component=$component;
+        $component->run();
     }
 
     /**
@@ -216,68 +46,9 @@ class DBGroup
      * @param int $userid The id of the user.
      * @param int $esid The id of the exercise sheet.
      */
-    public function editGroup( 
-                              $userid,
-                              $esid
-                              )
+    public function editGroup( $callName, $input, $params = array() )
     {
-        Logger::Log( 
-                    'starts PUT EditGroup',
-                    LogLevel::DEBUG
-                    );
-
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput( 
-                           $this->_app,
-                           ctype_digit( $userid ),
-                           ctype_digit( $esid )
-                           );
-
-        // decode the received group data, as an object
-        $insert = Group::decodeGroup( $this->_app->request->getBody( ) );
-
-        // always been an array
-        $arr = true;
-        if ( !is_array( $insert ) ){
-            $insert = array( $insert );
-            $arr = false;
-        }
-
-        foreach ( $insert as $in ){
-
-            // generates the update data for the object
-            $data = $in->getInsertData( );
-
-            // starts a query, by using a given file
-            $result = DBRequest::getRoutedSqlFile( 
-                                                  $this->query,
-                                                  dirname(__FILE__) . '/Sql/EditGroup.sql',
-                                                  array( 
-                                                        'esid' => $esid,
-                                                        'userid' => $userid,
-                                                        'values' => $data
-                                                        )
-                                                  );
-
-            // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
-                 $result['status'] <= 299 ){
-                $this->_app->response->setStatus( 201 );
-                if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
-                                                        'Content-Type',
-                                                        $result['headers']['Content-Type']
-                                                        );
-                
-            } else {
-                Logger::Log( 
-                            'PUT EditGroup failed',
-                            LogLevel::ERROR
-                            );
-                $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-                $this->_app->stop( );
-            }
-        }
+        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/EditGroup.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new Group()),'Model::isProblem',array(new Group()));
     }
 
     /**
@@ -290,51 +61,9 @@ class DBGroup
      * @param int $userid The id of the user.
      * @param int $esid The id of the exercise sheet.
      */
-    public function deleteGroup( 
-                                $userid,
-                                $esid
-                                )
+    public function deleteGroup( $callName, $input, $params = array() )
     {
-        Logger::Log( 
-                    'starts DELETE DeleteGroup',
-                    LogLevel::DEBUG
-                    );
-
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput( 
-                           $this->_app,
-                           ctype_digit( $userid ),
-                           ctype_digit( $esid )
-                           );
-
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
-                                              $this->query,
-                                              dirname(__FILE__) . '/Sql/DeleteGroup.sql',
-                                              array( 
-                                                    'esid' => $esid,
-                                                    'userid' => $userid
-                                                    )
-                                              );
-
-        // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
-             $result['status'] <= 299 ){
-            $this->_app->response->setStatus( 201 );
-            if ( isset( $result['headers']['Content-Type'] ) )
-                $this->_app->response->headers->set( 
-                                                    'Content-Type',
-                                                    $result['headers']['Content-Type']
-                                                    );
-            
-        } else {
-            Logger::Log( 
-                        'DELETE DeleteGroup failed',
-                        LogLevel::ERROR
-                        );
-            $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-            $this->_app->stop( );
-        }
+        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/DeleteGroup.sql',$params,201,'Model::isCreated',array(new Group()),'Model::isProblem',array(new Group()));  
     }
 
     /**
@@ -345,216 +74,43 @@ class DBGroup
      * The request body should contain a JSON object representing
      * the group's attributes.
      */
-    public function addGroup( )
+    public function addGroup( $callName, $input, $params = array() )
     {
-        Logger::Log( 
-                    'starts POST AddGroup',
-                    LogLevel::DEBUG
-                    );
-
-        // decode the received group data, as an object
-        $insert = Group::decodeGroup( $this->_app->request->getBody( ) );
-
-        // always been an array
-        $arr = true;
-        if ( !is_array( $insert ) ){
-            $insert = array( $insert );
-            $arr = false;
-        }
-
-        foreach ( $insert as $in ){
-
-            // generates the insert data for the object
-            $data = $in->getInsertData( );
-
-            // starts a query, by using a given file
-            $result = DBRequest::getRoutedSqlFile( 
-                                                  $this->query,
-                                                  dirname(__FILE__) . '/Sql/AddGroup.sql',
-                                                  array( 'values' => $data )
-                                                  );
-
-            // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
-                 $result['status'] <= 299 ){
-
-                $this->_app->response->setStatus( 201 );
-                if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
-                                                        'Content-Type',
-                                                        $result['headers']['Content-Type']
-                                                        );
-                
-            } else {
-                Logger::Log( 
-                            'POST AddGroup failed',
-                            LogLevel::ERROR
-                            );
-                $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-                $this->_app->stop( );
+        $positive = function($input) {
+            // sets the new auto-increment id
+            $obj = new Group( );
+            $obj->setId( $input[0]->getInsertId( ) );
+            return array("status"=>201,"content"=>$obj);
+        };
+        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/AddGroup.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new Group()));
+    }
+    
+    public function get( $functionName, $linkName, $params=array(),$singleResult = false, $checkSession = true )
+    {
+        $positive = function($input, $singleResult) {
+            //$input = $input[count($input)-1];
+            $result = Model::isEmpty();$result['content']=array();
+            foreach ($input as $inp){
+                if ( $inp->getNumRows( ) > 0 ){
+                    // extract Group data from db answer
+                    $result['content'] = array_merge($result['content'], Group::ExtractGroup( $inp->getResponse( ), $singleResult));
+                    $result['status'] = 200;
+                }
             }
-        }
+            return $result;
+        };
+        
+        $params = DBJson::mysql_real_escape_string( $params );
+        return $this->_component->call($linkName, $params, '', 200, $positive, array($singleResult), 'Model::isProblem', array(), 'Query');
     }
 
-    public function get( 
-                        $functionName,
-                        $sqlFile,
-                        $params=array(),
-                        $singleResult = false,
-                        $checkSession = true
-                        )
+    public function getMatch($callName, $input, $params = array())
     {
-        Logger::Log( 
-                    'starts GET ' . $functionName,
-                    LogLevel::DEBUG
-                    );
-
-        // checks whether incoming data has the correct data type
-        foreach ($params as &$param)
-            $param = DBJson::mysql_real_escape_string( $param );
-
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
-                                              $this->query,
-                                              $sqlFile,
-                                              $params,
-                                              $checkSession
-                                              );
-
-        // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
-             $result['status'] <= 299 ){
-            $query = Query::decodeQuery( $result['content'] );
-
-            if ( $query->getNumRows( ) > 0 ){
-                $res = Group::ExtractGroup( 
-                                           $query->getResponse( ),
-                                           $singleResult
-                                           );
-                $this->_app->response->setBody( Group::encodeGroup( $res ) );
-
-                $this->_app->response->setStatus( 200 );
-                if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
-                                                        'Content-Type',
-                                                        $result['headers']['Content-Type']
-                                                        );
-
-                $this->_app->stop( );
-                
-            } else 
-                $result['status'] = 404;
-        }
-
-        Logger::Log( 
-                    'GET ' . $functionName . ' failed',
-                    LogLevel::ERROR
-                    );
-        $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-        $this->_app->response->setBody( Group::encodeGroup( new Group( ) ) );
-        $this->_app->stop( );
+        return $this->get($callName,$callName,$params);
     }
-
-    /**
-     * Returns all groups a given user is part of.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /group/user/$userid(/).
-     *
-     * @param int $userid The id of the user.
-     */
-    public function getUserGroups( $userid )
+    public function getMatchSingle($callName, $input, $params = array())
     {
-        $this->get( 
-                   'GetUserGroups',
-                   dirname(__FILE__) . '/Sql/GetUserGroups.sql',
-                   array("userid"=>$userid)
-                   );
-    }
-
-    /**
-     * Returns all groups.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /group/group(/) or /group(/).
-     */
-    public function getAllGroups( )
-    {
-        $this->get( 
-                   'GetAllGroups',
-                   dirname(__FILE__) . '/Sql/GetAllGroups.sql',
-                   array("userid"=>$userid)
-                   );
-    }
-
-    /**
-     * Returns all groups a given user is part of regarding a specific
-     * exercise sheet.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /group/user/$userid/exercisesheet/$esid(/).
-     *
-     * @param int $userid The id of the user.
-     * @param int $esid The id of the exercise sheet.
-     */
-    public function getUserSheetGroups( 
-                                       $userid,
-                                       $esid
-                                       )
-    {
-        $this->get( 
-                   'GetUserSheetGroups',
-                   dirname(__FILE__) . '/Sql/GetUserSheetGroups.sql',
-                   array("userid"=>$userid,"esid"=>$esid),
-                   true
-                   );
-    }
-
-    /**
-     * Returns all groups of specific exercise sheet.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /group/exercisesheet/$esid(/).
-     *
-     * @param int $esid The id of the exercise sheet.
-     */
-    public function getSheetGroups( $esid )
-    {
-        $this->get( 
-                   'GetSheetGroups',
-                   dirname(__FILE__) . '/Sql/GetSheetGroups.sql',
-                   array("esid"=>$esid),
-                   false,
-                   false
-                   );
-    }
-    
-    public function getCourseGroups( $courseid )
-    {
-        $this->get( 
-                   'GetCourseGroups',
-                   dirname(__FILE__) . '/Sql/GetCourseGroups.sql',
-                   array("courseid"=>$courseid),
-                   false,
-                   false
-                   );
-    }
-    
-    /**
-     * Returns status code 200, if this component is correctly installed for the platform
-     *
-     * Called when this component receives an HTTP GET request to
-     * /link/exists/platform.
-     */
-    public function getExistsPlatform( )
-    {
-        $this->get( 
-                   'GetExistsPlatform',
-                   dirname(__FILE__) . '/Sql/GetExistsPlatform.sql',
-                   array(),
-                   true,
-                   false
-                   );
+        return $this->get($callName,$callName,$params,true,false);
     }
     
     /**
@@ -563,42 +119,9 @@ class DBGroup
      * Called when this component receives an HTTP DELETE request to
      * /platform.
      */
-    public function deletePlatform( )
+    public function deletePlatform( $callName, $input, $params = array())
     {
-        Logger::Log( 
-                    'starts DELETE DeletePlatform',
-                    LogLevel::DEBUG
-                    );
-
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
-                                              $this->query2,
-                                              dirname(__FILE__) . '/Sql/DeletePlatform.sql',
-                                              array( ),
-                                              false
-                                              );
-
-        // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
-             $result['status'] <= 299 ){
-
-            $this->_app->response->setStatus( 201 );
-            $this->_app->response->setBody( '' );
-            if ( isset( $result['headers']['Content-Type'] ) )
-                $this->_app->response->headers->set( 
-                                                    'Content-Type',
-                                                    $result['headers']['Content-Type']
-                                                    );
-            
-        } else {
-            Logger::Log( 
-                        'DELETE DeletePlatform failed',
-                        LogLevel::ERROR
-                        );
-            $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-            $this->_app->response->setBody( '' );
-            $this->_app->stop( );
-        }
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
     
     /**
@@ -607,65 +130,9 @@ class DBGroup
      * Called when this component receives an HTTP POST request to
      * /platform.
      */
-    public function addPlatform( )
+    public function addPlatform( $callName, $input, $params = array())
     {
-        Logger::Log( 
-                    'starts POST AddPlatform',
-                    LogLevel::DEBUG
-                    );
-
-        // decode the received course data, as an object
-        $insert = Platform::decodePlatform( $this->_app->request->getBody( ) );
-
-        // always been an array
-        $arr = true;
-        if ( !is_array( $insert ) ){
-            $insert = array( $insert );
-            $arr = false;
-        }
-
-        // this array contains the indices of the inserted objects
-        $res = array( );
-        foreach ( $insert as $in ){
-        
-            // starts a query, by using a given file
-            $result = DBRequest::getRoutedSqlFile( 
-                                                  $this->query2,
-                                                  dirname(__FILE__) . '/Sql/AddPlatform.sql',
-                                                  array( 'object' => $in ),
-                                                  false
-                                                  );
-
-            // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
-                 $result['status'] <= 299 ){
-                $queryResult = Query::decodeQuery( $result['content'] );
-
-                $res[] = $in;
-                $this->_app->response->setStatus( 201 );
-                if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
-                                                        'Content-Type',
-                                                        $result['headers']['Content-Type']
-                                                        );
-                
-            } else {
-                Logger::Log( 
-                            'POST AddPlatform failed',
-                            LogLevel::ERROR
-                            );
-                $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-                $this->_app->response->setBody( Platform::encodePlatform( $res ) );
-                $this->_app->stop( );
-            }
-        }
-
-        if ( !$arr && 
-             count( $res ) == 1 ){
-            $this->_app->response->setBody( Platform::encodePlatform( $res[0] ) );
-            
-        } else 
-            $this->_app->response->setBody( Platform::encodePlatform( $res ) );
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
 }
 

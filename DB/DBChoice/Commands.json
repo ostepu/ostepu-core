@@ -1,13 +1,13 @@
 [
     {    "method":"post", "path":"(/:preChoice(/:preForm(/:preExercise)))/course" },
     {    "method":"delete", "path":"(/:preChoice(/:preForm(/:preExercise)))/course(/course)/:courseid" },
-    {    "method":"put", "path":"(/:preChoice(/:preForm(/:preExercise)))/choice(/choice)/:choiceid(/)" },
-    {    "method":"delete", "path":"(/:preChoice(/:preForm(/:preExercise)))/choice(/choice)/:choiceid(/)" },
-    {    "method":"post", "path":"(/:preChoice(/:preForm(/:preExercise)))/choice(/)" },
-    {    "method":"get", "path":"(/:preChoice(/:preForm(/:preExercise)))/choice(/choice)/:choiceid(/)" },
-    {    "method":"get", "path":"(/:preChoice(/:preForm(/:preExercise)))/choice/course/:courseid(/)" },
-    {    "method":"get", "path":"(/:preChoice(/:preForm(/:preExercise)))/link/exists/course/:courseid(/)" },
-    {    "method":"get", "path":"(/:preChoice(/:preForm(/:preExercise)))/choice/exercisesheet/:esid(/)" },
-    {    "method":"get", "path":"(/:preChoice(/:preForm(/:preExercise)))/choice/exercise/:eid(/)" },
-    {    "method":"get", "path":"(/:preChoice(/:preForm(/:preExercise)))/choice/form/:formid(/)" }
+    {    "method":"put", "path":"(/:preChoice(/:preForm(/:preExercise)))/choice(/choice)/:choiceid" },
+    {    "method":"delete", "path":"(/:preChoice(/:preForm(/:preExercise)))/choice(/choice)/:choiceid" },
+    {    "method":"post", "path":"(/:preChoice(/:preForm(/:preExercise)))/choice" },
+    {    "method":"get", "path":"(/:preChoice(/:preForm(/:preExercise)))/choice(/choice)/:choiceid" },
+    {    "method":"get", "path":"(/:preChoice(/:preForm(/:preExercise)))/choice/course/:courseid" },
+    {    "method":"get", "path":"(/:preChoice(/:preForm(/:preExercise)))/link/exists/course/:courseid" },
+    {    "method":"get", "path":"(/:preChoice(/:preForm(/:preExercise)))/choice/exercisesheet/:esid" },
+    {    "method":"get", "path":"(/:preChoice(/:preForm(/:preExercise)))/choice/exercise/:eid" },
+    {    "method":"get", "path":"(/:preChoice(/:preForm(/:preExercise)))/choice/form/:formid" }
 ]

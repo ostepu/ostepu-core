@@ -45,7 +45,7 @@ class DBRequest
                                      );
         }
         
-        ini_set('mysql.connect_timeout','60');
+        //ini_set('mysql.connect_timeout','60');
 
         // creates a new connection to database
         if (!isset($config['ZV']['zv_type']) || (isset($config['ZV']['zv_type']) && $config['ZV']['zv_type']=='local')){
@@ -168,19 +168,15 @@ class DBRequest
                                      );
         }
 
-        ini_set('mysql.connect_timeout','60');
+        //ini_set('mysql.connect_timeout','60');
         
         // creates a new connection to database
-        //echo "type: ".$config['ZV']['zv_type']."<br>";
         if (!isset($config['ZV']['zv_type']) || (isset($config['ZV']['zv_type']) && $config['ZV']['zv_type']=='local')){
             $path = (strpos($config['PL']['urlExtern'],$config['DB']['db_path'])===false ? $config['DB']['db_path'] : 'localhost' );
         } else
             $path = $config['DB']['db_path'];
             
-        //echo "Path: ".$path."<br>";
         if (!$useDbOperator){
-        //echo "User: ".$config['DB']['db_user']."<br>";
-        //echo "Passwort: ".$config['DB']['db_passwd']."<br>";
             $dbconn = @mysqli_connect( 
                                     $path,
                                     $config['DB']['db_user'],
@@ -188,8 +184,6 @@ class DBRequest
                                     $config['DB']['db_name'] 
                                     );
         } else {
-        //echo "User: ".$config['DB']['db_user_operator']."<br>";
-        //echo "Passwort: ".$config['DB']['db_passwd_operator']."<br>";
             $dbconn = @mysqli_connect( 
                                     $path,
                                     $config['DB']['db_user_operator'],
@@ -265,7 +259,7 @@ class DBRequest
                                                 $dbconn,
                                                 $sqlStatement
                                                );
-        $query_result=array();    
+        $query_result=array();
 
     if ($answ===false){
         $result=array();    
@@ -278,26 +272,30 @@ class DBRequest
     else{
         do {
             $result=array();
-            if ($res = mysqli_store_result( $dbconn )) {
-                $result['content']  = $res;
-
+            $res=null;
+            if ($res = mysqli_use_result( $dbconn )) {
+                $hash='';
+                $result['content']  = DBJson::getRows2( $res, $hash );
+                $result['hash'] = $hash;
+                $result['numRows'] = count($result['content']);
+                
                 // evaluates the request
                 $result['affectedRows'] = mysqli_affected_rows( $dbconn );
                 $result['insertId'] = mysqli_insert_id( $dbconn);
                 $result['errno'] = mysqli_errno( $dbconn );
                 $result['error'] = mysqli_error( $dbconn );
-
-                if ( gettype( $result['content'] ) != 'boolean' ){
-                    $result['numRows'] = mysqli_num_rows( $result['content'] );
-                }
+                mysqli_free_result($res);
             }
             else
             {
-                $result['content']  = $res;
+                $hash='';
+                $result['content'] = null;
+                $result['hash'] = $hash;
                 $result['affectedRows'] = mysqli_affected_rows( $dbconn );
                 $result['insertId'] = mysqli_insert_id( $dbconn);
                 $result['errno'] = mysqli_errno( $dbconn );
                 $result['error'] = mysqli_error( $dbconn );
+                
             }
 
             $query_result[] = $result;
@@ -333,7 +331,7 @@ class DBRequest
                                             $checkSession = true
                                             )
     {
-
+        $vars['sqlPath'] = dirname($sqlFile);
         // generates the variable content
         extract( 
                 $vars,
@@ -346,7 +344,7 @@ class DBRequest
         $sqlParsed = eval("?>" .  file_get_contents( $sqlFile ));
         $sql = ob_get_contents();
         ob_end_clean();
-///echo $sql;
+//echo $sql;
         if ($sqlParsed === false){
             $answer = array();
             $answer['status'] = 409;
@@ -354,7 +352,7 @@ class DBRequest
         } else {
             $obj->setRequest( $sql );
             $obj->setCheckSession( $checkSession );
-            
+
             // perform the route process
             return Request::routeRequest( 
                                          'POST',
@@ -365,10 +363,57 @@ class DBRequest
                                          'query'
                                          );
         }
-        
+
         $answer = array();
         $answer['status'] = 409;
         return $answer;
+    }
+    
+    public static function getRoutedSql( 
+                                            $querys,
+                                            $sql,
+                                            $checkSession = true
+                                            )
+    {
+
+        $obj = new Query( );
+        $obj->setRequest( $sql );
+        $obj->setCheckSession( $checkSession );
+
+        // perform the route process
+        return Request::routeRequest( 
+                                     'POST',
+                                     '/query',
+                                     array( ),
+                                     Query::encodeQuery( $obj ),
+                                     $querys,
+                                     'query'
+                                     );
+    }
+    
+        public static function prepareSqlFile(
+                                            $sqlFile,
+                                            $vars
+                                            )
+    {
+        $vars['sqlPath'] = dirname($sqlFile);
+        // generates the variable content
+        extract( 
+                $vars,
+                EXTR_OVERWRITE
+                );
+
+        // loads the given sql file
+        ob_start();
+        $sqlParsed = eval("?>" .  file_get_contents( $sqlFile ));
+        $sql = ob_get_contents();
+        ob_end_clean();
+//echo $sql;
+        if ($sqlParsed === false){
+            return false;
+        } else {
+            return $sql;
+        }
     }
 }
 

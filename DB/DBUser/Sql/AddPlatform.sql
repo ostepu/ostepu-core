@@ -27,6 +27,11 @@ SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
+<?php if (is_dir($sqlPath.'/procedures')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/procedures/'.$inp);}},scandir($sqlPath.'/procedures'),array_pad(array(),count(scandir($sqlPath.'/procedures')),$sqlPath));?>
+<?php if (is_dir($sqlPath.'/migrations')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/migrations/'.$inp);}},scandir($sqlPath.'/migrations'),array_pad(array(),count(scandir($sqlPath.'/migrations')),$sqlPath));?>
+ALTER TABLE `User` CHANGE `U_flag` `U_flag` TINYINT NULL DEFAULT '1';
+ALTER TABLE `User` CHANGE `U_isSuperAdmin` `U_isSuperAdmin` TINYINT NULL DEFAULT '0';
+
 DROP TRIGGER IF EXISTS `User_BUPD`;
 CREATE TRIGGER `User_BUPD` BEFORE UPDATE ON `User` FOR EACH ROW
 <?php
@@ -35,12 +40,6 @@ CREATE TRIGGER `User_BUPD` BEFORE UPDATE ON `User` FOR EACH ROW
 @author Till*/
 ?>
 begin
-<?php
-/*if (not New.U_flag is null and New.U_flag = OLD.U_flag) then
-SIGNAL sqlstate '45001' set message_text = 'no flag change';
-end if;*/
-?>
-
 IF NEW.U_flag = 0 and OLD.U_flag = 1 THEN
 SET NEW.U_email = '';
 SET NEW.U_lastName = '';
@@ -49,7 +48,7 @@ SET NEW.U_title = '';
 SET NEW.U_password = '';
 SET NEW.U_failed_logins = ' ';
 END IF;
-end;
+end; 
 
 DROP TRIGGER IF EXISTS `User_AUPD`;
 CREATE TRIGGER `User_AUPD` AFTER UPDATE ON `User` FOR EACH ROW
@@ -61,4 +60,12 @@ begin
 If NEW.U_flag != 1
 then delete from `Session` where NEW.U_id = U_id;
 end if;
-end;
+end; 
+<?php include $sqlPath.'/procedures/GetUser.sql'; ?>
+<?php include $sqlPath.'/procedures/GetUsers.sql'; ?>
+<?php include $sqlPath.'/procedures/GetUserByStatus.sql'; ?>
+<?php include $sqlPath.'/procedures/GetCourseUserByStatus.sql'; ?>
+<?php include $sqlPath.'/procedures/GetGroupMember.sql'; ?>
+<?php include $sqlPath.'/procedures/GetCourseMember.sql'; ?>
+<?php include $sqlPath.'/procedures/GetIncreaseUserFailedLogin.sql'; ?>
+<?php include $sqlPath.'/procedures/GetExistsPlatform.sql'; ?>

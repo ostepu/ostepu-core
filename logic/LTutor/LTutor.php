@@ -671,6 +671,7 @@ class LTutor
                     }
                                         
                     // file
+                    $newFile = null;
                     if (isset($marking['submission']['file']['displayName'])){
                         $fileInfo = pathinfo($marking['submission']['file']['displayName']);
                         $newFile = array_merge(array(),$marking['submission']['file']);
@@ -723,7 +724,7 @@ class LTutor
                             $newFileData = new File();
                             $newFileData->setBody(base64_encode("</pre>"));
                             $newFileSend[] = $newFileData;
-                            //echo File::encodeFile($newFileSend);//return;
+//echo File::encodeFile($newFileSend);//return;
                             $answer = Request::routeRequest(
                                                             'POST',
                                                             '/temppdf/file/merge',
@@ -732,7 +733,7 @@ class LTutor
                                                             $this->_postPdf,
                                                             'pdf'
                                                             );
-
+                            unset($newFileSend);
                             if ($answer['status'] == 201 && isset($answer['content'])){
                                 $file = json_decode($answer['content'],true);
                                 /*$a = json_decode($answer['content'],true);
@@ -745,6 +746,7 @@ class LTutor
                                 $sortedMarkings[$exerciseId][$key]['submission']['file']['conv'] = $newFile;
                                 $converted=true;
                             }
+                            unset($answer);
                         }
                     }
                     
@@ -755,6 +757,7 @@ class LTutor
                             $newFile['displayName'] = 'K_'.$newFile['displayName'];
                         $row['FILE'] = $namesOfExercises[$exerciseId].'/'.$marking['id'].'/'.$newFile['displayName'];
                     }
+                    unset($newFile);
 
                     $tempRows[] = $row;
                 }

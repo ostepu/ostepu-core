@@ -7,3 +7,8 @@ DROP TABLE IF EXISTS `ApprovalCondition`;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+DROP PROCEDURE IF EXISTS `DBApprovalConditionGetCourseApprovalConditions`;
+DROP PROCEDURE IF EXISTS `DBApprovalConditionGetExistsPlatform`;
+DROP PROCEDURE IF EXISTS `DBApprovalConditionGetAllApprovalConditions`;
+DROP PROCEDURE IF EXISTS `DBApprovalConditionGetApprovalCondition`;

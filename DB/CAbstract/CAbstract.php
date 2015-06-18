@@ -34,7 +34,7 @@ class CAbstract
         // runs the CConfig
         $com = new CConfig( 'link,definition' );
 
-        // runs the DBSubmission
+        // runs the CAbstract
         if ( $com->used( ) ) {
             $conf = $com->loadConfig( dirname(__FILE__).'/'.(isset($com->pre) ?  $com->pre : '') );
             $options = $conf->getOption();

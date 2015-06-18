@@ -6,65 +6,16 @@
  *
  * @author Till Uhlig
  * @example DB/DBExerciseFileType/ExerciseFileTypeSample.json
- * @date 2013-2014
+ * @date 2013-2015
  */
 
-require_once ( dirname(__FILE__) . '/../../Assistants/Slim/Slim.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Structures.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Request.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/DBJson.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/DBRequest.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/CConfig.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
-
-\Slim\Slim::registerAutoloader( );
+include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );
 
 /**
  * A class, to abstract the "ExerciseFileType" table from database
  */
 class DBExerciseFileType
 {
-
-    /**
-     * @var Slim $_app the slim object
-     */
-    private $_app = null;
-
-    /**
-     * @var Component $_conf the component data object
-     */
-    private $_conf = null;
-
-    /**
-     * @var Link[] $query a list of links to a query component
-     */
-    private $query = array( );
-    private $query2 = array( );
-
-    /**
-     * @var string $_prefix the prefixes, the class works with (comma separated)
-     */
-    private static $_prefix = 'exercisefiletype';
-
-    /**
-     * the $_prefix getter
-     *
-     * @return the value of $_prefix
-     */
-    public static function getPrefix( )
-    {
-        return DBExerciseFileType::$_prefix;
-    }
-
-    /**
-     * the $_prefix setter
-     *
-     * @param string $value the new value for $_prefix
-     */
-    public static function setPrefix( $value )
-    {
-        DBExerciseFileType::$_prefix = $value;
-    }
 
     /**
      * REST actions
@@ -74,142 +25,12 @@ class DBExerciseFileType
      *
      * @param Component $conf component data
      */
+    private $_component = null;
     public function __construct( )
     {
-        // runs the CConfig
-        $com = new CConfig( DBExerciseFileType::getPrefix( ), dirname(__FILE__) );
-
-        // runs the DBExerciseFileType
-        if ( $com->used( ) ) return;
-            $conf = $com->loadConfig( );
-            
-        // initialize component
-        $this->_conf = $conf;
-        $this->query = array( CConfig::getLink( 
-                                               $conf->getLinks( ),
-                                               'out'
-                                               ) );
-        $this->query2 = array( CConfig::getLink( 
-                                               $conf->getLinks( ),
-                                               'out2'
-                                               ) );
-
-        // initialize slim
-        $this->_app = new \Slim\Slim( );
-        $this->_app->response->headers->set( 
-                                            'Content-Type',
-                                            'application/json'
-                                            );
-        // POST AddPlatform
-        $this->_app->post( 
-                         '/platform',
-                         array( 
-                               $this,
-                               'addPlatform'
-                               )
-                         );
-                         
-        // DELETE DeletePlatform
-        $this->_app->delete( 
-                         '/platform',
-                         array( 
-                               $this,
-                               'deletePlatform'
-                               )
-                         );
-                         
-        // GET GetExistsPlatform
-        $this->_app->get( 
-                         '/link/exists/platform',
-                         array( 
-                               $this,
-                               'getExistsPlatform'
-                               )
-                         );
-                         
-        // PUT EditExerciseFileType
-        $this->_app->put( 
-                         '/' . $this->getPrefix( ) . '(/exercisefiletype)/:eftid(/)',
-                         array( 
-                               $this,
-                               'editExerciseFileType'
-                               )
-                         );
-
-        // DELETE DeleteExerciseFileType
-        $this->_app->delete( 
-                            '/' . $this->getPrefix( ) . '(/exercisefiletype)/:eftid(/)',
-                            array( 
-                                  $this,
-                                  'deleteExerciseFileType'
-                                  )
-                            );
-                            
-        // DELETE DeleteExerciseExerciseFileType
-        $this->_app->delete( 
-                            '/' . $this->getPrefix( ) . '/exercise/:eid(/)',
-                            array( 
-                                  $this,
-                                  'deleteExerciseExerciseFileType'
-                                  )
-                            );
-                            
-        // DELETE DeleteExerciseSheetExerciseFileType
-        $this->_app->delete( 
-                            '/' . $this->getPrefix( ) . '/exercisesheet/:esid(/)',
-                            array( 
-                                  $this,
-                                  'deleteExerciseSheetExerciseFileType'
-                                  )
-                            );
-                            
-        // POST AddExerciseFileType
-        $this->_app->post( 
-                          '/' . $this->getPrefix( ) . '(/)',
-                          array( 
-                                $this,
-                                'addExerciseFileType'
-                                )
-                          );
-
-        // GET GetExerciseFileType
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '(/exercisefiletype)/:eftid(/)',
-                         array( 
-                               $this,
-                               'getExerciseFileType'
-                               )
-                         );
-
-        // GET GetExerciseExerciseFileTypes
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/exercise/:eid(/)',
-                         array( 
-                               $this,
-                               'getExerciseExerciseFileTypes'
-                               )
-                         );
-                         
-        // GET GetSheetExerciseFileTypes
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/exercisesheet/:esid(/)',
-                         array( 
-                               $this,
-                               'getSheetExerciseFileTypes'
-                               )
-                         );
-                         
-        // GET GetAllExerciseFileTypes
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '(/exercisefiletype)(/)',
-                         array( 
-                               $this,
-                               'getAllExerciseFileTypes'
-                               )
-                         );
-
-        // run Slim
-        $this->_app->run( );
+        $component = new Model('exercisefiletype', dirname(__FILE__), $this);
+        $this->_component=$component;
+        $component->run();
     }
 
     /**
@@ -222,63 +43,9 @@ class DBExerciseFileType
      *
      * @param int $eftid The id or the exercise file type.
      */
-    public function editExerciseFileType( $eftid )
+    public function editExerciseFileType( $callName, $input, $params = array() )
     {
-        Logger::Log( 
-                    'starts PUT EditExerciseFileType',
-                    LogLevel::DEBUG
-                    );
-
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput( 
-                           $this->_app,
-                           ctype_digit( $eftid )
-                           );
-
-        // decode the received exercise file type data, as an object
-        $insert = ExerciseFileType::decodeExerciseFileType( $this->_app->request->getBody( ) );
-
-        // always been an array
-        $arr = true;
-        if ( !is_array( $insert ) ){
-            $insert = array( $insert );
-            $arr = false;
-        }
-
-        foreach ( $insert as $in ){
-
-            // generates the update data for the object
-            $data = $in->getInsertData( );
-
-            // starts a query, by using a given file
-            $result = DBRequest::getRoutedSqlFile( 
-                                                  $this->query,
-                                                  dirname(__FILE__) . '/Sql/EditExerciseFileType.sql',
-                                                  array( 
-                                                        'eftid' => $eftid,
-                                                        'values' => $data
-                                                        )
-                                                  );
-
-            // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
-                 $result['status'] <= 299 ){
-                $this->_app->response->setStatus( 201 );
-                if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
-                                                        'Content-Type',
-                                                        $result['headers']['Content-Type']
-                                                        );
-                
-            } else {
-                Logger::Log( 
-                            'PUT EditExerciseFileType failed',
-                            LogLevel::ERROR
-                            );
-                $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-                $this->_app->stop( );
-            }
-        }
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/EditExerciseFileType.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new ExerciseFileType()),'Model::isProblem',array(new ExerciseFileType()));
     }
 
     /**
@@ -289,113 +56,19 @@ class DBExerciseFileType
      *
      * @param int $eftid The id or the exercise file type that is being deleted.
      */
-    public function deleteExerciseFileType( $eftid )
+    public function deleteExerciseFileType( $callName, $input, $params = array() )
     {
-        Logger::Log( 
-                    'starts DELETE DeleteExerciseFileType',
-                    LogLevel::DEBUG
-                    );
-
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput( 
-                           $this->_app,
-                           ctype_digit( $eftid )
-                           );
-
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
-                                              $this->query,
-                                              dirname(__FILE__) . '/Sql/DeleteExerciseFileType.sql',
-                                              array( 'eftid' => $eftid )
-                                              );
-
-        // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
-             $result['status'] <= 299 ){
-
-            $this->_app->response->setStatus( 201 );
-            if ( isset( $result['headers']['Content-Type'] ) )
-                $this->_app->response->headers->set( 
-                                                    'Content-Type',
-                                                    $result['headers']['Content-Type']
-                                                    );
-            
-        } else {
-            Logger::Log( 
-                        'DELETE DeleteExerciseFileType failed',
-                        LogLevel::ERROR
-                        );
-            $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-            $this->_app->stop( );
-        }
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteExerciseFileType.sql',$params,201,'Model::isCreated',array(new ExerciseFileType()),'Model::isProblem',array(new ExerciseFileType()));  
     }
-    public function deleteExerciseExerciseFileType( $eid )
+    
+    public function deleteExerciseExerciseFileType( $callName, $input, $params = array() )
     {
-        Logger::Log( 
-                    'starts DELETE DeleteExerciseExerciseFileType',
-                    LogLevel::DEBUG
-                    );
-
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
-                                              $this->query,
-                                              dirname(__FILE__) . '/Sql/DeleteExerciseExerciseFileType.sql',
-                                              array( 'eid' => $eid )
-                                              );
-
-        // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
-             $result['status'] <= 299 ){
-
-            $this->_app->response->setStatus( 201 );
-            if ( isset( $result['headers']['Content-Type'] ) )
-                $this->_app->response->headers->set( 
-                                                    'Content-Type',
-                                                    $result['headers']['Content-Type']
-                                                    );
-            
-        } else {
-            Logger::Log( 
-                        'DELETE DeleteExerciseExerciseFileType failed',
-                        LogLevel::ERROR
-                        );
-            $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-            $this->_app->stop( );
-        }
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteExerciseExerciseFileType.sql',$params,201,'Model::isCreated',array(new ExerciseFileType()),'Model::isProblem',array(new ExerciseFileType()));  
     }
-    public function deleteExerciseSheetExerciseFileType( $esid )
+    
+    public function deleteExerciseSheetExerciseFileType( $callName, $input, $params = array() )
     {
-        Logger::Log( 
-                    'starts DELETE DeleteExerciseSheetExerciseFileType',
-                    LogLevel::DEBUG
-                    );
-
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
-                                              $this->query,
-                                              dirname(__FILE__) . '/Sql/DeleteExerciseSheetExerciseFileType.sql',
-                                              array( 'esid' => $esid )
-                                              );
-
-        // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
-             $result['status'] <= 299 ){
-
-            $this->_app->response->setStatus( 201 );
-            if ( isset( $result['headers']['Content-Type'] ) )
-                $this->_app->response->headers->set( 
-                                                    'Content-Type',
-                                                    $result['headers']['Content-Type']
-                                                    );
-            
-        } else {
-            Logger::Log( 
-                        'DELETE DeleteExerciseSheetExerciseFileType failed',
-                        LogLevel::ERROR
-                        );
-            $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-            $this->_app->stop( );
-        }
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteExerciseSheetExerciseFileType.sql',$params,201,'Model::isCreated',array(new ExerciseFileType()),'Model::isProblem',array(new ExerciseFileType()));  
     }
     
     /**
@@ -406,302 +79,54 @@ class DBExerciseFileType
      * The request body should contain a JSON object representing the
      * new exercise file type's attributes.
      */
-    public function addExerciseFileType( )
+    public function addExerciseFileType( $callName, $input, $params = array() )
     {
-        Logger::Log( 
-                    'starts POST SetExerciseFileType',
-                    LogLevel::DEBUG
-                    );
+        $positive = function($input) {
+            // sets the new auto-increment id
+            $obj = new ExerciseFileType( );
+            $obj->setId( $input[0]->getInsertId( ) );
+            return array("status"=>201,"content"=>$obj);
+        };
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddExerciseFileType.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new ExerciseFileType()));
+    }
 
-        // decode the received exercise file type data, as an object
-        $insert = ExerciseFileType::decodeExerciseFileType( $this->_app->request->getBody( ) );
-
-        // always been an array
-        $arr = true;
-        if ( !is_array( $insert ) ){
-            $insert = array( $insert );
-            $arr = false;
-        }
-
-        // this array contains the indices of the inserted objects
-        $res = array( );
-        foreach ( $insert as $in ){
-
-            // generates the insert data for the object
-            $data = $in->getInsertData( );
-
-            // starts a query, by using a given file
-            $result = DBRequest::getRoutedSqlFile( 
-                                                  $this->query,
-                                                  dirname(__FILE__) . '/Sql/AddExerciseFileType.sql',
-                                                  array( 'values' => $data )
-                                                  );
-
-            // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
-                 $result['status'] <= 299 ){
-                $queryResult = Query::decodeQuery( $result['content'] );
-
-                // sets the new auto-increment id
-                $obj = new ExerciseFileType( );
-                $obj->setId( $queryResult->getInsertId( ) );
-
-                $res[] = $obj;
-                $this->_app->response->setStatus( 201 );
-                if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
-                                                        'Content-Type',
-                                                        $result['headers']['Content-Type']
-                                                        );
-                
-            } else {
-                Logger::Log( 
-                            'POST SetExerciseFileType failed',
-                            LogLevel::ERROR
-                            );
-                $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-                $this->_app->response->setBody( ExerciseFileType::encodeExerciseFileType( $res ) );
-                $this->_app->stop( );
+    public function get( $functionName, $linkName, $params=array(),$singleResult = false, $checkSession = true )
+    {
+        $positive = function($input, $singleResult) {
+            //$input = $input[count($input)-1];
+            $result = Model::isEmpty();$result['content']=array();
+            foreach ($input as $inp){
+                if ( $inp->getNumRows( ) > 0 ){
+                    // extract ExerciseFileType data from db answer
+                    $result['content'] = array_merge($result['content'], ExerciseFileType::ExtractExerciseFileType( $inp->getResponse( ), $singleResult));
+                    $result['status'] = 200;
+                }
             }
-        }
-
-        if ( !$arr && 
-             count( $res ) == 1 ){
-            $this->_app->response->setBody( ExerciseFileType::encodeExerciseFileType( $res[0] ) );
-            
-        } else 
-            $this->_app->response->setBody( ExerciseFileType::encodeExerciseFileType( $res ) );
+            return $result;
+        };
+        
+        $params = DBJson::mysql_real_escape_string( $params );
+        return $this->_component->call($linkName, $params, '', 200, $positive, array($singleResult), 'Model::isProblem', array(), 'Query');
     }
 
-    public function get( 
-                        $functionName,
-                        $sqlFile,
-                        $userid,
-                        $courseid,
-                        $esid,
-                        $eid,
-                        $etid,
-                        $eftid,
-                        $singleResult = false,
-                        $checkSession = true
-                        )
+    public function getMatch($callName, $input, $params = array())
     {
-        Logger::Log( 
-                    'starts GET ' . $functionName,
-                    LogLevel::DEBUG
-                    );
-
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput( 
-                           $this->_app,
-                           $userid == '' ? true : ctype_digit( $userid ),
-                           $courseid == '' ? true : ctype_digit( $courseid ),
-                           $esid == '' ? true : ctype_digit( $esid ),
-                           $eid == '' ? true : ctype_digit( $eid ),
-                           $etid == '' ? true : ctype_digit( $etid ),
-                           $eftid == '' ? true : ctype_digit( $eftid )
-                           );
-
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
-                                              $this->query,
-                                              $sqlFile,
-                                              array( 
-                                                    'userid' => $userid,
-                                                    'courseid' => $courseid,
-                                                    'esid' => $esid,
-                                                    'eid' => $eid,
-                                                    'etid' => $etid,
-                                                    'eftid' => $eftid
-                                                    ),
-                                              $checkSession
-                                              );
-
-        // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
-             $result['status'] <= 299 ){
-            $query = Query::decodeQuery( $result['content'] );
-
-            if ( $query->getNumRows( ) > 0 ){
-                $res = ExerciseFileType::ExtractExerciseFileType( 
-                                                                 $query->getResponse( ),
-                                                                 $singleResult
-                                                                 );
-                $this->_app->response->setBody( ExerciseFileType::encodeExerciseFileType( $res ) );
-
-                $this->_app->response->setStatus( 200 );
-                if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
-                                                        'Content-Type',
-                                                        $result['headers']['Content-Type']
-                                                        );
-
-                $this->_app->stop( );
-                
-            } else 
-                $result['status'] = 404;
-        }
-
-        Logger::Log( 
-                    'GET ' . $functionName . ' failed',
-                    LogLevel::ERROR
-                    );
-        $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-        $this->_app->response->setBody( ExerciseFileType::encodeExerciseFileType( new ExerciseFileType( ) ) );
-        $this->_app->stop( );
+        return $this->get($callName,$callName,$params);
     }
-
-    /**
-     * Returns all exercise file types.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /exercisefiletype(/) or /exercisefiletype/exercisefiletype(/).
-     */
-    public function getAllExerciseFileTypes( )
+    public function getMatchSingle($callName, $input, $params = array())
     {
-        $this->get( 
-                   'GetAllExerciseFileTypes',
-                   dirname(__FILE__) . '/Sql/GetAllExerciseFileTypes.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $etid ) ? $etid : '',
-                   isset( $eftid ) ? $eftid : ''
-                   );
-    }
-
-    /**
-     * Returns an exercise file type.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /exercisefiletype/$eftid(/) or /exercisefiletype/exercisefiletype/$eftid(/).
-     *
-     * @param string $eftid The id of the exercise file type that should be returned.
-     */
-    public function getExerciseFileType( $eftid )
-    {
-        $this->get( 
-                   'GetExerciseFileType',
-                   dirname(__FILE__) . '/Sql/GetExerciseFileType.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $etid ) ? $etid : '',
-                   isset( $eftid ) ? $eftid : '',
-                   true
-                   );
-    }
-
-    /**
-     * Returns all exercise exercise file types.
-     *
-     * Called when this component receives an HTTP GET request to
-     * exercisefiletype/exercise/$eid(/).
-     *
-     * @param string $eid The id of the exercise that should be returned.
-     */
-    public function getExerciseExerciseFileTypes( $eid )
-    {
-        $this->get( 
-                   'GetExerciseExerciseFileTypes',
-                   dirname(__FILE__) . '/Sql/GetExerciseExerciseFileTypes.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $etid ) ? $etid : '',
-                   isset( $eftid ) ? $eftid : ''
-                   );
+        return $this->get($callName,$callName,$params,true,false);
     }
     
-     /**
-     * Returns all exercise-sheet exercise file types.
-     *
-     * Called when this component receives an HTTP GET request to
-     * exercisefiletype/exercisesheet/$esid(/).
-     *
-     * @param string $esid The id of the exercise-sheet that should be returned.
-     */
-    public function getSheetExerciseFileTypes( $eid )
-    {
-        $this->get( 
-                   'GetSheetExerciseFileTypes',
-                   dirname(__FILE__) . '/Sql/GetSheetExerciseFileTypes.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $etid ) ? $etid : '',
-                   isset( $eftid ) ? $eftid : ''
-                   );
-    }
-    
-    /**
-     * Returns status code 200, if this component is correctly installed for the platform
-     *
-     * Called when this component receives an HTTP GET request to
-     * /link/exists/platform.
-     */
-    public function getExistsPlatform( )
-    {
-        $this->get( 
-                   'GetExistsPlatform',
-                   dirname(__FILE__) . '/Sql/GetExistsPlatform.sql',
-                   isset( $userid ) ? $userid : '',
-                   isset( $courseid ) ? $courseid : '',
-                   isset( $esid ) ? $esid : '',
-                   isset( $eid ) ? $eid : '',
-                   isset( $etid ) ? $etid : '',
-                   isset( $eftid ) ? $eftid : '',
-                   true,
-                   false
-                   );
-    }
-    
-    /**
+        /**
      * Removes the component from the platform
      *
      * Called when this component receives an HTTP DELETE request to
      * /platform.
      */
-    public function deletePlatform( )
+    public function deletePlatform( $callName, $input, $params = array())
     {
-        Logger::Log( 
-                    'starts DELETE DeletePlatform',
-                    LogLevel::DEBUG
-                    );
-
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
-                                              $this->query2,
-                                              dirname(__FILE__) . '/Sql/DeletePlatform.sql',
-                                              array( ),
-                                              false
-                                              );
-
-        // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
-             $result['status'] <= 299 ){
-
-            $this->_app->response->setStatus( 201 );
-            $this->_app->response->setBody( '' );
-            if ( isset( $result['headers']['Content-Type'] ) )
-                $this->_app->response->headers->set( 
-                                                    'Content-Type',
-                                                    $result['headers']['Content-Type']
-                                                    );
-            
-        } else {
-            Logger::Log( 
-                        'DELETE DeletePlatform failed',
-                        LogLevel::ERROR
-                        );
-            $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-            $this->_app->response->setBody( '' );
-            $this->_app->stop( );
-        }
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
     
     /**
@@ -710,66 +135,8 @@ class DBExerciseFileType
      * Called when this component receives an HTTP POST request to
      * /platform.
      */
-    public function addPlatform( )
+    public function addPlatform( $callName, $input, $params = array())
     {
-        Logger::Log( 
-                    'starts POST AddPlatform',
-                    LogLevel::DEBUG
-                    );
-
-        // decode the received course data, as an object
-        $insert = Platform::decodePlatform( $this->_app->request->getBody( ) );
-
-        // always been an array
-        $arr = true;
-        if ( !is_array( $insert ) ){
-            $insert = array( $insert );
-            $arr = false;
-        }
-
-        // this array contains the indices of the inserted objects
-        $res = array( );
-        foreach ( $insert as $in ){
-        
-            // starts a query, by using a given file
-            $result = DBRequest::getRoutedSqlFile( 
-                                                  $this->query2,
-                                                  dirname(__FILE__) . '/Sql/AddPlatform.sql',
-                                                  array( 'object' => $in ),
-                                                  false
-                                                  );
-
-            // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
-                 $result['status'] <= 299 ){
-                $queryResult = Query::decodeQuery( $result['content'] );
-
-                $res[] = $in;
-                $this->_app->response->setStatus( 201 );
-                if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
-                                                        'Content-Type',
-                                                        $result['headers']['Content-Type']
-                                                        );
-                
-            } else {
-                Logger::Log( 
-                            'POST AddPlatform failed',
-                            LogLevel::ERROR
-                            );
-                $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-                $this->_app->response->setBody( Platform::encodePlatform( $res ) );
-                $this->_app->stop( );
-            }
-        }
-
-        if ( !$arr && 
-             count( $res ) == 1 ){
-            $this->_app->response->setBody( Platform::encodePlatform( $res[0] ) );
-            
-        } else 
-            $this->_app->response->setBody( Platform::encodePlatform( $res ) );
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
 }
-
- 

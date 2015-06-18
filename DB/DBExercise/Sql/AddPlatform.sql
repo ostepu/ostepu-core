@@ -37,11 +37,12 @@ CREATE TABLE IF NOT EXISTS `Exercise` (
 ENGINE = InnoDB
 AUTO_INCREMENT = 1;
 
-ALTER TABLE `Exercise` MODIFY `E_maxPoints` DECIMAL(3) NULL DEFAULT 0;
-
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+ALTER TABLE `Exercise` MODIFY `E_maxPoints` DECIMAL(3) NULL DEFAULT 0;
+ALTER TABLE `Exercise` CHANGE `E_maxPoints` `E_maxPoints` SMALLINT UNSIGNED NULL DEFAULT '0';
 
 DROP TRIGGER IF EXISTS `Exercise_BINS`;
 CREATE TRIGGER `Exercise_BINS` BEFORE INSERT ON `Exercise` FOR EACH ROW
@@ -70,3 +71,6 @@ if (NEW.C_id is NULL) then
 SIGNAL sqlstate '45001' set message_text = 'no corresponding exercisesheet';
 END if;
 END;
+
+<?php if (is_dir($sqlPath.'/procedures')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/procedures/'.$inp);}},scandir($sqlPath.'/procedures'),array_pad(array(),count(scandir($sqlPath.'/procedures')),$sqlPath));?>
+<?php if (is_dir($sqlPath.'/migrations')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/migrations/'.$inp);}},scandir($sqlPath.'/migrations'),array_pad(array(),count(scandir($sqlPath.'/migrations')),$sqlPath));?>

@@ -1,0 +1,9 @@
+[
+    {
+        "name": "generateSamples",
+        "outputType": "",
+        "inputType": "",
+        "method": "POST",
+        "path": "/samples/course/:courseAmount"
+    }
+]

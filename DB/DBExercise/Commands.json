@@ -1,16 +1,91 @@
 [
-    {"method":"PUT", "path":"/exercise(/exercise)/:eid(/)"},
-    {"method":"DELETE", "path":"/exercise(/exercise)/:eid(/)"},
-    {"method":"POST", "path":"/exercise(/)"},
-    {"method":"GET", "path":"/exercise(/exercise)(/)"},
-    {"method":"GET", "path":"/exercise(/exercise)/nosubmission(/)"},
-    {"method":"GET", "path":"/exercise(/exercise)/:eid(/)"},
-    {"method":"GET", "path":"/exercise(/exercise)/:eid/nosubmission(/)"},
-    {"method":"GET", "path":"/exercise/exercisesheet/:esid(/)"},
-    {"method":"GET", "path":"/exercise/exercisesheet/:esid/nosubmission(/)"},
-    {"method":"GET", "path":"/exercise/course/:courseid(/)"},
-    {"method":"GET", "path":"/exercise/course/:courseid/nosubmission(/)"},
-    {"method":"POST", "path":"/platform"},
-    {"method":"DELETE", "path":"/platform"},
-    {"method":"GET", "path":"/link/exists/platform"}
+    {
+        "name": "editExercise",
+        "outputType": "Exercise",
+        "inputType": "Exercise",
+        "method": "PUT",
+        "path": "/exercise(/exercise)/:eid"
+    },
+    {
+        "name": "deleteExercise",
+        "outputType": "Exercise",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/exercise(/exercise)/:eid"
+    },
+    {
+        "name": "addExercise",
+        "outputType": "Exercise",
+        "inputType": "Exercise",
+        "method": "POST",
+        "path": "/exercise"
+    },
+    {
+        "name": "getAllExercises",
+        "callback": "getMatch",
+        "outputType": "Exercise",
+        "inputType": "",
+        "method": "GET",
+        "path": "/exercise(/exercise)(/:sub)"
+    },
+    {
+        "name": "getSheetExercises",
+        "callback": "getMatch",
+        "outputType": "Exercise",
+        "inputType": "",
+        "method": "GET",
+        "path": "/exercise/exercisesheet/:esid(/:sub)"
+    },
+    {
+        "name": "getCourseExercises",
+        "callback": "getMatch",
+        "outputType": "Exercise",
+        "inputType": "",
+        "method": "GET",
+        "path": "/exercise/course/:courseid(/:sub)"
+    },
+    {
+        "name": "getExercise",
+        "callback": "getMatchSingle",
+        "outputType": "Exercise",
+        "inputType": "",
+        "method": "GET",
+        "path": "/exercise(/exercise)/:eid(/:sub)"
+    },
+    {
+        "name": "addPlatform",
+        "outputType": "Platform",
+        "inputType": "Platform",
+        "method": "POST",
+        "path": "/platform"
+    },
+    {
+        "name": "deletePlatform",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/platform"
+    },
+    {
+        "name": "getExistsPlatform",
+        "callback": "getMatchSingle",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "GET",
+        "path": "/link/exists/platform"
+    },
+    {
+        "name": "getSamplesInfo",
+        "outputType": "",
+        "inputType": "",
+        "method": "GET",
+        "path": "/samples"
+    },
+    {
+        "name": "postSamples",
+        "outputType": "Query",
+        "inputType": "",
+        "method": "POST",
+        "path": "/samples/course/:courseAmount/user/:userAmount"
+    }
 ]

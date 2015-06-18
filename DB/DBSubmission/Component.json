@@ -1,20 +1,231 @@
 {
-  "name":"DBSubmission",
-  "version":"1.0",
-  "classFile":"DBSubmission.php",
-  "className":"DBSubmission",
-  "files":[
-    {"path":".htaccess"},
-    {"path":"DBSubmission.php"},
-    {"path":"index.php"},
-    {"path":"Commands.json"},
-    {"path":"Sql/"}
-  ],
-  "links":[
-    {"name":"out", "target":"DBQuery", "links":[{"method":"POST", "path":"/query" }] },
-    {"name":"out2", "target":"DBQuery2", "links":[{"method":"POST", "path":"/query" }] }
-  ],
-  "connector":[
-    {"name":"request", "target":"CLocalObjectRequest"}
-  ]
+    "name": "DBSubmission",
+    "version": "1.0",
+    "classFile": "DBSubmission.php",
+    "className": "DBSubmission",
+    "files": [
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "DBSubmission.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "Sql/"
+        }
+    ],
+    "links": [
+        {
+            "name": "out",
+            "target": "DBQuery",
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "/query"
+                }
+            ]
+        },
+        {
+            "name": "out2",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "/query"
+                }
+            ]
+        },
+        {
+            "name": "getAllSubmissions",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBSubmissionGetAllSubmissions/:selected/:beginStamp/:endStamp"
+                }
+            ]
+        },
+        {
+            "name": "getCourseSubmissions",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBSubmissionGetCourseSubmissions/:courseid"
+                }
+            ]
+        },
+        {
+            "name": "getCourseUserSubmissions",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBSubmissionGetCourseUserSubmissions/:courseid/:userid"
+                }
+            ]
+        },
+        {
+            "name": "getExerciseSubmissions",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBSubmissionGetExerciseSubmissions/:eid"
+                }
+            ]
+        },
+        {
+            "name": "getGroupCourseSubmissions",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBSubmissionGetGroupCourseSubmissions/:userid/:courseid"
+                }
+            ]
+        },
+        {
+            "name": "getGroupExerciseSubmissions",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBSubmissionGetGroupExerciseSubmissions/:userid/:eid"
+                }
+            ]
+        },
+        {
+            "name": "getGroupSelectedCourseSubmissions",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBSubmissionGetGroupSelectedCourseSubmissions/:userid/:courseid"
+                }
+            ]
+        },
+        {
+            "name": "getGroupSelectedExerciseSubmissions",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBSubmissionGetGroupSelectedExerciseSubmissions/:userid/:eid"
+                }
+            ]
+        },
+        {
+            "name": "getGroupSelectedSubmissions",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBSubmissionGetGroupSelectedSubmissions/:userid/:esid"
+                }
+            ]
+        },
+        {
+            "name": "getGroupSubmissions",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBSubmissionGetGroupSubmissions/:userid/:esid"
+                }
+            ]
+        },
+        {
+            "name": "getSelectedCourseUserSubmissions",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBSubmissionGetSelectedCourseUserSubmissions/:courseid/:userid"
+                }
+            ]
+        },
+        {
+            "name": "getSelectedExerciseSubmissions",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBSubmissionGetSelectedExerciseSubmissions/:eid"
+                }
+            ]
+        },
+        {
+            "name": "getSelectedSheetSubmissions",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBSubmissionGetSelectedSheetSubmissions/:esid"
+                }
+            ]
+        },
+        {
+            "name": "getSheetSubmissions",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBSubmissionGetSheetSubmissions/:esid"
+                }
+            ]
+        },
+        {
+            "name": "getSubmission",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBSubmissionGetSubmission/:suid"
+                }
+            ]
+        },
+        {
+            "name": "getUserExerciseSubmissions",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBSubmissionGetUserExerciseSubmissions/:userid/:eid"
+                }
+            ]
+        },
+        {
+            "name": "getUserSheetSubmissions",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBSubmissionGetUserSheetSubmissions/:userid/:esid"
+                }
+            ]
+        },
+        {
+            "name": "getExistsPlatform",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBSubmissionGetExistsPlatform"
+                }
+            ]
+        }
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest"
+        }
+    ]
 }

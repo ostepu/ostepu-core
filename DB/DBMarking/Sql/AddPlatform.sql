@@ -21,12 +21,12 @@ CREATE TABLE IF NOT EXISTS `Marking` (
   CONSTRAINT `fk_Marking_Submission1`
     FOREIGN KEY (`S_id`)
     REFERENCES `Submission` (`S_id`)
-    ON DELETE RESTRICT
+    ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `fk_Marking_User1`
     FOREIGN KEY (`U_id_tutor`)
     REFERENCES `User` (`U_id`)
-    ON DELETE RESTRICT
+    ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `fk_Marking_File1`
     FOREIGN KEY (`F_id_file`)
@@ -51,12 +51,28 @@ CREATE TABLE IF NOT EXISTS `Marking` (
 ENGINE = InnoDB
 AUTO_INCREMENT = 1;
 
-ALTER TABLE `Marking` MODIFY `M_points` FLOAT;
-ALTER TABLE `Marking` MODIFY `M_tutorComment` VARCHAR(255);
-
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+/*set @database = Database();
+CREATE TEMPORARY TABLE `ColData`
+SELECT COLUMN_NAME as 'Name', DATA_TYPE as 'Type', IS_NULLABLE as 'Nullable', COLUMN_DEFAULT as 'Default'
+  FROM INFORMATION_SCHEMA.COLUMNS where TABLE_SCHEMA = @database and TABLE_NAME = 'Marking';*/
+
+/*if ((select count(*) from `ColData` where `Name` = `M_points`)>0) then
+
+END if;*/
+ALTER TABLE `Marking` MODIFY `M_points` FLOAT;
+ALTER TABLE `Marking` MODIFY `M_tutorComment` VARCHAR(255);
+/*ALTER TABLE `Marking` DROP FOREIGN KEY `fk_Marking_User1`; 
+ALTER TABLE `Marking` ADD CONSTRAINT `fk_Marking_User1` FOREIGN KEY (`U_id_tutor`) REFERENCES `user`(`U_id`) ON DELETE CASCADE ON UPDATE CASCADE; 
+ALTER TABLE `Marking` DROP FOREIGN KEY `fk_Marking_Submission1`; 
+ALTER TABLE `Marking` ADD CONSTRAINT `fk_Marking_Submission1` FOREIGN KEY (`S_id`) REFERENCES `submission`(`S_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `Marking` CHANGE `M_status` `M_status` TINYINT NOT NULL DEFAULT 0;
+ALTER TABLE `Marking` CHANGE `M_date` `M_date` INT UNSIGNED NOT NULL DEFAULT 0;
+ALTER TABLE `Marking` CHANGE `M_hideFile` `M_hideFile` TINYINT NOT NULL DEFAULT 0;*/
 
 DROP TRIGGER IF EXISTS `Marking_BINS`;
 CREATE TRIGGER `Marking_BINS` BEFORE INSERT ON `Marking` FOR EACH ROW
@@ -66,14 +82,18 @@ CREATE TRIGGER `Marking_BINS` BEFORE INSERT ON `Marking` FOR EACH ROW
 @author Lisa*/
 ?>
 BEGIN
+if (NEW.E_id is NULL) then
 SET NEW.E_id = (select S.E_id from Submission S where S.S_id = NEW.S_id limit 1);
 if (NEW.E_id is NULL) then
 SIGNAL sqlstate '45001' set message_text = 'no corresponding submission';
 END if;
+END if;
 
+if (NEW.ES_id is NULL) then
 SET NEW.ES_id = (select S.ES_id from Submission S where S.S_id = NEW.S_id limit 1);
 if (NEW.ES_id is NULL) then
 SIGNAL sqlstate '45001' set message_text = 'no corresponding submission';
+END if;
 END if;
 END;
 
@@ -85,13 +105,19 @@ CREATE TRIGGER `Marking_BUPD` BEFORE UPDATE ON `Marking` FOR EACH ROW
 @author Lisa*/
 ?>
 BEGIN
+if (NEW.E_id is NULL) then
 SET NEW.E_id = (select S.E_id from Submission S where S.S_id = NEW.S_id limit 1);
 if (NEW.E_id is NULL) then
 SIGNAL sqlstate '45001' set message_text = 'no corresponding submission';
 END if;
+END if;
 
+if (NEW.ES_id is NULL) then
 SET NEW.ES_id = (select S.ES_id from Submission S where S.S_id = NEW.S_id limit 1);
 if (NEW.ES_id is NULL) then
 SIGNAL sqlstate '45001' set message_text = 'no corresponding submission';
 END if;
+END if;
 END;
+<?php if (is_dir($sqlPath.'/procedures')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/procedures/'.$inp);}},scandir($sqlPath.'/procedures'),array_pad(array(),count(scandir($sqlPath.'/procedures')),$sqlPath));?>
+<?php if (is_dir($sqlPath.'/migrations')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/migrations/'.$inp);}},scandir($sqlPath.'/migrations'),array_pad(array(),count(scandir($sqlPath.'/migrations')),$sqlPath));?>

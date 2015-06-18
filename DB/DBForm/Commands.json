@@ -1,12 +1,12 @@
 [
     {    "method":"post", "path":"/course" },
     {    "method":"delete", "path":"/course(/course)/:courseid" },
-    {    "method":"put", "path":"/form(/form)/:formid(/)" },
-    {    "method":"delete", "path":"/form(/form)/:formid(/)" },
-    {    "method":"post", "path":"/form(/)" },
-    {    "method":"get", "path":"/form(/form)/:formid(/)" },
-    {    "method":"get", "path":"/form/course/:courseid(/)" },
-    {    "method":"get", "path":"/link/exists/course/:courseid(/)" },
-    {    "method":"get", "path":"/form/exercisesheet/:esid(/)" },
-    {    "method":"get", "path":"/form/exercise/:eid(/)" }
+    {    "method":"put", "path":"/form(/form)/:formid" },
+    {    "method":"delete", "path":"/form(/form)/:formid" },
+    {    "method":"post", "path":"/form" },
+    {    "method":"get", "path":"/form(/form)/:formid" },
+    {    "method":"get", "path":"/form/course/:courseid" },
+    {    "method":"get", "path":"/link/exists/course/:courseid" },
+    {    "method":"get", "path":"/form/exercisesheet/:esid" },
+    {    "method":"get", "path":"/form/exercise/:eid" }
 ]

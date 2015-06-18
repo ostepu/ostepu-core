@@ -634,7 +634,7 @@ class Exercise extends Object implements JsonSerializable
                                               );
 
         // concatenates the exercise and the associated submissions
-        $res = DBJson::concatResultObjectLists(
+        $res = DBJson::concatObjectLists(
                                                $data,
                                                $res,
                                                Exercise::getDBPrimaryKey( ),

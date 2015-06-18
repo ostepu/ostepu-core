@@ -1,10 +1,75 @@
 [
-    {"method":"PUT", "path":"/exercisetype(/exercisetype)/:etid(/)"},
-    {"method":"DELETE", "path":"/exercisetype(/exercisetype)/:etid(/)"},
-    {"method":"POST", "path":"/exercisetype(/)"},
-    {"method":"GET", "path":"/exercisetype(/exercisetype)/:etid(/)"},
-    {"method":"GET", "path":"/exercisetype(/exercisetype)(/)"},
-    {"method":"POST", "path":"/platform"},
-    {"method":"DELETE", "path":"/platform"},
-    {"method":"GET", "path":"/link/exists/platform"}    
+    {
+        "name": "editExerciseType",
+        "outputType": "ExerciseType",
+        "inputType": "ExerciseType",
+        "method": "PUT",
+        "path": "/exercisetype(/exercisetype)/:etid"
+    },
+    {
+        "name": "deleteExerciseType",
+        "outputType": "ExerciseType",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/exercisetype(/exercisetype)/:etid"
+    },
+    {
+        "name": "addExerciseType",
+        "outputType": "ExerciseType",
+        "inputType": "ExerciseType",
+        "method": "POST",
+        "path": "/exercisetype"
+    },
+    {
+        "name": "getExerciseType",
+        "callback": "getMatchSingle",
+        "outputType": "ExerciseType",
+        "inputType": "",
+        "method": "GET",
+        "path": "/exercisetype(/exercisetype)/:etid"
+    },
+    {
+        "name": "getAllExerciseTypes",
+        "callback": "getMatch",
+        "outputType": "ExerciseType",
+        "inputType": "",
+        "method": "GET",
+        "path": "/exercisetype(/exercisetype)"
+    },
+    {
+        "name": "addPlatform",
+        "outputType": "Platform",
+        "inputType": "Platform",
+        "method": "POST",
+        "path": "/platform"
+    },
+    {
+        "name": "deletePlatform",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/platform"
+    },
+    {
+        "name": "getExistsPlatform",
+        "callback": "getMatchSingle",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "GET",
+        "path": "/link/exists/platform"
+    },
+    {
+        "name": "getSamplesInfo",
+        "outputType": "",
+        "inputType": "",
+        "method": "GET",
+        "path": "/samples"
+    },
+    {
+        "name": "postSamples",
+        "outputType": "",
+        "inputType": "",
+        "method": "POST",
+        "path": "/samples/:amount"
+    }
 ]

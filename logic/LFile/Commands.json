@@ -1,5 +1,4 @@
 [
-    {    "method":"post", "path":"/file/:adress(/)" },
-    {    "method":"post", "path":"/file(/)" },
-    {    "method":"delete", "path":"/file(/)" }
+    {    "method":"POST", "path":"/file(/)" },
+    {    "method":"DELETE", "path":"/file/:fileid(/)" }
 ]

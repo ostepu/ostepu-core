@@ -1,20 +1,101 @@
 {
-  "name":"DBApprovalCondition",
-  "version":"1.0",
-  "classFile":"DBApprovalCondition.php",
-  "className":"DBApprovalCondition",
-  "files":[
-    {"path":".htaccess"},
-    {"path":"DBApprovalCondition.php"},
-    {"path":"index.php"},
-    {"path":"Commands.json"},
-    {"path":"Sql/"}
-  ],
-  "links":[
-    {"name":"out", "target":"DBQuery", "links":[{"method":"POST", "path":"/query" }] },
-    {"name":"out2", "target":"DBQuery2", "links":[{"method":"POST", "path":"/query" }] }
-  ],
-  "connector":[
-    {"name":"request", "target":"CLocalObjectRequest"}
-  ]
+    "name": "DBApprovalCondition",
+    "version": "1.0",
+    "classFile": "DBApprovalCondition.php",
+    "className": "DBApprovalCondition",
+    "files": [
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "DBApprovalCondition.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "Sql/"
+        }
+    ],
+    "links": [
+        {
+            "name": "out",
+            "target": "DBQuery",
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "/query"
+                }
+            ]
+        },
+        {
+            "name": "out2",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "/query"
+                }
+            ]
+        },
+        {
+            "name": "getApprovalCondition",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBApprovalConditionGetApprovalCondition/:apid"
+                }
+            ]
+        },
+        {
+            "name": "getAllApprovalConditions",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBApprovalConditionGetAllApprovalConditions"
+                }
+            ]
+        },
+        {
+            "name": "getCourseApprovalConditions",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBApprovalConditionGetCourseApprovalConditions/:courseid"
+                }
+            ]
+        },
+        {
+            "name": "getExistsPlatform",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBApprovalConditionGetExistsPlatform"
+                }
+            ]
+        },
+        {
+            "name": "getSamplesInfo",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBApprovalConditionGetExistsPlatform"
+                }
+            ]
+        }
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest"
+        }
+    ]
 }

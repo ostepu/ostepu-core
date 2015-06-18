@@ -1,7 +1,7 @@
 <?php
 /** 
- * @file DeleteUserSheetSelectedSubmission.sql
- * deletes a specified selected submission row from %SelectedSubmission table
+ * @file DeleteUserSheetSubmission.sql
+ * deletes a specified selected submission row from %SelectedSubmission and %Submission table
  * @author  Till Uhlig
  * @param int \$userid a %User identifier
  * @param int \$esid a %ExerciseSheet identifier

@@ -9,4 +9,4 @@
 ?>
  
 INSERT INTO File SET <?php echo $values; ?>
-ON DUPLICATE KEY UPDATE <?php echo $values; ?>
+ON DUPLICATE KEY UPDATE <?php echo $values; ?>;

@@ -1,9 +1,11 @@
 *.swp
 .DS_Store
 Assistants/parsedown/
-Assistants/hyperlight/
-path/
+Assistants/Test/
+Assistants/hyperlight
 *CConfig.json
 *.ini
+path/
+ostepu/
 Assistants/Test/
 .project

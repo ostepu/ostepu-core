@@ -23,6 +23,8 @@ SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
+ALTER TABLE `CourseStatus` CHANGE `CS_status` `CS_status` TINYINT NOT NULL DEFAULT '0';
+
 DROP TRIGGER IF EXISTS `CourseStatus_AINS`;
 CREATE TRIGGER `CourseStatus_AINS` AFTER INSERT ON `CourseStatus` FOR EACH ROW
 <?php
@@ -52,3 +54,6 @@ FROM ExerciseSheet E
 WHERE E.C_id = NEW.C_id;
 end if;
 end;
+
+<?php if (is_dir($sqlPath.'/procedures')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/procedures/'.$inp);}},scandir($sqlPath.'/procedures'),array_pad(array(),count(scandir($sqlPath.'/procedures')),$sqlPath));?>
+<?php if (is_dir($sqlPath.'/migrations')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/migrations/'.$inp);}},scandir($sqlPath.'/migrations'),array_pad(array(),count(scandir($sqlPath.'/migrations')),$sqlPath));?>

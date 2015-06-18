@@ -35,6 +35,10 @@ SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
+ALTER TABLE `ExerciseSheet` CHANGE `ES_startDate` `ES_startDate` INT UNSIGNED NULL DEFAULT '0';
+ALTER TABLE `ExerciseSheet` CHANGE `ES_endDate` `ES_endDate` INT UNSIGNED NULL DEFAULT '0';
+ALTER TABLE `ExerciseSheet` CHANGE `ES_groupSize` `ES_groupSize` SMALLINT UNSIGNED NULL DEFAULT '1';
+
 DROP TRIGGER IF EXISTS `ExerciseSheet_AINS`;
 CREATE TRIGGER `ExerciseSheet_AINS` AFTER INSERT ON `ExerciseSheet` FOR EACH ROW
 <?php
@@ -64,3 +68,6 @@ if (NEW.ES_groupSize is NULL) then
 SIGNAL sqlstate '23000' set message_text = 'no corresponding course for exercisesheet';
 END if;
 end;
+
+<?php if (is_dir($sqlPath.'/procedures')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/procedures/'.$inp);}},scandir($sqlPath.'/procedures'),array_pad(array(),count(scandir($sqlPath.'/procedures')),$sqlPath));?>
+<?php if (is_dir($sqlPath.'/migrations')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/migrations/'.$inp);}},scandir($sqlPath.'/migrations'),array_pad(array(),count(scandir($sqlPath.'/migrations')),$sqlPath));?>

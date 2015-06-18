@@ -1,27 +1,146 @@
 [
-    {"method":"PUT", "path":"/marking(/marking)/:mid(/)"},
-    {"method":"DELETE", "path":"/marking(/marking)/:mid(/)"},
-    {"method":"DELETE", "path":"/marking(/marking)/exercisesheet/:esid(/)"},
-    {"method":"POST", "path":"/marking(/)"},
-    {"method":"GET", "path":"/marking/submission/:suid(/)"},
-    {"method":"GET", "path":"/marking/submission/:suid/nosubmission(/)"},
-    {"method":"GET", "path":"/marking/exercise/:eid(/)"},
-    {"method":"GET", "path":"/marking/exercise/:eid/nosubmission(/)"},
-    {"method":"GET", "path":"/marking/exercisesheet/:esid(/)"},
-    {"method":"GET", "path":"/marking/exercisesheet/:esid/nosubmission(/)"},
-    {"method":"GET", "path":"/marking/course/:cid(/)"},
-    {"method":"GET", "path":"/marking/course/:cid/nosubmission(/)"},
-    {"method":"GET", "path":"/marking/exercisesheet/:esid/user/:userid(/)"},
-    {"method":"GET", "path":"/marking/exercisesheet/:esid/user/:userid/nosubmission(/)"},
-    {"method":"GET", "path":"/marking/exercisesheet/:esid/tutor/:userid(/)"},
-    {"method":"GET", "path":"/marking/exercisesheet/:esid/tutor/:userid/nosubmission(/)"},
-    {"method":"GET", "path":"/marking/exercise/:eid/tutor/:userid(/)"},
-    {"method":"GET", "path":"/marking/exercise/:eid/tutor/:userid/nosubmission(/)"},
-    {"method":"GET", "path":"/marking(/marking)/:mid(/)"},
-    {"method":"GET", "path":"/marking(/marking)/:mid/nosubmission(/)"},
-    {"method":"GET", "path":"/marking(/marking)(/)"},
-    {"method":"GET", "path":"/marking(/marking)/nosubmission(/)"},
-    {"method":"POST", "path":"/platform"},
-    {"method":"DELETE", "path":"/platform"},
-    {"method":"GET", "path":"/link/exists/platform"}
+    {
+        "name": "editMarking",
+        "outputType": "Marking",
+        "inputType": "Marking",
+        "method": "PUT",
+        "path": "/marking(/marking)/:mid"
+    },
+    {
+        "name": "deleteMarking",
+        "outputType": "Marking",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/marking(/marking)/:mid"
+    },
+    {
+        "name": "deleteSheetMarkings",
+        "outputType": "Marking",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/marking(/marking)/exercisesheet/:esid"
+    },
+    {
+        "name": "addMarking",
+        "outputType": "Marking",
+        "inputType": "Marking",
+        "method": "POST",
+        "path": "/marking"
+    },
+    {
+        "name": "getSubmissionMarking",
+        "callback": "getMatchSingle",
+        "outputType": "Marking",
+        "inputType": "",
+        "method": "GET",
+        "path": "/marking/submission/:suid(/:sub)"
+    },
+    {
+        "name": "getExerciseMarkings",
+        "callback": "getMatch",
+        "outputType": "Marking",
+        "inputType": "",
+        "method": "GET",
+        "path": "/marking/exercise/:eid(/:sub)"
+    },
+    {
+        "name": "getSheetMarkings",
+        "callback": "getMatch",
+        "outputType": "Marking",
+        "inputType": "",
+        "method": "GET",
+        "path": "/marking/exercisesheet/:esid(/:sub)"
+    },
+    {
+        "name": "getCourseMarkings",
+        "callback": "getMatch",
+        "outputType": "Marking",
+        "inputType": "",
+        "method": "GET",
+        "path": "/marking/course/:courseid(/:sub)"
+    },
+    {
+        "name": "getUserGroupMarkings",
+        "callback": "getMatch",
+        "outputType": "Marking",
+        "inputType": "",
+        "method": "GET",
+        "path": "/marking/exercisesheet/:esid/user/:userid(/:sub)"
+    },
+    {
+        "name": "getCourseUserGroupMarkings",
+        "callback": "getMatch",
+        "outputType": "Marking",
+        "inputType": "",
+        "method": "GET",
+        "path": "/marking/course/:courseid/user/:userid(/:sub)"
+    },
+    {
+        "name": "getTutorSheetMarkings",
+        "callback": "getMatch",
+        "outputType": "Marking",
+        "inputType": "",
+        "method": "GET",
+        "path": "/marking/exercisesheet/:esid/tutor/:userid(/:sub)"
+    },
+    {
+        "name": "getTutorExerciseMarkings",
+        "callback": "getMatch",
+        "outputType": "Marking",
+        "inputType": "",
+        "method": "GET",
+        "path": "/marking/exercise/:eid/tutor/:userid(/:sub)"
+    },
+    {
+        "name": "getMarking",
+        "callback": "getMatchSingle",
+        "outputType": "Marking",
+        "inputType": "",
+        "method": "GET",
+        "path": "/marking(/marking)/:mid(/:sub)"
+    },
+    {
+        "name": "getAllMarkings",
+        "callback": "getMatch",
+        "outputType": "Marking",
+        "inputType": "",
+        "method": "GET",
+        "path": "/marking(/marking)(/:sub)"
+    },
+    {
+        "name": "addPlatform",
+        "outputType": "Platform",
+        "inputType": "Platform",
+        "method": "POST",
+        "path": "/platform"
+    },
+    {
+        "name": "deletePlatform",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/platform"
+    },
+    {
+        "name": "getExistsPlatform",
+        "callback": "getMatchSingle",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "GET",
+        "path": "/link/exists/platform"
+    },
+    {
+        "name": "getSamplesInfo",
+        "outputType": "",
+        "inputType": "",
+        "method": "GET",
+        "path": "/samples"
+    },
+    {
+        "name": "postSamples",
+        "outputType": "Query",
+        "inputType": "",
+        "method": "POST",
+        "path": "/samples/course/:courseAmount/user/:userAmount"
+    }
 ]

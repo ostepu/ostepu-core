@@ -1,20 +1,101 @@
 {
-  "name":"DBExercise",
-  "version":"1.0",
-  "classFile":"DBExercise.php",
-  "className":"DBExercise",
-  "files":[
-    {"path":".htaccess"},
-    {"path":"DBExercise.php"},
-    {"path":"index.php"},
-    {"path":"Commands.json"},
-    {"path":"Sql/"}
-  ],
-  "links":[
-    {"name":"out", "target":"DBQuery", "links":[{"method":"POST", "path":"/query" }] },
-    {"name":"out2", "target":"DBQuery2", "links":[{"method":"POST", "path":"/query" }] }
-  ],
-  "connector":[
-    {"name":"request", "target":"CLocalObjectRequest"}
-  ]
+    "name": "DBExercise",
+    "version": "1.0",
+    "classFile": "DBExercise.php",
+    "className": "DBExercise",
+    "files": [
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "DBExercise.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "Sql/"
+        }
+    ],
+    "links": [
+        {
+            "name": "out",
+            "target": "DBQuery",
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "/query"
+                }
+            ]
+        },
+        {
+            "name": "out2",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "/query"
+                }
+            ]
+        },
+        {
+            "name": "getExercise",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBExerciseGetExercise/:eid/:sub"
+                }
+            ]
+        },
+        {
+            "name": "getAllExercises",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBExerciseGetAllExercises/:sub"
+                }
+            ]
+        },
+        {
+            "name": "getCourseExercises",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBExerciseGetCourseExercises/:courseid/:sub"
+                }
+            ]
+        },
+        {
+            "name": "getSheetExercises",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBExerciseGetSheetExercises/:esid/:sub"
+                }
+            ]
+        },
+        {
+            "name": "getExistsPlatform",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBExerciseGetExistsPlatform"
+                }
+            ]
+        }
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest"
+        }
+    ]
 }

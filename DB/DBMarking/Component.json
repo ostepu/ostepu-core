@@ -1,20 +1,171 @@
 {
-  "name":"DBMarking",
-  "version":"1.0",
-  "classFile":"DBMarking.php",
-  "className":"DBMarking",
-  "files":[
-    {"path":".htaccess"},
-    {"path":"DBMarking.php"},
-    {"path":"index.php"},
-    {"path":"Commands.json"},
-    {"path":"Sql/"}
-  ],
-  "links":[
-    {"name":"out", "target":"DBQuery", "links":[{"method":"POST", "path":"/query" }] },
-    {"name":"out2", "target":"DBQuery2", "links":[{"method":"POST", "path":"/query" }] }
-  ],
-  "connector":[
-    {"name":"request", "target":"CLocalObjectRequest"}
-  ]
+    "name": "DBMarking",
+    "version": "1.0",
+    "classFile": "DBMarking.php",
+    "className": "DBMarking",
+    "files": [
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "DBMarking.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "Sql/"
+        }
+    ],
+    "links": [
+        {
+            "name": "out",
+            "target": "DBQuery",
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "/query"
+                }
+            ]
+        },
+        {
+            "name": "out2",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "/query"
+                }
+            ]
+        },
+        {
+            "name": "getMarking",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBMarkingGetMarking/:mid/:sub"
+                }
+            ]
+        },
+        {
+            "name": "getSubmissionMarking",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBMarkingGetSubmissionMarking/:suid/:sub"
+                }
+            ]
+        },
+        {
+            "name": "getAllMarkings",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBExerciseGetAllMarkings/:sub"
+                }
+            ]
+        },
+        {
+            "name": "getCourseMarkings",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBMarkingGetCourseMarkings/:courseid/:sub"
+                }
+            ]
+        },
+        {
+            "name": "getExerciseMarkings",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBMarkingGetExerciseMarkings/:eid/:sub"
+                }
+            ]
+        },
+        {
+            "name": "getSheetMarkings",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBMarkingGetSheetMarkings/:esid/:sub"
+                }
+            ]
+        },
+        {
+            "name": "getTutorCourseMarkings",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBMarkingGetTutorCourseMarkings/:courseid/:userid/:sub"
+                }
+            ]
+        },
+        {
+            "name": "getTutorExerciseMarkings",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBMarkingGetTutorExerciseMarkings/:eid/:userid/:sub"
+                }
+            ]
+        },
+        {
+            "name": "getTutorSheetMarkings",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBMarkingGetTutorSheetMarkings/:esid/:userid/:sub"
+                }
+            ]
+        },
+        {
+            "name": "getUserGroupMarkings",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBMarkingGetUserGroupMarkings/:esid/:userid/:sub"
+                }
+            ]
+        },
+        {
+            "name": "getCourseUserGroupMarkings",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBMarkingGetCourseUserGroupMarkings/:courseid/:userid/:sub"
+                }
+            ]
+        },
+        {
+            "name": "getExistsPlatform",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBMarkingGetExistsPlatform"
+                }
+            ]
+        }
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest"
+        }
+    ]
 }

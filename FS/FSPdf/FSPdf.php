@@ -11,9 +11,9 @@
 
 require_once ( dirname(__FILE__) . '/../../Assistants/Slim/Slim.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/CConfig.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Structures.php' );
-require_once(dirname(__FILE__).'/_tcpdf_6.0.095/tcpdf_autoconfig.php');
-require_once(dirname(__FILE__).'/_tcpdf_6.0.095/tcpdf.php');
+include_once ( dirname(__FILE__) . '/../../Assistants/Structures/Pdf.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/Structures/File.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/Structures/Platform.php' );
 
 \Slim\Slim::registerAutoloader( );
 
@@ -68,7 +68,7 @@ class FSPdf
      */
     public function __construct( )
     {
-    
+
         // runs the CConfig
         $com = new CConfig( FSPdf::getBaseDir( ), dirname(__FILE__) );
 
@@ -85,7 +85,7 @@ class FSPdf
         // initialize component
         ///$this->_conf = $_conf;
 
-        $this->_app = new \Slim\Slim( array( 'debug' => true ) );
+        $this->_app = new \Slim\Slim( array( 'debug' => false ) );
 
         $this->_app->response->headers->set( 
                                             'Content-Type',
@@ -361,9 +361,9 @@ class FSPdf
         // merge all file objects to one pdf
         $body = $this->_app->request->getBody( );
         $files = File::decodeFile($body);
-        
+      
         if (!is_array($files)) $files = array($files);
-        
+ 
         $hashArray = array( );
         foreach ( $files as $part ){
             if ( $part->getBody( ) !== null ){
@@ -372,7 +372,7 @@ class FSPdf
             } else 
                 $hashArray[] = $part->getAddress( ) . $part->getDisplayName( );
         }
-        
+      
         $name = sha1( implode( 
                               "\n",
                               $hashArray
@@ -382,7 +382,7 @@ class FSPdf
                                             $folder,
                                             $name
                                             );
-                                            
+
         if (!file_exists( $this->config['DIR']['files'].'/'.$targetPath ) ){
         
             $body="";
@@ -398,7 +398,6 @@ class FSPdf
                             $text = utf8_encode($text); 
                         }
                         $text = htmlentities(htmlentities($text));
-
                         $body.= $text.'<br>';
                     } else {
                         // failure
@@ -818,6 +817,9 @@ class FSPdf
     
     public static function createPdf($data)
     {
+        require_once(dirname(__FILE__).'/_tcpdf_6.0.095/tcpdf_autoconfig.php');
+        require_once(dirname(__FILE__).'/_tcpdf_6.0.095/tcpdf.php');
+
         $pdf = new TCPDF( 
                        ($data->getOrientation()!==null ? $data->getOrientation() : 'P'),
                        'mm',

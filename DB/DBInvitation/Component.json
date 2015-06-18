@@ -1,20 +1,121 @@
 {
-  "name":"DBInvitation",
-  "version":"1.0",
-  "classFile":"DBInvitation.php",
-  "className":"DBInvitation",
-  "files":[
-    {"path":".htaccess"},
-    {"path":"DBInvitation.php"},
-    {"path":"index.php"},
-    {"path":"Commands.json"},
-    {"path":"Sql/"}
-  ],
-  "links":[
-    {"name":"out", "target":"DBQuery", "links":[{"method":"POST", "path":"/query" }] },
-    {"name":"out2", "target":"DBQuery2", "links":[{"method":"POST", "path":"/query" }] }
-  ],
-  "connector":[
-    {"name":"request", "target":"CLocalObjectRequest"}
-  ]
+    "name": "DBInvitation",
+    "version": "1.0",
+    "classFile": "DBInvitation.php",
+    "className": "DBInvitation",
+    "files": [
+        {
+            "path": ".htaccess"
+        },
+        {
+            "path": "DBInvitation.php"
+        },
+        {
+            "path": "index.php"
+        },
+        {
+            "path": "Commands.json"
+        },
+        {
+            "path": "Sql/"
+        }
+    ],
+    "links": [
+        {
+            "name": "out",
+            "target": "DBQuery",
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "/query"
+                }
+            ]
+        },
+        {
+            "name": "out2",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "POST",
+                    "path": "/query"
+                }
+            ]
+        },
+        {
+            "name": "getAllInvitations",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBInvitationGetAllInvitations"
+                }
+            ]
+        },
+        {
+            "name": "getLeaderInvitations",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBInvitationGetLeaderInvitations/:userid"
+                }
+            ]
+        },
+        {
+            "name": "getMemberInvitations",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBInvitationGetMemberInvitations/:userid"
+                }
+            ]
+        },
+        {
+            "name": "getSheetInvitations",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBInvitationGetSheetInvitations/:esid"
+                }
+            ]
+        },
+        {
+            "name": "getSheetLeaderInvitations",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBInvitationGetSheetLeaderInvitations/:esid/:userid"
+                }
+            ]
+        },
+        {
+            "name": "getSheetMemberInvitations",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBInvitationGetSheetMemberInvitations/:esid/:userid"
+                }
+            ]
+        },
+        {
+            "name": "getExistsPlatform",
+            "target": "DBQuery2",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/query/procedure/DBCourseGetExistsPlatform"
+                }
+            ]
+        }
+    ],
+    "connector": [
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest"
+        }
+    ]
 }

@@ -5,8 +5,9 @@
  * @author Till Uhlig
  * @author Felix Schmidt
  * @example DB/DBUser/UserSample.json
- * @date 2013-2014
+ * @date 2013-2015
  */
+
 include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );
 
 /**
@@ -41,10 +42,9 @@ class DBUser
      *
      * @param string $userid The id or the username of the user that is being updated.
      */
-    public function editUser( $input, $userid )
+    public function editUser( $callName, $input, $params = array() )
     {
-        $userid = DBJson::mysql_real_escape_string( $userid );
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/EditUser.sql',array('userid' => $userid, 'values' => $input->getInsertData( )),200,'Model::isCreated',array(new User()),'Model::isProblem',array(new User()));
+        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/EditUser.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new User()),'Model::isProblem',array(new User()));
     }
 
     /**
@@ -55,10 +55,9 @@ class DBUser
      *
      * @param string $userid The id or the username of the user that is being deleted.
      */
-    public function removeUser( $input, $userid )
+    public function removeUser( $callName, $input, $params = array() )
     {
-        $userid = DBJson::mysql_real_escape_string( $userid );
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/DeleteUser.sql',array('userid' => $userid),200,'Model::isCreated',array(new User()),'Model::isProblem',array(new User()));  
+        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/DeleteUser.sql',$params,201,'Model::isCreated',array(new User()),'Model::isProblem',array(new User()));  
     }
 
     /**
@@ -69,10 +68,9 @@ class DBUser
      *
      * @param string $userid The id or the username of the user that is being deleted.
      */
-    public function removeUserPermanent( $input, $userid )
+    public function removeUserPermanent( $callName, $input, $params = array() )
     {
-        $userid = DBJson::mysql_real_escape_string( $userid );
-        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/DeleteUserPermanent.sql',array('userid' => $userid),200,'Model::isCreated',array(new User()),'Model::isProblem',array(new User()));
+        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/DeleteUserPermanent.sql',$params,201,'Model::isCreated',array(new User()),'Model::isProblem',array(new User()));
     }
 
     /**
@@ -82,7 +80,7 @@ class DBUser
      * /user(/).
      * The request body should contain a JSON object representing the new user.
      */
-    public function addUser( $input )
+    public function addUser( $callName, $input, $params = array() )
     {
         $positive = function($input) {
             // sets the new auto-increment id
@@ -93,125 +91,32 @@ class DBUser
         return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/AddUser.sql',array( 'values' => $input->getInsertData( )),200,$positive,array(),'Model::isProblem',array(new User()),false);
     }
 
-    public function get( $functionName,$sqlFile,$params=array(),$singleResult = false, $checkSession = true )
+    public function get( $functionName, $linkName, $params=array(),$singleResult = false, $checkSession = true )
     {
         $positive = function($input, $singleResult) {
-            $input = $input[count($input)-1];
-            $result = Model::isEmpty();
-            if ( $input->getNumRows( ) > 0 ){
-                // extract user data from db answer
-                $result['content'] = User::ExtractUser( $input->getResponse( ), $singleResult);
-                $result['status'] = 200;            
+            //$input = $input[count($input)-1];
+            $result = Model::isEmpty();$result['content']=array();
+            foreach ($input as $inp){
+                if ( $inp->getNumRows( ) > 0 ){
+                    // extract user data from db answer
+                    $result['content'] = array_merge($result['content'], User::ExtractUser( $inp->getResponse( ), $singleResult));
+                    $result['status'] = 200;
+                }
             }
             return $result;
         };
         
         $params = DBJson::mysql_real_escape_string( $params );
-        return $this->_component->callSqlTemplate('out',$sqlFile,$params,200,$positive,array($singleResult),'Model::isProblem',array(),$checkSession);
+        return $this->_component->call($linkName, $params, '', 200, $positive, array($singleResult), 'Model::isProblem', array(), 'Query');
     }
 
-    /**
-     * Returns all users.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /user(/) or /user/user(/).
-     */
-    public function getUsers( $input )
+    public function getMatch($callName, $input, $params = array())
     {
-        return $this->get('GetUsers',dirname(__FILE__).'/Sql/GetUsers.sql',array() );
+        return $this->get($callName,$callName,$params);
     }
-
-    /**
-     * Returns a user.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /user/$userid(/) or user/user/$userid(/).
-     *
-     * @param string $userid The id or the username of the user that should be returned.
-     */
-    public function getUser( $input, $userid )
+    public function getMatchSingle($callName, $input, $params = array())
     {
-        return $this->get('GetUser',dirname(__FILE__).'/Sql/GetUser.sql',array("userid"=>$userid),true,false);
-    }
-
-    /**
-     * Increases the number of failed login attempts of a user and then returns the user.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /user/$userid/IncFailedLogin(/) or /user/user/$userid/IncFailedLogin(/).
-     *
-     * @param string $userid The id or the username of the user.
-     */
-    public function getIncreaseUserFailedLogin( $input, $userid )
-    {
-        return $this->get('GetIncreaseUserFailedLogin',dirname(__FILE__).'/Sql/GetIncreaseUserFailedLogin.sql',array("userid"=>$userid),true,false);
-    }
-
-    /**
-     * Returns all users of a course.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /user/course/$courseid(/).
-     *
-     * @param int $courseid The id or the course.
-     */
-    public function getCourseMember( $input, $courseid )
-    {
-        return $this->get('GetCourseMember',dirname(__FILE__).'/Sql/GetCourseMember.sql',array("courseid"=>$courseid));
-    }
-
-    /**
-     * Returns all members of the group the user is part of
-     * regarding a specific exercise sheet.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /user/group/user/$userid/exercisesheet/$esid(/).
-     *
-     * @param string $userid The id or the username of the user.
-     * @param int $esid The id of the exercise sheet.
-     */
-    public function getGroupMember($input,$userid,$esid)
-    {
-        return $this->get('GetGroupMember',dirname(__FILE__).'/Sql/GetGroupMember.sql',array("esid"=>$esid,"statusid"=>$statusid) );
-    }
-
-    /**
-     * Returns all users with a given status.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /user/status/$statusid(/).
-     *
-     * @param string $statusid The status the users should have.
-     */
-    public function getUserByStatus($input,$statusid )
-    {
-        return $this->get('GetUserByStatus',dirname(__FILE__).'/Sql/GetUserByStatus.sql',array("statusid"=>$statusid) );
-    }
-
-    /**
-     * Returns all users with a given status which are members of a
-     * specific course.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /course/$courseid/status/$statusid(/).
-     *
-     * @param string $courseid The courseid of the course.
-     * @param string $statusid The status the users should have.
-     */
-    public function getCourseUserByStatus($input,$courseid,$statusid)
-    {
-        return $this->get('GetCourseUserByStatus',dirname(__FILE__).'/Sql/GetCourseUserByStatus.sql',array("courseid"=>$courseid,"statusid"=>$statusid));
-    }
-    
-    /**
-     * Returns status code 200, if this component is correctly installed for the platform
-     *
-     * Called when this component receives an HTTP GET request to
-     * /link/exists/platform.
-     */
-    public function getExistsPlatform( $input )
-    {
-        return $this->get('GetExistsPlatform',dirname(__FILE__).'/Sql/GetExistsPlatform.sql',array(),true,false);
+        return $this->get($callName,$callName,$params,true,false);
     }
     
     /**
@@ -220,9 +125,9 @@ class DBUser
      * Called when this component receives an HTTP DELETE request to
      * /platform.
      */
-    public function deletePlatform( $input )
+    public function deletePlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),200,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
     
     /**
@@ -231,8 +136,34 @@ class DBUser
      * Called when this component receives an HTTP POST request to
      * /platform.
      */
-    public function addPlatform( $input )
+    public function addPlatform( $callName, $input, $params = array())
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),200,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
+    }
+    
+    public function getSamplesInfo( $callName, $input, $params = array() )
+    {
+        $positive = function($input) {
+            $result = Model::isEmpty();$result['content']=array();
+            foreach ($input as $inp){
+                if ( $inp->getNumRows( ) > 0 ){
+                    foreach($inp->getResponse( ) as $key => $value)
+                        foreach($value as $key2 => $value2){
+                            $result['content'][] = $value2;
+                        }
+                    $result['status'] = 200;
+                }
+            }
+            return $result;
+        };
+        
+        $params = DBJson::mysql_real_escape_string( $params );
+        return $this->_component->call($callName, $params, '', 200, $positive,  array(), 'Model::isProblem', array(), 'Query');
+    }
+    
+    public function postSamples( $callName, $input, $params = array() )
+    {   
+        set_time_limit(0);
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/Samples.sql',$params,201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));  
     }
 }

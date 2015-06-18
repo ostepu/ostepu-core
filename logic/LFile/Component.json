@@ -13,8 +13,8 @@
     {"path":"LFileHandler2.php"}
   ],
   "links":[
-    {"name":"fileDb", "target":"DBFile", "links":[{"method":"GET", "path":"/file/:adress/hash/:hash" },{"method":"DELETE", "path":"/file/:fileid" }] },
-    {"name":"file", "target":"FSFile", "links":[{"method":"POST", "path":"/file/:adress" },{"method":"DELETE", "path":"/:adress" }] }
+    {"name":"fileDb", "target":"DBFile", "links":[{"method":"GET", "path":"/file/hash/:hash" },{"method":"DELETE", "path":"/file/:fileid" }] },
+    {"name":"file", "target":"FSFile", "links":[{"method":"POST", "path":"/file" },{"method":"DELETE", "path":"/file/:adress" }] }
   ],
   "connector":[
     {"name":"request", "target":"CLocalObjectRequest"}

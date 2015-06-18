@@ -4,77 +4,84 @@
         "outputType": "User",
         "inputType": "User",
         "method": "PUT",
-        "path": "/user(/user)/:userid(/)"
+        "path": "/user(/user)/:userid"
     },
     {
         "name": "removeUser",
         "outputType": "User",
         "inputType": "",
         "method": "DELETE",
-        "path": "/user(/user)/:userid(/)"
+        "path": "/user(/user)/:userid"
     },
     {
         "name": "removeUserPermanent",
         "outputType": "User",
         "inputType": "",
         "method": "DELETE",
-        "path": "/user(/user)/:userid/permanent(/)"
+        "path": "/user(/user)/:userid/permanent"
     },
     {
         "name": "addUser",
         "outputType": "User",
         "inputType": "User",
         "method": "POST",
-        "path": "/user(/)"
+        "path": "/user"
     },
     {
         "name": "getUsers",
+        "callback": "getMatch",
         "outputType": "User",
         "inputType": "",
         "method": "GET",
-        "path": "/user(/user)(/)"
+        "path": "/user(/user)"
     },
     {
         "name": "getIncreaseUserFailedLogin",
+        "callback": "getMatchSingle",
         "outputType": "User",
         "inputType": "",
         "method": "GET",
-        "path": "/user(/user)/:userid/IncFailedLogin(/)"
+        "path": "/user(/user)/:userid/IncFailedLogin"
     },
     {
         "name": "getUser",
+        "callback": "getMatchSingle",
         "outputType": "User",
         "inputType": "",
         "method": "GET",
-        "path": "/user(/user)/:userid(/)"
+        "path": "/user(/user)/:userid"
     },
     {
         "name": "getCourseUserByStatus",
+        "callback": "getMatch",
         "outputType": "User",
         "inputType": "",
         "method": "GET",
-        "path": "/user/course/:courseid/status/:statusid(/)"
+        "path": "/user/course/:courseid/status/:statusid"
     },
     {
         "name": "getCourseMember",
+        "callback": "getMatch",
         "outputType": "User",
         "inputType": "",
         "method": "GET",
-        "path": "/user/course/:courseid(/)"
+        "path": "/user/course/:courseid"
     },
     {
         "name": "getGroupMember",
+        "callback": "getMatch",
         "outputType": "User",
         "inputType": "",
         "method": "GET",
-        "path": "/user/group/user/:userid/exercisesheet/:esid(/)"
+        "path": "/user/group/user/:userid/exercisesheet/:esid"
     },
     {
         "name": "getUserByStatus",
+        "callback": "getMatch",
         "outputType": "User",
         "inputType": "",
         "method": "GET",
-        "path": "/user/status/:statusid(/)"
+        "path": "/user/status/:statusid"
     },
     {
         "name": "addPlatform",
@@ -92,9 +99,24 @@
     },
     {
         "name": "getExistsPlatform",
+        "callback": "getMatchSingle",
         "outputType": "Platform",
         "inputType": "",
         "method": "GET",
         "path": "/link/exists/platform"
+    },
+    {
+        "name": "getSamplesInfo",
+        "outputType": "",
+        "inputType": "",
+        "method": "GET",
+        "path": "/samples"
+    },
+    {
+        "name": "postSamples",
+        "outputType": "Query",
+        "inputType": "",
+        "method": "POST",
+        "path": "/samples/course/:courseAmount/user/:userAmount"
     }
 ]

@@ -9,3 +9,10 @@ SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 DROP TRIGGER IF EXISTS `Invitation_BINS`;
+DROP PROCEDURE IF EXISTS `DBInvitationGetLeaderInvitations`;
+DROP PROCEDURE IF EXISTS `DBInvitationGetExistsPlatform`;
+DROP PROCEDURE IF EXISTS `DBInvitationGetAllInvitations`;
+DROP PROCEDURE IF EXISTS `DBInvitationGetSheetMemberInvitations`;
+DROP PROCEDURE IF EXISTS `DBInvitationGetSheetLeaderInvitations`;
+DROP PROCEDURE IF EXISTS `DBInvitationGetSheetInvitations`;
+DROP PROCEDURE IF EXISTS `DBInvitationGetMemberInvitations`;

@@ -8,5 +8,5 @@
  */
 ?>
  
-insert into User SET <?php echo $values; ?>
+insert into User SET <?php echo $values; ?>;
 

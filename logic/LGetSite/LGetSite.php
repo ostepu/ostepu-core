@@ -410,7 +410,8 @@ class LGetSite
         $URL = $this->_getSubmission->getAddress().'/submission/group/user/' . $userid .'/course/' . $courseid . '/selected';
         $handler2 = Request_CreateRequest::createGet($URL, array(), '');
 
-        $URL = $this->_getMarking->getAddress().'/marking/course/' . $courseid;
+        //$URL = $this->_getMarking->getAddress().'/marking/course/' . $courseid;
+        $URL = $this->_getMarking->getAddress().'/marking/course/'.$courseid.'/user/'.$userid;
         $handler3 = Request_CreateRequest::createGet($URL, array(), '');
 
         $URL = $this->_getGroup->getAddress().'/group/user/' . $userid;
@@ -431,13 +432,12 @@ class LGetSite
         //Get neccessary data
         $sheets = json_decode($answer[0]['content'], true);
         $submissions = json_decode($answer[1]['content'], true);
-
+        
         if (!isset($submissions)) {
             $submissions = array();
         }
 
         $markings = json_decode($answer[2]['content'], true);
-
         if (!isset($markings)) {
             $markings = array();
         }
@@ -1093,14 +1093,14 @@ class LGetSite
     public function upload($userid, $courseid, $sheetid)
     {
         // loads all exercises of an exercise sheet
-        $URL = "{$this->lURL}/exercisesheet/exercisesheet/{$sheetid}/exercise/";
+        $URL = "{$this->lURL}/exercisesheet/exercisesheet/{$sheetid}/exercise";
         $answer = Request::custom('GET', $URL, array(), '');
         $exercisesheet = json_decode($answer['content'], true);
 
         $URL = "{$this->_getSubmission->getAddress()}/submission/group/user/{$userid}/exercisesheet/{$sheetid}/selected";
         $answer = Request::custom('GET', $URL, array(), '');
         $submissions = json_decode($answer['content'], true);
-        
+
         $URL = "{$this->_getExerciseType->getAddress()}/exercisetype";
         $answer = Request::custom('GET', $URL, array(), '');
         $possibleExerciseTypes = json_decode($answer['content'], true);
@@ -1505,7 +1505,7 @@ class LGetSite
         $handler = Request_CreateRequest::createCustom('GET', $URL, array(),'');
         $multiRequestHandle->addRequest($handler);
 
-        $URL = $this->_getExercise->getAddress() . '/exercise/course/'.$courseid;
+        $URL = $this->_getExercise->getAddress() . '/exercise/course/'.$courseid.'/nosubmission';
         $handler = Request_CreateRequest::createCustom('GET', $URL, array(),'');
         $multiRequestHandle->addRequest($handler);
 

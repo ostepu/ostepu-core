@@ -8,28 +8,25 @@ include_once ( dirname(__FILE__) . '/Logger.php' );
 include_once ( dirname(__FILE__) . '/CConfig.php' );
 include_once ( dirname(__FILE__) . '/DBRequest.php' );
 include_once ( dirname(__FILE__) . '/DBJson.php' );
+require_once( dirname(__FILE__) . '/phpfastcache/phpfastcache.php');
 
 class PathObject
 {
-    ///private static $maxID = 0;
-    public function __construct( $_fromName, $_fromURL, $_fromMethod, $_toName, $_toURL, $_toMethod)
+    public function __construct( $_fromSid, $_toSid,$_toName, $_toURL, $_toMethod)
     {
-        ///$this->id = self::$maxID;self::$maxID++;
-        $this->fromName = $_fromName;
-        $this->fromURL = $_fromURL;
-        $this->fromMethod = $_fromMethod;
+        $this->fromSid = $_fromSid;
+        $this->toSid = $_toSid;
         $this->toName = $_toName;
         $this->toURL = $_toURL;
         $this->toMethod = $_toMethod;
     }
     
-    public $fromName = null;
-    public $fromURL = null;
-    public $fromMethod = null;
+    public $fromSid = null;
+    public $toSid = null;
     public $toName = null;
     public $toURL = null;
     public $toMethod = null;
-    ///public $id = null;
+    public $eTag = null;
 }
 
 class DataObject
@@ -49,76 +46,163 @@ class DataObject
 class CacheManager
 {
     private static $cachedData = array();
-    private static $cachedPath = array();
+    public static $cachedPath = array();
+    public static $tree = null;
     private static $begin = null;
+    private static $activeTree = false;
+    private static $changedTree = false;
+    private static $enabled = false;
+    private static $maxSid = -1;
     
-    public static function savePath()
+    public static function getToPathBySid($sid)
     {
-        $text="digraph G {rankdir=TB;edge [splines=\"polyline\"];\n";
-        $graphName="graph";
-        $groups=array();
-        foreach (self::$cachedPath as $path){
-            $group='0';
-            if (strpos($path->fromURL,'/UI/')!==false)$group='1';
-            if (strpos($path->fromURL,'/logic/')!==false)$group='2';
-            if (strpos($path->fromURL,'/DB/')!==false)$group='3';
-            
-            if (!isset($groups[$group])) $groups[$group] = array();
-            $groups[$group][] = $path;
+        if ($sid===null) return null;
+        foreach(self::$cachedPath as $key => $elem){
+            if ($elem->toSid===null) continue;
+            if ($elem->toSid==$sid)
+                return $elem;
         }
-        
-        foreach ($groups as $key=>$list){
-        	$text.="subgraph step{$key}{\n";//cluster_{$key}
-		
-            foreach ($list as $path){
-                if ($path->fromName===null){
-                    $text.="\"".$path->fromName."\" [style=\"invis\"];\n";
-                    $graphName=$path->toName;
-                } else{
-                    $text.="\"".$path->fromName."\" [shape=\"box\"];\n";
-                }
-            }
-            
-            $text.=" label = \"{$key}\";color=blue;style=dashed;rank = same;}\n";
-        }
-        
-        foreach (self::$cachedPath as $path){
-            $text.="\"".$path->fromName.'"->"'.$path->toName."\"[ label = \"".$path->toMethod."".implode("\n/",explode('/',$path->toURL))."\" ];\n";
-        }
-        $text.="\n}";
-        
-        file_put_contents(dirname(__FILE__).'/../path/'.$graphName.'.gv',$text);
-    }
-    
-    public static function getCachedDataByURL($Base, $URI, $method)
-    {
-        /*$URL = $Base. $URI;
-        if (self::$begin===null){
-            self::$begin = $_SERVER['REQUEST_METHOD'].$_SERVER['REQUEST_URI'];
-            self::$cachedPath[] = new PathObject(null,null,null,basename($_SERVER['SCRIPT_NAME']),$_SERVER['SCRIPT_NAME'],$_SERVER['REQUEST_METHOD']);
-        }
-        
-        self::$cachedPath[] = new PathObject(basename($_SERVER['SCRIPT_NAME']),$_SERVER['SCRIPT_NAME'],$_SERVER['REQUEST_METHOD'],$Base, $URI,$method);
-        if (strtoupper($method)!='GET') return null;
-        $uTag = md5($URL);
-        if (isset($cachedData[$uTag]))
-            return $cachedData[$uTag];*/
         return null;
     }
     
-    public static function cacheData($URL, $content, $status, $method)
+    public static function getNextSid()
     {
-        /*if (self::$begin!==null && self::$begin==$_SERVER['REQUEST_METHOD'].$_SERVER['REQUEST_URI']){
+        self::$maxSid=self::$maxSid+1;
+        return self::$maxSid;
+    }
+    
+    public static function setCacheEnabled($status=null)
+    {
+        if ($status===null) return self::$enabled;
+        self::$enabled=$status;
+    }
+    
+    public static function enable()
+    {
+        $enabled=true;
+    }
+    
+    public static function disable()
+    {
+        $enabled=false;
+    }
+    
+    public static function reset()
+    {
+        self::$cachedData = array();
+        self::$cachedPath = array();
+        self::$tree = null;
+        self::$begin = null;
+        self::$activeTree = false;
+        self::$changedTree = false;
+        self::$enabled = true; 
+        self::$maxSid = -1;
+    }
+    
+    public static function savePath()
+    {
+        if (!self::$enabled) return;
+        asort(self::$cachedPath);
+        
+       /* $text="digraph G {rankdir=TB;edge [splines=\"polyline\"];\n";
+        $graphName="graph";
+        
+        $graphName = $_SERVER['SCRIPT_NAME'];
+        $graphName = basename(explode('?',$graphName)[0]);
+        
+        $beginDone=false;
+        foreach (self::$cachedPath as $key => $path){
+            $fromName = self::getToPathBySid($path->fromSid);
+
+            if ($fromName===null){
+                $fromName = 'BEGIN';
+            } else
+                $fromName = $fromName->toName;
+            $text.="\"".$fromName.'"->"'.$path->toName."\"[ label = \"".$path->toMethod."\" ];\n";
+        }
+        $text.="\n}";
+        file_put_contents(dirname(__FILE__).'/../path/'.$graphName.'.gv',$text);*/
+        
+        if (self::$changedTree) return;
+                
+        $tree = array();
+        foreach (self::$cachedPath as $key => $path){
+            if ($path->toMethod!='GET') continue;
+            $uTag = self::generateETag($path->toURL);
+            $eTag = isset(self::$cachedData[$uTag]) ? self::$cachedData[$uTag]->content : null;
+            if ($eTag!==null) $eTag = self::generateETag($eTag);
+            $path->eTag=$eTag;
+            $tree[$key] = $path;
+        }
+
+        $uTag = self::generateETag(self::$cachedPath[0]->toURL);
+        self::storeData('tree_'.$uTag,json_encode($tree));
+    }
+    
+    public static function generateURL()
+    {
+        if (!self::$enabled) return null;
+        return $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
+    }
+    
+    public static function getCachedDataByURL($sid, $URL, $method)
+    {
+        if (!self::$enabled) return null;
+        if (strtoupper($method)!='GET') return null;
+        
+        $uTag = md5($URL);
+        if (isset(self::$cachedData[$uTag]))
+            return self::$cachedData[$uTag];
+
+        return null;
+    }
+    
+    public static function addPath($sid, $toSid, $Name, $URL, $method)
+    {
+        if (!self::$enabled) return null;
+        self::$cachedPath[$sid] = new PathObject($sid, $toSid, $Name, $URL ,$method);
+    }
+    
+    public static function cacheData($sid, $Name, $URL, $content, $status, $method)
+    {
+        if (!self::$enabled) return null;
+        if (strpos($URL,'/UI/')===false && strtoupper($method)=='GET'){
+            $uTag = md5($URL);
+
+            if (!isset(self::$cachedData[$uTag])){
+                self::$cachedData[$uTag] = new DataObject($content,$status);
+                $eTag = self::generateETag($content);
+                if ($sid==0)
+                    self::storeData('data_'.$eTag,$content);
+            }
+        }
+
+        if ($sid===0){
             self::savePath();
         }
+    }
+    
+    public static function cacheDataSimple($sid, $Name, $URL, $content, $status, $method)
+    {
+        if (!self::$enabled) return null;
+        if (strpos($URL,'/UI/')===false && strtoupper($method)=='GET'){
+            $uTag = md5($URL);
+
+            if (!isset(self::$cachedData[$uTag])){
+                self::$cachedData[$uTag] = new DataObject($content,$status);
+                $componentTag = $Name;
+                $eTag = self::generateETag($content);
+            }
+        }
         
-        if (strtoupper($method)!='GET') $content=null;
-        $uTag = md5($URL);
-        $cachedData[$uTag] = new DataObject($content,$status);*/
+        if ($sid===0){
+            self::savePath();
+        }
     }
     
     public static function generateETag($data)
     {
+        if (!self::$enabled) return null;
         if (!is_string($data))
             $data = json_encode($data);
         return md5($data);
@@ -126,34 +210,127 @@ class CacheManager
     
     public static function setETag($data)
     {
+        if (!self::$enabled) return null;
         $eTag=self::generateETag($data);
-        header('ETag: "' . $eTag . '"');
+        header('ETag: ' . $eTag . '');
     }
     
-    /*public static function getKnownETags($componentName, $URL)
+    public static function setCacheSid($sid)
     {
-        $folder = dirname(__FILE__).'/../../cache/'.md5($componentName.' '.$URL);
-        if (is_dir($folder)){
-            return scandir($folder);
-        } else
-           return array();
+        if (!self::$enabled) return null;
+        header('Cachesid: ' . $sid . '');
     }
     
-    public static function getCachedData($componentName, $URL, $eTag)
+    public static function getTree($sid, $URL, $method)
     {
-        $file = dirname(__FILE__).'/../../cache/'.md5($componentName.' '.$URL).'/'.$eTag;
-        if (file_exists($file)){
-            return file_get_contents($file);
-        } else
-            return null;        
+        if (!self::$enabled) return;
+        if (self::$activeTree) return;
+        if (self::$tree!=null) return;
+        if (strtoupper($method)!='GET') return;
+        
+        $uTag = md5($URL);
+        self::$activeTree=true;
+        self::$changedTree=true;
+        $uriTag = self::generateETag($URL);
+        $list = self::loadData('tree_'.$uTag);
+        if ($list===null) {
+            self::$changedTree=false;
+            ///Logger::Log('no tree', LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+            return;
+        } else {
+            ///Logger::Log('tree found', LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+        }
+        
+        $list = json_decode($list,true);
+        $result = self::loadData('data_'.$list[0]['eTag']);
+        if ($result===null) {
+            self::$changedTree=false;
+            ///Logger::Log('no result', LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+            return;
+        }
+        
+        self::$tree = json_decode(json_encode($list));
+        $sources = array();
+        $allOK = true;
+                    
+        foreach ($list as $key=>$elem){
+            if ($elem['toSid']===null)
+                $sources[$key] = $elem;
+        }
+        
+        // call sources            
+        if ($allOK){
+            foreach ($sources as $key => $source){
+                $answ = Request::get($source['toURL'], array(),  '', true);
+                if (!isset($answ['headers']['Etag']) || $answ['headers']['Etag']!=$source['eTag']){
+                    $allOK = false;
+                    ///Logger::Log('call '.$source['toURL'].(isset($answ['headers']['Etag']) ? ' is not equal, recvHash: '.$answ['headers']['Etag'] : '').' oldHash: '.$source['eTag'] , LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+                } else {
+                    ///Logger::Log('call '.$source['toURL'].' is equal' , LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+                }
+            }
+        }
+        
+        if ($allOK){
+            self::$changedTree=true;
+            if (isset($list[0])){
+                self::cacheDataSimple($sid, $list[0]['toName'], $list[0]['toURL'], $result, 200, $list[0]['toMethod']);
+                ///Logger::Log('cache hit', LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+            } else {
+                ///Logger::Log('nonono', LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+            }
+        } else {
+            // remove tree
+            self::removeData('tree_'.$uTag);
+        }
     }
     
-    public static function cacheData($componentName, $URL, $data, $eTag=null)
+    private static $cache = null;
+    public static function storeData($key, $value)
     {
-        if ($eTag===null)
-            $eTag = self::generateETag($data);
-        $file = dirname(__FILE__).'/../../cache/'.md5($componentName.' '.$URL).'/'.$eTag;
-        mkdir(dirname($file));
-        file_put_contents($file,$data);
-    }*/
+        if (!self::$enabled) return;
+        if (self::$cache===null){
+            phpFastCache::setup(phpFastCache::$config);
+            self::$cache = phpFastCache();
+        }
+        ///Logger::Log('store: '.$key, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+
+        return self::$cache->set($key,$value , 43200);
+    }
+    
+    public static function removeData($key)
+    {
+        if (!self::$enabled) return null;
+        if (self::$cache===null){
+            phpFastCache::setup(phpFastCache::$config);
+            self::$cache = phpFastCache();
+        }        
+        ///Logger::Log('delete: '.$key, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+        return self::$cache->delete($key);
+    }
+    
+    public static function loadData($key)
+    {
+        if (!self::$enabled) return null;
+        if (self::$cache===null){
+            phpFastCache::setup(phpFastCache::$config);
+            self::$cache = phpFastCache();
+        }
+        ///Logger::Log('load: '.$key, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+        
+        return self::$cache->get($key);
+    }
+    
+    public static function loadDataArray($keys)
+    {
+        if (!self::$enabled) return null;
+        if (self::$cache===null){
+            phpFastCache::setup(phpFastCache::$config);
+            self::$cache = phpFastCache();
+        }
+        ///Logger::Log('load: '.implode(':',$keys), LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
+        
+        return self::$cache->getMulti($keys);
+    }
+    
 }

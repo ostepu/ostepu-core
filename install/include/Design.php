@@ -15,48 +15,66 @@ class Design
     public static function erstelleZeile()
     {
         $args = func_get_args();
-        $simple = array_shift($args);
+        $console = array_shift($args);
         $text = '';
+        $result = '';
         
-        $result = '<tr>';
-        foreach($args as $pos => $data){
-            if ($pos%2===0){
-                $text = $data;
-            } else {
-                $result.="<td class='{$data}'>{$text}</td>";
+        if (count($args)%2!=0)
+            $args[] = '';
+        
+        if (!$console){
+            $result = '<tr>';
+            foreach($args as $pos => $data){
+                if ($pos%2===0){
+                    $text = $data;
+                } else {
+                    $result.="<td class='{$data}'>{$text}</td>";
+                }
             }
+            $result.='</tr>';
+        } else {
+            foreach($args as $pos => $data){
+                if ($pos%2===0){
+                    $text = $data;
+                } else {
+                    $result.=" {$text}";
+                }
+            }
+            $result.="\n";         
         }
-        $result.='</tr>';
         
-        return $result;
+        return trim($result,' ');
     }
     
-    public static function erstelleBlock($simple, $name, $data)
+    public static function erstelleBlock($console, $name, $data)
     {
-        $result = "<h2>{$name}</h2><table border='0' cellpadding='3' width='600'>";
-        $result .= "<colgroup><col width='200'><col width='300'><col width='100'></colgroup>";
-        $result.=$data;
-        $result.="</table><br/>";
+        $result = '';
+        if (!$console){
+            $result .= "<h2>{$name}</h2>";
+            $result .= "<table border='0' cellpadding='3' width='600'>";
+            $result .= "<colgroup><col width='200'><col width='300'><col width='100'></colgroup>";
+            $result .= $data;
+            $result .= "</table><br/>";
+        } else {
+            $result .= "<<<{$name}>>>\n";
+            $result .= $data;
+            $result .= "\n";
+
+        }
         return $result;
     }
     
-    public static function erstelleEingabezeile($simple, &$variable, $variablenName, $default, $save=false)
+    public static function erstelleBeschreibung($console, $description)
     {
-        if ($save == true && $variable == null){
-            $variable = Einstellungen::Get($variablenName, $default);
-        } 
-        
-        if ($save == true && $variable != null)
-            Einstellungen::Set($variablenName, $variable);
-            
-        if ($variable == null)
-            $variable = $default;
-        
-        $result = "<input style='width:100%' type='text' name='{$variablenName}' value='".($variable != null? $variable : $default)."'>";
+        if (!$console){
+            $result = "<tr><td colspan='2'>".$description."</td></tr>";
+        } else {
+            $result = '';
+        }
         return $result;
     }
     
-    public static function erstelleVersteckteEingabezeile($simple, &$variable, $variablenName, $default, $save=false)
+    public static function erstelleEingabezeile($console, &$variable, $variablenName, $default, $save=false)
     {
         if ($save == true && $variable == null){
             $variable = Einstellungen::Get($variablenName, $default);
@@ -69,11 +87,34 @@ class Design
             $variable = $default;
         
         $result = '';
-            $result = "<input type='hidden' name='{$variablenName}' value='".($variable != null ? $variable : $default)."'>";
+        
+        if (!$console)
+            $result = "<input style='width:100%' type='text' name='{$variablenName}' value='".($variable != null? $variable : $default)."'>";
+        
         return $result;
     }
     
-    public static function erstelleGruppenAuswahl($simple, &$variable, $variablenName, $value, $default, $save=false)
+    public static function erstelleVersteckteEingabezeile($console, &$variable, $variablenName, $default, $save=false)
+    {
+        if ($save == true && $variable == null){
+            $variable = Einstellungen::Get($variablenName, $default);
+        } 
+        
+        if ($save == true && $variable != null)
+            Einstellungen::Set($variablenName, $variable);
+            
+        if ($variable == null)
+            $variable = $default;
+        
+        $result = '';
+        
+        if (!$console)
+            $result = "<input type='hidden' name='{$variablenName}' value='".($variable != null ? $variable : $default)."'>";
+        
+        return $result;
+    }
+    
+    public static function erstelleGruppenAuswahl($console, &$variable, $variablenName, $value, $default, $save=false)
     {
         if ($save == true && $variable == null){
            $variable = Einstellungen::Get($variablenName, $default);
@@ -90,7 +131,7 @@ class Design
         return $result;
     }
     
-    public static function erstelleAuswahl($simple, &$variable, $variablenName, $value, $default, $save=false)
+    public static function erstelleAuswahl($console, &$variable, $variablenName, $value, $default, $save=false)
     {
         if ($save == true && $variable == null){
            $variable = Einstellungen::Get($variablenName, $default);
@@ -103,24 +144,37 @@ class Design
             $variable = $default;
 
         $empty = '_';
-        $result = Design::erstelleVersteckteEingabezeile($simple, $empty , $variablenName, $default, $save);
+        $result = Design::erstelleVersteckteEingabezeile($console, $empty , $variablenName, $default, $save);
         $result .= "<input style='width:100%' type='checkbox' name='{$variablenName}' value='".$value."'".(($variable==$value && $variable != null) ? "checked" : ($default === null ? '' : ($default===$value ? "checked" : '')) ).">";
         return $result;
     }
     
-    public static function erstellePasswortzeile($simple, $variable, $variablenName, $default, $save=false)
+    public static function erstellePasswortzeile($console, $variable, $variablenName, $default, $save=false)
     {
-        $result = "<input style='width:100%' type='password' name='{$variablenName}' value='".(isset($variable) ? $variable : $default)."'>";
+        $result = '';
+        
+        if (!$console)
+            $result = "<input style='width:100%' type='password' name='{$variablenName}' value='".(isset($variable) ? $variable : $default)."'>";
+        
         return $result;
     }
     
-    public static function erstelleInstallationszeile($simple, &$installFail, $fail, $errno, $error)
+    public static function erstelleInstallationszeile($console, $fail, $errno, $error)
     {
-        if ($fail === true){
-            $installFail = true;
-            return Design::erstelleZeile($simple, Sprachen::Get('main','installation'), 'e', '', 'v', "<div align ='center'><font color='red'>".Sprachen::Get('main','fail'). (($errno!=null && $errno!='') ? " ({$errno})" : '') ."<br> {$error}</font></align>", 'v');
-        } else{
-            return Design::erstelleZeile($simple, Sprachen::Get('main','installation'), 'e', '', 'v', '<div align ="center">'.Sprachen::Get('main','ok').'</align>', 'v');
+        if (!$console){
+            if ($fail === true){
+                //$installFail = true;
+                return Design::erstelleZeile($console, Sprachen::Get('main','installation'), 'e', '', 'v', "<div align ='center'><font color='red'>".Sprachen::Get('main','fail'). (($errno!=null && $errno!='') ? " ({$errno})" : '') ."<br> {$error}</font></align>", 'v');
+            } else{
+                return Design::erstelleZeile($console, Sprachen::Get('main','installation'), 'e', '', 'v', '<div align ="center">'.Sprachen::Get('main','ok').'</align>', 'v');
+            }
+        } else {
+            if ($fail === true){
+                //$installFail = true;
+                return Design::erstelleZeile($console, Sprachen::Get('main','installation'), 'e', '', 'v', Sprachen::Get('main','fail'). (($errno!=null && $errno!='') ? " ({$errno})" : '') ." {$error}", 'v');
+            } else{
+                return Design::erstelleZeile($console, Sprachen::Get('main','installation'), 'e', '', 'v', Sprachen::Get('main','ok'), 'v');
+            }
         }
     }
     

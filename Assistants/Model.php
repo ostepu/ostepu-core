@@ -21,8 +21,9 @@ class Model
     /**
      * @var Component $_conf the component data object
      */
-    private $_conf = null;
+    public $_conf = null;
     private $_class = null;
+    private $_com = null;
     
     public function __construct( $prefix, $path, $class )
     {
@@ -40,41 +41,45 @@ class Model
         if ( $com->used( ) ) return;
             $conf = $com->loadConfig( );
         $this->_conf=$conf;
-        /*$this->_app->response->headers->set( 
-                                            'Content-Type',
-                                            'application/json'
-                                            );*/
+        $this->_com=$com;
         $commands = $com->commands(array(),true,true);
+        //$commands[] = array('name' => 'postMultiGetRequest','method' => 'POST', 'path' => '/multiGetRequest', 'inputType' => 'Link', 'outputType' => '');
+        
         $router = new \Slim\Router();
         foreach ($commands as $command){
-            $route = new \Slim\Route($command['path'],array($this->_class,$command['name']),false);
+            $route = new \Slim\Route($command['path'],array($this->_class,(isset($command['callback']) ? $command['callback'] : $command['name'])),false);
             $route->via(strtoupper($command['method']));
+            $route->setName($command['name']);
             $router->map($route);
+            if (strtoupper($command['method'])=='GET'){
+                $route = new \Slim\Route($command['path'],array($this->_class,(isset($command['callback']) ? $command['callback'] : $command['name'])),false);
+                $route->via('HEAD');
+                $route->setName($command['name']);
+                $router->map($route);
+            }
         }
-        
+
         $scriptName = $_SERVER['SCRIPT_NAME'];
         $requestUri = $_SERVER['REQUEST_URI'];
         $path = str_replace('?' . (isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : ''), '', substr_replace($requestUri, '', 0, strlen((strpos($requestUri, $scriptName) !== false ? $scriptName : str_replace('\\', '', dirname($scriptName))))));
         $matches = $router->getMatchedRoutes(strtoupper($_SERVER['REQUEST_METHOD']), $path);
-        
+
         if (count($matches)>0){
             $matches = $matches[0];
-
             $selectedCommand=null;
             foreach ($commands as $command){
-                if ($command['name'] === $matches->getCallable()[1]){
+                if ($command['name'] === $matches->getName()){
                     $selectedCommand = $command;
                     break;
                 }
             }
-            
             
             $rawInput = \Slim\Environment::getInstance()->offsetGet('slim.input');
             if (!$rawInput) {
                 $rawInput = @file_get_contents('php://input');
             }
             ///Logger::Log('input>> '.$rawInput, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
-            
+
             $arr = true;
             if (isset($selectedCommand['inputType']) && trim($selectedCommand['inputType'])!=''){
                 $inputType = $selectedCommand['inputType'];
@@ -85,21 +90,26 @@ class Model
                     $arr = false;
                 }
             }
-            
+
             // call method
+            $params = $matches->getParams();
             if (isset($selectedCommand['inputType']) && trim($selectedCommand['inputType'])!='' && isset($rawInput)){
                 $result=array("status"=>201,"content"=>array());
                 foreach($rawInput as $input){
-                    $res = call_user_func_array($matches->getCallable(), array_merge(array("input"=>$input),$matches->getParams()));
+                    $res = call_user_func_array($matches->getCallable(), array($selectedCommand['name'],"input"=>$input,$params));
                     if (is_callable(array($res['content'],'setStatus')))
                         $res['content']->setStatus($res['status']);
                     $result["content"][] = $res['content'];
+                    if (isset($res['status']))
+                        $result["status"] = $res['status']; // eingefuegt
                 }
             } else {
-                $result = call_user_func_array($matches->getCallable(), array_merge(array("input"=>$rawInput),$matches->getParams()));
+                $result = call_user_func_array($matches->getCallable(), array($selectedCommand['name'],"input"=>$rawInput,$params));
             }
             
-            if (isset($selectedCommand['outputType']) && trim($selectedCommand['outputType'])!=''){
+            if ($selectedCommand['method']=='HEAD'){
+                $result['content'] = '';
+            } elseif (isset($selectedCommand['outputType']) && trim($selectedCommand['outputType'])!='' && trim($selectedCommand['outputType'])!='binary'){
                 $outputType = $selectedCommand['outputType'];
                 
                 if (isset( $result['content']) ){
@@ -109,8 +119,14 @@ class Model
                     
                     if ( !$arr && count( $result['content'] ) == 1 )
                         $result['content'] = $result['content'][0];
-                    
+
                     $result['content'] = call_user_func_array('\\'.$outputType.'::encode'.$outputType, array($result['content']));
+                }
+                header('Content-Type: application/json');                                            
+            } elseif (isset($selectedCommand['outputType']) && trim($selectedCommand['outputType'])=='binary'){
+                if (isset( $result['content'])){
+                    if (!is_string($result['content']))
+                    $result['content'] = json_encode($result['content']);
                 }
             } else {
                 if (isset( $result['content']) )
@@ -119,8 +135,8 @@ class Model
         } else {
             $result=self::isEmpty();
         }
-        
-        if (isset( $result['content']) )
+
+        if (isset( $result['content'])  )
             echo $result['content'];  
                     
         if (isset( $result['status']) ){
@@ -129,9 +145,11 @@ class Model
             http_response_code(200); 
     }
     
-    public function call($linkName, $params, $body, $returnType=null){
+    public function call($linkName, $params, $body, $positiveStatus, callable $positiveMethod, $positiveParams, callable $negativeMethod, $negativeParams, $returnType=null)
+    {
+   // public function call($linkName, $params, $body, $returnType=null){
         $link=CConfig::getLink($this->_conf->getLinks( ),$linkName);
-        $instructions = $this->_conf->instruction(array(),true);
+        $instructions = $this->_com->instruction(array(),true)['links'];
         $selectedInstruction=null;
         foreach($instructions as $instruction){
             if ($instruction['name']==$linkName){
@@ -143,27 +161,26 @@ class Model
         $order = $selectedInstruction['links'][0]['path'];
         foreach ($params as $key=>$param)
             $order = str_replace( ':'.$key, $param, $order);
-        
+//echo $selectedInstruction['links'][0]['method'].' '.$order;
         $result = Request::routeRequest( 
                                         $selectedInstruction['links'][0]['method'],
                                         $order,
                                         array(),
                                         $body,
-                                        $link
+                                        $link,
+                                        $link->getPrefix()
                                         );    
-                                        
-        if ( $result['status'] >= 200 && 
-             $result['status'] <= 299 ){
+                      
+        if ( $result['status'] == $positiveStatus ){
              
             if ($returnType!==null){
                 $result['content'] = call_user_func_array('\\'.$returnType.'::decode'.$returnType, array($result['content']));
                 if ( !is_array( $result['content'] ) )
                     $result['content'] = array( $result['content'] );
             }
-        } else {
-            $result['content']=array();
+            return call_user_func_array($positiveMethod, array_merge(array("input"=>$result['content']),$positiveParams));
         }
-        return $result;
+        return call_user_func_array($negativeMethod, $negativeParams);
     }
     
     public function callSqlTemplate($linkName, $file, $params, $positiveStatus, callable $positiveMethod, $positiveParams, callable $negativeMethod, $negativeParams, $checkSession=true)
@@ -178,29 +195,50 @@ class Model
                                               );
 
         // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
-             $result['status'] <= 299 ){
+        if ( $result['status'] == $positiveStatus){
             $queryResult = Query::decodeQuery( $result['content'] );
             if (!is_array($queryResult)) $queryResult = array($queryResult);
             return call_user_func_array($positiveMethod, array_merge(array("input"=>$queryResult),$positiveParams));
-        } else {
-            return call_user_func_array($negativeMethod, $negativeParams);
         }
+        return call_user_func_array($negativeMethod, $negativeParams);
+    }
+    
+    public function callSql($linkName, $sql, $positiveStatus, callable $positiveMethod, $positiveParams, callable $negativeMethod, $negativeParams, $checkSession=true)
+    {
+        $link=CConfig::getLink($this->_conf->getLinks( ),$linkName);
+        // starts a query, by using given sql statements/statement
+        $result = DBRequest::getRoutedSql( 
+                                              $link,
+                                              $sql,
+                                              $checkSession
+                                              );
+
+        // checks the correctness of the query
+        if ( $result['status'] == $positiveStatus){
+            $queryResult = Query::decodeQuery( $result['content'] );
+            if (!is_array($queryResult)) $queryResult = array($queryResult);
+            return call_user_func_array($positiveMethod, array_merge(array("input"=>$queryResult),$positiveParams));
+        }
+        return call_user_func_array($negativeMethod, $negativeParams);
     }
     
     public static function createAnswer($status=200, $content=''){
         return array("status"=>$status,"content"=>$content);
     }
-    public static function isProblem($content=''){
+    public static function isProblem($content=null){
         return self::createAnswer(409,$content);
     }
-    public static function isCreated($content=''){
+    public static function isCreated($content=null){
         return self::createAnswer(201,$content);
     }
-    public static function isOk($content=''){
+    public static function isOk($content=null){
         return self::createAnswer(200,$content);
     }
-    public static function isEmpty($content=''){
+    public static function isEmpty($content=null){
         return self::createAnswer(404,$content);
+    }
+
+    public static function isRejected($content=null){
+        return self::createAnswer(401,$content);
     }
 }

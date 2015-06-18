@@ -67,11 +67,6 @@ $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
                "notificationElements" => $notifications,
                "navigationElement" => $menu));
 $h->bind($student_data);
-
-/*$hp = Template::WithTemplateFile('include/Header/Extra-Info-Student.template.html');
-$hp->bind($user_course_data);
-$hp->bind(array("name" => $user_course_data['courses'][0]['course']['name']));
-$hp->bind($student_data);*/
                
 $t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetStudent.template.html');
 $t->bind($student_data);

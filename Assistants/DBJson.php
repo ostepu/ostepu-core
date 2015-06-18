@@ -130,13 +130,29 @@ class DBJson
         return $res;
     }
     
-    public static function getRows2( $data )
+    public static function getRows2( &$data, &$hash )
     {
         $res = array( );
-
-        while ( $row = mysqli_fetch_assoc( $data ) ){
-            $res[] = $row;
+        $hash=array();
+        
+        if (method_exists('mysqli_result', 'fetch_all')){ # Compatibility layer with PHP < 5.3
+            $res = mysqli_fetch_all($data, MYSQLI_ASSOC);
+        } else {
+            for ($res = array(); $tmp = mysqli_fetch_array($data, MYSQLI_ASSOC);) {
+                $res[] = $tmp;
+            }
         }
+        
+        foreach($res as &$b){
+            foreach ($b as $key => &$a)
+                if ($a === null){
+                    unset($b[$key]);
+                }
+        }
+            
+
+        ///    $hash[] = md5(implode('',$b));
+        ///$hash=md5(implode('',$hash));
         return $res;
     }
 

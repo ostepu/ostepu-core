@@ -7,65 +7,16 @@
  * @author Till Uhlig
  * @author Felix Schmidt
  * @example DB/DBSubmission/SubmissionSample.json
- * @date 2013-2014
+ * @date 2013-2015
  */
 
-require_once ( dirname(__FILE__) . '/../../Assistants/Slim/Slim.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Structures.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Request.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/DBJson.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/DBRequest.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/CConfig.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
-
-\Slim\Slim::registerAutoloader( );
+include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );
 
 /**
  * A class, to abstract the "Submission" table from database
  */
 class DBSubmission
 {
-
-    /**
-     * @var Slim $_app the slim object
-     */
-    private $_app = null;
-
-    /**
-     * @var Component $_conf the component data object
-     */
-    private $_conf = null;
-
-    /**
-     * @var Link[] $query a list of links to a query component
-     */
-    private $query = array( );
-    private $query2 = array( );
-
-    /**
-     * @var string $_prefix the prefixes, the class works with (comma separated)
-     */
-    private static $_prefix = 'submission';
-
-    /**
-     * the $_prefix getter
-     *
-     * @return the value of $_prefix
-     */
-    public static function getPrefix( )
-    {
-        return DBSubmission::$_prefix;
-    }
-
-    /**
-     * the $_prefix setter
-     *
-     * @param string $value the new value for $_prefix
-     */
-    public static function setPrefix( $value )
-    {
-        DBSubmission::$_prefix = $value;
-    }
 
     /**
      * REST actions
@@ -75,265 +26,12 @@ class DBSubmission
      *
      * @param Component $conf component data
      */
+    private $_component = null;
     public function __construct( )
     {
-        // runs the CConfig
-        $com = new CConfig( DBSubmission::getPrefix( ), dirname(__FILE__) );
-
-        // runs the DBSubmission
-        if ( $com->used( ) ) return;
-            $conf = $com->loadConfig( );
-
-        // initialize component
-        $this->_conf = $conf;
-        $this->query = array( CConfig::getLink( 
-                                               $conf->getLinks( ),
-                                               'out'
-                                               ) );
-        $this->query2 = array( CConfig::getLink( 
-                                               $conf->getLinks( ),
-                                               'out2'
-                                               ) );
-
-        // initialize slim
-        $this->_app = new \Slim\Slim( );
-        $this->_app->response->headers->set( 
-                                            'Content-Type',
-                                            'application/json'
-                                            );
-        // POST AddPlatform
-        $this->_app->post( 
-                         '/platform',
-                         array( 
-                               $this,
-                               'addPlatform'
-                               )
-                         );
-                         
-        // DELETE DeletePlatform
-        $this->_app->delete( 
-                         '/platform',
-                         array( 
-                               $this,
-                               'deletePlatform'
-                               )
-                         );
-                         
-        // GET GetExistsPlatform
-        $this->_app->get( 
-                         '/link/exists/platform',
-                         array( 
-                               $this,
-                               'getExistsPlatform'
-                               )
-                         );
-                         
-        // PUT EditSubmission
-        $this->_app->put( 
-                         '/' . $this->getPrefix( ) . '(/submission)/:suid(/)',
-                         array( 
-                               $this,
-                               'editSubmission'
-                               )
-                         );
-
-        // DELETE DeleteSubmission
-        $this->_app->delete( 
-                            '/' . $this->getPrefix( ) . '(/submission)/:suid(/)',
-                            array( 
-                                  $this,
-                                  'deleteSubmission'
-                                  )
-                            );
-
-        // POST AddSubmission
-        $this->_app->post( 
-                          '/' . $this->getPrefix( ) . '(/)',
-                          array( 
-                                $this,
-                                'addSubmission'
-                                )
-                          );
-
-        // GET GetExerciseSubmissions
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/exercise/:eid(/)',
-                         array( 
-                               $this,
-                               'getExerciseSubmissions'
-                               )
-                         );
-
-        // GET GetUserExerciseSubmissions
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/user/:userid/exercise/:eid(/)',
-                         array( 
-                               $this,
-                               'getUserExerciseSubmissions'
-                               )
-                         );
-                         
-        // GET GetUserSheetSubmissions
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/user/:userid/exercisesheet/:esid(/)',
-                         array( 
-                               $this,
-                               'getUserSheetSubmissions'
-                               )
-                         );
-
-        // GET GetGroupSubmissions
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/group/user/:userid/exercisesheet/:esid(/)',
-                         array( 
-                               $this,
-                               'getGroupSubmissions'
-                               )
-                         );
-
-        // GET GetGroupSelectedSubmissions
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/group/user/:userid/exercisesheet/:esid/selected(/)',
-                         array( 
-                               $this,
-                               'getGroupSelectedSubmissions'
-                               )
-                         );
-
-        // GET GetGroupExerciseSubmissions
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/group/user/:userid/exercise/:eid(/)',
-                         array( 
-                               $this,
-                               'getGroupExerciseSubmissions'
-                               )
-                         );
-
-        // GET GetGroupSelectedExerciseSubmissions
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/group/user/:userid/exercise/:eid/selected(/)',
-                         array( 
-                               $this,
-                               'getGroupSelectedExerciseSubmissions'
-                               )
-                         );
-
-        // GET GetGroupSelectedCourseSubmissions
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/group/user/:userid/course/:courseid/selected(/)',
-                         array( 
-                               $this,
-                               'getGroupSelectedCourseSubmissions'
-                               )
-                         );
-
-        // GET GetGroupCourseSubmissions
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/group/user/:userid/course/:courseid(/)',
-                         array( 
-                               $this,
-                               'getGroupCourseSubmissions'
-                               )
-                         );
-
-        // GET GetSelectedSheetSubmissions
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/exercisesheet/:esid/selected(/)',
-                         array( 
-                               $this,
-                               'getSelectedSheetSubmissions'
-                               )
-                         );
-
-        // GET GetAllSubmissions
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '(/date/begin/:begin/end/:end)(/)',
-                         array( 
-                               $this,
-                               'getAllSubmissions'
-                               )
-                         );
-                         
-        // GET GetSelectedAllSubmissions
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/selected(/date/begin/:begin/end/:end)(/)',
-                         array( 
-                               $this,
-                               'getSelectedAllSubmissions'
-                               )
-                         );
-                         
-        // GET GetSelectedExerciseSubmissions
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/exercise/:eid/selected(/)',
-                         array( 
-                               $this,
-                               'getSelectedExerciseSubmissions'
-                               )
-                         );
-
-        // GET GetSheetSubmissions
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/exercisesheet/:esid(/)',
-                         array( 
-                               $this,
-                               'getSheetSubmissions'
-                               )
-                         );
-
-        // GET GetSubmission
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '(/submission)/:suid(/)',
-                         array( 
-                               $this,
-                               'getSubmission'
-                               )
-                         );
-
-        // GET GetCourseSubmissions
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/course/:courseid(/)',
-                         array( 
-                               $this,
-                               'getCourseSubmissions'
-                               )
-                         );
-        // GET GetCourseUserSubmissions
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/course/:courseid/user/:userid(/)',
-                         array( 
-                               $this,
-                               'getCourseUserSubmissions'
-                               )
-                         );
-        // GET GetSelectedCourseUserSubmissions
-        $this->_app->get( 
-                         '/' . $this->getPrefix( ) . '/course/:courseid/user/:userid/selected(/)',
-                         array( 
-                               $this,
-                               'getSelectedCourseUserSubmissions'
-                               )
-                         );    
-                         
-        // run Slim
-        $this->_app->run( );
-    }
-
-    /**
-     * Returns all submissions (including overwritten ones) of a given exercise.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /submission/exercise/$eid(/).
-     *
-     * @param int $eid The id of the exercise.
-     */
-    public function getExerciseSubmissions( $eid )
-    {
-        $this->get( 
-                   'GetExerciseSubmissions',
-                   dirname(__FILE__) . '/Sql/GetExerciseSubmissions.sql',
-                   array("eid"=>$eid)
-                   );
+        $component = new Model('submission', dirname(__FILE__), $this);
+        $this->_component=$component;
+        $component->run();
     }
 
     /**
@@ -346,63 +44,9 @@ class DBSubmission
      *
      * @param int $suid The id of the submission which is being updated.
      */
-    public function editSubmission( $suid )
+    public function editSubmission( $callName, $input, $params = array() )
     {
-        Logger::Log( 
-                    'starts PUT EditSubmission',
-                    LogLevel::DEBUG
-                    );
-
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput( 
-                           $this->_app,
-                           ctype_digit( $suid )
-                           );
-
-        // decode the received submission data, as an object
-        $insert = Submission::decodeSubmission( $this->_app->request->getBody( ) );
-
-        // always been an array
-        $arr = true;
-        if ( !is_array( $insert ) ){
-            $insert = array( $insert );
-            $arr = false;
-        }
-
-        foreach ( $insert as $in ){
-
-            // generates the update data for the object
-            $data = $in->getInsertData( );
-
-            // starts a query, by using a given file
-            $result = DBRequest::getRoutedSqlFile( 
-                                                  $this->query,
-                                                  dirname(__FILE__) . '/Sql/EditSubmission.sql',
-                                                  array( 
-                                                        'suid' => $suid,
-                                                        'values' => $data
-                                                        )
-                                                  );
-
-            // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
-                 $result['status'] <= 299 ){
-                $this->_app->response->setStatus( 201 );
-                if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
-                                                        'Content-Type',
-                                                        $result['headers']['Content-Type']
-                                                        );
-                
-            } else {
-                Logger::Log( 
-                            'PUT EditSubmission failed',
-                            LogLevel::ERROR
-                            );
-                $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-                $this->_app->stop( );
-            }
-        }
+        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/EditSubmission.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new Submission()),'Model::isProblem',array(new Submission()));
     }
 
     /**
@@ -413,45 +57,9 @@ class DBSubmission
      *
      * @param int $suid The id of the submission which is being deleted.
      */
-    public function deleteSubmission( $suid )
+    public function deleteSubmission( $callName, $input, $params = array() )
     {
-        Logger::Log( 
-                    'starts DELETE DeleteSubmission',
-                    LogLevel::DEBUG
-                    );
-
-        // checks whether incoming data has the correct data type
-        DBJson::checkInput( 
-                           $this->_app,
-                           ctype_digit( $suid )
-                           );
-
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
-                                              $this->query,
-                                              dirname(__FILE__) . '/Sql/DeleteSubmission.sql',
-                                              array( 'suid' => $suid )
-                                              );
-
-        // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
-             $result['status'] <= 299 ){
-
-            $this->_app->response->setStatus( 201 );
-            if ( isset( $result['headers']['Content-Type'] ) )
-                $this->_app->response->headers->set( 
-                                                    'Content-Type',
-                                                    $result['headers']['Content-Type']
-                                                    );
-            
-        } else {
-            Logger::Log( 
-                        'DELETE DeleteSubmission failed',
-                        LogLevel::ERROR
-                        );
-            $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-            $this->_app->stop( );
-        }
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteSubmission.sql',$params,201,'Model::isCreated',array(new Submission()),'Model::isProblem',array(new Submission()));  
     }
 
     /**
@@ -461,458 +69,43 @@ class DBSubmission
      * /submission(/).
      * The request body should contain a JSON object representing the new submission.
      */
-    public function addSubmission( )
+    public function addSubmission( $callName, $input, $params = array() )
     {
-        Logger::Log( 
-                    'starts POST AddSubmission',
-                    LogLevel::DEBUG
-                    );
+        $positive = function($input) {
+            // sets the new auto-increment id
+            $obj = new Submission( );
+            $obj->setId( $input[0]->getInsertId( ) );
+            return array("status"=>201,"content"=>$obj);
+        };
+        return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/AddSubmission.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new Submission()));
+    }
 
-        // decode the received submission data, as an object
-        $insert = Submission::decodeSubmission( $this->_app->request->getBody( ) );
-
-        // always been an array
-        $arr = true;
-        if ( !is_array( $insert ) ){
-            $insert = array( $insert );
-            $arr = false;
-        }
-
-        // this array contains the indices of the inserted objects
-        $res = array( );
-        foreach ( $insert as $in ){
-
-            // generates the insert data for the object
-            $data = $in->getInsertData( );
-
-            // starts a query, by using a given file
-            $result = DBRequest::getRoutedSqlFile( 
-                                                  $this->query,
-                                                  dirname(__FILE__) . '/Sql/AddSubmission.sql',
-                                                  array( 'values' => $data )
-                                                  );
-
-            // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
-                 $result['status'] <= 299 ){
-                $queryResult = Query::decodeQuery( $result['content'] );
-
-                // sets the new auto-increment id
-                $obj = new Submission( );
-                $obj->setId( $queryResult->getInsertId( ) );
-
-                $res[] = $obj;
-                $this->_app->response->setStatus( 201 );
-                if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
-                                                        'Content-Type',
-                                                        $result['headers']['Content-Type']
-                                                        );
-                
-            } else {
-                Logger::Log( 
-                            'POST AddSubmission failed',
-                            LogLevel::ERROR
-                            );
-                $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-                $this->_app->response->setBody( Submission::encodeSubmission( $res ) );
-                $this->_app->stop( );
+    public function get( $functionName, $linkName, $params=array(),$singleResult = false, $checkSession = true )
+    {
+        $positive = function($input, $singleResult) {
+            //$input = $input[count($input)-1];
+            $result = Model::isEmpty();$result['content']=array();
+            foreach ($input as $inp){
+                if ( $inp->getNumRows( ) > 0 ){
+                    // extract Submission data from db answer
+                    $result['content'] = array_merge($result['content'], Submission::ExtractSubmission( $inp->getResponse( ), $singleResult));
+                    $result['status'] = 200;
+                }
             }
-        }
-
-        if ( !$arr && 
-             count( $res ) == 1 ){
-            $this->_app->response->setBody( Submission::encodeSubmission( $res[0] ) );
-            
-        } else 
-            $this->_app->response->setBody( Submission::encodeSubmission( $res ) );
+            return $result;
+        };
+        
+        $params = DBJson::mysql_real_escape_string( $params );
+        return $this->_component->call($linkName, $params, '', 200, $positive, array($singleResult), 'Model::isProblem', array(), 'Query');
     }
 
-    public function get( 
-                        $functionName,
-                        $sqlFile,
-                        $params=array(),
-                        $singleResult = false,
-                        $checkSession = true
-                        )
+    public function getMatch($callName, $input, $params = array())
     {
-        Logger::Log( 
-                    'starts GET ' . $functionName,
-                    LogLevel::DEBUG
-                    );
-
-        // checks whether incoming data has the correct data type
-        foreach ($params as &$param)
-            $param = DBJson::mysql_real_escape_string( $param );
-
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
-                                              $this->query,
-                                              $sqlFile,
-                                              $params,
-                                              $checkSession
-                                              );
-
-        // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
-             $result['status'] <= 299 ){
-            $query = Query::decodeQuery( $result['content'] );
-
-            if ( $query->getNumRows( ) > 0 ){
-                $res = Submission::ExtractSubmission( 
-                                                     $query->getResponse( ),
-                                                     $singleResult
-                                                     );
-                $this->_app->response->setBody( Submission::encodeSubmission( $res ) );
-
-                $this->_app->response->setStatus( 200 );
-                if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
-                                                        'Content-Type',
-                                                        $result['headers']['Content-Type']
-                                                        );
-
-                $this->_app->stop( );
-                
-            } else 
-                $result['status'] = 404;
-        }
-
-        Logger::Log( 
-                    'GET ' . $functionName . ' failed',
-                    LogLevel::ERROR
-                    );
-        $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-        $this->_app->response->setBody( Submission::encodeSubmission( new Submission( ) ) );
-        $this->_app->stop( );
+        return $this->get($callName,$callName,$params);
     }
-
-    /**
-     * Returns all submissions.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /submission/submission(/) or /submission(/).
-     */
-    public function getAllSubmissions( $begin = null, $end=null,$selected = null)
+    public function getMatchSingle($callName, $input, $params = array())
     {
-        $this->get( 
-                   'GetAllSubmissions',
-                   dirname(__FILE__) . '/Sql/GetAllSubmissions.sql',
-                   array("selected"=>$selected,"begin"=>$begin,"end"=>$end),
-                   false,
-                   false
-                   );
-    }
-    
-    public function getSelectedAllSubmissions( $begin = null, $end=null)
-    {
-        $this->getAllSubmissions($begin,$end,'1');
-    }
-
-    /**
-     * Returns all submissions (including overwritten ones) of a given group
-     * of a specific exercise sheet.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /submission/group/user/$userid/exercisesheet/$esid(/).
-     *
-     * @param int $userid The id of the user.
-     * @param int $esid The id of the exercise sheet.
-     */
-    public function getGroupSubmissions( 
-                                        $userid,
-                                        $esid
-                                        )
-    {
-        $this->get( 
-                   'GetGroupSubmissions',
-                   dirname(__FILE__) . '/Sql/GetGroupSubmissions.sql',
-                   array("userid"=>$userid,"esid"=>$esid)
-                   );
-    }
-
-    /**
-     * Returns the submissions of a given group of a specific exercise sheet
-     * which should be marked.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /submission/group/user/$userid/exercisesheet/$esid/selected(/).
-     *
-     * @param int $userid The id of the user.
-     * @param int $esid The id of the exercise sheet.
-     */
-    public function getGroupSelectedSubmissions( 
-                                                $userid,
-                                                $esid
-                                                )
-    {
-        $this->get( 
-                   'GetGroupSelectedSubmissions',
-                   dirname(__FILE__) . '/Sql/GetGroupSelectedSubmissions.sql',
-                   array("userid"=>$userid,"esid"=>$esid)
-                   );
-    }
-
-    /**
-     * Returns the submissions of a given group of a specific course
-     * which should be marked.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /submission/group/user/$userid/course/$courseid/selected(/).
-     *
-     * @param int $userid The id of the user.
-     * @param int $courseid The id of the course.
-     */
-    public function getGroupSelectedCourseSubmissions( 
-                                                      $userid,
-                                                      $courseid
-                                                      )
-    {
-        $this->get( 
-                   'GetGroupSelectedCourseSubmissions',
-                   dirname(__FILE__) . '/Sql/GetGroupSelectedCourseSubmissions.sql',
-                   array("userid"=>$userid,"courseid"=>$courseid)
-                   );
-    }
-
-    /**
-     * Returns the submissions of a given group of a specific course
-     *
-     * Called when this component receives an HTTP GET request to
-     * /submission/group/user/$userid/course/$courseid(/).
-     *
-     * @param int $userid The id of the user.
-     * @param int $courseid The id of the course.
-     */
-    public function getGroupCourseSubmissions( 
-                                              $userid,
-                                              $courseid
-                                              )
-    {
-        $this->get( 
-                   'GetGroupCourseSubmissions',
-                   dirname(__FILE__) . '/Sql/GetGroupCourseSubmissions.sql',
-                   array("userid"=>$userid,"courseid"=>$courseid)
-                   );
-    }
-
-    /**
-     * Returns all submissions (including overwritten ones) of a given group
-     * of a specific exercise.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /submission/group/user/$userid/exercise/$eid(/).
-     *
-     * @param int $userid The id of the user.
-     * @param int $eid The id of the exercise.
-     */
-    public function getGroupExerciseSubmissions( 
-                                                $userid,
-                                                $eid
-                                                )
-    {
-        $this->get( 
-                   'GetGroupExerciseSubmissions',
-                   dirname(__FILE__) . '/Sql/GetGroupExerciseSubmissions.sql',
-                   array("userid"=>$userid,"eid"=>$eid)
-                   );
-    }
-
-    /**
-     * Returns the submissions of a given group of a specific exercise
-     * which should be marked.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /submission/group/user/$userid/exercise/$eid/selected(/).
-     *
-     * @param int $userid The id of the user.
-     * @param int $eid The id of the exercise.
-     */
-    public function getGroupSelectedExerciseSubmissions( 
-                                                        $userid,
-                                                        $eid
-                                                        )
-    {
-        $this->get( 
-                   'GetGroupSelectedExerciseSubmissions',
-                   dirname(__FILE__) . '/Sql/GetGroupSelectedExerciseSubmissions.sql',
-                   array("userid"=>$userid,"eid"=>$eid)
-                   );
-    }
-
-    /**
-     * Returns a submission.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /submission/submission/$suid(/) or /submission/$suid(/).
-     *
-     * @param int $suid The id of the submission.
-     */
-    public function getSubmission( $suid )
-    {
-        $this->get( 
-                   'GetSubmission',
-                   dirname(__FILE__) . '/Sql/GetSubmission.sql',
-                   array("suid"=>$suid),
-                   true
-                   );
-    }
-
-    /**
-     * Returns all submissions (including overwritten ones) of a given
-     * exercise sheet.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /submission/exercisesheet/$esid(/).
-     *
-     * @param int $esid The id of the exercise sheet.
-     */
-    public function getSheetSubmissions( $esid )
-    {
-        $this->get( 
-                   'GetSheetSubmissions',
-                   dirname(__FILE__) . '/Sql/GetSheetSubmissions.sql',
-                   array("esid"=>$esid)
-                   );
-    }
-
-    /**
-     * Returns all submissions of a given exercise sheet which
-     * should be marked.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /submission/exercisesheet/$esid/selected(/).
-     *
-     * @param int $esid The id of the exercise sheet.
-     */
-    public function getSelectedSheetSubmissions( $esid )
-    {
-        $this->get( 
-                   'GetSelectedSheetSubmissions',
-                   dirname(__FILE__) . '/Sql/GetSelectedSheetSubmissions.sql',
-                   array("esid"=>$esid)
-                   );
-    }
-
-    /**
-     * Returns all submissions of a given exercise which
-     * should be marked.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /submission/exercise/$eid/selected(/).
-     *
-     * @param int $eid The id of the exercise.
-     */
-    public function getSelectedExerciseSubmissions( $eid )
-    {
-        $this->get( 
-                   'GetSelectedExerciseSubmissions',
-                   dirname(__FILE__) . '/Sql/GetSelectedExerciseSubmissions.sql',
-                   array("eid"=>$eid)
-                   );
-    }
-
-    /**
-     * Returns all submissions (including overwritten ones) of a given user
-     * of a specific exercise.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /submission/user/$userid/exercise/$eid(/).
-     *
-     * @param int $userid The id of the user.
-     * @param int $eid The id of the exercise.
-     */
-    public function getUserExerciseSubmissions( 
-                                               $userid,
-                                               $eid
-                                               )
-    {
-        $this->get( 
-                   'GetUserExerciseSubmissions',
-                   dirname(__FILE__) . '/Sql/GetUserExerciseSubmissions.sql',
-                   array("userid"=>$userid,"eid"=>$eid)
-                   );
-    }
-    
-    /**
-     * Returns all submissions (including overwritten ones) of a given user
-     * of a specific exercisesheet.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /submission/user/$userid/exercisesheet/$esid(/).
-     *
-     * @param int $userid The id of the user.
-     * @param int $esid The id of the exercisesheet.
-     */
-    public function getUserSheetSubmissions( 
-                                               $userid,
-                                               $esid
-                                               )
-    {
-        $this->get( 
-                   'GetUserSheetSubmissions',
-                   dirname(__FILE__) . '/Sql/GetUserSheetSubmissions.sql',
-                   array("userid"=>$userid,"esid"=>$esid)
-                   );
-    }
-    
-    public function getCourseUserSubmissions( 
-                                               $courseid,
-                                               $userid
-                                               )
-    {
-        $this->get( 
-                   'GetCourseUserSubmissions',
-                   dirname(__FILE__) . '/Sql/GetCourseUserSubmissions.sql',
-                   array("userid"=>$userid,"courseid"=>$courseid)
-                   );
-    }
-    
-    public function getSelectedCourseUserSubmissions( 
-                                               $courseid,
-                                               $userid
-                                               )
-    {
-        $this->get( 
-                   'GetSelectedCourseUserSubmissions',
-                   dirname(__FILE__) . '/Sql/GetSelectedCourseUserSubmissions.sql',
-                   array("userid"=>$userid,"courseid"=>$courseid)
-                   );
-    }
-    
-    /**
-     * Returns all course submissions (including overwritten ones) of a given course
-     * of a specific exercise.
-     *
-     * Called when this component receives an HTTP GET request to
-     * /submission/course/$courseid(/).
-     *
-     * @param int $courseid The id of the course.
-     */
-    public function getCourseSubmissions( $courseid )
-    {
-        $this->get( 
-                   'GetCourseSubmissions',
-                   dirname(__FILE__) . '/Sql/GetCourseSubmissions.sql',
-                   array("courseid"=>$courseid)
-                   );
-    }
-    
-    /**
-     * Returns status code 200, if this component is correctly installed for the platform
-     *
-     * Called when this component receives an HTTP GET request to
-     * /link/exists/platform.
-     */
-    public function getExistsPlatform( )
-    {
-        $this->get( 
-                   'GetExistsPlatform',
-                   dirname(__FILE__) . '/Sql/GetExistsPlatform.sql',
-                   array("userid"=>$userid,"courseid"=>$courseid),
-                   true,
-                   false
-                   );
+        return $this->get($callName,$callName,$params,true,false);
     }
     
     /**
@@ -921,42 +114,9 @@ class DBSubmission
      * Called when this component receives an HTTP DELETE request to
      * /platform.
      */
-    public function deletePlatform( )
+    public function deletePlatform( $callName, $input, $params = array())
     {
-        Logger::Log( 
-                    'starts DELETE DeletePlatform',
-                    LogLevel::DEBUG
-                    );
-
-        // starts a query, by using a given file
-        $result = DBRequest::getRoutedSqlFile( 
-                                              $this->query2,
-                                              dirname(__FILE__) . '/Sql/DeletePlatform.sql',
-                                              array( ),
-                                              false
-                                              );
-
-        // checks the correctness of the query
-        if ( $result['status'] >= 200 && 
-             $result['status'] <= 299 ){
-
-            $this->_app->response->setStatus( 201 );
-            $this->_app->response->setBody( '' );
-            if ( isset( $result['headers']['Content-Type'] ) )
-                $this->_app->response->headers->set( 
-                                                    'Content-Type',
-                                                    $result['headers']['Content-Type']
-                                                    );
-            
-        } else {
-            Logger::Log( 
-                        'DELETE DeletePlatform failed',
-                        LogLevel::ERROR
-                        );
-            $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-            $this->_app->response->setBody( '' );
-            $this->_app->stop( );
-        }
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeletePlatform.sql',array(),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
     
     /**
@@ -965,64 +125,35 @@ class DBSubmission
      * Called when this component receives an HTTP POST request to
      * /platform.
      */
-    public function addPlatform( )
+    public function addPlatform( $callName, $input, $params = array())
     {
-        Logger::Log( 
-                    'starts POST AddPlatform',
-                    LogLevel::DEBUG
-                    );
-
-        // decode the received course data, as an object
-        $insert = Platform::decodePlatform( $this->_app->request->getBody( ) );
-
-        // always been an array
-        $arr = true;
-        if ( !is_array( $insert ) ){
-            $insert = array( $insert );
-            $arr = false;
-        }
-
-        // this array contains the indices of the inserted objects
-        $res = array( );
-        foreach ( $insert as $in ){
-        
-            // starts a query, by using a given file
-            $result = DBRequest::getRoutedSqlFile( 
-                                                  $this->query2,
-                                                  dirname(__FILE__) . '/Sql/AddPlatform.sql',
-                                                  array( 'object' => $in ),
-                                                  false
-                                                  );
-
-            // checks the correctness of the query
-            if ( $result['status'] >= 200 && 
-                 $result['status'] <= 299 ){
-                $queryResult = Query::decodeQuery( $result['content'] );
-
-                $res[] = $in;
-                $this->_app->response->setStatus( 201 );
-                if ( isset( $result['headers']['Content-Type'] ) )
-                    $this->_app->response->headers->set( 
-                                                        'Content-Type',
-                                                        $result['headers']['Content-Type']
-                                                        );
-                
-            } else {
-                Logger::Log( 
-                            'POST AddPlatform failed',
-                            LogLevel::ERROR
-                            );
-                $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
-                $this->_app->response->setBody( Platform::encodePlatform( $res ) );
-                $this->_app->stop( );
-            }
-        }
-
-        if ( !$arr && 
-             count( $res ) == 1 ){
-            $this->_app->response->setBody( Platform::encodePlatform( $res[0] ) );
-            
-        } else 
-            $this->_app->response->setBody( Platform::encodePlatform( $res ) );
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddPlatform.sql',array('object' => $input),201,'Model::isCreated',array(new Platform()),'Model::isProblem',array(new Platform()),false);
     }
+    
+    public function getSamplesInfo( $callName, $input, $params = array() )
+    {
+        $positive = function($input) {
+            $result = Model::isEmpty();$result['content']=array();
+            foreach ($input as $inp){
+                if ( $inp->getNumRows( ) > 0 ){
+                    foreach($inp->getResponse( ) as $key => $value)
+                        foreach($value as $key2 => $value2){
+                            $result['content'][] = $value2;
+                        }
+                    $result['status'] = 200;
+                }
+            }
+            return $result;
+        };
+        
+        $params = DBJson::mysql_real_escape_string( $params );
+        return $this->_component->call($callName, $params, '', 200, $positive,  array(), 'Model::isProblem', array(), 'Query');
+    }
+    
+    public function postSamples( $callName, $input, $params = array() )
+    {   
+        set_time_limit(0);
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/Samples.sql',$params,201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));  
+    }
+    
 }

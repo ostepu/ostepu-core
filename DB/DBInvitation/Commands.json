@@ -1,14 +1,93 @@
 [
-    {"method":"PUT", "path":"/invitation/user/:userid/exercisesheet/:esid/user/:memberid(/)"},
-    {"method":"DELETE", "path":"/invitation/user/:userid/exercisesheet/:esid/user/:memberid(/)"},
-    {"method":"POST", "path":"/invitation(/)"},
-    {"method":"GET", "path":"/invitation/leader/user/:userid(/)"},
-    {"method":"GET", "path":"/invitation/member/user/:userid(/)"},
-    {"method":"GET", "path":"/invitation(/invitation)(/)"},
-    {"method":"GET", "path":"/invitation/leader/exercisesheet/:esid/user/:userid(/)"},
-    {"method":"GET", "path":"/invitation/member/exercisesheet/:esid/user/:userid(/)"},
-    {"method":"GET", "path":"/invitation/exercisesheet/:esid(/)"},
-    {"method":"POST", "path":"/platform"},
-    {"method":"DELETE", "path":"/platform"},
-    {"method":"GET", "path":"/link/exists/platform"}
+    {
+        "name": "editInvitation",
+        "outputType": "Invitation",
+        "inputType": "Invitation",
+        "method": "PUT",
+        "path": "/invitation/user/:userid/exercisesheet/:esid/user/:memberid"
+    },
+    {
+        "name": "deleteInvitation",
+        "outputType": "Invitation",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/invitation/user/:userid/exercisesheet/:esid/user/:memberid"
+    },
+    {
+        "name": "addInvitation",
+        "outputType": "Invitation",
+        "inputType": "Invitation",
+        "method": "POST",
+        "path": "/invitation"
+    },
+    {
+        "name": "getLeaderInvitations",
+        "callback": "getMatch",
+        "outputType": "Invitation",
+        "inputType": "",
+        "method": "GET",
+        "path": "/invitation/leader/user/:userid"
+    },
+    {
+        "name": "getMemberInvitations",
+        "callback": "getMatch",
+        "outputType": "Invitation",
+        "inputType": "",
+        "method": "GET",
+        "path": "/invitation/member/user/:userid"
+    },
+    {
+        "name": "getAllInvitations",
+        "callback": "getMatch",
+        "outputType": "Invitation",
+        "inputType": "",
+        "method": "GET",
+        "path": "/invitation(/invitation)"
+    },
+    {
+        "name": "getSheetLeaderInvitations",
+        "callback": "getMatch",
+        "outputType": "Invitation",
+        "inputType": "",
+        "method": "GET",
+        "path": "/invitation/leader/exercisesheet/:esid/user/:userid"
+    },
+    {
+        "name": "getSheetMemberInvitations",
+        "callback": "getMatch",
+        "outputType": "Invitation",
+        "inputType": "",
+        "method": "GET",
+        "path": "/invitation/member/exercisesheet/:esid/user/:userid"
+    },
+    {
+        "name": "getSheetInvitations",
+        "callback": "getMatch",
+        "outputType": "Invitation",
+        "inputType": "",
+        "method": "GET",
+        "path": "/invitation/exercisesheet/:esid"
+    },
+    {
+        "name": "addPlatform",
+        "outputType": "Platform",
+        "inputType": "Platform",
+        "method": "POST",
+        "path": "/platform"
+    },
+    {
+        "name": "deletePlatform",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/platform"
+    },
+    {
+        "name": "getExistsPlatform",
+        "callback": "getMatchSingle",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "GET",
+        "path": "/link/exists/platform"
+    }
 ]

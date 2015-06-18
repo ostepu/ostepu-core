@@ -5,58 +5,16 @@
  * @file DBQuery2.php contains the DBQuery2 class
  *
  * @author Till Uhlig
- * @date 2014
+ * @date 2014-2015
  */
 
-require_once ( dirname(__FILE__) . '/../../Assistants/Slim/Slim.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Structures.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/DBJson.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/DBRequest.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/CConfig.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
-
-\Slim\Slim::registerAutoloader( );
+include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );
 
 /**
  * A class, to perform requests to the database
  */
 class DBQuery2
 {
-
-    /**
-     * @var Slim $_app the slim object
-     */
-    private $_conf = null;
-
-    /**
-     * @var $app the slim object
-     */
-    private $_app = null;
-
-    /**
-     * @var string $_prefix the prefixes, the class works with (comma separated)
-     */
-    private static $_prefix = 'query';
-
-    /**
-     * the $_prefix getter
-     *
-     * @return the value of $_prefix
-     */
-    public static function getPrefix( )
-    {
-        return DBQuery2::$_prefix;
-    }
-
-    /**
-     * the $_prefix setter
-     *
-     * @param string $value the new value for $_prefix
-     */
-    public static function setPrefix( $value )
-    {
-        DBQuery2::$_prefix = $value;
-    }
 
     /**
      * REST actions
@@ -66,76 +24,12 @@ class DBQuery2
      *
      * @param Component $conf component data
      */
+    private $_component = null;
     public function __construct( )
     {
-        // runs the CConfig
-        $com = new CConfig( DBQuery2::getPrefix( ), dirname(__FILE__) );
-
-        // runs the DBQuery2
-        if ( $com->used( ) ) return;
-            
-        // initialize component
-        $this->_conf = $com;
-
-        // initialize slim
-        $this->_app = new \Slim\Slim( array( 'debug' => true ));
-        $this->_app->response->setStatus( 404 );
-
-        $this->_app->response->headers->set( 
-                                            'Content-Type',
-                                            'application/json'
-                                            );
-
-        // POST AddPlatform
-        $this->_app->post( 
-                         '(/:name)/platform',
-                         array( 
-                               $this,
-                               'addPlatform'
-                               )
-                         );
-                         
-        // DELETE DeletePlatform
-        $this->_app->delete( 
-                         '(/:name)/platform',
-                         array( 
-                               $this,
-                               'deletePlatform'
-                               )
-                         );
-                         
-        // GET GetExistsPlatform
-        $this->_app->get( 
-                         '(/:name)/link/exists/platform',
-                         array( 
-                               $this,
-                               'getExistsPlatform'
-                               )
-                         );
-
-        // POST,GET,PUT QueryResult
-        $this->_app->map( 
-                          '(/:name)/' . $this->getPrefix( ) . '(/)',
-                          array( 
-                                $this,
-                                'queryResult'
-                                )
-                          )->via('GET','POST','PUT');
-
-        // run Slim
-        $this->_app->run( );
-    }
-    
-    /**
-     * Loads the configuration data for the component from CConfig.json file
-     *
-     * @param int $name A optional prefix for the attachment table.
-     *
-     * @return an component object, which represents the configuration
-     */
-    public function loadConfig( $name='' ){
-        // initialize component
-        $this->_conf = $this->_conf->loadConfig( $name ); 
+        $component = new Model('query', dirname(__FILE__), $this);
+        $this->_component=$component;
+        $component->run();
     }
 
     /**
@@ -148,23 +42,221 @@ class DBQuery2
      * Called when this component receives an HTTP GET, an HTTP PUT or an HTTP POST
      * request to /query/.
      */
-    public function queryResult( $name = '' )
+    public function generateParam($a)
     {
-        Logger::Log( 
-                    'starts GET queryResult',
-                    LogLevel::DEBUG
-                    );
-
-        $this->loadConfig($name);
-        $body = $this->_app->request->getBody( );
-
-        // decode the received query data, as an object
-        $obj = Query::decodeQuery( $body );
+        return "'{$a}'";
+    }
+    public function generateQuery($procedure, $params)
+    {
+        return "CALL `{$procedure}`(".implode(',',array_map(array($this,'generateParam'), $params)).");";
+    }
+    
+    public function postMultiGetRequest( $callName, $input, $par = array() )
+    {     
+        $params=array();
+        extract( 
+                $par,
+                EXTR_OVERWRITE
+        );
         
         $config = parse_ini_file( 
-                                dirname(__FILE__).'/config'.($name!='' ? '_'.$name : '').'.ini',
+                                dirname(__FILE__).'/config.ini',
                                 TRUE
                                 );
+        $querys = $input;
+        $sql='';
+        $querys=explode("\n",$querys);
+        foreach ($querys as $query){
+            $query=explode('/query/procedure',$query)[1];
+            $params = explode('/',$query);
+            array_shift($params);
+            $procedure=array_shift($params);
+            $sql.=$this->generateQuery($procedure,$params)."select 'next';";
+        }
+
+        $answer = DBRequest::request2( 
+                                           $sql,
+                                           false,
+                                           $config
+                                     );                  
+        $result = Model::isOK();
+        $res = array();
+        $resArray=array();
+        foreach ($answer as $query_result){
+            $obj = new Query( );
+            if (isset($query_result['content']) && $query_result['content']===array(array("next"=>'next'))){
+                $resArray[]=array(Query::encodeQuery($res),'ETag'=>CacheManager::generateETag($res));  
+                $res=array();
+                continue;
+            }
+            
+        if ( $query_result['errno'] != 0 ){
+            if ( isset($query_result['errno']) && $query_result['errno'] != 0 )
+                Logger::Log( 
+                            'GET queryResult failed errno: ' . $query_result['errno'] . ' error: ' . $query_result['error'],
+                            LogLevel::ERROR
+                            );
+
+            if ( !isset($query_result['content']) || !$query_result['content'] )
+                Logger::Log( 
+                            'GET queryResult failed, no content',
+                            LogLevel::ERROR
+                            );
+
+            if ( isset($query_result['errno']) && $query_result['errno'] == 401 ){
+                $result = Model::isRejected();
+                
+            } else 
+                $result = Model::isProblem();
+            
+        }elseif ( gettype( $query_result['content'] ) == 'boolean' ){
+            $obj->setResponse( array( ) );
+            if ( isset( $query_result['affectedRows'] ) )
+                $obj->setAffectedRows( $query_result['affectedRows'] );
+            if ( isset( $query_result['insertId'] ) )
+                $obj->setInsertId( $query_result['insertId'] );
+            if ( isset( $query_result['errno'] ) )
+                $obj->setErrno( $query_result['errno'] );
+            if ( isset( $query_result['numRows'] ) )
+                $obj->setNumRows( $query_result['numRows'] );
+
+          if ( isset( $query_result['errno'] ) && $query_result['errno']>0 ){
+            $result = Model::isProblem();
+          }
+          else
+            $result = Model::isOK();
+            
+        } else {
+            $data = array( );
+            if ( isset( $query_result['numRows'] ) && 
+                 $query_result['numRows'] > 0 ){
+                $data = $query_result['content'];
+            }
+
+            $obj->setResponse( $data );
+            if ( isset( $query_result['affectedRows'] ) )
+                $obj->setAffectedRows( $query_result['affectedRows'] );
+            if ( isset( $query_result['insertId'] ) )
+                $obj->setInsertId( $query_result['insertId'] );
+            if ( isset( $query_result['errno'] ) )
+                $obj->setErrno( $query_result['errno'] );
+            if ( isset( $query_result['numRows'] ) )
+                $obj->setNumRows( $query_result['numRows'] );
+
+            
+            $result = Model::isOK();
+        }
+        $res[]=$obj;
+        }
+        //$resArray[]=array('content'=>$res,'ETag'=>CacheManager::generateETag($res));
+        $result['content'] = $resArray;
+                 
+        return $result;
+    }
+
+    public function getProcedureQuery( $callName, $input, $par = array() )
+    {
+        $par = DBJson::mysql_real_escape_string( $par );
+        $params=array();
+        extract( 
+                $par,
+                EXTR_OVERWRITE
+        );
+        $config = parse_ini_file( 
+                                dirname(__FILE__).'/config.ini',
+                                TRUE
+                                );
+
+        $result = Model::isOK();$result['content']=array();
+        $sql = $this->generateQuery($procedure,$params);
+        $answer = DBRequest::request2( 
+                                           $sql,
+                                           false,
+                                           $config
+                                     );        
+
+        $res = array();
+        $hash=null;
+
+        foreach ($answer as $query_result){
+            $obj = new Query( );
+            
+        if ( $query_result['errno'] != 0 ){
+            if ( isset($query_result['errno']) && $query_result['errno'] != 0 )
+                Logger::Log( 
+                            'GET queryResult failed errno: ' . $query_result['errno'] . ' error: ' . $query_result['error'],
+                            LogLevel::ERROR
+                            );
+
+            if ( !isset($query_result['content']) || !$query_result['content'] )
+                Logger::Log( 
+                            'GET queryResult failed, no content',
+                            LogLevel::ERROR
+                            );
+
+            if ( isset($query_result['errno']) && $query_result['errno'] == 401 ){
+                $result = Model::isRejected();
+                
+            } else 
+                $result = Model::isProblem();
+            
+        }elseif ( gettype( $query_result['content'] ) == 'boolean' ){
+            $obj->setResponse( array( ) );
+            if ( isset( $query_result['affectedRows'] ) )
+                $obj->setAffectedRows( $query_result['affectedRows'] );
+            if ( isset( $query_result['insertId'] ) )
+                $obj->setInsertId( $query_result['insertId'] );
+            if ( isset( $query_result['errno'] ) )
+                $obj->setErrno( $query_result['errno'] );
+            if ( isset( $query_result['numRows'] ) )
+                $obj->setNumRows( $query_result['numRows'] );
+
+          if ( isset( $query_result['errno'] ) && $query_result['errno']>0 ){
+            $result = Model::isProblem();
+          }
+            
+        } else {
+            $data = array( );
+            if ( isset( $query_result['numRows'] ) && 
+                 $query_result['numRows'] > 0 ){
+                $data = $query_result['content'];
+            }
+
+            $obj->setResponse( $data );
+            if ( isset( $query_result['affectedRows'] ) )
+                $obj->setAffectedRows( $query_result['affectedRows'] );
+            if ( isset( $query_result['insertId'] ) )
+                $obj->setInsertId( $query_result['insertId'] );
+            if ( isset( $query_result['errno'] ) )
+                $obj->setErrno( $query_result['errno'] );
+            if ( isset( $query_result['numRows'] ) )
+                $obj->setNumRows( $query_result['numRows'] );
+                
+            $result = Model::isOK();
+        }
+        $res[]=$obj;
+        }
+
+        if (count($res)==1) $res = $res[0]; 
+        $result['content'] = $res;
+        
+        return $result;
+    }
+    
+    public function postQuery( $callName, $input, $par = array() )
+    {
+        $par = DBJson::mysql_real_escape_string( $par );
+        $params=array();
+        extract( 
+                $par,
+                EXTR_OVERWRITE
+        );
+        $config = parse_ini_file( 
+                                dirname(__FILE__).'/config.ini',
+                                TRUE
+                                );
+                 
+        $obj = $input;
 
         $answer = DBRequest::request2( 
                                            $obj->getRequest( ),
@@ -172,8 +264,8 @@ class DBQuery2
                                            $config
                                      );
                                            
-        $this->_app->response->setStatus( 200 );
-        $result = array();
+        $result = Model::isOK();$result['content']=array();
+        $res=array();
              
         foreach ($answer as $query_result){
             $obj = new Query( );
@@ -192,10 +284,11 @@ class DBQuery2
                             );
 
             if ( isset($query_result['errno']) && $query_result['errno'] == 401 ){
-                $this->_app->response->setStatus( 401 );
+                $result = Model::isRejected();
                 
-            } else 
-                $this->_app->response->setStatus( 409 );
+            } else {
+                $result = Model::isProblem();
+            }
             
         }elseif ( gettype( $query_result['content'] ) == 'boolean' ){
             $obj->setResponse( array( ) );
@@ -209,16 +302,17 @@ class DBQuery2
                 $obj->setNumRows( $query_result['numRows'] );
 
           if ( isset( $query_result['errno'] ) && $query_result['errno']>0 ){
-          $this->_app->response->setStatus( 409 );
+            $result = Model::isProblem();
           }
-          else
-            $this->_app->response->setStatus( 200 );
+          else {
+            $result = Model::isCreated();
+          }
             
         } else {
             $data = array( );
             if ( isset( $query_result['numRows'] ) && 
                  $query_result['numRows'] > 0 ){
-                $data = DBJson::getRows2( $query_result['content'] );
+                $data = $query_result['content'];
             }
 
             $obj->setResponse( $data );
@@ -231,13 +325,20 @@ class DBQuery2
             if ( isset( $query_result['numRows'] ) )
                 $obj->setNumRows( $query_result['numRows'] );
 
-            
-            $this->_app->response->setStatus( 200 );
+          if ( isset( $query_result['errno'] ) && $query_result['errno']>0 ){
+            $result = Model::isProblem();
+          }
+          else {
+            $result = Model::isCreated();
+          }
+            //$result = Model::isOK();
         }
-        $result[]=$obj;
+        $res[]=$obj;
         }
-        if (count($result)==1) $result = $result[0];        
-        $this->_app->response->setBody( Query::encodeQuery( $result ) );
+        if (count($res)==1) $res = $res[0]; 
+        $result['content'] = $res;
+        
+        return $result;
     }
     
     /**
@@ -246,21 +347,13 @@ class DBQuery2
      * Called when this component receives an HTTP GET request to
      * /link/exists/platform.
      */
-    public function getExistsPlatform( $name = '' )
-    {
-        Logger::Log( 
-                    'starts GET GetExistsPlatform',
-                    LogLevel::DEBUG
-                    );
-                    
-        $this->loadConfig($name);           
-        if (!file_exists(dirname(__FILE__) . '/config'.($name!='' ? '_'.$name : '').'.ini')){
-            $this->_app->response->setStatus( 409 );
-            $this->_app->stop();
+    public function getExistsPlatform( $callName, $input, $params = array() )
+    {         
+        if (!file_exists(dirname(__FILE__) . '/config.ini')){
+            return Model::isProblem();
         }
        
-        $this->_app->response->setStatus( 200 );
-        $this->_app->response->setBody( '' );   
+        return Model::isOK();
     }
     
     /**
@@ -269,7 +362,7 @@ class DBQuery2
      * Called when this component receives an HTTP DELETE request to
      * /platform.
      */
-    public function deletePlatform( $name = '' )
+    public function deletePlatform( $callName, $input, $params = array() )
     {
         Logger::Log( 
                     'starts DELETE DeletePlatform',
@@ -277,15 +370,12 @@ class DBQuery2
                     );
           
         $this->loadConfig($name);  
-        $configFile = dirname(__FILE__) . '/config'.($name!='' ? '_'.$name : '').'.ini';
+        $configFile = dirname(__FILE__) . '/config.ini';
         if (file_exists($configFile) && !unlink($configFile)){
-            $this->_app->response->setStatus( 409 );
-            $this->_app->stop();
+            return Model::isProblem();
         }
         
-        $this->_app->response->setStatus( 201 );
-        $this->_app->response->setBody( '' );
-
+        return Model::isCreated();
     }
     
     /**
@@ -294,16 +384,17 @@ class DBQuery2
      * Called when this component receives an HTTP POST request to
      * /platform.
      */
-    public function addPlatform( $name = '' )
+    public function addPlatform( $callName, $input, $params = array() )
     {
         Logger::Log( 
                     'starts POST AddPlatform',
                     LogLevel::DEBUG
                     );
                     
-        $this->loadConfig($name);
+        //$this->loadConfig($name);
         // decode the received course data, as an object
-        $insert = Platform::decodePlatform( $this->_app->request->getBody( ) );
+        $insert = $input;
+        $result=Model::isOK();
 
         // always been an array
         $arr = true;
@@ -316,7 +407,7 @@ class DBQuery2
         $res = array( );
         foreach ( $insert as $in ){
         
-            $file = dirname(__FILE__) . '/config'.($name!='' ? '_'.$name : '').'.ini';
+            $file = dirname(__FILE__) . '/config.ini';
             $text = "[DB]\n".
                     "db_path = \"".str_replace(array("\\","\""),array("\\\\","\\\""),$in->getDatabaseUrl())."\"\n".
                     "db_user = \"".str_replace(array("\\","\""),array("\\\\","\\\""),$in->getDatabaseOperatorUser())."\"\n".
@@ -332,22 +423,16 @@ class DBQuery2
                             LogLevel::ERROR
                             );
 
-                $this->_app->response->setStatus( 409 );
-                $this->_app->stop();
+                $result=Model::isProblem();
             }   
 
             $platform = new Platform();
             $platform->setStatus(201);
             $res[] = $platform;
-            $this->_app->response->setStatus( 201 );            
+            $result=Model::isCreated();            
         }
-
-        if ( !$arr && 
-             count( $res ) == 1 ){
-            $this->_app->response->setBody( Platform::encodePlatform( $res[0] ) );
-            
-        } else 
-            $this->_app->response->setBody( Platform::encodePlatform( $res ) );
+        $return['content'] = $res;
+        return $return;
     }
 }
 

@@ -201,7 +201,6 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
 
 // load user data from the database
 $URL = $getSiteURI . "/upload/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
-///echo $URL;return;
 $upload_data = http_get($URL, true);
 $upload_data = json_decode($upload_data, true);
 $upload_data['filesystemURI'] = $filesystemURI;

@@ -13,10 +13,13 @@ h1 {font-size: 150%;}
 h2 {font-size: 125%;}
 .p {text-align: left;}
 .e {background-color: #ccccff; font-weight: bold; color: #000000;}
+.e_c {background-color: #ccccff; font-weight: bold; color: #000000;text-align: center;}
 .h {background-color: #9999cc; font-weight: bold; color: #000000;text-align: right;}
 .k {background-color: #FACC2E; font-weight: bold; color: #000000;text-align: right;}
 .v {background-color: #cccccc; color: #000000;}
+.v_c {background-color: #cccccc; color: #000000;text-align: center;}
 .vr {background-color: #cccccc; text-align: right; color: #000000;}
+.error {background-color: #ffffff; color: #ff0000;text-align: center;font-weight: bold;}
 hr {width: 600px; background-color: #cccccc; border: 0px; height: 1px; color: #000000;}
 .text-button {
     font-family:'Lucida Sans Unicode', Helvetica, Arial, Verdana, sans-serif;

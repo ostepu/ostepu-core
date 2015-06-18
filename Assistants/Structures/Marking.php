@@ -473,7 +473,7 @@ class Marking extends Object implements JsonSerializable
         if ( $data == null )
             $data = array( );
 
-        foreach ( $data AS $key => $value ){
+        foreach ( $data AS $key => &$value ){
             if ( isset( $key ) ){
                 if ( $key == 'file' ){
                     $this->{
@@ -499,10 +499,12 @@ class Marking extends Object implements JsonSerializable
                     $methodVariable = array($this, $func);
                     if (is_callable($methodVariable)){
                         $this->$func($value);
-                    } else
+                    } else {
                         $this->{$key} = $value;
+                    }
                 }
             }
+            unset($value);
         }
     }
 
