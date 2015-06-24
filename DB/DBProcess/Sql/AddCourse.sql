@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS `Process<?php echo $pre; ?>_<?php echo $object->getId
   `PRO_id` INT NOT NULL AUTO_INCREMENT,
   `ES_id` INT NULL,
   `E_id` INT NULL,
-  `PRO_parameter` VARCHAR(255) NULL,
+  `PRO_parameter` TEXT NULL,
   `CO_id_target` INT NOT NULL,
   PRIMARY KEY (`PRO_id`),
   UNIQUE INDEX `EPRO_id_UNIQUE` (`PRO_id` ASC),
