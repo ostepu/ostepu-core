@@ -39,6 +39,7 @@ include_once ( dirname( __FILE__ ) . '/Structures/SelectedSubmission.php' );
 include_once ( dirname( __FILE__ ) . '/Structures/Session.php' );
 include_once ( dirname( __FILE__ ) . '/Structures/Setting.php' );
 include_once ( dirname( __FILE__ ) . '/Structures/Submission.php' );
+include_once ( dirname( __FILE__ ) . '/Structures/Testcase.php' );
 include_once ( dirname( __FILE__ ) . '/Structures/Transaction.php' );
 include_once ( dirname( __FILE__ ) . '/Structures/TutorAssignment.php' );
 include_once ( dirname( __FILE__ ) . '/Structures/User.php' );
