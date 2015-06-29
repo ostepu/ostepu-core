@@ -3,6 +3,7 @@
 Assistants/Test/
 Assistants/hyperlight
 *CConfig.json
+*_cconfig.json
 *.ini
 path/
 ostepu/
