@@ -1,7 +1,0 @@
-[
-    {"method":"POST", "path":"/group" },
-    {"method":"PUT", "path":"/group/accept" },
-    {"method":"PUT", "path":"/group/user/:userid/leave" },
-    {"method":"PUT", "path":"/group/user/:userid/deleteMember" },
-    {"method":"GET", "path":"/group/user/:userid/exercisesheet/:sheetid" }
-]
