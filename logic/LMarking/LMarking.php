@@ -188,7 +188,10 @@ class LMarking
                      $result['status'] <= 299 ){
                     // marking is uploaded
                     $newmarking = Marking::decodeMarking($result['content']);
-                    $marking->setId($newmarking->getId());
+                    if (is_array($newmarking)) $newmarking = $newmarking[0];
+                    
+                    if ($newmarking->getId()!==null)
+                        $marking->setId($newmarking->getId());
                 
                     $res[] = $marking;
                     if ( isset( $result['headers']['Content-Type'] ) )
