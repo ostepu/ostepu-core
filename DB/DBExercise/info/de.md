@@ -1,8 +1,8 @@
 #### Eingänge
-- eid = ??? 
-- sub = ??? 
-- esid = ??? 
-- courseid = ??? 
+- eid = die ID einer Aufgabe (`Exercise`) 
+- sub = bestimmt, ob keine Einsendungen mit zurückgegeben werden sollen ('nosubmission' = keine Einsendungen, sonst = mit Einsendungen) 
+- courseid = eine Veranstaltungs ID (`Course`) 
+- esid = die ID einer Übungsserie (`ExerciseSheet`) 
 - courseAmount = ??? 
 
 | Bezeichnung  | Eingabetyp  | Ausgabetyp | Befehl | Beschreibung |
@@ -21,24 +21,24 @@
 |postSamples|-|Query|POST<br>/samples/course/:courseAmount/user/:userAmount| ??? |
 
 #### Ausgänge
-- eid = ??? 
-- sub = ??? 
-- courseid = ??? 
-- esid = ??? 
+- eid = die ID einer Aufgabe (`Exercise`) 
+- sub = bestimmt, ob keine Einsendungen mit zurückgegeben werden sollen ('nosubmission' = keine Einsendungen, sonst = mit Einsendungen) 
+- courseid = eine Veranstaltungs ID (`Course`) 
+- esid = die ID einer Übungsserie (`ExerciseSheet`) 
 
 | Bezeichnung  | Ziel  | Verwendung | Beschreibung |
 | :----------- |:----- | :--------- | :----------- |
-|out|DBQuery|POST<br>/query| ??? |
-|out2|DBQuery2|POST<br>/query| ??? |
-|getExercise|DBQuery2|GET<br>/query/procedure/DBExerciseGetExercise/:eid/:sub| ??? |
-|getAllExercises|DBQuery2|GET<br>/query/procedure/DBExerciseGetAllExercises/:sub| ??? |
-|getCourseExercises|DBQuery2|GET<br>/query/procedure/DBExerciseGetCourseExercises/:courseid/:sub| ??? |
-|getSheetExercises|DBQuery2|GET<br>/query/procedure/DBExerciseGetSheetExercises/:esid/:sub| ??? |
-|getExistsPlatform|DBQuery2|GET<br>/query/procedure/DBExerciseGetExistsPlatform| ??? |
+|out|DBQuery|POST<br>/query| wird für EDIT, DELETE<br>und POST<br>SQL-Templates verwendet |
+|out2|DBQuery2|POST<br>/query| wird für EDIT, DELETE<br>und POST<br>SQL-Templates verwendet |
+|getExercise|DBQuery2|GET<br>/query/procedure/DBExerciseGetExercise/:eid/:sub| Prozeduraufruf |
+|getAllExercises|DBQuery2|GET<br>/query/procedure/DBExerciseGetAllExercises/:sub| Prozeduraufruf |
+|getCourseExercises|DBQuery2|GET<br>/query/procedure/DBExerciseGetCourseExercises/:courseid/:sub| Prozeduraufruf |
+|getSheetExercises|DBQuery2|GET<br>/query/procedure/DBExerciseGetSheetExercises/:esid/:sub| Prozeduraufruf |
+|getExistsPlatform|DBQuery2|GET<br>/query/procedure/DBExerciseGetExistsPlatform| Prozeduraufruf |
 
 #### Anbindungen
 | Bezeichnung  | Ziel  | Priorität | Beschreibung |
 | :----------- |:----- | :--------:| :------------|
-|request|CLocalObjectRequest|-| ??? |
+|request|CLocalObjectRequest|-| damit DBExercise als lokales Objekt aufgerufen werden kann |
 
 Stand 29.06.2015

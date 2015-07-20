@@ -23,19 +23,19 @@
 
 | Bezeichnung  | Ziel  | Verwendung | Beschreibung |
 | :----------- |:----- | :--------- | :----------- |
-|out|DBQuery|POST<br>/query| ??? |
-|out2|DBQuery2|POST<br>/query| ??? |
-|getCourseExercises|DBQuery2|GET<br>/query/procedure/DBExerciseSheetGetCourseExercises/:courseid| ??? |
-|getCourseSheets|DBQuery2|GET<br>/query/procedure/DBExerciseSheetGetCourseSheets/:courseid| ??? |
-|getCourseSheetURLS|DBQuery2|GET<br>/query/procedure/DBExerciseSheetGetCourseSheetURLs/:courseid| ??? |
-|getExerciseSheet|DBQuery2|GET<br>/query/procedure/DBExerciseSheetGetExerciseSheet/:esid| ??? |
-|getExerciseSheetURL|DBQuery2|GET<br>/query/procedure/DBExerciseSheetGetExerciseSheetURL/:esid| ??? |
-|getSheetExercises|DBQuery2|GET<br>/query/procedure/DBExerciseSheetGetSheetExercises/:esid| ??? |
-|getExistsPlatform|DBQuery2|GET<br>/query/procedure/DBExerciseSheetGetExistsPlatform| ??? |
+|out|DBQuery|POST<br>/query| wird für EDIT, DELETE<br>und POST<br>SQL-Templates verwendet |
+|out2|DBQuery2|POST<br>/query| wird für EDIT, DELETE<br>und POST<br>SQL-Templates verwendet |
+|getCourseExercises|DBQuery2|GET<br>/query/procedure/DBExerciseSheetGetCourseExercises/:courseid| Prozeduraufruf |
+|getCourseSheets|DBQuery2|GET<br>/query/procedure/DBExerciseSheetGetCourseSheets/:courseid| Prozeduraufruf |
+|getCourseSheetURLS|DBQuery2|GET<br>/query/procedure/DBExerciseSheetGetCourseSheetURLs/:courseid| Prozeduraufruf |
+|getExerciseSheet|DBQuery2|GET<br>/query/procedure/DBExerciseSheetGetExerciseSheet/:esid| Prozeduraufruf |
+|getExerciseSheetURL|DBQuery2|GET<br>/query/procedure/DBExerciseSheetGetExerciseSheetURL/:esid| Prozeduraufruf |
+|getSheetExercises|DBQuery2|GET<br>/query/procedure/DBExerciseSheetGetSheetExercises/:esid| Prozeduraufruf |
+|getExistsPlatform|DBQuery2|GET<br>/query/procedure/DBExerciseSheetGetExistsPlatform| Prozeduraufruf |
 
 #### Anbindungen
 | Bezeichnung  | Ziel  | Priorität | Beschreibung |
 | :----------- |:----- | :--------:| :------------|
-|request|CLocalObjectRequest|-| ??? |
+|request|CLocalObjectRequest|-| damit DBExerciseSheet als lokales Objekt aufgerufen werden kann |
 
 Stand 29.06.2015

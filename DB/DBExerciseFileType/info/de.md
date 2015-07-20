@@ -25,17 +25,17 @@
 
 | Bezeichnung  | Ziel  | Verwendung | Beschreibung |
 | :----------- |:----- | :--------- | :----------- |
-|out|DBQuery|POST<br>/query| ??? |
-|out2|DBQuery2|POST<br>/query| ??? |
-|getExerciseFileType|DBQuery2|GET<br>/query/procedure/DBExerciseFileTypeGetExerciseFileType/:eftid| ??? |
-|getAllExerciseFileTypes|DBQuery2|GET<br>/query/procedure/DBExerciseFileTypeGetAllExerciseFileTypes| ??? |
-|getExerciseExerciseFileTypes|DBQuery2|GET<br>/query/procedure/DBExerciseFileTypeGetExerciseExerciseFileTypes/:eid| ??? |
-|getSheetExerciseFileTypes|DBQuery2|GET<br>/query/procedure/DBExerciseFileTypeGetSheetExerciseFileTypes/:esid| ??? |
-|getExistsPlatform|DBQuery2|GET<br>/query/procedure/DBExerciseFileTypeGetExistsPlatform| ??? |
+|out|DBQuery|POST<br>/query| wird für EDIT, DELETE<br>und POST<br>SQL-Templates verwendet |
+|out2|DBQuery2|POST<br>/query| wird für EDIT, DELETE<br>und POST<br>SQL-Templates verwendet |
+|getExerciseFileType|DBQuery2|GET<br>/query/procedure/DBExerciseFileTypeGetExerciseFileType/:eftid| Prozeduraufruf |
+|getAllExerciseFileTypes|DBQuery2|GET<br>/query/procedure/DBExerciseFileTypeGetAllExerciseFileTypes| Prozeduraufruf |
+|getExerciseExerciseFileTypes|DBQuery2|GET<br>/query/procedure/DBExerciseFileTypeGetExerciseExerciseFileTypes/:eid| Prozeduraufruf |
+|getSheetExerciseFileTypes|DBQuery2|GET<br>/query/procedure/DBExerciseFileTypeGetSheetExerciseFileTypes/:esid| Prozeduraufruf |
+|getExistsPlatform|DBQuery2|GET<br>/query/procedure/DBExerciseFileTypeGetExistsPlatform| Prozeduraufruf |
 
 #### Anbindungen
 | Bezeichnung  | Ziel  | Priorität | Beschreibung |
 | :----------- |:----- | :--------:| :------------|
-|request|CLocalObjectRequest|-| ??? |
+|request|CLocalObjectRequest|-| damit DBExerciseFileType als lokales Objekt aufgerufen werden kann |
 
 Stand 29.06.2015
