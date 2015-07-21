@@ -1,0 +1,7 @@
+[
+    {
+        "name": "getTimestamp",
+        "method": "GET",
+        "path": "/timestamp"
+    }
+]
