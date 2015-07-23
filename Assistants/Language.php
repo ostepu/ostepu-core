@@ -10,24 +10,70 @@
 
 class Language
 {
+    
+    /**
+     * @var string[][][] $language Die geladene Sprache
+     * Struktur: self::$language[Paketname][Bereich][Platzhalter]
+     */
     public static $language = array();
+    
+    /**
+     * @var string $selectedLanguage Die ausgewählte/geladene Sprache
+     */
     public static $selectedLanguage = null;
+    
+    /**
+     * @var string $preferedLanguage Die bevorzugte Sprache
+     */
     public static $preferedLanguage = null;
     
+    /**
+     * @var string[][][] $defaultLanguage Die geladene Standardsprache
+     * Struktur: self::$defaultLanguage[Paketname][Bereich][Platzhalter]
+     */
     public static $defaultLanguage = array();
-    public static $selectedDefaultLanguage = null;
-    public static $default = 'de';
     
+    /**
+     * @var string Die ausgwählte/geladene Standardsprache
+     */
+    public static $selectedDefaultLanguage = null;   
+
+    /**
+     * @var string $default Die vom Sprachsystem vorgegebene Standardsprache
+     */
+    public static $default = 'de';
+        
+    /**
+     * Setzt die bevorzugte Sprache
+     *
+     * @param string $lang Der Sprachbezeichner Bsp.: de, en
+     */
     public static function setPreferedLanguage($lang)
     {
         self::$preferedLanguage = $lang;
     }
-    
+        
+    /**
+     * Lädt die Sprachdatei von $lang
+     *
+     * @param string $lang Der Bezeichner der Sprachedatei
+     * @param string $name Ein zusätzlicher optionaler Präfix der Sprachdatei und Name des Platzhalterpakets
+     * @param string $type Der Typ der Sprachdatei (json oder ini)
+     * @param string $path Der Pfad der Sprachdatei
+     */
     public static function loadLanguageFile($lang, $name='default', $type='json', $path='')
     {
         self::loadLanguage($lang, $name, $type, $path);
     }
-    
+        
+    /**
+     * Lädt die Sprache $lang
+     *
+     * @param string $lang Der Bezeichner der Sprachedatei
+     * @param string $name Ein zusätzlicher optionaler Präfix der Sprachdatei und Name des Platzhalterpakets
+     * @param string $type Der Typ der Sprachdatei (json oder ini)
+     * @param string $path Der Pfad der Sprachdatei
+     */
     public static function loadLanguage($lang, $name='default', $type='json', $path='')
     {
         $nameAdd = ($name == 'default') ? '' : $name.'_';
@@ -78,7 +124,15 @@ class Language
             
         }
     }
-    
+        
+    /**
+     * Liefert den Text zu dem Platzhalter $cell im Bereich $area
+     *
+     * @param string $area Der Name des Bereichs
+     * @param string $cell Der Name des Platzhalters
+     * @param string $name Ein optionaler Sprachbezeichner (Bsp.: de, en)
+     * @return string Der Text aus der geladenen Sprache, der Standardsprache oder ??? im Fehlerfall
+     */
     public static function Get($area, $cell, $name='default')
     {        
         if (self::$selectedLanguage != null && isset(self::$language[$name]) && isset(self::$language[$name][$area]) && isset(self::$language[$name][$area][$cell])){
