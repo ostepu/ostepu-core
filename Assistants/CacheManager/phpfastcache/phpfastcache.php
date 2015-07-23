@@ -3,7 +3,7 @@
 require_once(dirname(__FILE__) . "/phpfastcache/2.4.2/base.php");
 
 // OK, setup your cache
-phpFastCache::$storage = "files";//memcache
+phpFastCache::$storage = "memcache";//memcache
 phpFastCache::$config = array(
 	"storage"   =>  phpFastCache::$storage,
 	/*
