@@ -3,6 +3,7 @@
  * @file CreateRequest.php contains the Request_CreateRequest class
  */ 
 
+include_once( dirname( __FILE__ ) . '/RequestObject.php' );
 
 /**
  * The Request_CreateRequest class is used to create and 
@@ -11,78 +12,6 @@
  * @author Till Uhlig
  * @date 2013-2014
  */
-class Request_RequestObject
-{
-    public $method;
-    public $target;
-    public $header;
-    public $content;
-    public $authbool;
-    public $sessiondelete;
-    public function __construct($method, $target, $header, $content, $authbool = true, $sessiondelete = false)
-    {
-        $this->method=$method;
-        $this->target=$target;
-        $this->header=$header;
-        $this->content=$content;
-        $this->authbool=$authbool;
-        $this->sessiondelete=$sessiondelete;
-    }
-    
-    public function get()
-    {
-        $ch = curl_init($this->target);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $this->method);
-
-        // take the SESSION, DATE and USER fields from received header and 
-        // add them to the header of our curl object
-        $resultHeader = array();
-                
-        if ($this->authbool){
-            if (isset($_SESSION['UID']))
-                $resultHeader['USER'] = 'USER: ' . $_SESSION['UID'];
-            if (isset($_SESSION['SESSION']))
-                $resultHeader['SESSION'] = 'SESSION: ' . $_SESSION['SESSION'];
-                                                
-            if ($this->sessiondelete) {
-                if (isset($_SERVER['REQUEST_TIME']))
-                    $resultHeader['DATE'] = 'DATE: ' . $_SERVER['REQUEST_TIME'];
-            } else {
-                if (isset($_SESSION['LASTACTIVE']))
-                    $resultHeader['DATE'] = 'DATE: ' . $_SESSION['LASTACTIVE'];
-            }
-        }
-        
-        if (isset($_SERVER['HTTP_SESSION']) && !in_array('SESSION',$resultHeader))
-            $resultHeader['SESSION'] = 'SESSION: ' . $_SERVER['HTTP_SESSION'];
-        if (isset($_SERVER['HTTP_USER']) && !in_array('USER',$resultHeader))
-            $resultHeader['USER'] = 'USER: ' . $_SERVER['HTTP_USER'];
-        if (isset($_SERVER['HTTP_DATE']) && !in_array('DATE',$resultHeader))
-            $resultHeader['DATE'] = 'DATE: ' . $_SERVER['HTTP_DATE'];
-            
-        $resultHeader = array_values($resultHeader);    
-        $resultHeader = array_merge($resultHeader,$this->header);
-
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $resultHeader);
-        
-        if ($this->method == 'POST' || $this->method == 'PUT'){
-            curl_setopt($ch, CURLOPT_POSTFIELDS, $this->content);
-        }
-        
-        /**
-         * @todo CURLOPT_FRESH_CONNECT and CURLOPT_FORBID_REUSE, we need that?
-         */
-        //curl_setopt($ch, CURLOPT_FRESH_CONNECT, 0);
-        //curl_setopt($ch, CURLOPT_FORBID_REUSE, 0);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 180);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true); 
-
-        curl_setopt($ch, CURLOPT_HEADER, 1);
-        return $ch; 
-    }
-}
- 
 class Request_CreateRequest
 {
     /**

@@ -11,20 +11,39 @@ include_once ( dirname(__FILE__) . '/DBJson.php' );
 
 class Model
 {
-    private $_path=null;
-    private $_prefix=null;
+    
     /**
-     * @var Slim $_app the slim object
+     * @var string $_path Der lokale Pfad des Moduls
      */
-   // private $_app = null;
+    private $_path=null;
+    
+    /**
+     * @var string $_prefix Unterstützte Präfixe (veraltet)
+     */
+    private $_prefix=null;
 
     /**
      * @var Component $_conf the component data object
      */
     public $_conf = null;
+    
+    /**
+     * @var string $_class Der Klassenname des Moduls
+     */
     private $_class = null;
+    
+    /**
+     * @var Component $_com Die Definition der Ausgänge
+     */
     private $_com = null;
     
+    /**
+     * Der Konstruktor
+     *
+     * @param string Unterstützte Präfixe (veraltet)
+     * @param string Der lokale Pfade des Moduls
+     * @param string Der Klassenname des Moduls
+     */
     public function __construct( $prefix, $path, $class )
     {
         $this->_path=$path;
@@ -32,12 +51,14 @@ class Model
         $this->_class=$class;
     }
 
+    /**
+     * Führt das Modul entsprechend der Commands.json und Component.json Definitionen aus
+     */
     public function run()
     {
         // runs the CConfig
         $com = new CConfig( $this->_prefix, $this->_path );
 
-        // runs the DBUser
         if ( $com->used( ) ) return;
             $conf = $com->loadConfig( );
         $this->_conf=$conf;
@@ -126,7 +147,7 @@ class Model
             } elseif (isset($selectedCommand['outputType']) && trim($selectedCommand['outputType'])=='binary'){
                 if (isset( $result['content'])){
                     if (!is_string($result['content']))
-                    $result['content'] = json_encode($result['content']);
+                        $result['content'] = json_encode($result['content']);
                 }
             } else {
                 if (isset( $result['content']) )
@@ -145,9 +166,22 @@ class Model
             http_response_code(200); 
     }
     
+    /**
+     * Führt eine Anfrage über $linkName aus
+     *
+     * @param string $linkName Der Name des Ausgangs
+     * @param mixed[] $params Die Ersetzungen für die Platzhalter des Befehls (Bsp.: array('uid'=>2,'cid'=>1)
+     * @param string body Der Inhalt der Anfrage für POST und PUT
+     * @param int $positiveStatus Der Status, welcher als erfolgreiche Antwort gesehen wird (Bsp.: 200)
+     * @param callable $positiveMethod Im positiven Fall wird diese Methode aufgerufen
+     * @param mixed[] $positiveParams Die Werte, welche an die positive Funktion übergeben werden
+     * @param callable $negativeMethod Im negativen Fall wird diese Methode aufgerufen
+     * @param mixed[] $negativeParams Die Werte, welche an die negative Funktion übergeben werden
+     * @param string returnType Ein optionaler Rückgabetyp (es können Structures angegeben werden, sodass automatisch Typ::encodeType() ausgelöst wird)
+     * @return mixed Das Ergebnis der aufgerufenen Resultatfunktion
+     */
     public function call($linkName, $params, $body, $positiveStatus, callable $positiveMethod, $positiveParams, callable $negativeMethod, $negativeParams, $returnType=null)
     {
-   // public function call($linkName, $params, $body, $returnType=null){
         $link=CConfig::getLink($this->_conf->getLinks( ),$linkName);
         $instructions = $this->_com->instruction(array(),true)['links'];
         $selectedInstruction=null;
@@ -161,7 +195,7 @@ class Model
         $order = $selectedInstruction['links'][0]['path'];
         foreach ($params as $key=>$param)
             $order = str_replace( ':'.$key, $param, $order);
-//echo $selectedInstruction['links'][0]['method'].' '.$order;
+
         $result = Request::routeRequest( 
                                         $selectedInstruction['links'][0]['method'],
                                         $order,
@@ -183,6 +217,20 @@ class Model
         return call_user_func_array($negativeMethod, $negativeParams);
     }
     
+    /**
+     * Sendet den Inhalt von $file an $linkName und behandelt die Antwort
+     *
+     * @param string $linkName Der Name des Ausgangs
+     * @param string $file Der Pfad des SQL Templates
+     * @param mixed[] $params Die Variablen, welche im Template verwendet werden können (Bsp.: array('time'=>12)
+     * @param int $positiveStatus Der Status, welcher als erfolgreiche Antwort gesehen wird (Bsp.: 200)
+     * @param callable $positiveMethod Im positiven Fall wird diese Methode aufgerufen
+     * @param mixed[] $positiveParams Die Werte, welche an die positive Funktion übergeben werden
+     * @param callable $negativeMethod Im negativen Fall wird diese Methode aufgerufen
+     * @param mixed[] $negativeParams Die Werte, welche an die negative Funktion übergeben werden
+     * @param bool $checkSession Ob die Sessiondaten in der Datenbank geprüft werden sollen
+     * @return mixed Das Ergebnis der aufgerufenen Resultatfunktion
+     */
     public function callSqlTemplate($linkName, $file, $params, $positiveStatus, callable $positiveMethod, $positiveParams, callable $negativeMethod, $negativeParams, $checkSession=true)
     {
         $link=CConfig::getLink($this->_conf->getLinks( ),$linkName);
@@ -203,6 +251,19 @@ class Model
         return call_user_func_array($negativeMethod, $negativeParams);
     }
     
+    /**
+     * Sendet $sql an $linkName und behandelt die Antwort
+     *
+     * @param string $linkName Der Name des Ausgangs
+     * @param string $sql Der zu verwendende SQL Inhalt
+     * @param int $positiveStatus Der Status, welcher als erfolgreiche Antwort gesehen wird (Bsp.: 200)
+     * @param callable $positiveMethod Im positiven Fall wird diese Methode aufgerufen
+     * @param mixed[] $positiveParams Die Werte, welche an die positive Funktion übergeben werden
+     * @param callable $negativeMethod Im negativen Fall wird diese Methode aufgerufen
+     * @param mixed[] $negativeParams Die Werte, welche an die negative Funktion übergeben werden
+     * @param bool $checkSession Ob die Sessiondaten in der Datenbank geprüft werden sollen
+     * @return mixed Das Ergebnis der aufgerufenen Resultatfunktion
+     */
     public function callSql($linkName, $sql, $positiveStatus, callable $positiveMethod, $positiveParams, callable $negativeMethod, $negativeParams, $checkSession=true)
     {
         $link=CConfig::getLink($this->_conf->getLinks( ),$linkName);
@@ -222,22 +283,66 @@ class Model
         return call_user_func_array($negativeMethod, $negativeParams);
     }
     
+    /**
+     * Liefert eine Rückgabe
+     *
+     * @param int $status Der Status
+     * @param string $content Der optionale Inhalt
+     * @return array('status'=>..,'content'=>..) Die Antwort
+     */
     public static function createAnswer($status=200, $content=''){
         return array("status"=>$status,"content"=>$content);
     }
+    
+    /**
+     * Liefert eine Rückgabe (ein Problem ist aufgetreten)
+     *
+     * @param string $content Der optionale Inhalt
+     * @return array('status'=>..,'content'=>..) Die Antwort
+     */
     public static function isProblem($content=null){
         return self::createAnswer(409,$content);
     }
+    
+    /**
+     * Liefert eine Rückgabe (wurde erstellt)
+     *
+     * @param string $content Der optionale Inhalt
+     * @return array('status'=>..,'content'=>..) Die Antwort
+     */
     public static function isCreated($content=null){
         return self::createAnswer(201,$content);
     }
+    
+    /**
+     * Liefert eine Rückgabe (Anfrage war erfolgreich)
+     *
+     * @param int $status Der Status
+     * @param string $content Der optionale Inhalt
+     * @return array('status'=>..,'content'=>..) Die Antwort
+     */
     public static function isOk($content=null){
         return self::createAnswer(200,$content);
     }
+    
+    /**
+     * Liefert eine Rückgabe (Ressource wurde nicht gefunden)
+     *
+     * @param int $status Der Status
+     * @param string $content Der optionale Inhalt
+     * @return array('status'=>..,'content'=>..) Die Antwort
+     */
     public static function isEmpty($content=null){
         return self::createAnswer(404,$content);
     }
 
+    /**
+     * Liefert eine Rückgabe (ein Problem ist aufgetreten)
+     *
+     * @param int $status Der Status
+     * @param string $content Der optionale Inhalt
+     * @return array('status'=>..,'content'=>..) Die Antwort
+     */
     public static function isRejected($content=null){
         return self::createAnswer(401,$content);
     }
