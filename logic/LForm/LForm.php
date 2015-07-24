@@ -88,14 +88,6 @@ class LForm
         $this->app->post('/'.$this->getPrefix().'(/)',
                         array($this, 'addForm'));
                         
-        // PUT EditForm
-        $this->app->put('/'.$this->getPrefix().'/:formId(/)',
-                        array($this, 'editForm'));
-                        
-        // PUT EditFormObject
-        $this->app->put('/'.$this->getPrefix().'(/)',
-                        array($this, 'editFormObject'));
-                        
         // POST AddCourse
         $this->app->post( 
                          '/course(/)',
@@ -474,31 +466,5 @@ class LForm
             
         } else 
             $this->app->response->setBody( Form::encodeForm( $res ) );
-    }
-  
-    /**
-     * Edits a given form.
-     *
-     * Called when this component receives an HTTP PUT request to
-     * /form/$formId(/).
-     *
-     * @param int $formId A form id.
-     * @todo Implement the functionality.
-     */
-    public function editForm($formId)
-    {
-        // not implemented
-    }
-    
-    /**
-     * Edits one or more given form objects.
-     *
-     * Called when this component receives an HTTP PUT request to
-     * /form(/).
-     * @todo Implement the functionality.
-     */
-    public function editFormObject()
-    {
-        // not implemented
     }
 }
