@@ -23,6 +23,10 @@ class CSystem
      * @param Component $conf component data
      */
     private $_component = null;
+    
+    /**
+     * Der Konstruktor
+     */
     public function __construct( )
     {
         $component = new Model('', dirname(__FILE__), $this);
@@ -30,6 +34,14 @@ class CSystem
         $component->run();
     }
     
+    /**
+     * Liefert den aktuellen Zeitstempel
+     *
+     * @param string $callName Der Name des aufgerufenen Befehls
+     * @param string $input Die Eingabe 
+     * @param string[] $params Die Platzhalter des Aufrufs
+     * @return string[] Positive Antwort mit Zeitstempel
+     */
     public function getTimestamp( $callName, $input, $params = array())
     {
         // returns the currect timestamp
