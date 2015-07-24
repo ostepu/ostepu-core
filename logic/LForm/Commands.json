@@ -1,7 +1,5 @@
 [
     {    "method":"post", "path":"/form" },
-    {    "method":"edit", "path":"/form/:formId" },
-    {    "method":"edit", "path":"/form" },
     {    "method":"post", "path":"/course" },
     {    "method":"delete", "path":"/course/:courseid" },
     {    "method":"get", "path":"/link/exists/course/:courseid" }
