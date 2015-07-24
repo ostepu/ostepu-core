@@ -2,49 +2,16 @@
 require_once ( dirname(__FILE__) . '/Slim/Route.php' );
 require_once ( dirname(__FILE__) . '/Slim/Router.php' );
 require_once ( dirname(__FILE__) . '/Slim/Environment.php' );
-include_once ( dirname(__FILE__) . '/Structures.php' );
-include_once ( dirname(__FILE__) . '/Request.php' );
-include_once ( dirname(__FILE__) . '/Logger.php' );
-include_once ( dirname(__FILE__) . '/CConfig.php' );
-include_once ( dirname(__FILE__) . '/DBRequest.php' );
-include_once ( dirname(__FILE__) . '/DBJson.php' );
-require_once( dirname(__FILE__) . '/phpfastcache/phpfastcache.php');
-
-class PathObject
-{
-    public function __construct( $_fromSid, $_toSid,$_toName, $_toURL, $_toMethod, $_toStatus)
-    {
-        $this->fromSid = $_fromSid;
-        $this->toSid = $_toSid;
-        $this->toName = $_toName;
-        $this->toURL = $_toURL;
-        $this->toMethod = $_toMethod;
-        $this->toStatus = $_toStatus;
-    }
-    
-    public $fromSid = null;
-    public $toSid = null;
-    public $toName = null;
-    public $toURL = null;
-    public $toMethod = null;
-    public $toStatus = null;
-    public $eTag = null;
-    
-}
-
-class DataObject
-{
-    public function __construct( $_content, $_status, $_eTag=null)
-    {
-        $this->content = $_content;
-        $this->status = $_status;
-        $this->eTag = $_eTag;
-    }
-    
-    public $content = null;
-    public $status = null;
-    public $eTag = null;
-}
+require_once ( dirname(__FILE__) . '/Structures.php' );
+require_once ( dirname(__FILE__) . '/Request.php' );
+require_once ( dirname(__FILE__) . '/Logger.php' );
+require_once ( dirname(__FILE__) . '/CConfig.php' );
+require_once ( dirname(__FILE__) . '/DBRequest.php' );
+require_once ( dirname(__FILE__) . '/DBJson.php' );
+require_once ( dirname(__FILE__) . '/CacheManager/SID.php' );
+require_once ( dirname(__FILE__) . '/CacheManager/structures/DataObject.php' );
+require_once ( dirname(__FILE__) . '/CacheManager/cacheAccess.php' );
+require_once ( dirname(__FILE__) . '/CacheManager/cacheTree.php' );
 
 class CacheManager
 {
@@ -54,24 +21,62 @@ class CacheManager
     private static $begin = null;
     private static $activeTree = false;
     private static $changedTree = false;
-    private static $enabled = false;
-    private static $maxSid = -1;
+    private static $enabled = true;
     private static $rootNode = null;
-    private static $currentBaseSID = 0;
+    
+    public static $beginTimestamps = array();
+    public static $endTimestamps = array();
+    public static $executionTime = array();
     
     // true = die dot-Graphen werden erstellt, false = die grafische Ausgabe der Graphen erfolgt nicht
     private static $makeTree = false;
     
+    /**
+     * Liefert den Index des ersten Elements einer Liste
+     *
+     * @param mixed[] 
+     * @return int Der Index des ersten Elements
+     */
+    public static function getFirstIndex($list)
+    {
+        reset($list);
+        return key($list);
+    }
+    
+    /**
+     * Liefert das erste Elements einer Liste
+     *
+     * @param mixed[] 
+     * @return mixed Das erste Element, null wenn die Liste leer ist
+     */
+    public static function getFirstElement($list)
+    {
+        reset($list);
+        return current($list);
+    }
+    
+    /**
+     * Aktiviert das Erstellen des Debug-Baums
+     */
     public static function enableMakeTree()
     {
         self::$makeTree = true;
     }
     
+    /**
+     * Deaktiviert das Erstellen des Debug-Baums
+     */
     public static function disableMakeTree()
     {
         self::$makeTree = false;
     }
     
+    /**
+     * ???
+     *
+     * @param ???
+     * @return ???
+     */
     public static function getToPathBySid($sid)
     {
         if ($sid===null) return null;
@@ -85,37 +90,30 @@ class CacheManager
     
     public static function getNextSid()
     {
-        $header = array_merge(array(),Request::http_parse_headers_short(headers_list()));
+        return SID::getNextSid();
+    }
+
         
-        $id=null;
-        if (isset($header['Cachesid'])){
-            $id = intval($header['Cachesid']);
-           
-            if (self::$currentBaseSID!==$id)
-                return $id;
-        }
-            
-        if ($id===self::$currentBaseSID) self::$currentBaseSID = self::$maxSid+1;
-        self::$maxSid=self::$maxSid+1;
-        return self::$maxSid;
-    }
-    
-    public static function setCacheEnabled($status=null)
-    {
-        if ($status===null) return self::$enabled;
-        self::$enabled=$status;
-    }
-    
+    /**
+     * Aktiviert den CacheManager
+     */
     public static function enable()
     {
         $enabled=true;
     }
-    
+        
+    /**
+     * Deaktiviert den CacheManager
+     */
     public static function disable()
     {
         $enabled=false;
     }
     
+    /**
+     * Setzt alle Daten des Managers auf den Standartwert zurück.
+     * Dabei bleiben $enabled und $makeTree unverändert.
+     */
     public static function reset()
     {
         self::$cachedData = array();
@@ -124,13 +122,27 @@ class CacheManager
         self::$begin = null;
         self::$activeTree = false;
         self::$changedTree = false;
-        self::$enabled = true; 
-        self::$maxSid = -1;
+        SID::reset();
     }
     
+    /**
+     * ???
+     *
+     * @param ???
+     * @return ???
+     */
     public static function savePath($URL,$method)
     {
         asort(self::$cachedPath);
+        
+        if (self::$makeTree){
+            foreach (self::$beginTimestamps as $key=>$value){
+                if (isset(self::$endTimestamps[$key])){
+                    $id = intval(self::$cachedPath[$key]->toSid);
+                    self::$executionTime[$id] = round((self::$endTimestamps[$key]-$value)*1000,2);
+                }
+            }
+        }
         
         if (self::$makeTree){
                         
@@ -172,6 +184,9 @@ class CacheManager
                 
                 if (!isset($Nodes[$path->toName.'_'.$path->toSid]['status']))
                     $Nodes[$path->toName.'_'.$path->toSid]['status'] = $path->toStatus;
+                
+                if (!isset($Nodes[$path->toName.'_'.$path->toSid]['sid']))
+                    $Nodes[$path->toName.'_'.$path->toSid]['sid'] = $path->toSid;
                                
                 
                 $edgeText.="\"".$fromName.'_'.$path->fromSid.'"->"'.$path->toName.'_'.$path->toSid."\"[ label = \"".$path->toMethod."\" ];\n";
@@ -180,9 +195,17 @@ class CacheManager
             $nodeText = '';
             foreach ($Nodes as $key=>$node){
                 $add = "";
+                
+                $time = '';
+                
+                if (isset($node['sid'])){
+                    $id = $node['sid'];
+                    $time = (isset(self::$executionTime[$id]) ? ("\n".self::$executionTime[$id]."ms") : "\n---");
+                }
+                
                 if (isset($node['status']) && ($node['status']<200 || $node['status']>299))
                     $add = "color = \"red\" fontcolor=\"red\" ";
-                $text.="\"".$key."\" [ ".$add."label=\"".$node['name']."\" id=\"$key\" ]; \n";
+                $text.="\"".$key."\" [ ".$add."label=\"".$node['name'].$time."\" id=\"$key\" ]; \n";
             }
             
             $text.= "{".$nodeText."}";
@@ -207,16 +230,26 @@ class CacheManager
             $tree[$key] = $path;
         }
 
-        $uTag = self::generateETag(self::$cachedPath[0]->toURL);
-        self::storeData('tree_'.$uTag,json_encode($tree));
+        $uTag = self::generateETag(self::$cachedPath[self::getFirstIndex(self::$cachedPath)]->toURL);
+        cacheAccess::storeData('tree_'.$uTag,json_encode($tree));
     }
     
+    /**
+     * Liefert die aufgerufene URL des PHP-Skriptes.
+     *
+     * @return string Die URL
+     */
     public static function generateURL()
     {
-        ///if (!self::$enabled) return null;
         return $_SERVER['REQUEST_SCHEME'].'://'.$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
     }
     
+    /**
+     * ???
+     *
+     * @param ???
+     * @return ???
+     */
     public static function getCachedDataByURL($sid, $URL, $method)
     {
         if (!self::$enabled) return null;
@@ -229,12 +262,21 @@ class CacheManager
         return null;
     }
     
+    /**
+     * ???
+     *
+     * @param ???
+     * @return ???
+     */
     public static function addPath($sid, $toSid, $Name, $URL, $method, $status)
     {
         if (!self::$enabled && !self::$makeTree) return null;
         self::$cachedPath[$toSid] = new PathObject($sid, $toSid, $Name, $URL ,$method, $status);
     }
     
+    /**
+     * Setzt das aktuelle Skript als Wurzelknoten
+     */
     public static function setRoot()
     {
         $graphName = $_SERVER['SCRIPT_NAME'];
@@ -242,26 +284,37 @@ class CacheManager
         self::$rootNode = new PathObject(null, null, $graphName, null ,null, null);
     }
     
+    /**
+     * ???
+     *
+     * @param ???
+     */
     public static function cacheData($sid, $Name, $URL, $content, $status, $method)
     {
-        //if (!self::$enabled) return null;
-        if (strpos($URL,'/UI/')===false && strtoupper($method)=='GET'){ // ??????
+        if (!self::$enabled) return;
+        if (strpos($URL,'/UI/')===false && strtoupper($method)=='GET'){
             $uTag = md5($URL);
 
             if (!isset(self::$cachedData[$uTag])){
                 self::$cachedData[$uTag] = new DataObject($content,$status);
                 $eTag = self::generateETag($content);
-                if ($sid===self::$currentBaseSID)
-                    self::storeData('data_'.$eTag,$content);
+                if ($sid===SID::$currentBaseSID)
+                    cacheAccess::storeData('data_'.$eTag,$content);
             }
         }
         
-        if ($sid===self::$currentBaseSID){
+        if ($sid===SID::$currentBaseSID){
             self::finishRequest($sid, null, 'BEGIN', null, $content, $status, null, null);
             self::savePath($URL,$method);
         }
     }
     
+    /**
+     * ???
+     *
+     * @param ???
+     * @return ???
+     */
     public static function finishRequest($sid, $path, $Name, $inURL, $outContent, $outStatus, $inMethod, $inContent)
     {
         if (!self::$makeTree) return;
@@ -299,6 +352,12 @@ class CacheManager
         }
     }
     
+    /**
+     * ???
+     *
+     * @param ???
+     * @return ???
+     */
     public static function cacheDataSimple($sid, $Name, $URL, $content, $status, $method)
     {
         if (self::$enabled && strpos($URL,'/UI/')===false && strtoupper($method)=='GET'){ // ??????
@@ -311,12 +370,18 @@ class CacheManager
             }
         }
         
-        if ((self::$enabled || self::$makeTree) && $sid===self::$currentBaseSID){
+        if ((self::$enabled || self::$makeTree) && $sid===SID::$currentBaseSID){
             self::finishRequest($sid, null, 'BEGIN', null, $content, $status, null, null);
             self::savePath($URL,$method);
         }
     }
     
+    /**
+     * Ermittelt einen Hash zu $data
+     *
+     * @param mixed Die Eingabedaten
+     * @return string Der MD5 Hash (32 Zeichen)
+     */
     public static function generateETag($data)
     {
         if (!is_string($data))
@@ -324,19 +389,36 @@ class CacheManager
         return md5($data);
     }
     
+    /**
+     * Ermittelt den Hash von $data und weist ihn dem ETag-Header zu
+     *
+     * @param mixed Eingabedaten
+     */
     public static function setETag($data)
     {
         $eTag=self::generateETag($data);
         header('ETag: ' . $eTag . '');
     }
     
+    /**
+     * Setzt den Cachesid-Header auf $sid
+     *
+     * @param int Eine SID
+     */
     public static function setCacheSid($sid)
     {
         header('Cachesid: ' . $sid . '');
     }
     
+    /**
+     * ???
+     *
+     * @param ???
+     * @return ???
+     */
     public static function getTree($sid, $URL, $method)
     {
+        return null;return;return;
         ///if (!self::$enabled) return;
         if (self::$activeTree) return;
         if (self::$tree!=null) return;
@@ -349,7 +431,8 @@ class CacheManager
         self::setRoot();
         
         $uriTag = self::generateETag($URL);
-        $list = self::loadData('tree_'.$uTag);
+        $list = cacheAccess::loadData('tree_'.$uTag);
+        
         if ($list===null) {
             self::$changedTree=false;
             ///Logger::Log('no tree', LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
@@ -359,7 +442,7 @@ class CacheManager
         }
         
         $list = json_decode($list,true);
-        $result = self::loadData('data_'.$list[0]['eTag']);
+        $result = cacheAccess::loadData('data_'.$list[self::getFirstIndex($list)]['eTag']);
         if ($result===null) {
             self::$changedTree=false;
             ///Logger::Log('no result', LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
@@ -390,64 +473,15 @@ class CacheManager
         
         if ($allOK){
             self::$changedTree=true;
-            if (isset($list[0])){
-                self::cacheDataSimple($sid, $list[0]['toName'], $list[0]['toURL'], $result, 200, $list[0]['toMethod']);
+            if (isset($list[self::getFirstIndex($list)])){
+                cacheAccess::cacheDataSimple($sid, $list[self::getFirstIndex($list)]['toName'], $list[self::getFirstIndex($list)]['toURL'], $result, 200, $list[self::getFirstIndex($list)]['toMethod']);
                 ///Logger::Log('cache hit', LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
             } else {
                 ///Logger::Log('nonono', LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
             }
         } else {
             // remove tree
-            self::removeData('tree_'.$uTag);
+            cacheAccess::removeData('tree_'.$uTag);
         }
-    }
-    
-    private static $cache = null;
-    public static function storeData($key, $value)
-    {
-        if (!self::$enabled) return null;
-        if (self::$cache===null){
-            phpFastCache::setup(phpFastCache::$config);
-            self::$cache = phpFastCache();
-        }
-        ///Logger::Log('store: '.$key, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
-
-        return self::$cache->set($key,$value , 43200);
-    }
-    
-    public static function removeData($key)
-    {
-        if (!self::$enabled) return null;
-        if (self::$cache===null){
-            phpFastCache::setup(phpFastCache::$config);
-            self::$cache = phpFastCache();
-        }        
-        ///Logger::Log('delete: '.$key, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
-        return self::$cache->delete($key);
-    }
-    
-    public static function loadData($key)
-    {
-        if (!self::$enabled) return null;
-        if (self::$cache===null){
-            phpFastCache::setup(phpFastCache::$config);
-            self::$cache = phpFastCache();
-        }
-        ///Logger::Log('load: '.$key, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
-        
-        return self::$cache->get($key);
-    }
-    
-    public static function loadDataArray($keys)
-    {
-        if (!self::$enabled) return null;
-        if (self::$cache===null){
-            phpFastCache::setup(phpFastCache::$config);
-            self::$cache = phpFastCache();
-        }
-        ///Logger::Log('load: '.implode(':',$keys), LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
-        
-        return self::$cache->getMulti($keys);
-    }
-    
+    }   
 }

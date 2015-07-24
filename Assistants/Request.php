@@ -116,14 +116,16 @@ class Request
                         if (!file_exists($tar)) continue;
                         $add = substr($target,strlen($url));
                         
-                        $sid = CacheManager::getNextSid();
-                        CacheManager::getTree($sid, $target, $method);
-                        $cachedData = CacheManager::getCachedDataByURL($sid, $target, $method);
-                        if ($cachedData!==null){
+                        //////$sid = CacheManager::getNextSid();
+                        //////CacheManager::getTree($sid, $target, $method);
+                        //////$cachedData = CacheManager::getCachedDataByURL($sid, $target, $method);
+                        //////$beginTime=microtime(true);
+                        
+                        if (isset($cacheData) && $cachedData!==null){
                             $result['content'] = $cachedData->content;
                             $result['status'] = $cachedData->status;
                             ///Logger::Log('out>> '.$method.' '.$target, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
-                            CacheManager::cacheData($sid, $com->getTargetName(), $target, $result['content'], $result['status'], $method);
+                            //////CacheManager::cacheData($sid, $com->getTargetName(), $target, $result['content'], $result['status'], $method);
                         } else {
                             $args = array(
                                           'REQUEST_METHOD' => $method,
@@ -194,12 +196,13 @@ class Request
                             if (isset($obj))
                                 unset($obj);                        
                             $result['content'] = ob_get_contents();
-                            CacheManager::setETag($result['content']);
+                            //////CacheManager::setETag($result['content']);
                             $result['headers'] = array_merge(array(),Request::http_parse_headers_short(headers_list()));
                             header_remove();
                             if (!isset($result['headers']['Cachesid'])){
-                                $newSid = CacheManager::getNextSid();
-                                $result['headers']['Cachesid'] = $newSid;
+                                //////$newSid = CacheManager::getNextSid();
+                                //////CacheManager::$beginTimestamps[$newSid] = $beginTime;
+                                //////$result['headers']['Cachesid'] = $newSid;
                             }
                             ob_end_clean();
                             //header_remove();            
@@ -217,12 +220,13 @@ class Request
                             foreach ($oldHeader as $head)
                                 header($head);
 
-                            CacheManager::setCacheSid($sid);
+                            //////CacheManager::setCacheSid($sid);
                             
                             $targetSid = (isset($result['headers']['Cachesid']) ? $result['headers']['Cachesid'] : null);
-                            CacheManager::addPath($sid, $targetSid, $com->getTargetName(), $target, $method, $result['status']);
-                            CacheManager::finishRequest($targetSid, $h.'/'.$com->getLocalPath(), $com->getTargetName(), $target, $result['content'], $result['status'], $method, $content);
-                            CacheManager::cacheData($sid, $com->getTargetName(), $target, $result['content'], $result['status'], $method);
+                            //////CacheManager::addPath($sid, $targetSid, $com->getTargetName(), $target, $method, $result['status']);
+                            //////CacheManager::finishRequest($targetSid, $h.'/'.$com->getLocalPath(), $com->getTargetName(), $target, $result['content'], $result['status'], $method, $content);
+                            //////CacheManager::cacheData($sid, $com->getTargetName(), $target, $result['content'], $result['status'], $method);
+                            //////CacheManager::$endTimestamps[$targetSid] = microtime(true);
                             ///Logger::Log('in<< '.$method.' '.$com->getClassName().$add, LogLevel::DEBUG, false, dirname(__FILE__) . '/../calls.log');
                         
                         }
