@@ -12,6 +12,16 @@
  
 class Design
 {
+    
+    /**
+     * Erzeugt eine Tabellenzeile (für erstelleBlock())
+     * Es wird von 3 Spalten ausgegangen (Bei 2 Eingabespalten wird auf die letzte zusammengefasst,
+     * bei einer Eingabespalte wird diese auf eine reduziert)
+     *
+     * @param bool $console true = Konsolendarstellung, false = HTML
+     * @param string[] Abwechselnd Daten und CSS-Klassen (Bsp.: TextA, classA, TextB, classB)
+     * @return string Der Text des Blocks
+     */
     public static function erstelleZeileShort()
     {
         $args = func_get_args();
@@ -52,6 +62,13 @@ class Design
         return trim($result,' ');
     }
     
+    /**
+     * Erzeugt eine Tabellenzeile (für erstelleBlock())
+     *
+     * @param bool $console true = Konsolendarstellung, false = HTML
+     * @param string[] Abwechselnd Daten und CSS-Klassen (Bsp.: TextA, classA, TextB, classB)
+     * @return string Der Text des Blocks
+     */
     public static function erstelleZeile()
     {
         $args = func_get_args();
@@ -87,6 +104,14 @@ class Design
         return trim($result,' ');
     }
     
+    /**
+     * Erzeugt einen Block (fasst Elemente zu einem Block zusammen)
+     *
+     * @param bool $console true = Konsolendarstellung, false = HTML
+     * @param string $name Der Bezeichner des Blocks
+     * @param string $data Der Blockinhalt
+     * @return string Der Text des Blocks
+     */
     public static function erstelleBlock($console, $name, $data)
     {
         $result = '';
@@ -105,6 +130,13 @@ class Design
         return $result;
     }
     
+    /**
+     * Erzeugt eine Beschreibung
+     *
+     * @param bool $console true = Konsolendarstellung, false = HTML
+     * @param string $description Der Beschreibungstext
+     * @return string Der Text des Eingabebereichs
+     */
     public static function erstelleBeschreibung($console, $description)
     {
         if (!$console){
@@ -115,6 +147,16 @@ class Design
         return $result;
     }
     
+    /**
+     * Erzeugt eine Eingabezeile
+     *
+     * @param bool $console true = Konsolendarstellung, false = HTML
+     * @param mixed $variable Der aktuelle Wert des Feldes (null = nicht zugewiesen)
+     * @param string $variablenName Der Name des Feldes
+     * @param mixed $default Der Standartwert (wenn $variable = null)
+     * @param bool $save true = speichere $variable in den Server Einstellungen, false = sonst
+     * @return string Der Text der Eingabezeile
+     */
     public static function erstelleEingabezeile($console, &$variable, $variablenName, $default, $save=false)
     {
         if ($save == true && $variable == null){
@@ -135,6 +177,16 @@ class Design
         return $result;
     }
     
+    /**
+     * Erzeugt einen Eingabebereich
+     *
+     * @param bool $console true = Konsolendarstellung, false = HTML
+     * @param mixed $variable Der aktuelle Wert des Feldes (null = nicht zugewiesen)
+     * @param string $variablenName Der Name des Feldes
+     * @param mixed $default Der Standartwert (wenn $variable = null)
+     * @param bool $save true = speichere $variable in den Server Einstellungen, false = sonst
+     * @return string Der Text des Eingabebereichs
+     */
     public static function erstelleEingabebereich($console, &$variable, $variablenName, $default, $save=false)
     {
         if ($save == true && $variable == null){
@@ -155,6 +207,14 @@ class Design
         return $result;
     }
     
+    /**
+     * Erzeugt einen Eingabebereich
+     *
+     * @param bool $console true = Konsolendarstellung, false = HTML
+     * @param string $variablenName Der Name des Feldes
+     * @param string $text Der Inhalt
+     * @return string Der Text des Eingabebereichs
+     */
     public static function zeichneEingabebereich($console, $variablenName, $text)
     {
         $result = '';
@@ -166,6 +226,16 @@ class Design
         return $result;
     }
     
+    /**
+     * Erzeugt eine verstecke Eingabezeile
+     *
+     * @param bool $console true = Konsolendarstellung, false = HTML
+     * @param mixed $variable Der aktuelle Wert des Feldes (null = nicht zugewiesen)
+     * @param string $variablenName Der Name des Feldes
+     * @param mixed $default Der Standartwert (wenn $variable = null)
+     * @param bool $save true = speichere $variable in den Server Einstellungen, false = sonst
+     * @return string Der Text der Eingabezeile
+     */
     public static function erstelleVersteckteEingabezeile($console, &$variable, $variablenName, $default, $save=false)
     {
         if ($save == true && $variable == null){
@@ -186,6 +256,16 @@ class Design
         return $result;
     }
     
+    /**
+     * Erzeugt eine Gruppen-Auswahl
+     *
+     * @param bool $console true = Konsolendarstellung, false = HTML
+     * @param mixed $variable Der aktuelle Wert des Feldes (null = nicht zugewiesen)
+     * @param string $variablenName Der Name des Feldes
+     * @param mixed $default Der Standartwert (wenn $variable = null)
+     * @param bool $save true = speichere $variable in den Server Einstellungen, false = sonst
+     * @return string Der Text der Auswahl
+     */
     public static function erstelleGruppenAuswahl($console, &$variable, $variablenName, $value, $default, $save=false)
     {
         if ($save == true && $variable == null){
@@ -203,6 +283,16 @@ class Design
         return $result;
     }
     
+    /**
+     * Erzeugt eine Auswahlbox
+     *
+     * @param bool $console true = Konsolendarstellung, false = HTML
+     * @param mixed $variable Der aktuelle Wert des Feldes (null = nicht zugewiesen)
+     * @param string $variablenName Der Name des Feldes
+     * @param mixed $default Der Standartwert (wenn $variable = null)
+     * @param bool $save true = speichere $variable in den Server Einstellungen, false = sonst
+     * @return string Der Text der Auswahl
+     */
     public static function erstelleAuswahl($console, &$variable, $variablenName, $value, $default, $save=false)
     {
         if ($save == true && $variable == null){
@@ -221,6 +311,16 @@ class Design
         return $result;
     }
     
+    /**
+     * Erzeugt eine Passwortzeile
+     *
+     * @param bool $console true = Konsolendarstellung, false = HTML
+     * @param mixed $variable Der aktuelle Wert des Feldes (null = nicht zugewiesen)
+     * @param string $variablenName Der Name des Feldes
+     * @param mixed $default Der Standartwert (wenn $variable = null)
+     * @param bool $save Wird nicht verwendet
+     * @return string Der Text der Passwortzeile
+     */
     public static function erstellePasswortzeile($console, $variable, $variablenName, $default, $save=false)
     {
         $result = '';
@@ -230,7 +330,17 @@ class Design
         
         return $result;
     }
-    
+
+    /**
+     * Erzeugt eine Installationszeile
+     * Prüft ob Fehler gemeldet wurden und gibt OK oder Fehler aus
+     *
+     * @param bool $console true = Konsolendarstellung, false = HTML
+     * @param bool $fail true = Fehler, false = sonst
+     * @param int $errno Die Fehlernummer
+     * @param string $error Der Fehlertext 
+     * @return string Der Text der Installationszeile
+     */
     public static function erstelleInstallationszeile($console, $fail, $errno, $error)
     {
         if (!$console){
@@ -250,6 +360,13 @@ class Design
         }
     }
     
+    /**
+     * Erzeugt einen Forumular Auslöser
+     *
+     * @param string $var Der Name des Auslösers
+     * @param string $text Der Wert des Auslösers
+     * @return string Der Text des Auslösers
+     */
     public static function erstelleSubmitButton($var, $text = null)
     {
         if ($text === null)
@@ -257,6 +374,14 @@ class Design
         return "<input type='submit' name='{$var}' value=' {$text} '>";
     }
     
+    /**
+     * Erzeugt einen Auslöser
+     *
+     * @param string $varName Der Name des Auslösers
+     * @param string $value Der Wert des Auslösers
+     * @param string $text Der sichtbare Text des Auslösers
+     * @return string Der Text des Auslösers
+     */
     public static function erstelleSubmitButtonFlach($varName, $value, $text = null)
     {
         if ($text === null)
@@ -264,6 +389,15 @@ class Design
         return "<button class='text-button info-color bold' name='{$varName}' value='{$value}'>{$text}</button>";
     }
     
+    /**
+     * Erzeugt einen grafischen Auslöser
+     *
+     * @param string $var Der Name des Auslösers
+     * @param string $bild Der Pfad des Bildes
+     * @param string $width Die Breite
+     * @param string $height Die Höhe
+     * @return string Der Text des Auslösers
+     */
     public static function erstelleSubmitButtonGrafisch($var, $bild, $width = null, $height = null)
     {
         return "<input type='image' src='{$bild}' name='{$var}' style='".($width!==null ? 'width:'.$width.'px;': '' ).($height!==null ? 'height:'.$height.'px;': '' )."'>";
