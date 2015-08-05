@@ -12,11 +12,19 @@ class Komponenten
     
     public static $onEvents = array('install'=>array('name'=>'initComponents','event'=>array('actionInitComponents','install', 'update')));
     
+    public static function getDefaults()
+    {
+        return array(
+                     'co_details' => array('data[CO][co_details]', null)
+                     );
+    }
     
     public static function init($console, &$data, &$fail, &$errno, &$error)
     {
+        $def = self::getDefaults();
+        
         $text = '';
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['CO']['co_details'], 'data[CO][co_details]', null,true);
+        $text .= Design::erstelleVersteckteEingabezeile($console, $data['CO']['co_details'], 'data[CO][co_details]', $def['co_details'][1],true);
         echo $text; 
         self::$initialized = true;
     }

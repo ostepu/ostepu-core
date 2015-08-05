@@ -2,23 +2,13 @@
 #region ZugangAusgeben
 class ZugangAusgeben
 {
-    private static $initialized=false;
     public static $name = 'setAccess';
-    public static $installed = false;
     public static $page = 5;
     public static $rank = 50;
     public static $enabledShow = false;
     public static $enabledInstall = false;
     
     public static $onEvents = array();
-    
-    
-    public static function init($console, &$data, &$fail, &$errno, &$error)
-    {
-        $text = '';
-        echo $text;
-        self::$initialized = true;
-    }
     
     public static function show($console, $result, $data)
     {
@@ -38,11 +28,6 @@ class ZugangAusgeben
 
             echo Design::erstelleBlock($console, Language::Get('access','title'), $text);
         }
-        return null;
-    }
-    
-    public static function install($data, &$fail, &$errno, &$error)
-    {
         return null;
     }
 }

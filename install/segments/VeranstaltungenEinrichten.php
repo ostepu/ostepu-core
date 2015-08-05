@@ -11,11 +11,19 @@ class VeranstaltungenEinrichten
     
     public static $onEvents = array('install'=>array('name'=>'initCourses','event'=>array('actionInstallCourses','install', 'update')));
     
-    
+    public static function getDefaults()
+    {
+        return array(
+                     'c_details' => array('data[C][c_details]', null)
+                     );
+    }
+        
     public static function init($console, &$data, &$fail, &$errno, &$error)
     {
+        $def = self::getDefaults();
+        
         $text = '';
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['C']['c_details'], 'data[C][c_details]', null,true);
+        $text .= Design::erstelleVersteckteEingabezeile($console, $data['C']['c_details'], 'data[C][c_details]', $def['c_details'][1],true);
         echo $text;
         self::$initialized = true;
     }

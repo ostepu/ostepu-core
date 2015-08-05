@@ -29,21 +29,35 @@ class PlugInsInstallieren
                                         )
                                     );
     
+    public static function getDefaults()
+    {
+        return array(
+                     'plug_install_CORE' => array('data[PLUG][plug_install_CORE]', '_'),
+                     'plug_install_OSTEPU-UI' => array('data[PLUG][plug_install_OSTEPU-UI]', '_'),
+                     'plug_install_OSTEPU-DB' => array('data[PLUG][plug_install_OSTEPU-DB]', '_'),
+                     'plug_install_OSTEPU-FS' => array('data[PLUG][plug_install_OSTEPU-FS]', '_'),
+                     'plug_install_OSTEPU-LOGIC' => array('data[PLUG][plug_install_OSTEPU-LOGIC]', '_'),
+                     'plug_install_INSTALL' => array('data[PLUG][plug_install_INSTALL]', '_')
+                     );
+    }
+    
     public static function init($console, &$data, &$fail, &$errno, &$error)
     {
+        $def = self::getDefaults();
+        
         $text = '';
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['PLUG']['plug_install_CORE'], 'data[PLUG][plug_install_CORE]', '_', true);
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['PLUG']['plug_install_OSTEPU-UI'], 'data[PLUG][plug_install_OSTEPU-UI]', '_', true);
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['PLUG']['plug_install_OSTEPU-DB'], 'data[PLUG][plug_install_OSTEPU-DB]', '_', true);
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['PLUG']['plug_install_OSTEPU-FS'], 'data[PLUG][plug_install_OSTEPU-FS]', '_', true);
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['PLUG']['plug_install_OSTEPU-LOGIC'], 'data[PLUG][plug_install_OSTEPU-LOGIC]', '_', true);
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['PLUG']['plug_install_INSTALL'], 'data[PLUG][plug_install_INSTALL]', '_', true);
+        $text .= Design::erstelleVersteckteEingabezeile($console, $data['PLUG']['plug_install_CORE'], 'data[PLUG][plug_install_CORE]', $def['plug_install_CORE'][1], true);
+        $text .= Design::erstelleVersteckteEingabezeile($console, $data['PLUG']['plug_install_OSTEPU-UI'], 'data[PLUG][plug_install_OSTEPU-UI]', $def['plug_install_OSTEPU-UI'][1], true);
+        $text .= Design::erstelleVersteckteEingabezeile($console, $data['PLUG']['plug_install_OSTEPU-DB'], 'data[PLUG][plug_install_OSTEPU-DB]', $def['plug_install_OSTEPU-DB'][1], true);
+        $text .= Design::erstelleVersteckteEingabezeile($console, $data['PLUG']['plug_install_OSTEPU-FS'], 'data[PLUG][plug_install_OSTEPU-FS]', $def['plug_install_OSTEPU-FS'][1], true);
+        $text .= Design::erstelleVersteckteEingabezeile($console, $data['PLUG']['plug_install_OSTEPU-LOGIC'], 'data[PLUG][plug_install_OSTEPU-LOGIC]', $def['plug_install_OSTEPU-LOGIC'][1], true);
+        $text .= Design::erstelleVersteckteEingabezeile($console, $data['PLUG']['plug_install_INSTALL'], 'data[PLUG][plug_install_INSTALL]', $def['plug_install_INSTALL'][1], true);
         echo $text;
         self::$initialized = true;
     }
     
     public static function show($console, $result, $data)
-{
+    {
         $pluginFiles = array();
         if ($handle = @opendir(dirname(__FILE__) . '/../../Plugins')) {
             while (false !== ($file = readdir($handle))) {

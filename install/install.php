@@ -9,8 +9,12 @@ set_time_limit(0);
  */
 define('ISCLI', PHP_SAPI === 'cli'); 
 
+// wenn der Installationsassitent über die Konsole aufgerufen wird, dürfen wird
+// Slim nicht verwenden (stürzt ab)
 if (!constant('ISCLI'))
     include_once dirname(__FILE__) . '/../Assistants/Slim/Slim.php';
+
+
 include_once dirname(__FILE__) . '/../Assistants/Slim/Route.php';
 
 include_once dirname(__FILE__) . '/../Assistants/Request.php';
@@ -21,7 +25,6 @@ include_once dirname(__FILE__) . '/include/Einstellungen.php';
 include_once dirname(__FILE__) . '/include/Design.php';
 include_once dirname(__FILE__) . '/include/Installation.php';
 include_once dirname(__FILE__) . '/../Assistants/Language.php';
-include_once dirname(__FILE__) . '/include/Variablen.php';
 include_once dirname(__FILE__) . '/include/Zugang.php';
 
 if (!constant('ISCLI'))
@@ -33,15 +36,17 @@ if (!constant('ISCLI'))
  * A class, to handle requests to the Installer-Component
  */
 class Installer
-{
+{                 
     /**
-     * @var Slim $_app the slim object
+     * @var int[] $menuItems Enthält die Reihenfolge der Seiten (anhand der IDs),
+     * diese stehen in den Segmente unter $page=Seitennummer
      */
-    private $app = null;
-    private $argv = null;
-    private $segments = array();
+    public static $menuItems = array(0,1,6,2,3,4); // 5, // ausgeblendet   
     
-    public static $menuItems = array(0,1,6,2,3,4); // 5, // ausgeblendet
+    /**
+     * @var int[] $menuTypes Die Art der Menüelemente
+     * 0 = auf diesen Server angewendet, 1 = auf alle Server angewendet
+     */
     public static $menuTypes = array(0,0,0,0,0,1,1);
     
     /**
@@ -50,15 +55,15 @@ class Installer
      * This function contains the REST actions with the assignments to
      * the functions.
      *
-     * @param Component $conf component data
+     * @param string[] $_argv Konsolenparameter, null = leer
      */
     public function __construct($_argv)
     {
-        $this->argv = $_argv;
-
-        if ($this->argv!=null){
-            array_shift($this->argv);
-            foreach($this->argv as $arg)
+        if ($_argv!=null){
+            // es gibt Konsolenparameter, diese werden nun $_POST zugewiesen,
+            // sodass der Installationsassistent sie verwenden kann
+            array_shift($_argv);
+            foreach($_argv as $arg)
                 $_POST[$arg] = 'OK';
             
             $this->CallInstall(true);
@@ -66,21 +71,30 @@ class Installer
         }
 
         // initialize slim    
-        $this->app = new \Slim\Slim(array( 'debug' => true ));
-        $this->app->contentType('text/html; charset=utf-8');
+        $app = new \Slim\Slim(array( 'debug' => true ));
+        $app->contentType('text/html; charset=utf-8');
 
         // POST,GET showInstall
-        $this->app->map('(/)',
+        $app->map('(/)',
                         array($this, 'CallInstall'))->via('POST', 'GET','INFO' );
                         
         // POST,GET showInstall
-        $this->app->map('/checkModulesExtern(/)',
+        $app->map('/checkModulesExtern(/)',
                         array($this, 'checkModulesExtern'))->via('POST', 'GET','INFO' );
 
         // run Slim
-        $this->app->run();  
+        $app->run();  
     }
     
+    /**
+     * Prüft das Vorhandensein der benötigten Apache Module
+     *
+     * @param string[][] $data Die Serverdaten
+     * @param bool $fail true = Fehler, false = sonst
+     * @param int $errno Die Fehlernummer
+     * @param string $error Der Fehlertext 
+     * @return string/string[] Die Json Darstellung (wenn constant('ISCLI')) oder das Array mit den Resultaten
+     */
     public static function callCheckModules($data, &$fail, &$errno, &$error)
     {
         if (constant('ISCLI')){
@@ -90,6 +104,9 @@ class Installer
         }
     }
     
+    /**
+     * Ruft die Funktion der Modulprüfung auf und gibt das Ergebnis aus
+     */
     public function checkModulesExtern()
     {
         $this->loadSegments();
@@ -97,6 +114,11 @@ class Installer
         echo json_encode(ModulpruefungAusgeben::install(null,$dat,$dat,$dat));
     }
     
+    /**
+     * Sucht die vorhandenen Segmentdateien
+     *
+     * @return string[] Die Pfade der Segmente
+     */
     public function loadSegments()
     {
         $p = dirname(__FILE__) . '/segments';
@@ -109,7 +131,7 @@ class Installer
             }
             foreach($segs as $seg){
                 include_once dirname(__FILE__) . '/segments/'.$seg;
-                $this->segments[] = substr($seg,0,count($seg)-5);
+                Einstellungen::$segments[] = substr($seg,0,count($seg)-5);
             }
             @closedir($handle);
         }   
@@ -117,10 +139,17 @@ class Installer
         // sort segments by page and rank
         function cmp($a, $b)
         {
-            $posA = array_search($a::$page,Installer::$menuItems);
-            $posB = array_search($b::$page,Installer::$menuItems);
-            $rankA = $a::$rank;
-            $rankB = $b::$rank;
+            $posA = 0;
+            $posB = 0;
+            
+            if (isset($a::$page)) $posA = array_search($a::$page,Installer::$menuItems);
+            if (isset($b::$page)) $posB = array_search($b::$page,Installer::$menuItems);
+            
+            $rankA = 100;
+            $rankB = 100;
+            
+            if (isset($a::$rank)) $rankA = $a::$rank;
+            if (isset($b::$rank)) $rankB = $b::$rank;
             
             if ($posA === false) return -1;
             if ($posB === false) return 1;
@@ -133,24 +162,31 @@ class Installer
             return ($posA < $posB) ? -1 : 1;
         }
 
-        usort($this->segments, "cmp");
+        usort(Einstellungen::$segments, "cmp");
     }
     
+    /**
+     * Die Hauptfunktion des Installationsassistenten
+     *
+     * @param bool $console true = Konsolendarstellung, false = HTML
+     */
     public function CallInstall($console = false)
     {
     
         $output = array();
         $installFail = false;
-        $simple=false;
+        $simple = false;
+        $data = array();
+        $tmp = array();
         
         if (isset($_POST['data']))
             $data = $_POST['data'];
         
+        if (isset($_POST['tmp']))
+            $tmp = $_POST['tmp'];
+        
         if (isset($_POST['simple']))
             $simple=true;
-
-        Variablen::Initialisieren($data);
-        $data['P']['masterPassword'] = (isset($data['P']['masterPassword']) ? $data['P']['masterPassword'] : '');
         
         if (isset($_POST['update'])) 
             $_POST['action'] = 'update';
@@ -167,6 +203,7 @@ class Installer
         if (!isset($data['PL']['init']))
             $data['PL']['init'] = 'DB/CControl';
             
+        // URLs und Pfade sollen keinen / am Ende haben (damit es einheitlich ist)
         if (isset($data['PL']['url'])) $data['PL']['url'] = rtrim($data['PL']['url'], '/');
         if (isset($data['PL']['urlExtern'])) $data['PL']['urlExtern'] = rtrim($data['PL']['urlExtern'], '/');
         if (isset($data['PL']['temp'])) $data['PL']['temp'] = rtrim($data['PL']['temp'], '/');
@@ -175,27 +212,63 @@ class Installer
             
         // check which server is selected
         $server = isset($_POST['server']) ? $_POST['server'] : null;
-        $selected_server = isset($_POST['selected_server']) ? $_POST['selected_server'] : null;
-        if ($data['SV']['name']!==null && $selected_server!==null)
-            if ($data['SV']['name']!=$selected_server)
-                Einstellungen::umbenennenEinstellungen($selected_server,$data['SV']['name']);
+        Einstellungen::$selected_server = isset($_POST['selected_server']) ? $_POST['selected_server'] : null;
+        
+        // behandle das MasterPasswort
+        $serverHash = md5(Einstellungen::$selected_server);
+        $tmp[$serverHash]['newMasterPassword'] = (isset($tmp[$serverHash]['masterPassword']) ? $tmp[$serverHash]['masterPassword'] : null);        
+        if (isset($_POST['changeMasterPassword'])){
+            Einstellungen::$masterPassword[$serverHash] = (isset($tmp[$serverHash]['oldMasterPassword']) ? $tmp[$serverHash]['oldMasterPassword'] : null);
+            $tmp[$serverHash]['masterPassword'] = Einstellungen::$masterPassword[$serverHash];
+        } else {
+            Einstellungen::$masterPassword[$serverHash] = $tmp[$serverHash]['newMasterPassword'];
+            $tmp[$serverHash]['masterPassword'] = Einstellungen::$masterPassword[$serverHash];
+        }
+        
+        foreach($tmp as $key => $tm){
+            if (!isset($tm['masterPassword']) && isset($tm['oldMasterPassword']) && trim($tm['oldMasterPassword']) != ''){
+                $tmp[$key]['masterPassword'] = $tm['oldMasterPassword'];
+                $tmp[$key]['newMasterPassword'] = (isset($tmp[$key]['oldMasterPassword']) ? $tmp[$key]['oldMasterPassword'] : null);
+                Einstellungen::$masterPassword[$key] = $tm['oldMasterPassword'];
+            }
+            if (!isset(Einstellungen::$masterPassword[$key]) && isset($tmp[$key]['masterPassword']) && trim($tmp[$key]['masterPassword']) != ''){
+                $tmp[$key]['newMasterPassword'] = (isset($tmp[$key]['masterPassword']) ? $tmp[$key]['masterPassword'] : null);
+                Einstellungen::$masterPassword[$key] = $tm['masterPassword'];
+            }
+            
+        }
+        
+        // prüfe ob der Servername geändert wurde
+        if (isset($data['SV']['name']) && $data['SV']['name']!==null && Einstellungen::$selected_server!==null){
+            if ($data['SV']['name']!=Einstellungen::$selected_server){
+                $oldServerHash = md5($data['SV']['name']);
+                $newServerHash = md5(Einstellungen::$selected_server);
+                
+                if (isset(Einstellungen::$masterPassword[$oldServerHash])){
+                    Einstellungen::$masterPassword[$newServerHash] = Einstellungen::$masterPassword[$oldServerHash];
+                    unset(Einstellungen::$masterPassword[$oldServerHash]);
+                }
+                
+                Einstellungen::umbenennenEinstellungen(Einstellungen::$selected_server,$data['SV']['name']);
+            }
+        }
 
         // check which menu is selected
         $selected_menu = intval(isset($_POST['selected_menu']) ? $_POST['selected_menu'] : self::$menuItems[0]);
-        if (isset($_POST['action']) && $_POST['action']=='update')
+        if (isset($_POST['action']) && $_POST['action']=='update'){
             $selected_menu = -1;
+        }
         
         // check server configs
-        $serverFiles = Installation::GibServerDateien();
+        Einstellungen::$serverFiles = Installation::GibServerDateien();
           
         // add Server
         $addServer = false;
         $addServerResult = array();
-        if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionAddServer']) || count($serverFiles)==0) && !$installFail){
+        if (((isset($_POST['action']) && $_POST['action'] === 'install') || isset($_POST['actionAddServer']) || count(Einstellungen::$serverFiles)==0) && !$installFail){
             $addServer = true;
-            Variablen::Zuruecksetzen($data);
             $server = Einstellungen::NeuenServerAnlegen();
-            $serverFiles[] = $server;
+            Einstellungen::$serverFiles[] = $server;
             $server = pathinfo($server)['filename'];
             Einstellungen::ladeEinstellungen($server,$data);
             ///$data['SV']['name'] = $server;
@@ -203,102 +276,66 @@ class Installer
         }
                     
         // save data on switching between server-confs
-        if ($selected_server!==null && $server!=null){
-            if ($server!=$selected_server){
-                Einstellungen::ladeEinstellungen($selected_server,$data);
-                Variablen::Einsetzen($data);
-                Einstellungen::speichereEinstellungen($selected_server,$data);
-                Variablen::Zuruecksetzen($data);
+        if (Einstellungen::$selected_server!==null && $server!=null){
+            if ($server!=Einstellungen::$selected_server){
+                Einstellungen::ladeEinstellungen(Einstellungen::$selected_server,$data);
+                //Einstellungen::speichereEinstellungen(Einstellungen::$selected_server,$data);
+                Einstellungen::resetConf();
             }
         }
 
         // select first if no server is selected
-        if ($selected_server==null && $server==null){
-            $selected_server = pathinfo($serverFiles[0])['filename'];
-            $server = $selected_server;
+        if (Einstellungen::$selected_server==null && $server==null){
+            Einstellungen::$selected_server = pathinfo(Einstellungen::$serverFiles[0])['filename'];
+            $server = Einstellungen::$selected_server;
         }
         
         if ($server!=null)
-            $selected_server=$server;
+            Einstellungen::$selected_server=$server;
         
-        $server=$selected_server;
-        $data['SV']['name'] = $server;
+        $server=Einstellungen::$selected_server;
+        $data['SV']['name'] = Einstellungen::$selected_server;
         
-        Einstellungen::ladeEinstellungen($server,$data);
-        Variablen::Einsetzen($data);
+        $serverHash = md5(Einstellungen::$selected_server);
         
-        if ($console)
-            $data['ZV']['zv_type'] = 'local';
+        if (!isset($tmp[$serverHash]['masterPassword'])){
+            $tmp[$serverHash]['masterPassword'] = null;
+        }
         
-        if ($simple)
-            $data['ZV']['zv_type'] = 'local';
+        // nun kann die Konfiguration des gewählten Servers geladen werden (selected_server)
+        Einstellungen::ladeEinstellungen(Einstellungen::$selected_server,$data);
         
-        if (isset($_POST['action']))
-            $data['action'] = $_POST['action'];
-
-        $this->loadSegments();           
-        foreach($this->segments as $segs){
-            $segs::init($console, $data, $fail, $errno, $error);
+        Einstellungen::$masterPassword[$serverHash] = (isset($tmp[$serverHash]['newMasterPassword']) ? $tmp[$serverHash]['newMasterPassword'] : '');
+        if (isset(Einstellungen::$masterPassword[$serverHash])){
+            $tmp[$serverHash]['masterPassword'] = Einstellungen::$masterPassword[$serverHash];
         }
         
         
-        $fail = false;
-        $errno = null;
-        $error = null;
+        // load language
+        Language::loadLanguage($data['PL']['language'], 'default', 'ini');
         
-        if ($simple)
-            $selected_menu = -1;
+        // ermittle alle Segmente
+        $this->loadSegments(); 
         
-        $segmentResults = array();
-        
-        // install segments
-        foreach($this->segments as $segs){
-            foreach ($segs::$onEvents as $event){
-                if (isset($event['enabledInstall']) && !$event['enabledInstall']) 
-                    continue;
-                
-                $isSetEvent = false;
-                if (isset($_POST['action']) && in_array($_POST['action'],$event['event'] ))
-                    $isSetEvent = true;
-                
-                foreach ($event['event'] as $ev){
-                    if (isset($_POST[$ev])){
-                        $isSetEvent = true;
-                        break;
-                    }
-                }
-                
-                if (!$installFail && ( 
-                    ($segs::$page===$selected_menu && in_array('page',$event['event'] )) || $isSetEvent
-                    )){
-                    $result = array();
-                    $procedure = 'install';
-                    if (isset($event['procedure']))
-                        $procedure = $event['procedure'];
-
-                    $result['content'] = Zugang::Ermitteln($event['name'],$segs.'::'.$procedure,$data, $fail, $errno, $error);
-                    $segs::$installed=true;
-                                    
-                    $installFail = $fail;
-                    $result['fail'] = $fail;
-                    $result['errno'] = $errno;
-                    $result['error'] = $error;
-                    if ($console && !$simple){
-                        $output[$segs::$name] = $result;
-                    }
-                    $fail = false;
-                    $errno = null;
-                    $error = null;
-                    
-                    if (!isset($segmentResults[$segs::$name]))
-                        $segmentResults[$segs::$name] = array();
-                    
-                    $segmentResults[$segs::$name][$event['name']] = $result;
-                }
-            }
+        if (Einstellungen::$accessAllowed){
+            if ($console)
+                $data['ZV']['zv_type'] = 'local';
+            
+            if ($simple)
+                $data['ZV']['zv_type'] = 'local';
+            
+            if (isset($_POST['action']))
+                $data['action'] = $_POST['action'];            
+            
+            $fail = false;
+            $errno = null;
+            $error = null;
+            
+            if ($simple)
+                $selected_menu = -1;
+            
         }
 
-        
         if (!$console && !$simple){
             // select language - german
             if (isset($_POST['actionSelectGerman']) || isset($_POST['actionSelectGerman_x'])){
@@ -309,9 +346,6 @@ class Installer
             if (isset($_POST['actionSelectEnglish']) || isset($_POST['actionSelectEnglish_x'])){
                 $data['PL']['language'] = 'en';
             }
-        
-            // load language
-            Language::loadLanguage($data['PL']['language'], 'default', 'ini');
             
             echo "<html><head>";
             echo "<link rel='stylesheet' type='text/css' href='css/format.css'>";
@@ -322,37 +356,95 @@ class Installer
                     $titleText=Language::Get('main','title'.$_POST['action']);
             }
             
-            echo "</head><body><div class='center'><h1>".$titleText."</h1></br>";
+            echo "</head><body><div class='center'>";
+            
+            if (Einstellungen::$accessAllowed){
+                echo "<h1>".$titleText."</h1></br>";
+            }
 
             echo "<form action='' method='post' autocomplete='off' autocorrect='off' autocapitalize='off' spellcheck='false'>";
+        }
+        
+        
+        if (Einstellungen::$accessAllowed){
+            
+            // führe die Initialisierungsfunktionen der Segmente aus
+            foreach(Einstellungen::$segments as $segs){
+                if (!is_callable("{$segs}::init")) continue;
+                ///if (!isset($segs::$initialized)) continue;
+                ///if ($segs::$initialized) continue;
+                $segs::init($console, $data, $fail, $errno, $error);
+            }
+            $segmentResults = array();
+            
+            // installiere die Segmente
+            foreach(Einstellungen::$segments as $segs){
+                if (!isset($segs::$onEvents)) continue;
+                    
+                foreach ($segs::$onEvents as $event){
+                    if (isset($event['enabledInstall']) && !$event['enabledInstall']) 
+                        continue;
+                    
+                    $isSetEvent = false;
+                    if (isset($_POST['action']) && in_array($_POST['action'],$event['event'] ))
+                        $isSetEvent = true;
+                    
+                    foreach ($event['event'] as $ev){
+                        if (isset($_POST[$ev])){
+                            $isSetEvent = true;
+                            break;
+                        }
+                    }
+                    
+                    if (!$installFail && ( 
+                        ($segs::$page===$selected_menu && in_array('page',$event['event'] )) || $isSetEvent
+                        )){
+                        $result = array();
+                        $procedure = 'install';
+                        if (isset($event['procedure']))
+                            $procedure = $event['procedure'];
+
+                        $result['content'] = Zugang::Ermitteln($event['name'],$segs.'::'.$procedure,$data, $fail, $errno, $error);
+                        $segs::$installed=true;
+                                        
+                        $installFail = $fail;
+                        $result['fail'] = $fail;
+                        $result['errno'] = $errno;
+                        $result['error'] = $error;
+                        if ($console && !$simple){
+                            $output[$segs::$name] = $result;
+                        }
+                        $fail = false;
+                        $errno = null;
+                        $error = null;
+                        
+                        if (!isset($segmentResults[$segs::$name]))
+                            $segmentResults[$segs::$name] = array();
+                        
+                        $segmentResults[$segs::$name][$event['name']] = $result;
+                    }
+                }
+            }
+            
+        }
+        
+        
+        if (!$console && !$simple){
             echo "<table border='0'><tr>";
             echo "<th valign='top'>";
             
             echo "<div style='width:150px;word-break: break-all;'>";
-            // Serverliste ausgeben
-            echo "<table border='0'>";
-            echo "<tr><td class='e'>".Language::Get('main','serverList')."</td></tr>";
-            foreach($serverFiles as $serverFile){
-                $file = pathinfo($serverFile)['filename'];
-                echo "<tr><td class='v'>".Design::erstelleSubmitButtonFlach('server',$file,($server == $file ? '<font color="maroon">'.$file.'</font>' : $file))."</td></tr>";
-            }
-            
-            echo "<tr><th height='10'></th></tr>";
-            echo "<tr><td class='v'>".Design::erstelleSubmitButtonFlach('actionAddServer','OK',Language::Get('main','addServer').">")."</td></tr>";
-            echo Design::erstelleVersteckteEingabezeile($console, $selected_server, 'selected_server', null);
-            
-            echo "<tr><th height='10'></th></tr>";
 
-            // master-Passwort abfragen
-            /*echo "<tr><td class='e'>".Language::Get('main','masterPassword')."</td></tr>";
-            echo "<tr><td class='v'>".Design::erstellePasswortzeile($console, $data['P']['masterPassword'], 'data[P][masterPassword]', $data['P']['masterPassword'])."</td></tr>";
-            */
+            echo "<table border='0'>";
             
-            echo "<tr><th height='20'></th></tr>";
-            
-            // update-Button
-            echo "<tr><td class='v'>".Design::erstelleSubmitButtonFlach('update','OK',Language::Get('main','simpleUpdate').">")."</td></tr>";
-            
+            // ab hier wird die linke Infoleiste erzeugt
+            foreach(Einstellungen::$segments as $segs){
+                if (isset($segs::$enabledShow) && !$segs::$enabledShow) continue;
+                if (!is_callable("{$segs}::showInfoBar")) continue;
+                $segs::showInfoBar($data);
+                echo "<tr><th height='10'></th></tr>";
+            }
+                
             echo "</table>";
 
             echo "</div";
@@ -362,20 +454,27 @@ class Installer
             
             echo "</th>";
 
-            echo "<th width='600'><hr />";        
-            $text='';
-            $text .= "<table border='0' cellpadding='4' width='600'>";
-            $text .= "<input type='hidden' name='selected_menu' value='{$selected_menu}'>";
-            
-            $text .= "<tr>";
-            for ($i=0;$i<count(self::$menuItems);$i++){
-                if ($i%5==0 && $i>0) $text .= "<tr>";
-                $item = self::$menuItems[$i];
-                $type = self::$menuTypes[$i];
-                $text .= "<td class='".($type==0?'h':'k')."'><div align='center'>".Design::erstelleSubmitButtonFlach('selected_menu',$item,($selected_menu == $item ? '<font color="maroon">'.Language::Get('main','title'.$item).'</font>' : Language::Get('main','title'.$item)))."</div></td>";
+            echo "<th width='600'><hr />";
+            if (Einstellungen::$accessAllowed){     
+                echo "<table border='0' cellpadding='4' width='600'>";           
+                echo "<input type='hidden' name='selected_menu' value='{$selected_menu}'>";
+                
+                echo "<tr>";
+                $text = '';
+                for ($i=0;$i<count(self::$menuItems);$i++){
+                    if ($i%5==0 && $i>0) $text .= "<tr>";
+                    $item = self::$menuItems[$i];
+                    $type = self::$menuTypes[$i];
+                    echo "<td class='".($type==0?'h':'k')."'><div align='center'>".Design::erstelleSubmitButtonFlach('selected_menu',$item,($selected_menu == $item ? '<font color="maroon">'.Language::Get('main','title'.$item).'</font>' : Language::Get('main','title'.$item)))."</div></td>";
+                }
+                echo "</tr>";
+                echo "</table>";
+            } else {
+                $text = '';
+                $text .= Design::erstelleBeschreibung($console,Language::Get('main','insertMasterPassword'));
+                echo Design::erstelleBlock($console, '', $text);
             }
-            $text .= "</tr></table>";
-            echo $text;
+            
             echo "<hr />";
         }
         
@@ -387,129 +486,121 @@ class Installer
         #endregion Sprachwahl
 
         
-        // show segments
-        foreach($this->segments as $segs){
-            if (!$segs::$enabledShow) 
-                continue;
-            
-            if ($segs::$page===$selected_menu || $segs::$installed){
-                $result = (isset($segmentResults[$segs::$name]) ? $segmentResults[$segs::$name] : array());     
-                $segs::show($console, $result, $data);
+        if (Einstellungen::$accessAllowed){
+            // show segments
+            foreach(Einstellungen::$segments as $segs){
+                if (isset($segs::$enabledShow) && !$segs::$enabledShow) continue;
+                
+                if (!isset($segs::$page) || $segs::$page===$selected_menu || (isset($segs::$installed) && $segs::$installed)){
+                    if (!is_callable("{$segs}::show")) continue;
+                    
+                    $result = (isset($segmentResults[$segs::$name]) ? $segmentResults[$segs::$name] : array());     
+                    $segs::show($console, $result, $data);
+                }
             }
-        }
-        
-        if ($simple){
-             if ($installFail){
-                 echo "0";
-             } else
-                 echo "1";
-        }
             
+            if ($simple){
+                 if ($installFail){
+                     echo "0";
+                 } else
+                     echo "1";
+            }
+                
 
-        if (!$console && !$simple){
-            if (($selected_menu === 2 || $selected_menu === 3 || $selected_menu === 4) && false){
+            if (!$console && !$simple){
+                if (($selected_menu === 2 || $selected_menu === 3 || $selected_menu === 4) && false){
+                    echo "<table border='0' cellpadding='3' width='600'>";
+                    echo "<tr><td class='h'><div align='center'><input type='submit' name='actionInstall' value=' ".Language::Get('main','installAll')." '></div></td></tr>";
+                    echo "</table><br />";
+                }
+                            
+                #region zurück_weiter_buttons
+                $a='';$b='';
+                if (array_search($selected_menu,self::$menuItems)>0){
+                    $item = self::$menuItems[array_search($selected_menu,self::$menuItems)-1];
+                    $a = Design::erstelleSubmitButtonFlach('selected_menu',$item, Language::Get('main','back')).'<br><font size=1>('.Language::Get('main','title'.$item).')</font>';
+                }
+                
+                if ($selected_menu>=0 && array_search($selected_menu,self::$menuItems)<count(self::$menuItems)-1){
+                    $item = self::$menuItems[array_search($selected_menu,self::$menuItems)+1];
+                    $b = Design::erstelleSubmitButtonFlach('selected_menu',$item, Language::Get('main','next')).'<br><font size=1>('.Language::Get('main','title'.$item).')</font>';
+                }
+                
                 echo "<table border='0' cellpadding='3' width='600'>";
-                echo "<tr><td class='h'><div align='center'><input type='submit' name='actionInstall' value=' ".Language::Get('main','installAll')." '></div></td></tr>";
-                echo "</table><br />";
-            }
-                        
-            #region zurück_weiter_buttons
-            $text = '';
-            $a='';$b='';
-            if (array_search($selected_menu,self::$menuItems)>0){
-                $item = self::$menuItems[array_search($selected_menu,self::$menuItems)-1];
-                $a = Design::erstelleSubmitButtonFlach('selected_menu',$item, Language::Get('main','back')).'<br><font size=1>('.Language::Get('main','title'.$item).')</font>';
-            }
-            
-            if ($selected_menu>=0 && array_search($selected_menu,self::$menuItems)<count(self::$menuItems)-1){
-                $item = self::$menuItems[array_search($selected_menu,self::$menuItems)+1];
-                $b = Design::erstelleSubmitButtonFlach('selected_menu',$item, Language::Get('main','next')).'<br><font size=1>('.Language::Get('main','title'.$item).')</font>';
-            }
-            
-            echo "<table border='0' cellpadding='3' width='600'>";
-            echo "<thead><tr><th align='left' width='50%'>{$a}</th><th align='right' width='50%'>{$b}</th></tr></thead>";
-            if ($selected_menu==0){
-                if (!isset($_POST['actionShowPhpInfo'])){
-                    echo "<tr><th colspan='2'>".Design::erstelleSubmitButton("actionShowPhpInfo", 'PHPInfo')."</th></tr>";
-                }
-            }
-            echo "</table>";
-            #endregion zurück_weiter_buttons
-            
-            echo "<div>";
-
-            echo "</div>";
-            
-            echo "</th>";
-            echo "<th width='2'></th>";
-            echo "<th valign='top'>";
-            $text='';
-            
-            echo "<div style='width:150px;word-break: break-all;'>";
-            echo "<table border='0'>";
-            echo "<tr><td class='e'>".Language::Get('general_informations','url')."</td></tr>";
-            echo "<tr><td>".$data['PL']['url']."</td></tr>";
-            echo "<tr><th></th></tr>";
-            echo "<tr><td class='e'>".Language::Get('general_informations','localPath')."</td></tr>";
-            echo "<tr><td>".$data['PL']['localPath']."</td></tr>";
-            echo "<tr><th></th></tr>";
-            echo "<tr><td class='e'>".Language::Get('general_informations','urlExtern')."</td></tr>";
-            echo "<tr><td>".$data['PL']['urlExtern']."</td></tr>";
-            echo "<tr><th></th></tr>";
-            echo "<tr><td class='e'>".Language::Get('database_informations','db_name')."</td></tr>";
-            echo "<tr><td>".$data['DB']['db_name']."</td></tr>";
-            echo "<tr><th></th></tr>";
-            echo "<tr><td class='e'>".Language::Get('database_informations','db_path')."</td></tr>";
-            echo "<tr><td>".$data['DB']['db_path']."</td></tr>";
-            echo "<tr><th></th></tr>";
-            echo "<tr><td class='e'>".Language::Get('databaseAdmin','db_user')."</td></tr>";
-            echo "<tr><td>".$data['DB']['db_user']."</td></tr>";
-            echo "<tr><th></th></tr>";
-            echo "<tr><td class='e'>".Language::Get('databasePlatformUser','db_user_operator')."</td></tr>";
-            echo "<tr><td>".$data['DB']['db_user_operator']."</td></tr>";
-            echo "<tr><td class='e'>".Language::Get('general_informations','temp')."</td></tr>";
-            echo "<tr><td>".$data['PL']['temp']."</td></tr>";
-            echo "<tr><td class='e'>".Language::Get('general_informations','files')."</td></tr>";
-            echo "<tr><td>".$data['PL']['files']."</td></tr>";
-            echo "</table>";
-            echo "</div";
-            
-            echo "</th></tr></form></table>";
-
-            echo "</div></body></html>";
-        }
-
-        if (isset($_POST['actionShowPhpInfo'])){
-            ob_start();
-            phpinfo();
-            $phpinfo = array('phpinfo' => array());
-
-            if(preg_match_all('#(?:<h2>(?:<a name=".*?">)?(.*?)(?:</a>)?</h2>)|(?:<tr(?: class=".*?")?><t[hd](?: class=".*?")?>(.*?)\s*</t[hd]>(?:<t[hd](?: class=".*?")?>(.*?)\s*</t[hd]>(?:<t[hd](?: class=".*?")?>(.*?)\s*</t[hd]>)?)?</tr>)#s', ob_get_clean(), $matches, PREG_SET_ORDER))
-                foreach($matches as $match)
-                    if(strlen($match[1]))
-                        $phpinfo[$match[1]] = array();
-                    elseif(isset($match[3])){
-                        $arr=array_keys($phpinfo);
-                        $phpinfo[end($arr)][$match[2]] = isset($match[4]) ? array($match[3], $match[4]) : $match[3];
-                    }else{
-                        $arr = array_keys($phpinfo);
-                        $phpinfo[end($arr)][] = $match[2]; 
+                echo "<thead><tr><th align='left' width='50%'>{$a}</th><th align='right' width='50%'>{$b}</th></tr></thead>";
+                if ($selected_menu==0){
+                    if (!isset($_POST['actionShowPhpInfo'])){
+                        echo "<tr><th colspan='2'>".Design::erstelleSubmitButton("actionShowPhpInfo", 'PHPInfo')."</th></tr>";
                     }
-                        
-            echo "<br><br><br><br><div align='center'>";
-            foreach($phpinfo as $name => $section) {
-                echo "<h3>$name</h3>\n<table>\n";
-                foreach($section as $key => $val) {
-                    if(is_array($val))
-                        echo "<tr><td>$key</td><td>$val[0]</td><td>$val[1]</td></tr>\n";
-                    elseif(is_string($key))
-                        echo "<tr><td>$key</td><td>$val</td></tr>\n";
-                    else
-                        echo "<tr><td>$val</td></tr>\n";
                 }
-                echo "</table>\n";
+                echo "</table>";
+                #endregion zurück_weiter_buttons
+                
+                echo "<div>";
+
+                echo "</div>";
+                
+                echo "</th>";
+                echo "<th width='2'></th>";
+                echo "<th valign='top'>";
+                
+                // ab hier wird die Infoleiste mit der aktuellen Konfiguration erstellt
+                // (die Leiste rechts am Rand)
+                echo "<div style='width:150px;word-break: break-all;'>";
+                echo "<table border='0'>";
+                foreach(Einstellungen::$segments as $segs){
+                    if (!is_callable("{$segs}::getSettingsBar")) continue;
+                    $settings = $segs::getSettingsBar($data);
+                    if (count($settings)>0){
+                        foreach ($settings as $key => $values){
+                            if (!isset($values[0]) || !isset($values[1])) continue;
+                            echo "<tr><td class='e'>".$values[0]."</td></tr>";
+                            echo "<tr><td>".$values[1]."</td></tr>";
+                            echo "<tr><th></th></tr>"; 
+                        }
+                    }
+                }
+                echo "</table>";
+                echo "</div";
+                
+                echo "</th></tr></form></table>";
+
+                echo "</div></body></html>";
             }
-            echo "</div>";
+
+            if (isset($_POST['actionShowPhpInfo'])){
+                ob_start();
+                phpinfo();
+                $phpinfo = array('phpinfo' => array());
+
+                if(preg_match_all('#(?:<h2>(?:<a name=".*?">)?(.*?)(?:</a>)?</h2>)|(?:<tr(?: class=".*?")?><t[hd](?: class=".*?")?>(.*?)\s*</t[hd]>(?:<t[hd](?: class=".*?")?>(.*?)\s*</t[hd]>(?:<t[hd](?: class=".*?")?>(.*?)\s*</t[hd]>)?)?</tr>)#s', ob_get_clean(), $matches, PREG_SET_ORDER))
+                    foreach($matches as $match)
+                        if(strlen($match[1]))
+                            $phpinfo[$match[1]] = array();
+                        elseif(isset($match[3])){
+                            $arr=array_keys($phpinfo);
+                            $phpinfo[end($arr)][$match[2]] = isset($match[4]) ? array($match[3], $match[4]) : $match[3];
+                        }else{
+                            $arr = array_keys($phpinfo);
+                            $phpinfo[end($arr)][] = $match[2]; 
+                        }
+                            
+                echo "<br><br><br><br><div align='center'>";
+                foreach($phpinfo as $name => $section) {
+                    echo "<h3>$name</h3>\n<table>\n";
+                    foreach($section as $key => $val) {
+                        if(is_array($val))
+                            echo "<tr><td>$key</td><td>$val[0]</td><td>$val[1]</td></tr>\n";
+                        elseif(is_string($key))
+                            echo "<tr><td>$key</td><td>$val</td></tr>\n";
+                        else
+                            echo "<tr><td>$val</td></tr>\n";
+                    }
+                    echo "</table>\n";
+                }
+                echo "</div>";
+            }
+        
         }
         
         if ($console && !$simple)

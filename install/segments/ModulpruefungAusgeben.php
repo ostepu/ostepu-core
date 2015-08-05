@@ -2,7 +2,6 @@
 #region ModulpruefungAusgeben
 class ModulpruefungAusgeben
 {
-    private static $initialized=false;
     public static $name = 'checkModules';
     public static $installed = false;
     public static $page = 0;
@@ -10,12 +9,6 @@ class ModulpruefungAusgeben
     public static $enabledShow = true;
     
     public static $onEvents = array('check'=>array('name'=>'checkModules','event'=>array('actionCheckModules','page','install', 'update')));
-    
-    
-    public static function init($console, &$data, &$fail, &$errno, &$error)
-    {
-        self::$initialized = true;
-    }
     
     public static function show($console, $result, $data)
     {

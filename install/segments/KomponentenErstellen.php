@@ -2,7 +2,6 @@
 #region KomponentenErstellen
 class KomponentenErstellen
 {
-    private static $initialized=false;
     public static $name = 'componentDefs';
     public static $installed = false;
     public static $page = 3;
@@ -11,12 +10,6 @@ class KomponentenErstellen
     public static $enabledInstall = true;
     
     public static $onEvents = array('install'=>array('name'=>'componentDefs','event'=>array('actionInstallComponentDefs','install', 'update')));
-    
-    
-    public static function init($console, &$data, &$fail, &$errno, &$error)
-    {
-        self::$initialized = true;
-    }
     
     public static function show($console, $result, $data)
     {
@@ -59,6 +52,12 @@ class KomponentenErstellen
         foreach($serverFiles as $sf){
             $sf = pathinfo($sf)['filename'];
             $tempData = Einstellungen::ladeEinstellungenDirekt($sf,$data);
+            if ($tempData === null){
+                $fail = true;
+                $error = Language::Get('generateComponents','noAccess');
+                return;
+            }
+            
             $componentList = Zugang::Ermitteln('actionInstallComponentDefs','KomponentenErstellen::installiereKomponentenDefinitionen',$tempData, $fail, $errno, $error); 
             
             if (isset($componentList['components']))
@@ -280,11 +279,12 @@ class KomponentenErstellen
                 $input = file_get_contents($comFile);
                 $input = json_decode($input,true);
                 if ($input==null) continue;
-                $input['urlExtern'] = $data['PL']['urlExtern'];
-                $input['url'] = $data['PL']['url'];
+                
+                if (isset($data['PL']['urlExtern'])) $input['urlExtern'] = $data['PL']['urlExtern'];
+                if (isset($data['PL']['url'])) $input['url'] = $data['PL']['url'];
                 $input['path'] = substr(dirname($comFile),strlen($mainPath)+1);
-                $input['link_type'] = $data['CO']['co_link_type'];
-                $input['link_availability'] = $data['CO']['co_link_availability'];
+                if (isset($data['CO']['co_link_type'])) $input['link_type'] = $data['CO']['co_link_type'];
+                if (isset($data['CO']['co_link_availability'])) $input['link_availability'] = $data['CO']['co_link_availability'];
                 
                 if (isset($input['files'])) unset($input['files']);
                 

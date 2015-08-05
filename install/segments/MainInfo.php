@@ -2,7 +2,6 @@
 #region MainInfo
 class MainInfo
 {
-    private static $initialized=false; // gibt an, ob das Segment initialisiert wurde
     public static $name = 'MainInfo';
     public static $installed = false; // ob die Installationsroutine ausgelöst wurde
     public static $page = 0; // die ID der Seite, auf welcher das Segment gezeigt werden soll
@@ -21,14 +20,7 @@ class MainInfo
                                                      'procedure'=>'install' // die im Installationsfall aufzurufende Funktion
                                                      )
                                     );
-    
-    
-    public static function init($console, &$data, &$fail, &$errno, &$error)
-    {
-        echo '';
-        self::$initialized = true;
-    }
-    
+                                    
     public static function show($console, $result, $data)
     {
         $text='';
@@ -41,11 +33,6 @@ class MainInfo
         
         if ($failure)
             echo Design::erstelleBlock($console, Language::Get('mainInfo','title'), $text);
-    }
-    
-    public static function install($data, &$fail, &$errno, &$error)
-    {
-        return null;
     }
 }
 #endregion MainInfo

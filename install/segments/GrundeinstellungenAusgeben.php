@@ -11,13 +11,23 @@ class GrundeinstellungenAusgeben
     
     public static $onEvents = array('install'=>array('name'=>'installInit','event'=>array('actionInstallInit','install','update')));
     
+    public static function getDefaults()
+    {
+        return array(
+                     'db_ignore' => array('data[DB][db_ignore]', null),
+                     'db_override' => array('data[DB][db_override]', null),
+                     'pl_main_details' => array('data[PL][pl_main_details]', null)
+                     );
+    }
     
     public static function init($console, &$data, &$fail, &$errno, &$error)
     {
+        $def = self::getDefaults();
+        
         $text = '';
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_ignore'], 'data[DB][db_ignore]', null, true);
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_override'], 'data[DB][db_override]', null, true);
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['PL']['pl_main_details'], 'data[PL][pl_main_details]', null, true);
+        $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_ignore'], 'data[DB][db_ignore]', $def['db_ignore'][1], true);
+        $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_override'], 'data[DB][db_override]', $def['db_override'][1], true);
+        $text .= Design::erstelleVersteckteEingabezeile($console, $data['PL']['pl_main_details'], 'data[PL][pl_main_details]', $def['pl_main_details'][1], true);
         echo $text;
         self::$initialized = true;
     }
@@ -91,10 +101,10 @@ class GrundeinstellungenAusgeben
         }
         
         
-        // CControl+DBQuery+DBQuery2 einrichten
+        // CControl+DBQuery2 einrichten
         $res = array();
         if (!$fail){
-            $list = array('DB/CControl','DB/DBQuery','DB/DBQuery2');
+            $list = array('DB/CControl','DB/DBQuery2');
             $platform = Installation::PlattformZusammenstellen($data);
 
             for ($i=0;$i<count($list);$i++){

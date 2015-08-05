@@ -11,11 +11,19 @@ class PlattformEinrichten
     
     public static $onEvents = array('install'=>array('name'=>'initPlatform','event'=>array('actionInstallPlatform','install', 'update')));
     
-    
+    public static function getDefaults()
+    {
+        return array(
+                     'pl_details' => array('data[PL][pl_details]', null)
+                     );
+    }
+        
     public static function init($console, &$data, &$fail, &$errno, &$error)
     {
+        $def = self::getDefaults();
+        
         $text = '';
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['PL']['pl_details'], 'data[PL][pl_details]', null,true);
+        $text .= Design::erstelleVersteckteEingabezeile($console, $data['PL']['pl_details'], 'data[PL][pl_details]', $def['pl_details'][1],true);
         echo $text;
         self::$initialized = true;
     }
@@ -61,23 +69,21 @@ class PlattformEinrichten
     
         if (!$fail){
             // die /platform Befehle auslösen
-            $list = array('DB/DBApprovalCondition','DB/DBAttachment','DB/DBCourse','DB/DBCourseStatus','DB/DBExercise','DB/DBExerciseFileType','DB/DBExerciseSheet','DB/DBExerciseType','DB/DBExternalId','DB/DBFile','DB/DBGroup','DB/DBInvitation','DB/DBMarking','DB/DBSelectedSubmission','DB/DBSession','DB/DBSubmission','DB/DBUser','FS/FSFile','FS/FSCsv','FS/FSPdf','FS/FSZip','FS/FSBinder','logic/LTutor');
-            
+            $list = Einstellungen::getLinks('postPlatform');
             $platform = Installation::PlattformZusammenstellen($data);
             
             $multiRequestHandle = new Request_MultiRequest();
 
             for ($i=0;$i<count($list);$i++){
-                $url = $list[$i];//$data['PL']['init'];
                 // inits all components
-                $handler = Request_CreateRequest::createPost($data['PL']['url'].'/'.$url. '/platform',array(),Platform::encodePlatform($platform));
+                $handler = Request_CreateRequest::createPost($list[$i]->getAddress(). '/platform',array(),Platform::encodePlatform($platform));
                 $multiRequestHandle->addRequest($handler);
             }
             
             $answer = $multiRequestHandle->run();
             
             for ($i=0;$i<count($list);$i++){
-                $url = $list[$i];            
+                $url = $list[$i]->getTargetName();            
                 $result = $answer[$i];
                 $res[$url] = array();
                 if (isset($result['content']) && isset($result['status']) && $result['status'] === 201){

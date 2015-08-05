@@ -53,6 +53,13 @@ class Installation
         
     }
     
+    /**
+     * Extrahiert die relevanten Daten der Plattform und erzeugt
+     * daraus ein Platform-Objekt
+     *
+     * @param string[][] $data Die Serverdaten
+     * @return Patform Die Plattformdaten
+     */
     public static function PlattformZusammenstellen($data)
     {   
         // hier aus den Daten ein Plattform-Objekt zusammenstellen
@@ -71,6 +78,12 @@ class Installation
         return $platform;
     }
     
+    /**
+     * Ermittelt alle vorhandenen Serverkonfigurationsdateien
+     * aus dem config Ordners
+     *
+     * @return string[] Die Dateipfade
+     */
     public static function GibServerDateien()
     {
         $serverFiles = array();
