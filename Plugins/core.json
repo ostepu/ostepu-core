@@ -21,6 +21,7 @@
       {"conf":"DB/CAbstract/Component.json"},
       {"conf":"DB/DBQuery2/DBQuery.json"},
       {"conf":"DB/DBQuery2/Component.json"},
-      {"conf":"Assistants/Request.json"}
+      {"conf":"Assistants/Request.json"},
+      {"conf":"install/component/CInstall.json"}
     ]
 }
