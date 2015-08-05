@@ -20,6 +20,7 @@ h2 {font-size: 125%;}
 .v_c {background-color: #cccccc; color: #000000;text-align: center;}
 .vr {background-color: #cccccc; text-align: right; color: #000000;}
 .error {background-color: #ffffff; color: #ff0000;text-align: center;font-weight: bold;}
+.error_light {background-color: #ffffff; color: #ff0000;word-break: normal;}
 hr {width: 600px; background-color: #cccccc; border: 0px; height: 1px; color: #000000;}
 .text-button {
     font-family:'Lucida Sans Unicode', Helvetica, Arial, Verdana, sans-serif;
