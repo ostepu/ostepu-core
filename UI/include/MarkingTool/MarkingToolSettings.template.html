@@ -11,81 +11,95 @@
 
     <div class="content-body-wrapper">
         <div class="content-body left">
-            <label class="form-field left label bold new-line" for="sheetID"><?php echo Language::Get('main','selectSheet', $langTemplate); ?>:</label>
-            <select class="form-field left text-input" name="sheetID" id="sheetID">
-                <?php
-                    foreach ($exerciseSheets as $sheet) {
-                        if (!isset($sheet['id'])) continue;
-                        if (!isset($sheet['sheetName'])) $sheet['sheetName'] = '???';
-                        print '<option value="';
-                        print $sheet['id'] . '"';
-                        print $sheet['id'] == $sheetID ? ' selected="selected"' : NULL;
-                        print '>';
-                        print $sheet['sheetName'];
-                        print '</option>';
-                    }
-                ?>
-            </select>
+        
+            <div>
+                <label class="form-field label bold" for="sheetID"><?php echo Language::Get('main','selectSheet', $langTemplate); ?>:</label>
+                <select class="form-field text-input" name="sheetID" id="sheetID">
+                    <?php
+                        foreach ($exerciseSheets as $sheet) {
+                            if (!isset($sheet['id'])) continue;
+                            if (!isset($sheet['sheetName'])) $sheet['sheetName'] = '???';
+                            print '<option value="';
+                            print $sheet['id'] . '"';
+                            print $sheet['id'] == $sheetID ? ' selected="selected"' : NULL;
+                            print '>';
+                            print $sheet['sheetName'];
+                            print '</option>';
+                        }
+                    ?>
+                </select>
+            </div>
 
             <?php if (isset($user['courses'][0]['status']) && $user['courses'][0]['status']>=2){ ?>
-            <label class="form-field left label bold new-line" for="tutorID"><?php echo Language::Get('main','tutor', $langTemplate); ?>:</label> 
-            <select class="form-field left text-input" name="tutorID" id="tutorID">
-                <option value="all"><?php echo Language::Get('main','all', $langTemplate); ?></option>
-                <?php
-                    foreach ($tutors as $tutor) {
-                        if (!isset($tutor['id'])) continue;
-                        if (!isset($tutor['firstName'])) $tutor['firstName'] = '???';
-                        if (!isset($tutor['lastName'])) $tutor['lastName'] = '???';
-                        
-                        print '<option value="';
-                        print $tutor['id'] . '"';
-                        if (!empty($tutorID)) {
-                            print $tutor['id'] == $tutorID ? ' selected="selected"' : NULL;
+            <div>
+                <label class="form-field label bold" for="tutorID"><?php echo Language::Get('main','tutor', $langTemplate); ?>:</label> 
+                <select class="form-field text-input" name="tutorID" id="tutorID">
+                    <option value="all"><?php echo Language::Get('main','all', $langTemplate); ?></option>
+                    <?php
+                        foreach ($tutors as $tutor) {
+                            if (!isset($tutor['id'])) continue;
+                            if (!isset($tutor['firstName'])) $tutor['firstName'] = '???';
+                            if (!isset($tutor['lastName'])) $tutor['lastName'] = '???';
+                            
+                            print '<option value="';
+                            print $tutor['id'] . '"';
+                            if (!empty($tutorID)) {
+                                print $tutor['id'] == $tutorID ? ' selected="selected"' : NULL;
+                            }
+                            print '>';
+                            print $tutor['firstName'] . ' ' . $tutor['lastName'];
+                            print '</option>';
                         }
-                        print '>';
-                        print $tutor['firstName'] . ' ' . $tutor['lastName'];
-                        print '</option>';
-                    }
-                ?>
-            </select>
+                    ?>
+                </select>
+            </div>
             <?php } else { ?>
             <input type="hidden" name="tutorID" value="<?php echo $user['id'];?>">
             <?php } ?>
 
-            <label class="form-field left label bold new-line" for="statusID"><?php echo Language::Get('main','status', $langTemplate); ?>:</label> 
-            <select class="form-field left text-input" name="statusID" id="statusID">
-                <option value="all"><?php echo Language::Get('main','all', $langTemplate); ?></option>
-                <?php
-                    foreach ($markingStatus as $status) {
-                        if (!isset($status['id'])) continue;
-                        if (!isset($status['longName'])) $status['longName'] = '???';
-                        
-                        print '<option value="';
-                        print $status['id'] . '"';
-                        if (isset($statusID)) {
-                            print $status['id'] == $statusID ? ' selected="selected"' : NULL;
-                        }
-                        print '>';
-                        print $status['longName'];
-                        print '</option>';
-                    }
-                ?>
-            </select>
-            <?php 
-                $sortTypes = array('lastName' => Language::Get('main','lastName', $langTemplate),'firstName' => Language::Get('main','firstName', $langTemplate),'userName' => Language::Get('main','userName', $langTemplate));
-            ?>
-            <label class="form-field left label bold new-line" for="sortUsers"><?php echo Language::Get('main','sorting', $langTemplate); ?>:</label> 
-            <select class="form-field left text-input" name="sortUsers" id="sortUsers">
+            <div>
+                <label class="form-field label bold" for="statusID"><?php echo Language::Get('main','status', $langTemplate); ?>:</label> 
+                <select class="form-field text-input" name="statusID" id="statusID">
+                    <option value="all"><?php echo Language::Get('main','all', $langTemplate); ?></option>
                     <?php
-                        foreach ($sortTypes as $key => $value) {
-                            echo "<option value='{$key}'".(isset($sortUsers) &&  $sortUsers==$key ? ' selected="selected"' : '').">{$value}</option>";
+                        foreach ($markingStatus as $status) {
+                            if (!isset($status['id'])) continue;
+                            if (!isset($status['longName'])) $status['longName'] = '???';
+                            
+                            print '<option value="';
+                            print $status['id'] . '"';
+                            if (isset($statusID)) {
+                                print $status['id'] == $statusID ? ' selected="selected"' : NULL;
+                            }
+                            print '>';
+                            print $status['longName'];
+                            print '</option>';
                         }
                     ?>
-            </select>
+                </select>
+            </div>
             
-            <a href="MarkingTool.php?cid=<?php echo $cid; ?>&downloadCSV=<?php echo $sheetID; ?>&statusID=<?php echo isset($statusID) ? $statusID : 'all'; ?>&tutorID=<?php echo isset($tutorID) ? $tutorID : 'all'; ?>" class="download text-button body-option-color footer-text" style="padding-left:0px">
-                <?php echo Language::Get('main','createArchive', $langTemplate); ?>
-            </a>
+            <div>
+                <div>
+                    <?php 
+                        $sortTypes = array('lastName' => Language::Get('main','lastName', $langTemplate),'firstName' => Language::Get('main','firstName', $langTemplate),'userName' => Language::Get('main','userName', $langTemplate));
+                    ?>
+                    <label class="form-field label bold" for="sortUsers"><?php echo Language::Get('main','sorting', $langTemplate); ?>:</label> 
+                    <select class="form-field text-input" name="sortUsers" id="sortUsers">
+                            <?php
+                                foreach ($sortTypes as $key => $value) {
+                                    echo "<option value='{$key}'".(isset($sortUsers) &&  $sortUsers==$key ? ' selected="selected"' : '').">{$value}</option>";
+                                }
+                            ?>
+                    </select>
+                </div>
+                
+                <div>
+                    <a href="MarkingTool.php?cid=<?php echo $cid; ?>&downloadCSV=<?php echo $sheetID; ?>&statusID=<?php echo isset($statusID) ? $statusID : 'all'; ?>&tutorID=<?php echo isset($tutorID) ? $tutorID : 'all'; ?>" class="download text-button body-option-color footer-text" style="padding-left:0px">
+                        <?php echo Language::Get('main','createArchive', $langTemplate); ?>
+                    </a>
+                </div>
+            </div>
         </div>
         
     </div> <!-- end: content-body -->
