@@ -86,7 +86,12 @@ a.button:after {
 }
 
 .content-body {
+    display: table;
+}
 
+.content-body > div > div{
+    display: table-cell;
+    table-layout: fixed;
 }
 
 .content-title {
