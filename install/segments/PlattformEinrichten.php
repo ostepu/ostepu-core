@@ -30,6 +30,8 @@ class PlattformEinrichten
     
     public static function show($console, $result, $data)
     {
+        $isUpdate = (isset($data['action']) && $data['action']=='update') ? true : false;
+        
         $text='';
         $text .= Design::erstelleBeschreibung($console,Language::Get('platform','description'));    
 
@@ -49,7 +51,7 @@ class PlattformEinrichten
         $content = $result['content'];
         
         if (self::$installed){
-            if (!$console && isset($data['PL']['pl_details']) && $data['PL']['pl_details'] === 'details'){
+            if (!$console && isset($data['PL']['pl_details']) && $data['PL']['pl_details'] === 'details' && !$isUpdate){
                 foreach ($content as $component => $dat){
                     $text .= "<tr><td class='e' rowspan='1'>{$component}</td><td class='v'></td><td class='e'><div align ='center'>".((isset($dat['status']) && $dat['status']===201) ? Language::Get('main','ok') : "<font color='red'>".Language::Get('main','fail')." ({$dat['status']})</font>")."</align></td></tr>";
                 }
