@@ -352,13 +352,14 @@ class Installer
             $titleText=Language::Get('main','title'.$selected_menu);
             
             if ($selected_menu==-1){
-                if (isset($_POST['action']))
+                if (isset($_POST['action'])){
                     $titleText=Language::Get('main','title'.$_POST['action']);
+                }
             }
             
             echo "</head><body><div class='center'>";
             
-            if (Einstellungen::$accessAllowed){
+            if (Einstellungen::$accessAllowed && $titleText!=='???'){
                 echo "<h1>".$titleText."</h1></br>";
             }
 
