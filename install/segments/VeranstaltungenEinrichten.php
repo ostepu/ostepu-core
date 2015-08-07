@@ -11,17 +11,27 @@ class VeranstaltungenEinrichten
     
     public static $onEvents = array('install'=>array('name'=>'initCourses','event'=>array('actionInstallCourses','install', 'update')));
     
-    
+    public static function getDefaults()
+    {
+        return array(
+                     'c_details' => array('data[C][c_details]', null)
+                     );
+    }
+        
     public static function init($console, &$data, &$fail, &$errno, &$error)
     {
+        $def = self::getDefaults();
+        
         $text = '';
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['C']['c_details'], 'data[C][c_details]', null,true);
+        $text .= Design::erstelleVersteckteEingabezeile($console, $data['C']['c_details'], 'data[C][c_details]', $def['c_details'][1],true);
         echo $text;
         self::$initialized = true;
     }
     
     public static function show($console, $result, $data)
     {
+        $isUpdate = (isset($data['action']) && $data['action']=='update') ? true : false;
+        
         $text='';
         $text .= Design::erstelleBeschreibung($console,Language::Get('courses','description'));  
 
@@ -41,7 +51,7 @@ class VeranstaltungenEinrichten
         $content = $result['content'];
         
         if (self::$installed){
-            if (!$console && isset($data['C']['c_details']) && $data['C']['c_details'] === 'details'){
+            if (!$console && isset($data['C']['c_details']) && $data['C']['c_details'] === 'details' && !$isUpdate){
                 foreach ($content as $courseid => $dat){
                     $text .= "<tr><td class='e' rowspan='1'>({$dat['course']->getId()}) {$dat['course']->getSemester()}</td><td class='v'>{$dat['course']->getName()}</td><td class='e'><div align ='center'>".((isset($dat['status']) && $dat['status']===201) ? Language::Get('main','ok') : "<font color='red'>".Language::Get('main','fail')." ({$dat['status']})</font>")."</align></td></tr>";
                 }

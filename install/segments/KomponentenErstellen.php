@@ -2,7 +2,6 @@
 #region KomponentenErstellen
 class KomponentenErstellen
 {
-    private static $initialized=false;
     public static $name = 'componentDefs';
     public static $installed = false;
     public static $page = 3;
@@ -11,12 +10,6 @@ class KomponentenErstellen
     public static $enabledInstall = true;
     
     public static $onEvents = array('install'=>array('name'=>'componentDefs','event'=>array('actionInstallComponentDefs','install', 'update')));
-    
-    
-    public static function init($console, &$data, &$fail, &$errno, &$error)
-    {
-        self::$initialized = true;
-    }
     
     public static function show($console, $result, $data)
     {
@@ -59,6 +52,12 @@ class KomponentenErstellen
         foreach($serverFiles as $sf){
             $sf = pathinfo($sf)['filename'];
             $tempData = Einstellungen::ladeEinstellungenDirekt($sf,$data);
+            if ($tempData === null){
+                $fail = true;
+                $error = Language::Get('generateComponents','noAccess');
+                return;
+            }
+            
             $componentList = Zugang::Ermitteln('actionInstallComponentDefs','KomponentenErstellen::installiereKomponentenDefinitionen',$tempData, $fail, $errno, $error); 
             
             if (isset($componentList['components']))
@@ -88,8 +87,7 @@ class KomponentenErstellen
                     // normale Komponente
                     
                     if (!isset($input['registered'])){
-                    ///echo $input['name'].'__'.$input['urlExtern']."<br>";
-                        $comList[] = "('{$input['name']}', '{$input['urlExtern']}/{$input['path']}', '".(isset($input['option']) ? $input['option'] : '')."')"; 
+                        $comList[] = "('{$input['name']}', '{$input['urlExtern']}/{$input['path']}', '".(isset($input['option']) ? $input['option'] : '')."', '".implode(';',(isset($input['def']) ? $input['def'] : array()))."')"; 
                         // Verknüpfungen erstellen
                         $setDBNames[] = " SET @{$key}_{$input['name']} = (select CO_id from Component where CO_address='{$input['urlExtern']}/{$input['path']}' limit 1); ";
                         $input['dbName'] = $key.'_'.$input['name'];
@@ -113,9 +111,6 @@ class KomponentenErstellen
                                 foreach ($ComponentListInput[$input['name']] as $input3){
                                     if ((!isset($input3['type']) || $input3['type']=='normal') && $input['name'] == $input3['name'] && "{$input3['urlExtern']}/{$input3['path']}" == "{$input2['urlExtern']}/{$input2['path']}{$input['baseURI']}"){
                                         $found = true;
-                                        ///echo "found: ".$input['name'].'__'.$input3['name']."<br>";
-                                        ///echo "{$input2['urlExtern']}/{$input2['path']}{$input['baseURI']}<br>";
-                                        ///echo "{$input3['urlExtern']}/{$input3['path']}<br>";
                                         break;
                                     }
                                 }
@@ -125,15 +120,13 @@ class KomponentenErstellen
                                 foreach ($tempList[$input['name']] as $input3){
                                     if ($input['name'] == $input3['name'] && "{$input3['urlExtern']}/{$input3['path']}" == "{$input2['urlExtern']}/{$input2['path']}{$input['baseURI']}"){
                                         $found = true;
-                                        ///echo "found2: ".$input['name'].'__'.$input3['name']."<br>";
-                                        ///echo "{$input2['urlExtern']}/{$input2['path']}{$input['baseURI']}<br>";
-                                        ///echo "{$input3['urlExtern']}/{$input3['path']}";
                                         break;
                                     }
                                 }
                             if ($found){ continue;}
                             
                             $input2['path'] = "{$input2['path']}{$input['baseURI']}";
+                            $input2['def'] = array_merge($input2['def'],$input['def']);
                             
                             $input2['links'] = array_merge((isset($input2['links']) ? $input2['links'] : array()),(isset($input['links']) ? $input['links'] : array()));
                             $input2['connector'] = array_merge((isset($input2['connector']) ? $input2['connector'] : array()),(isset($input['connector']) ? $input['connector'] : array()));
@@ -144,25 +137,24 @@ class KomponentenErstellen
                             $input2['registered'] = null;
                             if (!isset($tempList[$key2])) $tempList[$key2] = array();
                             $tempList[$key2][] = $input2;
-                            //echo $input2['name'].'__'.$input2['urlExtern']."<br>";
-                            //var_dump($input2);
-                            //var_dump($input2);
                         }
                 }
             }
         }
             $ComponentListInput = $tempList;
         }
-        //var_dump($ComponentListInput);
-        
+                
         $sql = "START TRANSACTION;SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;TRUNCATE TABLE `ComponentLinkage`;SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;COMMIT;";//TRUNCATE TABLE `Component`;
         DBRequest::request2($sql, false, $data, true);
         
-        $sql = "START TRANSACTION;SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;INSERT INTO `Component` (`CO_name`, `CO_address`, `CO_option`) VALUES ";
+        $sql = "UPDATE `Component` SET `CO_status` = '0';";
+        DBRequest::request2($sql, false, $data, true);
+        
+        $sql = "START TRANSACTION;SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;INSERT INTO `Component` (`CO_name`, `CO_address`, `CO_option`, `CO_def`) VALUES ";
         $installComponentDefsResult['componentsCount'] = count($comList);
         $sql.=implode(',',$comList);
         unset($comList);
-        $sql .= " ON DUPLICATE KEY UPDATE CO_address=VALUES(CO_address), CO_option=VALUES(CO_option);SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;COMMIT;";
+        $sql .= " ON DUPLICATE KEY UPDATE CO_status='1', CO_address=VALUES(CO_address), CO_option=VALUES(CO_option), CO_def=VALUES(CO_def);SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;COMMIT;";
         //echo $sql;
         DBRequest::request2($sql, false, $data, true);
         //echo $sql;
@@ -280,11 +272,13 @@ class KomponentenErstellen
                 $input = file_get_contents($comFile);
                 $input = json_decode($input,true);
                 if ($input==null) continue;
-                $input['urlExtern'] = $data['PL']['urlExtern'];
-                $input['url'] = $data['PL']['url'];
+                
+                if (isset($data['PL']['urlExtern'])) $input['urlExtern'] = $data['PL']['urlExtern'];
+                if (isset($data['PL']['url'])) $input['url'] = $data['PL']['url'];
                 $input['path'] = substr(dirname($comFile),strlen($mainPath)+1);
-                $input['link_type'] = $data['CO']['co_link_type'];
-                $input['link_availability'] = $data['CO']['co_link_availability'];
+                $input['def'] = array($input['name'],str_replace("\\","/",realpath($comFile)));
+                if (isset($data['CO']['co_link_type'])) $input['link_type'] = $data['CO']['co_link_type'];
+                if (isset($data['CO']['co_link_availability'])) $input['link_availability'] = $data['CO']['co_link_availability'];
                 
                 if (isset($input['files'])) unset($input['files']);
                 

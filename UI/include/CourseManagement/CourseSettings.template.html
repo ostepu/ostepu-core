@@ -18,92 +18,104 @@ if (isset($CourseSettingsNotificationElements)) {
     </div>
 
     <div class="content-body-wrapper">
-        <div class="content-body left">
+        <div class="content-body">
             <div class="content-description">
                 <?php echo Language::Get('main','description', $langTemplate); ?>
             </div>
-            <label class="form-field left label bold" for="courseName"><?php echo Language::Get('main','courseName', $langTemplate); ?>:</label>
-            <input class="form-field left text-input" 
-                   name="courseName" 
-                   value="<?php echo $course['name']; ?>" 
-                   id="courseName"
-                   maxlength="255" />
+            <div>
+                <span style='display:block'>
+                <label class="form-field label bold top" for="courseName"><?php echo Language::Get('main','courseName', $langTemplate); ?>:</label>
+                <input class="form-field text-input top" 
+                       name="courseName" 
+                       value="<?php echo $course['name']; ?>" 
+                       id="courseName"
+                       maxlength="255" />
+                </span>
 
-            <label class="form-field left label bold new-line" for="semester"><?php echo Language::Get('main','semester', $langTemplate); ?>:</label>
-            <select class="form-field left text-input short" name="semester" id="semester">
-                <?php
-                    // Dynamically creates a list of possible semesters beginning
-                    // with the current year + 1 and ending with the current year - 7 or the $semester if it is older
-                    $semester = (isset($course['semester']) ? $course['semester'] : null);
-                    $currentYear = date('Y') + 1;
-                    $savedYear = (isset($course['semester']) ? substr($course['semester'], -4) : $currentYear); ?>
-                <?php if ($savedYear < $currentYear - 7): ?>
-                        <?php $endyear = $savedYear; ?>
-                <?php else: ?>
-                        <?php $endyear = $currentYear - 7; ?>
-                <?php endif; ?>
+                <span style='display:block'>
+                <label class="form-field label bold top" for="semester"><?php echo Language::Get('main','semester', $langTemplate); ?>:</label>
+                <select class="form-field text-input short top" name="semester" id="semester">
+                    <?php
+                        // Dynamically creates a list of possible semesters beginning
+                        // with the current year + 1 and ending with the current year - 7 or the $semester if it is older
+                        $semester = (isset($course['semester']) ? $course['semester'] : null);
+                        $currentYear = date('Y') + 1;
+                        $savedYear = (isset($course['semester']) ? substr($course['semester'], -4) : $currentYear); ?>
+                    <?php if ($savedYear < $currentYear - 7): ?>
+                            <?php $endyear = $savedYear; ?>
+                    <?php else: ?>
+                            <?php $endyear = $currentYear - 7; ?>
+                    <?php endif; ?>
 
-                <?php for ($i = $currentYear; $i >= $endyear; $i--): ?>
+                    <?php for ($i = $currentYear; $i >= $endyear; $i--): ?>
 
-                        <?php $semesterString = "SS " . $i; ?>
-                        <option <?php echo (isset($semester) && $semester!=null && $semesterString == $semester) ? 'selected="selected"' : NULL; ?>
-                            value="SS <?php echo $i; ?>">
-                            SS <?php echo $i; ?>
-                        </option>
+                            <?php $semesterString = "SS " . $i; ?>
+                            <option <?php echo (isset($semester) && $semester!=null && $semesterString == $semester) ? 'selected="selected"' : NULL; ?>
+                                value="SS <?php echo $i; ?>">
+                                SS <?php echo $i; ?>
+                            </option>
 
-                        <?php $semesterString = "WS " . (string)($i - 1) . "/" . $i; ?>
-                        <option <?php echo (isset($semester) && $semester!=null && $semesterString == $semester) ? 'selected="selected"' : NULL;?>
-                            value="<?php echo $semesterString; ?> "\>
-                            <?php echo $semesterString; ?>
-                        </option>
-                <?php endfor; ?>
-            </select>
+                            <?php $semesterString = "WS " . (string)($i - 1) . "/" . $i; ?>
+                            <option <?php echo (isset($semester) && $semester!=null && $semesterString == $semester) ? 'selected="selected"' : NULL;?>
+                                value="<?php echo $semesterString; ?> "\>
+                                <?php echo $semesterString; ?>
+                            </option>
+                    <?php endfor; ?>
+                </select>
+                </span>
 
-            <label class="form-field left label bold new-line" for="defaultGroupSize">
-                <?php echo Language::Get('main','defaultGroupSize', $langTemplate); ?>:
-            </label>
-            <input class="form-field left text-input short" name="defaultGroupSize"
-            value="<?php echo $course['defaultGroupSize']; ?>" id="defaultGroupSize" maxlength="3" />
+                <span style='display:block'>
+                <label class="form-field label bold top" for="defaultGroupSize">
+                    <?php echo Language::Get('main','defaultGroupSize', $langTemplate); ?>:
+                </label>
+                <input class="form-field text-input short top" name="defaultGroupSize"
+                value="<?php echo $course['defaultGroupSize']; ?>" id="defaultGroupSize" maxlength="3" />
+                </span>
 
-            <label class="form-field left label bold new-line" for="defaultExerciseTypes">
-                <?php echo Language::Get('main','defaultExerciseTypes', $langTemplate); ?>:
-            </label>
-            <div class="form-field left checkbox-container">
-                <?php 
-                foreach ($exerciseTypes as $exerciseType):
-                    print '<input type="checkbox" name="exerciseTypes[]" value="';
-                    print $exerciseType['id'];
-                    print '"';
-                    print isset($exerciseType['inCourse'])?' checked="true"':NULL;
-                    print ' />';
-                    print $exerciseType['name'];
-                    print '<br />';
-                endforeach;
-                ?>
+                <span style='display:block'>
+                <label class="form-field label bold top" for="defaultExerciseTypes">
+                    <?php echo Language::Get('main','defaultExerciseTypes', $langTemplate); ?>:
+                </label>
+                <span class="form-field checkbox-container">
+                    <?php 
+                    foreach ($exerciseTypes as $exerciseType):
+                        print '<input type="checkbox" name="exerciseTypes[]" value="';
+                        print $exerciseType['id'];
+                        print '"';
+                        print isset($exerciseType['inCourse'])?' checked="true"':NULL;
+                        print ' />';
+                        print $exerciseType['name'];
+                        print '<br />';
+                    endforeach;
+                    ?>
+                </span>  
+                </span>
             </div>
-        </div>
-        <div class="content-body left">            
+            
             <?php if (isset($course['settings'])){
                     foreach($course['settings'] as $setting){
-                        echo '<label class="form-field left label bold new-line" for="">';
+                        echo "<div style='display:block;margin-bottom: 0px'>";
+                        echo '<label class="form-field label bold" for="">';
                         echo $setting['name'];
                         echo "</label>";
                         if ($setting['type']==='TIMESTAMP'){
                             $data = ($setting['state']!=0 ? $setting['state'] : null);
                             ?>
-                            <div id="datetimepicker<?php echo $setting['id']; ?>" class="dtpicker input-append left date">
+                            <div style='display:inline-block;margin-bottom: 0px'>
+                            <span id="datetimepicker<?php echo $setting['id']; ?>" class="dtpicker date input-append">
                                 <input class="form-field text-input" data-format="dd.MM.yyyy - hh:mm"
                                 <?php if (isset($data)) {?> value="<?php echo (ctype_digit($data) ? date('d.m.Y - H:i', $data) : $data); ?>" <?php } ?>
                                  type="text" name="setting[<?php echo $setting['id']; ?>][value]"/>
                                 <span class="add-on">
                                   ...
                                 </span>
+                            </span>
                             </div>
                             <input type="hidden" name="setting[<?php echo $setting['id']; ?>][type]" value="DATE">
                             <?php
                         } elseif ($setting['type']==='BOOL'){
                             ?>
-                            <div>
+                            <div style='display:inline-block;margin-bottom: 0px'>
                               <input type="hidden" name="setting[<?php echo $setting['id']; ?>][type]" value="TEXT">
                               <select name="setting[<?php echo $setting['id']; ?>][value]" size="1">
                                 <option value="1" <?php echo ($setting['state'] == 1 ?"selected=\"selected\"":''); ?>><?php echo Language::Get('main','yes', $langTemplate); ?></option>
@@ -114,7 +126,7 @@ if (isset($CourseSettingsNotificationElements)) {
                         } elseif ($setting['type']==='INT' || $setting['type']==='STRING'){
                             $data = ($setting['state']!=0 ? $setting['state'] : null);
                             ?>
-                            <div>
+                            <div class="content-element" style='display:inline-block;margin-bottom: 0px'>
                                 <input type="hidden" name="setting[<?php echo $setting['id']; ?>][type]" value="TEXT">
                                 <input class="form-field text-input"
                                     <?php if (isset($data)) {?> value="<?php echo $data; ?>" <?php } ?>
@@ -122,6 +134,7 @@ if (isset($CourseSettingsNotificationElements)) {
                             </div>
                             <?php
                         }
+                        echo "</div>";
                     }
                 } ?>
         </div>

@@ -2,7 +2,6 @@
 #region PruefungErweiterungen
 class PruefungErweiterungen
 {
-    private static $initialized=false;
     public static $name = 'checkExtensions';
     public static $installed = false;
     public static $page = 0;
@@ -10,12 +9,6 @@ class PruefungErweiterungen
     public static $enabledShow = true;
     
     public static $onEvents = array('check'=>array('name'=>'checkExtensions','event'=>array('actionCheckExtensions','page','install', 'update')));
-    
-    
-    public static function init($console, &$data, &$fail, &$errno, &$error)
-    {
-        self::$initialized = true;
-    }
     
     public static function show($console, $result, $data)
     {

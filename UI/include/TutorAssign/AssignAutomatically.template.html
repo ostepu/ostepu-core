@@ -16,17 +16,19 @@ if (isset($AssignAutomaticallyNotificationElements)) {
     </div>
 
     <div class="content-body-wrapper">
-        <div class="content-body left">
-            <label class="form-field left label bold new-line">
-                <?php echo Language::Get('main','assignInGroups', $langTemplate); ?>:
-            </label>
-<div class="left">
+        <div class="content-body">
+            <div>
+                <label class="form-field label bold">
+                    <?php echo Language::Get('main','assignInGroups', $langTemplate); ?>:
+                </label>
+            </div>
+            <div>
                 <?php $statusList = CourseStatus::getStatusDefinition();
-                foreach ($tutorAssignments as $tutorAssignment):
+                foreach ($tutorAssignments as $tutorAssignment){
                     $tutorId = isset($tutorAssignment['tutor']['id']) ? $tutorAssignment['tutor']['id'] : null;
                     
-                    if (isset($tutorAssignment['tutor']['id']) && $tutorAssignment['tutor']['userName'] != "unassigned"):
-                        echo "<div class=''>";
+                    if (isset($tutorAssignment['tutor']['id']) && $tutorAssignment['tutor']['userName'] != "unassigned"){
+                        echo "<span style='display:inline-block' class='tutor-assign-element'>";
                         print '<input type="checkbox" name="tutorIds[]" value="';
                         print $tutorId . '" id="';
                         print $tutorId . '" />';
@@ -40,11 +42,11 @@ if (isset($AssignAutomaticallyNotificationElements)) {
                         echo isset($tutorAssignment['tutor']['userName']) ? '('.$tutorAssignment['tutor']['userName'].$status.')' : '';
                         print "(" . count($tutorAssignment['submissions']) . ")";
                         print '</label>';
-                        echo "</div>";
-                    endif;
-                endforeach;
+                        echo "</span>";
+                    }
+                }
                 ?>
-</div>
+            </div>
         </div>
     </div> <!-- end: content-body-wrapper -->
 </div> <!-- end: content-element -->

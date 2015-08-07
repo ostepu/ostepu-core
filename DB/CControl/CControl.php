@@ -733,7 +733,7 @@ class CControl
                                      TRUE
                                      )
                                      );
-
+                                     
         // checks the correctness of the query
         if ( (!isset($result['errno']) || !$result['errno']) && 
              $result['content'] ){
@@ -744,6 +744,8 @@ class CControl
                                                          Component::getDBPrimaryKey( ),
                                                          Component::getDBConvert( )
                                                          );
+                                                         
+
             $Links = DBJson::getObjectsByAttributes( 
                                                     $data,
                                                     Link::getDBPrimaryKey( ),
@@ -800,6 +802,7 @@ class CControl
                 $newObject->setId($object->getId());
                 $newObject->setName($object->getName());
                 $newObject->setAddress($object->getAddress());
+                $newObject->setDef($object->getDef());
                 $newObject->setStatus($result['status']);
                 $res[] = $newObject;
 

@@ -8,7 +8,7 @@ class BEISPIEL // der Name der Klasse muss mit dem Dateinamen uebereinstimmen
     public static $page = 0; // die ID der Seite, auf welcher das Segment gezeigt werden soll
     public static $rank = 50; // bestimmt die Reihenfolge im Vergleich zu anderen Segmenten auf der selben Seite
                               // niedriger Rank = fruehe Ausfuehrung, hoher Rank = spaetere Ausfuehrung
-    public static $enabledShow = true; // ob die show() Funktion aufrufbar ist
+    public static $enabledShow = true; // ob die show() Funktionen aufrufbar sind
     
     public static $onEvents = array(
                                     '0' =>array(
