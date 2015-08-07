@@ -95,6 +95,7 @@ class Komponenten
                     
                 }
                 
+                
                 $calls=null;
                 if (isset($component['call']))
                     $calls = $component['call'];
@@ -104,6 +105,9 @@ class Komponenten
                             $callNames[$callList['name']] = $callList['name'];
                     }
                 }
+                
+                //if ($componentName == 'CInstall')
+                //    var_dump($callNames);
                                     
                 $countLinks = 1;
                 if (isset($component['init']) && $component['init']->getStatus() === 201){
@@ -112,8 +116,12 @@ class Komponenten
                 }
                 
                 $countCommands = count(isset($component['commands']) ? $component['commands'] : array());
-                if (isset($component['init']) && isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details' && !$isUpdate)
-                    $text .= "<tr><td class='e' rowspan='{$countLinks}'>{$componentName}</td><td class='v'>{$component['init']->getAddress()}</td><td class='e'><div align ='center'>".($component['init']->getStatus() === 201 ? Language::Get('main','ok') : "<font color='red'>".Language::Get('main','fail')." ({$component['init']->getStatus()})</font>")."</align></td></tr>";
+                if (isset($component['init']) && isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details' && !$isUpdate){
+                    $defs = explode(";",$component['init']->getDef());
+                    $baseComponent = (count($defs)>2 ? "<br><span class='info-color tiny'>(".$defs[0].")</span>" : '');
+                    //var_dump($component['init']->getDef());
+                    $text .= "<tr><td class='e' rowspan='{$countLinks}'>{$componentName}{$baseComponent}</td><td class='v'>{$component['init']->getAddress()}</td><td class='e'><div align ='center'>".($component['init']->getStatus() === 201 ? Language::Get('main','ok') : "<font color='red'>".Language::Get('main','fail')." ({$component['init']->getStatus()})</font>")."</align></td></tr>";
+                }
                 
                 if (isset($component['init']) && $component['init']->getStatus() === 201){
                     $installedComponents++;
@@ -127,6 +135,8 @@ class Komponenten
                     if (isset($component['links']))
                         $links = $component['links'];
                     $lastLink = null;
+                
+                    
                     foreach($links as $link){
                         $calls = null;
                         if (isset($component['call']))
@@ -233,7 +243,6 @@ class Komponenten
             $results = Installation::orderBy(json_decode(Component::encodeComponent($results),true),'name',SORT_ASC);
             $results = Component::decodeComponent(Component::encodeComponent($results));
             if (!is_array($results)) $results = array($results);
-            
             foreach($results as $res){
                 $components[$res->getName()] = array();
                 $components[$res->getName()]['init'] = $res;
@@ -263,6 +272,7 @@ class Komponenten
                 
                 $result2 = $result2->run();
                 $result3 = $result3->run();
+                
             
                 foreach($results as $res){
                     if ($res===null){
@@ -288,13 +298,6 @@ class Komponenten
                             if (isset($result2[$resultCounter]['content']) && isset($result2[$resultCounter]['status']) && $result2[$resultCounter]['status'] === 200){
                                 $commands = json_decode($result2[$resultCounter]['content'], true);
                                 if ($commands!==null){
-                                    /*$router = new \Slim\Router();
-                                    foreach($commands as $command){
-                                        $route = new \Slim\Route($command['path'],'is_array');
-                                        $route->via(strtoupper($command['method']));
-                                        $router->map($route);
-                                    }
-                                    $components[$definition->getName()]['router'] = $router;*/
                                     $components[$definition->getName()]['commands'] = $commands;
                                 }
                             }
