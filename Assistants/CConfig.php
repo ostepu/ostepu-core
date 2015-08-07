@@ -91,7 +91,7 @@ class CConfig
                 //echo $scriptName."\n".$requestUri."\n".$path."\nNOT\n";
                 } else {
                 //echo $path."\nPOSSIBLE\n";
-            $this->_app = new \Slim\Slim( array('debug' => false) );
+            $this->_app = new \Slim\Slim( array('debug' => true) );
 
             $this->_app->response->headers->set( 
                                                 'Content-Type',
@@ -166,23 +166,43 @@ class CConfig
     
     public function instruction( $pre = array(), $returnData=false)
     {
+        $tempPre = '';
+        foreach($pre as $pr){
+            if ($pr !== '')
+                $tempPre .= $pr . '_';
+        }
+        $pre = $tempPre;
+        
         $path = ($this->callPath!=null ? $this->callPath.'/' : '');
         $path = str_replace("\\",'/',$path);
-
-        if (file_exists($path.'Component.json')){
-            if (!$returnData)
-                $this->_app->response->setStatus( 200 );
-            $data = json_decode(file_get_contents($path.'Component.json'),true);
-            if ($returnData){
-                return $data;
-            } else 
-                $this->_app->response->setBody( json_encode((isset($data['links']) ? $data['links'] : array())) );
-        }else{
-            if ($returnData){
-                return array();
-            } else {
+        if ($this->callPath==null && $path!='') $this->callPath=$path;
+        $this->confFile = $path . '/' . CConfig::$CONF_FILE;
+        $conf = CConfig::loadStaticConfig($this->getPrefix(),$pre, $this->callPath);
+        $defs = explode(";",$conf->getDef());
+        $links = array();
+        
+        $found = false;
+        foreach ($defs as $key => $value){
+            if ($key%2 == 0) continue;
+            if (file_exists($value)){
+                $found=true;
+                $content = json_decode(file_get_contents($value),true);
+                
+                if (isset($content['links'])){
+                    $links = array_merge($links,$content['links']);
+                }
+            }
+        }
+        
+        if ($returnData){
+            if (!$found) return array();
+            return $links;
+        } else {
+            if (!$found){
                 $this->_app->response->setStatus( 404 );
                 $this->_app->response->setBody( '' );
+            } else {
+                $this->_app->response->setBody( json_encode($links) );
             }
         }
     }
@@ -367,7 +387,6 @@ class CConfig
                 // if a link has no prefix, we have to ask the link target
                 // for the prefix list
                 if ( $link->getPrefix( ) === null ){
-//Logger::Log($com->getName().'->'.$link->getTargetName( ), LogLevel::DEBUG, false, dirname(__FILE__) . '/../cconfig.log');
 
                     $result = Request::get( 
                                            $link->getAddress( ) . '/control',
