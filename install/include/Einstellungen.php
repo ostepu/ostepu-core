@@ -35,17 +35,17 @@ class Einstellungen
     public static $masterPassword = array();
     
     /**
-     * @var ???
+     * @var string $selected_server Der Name des ausgewählten Servers/ der Konfigurationsdatei
      */
     public static $selected_server = null;
     
     /**
-     * @var ???
+     * @var string[] $serverFiles Eine Liste der Pfade der Konfigurationsdateien
      */
     public static $serverFiles = null; 
     
     /**
-     * @var ???
+     * @var Component $config Die Konfiguration der CInstall
      */
     public static $config = null; 
     
