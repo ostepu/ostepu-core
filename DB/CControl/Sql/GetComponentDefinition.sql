@@ -3,6 +3,7 @@ select
     CO.CO_name,
     CO.CO_address,
     CO.CO_option,
+    CO.CO_def,
     null as CO_prefix,
     CL.CL_id,
     CL.CL_name,
@@ -20,6 +21,7 @@ from
         left join
     Component CO2 ON CO2.CO_id = CL.CO_id_target
 where
-    CO.CO_id = '<?php echo $componentid; ?>'
-        or CO.CO_name = '<?php echo $componentid; ?>'
+    (CO.CO_id = '<?php echo $componentid; ?>'
+        or CO.CO_name = '<?php echo $componentid; ?>')
+        and CO.CO_status = '1'
 ORDER BY CL_priority asc, CL_id asc
