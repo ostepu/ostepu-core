@@ -74,19 +74,29 @@ class Model
         // Ein Router stellt einen erlaubten Aufruf dar (mit Methode und URI), sodass geprüft werden kann,
         // welcher für die Beantwortung zuständig ist
         $router = new \Slim\Router();
-        foreach ($commands as $command){
-            $route = new \Slim\Route($command['path'],array($this->_class,(isset($command['callback']) ? $command['callback'] : $command['name'])),false);
-            $route->via(strtoupper($command['method']));
-            $route->setName($command['name']);
-            $router->map($route);
+        foreach ($commands as &$command){
+            if (!isset($command['name'])) continue;
+            if (!isset($command['method'])) $command['method'] = 'GET';
+            if (!isset($command['callback'])) $command['callback'] = $command['name'];
+            if (!isset($command['singleInput'])) $command['singleInput'] = 'TRUE';
             
-            // wenn es ein GET Befehl ist, wird automatisch HEAD unterstützt
-            if (strtoupper($command['method'])=='GET'){
-                // erzeugt einen HEAD Router
-                $route = new \Slim\Route($command['path'],array($this->_class,(isset($command['callback']) ? $command['callback'] : $command['name'])),false);
-                $route->via('HEAD');
+            // Methoden können durch Komma getrennt aufgelistet sein
+            $methods = explode(',',$command['method']);
+            
+            foreach ($methods as $method){
+                $route = new \Slim\Route($command['path'],array($this->_class,$command['callback']),false);
+                $route->via(strtoupper($method));
                 $route->setName($command['name']);
                 $router->map($route);
+                
+                // wenn es ein GET Befehl ist, wird automatisch HEAD unterstützt
+                if (strtoupper($method)=='GET'){
+                    // erzeugt einen HEAD Router
+                    $route = new \Slim\Route($command['path'],array($this->_class,$command['callback']),false);
+                    $route->via('HEAD');
+                    $route->setName($command['name']);
+                    $router->map($route);
+                }
             }
         }
 
@@ -112,6 +122,11 @@ class Model
                 }
             }
             
+            if ($selectedCommand == null){
+                http_response_code(500);
+                return;
+            }
+            
             // lies die eingehenden PHP Daten
             $rawInput = \Slim\Environment::getInstance()->offsetGet('slim.input');
             if (!$rawInput) {
@@ -132,6 +147,10 @@ class Model
                     $arr = false;
                 }
             }
+            
+            if (strtoupper($selectedCommand['singleInput']) != 'TRUE') {
+                $arr = false;
+            }
 
             // nun soll die zugehörige Funktion im Modul aufgerufen werden
             $params = $matches->getParams();
@@ -139,23 +158,40 @@ class Model
                 // initialisiert die Ausgabe positiv
                 $result=array("status"=>201,"content"=>array());
                 
-                // für jede Eingabe wird die Funktion ausgeführt
-                foreach($rawInput as $input){
-                    
+                if (strtoupper($selectedCommand['singleInput']) == 'TRUE'){
+                    // für jede Eingabe wird die Funktion ausgeführt
+                    foreach($rawInput as $input){
+                        
+                        // Aufruf der Modulfunktion
+                        $res = call_user_func_array($matches->getCallable(), array($selectedCommand['name'],"input"=>$input,$params));
+                        
+                        // wenn es ein Ausgabeobjekt gibt, wird versucht dort einen Status zu setzen
+                        if (is_callable(array($res['content'],'setStatus'))){
+                            $res['content']->setStatus($res['status']);
+                        }
+                        
+                        // setze Status und Ausgabe
+                        $result["content"][] = $res['content'];
+                        if (isset($res['status'])){
+                            $result["status"] = $res['status'];
+                        }
+                    }
+                } else {
                     // Aufruf der Modulfunktion
-                    $res = call_user_func_array($matches->getCallable(), array($selectedCommand['name'],"input"=>$input,$params));
-                    
+                    $res = call_user_func_array($matches->getCallable(), array($selectedCommand['name'],"input"=>$rawInput,$params));
+
                     // wenn es ein Ausgabeobjekt gibt, wird versucht dort einen Status zu setzen
                     if (is_callable(array($res['content'],'setStatus'))){
                         $res['content']->setStatus($res['status']);
                     }
                     
                     // setze Status und Ausgabe
-                    $result["content"][] = $res['content'];
+                    $result["content"] = $res['content'];
                     if (isset($res['status'])){
                         $result["status"] = $res['status'];
-                    }
+                    } 
                 }
+                
             } else {
                 // wenn keinen vorgegebenen Eingabetyp gibt, wird die Eingabe direkt an die Modulfunktion weitergegeben
                 $result = call_user_func_array($matches->getCallable(), array($selectedCommand['name'],"input"=>$rawInput,$params));
@@ -182,12 +218,7 @@ class Model
                 }
                 header('Content-Type: application/json');                                            
             } elseif (isset($selectedCommand['outputType']) && trim($selectedCommand['outputType'])=='binary'){
-                // wenn kein konkreter Ausgabetyp angegeben ist, soll nur die Umwandlung
-                // nach json erfolgen
-                if (isset( $result['content'])){
-                    if (!is_string($result['content']))
-                        $result['content'] = json_encode($result['content']);
-                }
+                // wenn der Ausgabetyp "binär" ist, erfolgt keine Anpassung
             } else {
                 // selbst wenn nichts zutrifft, wird json kodiert
                 if (isset( $result['content']) )
@@ -407,5 +438,9 @@ class Model
      */
     public static function isRejected($content=null){
         return self::createAnswer(401,$content);
+    }
+    
+    public static function header($name, $value){
+        header($name.': '.$value); 
     }
 }
