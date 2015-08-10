@@ -125,32 +125,28 @@ class Einstellungen
 
         if (file_exists(Einstellungen::$path.'/'.$serverName.".ini") && is_readable(Einstellungen::$path.'/'.$serverName.".ini")){
             $temp = file_get_contents(Einstellungen::$path.'/'.$serverName.".ini");
+            
+            if (isset(self::$masterPassword[$serverHash]) && trim(self::$masterPassword[$serverHash]) != ''){
+                foreach ($keys as $key){
+                    if ($key === '_BASE64'){
+                        $element2 = @base64_decode($temp,true);
+                        
+                        if ($element2===false) {
+                            // die base64 dekodierung ist fehlgeschlagen
+                            Einstellungen::$konfiguration = array();
+                            return;
+                        }
+                        
+                        $temp = $element2;
+                    } else {
+                        $temp = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $temp, MCRYPT_MODE_ECB);
+                    }
+                }
+            }
+            
             $temp = explode("\n",$temp);
             foreach ($temp as $element){
-                if (isset(self::$masterPassword[$serverHash]) && trim(self::$masterPassword[$serverHash]) != ''){                    
-                    if (trim($element)=='') continue;
-                    foreach ($keys as $key){
-                        if ($key === '_BASE64'){
-                            $add = 4-(strlen($element)%4);
-                            if ($add == 4) $add = 0;
-                            
-                            $element = str_pad($element, strlen($element)+$add, '=', STR_PAD_RIGHT);
-                            $element2 = @base64_decode($element,true);
-                            
-                            if ($element2===false) {
-                                // die base64 dekodierung ist fehlgeschlagen
-                                Einstellungen::$konfiguration = array();
-                                return;
-                            }
-                            
-                            $element = $element2;
-                        } else {
-                            $element = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $element, MCRYPT_MODE_ECB);
-                        }
-                    }
-                } else {
-                    if (trim($element)=='') continue;
-                }
+                if (trim($element) == '') continue;
                 
                 $pos = strpos($element, '=');
                 if ($pos === false || $pos === 0){
@@ -263,31 +259,26 @@ class Einstellungen
         $data = array();
         if (file_exists($path.'/'.$serverName.".ini") && is_readable($path.'/'.$serverName.".ini")){
             $temp = file_get_contents($path.'/'.$serverName.".ini");
+            if (isset(self::$masterPassword[$serverHash]) && trim(self::$masterPassword[$serverHash]) != ''){
+                foreach ($keys as $key){
+                    if ($key === '_BASE64'){
+                        $element2 = @base64_decode($temp,true);
+                        
+                        if ($element2===false) {
+                            // die base64 dekodierung ist fehlgeschlagen
+                            return null;
+                        }
+                        
+                        $temp = $element2;
+                    } else {
+                        $temp = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $temp, MCRYPT_MODE_ECB);
+                    }
+                }
+            }
+                
             $temp = explode("\n",$temp);
             foreach ($temp as $element){
-                if (isset(self::$masterPassword[$serverHash]) && trim(self::$masterPassword[$serverHash]) != ''){ 
-                    if (trim($element)=='') continue;
-                    foreach ($keys as $key){
-                        if ($key === '_BASE64'){
-                            $add = 4-(strlen($element)%4);
-                            if ($add == 4) $add = 0;
-                            
-                            $element = str_pad($element, strlen($element)+$add, '=', STR_PAD_RIGHT);
-                            $element2 = @base64_decode($element,true);
-                            
-                            if ($element2===false) {
-                                // die base64 dekodierung ist fehlgeschlagen
-                                return null;
-                            }
-                            
-                            $element = $element2;
-                        } else {
-                            $element = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $element, MCRYPT_MODE_ECB);
-                        }
-                    }
-                } else {
-                    if (trim($element)=='') continue;
-                }
+                if (trim($element)=='') continue;
                 
                 $pos = strpos($element, '=');
                 if ($pos === false || $pos === 0){
@@ -370,9 +361,10 @@ class Einstellungen
         $keys = array();
         $A = str_split($key, 32);
         
-        $keys = array_merge($keys, $A);
-        $keys = array_merge($keys, $keys);
-        $keys = array_merge($keys, $keys);
+        for ($i=0;$i<50;$i++){
+            $keys = array_merge($keys, $A);
+        }
+        
         $keys = array_merge($keys, array('_BASE64'));
         return $keys;
     }
@@ -429,26 +421,27 @@ class Einstellungen
             $keys = self::makeKeys(self::$masterPassword[$serverHash]);
         }
         
-        // ab hier werden die Konfigurationsdaten in die Zieldatei geschrieben
+        // Daten zusammentragen
+        $dat = '';
         foreach (Einstellungen::$konfiguration as $varName => $value){
             $write = str_replace(array("\\","\""),array("\\\\","\\\""),$value);
-            $line = $varName.'="'.$write.'"';
+            $dat .= $varName.'="'.$write."\"\n";
+        }
 
-            if (isset(self::$masterPassword[$serverHash]) && trim(self::$masterPassword[$serverHash]) != ''){
-                foreach ($keys as $key){
-                    if ($key === '_BASE64'){
-                        $line = base64_encode($line);
-                        $line = trim($line, "=");
-                    } else {
-                        $line = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $line, MCRYPT_MODE_ECB);
-                    }
+        if (isset(self::$masterPassword[$serverHash]) && trim(self::$masterPassword[$serverHash]) != ''){
+            foreach ($keys as $key){
+                if ($key === '_BASE64'){
+                    $dat = base64_encode($dat);
+                } else {
+                    $dat = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $dat, MCRYPT_MODE_ECB);
                 }
             }
-            
-            if (!fwrite($handle, $line."\n")){
-               fclose($handle);
-                return;
-            }
+        }
+        
+        // ab hier werden die Konfigurationsdaten in die Zieldatei geschrieben
+        if (!fwrite($handle, $dat)){
+           fclose($handle);
+            return;
         }
 
         fclose($handle);
