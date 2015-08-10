@@ -167,23 +167,19 @@ class Einstellungen
             }
         }
         
-        if (isset(self::$masterPassword[$serverHash]) && trim(self::$masterPassword[$serverHash]) != ''){
-            if (count(Einstellungen::$konfiguration) === 0){
-                Einstellungen::$accessAllowed = true;
-            } elseif (!isset(Einstellungen::$konfiguration['data[SV][hash]']) && count(Einstellungen::$konfiguration)>0){
-                Einstellungen::$accessAllowed = false;
-            } else {
-                $existingHash = Einstellungen::$konfiguration['data[SV][hash]'];
-                unset(Einstellungen::$konfiguration['data[SV][hash]']);
-                $hash = self::makeHash(Einstellungen::$konfiguration);
-                if ($existingHash == $hash){
-                    Einstellungen::$accessAllowed = true;
-                } else {
-                    Einstellungen::$accessAllowed = false;
-                }
-            }
-        } else {
+        if (count(Einstellungen::$konfiguration) === 0){
             Einstellungen::$accessAllowed = true;
+        } elseif (!isset(Einstellungen::$konfiguration['data[SV][hash]']) && count(Einstellungen::$konfiguration)>0){
+            Einstellungen::$accessAllowed = false;
+        } else {
+            $existingHash = Einstellungen::$konfiguration['data[SV][hash]'];
+            unset(Einstellungen::$konfiguration['data[SV][hash]']);
+            $hash = self::makeHash(Einstellungen::$konfiguration);
+            if ($existingHash == $hash){
+                Einstellungen::$accessAllowed = true;
+            } else {
+                Einstellungen::$accessAllowed = false;
+            }
         }
         
         ///echo "Ladezeit: ".(round((microtime(true) - $begin)*1000,2)). 'ms<br>';
@@ -297,23 +293,19 @@ class Einstellungen
             }
         }
         
-        if (isset(self::$masterPassword[$serverHash]) && trim(self::$masterPassword[$serverHash]) != ''){
-            if (count($konfiguration) === 0){
-                // leer
-            } elseif (!isset($konfiguration['data[SV][hash]']) && count($konfiguration)>0){
-                return null;
-            } else {
-                $existingHash = $konfiguration['data[SV][hash]'];
-                unset($konfiguration['data[SV][hash]']);
-                $hash = self::makeHash($konfiguration);
-                if ($existingHash == $hash){
-                    // leer
-                } else {
-                    return null;
-                }
-            }
-        } else {
+        if (count($konfiguration) === 0){
             // leer
+        } elseif (!isset($konfiguration['data[SV][hash]']) && count($konfiguration)>0){
+            return null;
+        } else {
+            $existingHash = $konfiguration['data[SV][hash]'];
+            unset($konfiguration['data[SV][hash]']);
+            $hash = self::makeHash($konfiguration);
+            if ($existingHash == $hash){
+                // leer
+            } else {
+                return null;
+            }
         }
         
         $konfiguration = self::extractData($konfiguration,'data');
