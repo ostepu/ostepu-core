@@ -9,12 +9,7 @@
  * @date 2013-2014
  */
 
-require_once ( dirname(__FILE__) . '/../../Assistants/Slim/Slim.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/CConfig.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Structures.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Request.php' );
-
-\Slim\Slim::registerAutoloader( );
+include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );
 
 /**
  * A class for creating and loading ZIP archives from the file system
@@ -49,122 +44,27 @@ class FSZip
     }
 
     /**
-     * @var Slim $_app the slim object
-     */
-    private $_app = null;
-    private $config = array();
-    
-    /**
-     * @var Component $_conf the component data object
-     */
-    private $_conf = null;
-
-    /**
      * REST actions
      *
      * This function contains the REST actions with the assignments to
      * the functions.
+     *
+     * @param Component $conf component data
      */
+    private $_component = null;
+    private $config = array();
     public function __construct( )
     {
-    
-        // runs the CConfig
-        $com = new CConfig( FSZip::getBaseDir( ), dirname(__FILE__) );
-
-        // runs the FSZip
-        if ( $com->used( ) ) return;
-            ///$_conf = $com->loadConfig( );
-            
-        if (file_exists(dirname(__FILE__).'/config.ini'))
-            $this->config = parse_ini_file( 
+        if (file_exists(dirname(__FILE__).'/config.ini')){
+            $this->config = parse_ini_file(
                                            dirname(__FILE__).'/config.ini',
                                            TRUE
-                                           ); 
-                                       
-        // initialize component
-        ///$this->_conf = $_conf;
-
-        // initialize slim
-        $this->_app = new \Slim\Slim( );
-        $this->_app->response->headers->set( 
-                                            'Content-Type',
-                                            '_application/json'
-                                            );
-
-        // POST AddPlatform
-        $this->_app->post( 
-                         '/platform',
-                         array( 
-                               $this,
-                               'addPlatform'
-                               )
-                         );
-                         
-        // DELETE DeletePlatform
-        $this->_app->delete( 
-                         '/platform',
-                         array( 
-                               $this,
-                               'deletePlatform'
-                               )
-                         );
-                         
-        // GET GetExistsPlatform
-        $this->_app->get( 
-                         '/link/exists/platform',
-                         array( 
-                               $this,
-                               'getExistsPlatform'
-                               )
-                         );
-                         
-        // POST PostZipTemporary
-        $this->_app->post( 
-                          '/' . FSZip::$_baseDir . '/:filename(/)',
-                          array( 
-                                $this,
-                                'postZip'
-                                )
-                          );
-
-        // POST PostZip
-        $this->_app->post( 
-                          '/' . FSZip::$_baseDir . '(/)',
-                          array( 
-                                $this,
-                                'postZip'
-                                )
-                          );
-
-        // GET GetZipData
-        $this->_app->get( 
-                         '/' . FSZip::$_baseDir . '/:a/:b/:c/:file(/)',
-                         array( 
-                               $this,
-                               'getZipData'
-                               )
-                         );
-
-        // GET GetZipDocument
-        $this->_app->get( 
-                         '/' . FSZip::$_baseDir . '/:a/:b/:c/:file/:filename(/)',
-                         array( 
-                               $this,
-                               'getZipDocument'
-                               )
-                         );
-
-        // DELETE DeleteZip
-        $this->_app->delete( 
-                            '/' . FSZip::$_baseDir . '/:a/:b/:c/:file(/)',
-                            array( 
-                                  $this,
-                                  'deleteZip'
-                                  )
-                            );
-
-        // run Slim
-        $this->_app->run( );
+                                           );
+        }
+        
+        $component = new Model('zip', dirname(__FILE__), $this);
+        $this->_component=$component;
+        $component->run();
     }
 
     /**
@@ -175,16 +75,12 @@ class FSZip
      * The request body should contain an array of JSON objects representing the files
      * which should be zipped and stored.
      */
-    public function postZip( $filename = null )
+    public function addZipPermanent( $callName, $input, $params = array() )
     {
-        $fileObject = File::decodeFile( $this->_app->request->getBody( ) );
-        if ( !is_array( $fileObject ) )
-            $fileObject = array( $fileObject );
-
         // generate sha1 hash for the zip, we have to create
         // (the name and the zip-hash are not the same)
         $hashArray = array( );
-        foreach ( $fileObject as $part ){
+        foreach ( $input as $part ){
             if ( $part->getBody( ) !== null ){
                 $hashArray[] = $part->getBody( );
                 
@@ -200,7 +96,7 @@ class FSZip
 
         // generate zip
         $filePath = FSZip::generateFilePath( 
-                                            FSZip::getBaseDir( ),
+                                            self::getBaseDir( ),
                                             $hash
                                             );
 
@@ -213,7 +109,7 @@ class FSZip
                             $this->config['DIR']['files'].'/'.$filePath,
                             ZIPARCHIVE::CREATE
                             ) === TRUE ){
-                foreach ( $fileObject as &$part ){
+                foreach ( $input as &$part ){
                     if ( $part->getBody( ) !== null ){
                         $zip->addFromString( 
                                             $part->getDisplayName( ),
@@ -229,48 +125,39 @@ class FSZip
                                                 file_get_contents($file)
                                                 );
                         } else {
-                            $this->_app->response->setStatus( 409 );
-                            $this->_app->response->setBody( File::encodeFile( new File() ) );
                             $zip->close( );
                             unlink( $filePath );
-                            $this->_app->stop( );
+                            return Model::isProblem(new File());
                         }
                     }
                     //unset($part);
                 }
                 $zip->close( );
             } else {
-                $this->_app->response->setStatus( 409 );
-                $this->_app->response->setBody( File::encodeFile( new File() ) );
                 $zip->close( );
                 unlink( $filePath );
-                $this->_app->stop( );
+                return Model::isProblem(new File());
             }
         }
 
-        if ($filename!=null){
+        if (isset($params['filename'])){
             readfile( $this->config['DIR']['files'].'/'.$filePath );
-            
-            $this->_app->response->headers->set( 
-                                                'Content-Type',
-                                                'application/octet-stream'
-                                                );
-            $this->_app->response->headers->set( 
-                                                'Content-Disposition',
-                                                "attachment; filename=\"$filename\""
-                                                );
+            Model::header('Content-Type','application/octet-stream');
+            Model::header('Content-Disposition',"attachment; filename=\"".$params['filename']."\"");
+            return Model::isCreated();
         } else {
             $zipFile = new File( );
             $zipFile->setHash( $hash );
             $zipFile->setAddress( $filePath );
             $zipFile->setMimeType("application/zip");
             
-            if (file_exists($this->config['DIR']['files'].'/'.$filePath))
+            if (file_exists($this->config['DIR']['files'].'/'.$filePath)){
                 $zipFile->setFileSize( filesize( $this->config['DIR']['files'].'/'.$filePath ) );
-            $this->_app->response->setBody( File::encodeFile($zipFile) );
+            }
+            return Model::isCreated($zipFile);
         }
-        $this->_app->response->setStatus( 201 );
     }
+    
     /**
      * Returns a file.
      *
@@ -280,13 +167,10 @@ class FSZip
      * @param string $hash The hash of the file which should be returned.
      * @param string $filename A freely chosen filename of the returned file.
      */
-    public function getZipDocument( 
-                                    $a, $b, $c, $file,
-                                    $filename
-                                    )
+    public function getZipDocument( $callName, $input, $params = array() )
     {
 
-        $path = array(FSZip::getBaseDir( ),$a,$b,$c,$file);
+        $path = array(self::getBaseDir( ),$a,$b,$c,$file);
 
         $filePath = implode( 
                             '/',
@@ -300,25 +184,13 @@ class FSZip
              file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
 
             // the file was found
-            $this->_app->response->headers->set( 
-                                                'Content-Type',
-                                                'application/octet-stream'
-                                                );
-            $this->_app->response->headers->set( 
-                                    'Content-Disposition',
-                                    "attachment; filename=\"$filename\""
-                                    );
-                                            
-            $this->_app->response->setStatus( 200 );
+            Model::header('Content-Type','application/octet-stream');
+            Model::header('Content-Disposition',"attachment; filename=\"".$params['filename']."\"");                                            
             readfile( $this->config['DIR']['files'].'/'.$filePath );
-            $this->_app->stop( );
+            return Model::isOk();
             
-        } else {
-            $this->_app->response->setStatus( 409 );
-            $this->_app->stop( );
         }
-
-        $this->_app->stop( );
+        return Model::isProblem();
     }
 
     /**
@@ -329,9 +201,9 @@ class FSZip
      *
      * @param string $hash The hash of the requested file.
      */
-    public function getZipData( $a, $b, $c, $file )
+    public function getZipData( $callName, $input, $params = array() )
     {
-        $path = array(FSZip::getBaseDir( ),$a,$b,$c,$file);
+        $path = array(self::getBaseDir(),$params['a'],$params['b'],$params['c'], $params['file']);
 
         $filePath = implode( 
                             '/',
@@ -350,15 +222,10 @@ class FSZip
             $file->setFileSize( filesize( $this->config['DIR']['files'].'/'.$filePath ) );
             $file->setHash( sha1_file( $this->config['DIR']['files'].'/'.$filePath ) );
             $file->setMimeType("application/zip");
-            $this->_app->response->setBody( File::encodeFile( $file ) );
-            $this->_app->response->setStatus( 200 );
-            $this->_app->stop( );
+            return Model::isOk($file);
             
-        } else {
-            $this->_app->response->setBody( File::encodeFile( new File( ) ) );
-            $this->_app->response->setStatus( 409 );
-            $this->_app->stop( );
         }
+        return Model::isProblem(new File( ));
     }
 
     /**
@@ -369,9 +236,9 @@ class FSZip
      *
      * @param string $hash The hash of the file which should be deleted.
      */
-    public function deleteZip( $a, $b, $c, $file )
+    public function deleteZip( $callName, $input, $params = array() )
     {
-        $path = array(FSZip::getBaseDir( ),$a,$b,$c,$file);
+        $path = array(self::getBaseDir(),$params['a'],$params['b'],$params['c'], $params['file']);
 
         $filePath = implode( 
                             '/',
@@ -396,22 +263,16 @@ class FSZip
 
             // the removing/unlink process failed, if the file still exists.
             if ( file_exists( $this->config['DIR']['files'] . '/' . $filePath ) ){
-                $this->_app->response->setStatus( 409 );
-                $this->_app->response->setBody( File::encodeFile( new File( ) ) );
-                $this->_app->stop( );
+            return Model::isProblem(new File( ));
             }
 
             // the file is removed
-            $this->_app->response->setBody( File::encodeFile( $file ) );
-            $this->_app->response->setStatus( 201 );
-            $this->_app->stop( );
+            return Model::isCreated($file);
             
         } else {
 
             // file does not exist
-            $this->_app->response->setStatus( 409 );
-            $this->_app->response->setBody( File::encodeFile( new File( ) ) );
-            $this->_app->stop( );
+            return Model::isProblem(new File( ));
         }
     }
     
@@ -421,7 +282,7 @@ class FSZip
      * Called when this component receives an HTTP GET request to
      * /link/exists/platform.
      */
-    public function getExistsPlatform( )
+    public function getExistsPlatform( $callName, $input, $params = array() )
     {
         Logger::Log( 
                     'starts GET GetExistsPlatform',
@@ -429,12 +290,10 @@ class FSZip
                     );
                     
         if (!file_exists(dirname(__FILE__).'/config.ini')){
-            $this->_app->response->setStatus( 409 );
-            $this->_app->stop();
+            return Model::isProblem();
         }
        
-        $this->_app->response->setStatus( 200 );
-        $this->_app->response->setBody( '' );  
+        return Model::isOk(); 
     }
     
     /**
@@ -443,19 +302,17 @@ class FSZip
      * Called when this component receives an HTTP DELETE request to
      * /platform.
      */
-    public function deletePlatform( )
+    public function deletePlatform( $callName, $input, $params = array() )
     {
         Logger::Log( 
                     'starts DELETE DeletePlatform',
                     LogLevel::DEBUG
                     );
         if (file_exists(dirname(__FILE__).'/config.ini') && !unlink(dirname(__FILE__).'/config.ini')){
-            $this->_app->response->setStatus( 409 );
-            $this->_app->stop();
+            return Model::isProblem();
         }
         
-        $this->_app->response->setStatus( 201 );
-        $this->_app->response->setBody( '' );
+        return Model::isCreated();
     }
     
     /**
@@ -464,54 +321,31 @@ class FSZip
      * Called when this component receives an HTTP POST request to
      * /platform.
      */
-    public function addPlatform( )
+    public function addPlatform( $callName, $input, $params = array() )
     {
         Logger::Log( 
                     'starts POST AddPlatform',
                     LogLevel::DEBUG
                     );
-
-        // decode the received course data, as an object
-        $insert = Platform::decodePlatform( $this->_app->request->getBody( ) );
-
-        // always been an array
-        $arr = true;
-        if ( !is_array( $insert ) ){
-            $insert = array( $insert );
-            $arr = false;
-        }
-
-        // this array contains the indices of the inserted objects
-        $res = array( );
-        foreach ( $insert as $in ){
         
-            $file = dirname(__FILE__).'/config.ini';
-            $text = "[DIR]\n".
-                    "temp = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$in->getTempDirectory()))."\"\n".
-                    "files = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$in->getFilesDirectory()))."\"\n";
-                    
-            if (!@file_put_contents($file,$text)){
-                Logger::Log( 
-                            'POST AddPlatform failed, config.ini no access',
-                            LogLevel::ERROR
-                            );
+        $file = dirname(__FILE__).'/config.ini';
+        $text = "[DIR]\n".
+                "temp = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$input->getTempDirectory()))."\"\n".
+                "files = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$input->getFilesDirectory()))."\"\n";
+                
+        if (!@file_put_contents($file,$text)){
+            Logger::Log( 
+                        'POST AddPlatform failed, config.ini no access',
+                        LogLevel::ERROR
+                        );
 
-                $this->_app->response->setStatus( 409 );
-                $this->_app->stop();
-            }   
+            return Model::isProblem();
+        }   
 
-            $platform = new Platform();
-            $platform->setStatus(201);
-            $res[] = $platform;
-            $this->_app->response->setStatus( 201 );
-        }
-
-        if ( !$arr && 
-             count( $res ) == 1 ){
-            $this->_app->response->setBody( Platform::encodePlatform( $res[0] ) );
-            
-        } else 
-            $this->_app->response->setBody( Platform::encodePlatform( $res ) );
+        $platform = new Platform();
+        $platform->setStatus(201);
+        
+        return Model::isCreated($platform);
     }
 
     /**

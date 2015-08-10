@@ -1,8 +1,58 @@
 [
-    {    "method":"post", "path":"/zip/:filename" },
-    {    "method":"post", "path":"/zip" },
-    {    "method":"delete", "path":"/zip/:hash" },
-    {    "method":"get", "path":"/zip/:hash" },
-    {    "method":"get", "path":"/zip/:hash/:filename" }
-    
+    {
+        "name": "addZipPermanent",
+        "singleInput": "false",
+        "outputType": "File",
+        "inputType": "File",
+        "method": "POST",
+        "path": "/zip"
+    },
+    {
+        "name": "addZipTemporary",
+        "singleInput": "false",
+        "callback": "addZipPermanent",
+        "outputType": "binary",
+        "inputType": "File",
+        "method": "POST",
+        "path": "/zip/:filename"
+    },
+    {
+        "name": "deleteZip",
+        "outputType": "File",
+        "method": "DELETE",
+        "path": "/zip/:a/:b/:c/:file"
+    },
+    {
+        "name": "getZipData",
+        "outputType": "File",
+        "method": "GET",
+        "path": "/zip/:a/:b/:c/:file"
+    },
+    {
+        "name": "getZipDocument",
+        "outputType": "binary",
+        "method": "GET",
+        "path": "/zip/:a/:b/:c/:file/:filename"
+    },
+    {
+        "name": "addPlatform",
+        "outputType": "Platform",
+        "inputType": "Platform",
+        "method": "POST",
+        "path": "/platform"
+    },
+    {
+        "name": "deletePlatform",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/platform"
+    },
+    {
+        "name": "getExistsPlatform",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "GET",
+        "path": "/link/exists/platform"
+    }
 ]

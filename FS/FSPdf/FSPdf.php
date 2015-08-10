@@ -9,190 +9,35 @@
  * @date 2013-2014
  */
 
-require_once ( dirname(__FILE__) . '/../../Assistants/Slim/Slim.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/CConfig.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Structures/Pdf.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Structures/File.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Structures/Platform.php' );
-
-\Slim\Slim::registerAutoloader( );
+include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );
 
 /**
  * A class for creating, storing and loading PDF files from the file system
  */
 class FSPdf
 {
-
-    /**
-     * @var string $_baseDir the name of the folder where the pdf files should be
-     * stored in the file system
-     */
-    private static $_baseDir = 'pdf';
-
-    /**
-     * the string $_baseDir getter
-     *
-     * @return the value of $_baseDir
-     */
-    public static function getBaseDir( )
-    {
-        return FSPdf::$_baseDir;
-    }
-
-    /**
-     * the $_baseDir setter
-     *
-     * @param string $value the new value for $_baseDir
-     */
-    public static function setBaseDir( $value )
-    {
-        FSPdf::$_baseDir = $value;
-    }
-
-    /**
-     * @var Slim $_app the slim object
-     */
-    private $_app;
-
-    /**
-     * @var Component $_conf the component data object
-     */
-    private $_conf;
-    private $config = array();
-
     /**
      * REST actions
      *
      * This function contains the REST actions with the assignments to
      * the functions.
+     *
+     * @param Component $conf component data
      */
+    private $_component = null;
+    private $config = array();
     public function __construct( )
     {
-
-        // runs the CConfig
-        $com = new CConfig( FSPdf::getBaseDir( ), dirname(__FILE__) );
-
-        // runs the FSPdf
-        if ( $com->used( ) ) return;
-            ///$_conf = $com->loadConfig( );
-
-        if (file_exists(dirname(__FILE__).'/config.ini'))
-            $this->config = parse_ini_file( 
+        if (file_exists(dirname(__FILE__).'/config.ini')){
+            $this->config = parse_ini_file(
                                            dirname(__FILE__).'/config.ini',
                                            TRUE
-                                           ); 
-                                       
-        // initialize component
-        ///$this->_conf = $_conf;
-
-        $this->_app = new \Slim\Slim( array( 'debug' => false ) );
-
-        $this->_app->response->headers->set( 
-                                            'Content-Type',
-                                            'application/json'
-                                            );
-                        
-        // POST AddPlatform
-        $this->_app->post( 
-                         '/platform',
-                         array( 
-                               $this,
-                               'addPlatform'
-                               )
-                         );
-                         
-        // DELETE DeletePlatform
-        $this->_app->delete( 
-                         '/platform',
-                         array( 
-                               $this,
-                               'deletePlatform'
-                               )
-                         );
-                         
-        // GET GetExistsPlatform
-        $this->_app->get( 
-                         '/link/exists/platform',
-                         array( 
-                               $this,
-                               'getExistsPlatform'
-                               )
-                         );
-                         
-        // POST PostPdfPermanent
-        $this->_app->post( 
-                          '/:folder(/)',
-                          array( 
-                                $this,
-                                'postPdf'
-                                )
-                          );
-
-        // POST PostPdfFromFile
-        $this->_app->post( 
-                          '/:folder/:type/:a/:b/:c/:file(/)',
-                          array( 
-                                $this,
-                                'PostPdfFromFile'
-                                )
-                          );
-                          
-        // POST PostPdfFromFile
-        $this->_app->post( 
-                          '/:folder/file(/)',
-                          array( 
-                                $this,
-                                'PostPdfFromFile2'
-                                )
-                          );
-                          
-        // POST PostPdfFromFile
-        $this->_app->post( 
-                          '/:folder/file/merge(/)',
-                          array( 
-                                $this,
-                                'PostPdfFromFile3'
-                                )
-                          );
-                          
-        // POST PostPdfTemporary
-        $this->_app->post( 
-                          '/:folder/:filename(/)',
-                          array( 
-                                $this,
-                                'postPdf'
-                                )
-                          );
-
-        // GET GetPdfData
-        $this->_app->get( 
-                         '/:folder/:a/:b/:c/:file(/)',
-                         array( 
-                               $this,
-                               'getPdfData'
-                               )
-                         );
-
-        // GET GetPdfDocument
-        $this->_app->get( 
-                         '/:folder/:a/:b/:c/:file/:filename(/)',
-                         array( 
-                               $this,
-                               'getPdfDocument'
-                               )
-                         );
-
-        // DELETE DeletePdf
-        $this->_app->delete( 
-                            '/:folder/:a/:b/:c/:file(/)',
-                            array( 
-                                  $this,
-                                  'deletePdf'
-                                  )
-                            );
-
-        // run Slim
-        $this->_app->run( );
+                                           );
+        }
+        
+        $component = new Model('pdf', dirname(__FILE__), $this);
+        $this->_component=$component;
+        $component->run();
     }
 
     /**
@@ -206,26 +51,20 @@ class FSPdf
      * @param string $filename A freely chosen filename of the PDF file which should be stored.
      * @see http://wiki.spipu.net/doku.php
      */
-    public function postPdf(
-                            $folder,
-                            $filename = null
-                            )
+    public function addPdfPermanent( $callName, $input, $params = array() )
     {
-        $body = $this->_app->request->getBody( );
-        $data = Pdf::decodePdf($body);
-        $name = sha1( $body );
-        unset($body);
+        $name = sha1( $input->getText() );
         
-                // generate pdf
+        // generate pdf
         $filePath = FSPdf::generateFilePath( 
-                                            $folder,
+                                            $params['folder'],
                                             $name
                                             );
                                            
         if (!file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
             FSPdf::generatepath( $this->config['DIR']['files'].'/'.dirname( $filePath ) );
             
-            $result = FSPdf::createPdf($data);
+            $result = FSPdf::createPdf($input);
 
             // writes the file to filesystem
             $file = fopen(
@@ -248,27 +87,19 @@ class FSPdf
                         'POST postPdf failed',
                         LogLevel::ERROR
                         );
-                $this->_app->response->setStatus( 409 );
-                $this->_app->response->setBody( File::encodeFile( $fileObject ) );
-                $this->_app->stop();
+                return Model::isProblem($fileObject);
             }
         }        
                                
-        $this->_app->response->setStatus( 201 );
-        if ($filename!=null){
+        if (isset($params['filename'])){
             if (isset($result)){
                 $this->_app->response->setBody($result);
             } else 
                 readfile($this->config['DIR']['files'].'/'.$filePath);
             
-            $this->_app->response->headers->set( 
-                                                'Content-Type',
-                                                'application/octet-stream'
-                                                );
-            $this->_app->response->headers->set( 
-                                                'Content-Disposition',
-                                                "attachment; filename=\"$filename\""
-                                                );
+            Model::header('Content-Type','application/octet-stream');
+            Model::header('Content-Disposition',"attachment; filename=\"".$params['filename']."\"");
+            return Model::isCreated();
         } else {
             $pdfFile = new File( );
             $pdfFile->setStatus(201);
@@ -280,21 +111,20 @@ class FSPdf
                 $hash = sha1(file_get_contents($this->config['DIR']['files'].'/'.$filePath));   
                 $pdfFile->setHash( $hash );
             }
-            $this->_app->response->setBody( File::encodeFile($pdfFile) );
+            return Model::isCreated($pdfFile);
         }
     }
     
-    public function PostPdfFromFile($folder,$type, $a, $b, $c, $file)
+    public function addPdfFromFile( $callName, $input, $params = array() )
     {
-                
-        $name = sha1($type.'/'.$a.'/'.$b.'/'.$c.'/'.$file);
+        $name = sha1($params['type'].'/'.$params['a'].'/'.$params['b'].'/'.$params['c'].'/'.$params['file']);
         $targetPath = FSPdf::generateFilePath( 
-                                            $folder,
+                                            $params['folder'],
                                             $name
                                             );
                                             
         if (!file_exists( $this->config['DIR']['files'].'/'.$targetPath ) ){
-            $sourcePath = implode( '/',array_slice(array($type,$a,$b,$c,$file),0));
+            $sourcePath = implode( '/',array_slice(array($params['type'],$params['a'],$params['b'],$params['c'],$params['file']),0));
             
             FSPdf::generatepath( $this->config['DIR']['files'].'/'.dirname( $targetPath ) );
             $body = file_get_contents($this->config['DIR']['files'].'/'.$sourcePath);
@@ -324,40 +154,32 @@ class FSPdf
                         'POST postPdf failed',
                         LogLevel::ERROR
                         );
-                $this->_app->response->setStatus( 409 );
-                $this->_app->response->setBody( File::encodeFile( $fileObject ) );
-                $this->_app->stop();
+                return Model::isProblem($fileObject);
             }
         }
         
-        $this->_app->response->setStatus( 201 );
-        {
-            $pdfFile = new File( );
-            $pdfFile->setStatus(201);
-            $pdfFile->setAddress( $targetPath );
-            $pdfFile->setMimeType("application/pdf");
-            
-            if (file_exists($this->config['DIR']['files'].'/'.$targetPath)){
-                $pdfFile->setFileSize( filesize( $this->config['DIR']['files'].'/'.$targetPath ) );
-                $hash = sha1(file_get_contents($this->config['DIR']['files'].'/'.$targetPath));   
-                $pdfFile->setHash( $hash );
-            }
-            $this->_app->response->setBody( File::encodeFile($pdfFile) );
+        $pdfFile = new File( );
+        $pdfFile->setStatus(201);
+        $pdfFile->setAddress( $targetPath );
+        $pdfFile->setMimeType("application/pdf");
+        
+        if (file_exists($this->config['DIR']['files'].'/'.$targetPath)){
+            $pdfFile->setFileSize( filesize( $this->config['DIR']['files'].'/'.$targetPath ) );
+            $hash = sha1(file_get_contents($this->config['DIR']['files'].'/'.$targetPath));   
+            $pdfFile->setHash( $hash );
         }
+        
+        return Model::isCreated($pdfFile);
     }
     
-    public function PostPdfFromFile2($folder)
+    public function addPdfFromFile2( $callName, $input, $params = array() )
     {
         // convert all file objects to pdf's
     }
     
-    public function PostPdfFromFile3($folder)
+    public function addPdfFromFile3( $callName, $files, $params = array() )
     {
         // merge all file objects to one pdf
-        $body = $this->_app->request->getBody( );
-        $files = File::decodeFile($body);
-      
-        if (!is_array($files)) $files = array($files);
  
         $hashArray = array( );
         foreach ( $files as $part ){
@@ -374,7 +196,7 @@ class FSPdf
                               ) );
 
         $targetPath = FSPdf::generateFilePath( 
-                                            $folder,
+                                            $params['folder'],
                                             $name
                                             );
 
@@ -427,26 +249,21 @@ class FSPdf
                         'POST postPdf failed',
                         LogLevel::ERROR
                         );
-                $this->_app->response->setStatus( 409 );
-                $this->_app->response->setBody( File::encodeFile( $fileObject ) );
-                $this->_app->stop();
+                return Model::isProblem($fileObject);
             }
         }
         
-        $this->_app->response->setStatus( 201 );
-        {
-            $pdfFile = new File( );
-            $pdfFile->setStatus(201);
-            $pdfFile->setAddress( $targetPath );
-            $pdfFile->setMimeType("application/pdf");
-            
-            if (file_exists($this->config['DIR']['files'].'/'.$targetPath)){
-                $pdfFile->setFileSize( filesize( $this->config['DIR']['files'].'/'.$targetPath ) );
-                $hash = sha1(file_get_contents($this->config['DIR']['files'].'/'.$targetPath));   
-                $pdfFile->setHash( $hash );
-            }
-            $this->_app->response->setBody( File::encodeFile($pdfFile) );
+        $pdfFile = new File( );
+        $pdfFile->setStatus(201);
+        $pdfFile->setAddress( $targetPath );
+        $pdfFile->setMimeType("application/pdf");
+        
+        if (file_exists($this->config['DIR']['files'].'/'.$targetPath)){
+            $pdfFile->setFileSize( filesize( $this->config['DIR']['files'].'/'.$targetPath ) );
+            $hash = sha1(file_get_contents($this->config['DIR']['files'].'/'.$targetPath));   
+            $pdfFile->setHash( $hash );
         }
+        return Model::isCreated($pdfFile);
     }
     /**
      * Returns a file.
@@ -457,13 +274,9 @@ class FSPdf
      * @param string $hash The hash of the file which should be returned.
      * @param string $filename A freely chosen filename of the returned file.
      */
-    public function getPdfDocument( $folder,
-                                    $a, $b, $c, $file,
-                                    $filename
-                                    )
+    public function getPdfDocument( $callName, $input, $params = array() )
     {
-
-        $path = array($folder,$a,$b,$c,$file);
+        $path = array($params['folder'],$params['a'],$params['b'],$params['c'], $params['file']);
 
         $filePath = implode( 
                             '/',
@@ -477,25 +290,13 @@ class FSPdf
              file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
 
             // the file was found
-            $this->_app->response->headers->set( 
-                                                'Content-Type',
-                                                'application/octet-stream'
-                                                );
-            $this->_app->response->headers->set( 
-                                    'Content-Disposition',
-                                    "attachment; filename=\"$filename\""
-                                    );
-                                            
-            $this->_app->response->setStatus( 200 );
+            Model::header('Content-Type','application/octet-stream');
+            Model::header('Content-Disposition',"attachment; filename=\"".$params['filename']."\"");   
             readfile( $this->config['DIR']['files'].'/'.$filePath );
-            $this->_app->stop( );
+            return Model::isOk();
             
-        } else {
-            $this->_app->response->setStatus( 409 );
-            $this->_app->stop( );
         }
-
-        $this->_app->stop( );
+        return Model::isProblem();
     }
 
     /**
@@ -506,9 +307,9 @@ class FSPdf
      *
      * @param string $hash The hash of the requested file.
      */
-    public function getPdfData( $folder,$a, $b, $c, $file )
+    public function getPdfData( $callName, $input, $params = array() )
     {
-        $path = array($folder,$a,$b,$c,$file);
+        $path = array($params['folder'],$params['a'],$params['b'],$params['c'], $params['file']);
 
         $filePath = implode( 
                             '/',
@@ -527,15 +328,10 @@ class FSPdf
             $file->setFileSize( filesize( $this->config['DIR']['files'].'/'.$filePath ) );
             $file->setHash( sha1_file( $this->config['DIR']['files'].'/'.$filePath ) );
             $file->setMimeType("application/pdf");
-            $this->_app->response->setBody( File::encodeFile( $file ) );
-            $this->_app->response->setStatus( 200 );
-            $this->_app->stop( );
+            return Model::isOk($file);
             
-        } else {
-            $this->_app->response->setBody( File::encodeFile( new File( ) ) );
-            $this->_app->response->setStatus( 409 );
-            $this->_app->stop( );
         }
+        return Model::isProblem(new File( ));
     }
 
     /**
@@ -546,9 +342,9 @@ class FSPdf
      *
      * @param string $hash The hash of the file which should be deleted.
      */
-    public function deletePdf( $folder,$a, $b, $c, $file )
+    public function deletePdf( $callName, $input, $params = array() )
     {
-        $path = array($folder,$a,$b,$c,$file);
+        $path = array($params['folder'],$params['a'],$params['b'],$params['c'], $params['file']);
 
         $filePath = implode( 
                             '/',
@@ -573,22 +369,16 @@ class FSPdf
 
             // the removing/unlink process failed, if the file still exists.
             if ( file_exists( $this->config['DIR']['files'] . '/' . $filePath ) ){
-                $this->_app->response->setStatus( 409 );
-                $this->_app->response->setBody( File::encodeFile( new File( ) ) );
-                $this->_app->stop( );
+            return Model::isProblem(new File( ));
             }
 
             // the file is removed
-            $this->_app->response->setBody( File::encodeFile( $file ) );
-            $this->_app->response->setStatus( 201 );
-            $this->_app->stop( );
+            return Model::isCreated($file);
             
         } else {
 
             // file does not exist
-            $this->_app->response->setStatus( 409 );
-            $this->_app->response->setBody( File::encodeFile( new File( ) ) );
-            $this->_app->stop( );
+            return Model::isProblem(new File( ));
         }
     }
     
@@ -598,7 +388,7 @@ class FSPdf
      * Called when this component receives an HTTP GET request to
      * /link/exists/platform.
      */
-    public function getExistsPlatform( )
+    public function getExistsPlatform( $callName, $input, $params = array() )
     {
         Logger::Log( 
                     'starts GET GetExistsPlatform',
@@ -606,12 +396,10 @@ class FSPdf
                     );
                     
         if (!file_exists(dirname(__FILE__).'/config.ini')){
-            $this->_app->response->setStatus( 409 );
-            $this->_app->stop();
+            return Model::isProblem();
         }
        
-        $this->_app->response->setStatus( 200 );
-        $this->_app->response->setBody( '' );  
+        return Model::isOk(); 
     }
     
     /**
@@ -620,19 +408,17 @@ class FSPdf
      * Called when this component receives an HTTP DELETE request to
      * /platform.
      */
-    public function deletePlatform( )
+    public function deletePlatform( $callName, $input, $params = array() )
     {
         Logger::Log( 
                     'starts DELETE DeletePlatform',
                     LogLevel::DEBUG
                     );
         if (file_exists(dirname(__FILE__).'/config.ini') && !unlink(dirname(__FILE__).'/config.ini')){
-            $this->_app->response->setStatus( 409 );
-            $this->_app->stop();
+            return Model::isProblem();
         }
         
-        $this->_app->response->setStatus( 201 );
-        $this->_app->response->setBody( '' );
+        return Model::isCreated();
     }
     
     /**
@@ -641,54 +427,31 @@ class FSPdf
      * Called when this component receives an HTTP POST request to
      * /platform.
      */
-    public function addPlatform( )
+    public function addPlatform( $callName, $input, $params = array() )
     {
         Logger::Log( 
                     'starts POST AddPlatform',
                     LogLevel::DEBUG
                     );
-
-        // decode the received course data, as an object
-        $insert = Platform::decodePlatform( $this->_app->request->getBody( ) );
-
-        // always been an array
-        $arr = true;
-        if ( !is_array( $insert ) ){
-            $insert = array( $insert );
-            $arr = false;
-        }
-
-        // this array contains the indices of the inserted objects
-        $res = array( );
-        foreach ( $insert as $in ){
         
-            $file = dirname(__FILE__).'/config.ini';
-            $text = "[DIR]\n".
-                    "temp = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$in->getTempDirectory()))."\"\n".
-                    "files = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$in->getFilesDirectory()))."\"\n";
-                    
-            if (!@file_put_contents($file,$text)){
-                Logger::Log( 
-                            'POST AddPlatform failed, config.ini no access',
-                            LogLevel::ERROR
-                            );
+        $file = dirname(__FILE__).'/config.ini';
+        $text = "[DIR]\n".
+                "temp = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$input->getTempDirectory()))."\"\n".
+                "files = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$input->getFilesDirectory()))."\"\n";
+                
+        if (!@file_put_contents($file,$text)){
+            Logger::Log( 
+                        'POST AddPlatform failed, config.ini no access',
+                        LogLevel::ERROR
+                        );
 
-                $this->_app->response->setStatus( 409 );
-                $this->_app->stop();
-            }   
+            return Model::isProblem();
+        }   
 
-            $platform = new Platform();
-            $platform->setStatus(201);
-            $res[] = $platform;
-            $this->_app->response->setStatus( 201 );
-        }
-
-        if ( !$arr && 
-             count( $res ) == 1 ){
-            $this->_app->response->setBody( Platform::encodePlatform( $res[0] ) );
-            
-        } else 
-            $this->_app->response->setBody( Platform::encodePlatform( $res ) );
+        $platform = new Platform();
+        $platform->setStatus(201);
+        
+        return Model::isCreated($platform);
     }
     
     /**

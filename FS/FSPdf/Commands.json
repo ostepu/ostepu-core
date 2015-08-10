@@ -1,8 +1,78 @@
 [
-    {    "method":"post", "path":"/pdf" },
-    {    "method":"post", "path":"/pdf/:filename" },
-    {    "method":"delete", "path":"/pdf/:hash" },
-    {    "method":"get", "path":"/pdf/:hash" },
-    {    "method":"get", "path":"/pdf/:hash/:filename" }
-    
+    {
+        "name": "addPdfPermanent",
+        "outputType": "File",
+        "inputType": "Pdf",
+        "method": "POST",
+        "path": "/:folder"
+    },
+    {
+        "name": "addPdfFromFile",
+        "outputType": "File",
+        "inputType": "",
+        "method": "POST",
+        "path": "/:folder/:type/:a/:b/:c/:file"
+    },
+    {
+        "name": "addPdfFromFile2",
+        "outputType": "File",
+        "inputType": "File",
+        "method": "POST",
+        "path": "/:folder/file"
+    },
+    {
+        "name": "addPdfFromFile3",
+        "singleInput": "FALSE",
+        "outputType": "File",
+        "inputType": "File",
+        "method": "POST",
+        "path": "/:folder/file/merge"
+    },
+    {
+        "name": "addPdfTemporary",
+        "callback": "addPdfPermanent",
+        "outputType": "binary",
+        "inputType": "Pdf",
+        "method": "POST",
+        "path": "/:folder/:filename"
+    },
+    {
+        "name": "deletePdf",
+        "outputType": "File",
+        "method": "DELETE",
+        "path": "/:folder/:a/:b/:c/:file"
+    },
+    {
+        "name": "getPdfdata",
+        "outputType": "File",
+        "method": "GET",
+        "path": "/:folder/:a/:b/:c/:file"
+    },
+    {
+        "name": "getPdfDocument",
+        "outputType": "binary",
+        "method": "GET",
+        "path": "/:folder/:a/:b/:c/:file/:filename"
+    },
+    {
+        "name": "addPlatform",
+        "outputType": "Platform",
+        "inputType": "Platform",
+        "method": "POST",
+        "path": "/platform"
+    },
+    {
+        "name": "deletePlatform",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/platform"
+    },
+    {
+        "name": "getExistsPlatform",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "GET",
+        "path": "/link/exists/platform"
+    }
 ]
