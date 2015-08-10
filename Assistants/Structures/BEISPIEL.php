@@ -39,7 +39,7 @@ class BEISPIEL extends Object implements JsonSerializable // muss eingebunden we
 
     // wandelt die gesetzten Attribute des Objekts in eine Zusammenstellung
     // für einen UPDATE oder INSERT Befehl einer MySql Anweisung um
-    public function getInsertData( )
+    public function getInsertData( $doubleEscaped=false )
     {
         $values = '';
 
@@ -56,7 +56,7 @@ class BEISPIEL extends Object implements JsonSerializable // muss eingebunden we
                              1
                              );
         }
-        return $values;
+        return ($doubleEscaped ? DBJson::mysql_real_escape_string($values) : $values);
     }
 
     // gibt den primären Datenbankschlüssel (eventuell auch ein array) der Struktur zurück
@@ -68,6 +68,9 @@ class BEISPIEL extends Object implements JsonSerializable // muss eingebunden we
     // ruft passende set() Funktionen des Objekts auf, um dessen Attribute zu belegen
     public function __construct( $data = array( ) )
     {
+        if ( $data === null )
+            $data = array( );
+        
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
                 $func = 'set' . strtoupper($key[0]).substr($key,1);

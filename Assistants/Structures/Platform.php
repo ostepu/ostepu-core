@@ -303,7 +303,7 @@ class Platform extends Object implements JsonSerializable
      * @return a comma separated string e.g. "a=1,b=2"
      * @todo currently not in use
      */
-    public function getInsertData( )
+    public function getInsertData( $doubleEscaped=false )
     {
         return '';
     }
@@ -326,6 +326,9 @@ class Platform extends Object implements JsonSerializable
      */
     public function __construct( $data = array( ) )
     {
+        if ( $data === null )
+            $data = array( );
+        
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
                 $func = 'set' . strtoupper($key[0]).substr($key,1);

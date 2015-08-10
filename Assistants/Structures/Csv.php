@@ -50,6 +50,9 @@ class Csv extends Object implements JsonSerializable
      */
     public function __construct( $data = array( ) )
     {
+        if ( $data === null )
+            $data = array( );
+        
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
                 $func = 'set' . strtoupper($key[0]).substr($key,1);
