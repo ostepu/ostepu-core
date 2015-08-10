@@ -645,7 +645,7 @@ class User extends Object implements JsonSerializable
      *
      * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getCourseStatusInsertData( )
+    public function getCourseStatusInsertData( $doubleEscaped=false )
     {
         $values = '';
 
