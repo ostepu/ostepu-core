@@ -159,37 +159,52 @@ class Model
                 $result=array("status"=>201,"content"=>array());
                 
                 if (strtoupper($selectedCommand['singleInput']) == 'TRUE'){
-                    // für jede Eingabe wird die Funktion ausgeführt
-                    foreach($rawInput as $input){
-                        
+                    try {
+                        // für jede Eingabe wird die Funktion ausgeführt
+                        foreach($rawInput as $input){
+                            
+                            // Aufruf der Modulfunktion
+                            $res = call_user_func_array($matches->getCallable(), array($selectedCommand['name'],"input"=>$input,$params));
+                            
+                            // wenn es ein Ausgabeobjekt gibt, wird versucht dort einen Status zu setzen
+                            if (is_callable(array($res['content'],'setStatus'))){
+                                $res['content']->setStatus($res['status']);
+                            }
+                            
+                            // setze Status und Ausgabe
+                            $result["content"][] = $res['content'];
+                            if (isset($res['status'])){
+                                $result["status"] = $res['status'];
+                            }
+                        }
+                    } catch(Exception $e) {
+                        header_remove();
+                        $result["content"] = '';
+                        $result["status"] = 500;
+                        error_log($e->getMessage());
+                    }
+                    
+                } else {
+                    try {
                         // Aufruf der Modulfunktion
-                        $res = call_user_func_array($matches->getCallable(), array($selectedCommand['name'],"input"=>$input,$params));
-                        
+                        $res = call_user_func_array($matches->getCallable(), array($selectedCommand['name'],"input"=>$rawInput,$params));
+
                         // wenn es ein Ausgabeobjekt gibt, wird versucht dort einen Status zu setzen
                         if (is_callable(array($res['content'],'setStatus'))){
                             $res['content']->setStatus($res['status']);
                         }
                         
                         // setze Status und Ausgabe
-                        $result["content"][] = $res['content'];
+                        $result["content"] = $res['content'];
                         if (isset($res['status'])){
                             $result["status"] = $res['status'];
                         }
+                    } catch(Exception $e) {
+                        header_remove();
+                        $result["content"] = '';
+                        $result["status"] = 500;
+                        error_log($e->getMessage());
                     }
-                } else {
-                    // Aufruf der Modulfunktion
-                    $res = call_user_func_array($matches->getCallable(), array($selectedCommand['name'],"input"=>$rawInput,$params));
-
-                    // wenn es ein Ausgabeobjekt gibt, wird versucht dort einen Status zu setzen
-                    if (is_callable(array($res['content'],'setStatus'))){
-                        $res['content']->setStatus($res['status']);
-                    }
-                    
-                    // setze Status und Ausgabe
-                    $result["content"] = $res['content'];
-                    if (isset($res['status'])){
-                        $result["status"] = $res['status'];
-                    } 
                 }
                 
             } else {

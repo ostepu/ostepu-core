@@ -188,23 +188,32 @@ class Request
                             http_response_code(0);
                            
                             $name = $com->getClassName();
-                            ob_start();
-                            
-                            $obj = new $name();  
-                            if (isset($obj))
-                                unset($obj);                        
-                            $result['content'] = ob_get_contents();
-                            CacheManager::setETag($result['content']);
-                            $result['headers'] = array_merge(array(),self::http_parse_headers_short(headers_list()));
-                            header_remove();
-                            if (!isset($result['headers']['Cachesid'])){
-                                $newSid = CacheManager::getNextSid();
-                                $result['headers']['Cachesid'] = $newSid;
-                            }
-                            ob_end_clean();
-                            //header_remove();            
+                            try {
+                                ob_start();
+                                
+                                $obj = new $name();  
+                                if (isset($obj))
+                                    unset($obj);                        
+                                $result['content'] = ob_get_contents();
+                                CacheManager::setETag($result['content']);
+                                $result['headers'] = array_merge(array(),self::http_parse_headers_short(headers_list()));
+                                header_remove();
+                                if (!isset($result['headers']['Cachesid'])){
+                                    $newSid = CacheManager::getNextSid();
+                                    $result['headers']['Cachesid'] = $newSid;
+                                }
+                                ob_end_clean();
+                                //header_remove();            
 
-                            $result['status'] = http_response_code();
+                                $result['status'] = http_response_code();
+                            } catch(Exception $e) {
+                                error_log($e->getMessage());
+                                header_remove();
+                                $result['status'] = '500';
+                                $result['content'] = '';
+                                $result['headers'] = array();
+                            }
+                            
                             $_SERVER['REQUEST_URI'] = $oldRequestURI;
                             $_SERVER['SCRIPT_NAME'] = $oldScriptName;
                             //$_SERVER['REDIRECT_URL'] = $oldRedirectURL;
