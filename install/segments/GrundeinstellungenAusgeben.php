@@ -61,7 +61,7 @@ class GrundeinstellungenAusgeben
                     if (!$console){
                         $text .= "<tr><td class='e' rowspan='1'>{$component}</td><td class='v'></td><td class='e'><div align ='center'>".((isset($dat['status']) && $dat['status']===201) ? Language::Get('main','ok') : "<font color='red'>".Language::Get('main','fail')." ({$dat['status']})</font>")."</align></td></tr>";
                     } else 
-                        $text .= "{$component}: ".((isset($dat['status']) && $dat['status']===201) ? Language::Get('main','ok') : Language::Get('main','fail')." ({$dat['status']})");
+                        $text .= "{$component}: ".((isset($dat['status']) && $dat['status']===201) ? Language::Get('main','ok')."\n" : Language::Get('main','fail')." ({$dat['status']})\n");
                 }
             }
             

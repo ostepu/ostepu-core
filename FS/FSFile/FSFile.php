@@ -10,14 +10,8 @@
  * @date 2013-2014
  */ 
 
-require_once ( dirname(__FILE__) . '/../../Assistants/Slim/Slim.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/CConfig.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Request.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Structures.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/MimeReader.php' );
-
-\Slim\Slim::registerAutoloader( );
 
 /**
  * The class for storing and hashing files.
@@ -51,115 +45,27 @@ class FSFile
     }
 
     /**
-     * @var Slim $_app the slim object
-     */
-    private $_app;
-
-    /**
-     * @var Component $_conf the component data object
-     */
-    private $_conf;
-    private $config = array();
-
-    /**
      * REST actions
      *
      * This function contains the REST actions with the assignments to
      * the functions.
+     *
+     * @param Component $conf component data
      */
+    private $_component = null;
+    private $config = array();
     public function __construct( )
     {
-        // runs the CConfig
-        $com = new CConfig( FSFile::getBaseDir( ), dirname(__FILE__) );
-
-        // runs the FSFile
-        if ( $com->used( ) ) return;
-            ///$_conf = $com->loadConfig( );
-            
-        // initialize component
-        ///$this->_conf = $_conf;
-        
-        if (file_exists(dirname(__FILE__).'/config.ini'))
-            $this->config = parse_ini_file( 
+        if (file_exists(dirname(__FILE__).'/config.ini')){
+            $this->config = parse_ini_file(
                                            dirname(__FILE__).'/config.ini',
                                            TRUE
-                                           ); 
-                                       
-        $this->_app = new \Slim\Slim( array( 'debug' => true ) );
-
-        $this->_app->response->headers->set( 
-                                            'Content-Type',
-                                            'application/json'
-                                            );
-
-        // POST AddPlatform
-        $this->_app->post( 
-                         '/platform',
-                         array( 
-                               $this,
-                               'addPlatform'
-                               )
-                         );
-                         
-        // DELETE DeletePlatform
-        $this->_app->delete( 
-                         '/platform',
-                         array( 
-                               $this,
-                               'deletePlatform'
-                               )
-                         );
-                         
-        // GET GetExistsPlatform
-        $this->_app->get( 
-                         '/link/exists/platform',
-                         array( 
-                               $this,
-                               'getExistsPlatform'
-                               )
-                         );
-                         
-        // POST File
-        $this->_app->post( 
-                          '/'.FSFile::getBaseDir( ).'(/)',
-                          array( 
-                                $this,
-                                'postFile'
-                                )
-                          );
-
-        // GET Filedata
-        $this->_app->map( 
-                         '/'.FSFile::getBaseDir( ).'/:a/:b/:c/:file(/)',
-                         array( 
-                               $this,
-                               'getFileData'
-                               )
-                         )->via( 
-                                'GET',
-                                'INFO'
-                                );;
-
-        // GET GetFileDocument
-        $this->_app->get( 
-                         '/'.FSFile::getBaseDir( ).'/:a/:b/:c/:file/:filename(/)',
-                         array( 
-                               $this,
-                               'getFileDocument'
-                               )
-                         );
-
-        // DELETE File
-        $this->_app->delete( 
-                            '/'.FSFile::getBaseDir( ).'/:a/:b/:c/:file(/)',
-                            array( 
-                                  $this,
-                                  'deleteFile'
-                                  )
-                            );
-
-        // run Slim
-        $this->_app->run( );
+                                           );
+        }
+        
+        $component = new Model(self::getBaseDir(), dirname(__FILE__), $this);
+        $this->_component=$component;
+        $component->run();
     }
 
     /**
@@ -170,76 +76,54 @@ class FSFile
      * The request body should contain a JSON object representing the file's
      * attributes.
      */
-    public function postFile( )
+    public function addFile( $callName, $input, $params = array() )
     {
-        $body = $this->_app->request->getBody( );
-        $fileObjects = File::decodeFile( $body );
+        $fileObject = $input;
+        $fileObject->setHash( sha1( base64_decode( $fileObject->getBody( ) ) ) );
+        $filePath = FSFile::generateFilePath( 
+                                             FSFile::getBaseDir( ),
+                                             $fileObject->getHash( )
+                                             );
+        $fileObject->setAddress( FSFile::getBaseDir( ) . '/' . $fileObject->getHash( ) );
 
-        // always been an array
-        $arr = true;
-        if ( !is_array( $fileObjects ) ){
-            $fileObjects = array( $fileObjects );
-            $arr = false;
-        }
+        if ( !file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
+            FSFile::generatepath( $this->config['DIR']['files'].'/'.dirname( $filePath ) );
 
-        $res = array( );
+            // writes the file to filesystem
+            $file = fopen(
+                          $this->config['DIR']['files'].'/'.$filePath,
+                          'w'
+                          );
+            if ($file){
+                fwrite( 
+                       $file,
+                       base64_decode( $fileObject->getBody( ) )
+                       );
+                fclose( $file );
+                $fileObject->setStatus(201);
+             
+            }else{
+                $fileObject->addMessage("Datei konnte nicht im Dateisystem angelegt werden.");
+                $fileObject->setStatus(409);
+                Logger::Log( 
+                        'POST postFile failed',
+                        LogLevel::ERROR
+                        );
 
-        foreach ( $fileObjects as $fileObject ){
-
-            $fileObject->setHash( sha1( base64_decode( $fileObject->getBody( ) ) ) );
-            $filePath = FSFile::generateFilePath( 
-                                                 FSFile::getBaseDir( ),
-                                                 $fileObject->getHash( )
-                                                 );
-            $fileObject->setAddress( FSFile::getBaseDir( ) . '/' . $fileObject->getHash( ) );
-
-            if ( !file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
-                FSFile::generatepath( $this->config['DIR']['files'].'/'.dirname( $filePath ) );
-
-                // writes the file to filesystem
-                $file = fopen(
-                              $this->config['DIR']['files'].'/'.$filePath,
-                              'w'
-                              );
-                if ($file){
-                    fwrite( 
-                           $file,
-                           base64_decode( $fileObject->getBody( ) )
-                           );
-                    fclose( $file );
-                    $fileObject->setStatus(201);
-                 
-                }else{
-                    $fileObject->addMessage("Datei konnte nicht im Dateisystem angelegt werden.");
-                    $fileObject->setStatus(409);
-                    Logger::Log( 
-                            'POST postFile failed',
-                            LogLevel::ERROR
-                            );
-
-                    $this->_app->response->setBody( File::encodeFile( $fileObject ) );
-                }
+                return Model::isCreated($fileObject);
             }
-
-            // resets the file content
-            $fileObject->setBody( null );
-
-            // generate new file address, file size and file hash
-            $fileObject->setAddress( $filePath );
-            $fileObject->setFileSize( filesize( $this->config['DIR']['files'].'/'.$filePath ) );
-            $fileObject->setHash( sha1_file( $this->config['DIR']['files'].'/'.$filePath ) );
-            $fileObject->setMimeType(MimeReader::get_mime($this->config['DIR']['files'].'/'.$filePath));
-
-            $res[] = $fileObject;
-
         }
 
-        if ( !$arr && 
-             count( $res ) == 1 )
-            $res = $res[0];
+        // resets the file content
+        $fileObject->setBody( null );
 
-        $this->_app->response->setStatus( 201 );
-        $this->_app->response->setBody( File::encodeFile( $res ) );
+        // generate new file address, file size and file hash
+        $fileObject->setAddress( $filePath );
+        $fileObject->setFileSize( filesize( $this->config['DIR']['files'].'/'.$filePath ) );
+        $fileObject->setHash( sha1_file( $this->config['DIR']['files'].'/'.$filePath ) );
+        $fileObject->setMimeType(MimeReader::get_mime($this->config['DIR']['files'].'/'.$filePath));
+            
+        return Model::isCreated($fileObject);
     }
 
     /**
@@ -251,13 +135,9 @@ class FSFile
      * @param string $hash The hash of the file which should be returned.
      * @param string $filename A freely chosen filename of the returned file.
      */
-    public function getFileDocument( 
-                                    $a, $b, $c, $file,
-                                    $filename
-                                    )
+    public function getFileDocument( $callName, $input, $params = array() )
     {
-
-        $path = array(FSFile::getBaseDir( ),$a,$b,$c,$file);
+        $path = array(self::getBaseDir(),$params['a'],$params['b'],$params['c'], $params['file']);
 
         $filePath = implode( 
                             '/',
@@ -271,25 +151,13 @@ class FSFile
              file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
 
             // the file was found
-            $this->_app->response->headers->set( 
-                                                'Content-Type',
-                                                'application/octet-stream'
-                                                );
-            $this->_app->response->headers->set( 
-                                    'Content-Disposition',
-                                    "attachment; filename=\"$filename\""
-                                    );
-                                            
-            $this->_app->response->setStatus( 200 );
+            Model::header('Content-Type','application/octet-stream');
+            Model::header('Content-Disposition',"attachment; filename=\"".$params['filename']."\"");                                            
             readfile( $this->config['DIR']['files'].'/'.$filePath );
-            $this->_app->stop( );
+            return Model::isOk();
             
-        } else {
-            $this->_app->response->setStatus( 409 );
-            $this->_app->stop( );
         }
-
-        $this->_app->stop( );
+        return Model::isProblem();
     }
 
     /**
@@ -300,9 +168,9 @@ class FSFile
      *
      * @param string $hash The hash of the requested file.
      */
-    public function getFileData( $a, $b, $c, $file )
+    public function getFileData( $callName, $input, $params = array() )
     {
-        $path = array(FSFile::getBaseDir( ),$a,$b,$c,$file);
+        $path = array(self::getBaseDir(),$params['a'],$params['b'],$params['c'], $params['file']);
 
         $filePath = implode( 
                             '/',
@@ -321,15 +189,10 @@ class FSFile
             $file->setFileSize( filesize( $this->config['DIR']['files'].'/'.$filePath ) );
             $file->setHash( sha1_file( $this->config['DIR']['files'].'/'.$filePath ) );
             $file->setMimeType(MimeReader::get_mime($this->config['DIR']['files'].'/'.$filePath));
-            $this->_app->response->setBody( File::encodeFile( $file ) );
-            $this->_app->response->setStatus( 200 );
-            $this->_app->stop( );
+            return Model::isOk($file);
             
-        } else {
-            $this->_app->response->setBody( File::encodeFile( new File( ) ) );
-            $this->_app->response->setStatus( 409 );
-            $this->_app->stop( );
         }
+        return Model::isProblem(new File( ));
     }
 
     /**
@@ -340,9 +203,9 @@ class FSFile
      *
      * @param string $hash The hash of the file which should be deleted.
      */
-    public function deleteFile( $a, $b, $c, $file )
+    public function deleteFile( $callName, $input, $params = array() )
     {
-        $path = array(FSFile::getBaseDir( ),$a,$b,$c,$file);
+        $path = array(self::getBaseDir(),$params['a'],$params['b'],$params['c'], $params['file']);
 
         $filePath = implode( 
                             '/',
@@ -367,22 +230,16 @@ class FSFile
 
             // the removing/unlink process failed, if the file still exists.
             if ( file_exists( $this->config['DIR']['files'] . '/' . $filePath ) ){
-                $this->_app->response->setStatus( 409 );
-                $this->_app->response->setBody( File::encodeFile( new File( ) ) );
-                $this->_app->stop( );
+            return Model::isProblem(new File( ));
             }
 
             // the file is removed
-            $this->_app->response->setBody( File::encodeFile( $file ) );
-            $this->_app->response->setStatus( 201 );
-            $this->_app->stop( );
+            return Model::isCreated($file);
             
         } else {
 
             // file does not exist
-            $this->_app->response->setStatus( 409 );
-            $this->_app->response->setBody( File::encodeFile( new File( ) ) );
-            $this->_app->stop( );
+            return Model::isProblem(new File( ));
         }
     }
     
@@ -392,7 +249,7 @@ class FSFile
      * Called when this component receives an HTTP GET request to
      * /link/exists/platform.
      */
-    public function getExistsPlatform( )
+    public function getExistsPlatform( $callName, $input, $params = array() )
     {
         Logger::Log( 
                     'starts GET GetExistsPlatform',
@@ -400,12 +257,10 @@ class FSFile
                     );
                     
         if (!file_exists(dirname(__FILE__).'/config.ini')){
-            $this->_app->response->setStatus( 409 );
-            $this->_app->stop();
+            return Model::isProblem();
         }
        
-        $this->_app->response->setStatus( 200 );
-        $this->_app->response->setBody( '' );  
+        return Model::isOk(); 
     }
     
     /**
@@ -414,19 +269,17 @@ class FSFile
      * Called when this component receives an HTTP DELETE request to
      * /platform.
      */
-    public function deletePlatform( )
+    public function deletePlatform( $callName, $input, $params = array() )
     {
         Logger::Log( 
                     'starts DELETE DeletePlatform',
                     LogLevel::DEBUG
                     );
         if (file_exists(dirname(__FILE__).'/config.ini') && !unlink(dirname(__FILE__).'/config.ini')){
-            $this->_app->response->setStatus( 409 );
-            $this->_app->stop();
+            return Model::isProblem();
         }
         
-        $this->_app->response->setStatus( 201 );
-        $this->_app->response->setBody( '' );
+        return Model::isCreated();
     }
     
     /**
@@ -435,54 +288,31 @@ class FSFile
      * Called when this component receives an HTTP POST request to
      * /platform.
      */
-    public function addPlatform( )
+    public function addPlatform( $callName, $input, $params = array() )
     {
         Logger::Log( 
                     'starts POST AddPlatform',
                     LogLevel::DEBUG
                     );
-
-        // decode the received course data, as an object
-        $insert = Platform::decodePlatform( $this->_app->request->getBody( ) );
-
-        // always been an array
-        $arr = true;
-        if ( !is_array( $insert ) ){
-            $insert = array( $insert );
-            $arr = false;
-        }
-
-        // this array contains the indices of the inserted objects
-        $res = array( );
-        foreach ( $insert as $in ){
         
-            $file = dirname(__FILE__).'/config.ini';
-            $text = "[DIR]\n".
-                    "temp = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$in->getTempDirectory()))."\"\n".
-                    "files = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$in->getFilesDirectory()))."\"\n";
-                    
-            if (!@file_put_contents($file,$text)){
-                Logger::Log( 
-                            'POST AddPlatform failed, config.ini no access',
-                            LogLevel::ERROR
-                            );
+        $file = dirname(__FILE__).'/config.ini';
+        $text = "[DIR]\n".
+                "temp = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$input->getTempDirectory()))."\"\n".
+                "files = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$input->getFilesDirectory()))."\"\n";
+                
+        if (!@file_put_contents($file,$text)){
+            Logger::Log( 
+                        'POST AddPlatform failed, config.ini no access',
+                        LogLevel::ERROR
+                        );
 
-                $this->_app->response->setStatus( 409 );
-                $this->_app->stop();
-            }   
+            return Model::isProblem();
+        }   
 
-            $platform = new Platform();
-            $platform->setStatus(201);
-            $res[] = $platform;
-            $this->_app->response->setStatus( 201 );
-        }
-
-        if ( !$arr && 
-             count( $res ) == 1 ){
-            $this->_app->response->setBody( Platform::encodePlatform( $res[0] ) );
-            
-        } else 
-            $this->_app->response->setBody( Platform::encodePlatform( $res ) );
+        $platform = new Platform();
+        $platform->setStatus(201);
+        
+        return Model::isCreated($platform);
     }
     
     /**

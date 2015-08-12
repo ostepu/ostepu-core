@@ -1,8 +1,56 @@
 [
-    {    "method":"post", "path":"/csv" },
-    {    "method":"post", "path":"/csv/:filename" },
-    {    "method":"delete", "path":"/csv/:hash" },
-    {    "method":"get", "path":"/csv/:hash" },
-    {    "method":"get", "path":"/csv/:hash/:filename" }
-    
+    {
+        "name": "addCsvPermanent",
+        "outputType": "File",
+        "inputType": "Csv",
+        "method": "POST",
+        "path": "/:folder"
+    },
+    {
+        "name": "addCsvTemporary",
+        "callback": "addCsvPermanent",
+        "outputType": "binary",
+        "inputType": "Csv",
+        "method": "POST",
+        "path": "/:folder/:filename"
+    },
+    {
+        "name": "deleteCsv",
+        "outputType": "File",
+        "method": "DELETE",
+        "path": "/:folder/:a/:b/:c/:file"
+    },
+    {
+        "name": "getCsvdata",
+        "outputType": "File",
+        "method": "GET",
+        "path": "/:folder/:a/:b/:c/:file"
+    },
+    {
+        "name": "getCsvDocument",
+        "outputType": "binary",
+        "method": "GET",
+        "path": "/:folder/:a/:b/:c/:file/:filename"
+    },
+    {
+        "name": "addPlatform",
+        "outputType": "Platform",
+        "inputType": "Platform",
+        "method": "POST",
+        "path": "/platform"
+    },
+    {
+        "name": "deletePlatform",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/platform"
+    },
+    {
+        "name": "getExistsPlatform",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "GET",
+        "path": "/link/exists/platform"
+    }
 ]

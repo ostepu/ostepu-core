@@ -1,6 +1,48 @@
 [
-    {    "method":"post", "path":"/:path+" },
-    {    "method":"delete", "path":"/:path+" },
-    {    "method":"get", "path":"/:path+" },
-    {    "method":"info", "path":"/:path+" }    
+    {
+        "name": "addFile",
+        "outputType": "File",
+        "inputType": "File",
+        "method": "POST",
+        "path": "/:folder/:a/:b/:c/:file"
+    },
+    {
+        "name": "deleteFile",
+        "outputType": "File",
+        "method": "DELETE",
+        "path": "/:folder/:a/:b/:c/:file"
+    },
+    {
+        "name": "getFiledata",
+        "outputType": "File",
+        "method": "GET,INFO",
+        "path": "/:folder/:a/:b/:c/:file"
+    },
+    {
+        "name": "getFileDocument",
+        "outputType": "binary",
+        "method": "GET",
+        "path": "/:folder/:a/:b/:c/:file/:filename"
+    },
+    {
+        "name": "addPlatform",
+        "outputType": "Platform",
+        "inputType": "Platform",
+        "method": "POST",
+        "path": "/platform"
+    },
+    {
+        "name": "deletePlatform",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "DELETE",
+        "path": "/platform"
+    },
+    {
+        "name": "getExistsPlatform",
+        "outputType": "Platform",
+        "inputType": "",
+        "method": "GET",
+        "path": "/link/exists/platform"
+    }
 ]

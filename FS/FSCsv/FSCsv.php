@@ -9,161 +9,35 @@
  * @date 2013-2014
  */
 
-require_once ( dirname(__FILE__) . '/../../Assistants/Slim/Slim.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/CConfig.php' );
-include_once ( dirname(__FILE__) . '/../../Assistants/Structures.php' );
-
-\Slim\Slim::registerAutoloader( );
+include_once ( dirname(__FILE__) . '/../../Assistants/Model.php' );
 
 /**
  * A class for creating, storing and loading CSV files from the file system
  */
 class FSCsv
 {
-
-    /**
-     * @var string $_baseDir the name of the folder where the csv files should be
-     * stored in the file system
-     */
-    private static $_baseDir = 'csv';
-
-    /**
-     * the string $_baseDir getter
-     *
-     * @return the value of $_baseDir
-     */
-    public static function getBaseDir( )
-    {
-        return FSCsv::$_baseDir;
-    }
-
-    /**
-     * the $_baseDir setter
-     *
-     * @param string $value the new value for $_baseDir
-     */
-    public static function setBaseDir( $value )
-    {
-        FSCsv::$_baseDir = $value;
-    }
-
-    /**
-     * @var Slim $_app the slim object
-     */
-    private $_app;
-
-    /**
-     * @var Component $_conf the component data object
-     */
-    private $_conf;
-    private $config = array();
-
     /**
      * REST actions
      *
      * This function contains the REST actions with the assignments to
      * the functions.
+     *
+     * @param Component $conf component data
      */
+    private $_component = null;
+    private $config = array();
     public function __construct( )
     {
-    
-        // runs the CConfig
-        $com = new CConfig( FSCsv::getBaseDir( ), dirname(__FILE__) );
-
-        // runs the FSCsv
-        if ( $com->used( ) ) return;
-            ///$_conf = $com->loadConfig( );
-
-        if (file_exists(dirname(__FILE__).'/config.ini'))
-            $this->config = parse_ini_file( 
+        if (file_exists(dirname(__FILE__).'/config.ini')){
+            $this->config = parse_ini_file(
                                            dirname(__FILE__).'/config.ini',
                                            TRUE
-                                           ); 
-                                       
-        // initialize component
-        ///$this->_conf = $_conf;
-
-        $this->_app = new \Slim\Slim( array( 'debug' => true ) );
-
-        $this->_app->response->headers->set( 
-                                            'Content-Type',
-                                            'application/json'
-                                            );
-                        
-        // POST AddPlatform
-        $this->_app->post( 
-                         '/platform',
-                         array( 
-                               $this,
-                               'addPlatform'
-                               )
-                         );
-                         
-        // DELETE DeletePlatform
-        $this->_app->delete( 
-                         '/platform',
-                         array( 
-                               $this,
-                               'deletePlatform'
-                               )
-                         );
-                         
-        // GET GetExistsPlatform
-        $this->_app->get( 
-                         '/link/exists/platform',
-                         array( 
-                               $this,
-                               'getExistsPlatform'
-                               )
-                         );
-                         
-        // POST PostCsvPermanent
-        $this->_app->post( 
-                          '/:folder(/)',
-                          array( 
-                                $this,
-                                'postCsv'
-                                )
-                          );
-                          
-        // POST PostCsvTemporary
-        $this->_app->post( 
-                          '/:folder/:filename(/)',
-                          array( 
-                                $this,
-                                'postCsv'
-                                )
-                          );
-
-        // GET GetCsvData
-        $this->_app->get( 
-                         '/:folder/:a/:b/:c/:file(/)',
-                         array( 
-                               $this,
-                               'getCsvData'
-                               )
-                         );
-
-        // GET GetCsvDocument
-        $this->_app->get( 
-                         '/:folder/:a/:b/:c/:file/:filename(/)',
-                         array( 
-                               $this,
-                               'getCsvDocument'
-                               )
-                         );
-
-        // DELETE DeleteCsv
-        $this->_app->delete( 
-                            '/:folder/:a/:b/:c/:file(/)',
-                            array( 
-                                  $this,
-                                  'deleteCsv'
-                                  )
-                            );
-
-        // run Slim
-        $this->_app->run( );
+                                           );
+        }
+        
+        $component = new Model('csv', dirname(__FILE__), $this);
+        $this->_component=$component;
+        $component->run();
     }
 
     /**
@@ -177,26 +51,28 @@ class FSCsv
      * @param string $filename A freely chosen filename of the Csv file which should be stored.
      * @see http://wiki.spipu.net/doku.php
      */
-    public function postCsv(
-                            $folder,
-                            $filename = null
-                            )
+    public function addCsvPermanent( $callName, $input, $params = array() )
     {
-        $body = $this->_app->request->getBody( );
-        $data = Csv::decodeCsv($body);
-        $name = sha1( $body );
-        unset($body);
+        $name = '';
+        if ($input->getRows() != null){
+            foreach ($input->getRows() as $row){
+                $name.=implode(',',$row);
+            }
+        }
         
-                // generate Csv
+        $name = sha1( $name );
+        
+        // generate Csv
         $filePath = FSCsv::generateFilePath( 
-                                            $folder,
+                                            $params['folder'],
                                             $name
                                             );
-                                           
+        unset($name);
+        
         if (!file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
             FSCsv::generatepath( $this->config['DIR']['files'].'/'.dirname( $filePath ) );
             
-            $result = $this->createCsv($data);
+            $result = $this->createCsv($input);
 
             // writes the file to filesystem
             $file = fopen(
@@ -219,27 +95,22 @@ class FSCsv
                         'POST postCsv failed',
                         LogLevel::ERROR
                         );
-                $this->_app->response->setStatus( 409 );
-                $this->_app->response->setBody( File::encodeFile( $fileObject ) );
-                $this->_app->stop();
+                return Model::isProblem($fileObject);
             }
         }        
                                
-        $this->_app->response->setStatus( 201 );
-        if ($filename!=null){
-            if (isset($result)){
-                $this->_app->response->setBody($result);
-            } else 
-                readfile($this->config['DIR']['files'].'/'.$filePath);
+        if (isset($params['filename'])){
             
-            $this->_app->response->headers->set( 
-                                                'Content-Type',
-                                                'application/octet-stream'
-                                                );
-            $this->_app->response->headers->set( 
-                                                'Content-Disposition',
-                                                "attachment; filename=\"$filename\""
-                                                );
+            Model::header('Content-Type','application/octet-stream');
+            Model::header('Content-Disposition',"attachment; filename=\"".$params['filename']."\"");
+            
+            if (isset($result)){
+                return isCreated($result);
+            } else {
+                readfile($this->config['DIR']['files'].'/'.$filePath);
+                return isCreated();
+            }
+            
         } else {
             $CsvFile = new File( );
             $CsvFile->setStatus(201);
@@ -251,7 +122,7 @@ class FSCsv
                 $hash = sha1(file_get_contents($this->config['DIR']['files'].'/'.$filePath));   
                 $CsvFile->setHash( $hash );
             }
-            $this->_app->response->setBody( File::encodeFile($CsvFile) );
+            return Model::isCreated($CsvFile);
         }
     }
 
@@ -264,13 +135,9 @@ class FSCsv
      * @param string $hash The hash of the file which should be returned.
      * @param string $filename A freely chosen filename of the returned file.
      */
-    public function getCsvDocument( $folder,
-                                    $a, $b, $c, $file,
-                                    $filename
-                                    )
+    public function getCsvDocument( $callName, $input, $params = array() )
     {
-
-        $path = array($folder,$a,$b,$c,$file);
+        $path = array($params['folder'],$params['a'],$params['b'],$params['c'], $params['file']);
 
         $filePath = implode( 
                             '/',
@@ -284,25 +151,14 @@ class FSCsv
              file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
 
             // the file was found
-            $this->_app->response->headers->set( 
-                                                'Content-Type',
-                                                'application/octet-stream'
-                                                );
-            $this->_app->response->headers->set( 
-                                    'Content-Disposition',
-                                    "attachment; filename=\"$filename\""
-                                    );
+            Model::header('Content-Type','application/octet-stream');
+            Model::header('Content-Disposition',"attachment; filename=\"".$params['filename']."\"");
                                             
-            $this->_app->response->setStatus( 200 );
             readfile( $this->config['DIR']['files'].'/'.$filePath );
-            $this->_app->stop( );
+            return Model::isOk();
             
-        } else {
-            $this->_app->response->setStatus( 409 );
-            $this->_app->stop( );
         }
-
-        $this->_app->stop( );
+        return Model::isProblem();
     }
 
     /**
@@ -313,9 +169,9 @@ class FSCsv
      *
      * @param string $hash The hash of the requested file.
      */
-    public function getCsvData( $folder,$a, $b, $c, $file )
+    public function getCsvData( $callName, $input, $params = array() )
     {
-        $path = array($folder,$a,$b,$c,$file);
+        $path = array($params['folder'],$params['a'],$params['b'],$params['c'], $params['file']);
 
         $filePath = implode( 
                             '/',
@@ -334,14 +190,10 @@ class FSCsv
             $file->setFileSize( filesize( $this->config['DIR']['files'].'/'.$filePath ) );
             $file->setHash( sha1_file( $this->config['DIR']['files'].'/'.$filePath ) );
             $file->setMimeType("application/Csv");
-            $this->_app->response->setBody( File::encodeFile( $file ) );
-            $this->_app->response->setStatus( 200 );
-            $this->_app->stop( );
+            return Model::isOk($file);
             
         } else {
-            $this->_app->response->setBody( File::encodeFile( new File( ) ) );
-            $this->_app->response->setStatus( 409 );
-            $this->_app->stop( );
+            return Model::isProblem(new File( ));
         }
     }
 
@@ -353,9 +205,9 @@ class FSCsv
      *
      * @param string $hash The hash of the file which should be deleted.
      */
-    public function deleteCsv( $folder,$a, $b, $c, $file )
+    public function deleteCsv( $callName, $input, $params = array() )
     {
-        $path = array($folder,$a,$b,$c,$file);
+        $path = array($params['folder'],$params['a'],$params['b'],$params['c'], $params['file']);
 
         $filePath = implode( 
                             '/',
@@ -380,22 +232,16 @@ class FSCsv
 
             // the removing/unlink process failed, if the file still exists.
             if ( file_exists( $this->config['DIR']['files'] . '/' . $filePath ) ){
-                $this->_app->response->setStatus( 409 );
-                $this->_app->response->setBody( File::encodeFile( new File( ) ) );
-                $this->_app->stop( );
+            return Model::isProblem(new File( ));
             }
 
             // the file is removed
-            $this->_app->response->setBody( File::encodeFile( $file ) );
-            $this->_app->response->setStatus( 201 );
-            $this->_app->stop( );
+            return Model::isCreated($file);
             
         } else {
 
             // file does not exist
-            $this->_app->response->setStatus( 409 );
-            $this->_app->response->setBody( File::encodeFile( new File( ) ) );
-            $this->_app->stop( );
+            return Model::isProblem(new File( ));
         }
     }
     
@@ -405,7 +251,7 @@ class FSCsv
      * Called when this component receives an HTTP GET request to
      * /link/exists/platform.
      */
-    public function getExistsPlatform( )
+    public function getExistsPlatform( $callName, $input, $params = array() )
     {
         Logger::Log( 
                     'starts GET GetExistsPlatform',
@@ -413,12 +259,10 @@ class FSCsv
                     );
                     
         if (!file_exists(dirname(__FILE__).'/config.ini')){
-            $this->_app->response->setStatus( 409 );
-            $this->_app->stop();
+            return Model::isProblem();
         }
        
-        $this->_app->response->setStatus( 200 );
-        $this->_app->response->setBody( '' );  
+        return Model::isOk(); 
     }
     
     /**
@@ -427,19 +271,17 @@ class FSCsv
      * Called when this component receives an HTTP DELETE request to
      * /platform.
      */
-    public function deletePlatform( )
+    public function deletePlatform( $callName, $input, $params = array() )
     {
         Logger::Log( 
                     'starts DELETE DeletePlatform',
                     LogLevel::DEBUG
                     );
         if (file_exists(dirname(__FILE__).'/config.ini') && !unlink(dirname(__FILE__).'/config.ini')){
-            $this->_app->response->setStatus( 409 );
-            $this->_app->stop();
+            return Model::isProblem();
         }
         
-        $this->_app->response->setStatus( 201 );
-        $this->_app->response->setBody( '' );
+        return Model::isCreated();
     }
     
     /**
@@ -448,54 +290,31 @@ class FSCsv
      * Called when this component receives an HTTP POST request to
      * /platform.
      */
-    public function addPlatform( )
+    public function addPlatform( $callName, $input, $params = array() )
     {
         Logger::Log( 
                     'starts POST AddPlatform',
                     LogLevel::DEBUG
                     );
-
-        // decode the received course data, as an object
-        $insert = Platform::decodePlatform( $this->_app->request->getBody( ) );
-
-        // always been an array
-        $arr = true;
-        if ( !is_array( $insert ) ){
-            $insert = array( $insert );
-            $arr = false;
-        }
-
-        // this array contains the indices of the inserted objects
-        $res = array( );
-        foreach ( $insert as $in ){
         
-            $file = dirname(__FILE__).'/config.ini';
-            $text = "[DIR]\n".
-                    "temp = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$in->getTempDirectory()))."\"\n".
-                    "files = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$in->getFilesDirectory()))."\"\n";
-                    
-            if (!@file_put_contents($file,$text)){
-                Logger::Log( 
-                            'POST AddPlatform failed, config.ini no access',
-                            LogLevel::ERROR
-                            );
+        $file = dirname(__FILE__).'/config.ini';
+        $text = "[DIR]\n".
+                "temp = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$input->getTempDirectory()))."\"\n".
+                "files = \"".str_replace(array("\\","\""),array("\\\\","\\\""),str_replace("\\","/",$input->getFilesDirectory()))."\"\n";
+                
+        if (!@file_put_contents($file,$text)){
+            Logger::Log( 
+                        'POST AddPlatform failed, config.ini no access',
+                        LogLevel::ERROR
+                        );
 
-                $this->_app->response->setStatus( 409 );
-                $this->_app->stop();
-            }   
+            return Model::isProblem();
+        }   
 
-            $platform = new Platform();
-            $platform->setStatus(201);
-            $res[] = $platform;
-            $this->_app->response->setStatus( 201 );
-        }
-
-        if ( !$arr && 
-             count( $res ) == 1 ){
-            $this->_app->response->setBody( Platform::encodePlatform( $res[0] ) );
-            
-        } else 
-            $this->_app->response->setBody( Platform::encodePlatform( $res ) );
+        $platform = new Platform();
+        $platform->setStatus(201);
+        
+        return Model::isCreated($platform);
     }
     
     /**

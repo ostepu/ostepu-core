@@ -308,7 +308,7 @@ class File extends Object implements JsonSerializable
      *
      * @return a comma separated string e.g. "a=1,b=2"
      */
-    public function getInsertData( )
+    public function getInsertData( $doubleEscaped=false )
     {
         $values = '';
 
@@ -367,7 +367,7 @@ class File extends Object implements JsonSerializable
                              1
                              );
         }
-        return $values;
+        return ($doubleEscaped ? DBJson::mysql_real_escape_string($values) : $values);
     }
 
     /**
@@ -387,7 +387,7 @@ class File extends Object implements JsonSerializable
      */
     public function __construct( $data = array( ) )
     {
-        if ( $data == null )
+        if ( $data === null )
             $data = array( );
 
         foreach ( $data AS $key => $value ){
