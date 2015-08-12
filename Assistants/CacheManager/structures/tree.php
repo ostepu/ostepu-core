@@ -8,6 +8,8 @@ class tree extends Object implements JsonSerializable
      * @var $elements node[] Enthält die Knoten des Baums
      */
     public $elements=array();
+    public function getElements( ){return $this->elements;}
+    public function setElements( $value = null ){$this->elements = $value;}
     
     /**
      * Liefert eine Liste der IDs der Knoten
@@ -313,12 +315,87 @@ class tree extends Object implements JsonSerializable
     }
     
     /**
-     * ???
+     * the constructor
+     *
+     * @param $data an assoc array with the object informations
+     */
+    public function __construct( $data = array( ) )
+    {
+        if ( $data === null )
+            $data = array( );
+
+        foreach ( $data AS $key => $value ){
+            if ( isset( $key ) ){
+                $func = 'set' . strtoupper($key[0]).substr($key,1);
+                $methodVariable = array($this, $func);
+                if (is_callable($methodVariable)){
+                    $this->$func($value);
+                } else
+                    $this->{$key} = $value;
+            }
+        }
+    }
+
+    /**
+     * encodes an object to json
+     *
+     * @param $data the object
+     *
+     * @return the json encoded object
+     */
+    public static function encodeTree( $data )
+    {
+        if (gettype($data) !== 'object'){
+            error_log('no object, '.gettype($data).' given');
+            return null;
+        }
+        if (get_class($data) !== 'Tree'){
+            error_log('wrong type, '.get_class($data).' given, Tree expected');
+            return null;
+        }
+        return json_encode( $data );
+    }
+
+    /**
+     * decodes $data to an object
+     *
+     * @param string $data json encoded data (decode=true)
+     * or json decoded data (decode=false)
+     * @param bool $decode specifies whether the data must be decoded
+     *
+     * @return the object
+     */
+    public static function decodeTree( 
+                                      $data,
+                                      $decode = true
+                                      )
+    {
+        if ( $decode && 
+             $data == null )
+            $data = '{}';
+
+        if ( $decode )
+            $data = json_decode( $data );
+
+        if ( is_array( $data ) ){
+            $result = array( );
+            foreach ( $data AS $key => $value ){
+                $result[] = new Tree( $value );
+            }
+            return $result;
+            
+        } else 
+            return new Tree( $data );
+    }
+    
+    /**
+     * dient der Serialisierung des Objekts
      */
     public function jsonSerialize( )
     {
-        return array( 
-                     'elements'=>$this->elements
-                     );
+        $list = array( );
+        if ( $this->elements !== null && $this->elements !== array())
+            $list['elements'] = $this->elements;
+        return array_merge($list,parent::jsonSerialize( ));
     }
 }

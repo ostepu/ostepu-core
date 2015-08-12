@@ -118,7 +118,7 @@ class Request
                         
                         //////$sid = CacheManager::getNextSid();
                         //////CacheManager::getTree($sid, $target, $method);
-                        //////$cachedData = CacheManager::getCachedDataByURL($sid, $target, $method);
+                        //////$cachedData = CacheManager::getCachedDataByURL($target, $method);
                         //////$beginTime=microtime(true);
                         
                         if (isset($cacheData) && $cachedData!==null){

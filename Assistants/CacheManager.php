@@ -88,6 +88,11 @@ class CacheManager
         return null;
     }
     
+    /**
+     * Liefert die nächste freie SID
+     *
+     * @return int Die neue SID
+     */
     public static function getNextSid()
     {
         return SID::getNextSid();
@@ -245,17 +250,17 @@ class CacheManager
     }
     
     /**
-     * ???
+     * Prüft ob zu dem Aufruf bereits Daten vorgehalten werden
      *
-     * @param ???
-     * @return ???
+     * @param string $URL 
+     * @param string $method
+     * @return string Die zum Aufruf gehörenden Daten der null, wenn keine vorhanden sind
      */
-    public static function getCachedDataByURL($sid, $URL, $method)
+    public static function getCachedDataByURL($URL, $method)
     {
-        if (!self::$enabled) return null;
-        if (strtoupper($method)!='GET') return null; // ?????? 
+        if (!self::$enabled) return null; 
         
-        $uTag = md5($URL);
+        $uTag = md5($method.'_'.$URL);
         if (isset(self::$cachedData[$uTag]))
             return self::$cachedData[$uTag];
 
@@ -292,20 +297,12 @@ class CacheManager
     public static function cacheData($sid, $Name, $URL, $content, $status, $method)
     {
         if (!self::$enabled) return;
-        if (strpos($URL,'/UI/')===false && strtoupper($method)=='GET'){
-            $uTag = md5($URL);
+        $uTag = md5($method.'_'.$URL);
 
-            if (!isset(self::$cachedData[$uTag])){
-                self::$cachedData[$uTag] = new DataObject($content,$status);
-                $eTag = self::generateETag($content);
-                if ($sid===SID::$currentBaseSID)
-                    cacheAccess::storeData('data_'.$eTag,$content);
-            }
-        }
-        
-        if ($sid===SID::$currentBaseSID){
-            self::finishRequest($sid, null, 'BEGIN', null, $content, $status, null, null);
-            self::savePath($URL,$method);
+        if (!isset(self::$cachedData[$uTag])){
+            self::$cachedData[$uTag] = new DataObject($content,$status);
+            $eTag = self::generateETag($content);
+            cacheAccess::storeData('data_'.$eTag,$content);
         }
     }
     
