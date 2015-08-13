@@ -29,22 +29,6 @@ function unsetValue(array $array, $value, $strict = TRUE)
 }
 
 /**
- * Read file contents as a string
- *
- * @param $filename The name of the file that should be read
- * @see http://php.net/manual/en/function.include.php
- */
-function getIncludeContents($filename)
-{
-    if (is_file($filename)) {
-        ob_start();
-        include $filename;
-        return ob_get_clean();
-    }
-    return false;
-}
-
-/**
  * tests if an array is associative.
  *
  * An array is treated as associative as soon as one of its keys is a string.
@@ -278,110 +262,6 @@ function MakeNavigationElement($user,
 }
 
 /**
- * Saves a file to an instance of a filesystem server
- *
- * @param string $filesystemURI The url at which the filesystem server is running.
- * @param string $filePath The local path at which the file is located.
- * @param string $displayName The displayname of the uploaded file
- * @param int $timestamp The UNIX timestamp of the upload
- * @param string &$message A reference to a variable that will contain the HTTP
- * status code on return.
- *
- * @return string Om success rturns a json object, representing the file in the
- * filesystem. NULL otherwise.
- */
-function uploadFileToFileSystem($filesystemURI,
-                                $filePath,
-                                $displayName,
-                                $timestamp,
-                                &$message)
-{
-    $data = file_get_contents($filePath);
-    $data = base64_encode($data);
-
-    $file = array('timeStamp' => $timestamp,
-                  'displayName' => $displayName,
-                  'body' => $data);
-
-    // upload the file to the filesystem
-    $URL = $filesystemURI . '/file';
-    $jsonFile = http_post_data($URL,
-                              json_encode($file),
-                              true,
-                              $message);
-
-    return $jsonFile;
-}
-
-/**
- * Saves a reference to a file in the Database.
- *
- * @param string $databaseURI The url at which the database server is running.
- * @param array $file An associative array or file object representing a file
- * @param string &$message A reference to a variable that will contain the HTTP
- * status code on return.
- *
- * @return string On success rturns a json object, representing the file in the
- * database. NULL otherwise.
- */
-function saveFileInDatabase($databaseURI,
-                            $file,
-                            &$message)
-{
-    $URL = $databaseURI . '/file';
-//echo json_encode($file);
-    $jsonFile = http_post_data($URL, json_encode($file), true, $message);
-///echo "OK: ".$jsonFile;
-    if ($message != "201") {
-        //POST failed, check if the file already exists
-        $hash = $file['hash'];
-        $URL = $databaseURI . '/file/hash/' . $hash;
-        $jsonFile = http_get($URL, true, $message);
-        ///echo "hash: ".$jsonFile;
-    }
-///echo "<br>";
-    return $jsonFile;
-}
-
-/**
- * Stores a file in filesystem and database.
- *
- * @param string $filesystemURI The url at which the filesystem server is running.
- * @param string $databaseURI The url at which the database server is running.
- * @param string $filePath The local path at which the file is located.
- * @param string $displayName The displayname of the uploaded file
- * @param int $timestamp The UNIX timestamp of the upload
- * @param string &$message A reference to a variable that will contain the HTTP
- * status code on return.
- */
-function fullUpload($filesystemURI,
-                    $databaseURI,
-                    $filePath,
-                    $displayName,
-                    $timestamp,
-                    &$message)
-{
-    $jsonFile = uploadFileToFileSystem($filesystemURI,
-                                       $filePath,
-                                       $displayName,
-                                       $timestamp,
-                                       $message);
-
-    if ($message != "201") {
-        return NULL;
-    }
-
-    $fileObj = json_decode($jsonFile, true);
-    $fileObj['timeStamp'] = $timestamp;
-
-    $jsonFile = saveFileInDatabase($databaseURI,
-                                   $fileObj,
-                                   $message);
-
-    return $jsonFile;
-}
-
-/**
  * Updates the selected submission of a group.
  *
  * @param string $databaseURI The url at which the database server is running.
@@ -435,67 +315,6 @@ function updateSelectedSubmission($databaseURI,
     }
     
     return $returnedSubmission;
-}
-
-/**
- * Creates a submission for a file.
- *
- * @param string $databaseURI The url at which the database server is running.
- * @param int $userid The id of the user that submitted the file.
- * @param int $fileId The id of the file that the user submitted.
- * @param int $exerciseId The id of the exercise the submission is for.
- * @param string $comment A comment the uder left on the submission.
- * @param int $timestapm The UNIX timestamp of the submission
- * @param string &$message A reference to a variable that will contain the HTTP
- * status code on return.
- *
- * @return string On success returns a json object, representing the selected
- * submission in the database. NULL otherwise.
- */
-function submitFile($databaseURI,
-                    $userid,
-                    $fileId,
-                    $exerciseId,
-                    $comment,
-                    $timestamp,
-                    &$message)
-{
-    $submission = Submission::createSubmission(NULL,
-                                               $userid,
-                                               $fileId,
-                                               $exerciseId,
-                                               $comment,
-                                               1,
-                                               $timestamp,
-                                               NULL,
-                                               NULL);
-    $URL = $databaseURI . '/submission';
-    $returnedSubmission = http_post_data($URL,
-                                         json_encode($submission),
-                                         true,
-                                         $message);
-
-    return $returnedSubmission;
-}
-
-/**
- * Starts download of all attachments of a sheet.
- *
- * @param $sheetId The id of the sheet whose attachments are downloaded.
- */
-function downloadAttachmentsOfSheet($sheetId)
-{
-    $sid = cleanInput($sheetId);
-    
-    $tokenString = "{$sid}_AttachmentsDownload";
-    $token = md5($tokenString);
-
-    if (!isset($_SESSION['downloads'][$token])) {
-        $_SESSION['downloads'][$token] = array('download' => 'attachments',
-                                               'sid' => $sid);
-    }
-
-    header("Location: Download.php?t={$token}");
 }
 
 /**
