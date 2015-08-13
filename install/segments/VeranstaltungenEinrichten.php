@@ -87,7 +87,11 @@ class VeranstaltungenEinrichten
                     $multiRequestHandle->addRequest($handler);   
                 }        
                 $answer = $multiRequestHandle->run();
-                //var_dump($courses);
+                
+                if (count($courses) != count($answer)){
+                    $fail = true;
+                    $error = Language::Get('courses','differentAnswers')."\n".Language::Get('main','line').':'.__LINE__;
+                }
                 
                 $i=0;
                 foreach($courses as $course){            
@@ -105,12 +109,12 @@ class VeranstaltungenEinrichten
                         }
                     }
                     $i++;
-                    if ($i>=count($result)) break;
+                    if ($i>=count($answer)) break;
                 }
                 
             } else {
                 $fail = true;
-                $error = "GET /DB/DBCourse/course konnte nicht aufgerufen werden oder es gibt keine Veranstaltungen.";
+                $error = "GET /DB/DBCourse/course ".Language::Get('courses','operationFailed');
                 if (isset($result[0]['status'])){
                     $errno = $result[0]['status'];
                 }
