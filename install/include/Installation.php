@@ -30,6 +30,7 @@ class Installation
     {
         $args = func_get_args();
         $data = array_shift($args);
+        if ($data === null) $data = array();
         foreach ($args as $n => $field) {
             if (is_string($field)) {
                 $tmp = array();

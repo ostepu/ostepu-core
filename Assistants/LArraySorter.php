@@ -54,6 +54,7 @@ class LArraySorter
     {
         $args = func_get_args();
         $data = array_shift($args);
+        if ($data === null) $data = array();
         $isArray=true;
         reset($data);
         if (gettype(current($data)) == 'object') $isArray=false;
