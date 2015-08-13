@@ -22,7 +22,8 @@
     },
     {
         "name": "getFile",
-        "callback": "getMatchSingle",
+        "callback": "getMatch",
+        "singleOutput": "TRUE",
         "outputType": "File",
         "inputType": "",
         "method": "GET",
@@ -30,7 +31,8 @@
     },
     {
         "name": "getFileByHash",
-        "callback": "getMatchSingle",
+        "callback": "getMatch",
+        "singleOutput": "TRUE",
         "outputType": "File",
         "inputType": "",
         "method": "GET",
@@ -68,7 +70,8 @@
     },
     {
         "name": "getExistsPlatform",
-        "callback": "getMatchSingle",
+        "callback": "getMatch",
+        "singleOutput": "TRUE",
         "outputType": "Platform",
         "inputType": "",
         "method": "GET",

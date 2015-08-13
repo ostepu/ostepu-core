@@ -22,7 +22,8 @@
     },
     {
         "name": "getExerciseType",
-        "callback": "getMatchSingle",
+        "callback": "getMatch",
+        "singleOutput": "TRUE",
         "outputType": "ExerciseType",
         "inputType": "",
         "method": "GET",
@@ -52,7 +53,8 @@
     },
     {
         "name": "getExistsPlatform",
-        "callback": "getMatchSingle",
+        "callback": "getMatch",
+        "singleOutput": "TRUE",
         "outputType": "Platform",
         "inputType": "",
         "method": "GET",

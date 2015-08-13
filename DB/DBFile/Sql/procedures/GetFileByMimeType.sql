@@ -20,9 +20,9 @@ where
     (F_mimeType like '",base,"/",base,"')
     )
     and
-        ('",beginStamp,"'=':beginStamp' or F_timeStamp>='",beginStamp,"')
+        ('",beginStamp,"'='0' or F_timeStamp>='",beginStamp,"')
         and 
-        ('",endStamp,"'=':endStamp' or F_timeStamp>='",endStamp,"');");
+        ('",endStamp,"'='0' or F_timeStamp>='",endStamp,"');");
 PREPARE stmt1 FROM @s;
 EXECUTE stmt1;
 DEALLOCATE PREPARE stmt1;

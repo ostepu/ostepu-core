@@ -37,7 +37,8 @@
     },
     {
         "name": "getIncreaseUserFailedLogin",
-        "callback": "getMatchSingle",
+        "callback": "getMatch",
+        "singleOutput": "TRUE",
         "outputType": "User",
         "inputType": "",
         "method": "GET",
@@ -45,7 +46,8 @@
     },
     {
         "name": "getUser",
-        "callback": "getMatchSingle",
+        "callback": "getMatch",
+        "singleOutput": "TRUE",
         "outputType": "User",
         "inputType": "",
         "method": "GET",
@@ -99,7 +101,8 @@
     },
     {
         "name": "getExistsPlatform",
-        "callback": "getMatchSingle",
+        "callback": "getMatch",
+        "singleOutput": "TRUE",
         "outputType": "Platform",
         "inputType": "",
         "method": "GET",
