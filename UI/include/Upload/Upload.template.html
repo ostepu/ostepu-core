@@ -19,10 +19,12 @@
 
     <?php     
     $groupMember = array();
-    if (isset($group['members']))
+    if (isset($group['members'])){
         $groupMember = array_merge($groupMember,$group['members']);
-    if (isset($group['leader']))
+    }
+    if (isset($group['leader'])){
         $groupMember = array_merge($groupMember,array($group['leader']));
+    }
     $m=array();
     foreach ($groupMember as $mem){
         if (isset($mem['id']))

@@ -1,7 +1,7 @@
 <?php $langTemplate='Group_InvitationsFromGroup';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
 
 <input type="hidden" name="action" value="InviteGroup">
-<?php $emptyGroupMembers = $groupSize - count($group['members']) - count($invitationsFromGroup) - 1; ?>
+<?php $emptyGroupMembers = $groupSize - (isset($group['members']) ? count($group['members']) : 0) - count($invitationsFromGroup) - 1; ?>
 
 <div class="content-element">
     <div class="content-header">

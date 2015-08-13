@@ -28,7 +28,7 @@ if (isset($UploadHistoryNotificationElements)) {
     
     $groupMember = array();
     if (isset($group)){
-        $groupMember2 = array_merge(array(),$group['members'],array($group['leader']));
+        $groupMember2 = array_merge(array(),(isset($group['members']) ? $group['members'] : array()),array($group['leader']));
         foreach ($groupMember2 as $mem){
             $groupMember[$mem['id']] = $mem;
         }

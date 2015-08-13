@@ -130,7 +130,7 @@ if (isset($_POST['action'])) {
 
             // removes all members from the group
             if (!empty($group)) {
-                if (!empty($group['members'])) {
+                if (isset($group['members']) && !empty($group['members'])) {
                     foreach ($group['members'] as $member) {
                         if (!removeUserFromGroup($member['id'], $sid)) {
                             $RequestError = true;

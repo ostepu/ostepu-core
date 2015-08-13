@@ -48,31 +48,33 @@
 
 
                     // prints group members
-                    foreach ($group['members'] as $member) {
-                        print "<li>";
-                        
-                        if (isset($member['firstName'])){
-                            print $member['firstName'];
-                        } else
-                            print "";
-                        print " ";
-                        if (isset($member['lastName'])){
-                            print $member['lastName'];
-                        } else
-                            print "";
-                        
-                        if (isset($member['userName'])){
-                            print " (".$member['userName'].")";
-                        } else
-                            print "???";
+                    if (isset($group['members'])){
+                        foreach ($group['members'] as $member) {
+                            print "<li>";
+                            
+                            if (isset($member['firstName'])){
+                                print $member['firstName'];
+                            } else
+                                print "";
+                            print " ";
+                            if (isset($member['lastName'])){
+                                print $member['lastName'];
+                            } else
+                                print "";
+                            
+                            if (isset($member['userName'])){
+                                print " (".$member['userName'].")";
+                            } else
+                                print "???";
 
-                        if ($isLeader) {
-                            print '<button name="removeMember" value="';
-                            print $member['id'];
-                            print '" class="right text-button body-option-color">'.Language::Get('main','removeMember', $langTemplate).'</button>';
+                            if ($isLeader) {
+                                print '<button name="removeMember" value="';
+                                print $member['id'];
+                                print '" class="right text-button body-option-color">'.Language::Get('main','removeMember', $langTemplate).'</button>';
+                            }
+
+                            print "</li>";
                         }
-
-                        print "</li>";
                     }
 
                     // prints group invitations
