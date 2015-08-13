@@ -131,15 +131,39 @@ class Language
      * @param string $area Der Name des Bereichs
      * @param string $cell Der Name des Platzhalters
      * @param string $name Ein optionaler Sprachbezeichner (Bsp.: de, en)
+     * @param string[] $params Ersetzungen für Platzhalter. Bsp.: array('abc'=>'test') ersetzt $abc mit 'test'... $ muss maskiert werden
      * @return string Der Text aus der geladenen Sprache, der Standardsprache oder ??? im Fehlerfall
      */
-    public static function Get($area, $cell, $name='default')
+    public static function Get($area, $cell, $name='default', $params=array())
     {        
         if (self::$selectedLanguage != null && isset(self::$language[$name]) && isset(self::$language[$name][$area]) && isset(self::$language[$name][$area][$cell])){
-            return self::$language[$name][$area][$cell];
+            $res = self::$language[$name][$area][$cell];
         } elseif (self::$selectedDefaultLanguage != null && isset(self::$defaultLanguage[$name]) && isset(self::$defaultLanguage[$name][$area]) && isset(self::$defaultLanguage[$name][$area][$cell])){
-            return self::$defaultLanguage[$name][$area][$cell];
+            $res = self::$defaultLanguage[$name][$area][$cell];
         } else
-            return '???';
+            $res = '???';
+        
+        $matches = array();
+        preg_match_all('/[^\\\\]\$\[([\w,]+)\]/', $res, $matches);
+        foreach ($matches[1] as $match){
+            $splitted = explode(',',$match);
+            if (count($splitted<2)){
+                $elem = '???';
+            } else if (count($splitted)==2){
+                $elem = self::Get($splitted[0],$splitted[1]);
+            } else if (count($splitted)==3){
+                $elem = self::Get($splitted[0],$splitted[1],$splitted[2]);
+            }
+            $res = preg_replace('/([^\\\\])(\$\['.$match.'\])/','$1'.$elem,$res);
+        }
+        
+        foreach($params as $key => $value){
+            $value = htmlspecialchars($value);
+            $res = preg_replace('/([^\\\\])(\$'.$key.')/','$1'.$value,$res);
+        }
+        $res = preg_replace('/([^\\\\])(\$[\w]+)/','$1???',$res);
+        $res = str_replace('\$','$',$res);
+        
+        return $res;
     }
 }
