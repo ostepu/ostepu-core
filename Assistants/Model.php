@@ -78,7 +78,8 @@ class Model
             if (!isset($command['name'])) continue;
             if (!isset($command['method'])) $command['method'] = 'GET';
             if (!isset($command['callback'])) $command['callback'] = $command['name'];
-            if (!isset($command['singleInput'])) $command['singleInput'] = 'TRUE';
+            if (!isset($command['seqInput'])) $command['seqInput'] = 'TRUE';
+            if (!isset($command['singleOutput'])) $command['singleOutput'] = 'FALSE';
             
             // Methoden können durch Komma getrennt aufgelistet sein
             $methods = explode(',',$command['method']);
@@ -148,7 +149,7 @@ class Model
                 }
             }
             
-            if (strtoupper($selectedCommand['singleInput']) != 'TRUE') {
+            if (strtoupper($selectedCommand['seqInput']) != 'TRUE') {
                 $arr = false;
             }
 
@@ -158,7 +159,7 @@ class Model
                 // initialisiert die Ausgabe positiv
                 $result=array("status"=>201,"content"=>array());
                 
-                if (strtoupper($selectedCommand['singleInput']) == 'TRUE'){
+                if (strtoupper($selectedCommand['seqInput']) == 'TRUE'){
                     try {
                         // für jede Eingabe wird die Funktion ausgeführt
                         foreach($rawInput as $input){
@@ -225,7 +226,9 @@ class Model
                         $result['content'] = array( $result['content'] );
                     }
                     
-                    if ( !$arr && count( $result['content'] ) == 1 ){
+                    if ( $command['singleOutput']!=='FALSE' && count( $result['content'] ) >= 1 ){
+                        $result['content'] = $result['content'][0];                        
+                    } elseif ( !$arr && count( $result['content'] ) == 1 ){
                         $result['content'] = $result['content'][0];
                     }
 
@@ -238,10 +241,11 @@ class Model
                 // selbst wenn nichts zutrifft, wird json kodiert
                 if (isset( $result['content']) )
                     $result['content'] = json_encode($result['content']);
+                header('Content-Type: application/json');  
             }
         } else {
             // es wurde kein zutreffender Befehl gefunden, also gibt es eine leere Antwort
-            $result=self::isEmpty();
+            $result=self::isError();
         }
 
         // ab hier werden die Ergebnisse ausgegeben
@@ -306,7 +310,7 @@ class Model
                 if ( !is_array( $result['content'] ) )
                     $result['content'] = array( $result['content'] );
             }
-            
+
             // rufe nun die positive Methode auf
             return call_user_func_array($positiveMethod, array_merge(array("input"=>$result['content']),$positiveParams));
         }
@@ -398,7 +402,8 @@ class Model
      * @param string $content Der optionale Inhalt
      * @return array('status'=>..,'content'=>..) Die Antwort
      */
-    public static function createAnswer($status=200, $content=''){
+    public static function createAnswer($status=200, $content='')
+    {
         return array("status"=>$status,"content"=>$content);
     }
     
@@ -408,8 +413,40 @@ class Model
      * @param string $content Der optionale Inhalt
      * @return array('status'=>..,'content'=>..) Die Antwort
      */
-    public static function isProblem($content=null){
+    public static function isProblem($content=null)
+    {
+        if (func_num_args()>1){
+            return self::isProblemAnswer(func_get_arg(0),func_get_arg(1));
+        }
         return self::createAnswer(409,$content);
+    }
+    private static function isProblemAnswer($input, $params)
+    {
+        if ($params===null){
+            return self::createAnswer(409,$content);
+        }
+        return self::createAnswer(409,$params);
+    }
+    
+    /**
+     * Liefert eine Rückgabe (ein schwerwiegender Fehler ist aufgetreten)
+     *
+     * @param string $content Der optionale Inhalt
+     * @return array('status'=>..,'content'=>..) Die Antwort
+     */
+    public static function isError($content=null)
+    {
+        if (func_num_args()>1){
+            return self::isErrorAnswer(func_get_arg(0),func_get_arg(1));
+        }
+        return self::createAnswer(500,$content);
+    }
+    private static function isErrorAnswer($input, $params)
+    {
+        if ($params===null){
+            return self::createAnswer(500,$content);
+        }
+        return self::createAnswer(500,$params);
     }
     
     /**
@@ -418,8 +455,19 @@ class Model
      * @param string $content Der optionale Inhalt
      * @return array('status'=>..,'content'=>..) Die Antwort
      */
-    public static function isCreated($content=null){
+    public static function isCreated($content=null)
+    {
+        if (func_num_args()>1){
+            return self::isCreatedAnswer(func_get_arg(0),func_get_arg(1));
+        }
         return self::createAnswer(201,$content);
+    }
+    private static function isCreatedAnswer($input, $params)
+    {
+        if ($params===null){
+            return self::createAnswer(201,$content);
+        }
+        return self::createAnswer(201,$params);
     }
     
     /**
@@ -429,8 +477,19 @@ class Model
      * @param string $content Der optionale Inhalt
      * @return array('status'=>..,'content'=>..) Die Antwort
      */
-    public static function isOk($content=null){
+    public static function isOk($content=null)
+    {
+        if (func_num_args()>1){
+            return self::isOkAnswer(func_get_arg(0),func_get_arg(1));
+        }
         return self::createAnswer(200,$content);
+    }
+    private static function isOkAnswer($input, $params)
+    {
+        if ($params===null){
+            return self::createAnswer(200,$content);
+        }
+        return self::createAnswer(200,$params);
     }
     
     /**
@@ -440,8 +499,19 @@ class Model
      * @param string $content Der optionale Inhalt
      * @return array('status'=>..,'content'=>..) Die Antwort
      */
-    public static function isEmpty($content=null){
+    public static function isEmpty($content=null)
+    {
+        if (func_num_args()>1){
+            return self::isEmptyAnswer(func_get_arg(0),func_get_arg(1));
+        }
         return self::createAnswer(404,$content);
+    }
+    private static function isEmptyAnswer($input, $params)
+    {
+        if ($params===null){
+            return self::createAnswer(404,$content);
+        }
+        return self::createAnswer(404,$params);
     }
 
     /**
@@ -451,8 +521,19 @@ class Model
      * @param string $content Der optionale Inhalt
      * @return array('status'=>..,'content'=>..) Die Antwort
      */
-    public static function isRejected($content=null){
+    public static function isRejected($content=null)
+    {
+        if (func_num_args()>1){
+            return self::isRejectedAnswer(func_get_arg(0),func_get_arg(1));
+        }
         return self::createAnswer(401,$content);
+    }
+    private static function isRejectedAnswer($input, $params)
+    {
+        if ($params===null){
+            return self::createAnswer(401,$content);
+        }
+        return self::createAnswer(401,$params);
     }
     
     public static function header($name, $value){
