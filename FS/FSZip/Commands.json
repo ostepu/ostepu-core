@@ -1,7 +1,7 @@
 [
     {
         "name": "addZipPermanent",
-        "singleInput": "false",
+        "seqInput": "false",
         "outputType": "File",
         "inputType": "File",
         "method": "POST",
@@ -9,7 +9,7 @@
     },
     {
         "name": "addZipTemporary",
-        "singleInput": "false",
+        "seqInput": "false",
         "callback": "addZipPermanent",
         "outputType": "binary",
         "inputType": "File",
