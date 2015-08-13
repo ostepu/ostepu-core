@@ -54,14 +54,23 @@ class LArraySorter
     {
         $args = func_get_args();
         $data = array_shift($args);
+        $isArray=true;
+        reset($data);
+        if (gettype(current($data)) == 'object') $isArray=false;
         foreach ($args as $n => $field) {
             if (is_string($field)) {
                 $tmp = array();
-                foreach ($data as $key => $row){
-                    $tmp[$key] = (isset($row[$field]) ? strtolower($row[$field]) : null);
+                if ($isArray){
+                    foreach ($data as $key => $row){
+                        $tmp[$key] = (isset($row[$field]) ? strtolower($row[$field]) : null);
+                    }
+                } else {
+                    foreach ($data as $key => $row){
+                        $tmp[$key] = (isset($row->{$field}) ? strtolower($row->{$field}) : null);
+                    }                 
                 }
-                $args[$n] = $tmp;
-                }
+                $args[$n] = $tmp;   
+            }
         }
         $args[] = &$data;
         call_user_func_array('array_multisort', $args);
