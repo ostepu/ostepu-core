@@ -1,0 +1,10 @@
+{
+    "main": {
+        "successAssignment": "Die Zuweisungen wurden erfolgreich geändert.",
+        "errorAssignment": "Bei der Zuweisung ist ein Fehler aufgetreten.",
+        "invalidTutor": "Ungültiger Tutor.",
+        "invalidSelection": "Ungültige Auswahl.",
+        "invalidTutors": "Ungültige Tutoren.",
+        "errorUnassign": "Beim Aufheben der Zuweisungen ist ein Fehler aufgetreten."
+    }
+}

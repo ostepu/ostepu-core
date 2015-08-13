@@ -1,0 +1,7 @@
+{
+    "main": {
+        "errorLogin": "Die Anmeldung war fehlerhaft!",
+        "changeCourse": "Veranstaltung wechseln",
+        "title": "Übungsplattform"
+    }
+}

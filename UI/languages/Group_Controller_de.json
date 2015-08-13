@@ -1,0 +1,27 @@
+{
+    "main": {
+        "errorRemoveMember": "Beim Entfernen ist ein Fehler aufgetreten.",
+        "successRemoveMember": "Der Nutzer wurde aus der Gruppe entfernt.",
+        "successRemoveInvitation": "Die Einladung wurde gelöscht.",
+        "errorRemoveInvitation": "Beim Löschen der Einladung ist ein Fehler aufgetreten.",
+        "errorLeaveGroup": "Beim Verlassen ist ein Fehler aufgetreten!",
+        "successLeaveGroup": "Sie haben die Gruppe verlassen.",
+        "successSelectSubmission": "Die Einsendungen wurden ausgewählt.",
+        "errorSelectSubmission": "Beim Speichern ist ein Fehler aufgetreten!",
+        "successInviteMembers": "Gruppenmitglieder wurden eingeladen!",
+        "successJoinMembers": "Gruppenmitglieder sind beigetreten!",
+        "errorJoinMember": "Mindestens ein Nutzer konnte der Gruppe nicht beitreten!",
+        "errorInviteMember": "Mindestens ein Nutzer konnte nicht eingeladen werden!",
+        "errorApplyGroup": "Beim übernehmen der Gruppe ist ein Fehler aufgetreten!",
+        "invalidUserId": "Ungültiges Kürzel.",
+        "successInviteMember": "Der Nutzer $memberName wurde eingeladen.",
+        "errorInviteMember": "Bei der Einladung ist ein Fehler aufgetreten. Eventuell wurde schon eine Einladung an $memberName gesendet.",
+        "successRejectInvitation": "Die Einladung wurde abgelehnt.",
+        "errorRejectInvitation": "Beim Ablehnen der Einladung ist ein Fehler aufgetreten.",
+        "successJoinGroup": "Sie haben die Einladung angenommen.",
+        "errorJoinGroup": "Beim Annehmen der Einladung ist ein Fehler aufgetreten!",
+        "expiredExercisePerion": "Der Übungszeitraum ist am $endDate abgelaufen!",
+        "noStatedExercisePeriod": "Der Übungszeitraum beginnt am $startDate !",
+        "noExercisePeriod": "Kein Übungszeitraum gefunden!",
+    }
+}
