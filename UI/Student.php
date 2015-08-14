@@ -9,12 +9,13 @@
  */
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
-include_once dirname(__FILE__) . '/../Assistants/Language.php';
+
+$langTemplate='Student_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 $sheetNotifications = array();
 
 if (isset($_POST['deleteSubmissionWarning'])) {
-    $notifications[] = MakeNotification("warning", "Soll die Einsendung wirklich gelöscht werden?");
+    $notifications[] = MakeNotification("warning", Language::Get('main','askDeleteSubmission', $langTemplate));
 } elseif (isset($_POST['deleteSubmission'])) {
     $suid = cleanInput($_POST['deleteSubmission']);
     
@@ -34,9 +35,9 @@ if (isset($_POST['deleteSubmissionWarning'])) {
         http_put_data($URI, Submission::encodeSubmission($submissionUpdate), true, $message2);
         
         if ($message == "201" && $message2 == 201) {
-            $notifications[] = MakeNotification("success", "Die Einsendung wurde gelöscht!");
+            $notifications[] = MakeNotification("success", Language::Get('main','successDeleteSubmission', $langTemplate));
         } else {
-            $notifications[] = MakeNotification("error", "Beim Löschen ist ein Fehler aufgetreten!");
+            $notifications[] = MakeNotification("error", Language::Get('main','errorDeleteSubmission', $langTemplate));
         }
     }
 
@@ -53,10 +54,6 @@ $student_data['cid'] = $cid;
 $student_data['uid'] = $uid;
 $user_course_data = $student_data['user'];
 
-if (isset($user_course_data['user']['lang'])){
-    Language::setPreferedLanguage($user_course_data['user']['lang']);
-}
-
 // check userrights for course
 Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $user_course_data);
 
@@ -67,7 +64,7 @@ $menu = MakeNavigationElement($user_course_data,
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
 $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
-               "backTitle" => "Veranstaltung wechseln",
+               "backTitle" => Language::Get('main','changeCourse', $langTemplate),
                "backURL" => "index.php",
                "notificationElements" => $notifications,
                "navigationElement" => $menu));

@@ -13,9 +13,10 @@
 
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
-include_once dirname(__FILE__) . '/../Assistants/Language.php';
 include_once dirname(__FILE__) . '/include/FormEvaluator.php';
 require_once dirname(__FILE__).'/phplatex.php';
+
+$langTemplate='CreateSheet_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 function unmap($map, $id){
     foreach ($map as $m){
@@ -51,7 +52,7 @@ if (isset($createsheetData['exerciseTypes'])) {
     $_SESSION['JSCACHE'] = json_encode($exerciseTypes['exerciseTypes']);
 } else {
     $_SESSION['JSCACHE'] = "";
-    $errormsg = "Bitte weisen Sie der Veranstaltung zugelassene Punktearten zu!";
+    $errormsg = Language::Get('main','missingExerciseTypes', $langTemplate);
     array_push($notifications, MakeNotification('warning', $errormsg));
     $noContent = true;
 }
@@ -104,7 +105,7 @@ if (isset($_POST['exercises']) == true && empty($_POST['exercises']) == false) {
                     $mimeType=$mimeType[0];
                     
                     if (FILE_TYPE::checkSupportedFileType($mimeType) == false) {
-                        $errormsg = "Sie haben eine nicht unterstützte Dateiendung verwendet.";
+                        $errormsg = Language::Get('main','invalidFileType', $langTemplate);
                         array_push($notifications, MakeNotification('warning', $errormsg));
                         $correctExercise = true;
                         //break;
@@ -408,15 +409,15 @@ if (isset($_POST['action'])) {// && $_POST['action'] == "new"
     $f->checkStringForKey('sheetName',
                           FormEvaluator::REQUIRED,
                           'error',
-                          'Ungültiger Blattname.');
+                          Language::Get('main','invalidSheetName', $langTemplate));
     $f->checkStringForKey('startDate',
                           FormEvaluator::REQUIRED,
                           'warning',
-                          'Leerer Bearbeitungsanfang.');
+                          Language::Get('main','invalidPeriodBegin', $langTemplate));
     $f->checkStringForKey('endDate',
                           FormEvaluator::REQUIRED,
                           'warning',
-                          'Leerer Bearbeitungsende.');
+                          Language::Get('main','invalidPeriodEnd', $langTemplate));
 
     // check if defaultGroupSize is bigger than standard groupsize 10
     if ($createsheetData['user']['courses'][0]['course']['defaultGroupSize'] < 10) {
@@ -428,7 +429,7 @@ if (isset($_POST['action'])) {// && $_POST['action'] == "new"
     $f->checkIntegerForKey('groupSize',
                            FormEvaluator::REQUIRED,
                            'warning',
-                           'Ungültige Gruppenstärke.',
+                           Language::Get('main','invalidGroupSize', $langTemplate),
                            array('min' => 0,'max' => $maxgroup));
     /*$f->checkArrayOfArraysForKey('exercises',
                                  FormEvaluator::REQUIRED,
@@ -716,10 +717,18 @@ if (isset($_POST['action'])) {// && $_POST['action'] == "new"
             }
             
             if ($errorInSent == false) {
-                $errormsg = "Die Serie wurde ".($_POST['action']=='edit' ? 'bearbeitet' : 'erstellt').".";
+                if ($_POST['action']=='edit'){
+                    $errormsg = Language::Get('main','successEditSheet', $langTemplate);
+                } else 
+                    $errormsg = Language::Get('main','successCreateSheet', $langTemplate);
+                }
                 array_push($notifications, MakeNotification('success', $errormsg));
             } else {
-                $errormsg = "Beim ".($_POST['action']=='edit' ? 'Bearbeiten' : 'Erstellen')." ist ein Fehler aufgetreten.";
+                if ($_POST['action']=='edit'){
+                    $errormsg = Language::Get('main','errorEditSheet', $langTemplate);
+                } else 
+                    $errormsg = Language::Get('main','errorCreateSheet', $langTemplate);
+                }
                 array_push($notifications, MakeNotification('error', $errormsg));
 
                 // delete exercisesheet if exercises are going wrong
@@ -727,7 +736,11 @@ if (isset($_POST['action'])) {// && $_POST['action'] == "new"
                     http_delete($logicURI.'/DB/exercisesheet/exercisesheet/'.$output['id'], true, $message);
             }
         } else {
-            $errormsg = "Beim ".($_POST['action']=='edit' ? 'Bearbeiten' : 'Erstellen')." ist ein Fehler aufgetreten.";
+            if ($_POST['action']=='edit'){
+                $errormsg = Language::Get('main','errorEditSheet', $langTemplate);
+            } else 
+                $errormsg = Language::Get('main','errorCreateSheet', $langTemplate);
+            }
             array_push($notifications, MakeNotification('error', $errormsg));
         }
     }  else {
@@ -752,10 +765,6 @@ $h->bind($createsheetData['user']);
 $h->bind(array("name" => $createsheetData['user']['courses'][0]['course']['name'],
                "notificationElements" => $notifications,
                "navigationElement" => $menu));
-
-if (isset($createsheetData['user']['lang'])){
-    Language::setPreferedLanguage($createsheetData['user']['lang']);
-}
 
 $sheetSettings = Template::WithTemplateFile('include/CreateSheet/SheetSettings.template.html');
 $createExercise = Template::WithTemplateFile('include/CreateSheet/CreateExercise.template.html');

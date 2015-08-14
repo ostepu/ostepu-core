@@ -11,8 +11,9 @@
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/include/FormEvaluator.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
-include_once dirname(__FILE__) . '/../Assistants/Language.php';
 include_once dirname(__FILE__) . '/../Assistants/LArraySorter.php';
+
+$langTemplate='TutorAssign_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 if (!isset($_POST['actionSortUsers']))
 if (isset($_POST['action'])) {
@@ -45,10 +46,10 @@ if (isset($_POST['action'])) {
             http_post_data($URI, Marking::encodeMarking($markings), true, $message);
 
             if ($message == "201" || $message == "200") {
-                $msg = "Die Zuweisungen wurden erfolgreich geändert.";
+                $msg = Language::Get('main','successAssignment', $langTemplate);
                 $assignManuallyNotifications[] = MakeNotification("success", $msg);
             } else {
-                $msg = "Bei der Zuweisung ist ein Fehler aufgetreten.";
+                $msg = Language::Get('main','errorAssignment', $langTemplate);
                 $assignManuallyNotifications[] = MakeNotification("error", $msg);
             }        
         }
@@ -60,12 +61,12 @@ if (isset($_POST['action'])) {
             $f->checkIntegerForKey('tutorId',
                                    FormEvaluator::REQUIRED,
                                    'warning',
-                                   'Ungültiger Tutor.');
+                                   Language::Get('main','invalidTutor', $langTemplate));
                                            
             $f->checkArrayOfArraysForKey('assign',
                                        FormEvaluator::REQUIRED,
                                        'warning',
-                                       'Ungültige Auswahl.');
+                                       Language::Get('main','invalidSelection', $langTemplate));
 
             if ($f->evaluate(true)) {
                 // extracts the php POST data
@@ -125,10 +126,10 @@ if (isset($_POST['action'])) {
                 http_post_data($URI, Marking::encodeMarking($markings), true, $message);
 
                 if ($message == "201" || $message == "200") {
-                    $msg = "Die Zuweisungen wurden erfolgreich geändert.";
+                    $msg = Language::Get('main','successAssignment', $langTemplate);
                     $assignManuallyNotifications[] = MakeNotification("success", $msg);
                 } else {
-                    $msg = "Bei der Zuweisung ist ein Fehler aufgetreten.";
+                    $msg = Language::Get('main','errorAssignment', $langTemplate);
                     $assignManuallyNotifications[] = MakeNotification("error", $msg);
                 }         
             }  else {
@@ -148,7 +149,7 @@ if (isset($_POST['action'])) {
         $f->checkArrayOfIntegersForKey('tutorIds',
                                        FormEvaluator::REQUIRED,
                                        'warning',
-                                       'Ungültige Tutoren.');
+                                       Language::Get('main','invalidTutors', $langTemplate));
 
         if ($f->evaluate(true)) {
             // extracts the php POST data
@@ -188,10 +189,10 @@ if (isset($_POST['action'])) {
             http_post_data($URI, $data, true, $message);
 
             if ($message == "201" || $message == "200") {
-                $msg = "Die Zuweisungen wurden erfolgreich geändert.";
+                $msg = Language::Get('main','successAssignment', $langTemplate);
                 $assignAutomaticallyNotifications[] = MakeNotification("success", $msg);
             } else {
-                $msg = "Bei der Zuweisung ist ein Fehler aufgetreten.";
+                $msg = Language::Get('main','errorAssignment', $langTemplate);
                 $assignAutomaticallyNotifications[] = MakeNotification("error", $msg);
             }
         }  else {
@@ -203,16 +204,16 @@ if (isset($_POST['action'])) {
 
     // removes all tutor assignments by deleting all markings of the exercisesheet
     if ($_POST['action'] == "AssignRemoveWarning") {
-        $assignRemoveNotifications[] = MakeNotification("warning", "Sollen die Zuweisungen wirklich aufgehoben werden?<br>Dabei werden alle bisherigen Korrekturen entfernt!!!");
+        $assignRemoveNotifications[] = MakeNotification("warning", Language::Get('main','askUnassign', $langTemplate));
     } elseif ($_POST['action'] == "AssignRemove") {
         $URI = $databaseURI . "/marking/exercisesheet/" . $sid;
         http_delete($URI, true, $message);
 
         if ($message == "201") {
-            $msg = "Die Zuweisungen wurden erfolgreich aufgehoben.";
+            $msg = Language::Get('main','successUnassign', $langTemplate);
             $assignRemoveNotifications[] = MakeNotification("success", $msg);
         } else {
-            $msg = "Beim Aufheben der Zuweisungen ist ein Fehler aufgetreten.";
+            $msg = Language::Get('main','errorUnassign', $langTemplate);
             $assignRemoveNotifications[] = MakeNotification("error", $msg);
         }
     }
@@ -270,10 +271,6 @@ function custom_sort($a,$b) {
 usort($tutorAssign_data['tutorAssignments'], "custom_sort");
 
 $user_course_data = $tutorAssign_data['user'];
-
-if (isset($user_course_data['user']['lang'])){
-    Language::setPreferedLanguage($user_course_data['user']['lang']);
-}
 
 if (isset($_POST['sortUsers'])) {
     $tutorAssign_data['sortUsers'] = $_POST['sortUsers'];
