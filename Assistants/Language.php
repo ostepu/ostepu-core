@@ -154,14 +154,14 @@ class Language
             } else if (count($splitted)==3){
                 $elem = self::Get($splitted[0],$splitted[1],$splitted[2]);
             }
-            $res = preg_replace('/([^\\\\])(\$\['.$match.'\])/','$1'.$elem,$res);
+            $res = preg_replace('/([^\\\\])(\$\['.$match.'\])/','${1}'.$elem,$res);
         }
         
         foreach($params as $key => $value){
             $value = htmlspecialchars($value);
-            $res = preg_replace('/([^\\\\])(\$'.$key.')/','$1'.$value,$res);
+            $res = preg_replace('/([^\\\\])(\$'.$key.')/','${1}'.$value,$res);
         }
-        $res = preg_replace('/([^\\\\])(\$[\w]+)/','$1???',$res);
+        $res = preg_replace('/([^\\\\])(\$[\w]+)/','${1}???',$res);
         $res = str_replace('\$','$',$res);
         
         return $res;
