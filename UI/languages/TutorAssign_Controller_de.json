@@ -5,6 +5,8 @@
         "invalidTutor": "Ungültiger Tutor.",
         "invalidSelection": "Ungültige Auswahl.",
         "invalidTutors": "Ungültige Tutoren.",
-        "errorUnassign": "Beim Aufheben der Zuweisungen ist ein Fehler aufgetreten."
+        "errorUnassign": "Beim Aufheben der Zuweisungen ist ein Fehler aufgetreten.",
+        "askUnassign": "Sollen die Zuweisungen wirklich aufgehoben werden?<br>Dabei werden alle bisherigen Korrekturen entfernt!!!",
+        "successUnassign"": "Die Zuweisungen wurden erfolgreich aufgehoben."
     }
 }

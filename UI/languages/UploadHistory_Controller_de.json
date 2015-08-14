@@ -3,7 +3,7 @@
         "successSelectSubmission": "Die Einsendung wurde ausgewählt.",
         "errorSelectSubmission": "Beim Speichern ist ein Fehler aufgetreten!",
         "expiredExercisePerion": "Der Übungszeitraum ist am $endDate abgelaufen!",
-        "noStatedExercisePeriod": "Der Übungszeitraum beginnt am $startDate !",
+        "noStartedExercisePeriod": "Der Übungszeitraum beginnt am $startDate !",
         "noExercisePeriod": "Kein Übungszeitraum gefunden!",
     }
 }

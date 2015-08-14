@@ -1,7 +1,7 @@
 {
     "main": {
         "errorNoGroup": "$status: Internal Server Error. <br/> Zur Zeit können keine Aufgaben eingesendet werden.",
-        "noStatedExercisePeriod": "Der Übungszeitraum beginnt am $startDate !",
+        "noStartedExercisePeriod": "Der Übungszeitraum beginnt am $startDate !",
         "noExercisePeriod": "Kein Übungszeitraum gefunden!",
         "errorUploadSubmission": "$status: Aufgabe $exerciseName konnte nicht hochgeladen werden.",
         "successUploadSubmission": "Aufgabe $exerciseName wurde erfolgreich eingesendet.",

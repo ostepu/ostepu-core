@@ -1,6 +1,6 @@
 {
     "main": {
-        "missingExerciseType": "Bitte weisen Sie der Veranstaltung zugelassene Punktearten zu!",
+        "missingExerciseTypes": "Bitte weisen Sie der Veranstaltung zugelassene Punktearten zu!",
         "invalidFileType": "Sie haben eine nicht unterstützte Dateiendung verwendet.",
         "invalidSheetName": "Ungültiger Blattname.",
         "invalidPeriodBegin": "Leerer Bearbeitungsanfang.",
