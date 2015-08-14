@@ -9,6 +9,7 @@
  
  
 include_once ( dirname(__FILE__) . '/../../Assistants/Request.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/Language.php' );
 include_once ( dirname(__FILE__) . '/Helpers/FILE_TYPE.php' );
 include_once ( dirname(__FILE__) . '/Helpers/PRIVILEGE_LEVEL.php' );
 
@@ -315,6 +316,22 @@ function updateSelectedSubmission($databaseURI,
     }
     
     return $returnedSubmission;
+}
+
+/**
+ * Setzt die Sprache des Nutzers (es sollen noch weitere Aspekte folgen)
+ */
+function initPage($uid, $courseid=null){
+    global $getSiteURI;
+    
+    // load user data from the database
+    $databaseURI = $getSiteURI . "/accountsettings/user/{$uid}";
+    $accountSettings_data = http_get($databaseURI, true);
+    $accountSettings_data = json_decode($accountSettings_data, true);
+
+    if (isset($accountSettings_data['lang'])){
+        Language::setPreferedLanguage($accountSettings_data['lang']);
+    }
 }
 
 /**
