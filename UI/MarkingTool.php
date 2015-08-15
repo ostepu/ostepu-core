@@ -232,15 +232,15 @@ if (isset($_GET['downloadCSV'])) {
                 if (isset($exercise['submission'])){
                     if (isset($exercise['submission']['marking'])){
                         // submission + marking
-                        $tempMarking = Marking::decodeMarking(Marking::encodeMarking($exercise['submission']['marking']));
-                        $tempSubmission = Submission::decodeSubmission(Submission::encodeSubmission($exercise['submission']));
+                        $tempMarking = Marking::decodeMarking(json_encode($exercise['submission']['marking']));
+                        $tempSubmission = Submission::decodeSubmission(json_encode($exercise['submission']));
                         $tempMarking->setSubmission($tempSubmission);
                         $markings[] = $tempMarking;
                     } else {
                         // no marking
                         $tempMarking = Marking::createMarking($newMarkings,$uid,null,$exercise['submission']['id'],null,null,1,null,$timestamp,null);
                         $newMarkings--;
-                        $tempSubmission = Submission::decodeSubmission(Submission::encodeSubmission($exercise['submission']));
+                        $tempSubmission = Submission::decodeSubmission(json_encode($exercise['submission']));
                         $tempMarking->setSubmission($tempSubmission);
                         $markings[] = $tempMarking;
                     }
