@@ -388,9 +388,13 @@ class Platform extends Object implements JsonSerializable
         
         $isArray = true;
         if ( !$decode ){
-            reset($data);
-            if (current($data)!==false && !is_int(key($data))) {
-                $isArray = false;
+            if ($data !== null){
+                reset($data);
+                if (current($data)!==false && !is_int(key($data))) {
+                    $isArray = false;
+                }
+            } else {
+               $isArray = false; 
             }
         }
         
