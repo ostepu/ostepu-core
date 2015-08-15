@@ -306,7 +306,7 @@ class DBTransaction
                 $obj = new Transaction( );
                 $course = Course::ExtractCourse($queryResult[count($queryResult)-1]->getResponse(),true);
 
-                $obj->setTransactionId( $course['id'] . '_' . $queryResult[count($queryResult)-2]->getInsertId( ) . '_' . $random );
+                $obj->setTransactionId( $course->getId() . '_' . $queryResult[count($queryResult)-2]->getInsertId( ) . '_' . $random );
                 
 
                 $res[] = $obj;
