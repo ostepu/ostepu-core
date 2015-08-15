@@ -1,0 +1,7 @@
+{
+    "main": {
+        "title": "Einsendungen erzeugen",
+        "execute": "erzeugen",
+        "content": "Es werden für solche Nutzer, welcher nichts eingesendet haben, leere Einsendungen erzeugt, sodass diese einem Tutor zur Korrektur zugewiesen werden können. Dieser Vorgang ist nicht umkehrbar."
+    }
+}

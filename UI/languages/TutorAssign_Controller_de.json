@@ -7,6 +7,9 @@
         "invalidTutors": "Ungültige Tutoren.",
         "errorUnassign": "Beim Aufheben der Zuweisungen ist ein Fehler aufgetreten.",
         "askUnassign": "Sollen die Zuweisungen wirklich aufgehoben werden?<br>Dabei werden alle bisherigen Korrekturen entfernt!!!",
-        "successUnassign"": "Die Zuweisungen wurden erfolgreich aufgehoben."
+        "successUnassign": "Die Zuweisungen wurden erfolgreich aufgehoben.",
+        "errorMake": "Beim Erzeugen der Einsendungen ist ein Fehler aufgetreten.",
+        "askMake": "Sollen die Einsendungen wirklich erzeugt werden?",
+        "successMake": "Die Einsendungen wurde erfolgreich erstellt."
     }
 }
