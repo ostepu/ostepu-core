@@ -12,7 +12,7 @@ if (isset($_POST['action']) && isset($_POST['action']) && $_POST['action'] == "A
             foreach ($tutorAssign_data['tutorAssignments'] as $tutorAssignment) {
                 if (isset($tutorAssignment['proposalSubmissions'])){
                     foreach ($tutorAssignment['proposalSubmissions'] as $submission){
-                        $sub = Submission::decodeSubmission(Submission::encodeSubmission($submission));
+                        $sub = Submission::decodeSubmission(json_encode($submission));
                         $marking = new Marking();
                         $marking->setSubmission($sub);
                         $marking->setStatus(1);
