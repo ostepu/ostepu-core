@@ -187,6 +187,11 @@ function MakeNotification($notificationType, $notificationText)
 EOF;
 }
 
+function MakeInfoButton($infoId)
+{
+    return "<a href='DB/CInfo/info/???' title='info'><img src='Images/Info.png' /></a>";
+}
+
 /**
  * Converts bytes into a readable file size.
  *
@@ -354,4 +359,198 @@ function downloadMarkingsForSheet($userId, $sheetId)
     }
 
     header("Location: Download.php?t={$token}");
+}
+
+/**
+ * Creates a submission.
+ * The submission contains a dummy file for consistency reasons
+ * which isn't shown to anyone by setting the 'hideFile' flag 
+ *
+ * @param $leaderID The userID of the group leader
+ * @param $eID The id of the exercisesheet
+ *
+ * @return Returns the submission on success, NULL otherwise 
+ */
+function createSubmission($leaderID, $eID)
+{
+    global $databaseURI;
+    global $filesystemURI;
+
+    // creates the new submission including the dummy file
+    $newSubmission = Submission::createSubmission(null,
+                                                  $leaderID,
+                                                  null,
+                                                  $eID,
+                                                  null,
+                                                  1,
+                                                  time(),
+                                                  null,
+                                                  null,
+                                                  true);
+
+    $newSubmission = Submission::encodeSubmission($newSubmission);
+
+    $URI = $databaseURI . "/submission";
+    $submission = http_post_data($URI, $newSubmission, true, $message);
+
+    if ($message != "201") {
+        return NULL;
+    }
+
+    $submission = json_decode($submission, true);
+    $submissionID = $submission['id'];
+
+    // makes the currently created submission selected
+    updateSelectedSubmission($databaseURI,
+                             $leaderID,
+                             $submissionID,
+                             $eID,
+                             $message);
+
+    if ($message != "201") {
+        return NULL;
+    }
+
+    return $submission;
+}
+
+
+/**
+ * Creates a marking to an already existing submission.
+ * The marking contains a dummy file for consistency reasons
+ * which isn't shown to anyone by setting the 'hideFile' flag 
+ *
+ * @param $points The points of the marking
+ * @param $tutorComment The tutor's comment
+ * @param $status The status of the marking
+ * @param $submissionID The id of the submission that belongs to the marking
+ * @param $tutorID The id of the tutor who creates the marking
+ *
+ * @return bool Returns the marking on success, NULL otherwise 
+ */
+function createMarking($points, $tutorComment, $status, $submissionID, $tutorID)
+{
+    global $databaseURI;
+    global $filesystemURI;
+
+        // creates the new marking including the dummy file
+        $newMarking = Marking::createMarking(null,
+                                             $tutorID,
+                                             null,
+                                             $submissionID,
+                                             $tutorComment,
+                                             null,
+                                             $status,
+                                             $points,
+                                             time(),
+                                             true);
+
+        $newMarking = Marking::encodeMarking($newMarking);
+        $URI = $databaseURI . "/marking";
+        $marking = http_post_data($URI, $newMarking, true, $message);
+
+        if ($message != "201") {
+            return NULL;
+        }
+
+    return $marking;
+}
+
+
+/**
+ * Stores a marking in the database.
+ *
+ * @param $points The points of the marking
+ * @param $tutorComment The tutor's comment
+ * @param $status The status of the marking
+ * @param $submissionID The id of the submission, if set, -1 otherwise
+ * @param $markingID The id of the marking, if set, -1 otherwise
+ * @param $leaderID The id of the group leader
+ * @param $tutorID The id of the tutor who creates the marking
+ * @param $eID The id of the exercisesheet
+ *
+ * @return bool Returns true on success, false otherwise 
+ */
+function saveMarking($points, $tutorComment, $status, $submissionID, $markingID, $leaderID, $tutorID, $eID)
+{
+    global $databaseURI;
+
+    // submission and marking already exist and don't 
+    // need to be created before adding the marking data
+    if (($submissionID != -1 && $markingID != -1)) {
+        $newMarking = Marking::createMarking($markingID, 
+                                             $tutorID, 
+                                             null, 
+                                             null,
+                                             $tutorComment,
+                                             null,
+                                             $status,
+                                             $points,
+                                             time());
+
+        $newMarking = Marking::encodeMarking($newMarking);
+        $URI = $databaseURI . "/marking/{$markingID}";
+        http_put_data($URI, $newMarking, true, $message);
+
+        if ($message != 201) {
+            return false;
+        } else {
+            return true;
+        }
+    } elseif ($submissionID != -1 && $markingID == -1) {
+        // only the submission exists, the marking still
+        // needs to be created before adding the marking data
+
+        // creates the marking in the database
+        $marking = createMarking($points, $tutorComment, $status, $submissionID, $tutorID);
+        if (empty($marking)) {
+            return false;
+        } else {
+            return true;
+        }
+    } elseif (($submissionID == -1 && $markingID == -1)) {
+        // neither the submission nor the marking exist - they both
+        // need to be created before adding the marking data
+
+        // creates the submission in the database
+        $submission = createSubmission($leaderID, $eID);
+
+        if (!empty($submission)) {
+            // creates the marking in the database
+            $submissionID = $submission['id'];
+            $marking = createMarking($points, $tutorComment, $status, $submissionID, $tutorID);
+            if (!empty($marking)) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+}
+
+function updateSubmission($submissionId, $accepted)
+{
+    global $databaseURI;
+    $newSubmission = Submission::createSubmission( 
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    $accepted,
+                                                    null,
+                                                    null
+                                                    );
+
+    $newSubmission = Submission::encodeSubmission($newSubmission);
+    $URI = $databaseURI . "/submission/{$submissionId}";
+    http_put_data($URI, $newSubmission, true, $message);
+
+    if ($message != 201) {
+        return false;
+    } else {
+        return true;
+    }
 }
