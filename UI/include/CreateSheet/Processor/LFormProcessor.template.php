@@ -1,6 +1,5 @@
 <?php include_once dirname(__FILE__) . '/../../../../Assistants/Language.php'; ?>
-<?php include_once dirname(__FILE__) . '/../../Config.php'; ?>
-<?php include_once dirname(__FILE__) . '/../../Helpers.php'; ?>
+<?php include_once dirname(__FILE__) . '/../../Boilerplate.php'; ?>
 <?php $langTemplate='Processor_LFormProcessor';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
 
 <?php
