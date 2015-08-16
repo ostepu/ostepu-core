@@ -6,8 +6,8 @@
  * @author Florian Lücke
  */
 
-include_once 'Helpers.php';
-include_once '../Assistants/Logger.php';
+include_once ( dirname(__FILE__) . '/Helpers.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
 
 /**
  * Template class.
