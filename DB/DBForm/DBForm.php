@@ -339,7 +339,7 @@ class DBForm
                 $obj = new Form( );
                 $course = Course::ExtractCourse($queryResult[count($queryResult)-1]->getResponse(),true);
 
-                $obj->setFormId( $course['id'] . '_' . $queryResult[count($queryResult)-2]->getInsertId( ) );
+                $obj->setFormId( $course->getId() . '_' . $queryResult[count($queryResult)-2]->getInsertId( ) );
 
                 $res[] = $obj;
                 $this->_app->response->setStatus( 201 );

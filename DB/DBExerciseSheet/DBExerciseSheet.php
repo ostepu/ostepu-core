@@ -49,7 +49,7 @@ class DBExerciseSheet
      */
     public function editExerciseSheet( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/EditExerciseSheet.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/EditExerciseSheet.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new ExerciseSheet()),'Model::isProblem',array(new ExerciseSheet()));
     }
 
     /**
@@ -62,7 +62,7 @@ class DBExerciseSheet
      */
     public function deleteExerciseSheet( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteExerciseSheet.sql',$params,201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));  
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteExerciseSheet.sql',$params,201,'Model::isCreated',array(new ExerciseSheet()),'Model::isProblem',array(new ExerciseSheet()));  
     }
 
     /**
@@ -77,11 +77,11 @@ class DBExerciseSheet
     {
         $positive = function($input) {
             // sets the new auto-increment id
-            $obj = new Course( );
+            $obj = new ExerciseSheet( );
             $obj->setId( $input[0]->getInsertId( ) );
             return array("status"=>201,"content"=>$obj);
         };
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddExerciseSheet.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new Course()));
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddExerciseSheet.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new ExerciseSheet()));
     }
 
     public function getURL( $functionName, $linkName, $params=array(), $checkSession = true )

@@ -339,7 +339,7 @@ if ($correctExercise == true) {
                 
                 foreach ($processorType as $tempKey => $Data) {
                     $processor = new Process();
-                    $processor->setExercise(Exercise::decodeExercise(Exercise::encodeExercise($subexercise)));
+                    $processor->setExercise(Exercise::decodeExercise(json_encode($subexercise)));
                     $component = new Component();
                     $component->setId($Data);
                     $processor->SetTarget($component); 
@@ -657,7 +657,7 @@ if (isset($_POST['action'])) {// && $_POST['action'] == "new"
                     // upload forms
                     $URL = $serverURI."/logic/LForm/form";
                     ///echo Form::encodeForm($forms);
-                    http_post_data($URL, Form::encodeForm($forms), true, $message);
+                    http_post_data($URL, json_encode($forms), true, $message);
                     if ($message != 201) {
                         $errorInSent = true;
                     }
@@ -699,7 +699,7 @@ if (isset($_POST['action'])) {// && $_POST['action'] == "new"
                 if (!empty($processes)){
                     // upload processors
                     $URL = $serverURI."/logic/LProcessor/process";
-                    http_post_data($URL, Process::encodeProcess($processes), true, $message);
+                    http_post_data($URL, json_encode($processes), true, $message);
 
                     if ($message != 201) {
                         $errorInSent = true; 

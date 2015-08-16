@@ -369,7 +369,7 @@ class DBAttachment2
                 $obj = new Attachment( );
                 $course = Course::ExtractCourse($queryResult[count($queryResult)-1]->getResponse(),true);
 
-                $obj->setId( $course['id'] . '_' . $queryResult[count($queryResult)-2]->getInsertId( ) );
+                $obj->setId( $course->getId() . '_' . $queryResult[count($queryResult)-2]->getInsertId( ) );
                 
 
                 $res[] = $obj;
