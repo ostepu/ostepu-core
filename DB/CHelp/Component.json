@@ -1,0 +1,22 @@
+{
+    "name": "CHelp",
+    "version": "1.0",
+    "classFile": "CHelp.php",
+    "className": "CHelp",
+    "files": [
+        {"path": ".htaccess"},
+        {"path": "CHelp.php"},
+        {"path": "index.php"},
+        {"path": "Commands.json"},
+        {"path": "info/"}
+    ],
+    "links": [
+        {
+            "name": "request"
+        }
+    ],
+    "connector": [
+        {"name": "request","target": "CLocalObjectRequest"},
+        {"name": "postPlatform","target": "CInstall"}
+    ]
+}
