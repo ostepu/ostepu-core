@@ -1,4 +1,6 @@
 <?php include_once dirname(__FILE__) . '/../../../../Assistants/Language.php'; ?>
+<?php include_once dirname(__FILE__) . '/../../Config.php'; ?>
+<?php include_once dirname(__FILE__) . '/../../Helpers.php'; ?>
 <?php $langTemplate='Processor_LFormPredecessor';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
 
 <?php
@@ -9,6 +11,7 @@
  header('Content-Type: text/html; charset=utf-8');
  ?>
 <div class="content-element ProcessorParameterArea" style="outline:2px solid #b9b8b8;border-radius: 0px;margin: 0px;">
+    <?php echo MakeInfoButton('extension','LFormPredecessor'); ?>
     <div class="content-body-wrapper">
         <div class="content-body left">
             <table border="0" style="width:100%">          

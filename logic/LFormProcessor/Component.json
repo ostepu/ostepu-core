@@ -19,6 +19,7 @@
   ],
   "connector":[
     {"name":"extension", "target":"LExtension", "priority":150},
-    {"name":"request", "target":"CLocalObjectRequest"}
+    {"name":"request", "target":"CLocalObjectRequest"},
+    {"name":"request", "target":"CHelp", "links":[{"path":"/help/:language/extension/LFormProcessor"}]}
   ]
 }

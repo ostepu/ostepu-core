@@ -187,9 +187,11 @@ function MakeNotification($notificationType, $notificationText)
 EOF;
 }
 
-function MakeInfoButton($infoId)
+function MakeInfoButton($helpPath)
 {
-    return "<a href='DB/CInfo/info/???' title='info'><img src='Images/Info.png' /></a>";
+    global $serverURI;
+    $helpPath = implode('/',func_get_args());
+    return "<a target='popup' onclick=\"window.open('', 'popup', 'width=700,height=600,scrollbars=no, toolbar=no,status=no,resizable=yes,menubar=no,location=no,directories=no')\" href='{$serverURI}/DB/CHelp/help/".Language::$selectedLanguage."/{$helpPath}' title='info' target='_blank'><img src='Images/Info.png' /></a>";
 }
 
 /**
