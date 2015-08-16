@@ -24,7 +24,7 @@
         "errorAddUser": "Beim Eintragen ist ein Fehler aufgetreten.",
         "invalidUserId": "Unbekannter Nutzer.",
         "invalidAction": "Unbekannte Aktion.",
-        "successEditCourse": "Die Veranstaltung wurde bearbeitet!"
+        "successEditCourse": "Die Veranstaltung wurde bearbeitet!",
         "errorEditCourse": "Beim Speichern ist ein Fehler aufgetreten!"
     }
 }
