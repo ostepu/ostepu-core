@@ -719,14 +719,14 @@ if (isset($_POST['action'])) {// && $_POST['action'] == "new"
             if ($errorInSent == false) {
                 if ($_POST['action']=='edit'){
                     $errormsg = Language::Get('main','successEditSheet', $langTemplate);
-                } else 
+                } else {
                     $errormsg = Language::Get('main','successCreateSheet', $langTemplate);
                 }
                 array_push($notifications, MakeNotification('success', $errormsg));
             } else {
                 if ($_POST['action']=='edit'){
                     $errormsg = Language::Get('main','errorEditSheet', $langTemplate);
-                } else 
+                } else {
                     $errormsg = Language::Get('main','errorCreateSheet', $langTemplate);
                 }
                 array_push($notifications, MakeNotification('error', $errormsg));
@@ -738,7 +738,7 @@ if (isset($_POST['action'])) {// && $_POST['action'] == "new"
         } else {
             if ($_POST['action']=='edit'){
                 $errormsg = Language::Get('main','errorEditSheet', $langTemplate);
-            } else 
+            } else {
                 $errormsg = Language::Get('main','errorCreateSheet', $langTemplate);
             }
             array_push($notifications, MakeNotification('error', $errormsg));
