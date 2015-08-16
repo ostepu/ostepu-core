@@ -18,6 +18,6 @@
   "connector":[
     {"name":"extension", "target":"LExtension"},
     {"name":"request", "target":"CLocalObjectRequest"},
-    {"name":"request", "target":"CHelp", "links":[{"path":"/help/:language/extension/LForm"}]}
+    {"name":"request", "target":"CHelp", "links":[{"path":"/help/:language/extension/LForm.md"}]}
   ]
 }

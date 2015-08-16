@@ -184,20 +184,24 @@ class CConfig
         $path = str_replace("\\",'/',$path);
         $path .= 'help/';
         
+        $fileName = array_pop($helpPath);
+        $path_parts = pathinfo($fileName);
+        $helpPath[] = $path_parts['filename'];
         $helpPath[] = $language;
-        $helpPathString = implode('_',$helpPath);
+        $extension = (isset($path_parts['extension']) ? ('.'.strtolower($path_parts['extension'])) : '');
+        $helpPathString = implode('_',$helpPath).$extension;
         
-        if (file_exists($path.$helpPathString.'.md')){
+        if (file_exists($path.$helpPathString)){
             $this->_app->response->setStatus( 200 );
-            $this->_app->response->setBody( file_get_contents($path.$helpPathString.'.md') );
+            $this->_app->response->setBody( file_get_contents($path.$helpPathString) );
         }else{
             array_pop($helpPath);
             $helpPath[] = $this->_defaultLanguage;
-            $helpPathString = implode('_',$helpPath);
+            $helpPathString = implode('_',$helpPath).$extension;
             
-            if (file_exists($path.$helpPathString.'.md')){
+            if (file_exists($path.$helpPathString)){
                 $this->_app->response->setStatus( 200 );
-                $this->_app->response->setBody( file_get_contents($path.$helpPathString.'.md') );
+                $this->_app->response->setBody( file_get_contents($path.$helpPathString) );
             } else {
                 $this->_app->response->setStatus( 404 );
                 $this->_app->response->setBody( '' );

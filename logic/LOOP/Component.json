@@ -21,6 +21,6 @@
   "connector":[
     {"name":"extension", "target":"LExtension"},
     {"name":"request", "target":"CLocalObjectRequest"},
-    {"name":"request", "target":"CHelp", "links":[{"path":"/help/:language/extension/LOOP"}]}
+    {"name":"request", "target":"CHelp", "links":[{"path":"/help/:language/extension/LOOP.md"}]}
   ]
 }

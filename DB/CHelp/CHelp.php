@@ -55,11 +55,19 @@ class CHelp
         
         array_unshift($params['path'],$params['language']);
         $fileName = array_pop($params['path']);
+        $path_parts = pathinfo($fileName);
+        
         $cacheFolder = dirname(__FILE__).'/cache/'.implode('/',$params['path']);
         self::generatepath( $cacheFolder );
         
-        $params['path'][] = $fileName;
-        $cachePath = dirname(__FILE__).'/cache/'.implode('/',$params['path']).'.html';
+        $realExtension = (isset($path_parts['extension']) ? ('.'.strtolower($path_parts['extension'])) : '');
+        $params['path'][] = $path_parts['filename'].$realExtension;
+        $cacheExtension = $realExtension;
+        if ($cacheExtension == '.md'){
+            $cacheExtension = '.html';
+        }
+        
+        $cachePath = dirname(__FILE__).'/cache/'.implode('/',$params['path']).$cacheExtension;
         if (file_exists($cachePath)){
             return Model::isOk(file_get_contents($cachePath));
         }
@@ -68,15 +76,18 @@ class CHelp
         $order = '/help/'.$order;
         
         
-        $positive = function($input, $cachePath) {
-            $parser = new \Michelf\MarkdownExtra;
-            $input = $this->umlaute($input);
-            $my_html = $parser->transform($input);
-            $input = '<link rel="stylesheet" href="'.$this->config['MAIN']['externalUrl'].'/UI/css/github-markdown.css" type="text/css"><span class="markdown-body">'.$my_html.'</span>';
+        $positive = function($input, $cachePath, $realExtension) {
+            if ($realExtension == '.md'){
+                $parser = new \Michelf\MarkdownExtra;
+                $input = $this->umlaute($input);
+                $my_html = $parser->transform($input);
+                $input = '<link rel="stylesheet" href="'.$this->config['MAIN']['externalUrl'].'/UI/css/github-markdown.css" type="text/css"><span class="markdown-body">'.$my_html.'</span>';
+            }
+            
             @file_put_contents($cachePath,$input);
             return Model::isOk($input);
         };
-        return $this->_component->callByURI('request', $order, array('language'=>$params['language']), '', 200, $positive, array('path'=>$cachePath), 'Model::isEmpty', array());
+        return $this->_component->callByURI('request', $order, array('language'=>$params['language']), '', 200, $positive, array('cachePath'=>$cachePath, 'realExtension'=>$realExtension), 'Model::isEmpty', array());
     }
     
     /**

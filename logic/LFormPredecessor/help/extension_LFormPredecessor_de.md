@@ -11,7 +11,7 @@ Lässt nur druckbare Zeichen zu. Das stellt eine Kombination aus den Filtern `Bu
 Erlaubt nur Zeichenfolgen, mit Buchstaben (`[A-Z]` bzw. `[a-z]`).
 
 ##### Zahlen
-Erlaubt Ziffern (`[0-9]`), mit Trennzeichen (`[,.]`).
+Erlaubt Ziffern (`[0-9]`) und (`[-,]`).
 
 ##### Ziffern
 Erlaubt Ziffern (`[0-9]`).
@@ -23,7 +23,7 @@ Kombiniert die Filter `Ziffern` und `Buchstaben`.
 Erlaubt Zeichenketten als Eingabe, welche Ziffern (`[0-9]`) oder Buchstaben (`[A-F]` bzw. `[a-f]`) enthalten.
 
 ##### regulärer Ausdruck
-Sie können auch selbst reguläre Ausdrücke definiere, weitere Informationen zur Form finden Sie unter 
+Sie können auch selbst reguläre Ausdrücke definieren, weitere Informationen zur Form finden Sie unter 
 `http://www.php.net/manual/de/regexp.introduction.php`.
 
 #### Voraussetzungen
