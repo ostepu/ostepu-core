@@ -45,7 +45,7 @@ foreach ($elements as $elem){
                 file_put_contents(dirname(__FILE__).'/path/'.$dir.'.html',$body);
             }
             
-            $cssFile = dirname(__FILE__) . '/Assistants/php-markdown-lib/github-markdown.css';
+            $cssFile = dirname(__FILE__) . '/../UI/css/github-markdown.css';
             $cssFileTarget = dirname(__FILE__).'/path/'.$dir.'/github-markdown.css';
             if (file_exists($cssFile) && !file_exists($cssFileTarget)){
                 file_put_contents($cssFileTarget, file_get_contents($cssFile));
