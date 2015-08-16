@@ -243,6 +243,16 @@ class Link extends Object implements JsonSerializable
         $this->priority = $value;
     }
     
+    private $path = null;
+    public function getPath( )
+    {
+        return $this->path;
+    }
+    public function setPath( $value = null )
+    {
+        $this->path = $value;
+    }
+    
     /**
      * Creates an Link object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -261,7 +271,8 @@ class Link extends Object implements JsonSerializable
                                       $target,
                                       $name,
                                       $relevanz,
-                                      $priority = 100
+                                      $priority = 100,
+                                      $path = null
                                       )
     {
         return new Link( array( 
@@ -270,7 +281,8 @@ class Link extends Object implements JsonSerializable
                                'target' => $target,
                                'name' => $name,
                                'relevanz' => $relevanz,
-                               'priority' => $priority
+                               'priority' => $priority,
+                               'path' => $path
                                ) );
     }
 
@@ -312,7 +324,8 @@ class Link extends Object implements JsonSerializable
                      'CO_id_target' => 'target',
                      'CL_relevanz' => 'relevanz',
                      'CL_targetName' => 'targetName',
-                     'CL_priority' => 'priority'
+                     'CL_priority' => 'priority',
+                     'CL_path' => 'path'
                      );
     }
 
@@ -360,6 +373,12 @@ class Link extends Object implements JsonSerializable
                                  $values,
                                  'CL_priority',
                                  DBJson::mysql_real_escape_string( $this->priority )
+                                 );
+        if ( $this->path != null )
+            $this->addInsertData( 
+                                 $values,
+                                 'CL_path',
+                                 DBJson::mysql_real_escape_string( $this->path )
                                  );
 
         if ( $values != '' ){
@@ -479,6 +498,8 @@ class Link extends Object implements JsonSerializable
             $list['className'] = $this->className;
         if ( $this->localPath !== null )
             $list['localPath'] = $this->localPath;
+        if ( $this->path !== null )
+            $list['path'] = $this->path;
             
         return array_merge($list,parent::jsonSerialize( ));
     }

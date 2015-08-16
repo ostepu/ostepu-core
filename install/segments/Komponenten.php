@@ -73,7 +73,7 @@ class Komponenten
                     $router = new \Slim\Router();
                     foreach($component['commands'] as $command){
                         $route = new \Slim\Route($command['path'],'is_array');
-                        $route->via(strtoupper($command['method']));
+                        $route->via((isset($command['method']) ? strtoupper($command['method']) : 'GET'));
                         $router->map($route);
                     }
                     $component['router'] = $router;
@@ -92,7 +92,6 @@ class Komponenten
                 foreach($links as $link){
                     $linkNames[] = $link->getName();
                     $linkNamesUnique[$link->getName()] = $link->getName();
-                    
                 }
                 
                 
@@ -161,20 +160,22 @@ class Komponenten
                             if ($calls!==null){
                                 foreach($calls as $pos => $callList){                
                                     if ($link->getName() !== $callList['name']) continue;
-                                    foreach($callList['links'] as $pos2 => $call){
-                                        if (!isset($content[$link->getTargetName()]['router'])){
-                                            $notRoutable=true;
-                                            break;
-                                        }
-                                        if ($content[$link->getTargetName()]['router']==null) continue;
-                                        if ($call===null) continue;
-                                        if (!isset($call['method'])) continue;
-                                        if (!isset($call['path'])) continue;
-                                        
-                                        $routes = count($content[$link->getTargetName()]['router']->getMatchedRoutes(strtoupper($call['method']), $call['path']),true);
-                                        if ($routes===0){
-                                            $notRoutable=true;
-                                            break;
+                                    if (isset($callList['links']) && $callList['links'] !== null){
+                                        foreach($callList['links'] as $pos2 => $call){
+                                            if (!isset($content[$link->getTargetName()]['router'])){
+                                                $notRoutable=true;
+                                                break;
+                                            }
+                                            if ($content[$link->getTargetName()]['router']==null) continue;
+                                            if ($call===null) continue;
+                                            if (!isset($call['method'])) continue;
+                                            if (!isset($call['path'])) continue;
+                                            
+                                            $routes = count($content[$link->getTargetName()]['router']->getMatchedRoutes(strtoupper($call['method']), $call['path']),true);
+                                            if ($routes===0){
+                                                $notRoutable=true;
+                                                break;
+                                            }
                                         }
                                     }
                                     if ($notRoutable) break;

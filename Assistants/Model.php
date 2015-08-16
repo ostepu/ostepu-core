@@ -37,6 +37,10 @@ class Model
      */
     private $_com = null;
     
+    
+    private $_noInfo = null;
+    private $_noHelp = null;
+    
     /**
      * Der Konstruktor
      *
@@ -44,11 +48,13 @@ class Model
      * @param string Der lokale Pfade des Moduls
      * @param string Der Klassenname des Moduls
      */
-    public function __construct( $prefix, $path, $class )
+    public function __construct( $prefix, $path, $class, $noInfo = false, $noHelp = false)
     {
         $this->_path=$path;
         $this->_prefix=$prefix;
         $this->_class=$class;
+        $this->_noInfo=$noInfo;
+        $this->_noHelp=$noHelp;
     }
 
     /**
@@ -57,7 +63,7 @@ class Model
     public function run()
     {
         // runs the CConfig
-        $com = new CConfig( $this->_prefix, $this->_path );
+        $com = new CConfig( $this->_prefix, $this->_path, $this->_noInfo, $this->_noHelp );
 
         // lädt die Konfiguration des Moduls
         if ( $com->used( ) ) return;
@@ -285,8 +291,23 @@ class Model
                 break;
             }
         }
-        
-        $order = $selectedInstruction['links'][0]['path'];
+
+        $method = 'GET';
+        if ($link->getPath()!==null && $link->getPath()!==''){
+            $order = $link->getPath();
+            $met = strpos($order, ' ');
+            if ($met !== false){
+                $method = substr($order,0,$met);
+                $order = substr($order,$met+1);
+            } else {
+                return call_user_func_array($negativeMethod, $negativeParams);
+            }
+        } else {
+            $order = $selectedInstruction['links'][0]['path'];
+            if (isset($selectedInstruction['links'][0]['method'])){
+                $method = $selectedInstruction['links'][0]['method'];
+            }
+        }
         
         // ersetzt die Platzer im Ausgang mit den eingegeben Parametern
         foreach ($params as $key=>$param)
@@ -294,7 +315,7 @@ class Model
 
         // führe nun den Aufruf aus
         $result = Request::routeRequest( 
-                                        $selectedInstruction['links'][0]['method'],
+                                        $method,
                                         $order,
                                         array(),
                                         $body,
@@ -302,6 +323,106 @@ class Model
                                         $link->getPrefix()
                                         );    
                       
+        if ( $result['status'] == $positiveStatus ){
+            // die Antwort war so, wie wir sie erwartet haben
+            if ($returnType!==null){
+                // wenn ein erwarteter Rückgabetyp angegeben wurde, wird eine Typ::decodeType() ausgeführt
+                $result['content'] = call_user_func_array('\\'.$returnType.'::decode'.$returnType, array($result['content']));
+                if ( !is_array( $result['content'] ) )
+                    $result['content'] = array( $result['content'] );
+            }
+
+            // rufe nun die positive Methode auf
+            return call_user_func_array($positiveMethod, array_merge(array("input"=>$result['content']),$positiveParams));
+        }
+        
+        // ansonsten rufen wir die negative Methode auf
+        return call_user_func_array($negativeMethod, $negativeParams);
+    }
+    
+    /**
+     * Führt eine Anfrage über $linkName aus, wobei eine Verbindung mit der URI $order genutzt wird
+     *
+     * @param string $linkName Der Name des Ausgangs
+     * @param mixed[] $params Die Ersetzungen für die Platzhalter des Befehls (Bsp.: array('uid'=>2,'cid'=>1)
+     * @param string body Der Inhalt der Anfrage für POST und PUT
+     * @param int $positiveStatus Der Status, welcher als erfolgreiche Antwort gesehen wird (Bsp.: 200)
+     * @param callable $positiveMethod Im positiven Fall wird diese Methode aufgerufen
+     * @param mixed[] $positiveParams Die Werte, welche an die positive Funktion übergeben werden
+     * @param callable $negativeMethod Im negativen Fall wird diese Methode aufgerufen
+     * @param mixed[] $negativeParams Die Werte, welche an die negative Funktion übergeben werden
+     * @param string returnType Ein optionaler Rückgabetyp (es können Structures angegeben werden, sodass automatisch Typ::encodeType() ausgelöst wird)
+     * @return mixed Das Ergebnis der aufgerufenen Resultatfunktion
+     */
+    public function callByURI($linkName, $order, $params, $body, $positiveStatus, callable $positiveMethod, $positiveParams, callable $negativeMethod, $negativeParams, $returnType=null)
+    {
+        $links=CConfig::getLinks($this->_conf->getLinks( ),$linkName);
+        $link=null;
+        
+        $instructions = $this->_com->instruction(array(),true);
+        
+        // ermittle den zutreffenden Ausgang
+        $selectedInstruction=null;
+        foreach($instructions as $instruction){
+            if ($instruction['name']==$linkName){
+                $selectedInstruction=$instruction;
+                break;
+            }
+        }
+        
+        if (isset($selectedInstruction['links'][0]['path']) && $selectedInstruction['links'][0]['path'] == $order){
+            $link = $links[0];
+        } else {
+            foreach($links as $li){
+                $testPath = $li->getPath();
+                $met = strpos($testPath, ' ');
+                if ($met !== false){
+                    $testPath = substr($testPath,$met+1);
+                    foreach ($params as $key=>$param)
+                        $testPath = str_replace( ':'.$key, $param, $testPath);
+                    
+                    if ($testPath == $order){
+                        $link = $li;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        if ($link == null){
+            return call_user_func_array($negativeMethod, $negativeParams);
+        }
+        
+        $method = 'GET';
+        if ($link->getPath()!==null && $link->getPath()!==''){
+            $order = $link->getPath();
+            $met = strpos($order, ' ');
+            if ($met !== false){
+                $method = substr($order,0,$met);
+                $order = substr($order,$met+1);
+            } else {
+                return call_user_func_array($negativeMethod, $negativeParams);
+            }
+        } else {
+            $order = $selectedInstruction['links'][0]['path'];
+            if (isset($selectedInstruction['links'][0]['method'])){
+                $method = $selectedInstruction['links'][0]['method'];
+            }
+        }
+        
+        // ersetzt die Platzer im Ausgang mit den eingegeben Parametern
+        foreach ($params as $key=>$param)
+            $order = str_replace( ':'.$key, $param, $order);
+            
+        // führe nun den Aufruf aus
+        $result = Request::routeRequest( 
+                                        $method,
+                                        $order,
+                                        array(),
+                                        $body,
+                                        $link
+                                        );
+
         if ( $result['status'] == $positiveStatus ){
             // die Antwort war so, wie wir sie erwartet haben
             if ($returnType!==null){
