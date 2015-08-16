@@ -53,6 +53,7 @@ class CHelp
             return Model::isProblem();
         }
         
+        array_unshift($params['path'],$params['language']);
         $fileName = array_pop($params['path']);
         $cacheFolder = dirname(__FILE__).'/cache/'.implode('/',$params['path']);
         self::generatepath( $cacheFolder );
@@ -63,7 +64,6 @@ class CHelp
             return Model::isOk(file_get_contents($cachePath));
         }
         
-        array_unshift($params['path'],$params['language']);
         $order = implode('/',$params['path']);
         $order = '/help/'.$order;
         

@@ -66,16 +66,18 @@ class CConfig
     
     private $_noInfo = false;
     private $_noHelp = false;
+    private $_defaultLanguage = null;
 
     /**
      * the CConfig constructor
      *
      * @param $prefix the prefix, the component works with
      */
-    public function __construct( $prefix, $callPath = null, $noInfo = false, $noHelp = false )
+    public function __construct( $prefix, $callPath = null, $noInfo = false, $noHelp = false, $defaultLanguage = 'de' )
     {
         $this->_noInfo = $noInfo;
         $this->_noHelp = $noHelp;
+        $this->_defaultLanguage = $defaultLanguage;
     
         // initialize slim
         $this->setPrefix( $prefix );
@@ -183,14 +185,23 @@ class CConfig
         $path .= 'help/';
         
         $helpPath[] = $language;
-        $helpPath = implode('_',$helpPath);
+        $helpPathString = implode('_',$helpPath);
         
-        if (file_exists($path.$helpPath.'.md')){
+        if (file_exists($path.$helpPathString.'.md')){
             $this->_app->response->setStatus( 200 );
-            $this->_app->response->setBody( file_get_contents($path.$helpPath.'.md') );
+            $this->_app->response->setBody( file_get_contents($path.$helpPathString.'.md') );
         }else{
-            $this->_app->response->setStatus( 404 );
-            $this->_app->response->setBody( '' );
+            array_pop($helpPath);
+            $helpPath[] = $this->_defaultLanguage;
+            $helpPathString = implode('_',$helpPath);
+            
+            if (file_exists($path.$helpPathString.'.md')){
+                $this->_app->response->setStatus( 200 );
+                $this->_app->response->setBody( file_get_contents($path.$helpPathString.'.md') );
+            } else {
+                $this->_app->response->setStatus( 404 );
+                $this->_app->response->setBody( '' );
+            }
         }
     }
     
