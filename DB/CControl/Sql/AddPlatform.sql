@@ -118,8 +118,8 @@ AUTO_INCREMENT = 1;
 
 call drop_index_if_exists('Component','CO_address_UNIQUE');
 ALTER TABLE `component` ADD UNIQUE(`CO_name` ASC);
-call execute_if_column_not_exists('Component','CO_def','ALTER TABLE `Component` ADD COLUMN CO_def VARCHAR(255) NOT NULL DEFAULT \'\'');
-call execute_if_column_not_exists('Component','CO_status','ALTER TABLE `Component` ADD COLUMN CO_status int NOT NULL DEFAULT 1');
+call execute_if_column_not_exists('Component','CO_def','ALTER TABLE `Component` ADD COLUMN CO_def VARCHAR(255) NOT NULL DEFAULT \'\';');
+call execute_if_column_not_exists('Component','CO_status','ALTER TABLE `Component` ADD COLUMN CO_status int NOT NULL DEFAULT 1;');
 
 
 CREATE TABLE IF NOT EXISTS `ComponentLinkage` (
