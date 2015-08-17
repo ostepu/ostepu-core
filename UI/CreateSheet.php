@@ -20,8 +20,9 @@ $langTemplate='CreateSheet_Controller';Language::loadLanguageFile('de', $langTem
 
 function unmap($map, $id){
     foreach ($map as $m){
-        if ($m[1]==$id)
+        if ($m[1]==$id && isset($m[2])){
             return $m[2];
+        }
     }
     return null;
 }
@@ -298,8 +299,8 @@ if ($correctExercise == true) {
                 if (isset($subexercise['correct'])){
                     $choiceCorrect = $subexercise['correct'];
                     foreach ($choiceCorrect as $tempKey => $choiceData) {
-                        if (isset($choices[$tempKey]))                          
-                            $choices[$tempKey]->setCorrect(1);                   
+                        if (isset($choices[$choiceData]))                          
+                            $choices[$choiceData]->setCorrect(1);                   
                     }
                 }
                 
