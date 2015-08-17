@@ -10,6 +10,7 @@
     {"path":"Commands.json"},
     {"path":"compiler/"},
     {"path":"info/"},
+    {"path":"help/"},
     {"path":"start_cx"}
   ],
   "links":[

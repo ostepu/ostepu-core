@@ -8,7 +8,8 @@
     {"path":"LForm.php"},
     {"path":"index.php"},
     {"path":"Commands.json"},
-    {"path":"info/"}
+    {"path":"info/"},
+    {"path":"help/"}
   ],
   "links":[
     {"name":"form", "target":"DBForm", "links":[{"method":"POST", "path":"/form" },{"method":"DELETE", "path":"/form/:formid" }] },
