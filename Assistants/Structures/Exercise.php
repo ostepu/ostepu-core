@@ -292,6 +292,16 @@ class Exercise extends Object implements JsonSerializable
         $this->fileTypes = $value;
     }
     
+    private $submittable = null;
+    public function getSubmittable( )
+    {
+        return $this->submittable;
+    }
+    public function setSubmittable( $value = null )
+    {
+        $this->submittable = $value;
+    }
+    
     /**
      * Creates an Exercise object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -315,7 +325,8 @@ class Exercise extends Object implements JsonSerializable
                                           $type,
                                           $link,
                                           $bonus,
-                                          $linkName = null
+                                          $linkName = null,
+                                          $submittable = '1'
                                           )
     {
         return new Exercise( array(
@@ -326,7 +337,8 @@ class Exercise extends Object implements JsonSerializable
                                    'type' => $type,
                                    'link' => $link,
                                    'linkName' => $linkName,
-                                   'bonus' => $bonus
+                                   'bonus' => $bonus,
+                                   'submittable' => $submittable
                                    ) );
     }
 
@@ -348,7 +360,8 @@ class Exercise extends Object implements JsonSerializable
                      'E_submissions' => 'submissions',
                      'E_bonus' => 'bonus',
                      'E_attachments' => 'attachments',
-                     'E_fileTypes' => 'fileTypes'
+                     'E_fileTypes' => 'fileTypes',
+                     'E_submittable' => 'submittable'
                      );
     }
 
@@ -403,6 +416,13 @@ class Exercise extends Object implements JsonSerializable
                                  'E_bonus',
                                  DBJson::mysql_real_escape_string( $this->bonus )
                                  );
+        if ( $this->submittable !== null )
+            $this->addInsertData(
+                                 $values,
+                                 'E_submittable',
+                                 DBJson::mysql_real_escape_string( $this->submittable )
+                                 );
+
 
         if ( $values != '' ){
             $values = substr(
@@ -575,6 +595,8 @@ class Exercise extends Object implements JsonSerializable
             $list['fileTypes'] = $this->fileTypes;
         if ( $this->linkName !== null )
             $list['linkName'] = $this->linkName;
+        if ( $this->submittable !== null )
+            $list['submittable'] = $this->submittable;
         return array_merge($list,parent::jsonSerialize( ));
     }
 

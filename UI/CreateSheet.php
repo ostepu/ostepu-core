@@ -208,8 +208,13 @@ if ($correctExercise == true) {
             }
             $exercise[$key2]['id']=$exerciseId;
             
+            $submittable = '1';
+            if (isset($exercise[$key2]['submittable']) && $exercise[$key2]['submittable'] == '0'){
+                $submittable = '0';
+            }
+            
             $subexerciseObj = Exercise::createExercise($exerciseId,$cid,$sheetId, $exercise[$key2]['maxPoints'],
-                                                       $exercise[$key2]['exerciseType'],$key1+1,$bonus,$key2+1);
+                                                       $exercise[$key2]['exerciseType'],$key1+1,$bonus,$key2+1, $submittable);
             
             // set FileTypes (only as an array with strings in it)
             $subexerciseObj->setFileTypes($exercise[$key2]['mime-type']);
@@ -295,12 +300,16 @@ if ($correctExercise == true) {
                     $choice->SetText($choiceData); 
                     $choices[$tempKey] = $choice;
                 }
-                
                 if (isset($subexercise['correct'])){
                     $choiceCorrect = $subexercise['correct'];
                     foreach ($choiceCorrect as $tempKey => $choiceData) {
-                        if (isset($choices[$choiceData]))                          
-                            $choices[$choiceData]->setCorrect(1);                   
+                        $keykey = $choiceData;
+                        if ($keykey == ''){
+                            $keykey = $tempKey;
+                        }
+                        
+                        if (isset($choices[$keykey]))                          
+                            $choices[$keykey]->setCorrect(1);                   
                     }
                 }
                 
