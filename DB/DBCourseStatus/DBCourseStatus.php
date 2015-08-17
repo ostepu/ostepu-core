@@ -76,9 +76,9 @@ class DBCourseStatus
     {
         $positive = function($input) {
             // sets the new auto-increment id
-            $obj = new User( );
+            //$obj = new User( );
             //$obj->setId( $input[0]->getInsertId( ) );
-            return array("status"=>201,"content"=>$obj);
+            return array("status"=>201);
         };
         return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/AddCourseMember.sql',array( 'values' => $input->getCourseStatusInsertData( )),201,$positive,array(),'Model::isProblem',array(new User()));
     }

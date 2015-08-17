@@ -433,7 +433,7 @@ class DBTransaction
     {
         $this->get( 
                    'GetTransaction',
-                   dirname(__FILE__) . '/Sql/GetTransaction.sql',
+                   dirname(__FILE__) . '/Sql/procedures/GetTransaction.sql',
                    isset( $name ) ? $name : '',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
@@ -463,7 +463,7 @@ class DBTransaction
     {
         $this->get( 
                    'GetExistsCourseTransactions',
-                   dirname(__FILE__) . '/Sql/GetExistsCourseTransactions.sql',
+                   dirname(__FILE__) . '/Sql/procedures/GetExistsCourseTransactions.sql',
                    isset( $pre ) ? $pre : '',
                    isset( $userid ) ? $userid : '',
                    isset( $courseid ) ? $courseid : '',
