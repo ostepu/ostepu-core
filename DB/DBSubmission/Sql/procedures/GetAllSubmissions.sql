@@ -31,8 +31,8 @@ from
         left join 
     SelectedSubmission SS on (S.S_id = SS.S_id_selected)
 where ('",selected,"'<>'selected' or  S.S_id = SS.S_id_selected)
-and ('",beginStamp,"'=':beginStamp' or S.S_date>='",beginStamp,"')
-and ('",endStamp,"'=':endStamp' or S.S_date<='",endStamp,"');");
+and ('",beginStamp,"'='0' or S.S_date>='",beginStamp,"')
+and ('",endStamp,"'='0' or S.S_date<='",endStamp,"');");
 PREPARE stmt1 FROM @s;
 EXECUTE stmt1;
 DEALLOCATE PREPARE stmt1;

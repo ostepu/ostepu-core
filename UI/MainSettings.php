@@ -16,8 +16,9 @@
 
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
-include_once dirname(__FILE__) . '/../Assistants/Language.php';
 include_once dirname(__FILE__) . '/include/FormEvaluator.php';
+
+$langTemplate='MainSettings_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 // load Plugins data from LogicController
 $URI = $serverURI . "/logic/LExtension/link/extension";
@@ -32,30 +33,30 @@ if (isset($_POST['action'])) {
         $f->checkStringForKey('courseName',
                               FormEvaluator::REQUIRED,
                               'warning',
-                              'Ungültiger Kursname.',
+                              Language::Get('main','invalidCourseName', $langTemplate),
                               array('min' => 1));
 
         $f->checkStringForKey('semester',
                               FormEvaluator::REQUIRED,
                               array('min' => 1),
                               'warning',
-                              'Ungültiges Semester.');
+                              Language::Get('main','invalidSemester', $langTemplate));
 
         $f->checkIntegerForKey('defaultGroupSize',
                               FormEvaluator::REQUIRED,
                               'warning',
-                              'Ungültige Gruppengröße.',
+                              Language::Get('main','invalidGroupSize', $langTemplate),
                               array('min' => 0));
 
         $f->checkArrayOfIntegersForKey('exerciseTypes',
                                        FormEvaluator::OPTIONAL,
                                        'warning',
-                                       'Ungültige Aufgabentypen.');
+                                       Language::Get('main','invalidExerciseType', $langTemplate));
                                        
         $f->checkArrayOfIntegersForKey('plugins',
                                FormEvaluator::OPTIONAL,
                                'warning',
-                               'keine Erweiterungen gewählt.');
+                               Language::Get('main','noSelectedExtensions', $langTemplate));
 
         if($f->evaluate(true)) {
             // bool which is true if any error occured
@@ -115,10 +116,10 @@ if (isset($_POST['action'])) {
             if ($messageNewCourse == "201"
                 && $RequestError == false) {
                 $notifications[] = MakeNotification("success",
-                                                    "Die Veranstaltung wurde erstellt!");
+                                                    Language::Get('main','successCreateCourse', $langTemplate));
             } else {
                 $notifications[] = MakeNotification("error",
-                                                    "Beim Speichern ist ein Fehler aufgetreten!");
+                                                    Language::Get('main','errorCreateCourse', $langTemplate));
             }
         } else {
             $notifications = $notifications + $f->notifications;
@@ -139,7 +140,7 @@ if (isset($_POST['action'])) {
 
             // sets admin rights for the user
             if (empty($user_data)) {
-                $notifications[] = MakeNotification("error", "Ungültiges Kürzel.");
+                $notifications[] = MakeNotification("error", Language::Get('main','invalidUserId', $langTemplate));
             } else {
                 $userID = $user_data['id'];
                 $status = 3;
@@ -154,12 +155,12 @@ if (isset($_POST['action'])) {
                     http_put_data($url, $data, true, $message);
 
                     if ($message == "201") {
-                        $notifications[] = MakeNotification("success", "Der Admin wurde eingetragen.");
+                        $notifications[] = MakeNotification("success", Language::Get('main','successSetAdmin', $langTemplate));
                     } else {
-                        $notifications[] = MakeNotification("error", "Beim Eintragen ist ein Fehler aufgetreten.");
+                        $notifications[] = MakeNotification("error", Language::Get('main','errorSetAdmin', $langTemplate));
                     }
                 } else {
-                    $notifications[] = MakeNotification("success", "Der Admin wurde eingetragen.");
+                    $notifications[] = MakeNotification("success", Language::Get('main','successSetAdmin', $langTemplate));
                 }
             }
         }
@@ -172,37 +173,37 @@ if (isset($_POST['action'])) {
         $f->checkStringForKey('lastName',
                               FormEvaluator::REQUIRED,
                               'warning',
-                              'Ungültiger Nachname.',
+                              Language::Get('main','invalidLastName', $langTemplate),
                               array('min' => 1));
 
         $f->checkStringForKey('firstName',
                               FormEvaluator::REQUIRED,
                               'warning',
-                              'Ungültiger Vorname.',
+                              Language::Get('main','invalidFirstName', $langTemplate),
                               array('min' => 1));
 
         $f->checkStringForKey('userName',
                               FormEvaluator::REQUIRED,
                               'warning',
-                              'Ungültiger Benutzername.',
+                              Language::Get('main','invalidUserName', $langTemplate),
                               array('min' => 1));
 
         $f->checkEmailForKey('email',
                               FormEvaluator::OPTIONAL,
                               false,
                               'warning',
-                              'Ungültige E-Mail-Adresse.');
+                              Language::Get('main','invalidMail', $langTemplate));
 
         $f->checkStringForKey('password',
                               FormEvaluator::REQUIRED,
                               'warning',
-                              'Ungültiges Passwort.',
+                              Language::Get('main','invalidPassword', $langTemplate),
                               array('min' => 6));
 
         $f->checkStringForKey('passwordRepeat',
                               FormEvaluator::REQUIRED,
                               'warning',
-                              'Ungültige Passwortwiederholung.',
+                              Language::Get('main','invalidPasswordRepeat', $langTemplate),
                               array('min' => 6));
 
         if($f->evaluate(true)) {
@@ -242,13 +243,13 @@ if (isset($_POST['action'])) {
                 if ($message == "201") {
                     $user = User::decodeUser($answer);
                     if ($user->getStatus()== '201'){
-                        $notifications[] = MakeNotification("success", "Der Nutzer wurde erstellt!");
+                        $notifications[] = MakeNotification("success", Language::Get('main','successCreateUser', $langTemplate));
                     } else
-                        $notifications[] = MakeNotification("error", "Der Nutzer wurde nicht erstellt!");
+                        $notifications[] = MakeNotification("error", Language::Get('main','errorCreateUser', $langTemplate));
                 } else
-                        $notifications[] = MakeNotification("error", "Der Nutzer wurde nicht erstellt!");
+                        $notifications[] = MakeNotification("error", Language::Get('main','errorCreateUser', $langTemplate));
             } else {
-                $notifications[] = MakeNotification("error", "Die Passwörter stimmen nicht überein!");
+                $notifications[] = MakeNotification("error", Language::Get('main','invalidPasswordRepeat', $langTemplate));
             }
         } else {
             $notifications = $notifications + $f->notifications;
@@ -267,7 +268,7 @@ if (isset($_POST['action'])) {
             $user_data = json_decode($user_data, true);
 
             if (empty($user_data)) {
-                $notifications[] = MakeNotification("error", "Ungültiges Kürzel.");
+                $notifications[] = MakeNotification("error", Language::Get('main','invalidUserId', $langTemplate));
             } else {
                 $userID = $user_data['id'];
 
@@ -276,9 +277,9 @@ if (isset($_POST['action'])) {
                 http_delete($url, true, $message);
 
                 if ($message == "201") {
-                    $notifications[] = MakeNotification("success", "Der Nutzer wurde erfolgreich gelöscht.");
+                    $notifications[] = MakeNotification("success",Language::Get('main','successDeleteUser', $langTemplate));
                 } else {
-                    $notifications[] = MakeNotification("error", "Beim Löschen ist ein Fehler aufgetreten.");
+                    $notifications[] = MakeNotification("error", Language::Get('main','errorDeleteUser', $langTemplate));
                 }
             }
         }
@@ -294,10 +295,6 @@ $mainSettings_data['plugins'] = $plugins_data;
 
 $user_course_data = $mainSettings_data['user'];
 
-if (isset($user_course_data['user']['lang'])){
-    Language::setPreferedLanguage($user_course_data['user']['lang']);
-}
-
 Authentication::checkRights(PRIVILEGE_LEVEL::SUPER_ADMIN, null, $uid, $user_course_data);
 $menu = MakeNavigationElement($user_course_data,
                               PRIVILEGE_LEVEL::SUPER_ADMIN,true);
@@ -305,8 +302,8 @@ $menu = MakeNavigationElement($user_course_data,
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
-$h->bind(array("name" => "Einstellungen",
-               "backTitle" => "Veranstaltungen",
+$h->bind(array("name" => Language::Get('main','settings', $langTemplate),
+               "backTitle" => Language::Get('main','courses', $langTemplate),
                "backURL" => "index.php",
                "notificationElements" => $notifications,
                "navigationElement" => $menu));

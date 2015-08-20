@@ -9,6 +9,9 @@
  
  
 include_once ( dirname(__FILE__) . '/../../Assistants/Request.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/Language.php' );
+include_once ( dirname(__FILE__) . '/Helpers/FILE_TYPE.php' );
+include_once ( dirname(__FILE__) . '/Helpers/PRIVILEGE_LEVEL.php' );
 
 /**
  * Remove a value fom an array
@@ -24,22 +27,6 @@ function unsetValue(array $array, $value, $strict = TRUE)
         unset($array[$key]);
     }
     return $array;
-}
-
-/**
- * Read file contents as a string
- *
- * @param $filename The name of the file that should be read
- * @see http://php.net/manual/en/function.include.php
- */
-function getIncludeContents($filename)
-{
-    if (is_file($filename)) {
-        ob_start();
-        include $filename;
-        return ob_get_clean();
-    }
-    return false;
 }
 
 /**
@@ -200,6 +187,13 @@ function MakeNotification($notificationType, $notificationText)
 EOF;
 }
 
+function MakeInfoButton($helpPath)
+{
+    global $serverURI;
+    $helpPath = implode('/',func_get_args());
+    return "<a target='popup' onclick=\"window.open('', 'popup', 'width=700,height=600,scrollbars=no, toolbar=no,status=no,resizable=yes,menubar=no,location=no,directories=no')\" href='{$serverURI}/DB/CHelp/help/".Language::$selectedLanguage."/{$helpPath}' title='info' target='_blank'><img src='Images/Info.png' /></a>";
+}
+
 /**
  * Converts bytes into a readable file size.
  *
@@ -240,30 +234,6 @@ function cleanInput($input)
     return $input;
 }
 
-/**
- * An enumeration of different privilege levels.
- */
-class PRIVILEGE_LEVEL
-{
-    const STUDENT = 0;
-    const TUTOR = 1;
-    const LECTURER = 2;
-    const ADMIN = 3;
-    const SUPER_ADMIN = 4;
-
-    static $NAMES = array(
-        self::STUDENT => 'Student',
-        self::TUTOR => 'Tutor',
-        self::LECTURER => 'Dozent',
-        self::ADMIN => 'Admin');
-
-    static $SITES = array(
-        self::STUDENT => 'Student.php',
-        self::TUTOR => 'Tutor.php',
-        self::LECTURER => 'Lecturer.php',
-        self::ADMIN => 'Admin.php');
-}
-
 function MakeNavigationElement($user,
                                $requiredPrivilege,
                                $switchDisabled = false,
@@ -297,110 +267,6 @@ function MakeNavigationElement($user,
                                    'forIndex' => $forIndex));
 
     return $navigationElement;
-}
-
-/**
- * Saves a file to an instance of a filesystem server
- *
- * @param string $filesystemURI The url at which the filesystem server is running.
- * @param string $filePath The local path at which the file is located.
- * @param string $displayName The displayname of the uploaded file
- * @param int $timestamp The UNIX timestamp of the upload
- * @param string &$message A reference to a variable that will contain the HTTP
- * status code on return.
- *
- * @return string Om success rturns a json object, representing the file in the
- * filesystem. NULL otherwise.
- */
-function uploadFileToFileSystem($filesystemURI,
-                                $filePath,
-                                $displayName,
-                                $timestamp,
-                                &$message)
-{
-    $data = file_get_contents($filePath);
-    $data = base64_encode($data);
-
-    $file = array('timeStamp' => $timestamp,
-                  'displayName' => $displayName,
-                  'body' => $data);
-
-    // upload the file to the filesystem
-    $URL = $filesystemURI . '/file';
-    $jsonFile = http_post_data($URL,
-                              json_encode($file),
-                              true,
-                              $message);
-
-    return $jsonFile;
-}
-
-/**
- * Saves a reference to a file in the Database.
- *
- * @param string $databaseURI The url at which the database server is running.
- * @param array $file An associative array or file object representing a file
- * @param string &$message A reference to a variable that will contain the HTTP
- * status code on return.
- *
- * @return string On success rturns a json object, representing the file in the
- * database. NULL otherwise.
- */
-function saveFileInDatabase($databaseURI,
-                            $file,
-                            &$message)
-{
-    $URL = $databaseURI . '/file';
-//echo json_encode($file);
-    $jsonFile = http_post_data($URL, json_encode($file), true, $message);
-///echo "OK: ".$jsonFile;
-    if ($message != "201") {
-        //POST failed, check if the file already exists
-        $hash = $file['hash'];
-        $URL = $databaseURI . '/file/hash/' . $hash;
-        $jsonFile = http_get($URL, true, $message);
-        ///echo "hash: ".$jsonFile;
-    }
-///echo "<br>";
-    return $jsonFile;
-}
-
-/**
- * Stores a file in filesystem and database.
- *
- * @param string $filesystemURI The url at which the filesystem server is running.
- * @param string $databaseURI The url at which the database server is running.
- * @param string $filePath The local path at which the file is located.
- * @param string $displayName The displayname of the uploaded file
- * @param int $timestamp The UNIX timestamp of the upload
- * @param string &$message A reference to a variable that will contain the HTTP
- * status code on return.
- */
-function fullUpload($filesystemURI,
-                    $databaseURI,
-                    $filePath,
-                    $displayName,
-                    $timestamp,
-                    &$message)
-{
-    $jsonFile = uploadFileToFileSystem($filesystemURI,
-                                       $filePath,
-                                       $displayName,
-                                       $timestamp,
-                                       $message);
-
-    if ($message != "201") {
-        return NULL;
-    }
-
-    $fileObj = json_decode($jsonFile, true);
-    $fileObj['timeStamp'] = $timestamp;
-
-    $jsonFile = saveFileInDatabase($databaseURI,
-                                   $fileObj,
-                                   $message);
-
-    return $jsonFile;
 }
 
 /**
@@ -460,64 +326,19 @@ function updateSelectedSubmission($databaseURI,
 }
 
 /**
- * Creates a submission for a file.
- *
- * @param string $databaseURI The url at which the database server is running.
- * @param int $userid The id of the user that submitted the file.
- * @param int $fileId The id of the file that the user submitted.
- * @param int $exerciseId The id of the exercise the submission is for.
- * @param string $comment A comment the uder left on the submission.
- * @param int $timestapm The UNIX timestamp of the submission
- * @param string &$message A reference to a variable that will contain the HTTP
- * status code on return.
- *
- * @return string On success returns a json object, representing the selected
- * submission in the database. NULL otherwise.
+ * Setzt die Sprache des Nutzers (es sollen noch weitere Aspekte folgen)
  */
-function submitFile($databaseURI,
-                    $userid,
-                    $fileId,
-                    $exerciseId,
-                    $comment,
-                    $timestamp,
-                    &$message)
-{
-    $submission = Submission::createSubmission(NULL,
-                                               $userid,
-                                               $fileId,
-                                               $exerciseId,
-                                               $comment,
-                                               1,
-                                               $timestamp,
-                                               NULL,
-                                               NULL);
-    $URL = $databaseURI . '/submission';
-    $returnedSubmission = http_post_data($URL,
-                                         json_encode($submission),
-                                         true,
-                                         $message);
-
-    return $returnedSubmission;
-}
-
-/**
- * Starts download of all attachments of a sheet.
- *
- * @param $sheetId The id of the sheet whose attachments are downloaded.
- */
-function downloadAttachmentsOfSheet($sheetId)
-{
-    $sid = cleanInput($sheetId);
+function initPage($uid, $courseid=null){
+    global $getSiteURI;
     
-    $tokenString = "{$sid}_AttachmentsDownload";
-    $token = md5($tokenString);
+    // load user data from the database
+    $databaseURI = $getSiteURI . "/accountsettings/user/{$uid}";
+    $accountSettings_data = http_get($databaseURI, true);
+    $accountSettings_data = json_decode($accountSettings_data, true);
 
-    if (!isset($_SESSION['downloads'][$token])) {
-        $_SESSION['downloads'][$token] = array('download' => 'attachments',
-                                               'sid' => $sid);
+    if (isset($accountSettings_data['lang'])){
+        Language::setPreferedLanguage($accountSettings_data['lang']);
     }
-
-    header("Location: Download.php?t={$token}");
 }
 
 /**
@@ -542,57 +363,196 @@ function downloadMarkingsForSheet($userId, $sheetId)
     header("Location: Download.php?t={$token}");
 }
 
-/*
- * An enumeration of different mime-types.
+/**
+ * Creates a submission.
+ * The submission contains a dummy file for consistency reasons
+ * which isn't shown to anyone by setting the 'hideFile' flag 
+ *
+ * @param $leaderID The userID of the group leader
+ * @param $eID The id of the exercisesheet
+ *
+ * @return Returns the submission on success, NULL otherwise 
  */
-class FILE_TYPE
+function createSubmission($leaderID, $eID)
 {
-    public static $mimeType = array(
-        'gz' => array('application/gzip'),
-        'xls' => array('application/msexcel'),
-        'ppt' => array('application/mspowerpoint'),
-        'doc' => array('application/msword'),
-        'pdf' => array('application/pdf'),
-        'ai' => array('application/postscript'),
-        'eps' => array('application/postscript'),
-        'ps' => array('application/postscript'),
-        'htm' => array('text/html', 'application/xhtml+xml'),
-        'html' => array('text/html', 'application/xhtml+xml'),
-        'shtml' => array('text/html', 'application/xhtml+xml'),
-        'xhtml' => array('text/html', 'application/xhtml+xml'),
-        'xml' => array('application/xml', 'text/xml', 'text/xml-external-parsed-entity'),
-        'gtar' => array('application/x-gtar'),
-        'php' => array('application/x-httpd-php'),
-        'tar' => array('application/x-tar'),
-        'zip' => array('application/zip'),
-        'jpg' => array('image/jpeg'),
-        'png' => array('image/png'),
-        'gif' => array('image/gif'),
-        'csv' => array('text/comma-separated-values'),
-        'css' => array('text/css'),
-        'js' => array('text/javascript', 'application/x-javascript'),
-        'txt' => array('text/*'),
-        'img' => array('image/*'));
+    global $databaseURI;
+    global $filesystemURI;
 
-    /**
-     * Check if FileType has a given MimeType.
-     *
-     * @param string $end The fileending string without ".".
-     *
-     * @return bool Returns true if filetype is supported.
-     */
-    public static function checkSupportedFileType($end) {
-        return array_key_exists($end, self::$mimeType);
+    // creates the new submission including the dummy file
+    $newSubmission = Submission::createSubmission(null,
+                                                  $leaderID,
+                                                  null,
+                                                  $eID,
+                                                  null,
+                                                  1,
+                                                  time(),
+                                                  null,
+                                                  null,
+                                                  true);
+
+    $newSubmission = Submission::encodeSubmission($newSubmission);
+
+    $URI = $databaseURI . "/submission";
+    $submission = http_post_data($URI, $newSubmission, true, $message);
+
+    if ($message != "201") {
+        return NULL;
     }
 
-    /**
-     * Returns a mime-type to given fileending.
-     *
-     * @param string $end The fileending string without ".".
-     *
-     * @return string Returns mime-type.
-     */
-    public static function getMimeTypeByFileEnding($end) {
-        return self::$mimeType[$end];
+    $submission = json_decode($submission, true);
+    $submissionID = $submission['id'];
+
+    // makes the currently created submission selected
+    updateSelectedSubmission($databaseURI,
+                             $leaderID,
+                             $submissionID,
+                             $eID,
+                             $message);
+
+    if ($message != "201") {
+        return NULL;
+    }
+
+    return $submission;
+}
+
+
+/**
+ * Creates a marking to an already existing submission.
+ * The marking contains a dummy file for consistency reasons
+ * which isn't shown to anyone by setting the 'hideFile' flag 
+ *
+ * @param $points The points of the marking
+ * @param $tutorComment The tutor's comment
+ * @param $status The status of the marking
+ * @param $submissionID The id of the submission that belongs to the marking
+ * @param $tutorID The id of the tutor who creates the marking
+ *
+ * @return bool Returns the marking on success, NULL otherwise 
+ */
+function createMarking($points, $tutorComment, $status, $submissionID, $tutorID)
+{
+    global $databaseURI;
+    global $filesystemURI;
+
+        // creates the new marking including the dummy file
+        $newMarking = Marking::createMarking(null,
+                                             $tutorID,
+                                             null,
+                                             $submissionID,
+                                             $tutorComment,
+                                             null,
+                                             $status,
+                                             $points,
+                                             time(),
+                                             true);
+
+        $newMarking = Marking::encodeMarking($newMarking);
+        $URI = $databaseURI . "/marking";
+        $marking = http_post_data($URI, $newMarking, true, $message);
+
+        if ($message != "201") {
+            return NULL;
+        }
+
+    return $marking;
+}
+
+
+/**
+ * Stores a marking in the database.
+ *
+ * @param $points The points of the marking
+ * @param $tutorComment The tutor's comment
+ * @param $status The status of the marking
+ * @param $submissionID The id of the submission, if set, -1 otherwise
+ * @param $markingID The id of the marking, if set, -1 otherwise
+ * @param $leaderID The id of the group leader
+ * @param $tutorID The id of the tutor who creates the marking
+ * @param $eID The id of the exercisesheet
+ *
+ * @return bool Returns true on success, false otherwise 
+ */
+function saveMarking($points, $tutorComment, $status, $submissionID, $markingID, $leaderID, $tutorID, $eID)
+{
+    global $databaseURI;
+
+    // submission and marking already exist and don't 
+    // need to be created before adding the marking data
+    if (($submissionID != -1 && $markingID != -1)) {
+        $newMarking = Marking::createMarking($markingID, 
+                                             $tutorID, 
+                                             null, 
+                                             null,
+                                             $tutorComment,
+                                             null,
+                                             $status,
+                                             $points,
+                                             time());
+
+        $newMarking = Marking::encodeMarking($newMarking);
+        $URI = $databaseURI . "/marking/{$markingID}";
+        http_put_data($URI, $newMarking, true, $message);
+
+        if ($message != 201) {
+            return false;
+        } else {
+            return true;
+        }
+    } elseif ($submissionID != -1 && $markingID == -1) {
+        // only the submission exists, the marking still
+        // needs to be created before adding the marking data
+
+        // creates the marking in the database
+        $marking = createMarking($points, $tutorComment, $status, $submissionID, $tutorID);
+        if (empty($marking)) {
+            return false;
+        } else {
+            return true;
+        }
+    } elseif (($submissionID == -1 && $markingID == -1)) {
+        // neither the submission nor the marking exist - they both
+        // need to be created before adding the marking data
+
+        // creates the submission in the database
+        $submission = createSubmission($leaderID, $eID);
+
+        if (!empty($submission)) {
+            // creates the marking in the database
+            $submissionID = $submission['id'];
+            $marking = createMarking($points, $tutorComment, $status, $submissionID, $tutorID);
+            if (!empty($marking)) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+}
+
+function updateSubmission($submissionId, $accepted)
+{
+    global $databaseURI;
+    $newSubmission = Submission::createSubmission( 
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    $accepted,
+                                                    null,
+                                                    null
+                                                    );
+
+    $newSubmission = Submission::encodeSubmission($newSubmission);
+    $URI = $databaseURI . "/submission/{$submissionId}";
+    http_put_data($URI, $newSubmission, true, $message);
+
+    if ($message != 201) {
+        return false;
+    } else {
+        return true;
     }
 }

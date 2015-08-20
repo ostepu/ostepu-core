@@ -10,7 +10,8 @@
 
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
-include_once dirname(__FILE__) . '/../Assistants/Language.php';
+
+$langTemplate='Upload_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 if (isset($_POST['action']) && $_POST['action'] == 'submit') {
     // handle uploading files
@@ -24,7 +25,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
     $group = json_decode($group, true);
 
     if (!isset($group['leader'])) {
-        $errormsg = "500: Internal Server Error. <br />Zur Zeit können keine Aufgaben eingesendet werden.";
+        $errormsg = Language::Get('main','errorNoGroup', $langTemplate, array('status'=>500));
         $notifications[] = MakeNotification('error',
                                             $errormsg);
         Logger::Log('error', "No group set for user {$uid} in course {$cid}!");
@@ -45,11 +46,11 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
             if ($isExpired){
                 // empty
             } elseif (!$hasStarted){
-                set_error("Der Übungszeitraum beginnt am ".date('d.m.Y  -  H:i', $sheet['startDate'])."!");
+                set_error(Language::Get('main','noExercisePeriod', $langTemplate, array('startDate'=>date('d.m.Y  -  H:i', $sheet['startDate']))));
             }
             
         } else
-            set_error("Kein Übungszeitraum gefunden!");
+            set_error(Language::Get('main','noExercisePeriod', $langTemplate));
 
         $leaderId = $group['leader']['id'];
 
@@ -123,7 +124,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
                     if ($message != "201") {
                         $result = Submission::decodeSubmission($result);
                         $exercise = $key + 1;
-                        $errormsg = "{$message}: Aufgabe ".$exercise['name']." konnte nicht hochgeladen werden.";
+                        $errormsg = Language::Get('main','errorUploadSubmission', $langTemplate, array('status'=>$message,'exerciseName'=>$exercise['name']));
                         
                         if ($result!==null && !empty($result)){
                             $errormsg .= "<br><br>";
@@ -156,7 +157,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
                                     if ($message != "201") {
                                         $result2 = Choice::decodeChoice($result2);
                                         $exercise = $key + 1;
-                                        $errormsg = "{$message}: Aufgabe ".$exercise['name']." konnte nicht hochgeladen werden.";
+                                        $errormsg = Language::Get('main','errorUploadSubmission', $langTemplate, array('status'=>$message,'exerciseName'=>$exercise['name']));
                                         
                                         if ($result2!==null){
                                             $errormsg .= "<br><br>";
@@ -185,12 +186,12 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
                     }
                   
 
-                    $msg = "Aufgabe ".$exercise['name']." wurde erfolgreich eingesendet.<br>".$errormsg;
+                    $msg = Language::Get('main','successUploadSubmission', $langTemplate, array('exerciseName'=>$exercise['name']))."<br>".$errormsg;
                     $notifications[] = MakeNotification('success',
                                                         $msg);
                                                         
                     if ($isExpired){
-                        $msg = "Aufgabe ".$exercise['name']." wurde verspätet eingesendet!";
+                        $msg = Language::Get('main','successLateSubmission', $langTemplate, array('exerciseName'=>$exercise['name']));
                         $notifications[] = MakeNotification('warning',
                                                             $msg);    
                     }
@@ -217,10 +218,6 @@ if (!isset($group)){
 
 $user_course_data = $upload_data['user'];
 
-if (isset($user_course_data['user']['lang'])){
-    Language::setPreferedLanguage($user_course_data['user']['lang']);
-}
-
 Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $user_course_data);
 $isExpired=null;
 $hasStarted=null;
@@ -241,21 +238,19 @@ if (isset($upload_data['exerciseSheet']['endDate']) && isset($upload_data['exerc
         
         ///set_error("Der Übungszeitraum ist am ".date('d.m.Y  -  H:i', $upload_data['exerciseSheet']['endDate'])." abgelaufen!");
         if ($allowed  === null || $allowed==1){
-            $msg = "Der Übungszeitraum ist am ".date('d.m.Y  -  H:i', $upload_data['exerciseSheet']['endDate'])." abgelaufen!<br>".
-                   "Eine verspätete Einsendung muss von einem Administrator akzeptiert werden, ansonsten wird diese nicht <br> gewertet. ".
-                   "Die vergebenen Punkte einer bereits bewerteten Einsendung gehen beim Überschreiben verloren.";
+            $msg = Language::Get('main','expiredExercisePerionDesc', $langTemplate,array('endDate'=>date('d.m.Y  -  H:i', $upload_data['exerciseSheet']['endDate'])));
             $notifications[] = MakeNotification('warning',
                                                 $msg);
         } else {
-            set_error("Der Übungszeitraum ist am ".date('d.m.Y  -  H:i', $upload_data['exerciseSheet']['endDate'])." abgelaufen!");
+            set_error(Language::Get('main','expiredExercisePerion', $langTemplate,array('endDate'=>date('d.m.Y  -  H:i', $upload_data['exerciseSheet']['endDate']))));
         }
         
     } elseif (!$hasStarted){
-        set_error("Der Übungszeitraum beginnt am ".date('d.m.Y  -  H:i', $upload_data['exerciseSheet']['startDate'])."!");
+        set_error(Language::Get('main','noStartedExercisePeriod', $langTemplate,array('startDate'=>date('d.m.Y  -  H:i', $upload_data['exerciseSheet']['startDate']))));
     }
     
 } else
-    set_error("Kein Übungszeitraum gefunden!");
+    set_error(Language::Get('main','noExercisePeriod', $langTemplate));
 
 //$formdata = file_get_contents('FormSample.json');
 $URL = $serverURI."/DB/DBForm/form/exercisesheet/{$sid}";
@@ -282,7 +277,7 @@ $menu = MakeNavigationElement($user_course_data,
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
 $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
-               "backTitle" => "zur Veranstaltung",
+               "backTitle" => Language::Get('main','backToCourse', $langTemplate),
                "backURL" => "Student.php?cid={$cid}",
                "notificationElements" => $notifications,
                "navigationElement" => $menu));

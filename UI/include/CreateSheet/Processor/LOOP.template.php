@@ -1,4 +1,5 @@
 <?php include_once dirname(__FILE__) . '/../../../../Assistants/Language.php'; ?>
+<?php include_once dirname(__FILE__) . '/../../Boilerplate.php'; ?>
 <?php $langTemplate='Processor_LOOP';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
 
 <?php
@@ -9,6 +10,7 @@
  header('Content-Type: text/html; charset=utf-8');
  ?>
 <div class="content-element ProcessorParameterArea" style="outline:2px solid #b9b8b8;border-radius: 0px;margin: 0px;">
+    <?php echo MakeInfoButton('extension','LOOP.md'); ?>
     <div class="content-body-wrapper" style="">
         <div class="content-body left" style="width:100%;">
             <table border="1" style="width:100%;"> 

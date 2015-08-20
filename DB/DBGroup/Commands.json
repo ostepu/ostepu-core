@@ -38,7 +38,8 @@
     },
     {
         "name": "getUserSheetGroup",
-        "callback": "getMatchSingle",
+        "callback": "getMatch",
+        "singleOutput": "TRUE",
         "outputType": "Group",
         "inputType": "",
         "method": "GET",
@@ -76,7 +77,8 @@
     },
     {
         "name": "getExistsPlatform",
-        "callback": "getMatchSingle",
+        "callback": "getMatch",
+        "singleOutput": "TRUE",
         "outputType": "Platform",
         "inputType": "",
         "method": "GET",

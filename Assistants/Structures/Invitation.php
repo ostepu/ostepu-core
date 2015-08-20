@@ -247,6 +247,18 @@ class Invitation extends Object implements JsonSerializable
      */
     public static function encodeInvitation( $data )
     {
+        if (is_array($data))reset($data);
+        if (gettype($data) !== 'object' && !(is_array($data) && (current($data)===false || gettype(current($data)) === 'object'))){
+            $e = new Exception();
+            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());            
+            return null;
+        }
+        if ((is_array($data) && (is_array(current($data)) || (current($data)!==false && get_class(current($data)) !== get_called_class()))) || (!is_array($data) && get_class($data) !== get_called_class())){
+            $e = new Exception();
+            $class = (is_array($data) && is_array(current($data)) ? 'array' : (is_array($data) ? (current($data)!==false ? get_class(current($data)) : 'array') : get_class($data)));
+            error_log(__FILE__.':'.__LINE__.' wrong type, '.$class.' given, '.get_called_class()." expected\n".$e->getTraceAsString());
+            return null;
+        }
         return json_encode( $data );
     }
 
@@ -270,7 +282,20 @@ class Invitation extends Object implements JsonSerializable
 
         if ( $decode )
             $data = json_decode( $data );
-        if ( is_array( $data ) ){
+        
+        $isArray = true;
+        if ( !$decode ){
+            if ($data !== null){
+                reset($data);
+                if (current($data)!==false && !is_int(key($data))) {
+                    $isArray = false;
+                }
+            } else {
+               $isArray = false; 
+            }
+        }
+        
+        if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
                 $result[] = new Invitation( $value );
@@ -359,6 +384,7 @@ class Invitation extends Object implements JsonSerializable
         if ($isResult){ 
             // to reindex
             $res = array_values( $res );
+            $res = Invitation::decodeInvitation($res,false);
 
             if ( $singleResult == true ){
 

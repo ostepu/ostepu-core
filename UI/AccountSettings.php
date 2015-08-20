@@ -10,8 +10,9 @@
 
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
-include_once dirname(__FILE__) . '/../Assistants/Language.php';
 include_once dirname(__FILE__) . '/include/FormEvaluator.php';
+
+$langTemplate='AccountSettings_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 if (isset($_POST['action'])) {
     // changes the user's password
@@ -21,19 +22,19 @@ if (isset($_POST['action'])) {
         $f->checkStringForKey('oldPassword',
                               FormEvaluator::OPTIONAL,
                               'warning',
-                              'Ungüliges altes Passwort.',
+                              Language::Get('main','invalidOldPassword', $langTemplate),
                               array('min' => 1));
 
         $f->checkStringForKey('newPassword',
                               FormEvaluator::REQUIRED,
                               'warning',
-                              'Ungüliges neues Passwort.',
+                              Language::Get('main','invalidNewPassword', $langTemplate),
                               array('min' => 3));
 
         $f->checkStringForKey('newPasswordRepeat',
                               FormEvaluator::REQUIRED,
                               'warning',
-                              'Ungülige Passwortwiederholung.',
+                              Language::Get('main','invalidRepeat', $langTemplate),
                               array('min' => 3));
 
         if($f->evaluate(true)) {
@@ -71,11 +72,11 @@ if (isset($_POST['action'])) {
                     }
                 }
                 else {
-                    $notifications[] = MakeNotification("error", "Die Passwörter stimmen nicht überein!");
+                    $notifications[] = MakeNotification("error", Language::Get('main','differentPasswords', $langTemplate));
                 }
             }
             else {
-                $notifications[] = MakeNotification("error", "Das alte Passwort ist nicht korrekt!");
+                $notifications[] = MakeNotification("error", Language::Get('main','incorrectOldPassword', $langTemplate));
             }
         } else {
             $notifications = $notifications + $f->notifications;
@@ -100,7 +101,7 @@ if (isset($_POST['action'])) {
             http_put_data($URI, $newUserSettings, true, $message);
 
             if ($message == "201") {
-                $notifications[] = MakeNotification("success", "Die Sprache wurde geändert!");
+                $notifications[] = MakeNotification("success", Language::Get('main','languageChanged', $langTemplate));
             }
         } else {
             $notifications = $notifications + $f->notifications;
@@ -113,16 +114,11 @@ $databaseURI = $getSiteURI . "/accountsettings/user/{$uid}";
 $accountSettings_data = http_get($databaseURI, true);
 $accountSettings_data = json_decode($accountSettings_data, true);
 
-
-if (isset($accountSettings_data['lang'])){
-    Language::setPreferedLanguage($accountSettings_data['lang']);
-}
-
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($accountSettings_data);
-$h->bind(array("name" => "Account-Einstellungen",
-               "backTitle" => "Veranstaltungen",
+$h->bind(array("name" => Language::Get('main','accountSettings', $langTemplate),
+               "backTitle" => Language::Get('main','course', $langTemplate),
                "backURL" => "index.php",
                "notificationElements" => $notifications));
 

@@ -16,9 +16,10 @@
 
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
-include_once dirname(__FILE__) . '/../Assistants/Language.php';
 include_once dirname(__FILE__) . '/../Assistants/LArraySorter.php';
 include_once dirname(__FILE__) . '/include/FormEvaluator.php';
+
+$langTemplate='CourseManagement_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 // load Plugins data from LogicController
 $URI = $serverURI . "/logic/LExtension/link/extension";
@@ -49,7 +50,7 @@ if (!isset($_POST['actionSortUsers']) && isset($_POST['action'])) {
         $RequestError = false;
         if (count($externalId) == 0){
             $RequestError = true;
-            $editExternalIdNotifications[] = MakeNotification("error", 'Wählen Sie einen Alias!');
+            $editExternalIdNotifications[] = MakeNotification("error", Language::Get('main','noSelectedAlias', $langTemplate));
         }
 
         if (!$RequestError){
@@ -60,7 +61,7 @@ if (!isset($_POST['actionSortUsers']) && isset($_POST['action'])) {
                 http_delete($URI, true, $messageNewAc);
                 if ($messageNewAc != "201") {
                     $RequestError = true;
-                    $editExternalIdNotifications[] = MakeNotification("error", "Beim Entfernen ist ein Fehler aufgetreten!");
+                    $editExternalIdNotifications[] = MakeNotification("error", Language::Get('main','errorRemoveAlias', $langTemplate));
                     break;
                 }
             }
@@ -68,7 +69,7 @@ if (!isset($_POST['actionSortUsers']) && isset($_POST['action'])) {
  
         // show notification
         if ($RequestError == false) {
-            $editExternalIdNotifications[] = MakeNotification("success", "Die Veranstaltung wurde bearbeitet!");
+            $editExternalIdNotifications[] = MakeNotification("success", Language::Get('main','successEditCourse', $langTemplate));
         }
     
     } elseif ($_POST['action'] == "AddExternalId") {
@@ -78,17 +79,17 @@ if (!isset($_POST['actionSortUsers']) && isset($_POST['action'])) {
         $RequestError = false;
         if (strlen($externalId) == 0){
             $RequestError = true;
-            $addExternalIdNotifications[] = MakeNotification("error", 'Geben Sie einen Alias für die Veranstaltung ein!');
+            $addExternalIdNotifications[] = MakeNotification("error", Language::Get('main','missingAliasName', $langTemplate));
         }
         
         if (strlen($externalType) == 0){
             $RequestError = true;
-            $addExternalIdNotifications[] = MakeNotification("error", 'Kein Alias-Typ gefunden!');
+            $addExternalIdNotifications[] = MakeNotification("error", Language::Get('main','missingAliasType', $langTemplate));
         }
         
         if ($externalType == 2 && strlen($externalTypeName) == 0){
             $RequestError = true;
-            $addExternalIdNotifications[] = MakeNotification("error", 'Geben Sie einen Alias-Präfix an!');
+            $addExternalIdNotifications[] = MakeNotification("error", Language::Get('main','missingAliasPrefix', $langTemplate));
         }
         
         if (!$RequestError){
@@ -101,13 +102,13 @@ if (!isset($_POST['actionSortUsers']) && isset($_POST['action'])) {
             http_post_data($URI, ExternalId::encodeExternalId($ext), true, $messageNewAc);
             if ($messageNewAc != "201") {
                 $RequestError = true;
-                $addExternalIdNotifications[] = MakeNotification("error", "Beim Anlegen ist ein Fehler aufgetreten!");
+                $addExternalIdNotifications[] = MakeNotification("error", Language::Get('main','errorCreateAlias', $langTemplate));
             }
         }
  
         // show notification
         if ($RequestError == false) {
-            $addExternalIdNotifications[] = MakeNotification("success", "Die Veranstaltung wurde bearbeitet!");
+            $addExternalIdNotifications[] = MakeNotification("success", Language::Get('main','successEditCourse', $langTemplate));
         }
     
     } elseif ($_POST['action'] == "Plugins") {
@@ -181,10 +182,10 @@ if (!isset($_POST['actionSortUsers']) && isset($_POST['action'])) {
 
         // show notification
         if ($RequestError == false) {
-            $pluginsNotifications[] = MakeNotification("success", "Die Erweiterungen wurden bearbeitet!");
+            $pluginsNotifications[] = MakeNotification("success", Language::Get('main','successEditExtensions', $langTemplate));
         }
         else {
-            $pluginsNotifications[] = MakeNotification("error", "Beim Bearbeiten ist ein Fehler aufgetreten!");
+            $pluginsNotifications[] = MakeNotification("error", Language::Get('main','errorEditExtensions', $langTemplate));
         }
     
     } elseif ($_POST['action'] == "CourseSettings") {
@@ -201,7 +202,7 @@ if (!isset($_POST['actionSortUsers']) && isset($_POST['action'])) {
             if (isset($_POST['setting'])){
                 foreach ($_POST['setting'] as $key => $params){
                     if (!isset($params['type']) || !isset($params['value'])){
-                        $courseSettingsNotifications[] = MakeNotification("error", "Fehlerhafte übermittlung!");
+                        $courseSettingsNotifications[] = MakeNotification("error", Language::Get('main','faultyTransmission', $langTemplate));
                         continue;
                     }
                         
@@ -214,7 +215,7 @@ if (!isset($_POST['actionSortUsers']) && isset($_POST['action'])) {
                             $value = 0;
                         $value = strtotime(str_replace(" - ", " ", $value));                        
                     } else {
-                        $courseSettingsNotifications[] = MakeNotification("error", "Unbekannter Typ wurde übermittelt!");
+                        $courseSettingsNotifications[] = MakeNotification("error", Language::Get('main','invalidType', $langTemplate));
                         continue;
                     }
                     
@@ -228,14 +229,14 @@ if (!isset($_POST['actionSortUsers']) && isset($_POST['action'])) {
                         // nothing
                     }
                     else {
-                        $courseSettingsNotifications[] = MakeNotification("error", "Beim Speichern der Einstellungen ist ein Fehler aufgetreten!");
+                        $courseSettingsNotifications[] = MakeNotification("error", Language::Get('main','invalidType', $langTemplate));
                         $RequestError = true;
                         break;
                     }
                 }
                 
                 if (!$RequestError){
-                    $courseSettingsNotifications[] = MakeNotification("success", "Die Einstellungen wurde bearbeitet!");
+                    $courseSettingsNotifications[] = MakeNotification("success", Language::Get('main','successSaveSettings', $langTemplate));
                 }
             }
             
@@ -328,10 +329,10 @@ if (!isset($_POST['actionSortUsers']) && isset($_POST['action'])) {
 
             // show notification
             if ($message == "201" && $RequestError == false) {
-                $courseSettingsNotifications[] = MakeNotification("success", "Die Veranstaltung wurde bearbeitet!");
+                $courseSettingsNotifications[] = MakeNotification("success", Language::Get('main','successEditCourse', $langTemplate));
             }
             else {
-                $courseSettingsNotifications[] = MakeNotification("error", "Beim Speichern ist ein Fehler aufgetreten!");
+                $courseSettingsNotifications[] = MakeNotification("error", Language::Get('main','errorEditCourse', $langTemplate));
             }
             
             ###########################
@@ -341,7 +342,7 @@ if (!isset($_POST['actionSortUsers']) && isset($_POST['action'])) {
             
         }
         else {
-            $courseSettingsNotifications[] = MakeNotification("error", "Es wurden nicht alle Felder ausgefüllt!");
+            $courseSettingsNotifications[] = MakeNotification("error", Language::Get('main','missingFields', $langTemplate));
         }
     } elseif ($_POST['action'] == "AddExerciseType") {
         // check if POST data is send
@@ -357,12 +358,12 @@ if (!isset($_POST['actionSortUsers']) && isset($_POST['action'])) {
 
             // show notification
             if ($message == "201") {
-                $addExerciseTypeNotifications[] = MakeNotification("success", "Die Punkteart wurde erfolgreich angelegt!");
+                $addExerciseTypeNotifications[] = MakeNotification("success", Language::Get('main','successCreateType', $langTemplate));
             } else {
-                $addExerciseTypeNotifications[] = MakeNotification("error", "Beim Speichern ist ein Fehler aufgetreten!");
+                $addExerciseTypeNotifications[] = MakeNotification("error", Language::Get('main','errorSaveSettings', $langTemplate));
             }
         } else {
-            $addExerciseTypeNotifications[] = MakeNotification("error", "Es wurden nicht alle Felder ausgefüllt!");
+            $addExerciseTypeNotifications[] = MakeNotification("error", Language::Get('main','missingFields', $langTemplate));
         }
     } elseif ($_POST['action'] == "EditExerciseType") {
         // check if POST data is send
@@ -379,12 +380,12 @@ if (!isset($_POST['actionSortUsers']) && isset($_POST['action'])) {
 
             // show notification
             if ($message == "201") {
-                $editExerciseTypeNotifications[] = MakeNotification("success", "Die Punkteart wurde erfolgreich geändert!");
+                $editExerciseTypeNotifications[] = MakeNotification("success", Language::Get('main','successSetType', $langTemplate));
             } else {
-                $editExerciseTypeNotifications[] = MakeNotification("error", "Beim Speichern ist ein Fehler aufgetreten!");
+                $editExerciseTypeNotifications[] = MakeNotification("error", Language::Get('main','errorSaveSettings', $langTemplate));
             }
         } else {
-            $editExerciseTypeNotifications[] = MakeNotification("error", "Es wurden nicht alle Felder ausgefüllt!");
+            $editExerciseTypeNotifications[] = MakeNotification("error", Language::Get('main','missingFields', $langTemplate));
         }
     } elseif ($_POST['action'] == "GrantRights") {
         // check if POST data is send
@@ -403,7 +404,7 @@ if (!isset($_POST['actionSortUsers']) && isset($_POST['action'])) {
 
                 // show notification
                 if ($message == "201") {
-                    $grantRightsNotifications[] = MakeNotification("success", "Die Rechte wurden erfolgreich vergeben!");
+                    $grantRightsNotifications[] = MakeNotification("success", Language::Get('main','successSetCourseStatus', $langTemplate));
                 }
             } else {
                 // otherwise show conflict page
@@ -411,7 +412,7 @@ if (!isset($_POST['actionSortUsers']) && isset($_POST['action'])) {
                 exit();
             }
         } else {
-            $grantRightsNotifications[] = MakeNotification("error", "Es wurde kein Nutzer gewählt!");
+            $grantRightsNotifications[] = MakeNotification("error", Language::Get('main','noSelectedUser', $langTemplate));
         }
     } elseif ($_POST['action'] == "RevokeRights") {
         // check if POST data is send
@@ -428,7 +429,7 @@ if (!isset($_POST['actionSortUsers']) && isset($_POST['action'])) {
 
                 // show notification
                 if ($message == "201") {
-                    $revokeRightsNotifications[] = MakeNotification("success", "Der Nutzer wurde aus der Veranstaltung entfernt!");
+                    $revokeRightsNotifications[] = MakeNotification("success", Language::Get('main','successRemoveUser', $langTemplate));
                 }
             } else {
                 // otherwise show conflict page
@@ -436,7 +437,7 @@ if (!isset($_POST['actionSortUsers']) && isset($_POST['action'])) {
                 exit();
             }
         } else {
-            $revokeRightsNotifications[] = MakeNotification("error", "Es wurde kein Nutzer gewählt!");
+            $revokeRightsNotifications[] = MakeNotification("error", Language::Get('main','noSelectedUser', $langTemplate));
         }
     } elseif ($_POST['action'] == "AddUser") {
 
@@ -445,13 +446,13 @@ if (!isset($_POST['actionSortUsers']) && isset($_POST['action'])) {
         $f->checkStringForKey('userName',
                               FormEvaluator::REQUIRED,
                               'warning',
-                              'Ungültiger Nutzername.',
+                              Language::Get('main','invalidUserName', $langTemplate),
                               array('min' => 1));
 
         $f->checkIntegerForKey('rights',
                                FormEvaluator::REQUIRED,
                                'warning',
-                               'Ungültige Rechte-ID.',
+                               Language::Get('main','invalidCourseStatus', $langTemplate),
                                array('min' => 0, 'max' => 2));
 
         if ($f->evaluate(true)) {
@@ -474,17 +475,13 @@ if (!isset($_POST['actionSortUsers']) && isset($_POST['action'])) {
                 http_post_data($URL, $newUser, true, $message);
 
                 if ($message == "201") {
-                    $addUserNotifications[] = MakeNotification('success',
-                                                        'Der Nutzer wurde'
-                                                        .' erfolgreich in die'
-                                                        .' Veranstaltung eingetragen.');
+                    $addUserNotifications[] = MakeNotification('success',Language::Get('main','successAddUser', $langTemplate));
                 } else {
-                    $addUserNotifications[] = MakeNotification('error',
-                                                        'Beim Eintragen ist ein Fehler aufgetreten.');
+                    $addUserNotifications[] = MakeNotification('error',Language::Get('main','errorAddUser', $langTemplate));
                 }
             } else {
                 $addUserNotifications[] = MakeNotification('error',
-                                                    'Unbekannter Nutzer.');
+                                                    Language::Get('main','invalidUserId', $langTemplate));
             }                                        
         } else {
             if (!isset($addUserNotifications))
@@ -492,8 +489,7 @@ if (!isset($_POST['actionSortUsers']) && isset($_POST['action'])) {
             $addUserNotifications = $addUserNotifications + $f->notifications;
         }
     } else {
-        $notifications[] = MakeNotification('error',
-                                            'Unbekannte Aktion.');
+        $notifications[] = MakeNotification('error',Language::Get('main','invalidAction', $langTemplate));
     }
 }
 
@@ -520,10 +516,6 @@ if (isset($_POST['sortUsers'])) {
 }
 
 $user_course_data = $courseManagement_data['user'];
-
-if (isset($user_course_data['user']['lang'])){
-    Language::setPreferedLanguage($user_course_data['user']['lang']);
-}
 
 Authentication::checkRights(PRIVILEGE_LEVEL::ADMIN, $cid, $uid, $user_course_data);
 $menu = MakeNavigationElement($user_course_data,

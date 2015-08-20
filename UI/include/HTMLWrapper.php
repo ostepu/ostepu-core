@@ -9,7 +9,7 @@
  * @todo Replace the class by a template based solution
  */
 
-include_once '../Assistants/Logger.php';
+include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
 
     /**
     * Wraps the header and the contents in a default HTML

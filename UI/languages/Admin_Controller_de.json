@@ -1,0 +1,8 @@
+{
+    "main": {
+        "askDeleteSubmission": "Soll die Übungsserie wirklich gelöscht werden?",
+        "successDeleteSubmission": "Die Übungsserie wurde gelöscht.",
+        "errorDeleteSubmission": "Die Übungsserie konnte nicht gelöscht werden.",
+        "changeCourse": "Veranstaltung wechseln"
+    }
+}

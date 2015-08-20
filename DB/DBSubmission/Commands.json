@@ -101,6 +101,15 @@
         "path": "/submission/exercisesheet/:esid/selected"
     },
     {
+        "name": "getSubmission",
+        "callback": "getMatch",
+        "singleOutput": "TRUE",
+        "outputType": "Submission",
+        "inputType": "",
+        "method": "GET",
+        "path": "/submission(/submission)/:suid"
+    },
+    {
         "name": "getAllSubmissions",
         "callback": "getMatch",
         "outputType": "Submission",
@@ -123,14 +132,6 @@
         "inputType": "",
         "method": "GET",
         "path": "/submission/exercisesheet/:esid"
-    },
-    {
-        "name": "getSubmission",
-        "callback": "getMatchSingle",
-        "outputType": "Submission",
-        "inputType": "",
-        "method": "GET",
-        "path": "/submission(/submission)/:suid"
     },
     {
         "name": "getCourseSubmissions",
@@ -172,7 +173,8 @@
     },
     {
         "name": "getExistsPlatform",
-        "callback": "getMatchSingle",
+        "callback": "getMatch",
+        "singleOutput": "TRUE",
         "outputType": "Platform",
         "inputType": "",
         "method": "GET",

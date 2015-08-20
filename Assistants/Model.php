@@ -37,6 +37,10 @@ class Model
      */
     private $_com = null;
     
+    
+    private $_noInfo = null;
+    private $_noHelp = null;
+    
     /**
      * Der Konstruktor
      *
@@ -44,11 +48,13 @@ class Model
      * @param string Der lokale Pfade des Moduls
      * @param string Der Klassenname des Moduls
      */
-    public function __construct( $prefix, $path, $class )
+    public function __construct( $prefix, $path, $class, $noInfo = false, $noHelp = false)
     {
         $this->_path=$path;
         $this->_prefix=$prefix;
         $this->_class=$class;
+        $this->_noInfo=$noInfo;
+        $this->_noHelp=$noHelp;
     }
 
     /**
@@ -57,7 +63,7 @@ class Model
     public function run()
     {
         // runs the CConfig
-        $com = new CConfig( $this->_prefix, $this->_path );
+        $com = new CConfig( $this->_prefix, $this->_path, $this->_noInfo, $this->_noHelp );
 
         // lädt die Konfiguration des Moduls
         if ( $com->used( ) ) return;
@@ -78,7 +84,8 @@ class Model
             if (!isset($command['name'])) continue;
             if (!isset($command['method'])) $command['method'] = 'GET';
             if (!isset($command['callback'])) $command['callback'] = $command['name'];
-            if (!isset($command['singleInput'])) $command['singleInput'] = 'TRUE';
+            if (!isset($command['seqInput'])) $command['seqInput'] = 'TRUE';
+            if (!isset($command['singleOutput'])) $command['singleOutput'] = 'FALSE';
             
             // Methoden können durch Komma getrennt aufgelistet sein
             $methods = explode(',',$command['method']);
@@ -148,7 +155,7 @@ class Model
                 }
             }
             
-            if (strtoupper($selectedCommand['singleInput']) != 'TRUE') {
+            if (strtoupper($selectedCommand['seqInput']) != 'TRUE') {
                 $arr = false;
             }
 
@@ -158,7 +165,7 @@ class Model
                 // initialisiert die Ausgabe positiv
                 $result=array("status"=>201,"content"=>array());
                 
-                if (strtoupper($selectedCommand['singleInput']) == 'TRUE'){
+                if (strtoupper($selectedCommand['seqInput']) == 'TRUE'){
                     try {
                         // für jede Eingabe wird die Funktion ausgeführt
                         foreach($rawInput as $input){
@@ -225,7 +232,9 @@ class Model
                         $result['content'] = array( $result['content'] );
                     }
                     
-                    if ( !$arr && count( $result['content'] ) == 1 ){
+                    if ( $command['singleOutput']!=='FALSE' && count( $result['content'] ) >= 1 ){
+                        $result['content'] = $result['content'][0];                        
+                    } elseif ( !$arr && count( $result['content'] ) == 1 ){
                         $result['content'] = $result['content'][0];
                     }
 
@@ -238,10 +247,11 @@ class Model
                 // selbst wenn nichts zutrifft, wird json kodiert
                 if (isset( $result['content']) )
                     $result['content'] = json_encode($result['content']);
+                header('Content-Type: application/json');  
             }
         } else {
             // es wurde kein zutreffender Befehl gefunden, also gibt es eine leere Antwort
-            $result=self::isEmpty();
+            $result=self::isError();
         }
 
         // ab hier werden die Ergebnisse ausgegeben
@@ -281,8 +291,23 @@ class Model
                 break;
             }
         }
-        
-        $order = $selectedInstruction['links'][0]['path'];
+
+        $method = 'GET';
+        if ($link->getPath()!==null && $link->getPath()!==''){
+            $order = $link->getPath();
+            $met = strpos($order, ' ');
+            if ($met !== false){
+                $method = substr($order,0,$met);
+                $order = substr($order,$met+1);
+            } else {
+                return call_user_func_array($negativeMethod, $negativeParams);
+            }
+        } else {
+            $order = $selectedInstruction['links'][0]['path'];
+            if (isset($selectedInstruction['links'][0]['method'])){
+                $method = $selectedInstruction['links'][0]['method'];
+            }
+        }
         
         // ersetzt die Platzer im Ausgang mit den eingegeben Parametern
         foreach ($params as $key=>$param)
@@ -290,7 +315,7 @@ class Model
 
         // führe nun den Aufruf aus
         $result = Request::routeRequest( 
-                                        $selectedInstruction['links'][0]['method'],
+                                        $method,
                                         $order,
                                         array(),
                                         $body,
@@ -306,7 +331,107 @@ class Model
                 if ( !is_array( $result['content'] ) )
                     $result['content'] = array( $result['content'] );
             }
+
+            // rufe nun die positive Methode auf
+            return call_user_func_array($positiveMethod, array_merge(array("input"=>$result['content']),$positiveParams));
+        }
+        
+        // ansonsten rufen wir die negative Methode auf
+        return call_user_func_array($negativeMethod, $negativeParams);
+    }
+    
+    /**
+     * Führt eine Anfrage über $linkName aus, wobei eine Verbindung mit der URI $order genutzt wird
+     *
+     * @param string $linkName Der Name des Ausgangs
+     * @param mixed[] $params Die Ersetzungen für die Platzhalter des Befehls (Bsp.: array('uid'=>2,'cid'=>1)
+     * @param string body Der Inhalt der Anfrage für POST und PUT
+     * @param int $positiveStatus Der Status, welcher als erfolgreiche Antwort gesehen wird (Bsp.: 200)
+     * @param callable $positiveMethod Im positiven Fall wird diese Methode aufgerufen
+     * @param mixed[] $positiveParams Die Werte, welche an die positive Funktion übergeben werden
+     * @param callable $negativeMethod Im negativen Fall wird diese Methode aufgerufen
+     * @param mixed[] $negativeParams Die Werte, welche an die negative Funktion übergeben werden
+     * @param string returnType Ein optionaler Rückgabetyp (es können Structures angegeben werden, sodass automatisch Typ::encodeType() ausgelöst wird)
+     * @return mixed Das Ergebnis der aufgerufenen Resultatfunktion
+     */
+    public function callByURI($linkName, $order, $params, $body, $positiveStatus, callable $positiveMethod, $positiveParams, callable $negativeMethod, $negativeParams, $returnType=null)
+    {
+        $links=CConfig::getLinks($this->_conf->getLinks( ),$linkName);
+        $link=null;
+        
+        $instructions = $this->_com->instruction(array(),true);
+        
+        // ermittle den zutreffenden Ausgang
+        $selectedInstruction=null;
+        foreach($instructions as $instruction){
+            if ($instruction['name']==$linkName){
+                $selectedInstruction=$instruction;
+                break;
+            }
+        }
+        
+        if (isset($selectedInstruction['links'][0]['path']) && $selectedInstruction['links'][0]['path'] == $order){
+            $link = $links[0];
+        } else {
+            foreach($links as $li){
+                $testPath = $li->getPath();
+                $met = strpos($testPath, ' ');
+                if ($met !== false){
+                    $testPath = substr($testPath,$met+1);
+                    foreach ($params as $key=>$param)
+                        $testPath = str_replace( ':'.$key, $param, $testPath);
+                    
+                    if ($testPath == $order){
+                        $link = $li;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        if ($link == null){
+            return call_user_func_array($negativeMethod, $negativeParams);
+        }
+        
+        $method = 'GET';
+        if ($link->getPath()!==null && $link->getPath()!==''){
+            $order = $link->getPath();
+            $met = strpos($order, ' ');
+            if ($met !== false){
+                $method = substr($order,0,$met);
+                $order = substr($order,$met+1);
+            } else {
+                return call_user_func_array($negativeMethod, $negativeParams);
+            }
+        } else {
+            $order = $selectedInstruction['links'][0]['path'];
+            if (isset($selectedInstruction['links'][0]['method'])){
+                $method = $selectedInstruction['links'][0]['method'];
+            }
+        }
+        
+        // ersetzt die Platzer im Ausgang mit den eingegeben Parametern
+        foreach ($params as $key=>$param)
+            $order = str_replace( ':'.$key, $param, $order);
             
+        // führe nun den Aufruf aus
+        $result = Request::routeRequest( 
+                                        $method,
+                                        $order,
+                                        array(),
+                                        $body,
+                                        $link
+                                        );
+
+        if ( $result['status'] == $positiveStatus ){
+            // die Antwort war so, wie wir sie erwartet haben
+            if ($returnType!==null){
+                // wenn ein erwarteter Rückgabetyp angegeben wurde, wird eine Typ::decodeType() ausgeführt
+                $result['content'] = call_user_func_array('\\'.$returnType.'::decode'.$returnType, array($result['content']));
+                if ( !is_array( $result['content'] ) )
+                    $result['content'] = array( $result['content'] );
+            }
+
             // rufe nun die positive Methode auf
             return call_user_func_array($positiveMethod, array_merge(array("input"=>$result['content']),$positiveParams));
         }
@@ -398,7 +523,8 @@ class Model
      * @param string $content Der optionale Inhalt
      * @return array('status'=>..,'content'=>..) Die Antwort
      */
-    public static function createAnswer($status=200, $content=''){
+    public static function createAnswer($status=200, $content='')
+    {
         return array("status"=>$status,"content"=>$content);
     }
     
@@ -408,8 +534,40 @@ class Model
      * @param string $content Der optionale Inhalt
      * @return array('status'=>..,'content'=>..) Die Antwort
      */
-    public static function isProblem($content=null){
+    public static function isProblem($content=null)
+    {
+        if (func_num_args()>1){
+            return self::isProblemAnswer(func_get_arg(0),func_get_arg(1));
+        }
         return self::createAnswer(409,$content);
+    }
+    private static function isProblemAnswer($input, $params)
+    {
+        if ($params===null){
+            return self::createAnswer(409,$content);
+        }
+        return self::createAnswer(409,$params);
+    }
+    
+    /**
+     * Liefert eine Rückgabe (ein schwerwiegender Fehler ist aufgetreten)
+     *
+     * @param string $content Der optionale Inhalt
+     * @return array('status'=>..,'content'=>..) Die Antwort
+     */
+    public static function isError($content=null)
+    {
+        if (func_num_args()>1){
+            return self::isErrorAnswer(func_get_arg(0),func_get_arg(1));
+        }
+        return self::createAnswer(500,$content);
+    }
+    private static function isErrorAnswer($input, $params)
+    {
+        if ($params===null){
+            return self::createAnswer(500,$content);
+        }
+        return self::createAnswer(500,$params);
     }
     
     /**
@@ -418,8 +576,19 @@ class Model
      * @param string $content Der optionale Inhalt
      * @return array('status'=>..,'content'=>..) Die Antwort
      */
-    public static function isCreated($content=null){
+    public static function isCreated($content=null)
+    {
+        if (func_num_args()>1){
+            return self::isCreatedAnswer(func_get_arg(0),func_get_arg(1));
+        }
         return self::createAnswer(201,$content);
+    }
+    private static function isCreatedAnswer($input, $params)
+    {
+        if ($params===null){
+            return self::createAnswer(201,$content);
+        }
+        return self::createAnswer(201,$params);
     }
     
     /**
@@ -429,8 +598,19 @@ class Model
      * @param string $content Der optionale Inhalt
      * @return array('status'=>..,'content'=>..) Die Antwort
      */
-    public static function isOk($content=null){
+    public static function isOk($content=null)
+    {
+        if (func_num_args()>1){
+            return self::isOkAnswer(func_get_arg(0),func_get_arg(1));
+        }
         return self::createAnswer(200,$content);
+    }
+    private static function isOkAnswer($input, $params)
+    {
+        if ($params===null){
+            return self::createAnswer(200,$content);
+        }
+        return self::createAnswer(200,$params);
     }
     
     /**
@@ -440,8 +620,19 @@ class Model
      * @param string $content Der optionale Inhalt
      * @return array('status'=>..,'content'=>..) Die Antwort
      */
-    public static function isEmpty($content=null){
+    public static function isEmpty($content=null)
+    {
+        if (func_num_args()>1){
+            return self::isEmptyAnswer(func_get_arg(0),func_get_arg(1));
+        }
         return self::createAnswer(404,$content);
+    }
+    private static function isEmptyAnswer($input, $params)
+    {
+        if ($params===null){
+            return self::createAnswer(404,$content);
+        }
+        return self::createAnswer(404,$params);
     }
 
     /**
@@ -451,8 +642,19 @@ class Model
      * @param string $content Der optionale Inhalt
      * @return array('status'=>..,'content'=>..) Die Antwort
      */
-    public static function isRejected($content=null){
+    public static function isRejected($content=null)
+    {
+        if (func_num_args()>1){
+            return self::isRejectedAnswer(func_get_arg(0),func_get_arg(1));
+        }
         return self::createAnswer(401,$content);
+    }
+    private static function isRejectedAnswer($input, $params)
+    {
+        if ($params===null){
+            return self::createAnswer(401,$content);
+        }
+        return self::createAnswer(401,$params);
     }
     
     public static function header($name, $value){

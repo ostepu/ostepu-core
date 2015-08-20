@@ -10,6 +10,7 @@
     {"path":"Commands.json"},
     {"path":"compiler/"},
     {"path":"info/"},
+    {"path":"help/"},
     {"path":"start_cx"}
   ],
   "links":[
@@ -20,6 +21,7 @@
   ],
   "connector":[
     {"name":"extension", "target":"LExtension"},
-    {"name":"request", "target":"CLocalObjectRequest"}
+    {"name":"request", "target":"CLocalObjectRequest"},
+    {"name":"request", "target":"CHelp", "links":[{"path":"/help/:language/extension/LOOP.md"}]}
   ]
 }

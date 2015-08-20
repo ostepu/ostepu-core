@@ -345,7 +345,7 @@ class DBSetting
                 }
                 
                 if ($insertId!=0)
-                    $obj->setId( $course['id'] . '_' . $insertId );
+                    $obj->setId( $course->getId() . '_' . $insertId );
 
                 $res[] = $obj;
                 $this->_app->response->setStatus( 201 );

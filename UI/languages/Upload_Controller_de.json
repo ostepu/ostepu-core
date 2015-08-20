@@ -1,0 +1,13 @@
+{
+    "main": {
+        "errorNoGroup": "$status: Internal Server Error. <br/> Zur Zeit können keine Aufgaben eingesendet werden.",
+        "noStartedExercisePeriod": "Der Übungszeitraum beginnt am $startDate !",
+        "noExercisePeriod": "Kein Übungszeitraum gefunden!",
+        "errorUploadSubmission": "$status: Aufgabe $exerciseName konnte nicht hochgeladen werden.",
+        "successUploadSubmission": "Aufgabe $exerciseName wurde erfolgreich eingesendet.",
+        "successLateSubmission": "Aufgabe $exerciseName wurde verspätet eingesendet!",
+        "expiredExercisePerionDesc": "Der Übungszeitraum ist am $endDate abgelaufen!<br>Eine verspätete Einsendung muss von einem Administrator akzeptiert werden, ansonsten wird diese nicht <br> gewertet. Die vergebenen Punkte einer bereits bewerteten Einsendung gehen beim Überschreiben verloren.",
+        "expiredExercisePerion": "Der Übungszeitraum ist am $endDate abgelaufen!",
+        "backToCourse": "zur Veranstaltung"
+    }
+}

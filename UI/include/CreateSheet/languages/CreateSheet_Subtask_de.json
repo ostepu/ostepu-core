@@ -7,6 +7,7 @@
         "removeAttachment": "Anhang löschen",
         "removeSubtask": "Teilaufgabe löschen",
         "useForm": "Eingabemaske verwenden",
-        "useProcessor": "Verarbeitung hinzufügen"
+        "useProcessor": "Verarbeitung hinzufügen",
+        "notSubmittable": "keine Einsendungen"
     }
 }

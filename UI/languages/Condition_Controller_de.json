@@ -1,0 +1,8 @@
+{
+    "main": {
+        "errorSetCondition": "Fehler beim Speichern!",
+        "invalidInput": "Ungültige Eingabe!",
+        "errorSetConditions": "Beim Speichern ist ein Fehler aufgetreten!",
+        "successSetConditions": "Die Zulassungsbedingungen wurden erfolgreich gespeichert!"
+    }
+}

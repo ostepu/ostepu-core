@@ -9,7 +9,8 @@
  */
 
 include_once 'include/Boilerplate.php';
-include_once dirname(__FILE__) . '/../Assistants/Language.php';
+
+$langTemplate='Group_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 /**
  * Removes a user from a group.
@@ -72,9 +73,9 @@ if (isset($_POST['action'])) {
         }
 
         if ($RequestError) {
-            $notifications[] = MakeNotification("error", "Beim Entfernen ist ein Fehler aufgetreten.");
+            $notifications[] = MakeNotification("error", Language::Get('main','errorRemoveMember', $langTemplate));
         } else {
-            $notifications[] = MakeNotification("success", "Der Nutzer wurde aus der Gruppe entfernt.");
+            $notifications[] = MakeNotification("success", Language::Get('main','successRemoveMember', $langTemplate));
         }
     }
 
@@ -88,9 +89,9 @@ if (isset($_POST['action'])) {
         http_delete($URI, true, $message);
 
         if ($message == "201") {
-            $notifications[] = MakeNotification("success", "Die Einladung wurde gelöscht.");
+            $notifications[] = MakeNotification("success", Language::Get('main','successRemoveInvitation', $langTemplate));
         } else {
-            $notifications[] = MakeNotification("error", "Beim Löschen der Einladung ist ein Fehler aufgetreten.");
+            $notifications[] = MakeNotification("error", Language::Get('main','errorRemoveInvitation', $langTemplate));
         }
     }
 
@@ -130,7 +131,7 @@ if (isset($_POST['action'])) {
 
             // removes all members from the group
             if (!empty($group)) {
-                if (!empty($group['members'])) {
+                if (isset($group['members']) && !empty($group['members'])) {
                     foreach ($group['members'] as $member) {
                         if (!removeUserFromGroup($member['id'], $sid)) {
                             $RequestError = true;
@@ -148,14 +149,14 @@ if (isset($_POST['action'])) {
 
                 // shows notification
                 if ($RequestError) {
-                    $notifications[] = MakeNotification("error", "Beim Verlassen ist ein Fehler aufgetreten!");
+                    $notifications[] = MakeNotification("error", Language::Get('main','errorLeaveGroup', $langTemplate));
                 }
                 else {
-                    $notifications[] = MakeNotification("success", "Sie haben die Gruppe verlassen.");
+                    $notifications[] = MakeNotification("success", Language::Get('main','successLeaveGroup', $langTemplate));
                 }
 
             } else {
-                $notifications[] = MakeNotification("error", "Beim Verlassen ist ein Fehler aufgetreten.");
+                $notifications[] = MakeNotification("error", Language::Get('main','errorLeaveGroup', $langTemplate));
             }
 
         } else {
@@ -169,14 +170,14 @@ if (isset($_POST['action'])) {
                 }
             } else {
                 $RequestError = true;
-                $notifications[] = MakeNotification("error", "Fehler else.");
+                ///$notifications[] = MakeNotification("error", "Fehler else.");
             }
 
             // shows notification
             if ($RequestError) {
-                $notifications[] = MakeNotification("error", "Beim Verlassen ist ein Fehler aufgetreten.");
+                $notifications[] = MakeNotification("error", Language::Get('main','errorLeaveGroup', $langTemplate));
             } else {
-                $notifications[] = MakeNotification("success", "Sie haben die Gruppe verlassen.");
+                $notifications[] = MakeNotification("success", Language::Get('main','successLeaveGroup', $langTemplate));
             }
         }
     }
@@ -207,10 +208,10 @@ if (isset($_POST['action'])) {
 
         // shows notification
         if ($RequestError == false) {
-            $notifications[] = MakeNotification("success", "Die Einsendungen wurden ausgewählt.");
+            $notifications[] = MakeNotification("success", Language::Get('main','successSelectSubmission', $langTemplate));
         }
         else {
-            $notifications[] = MakeNotification("error", "Beim Speichern ist ein Fehler aufgetreten!");
+            $notifications[] = MakeNotification("error", Language::Get('main','errorSelectSubmission', $langTemplate));
         }
     }
 
@@ -230,7 +231,7 @@ if (isset($_POST['action'])) {
                 }
             }
             if (!$RequestError){
-                $notifications[] = MakeNotification("success", "Gruppenmitglieder wurden eingeladen!");
+                $notifications[] = MakeNotification("success", Language::Get('main','successInviteMembers', $langTemplate));
                 // accept invitations
                 foreach ($_POST['members'] as $member){
                     
@@ -260,16 +261,16 @@ if (isset($_POST['action'])) {
                 }
                 
                 if (!$RequestError){
-                    $notifications[] = MakeNotification("success", "Gruppenmitglieder sind beigetreten!");
+                    $notifications[] = MakeNotification("success", Language::Get('main','successJoinMembers', $langTemplate));
                 } else {
-                    $notifications[] = MakeNotification("error", "Mindestens ein Nutzer konnte der Gruppe nicht beitreten!");
+                    $notifications[] = MakeNotification("error", Language::Get('main','errorJoinMember', $langTemplate));
                 }
         
             } else {
-               $notifications[] = MakeNotification("error", "Mindestens ein Nutzer konnte nicht eingeladen werden!");
+               $notifications[] = MakeNotification("error", Language::Get('main','errorInviteMember', $langTemplate));
             }
         } else {
-            $notifications[] = MakeNotification("error", "Beim übernehmen der Gruppe ist ein Fehler aufgetreten!");
+            $notifications[] = MakeNotification("error", Language::Get('main','errorApplyGroup', $langTemplate));
             $RequestError = true;
         }
     }
@@ -294,7 +295,7 @@ if (isset($_POST['action'])) {
 
                 // invites the user to the current group
                 if (!isset($user_data['id']) || empty($user_data) || $user_data['id'] == $uid) {
-                    $notifications[] = MakeNotification("error", "Ungültiges Kürzel.");
+                    $notifications[] = MakeNotification("error", Language::Get('main','invalidUserId', $langTemplate));
                 } else {
                     $memberID = $user_data['id'];
 
@@ -303,10 +304,9 @@ if (isset($_POST['action'])) {
                     http_post_data($URI, $newInvitation, true, $message);
 
                     if ($message == "201") {
-                        $notifications[] = MakeNotification("success", "Der Nutzer {$memberName} wurde eingeladen.");
+                        $notifications[] = MakeNotification("success", Language::Get('main','successInviteMember', $langTemplate, array('memberName'=>$memberName)));
                     } else {
-                        $notifications[] = MakeNotification("error", "Bei der Einladung ist ein Fehler aufgetreten. 
-                            Eventuell wurde schon eine Einladung an {$memberName} gesendet.");
+                        $notifications[] = MakeNotification("error", Language::Get('main','errorInviteMember', $langTemplate, array('memberName'=>$memberName)));
                     }
                 }
             }
@@ -323,9 +323,9 @@ if (isset($_POST['action'])) {
         http_delete($URI, true, $message);
 
         if ($message == "201") {
-            $notifications[] = MakeNotification("success", "Die Einladung wurde abgelehnt.");
+            $notifications[] = MakeNotification("success", Language::Get('main','successRejectInvitation', $langTemplate));
         } else {
-            $notifications[] = MakeNotification("error", "Beim Ablehnen der Einladung ist ein Fehler aufgetreten.");
+            $notifications[] = MakeNotification("error", Language::Get('main','errorRejectInvitation', $langTemplate));
         }
     }
 
@@ -361,10 +361,10 @@ if (isset($_POST['action'])) {
 
         // shows notification
         if ($RequestError == false) {
-            $notifications[] = MakeNotification("success", "Sie haben die Einladung angenommen.");
+            $notifications[] = MakeNotification("success", Language::Get('main','successJoinGroup', $langTemplate));
         }
         else {
-            $notifications[] = MakeNotification("error", "Beim Annehmen der Einladung ist ein Fehler aufgetreten!");
+            $notifications[] = MakeNotification("error", Language::Get('main','errorJoinGroup', $langTemplate));
         }
     }
 }
@@ -379,10 +379,6 @@ $group_data['uid'] = $uid;
 
 $user_course_data = $group_data['user'];
 
-if (isset($user_course_data['user']['lang'])){
-    Language::setPreferedLanguage($user_course_data['user']['lang']);
-}
-
 Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $user_course_data);
 
 if (isset($group_data['exerciseSheet']['endDate']) && isset($group_data['exerciseSheet']['startDate'])){
@@ -392,13 +388,13 @@ if (isset($group_data['exerciseSheet']['endDate']) && isset($group_data['exercis
     // bool if startDate of sheet is greater than the actual date
     $hasStarted = date('U') > date('U', $group_data['exerciseSheet']['startDate']);
     if ($isExpired){
-        set_error("Der Übungszeitraum ist am ".date('d.m.Y  -  H:i', $group_data['exerciseSheet']['endDate'])." abgelaufen!");
+        set_error(Language::Get('main','expiredExercisePerion', $langTemplate,array('endDate'=>date('d.m.Y  -  H:i', $group_data['exerciseSheet']['endDate']))));
     } elseif (!$hasStarted){
-        set_error("Der Übungszeitraum beginnt am ".date('d.m.Y  -  H:i', $group_data['exerciseSheet']['startDate'])."!");
+        set_error(Language::Get('main','noStartedExercisePeriod', $langTemplate,array('startDate'=>date('d.m.Y  -  H:i', $group_data['exerciseSheet']['startDate']))));
     }
     
 } else
-    set_error("Kein Übungszeitraum gefunden!");
+    set_error(Language::Get('main','noExercisePeriod', $langTemplate));
 
 
 $user_course_data = $group_data['user'];

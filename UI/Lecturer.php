@@ -10,22 +10,23 @@
 
 include_once dirname(__FILE__).'/include/Boilerplate.php';
 include_once dirname(__FILE__).'/../Assistants/Structures.php';
-include_once dirname(__FILE__).'/../Assistants/Language.php';
 include_once dirname(__FILE__).'/../Assistants/LArraySorter.php';
+
+$langTemplate='Lecturer_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 $sheetNotifications = array();
 
 if (isset($_POST['action'])){ 
     if ($_POST['action'] == "ExerciseSheetLecturer" && isset($_POST['deleteSheetWarning'])) {
-        $sheetNotifications[$_POST['deleteSheetWarning']][] = MakeNotification("warning", "Soll die Übungsserie wirklich gelöscht werden?");
+        $sheetNotifications[$_POST['deleteSheetWarning']][] = MakeNotification("warning", Language::Get('main','askDeleteSheet', $langTemplate));
     } elseif ($_POST['action'] == "ExerciseSheetLecturer" && isset($_POST['deleteSheet'])) {
         $URL = $logicURI . "/exercisesheet/exercisesheet/{$_POST['deleteSheet']}";
         $result = http_delete($URL, true, $message);
         
         if ($message == 201){
-            $sheetNotifications[$_POST['deleteSheet']][] = MakeNotification('success', 'Die Übungsserie wurde gelöscht.');
+            $sheetNotifications[$_POST['deleteSheet']][] = MakeNotification('success', Language::Get('main','successDeleteSheet', $langTemplate));
         } else 
-            $sheetNotifications[$_POST['deleteSheet']][] = MakeNotification('error', 'Die Übungsserie konnte nicht gelöscht werden.');
+            $sheetNotifications[$_POST['deleteSheet']][] = MakeNotification('error', Language::Get('main','errorDeleteSheet', $langTemplate));
     }
 }
 
@@ -37,10 +38,6 @@ $lecturer_data['filesystemURI'] = $filesystemURI;
 $lecturer_data['cid'] = $cid;
 
 $user_course_data = $lecturer_data['user'];
-
-if (isset($lecturer_data['user']['lang'])){
-    Language::setPreferedLanguage($lecturer_data['user']['lang']);
-}
 
 // check userrights for course
 Authentication::checkRights(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $user_course_data);
@@ -55,7 +52,7 @@ $menu = MakeNavigationElement($user_course_data,
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
 $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
-               "backTitle" => "Veranstaltung wechseln",
+               "backTitle" => Language::Get('main','changeCourse', $langTemplate),
                "backURL" => "index.php",
                "notificationElements" => $notifications,
                "navigationElement" => $menu));

@@ -84,7 +84,8 @@
     },
     {
         "name": "getExistsPlatform",
-        "callback": "getMatchSingle",
+        "callback": "getMatch",
+        "singleOutput": "TRUE",
         "outputType": "Platform",
         "inputType": "",
         "method": "GET",

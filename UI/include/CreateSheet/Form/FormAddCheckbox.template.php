@@ -13,7 +13,7 @@
     <input type="hidden" class="choice-id" name="exercises[0][subexercises][0][choiceId][0]" value="<?php echo $choice['choiceId']; ?>" />
     <?php } ?>
     
-    <input type="checkbox" class="choice-input" name="exercises[0][subexercises][0][correct][0]"<?php echo (isset($choice['correct']) && $choice['correct']==1 ? " checked" : ''); ?>/>
+    <input type="checkbox" value="" class="choice-input" name="exercises[0][subexercises][0][correct][0]"<?php echo (isset($choice['correct']) && $choice['correct']==1 ? " checked" : ''); ?>/>
     <input class="form-field input-choice-text" name="exercises[0][subexercises][0][choice][0]" value="<?php echo (isset($choice['text']) ? $choice['text'] : ''); ?>" placeholder="<?php echo Language::Get('main','choicePlaceholder', $langTemplate); ?>"/>    
     <a href="javascript:void(0);" class="critical-color deny-button delete-choice center">
         <div class="left">

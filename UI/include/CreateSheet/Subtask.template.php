@@ -10,6 +10,7 @@ include_once dirname(__FILE__) . '/../Helpers.php';
 ?>
 
 <li>
+    <span style="display:inline-table">
     <input class="form-field text-input very-short" name="exercises[0][subexercises][0][maxPoints]" placeholder="<?php echo Language::Get('main','points', $langTemplate); ?>" id="exerciseMaxPoints" <?php echo isset($maxPoints) ? "value='{$maxPoints}'" : ''?>/>
     <select class="form-field text-input short" name="exercises[0][subexercises][0][exerciseType]" id="exerciseType">
         <?php
@@ -102,6 +103,13 @@ include_once dirname(__FILE__) . '/../Helpers.php';
             </div>
         </span>
         <?php } ?>
+    </span>
+    
+    <?php if (isset($submittable)){ ?>
+    <input type="hidden" name="exercises[0][subexercises][0][submittable]" value="<?php echo $submittable; ?>" />
+    <?php } ?>
+        <input type="checkbox" value="0" name="exercises[0][subexercises][0][submittable]"<?php echo (isset($submittable) && $submittable=='0' ? " checked" : ''); ?>/>
+        <?php echo Language::Get('main','notSubmittable', $langTemplate); ?>
     </span>
     
     <a href="javascript:void(0);" class="deny-button delete-subtask critical-color right"><?php echo Language::Get('main','removeSubtask', $langTemplate); ?><?php if (isset($id)){ ?><span class="right warning-simple"></span><?php } ?>  </a>

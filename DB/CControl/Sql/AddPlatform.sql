@@ -1,3 +1,7 @@
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+
 DROP PROCEDURE IF EXISTS `drop_index_if_exists`;
 CREATE PROCEDURE `drop_index_if_exists` (in theTable varchar(128), in theIndexName varchar(128))
 begin
@@ -102,10 +106,6 @@ begin
     select 1;
 end;
 
-SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
-SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
-SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
-
 CREATE TABLE IF NOT EXISTS `Component` (
   `CO_id` INT NOT NULL AUTO_INCREMENT,
   `CO_name` VARCHAR(45) NOT NULL,
@@ -117,9 +117,9 @@ ENGINE = InnoDB
 AUTO_INCREMENT = 1;
 
 call drop_index_if_exists('Component','CO_address_UNIQUE');
-ALTER TABLE `component` ADD UNIQUE(`CO_name` ASC);
-call execute_if_column_not_exists('Component','CO_def','ALTER TABLE `Component` ADD COLUMN CO_def VARCHAR(255) NOT NULL DEFAULT \'\'');
-call execute_if_column_not_exists('Component','CO_status','ALTER TABLE `Component` ADD COLUMN CO_status int NOT NULL DEFAULT 1');
+ALTER TABLE `Component` ADD UNIQUE(`CO_name` ASC);
+call execute_if_column_not_exists('Component','CO_def','ALTER TABLE `Component` ADD COLUMN CO_def VARCHAR(255) NOT NULL DEFAULT \'\';');
+call execute_if_column_not_exists('Component','CO_status','ALTER TABLE `Component` ADD COLUMN CO_status int NOT NULL DEFAULT 1;');
 
 
 CREATE TABLE IF NOT EXISTS `ComponentLinkage` (
@@ -144,6 +144,7 @@ ENGINE = InnoDB
 AUTO_INCREMENT = 1;
 
 call execute_if_column_not_exists('ComponentLinkage','CL_priority','ALTER TABLE `ComponentLinkage` ADD COLUMN CL_priority int NOT NULL DEFAULT 100;');
+call execute_if_column_not_exists('ComponentLinkage','CL_path','ALTER TABLE `ComponentLinkage` ADD COLUMN CL_path VARCHAR(255) NOT NULL DEFAULT \'\';');
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

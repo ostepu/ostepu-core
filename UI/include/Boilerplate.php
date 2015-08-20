@@ -6,12 +6,13 @@
  * @todo Configuration for logic controller uri could go here.
  */
 
-include_once 'include/Authorization.php';
-include_once 'include/HTMLWrapper.php';
-include_once 'include/Template.php';
-include_once '../Assistants/Logger.php';
-include_once 'include/Helpers.php';
-include_once 'include/Config.php';
+include_once ( dirname(__FILE__) . '/Authorization.php' );
+include_once ( dirname(__FILE__) . '/HTMLWrapper.php' );
+include_once ( dirname(__FILE__) . '/Template.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
+include_once ( dirname(__FILE__) . '/Helpers.php' );
+include_once ( dirname(__FILE__) . '/../../Assistants/Language.php' );
+include_once ( dirname(__FILE__) . '/Config.php' );
 
 $notifications = array();
 
@@ -39,8 +40,6 @@ if (isset($_GET['suid'])) {
     Logger::Log('no submission id!\n');
 }
 
-// global $serverURI;
-// global $databaseURI;
-// global $logicURI;
-// global $filesystemURI;
-// global $getSiteURI;
+if (isset($uid)){
+    initPage($uid);
+}

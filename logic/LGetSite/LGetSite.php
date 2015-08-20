@@ -807,9 +807,11 @@ class LGetSite
             $leaderId = $group['leader']['id'];
             $userGroups[$leaderId] = &$group;
 
-            foreach ($group['members'] as $member) {
-                $memberId = $member['id'];
-                $userGroups[$memberId] = &$group;
+            if (isset($group['members'])){
+                foreach ($group['members'] as $member) {
+                    $memberId = $member['id'];
+                    $userGroups[$memberId] = &$group;
+                }
             }
 
             $group['exercises'] = $exercises;
@@ -1416,9 +1418,11 @@ class LGetSite
         if (isset($group['leader']['id'])){
             $leaderId = $group['leader']['id'];
             $usersById[$leaderId] = &$group['leader'];
-            foreach ($group['members'] as &$member) {
-                $uId = $member['id'];
-                $usersById[$uId] = &$member;
+            if (isset($group['members'])){
+                foreach ($group['members'] as &$member) {
+                    $uId = $member['id'];
+                    $usersById[$uId] = &$member;
+                }
             }
         }
 
@@ -1644,13 +1648,15 @@ class LGetSite
             
             if (isset($allGroups[$sheetID][$leaderID])){
                 $group = $allGroups[$sheetID][$leaderID];
-                foreach ($group['members'] as $member){
-                    if (!isset($studentMarkings[$member['id']]))
-                        $studentMarkings[$member['id']] = array();
-                    if (!isset($studentMarkings[$member['id']][$exerciseType]))
-                        $studentMarkings[$member['id']][$exerciseType] = 0;
-                    
-                    $studentMarkings[$member['id']][$exerciseType] += isset($marking['points']) ? $marking['points'] : 0;
+                if (isset($group['members'])){
+                    foreach ($group['members'] as $member){
+                        if (!isset($studentMarkings[$member['id']]))
+                            $studentMarkings[$member['id']] = array();
+                        if (!isset($studentMarkings[$member['id']][$exerciseType]))
+                            $studentMarkings[$member['id']][$exerciseType] = 0;
+                        
+                        $studentMarkings[$member['id']][$exerciseType] += isset($marking['points']) ? $marking['points'] : 0;
+                    }
                 }
             }
         }

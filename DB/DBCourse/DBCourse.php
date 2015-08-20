@@ -89,14 +89,15 @@ class DBCourse
         return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddCourse.sql',array( 'values' => $input->getInsertData( ), 'in' => $input),201,$positive,array(),'Model::isProblem',array(new Course()));
     }
 
-    public function get( $functionName, $linkName, $params=array(),$singleResult = false, $checkSession = true )
+    public function get( $functionName, $linkName, $params=array(), $checkSession = true )
     {
-        $positive = function($input, $singleResult) {
+        $positive = function($input) {
             $result = Model::isEmpty();$result['content']=array();
             foreach ($input as $inp){
                 if ( $inp->getNumRows( ) > 0 ){
                     // extract Course data from db answer
-                    $result['content'] = array_merge($result['content'], Course::ExtractCourse( $inp->getResponse( ), $singleResult));
+                    $res = Course::ExtractCourse( $inp->getResponse( ), false);
+                    $result['content'] = array_merge($result['content'], (is_array($res) ? $res : array($res)));
                     $result['status'] = 200;
                 }
             }
@@ -104,16 +105,12 @@ class DBCourse
         };
         
         $params = DBJson::mysql_real_escape_string( $params );
-        return $this->_component->call($linkName, $params, '', 200, $positive, array($singleResult), 'Model::isProblem', array(), 'Query');
+        return $this->_component->call($linkName, $params, '', 200, $positive, array(), 'Model::isProblem', array(), 'Query');
     }
 
     public function getMatch($callName, $input, $params = array())
     {
         return $this->get($callName,$callName,$params);
-    }
-    public function getMatchSingle($callName, $input, $params = array())
-    {
-        return $this->get($callName,$callName,$params,true,false);
     }
     
     /**

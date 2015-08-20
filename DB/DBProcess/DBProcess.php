@@ -375,7 +375,7 @@ class DBProcess
                 $obj = new Process( );
                 $course = Course::ExtractCourse($queryResult[count($queryResult)-1]->getResponse(),true);
 
-                $obj->setProcessId( $course['id'] . '_' . $queryResult[count($queryResult)-2]->getInsertId( ) );
+                $obj->setProcessId( $course->getId() . '_' . $queryResult[count($queryResult)-2]->getInsertId( ) );
 
                 $res[] = $obj;
                 $this->_app->response->setStatus( 201 );
@@ -398,10 +398,10 @@ class DBProcess
 
         if ( !$arr && 
              count( $res ) == 1 ){
-            $this->_app->response->setBody( Form::encodeForm( $res[0] ) );
+            $this->_app->response->setBody( Process::encodeProcess( $res[0] ) );
             
         } else 
-            $this->_app->response->setBody( Form::encodeForm( $res ) );
+            $this->_app->response->setBody( Process::encodeProcess( $res ) );
     }
 
     public function get( 

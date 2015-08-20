@@ -10,7 +10,8 @@
 
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
-include_once dirname(__FILE__) . '/../Assistants/Language.php';
+
+$langTemplate='Condition_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 $notifications = array();
 
@@ -39,12 +40,12 @@ if (isset($_POST['action'])) {
                 http_put_data($URI, $newApprovalConditionSettings, true, $message);
 
                 if ($message != "201") {
-                    $notifications[] = MakeNotification("error", "Fehler beim Speichern!");
+                    $notifications[] = MakeNotification("error", Language::Get('main','errorSetCondition', $langTemplate));
                     $RequestError = true;
                 }
             }
             else {
-                $notifications[] = MakeNotification("warning", "Ungültige Eingabe!");
+                $notifications[] = MakeNotification("warning", Language::Get('main','invalidInput', $langTemplate));
                 $RequestError = true;
             }
 
@@ -53,10 +54,10 @@ if (isset($_POST['action'])) {
 
         // creates a notification depending on RequestError
         if ($RequestError) {
-            $notifications[] = MakeNotification("error", "Beim Speichern ist ein Fehler aufgetreten!");
+            $notifications[] = MakeNotification("error", Language::Get('main','errorSetConditions', $langTemplate));
         }
         else {
-            $notifications[] = MakeNotification("success", "Die Zulassungsbedingungen wurden erfolgreich gespeichert!");
+            $notifications[] = MakeNotification("success", Language::Get('main','successSetConditions', $langTemplate));
         }
 
     }
@@ -76,10 +77,6 @@ $condition_data = http_get($URL, true);
 $condition_data = json_decode($condition_data, true);
 
 $user_course_data = $condition_data['user'];
-
-if (isset($user_course_data['user']['lang'])){
-    Language::setPreferedLanguage($user_course_data['user']['lang']);
-}
 
 Authentication::checkRights(PRIVILEGE_LEVEL::ADMIN, $cid, $uid, $user_course_data);
 $menu = MakeNavigationElement($user_course_data,

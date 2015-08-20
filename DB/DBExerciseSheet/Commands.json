@@ -22,8 +22,9 @@
     },
     {
         "name": "getExerciseSheetURL",
-        "callback": "getMatchSingleURL",
-        "outputType": "File",
+        "callback": "getMatchURL",
+        "singleOutput": "TRUE",
+        "outputType": "",
         "inputType": "",
         "method": "GET",
         "path": "/exercisesheet(/exercisesheet)/:esid/url"
@@ -31,21 +32,22 @@
     {
         "name": "getCourseSheetURLs",
         "callback": "getMatchURL",
-        "outputType": "File",
+        "outputType": "",
         "inputType": "",
         "method": "GET",
         "path": "/exercisesheet/course/:courseid/url"
     },
     {
         "name": "getCourseSheets",
-        "outputType": "ExerciseSheet",
+        "outputType": "",
         "inputType": "",
         "method": "GET",
         "path": "/exercisesheet/course/:courseid(/:exercise)"
     },
     {
         "name": "getExerciseSheet",
-        "outputType": "ExerciseSheet",
+        "singleOutput": "TRUE",
+        "outputType": "",
         "inputType": "",
         "method": "GET",
         "path": "/exercisesheet(/exercisesheet)/:esid(/:exercise)"

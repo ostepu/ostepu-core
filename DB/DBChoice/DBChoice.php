@@ -407,7 +407,7 @@ class DBChoice
                 $obj = new Choice( );
                 $course = Course::ExtractCourse($queryResult[count($queryResult)-1]->getResponse(),true);
 
-                $obj->setChoiceId( $course['id'] . '_' . $queryResult[count($queryResult)-2]->getInsertId( ) );
+                $obj->setChoiceId( $course->getId() . '_' . $queryResult[count($queryResult)-2]->getInsertId( ) );
                 
                 $res[] = $obj;
                 $this->_app->response->setStatus( 201 );

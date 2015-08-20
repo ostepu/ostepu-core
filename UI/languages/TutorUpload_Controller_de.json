@@ -1,0 +1,6 @@
+{
+    "main": {
+        "sucessFileUpload": "Die Datei wurde hochgeladen.",
+        "invalidFileType": "Es handelt sich nicht um ein *.zip-Archiv."
+    }
+}

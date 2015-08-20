@@ -73,7 +73,7 @@ class Komponenten
                     $router = new \Slim\Router();
                     foreach($component['commands'] as $command){
                         $route = new \Slim\Route($command['path'],'is_array');
-                        $route->via(strtoupper($command['method']));
+                        $route->via((isset($command['method']) ? strtoupper($command['method']) : 'GET'));
                         $router->map($route);
                     }
                     $component['router'] = $router;
@@ -92,7 +92,6 @@ class Komponenten
                 foreach($links as $link){
                     $linkNames[] = $link->getName();
                     $linkNamesUnique[$link->getName()] = $link->getName();
-                    
                 }
                 
                 
@@ -106,24 +105,25 @@ class Komponenten
                     }
                 }
                 
-                //if ($componentName == 'CInstall')
-                //    var_dump($callNames);
-                                    
                 $countLinks = 1;
-                if (isset($component['init']) && $component['init']->getStatus() === 201){
+                if (isset($component['init']) && $component['init']!==null && $component['init']->getStatus() === 201){
                     $countLinks+=count($linkNames) + count(array_diff($callNames,$linkNamesUnique)) + count($linkNamesUnique) - count(array_diff($linkNamesUnique,$callNames));
                     $countLinks++;
+                } else {
+                    if (!isset($component['init']) || $component['init']===null){
+                        $fail = true;
+                        $error = Language::Get('components','componentCrashed');
+                    }
                 }
                 
                 $countCommands = count(isset($component['commands']) ? $component['commands'] : array());
                 if (isset($component['init']) && isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details' && !$isUpdate){
                     $defs = explode(";",$component['init']->getDef());
                     $baseComponent = (count($defs)>2 ? "<br><span class='info-color tiny'>(".$defs[0].")</span>" : '');
-                    //var_dump($component['init']->getDef());
                     $text .= "<tr><td class='e' rowspan='{$countLinks}'>{$componentName}{$baseComponent}</td><td class='v'>{$component['init']->getAddress()}</td><td class='e'><div align ='center'>".($component['init']->getStatus() === 201 ? Language::Get('main','ok') : "<font color='red'>".Language::Get('main','fail')." ({$component['init']->getStatus()})</font>")."</align></td></tr>";
                 }
                 
-                if (isset($component['init']) && $component['init']->getStatus() === 201){
+                if (isset($component['init']) && $component['init']!==null && $component['init']->getStatus() === 201){
                     $installedComponents++;
                     $installedLinks+=count(isset($component['links']) ? $component['links'] : array());
                     $installedCommands+=$countCommands;
@@ -160,20 +160,22 @@ class Komponenten
                             if ($calls!==null){
                                 foreach($calls as $pos => $callList){                
                                     if ($link->getName() !== $callList['name']) continue;
-                                    foreach($callList['links'] as $pos2 => $call){
-                                        if (!isset($content[$link->getTargetName()]['router'])){
-                                            $notRoutable=true;
-                                            break;
-                                        }
-                                        if ($content[$link->getTargetName()]['router']==null) continue;
-                                        if ($call===null) continue;
-                                        if (!isset($call['method'])) continue;
-                                        if (!isset($call['path'])) continue;
-                                        
-                                        $routes = count($content[$link->getTargetName()]['router']->getMatchedRoutes(strtoupper($call['method']), $call['path']),true);
-                                        if ($routes===0){
-                                            $notRoutable=true;
-                                            break;
+                                    if (isset($callList['links']) && $callList['links'] !== null){
+                                        foreach($callList['links'] as $pos2 => $call){
+                                            if (!isset($content[$link->getTargetName()]['router'])){
+                                                $notRoutable=true;
+                                                break;
+                                            }
+                                            if ($content[$link->getTargetName()]['router']==null) continue;
+                                            if ($call===null) continue;
+                                            if (!isset($call['method'])) continue;
+                                            if (!isset($call['path'])) continue;
+                                            
+                                            $routes = count($content[$link->getTargetName()]['router']->getMatchedRoutes(strtoupper($call['method']), $call['path']),true);
+                                            if ($routes===0){
+                                                $notRoutable=true;
+                                                break;
+                                            }
                                         }
                                     }
                                     if ($notRoutable) break;
@@ -212,6 +214,18 @@ class Komponenten
                 }
             }
             
+            
+            if ($installedComponents==0){
+                $fail = true;
+                $error = Language::Get('components','noComponents');
+            } else if ($installedLinks==0){
+                $fail = true;
+                $error = Language::Get('components','noLinks');
+            } else if ($installedCommands==0){
+                $fail = true;
+                $error = Language::Get('components','noCommands');
+            }
+            
             if (isset($data['CO']['co_details']) && $data['CO']['co_details'] === 'details' && !$isUpdate)
                 $text .= Design::erstelleZeile($console, '', '', '', '', '' , '');
             
@@ -241,8 +255,14 @@ class Komponenten
 
             $results = Component::decodeComponent($result['content']);
             $results = Installation::orderBy(json_decode(Component::encodeComponent($results),true),'name',SORT_ASC);
-            $results = Component::decodeComponent(Component::encodeComponent($results));
+            $results = Component::decodeComponent(json_encode($results));
             if (!is_array($results)) $results = array($results);
+            
+            if (count($results)==0){
+                $fail = true;
+                $error = Language::Get('components','noComponents');
+            }
+            
             foreach($results as $res){
                 $components[$res->getName()] = array();
                 $components[$res->getName()]['init'] = $res;
@@ -254,6 +274,11 @@ class Komponenten
             if (isset($result4['content']) && isset($result4['status']) && $result4['status'] === 200){
                 $definitions = Component::decodeComponent($result4['content']);
                 if (!is_array($definitions)) $definitions = array($definitions);
+                
+                if (count($definitions)==0){
+                    $fail = true;
+                    $error = Language::Get('components','noDefinitions');
+                }
                 
                 $result2 = new Request_MultiRequest();
                 $result3 = new Request_MultiRequest();
@@ -290,7 +315,7 @@ class Komponenten
                         
                             $links = $definition->getLinks();
                             $links = Installation::orderBy(json_decode(Link::encodeLink($links),true),'name',SORT_ASC);
-                            $links = Link::decodeLink(Link::encodeLink($links));
+                            $links = Link::decodeLink(json_encode($links));
                             if (!is_array($links)) $links = array($links);
                             
                             $components[$definition->getName()]['links'] = $links;
@@ -317,16 +342,17 @@ class Komponenten
                 }
             } else{
                $fail = true;
-               $error = "keine Definitionen";
+               $error = Language::Get('components','noDefinitions');
             }
             
        }else{
             $fail = true;
+            $error = Language::Get('components','operationFailed');
        }
         
         if (isset($result['status']) && $result['status'] !== 200){
             $fail = true;
-            $error = "Initialisierung fehlgeschlagen";
+            $error = Language::Get('components','operationFailed');
             $errno = $result['status'];
         }
         return $components;

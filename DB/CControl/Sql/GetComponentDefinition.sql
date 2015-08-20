@@ -11,6 +11,7 @@ select
     CL.CO_id_owner,
     CL.CL_relevanz,
     CL.CL_priority,
+    CL.CL_path,
     CO2.CO_name as CL_targetName,
     CO2.CO_address as CL_address,
     CO2.CO_option as CL_option
