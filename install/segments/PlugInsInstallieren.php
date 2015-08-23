@@ -138,8 +138,20 @@ class PlugInsInstallieren
                 self::gibPluginDateien($input, $fileList, $fileListAddress, $componentFiles);
                 $fileCount=count($fileList);
                 foreach($fileList as $f){
-                    if (is_readable($f))
+                    if (is_readable($f)){
                         $fileSize += filesize($f);
+                        
+                        if ($fileSize>0 && strtolower(substr($f,-5))==='.json'){
+                            // validiere die json Datei
+                            $cont = file_get_contents($f);
+                            if (trim($cont) != ''){
+                                $val = @json_decode(file_get_contents($f));
+                                if ($val===null){
+                                    $text .= Design::erstelleZeileShort($console, 'Fehler', 'v error', realpath($f) , 'break v'); 
+                                }
+                            }
+                        }
+                    }
                 }
                 $componentCount = count($componentFiles);
             }
