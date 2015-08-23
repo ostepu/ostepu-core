@@ -173,9 +173,11 @@ class Model
                 if (isset($placeholder[$key])){
                     $pregRes = @preg_match($placeholder[$key], $value);
                     if ($pregRes === false){
+                        error_log(__FILE__.':'.__LINE__.' '.$placeholder[$key].' konnte nicht interpretiert werden');
                         $this->finishRequest(self::isError());
                         return;
                     } else if ($pregRes === 0){
+                        error_log(__FILE__.':'.__LINE__.' '.$value.' passt nicht zu '.$placeholder[$key]);
                         $this->finishRequest(self::isPreconditionError());
                         return;
                     }
