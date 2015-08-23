@@ -86,6 +86,7 @@ class Model
             if (!isset($command['callback'])) $command['callback'] = $command['name'];
             if (!isset($command['seqInput'])) $command['seqInput'] = 'TRUE';
             if (!isset($command['singleOutput'])) $command['singleOutput'] = 'FALSE';
+            if (!isset($command['placeholder'])) $command['placeholder'] = array();
             
             // Methoden können durch Komma getrennt aufgelistet sein
             $methods = explode(',',$command['method']);
@@ -159,8 +160,29 @@ class Model
                 $arr = false;
             }
 
-            // nun soll die zugehörige Funktion im Modul aufgerufen werden
             $params = $matches->getParams();
+            $placeholder = array();
+            // prüfe die Bedingungen für die Platzhalter
+            foreach ($selectedCommand['placeholder'] as $holder){
+                if (!isset($holder['name'])) continue;
+                if (!isset($holder['regex'])) continue;
+                $placeholder[$holder['name']] = $holder['regex'];
+            }
+            
+            foreach ($params as $key => $value){
+                if (isset($placeholder[$key])){
+                    $pregRes = @preg_match($placeholder[$key], $value);
+                    if ($pregRes === false){
+                        $this->finishRequest(self::isError());
+                        return;
+                    } else if ($pregRes === 0){
+                        $this->finishRequest(self::isPreconditionError());
+                        return;
+                    }
+                }
+            }
+            
+            // nun soll die zugehörige Funktion im Modul aufgerufen werden
             if (isset($selectedCommand['inputType']) && trim($selectedCommand['inputType'])!='' && isset($rawInput)){
                 // initialisiert die Ausgabe positiv
                 $result=array("status"=>201,"content"=>array());
@@ -186,9 +208,9 @@ class Model
                         }
                     } catch(Exception $e) {
                         header_remove();
-                        $result["content"] = '';
-                        $result["status"] = 500;
                         error_log($e->getMessage());
+                        $this->finishRequest(self::isError());
+                        return;
                     }
                     
                 } else {
@@ -208,9 +230,9 @@ class Model
                         }
                     } catch(Exception $e) {
                         header_remove();
-                        $result["content"] = '';
-                        $result["status"] = 500;
                         error_log($e->getMessage());
+                        $this->finishRequest(self::isError());
+                        return;
                     }
                 }
                 
@@ -251,10 +273,16 @@ class Model
             }
         } else {
             // es wurde kein zutreffender Befehl gefunden, also gibt es eine leere Antwort
-            $result=self::isError();
+            $this->finishRequest(self::isError());
+            return;
         }
 
         // ab hier werden die Ergebnisse ausgegeben
+        $this->finishRequest($result);
+    }
+    
+    private function finishRequest($result = array('content'=>'', 'status'=>200))
+    {
         if (isset( $result['content'])  )
             echo $result['content'];  
                     
@@ -568,6 +596,21 @@ class Model
             return self::createAnswer(500,$content);
         }
         return self::createAnswer(500,$params);
+    }
+    
+    public static function isPreconditionError($content=null)
+    {
+        if (func_num_args()>1){
+            return self::isPreconditionErrorAnswer(func_get_arg(0),func_get_arg(1));
+        }
+        return self::createAnswer(412,$content);
+    }
+    private static function isPreconditionErrorAnswer($input, $params)
+    {
+        if ($params===null){
+            return self::createAnswer(412,$content);
+        }
+        return self::createAnswer(412,$params);
     }
     
     /**
