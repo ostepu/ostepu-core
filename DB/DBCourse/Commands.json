@@ -4,6 +4,7 @@
         "outputType": "Course",
         "inputType": "Course",
         "method": "PUT",
+        "placeholder":[{"name":"courseid","regex":"%^([0-9]+)$%"}],
         "path": "/course(/course)/:courseid"
     },
     {
@@ -11,6 +12,7 @@
         "outputType": "Course",
         "inputType": "",
         "method": "DELETE",
+        "placeholder":[{"name":"courseid","regex":"%^([0-9]+)$%"}],
         "path": "/course(/course)/:courseid"
     },
     {
@@ -27,6 +29,7 @@
         "outputType": "Course",
         "inputType": "",
         "method": "GET",
+        "placeholder":[{"name":"courseid","regex":"%^([0-9]+)$%"}],
         "path": "/course(/course)/:courseid"
     },
     {
@@ -43,6 +46,7 @@
         "outputType": "Course",
         "inputType": "",
         "method": "GET",
+        "placeholder":[{"name":"userid","regex":"%^([0-9]+)$%"}],
         "path": "/course/user/:userid"
     },
     {

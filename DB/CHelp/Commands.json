@@ -2,6 +2,7 @@
     {
         "name": "getHelp",
         "outputType": "binary",
+        "placeholder":[{"name":"language","regex":"%^[a-zA-Z]{2}$%"}],
         "path": "/help/:language/:path+"
     },
     {
