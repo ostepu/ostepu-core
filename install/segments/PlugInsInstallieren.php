@@ -17,15 +17,21 @@ class PlugInsInstallieren
                                         ),
                                     'install'=>array(
                                         'name'=>'installPlugins',
-                                        'event'=>array('actionInstallPlugins','page'),
+                                        'event'=>array('actionInstallPlugins'),
                                         'procedure'=>'installInstallPlugins',
                                         'enabledInstall'=>false
                                         ),
                                     'uninstall'=>array(
                                         'name'=>'uninstallPlugins',
-                                        'event'=>array('page'),
+                                        'event'=>array('actionUninstallPlugins'),
                                         'procedure'=>'installUninstallPlugins',
                                         'enabledInstall'=>false
+                                        ),
+                                    'validateFiles'=>array(
+                                        'name'=>'validateFiles',
+                                        'event'=>array('actionValidateFiles'),
+                                        'procedure'=>'installValidateFiles',
+                                        'enabledInstall'=>true
                                         )
                                     );
     
@@ -71,9 +77,17 @@ class PlugInsInstallieren
         $text .= Design::erstelleBeschreibung($console,Language::Get('packages','description'));
         
         if (self::$onEvents['install']['enabledInstall'])
-            $text .= Design::erstelleZeile($console, Language::Get('packages','installSelected'), 'e', '', 'v', Design::erstelleSubmitButton(self::$installPlugins,Language::Get('main','install')), 'h');
+            $text .= Design::erstelleZeile($console, Language::Get('packages','installSelected'), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0],Language::Get('main','install')), 'h');
         if (self::$onEvents['uninstall']['enabledInstall'])
-            $text .= Design::erstelleZeile($console, Language::Get('packages','uninstallSelected'), 'e', '', 'v', Design::erstelleSubmitButton(self::$uninstallPlugins,Language::Get('main','uninstall')), 'h');
+            $text .= Design::erstelleZeile($console, Language::Get('packages','uninstallSelected'), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['uninstall']['event'][0],Language::Get('main','uninstall')), 'h');
+        
+        if (self::$onEvents['validateFiles']['enabledInstall'])
+            $text .= Design::erstelleZeile($console, Language::Get('packages','validateFilesDesc'), 'e', '', 'v', Design::erstelleSubmitButton(self::$onEvents['validateFiles']['event'][0],Language::Get('packages','validateFiles')), 'h');
+        
+        $validateFiles=false;
+        if (isset($result[self::$onEvents['validateFiles']['name']])){
+            $validateFiles=true;
+        }
         
         if (isset($result[self::$onEvents['check']['name']]) && $result[self::$onEvents['check']['name']]!=null){
            $result =  $result[self::$onEvents['check']['name']];
@@ -140,14 +154,25 @@ class PlugInsInstallieren
                 foreach($fileList as $f){
                     if (is_readable($f)){
                         $fileSize += filesize($f);
-                        
-                        if ($fileSize>0 && strtolower(substr($f,-5))==='.json'){
-                            // validiere die json Datei
-                            $cont = file_get_contents($f);
-                            if (trim($cont) != ''){
-                                $val = @json_decode(file_get_contents($f));
-                                if ($val===null){
-                                    $text .= Design::erstelleZeileShort($console, 'Fehler', 'v error', realpath($f) , 'break v'); 
+                        if ($validateFiles){
+                            if ($fileSize>0 && strtolower(substr($f,-5))==='.json'){
+                                // validiere die json Datei
+                                $cont = file_get_contents($f);
+                                if (trim($cont) != ''){
+                                    $val = @json_decode(file_get_contents($f));
+                                    if ($val===null){
+                                        $text .= Design::erstelleZeileShort($console, 'Fehler', 'v error', realpath($f) , 'break v'); 
+                                    }
+                                }
+                            }
+                            
+                            if ($fileSize>0 && strtolower(substr($f,-4))==='.php'){
+                                // validiere die php Datei
+                                $output=null;
+                                $result=null;
+                                exec('(php -l -d error_reporting=E_ALL -d display_errors=on -d log_errors=off -f '.realpath($f).') 2>&1',$output,$result);
+                                if ($result!=0){
+                                    $text .= Design::erstelleZeileShort($console, realpath($f), 'break v', implode('<br>',$output), 'v error_light break');
                                 }
                             }
                         }
@@ -269,6 +294,11 @@ class PlugInsInstallieren
                 }
             }
         }
+    }
+    
+    public static function installValidateFiles($data, &$fail, &$errno, &$error)
+    {
+        return array("content"=>'');
     }
     
     public static function installInstallPlugins($data, &$fail, &$errno, &$error)
