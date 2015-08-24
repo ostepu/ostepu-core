@@ -161,7 +161,7 @@ class PlugInsInstallieren
                                 if (trim($cont) != ''){
                                     $val = @json_decode(file_get_contents($f));
                                     if ($val===null){
-                                        $text .= Design::erstelleZeileShort($console, 'Fehler', 'v error', realpath($f) , 'break v'); 
+                                        $text .= Design::erstelleZeileShort($console, realpath($f) , 'break v', Language::Get('packages','jsonInvalid'), 'v error_light break'); 
                                     }
                                 }
                             }
