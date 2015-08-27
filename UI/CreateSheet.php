@@ -14,6 +14,7 @@
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
 include_once dirname(__FILE__) . '/include/FormEvaluator.php';
+include_once dirname(__FILE__) . '/include/CreateSheet/Processor/Processor.functions.php';
 require_once dirname(__FILE__).'/phplatex.php';
 
 $langTemplate='CreateSheet_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
@@ -388,8 +389,33 @@ if ($correctExercise == true) {
                                 $Data2[] = $dat;
                             
                         if (isset($tempProcessors[$tempKey]))
-                            $tempProcessors[$tempKey]->setParameter(implode(' ',array_values($Data2)));                   
+                        {
+                            $tempProcessors[$tempKey]->setParameter(implode(' ',array_values($Data2)));
+
+                            // call functions for saving parameters in other format
+                            $componentId = $tempProcessors[$tempKey]->getTarget()->getId();
+                            // search components name
+                            if (isset($components) && !empty($components) && $components !== '')
+                            {
+                                foreach ($components as $tempKey2 => $Data)
+                                {
+                                    if ($componentId == $Data->getId())
+                                    {
+                                        // create string for function createparameters 
+                                        $functionname = $Data->getName();
+                                        $functionname .= "_createParameters";
+
+                                        // if Processor has such function then call it
+                                        if (is_callable($functionname, false, $callable_name))
+                                        {
+                                            $tempProcessors[$tempKey]->setParameter($callable_name($subexercise, $tempKey, $tempProcessors[$tempKey]->getParameter()));
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
+                    //$tempProcessors[$tempKey]->get
                 }
 
                 $processors = array_merge($processors,$tempProcessors);
