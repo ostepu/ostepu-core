@@ -588,7 +588,7 @@ class CControl
                                                                Component::getDBPrimaryKey( ),
                                                                Component::getDBConvert( )
                                                                );
-            $this->_app->response->setBody( Component::encodeComponent( $components ) );
+            $this->_app->response->setBody( json_encode( $components ) );
             $this->_app->response->setStatus( 200 );
             
         } else {
@@ -643,7 +643,7 @@ class CControl
                                                       $links,
                                                       Link::getDBPrimaryKey( )
                                                       );
-            $this->_app->response->setBody( Component::encodeComponent( $result ) );
+            $this->_app->response->setBody( json_encode( $result ) );
             $this->_app->response->setStatus( 200 );
             
         } else {
@@ -702,7 +702,7 @@ class CControl
                                                       Link::getDBPrimaryKey( )
                                                       );
             if ( count( $result ) > 0 )
-                $this->_app->response->setBody( Component::encodeComponent( $result[0] ) );
+                $this->_app->response->setBody( json_encode( $result[0] ) );
             $this->_app->response->setStatus( 200 );
             
         } else {
@@ -768,7 +768,7 @@ class CControl
                                      
             $tempObjects = array();
             foreach ( $objects as $object ){
-                $object = Component::decodeComponent( Component::encodeComponent( $object ) );
+                $object = Component::decodeComponent( json_encode( $object ) );
                 
                 // prüfen, welche Komponente auf diesem Server ist
                 if (strpos($object->getAddress().'/', $data['PL']['urlExtern'].'/')===false) continue;

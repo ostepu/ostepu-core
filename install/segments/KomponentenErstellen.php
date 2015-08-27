@@ -205,27 +205,33 @@ class KomponentenErstellen
                         foreach ($input['connector'] as $link){
                             if (!isset($link['target'])) $link['target'] = '';
                             if (!is_array($link['target'])) $link['target'] = array($link['target']);
-                            
-                            foreach ($link['target'] as $tar){// $tar -> der Name der Zielkomponente
-                                if (!isset($ComponentListInput[$tar])) continue;
-                                foreach ($ComponentListInput[$tar] as $target){
-                                    // $target -> das Objekt der Zielkomponente
-                                    if (!isset($target['dbName'])) continue;
-                                    if ($input['link_type']=='local' || $input['link_type']==''){
-                                        if ($input['urlExtern'] == $target['urlExtern']){
-                                            
-                                            $priority = (isset($link['priority']) ? ", CL_priority = {$link['priority']}" : '');
-                                            $relevanz = (isset($link['relevanz']) ? $link['relevanz'] : '');
-                                            $sql .= " INSERT INTO `ComponentLinkage` SET CO_id_owner = @{$target['dbName']}, CL_name = '{$link['name']}', CL_relevanz = '{$relevanz}', CO_id_target = @{$input['dbName']} {$priority};";
-                                            $links[] = 1;
-                                        }
-                                    } elseif ($input['link_type']=='full'){
-                                        if ($input['urlExtern'] == $target['urlExtern'] || (isset($input['link_availability']) && $input['link_availability']=='full')){
-                                            
-                                            $priority = (isset($link['priority']) ? ", CL_priority = {$link['priority']}" : '');
-                                            $relevanz = (isset($link['relevanz']) ? $link['relevanz'] : '');
-                                            $sql .= " INSERT INTO `ComponentLinkage` SET CO_id_owner = @{$target['dbName']}, CL_name = '{$link['name']}', CL_relevanz = '{$relevanz}', CO_id_target = @{$input['dbName']} {$priority};";
-                                            $links[] = 1;
+                            if (!isset($link['links'])) $link['links'] = array('a'=>null);
+                            foreach ($link['links'] as $callKey=>$call){
+                                foreach ($link['target'] as $tar){// $tar -> der Name der Zielkomponente
+                                    if (!isset($ComponentListInput[$tar])) continue;
+                                    foreach ($ComponentListInput[$tar] as $target){
+                                        // $target -> das Objekt der Zielkomponente
+                                        if (!isset($target['dbName'])) continue;
+                                        if ($input['link_type']=='local' || $input['link_type']==''){
+                                            if ($input['urlExtern'] == $target['urlExtern']){
+                                                
+                                                $priority = (isset($link['priority']) ? ", CL_priority = {$link['priority']}" : '');
+                                                $method = (isset($call['method']) ? $call['method'] : 'GET');
+                                                $path = (isset($call['path']) ? ", CL_path = '{$method} {$call['path']}'" : '');
+                                                $relevanz = (isset($link['relevanz']) ? $link['relevanz'] : '');
+                                                $sql .= " INSERT INTO `ComponentLinkage` SET CO_id_owner = @{$target['dbName']}, CL_name = '{$link['name']}', CL_relevanz = '{$relevanz}', CO_id_target = @{$input['dbName']} {$priority} {$path};";
+                                                $links[] = 1;
+                                            }
+                                        } elseif ($input['link_type']=='full'){
+                                            if ($input['urlExtern'] == $target['urlExtern'] || (isset($input['link_availability']) && $input['link_availability']=='full')){
+                                                
+                                                $priority = (isset($link['priority']) ? ", CL_priority = {$link['priority']}" : '');
+                                                $method = (isset($call['method']) ? $call['method'] : 'GET');
+                                                $path = (isset($call['path']) ? ", CL_path = '{$method} {$call['path']}'" : '');
+                                                $relevanz = (isset($link['relevanz']) ? $link['relevanz'] : '');
+                                                $sql .= " INSERT INTO `ComponentLinkage` SET CO_id_owner = @{$target['dbName']}, CL_name = '{$link['name']}', CL_relevanz = '{$relevanz}', CO_id_target = @{$input['dbName']} {$priority} {$path};";
+                                                $links[] = 1;
+                                            }
                                         }
                                     }
                                 }

@@ -42,24 +42,26 @@ if (isset($UploadHistoryGroupNotificationElements)) {
 
 
                 // prints group members
-                foreach ($group['members'] as $member) {
-                    print "<li>";
-                    
-                    if (isset($member['firstName'])){
-                        print $member['firstName'];
-                    } else
-                        print "";
-                    print " ";
-                    if (isset($member['lastName'])){
-                        print $member['lastName'];
-                    } else
-                        print "";
-                    
-                    if (isset($member['userName'])){
-                        print " (".$member['userName'].")";
-                    } else
-                        print "???";
-                    print "</li>";
+                if (isset($group['members'])){
+                    foreach ($group['members'] as $member) {
+                        print "<li>";
+                        
+                        if (isset($member['firstName'])){
+                            print $member['firstName'];
+                        } else
+                            print "";
+                        print " ";
+                        if (isset($member['lastName'])){
+                            print $member['lastName'];
+                        } else
+                            print "";
+                        
+                        if (isset($member['userName'])){
+                            print " (".$member['userName'].")";
+                        } else
+                            print "???";
+                        print "</li>";
+                    }
                 }
             ?>
         </ol>

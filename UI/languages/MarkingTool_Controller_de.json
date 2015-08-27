@@ -1,0 +1,12 @@
+{
+    "main": {
+        "invalidPoints": "Ungültige Punktzahl.",
+        "invalidComment": "Ungültiger Kommentar.",
+        "invalidStatus": "Ungültiger Status.",
+        "invalidAcceptance": "Ungültige Akzeptanz.",
+        "errorSaveMarking": "Beim Speichern der Korrektur ist ein Fehler aufgetreten.",
+        "successSaveMarking": "Die Korrektur wurde erfolgreich geändert.",
+        "errorSaveSubmission": "Beim Speichern der Einsendung ist ein Fehler aufgetreten.",
+        "editedSubmission": "Die Einsendung wurde erfolgreich geändert."
+    }
+}

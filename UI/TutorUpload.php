@@ -12,7 +12,8 @@ include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
 include_once dirname(__FILE__) . '/../Assistants/Language.php';
 include_once dirname(__FILE__) . '/../Assistants/MimeReader.php';
-include_once dirname(__FILE__) . '/../Assistants/Language.php';
+
+$langTemplate='TutorUpload_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 if (isset($_POST['action']) && $_POST['action'] == 'TutorUpload') {
     if (isset($_FILES['MarkingFile'])) {
@@ -44,7 +45,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'TutorUpload') {
                 $error = http_post_data($URI, $file, true, $message);
 
                 if ($message == "201" || $message == "200") {
-                    $successmsg = "Die Datei wurde hochgeladen.";
+                    $successmsg = Language::Get('main','sucessFileUpload', $langTemplate);
                     $notifications[] = MakeNotification('success',
                                                         $successmsg);
                 } else {
@@ -52,7 +53,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'TutorUpload') {
                                                         $error);
                 }
             } else {
-                $errormsg = "Es handelt sich nicht um ein *.zip-Archiv.";
+                $errormsg = Language::Get('main','invalidFileType', $langTemplate);
                 $notifications[] = MakeNotification('error',
                                                     $errormsg);
             }
@@ -68,10 +69,6 @@ $tutorUpload_data['filesystemURI'] = $filesystemURI;
 $tutorUpload_data['cid'] = $cid;
 
 $user_course_data = $tutorUpload_data['user'];
-
-if (isset($user_course_data['user']['lang'])){
-    Language::setPreferedLanguage($user_course_data['user']['lang']);
-}
 
 Authentication::checkRights(PRIVILEGE_LEVEL::TUTOR, $cid, $uid, $user_course_data);
 $menu = MakeNavigationElement($user_course_data,

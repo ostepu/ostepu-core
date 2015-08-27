@@ -11,14 +11,12 @@
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/LArraySorter.php';
 
+$langTemplate='index_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
+
 // load user data from the database
 $databaseURI = $databaseURI . "/user/user/{$uid}";
 $user = http_get($databaseURI, false);
 $user = json_decode($user, true);
-
-if (isset($user['lang'])){
-    Language::setPreferedLanguage($user['lang']);
-}
 
 if (is_null($user)) {
     $user = array();
@@ -31,7 +29,7 @@ $menu = MakeNavigationElement($user,
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user);
-$h->bind(array("name" => "Übungsplattform",
+$h->bind(array("name" => Language::Get('main','title', $langTemplate),
                "hideBackLink" => "true",
                "notificationElements" => $notifications,
                "navigationElement" => $menu));

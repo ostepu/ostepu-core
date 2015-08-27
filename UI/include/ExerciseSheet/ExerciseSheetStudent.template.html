@@ -234,7 +234,7 @@
                             $allowed = 0;
                     
                             if (isset($user['courses'][0]['course'])){
-                                $obj = Course::decodeCourse(Course::encodeCourse($user['courses'][0]['course']));
+                                $obj = Course::decodeCourse(json_encode($user['courses'][0]['course']));
                                 $allowed = Course::containsSetting($obj,'AllowLateSubmissions');
                             }
                         

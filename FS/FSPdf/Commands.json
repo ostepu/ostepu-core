@@ -22,7 +22,7 @@
     },
     {
         "name": "addPdfFromFile3",
-        "singleInput": "FALSE",
+        "seqInput": "FALSE",
         "outputType": "File",
         "inputType": "File",
         "method": "POST",

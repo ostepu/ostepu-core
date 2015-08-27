@@ -8,7 +8,8 @@
     {"path":"LFormPredecessor.php"},
     {"path":"index.php"},
     {"path":"Commands.json"},
-    {"path":"info/"}
+    {"path":"info/"},
+    {"path":"help/"}
   ],
   "links":[
     {"name":"formDb", "target":"DBForm", "links":[{"method":"GET", "path":"/form/exercise/:exerciseid" }] },
@@ -19,6 +20,7 @@
   ],
   "connector":[
     {"name":"extension", "target":"LExtension", "priority":150},
-    {"name":"request", "target":"CLocalObjectRequest"}
+    {"name":"request", "target":"CLocalObjectRequest"},
+    {"name":"request", "target":"CHelp", "links":[{"path":"/help/:language/extension/LFormPredecessor.md"}]}
   ]
 }

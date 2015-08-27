@@ -1,0 +1,12 @@
+{
+    "main": {
+        "invalidOldPassword": "Ungüliges altes Passwort.",
+        "invalidNewPassword": "Ungüliges neues Passwort.",
+        "invalidRepeat": "Ungülige Passwortwiederholung.",
+        "differentPasswords": "Die Passwörter stimmen nicht überein!",
+        "incorrectOldPassword": "Das alte Passwort ist nicht korrekt!",
+        "languageChanged": "Die Sprache wurde geändert!",
+        "accountSettings": "Account-Einstellungen",
+        "course": "Veranstaltungen"
+    }
+}

@@ -9,7 +9,8 @@
  */
 
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
-include_once dirname(__FILE__) . '/../Assistants/Language.php';
+
+$langTemplate='UploadHistory_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 if (isset($_POST['sheetID']))
     $sid = $_POST['sheetID'];
@@ -40,10 +41,10 @@ if (isset($_POST['updateSelectedSubmission'])) {
 
     // shows notification
     if ($RequestError == false) {
-        $uploadHistoryNotifications[] = MakeNotification("success", "Die Einsendung wurde ausgewählt.");
+        $uploadHistoryNotifications[] = MakeNotification("success", Language::Get('main','successSelectSubmission', $langTemplate));
     }
     else {
-        $uploadHistoryNotifications[] = MakeNotification("error", "Beim Speichern ist ein Fehler aufgetreten!");
+        $uploadHistoryNotifications[] = MakeNotification("error", Language::Get('main','errorSelectSubmission', $langTemplate));
     }
 }
     
@@ -73,10 +74,6 @@ if (isset($_POST['sortUsers']))
     $uploadHistoryOptions_data['sortUsers'] = $_POST['sortUsers'];
 
 $user_course_data = $uploadHistoryOptions_data['user'];
-
-if (isset($user_course_data['user']['lang'])){
-    Language::setPreferedLanguage($user_course_data['user']['lang']);
-}
 
 if (isset($user_course_data['courses'][0]['status'])){   
     $courseStatus = $user_course_data['courses'][0]['status'];
@@ -111,13 +108,13 @@ if ($courseStatus<=0 /* PRIVILEGE_LEVEL::STUDENT */){
         // bool if startDate of sheet is greater than the actual date
         $hasStarted = date('U') > date('U', $sheet['startDate']);
         if ($isExpired){
-            set_error("Der Übungszeitraum ist am ".date('d.m.Y  -  H:i', $sheet['endDate'])." abgelaufen!");
+            set_error(Language::Get('main','expiredExercisePerion', $langTemplate,array('endDate'=>date('d.m.Y  -  H:i', $sheet['endDate']))));
         } elseif (!$hasStarted){
-            set_error("Der Übungszeitraum beginnt am ".date('d.m.Y  -  H:i', $sheet['startDate'])."!");
+            set_error(Language::Get('main','noStartedExercisePeriod', $langTemplate,array('startDate'=>date('d.m.Y  -  H:i', $sheet['startDate']))));
         }
         
     } else
-        set_error("Kein Übungszeitraum gefunden!");
+        set_error(Language::Get('main','noExercisePeriod', $langTemplate));
 }
 
 // construct a new header

@@ -291,7 +291,7 @@ class LExtension
     public function getInstalledExtensions($courseid)
     {
         $extensions = array();
-        
+
         foreach($this->_extension as $link){
             $result = Request::routeRequest( 
                                             'GET',
@@ -313,8 +313,8 @@ class LExtension
             $this->app->response->setStatus( 200 );
         } else
             $this->app->response->setStatus( 404 );
-        
-        $this->app->response->setBody( Component::encodeComponent( $extensions ) );
+
+        $this->app->response->setBody( Link::encodeLink( $extensions ) );
     }
   
     /**
@@ -418,6 +418,6 @@ class LExtension
     public function getExtensions()
     {
         $this->app->response->setStatus( 200 );
-        $this->app->response->setBody( Component::encodeComponent( $this->_extension ) );
+        $this->app->response->setBody( Link::encodeLink( $this->_extension ) );
     }
 }

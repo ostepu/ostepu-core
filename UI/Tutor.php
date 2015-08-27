@@ -10,7 +10,8 @@
 
 include_once dirname(__FILE__).'/include/Boilerplate.php';
 include_once dirname(__FILE__).'/../Assistants/Structures.php';
-include_once dirname(__FILE__) . '/../Assistants/Language.php';
+
+$langTemplate='Tutor_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 // load tutor data from GetSite
 $URI = $getSiteURI . "/tutor/user/{$uid}/course/{$cid}";
@@ -22,10 +23,6 @@ $tutor_data['cid'] = $cid;
 // check userrights for course
 $user_course_data = $tutor_data['user'];
 
-if (isset($user_course_data['user']['lang'])){
-    Language::setPreferedLanguage($user_course_data['user']['lang']);
-}
-
 Authentication::checkRights(PRIVILEGE_LEVEL::TUTOR, $cid, $uid, $user_course_data);
 $menu = MakeNavigationElement($user_course_data,
                               PRIVILEGE_LEVEL::TUTOR);
@@ -34,7 +31,7 @@ $menu = MakeNavigationElement($user_course_data,
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
 $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
-               "backTitle" => "Veranstaltung wechseln",
+               "backTitle" => Language::Get('main','changeCourse', $langTemplate),
                "backURL" => "index.php",
                "notificationElements" => $notifications,
                "navigationElement" => $menu));

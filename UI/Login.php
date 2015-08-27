@@ -11,8 +11,9 @@ include_once dirname(__FILE__) . '/include/Authentication.php';
 include_once dirname(__FILE__) . '/include/HTMLWrapper.php';
 include_once dirname(__FILE__) . '/include/Template.php';
 include_once dirname(__FILE__) . '/../Assistants/Logger.php';
-include_once dirname(__FILE__) . '/../Assistants/Language.php';
 include_once dirname(__FILE__) . '/include/Helpers.php';
+
+$langTemplate='Login_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 $auth = new Authentication();
 Authentication::preventSessionFix();
@@ -41,7 +42,7 @@ if (isset($_POST['action'])) {
         if ($signed!==false){
             $notifications[] = $signed;
         } else 
-            $notifications[] = MakeNotification("error", "Die Anmeldung war fehlerhaft!");
+            $notifications[] = MakeNotification("error", Language::Get('main','errorLogin', $langTemplate));
     }
 } else {
     $notifications = array();
@@ -55,8 +56,8 @@ if(Authentication::checkLogin()) {
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
-$h->bind(array("backTitle" => "Veranstaltung wechseln",
-               "name" => "Übungsplattform",
+$h->bind(array("backTitle" => Language::Get('main','changeCourse', $langTemplate),
+               "name" => Language::Get('main','title', $langTemplate),
                "hideBackLink" => "true",
                "hideLogoutLink" => "true",
                "notificationElements" => $notifications));

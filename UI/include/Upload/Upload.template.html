@@ -19,10 +19,12 @@
 
     <?php     
     $groupMember = array();
-    if (isset($group['members']))
+    if (isset($group['members'])){
         $groupMember = array_merge($groupMember,$group['members']);
-    if (isset($group['leader']))
+    }
+    if (isset($group['leader'])){
         $groupMember = array_merge($groupMember,array($group['leader']));
+    }
     $m=array();
     foreach ($groupMember as $mem){
         if (isset($mem['id']))
@@ -120,6 +122,8 @@
             </div>
             <?php }?>
             
+            <?php if (!isset($exercise['submittable']) || $exercise['submittable'] == '1'){ ?>
+            
                     <?php
                     if ($form->getType()==0){
                     ?>
@@ -164,24 +168,31 @@
 <br><br>
                     <?php
 
-                    }                    
+                    }
+                    } else { ?>
+                        <span class="left info-color">
+                        <?php echo Language::Get('main','notSubmittable', $langTemplate); ?>
+                        </span>
+                    <?php }             
                     }
                     
                     ?>
                     
                     
                     
-
-                    <label class="short left label bold new-line"
-                           for="studentComment"><?php echo Language::Get('submission','comment', $langTemplate); ?>:</label>
-                    <textarea name="exercises[<?php echo $key; ?>][comment]"
-                              class="form-field text-input"
-                              rows="5"
-                              maxlength="255"></textarea>
+                    <?php if (!isset($exercise['submittable']) || $exercise['submittable'] == '1'){ ?>
+                        <label class="short left label bold new-line"
+                               for="studentComment"><?php echo Language::Get('submission','comment', $langTemplate); ?>:</label>
+                        <textarea name="exercises[<?php echo $key; ?>][comment]"
+                                  class="form-field text-input"
+                                  rows="5"
+                                  maxlength="255"></textarea>
+                    <?php } ?>
 
                     <?php
                     if (!isset($exercise['form'])){
                     ?>
+                    <?php if (!isset($exercise['submittable']) || $exercise['submittable'] == '1'){ ?>
                     <label class="short left label bold new-line"
                            for="studentComment"><?php echo Language::Get('submission','file', $langTemplate); ?>:</label>
                     <input type="file"
@@ -193,6 +204,12 @@
                                 $typesText[] = $type['text']; 
                             $typesText = implode(', ',$typesText);?>
                         <div><?php echo $typesText; ?></div>
+                    <?php } ?>
+                    
+                    <?php } else { ?>
+                        <span class="info-color">
+                        <?php echo Language::Get('main','notSubmittable', $langTemplate); ?>
+                        </span>
                     <?php } ?>
 
                     <?php } ?>

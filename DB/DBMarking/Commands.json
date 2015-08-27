@@ -29,7 +29,8 @@
     },
     {
         "name": "getSubmissionMarking",
-        "callback": "getMatchSingle",
+        "callback": "getMatch",
+        "singleOutput": "TRUE",
         "outputType": "Marking",
         "inputType": "",
         "method": "GET",
@@ -93,7 +94,8 @@
     },
     {
         "name": "getMarking",
-        "callback": "getMatchSingle",
+        "callback": "getMatch",
+        "singleOutput": "TRUE",
         "outputType": "Marking",
         "inputType": "",
         "method": "GET",
@@ -123,7 +125,8 @@
     },
     {
         "name": "getExistsPlatform",
-        "callback": "getMatchSingle",
+        "callback": "getMatch",
+        "singleOutput": "TRUE",
         "outputType": "Platform",
         "inputType": "",
         "method": "GET",

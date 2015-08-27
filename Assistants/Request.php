@@ -344,7 +344,7 @@ class Request
      *
      * @return an array with the request result (status, header, content)
      */
-    public static function routeRequest($method , $resourceUri , $header ,  $content , $linkedComponents , $prefix, $linkName=NULL)
+    public static function routeRequest($method , $resourceUri , $header ,  $content , $linkedComponents , $prefix=null, $linkName=NULL)
     {
         if (!is_array($linkedComponents)) $linkedComponents = array($linkedComponents);
     
@@ -368,7 +368,7 @@ class Request
             // determines all supported prefixes    
             $possible = explode(',',$links->getPrefix());
             
-            if (in_array($prefix,$possible)){
+            if ($prefix === null || in_array($prefix,$possible)){
             
                 // create a custom request
                 $ch = self::custom($method,

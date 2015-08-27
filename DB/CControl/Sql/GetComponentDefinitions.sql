@@ -10,6 +10,7 @@ select
     CL.CO_id_target,
     CL.CL_relevanz,
     CL.CL_priority,
+    CL.CL_path,
     CL.CO_id_target,
     CL.CO_id_owner,
     CO2.CO_name as CL_targetName,

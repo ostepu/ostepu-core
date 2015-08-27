@@ -292,6 +292,16 @@ class Exercise extends Object implements JsonSerializable
         $this->fileTypes = $value;
     }
     
+    private $submittable = null;
+    public function getSubmittable( )
+    {
+        return $this->submittable;
+    }
+    public function setSubmittable( $value = null )
+    {
+        $this->submittable = $value;
+    }
+    
     /**
      * Creates an Exercise object, for database post(insert) and put(update).
      * Not needed attributes can be set to null.
@@ -315,7 +325,8 @@ class Exercise extends Object implements JsonSerializable
                                           $type,
                                           $link,
                                           $bonus,
-                                          $linkName = null
+                                          $linkName = null,
+                                          $submittable = '1'
                                           )
     {
         return new Exercise( array(
@@ -326,7 +337,8 @@ class Exercise extends Object implements JsonSerializable
                                    'type' => $type,
                                    'link' => $link,
                                    'linkName' => $linkName,
-                                   'bonus' => $bonus
+                                   'bonus' => $bonus,
+                                   'submittable' => $submittable
                                    ) );
     }
 
@@ -348,7 +360,8 @@ class Exercise extends Object implements JsonSerializable
                      'E_submissions' => 'submissions',
                      'E_bonus' => 'bonus',
                      'E_attachments' => 'attachments',
-                     'E_fileTypes' => 'fileTypes'
+                     'E_fileTypes' => 'fileTypes',
+                     'E_submittable' => 'submittable'
                      );
     }
 
@@ -403,6 +416,13 @@ class Exercise extends Object implements JsonSerializable
                                  'E_bonus',
                                  DBJson::mysql_real_escape_string( $this->bonus )
                                  );
+        if ( $this->submittable !== null )
+            $this->addInsertData(
+                                 $values,
+                                 'E_submittable',
+                                 DBJson::mysql_real_escape_string( $this->submittable )
+                                 );
+
 
         if ( $values != '' ){
             $values = substr(
@@ -483,6 +503,18 @@ class Exercise extends Object implements JsonSerializable
      */
     public static function encodeExercise( $data )
     {
+        if (is_array($data))reset($data);
+        if (gettype($data) !== 'object' && !(is_array($data) && (current($data)===false || gettype(current($data)) === 'object'))){
+            $e = new Exception();
+            error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());            
+            return null;
+        }
+        if ((is_array($data) && (is_array(current($data)) || (current($data)!==false && get_class(current($data)) !== get_called_class()))) || (!is_array($data) && get_class($data) !== get_called_class())){
+            $e = new Exception();
+            $class = (is_array($data) && is_array(current($data)) ? 'array' : (is_array($data) ? (current($data)!==false ? get_class(current($data)) : 'array') : get_class($data)));
+            error_log(__FILE__.':'.__LINE__.' wrong type, '.$class.' given, '.get_called_class()." expected\n".$e->getTraceAsString());
+            return null;
+        }
         return json_encode( $data );
     }
 
@@ -506,7 +538,20 @@ class Exercise extends Object implements JsonSerializable
 
         if ( $decode )
             $data = json_decode( $data );
-        if ( is_array( $data ) ){
+        
+        $isArray = true;
+        if ( !$decode ){
+            if ($data !== null){
+                reset($data);
+                if (current($data)!==false && !is_int(key($data))) {
+                    $isArray = false;
+                }
+            } else {
+               $isArray = false; 
+            }
+        }
+        
+        if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
                 $result[] = new Exercise( $value );
@@ -550,6 +595,8 @@ class Exercise extends Object implements JsonSerializable
             $list['fileTypes'] = $this->fileTypes;
         if ( $this->linkName !== null )
             $list['linkName'] = $this->linkName;
+        if ( $this->submittable !== null )
+            $list['submittable'] = $this->submittable;
         return array_merge($list,parent::jsonSerialize( ));
     }
 
@@ -650,6 +697,7 @@ class Exercise extends Object implements JsonSerializable
         if ($isResult){ 
             // to reindex
             $res = array_values( $res );
+            $res = Exercise::decodeExercise($res,false);
 
             if ( $singleResult ){
 

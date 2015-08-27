@@ -68,7 +68,7 @@ trig.parents('.form').last().find('.content-title').first().text("Eingabezeile")
     });
 }
 
-function rename(){
+function rename(){    
     var all = $('.choice-input');
 
     for (var i = 0; i < all.length; i++) {
@@ -112,14 +112,37 @@ function rename(){
         var elem = $(all2[i]);
         var oldName = elem.attr('name');
 
-            var regex = /exercises\[(.+?)]\[.+?\]\[(.+?)]\[(.+?)]\[[0-9]+\]/gm;
-            var nameString = "exercises[$1][subexercises][$2][$3]["+ (i) +"]";
+        var regex = /exercises\[(.+?)]\[.+?\]\[(.+?)]\[(.+?)]\[[0-9]+\]/gm;
+        var nameString = "exercises[$1][subexercises][$2][$3]["+ (i) +"]";
 
-            // match the regex and replace the numbers
-            var newName = oldName.replace(regex, nameString);
+        // match the regex and replace the numbers
+        var newName = oldName.replace(regex, nameString);
 
-            // set the new name
-            elem.attr('name', newName);
+        // set the new name
+        elem.attr('name', newName);
+    }
+    
+    // corrects the names of radioButtons (groups need the same IDs)
+    var allRadio = $('.form');
+    for (var i = 0; i < allRadio.length; i++) {
+        var elem = $(allRadio[i]);
+        var elem2 = elem.find('.form-input-radio');
+        if (elem2.length > 0){
+            var choiceInput = $(elem2[0]).children('.choice-input').attr('name');
+            
+            for (var b = 0; b < elem2.length; b++) {
+                var radioField = $(elem2[b]).children('.choice-input');
+                var choiceInputValue = radioField.attr('value');
+                if (choiceInputValue==null){
+                    var choiceInputOldName = radioField.attr('name');
+                    var regex = /exercises\[(.+?)]\[.+?\]\[(.+?)]\[(.+?)]\[(.+?)]/gm;
+                    var nameString = "$4";
+                    var choiceInputId = choiceInputOldName.replace(regex, nameString);
+                    radioField.attr('value', choiceInputId);
+                    radioField.attr('name', choiceInput);
+                }
+            }
+        }
     }
 }
 

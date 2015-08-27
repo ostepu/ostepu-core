@@ -91,15 +91,16 @@ class DBUser
         return $this->_component->callSqlTemplate('out',dirname(__FILE__).'/Sql/AddUser.sql',array( 'values' => $input->getInsertData( )),200,$positive,array(),'Model::isProblem',array(new User()),false);
     }
 
-    public function get( $functionName, $linkName, $params=array(),$singleResult = false, $checkSession = true )
+    public function get( $functionName, $linkName, $params=array(), $checkSession = true )
     {
-        $positive = function($input, $singleResult) {
+        $positive = function($input) {
             //$input = $input[count($input)-1];
             $result = Model::isEmpty();$result['content']=array();
             foreach ($input as $inp){
                 if ( $inp->getNumRows( ) > 0 ){
                     // extract user data from db answer
-                    $result['content'] = array_merge($result['content'], User::ExtractUser( $inp->getResponse( ), $singleResult));
+                    $res = User::ExtractUser( $inp->getResponse( ), false);
+                    $result['content'] = array_merge($result['content'], (is_array($res) ? $res : array($res)));
                     $result['status'] = 200;
                 }
             }
@@ -107,16 +108,12 @@ class DBUser
         };
         
         $params = DBJson::mysql_real_escape_string( $params );
-        return $this->_component->call($linkName, $params, '', 200, $positive, array($singleResult), 'Model::isProblem', array(), 'Query');
+        return $this->_component->call($linkName, $params, '', 200, $positive, array(), 'Model::isProblem', array(), 'Query');
     }
 
     public function getMatch($callName, $input, $params = array())
     {
         return $this->get($callName,$callName,$params);
-    }
-    public function getMatchSingle($callName, $input, $params = array())
-    {
-        return $this->get($callName,$callName,$params,true,false);
     }
     
     /**

@@ -22,8 +22,9 @@
     },
     {
         "name": "getMemberRight",
-        "callback": "getMatchSingle",
-        "outputType": "CourseStatus",
+        "callback": "getMatch",
+        "singleOutput": "TRUE",
+        "outputType": "User",
         "inputType": "",
         "method": "GET",
         "path": "/coursestatus/course/:courseid/user/:userid"
@@ -31,7 +32,7 @@
     {
         "name": "getMemberRights",
         "callback": "getMatch",
-        "outputType": "CourseStatus",
+        "outputType": "User",
         "inputType": "",
         "method": "GET",
         "path": "/coursestatus/user/:userid"
@@ -39,7 +40,7 @@
     {
         "name": "getCourseRights",
         "callback": "getMatch",
-        "outputType": "CourseStatus",
+        "outputType": "User",
         "inputType": "",
         "method": "GET",
         "path": "/coursestatus/course/:courseid"
@@ -60,7 +61,8 @@
     },
     {
         "name": "getExistsPlatform",
-        "callback": "getMatchSingle",
+        "callback": "getMatch",
+        "singleOutput": "TRUE",
         "outputType": "Platform",
         "inputType": "",
         "method": "GET",

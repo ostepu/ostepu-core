@@ -1,0 +1,8 @@
+{
+    "main": {
+        "askDeleteSubmission": "Soll die Einsendung wirklich gelöscht werden?",
+        "successDeleteSubmission": "Die Einsendung wurde gelöscht!",
+        "errorDeleteSubmission": "Beim Löschen ist ein Fehler aufgetreten!",
+        "changeCourse": "Veranstaltung wechseln"
+    }
+}

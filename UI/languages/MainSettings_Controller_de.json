@@ -1,0 +1,26 @@
+{
+    "main": {
+        "invalidCourseName": "Ungültiger Veranstaltungsname.",
+        "invalidSemester": "Ungültiges Semester.",
+        "invalidGroupSize": "Ungültige Gruppengröße.",
+        "invalidExerciseType": "Ungültige Aufgabentypen.",
+        "noSelectedExtensions": "keine Erweiterungen gewählt.",
+        "successCreateCourse": "Die Veranstaltung wurde erstellt!",
+        "errorCreateCourse": "Beim Speichern ist ein Fehler aufgetreten!",
+        "invalidUserId": "Ungültiges Kürzel.",
+        "successSetAdmin": "Der Admin wurde eingetragen.",
+        "errorSetAdmin": "Beim Eintragen ist ein Fehler aufgetreten.",
+        "invalidLastName": "Ungültiger Nachname.",
+        "invalidFirstName": "Ungültiger Vorname.",
+        "invalidUserName": "Ungültiger Benutzername.",
+        "invalidMail": "Ungültige E-Mail-Adresse.",
+        "invalidPassword": "Ungültiges Passwort.",
+        "invalidPasswordRepeat": "Ungültige Passwortwiederholung.",
+        "successCreateUser": "Der Nutzer wurde erstellt!",
+        "errorCreateUser": "Der Nutzer wurde nicht erstellt!",
+        "successDeleteUser": "Der Nutzer wurde erfolgreich gelöscht.",
+        "errorDeleteUser": "Beim Löschen ist ein Fehler aufgetreten.",
+        "settings": "Einstellungen",
+        "courses": "Veranstaltungen"
+    }
+}

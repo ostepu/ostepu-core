@@ -10,22 +10,23 @@
 
 include_once dirname(__FILE__).'/include/Boilerplate.php';
 include_once dirname(__FILE__).'/../Assistants/Structures.php';
-include_once dirname(__FILE__) . '/../Assistants/Language.php';
 include_once dirname(__FILE__).'/../Assistants/LArraySorter.php';
+
+$langTemplate='Admin_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 $sheetNotifications = array();
 
 if (isset($_POST['action'])) {     
     if ($_POST['action'] == "ExerciseSheetLecturer" && isset($_POST['deleteSheetWarning'])) {
-        $sheetNotifications[$_POST['deleteSheetWarning']][] = MakeNotification("warning", "Soll die Übungsserie wirklich gelöscht werden?");
+        $sheetNotifications[$_POST['deleteSheetWarning']][] = MakeNotification("warning", Language::Get('main','askDeleteSubmission', $langTemplate));
     } elseif ($_POST['action'] == "ExerciseSheetLecturer" && isset($_POST['deleteSheet'])) {
         $URL = $logicURI . "/exercisesheet/exercisesheet/{$_POST['deleteSheet']}";
         $result = http_delete($URL, true, $message);
         
         if ($message == 201){
-            $sheetNotifications[$_POST['deleteSheet']][] = MakeNotification('success', 'Die Übungsserie wurde gelöscht.');
+            $sheetNotifications[$_POST['deleteSheet']][] = MakeNotification('success', Language::Get('main','successDeleteSubmission', $langTemplate));
         } else 
-            $sheetNotifications[$_POST['deleteSheet']][] = MakeNotification('error', 'Die Übungsserie konnte nicht gelöscht werden.');
+            $sheetNotifications[$_POST['deleteSheet']][] = MakeNotification('error', Language::Get('main','errorDeleteSubmission', $langTemplate));
     }
 }
 
@@ -38,10 +39,6 @@ $admin_data['cid'] = $cid;
 
 $user_course_data = $admin_data['user'];
 
-if (isset($user_course_data['user']['lang'])){
-    Language::setPreferedLanguage($user_course_data['user']['lang']);
-}
-
 Authentication::checkRights(PRIVILEGE_LEVEL::ADMIN, $cid, $uid, $user_course_data);
 $menu = MakeNavigationElement($user_course_data,
                               PRIVILEGE_LEVEL::ADMIN);
@@ -50,7 +47,7 @@ $menu = MakeNavigationElement($user_course_data,
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
 $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
-               "backTitle" => "Veranstaltung wechseln",
+               "backTitle" => Language::Get('main','changeCourse', $langTemplate),
                "backURL" => "index.php",
                "notificationElements" => $notifications,
                "navigationElement" => $menu));

@@ -9,207 +9,11 @@
 ///echo count($_REQUEST['exercises'],COUNT_RECURSIVE);
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
-include_once dirname(__FILE__) . '/../Assistants/Language.php';
 include_once dirname(__FILE__) . '/include/FormEvaluator.php';
 
+$langTemplate='MarkingTool_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
+
 $timestamp = time();
-
-/**
- * Creates a submission.
- * The submission contains a dummy file for consistency reasons
- * which isn't shown to anyone by setting the 'hideFile' flag 
- *
- * @param $leaderID The userID of the group leader
- * @param $eID The id of the exercisesheet
- *
- * @return Returns the submission on success, NULL otherwise 
- */
-function createSubmission($leaderID, $eID)
-{
-    global $databaseURI;
-    global $filesystemURI;
-    global $timestamp;
-
-    // creates the new submission including the dummy file
-    $newSubmission = Submission::createSubmission(null,
-                                                  $leaderID,
-                                                  null,
-                                                  $eID,
-                                                  null,
-                                                  1,
-                                                  $timestamp,
-                                                  null,
-                                                  null,
-                                                  true);
-
-    $newSubmission = Submission::encodeSubmission($newSubmission);
-
-    $URI = $databaseURI . "/submission";
-    $submission = http_post_data($URI, $newSubmission, true, $message);
-
-    if ($message != "201") {
-        return NULL;
-    }
-
-    $submission = json_decode($submission, true);
-    $submissionID = $submission['id'];
-
-    // makes the currently created submission selected
-    updateSelectedSubmission($databaseURI,
-                             $leaderID,
-                             $submissionID,
-                             $eID,
-                             $message);
-
-    if ($message != "201") {
-        return NULL;
-    }
-
-    return $submission;
-}
-
-
-/**
- * Creates a marking to an already existing submission.
- * The marking contains a dummy file for consistency reasons
- * which isn't shown to anyone by setting the 'hideFile' flag 
- *
- * @param $points The points of the marking
- * @param $tutorComment The tutor's comment
- * @param $status The status of the marking
- * @param $submissionID The id of the submission that belongs to the marking
- * @param $tutorID The id of the tutor who creates the marking
- *
- * @return bool Returns the marking on success, NULL otherwise 
- */
-function createMarking($points, $tutorComment, $status, $submissionID, $tutorID)
-{
-    global $databaseURI;
-    global $filesystemURI;
-    global $timestamp;
-
-        // creates the new marking including the dummy file
-        $newMarking = Marking::createMarking(null,
-                                             $tutorID,
-                                             null,
-                                             $submissionID,
-                                             $tutorComment,
-                                             null,
-                                             $status,
-                                             $points,
-                                             $timestamp,
-                                             true);
-
-        $newMarking = Marking::encodeMarking($newMarking);
-        $URI = $databaseURI . "/marking";
-        $marking = http_post_data($URI, $newMarking, true, $message);
-
-        if ($message != "201") {
-            return NULL;
-        }
-
-    return $marking;
-}
-
-
-/**
- * Stores a marking in the database.
- *
- * @param $points The points of the marking
- * @param $tutorComment The tutor's comment
- * @param $status The status of the marking
- * @param $submissionID The id of the submission, if set, -1 otherwise
- * @param $markingID The id of the marking, if set, -1 otherwise
- * @param $leaderID The id of the group leader
- * @param $tutorID The id of the tutor who creates the marking
- * @param $eID The id of the exercisesheet
- *
- * @return bool Returns true on success, false otherwise 
- */
-function saveMarking($points, $tutorComment, $status, $submissionID, $markingID, $leaderID, $tutorID, $eID)
-{
-    global $databaseURI;
-    global $timestamp;
-
-    // submission and marking already exist and don't 
-    // need to be created before adding the marking data
-    if (($submissionID != -1 && $markingID != -1)) {
-        $newMarking = Marking::createMarking($markingID, 
-                                             $tutorID, 
-                                             null, 
-                                             null,
-                                             $tutorComment,
-                                             null,
-                                             $status,
-                                             $points,
-                                             $timestamp);
-
-        $newMarking = Marking::encodeMarking($newMarking);
-        $URI = $databaseURI . "/marking/{$markingID}";
-        http_put_data($URI, $newMarking, true, $message);
-
-        if ($message != 201) {
-            return false;
-        } else {
-            return true;
-        }
-    } elseif ($submissionID != -1 && $markingID == -1) {
-        // only the submission exists, the marking still
-        // needs to be created before adding the marking data
-
-        // creates the marking in the database
-        $marking = createMarking($points, $tutorComment, $status, $submissionID, $tutorID);
-        if (empty($marking)) {
-            return false;
-        } else {
-            return true;
-        }
-    } elseif (($submissionID == -1 && $markingID == -1)) {
-        // neither the submission nor the marking exist - they both
-        // need to be created before adding the marking data
-
-        // creates the submission in the database
-        $submission = createSubmission($leaderID, $eID);
-
-        if (!empty($submission)) {
-            // creates the marking in the database
-            $submissionID = $submission['id'];
-            $marking = createMarking($points, $tutorComment, $status, $submissionID, $tutorID);
-            if (!empty($marking)) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
-}
-
-function updateSubmission($submissionId, $accepted)
-{
-    global $databaseURI;
-    $newSubmission = Submission::createSubmission( 
-                                                    null,
-                                                    null,
-                                                    null,
-                                                    null,
-                                                    null,
-                                                    $accepted,
-                                                    null,
-                                                    null
-                                                    );
-
-    $newSubmission = Submission::encodeSubmission($newSubmission);
-    $URI = $databaseURI . "/submission/{$submissionId}";
-    http_put_data($URI, $newSubmission, true, $message);
-
-    if ($message != 201) {
-        return false;
-    } else {
-        return true;
-    }
-}
 
 // changes search settings
 if (isset($_POST['action']) && $_POST['action'] == "ShowMarkingTool") {
@@ -269,13 +73,13 @@ if (isset($_POST['MarkingTool'])) {
                 $f->checkNumberForKey('points',
                                        FormEvaluator::OPTIONAL,
                                        'warning',
-                                       'Ungültige Punktzahl.',
+                                       Language::Get('main','invalidPoints', $langTemplate),
                                        array('min' => 0, 'max' => $maxPoints));
 
                 $f->checkStringForKey('tutorComment',
                                       FormEvaluator::OPTIONAL,
                                       'warning',
-                                      'Ungültiger Kommentar.',
+                                      Language::Get('main','invalidComment', $langTemplate),
                                       array('min' => 1));
 
                 /**
@@ -284,13 +88,13 @@ if (isset($_POST['MarkingTool'])) {
                 $f->checkIntegerForKey('status',
                                        FormEvaluator::OPTIONAL,
                                        'warning',
-                                       'Ungültiger Status.',
+                                       Language::Get('main','invalidStatus', $langTemplate),
                                        array('min' => 0, 'max' => $maxMarkingStatus));
                                        
                 $f->checkIntegerForKey('accepted',
                                        FormEvaluator::OPTIONAL,
                                        'warning',
-                                       'Ungültige Akzeptanz.',
+                                       Language::Get('main','invalidAcceptance', $langTemplate),
                                        array('min' => 0, 'max' => 1));
 
                 if ($f->evaluate(true)) {
@@ -352,13 +156,13 @@ if (isset($_POST['MarkingTool'])) {
             if ($hasChangedMarking){
                 if ($RequestErrorMarking) {
                     //$msg = "Beim Speichern für ".$userName." ist ein Fehler aufgetreten.";
-                    $msg = "Beim Speichern der Korrektur ist ein Fehler aufgetreten.";
+                    $msg = Language::Get('main','errorSaveMarking', $langTemplate);
                     if (!isset($GroupNotificationElements[$key])) $GroupNotificationElements[$key]=array();
                     $GroupNotificationElements[$key][] = MakeNotification("error", $msg);
                     
                 } else {
                     //$msg = "Die Korrektur für ".$userName." wurde erfolgreich gespeichert.";
-                    $msg = "Die Korrektur wurde erfolgreich geändert.";
+                    $msg = Language::Get('main','successSaveMarking', $langTemplate);
                     if (!isset($GroupNotificationElements[$key])) $GroupNotificationElements[$key]=array();
                     $GroupNotificationElements[$key][] = MakeNotification("success", $msg);
                 }
@@ -367,13 +171,13 @@ if (isset($_POST['MarkingTool'])) {
             if ($hasChangedSubmission){
                 if ($RequestErrorSubmission) {
                     //$msg = "Beim Speichern für ".$userName." ist ein Fehler aufgetreten.";
-                    $msg = "Beim Speichern der Einsendung ist ein Fehler aufgetreten.";
+                    $msg = Language::Get('main','errorSaveSubmission', $langTemplate);
                     if (!isset($GroupNotificationElements[$key])) $GroupNotificationElements[$key]=array();
                     $GroupNotificationElements[$key][] = MakeNotification("error", $msg);
                     
                 } else {
                     //$msg = "Die Korrektur für ".$userName." wurde erfolgreich gespeichert.";
-                    $msg = "Die Einsendung wurde erfolgreich geändert.";
+                    $msg = Language::Get('main','editedSubmission', $langTemplate);
                     if (!isset($GroupNotificationElements[$key])) $GroupNotificationElements[$key]=array();
                     $GroupNotificationElements[$key][] = MakeNotification("success", $msg);
                 }
@@ -428,15 +232,15 @@ if (isset($_GET['downloadCSV'])) {
                 if (isset($exercise['submission'])){
                     if (isset($exercise['submission']['marking'])){
                         // submission + marking
-                        $tempMarking = Marking::decodeMarking(Marking::encodeMarking($exercise['submission']['marking']));
-                        $tempSubmission = Submission::decodeSubmission(Submission::encodeSubmission($exercise['submission']));
+                        $tempMarking = Marking::decodeMarking(json_encode($exercise['submission']['marking']));
+                        $tempSubmission = Submission::decodeSubmission(json_encode($exercise['submission']));
                         $tempMarking->setSubmission($tempSubmission);
                         $markings[] = $tempMarking;
                     } else {
                         // no marking
                         $tempMarking = Marking::createMarking($newMarkings,$uid,null,$exercise['submission']['id'],null,null,1,null,$timestamp,null);
                         $newMarkings--;
-                        $tempSubmission = Submission::decodeSubmission(Submission::encodeSubmission($exercise['submission']));
+                        $tempSubmission = Submission::decodeSubmission(json_encode($exercise['submission']));
                         $tempMarking->setSubmission($tempSubmission);
                         $markings[] = $tempMarking;
                     }
@@ -479,10 +283,6 @@ $markingTool_data['URI'] = $URI;
 $markingTool_data['cid'] = $cid;
 
 $user_course_data = $markingTool_data['user'];
-
-if (isset($user_course_data['user']['lang'])){
-    Language::setPreferedLanguage($user_course_data['user']['lang']);
-}
 
 Authentication::checkRights(PRIVILEGE_LEVEL::TUTOR, $cid, $uid, $user_course_data);
 $menu = MakeNavigationElement($user_course_data,

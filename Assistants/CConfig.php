@@ -63,34 +63,35 @@ class CConfig
     {
         $this->_prefix = $value;
     }
+    
+    private $_noInfo = false;
+    private $_noHelp = false;
+    private $_defaultLanguage = null;
 
     /**
      * the CConfig constructor
      *
      * @param $prefix the prefix, the component works with
      */
-    public function __construct( $prefix, $callPath = null )
+    public function __construct( $prefix, $callPath = null, $noInfo = false, $noHelp = false, $defaultLanguage = 'de' )
     {
-
+        $this->_noInfo = $noInfo;
+        $this->_noHelp = $noHelp;
+        $this->_defaultLanguage = $defaultLanguage;
+    
         // initialize slim
         $this->setPrefix( $prefix );
         
         $callPath = str_replace("\\",'/',$callPath);
         $this->callPath = $callPath;
         
-        ///if (CConfig::$possible){
-
         $scriptName = $_SERVER['SCRIPT_NAME'];
         $requestUri = $_SERVER['REQUEST_URI'];
         $path = str_replace('?' . (isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : ''), '', substr_replace($requestUri, '', 0, strlen((strpos($requestUri, $scriptName) !== false ? $scriptName : str_replace('\\', '', dirname($scriptName))))));
 
-    if ( strpos($path,'/control') === false  &&  strpos( 
-                $path,
-                '/info'
-                ) === false ) {
-                //echo $scriptName."\n".$requestUri."\n".$path."\nNOT\n";
-                } else {
-                //echo $path."\nPOSSIBLE\n";
+    if ( strpos($path,'/control') === false && strpos( $path, '/info/commands') === false && strpos( $path, '/info/links') === false && ($noInfo || strpos( $path, '/info') === false)  &&  ($noHelp || strpos( $path, '/help') === false) ) {
+            // empty
+    } else {
             $this->_app = new \Slim\Slim( array('debug' => true) );
 
             $this->_app->response->headers->set( 
@@ -116,14 +117,16 @@ class CConfig
                                     )
                               );   
 
-            // GET Info
-            $this->_app->get( 
-                              '(/:pre+)/info/:language(/)',
-                              array( 
-                                    $this,
-                                    'info'
-                                    )
-                              );                                              
+            if (!$this->_noInfo){
+                // GET Info
+                $this->_app->get( 
+                                  '(/:pre+)/info/:language(/)',
+                                  array( 
+                                        $this,
+                                        'info'
+                                        )
+                                  );   
+            }                              
 
             // POST Config
             $this->_app->post( 
@@ -142,7 +145,18 @@ class CConfig
                                    'getConfig'
                                    )
                              );
-
+                             
+            if (!$this->_noHelp){
+                // GET Help
+                $this->_app->get( 
+                                 '(/:pre+)/help/:language/:helpPath+',
+                                 array( 
+                                       $this,
+                                       'getHelp'
+                                       )
+                                 );
+            }
+                             
         // run Slim
         $this->_used = true;
         $this->_app->run( );
@@ -161,6 +175,37 @@ class CConfig
         }else{
             $this->_app->response->setStatus( 404 );
             $this->_app->response->setBody( '' );
+        }
+    }
+    
+    public function getHelp( $pre = array(), $language, $helpPath)
+    {
+        $path = ($this->callPath!=null ? $this->callPath.'/' : '');
+        $path = str_replace("\\",'/',$path);
+        $path .= 'help/';
+        
+        $fileName = array_pop($helpPath);
+        $path_parts = pathinfo($fileName);
+        $helpPath[] = $path_parts['filename'];
+        $helpPath[] = $language;
+        $extension = (isset($path_parts['extension']) ? ('.'.strtolower($path_parts['extension'])) : '');
+        $helpPathString = implode('_',$helpPath).$extension;
+        
+        if (file_exists($path.$helpPathString)){
+            $this->_app->response->setStatus( 200 );
+            $this->_app->response->setBody( file_get_contents($path.$helpPathString) );
+        }else{
+            array_pop($helpPath);
+            $helpPath[] = $this->_defaultLanguage;
+            $helpPathString = implode('_',$helpPath).$extension;
+            
+            if (file_exists($path.$helpPathString)){
+                $this->_app->response->setStatus( 200 );
+                $this->_app->response->setBody( file_get_contents($path.$helpPathString) );
+            } else {
+                $this->_app->response->setStatus( 404 );
+                $this->_app->response->setBody( '' );
+            }
         }
     }
     
@@ -218,9 +263,10 @@ class CConfig
             if (!$nativeOnly){
                 $commands[] = array('method' => 'get', 'path' => '(/:pre+)/info/commands(/)');
                 $commands[] = array('method' => 'get', 'path' => '(/:pre+)/info/links(/)');
-                $commands[] = array('method' => 'get', 'path' => '(/:pre+)/info/:language(/)');
+                if (!$this->_noInfo) $commands[] = array('method' => 'get', 'path' => '(/:pre+)/info/:language(/)');
                 $commands[] = array('method' => 'post', 'path' => '(/:pre+)/control');
                 $commands[] = array('method' => 'get', 'path' => '(/:pre+)/control');
+                if (!$this->_noHelp) $commands[] = array('method' => 'get', 'path' => '(/:pre+)/help/:language/path+');
             }
             
             if ($returnData){

@@ -13,14 +13,16 @@
 
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
-include_once dirname(__FILE__) . '/../Assistants/Language.php';
 include_once dirname(__FILE__) . '/include/FormEvaluator.php';
 require_once dirname(__FILE__).'/phplatex.php';
 
+$langTemplate='CreateSheet_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
+
 function unmap($map, $id){
     foreach ($map as $m){
-        if ($m[1]==$id)
+        if ($m[1]==$id && isset($m[2])){
             return $m[2];
+        }
     }
     return null;
 }
@@ -51,7 +53,7 @@ if (isset($createsheetData['exerciseTypes'])) {
     $_SESSION['JSCACHE'] = json_encode($exerciseTypes['exerciseTypes']);
 } else {
     $_SESSION['JSCACHE'] = "";
-    $errormsg = "Bitte weisen Sie der Veranstaltung zugelassene Punktearten zu!";
+    $errormsg = Language::Get('main','missingExerciseTypes', $langTemplate);
     array_push($notifications, MakeNotification('warning', $errormsg));
     $noContent = true;
 }
@@ -104,7 +106,7 @@ if (isset($_POST['exercises']) == true && empty($_POST['exercises']) == false) {
                     $mimeType=$mimeType[0];
                     
                     if (FILE_TYPE::checkSupportedFileType($mimeType) == false) {
-                        $errormsg = "Sie haben eine nicht unterstützte Dateiendung verwendet.";
+                        $errormsg = Language::Get('main','invalidFileType', $langTemplate);
                         array_push($notifications, MakeNotification('warning', $errormsg));
                         $correctExercise = true;
                         //break;
@@ -206,8 +208,13 @@ if ($correctExercise == true) {
             }
             $exercise[$key2]['id']=$exerciseId;
             
+            $submittable = '1';
+            if (isset($exercise[$key2]['submittable']) && $exercise[$key2]['submittable'] == '0'){
+                $submittable = '0';
+            }
+            
             $subexerciseObj = Exercise::createExercise($exerciseId,$cid,$sheetId, $exercise[$key2]['maxPoints'],
-                                                       $exercise[$key2]['exerciseType'],$key1+1,$bonus,$key2+1);
+                                                       $exercise[$key2]['exerciseType'],$key1+1,$bonus,$key2+1, $submittable);
             
             // set FileTypes (only as an array with strings in it)
             $subexerciseObj->setFileTypes($exercise[$key2]['mime-type']);
@@ -293,12 +300,16 @@ if ($correctExercise == true) {
                     $choice->SetText($choiceData); 
                     $choices[$tempKey] = $choice;
                 }
-                
                 if (isset($subexercise['correct'])){
                     $choiceCorrect = $subexercise['correct'];
                     foreach ($choiceCorrect as $tempKey => $choiceData) {
-                        if (isset($choices[$tempKey]))                          
-                            $choices[$tempKey]->setCorrect(1);                   
+                        $keykey = $choiceData;
+                        if ($keykey == ''){
+                            $keykey = $tempKey;
+                        }
+                        
+                        if (isset($choices[$keykey]))                          
+                            $choices[$keykey]->setCorrect(1);                   
                     }
                 }
                 
@@ -338,7 +349,7 @@ if ($correctExercise == true) {
                 
                 foreach ($processorType as $tempKey => $Data) {
                     $processor = new Process();
-                    $processor->setExercise(Exercise::decodeExercise(Exercise::encodeExercise($subexercise)));
+                    $processor->setExercise(Exercise::decodeExercise(json_encode($subexercise)));
                     $component = new Component();
                     $component->setId($Data);
                     $processor->SetTarget($component); 
@@ -408,15 +419,15 @@ if (isset($_POST['action'])) {// && $_POST['action'] == "new"
     $f->checkStringForKey('sheetName',
                           FormEvaluator::REQUIRED,
                           'error',
-                          'Ungültiger Blattname.');
+                          Language::Get('main','invalidSheetName', $langTemplate));
     $f->checkStringForKey('startDate',
                           FormEvaluator::REQUIRED,
                           'warning',
-                          'Leerer Bearbeitungsanfang.');
+                          Language::Get('main','invalidPeriodBegin', $langTemplate));
     $f->checkStringForKey('endDate',
                           FormEvaluator::REQUIRED,
                           'warning',
-                          'Leerer Bearbeitungsende.');
+                          Language::Get('main','invalidPeriodEnd', $langTemplate));
 
     // check if defaultGroupSize is bigger than standard groupsize 10
     if ($createsheetData['user']['courses'][0]['course']['defaultGroupSize'] < 10) {
@@ -428,7 +439,7 @@ if (isset($_POST['action'])) {// && $_POST['action'] == "new"
     $f->checkIntegerForKey('groupSize',
                            FormEvaluator::REQUIRED,
                            'warning',
-                           'Ungültige Gruppenstärke.',
+                           Language::Get('main','invalidGroupSize', $langTemplate),
                            array('min' => 0,'max' => $maxgroup));
     /*$f->checkArrayOfArraysForKey('exercises',
                                  FormEvaluator::REQUIRED,
@@ -656,7 +667,7 @@ if (isset($_POST['action'])) {// && $_POST['action'] == "new"
                     // upload forms
                     $URL = $serverURI."/logic/LForm/form";
                     ///echo Form::encodeForm($forms);
-                    http_post_data($URL, Form::encodeForm($forms), true, $message);
+                    http_post_data($URL, json_encode($forms), true, $message);
                     if ($message != 201) {
                         $errorInSent = true;
                     }
@@ -698,7 +709,7 @@ if (isset($_POST['action'])) {// && $_POST['action'] == "new"
                 if (!empty($processes)){
                     // upload processors
                     $URL = $serverURI."/logic/LProcessor/process";
-                    http_post_data($URL, Process::encodeProcess($processes), true, $message);
+                    http_post_data($URL, json_encode($processes), true, $message);
 
                     if ($message != 201) {
                         $errorInSent = true; 
@@ -716,10 +727,18 @@ if (isset($_POST['action'])) {// && $_POST['action'] == "new"
             }
             
             if ($errorInSent == false) {
-                $errormsg = "Die Serie wurde ".($_POST['action']=='edit' ? 'bearbeitet' : 'erstellt').".";
+                if ($_POST['action']=='edit'){
+                    $errormsg = Language::Get('main','successEditSheet', $langTemplate);
+                } else {
+                    $errormsg = Language::Get('main','successCreateSheet', $langTemplate);
+                }
                 array_push($notifications, MakeNotification('success', $errormsg));
             } else {
-                $errormsg = "Beim ".($_POST['action']=='edit' ? 'Bearbeiten' : 'Erstellen')." ist ein Fehler aufgetreten.";
+                if ($_POST['action']=='edit'){
+                    $errormsg = Language::Get('main','errorEditSheet', $langTemplate);
+                } else {
+                    $errormsg = Language::Get('main','errorCreateSheet', $langTemplate);
+                }
                 array_push($notifications, MakeNotification('error', $errormsg));
 
                 // delete exercisesheet if exercises are going wrong
@@ -727,7 +746,11 @@ if (isset($_POST['action'])) {// && $_POST['action'] == "new"
                     http_delete($logicURI.'/DB/exercisesheet/exercisesheet/'.$output['id'], true, $message);
             }
         } else {
-            $errormsg = "Beim ".($_POST['action']=='edit' ? 'Bearbeiten' : 'Erstellen')." ist ein Fehler aufgetreten.";
+            if ($_POST['action']=='edit'){
+                $errormsg = Language::Get('main','errorEditSheet', $langTemplate);
+            } else {
+                $errormsg = Language::Get('main','errorCreateSheet', $langTemplate);
+            }
             array_push($notifications, MakeNotification('error', $errormsg));
         }
     }  else {
@@ -752,10 +775,6 @@ $h->bind($createsheetData['user']);
 $h->bind(array("name" => $createsheetData['user']['courses'][0]['course']['name'],
                "notificationElements" => $notifications,
                "navigationElement" => $menu));
-
-if (isset($createsheetData['user']['lang'])){
-    Language::setPreferedLanguage($createsheetData['user']['lang']);
-}
 
 $sheetSettings = Template::WithTemplateFile('include/CreateSheet/SheetSettings.template.html');
 $createExercise = Template::WithTemplateFile('include/CreateSheet/CreateExercise.template.html');

@@ -49,7 +49,7 @@ class DBExerciseSheet
      */
     public function editExerciseSheet( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/EditExerciseSheet.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/EditExerciseSheet.sql',array_merge($params,array('values' => $input->getInsertData( ))),201,'Model::isCreated',array(new ExerciseSheet()),'Model::isProblem',array(new ExerciseSheet()));
     }
 
     /**
@@ -62,7 +62,7 @@ class DBExerciseSheet
      */
     public function deleteExerciseSheet( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteExerciseSheet.sql',$params,201,'Model::isCreated',array(new Course()),'Model::isProblem',array(new Course()));  
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteExerciseSheet.sql',$params,201,'Model::isCreated',array(new ExerciseSheet()),'Model::isProblem',array(new ExerciseSheet()));  
     }
 
     /**
@@ -77,22 +77,22 @@ class DBExerciseSheet
     {
         $positive = function($input) {
             // sets the new auto-increment id
-            $obj = new Course( );
+            $obj = new ExerciseSheet( );
             $obj->setId( $input[0]->getInsertId( ) );
             return array("status"=>201,"content"=>$obj);
         };
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddExerciseSheet.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new Course()));
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddExerciseSheet.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new ExerciseSheet()));
     }
 
-    public function getURL( $functionName, $linkName, $params=array(),$singleResult = false, $checkSession = true )
+    public function getURL( $functionName, $linkName, $params=array(), $checkSession = true )
     {
-        $positive = function($input, $singleResult) {
+        $positive = function($input) {
             //$input = $input[count($input)-1];
             $result = Model::isEmpty();$result['content']=array();
             foreach ($input as $inp){
                 if ( $inp->getNumRows( ) > 0 ){
                     // extract Course data from db answer
-                    $result['content'] = array_merge($result['content'], File::ExtractFile( $inp->getResponse( ), $singleResult));
+                    $result['content'] = array_merge($result['content'], File::ExtractFile( $inp->getResponse( ), false));
                     $result['status'] = 200;
                 }
             }
@@ -100,16 +100,12 @@ class DBExerciseSheet
         };
         
         $params = DBJson::mysql_real_escape_string( $params );
-        return $this->_component->call($linkName, $params, '', 200, $positive, array($singleResult), 'Model::isProblem', array(), 'Query');
+        return $this->_component->call($linkName, $params, '', 200, $positive, array(), 'Model::isProblem', array(), 'Query');
     }
 
     public function getMatchURL($callName, $input, $params = array())
     {
         return $this->getURL($callName,$callName,$params);
-    }
-    public function getMatchSingleURL($callName, $input, $params = array())
-    {
-        return $this->getURL($callName,$callName,$params,true,false);
     }
     
     public static function finalizeSheets( $result)
@@ -118,11 +114,21 @@ class DBExerciseSheet
         
         // sets the sheet names
         $id = 1;
+        reset($result['content']);
+        $isArray=true;
+        if (gettype(current($result['content'])) == 'object') $isArray=false;
         foreach ( $result['content'] as &$sheet ){
-            if ( !isset( $sheet['sheetName'] ) || 
-                 $sheet['sheetName'] == null ){
-                $sheet['sheetName'] = 'Serie ' . ( string )$id;
-                $id++;
+            if ($isArray){
+                if ( !isset( $sheet['sheetName'] ) || 
+                     $sheet['sheetName'] == null ){
+                    $sheet['sheetName'] = 'Serie ' . ( string )$id;
+                    $id++;
+                }
+            } else {
+                if ( $sheet->getSheetName() == null ){
+                    $sheet->setSheetName( 'Serie ' . ( string )$id);
+                    $id++;
+                }   
             }
         }
         
@@ -213,9 +219,10 @@ class DBExerciseSheet
                     $result['status'] = 200;
                 }
             }
-            
-            if ($exercise===null)
+
+            if ($exercise===null){
                 return self::finalizeSheets($result);
+            }
             return $this->_component->call('getCourseExercises', array("courseid"=>$courseid), '', 200, $getExercises, array("sheet"=>$result['content']), 'Model::isProblem', array(), 'Query');;
         };
 
