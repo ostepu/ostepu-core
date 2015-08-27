@@ -356,7 +356,8 @@ class LOOP
 
                     // der $pro->getParameter() wurden beim Erstellen der Verarbeitung festgelegt und enthält
                     // sowohl den aufzurufenden Compiler als auch weitere Aufrufparameter
-                    $parameter = explode(' ',strtolower($pro->getParameter()));
+                    $parameter = explode(' ',strtolower(Testcase::decodeTestcase($pro->getParameter())[0]->getInput()[0]));
+
                     if (count($parameter)>=2){
                         $type = array_shift($parameter);
                         
