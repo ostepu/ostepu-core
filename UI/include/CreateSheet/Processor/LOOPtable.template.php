@@ -86,4 +86,4 @@
         <?php }
     } ?>    
 </table>
-<a href="javascript:void(0);" class="body-option-color very-short delete-test"><?php echo Language::Get('main','deletetest', $langTemplate); ?></a>
+<a href="javascript:void(0);" class="critical-color very-short delete-test"><?php echo Language::Get('main','deletetest', $langTemplate); ?></a>
