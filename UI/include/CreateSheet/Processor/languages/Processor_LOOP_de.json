@@ -2,6 +2,13 @@
     "main": {
         "custom": "Benutzerdefiniert",
         "executable": "Anwendung",
-        "parameters": "Parameter"
+        "parameters": "Eingabeparameter",
+        "compileparameters": "Kompilierungsparameter",
+        "testcount": "Testdurchgänge",
+        "update": "aktualisieren",
+        "output": "Ausgabe",
+        "paramcount": "Parameteranzahl",
+        "addtest": "Testdurchgänge hinzufügen",
+        "deletetest": "Testdurchgänge entfernen"
     }
 }
