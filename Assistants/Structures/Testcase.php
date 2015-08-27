@@ -129,15 +129,15 @@ class Testcase extends Object implements JsonSerializable // muss eingebunden we
     // die Strukturen aus verschiedenen Strukturen zusammengesetzt wurden und 
     // einzelne Felder für einen Datenbankeintrag benötigt werden
     public static function createTestcase(
-                                         $testcaseId,
-                                         $testcaseType,
-                                         $input,
-                                         $output,
-                                         $status,
-                                         $process,
-                                         $runOutput,
-                                         $fileId,
-                                         $submissionId
+                                         $testcaseId = null,
+                                         $testcaseType = null,
+                                         $input = null,
+                                         $output = null,
+                                         $status = null,
+                                         $process = null,
+                                         $runOutput = null,
+                                         $fileId = null,
+                                         $submissionId = null
                                          )
     {
         return new Testcase( array(
