@@ -20,8 +20,9 @@
         "javascript/bootstrap-datetimepicker.min.js",
         "javascript/interactive.js",
         "javascript/form.js",
-        "javascript/createSheet.js",
         "javascript/processor.js",
+        "javascript/loop.js",
+        "javascript/createSheet.js",
         "javascript/ckeditor/ckeditor.js",
         "javascript/ckeditor/config.js"
     ]
