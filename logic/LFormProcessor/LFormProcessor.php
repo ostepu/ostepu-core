@@ -495,7 +495,7 @@ class LFormProcessor
 //echo Pdf::encodePdf($pdf);return;
                             $result = Request::routeRequest( 
                                                             'POST',
-                                                            '/pdf/',
+                                                            '/pdf',
                                                             array(),
                                                             Pdf::encodePdf($pdf),
                                                             $this->_pdf,

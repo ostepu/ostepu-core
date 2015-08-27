@@ -544,9 +544,15 @@ class LProcessor
                         $fileHash = sha1($file);
                     
                         $filePath = '/tmp/'.$fileHash;
-                        LProcessor::generatepath($filePath);
-                        file_put_contents($filePath . '/' . $submission->getFile()->getDisplayName(), $file); 
-                        $filePath .= '/' . $submission->getFile()->getDisplayName();                        
+                        if ($submission->getFile()->getDisplayName() != null){
+                            LProcessor::generatepath($filePath);
+                            file_put_contents($filePath . '/' . $submission->getFile()->getDisplayName(), $file); 
+                            $filePath .= '/' . $submission->getFile()->getDisplayName();   
+                        } else {
+                            LProcessor::generatepath($filePath);
+                            file_put_contents($filePath . '/tmp', $file);
+                            $filePath .= '/tmp';   
+                        }                            
                     }
                 }
                 
@@ -555,18 +561,20 @@ class LProcessor
                     $found = false;
                     $types = array();
                     $mimeType = MimeReader::get_mime($filePath);
+                    $foundExtension = (isset(pathinfo($filePath)['extension']) ? pathinfo($filePath)['extension'] : '-');
+                    
                     foreach ($exerciseFileTypes as $type){
                         $types[] = $type->getText();
                         $type = explode(' ',str_replace('*','',$type->getText()));
 //echo MimeReader::get_mime($filePath);
-                        if (strpos($mimeType,$type[0])!==false && (!isset($type[1]) || (('.'.pathinfo($filePath)['extension']) == $type[1]))) {
+                        if (strpos($mimeType,$type[0])!==false && (!isset($type[1]) || (('.'.$foundExtension) == $type[1]))) {
                             $found = true;
                             break;
                         }
                     }
                     
                     if (!$found && count($exerciseFileTypes)>0){
-                        $submission->addMessage("falscher Dateityp \nGefunden: ".$mimeType." .".pathinfo($filePath)['extension']."\nErlaubt: ".implode(',',$types));
+                        $submission->addMessage("falscher Dateityp \nGefunden: ".$mimeType." .".$foundExtension."\nErlaubt: ".implode(',',$types));
                         $res[] = $submission;
                         $this->app->response->setStatus( 409 );
                         unlink($filePath);

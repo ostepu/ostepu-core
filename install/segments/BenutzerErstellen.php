@@ -11,15 +11,27 @@ class BenutzerErstellen
     
     public static $onEvents = array('install'=>array('name'=>'SuperAdmin','event'=>array('actionInstallSuperAdmin','install')));
     
-    
+    public static function getDefaults()
+    {
+        return array(
+                     'db_user_insert' => array('data[DB][db_user_insert]', 'root'),
+                     'db_first_name_insert' => array('data[DB][db_first_name_insert]', ''),
+                     'db_last_name_insert' => array('data[DB][db_last_name_insert]', ''),
+                     'db_email_insert' => array('data[DB][db_email_insert]', ''),
+                     'db_passwd_insert' => array('data[DB][db_passwd_insert]', '')
+                     );
+    }
+        
     public static function init($console, &$data, &$fail, &$errno, &$error)
     {
+        $def = self::getDefaults();
+        
         $text = '';
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_user_insert'], 'data[DB][db_user_insert]', 'root',true);
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_first_name_insert'], 'data[DB][db_first_name_insert]', '',true);
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_last_name_insert'], 'data[DB][db_last_name_insert]', '',true);
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_email_insert'], 'data[DB][db_email_insert]', '',true);
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_passwd_insert'], 'data[DB][db_passwd_insert]', '');
+        $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_user_insert'], 'data[DB][db_user_insert]', $def['db_user_insert'][1],true);
+        $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_first_name_insert'], 'data[DB][db_first_name_insert]', $def['db_first_name_insert'][1],true);
+        $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_last_name_insert'], 'data[DB][db_last_name_insert]', $def['db_last_name_insert'][1],true);
+        $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_email_insert'], 'data[DB][db_email_insert]', $def['db_email_insert'][1],true);
+        $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_passwd_insert'], 'data[DB][db_passwd_insert]', $def['db_passwd_insert'][1], true);
         echo $text;
         self::$initialized = true;
     }

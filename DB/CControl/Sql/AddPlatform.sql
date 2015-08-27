@@ -20,6 +20,20 @@ begin
      END IF;
 end;
 
+DROP PROCEDURE IF EXISTS `drop_constraint_if_exists`;
+CREATE PROCEDURE `drop_constraint_if_exists` (in theTable varchar(255), in theForeignKey varchar(255))
+begin
+    set @database = Database();
+    if((SELECT count(*) FROM information_schema.TABLE_CONSTRAINTS WHERE
+            CONSTRAINT_SCHEMA = @database AND
+            TABLE_NAME        = theTable AND
+            CONSTRAINT_NAME   = theForeignKey) >0) THEN
+               SET @s = CONCAT('ALTER TABLE `' , theTable , '` DROP FOREIGN KEY ' , theForeignKey);
+               PREPARE stmt FROM @s;
+               EXECUTE stmt;
+    END IF;
+end;
+
 DROP PROCEDURE IF EXISTS `execute_if_column_not_exists`;
 CREATE PROCEDURE `execute_if_column_not_exists` (in theTable varchar(128), in theColumnName varchar(128), in theStatement varchar(255))
 begin
@@ -98,10 +112,15 @@ CREATE TABLE IF NOT EXISTS `Component` (
   `CO_address` VARCHAR(255) NOT NULL,
   `CO_option` VARCHAR(255) NULL,
   PRIMARY KEY (`CO_id`),
-  UNIQUE INDEX `CO_id_UNIQUE` (`CO_id` ASC),
-  UNIQUE INDEX `CO_address_UNIQUE` (`CO_address` ASC))
+  UNIQUE INDEX `CO_id_UNIQUE` (`CO_id` ASC))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1;
+
+call drop_index_if_exists('Component','CO_address_UNIQUE');
+ALTER TABLE `component` ADD UNIQUE(`CO_name` ASC);
+call execute_if_column_not_exists('Component','CO_def','ALTER TABLE `Component` ADD COLUMN CO_def VARCHAR(255) NOT NULL DEFAULT \'\'');
+call execute_if_column_not_exists('Component','CO_status','ALTER TABLE `Component` ADD COLUMN CO_status int NOT NULL DEFAULT 1');
+
 
 CREATE TABLE IF NOT EXISTS `ComponentLinkage` (
   `CL_id` INT NOT NULL AUTO_INCREMENT,

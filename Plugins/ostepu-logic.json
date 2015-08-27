@@ -15,24 +15,20 @@
   "components":
     [
       {"conf":"logic/LAttachment/Component.json"},
-      {"conf":"logic/LCondition/Component.json"},
       {"conf":"logic/LController/Component.json"},
       {"conf":"logic/LCourse/Component.json"},
       {"conf":"logic/LExercise/Component.json"},
       {"conf":"logic/LExerciseSheet/Component.json"},
-      {"conf":"logic/LExerciseType/Component.json"},
       {"conf":"logic/LExtension/Component.json"},
       {"conf":"logic/LFile/Component.json"},
       {"conf":"logic/LForm/Component.json"},
       {"conf":"logic/LFormPredecessor/Component.json"},
       {"conf":"logic/LFormProcessor/Component.json"},
       {"conf":"logic/LGetSite/Component.json"},
-      {"conf":"logic/LGroup/Component.json"},
       {"conf":"logic/LMarking/Component.json"},
       {"conf":"logic/LOOP/Component.json"},
       {"conf":"logic/LProcessor/Component.json"},
       {"conf":"logic/LSubmission/Component.json"},
-      {"conf":"logic/LTutor/Component.json"},
-      {"conf":"logic/LUser/Component.json"}
+      {"conf":"logic/LTutor/Component.json"}
     ]
 }

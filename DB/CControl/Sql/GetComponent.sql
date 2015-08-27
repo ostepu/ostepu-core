@@ -1,5 +1,5 @@
 select 
-    CO_id, CO_name, CO_address, CO_option
+    CO_id, CO_name, CO_address, CO_option, CO.CO_def
 from
     Component
 where

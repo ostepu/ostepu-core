@@ -16,72 +16,72 @@ if (isset($AssignManuallyNotificationElements)) {
     </div>
         
     <div class="content-body-wrapper">  
-    
-        <div class="content-body left">
-        <?php 
-            $sortTypes = array('lastName' => Language::Get('main','lastName', $langTemplate),'firstName' => Language::Get('main','firstName', $langTemplate),'userName' => Language::Get('main','userName', $langTemplate));
-        ?>
-        <label class="left label bold new-line" for="sortUsers"><?php echo Language::Get('main','sorting', $langTemplate); ?>:</label> 
-        <select class="form-field left text-input" name="sortUsers" id="sortUsers">
-                <?php
-                    foreach ($sortTypes as $key => $value) {
-                        echo "<option value='{$key}'".(isset($sortUsers) &&  $sortUsers==$key ? ' selected="selected"' : '').">{$value}</option>";
-                    }
+        <div class="content-body">
+        <div>
+            <div>
+                <?php 
+                    $sortTypes = array('lastName' => Language::Get('main','lastName', $langTemplate),'firstName' => Language::Get('main','firstName', $langTemplate),'userName' => Language::Get('main','userName', $langTemplate));
                 ?>
-        </select>
-        <button name="actionSortUsers" value="" class="left text-button-simple body-option-color">>></button>
-        </div>
-        
-        <div class="new-line content-body left">
-        
-            <div class="left">
-            <?php $statusList = CourseStatus::getStatusDefinition();
-                foreach ($tutorAssignments as $tutorAssignment){ ?> 
-                <?php if (count($tutorAssignment['submissions'])>0 || (isset($tutorAssignment['proposalSubmissions']) && count($tutorAssignment['proposalSubmissions'])>0))  
-                        continue; ?>
-                <div class="left"> 
-                
-                <?php
-                        $tutorId = isset($tutorAssignment['tutor']['id']) ? $tutorAssignment['tutor']['id'] : null;
-
-                        if (isset($tutorAssignment['tutor']['id'])){
-                            print '<input type="radio" name="tutorId" value="';
-                            print $tutorId . '" for="M_';
-                            print $tutorId . '" />';
-                        } else {
-                            print '<input type="radio" name="tutorId" value="-1" for="-1" />';
-                        }
-
-                        print '<label class="tutor-name">';
-
-                        if ($tutorAssignment['tutor']['userName'] != "unassigned") {
-                            if (!isset($tutorAssignment['tutor']['id'])){
-                                echo Language::Get('main','unknownTutor', $langTemplate);
-                            } else {
-                                print isset($tutorAssignment['tutor']['firstName']) ? $tutorAssignment['tutor']['firstName'].' ' : '';
-                                print isset($tutorAssignment['tutor']['lastName']) ? $tutorAssignment['tutor']['lastName'].' ': '';
-                                $status = isset($tutorAssignment['tutor']['courses'][0]['status']) ? $statusList[$tutorAssignment['tutor']['courses'][0]['status']] : '';
-                                echo isset($tutorAssignment['tutor']['userName']) ? '('.$tutorAssignment['tutor']['userName'].','.$status.')' : '';
+                <label class="label bold" for="sortUsers"><?php echo Language::Get('main','sorting', $langTemplate); ?>:</label> 
+                <select class="form-field text-input" name="sortUsers" id="sortUsers">
+                        <?php
+                            foreach ($sortTypes as $key => $value) {
+                                echo "<option value='{$key}'".(isset($sortUsers) &&  $sortUsers==$key ? ' selected="selected"' : '').">{$value}</option>";
                             }
-                            print " (" . count($tutorAssignment['submissions']) . ")";
-                        } else {
-                            print Language::Get('main','notAssigned', $langTemplate)." ";
-                            print "(" . count($tutorAssignment['submissions']) . ")";
-                        }
-
-                        print '</label>';
                         ?>
-               </div>
-            <?php } ?>
+                </select>
+                <button name="actionSortUsers" value="" class="text-button-simple body-option-color">>></button>
             </div>
         </div>
+        <div>    
+            <div>
+                <?php $statusList = CourseStatus::getStatusDefinition();
+                    foreach ($tutorAssignments as $tutorAssignment){ ?> 
+                    <?php if (count($tutorAssignment['submissions'])>0 || (isset($tutorAssignment['proposalSubmissions']) && count($tutorAssignment['proposalSubmissions'])>0))  
+                            continue; ?>
+                            
+                    <span style='display:inline-block' class="tutor-assign-element"> 
+                    <?php
+                            $tutorId = isset($tutorAssignment['tutor']['id']) ? $tutorAssignment['tutor']['id'] : null;
 
-        <div class="left">
+                            if (isset($tutorAssignment['tutor']['id'])){
+                                print '<input type="radio" name="tutorId" value="';
+                                print $tutorId . '" for="M_';
+                                print $tutorId . '" />';
+                            } else {
+                                print '<input type="radio" name="tutorId" value="-1" for="-1" />';
+                            }
+
+                            print '<label class="tutor-name">';
+
+                            if ($tutorAssignment['tutor']['userName'] != "unassigned") {
+                                if (!isset($tutorAssignment['tutor']['id'])){
+                                    echo Language::Get('main','unknownTutor', $langTemplate);
+                                } else {
+                                    print isset($tutorAssignment['tutor']['firstName']) ? $tutorAssignment['tutor']['firstName'].' ' : '';
+                                    print isset($tutorAssignment['tutor']['lastName']) ? $tutorAssignment['tutor']['lastName'].' ': '';
+                                    $status = isset($tutorAssignment['tutor']['courses'][0]['status']) ? $statusList[$tutorAssignment['tutor']['courses'][0]['status']] : '';
+                                    echo isset($tutorAssignment['tutor']['userName']) ? '('.$tutorAssignment['tutor']['userName'].','.$status.')' : '';
+                                }
+                                print " (" . count($tutorAssignment['submissions']) . ")";
+                            } else {
+                                print Language::Get('main','notAssigned', $langTemplate)." ";
+                                print "(" . count($tutorAssignment['submissions']) . ")";
+                            }
+
+                            print '</label>';
+                            ?>
+                   </span>
+                <?php } ?>
+            </div>
+        </div>
+        
+        <div>
     <?php    
     $proposedSubmissions=false;
     foreach ($tutorAssignments as $tutorAssignment){ 
         if (count($tutorAssignment['submissions'])<=0 && (!isset($tutorAssignment['proposalSubmissions']) || count($tutorAssignment['proposalSubmissions'])<=0))  continue; ?>
-        <div class="tutor-assign-element left">
+        <span style='display:inline-block' class="tutor-assign-element">
             <div class="tutor-assign-element-title">
                 <?php
                 $tutorId = isset($tutorAssignment['tutor']['id']) ? $tutorAssignment['tutor']['id'] : null;
@@ -147,24 +147,28 @@ if (isset($AssignManuallyNotificationElements)) {
                     }
                 ?>
                 
-                <?php   $count=-1;
-                        foreach ($tutorAssignment['submissions'] as $submission){
-                            print '<input type="checkbox" name="';
-                            print 'assign['.$tutId.'][marking]['.(isset($submission['markingId'])?$submission['markingId']:$count).'][]';
-                            print '" value="';
-                            print $submission['id'] . '"/>';
-                            print '<span>';
-                            $name = (isset($submission['user']['firstName']) && isset($submission['user']['lastName'])) ? $submission['user']['firstName'].' '.$submission['user']['lastName'].',': '';
-                            print (isset($namesOfExercises[$submission['exerciseId']]) ? $namesOfExercises[$submission['exerciseId']] : '?').(isset($submission['user']['userName']) ? ' ('.$name.$submission['user']['userName'].')' : '');
-                            print '</span><br />';
-                            $count--;
-                        }
+                <?php
+                    $count=-1;
+                    foreach ($tutorAssignment['submissions'] as $submission){
+                        print '<input type="checkbox" name="';
+                        print 'assign['.$tutId.'][marking]['.(isset($submission['markingId'])?$submission['markingId']:$count).'][]';
+                        print '" value="';
+                        print $submission['id'] . '"/>';
+                        print '<span>';
+                        $name = (isset($submission['user']['firstName']) && isset($submission['user']['lastName'])) ? $submission['user']['firstName'].' '.$submission['user']['lastName'].',': '';
+                        print (isset($namesOfExercises[$submission['exerciseId']]) ? $namesOfExercises[$submission['exerciseId']] : '?').(isset($submission['user']['userName']) ? ' ('.$name.$submission['user']['userName'].')' : '');
+                        print '</span><br />';
+                        $count--;
+                    }
                 ?>
                 
             </div>
-        </div>
+        </span>
     <?php } ?>
     </div>
+    
+    
+        </div>  <!--end: content-body -->
     </div>  <!--end: content-body-wrapper -->
 
         <?php if ($proposedSubmissions) { ?>

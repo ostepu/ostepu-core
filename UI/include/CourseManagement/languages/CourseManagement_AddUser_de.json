@@ -2,7 +2,7 @@
     "main": {
         "title": "Nutzer hinzuf&uuml;gen",
         "execute": "hinzuf&uuml;gen",
-        "description": "Geben Sie das K&uuml;rzel und die gew&uuml;nschten Rechte der Person ein, welche zur Veranstaltung hinzugef&uuml;gt werden soll. Die Person mu&szlig; bereits in der &uuml;bungsplattform eingetragen sein.",
+        "description": "Geben Sie das K&uuml;rzel und die gew&uuml;nschten Rechte der Person ein, welche zur Veranstaltung hinzugef&uuml;gt werden soll. Die Person muss bereits in der &uuml;bungsplattform eingetragen sein.",
         "userName": "K&uuml;rzel der Person",
         "rights": "Rechte",
         "student": "Student",

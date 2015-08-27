@@ -11,10 +11,19 @@ class PlattformDatenbanknutzer
     
     public static $onEvents = array('install'=>array('name'=>'DBOperator','event'=>array('actionInstallDBOperator','install')));
     
+    public static function getDefaults()
+    {
+        return array(
+                     'db_user_override_operator' => array('data[DB][db_user_override_operator]', null),
+                     );
+    }
+    
     public static function init($console, &$data, &$fail, &$errno, &$error)
     {
+        $def = self::getDefaults();
+        
         $text = '';
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_user_override_operator'], 'data[DB][db_user_override_operator]', null, true);
+        $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_user_override_operator'], 'data[DB][db_user_override_operator]', $def['db_user_override_operator'][1], true);
         echo $text;
         self::$initialized = true;
     }

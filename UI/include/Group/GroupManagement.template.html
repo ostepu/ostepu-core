@@ -25,12 +25,13 @@
             // bool if subtasks are printed
             $isSubtask = false;
 
-            foreach ($exercises as $key => $exercise):
+            foreach ($exercises as $key => $exercise){
+                
                 $hasSelectedSubmissions = false;
                 $noSubmission = true;
 
                 // prints exercise title
-                print '<div class="group-exercise-title bold new-line">';
+                print '<div class="group-exercise-title bold">';
                 print 'AUFGABE ' . $exercise['link'];
                 // if next exercise is not main or is main but current one is subexercise or end is reached but current one is subex.
                 if ((isset($exercises[$key+1]) && $exercises[$key+1]['linkName'] != 1) ||
@@ -42,17 +43,18 @@
                 endif;
                 print '</div>';
 
-                if (!empty($exercise['groupSubmissions'])):
+                if (!empty($exercise['groupSubmissions'])){
                     $exerciseID = $exercise['id'];
-                    foreach ($exercise['groupSubmissions'] as $userExerciseSubmission):
+                    foreach ($exercise['groupSubmissions'] as $userExerciseSubmission){
+                        echo '<div>';
                         $submission = $userExerciseSubmission['submission'];
                         $user = $userExerciseSubmission['user'];
 
-                        if ($submission['hideFile'] == "0"):
-                            if ($isLeader || isset($submission['selectedForGroup'])):
+                        if ($submission['hideFile'] == "0"){
+                            if ($isLeader || isset($submission['selectedForGroup'])){
                                 $noSubmission = false;
-                                print '<div class="left radio new-line">';
-                                if ($isLeader):
+                                print '<div class="radio">';
+                                if ($isLeader){
                                     // prints a radio button for setting the submission as selected
                                     // (group leaders only)
                                     print '<input type="radio" name="';
@@ -64,13 +66,13 @@
                                     print '" value="';
                                     print $submission['id'];
                                     print '" />';
-                                else:
+                                } else {
                                     $hasSelectedSubmissions = true;
-                                endif;
+                                };
                                 print '</div>';
 
                                 // prints the name of the member
-                                print '<div class="group-member-name left">';
+                                print '<div class="group-member-name">';
                                 
                                 if (isset($user['firstName'])){
                                     print $user['firstName'];
@@ -104,26 +106,27 @@
                                 print '</span>';
                                 print '</div>';
                                 print '</div>';
-                            endif;
-                        endif;
-                    endforeach;
-                endif;
+                            }
+                        }
+                        echo "</div>";
+                    }
+                }
 
-                if ((!$hasSelectedSubmissions && !$isLeader) || $noSubmission):
-                    print '<div class="left radio new-line">';
+                if ((!$hasSelectedSubmissions && !$isLeader) || $noSubmission){
+                    print '<div class="radio">';
                     echo Language::Get('main','noSelectedSubmission', $langTemplate);
                     print '</div>';
-                elseif (empty($exercise['groupSubmissions']) || $noSubmission):
-                    print '<div class="left radio new-line">';
+                } elseif (empty($exercise['groupSubmissions']) || $noSubmission){
+                    print '<div class="radio">';
                     echo Language::Get('main','noSubmission', $langTemplate);
                     print '</div>';
-                endif;
+                }
                 // set isSubtask to false if next exercise is a new mainexercise or end of exercises is reached
                 if ((isset($exercises[$key+1]) && $exercises[$key+1]['linkName'] == 1 && $isSubtask == true) ||
-                    (isset($exercises[$key+1]) == false && $isSubtask == true)):
+                    (isset($exercises[$key+1]) == false && $isSubtask == true)){
                     $isSubtask = false;
-                endif;
-            endforeach; 
+                }
+            } 
             ?>
         </div>
     </div> <!-- end: content-body-wrapper -->

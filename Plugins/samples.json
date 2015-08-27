@@ -13,6 +13,6 @@
     ],
   "components":
     [
-      {"conf":"logic/LSamples/Component.json"}
+      {"conf":"---logic/LSamples/Component.json"}
     ]
 }

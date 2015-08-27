@@ -100,16 +100,26 @@
                     <li class="footer-text"><?php echo count(array_unique($studentsCount)) ?> <?php echo Language::Get('sheet','totalStudents', $langTemplate); ?></li>
                     <li class="footer-text"><?php echo $sheet['selectedSubmissions']; ?> <?php echo Language::Get('sheet','selectedSubmissions', $langTemplate); ?></li>
                     <!--<li class="footer-text"><?php echo $sheet['tutorMarkings']; ?> Korrekturaufträge</li-->
+                
                     <?php if (isset($sheet['status'])){ ?>
-                    <br>
-                    <li class="footer-text bold"><?php echo Language::Get('sheet','tutorMarkings', $langTemplate); ?>:</li>
-                    <?php $types = Marking::getStatusDefinition();
-                    foreach ($sheet['status'] as $key => $value){ ?>
-                    <li class="footer-text">
-                    <a href="Download.php?cid=<?php echo $cid; ?>&downloadCSV_<?php echo $key;?>=<?php echo $sheet['id']; ?>" class="download text-button body-option-color footer-text" style="padding-left:0px">
-                    <?php echo $value.' '.$types[LArraySorter::multidimensional_search($types, array('id'=>$key))]['longName'];?> 
-                    </a></li>
-                    <?php }} ?>
+                        <br>
+                        <li class="footer-text bold"><?php echo Language::Get('sheet','tutorMarkings', $langTemplate); ?>:</li>
+                        <?php $types = Marking::getStatusDefinition();
+                        foreach ($sheet['status'] as $key => $value){ ?>
+                            <li class="footer-text">
+                            <!--<a href="Download.php?cid=--><?php /*echo $cid;*/ ?><!--&downloadCSV_--><?php /*echo $key;*/?><!--=--><?php /*echo $sheet['id'];*/ ?><!--" class="download text-button body-option-color footer-text" style="padding-left:0px">-->
+
+                            <a style="padding-left:0px" class="text-button body-option-color footer-text" href="MarkingTool.php?cid=<?php echo $user['courses'][0]['course']['id'],
+                                                             '&sid=',
+                                                             $sheet['id'],
+                                                             '&statusID=',
+                                                             $types[LArraySorter::multidimensional_search($types, array('id'=>$key))]['id']; ?>">
+                            <?php echo $value.' '.$types[LArraySorter::multidimensional_search($types, array('id'=>$key))]['longName'];?>
+                            </a>
+                            </li>    
+                        <?php } ?>
+                    <?php } ?>
+                
                     <?php if (isset($sheet['allStatus'])){ ?>
                     <br>
                     <li class="footer-text bold"><?php echo Language::Get('sheet','allMarkings', $langTemplate); ?>:</li>

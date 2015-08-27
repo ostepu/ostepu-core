@@ -10,6 +10,7 @@
     {"path":"index.php"}
   ],
   "connector":[
-    {"name":"request", "target":"CLocalObjectRequest"}
+        {"name": "request","target": "CLocalObjectRequest"},
+        {"name": "postPlatform","target": "CInstall"}
   ]
 }

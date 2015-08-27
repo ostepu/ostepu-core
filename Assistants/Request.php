@@ -87,11 +87,11 @@ class Request
         
         $done = false;
         if (!CConfig::$onload && strpos($target,'http://localhost/')===0 && file_exists(dirname(__FILE__) . '/request_cconfig.json')){
-            if (Request::$components==null){
-                Request::$components=CConfig::loadStaticConfig('','',dirname(__FILE__),'request_cconfig.json');
+            if (self::$components===null){
+                self::$components=CConfig::loadStaticConfig('','',dirname(__FILE__),'request_cconfig.json');
             }
             
-            $coms = Request::$components->getLinks();
+            $coms = self::$components->getLinks();
             if ($coms!=null){      
                 if (!is_array($coms)) $coms = array($coms);
                 
@@ -188,23 +188,32 @@ class Request
                             http_response_code(0);
                            
                             $name = $com->getClassName();
-                            ob_start();
-                            
-                            $obj = new $name();  
-                            if (isset($obj))
-                                unset($obj);                        
-                            $result['content'] = ob_get_contents();
-                            CacheManager::setETag($result['content']);
-                            $result['headers'] = array_merge(array(),Request::http_parse_headers_short(headers_list()));
-                            header_remove();
-                            if (!isset($result['headers']['Cachesid'])){
-                                $newSid = CacheManager::getNextSid();
-                                $result['headers']['Cachesid'] = $newSid;
-                            }
-                            ob_end_clean();
-                            //header_remove();            
+                            try {
+                                ob_start();
+                                
+                                $obj = new $name();  
+                                if (isset($obj))
+                                    unset($obj);                        
+                                $result['content'] = ob_get_contents();
+                                CacheManager::setETag($result['content']);
+                                $result['headers'] = array_merge(array(),self::http_parse_headers_short(headers_list()));
+                                header_remove();
+                                if (!isset($result['headers']['Cachesid'])){
+                                    $newSid = CacheManager::getNextSid();
+                                    $result['headers']['Cachesid'] = $newSid;
+                                }
+                                ob_end_clean();
+                                //header_remove();            
 
-                            $result['status'] = http_response_code();
+                                $result['status'] = http_response_code();
+                            } catch(Exception $e) {
+                                error_log($e->getMessage());
+                                header_remove();
+                                $result['status'] = '500';
+                                $result['content'] = '';
+                                $result['headers'] = array();
+                            }
+                            
                             $_SERVER['REQUEST_URI'] = $oldRequestURI;
                             $_SERVER['SCRIPT_NAME'] = $oldScriptName;
                             //$_SERVER['REDIRECT_URL'] = $oldRedirectURL;
@@ -248,7 +257,7 @@ class Request
             
             // splits the received header info, to create an entry 
             // in the $result['headers'] for each part of the header
-            $result['headers'] = Request::http_parse_headers(substr($content, 0, $header_size));
+            $result['headers'] = self::http_parse_headers(substr($content, 0, $header_size));
 
             // seperates the content part
             $result['content'] = substr($content, $header_size);
@@ -274,7 +283,7 @@ class Request
      */
     public static function post($target, $header,  $content, $authbool=true, $sessiondelete = false)
     {
-        return Request::custom("POST", $target , $header, $content, $authbool, $sessiondelete); 
+        return self::custom("POST", $target , $header, $content, $authbool, $sessiondelete); 
     }
     
     
@@ -289,7 +298,7 @@ class Request
      */
     public static function get($target, $header,  $content, $authbool=true, $sessiondelete = false)
     {
-        return Request::custom("GET", $target, $header, $content, $authbool, $sessiondelete); 
+        return self::custom("GET", $target, $header, $content, $authbool, $sessiondelete); 
     }
     
     
@@ -304,7 +313,7 @@ class Request
      */
     public static function delete($target, $header,  $content, $authbool=true, $sessiondelete = false)
     {
-        return Request::custom("DELETE", $target, $header, $content, $authbool, $sessiondelete); 
+        return self::custom("DELETE", $target, $header, $content, $authbool, $sessiondelete); 
     } 
     
     /**
@@ -318,7 +327,7 @@ class Request
      */
     public static function put($target, $header,  $content, $authbool=true, $sessiondelete = false)
     {
-        return Request::custom("PUT", $target, $header, $content, $authbool, $sessiondelete); 
+        return self::custom("PUT", $target, $header, $content, $authbool, $sessiondelete); 
     } 
 
     /**
@@ -362,7 +371,7 @@ class Request
             if (in_array($prefix,$possible)){
             
                 // create a custom request
-                $ch = Request::custom($method,
+                $ch = self::custom($method,
                                       $links->getAddress().$resourceUri,
                                       $header,
                                       $content);
@@ -393,7 +402,7 @@ class Request
         foreach ($else as $links)
         {
             // create a custom request
-            $ch = Request::custom($method,
+            $ch = self::custom($method,
                                   $links->getAddress().$resourceUri,
                                   $header,
                                   $content);

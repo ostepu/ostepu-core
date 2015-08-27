@@ -15,6 +15,7 @@
     {"name":"out2", "target":"DBQuery2", "links":[{"method":"POST", "path":"/query" }] }
   ],
   "connector":[
-    {"name":"request", "target":"CLocalObjectRequest"}
+        {"name": "request","target": "CLocalObjectRequest"},
+        {"name": "postPlatform","target": "CInstall"}
   ]
 }
