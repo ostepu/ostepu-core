@@ -61,7 +61,7 @@ if (isset($processors)){
         </div>
         
 
-        <div class="content-body-wrapper">
+        <div class="content-body-wrapper" style="margin-top: 0px; padding: 10px;">
             <div class="content-body left"> </div>
             <label class="short left label bold" for="exerciseType"><?php echo Language::Get('main','selectProcessor', $langTemplate); ?>:</label>
             <?php if (isset($process['processId'])){?>
@@ -95,7 +95,7 @@ if (isset($processors)){
             $pro->show();
         }
     ?>
-              <div class="form-field processor-parameter-area" style="width:100%"></div>
+              <div class="form-field processor-parameter-area" style="width:100%; display: none;"></div>
             </div></div>
 </td></tr>
 
@@ -122,3 +122,4 @@ if (isset($processors)){
           </td></tr>
 <?php
 }
+?>
