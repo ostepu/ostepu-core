@@ -34,23 +34,23 @@ class Testcase extends Object implements JsonSerializable // muss eingebunden we
     }
 
     // input beschreibt die Eingabeparameter
-    private $input = null;
+    private $input = array();
     public function getInput( )
     {
         return $this->input;
     }
-    public function setInput( $value = null )
+    public function setInput( $value = array())
     {
         $this->input = $value;
     }
 
     // Output beschreibt die Muster Ausgabe
-    private $output = null;
+    private $output = array();
     public function getOutput( )
     {
         return $this->output;
     }
-    public function setOutput( $value = null )
+    public function setOutput( $value = array() )
     {
         $this->output = $value;
     }
