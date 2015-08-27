@@ -43,6 +43,7 @@ function createTestcases(event) {
             $.get("include/CreateSheet/Processor/LOOPtable.template.php", function (data3) {
                 trig.before(data3);
                 trig.closest("table").find(".testcase-table").hide().fadeIn('fast');
+                trig.closest("table").find("a.delete-test").hide().fadeIn('fast');
 
                 trig.hide();
                 $('select.parameter-count').on("change",updateCols);
