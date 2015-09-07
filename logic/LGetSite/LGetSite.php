@@ -528,7 +528,7 @@ class LGetSite
                         if (!isset($submission['hideFile']) || !$submission['hideFile'])
                             $hasSubmissions=true;
                             
-                        if (isset($submission['marking'])) {
+                        if (isset($submission['marking']))
                             $marking = $submission['marking'];
 
                         if (isset($submission['accepted']) && $submission['accepted'] == 1)
