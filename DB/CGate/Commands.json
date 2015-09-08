@@ -1,0 +1,11 @@
+[
+    {
+        "name": "call",
+        "outputType": "binary",
+        "inputType": "binary",
+        "seqInput": "FALSE",
+        "callback": "request",
+        "method": "PUT,GET,POST,DELETE",
+        "path": "/:path+"
+    }
+]

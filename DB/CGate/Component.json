@@ -1,0 +1,28 @@
+{
+    "name": "CGate",
+    "version": "1.0",
+    "classFile": "CGate.php",
+    "className": "CGate",
+    "files": [
+        {"path": ".htaccess"},
+        {"path": "CGate.php"},
+        {"path": "index.php"},
+        {"path": "Commands.json"},
+    ],
+    "links": [
+        {
+            "name": "getSession",
+            "target": "DBSession",
+            "links": [
+                {
+                    "method": "GET",
+                    "path": "/session/session/:seid"
+                }
+            ]
+        }
+    ],
+    "connector": [
+        {"name": "request","target": "CLocalObjectRequest"},
+        {"name": "postPlatform","target": "CInstall"}
+    ]
+}
