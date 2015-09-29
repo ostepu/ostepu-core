@@ -4,7 +4,7 @@
         "outputType": "Session",
         "inputType": "Session",
         "method": "PUT",
-        "placeholder":[{"name":"seid","regex":"%^[0-9A-Fa-f]{32}$%"}],
+        "placeholder":[{"name":"seid","regex":"%^[0-9A-Fa-f]{40}$%"}],
         "path": "/session(/session)/:seid"
     },
     {
@@ -12,7 +12,7 @@
         "outputType": "Session",
         "inputType": "",
         "method": "DELETE",
-        "placeholder":[{"name":"seid","regex":"%^[0-9A-Fa-f]{32}$%"}],
+        "placeholder":[{"name":"seid","regex":"%^[0-9A-Fa-f]{40}$%"}],
         "path": "/session(/session)/:seid"
     },
     {
