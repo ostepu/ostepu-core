@@ -4,7 +4,7 @@
         "outputType": "ExternalId",
         "inputType": "ExternalId",
         "method": "PUT",
-        "placeholder":[{"name":"exid","regex":"%^[0-9a-zA-Z]+$%"}],
+        "placeholder":[{"name":"exid","regex":"%^[0-9a-zA-Z_]+$%"}],
         "path": "/externalid(/externalid)/:exid"
     },
     {
@@ -12,7 +12,7 @@
         "outputType": "ExternalId",
         "inputType": "",
         "method": "DELETE",
-        "placeholder":[{"name":"exid","regex":"%^[0-9a-zA-Z]+$%"}],
+        "placeholder":[{"name":"exid","regex":"%^[0-9a-zA-Z_]+$%"}],
         "path": "/externalid(/externalid)/:exid"
     },
     {
@@ -29,7 +29,7 @@
         "outputType": "ExternalId",
         "inputType": "",
         "method": "GET",
-        "placeholder":[{"name":"exid","regex":"%^[0-9a-zA-Z]+$%"}],
+        "placeholder":[{"name":"exid","regex":"%^[0-9a-zA-Z_]+$%"}],
         "path": "/externalid(/externalid)/:exid"
     },
     {
