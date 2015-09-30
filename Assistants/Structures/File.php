@@ -511,8 +511,8 @@ class File extends Object implements JsonSerializable
                                                     File::getDBConvert( )
                                                     );
 
+        $res = File::decodeFile($res,false);
         if ( $singleResult == true ){
-            $res = File::decodeFile($res,false);
 
             // only one object as result
             if ( count( $res ) > 0 )

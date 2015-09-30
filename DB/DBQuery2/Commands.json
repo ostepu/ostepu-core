@@ -18,6 +18,7 @@
         "outputType": "Query",
         "inputType": "",
         "method": "GET",
+        "placeholder":[{"name":"procedure","regex":"%^([a-zA-Z]+)$%"}],
         "path": "/query/procedure/:procedure(/:params+)"
     },
     {

@@ -4,6 +4,7 @@
         "outputType": "ExerciseFileType",
         "inputType": "ExerciseFileType",
         "method": "PUT",
+        "placeholder":[{"name":"eftid","regex":"%^([0-9]+)$%"}],
         "path": "/exercisefiletype(/exercisefiletype)/:eftid"
     },
     {
@@ -11,6 +12,7 @@
         "outputType": "ExerciseFileType",
         "inputType": "",
         "method": "DELETE",
+        "placeholder":[{"name":"eftid","regex":"%^([0-9]+)$%"}],
         "path": "/exercisefiletype(/exercisefiletype)/:eftid"
     },
     {
@@ -18,6 +20,7 @@
         "outputType": "ExerciseFileType",
         "inputType": "",
         "method": "DELETE",
+        "placeholder":[{"name":"eid","regex":"%^([0-9]+)$%"}],
         "path": "/exercisefiletype/exercise/:eid"
     },
     {
@@ -25,6 +28,7 @@
         "outputType": "ExerciseFileType",
         "inputType": "",
         "method": "DELETE",
+        "placeholder":[{"name":"eftid","regex":"%^([0-9]+)$%"}],
         "path": "/exercisefiletype/exercisesheet/:esid"
     },
     {
@@ -41,6 +45,7 @@
         "outputType": "ExerciseFileType",
         "inputType": "",
         "method": "GET",
+        "placeholder":[{"name":"eftid","regex":"%^([0-9]+)$%"}],
         "path": "/exercisefiletype(/exercisefiletype)/:eftid"
     },
     {
@@ -49,6 +54,7 @@
         "outputType": "ExerciseFileType",
         "inputType": "",
         "method": "GET",
+        "placeholder":[{"name":"eid","regex":"%^([0-9]+)$%"}],
         "path": "/exercisefiletype(/exercisefiletype)/exercise/:eid"
     },
     {
@@ -57,6 +63,7 @@
         "outputType": "ExerciseFileType",
         "inputType": "",
         "method": "GET",
+        "placeholder":[{"name":"esid","regex":"%^([0-9]+)$%"}],
         "path": "/exercisefiletype(/exercisefiletype)/exercisesheet/:esid"
     },
     {

@@ -1,7 +1,7 @@
 [
     {    "method":"post", "path":"/link/course/:courseid/extension/:name" },
     {    "method":"delete", "path":"/link/course/:courseid/extension/:name" },
-    {    "method":"delete", "path":"/link/course/:courseid" }
+    {    "method":"delete", "path":"/link/course/:courseid" },
     {    "method":"get", "path":"/link/exists/course/:courseid/extension/:name" },
     {    "method":"get", "path":"/link/course/:courseid/extension" },
     {    "method":"get", "path":"/link/extension" },
