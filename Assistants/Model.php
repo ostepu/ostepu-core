@@ -169,7 +169,7 @@ class Model
                 $placeholder[$holder['name']] = $holder['regex'];
             }
             
-            foreach ($params as $key => $value){
+            /*foreach ($params as $key => $value){
                 if (isset($placeholder[$key])){
                     $pregRes = @preg_match($placeholder[$key], $value);
                     if ($pregRes === false){
@@ -182,7 +182,7 @@ class Model
                         return;
                     }
                 }
-            }
+            }*/
             
             // nun soll die zugehörige Funktion im Modul aufgerufen werden
             if (isset($selectedCommand['inputType']) && trim($selectedCommand['inputType'])!='' && isset($rawInput)){
