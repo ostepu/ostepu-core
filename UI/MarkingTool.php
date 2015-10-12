@@ -113,7 +113,7 @@ if (isset($_POST['MarkingTool'])) {
                     }
                           
                     $status = (isset($foundValues['status']) ? $foundValues['status'] : null);
-                    if ((!isset($exercise['oldStatus']) && isset($foundValues['status'])) || (isset($exercise['oldStatus']) && $status!=$exercise['oldStatus'])){
+                    if ((!isset($exercise['oldStatus']) && isset($foundValues['status']) && $foundValues['status']!=0 ) || (isset($exercise['oldStatus']) && $status!=$exercise['oldStatus'])){
                           $changed=true;///echo "C";
                     }
                           
