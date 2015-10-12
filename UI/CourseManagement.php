@@ -419,7 +419,6 @@ if (!isset($_POST['actionSortUsers']) && isset($_POST['action'])) {
         if(isset($_POST['userID'])) {
             // clean Input
             $userID = cleanInput($_POST['userID']);
-            $Rights = cleanInput($_POST['Rights']);
 
             // validate POST data
             if (is_numeric($userID) == true) {
