@@ -86,6 +86,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
             #endregion
 
             if (isset($_FILES[$fileName]) || $formdata !== array()) {
+                $error=0;
                 if (isset($_FILES[$fileName])){
                     $file = $_FILES[$fileName];
                     $error = $file['error'];
@@ -98,102 +99,119 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
 
                 if ($error === 0) {
                     $errormsg = '';
-                    if (isset($_FILES[$fileName])){
-                        $filePath = $file['tmp_name'];
-                        $uploadFile = File::createFile(null,$file['name'],null,$timestamp,null,null);
-                        $uploadFile->setBody(base64_encode(file_get_contents($file['tmp_name'])));
-                    } else {
-                        $uploadFile = File::createFile(null,null,null,$timestamp,null,null);
-                        $uploadFile->setBody(base64_encode(Form::encodeForm($formdata)));
-                    }
-
-                    $uploadSubmission = Submission::createSubmission(null,$uid,null,$exerciseId,$exercise['comment'],1,$timestamp,null,$leaderId);
-                    $uploadSubmission->setFile($uploadFile);
-                    $uploadSubmission->setExerciseName(isset($exercise['name']) ? $exercise['name'] : null);
-                    $uploadSubmission->setSelectedForGroup('1');
                     
-                    if ($isExpired){
-                        $uploadSubmission->setAccepted(0);
-                    }
-
-                    $URL = $serverURI.'/logic/LProcessor/submission';
-///echo Submission::encodeSubmission($uploadSubmission);return;
-
-                    $result = http_post_data($URL, Submission::encodeSubmission($uploadSubmission), true, $message);
-//echo $result;
-                    if ($message != "201") {
-                        $result = Submission::decodeSubmission($result);
-                        $exercise = $key + 1;
-                        $errormsg = Language::Get('main','errorUploadSubmission', $langTemplate, array('status'=>$message,'exerciseName'=>$exercise['name']));
+                    // prüfe ob nur erlaubte Zeichen im Dateinamen verwendet wurden
+                    $pregRes = @preg_match("%^([a-zA-Z0-9\\.\\-_]+)$%", $file['name']);
+                    if ($pregRes !== false && $pregRes > 0){
                         
-                        if ($result!==null && !empty($result)){
-                            $errormsg .= "<br><br>";
-                            $messages = $result->getMessages();
-                            foreach ($messages as $message){
-                                $errormsg.=str_replace("\n",'<br>',$message).'<br>';
-                            }
+                        if (isset($_FILES[$fileName])){
+                            $filePath = $file['tmp_name'];
+                            $uploadFile = File::createFile(null,$file['name'],null,$timestamp,null,null);
+                            $uploadFile->setBody(base64_encode(file_get_contents($file['tmp_name'])));
+                        } else {
+                            $uploadFile = File::createFile(null,null,null,$timestamp,null,null);
+                            $uploadFile->setBody(base64_encode(Form::encodeForm($formdata)));
                         }
-                        
-                        $notifications[] = MakeNotification('error',
-                                                            $errormsg);
-                        continue;
-                    }
-                    else{
-                        $result = Submission::decodeSubmission($result);
-                        
-                        // if using forms, upload user input
-                        if(isset($exercise['choices'])){
 
-                            $i=0;    
-                            foreach($formdata as &$form){
-                                $choices = $form->getChoices();
-                                foreach($choices as &$choice){
-                                    $choice->setSubmissionId($result->getId());
+                        $uploadSubmission = Submission::createSubmission(null,$uid,null,$exerciseId,$exercise['comment'],1,$timestamp,null,$leaderId);
+                        $uploadSubmission->setFile($uploadFile);
+                        $uploadSubmission->setExerciseName(isset($exercise['name']) ? $exercise['name'] : null);
+                        $uploadSubmission->setSelectedForGroup('1');
+                        
+                        if ($isExpired){
+                            $uploadSubmission->setAccepted(0);
+                        }
+
+                        $URL = $serverURI.'/logic/LProcessor/submission';
+    ///echo Submission::encodeSubmission($uploadSubmission);return;
+
+                        $result = http_post_data($URL, Submission::encodeSubmission($uploadSubmission), true, $message);
+    //echo $result;
+                        if ($message != "201") {
+                            $result = Submission::decodeSubmission($result);
+                            $exercise = $key + 1;
+                            $errormsg = Language::Get('main','errorUploadSubmission', $langTemplate, array('status'=>$message,'exerciseName'=>$exercise['name']));
+                            
+                            if ($result!==null && !empty($result)){
+                                $errormsg .= "<br><br>";
+                                $messages = $result->getMessages();
+                                foreach ($messages as $message){
+                                    $errormsg.=str_replace("\n",'<br>',$message).'<br>';
                                 }
-                                
-                                $URL = $serverURI.'/DB/DBChoice/formResult/choice';
-                                $result2 = http_post_data($URL, Choice::encodeChoice($choices), true, $message);
-                                
-                                    if ($message != "201") {
-                                        $result2 = Choice::decodeChoice($result2);
-                                        $exercise = $key + 1;
-                                        $errormsg = Language::Get('main','errorUploadSubmission', $langTemplate, array('status'=>$message,'exerciseName'=>$exercise['name']));
-                                        
-                                        if ($result2!==null){
-                                            $errormsg .= "<br><br>";
-                                            $messages2 = $result2->getMessages();
-                                            foreach ($messages2 as $message){
-                                                $errormsg.=str_replace("\n",'<br>',$message).'<br>';
-                                            }
-                                        }
-                                        
-                                        $notifications[] = MakeNotification('error',
-                                                                            $errormsg);
-                                        continue;
-                                    }
-                                $i++;
                             }
-                        
+                            
+                            $notifications[] = MakeNotification('error',
+                                                                $errormsg);
+                            continue;
                         }
-                        
-                        $messages = $result->getMessages();
-                        
-                        if ($messages !== null){
-                            foreach ($messages as $message){
-                                $errormsg.=str_replace("\n",'<br>',$message).'<br>';
-                            }
-                        }
-                    }
-                  
+                        else{
+                            $result = Submission::decodeSubmission($result);
+                            
+                            // if using forms, upload user input
+                            if(isset($exercise['choices'])){
 
-                    $msg = Language::Get('main','successUploadSubmission', $langTemplate, array('exerciseName'=>$exercise['name']))."<br>".$errormsg;
-                    $notifications[] = MakeNotification('success',
-                                                        $msg);
-                                                        
-                    if ($isExpired){
-                        $msg = Language::Get('main','successLateSubmission', $langTemplate, array('exerciseName'=>$exercise['name']));
-                        $notifications[] = MakeNotification('warning',
-                                                            $msg);    
+                                $i=0;    
+                                foreach($formdata as &$form){
+                                    $choices = $form->getChoices();
+                                    foreach($choices as &$choice){
+                                        $choice->setSubmissionId($result->getId());
+                                    }
+                                    
+                                    $URL = $serverURI.'/DB/DBChoice/formResult/choice';
+                                    $result2 = http_post_data($URL, Choice::encodeChoice($choices), true, $message);
+                                    
+                                        if ($message != "201") {
+                                            $result2 = Choice::decodeChoice($result2);
+                                            $exercise = $key + 1;
+                                            $errormsg = Language::Get('main','errorUploadSubmission', $langTemplate, array('status'=>$message,'exerciseName'=>$exercise['name']));
+                                            
+                                            if ($result2!==null){
+                                                $errormsg .= "<br><br>";
+                                                $messages2 = $result2->getMessages();
+                                                foreach ($messages2 as $message){
+                                                    $errormsg.=str_replace("\n",'<br>',$message).'<br>';
+                                                }
+                                            }
+                                            
+                                            $notifications[] = MakeNotification('error',
+                                                                                $errormsg);
+                                            continue;
+                                        }
+                                    $i++;
+                                }
+                            
+                            }
+                            
+                            $messages = $result->getMessages();
+                            
+                            if ($messages !== null){
+                                foreach ($messages as $message){
+                                    $errormsg.=str_replace("\n",'<br>',$message).'<br>';
+                                }
+                            }
+                        }
+                      
+
+                        $msg = Language::Get('main','successUploadSubmission', $langTemplate, array('exerciseName'=>$exercise['name']))."<br>".$errormsg;
+                        $notifications[] = MakeNotification('success',
+                                                            $msg);
+                                                            
+                        if ($isExpired){
+                            $msg = Language::Get('main','successLateSubmission', $langTemplate, array('exerciseName'=>$exercise['name']));
+                            $notifications[] = MakeNotification('warning',
+                                                                $msg);    
+                        }
+                    } else {
+                        $msg = Language::Get('main','errorUploadSubmissionSymbols', $langTemplate, array('status'=>412,'exerciseName'=>$exercise['name']));
+                        $notifications[] = MakeNotification('error',$msg); 
+                    }
+                } else {
+                    if ($error === UPLOAD_ERR_INI_SIZE){
+                        $msg = Language::Get('main','errorUploadSubmissionFileToLarge', $langTemplate, array('maxFileSize'=>formatBytes(parse_size(ini_get('upload_max_filesize'))),'status'=>412,'exerciseName'=>$exercise['name']));
+                        $notifications[] = MakeNotification('error',$msg);
+                    } else if($error === UPLOAD_ERR_PARTIAL || $error === UPLOAD_ERR_NO_TMP_DIR || $error === UPLOAD_ERR_CANT_WRITE || $error === UPLOAD_ERR_EXTENSION){
+                        $msg = Language::Get('main','errorUploadSubmission', $langTemplate, array('status'=>500,'exerciseName'=>$exercise['name']));
+                        $notifications[] = MakeNotification('error',$msg);
                     }
                 }
             }
@@ -231,8 +249,8 @@ if (isset($upload_data['exerciseSheet']['endDate']) && isset($upload_data['exerc
     if ($isExpired){
         $allowed = 0;
 
-        if (isset($user_course_data['user']['courses'][0]['course'])){
-            $obj = Course::decodeCourse(Course::encodeCourse($user_course_data['user']['courses'][0]['course']));
+        if (isset($user_course_data['courses'][0]['course'])){
+            $obj = Course::decodeCourse(Course::encodeCourse($user_course_data['courses'][0]['course']));
             $allowed = Course::containsSetting($obj,'AllowLateSubmissions');
         }
         
