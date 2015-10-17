@@ -10,6 +10,6 @@
         "expiredExercisePerion": "Der Übungszeitraum ist am $endDate abgelaufen!",
         "backToCourse": "zur Veranstaltung",
         "errorUploadSubmissionSymbols": " $status: Aufgabe $exerciseName konnte nicht hochgeladen werden. <br/> Der Dateiname enthält unerlaubte Zeichen. <br/> Verwenden Sie nur a-z, A-Z, 0-9 und ._-",
-        "errorUploadSubmissionFileToLarge": " $status: Aufgabe $exerciseName konnte nicht hochgeladen werden. <br/> Die Datei war zu groß. <br/> Maximal: $maxFileSize"
+        "errorUploadSubmissionFileToLarge": " $status: Aufgabe $exerciseName konnte nicht hochgeladen werden. <br/> Die Datei war zu groß (max. $maxFileSize)."
     }
 }

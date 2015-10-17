@@ -102,7 +102,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
                     
                     // prüfe ob nur erlaubte Zeichen im Dateinamen verwendet wurden
                     $pregRes = @preg_match("%^([a-zA-Z0-9\\.\\-_]+)$%", $file['name']);
-                    if ($pregRes !== false && $pregRes > 0){
+                    if ($file === null ||($pregRes !== false && $pregRes > 0)){
                         
                         if (isset($_FILES[$fileName])){
                             $filePath = $file['tmp_name'];
