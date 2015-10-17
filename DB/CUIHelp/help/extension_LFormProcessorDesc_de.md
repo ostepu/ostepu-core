@@ -31,4 +31,4 @@ Mit dieser Einstellung können Sie in das nebenstehende Eingabefeld reguläre Au
 weitere Informationen zur Form finden Sie unter
 [http://www.php.net/manual/de/regexp.introduction.php](http://www.php.net/manual/de/regexp.introduction.php)
 
-Bsp.: $%[B|b]erlin%$
+Bsp.: %^[B|b]erlin$%

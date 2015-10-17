@@ -1,4 +1,4 @@
-#### Korrekturaufträge herunterladen
+#### Korrekturaufträge herunterladen ####
 
 > ##### Alle Korrekturaufträge #####
 
@@ -44,7 +44,6 @@ Sie können die **Bewertung**, die **Korrekturdatei**, den **Korrekturstatus** u
 ![](libreA.png "LibreOffice")
 
 ![](libreB.png)
-
 
 1. Korrekturnummer (der Ordnername im zip-Archiv)
 2. die erhaltenen Punkte (dürfen **MAXPOINTS** nicht überschreiten)

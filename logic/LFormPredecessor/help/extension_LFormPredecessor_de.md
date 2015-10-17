@@ -24,7 +24,7 @@ Erlaubt Zeichenketten als Eingabe, welche Ziffern (`[0-9]`) oder Buchstaben (`[A
 
 ##### regulärer Ausdruck
 Sie können auch selbst reguläre Ausdrücke definieren, weitere Informationen zur Form finden Sie unter 
-`http://www.php.net/manual/de/regexp.introduction.php`.
+[http://www.php.net/manual/de/regexp.introduction.php](http://www.php.net/manual/de/regexp.introduction.php).
 
 #### Voraussetzungen
 Dieses Modul benötigt LForm
