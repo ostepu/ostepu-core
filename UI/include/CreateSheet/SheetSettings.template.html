@@ -1,4 +1,5 @@
 <?php include_once dirname(__FILE__) . '/../../../Assistants/Language.php'; ?>
+<?php include_once ( dirname(__FILE__) . '/../Helpers.php' ); ?>
 
 <?php $langTemplate='CreateSheet_SheetSettings';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/'); ?>
 
@@ -9,6 +10,7 @@
 
 <div class="content-element collapsible">
     <div class="content-header">
+        <?php echo MakeInfoButton('createSheet','sheetSettings.md'); ?>
         <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
         <div class="info-color bold right">
             <?php if (!isset($sid)){ ?>

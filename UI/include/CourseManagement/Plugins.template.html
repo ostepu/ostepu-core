@@ -37,6 +37,9 @@ if (isset($PluginsNotificationElements)) {
                         print isset($plugin['isInstalled'])?' checked="true"':NULL;
                         print ' />';
                         print (isset($plugin['targetName']) ? $plugin['targetName'] : Language::Get('main','unknown', $langTemplate));
+                        if (isset($plugin['targetName'])){
+                            print "<span class='right'>".MakeInfoButton('extension',$plugin['targetName'].'Desc.md')."</span>";
+                        }
                         print '<br />';
                     endforeach;
                 ?>

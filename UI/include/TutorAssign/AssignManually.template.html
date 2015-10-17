@@ -11,6 +11,7 @@ if (isset($AssignManuallyNotificationElements)) {
 <input type="hidden" name="action" value="AssignManually">
 <div class="content-element">
     <div class="content-header">
+        <?php echo MakeInfoButton('tutorAssign','manually.md'); ?>
         <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
         <button name="actionAssignManually" value="" class="text-button right bold info-color"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
     </div>
@@ -156,7 +157,7 @@ if (isset($AssignManuallyNotificationElements)) {
                         print $submission['id'] . '"/>';
                         print '<span>';
                         $name = (isset($submission['user']['firstName']) && isset($submission['user']['lastName'])) ? $submission['user']['firstName'].' '.$submission['user']['lastName'].',': '';
-                        print (isset($namesOfExercises[$submission['exerciseId']]) ? $namesOfExercises[$submission['exerciseId']] : '?').(isset($submission['user']['userName']) ? ' ('.$name.$submission['user']['userName'].')' : '');
+                        print (isset($namesOfExercises[$submission['exerciseId']]) ? $namesOfExercises[$submission['exerciseId']] : '?').(isset($submission['user']['userName']) ? ' ('.$name.$submission['user']['userName'].')' : ' ???');
                         print '</span><br />';
                         $count--;
                     }
