@@ -86,7 +86,7 @@
                 <?php } ?>
             </span>
             
-            <div class="content-body left">(<?php echo Language::Get('main','optional', $langTemplate); ?>)</div>
+            <div class="content-body left">(<?php echo Language::Get('main','optionalFile', $langTemplate, array('maxFileSize'=>formatBytes(parse_size(ini_get('upload_max_filesize'))))); ?>)</div>
 
             <label class="form-field left label bold new-line" for="sheetSolution"><?php echo Language::Get('main','sampleSolution', $langTemplate); ?>:</label>
             
@@ -118,7 +118,7 @@
                 <?php } ?>
             </span>
             
-            <div class="content-body left">(<?php echo Language::Get('main','optional', $langTemplate); ?>)</div>
+            <div class="content-body left">(<?php echo Language::Get('main','optionalFile', $langTemplate, array('maxFileSize'=>formatBytes(parse_size(ini_get('upload_max_filesize'))))); ?>)</div>
             
             <label class="form-field left label bold new-line" for="groupSize"><?php echo Language::Get('main','groupSize', $langTemplate); ?>:</label>
             <select class="form-field left text-input very-short" name="groupSize" id="groupSize">
