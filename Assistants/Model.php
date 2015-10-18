@@ -169,20 +169,38 @@ class Model
                 $placeholder[$holder['name']] = $holder['regex'];
             }
             
-            /*foreach ($params as $key => $value){
+            foreach ($params as $key => $value){
                 if (isset($placeholder[$key])){
-                    $pregRes = @preg_match($placeholder[$key], $value);
-                    if ($pregRes === false){
-                        error_log(__FILE__.':'.__LINE__.' '.$placeholder[$key].' konnte nicht interpretiert werden');
-                        $this->finishRequest(self::isError());
-                        return;
-                    } else if ($pregRes === 0){
-                        error_log(__FILE__.':'.__LINE__.' '.$value.' passt nicht zu '.$placeholder[$key]);
-                        $this->finishRequest(self::isPreconditionError());
-                        return;
+                    if (is_array($value)){
+                        // wenn es ein Array ist, wurde ein :Element+ verwendet (Slim)
+                        // daher wird der Ausdruck auf jedes Element angewendet
+                        foreach($value as $val){
+                            $pregRes = @preg_match($placeholder[$key], $val);
+                            if ($pregRes === false){
+                                error_log(__FILE__.':'.__LINE__.' '.$placeholder[$key].' konnte nicht interpretiert werden');
+                                $this->finishRequest(self::isError());
+                                return;
+                            } else if ($pregRes === 0){
+                                error_log(__FILE__.':'.__LINE__.' '.$val.' passt nicht zu '.$placeholder[$key]);
+                                $this->finishRequest(self::isPreconditionError());
+                                return;
+                            }
+                        }
+                    } else {
+                        // einzelnes Element für Slim verwendet :Element
+                        $pregRes = @preg_match($placeholder[$key], $value);
+                        if ($pregRes === false){
+                            error_log(__FILE__.':'.__LINE__.' '.$placeholder[$key].' konnte nicht interpretiert werden');
+                            $this->finishRequest(self::isError());
+                            return;
+                        } else if ($pregRes === 0){
+                            error_log(__FILE__.':'.__LINE__.' '.$value.' passt nicht zu '.$placeholder[$key]);
+                            $this->finishRequest(self::isPreconditionError());
+                            return;
+                        }
                     }
                 }
-            }*/
+            }
             
             // nun soll die zugehörige Funktion im Modul aufgerufen werden
             if (isset($selectedCommand['inputType']) && trim($selectedCommand['inputType'])!='' && isset($rawInput)){
