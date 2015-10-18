@@ -192,7 +192,7 @@
                         <?php $fileAddress = $sheet['sampleSolution']['address']; ?>
                         <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
                         <li>
-                            <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
+                            <a class="text-button" href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" target="_blank">
                                 <?php echo Language::Get('sheetMenu','sampleSolution', $langTemplate); ?>
                             </a>
                         </li>
