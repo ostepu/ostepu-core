@@ -59,7 +59,19 @@ class DBFile
      */
     public function removeFile( $callName, $input, $params = array() )
     {
-        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteFile.sql',$params,201,'Model::isCreated',array(new File()),'Model::isProblem',array(new File()));  
+        $positive = function($input) {
+            $result = Model::isProblem();$result['content']=array();
+            foreach ($input as $inp){
+                if ( $inp->getNumRows( ) > 0 ){
+                    // extract File data from db answer
+                      $res = File::ExtractFile( $inp->getResponse( ), false);
+                    $result['content'] = array_merge($result['content'], (is_array($res) ? $res : array($res)));
+                    $result['status'] = 201;
+                }
+            }
+            return $result;
+        };
+        return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/DeleteFile.sql',$params,201,$positive,array(),'Model::isProblem',array(new File()), 'Query');  
     }
 
     /**

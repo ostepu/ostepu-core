@@ -128,21 +128,25 @@ class LFileHandler2
             if ($answer['status'] >= 200 && $answer['status'] <= 299 && isset($answer['content']) && !empty($answer['content'])) {
                 $file = File::decodeFile($answer['content']);
             
-                // requests to filesystem
-                $answer = Request::routeRequest( 
-                                                'DELETE',
-                                                '/'.$file->getAddress(),
-                                                $header,
-                                                '',
-                                                $filesystem,
-                                                'file'
-                                                );
-                                                
-                if ($answer['status'] >= 200 && $answer['status'] <= 299) {
-                    return File::decodeFile($answer['content']);
-                }
-                else
+                if (is_object($file)){
+                    // requests to filesystem
+                    $answer = Request::routeRequest( 
+                                                    'DELETE',
+                                                    '/'.$file->getAddress(),
+                                                    $header,
+                                                    '',
+                                                    $filesystem,
+                                                    'file'
+                                                    );
+                                                    
+                    if ($answer['status'] >= 200 && $answer['status'] <= 299) {
+                        return File::decodeFile($answer['content']);
+                    }
+                    else
+                        return null;
+                } else {
                     return null;
+                }
             }
             else
                 return $file;

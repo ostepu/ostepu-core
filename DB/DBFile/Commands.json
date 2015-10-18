@@ -10,6 +10,7 @@
     {
         "name": "removeFile",
         "outputType": "File",
+        "singleOutput": "TRUE",
         "inputType": "",
         "method": "DELETE",
         "placeholder":[{"name":"fileid","regex":"%^[0-9]+$%"}],
