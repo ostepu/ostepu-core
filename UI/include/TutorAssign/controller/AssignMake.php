@@ -3,6 +3,7 @@
 if (isset($_POST['action']) && $_POST['action'] == "AssignMakeWarning") {
     $assignMakeNotifications[] = MakeNotification("warning", Language::Get('main','askMake', $langTemplate));
 } elseif (isset($_POST['action']) && $_POST['action'] == "AssignMake") {
+    set_time_limit(180);
     $URI = $databaseURI . "/group/exercisesheet/{$sid}";
     $groups = http_get($URI, true, $message);
     $groups = Group::decodeGroup($groups);

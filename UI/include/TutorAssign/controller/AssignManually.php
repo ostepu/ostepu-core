@@ -1,6 +1,6 @@
 <?php
 if (isset($_POST['action']) && isset($_POST['action']) && $_POST['action'] == "AssignManually") {
-
+    set_time_limit(180);
     // automatically assigns all unassigned proposed submissions to tutors
     if (isset($_POST['actionAssignAllProposals'])){
         // load user data from the database
