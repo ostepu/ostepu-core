@@ -194,7 +194,7 @@
                     ?>
                     <?php if (!isset($exercise['submittable']) || $exercise['submittable'] == '1'){ ?>
                     <label class="short left label bold new-line"
-                           for="studentComment"><?php echo Language::Get('submission','file', $langTemplate, array('maxFileSize'=>formatBytes(parse_size(ini_get('upload_max_filesize'))))); ?>:</label>
+                           for="studentComment"><?php echo Language::Get('submission','file', $langTemplate, array('maxFileSize'=>formatBytes(parse_size(ini_get('upload_max_filesize'))/4))); ?>:</label>
                     <input type="file"
                            class="button left"
                            name="file<?php echo $exercise['id']; ?>">
