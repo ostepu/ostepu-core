@@ -18,6 +18,8 @@ Beispiel:
 
 Dieser Wert wird beim Erstellen neuer Übungsserien voreingestellt, sodass der in dieser Veranstaltung übliche Wert für die Gruppengröße nicht stets neu ausgewählt werden muss (Bedienhilfe).
 
+> Bereich: 1-65535
+
 Beispiel:
 
 ![](courseSettingsF.png)
