@@ -128,7 +128,7 @@
                     } else {
                         $maxgroup = $courses[0]['course']['defaultGroupSize'];
                     }
-                    for ($i=0; $i <= $maxgroup; $i++) { 
+                    for ($i=1; $i <= $maxgroup; $i++) { 
                         print "<option value=\"".$i."\"";
                         if (isset($groupSize) == false && $i == $courses[0]['course']['defaultGroupSize']) {
                             print " selected=\"selected\"";
