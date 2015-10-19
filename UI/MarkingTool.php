@@ -74,7 +74,7 @@ if (isset($_POST['MarkingTool'])) {
                                        FormEvaluator::OPTIONAL,
                                        'warning',
                                        Language::Get('main','invalidPoints', $langTemplate),
-                                       array('min' => 0, 'max' => $maxPoints));
+                                       array('min' => 0));
 
                 $f->checkStringForKey('tutorComment',
                                       FormEvaluator::OPTIONAL,
@@ -99,9 +99,15 @@ if (isset($_POST['MarkingTool'])) {
 
                 if ($f->evaluate(true)) {
                     $foundValues = $f->foundValues;
-                    $changed = false; 
+                    $changed = false;
                     
                     $points = (isset($foundValues['points']) ? $foundValues['points'] : null);
+                    if ($points>$maxPoints){
+                        $msg = Language::Get('main','tooManyPoints', $langTemplate, array('maxPoints'=>$maxPoints));
+                        if (!isset($GroupNotificationElements[$key])) $GroupNotificationElements[$key]=array();
+                        $GroupNotificationElements[$key][] = MakeNotification("warning", $msg);
+                    }
+                    
                     if ((!isset($exercise['oldPoints']) && $points!=null) || (isset($exercise['oldPoints']) && $points!=$exercise['oldPoints'])){
                           $changed=true;///echo "A";
                     }

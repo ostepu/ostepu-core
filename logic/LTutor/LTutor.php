@@ -1025,12 +1025,12 @@ class LTutor
                         // checks whether the points are less or equal to the maximum points
                         if ($points > $markingData['maxPoints'] || $points<0){
                             // too much points
-                            fclose($csv);
-                            $this->deleteDir($tempDir);
-                            $this->app->response->setStatus(409);
-                            $errors[] = "incorrect points in marking: {$markingId}";
-                            $this->app->response->setBody(json_encode($errors));
-                            $this->app->stop();
+                            ///fclose($csv);
+                            ///$this->deleteDir($tempDir);
+                            ///$this->app->response->setStatus(409);
+                            ///$errors[] = "incorrect points in marking: {$markingId}";
+                            ///$this->app->response->setBody(json_encode($errors));
+                            ///$this->app->stop();
                         }
                         
                         // checks if file with this markingid exists
