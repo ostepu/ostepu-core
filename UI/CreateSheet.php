@@ -135,7 +135,7 @@ if ($correctExercise == true) {
     if (isset($_FILES['sheetPDF']['error']) && !$_FILES['sheetPDF']['error'] == 4){
         // create new exerciseSheet
         $sheetPDFFile = File::createFile(NULL,$_FILES['sheetPDF']['name'],NULL,$timestamp,NULL,NULL,NULL);
-        $sheetPDFFile->setLocalRef($_FILES['sheetPDF']['tmp_name']);
+        $sheetPDFFile->setBody( Reference::createReference($_FILES['sheetPDF']['tmp_name']) );
     } elseif(isset($_POST['sheetPDFId'])) {
         // update existing exerciseSheet
         $sheetPDFFile = File::createFile(NULL,null,NULL,null,NULL,NULL,NULL);
@@ -161,7 +161,7 @@ if ($correctExercise == true) {
     if (isset($_FILES['sheetSolution']['error']) && $_FILES['sheetSolution']['error'] != 4) {
         // create new sheetSolution
         $sheetSolutionFile = File::createFile(NULL,$_FILES['sheetSolution']['name'],NULL,$timestamp,NULL,NULL,NULL);
-        $sheetSolutionFile->setLocalRef($_FILES['sheetSolution']['tmp_name']);
+        $sheetSolutionFile->setBody( Reference::createReference($_FILES['sheetSolution']['tmp_name']) );
         $myExerciseSheet->setSampleSolution($sheetSolutionFile);
     } elseif(isset($_POST['sheetSolutionId'])) {
         // update existing sheetSolution
@@ -221,7 +221,7 @@ if ($correctExercise == true) {
                 $attachments = array();
 
                 $attachementFile = File::createFile(NULL,$displayName,NULL,$timestamp,NULL,NULL,NULL);
-                $attachementFile->setLocalRef($filePath);
+                $attachementFile->setBody( Reference::createReference($filePath) );
                 
                 $subexerciseObj->setAttachments(array($attachementFile));
             } elseif(isset($_POST['exercises'][$key1]['subexercises'][$key2]['attachment']['fileId'])) {
@@ -357,7 +357,7 @@ if ($correctExercise == true) {
                         foreach ($filePath as $attachKey => $attachPath){                        
                             $attachment = new Attachment();
                             $attachementFile = File::createFile(NULL,$displayName[$attachKey],NULL,$timestamp,NULL,NULL,NULL);
-                            $attachementFile->setLocalRef($attachPath);
+                            $attachementFile->setBody( Reference::createReference($attachPath) );
                             $attachment->setFile($attachementFile);
                             $attachments[] = $attachment;
                         }

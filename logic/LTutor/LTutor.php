@@ -475,11 +475,11 @@ class LTutor
                         $data.="Kommentar: {$submission['comment']}\n";
                         
                     $data.="<pre>";
-                    $newFileData->setContent($data);
+                    $newFileData->setBody($data, true);
                     $newFileSend[] = $newFileData;
                     $newFileSend[] = $newFile;
                     $newFileData = new File();
-                    $newFileData->setContent("</pre>");
+                    $newFileData->setBody("</pre>", true);
                     $newFileSend[] = $newFileData;
                     //echo File::encodeFile($newFileSend);
                     $answer = Request::routeRequest(
@@ -717,13 +717,13 @@ class LTutor
                             $data.="Kommentar: {$marking['submission']['comment']}\n";
                             
                         $data.="<pre>";
-                        $newFileData->setContent($data);
+                        $newFileData->setBody($data, true);
                         $newFileSend[] = $newFileData;
                         
                         if (isset($newFile)){
                             $newFileSend[] = $newFile;
                             $newFileData = new File();
-                            $newFileData->setContent("</pre>");
+                            $newFileData->setBody("</pre>", true);
                             $newFileSend[] = $newFileData;
 //echo File::encodeFile($newFileSend);//return;
                             $answer = Request::routeRequest(
@@ -882,7 +882,7 @@ class LTutor
             $path = $tempDir.'/Liste.csv';//$user['lastName'].'_'.
             $csvFile = new File();
             $csvFile->setDisplayName(Liste.csv);
-            $csvFile->setLocalRef($path);
+            $csvFile->setBody( Reference::createReference($path) );
             $filesToZip[] = $csvFile;
             
             unlink($path);
@@ -949,7 +949,7 @@ class LTutor
 
         $body = File::decodeFile($this->app->request->getBody()); //1 file-Object
         $filename = $tempDir.'/'.$courseid.'.zip';
-        file_put_contents($filename, $body->getContent());
+        file_put_contents($filename, $body->getBody( true ));
         unset($body);
         
         $zip = new ZipArchive();
@@ -1042,7 +1042,7 @@ class LTutor
                                 $fileInfo = pathinfo($markingFile);
                                 $file = newFile();
                                 $file->setDisplayName($fileInfo['basename']);
-                                $file->setLocalRef($fileAddress);
+                                $file->setBody( Reference::createReference($fileAddress) );
                             } else {
                                 $file = null;
                             }

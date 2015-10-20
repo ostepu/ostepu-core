@@ -79,7 +79,7 @@ class FSFile
     public function addFile( $callName, $input, $params = array() )
     {
         $fileObject = $input;
-        $fileContent = $fileObject->getContent( );
+        $fileContent = $fileObject->getBody( true );
         $fileObject->setBody( null );        
         
         $fileObject->setHash( sha1( $fileContent ) );

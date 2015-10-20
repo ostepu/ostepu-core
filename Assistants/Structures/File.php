@@ -179,39 +179,15 @@ class File extends Object implements JsonSerializable
      *
      * @return the value of $body
      */
-    public function getBody( )
+    public function getBody( $decode = false)
     {
+    	if ($decode && self::isStructure($this->body, 'Reference')){
+    		return $this->body->getContent();
+    	} elseif ($decode){
+    		return base64_decode($this->body);
+    	}
+    	
         return $this->body;
-    }
-    
-    public function setContent( $value = null )
-    {
-        if ($value === null){
-            $this->body = null;
-        } else {
-            $this->body = base64_encode($value);
-        }
-    }
-    
-    public function getContent( )
-    {
-        if (substr($this->body,0,9) === 'localRef:'){
-            return file_get_contents(substr($this->body,9));
-        } elseif (substr($this->body,0,10) === 'globalRef:'){
-            return file_get_contents(substr($this->body,10));
-        }
-        
-        return base64_decode($this->body);
-    }
-    
-    public function setLocalRef( $address )
-    {
-        $this->body = 'localRef:'.$address;
-    }
-    
-    public function setGlobalRef( $address )
-    {
-        $this->body = 'globalRef:'.$address;
     }
 
     /**
@@ -219,9 +195,13 @@ class File extends Object implements JsonSerializable
      *
      * @param string $value the new value for $body
      */
-    public function setBody( $value = null )
+    public function setBody( $value = null, $encode = false )
     {
-        $this->body = $value;
+    	if ($value !== null && !self::isStructure($value,'Reference') && $encode){
+        	$this->body = base64_encode($value);
+    	} else {
+    		$this->body = $value;
+    	}
     }
 
     /**
@@ -422,12 +402,22 @@ class File extends Object implements JsonSerializable
 
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
-                $func = 'set' . strtoupper($key[0]).substr($key,1);
-                $methodVariable = array($this, $func);
-                if (is_callable($methodVariable)){
-                    $this->$func($value);
-                } else
-                    $this->{$key} = $value;
+            	if ( $key == 'body' && is_object($value)){
+                    $this->{
+                        $key
+                    } = Reference::decodeReference( 
+			                                       $value,
+			                                       false
+			                                       );
+                    
+                } else {
+	                $func = 'set' . strtoupper($key[0]).substr($key,1);
+	                $methodVariable = array($this, $func);
+	                if (is_callable($methodVariable)){
+	                    $this->$func($value);
+	                } else
+	                    $this->{$key} = $value;
+                }
             }
         }
     }

@@ -125,4 +125,17 @@ abstract class Object
             $c='\'' . $c . '\'';
         $a .= ',' . $b . '='.$c.' ';
     }
+    
+    protected function isStructure($element, $structureName)
+    {
+    	if (gettype($element) === 'object' && get_class($element) === $structureName){
+    		return true;	
+    	}
+    	return false;
+    }
+    
+    protected function isString($element)
+    {
+    	return is_string($element);
+    }
 }

@@ -206,7 +206,7 @@ class FSPdf
             foreach($files as $part){
                 if ( $part->getBody( ) !== null ){
                     // use body
-                    $body.=$part->getContent( ).'<br>';
+                    $body.=$part->getBody( true ).'<br>';
                 } else {
                     $file = $this->config['DIR']['files']. '/' . $part->getAddress( );
                     if (file_exists($file)){

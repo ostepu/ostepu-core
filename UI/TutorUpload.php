@@ -30,7 +30,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'TutorUpload') {
 
                 // creates the JSON object containing the file
                 $file = new File();
-                $file->setLocalRef($filePath);
+                $file->setBody( Reference::createReference($filePath) );
                 $file->setTimeStamp(time());
                 $file->setDisplayName($displayName);
 

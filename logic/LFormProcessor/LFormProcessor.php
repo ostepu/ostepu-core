@@ -348,7 +348,7 @@ class LFormProcessor
                     $timestamp = time();
                 
                 if ($formdata !== null && $forms !== null){
-                    $formdata = Form::decodeForm($formdata->getContent());
+                    $formdata = Form::decodeForm($formdata->getBody( true ));
                     if (is_array($formdata)) $formdata = $formdata[0];
 
                     if ($formdata !== null){
@@ -546,7 +546,7 @@ class LFormProcessor
 
                         $rawSubmission = $pro->getRawSubmission();
                         $rawFile = $rawSubmission->getFile();
-                        $rawFile->setContent(Form::encodeForm($formdata));
+                        $rawFile->setBody(Form::encodeForm($formdata), true);
                         $rawSubmission->setFile($rawFile);
                         $rawSubmission->setExerciseId($eid);
                         $pro->setRawSubmission($rawSubmission);
