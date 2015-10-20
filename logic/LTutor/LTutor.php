@@ -881,12 +881,12 @@ class LTutor
             //push the .csv-file to the array
             $path = $tempDir.'/Liste.csv';//$user['lastName'].'_'.
             $csvFile = new File();
-            $csvFile->setDisplayName(Liste.csv);
+            $csvFile->setDisplayName('Liste.csv');
             $csvFile->setBody( Reference::createReference($path) );
             $filesToZip[] = $csvFile;
             
-            unlink($path);
-            $this->deleteDir(dirname($path));
+            ///unlink($path);
+            ///$this->deleteDir(dirname($path));
 
             //request to filesystem to create the Zip-File
             $result = Request::routeRequest( 
