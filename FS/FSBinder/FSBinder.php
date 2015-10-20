@@ -76,7 +76,7 @@ class FSBinder
             if ($file){
                 fwrite( 
                        $file,
-                       base64_decode( $fileobject->getBody( ) )
+                       $fileobject->getBody( true )
                        );
                 fclose( $file );
                 $fileObject->setStatus(201);
@@ -133,6 +133,7 @@ class FSBinder
             // the file was found
             Model::header('Content-Type','application/octet-stream');
             Model::header('Content-Disposition',"attachment; filename=\"".$params['filename']."\"");
+            Model::header('Content-Length',filesize($this->config['DIR']['files'].'/'.$filePath));
             readfile( $this->config['DIR']['files'].'/'.$filePath );
             return Model::isOk();
             

@@ -6,6 +6,9 @@
  * @todo Configuration for logic controller uri could go here.
  */
 
+$notifications = array();
+$startup_error = error_get_last();
+
 include_once ( dirname(__FILE__) . '/Authorization.php' );
 include_once ( dirname(__FILE__) . '/HTMLWrapper.php' );
 include_once ( dirname(__FILE__) . '/Template.php' );
@@ -14,7 +17,10 @@ include_once ( dirname(__FILE__) . '/Helpers.php' );
 include_once ( dirname(__FILE__) . '/../../Assistants/Language.php' );
 include_once ( dirname(__FILE__) . '/Config.php' );
 
-$notifications = array();
+if ($startup_error !== null){
+    $notifications[] = MakeNotification('error',$startup_error['message']);
+    unset($startup_error);
+}
 
 if (isset($_GET['cid'])) {
     $cid = $_GET['cid'];

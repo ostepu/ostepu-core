@@ -179,8 +179,14 @@ class File extends Object implements JsonSerializable
      *
      * @return the value of $body
      */
-    public function getBody( )
+    public function getBody( $decode = false)
     {
+    	if ($decode && self::isStructure($this->body, 'Reference')){
+    		return $this->body->getContent();
+    	} elseif ($decode){
+    		return base64_decode($this->body);
+    	}
+    	
         return $this->body;
     }
 
@@ -189,9 +195,13 @@ class File extends Object implements JsonSerializable
      *
      * @param string $value the new value for $body
      */
-    public function setBody( $value = null )
+    public function setBody( $value = null, $encode = false )
     {
-        $this->body = $value;
+    	if ($value !== null && !self::isStructure($value,'Reference') && $encode){
+        	$this->body = base64_encode($value);
+    	} else {
+    		$this->body = $value;
+    	}
     }
 
     /**
@@ -392,12 +402,22 @@ class File extends Object implements JsonSerializable
 
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
-                $func = 'set' . strtoupper($key[0]).substr($key,1);
-                $methodVariable = array($this, $func);
-                if (is_callable($methodVariable)){
-                    $this->$func($value);
-                } else
-                    $this->{$key} = $value;
+            	if ( $key == 'body' && is_object($value)){
+                    $this->{
+                        $key
+                    } = Reference::decodeReference( 
+			                                       $value,
+			                                       false
+			                                       );
+                    
+                } else {
+	                $func = 'set' . strtoupper($key[0]).substr($key,1);
+	                $methodVariable = array($this, $func);
+	                if (is_callable($methodVariable)){
+	                    $this->$func($value);
+	                } else
+	                    $this->{$key} = $value;
+                }
             }
         }
     }
@@ -415,13 +435,13 @@ class File extends Object implements JsonSerializable
         if (gettype($data) !== 'object' && !(is_array($data) && (current($data)===false || gettype(current($data)) === 'object'))){
             $e = new Exception();
             error_log(__FILE__.':'.__LINE__.' no object, '.gettype($data)." given\n".$e->getTraceAsString());            
-            return null;
+            ///return null;
         }
         if ((is_array($data) && (is_array(current($data)) || (current($data)!==false && get_class(current($data)) !== get_called_class()))) || (!is_array($data) && get_class($data) !== get_called_class())){
             $e = new Exception();
             $class = (is_array($data) && is_array(current($data)) ? 'array' : (is_array($data) ? (current($data)!==false ? get_class(current($data)) : 'array') : get_class($data)));
             error_log(__FILE__.':'.__LINE__.' wrong type, '.$class.' given, '.get_called_class()." expected\n".$e->getTraceAsString());
-            return null;
+            ///return null;
         }*/
         return json_encode( $data );
     }

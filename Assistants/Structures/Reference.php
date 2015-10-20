@@ -1,46 +1,94 @@
-<?php
+<?php 
 
 
 /**
- * @file Csv.php contains the csv class
+ * @file Reference.php contains the Reference class
  */
 
 include_once ( dirname( __FILE__ ) . '/Object.php' );
 
 /**
- * the csv structure
+ * the reference structure
  *
  * @author Till Uhlig
- * @date 2014
+ * @date 2015
  */
-class Csv extends Object implements JsonSerializable
+class Reference extends Object implements JsonSerializable
 {
 
-    private $rows = null;
-    public function getRows( )
+    /**
+     * @var string $localRef
+     */
+    private $localRef = null;
+
+    /**
+     * the $localRef getter
+     *
+     * @return the value of $localRef
+     */
+    private function getLocalRef( )
     {
-        return $this->rows;
-    }
-    public function setRows( $value = null )
-    {
-        $this->rows = $value;
+        return $this->localRef;
     }
 
     /**
-     * Creates an Exercise object, for database post(insert) and put(update).
+     * the $localRef setter
+     *
+     * @param string $value the new value for $localRef
+     */
+    private function setLocalRef( $value = null )
+    {
+        $this->localRef = $value;
+    }
+    
+    /**
+     * @var string $globalRef
+     */
+    private $globalRef = null;
+
+    /**
+     * the $globalRef getter
+     *
+     * @return the value of $globalRef
+     */
+    private function getGlobalRef( )
+    {
+        return $this->globalRef;
+    }
+
+    /**
+     * the $globalRef setter
+     *
+     * @param string $value the new value for $globalRef
+     */
+    private function setGlobalRef( $value = null )
+    {
+        $this->globalRef = $value;
+    }
+
+    public function getContent( )
+    {
+        return file_get_contents($this->localRef);
+    }
+    
+    /**
+     * Creates an reference object
      * Not needed attributes can be set to null.
      *
-     * @param [][] $rows.
+     * @param string $localReference The id of the user.
+     * @param string $globalReference The id of the session.
      *
-     * @return an exercise object
+     * @return an reference object
      */
-    public static function createCsv(
-                                          $rows
-                                          )
+    public static function createReference( 
+                                         $localReference,
+                                         $globalReference=null
+                                         )
     {
-        return new Csv( array(
-                                   'rows' => $rows
-                                   ) );
+        return new Reference( array( 
+                                  'localRef' => $localReference,
+                                  'globalRef' => $globalReference
+                                  ) );
     }
     
     /**
@@ -52,7 +100,7 @@ class Csv extends Object implements JsonSerializable
     {
         if ( $data === null )
             $data = array( );
-        
+
         foreach ( $data AS $key => $value ){
             if ( isset( $key ) ){
                 $func = 'set' . strtoupper($key[0]).substr($key,1);
@@ -72,7 +120,7 @@ class Csv extends Object implements JsonSerializable
      *
      * @return the json encoded object
      */
-    public static function encodeCsv( $data )
+    public static function encodeReference( $data )
     {
         /*if (is_array($data))reset($data);
         if (gettype($data) !== 'object' && !(is_array($data) && (current($data)===false || gettype(current($data)) === 'object'))){
@@ -98,12 +146,12 @@ class Csv extends Object implements JsonSerializable
      *
      * @return the object
      */
-    public static function decodeCsv(
-                                          $data,
-                                          $decode = true
-                                          )
+    public static function decodeReference( 
+                                         $data,
+                                         $decode = true
+                                         )
     {
-        if ( $decode &&
+        if ( $decode && 
              $data == null )
             $data = '{}';
 
@@ -125,24 +173,26 @@ class Csv extends Object implements JsonSerializable
         if ( $isArray && is_array( $data ) ){
             $result = array( );
             foreach ( $data AS $key => $value ){
-                $result[] = new Csv( $value );
+                $result[] = new Reference( $value );
             }
             return $result;
-
-        } else
-            return new Csv( $data );
+            
+        } else 
+            return new Reference( $data );
     }
 
     /**
      * the json serialize function
-     *
-     * @return an array to serialize the object
      */
     public function jsonSerialize( )
     {
         $list = array( );
-        if ( $this->rows !== null )
-            $list['rows'] = $this->rows;
+        if ( $this->localRef !== null )
+            $list['localRef'] = $this->localRef;
+        if ( $this->globalRef !== null )
+            $list['globalRef'] = $this->globalRef;
         return array_merge($list,parent::jsonSerialize( ));
     }
 }
+
+ 

@@ -107,10 +107,10 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
                         if (isset($_FILES[$fileName])){
                             $filePath = $file['tmp_name'];
                             $uploadFile = File::createFile(null,$file['name'],null,$timestamp,null,null);
-                            $uploadFile->setBody(base64_encode(file_get_contents($file['tmp_name'])));
+                            $uploadFile->setBody(Reference::createReference($file['tmp_name']));
                         } else {
                             $uploadFile = File::createFile(null,null,null,$timestamp,null,null);
-                            $uploadFile->setBody(base64_encode(Form::encodeForm($formdata)));
+                            $uploadFile->setBody(Form::encodeForm($formdata),true);
                         }
 
                         $uploadSubmission = Submission::createSubmission(null,$uid,null,$exerciseId,$exercise['comment'],1,$timestamp,null,$leaderId);
