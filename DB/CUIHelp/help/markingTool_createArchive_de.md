@@ -26,6 +26,8 @@ Sie können eine zusätzliche Auswahl im Korrekturassistenten treffen.
 
 #### Korrigieren ####
 
+> Jedes Korrekturarchiv ist ab dessen Erstellung 30 Tage gültig, danach kann es nicht mehr hochgeladen werden.
+
 > ##### 1. Entpacken #####
 
 Entpacken Sie das heruntergeladene zip-Archiv.

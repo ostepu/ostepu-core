@@ -1,5 +1,5 @@
 #### LFormPredecessor ####
-Diese **Verarbeitung** wird bei der Nutzung von Formulareingaben benötigt.
+Diese **Verarbeitung** wird bei der Nutzung von Formulareingaben (**LForm**) benötigt.
 
 ![](LFormPredecessor.png "LFormPredecessor verwenden")
 
