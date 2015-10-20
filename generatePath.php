@@ -41,11 +41,11 @@ foreach ($elements as $elem){
                 $body = "<html><head><meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"><title></title><style>.node {}.node:hover {font-weight: bold;}</style><script src=\"../UI/javascript/jquery-2.0.3.min.js\"></script><script type=\"text/javascript\">".'$'."(document).ready( function(){".'$'."('.node').click(function(){var trig = ".'$'."(this);var id = trig.prop('id');var q = window.open(\"".$dir."/\"+id+\".html\", 'data', 'width=700,height=600');q.focus();return false;});});</script></head><body><div id=\"bild\">";
                 $body .= file_get_contents(dirname(__FILE__).'/path/'.$dir.'/'.$file.'.svg');
                 $body .= "</div></body></html>";
-                
+
                 file_put_contents(dirname(__FILE__).'/path/'.$dir.'.html',$body);
             }
             
-            $cssFile = dirname(__FILE__) . '/../UI/css/github-markdown.css';
+            $cssFile = dirname(__FILE__) . '/UI/css/github-markdown.css';
             $cssFileTarget = dirname(__FILE__).'/path/'.$dir.'/github-markdown.css';
             if (file_exists($cssFile) && !file_exists($cssFileTarget)){
                 file_put_contents($cssFileTarget, file_get_contents($cssFile));
