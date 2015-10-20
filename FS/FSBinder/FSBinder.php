@@ -76,7 +76,7 @@ class FSBinder
             if ($file){
                 fwrite( 
                        $file,
-                       base64_decode( $fileobject->getBody( ) )
+                       $fileobject->getContent( )
                        );
                 fclose( $file );
                 $fileObject->setStatus(201);

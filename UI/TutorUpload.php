@@ -29,19 +29,16 @@ if (isset($_POST['action']) && $_POST['action'] == 'TutorUpload') {
             if (MimeReader::get_mime($filePath) == "application/zip") {
 
                 // creates the JSON object containing the file
-                $data = file_get_contents($filePath);
+                $file = new File();
+                $file->setLocalRef($filePath);
+                $file->setTimeStamp(time());
+                $file->setDisplayName($displayName);
 
-                $data = base64_encode($data);
-
-                $file = array('timeStamp' => time(),
-                              'displayName' => $displayName,
-                              'body' => $data);
-
-                $file = json_encode($file);
+                $file = File::encodeFile($file);
 
                 // sends the JSON object to the logic
                 $URI = $logicURI . "/tutor/user/{$uid}/course/{$cid}";
-                ///echo $file;echo $URI;return;
+
                 $error = http_post_data($URI, $file, true, $message);
 
                 if ($message == "201" || $message == "200") {

@@ -538,7 +538,7 @@ class LProcessor
 
                 $filePath = null;
                 if ($submission->getFile()!=null){
-                    $file = base64_decode($submission->getFile()->getBody());
+                    $file = $submission->getFile()->getContent();
                   
                     if ($file !== null){
                         $fileHash = sha1($file);

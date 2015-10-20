@@ -13,6 +13,7 @@ include_once dirname(__FILE__) . '/../../Assistants/Request.php';
 include_once dirname(__FILE__) . '/../../Assistants/CConfig.php';
 include_once dirname(__FILE__) . '/../../Assistants/Structures/Transaction.php';
 include_once dirname(__FILE__) . '/../../Assistants/Structures/Platform.php';
+include_once dirname(__FILE__) . '/../../Assistants/Structures/File.php';
 
 \Slim\Slim::registerAutoloader();
 
@@ -474,11 +475,11 @@ class LTutor
                         $data.="Kommentar: {$submission['comment']}\n";
                         
                     $data.="<pre>";
-                    $newFileData->setBody(base64_encode($data));
+                    $newFileData->setContent($data);
                     $newFileSend[] = $newFileData;
                     $newFileSend[] = $newFile;
                     $newFileData = new File();
-                    $newFileData->setBody(base64_encode("</pre>"));
+                    $newFileData->setContent("</pre>");
                     $newFileSend[] = $newFileData;
                     //echo File::encodeFile($newFileSend);
                     $answer = Request::routeRequest(
@@ -716,13 +717,13 @@ class LTutor
                             $data.="Kommentar: {$marking['submission']['comment']}\n";
                             
                         $data.="<pre>";
-                        $newFileData->setBody(base64_encode($data));
+                        $newFileData->setContent($data);
                         $newFileSend[] = $newFileData;
                         
                         if (isset($newFile)){
                             $newFileSend[] = $newFile;
                             $newFileData = new File();
-                            $newFileData->setBody(base64_encode("</pre>"));
+                            $newFileData->setContent("</pre>");
                             $newFileSend[] = $newFileData;
 //echo File::encodeFile($newFileSend);//return;
                             $answer = Request::routeRequest(
@@ -879,10 +880,9 @@ class LTutor
 
             //push the .csv-file to the array
             $path = $tempDir.'/Liste.csv';//$user['lastName'].'_'.
-            $csvFile = array(
-                        'displayName' => 'Liste.csv', //$user['lastName'].'_'.
-                        'body' => base64_encode(file_get_contents($path))
-                    );
+            $csvFile = new File();
+            $csvFile->setDisplayName(Liste.csv);
+            $csvFile->setLocalRef($path);
             $filesToZip[] = $csvFile;
             
             unlink($path);
@@ -947,9 +947,9 @@ class LTutor
         LTutor::generatepath($this->config['DIR']['temp']);
         $tempDir = $this->tempdir($this->config['DIR']['temp'], 'extractZip', $mode=0775);
 
-        $body = json_decode($this->app->request->getBody(), true); //1 file-Object        
+        $body = File::decodeFile($this->app->request->getBody()); //1 file-Object
         $filename = $tempDir.'/'.$courseid.'.zip';
-        file_put_contents($filename, base64_decode($body['body']));
+        file_put_contents($filename, $body->getContent());
         unset($body);
         
         $zip = new ZipArchive();
@@ -1037,13 +1037,12 @@ class LTutor
                         if ($markingFile == '' || file_exists($files.'/'.$markingFile)) {
                         
                             if ($markingFile!=''){
-                                $fileBody = file_get_contents($files.'/'.$markingFile);
+                                $fileAddress = $files.'/'.$markingFile; ///file_get_contents($files.'/'.$markingFile);
                                 // file
                                 $fileInfo = pathinfo($markingFile);
-                                $file = array(
-                                        'displayName' => $fileInfo['basename'],
-                                        'body' => base64_encode($fileBody),
-                                        );
+                                $file = newFile();
+                                $file->setDisplayName($fileInfo['basename']);
+                                $file->setLocalRef($fileAddress);
                             } else {
                                 $file = null;
                             }

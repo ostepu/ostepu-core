@@ -343,7 +343,7 @@ class LOOP
             // es muss eine Einsendung vorhanden sein, welche bearbeitet werden kann
             if ($file !== null){
                 $fileName = $file->getDisplayName();
-                $file = base64_decode($file->getBody()); // gibt den Inhalt der Einsendung an $file
+                $file = $file->getContent(); // gibt den Inhalt der Einsendung an $file
               
                 // es muss ein Einsendungsinhalt vorhanden sein
                 if ($file !== null){

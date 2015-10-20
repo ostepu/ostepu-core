@@ -79,7 +79,10 @@ class FSFile
     public function addFile( $callName, $input, $params = array() )
     {
         $fileObject = $input;
-        $fileObject->setHash( sha1( base64_decode( $fileObject->getBody( ) ) ) );
+        $fileContent = $fileObject->getContent( );
+        $fileObject->setBody( null );        
+        
+        $fileObject->setHash( sha1( $fileContent ) );
         $filePath = FSFile::generateFilePath( 
                                              FSFile::getBaseDir( ),
                                              $fileObject->getHash( )
@@ -97,7 +100,7 @@ class FSFile
             if ($file){
                 fwrite( 
                        $file,
-                       base64_decode( $fileObject->getBody( ) )
+                       $fileContent
                        );
                 fclose( $file );
                 $fileObject->setStatus(201);

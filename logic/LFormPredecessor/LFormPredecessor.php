@@ -346,7 +346,7 @@ class LFormPredecessor
                     $timestamp = time();
                 
                 if ($formdata !== null && $forms !== null){
-                    $formdata = Form::decodeForm(base64_decode($formdata->getBody()));
+                    $formdata = Form::decodeForm($formdata->getContent());
                     if (is_array($formdata)) $formdata = $formdata[0];
 
                     if ($formdata !== null){
@@ -505,7 +505,7 @@ class LFormPredecessor
                         
                         $rawSubmission = $pro->getRawSubmission();
                         $rawFile = $rawSubmission->getFile();
-                        $rawFile->setBody(base64_encode(Form::encodeForm($formdata)));
+                        $rawFile->setContent(Form::encodeForm($formdata));
                         $rawSubmission->setFile($rawFile);
                         $rawSubmission->setExerciseId($eid);
                         $pro->setRawSubmission($rawSubmission);

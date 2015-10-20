@@ -113,7 +113,7 @@ class FSZip
                     if ( $part->getBody( ) !== null ){
                         $zip->addFromString( 
                                             $part->getDisplayName( ),
-                                            base64_decode( $part->getBody( ) )
+                                            $part->getContent( )
                                             );
                         
                     } else {

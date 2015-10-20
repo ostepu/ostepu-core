@@ -183,6 +183,36 @@ class File extends Object implements JsonSerializable
     {
         return $this->body;
     }
+    
+    public function setContent( $value = null )
+    {
+        if ($value === null){
+            $this->body = null;
+        } else {
+            $this->body = base64_encode($value);
+        }
+    }
+    
+    public function getContent( )
+    {
+        if (substr($this->body,0,9) === 'localRef:'){
+            return file_get_contents(substr($this->body,9));
+        } elseif (substr($this->body,0,10) === 'globalRef:'){
+            return file_get_contents(substr($this->body,10));
+        }
+        
+        return base64_decode($this->body);
+    }
+    
+    public function setLocalRef( $address )
+    {
+        $this->body = 'localRef:'.$address;
+    }
+    
+    public function setGlobalRef( $address )
+    {
+        $this->body = 'globalRef:'.$address;
+    }
 
     /**
      * the $body setter
