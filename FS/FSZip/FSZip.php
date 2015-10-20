@@ -82,7 +82,7 @@ class FSZip
         $hashArray = array( );
         foreach ( $input as $part ){
             if ( $part->getBody( ) !== null ){
-                $hashArray[] = $part->getBody( );
+                $hashArray[] = base64_encode($part->getBody( true ));
                 
             } else 
                 $hashArray[] = $part->getAddress( ) . $part->getDisplayName( );
