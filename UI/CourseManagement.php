@@ -208,7 +208,20 @@ if (!isset($_POST['actionSortUsers']) && isset($_POST['action'])) {
                         
                     $value = $params['value'];
                     $type = $params['type'];
-                    if (strtoupper($type) === 'TEXT'){
+                    if (strtoupper($type) === 'BOOL'){
+                    	if ($value != '1' && $value != '0'){
+	                        $courseSettingsNotifications[] = MakeNotification("error", Language::Get('main','containsUnsupportedChars', $langTemplate));
+	                        continue;
+                    	}
+                    } elseif (strtoupper($type) === 'INT'){
+                    	if (trim($value) != ''){
+	                    	$pregRes = @preg_match("%^([0-9]+)$%", $value);
+	                        if (!$pregRes){
+		                        $courseSettingsNotifications[] = MakeNotification("error", Language::Get('main','containsUnsupportedChars', $langTemplate));
+		                        continue;
+	                        }
+                    	}
+                    } elseif (strtoupper($type) === 'STRING'){
                         // nothing
                     } elseif (strtoupper($type) === 'DATE'){
                         if (trim($value) == '')

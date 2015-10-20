@@ -14,5 +14,6 @@ SET @a = <?php if ($in->getId()!==null){echo "'".$in->getId()."';";} else echo "
 
 call execute_if_table_exists(concat('Setting_',@a),concat("INSERT IGNORE INTO Setting_",@a," (SET_name, SET_state, SET_type) VALUES ('RegistrationPeriodEnd', '0' ,'TIMESTAMP');"));
 call execute_if_table_exists(concat('Setting_',@a),concat("INSERT IGNORE INTO Setting_",@a," (SET_name, SET_state, SET_type) VALUES ('AllowLateSubmissions', '1' ,'BOOL');"));
+call execute_if_table_exists(concat('Setting_',@a),concat("INSERT IGNORE INTO Setting_",@a," (SET_name, SET_state, SET_type) VALUES ('MaxStudentUploadSize', '2097152' ,'INT');"));
 
 select @a;
