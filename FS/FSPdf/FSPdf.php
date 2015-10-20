@@ -94,8 +94,11 @@ class FSPdf
         if (isset($params['filename'])){
             if (isset($result)){
                 $this->_app->response->setBody($result);
-            } else 
+           	    Model::header('Content-Length',strlen($result));
+            } else {
                 readfile($this->config['DIR']['files'].'/'.$filePath);
+           	    Model::header('Content-Length',filesize($this->config['DIR']['files'].'/'.$filePath));
+            }
             
             Model::header('Content-Type','application/octet-stream');
             Model::header('Content-Disposition',"attachment; filename=\"".$params['filename']."\"");
@@ -292,6 +295,7 @@ class FSPdf
             // the file was found
             Model::header('Content-Type','application/octet-stream');
             Model::header('Content-Disposition',"attachment; filename=\"".$params['filename']."\"");   
+            Model::header('Content-Length',filesize($this->config['DIR']['files'].'/'.$filePath));
             readfile( $this->config['DIR']['files'].'/'.$filePath );
             return Model::isOk();
             

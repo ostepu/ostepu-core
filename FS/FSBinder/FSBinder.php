@@ -132,6 +132,7 @@ class FSBinder
             // the file was found
             Model::header('Content-Type','application/octet-stream');
             Model::header('Content-Disposition',"attachment; filename=\"".$params['filename']."\"");
+            Model::header('Content-Length',filesize($this->config['DIR']['files'].'/'.$filePath));
             readfile( $this->config['DIR']['files'].'/'.$filePath );
             return Model::isOk();
             

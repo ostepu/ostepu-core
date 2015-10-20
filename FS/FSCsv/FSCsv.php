@@ -105,9 +105,11 @@ class FSCsv
             Model::header('Content-Disposition',"attachment; filename=\"".$params['filename']."\"");
             
             if (isset($result)){
+            	Model::header('Content-Length',strlen($result));
                 return isCreated($result);
             } else {
                 readfile($this->config['DIR']['files'].'/'.$filePath);
+           		Model::header('Content-Length',filesize($this->config['DIR']['files'].'/'.$filePath));
                 return isCreated();
             }
             
@@ -152,7 +154,8 @@ class FSCsv
 
             // the file was found
             Model::header('Content-Type','application/octet-stream');
-            Model::header('Content-Disposition',"attachment; filename=\"".$params['filename']."\"");
+            Model::header('Content-Disposition',"attachment; filename=\"".$params['filename']."\"");   
+            Model::header('Content-Length',filesize($this->config['DIR']['files'].'/'.$filePath));   
                                             
             readfile( $this->config['DIR']['files'].'/'.$filePath );
             return Model::isOk();
