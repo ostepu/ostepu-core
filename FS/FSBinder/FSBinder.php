@@ -116,6 +116,7 @@ class FSBinder
      */
     public function getFileDocument( $callName, $input, $params = array() )
     {
+    	set_time_limit(600);
         $path = array($params['folder'],$params['a'],$params['b'],$params['c'], $params['file']);
         
         $filePath = implode( 
