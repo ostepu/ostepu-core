@@ -46,6 +46,7 @@ if (isset($_GET['suid'])) {
     Logger::Log('no submission id!\n');
 }
 
+$globalUserData = null;
 if (isset($uid)){
-    initPage($uid);
+    initPage($uid,(isset($cid) ? $cid : null));
 }

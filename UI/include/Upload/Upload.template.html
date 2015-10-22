@@ -194,7 +194,16 @@
                     ?>
                     <?php if (!isset($exercise['submittable']) || $exercise['submittable'] == '1'){ ?>
                     <label class="short left label bold new-line"
-                           for="studentComment"><?php echo Language::Get('submission','file', $langTemplate, array('maxFileSize'=>formatBytes(parse_size(ini_get('upload_max_filesize'))/4))); ?>:</label>
+                           <?php 
+                                $maxFileSize = parse_size(ini_get('upload_max_filesize'));
+                                
+                                global $globalUserData; 
+                                if (isset($globalUserData['courses'][0]['course'])){
+                                    $obj = Course::decodeCourse(Course::encodeCourse($globalUserData['courses'][0]['course']));
+                                    $maxFileSize = Course::containsSetting($obj,'MaxStudentUploadSize');
+                                }
+                           ?>
+                           for="studentComment"><?php echo Language::Get('submission','file', $langTemplate, array('maxFileSize'=>formatBytes($maxFileSize))); ?>:</label>
                     <input type="file"
                            class="button left"
                            name="file<?php echo $exercise['id']; ?>">

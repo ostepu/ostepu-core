@@ -98,7 +98,7 @@ class LGetSite
                         array($this, 'studentSiteInfo'));
 
         //GET AccountSettings
-        $this->app->get('/accountsettings/user/:userid(/)',
+        $this->app->get('/accountsettings/user/:userid(/course/:courseid)(/)',
                         array($this, 'accountsettings'));
 
         //GET CreateSheet
@@ -629,11 +629,17 @@ class LGetSite
         }
     }
 
-    public function accountsettings($userid)
+    public function accountsettings($userid, $courseid=null)
     {
-        $URL = $this->_getUser->getAddress().'/user/user/' . $userid;
-        $answer = Request::custom('GET', $URL, array(), '');
-        $user = json_decode($answer['content'], true);
+        if ($courseid === null){
+            $URL = $this->_getUser->getAddress().'/user/user/' . $userid;
+            $answer = Request::custom('GET', $URL, array(), '');
+            $user = json_decode($answer['content'], true);
+        } else {
+            $URL = $this->_getCourseStatus->getAddress().'/coursestatus/course/'.$courseid.'/user/'.$userid;
+            $answer = Request::custom('GET', $URL, array(), '');
+            $user = json_decode($answer['content'], true);
+        }
 
         $this->app->response->setBody(json_encode($user));
     }

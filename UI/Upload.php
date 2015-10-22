@@ -87,9 +87,26 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
 
             if (isset($_FILES[$fileName]) || $formdata !== array()) {
                 $error=0;
+                
                 if (isset($_FILES[$fileName])){
                     $file = $_FILES[$fileName];
                     $error = $file['error'];
+                    
+                    if ($error === 0){
+                        $maxFileSize = parse_size(ini_get('upload_max_filesize'));
+                        
+                        global $globalUserData; 
+                        if (isset($globalUserData['courses'][0]['course'])){
+                            $obj = Course::decodeCourse(Course::encodeCourse($globalUserData['courses'][0]['course']));
+                            $maxFileSize = Course::containsSetting($obj,'MaxStudentUploadSize');
+                        }
+                        
+                        if ($file['size']>$maxFileSize){
+                            $msg = Language::Get('main','errorUploadSubmissionFileToLarge', $langTemplate, array('maxFileSize'=>formatBytes($maxFileSize),'status'=>412,'exerciseName'=>$exercise['name']));
+                            $notifications[] = MakeNotification('error',$msg);
+                            $error = -1;
+                        }
+                    }
                 }
                 else
                 {    
@@ -102,7 +119,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
                     
                     // prüfe ob nur erlaubte Zeichen im Dateinamen verwendet wurden
                     $pregRes = @preg_match("%^([a-zA-Z0-9\\.\\-_]+)$%", $file['name']);
-                    if ($file === null ||($pregRes !== false && $pregRes > 0)){
+                    if ($file === null || $pregRes){
                         
                         if (isset($_FILES[$fileName])){
                             $filePath = $file['tmp_name'];
