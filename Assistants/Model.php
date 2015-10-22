@@ -329,7 +329,7 @@ class Model
     public function call($linkName, $params, $body, $positiveStatus, callable $positiveMethod, $positiveParams, callable $negativeMethod, $negativeParams, $returnType=null)
     {
         $link=CConfig::getLink($this->_conf->getLinks( ),$linkName);
-        $instructions = $this->_com->instruction(array(),true);
+        $instructions = $this->_com->instruction('',true);
         
         // ermittle den zutreffenden Ausgang
         $selectedInstruction=null;
@@ -407,7 +407,7 @@ class Model
         $links=CConfig::getLinks($this->_conf->getLinks( ),$linkName);
         $link=null;
         
-        $instructions = $this->_com->instruction(array(),true);
+        $instructions = $this->_com->instruction('',true);
         
         // ermittle den zutreffenden Ausgang
         $selectedInstruction=null;

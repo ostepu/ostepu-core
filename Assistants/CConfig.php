@@ -89,9 +89,14 @@ class CConfig
         $requestUri = $_SERVER['REQUEST_URI'];
         $path = str_replace('?' . (isset($_SERVER['QUERY_STRING']) ? $_SERVER['QUERY_STRING'] : ''), '', substr_replace($requestUri, '', 0, strlen((strpos($requestUri, $scriptName) !== false ? $scriptName : str_replace('\\', '', dirname($scriptName))))));
 
-    if ( strpos($path,'/control') === false && strpos( $path, '/info/commands') === false && strpos( $path, '/info/links') === false && ($noInfo || strpos( $path, '/info') === false)  &&  ($noHelp || strpos( $path, '/help') === false) ) {
-            // empty
-    } else {
+        $pregA = @preg_match("%^(/[a-zA-Z0-9_\x7f-\xff]*)?/control$%", $path);
+        $pregB = @preg_match("%^(/[a-zA-Z0-9_\x7f-\xff]*)?/info/commands(/?)$%", $path);
+        $pregC = @preg_match("%^(/[a-zA-Z0-9_\x7f-\xff]*)?/info/links(/?)$%", $path);
+        $pregD = @preg_match("%^(/[a-zA-Z0-9_\x7f-\xff]*)?/info/([a-zA-Z0-9_\x7f-\xff]*)(/?)$%", $path);
+        $pregE = @preg_match("%^(/[a-zA-Z0-9_\x7f-\xff]*)?/help/([a-zA-Z0-9_\x7f-\xff]*)/%", $path);
+                       
+        if ( $pregA || $pregB || $pregC || (!$noInfo && $pregD )  || (!$noHelp && $pregE ) ) {
+
             $this->_app = new \Slim\Slim( array('debug' => true) );
 
             $this->_app->response->headers->set( 
@@ -101,7 +106,7 @@ class CConfig
                                                 
             // GET Commands
             $this->_app->map( 
-                              '(/:pre+)/info/commands(/)',
+                              '(/:pre)/info/commands(/)',
                               array( 
                                     $this,
                                     'commands'
@@ -110,7 +115,7 @@ class CConfig
 
             // GET Instruction
             $this->_app->get( 
-                              '(/:pre+)/info/links(/)',
+                              '(/:pre)/info/links(/)',
                               array( 
                                     $this,
                                     'instruction'
@@ -120,7 +125,7 @@ class CConfig
             if (!$this->_noInfo){
                 // GET Info
                 $this->_app->get( 
-                                  '(/:pre+)/info/:language(/)',
+                                  '(/:pre)/info/:language(/)',
                                   array( 
                                         $this,
                                         'info'
@@ -130,7 +135,7 @@ class CConfig
 
             // POST Config
             $this->_app->post( 
-                              '(/:pre+)/control',
+                              '(/:pre)/control',
                               array( 
                                     $this,
                                     'postConfig'
@@ -139,7 +144,7 @@ class CConfig
 
             // GET Config
             $this->_app->get( 
-                             '(/:pre+)/control',
+                             '(/:pre)/control',
                              array( 
                                    $this,
                                    'getConfig'
@@ -149,7 +154,7 @@ class CConfig
             if (!$this->_noHelp){
                 // GET Help
                 $this->_app->get( 
-                                 '(/:pre+)/help/:language/:helpPath+',
+                                 '(/:pre)/help/:language/:helpPath+',
                                  array( 
                                        $this,
                                        'getHelp'
@@ -164,7 +169,7 @@ class CConfig
         }
     }
     
-    public function info( $pre = array(), $language = 'de')
+    public function info( $pre = '', $language = 'de')
     {
         $path = ($this->callPath!=null ? $this->callPath.'/' : '');
         $path = str_replace("\\",'/',$path);
@@ -178,7 +183,7 @@ class CConfig
         }
     }
     
-    public function getHelp( $pre = array(), $language, $helpPath)
+    public function getHelp( $pre = '', $language, $helpPath)
     {
         $path = ($this->callPath!=null ? $this->callPath.'/' : '');
         $path = str_replace("\\",'/',$path);
@@ -209,14 +214,11 @@ class CConfig
         }
     }
     
-    public function instruction( $pre = array(), $returnData=false)
+    public function instruction( $pre ='', $returnData=false)
     {
-        $tempPre = '';
-        foreach($pre as $pr){
-            if ($pr !== '')
-                $tempPre .= $pr . '_';
+        if ($pre != ''){
+            $pre.='_';
         }
-        $pre = $tempPre;
         
         $path = ($this->callPath!=null ? $this->callPath.'/' : '');
         $path = str_replace("\\",'/',$path);
@@ -252,7 +254,7 @@ class CConfig
         }
     }
     
-    public function commands( $pre = array(), $nativeOnly=false, $returnData=false )
+    public function commands( $pre = '', $nativeOnly=false, $returnData=false )
     {
         if (file_exists(($this->callPath!=null ? $this->callPath.'/':'').'Commands.json')){
             if (!$returnData)
@@ -261,12 +263,12 @@ class CConfig
             $commands = json_decode(file_get_contents(($this->callPath!=null ? $this->callPath.'/':'').'Commands.json'), true);
             
             if (!$nativeOnly){
-                $commands[] = array('method' => 'get', 'path' => '(/:pre+)/info/commands(/)');
-                $commands[] = array('method' => 'get', 'path' => '(/:pre+)/info/links(/)');
-                if (!$this->_noInfo) $commands[] = array('method' => 'get', 'path' => '(/:pre+)/info/:language(/)');
-                $commands[] = array('method' => 'post', 'path' => '(/:pre+)/control');
-                $commands[] = array('method' => 'get', 'path' => '(/:pre+)/control');
-                if (!$this->_noHelp) $commands[] = array('method' => 'get', 'path' => '(/:pre+)/help/:language/path+');
+                $commands[] = array('method' => 'get', 'path' => '(/:pre)/info/commands(/)');
+                $commands[] = array('method' => 'get', 'path' => '(/:pre)/info/links(/)');
+                if (!$this->_noInfo) $commands[] = array('method' => 'get', 'path' => '(/:pre)/info/:language(/)');
+                $commands[] = array('method' => 'post', 'path' => '(/:pre)/control');
+                $commands[] = array('method' => 'get', 'path' => '(/:pre)/control');
+                if (!$this->_noHelp) $commands[] = array('method' => 'get', 'path' => '(/:pre)/help/:language/path+');
             }
             
             if ($returnData){
@@ -298,14 +300,11 @@ class CConfig
      * POST Config
      * - to store new component data
      */
-    public function postConfig( $pre = array() )
+    public function postConfig( $pre = '' )
     {
-        $tempPre = '';
-        foreach($pre as $pr){
-            if ($pr !== '')
-                $tempPre .= $pr . '_';
+        if ($pre != ''){
+            $pre.='_';
         }
-        $pre = $tempPre;
         
         $this->_app->response->setStatus( 451 );
         $body = $this->_app->request->getBody( );
@@ -319,18 +318,15 @@ class CConfig
      * GET Config
      * - to ask this component for his component data
      */
-    public function getConfig( $pre = array(), $path = ''  )
+    public function getConfig( $pre = '', $path = ''  )
     {
         if ($path=='' && $this->callPath!=null) $path = $this->callPath;
         if ($path!='') $path.='/';
         $path = str_replace("\\",'/',$path);
         
-        $tempPre = '';
-        foreach($pre as $pr){
-            if ($pr !== '')
-                $tempPre .= $pr . '_';
-        }
-        $pre = $tempPre;
+        if ($pre != ''){
+            $pre.='_';
+        }  
         
         if ( file_exists( $path . $pre . CConfig::$CONF_FILE ) ){
             $com = Component::decodeComponent( file_get_contents( $path . $pre . CConfig::$CONF_FILE ) );
@@ -377,7 +373,7 @@ class CConfig
         if ($path!='')$path.='/';
         $path = str_replace("\\",'/',$path);
         
-        $ff = $path.$pre . CConfig::$CONF_FILE;
+        $ff = $path . $pre . CConfig::$CONF_FILE;
         if ($file!=null)
             $ff=$path.$file;
         
@@ -475,15 +471,11 @@ class CConfig
         CConfig::$onload=false;
     }
     
-    public function loadConfig( )
+    public function loadConfig( $pre = '')
     {
-        $tempPre = '';
-        $args = func_get_args();
-        foreach($args as $n => $field){
-            if ($field !== '')
-                $tempPre .= $field. '_' ;
+        if ($pre != ''){
+            $pre.='_';
         }
-        $pre = $tempPre;
         
         $path ='';
         if ($this->callPath!=null) $path=$this->callPath;
