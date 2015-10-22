@@ -37,6 +37,8 @@ Eventuell enthält der jeweilige Ordner mit der Einsendung noch eine .pdf Datei,
 
 Beispiel: Wenn der Student eine Hallo.java einsendet, wird zudem eine Hallo.pdf erzeugt. 
 
+Wenn der Name der Einsendung (des Studenten) und der Korekturdatei (vom Kontrolleur erstellt) übereinstimmen, wird der Korrekturdatei ein K_ vorangestellt. Dieser Fall tritt ebenfalls auf, wenn dem Studenten seine eigene Einsendung als Korrekturdatei (Namensgleich) überlassen wird.
+
 ![](sampleB.png)
 
 > ##### 2. Bewerten #####
