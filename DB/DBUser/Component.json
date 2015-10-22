@@ -15,116 +15,107 @@
         {
             "name": "out",
             "target": "DBQuery",
-            "links": [
-                {
-                    "method": "POST",
-                    "path": "/query"
-                }
-            ]
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
         },
         {
             "name": "out2",
             "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "POST",
-                    "path": "/query"
-                }
-            ]
+            "links": [{
+                "method": "POST",
+                "path": "/query"
+            }]
         },
         {
             "name": "getUser",
             "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBUserGetUser/:userid"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBUserGetUser/:userid"
+            }]
         },
         {
             "name": "getUsers",
             "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBUserGetUsers"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBUserGetUsers"
+            }]
         },
         {
             "name": "getCourseMember",
             "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBUserGetCourseMember/:courseid"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBUserGetCourseMember/:courseid"
+            }]
         },
         {
             "name": "getGroupMember",
             "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBUserGetGroupMember/:esid/:userid"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBUserGetGroupMember/:esid/:userid"
+            }]
         },
         {
             "name": "getUserByStatus",
             "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBUserGetUserByStatus/:statusid"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBUserGetUserByStatus/:statusid"
+            }]
         },
         {
             "name": "getCourseUserByStatus",
             "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBUserGetCourseUserByStatus/:courseid/:statusid"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBUserGetCourseUserByStatus/:courseid/:statusid"
+            }]
         },
         {
             "name": "getIncreaseUserFailedLogin",
             "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBUserGetIncreaseUserFailedLogin/:userid"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBUserGetIncreaseUserFailedLogin/:userid"
+            }]
         },
         {
             "name": "getExistsPlatform",
             "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBUserGetExistsPlatform"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBUserGetExistsPlatform"
+            }]
         },
         {
             "name": "getSamplesInfo",
             "target": "DBQuery2",
-            "links": [
-                {
-                    "method": "GET",
-                    "path": "/query/procedure/DBUserGetExistsPlatform"
-                }
-            ]
+            "links": [{
+                "method": "GET",
+                "path": "/query/procedure/DBUserGetExistsPlatform"
+            }]
         }
     ],
     "connector": [
-        {"name": "request","target": "CLocalObjectRequest"},
-        {"name": "postPlatform","target": "CInstall"}
+        {
+            "name": "request",
+            "target": "CLocalObjectRequest"
+        },
+        {
+            "name": "postPlatform",
+            "target": "CInstall"
+        },
+        {
+            "name": "getAlive",
+            "target": "CHelp",
+            "links": [{
+                "path": "/link/exists/platform"
+            }]
+        }
     ]
 }

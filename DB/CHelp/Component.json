@@ -11,7 +11,10 @@
         {"path": "info/"},
         {"path": "help/"}
     ],
-    "links": [{"name": "request"}],
+    "links": [
+        {"name": "request"},
+        {"name": "getAlive"}
+    ],
     "connector": [
         {
             "name": "request",

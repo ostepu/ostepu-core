@@ -15,6 +15,11 @@
         "path": "/help/:language/:path+"
     },
     {
+        "name": "getSystemStatus",
+        "outputType": "binary",
+        "path": "/status"
+    },
+    {
         "name": "addPlatform",
         "outputType": "Platform",
         "inputType": "Platform",
