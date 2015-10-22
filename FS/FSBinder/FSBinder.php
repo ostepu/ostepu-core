@@ -126,7 +126,7 @@ class FSBinder
                                         0
                                         )
                             );
-        
+
         if ( strlen( $this->config['DIR']['files'].'/'.$filePath ) > 1 && 
              file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
 
@@ -134,6 +134,7 @@ class FSBinder
             Model::header('Content-Type','application/octet-stream');
             Model::header('Content-Disposition',"attachment; filename=\"".$params['filename']."\"");
             Model::header('Content-Length',filesize($this->config['DIR']['files'].'/'.$filePath));
+            Model::header('Accept-Ranges','none');
             readfile( $this->config['DIR']['files'].'/'.$filePath );
             return Model::isOk();
             

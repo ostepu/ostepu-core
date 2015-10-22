@@ -155,8 +155,9 @@ class FSFile
 
             // the file was found
             Model::header('Content-Type','application/octet-stream');
-            Model::header('Content-Disposition',"attachment; filename=\"".$params['filename']."\"");    
-            Model::header('Content-Length',filesize($this->config['DIR']['files'].'/'.$filePath));                                        
+            Model::header('Content-Disposition',"attachment; filename=\"".$params['filename']."\"");
+            Model::header('Content-Length',filesize($this->config['DIR']['files'].'/'.$filePath));
+            Model::header('Accept-Ranges','none');
             readfile( $this->config['DIR']['files'].'/'.$filePath );
             return Model::isOk();
             

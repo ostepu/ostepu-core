@@ -100,8 +100,9 @@ class FSPdf
            	    Model::header('Content-Length',filesize($this->config['DIR']['files'].'/'.$filePath));
             }
             
-            Model::header('Content-Type','application/octet-stream');
+            Model::header('Content-Type','application/pdf');
             Model::header('Content-Disposition',"attachment; filename=\"".$params['filename']."\"");
+            Model::header('Accept-Ranges','none');
             return Model::isCreated();
         } else {
             $pdfFile = new File( );
@@ -293,9 +294,10 @@ class FSPdf
              file_exists( $this->config['DIR']['files'].'/'.$filePath ) ){
 
             // the file was found
-            Model::header('Content-Type','application/octet-stream');
+            Model::header('Content-Type','application/pdf');
             Model::header('Content-Disposition',"attachment; filename=\"".$params['filename']."\"");   
             Model::header('Content-Length',filesize($this->config['DIR']['files'].'/'.$filePath));
+            Model::header('Accept-Ranges','none');
             readfile( $this->config['DIR']['files'].'/'.$filePath );
             return Model::isOk();
             
