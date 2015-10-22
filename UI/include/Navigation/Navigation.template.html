@@ -29,6 +29,8 @@
     <li>
         <a href="Condition.php?cid=<?php echo $cid; ?>"><?php echo Language::Get('main','condition', $langTemplate); ?></a>
     </li>
+<?php } ?>
+<?php if ($courseStatus >= 2 /* PRIVILEGE_LEVEL::LECTURER */  && !$forIndex) { ?>
     <li>
         <a href="UploadHistory.php?cid=<?php echo $cid; ?>"><?php echo Language::Get('main','uploadHistory', $langTemplate); ?></a>
     </li>
