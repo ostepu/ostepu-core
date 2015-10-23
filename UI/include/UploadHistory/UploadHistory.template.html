@@ -103,18 +103,22 @@ echo '<span class="content-body-wrapper">';
                             <?php
                             print '</div>';                            
 
-                            $displayName = $submission['file']['displayName'];
-                            $fileAddress = $submission['file']['address'];
-                            $fileSize = $submission['file']['fileSize'];
+
 
                             // prints the link for downloading the submission
-                            $fileURL = '../FS/FSBinder/' . $fileAddress . '/' . $displayName;
                             print '<span class="wider left '.($selected ? 'bold critical-color' : 'body-option-color').'">';
                             print '<div class="exercise-sheet-images">';
-                            print '<a href="'.$fileURL.'" title="'.$displayName.'" class="plain" target="_blank">';
-                            print '        <img src="Images/Download.png" />';
-                            print ' (' . formatBytes($fileSize) . ') ';
-                            print '</a>';
+                            
+                            if (isset($submission['file']) && (!isset($submission['file']['hideFile']) || !$submission['file']['hideFile'])){
+                                $displayName = $submission['file']['displayName'];
+                                $fileAddress = $submission['file']['address'];
+                                $fileSize = $submission['file']['fileSize'];
+                                $fileURL = '../FS/FSBinder/' . $fileAddress . '/' . $displayName;
+                                print '<a href="'.$fileURL.'" title="'.$displayName.'" class="plain" target="_blank">';
+                                print '        <img src="Images/Download.png" />';
+                                print ' (' . formatBytes($fileSize) . ') ';
+                                print '</a>';
+                            }
                             
                             if (isset($submission['marking']['id']) && ($courseStatus>=1 /* PRIVILEGE_LEVEL::TUTOR */ || (isset($isExpired) && $isExpired))){  
                                 if (isset($submission['marking']['file']) && $submission['marking']['hideFile']==='0'){
