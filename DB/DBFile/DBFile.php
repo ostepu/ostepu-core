@@ -87,7 +87,9 @@ class DBFile
         $positive = function($input) {
             // sets the new auto-increment id
             $obj = new File( );
-            $obj->setFileId( $input[0]->getInsertId( ) );
+            $id = $input[count($input)-1]->getResponse();
+            $id = $id[0]['ID'];
+            $obj->setFileId( $id );
             return array("status"=>201,"content"=>$obj);
         };
         return $this->_component->callSqlTemplate('out2',dirname(__FILE__).'/Sql/AddFile.sql',array( 'values' => $input->getInsertData( )),201,$positive,array(),'Model::isProblem',array(new File()));
