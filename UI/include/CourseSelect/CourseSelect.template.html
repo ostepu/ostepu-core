@@ -31,13 +31,12 @@
                         <?php print $statusName[$course['status']]; ?>
                     </span>
                     
-                    <a href="<?php echo $sites[$course['status']], '?cid=', $course['course']['id']; ?>"
-                       class="left body-option-color form-text deny-button" style="padding-right: 10px">
-                        <?php echo Language::Get('main','enterCourse', $langTemplate); ?>
-                    </a>
-                    
                     <div class="left course-list form-text" >
-                        <?php print $course['course']['name'];?>
+                        <a href="<?php echo $sites[$course['status']], '?cid=', $course['course']['id']; ?>"
+                        class="left body-option-color form-text deny-button" style="padding-right: 10px">
+                            <?php //echo Language::Get('main','enterCourse', $langTemplate); ?>
+                            <?php print $course['course']['name'];?>
+                        </a>
                     </div>
                     
             <?php 
