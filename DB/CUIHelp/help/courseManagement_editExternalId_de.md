@@ -1,4 +1,4 @@
-Wenn Sie eine externe Verbindung entfernen ist dennoch der direkte Zugang zur Plattform und der Veranstaltung möglich.
+Wenn Sie eine externe Verbindung entfernen, ist dennoch der direkte Zugang zur Plattform und der Veranstaltung möglich.
 
 > Ein Passwort für den direkten Login/Zugang wird dazu benötigt.
 

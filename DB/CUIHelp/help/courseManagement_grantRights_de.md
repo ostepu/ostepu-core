@@ -1,16 +1,18 @@
 
 #### 1. Nutzer auswählen
-![](grantRightsA.png)
+![](grantRightsB.png)
+
+Sie können in jedem Vorgang lediglich die Berechtigung eines einzelnen Nutzers ändern.
 
 #### 2. Rechte des Nutzers festlegen
 
-![](grantRightsB.png)
+![](grantRightsC.png)
 
 Der neue Nutzer erhält diese Rechte, nur in dieser Veranstaltung.
 
 #### 3. Vorgang auslösen
 
-![](grantRightsC.png)
+![](grantRightsA.png)
 
 Wenn Sie den grünen Hinweis sehen, wurde der Nutzer erfolgreich eingetragen.
 
