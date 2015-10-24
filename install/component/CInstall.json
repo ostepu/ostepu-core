@@ -6,6 +6,8 @@
   "baseURI":"/cinstall",
   "option":"confPath=install/component/cinstall_cconfig.json",
   "links":[
-    {"name":"postPlatform","target":"","links":[]}
+    {"name":"postPlatform","target":"","links":[]},
+    {"name":"getCleanAmount","target":"","links":[]},
+    {"name":"deleteClean","target":"","links":[]}
   ]
 }
