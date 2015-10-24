@@ -16,6 +16,9 @@ include_once dirname(__FILE__) . '/../Assistants/Structures.php';
 include_once dirname(__FILE__) . '/include/FormEvaluator.php';
 require_once dirname(__FILE__).'/phplatex.php';
 
+global $globalUserData;
+Authentication::checkRights(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $globalUserData);
+
 $langTemplate='CreateSheet_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 function unmap($map, $id){
@@ -753,7 +756,6 @@ if (isset($sid)){
     $sheet_data = json_decode($sheet_data, true);
 }
 
-Authentication::checkRights(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $createsheetData['user']);
 
 $menu = MakeNavigationElement($createsheetData['user'],
                               PRIVILEGE_LEVEL::LECTURER,true);

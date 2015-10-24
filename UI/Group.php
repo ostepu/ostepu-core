@@ -10,6 +10,9 @@
 
 include_once 'include/Boilerplate.php';
 
+global $globalUserData;
+Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $globalUserData);
+
 $langTemplate='Group_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 /**
@@ -379,7 +382,6 @@ $group_data['uid'] = $uid;
 
 $user_course_data = $group_data['user'];
 
-Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $user_course_data);
 
 if (isset($group_data['exerciseSheet']['endDate']) && isset($group_data['exerciseSheet']['startDate'])){
     // bool if endDate of sheet is greater than the actual date

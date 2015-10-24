@@ -11,6 +11,9 @@
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
 
+global $globalUserData;
+Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $globalUserData);
+
 $langTemplate='Upload_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 if (isset($_POST['action']) && $_POST['action'] == 'submit') {
@@ -253,7 +256,6 @@ if (!isset($group)){
 
 $user_course_data = $upload_data['user'];
 
-Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $user_course_data);
 $isExpired=null;
 $hasStarted=null;
 
