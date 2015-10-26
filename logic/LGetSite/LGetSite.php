@@ -1025,7 +1025,7 @@ class LGetSite
                     if (isset($submission['exerciseId'])){
                         if (!empty($answer2)){
                             foreach ($answer2 as $key => $marking){
-                                if (isset($marking['submission']['id'])){
+                                if (isset($marking['submission']['id']) && $marking['submission']['id'] == $submission['id']){
                                     unset($marking['submission']);
                                     $submission['marking'] = $marking;
                                     unset($answer2[$key]);
@@ -1033,7 +1033,6 @@ class LGetSite
                                 }
                             }
                         }
-                        
                         $submissions[$submission['exerciseId']][] = $submission;
                     }
                 }
@@ -1650,7 +1649,7 @@ class LGetSite
             if (!isset($studentMarkings[$studentID][$exerciseType]))
                 $studentMarkings[$studentID][$exerciseType] = 0;
 
-            $studentMarkings[$studentID][$exerciseType] += isset($marking['points']) ? $marking['points'] : 0;
+            $studentMarkings[$leaderID][$exerciseType] += isset($marking['points']) ? $marking['points'] : 0;
             
             if (isset($allGroups[$sheetID][$leaderID])){
                 $group = $allGroups[$sheetID][$leaderID];
