@@ -1034,9 +1034,9 @@ class LTutor
                         }
                         
                         // checks if file with this markingid exists
-                        if ($markingFile == '' || file_exists($files.'/'.$markingFile)) {
+                        if ($markingFile == null || $markingFile == '' || file_exists($files.'/'.$markingFile)) {
                         
-                            if ($markingFile!=''){
+                            if ($markingFile!='' && $markingFile!=null){
                                 $fileAddress = $files.'/'.$markingFile; ///file_get_contents($files.'/'.$markingFile);
                                 // file
                                 $fileInfo = pathinfo($markingFile);
