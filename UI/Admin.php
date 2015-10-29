@@ -19,6 +19,8 @@ $langTemplate='Admin_Controller';Language::loadLanguageFile('de', $langTemplate,
 
 $sheetNotifications = array();
 
+unset($_SESSION['selectedUser']);
+
 if (isset($_POST['action'])) {     
     if ($_POST['action'] == "ExerciseSheetLecturer" && isset($_POST['deleteSheetWarning'])) {
         $sheetNotifications[$_POST['deleteSheetWarning']][] = MakeNotification("warning", Language::Get('main','askDeleteSubmission', $langTemplate));

@@ -30,6 +30,7 @@ function checkPermission($permission){
         $data['courses']=array();
     $user_course_data = $data;
     Authentication::checkRights($permission, $cid, $uid, $user_course_data);
+    return $user_course_data;
 }
 
 $_GET=cleanInput($_GET);
@@ -53,7 +54,13 @@ if (isset($_GET['downloadCSV'])) {
 }
 
 if (isset($_GET['downloadAttachments'])) {
-    checkPermission(PRIVILEGE_LEVEL::STUDENT);
+    $user_course_data = checkPermission(PRIVILEGE_LEVEL::STUDENT);
+    
+    $selectedUser = $uid;
+    if (Authentication::checkRight(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $user_course_data)){
+        $selectedUser = isset($_SESSION['selectedUser']) ? $_SESSION['selectedUser'] : $uid;
+    }
+
     $sid = $_GET['downloadAttachments'];
     $URL = "{$logicURI}/DB/attachment/exercisesheet/{$sid}";
     $attachments = http_get($URL, true);
@@ -73,14 +80,21 @@ if (isset($_GET['downloadAttachments'])) {
     echo $zipfile;
     exit(0);
 
-} elseif (isset($_GET['downloadMarkings'])) {
-    checkPermission(PRIVILEGE_LEVEL::STUDENT);
-    $sid = $_GET['downloadMarkings'];
+}
+
+if (isset($_GET['downloadMarkings'])) {
+    $user_course_data = checkPermission(PRIVILEGE_LEVEL::STUDENT);
+    $sid = $_GET['downloadMarkings'];    
+    
+    $selectedUser = $uid;
+    if (Authentication::checkRight(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $user_course_data)){
+        $selectedUser = isset($_SESSION['selectedUser']) ? $_SESSION['selectedUser'] : $uid;
+    }
 
     $multiRequestHandle = new Request_MultiRequest();
     
     //request to database to get the markings
-    $handler = Request_CreateRequest::createCustom('GET', "{$logicURI}/DB/marking/exercisesheet/{$sid}/user/{$uid}", array(),'');
+    $handler = Request_CreateRequest::createCustom('GET', "{$logicURI}/DB/marking/exercisesheet/{$sid}/user/{$selectedUser}", array(),'');
     $multiRequestHandle->addRequest($handler);
     
     $handler = Request_CreateRequest::createCustom('GET', "{$logicURI}/DB/exercisesheet/exercisesheet/{$sid}/exercise", array(),'');

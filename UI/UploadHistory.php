@@ -17,10 +17,52 @@ $langTemplate='UploadHistory_Controller';Language::loadLanguageFile('de', $langT
 
 if (isset($_POST['sheetID']))
     $sid = $_POST['sheetID'];
+
+$selectedUser = $uid;
+if (Authentication::checkRight(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $globalUserData)){
+    if (isset($_POST['selectedUser'])){
+        $URI = $serverURI . "/DB/DBUser/user/course/{$cid}/status/0";
+        $courseUser = http_get($URI, true);
+        $courseUser = User::decodeUser($courseUser);
+        
+        $correct = false;
+        foreach ($courseUser as $user){
+            if ($user->getId() == $_POST['selectedUser']){
+                $correct = true;
+                break;
+            }
+        }
+        
+        if ($correct){
+            $_SESSION['selectedUser'] = $_POST['selectedUser'];
+        }
+    }
+    $selectedUser = isset($_SESSION['selectedUser']) ? $_SESSION['selectedUser'] : $uid;
+    
+    if (isset($_POST['selectedSheet'])){
+        $URI = $serverURI . "/DB/DBExerciseSheet/exerciseSheet/course/{$cid}";
+        $courseSheets = http_get($URI, true);
+        $courseSheets = ExerciseSheet::decodeExerciseSheet($courseSheets);
+        
+        $correct = false;
+        foreach ($courseSheets as $sheet){
+            if ($sheet->getId() == $_POST['selectedSheet']){
+                $correct = true;
+                break;
+            }
+        }
+        
+        if ($correct){
+            $sid = $_POST['selectedSheet'];
+        }
+    }
+}
+
 if (isset($sid)){
     $sheetID = $sid;
     $_POST['sheetID'] = $sid;
 }
+
 if (isset($_GET['action']) && !isset($_POST['action']))
     $_POST['action'] = $_GET['action'];
 
@@ -52,7 +94,7 @@ if (isset($_POST['updateSelectedSubmission'])) {
 }
     
 // loads data for the settings element
-$URL = $getSiteURI . "/uploadhistoryoptions/user/{$uid}/course/{$cid}";
+$URL = $getSiteURI . "/uploadhistoryoptions/user/{$selectedUser}/course/{$cid}";
 $uploadHistoryOptions_data = http_get($URL, true);
 $uploadHistoryOptions_data = json_decode($uploadHistoryOptions_data, true);
 
@@ -84,12 +126,25 @@ if (isset($user_course_data['courses'][0]['status'])){
     $courseStatus =  -1;
 
 if ($courseStatus==0)
-    $_POST['userID'] = $uid;
+    $_POST['userID'] = $selectedUser;
 
 $menu = MakeNavigationElement($user_course_data,
                               PRIVILEGE_LEVEL::STUDENT,
                               true);
                               
+$userNavigation = null;
+if (isset($_SESSION['selectedUser'])){
+    $URI = $serverURI . "/DB/DBUser/user/course/{$cid}/status/0";
+    $courseUser = http_get($URI, true);
+    $courseUser = User::decodeUser($courseUser);
+    $URI = $serverURI . "/DB/DBExerciseSheet/exercisesheet/course/{$cid}/";
+    $courseSheets = http_get($URI, true);
+    $courseSheets = ExerciseSheet::decodeExerciseSheet($courseSheets);
+    $courseSheets = array_reverse($courseSheets);
+    $userNavigation = MakeUserNavigationElement($globalUserData,$courseUser,
+                                                PRIVILEGE_LEVEL::LECTURER,$sid,$courseSheets);
+}
+                        
 $isExpired=null;
 $hasStarted=null;
 
@@ -124,7 +179,8 @@ $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);
 $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
                "notificationElements" => $notifications,
-               "navigationElement" => $menu));
+               "navigationElement" => $menu,
+               "userNavigationElement" => $userNavigation));
 
 if (!isset($_POST['actionSortUsers']))
 if (isset($_POST['action'])) {
@@ -137,7 +193,7 @@ if (isset($_POST['action'])) {
 
             // loads the upload history of the selected user (uploadUserID) in the 
             // selected course from GetSite
-            $URL = $getSiteURI . "/uploadhistory/user/{$uid}/course/{$cid}/exercisesheet/{$sheetID}/uploaduser/{$uploadUserID}";
+            $URL = $getSiteURI . "/uploadhistory/user/{$selectedUser}/course/{$cid}/exercisesheet/{$sheetID}/uploaduser/{$uploadUserID}";
             $uploadHistory_data = http_get($URL, true);
             $uploadHistory_data = json_decode($uploadHistory_data, true);
             $uploadHistory_data['filesystemURI'] = $filesystemURI;

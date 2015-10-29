@@ -16,6 +16,8 @@ Authentication::checkRights(PRIVILEGE_LEVEL::TUTOR, $cid, $uid, $globalUserData)
 
 $langTemplate='Tutor_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
+unset($_SESSION['selectedUser']);
+
 // load tutor data from GetSite
 $URI = $getSiteURI . "/tutor/user/{$uid}/course/{$cid}";
 $tutor_data = http_get($URI, true);

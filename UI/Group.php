@@ -8,12 +8,53 @@
  * @author Ralf Busch
  */
 
-include_once 'include/Boilerplate.php';
+include_once dirname(__FILE__) . '/include/Boilerplate.php';
 
 global $globalUserData;
 Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $globalUserData);
 
 $langTemplate='Group_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
+
+$selectedUser = $uid;
+if (Authentication::checkRight(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $globalUserData)){
+    if (isset($_POST['selectedUser'])){
+        $URI = $serverURI . "/DB/DBUser/user/course/{$cid}/status/0";
+        $courseUser = http_get($URI, true);
+        $courseUser = User::decodeUser($courseUser);
+        
+        $correct = false;
+        foreach ($courseUser as $user){
+            if ($user->getId() == $_POST['selectedUser']){
+                $correct = true;
+                break;
+            }
+        }
+        
+        if ($correct){
+            $_SESSION['selectedUser'] = $_POST['selectedUser'];
+        }
+    }
+    
+    $selectedUser = isset($_SESSION['selectedUser']) ? $_SESSION['selectedUser'] : $uid;
+    
+    if (isset($_POST['selectedSheet'])){
+        $URI = $serverURI . "/DB/DBExerciseSheet/exerciseSheet/course/{$cid}";
+        $courseSheets = http_get($URI, true);
+        $courseSheets = ExerciseSheet::decodeExerciseSheet($courseSheets);
+        
+        $correct = false;
+        foreach ($courseSheets as $sheet){
+            if ($sheet->getId() == $_POST['selectedSheet']){
+                $correct = true;
+                break;
+            }
+        }
+        
+        if ($correct){
+            $sid = $_POST['selectedSheet'];
+        }
+    }
+}
 
 /**
  * Removes a user from a group.
@@ -88,7 +129,7 @@ if (isset($_POST['action'])) {
         $userID = cleanInput($_POST['removeInvitation']);
         
         // deletes the invitation
-        $URI = $databaseURI . "/invitation/user/{$uid}/exercisesheet/{$sid}/user/{$userID}";
+        $URI = $databaseURI . "/invitation/user/{$selectedUser}/exercisesheet/{$sid}/user/{$userID}";
         http_delete($URI, true, $message);
 
         if ($message == "201") {
@@ -104,7 +145,7 @@ if (isset($_POST['action'])) {
         $leaderID = cleanInput($_POST['leaveGroup']);
 
         // checks if the user that wants to leave is the leader of the group
-        if ($leaderID == $uid) {
+        if ($leaderID == $selectedUser) {
             // bool which is true if any error occured
             $RequestError = false;
 
@@ -114,7 +155,7 @@ if (isset($_POST['action'])) {
             $invitations = json_decode($invitations, true);
 
             // returns the leader and all members of the group
-            $URI = $databaseURI . "/group/user/{$uid}/exercisesheet/{$sid}";
+            $URI = $databaseURI . "/group/user/{$selectedUser}/exercisesheet/{$sid}";
             $group = http_get($URI, true);
             $group = json_decode($group, true);
 
@@ -167,8 +208,8 @@ if (isset($_POST['action'])) {
             $RequestError = false;
 
             // removes the user from the group
-            if (removeUserFromGroup($uid, $sid)) {
-                if (!removeSelectedSubmission($uid, $sid)) {
+            if (removeUserFromGroup($selectedUser, $sid)) {
+                if (!removeSelectedSubmission($selectedUser, $sid)) {
                     $RequestError = true;
                 }
             } else {
@@ -199,7 +240,7 @@ if (isset($_POST['action'])) {
             $submissionID = $value;
 
             updateSelectedSubmission($databaseURI,
-                                     $uid,
+                                     $selectedUser,
                                      $submissionID,
                                      $exerciseID,
                                      $message);
@@ -225,7 +266,7 @@ if (isset($_POST['action'])) {
         if (isset($_POST['members'])) {
             // invite old members
             foreach ($_POST['members'] as $member){
-                $newInvitation = Invitation::encodeInvitation(Invitation::createInvitation($uid, $member, $sid));
+                $newInvitation = Invitation::encodeInvitation(Invitation::createInvitation($selectedUser, $member, $sid));
                 $URI = $databaseURI . "/invitation";
                 http_post_data($URI, $newInvitation, true, $message);
 
@@ -239,7 +280,7 @@ if (isset($_POST['action'])) {
                 foreach ($_POST['members'] as $member){
                     
                     // adds the user to the group
-                    $newGroupSettings = Group::encodeGroup(Group::createGroup($uid, $member, $sid));
+                    $newGroupSettings = Group::encodeGroup(Group::createGroup($selectedUser, $member, $sid));
                     $URI = $databaseURI . "/group/user/{$member}/exercisesheet/{$sid}";
                     $answ = http_put_data($URI, $newGroupSettings, true, $message);
                     if ($message != "201") {
@@ -248,7 +289,7 @@ if (isset($_POST['action'])) {
                     }
                     
                     // deletes the invitation
-                    $URI = $databaseURI . "/invitation/user/{$uid}/exercisesheet/{$sid}/user/{$member}";
+                    $URI = $databaseURI . "/invitation/user/{$selectedUser}/exercisesheet/{$sid}/user/{$member}";
                     http_delete($URI, true, $message);
 
                     if ($message != "201") {
@@ -297,12 +338,12 @@ if (isset($_POST['action'])) {
                 $user_data = json_decode($user_data, true);
 
                 // invites the user to the current group
-                if (!isset($user_data['id']) || empty($user_data) || $user_data['id'] == $uid) {
+                if (!isset($user_data['id']) || empty($user_data) || $user_data['id'] == $selectedUser) {
                     $notifications[] = MakeNotification("error", Language::Get('main','invalidUserId', $langTemplate));
                 } else {
                     $memberID = $user_data['id'];
 
-                    $newInvitation = Invitation::encodeInvitation(Invitation::createInvitation($uid, $memberID, $sid));
+                    $newInvitation = Invitation::encodeInvitation(Invitation::createInvitation($selectedUser, $memberID, $sid));
                     $URI = $databaseURI . "/invitation";
                     http_post_data($URI, $newInvitation, true, $message);
 
@@ -322,7 +363,7 @@ if (isset($_POST['action'])) {
         $leaderID = cleanInput($_POST['denyInvitation']);
 
         // deletes the invitation
-        $URI = $databaseURI . "/invitation/user/{$leaderID}/exercisesheet/{$sid}/user/{$uid}";
+        $URI = $databaseURI . "/invitation/user/{$leaderID}/exercisesheet/{$sid}/user/{$selectedUser}";
         http_delete($URI, true, $message);
 
         if ($message == "201") {
@@ -341,8 +382,8 @@ if (isset($_POST['action'])) {
         $leaderID = cleanInput($_POST['acceptInvitation']);
 
         // adds the user to the group
-        $newGroupSettings = Group::encodeGroup(Group::createGroup($leaderID, $uid, $sid));
-        $URI = $databaseURI . "/group/user/{$uid}/exercisesheet/{$sid}";
+        $newGroupSettings = Group::encodeGroup(Group::createGroup($leaderID, $selectedUser, $sid));
+        $URI = $databaseURI . "/group/user/{$selectedUser}/exercisesheet/{$sid}";
         http_put_data($URI, $newGroupSettings, true, $message);
 
         if ($message != "201") {
@@ -350,7 +391,7 @@ if (isset($_POST['action'])) {
         }
 
         // deletes the invitation
-        $URI = $databaseURI . "/invitation/user/{$leaderID}/exercisesheet/{$sid}/user/{$uid}";
+        $URI = $databaseURI . "/invitation/user/{$leaderID}/exercisesheet/{$sid}/user/{$selectedUser}";
         http_delete($URI, true, $message);
 
         if ($message != "201") {
@@ -358,7 +399,7 @@ if (isset($_POST['action'])) {
         }
 
         // deletes all selectedSubmissions
-        if (!removeSelectedSubmission($uid, $sid)) {
+        if (!removeSelectedSubmission($selectedUser, $sid)) {
             $RequestError = true;
         }
 
@@ -373,12 +414,12 @@ if (isset($_POST['action'])) {
 }
 
 // load mainSettings data from GetSite
-$URI = $getSiteURI . "/group/user/{$uid}/course/{$cid}/exercisesheet/{$sid}";
+$URI = $getSiteURI . "/group/user/{$selectedUser}/course/{$cid}/exercisesheet/{$sid}";
 ///echo $URI;return;
 $group_data = http_get($URI, true);
 $group_data = json_decode($group_data, true);
 $group_data['filesystemURI'] = $filesystemURI;
-$group_data['uid'] = $uid;
+$group_data['uid'] = $selectedUser;
 
 $user_course_data = $group_data['user'];
 
@@ -402,6 +443,19 @@ if (isset($group_data['exerciseSheet']['endDate']) && isset($group_data['exercis
 $user_course_data = $group_data['user'];
 $menu = MakeNavigationElement($user_course_data,
                               PRIVILEGE_LEVEL::STUDENT);
+                              
+$userNavigation = null;
+if (isset($_SESSION['selectedUser'])){
+    $URI = $serverURI . "/DB/DBUser/user/course/{$cid}/status/0";
+    $courseUser = http_get($URI, true);
+    $courseUser = User::decodeUser($courseUser);
+    $URI = $serverURI . "/DB/DBExerciseSheet/exercisesheet/course/{$cid}/";
+    $courseSheets = http_get($URI, true);
+    $courseSheets = ExerciseSheet::decodeExerciseSheet($courseSheets);
+    $courseSheets = array_reverse($courseSheets);
+    $userNavigation = MakeUserNavigationElement($globalUserData,$courseUser,
+                                                PRIVILEGE_LEVEL::LECTURER,$sid,$courseSheets);
+}
 
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
@@ -410,10 +464,11 @@ $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
                "backTitle" => "zur Veranstaltung",
                "backURL" => "Student.php?cid={$cid}",
                "notificationElements" => $notifications,
-               "navigationElement" => $menu));
+               "navigationElement" => $menu,
+               "userNavigationElement" => $userNavigation));
 
 $isInGroup = (!empty($group_data['group']['members']) || !empty($group_data['invitationsFromGroup']));
-$isLeader = isset($group_data['group']['leader']['id']) && $group_data['group']['leader']['id'] == $uid;
+$isLeader = isset($group_data['group']['leader']['id']) && $group_data['group']['leader']['id'] == $selectedUser;
 $hasInvitations = !empty($group_data['invitationsToGroup']);
 
 $group_data['isInGroup'] = $isInGroup;

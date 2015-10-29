@@ -206,6 +206,34 @@ abstract class AbstractAuthentication
             set_error("403");
         }
     }
+    
+    public static function checkRight($minimum, $cid, $uid, $data)
+    {
+        if (isset($data['isSuperAdmin']) && $data['isSuperAdmin']=='1') return true;
+        
+        // check if user exists in course
+        if ($data !== array() && $data !== null) {
+            // find the right course
+            $status = -1;
+            if ($data!==null)
+                foreach ($data['courses'] as $element) {
+                    if ($element['course']['id'] == $cid) {
+                        $status = $element['status'];
+                        break;
+                    }
+                }
+
+            // check if minimum right is given
+            if ($status < $minimum) {
+                return false;
+            }
+
+        } else {
+            return false;
+        }
+        
+        return true;
+    }
 
     /**
      * Generates a random Salt hashed with sha1.

@@ -14,9 +14,9 @@
             <a href="Student.php?cid=<?php echo $cid; ?>"><?php echo Language::Get('main','student', $langTemplate); ?></a>
         </li>
     <?php } else { ?>
-        <li>
+        <!--<li>
             <a href="<?php echo $sites[$courseStatus]; ?>?cid=<?php echo $cid; ?>"><?php echo Language::Get('main','leaveStudent', $langTemplate); ?></a>
-        </li>
+        </li>-->
     <?php } ?>
 <?php } ?>
 <?php if ($courseStatus == 3 /* PRIVILEGE_LEVEL::ADMIN */  && !$forIndex) { ?>
