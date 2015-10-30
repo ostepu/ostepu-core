@@ -302,28 +302,26 @@ $h->bind($user_course_data);
 $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
                "navigationElement" => $menu));
 
-
 $searchSettings = Template::WithTemplateFile('include/MarkingTool/MarkingToolSettings.template.html');
 $searchSettings->bind($markingTool_data);
 
 // wrap all the elements in some HTML and show them on the page
 $w = new HTMLWrapper($h, $searchSettings);
+$allOutputs = 0;
 
 if (!empty($markingTool_data['groups'])) {
-// find selected sheet
-$selectedSheet=null;
-foreach ($markingTool_data['exerciseSheets'] as $sheet){
-    if (!isset($sheet['id'])) continue;
-    if ($sheet['id'] == $sid){
-        $selectedSheet = $sheet;
-        break;
+    // find selected sheet
+    $selectedSheet=null;
+    foreach ($markingTool_data['exerciseSheets'] as $sheet){
+        if (!isset($sheet['id'])) continue;
+        if ($sheet['id'] == $sid){
+            $selectedSheet = $sheet;
+            break;
+        }
     }
-}
-
     
-$allOutputs = 0;
-$groups = $markingTool_data['groups'];
-//unset($markingTool_data['groups']);
+    $groups = $markingTool_data['groups'];
+    //unset($markingTool_data['groups']);
     $allOutputs=0;
     foreach ($groups as $group) {
         $anz=0;
@@ -354,17 +352,19 @@ $groups = $markingTool_data['groups'];
         $w->insert($markingElement);
     }
 } else {
-        $markingElement = Template::WithTemplateFile('include/MarkingTool/MarkingToolEmpty.template.html');
-        $markingElement->bind($markingTool_data);
-        $w->insert($markingElement);
+    $markingElement = Template::WithTemplateFile('include/MarkingTool/MarkingToolEmpty.template.html');
+    $markingElement->bind($markingTool_data);
+    $w->insert($markingElement);
 }
 
 if (!empty($GroupNotificationElements)){
-    foreach ($GroupNotificationElements as $key => $notifs)
+    foreach ($GroupNotificationElements as $key => $notifs){
         $notifications = array_merge($notifications,$notifs);
+    }
 }
 
 $h->bind(array("notificationElements" => $notifications));
+$searchSettings->bind(array('allOutputs'=>$allOutputs));
 
 $w->defineForm(basename(__FILE__)."?cid=".$cid."&sid=".$sid, false, $searchSettings);
 $w->set_config_file('include/configs/config_marking_tool.json');
