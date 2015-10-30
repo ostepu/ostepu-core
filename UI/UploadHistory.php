@@ -19,6 +19,7 @@ if (isset($_POST['sheetID']))
     $sid = $_POST['sheetID'];
 
 $selectedUser = $uid;
+$privileged = 0;
 if (Authentication::checkRight(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $globalUserData)){
     if (isset($_POST['selectedUser'])){
         $URI = $serverURI . "/DB/DBUser/user/course/{$cid}/status/0";
@@ -38,6 +39,11 @@ if (Authentication::checkRight(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $globalUse
         }
     }
     $selectedUser = isset($_SESSION['selectedUser']) ? $_SESSION['selectedUser'] : $uid;
+
+    if (isset($_POST['privileged'])){
+        $_SESSION['privileged'] = $_POST['privileged'];
+    }
+    $privileged = (isset($_SESSION['privileged']) ? $_SESSION['privileged'] : $privileged);
     
     if (isset($_POST['selectedSheet'])){
         $URI = $serverURI . "/DB/DBExerciseSheet/exerciseSheet/course/{$cid}";
@@ -141,7 +147,25 @@ if (isset($_SESSION['selectedUser'])){
     $courseSheets = http_get($URI, true);
     $courseSheets = ExerciseSheet::decodeExerciseSheet($courseSheets);
     $courseSheets = array_reverse($courseSheets);
-    $userNavigation = MakeUserNavigationElement($globalUserData,$courseUser,
+    
+    if (!$privileged){
+        foreach ($courseSheets as $key => $sheet){
+            if ($sheet->getEndDate()!==null && $sheet->getStartDate()!==null){
+                // bool if endDate of sheet is greater than the actual date
+                $isExpired = date('U') > date('U', $sheet->getEndDate()); 
+
+                // bool if startDate of sheet is greater than the actual date
+                $hasStarted = date('U') > date('U', $sheet->getStartDate());
+                if ($isExpired || !$hasStarted){
+                   unset($courseSheets[$key]);
+                }
+            } else {
+                unset($courseSheets[$key]);
+            }
+        }
+    }
+    
+    $userNavigation = MakeUserNavigationElement($globalUserData,$courseUser,$privileged,
                                                 PRIVILEGE_LEVEL::LECTURER,$sid,$courseSheets);
 }
                         
@@ -164,9 +188,9 @@ if ($courseStatus<=0 /* PRIVILEGE_LEVEL::STUDENT */){
 
         // bool if startDate of sheet is greater than the actual date
         $hasStarted = date('U') > date('U', $sheet['startDate']);
-        if ($isExpired){
+        if ($isExpired && !$privileged){
             set_error(Language::Get('main','expiredExercisePerion', $langTemplate,array('endDate'=>date('d.m.Y  -  H:i', $sheet['endDate']))));
-        } elseif (!$hasStarted){
+        } elseif (!$hasStarted && !$privileged){
             set_error(Language::Get('main','noStartedExercisePeriod', $langTemplate,array('startDate'=>date('d.m.Y  -  H:i', $sheet['startDate']))));
         }
         
@@ -214,11 +238,17 @@ if (isset($uploadHistory_data))$uploadHistory->bind($uploadHistory_data);
 if (isset($uploadHistoryNotifications))
     $uploadHistory->bind(array("UploadHistoryNotificationElements" => $uploadHistoryNotifications));
 
+$uploadHistory->bind(array("privileged" => $privileged));
+
 if ($courseStatus >= 1 /* PRIVILEGE_LEVEL::TUTOR */){
     $uploadHistoryGroup = Template::WithTemplateFile('include/UploadHistory/UploadHistoryGroup.template.html');
     if (isset($uploadHistory_data))$uploadHistoryGroup->bind($uploadHistory_data);
     if (isset($uploadHistoryGroupNotifications))
         $uploadHistoryGroup->bind(array("UploadHistoryNotificationElements" => $uploadHistoryGroupNotifications));
+}
+
+if (isset($uploadHistoryGroup)){
+    $uploadHistoryGroup->bind(array("privileged" => $privileged));
 }
 
 // wrap all the elements in some HTML and show them on the page

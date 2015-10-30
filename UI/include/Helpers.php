@@ -284,6 +284,7 @@ function MakeNavigationElement($user,
 
 function MakeUserNavigationElement($user,
                                $courseUser,
+                               $privileged,
                                $requiredPrivilege,
                                $sid = null,
                                $courseSheets = null,
@@ -327,7 +328,8 @@ function MakeUserNavigationElement($user,
                                    'forIndex' => $forIndex,
                                    'sid' => $sid,
                                    'courseUser' => $courseUser,
-                                   'courseSheets' => $courseSheets));
+                                   'courseSheets' => $courseSheets,
+                                   'privileged' => $privileged));
 
     return $navigationElement;
 }

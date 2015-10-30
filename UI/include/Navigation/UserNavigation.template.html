@@ -39,6 +39,13 @@
                 </form>
             </li>
         <?php } ?>
+            <li>
+                <form action="#" method="POST">
+                    <?php echo Language::Get('main','privileged', $langTemplate);?>
+                    <input type="hidden" value="0" name="privileged"/>
+                    <input onchange="this.form.submit()" type="checkbox" value="1" name="privileged"<?php echo (isset($privileged) && $privileged==1 ? " checked" : ''); ?>/>
+                </form>
+            </li>
 <?php } ?>
 <?php } ?>
 

@@ -17,6 +17,7 @@ Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $globalUserDat
 $langTemplate='Upload_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 $selectedUser = $uid;
+$privileged = 0;
 if (Authentication::checkRight(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $globalUserData)){
     if (isset($_POST['selectedUser'])){
         $URI = $serverURI . "/DB/DBUser/user/course/{$cid}/status/0";
@@ -37,6 +38,11 @@ if (Authentication::checkRight(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $globalUse
     }
     
     $selectedUser = isset($_SESSION['selectedUser']) ? $_SESSION['selectedUser'] : $uid;
+
+    if (isset($_POST['privileged'])){
+        $_SESSION['privileged'] = $_POST['privileged'];
+    }
+    $privileged = (isset($_SESSION['privileged']) ? $_SESSION['privileged'] : $privileged);
     
     if (isset($_POST['selectedSheet'])){
         $URI = $serverURI . "/DB/DBExerciseSheet/exerciseSheet/course/{$cid}";
@@ -320,10 +326,16 @@ if (isset($upload_data['exerciseSheet']['endDate']) && isset($upload_data['exerc
             $notifications[] = MakeNotification('warning',
                                                 $msg);
         } else {
-            set_error(Language::Get('main','expiredExercisePerion', $langTemplate,array('endDate'=>date('d.m.Y  -  H:i', $upload_data['exerciseSheet']['endDate']))));
+            if ($privileged){
+                $msg = Language::Get('main','expiredExercisePerionDesc', $langTemplate,array('endDate'=>date('d.m.Y  -  H:i', $upload_data['exerciseSheet']['endDate'])));
+                $notifications[] = MakeNotification('warning',
+                                                    $msg);  
+            } else {
+                set_error(Language::Get('main','expiredExercisePerion', $langTemplate,array('endDate'=>date('d.m.Y  -  H:i', $upload_data['exerciseSheet']['endDate']))));
+            }
         }
         
-    } elseif (!$hasStarted){
+    } elseif (!$hasStarted && !$privileged){
         set_error(Language::Get('main','noStartedExercisePeriod', $langTemplate,array('startDate'=>date('d.m.Y  -  H:i', $upload_data['exerciseSheet']['startDate']))));
     }
     
@@ -360,7 +372,39 @@ if (isset($_SESSION['selectedUser'])){
     $courseSheets = http_get($URI, true);
     $courseSheets = ExerciseSheet::decodeExerciseSheet($courseSheets);
     $courseSheets = array_reverse($courseSheets);
-    $userNavigation = MakeUserNavigationElement($globalUserData,$courseUser,
+    
+    if (!$privileged){
+        foreach ($courseSheets as $key => $sheet){
+            if ($sheet->getEndDate()!==null && $sheet->getStartDate()!==null){
+                // bool if endDate of sheet is greater than the actual date
+                $isExpired = date('U') > date('U', $sheet->getEndDate()); 
+
+                // bool if startDate of sheet is greater than the actual date
+                $hasStarted = date('U') > date('U', $sheet->getStartDate());
+                if ($isExpired){
+                    $allowed = 0;
+
+                    if (isset($user_course_data['courses'][0]['course'])){
+                        $obj = Course::decodeCourse(Course::encodeCourse($user_course_data['courses'][0]['course']));
+                        $allowed = Course::containsSetting($obj,'AllowLateSubmissions');
+                    }
+                    
+                    if ($allowed  === null || $allowed==1){
+                    } else {
+                        unset($courseSheets[$key]);
+                    }
+                    
+                } elseif (!$hasStarted){
+                    unset($courseSheets[$key]);
+                }
+                
+            } else {
+                unset($courseSheets[$key]);
+            }
+        }
+    }
+    
+    $userNavigation = MakeUserNavigationElement($globalUserData,$courseUser,$privileged,
                                                 PRIVILEGE_LEVEL::LECTURER,$sid,$courseSheets);
 }
 
@@ -389,6 +433,7 @@ $h->bind(array("name" => $user_course_data['courses'][0]['course']['name'],
 
 $t = Template::WithTemplateFile('include/Upload/Upload.template.html');
 $t->bind($upload_data);
+$t->bind(array("privileged" => $privileged));
 
 $w = new HTMLWrapper($h, $t);
 $w->set_config_file('include/configs/config_upload_exercise.json');

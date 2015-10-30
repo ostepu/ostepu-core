@@ -16,6 +16,7 @@ Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $globalUserDat
 $langTemplate='Group_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 $selectedUser = $uid;
+$privileged = 0;
 if (Authentication::checkRight(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $globalUserData)){
     if (isset($_POST['selectedUser'])){
         $URI = $serverURI . "/DB/DBUser/user/course/{$cid}/status/0";
@@ -36,6 +37,11 @@ if (Authentication::checkRight(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $globalUse
     }
     
     $selectedUser = isset($_SESSION['selectedUser']) ? $_SESSION['selectedUser'] : $uid;
+
+    if (isset($_POST['privileged'])){
+        $_SESSION['privileged'] = $_POST['privileged'];
+    }
+    $privileged = (isset($_SESSION['privileged']) ? $_SESSION['privileged'] : $privileged);
     
     if (isset($_POST['selectedSheet'])){
         $URI = $serverURI . "/DB/DBExerciseSheet/exerciseSheet/course/{$cid}";
@@ -430,9 +436,9 @@ if (isset($group_data['exerciseSheet']['endDate']) && isset($group_data['exercis
 
     // bool if startDate of sheet is greater than the actual date
     $hasStarted = date('U') > date('U', $group_data['exerciseSheet']['startDate']);
-    if ($isExpired){
+    if ($isExpired && !$privileged){
         set_error(Language::Get('main','expiredExercisePerion', $langTemplate,array('endDate'=>date('d.m.Y  -  H:i', $group_data['exerciseSheet']['endDate']))));
-    } elseif (!$hasStarted){
+    } elseif (!$hasStarted && !$privileged){
         set_error(Language::Get('main','noStartedExercisePeriod', $langTemplate,array('startDate'=>date('d.m.Y  -  H:i', $group_data['exerciseSheet']['startDate']))));
     }
     
@@ -453,7 +459,30 @@ if (isset($_SESSION['selectedUser'])){
     $courseSheets = http_get($URI, true);
     $courseSheets = ExerciseSheet::decodeExerciseSheet($courseSheets);
     $courseSheets = array_reverse($courseSheets);
-    $userNavigation = MakeUserNavigationElement($globalUserData,$courseUser,
+    
+    if (!$privileged){
+        foreach ($courseSheets as $key => $sheet){
+            if ($sheet->getGroupSize() === null || $sheet->getGroupSize() <= 1){
+                unset($courseSheets[$key]);
+                continue;
+            }
+            
+            if ($sheet->getEndDate()!==null && $sheet->getStartDate()!==null){
+                // bool if endDate of sheet is greater than the actual date
+                $isExpired = date('U') > date('U', $sheet->getEndDate()); 
+
+                // bool if startDate of sheet is greater than the actual date
+                $hasStarted = date('U') > date('U', $sheet->getStartDate());
+                if ($isExpired || !$hasStarted){
+                   unset($courseSheets[$key]);
+                }
+            } else {
+                unset($courseSheets[$key]);
+            }
+        }
+    }
+    
+    $userNavigation = MakeUserNavigationElement($globalUserData,$courseUser,$privileged,
                                                 PRIVILEGE_LEVEL::LECTURER,$sid,$courseSheets);
 }
 
@@ -477,23 +506,27 @@ $group_data['isLeader'] = $isLeader;
 // construct a content element for group information
 $groupMembers = Template::WithTemplateFile('include/Group/GroupMembers.template.html');
 $groupMembers->bind($group_data);
+$groupMembers->bind(array("privileged" => $privileged));
 
 // construct a content element for managing groups
 if ($isInGroup) {
     $groupManagement = Template::WithTemplateFile('include/Group/GroupManagement.template.html');
     $groupManagement->bind($group_data);
+    $groupManagement->bind(array("privileged" => $privileged));
 }
 
 // construct a content element for creating groups
 if ($isLeader) {
     $invitationsFromGroup = Template::WithTemplateFile('include/Group/InvitationsFromGroup.template.html');
     $invitationsFromGroup->bind($group_data);
+    $invitationsFromGroup->bind(array("privileged" => $privileged));
 }
 
 // construct a content element for joining groups
 if ($hasInvitations) {
     $invitationsToGroup = Template::WithTemplateFile('include/Group/InvitationsToGroup.template.html');
     $invitationsToGroup->bind($group_data);
+    $invitationsToGroup->bind(array("privileged" => $privileged));
 }
 
 // wrap all the elements in some HTML and show them on the page

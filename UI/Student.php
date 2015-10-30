@@ -16,6 +16,7 @@ Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $globalUserDat
 $langTemplate='Student_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 $selectedUser = $uid;
+$privileged = 0;
 if (Authentication::checkRight(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $globalUserData)){
     if (isset($_POST['selectedUser'])){
         $URI = $serverURI . "/DB/DBUser/user/course/{$cid}/status/0";
@@ -37,6 +38,11 @@ if (Authentication::checkRight(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $globalUse
         $_SESSION['selectedUser'] = $uid;
     }
     $selectedUser = isset($_SESSION['selectedUser']) ? $_SESSION['selectedUser'] : $uid;
+
+    if (isset($_POST['privileged'])){
+        $_SESSION['privileged'] = $_POST['privileged'];
+    }
+    $privileged = (isset($_SESSION['privileged']) ? $_SESSION['privileged'] : $privileged);
 }
 
 $sheetNotifications = array();
@@ -88,7 +94,7 @@ if (isset($_SESSION['selectedUser'])){
     $URI = $serverURI . "/DB/DBUser/user/course/{$cid}/status/0";
     $courseUser = http_get($URI, true);
     $courseUser = User::decodeUser($courseUser);
-    $userNavigation = MakeUserNavigationElement($globalUserData,$courseUser,
+    $userNavigation = MakeUserNavigationElement($globalUserData,$courseUser,$privileged,
                                                 PRIVILEGE_LEVEL::LECTURER);
 }
 
@@ -105,7 +111,7 @@ $h->bind($student_data);
                
 $t = Template::WithTemplateFile('include/ExerciseSheet/ExerciseSheetStudent.template.html');
 $t->bind($student_data);
-$t->bind(array('uid'=>$selectedUser));
+$t->bind(array('uid'=>$selectedUser, 'privileged'=>$privileged));
 
 $w = new HTMLWrapper($h, $t);
 $w->defineForm(basename(__FILE__)."?cid=".$cid, false, $t);
