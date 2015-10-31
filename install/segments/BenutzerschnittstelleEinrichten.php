@@ -63,16 +63,13 @@ class BenutzerschnittstelleEinrichten
         $file = $data['UI']['conf'];
         if (!file_exists(dirname(__FILE__).'/../'.$data['UI']['conf'])){ $fail = true;$error='UI-Konfigurationsdatei wurde nicht gefunden!';return null;}
         
-        $text = explode("\n",file_get_contents(dirname(__FILE__).'/../'.$data['UI']['conf']));
-        foreach ($text as &$tt){
-            if (substr(trim($tt),0,10)==='$serverURI'){
-                $tt='$serverURI'. " = '{$data['PL']['url']}';";
-            } else
-            if (substr(trim($tt),0,14)==='$globalSiteKey'){
-                $tt='$globalSiteKey'. " = '{$data['UI']['siteKey']}';";
-            }
-        }
-        
+        $text = array("<?php");
+        $text[]='$serverURI'. " = '{$data['PL']['url']}';";
+        $text[]='$databaseURI = $serverURI . "/DB/DBControl";';
+        $text[]='$logicURI = $serverURI . "/logic/LController";';
+        $text[]='$filesystemURI = $serverURI . "/FS/FSControl";';
+        $text[]='$getSiteURI = $serverURI . "/logic/LGetSite";';
+        $text[]='$globalSiteKey'. " = '{$data['UI']['siteKey']}';";        
         
         $text = implode("\n",$text);
         if (!@file_put_contents(dirname(__FILE__).'/../'.$file,$text)){ $fail = true;$error='UI-Konfigurationsdatei, kein Schreiben möglich!';return null;} 
