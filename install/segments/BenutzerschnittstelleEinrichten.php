@@ -61,8 +61,7 @@ class BenutzerschnittstelleEinrichten
     {
         $fail = false;
         $file = $data['UI']['conf'];
-        if (!file_exists(dirname(__FILE__).'/../'.$data['UI']['conf'])){ $fail = true;$error='UI-Konfigurationsdatei wurde nicht gefunden!';return null;}
-        
+
         $text = array("<?php");
         $text[]='$serverURI'. " = '{$data['PL']['url']}';";
         $text[]='$databaseURI = $serverURI . "/DB/DBControl";';
