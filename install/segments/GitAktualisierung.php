@@ -27,7 +27,7 @@ class GitAktualisierung
         if (Einstellungen::$accessAllowed){
             //if ($collected['content'] === null){
                 if (!$console)
-                    $text .= Design::erstelleZeile($console, Language::Get('gitUpdate','collectGitUpdates'), 'e', Design::erstelleSubmitButton(self::$onEvents['collect']['event'][0], Language::Get('gitUpdate','collectGitUpdates')), 'h');
+                    $text .= Design::erstelleZeile($console, Language::Get('gitUpdate','collectGitUpdatesDesc'), 'e', Design::erstelleSubmitButton(self::$onEvents['collect']['event'][0], Language::Get('gitUpdate','collectGitUpdates')), 'h');
             //}
             
             
@@ -36,7 +36,7 @@ class GitAktualisierung
                 if (isset($collected['content']['modified'][0])){
                     $t = $collected['content']['modified'][0];
                 } else {
-                    $t = '----';                    
+                    $t = Language::Get('gitUpdate','noUpdates');                    
                 }
                 
                 if (!$console){
@@ -47,16 +47,16 @@ class GitAktualisierung
             }
             
             if (isset($collected['content']['commits']) && $collected['content']['commits'] !== null){
-                for($i=0;$i<10 && $i<count($collected['content']['commits']);$i++){
+                for($i=0;$i<20 && $i<count($collected['content']['commits']);$i++){
                     if (!$console){
                         $text .= "<tr><td class='v' colspan='2'>{$collected['content']['commits'][$i]['desc']}</td><td class='e'>{$collected['content']['commits'][$i]['period']}</td></tr>";
                     } else  {
                         
                     }
                 }
-                if (count($collected['content']['commits'])>10){
+                if (count($collected['content']['commits'])>20){
                     if (!$console){
-                        $text .= Design::erstelleZeile($console, '...', 'v');
+                        $text .= Design::erstelleZeile($console, Language::Get('gitUpdate','additionalCommits',array('additionalCommits'=>count($collected['content']['commits'])-20)), 'v');
                     } else  {
                         
                     }  
@@ -111,7 +111,7 @@ class GitAktualisierung
                     }
                 } else {
                     $fail = true;
-                    $error = Language::Get('gitUpdate','errorGitDiff');                
+                    $error = Language::Get('gitUpdate','errorGitLog');                
                 }
             } else {
                 $fail = true;
