@@ -21,13 +21,20 @@ class GitAktualisierung
         $collected = array();
         if (isset($result[self::$onEvents['collect']['name']]) && $result[self::$onEvents['collect']['name']]!=null){
            $collected =  $result[self::$onEvents['collect']['name']];
+        } elseif (isset($result[self::$onEvents['install']['name']]) && $result[self::$onEvents['install']['name']]!=null){
+           $collected =  $result[self::$onEvents['install']['name']];
         } else 
            $collected = array('content'=>null,'fail'=>false,'errno'=>null,'error'=>null);
+       
+        $fail = $collected['fail'];
+        $error = $collected['error'];
+        $errno = $collected['errno'];
         
         if (Einstellungen::$accessAllowed){
             //if ($collected['content'] === null){
-                if (!$console)
-                    $text .= Design::erstelleZeile($console, Language::Get('gitUpdate','collectGitUpdatesDesc'), 'e', Design::erstelleSubmitButton(self::$onEvents['collect']['event'][0], Language::Get('gitUpdate','collectGitUpdates')), 'h');
+                if (!$console){
+                    $text .= Design::erstelleZeileShort($console, Language::Get('gitUpdate','collectGitUpdatesDesc'), 'e', Design::erstelleSubmitButton(self::$onEvents['collect']['event'][0], Language::Get('gitUpdate','collectGitUpdates')), 'h');
+                }
             //}
             
             
@@ -40,7 +47,7 @@ class GitAktualisierung
                 }
                 
                 if (!$console){
-                    $text .= "<tr><td class='e' colspan='3'>{$t}</td></tr>";
+                    $text .= "<tr><td class='v' colspan='3'>{$t}</td></tr>";
                 } else  {
                     
                 }
@@ -61,8 +68,17 @@ class GitAktualisierung
                         
                     }  
                 }
+                
+                if (count($collected['content']['commits'])>0){
+                    if (!$console){
+                        $text .= Design::erstelleZeileShort($console, Language::Get('gitUpdate','installGitUpdatesDesc'), 'e', Design::erstelleSubmitButton(self::$onEvents['install']['event'][0], Language::Get('gitUpdate','installGitUpdates')), 'h');
+                    }
+                }
             }
-        
+            
+            if (self::$installed){
+                $text .= Design::erstelleInstallationszeile($console, $fail, $errno, $error, Language::Get('gitUpdate','executeGitUpdatesDesc'));
+            }
         }  
         
         echo Design::erstelleBlock($console, Language::Get('gitUpdate','title'), $text);
@@ -85,7 +101,7 @@ class GitAktualisierung
         
         if ($return == 0){
             $pathOld = getcwd();
-        $output=null;
+            $output=null;
             chdir(dirname(__FILE__).'/../../');
             exec('(git diff --shortstat HEAD...FETCH_HEAD) 2>&1', $output, $return);
             chdir($pathOld);
@@ -121,6 +137,37 @@ class GitAktualisierung
         } else {
             $fail = true;
             $error = Language::Get('gitUpdate','errorGitFetch');
+        }
+        
+        return $result;
+    }
+    
+    public static function install($data, &$fail, &$errno, &$error)
+    {
+        $result = array();
+        $pathOld = getcwd();
+        $output=null;
+        chdir(dirname(__FILE__).'/../../');
+        exec('(git reset --hard) 2>&1', $output, $return);
+        chdir($pathOld);
+        
+        if ($return == 0){
+            $pathOld = getcwd();
+            $output=null;
+            chdir(dirname(__FILE__).'/../../');
+            exec('(git pull) 2>&1', $output, $return);
+            chdir($pathOld);
+            
+            if ($return == 0){
+                // OK
+            } else {
+                $fail = true;
+                $error = Language::Get('gitUpdate','errorGitPull');                
+            }
+            
+        } else {
+            $fail = true;
+            $error = Language::Get('gitUpdate','errorGitReset');
         }
         
         return $result;
