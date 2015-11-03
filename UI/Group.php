@@ -460,25 +460,25 @@ if (isset($_SESSION['selectedUser'])){
     $courseSheets = ExerciseSheet::decodeExerciseSheet($courseSheets);
     $courseSheets = array_reverse($courseSheets);
     
-    if (!$privileged){
-        foreach ($courseSheets as $key => $sheet){
-            if ($sheet->getGroupSize() === null || $sheet->getGroupSize() <= 1){
-                unset($courseSheets[$key]);
-                continue;
-            }
-            
-            if ($sheet->getEndDate()!==null && $sheet->getStartDate()!==null){
-                // bool if endDate of sheet is greater than the actual date
-                $isExpired = date('U') > date('U', $sheet->getEndDate()); 
+    foreach ($courseSheets as $key => $sheet){
+        if ($sheet->getGroupSize() === null || $sheet->getGroupSize() <= 1){
+            unset($courseSheets[$key]);
+            continue;
+        }
+        
+        if ($privileged) continue;
+        
+        if ($sheet->getEndDate()!==null && $sheet->getStartDate()!==null){
+            // bool if endDate of sheet is greater than the actual date
+            $isExpired = date('U') > date('U', $sheet->getEndDate()); 
 
-                // bool if startDate of sheet is greater than the actual date
-                $hasStarted = date('U') > date('U', $sheet->getStartDate());
-                if ($isExpired || !$hasStarted){
-                   unset($courseSheets[$key]);
-                }
-            } else {
-                unset($courseSheets[$key]);
+            // bool if startDate of sheet is greater than the actual date
+            $hasStarted = date('U') > date('U', $sheet->getStartDate());
+            if ($isExpired || !$hasStarted){
+               unset($courseSheets[$key]);
             }
+        } else {
+            unset($courseSheets[$key]);
         }
     }
     
