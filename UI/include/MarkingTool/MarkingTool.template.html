@@ -144,7 +144,7 @@ if (isset($GroupNotificationElements)) {
                     <?php if (isset($exercise['submission']['marking']['tutorComment'])) { ?>
                     <input type="hidden" 
                        name="exercises[<?php echo $leaderID; ?>][<?php echo $eid; ?>][oldTutorComment]" 
-                       value="<?php echo $exercise['submission']['marking']['tutorComment']; ?>" />
+                       value="<?php echo str_replace ( "\"", "&quot;", $exercise['submission']['marking']['tutorComment'] ) ; ?>" />
                     <?php } ?>  
                     
                     <?php 

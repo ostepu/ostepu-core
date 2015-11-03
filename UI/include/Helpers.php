@@ -215,6 +215,7 @@ function MakeInfoButton($helpPath)
  */
 function formatBytes($size)
 {
+    if ($size<=0) return '0B';
     $base = log($size) / log(1024);
     $suffixes = array('', 'K', 'M', 'G', 'T');
 

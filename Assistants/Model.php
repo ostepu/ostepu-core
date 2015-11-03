@@ -301,15 +301,24 @@ class Model
         $this->finishRequest($result);
     }
     
-    private function finishRequest($result = array('content'=>'', 'status'=>200))
+    private function finishRequest($result = array('content'=>'', 'status'=>200, 'statusText'=>null))
     {
         if (isset( $result['content'])  )
             echo $result['content'];  
                     
+        $code = 0;
         if (isset( $result['status']) ){
-            http_response_code($result['status']); 
-        } else 
-            http_response_code(200); 
+            $code = $result['status'];
+        } else {
+            $code = 200;
+        }
+        
+        $statusText = null;
+        if (isset($result['statusText']))
+            $statusText = ' '.$result['statusText'];
+
+        $protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
+        header($protocol . ' ' . $code . (isset($statusText)?$statusText:''));
     }
     
     /**

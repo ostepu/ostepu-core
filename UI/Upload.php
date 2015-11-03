@@ -168,7 +168,7 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
                     $errormsg = '';
                     
                     // prüfe ob nur erlaubte Zeichen im Dateinamen verwendet wurden
-                    $pregRes = @preg_match("%^([a-zA-Z0-9\\.\\-_]+)$%", $file['name']);
+                    $pregRes = @preg_match("%^((?!\.)[a-zA-Z0-9\\.\\-_]+)$%", $file['name']);
                     if ($file === null || $pregRes){
                         
                         if (isset($_FILES[$fileName])){

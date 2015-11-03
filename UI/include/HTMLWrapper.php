@@ -62,7 +62,14 @@ include_once ( dirname(__FILE__) . '/../../Assistants/Logger.php' );
 
             return $this;
         }
-
+        
+        public function insertTop($element)
+        {
+            array_unshift($this->contentElements,$element);
+            
+            return $this;
+        }
+        
         /**
          * defines a form starting from the first element and ending with the
          * last element in arguments.

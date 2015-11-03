@@ -4,6 +4,7 @@ class Serverliste
 {
     public static $name = 'servers';
     public static $enabledShow = true;
+    public static $rank = 100;
     
     public static function showInfoBar(&$data)
     {

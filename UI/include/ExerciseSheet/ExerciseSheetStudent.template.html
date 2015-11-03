@@ -119,8 +119,8 @@
 
                             <?php // creates a download icon for the submission (if it exists) ?>
                             <?php if(isset($exercise['submission']) && $exercise['submission']['hideFile'] == "0"): ?>
-                                <?php $displayName = $exercise['submission']['file']['displayName']; ?>
-                                <?php $fileAddress = $exercise['submission']['file']['address']; ?>
+                                <?php $displayName = (isset($exercise['submission']['file']['displayName']) ? $exercise['submission']['file']['displayName'] : ''); ?>
+                                <?php $fileAddress = (isset($exercise['submission']['file']['address']) ? $exercise['submission']['file']['address'] : ''); ?>
                                 <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}";/*{$filesystemURI}*/ ?>
 
                                 <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" class="plain" target="_blank">

@@ -110,9 +110,9 @@ echo '<span class="content-body-wrapper">';
                             print '<div class="exercise-sheet-images">';
                             
                             if (isset($submission['file']) && (!isset($submission['file']['hideFile']) || !$submission['file']['hideFile'])){
-                                $displayName = $submission['file']['displayName'];
-                                $fileAddress = $submission['file']['address'];
-                                $fileSize = $submission['file']['fileSize'];
+                                $displayName = (isset($submission['file']['displayName']) ? $submission['file']['displayName'] : '');
+                                $fileAddress = (isset($submission['file']['address']) ? $submission['file']['address'] : '');
+                                $fileSize = (isset($submission['file']['fileSize']) ? $submission['file']['fileSize'] : 0);
                                 $fileURL = '../FS/FSBinder/' . $fileAddress . '/' . $displayName;
                                 print '<a href="'.$fileURL.'" title="'.$displayName.'" class="plain" target="_blank">';
                                 print '        <img src="Images/Download.png" />';
