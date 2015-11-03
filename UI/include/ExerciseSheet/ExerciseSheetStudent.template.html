@@ -240,7 +240,7 @@
                                 $allowed = Course::containsSetting($obj,'AllowLateSubmissions');
                             }
                         
-                            if ($allowed  === null || $allowed==1){
+                            if ($allowed  === null || $allowed==1 || $privileged){
                     ?>
                                 <li>
                                     <a class="text-button" href="Upload.php?cid=<?php echo $cid; ?>&sid=<?php echo $sheet['id']; ?>" title="Upload">
