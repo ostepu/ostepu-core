@@ -673,17 +673,20 @@ class LTutor
                                         
                     // file
                     $newFile = null;
+                    $selectedFile = null;
                     if (isset($marking['submission']['file']['displayName'])){
                         $fileInfo = pathinfo($marking['submission']['file']['displayName']);
                         $newFile = array_merge(array(),$marking['submission']['file']);
+                        $selectedFile='submission';
                     }
                     $converted=false;
                     
-                    if (isset($marking['file'])) {
+                    if (isset($marking['file']) && $marking['file']!==array()) {
                         $newFile = array_merge(array(),$marking['file']);
+                        $selectedFile='marking';
                     }
 
-                    if (!isset($marking['file']) && $marking['file'] !== array())
+                    if ($selectedFile == 'submission')
                     if (!isset($newFile['mimeType']) || strpos($newFile['mimeType'],'text/')!==false){
                    
                         // convert file to pdf
@@ -745,6 +748,7 @@ class LTutor
                                 $address = $file['address'];
                                 $newFile['address'] = $address;
                                 $newFile['displayName'] = $fileInfo['filename'].'.pdf';
+                                $selectedFile='converted';
                                 $sortedMarkings[$exerciseId][$key]['submission']['file']['conv'] = $newFile;
                                 $converted=true;
                             }
@@ -755,17 +759,14 @@ class LTutor
                     //$row[] = $namesOfExercises[$exerciseId].'/'.($converted ? 'K_' :'').$marking['id'].($fileInfo['extension']!='' ? '.'.$fileInfo['extension']:'');
                     //if (!$converted)
                     if (isset($newFile['displayName'])){
-                        if (
-                            isset($marking['submission']['file']['displayName']) && 
-                            (
-                             $newFile['displayName'] == $marking['submission']['file']['displayName'] && 
-                             $newFile['address'] != $marking['submission']['file']['address'] 
-                            ) ||
-                        ( isset($marking['file']['displayName']) && 
-                          $newFile['address'] == $marking['file']['address'] && 
-                          $newFile['displayName'] == $marking['file']['displayName'] )){
-                            $newFile['displayName'] = 'K_'.$newFile['displayName'];
-                        }
+                        if (isset($selectedFile) && isset($marking['submission']['file']['displayName']) &&
+                            ($selectedFile == 'marking' || $selectedFile == 'converted') &&
+                              $newFile['displayName'] == $marking['submission']['file']['displayName']
+                           ){
+                                  
+                                $newFile['displayName'] = 'K_'.$newFile['displayName'];
+                                
+                            }
                         
                         $row['FILE'] = $namesOfExercises[$exerciseId].'/'.$marking['id'].'/'.$newFile['displayName'];
                     }
@@ -1155,7 +1156,7 @@ class LTutor
                                                     'POST',
                                                     '/marking',
                                                     array(),
-                                                    json_encode($markings),
+                                                    $mark,
                                                     $this->_postMarking,
                                                     'marking'
                                                     );
