@@ -99,7 +99,7 @@ if (isset($GroupNotificationElements)) {
                     </span>
                         
                     <?php
-                        print '<span class="very-short left">';
+                        print '<span class="very-very-short left">';
                         print '<input class="form-field text-input very-very-short" placeholder="'.Language::Get('main','points', $langTemplate).'" name="';
                         print 'exercises[' . $leaderID . '][' . $eid . '][points]" value="';
                         print isset($exercise['submission']['marking']['points']) ? $exercise['submission']['marking']['points'] : '';
@@ -205,7 +205,7 @@ if (isset($GroupNotificationElements)) {
                         <?php
                             if (isset($exercise['submission']['comment'])){
                                 $studentComment = $exercise['submission']['comment'];
-
+                                $studentComment = htmlspecialchars (addslashes ($studentComment),ENT_QUOTES);
                                 if (!empty($studentComment)) {
                                     print '<span class="">';
                                     print '<a href="javascript:alert(\'';
