@@ -1059,7 +1059,7 @@ class LTutor
                             fclose($csv);
                             $this->deleteDir($tempDir);
                             $this->app->response->setStatus(409);
-                            $errors[] = Language::Get('main','unknownMarkindID', self::$langTemplate, array('csvFile'=>$csvFile,'markingId'=>htmlspecialchars(trim(($markingId)),ENT_QUOTES, 'UTF-8')));
+                            $errors[] = Language::Get('main','unknownMarkingID', self::$langTemplate, array('csvFile'=>$csvFile,'markingId'=>htmlspecialchars(trim(($markingId)),ENT_QUOTES, 'UTF-8')));
                             $this->app->response->setBody(json_encode($errors));
                             $this->app->stop();
                         }
