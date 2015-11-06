@@ -12,6 +12,14 @@ class BenutzerschnittstelleEinrichten
     
     public static $onEvents = array('install'=>array('name'=>'UIConf','event'=>array('actionInstallUIConf','install', 'update')));
     
+    public static function getSettingsBar(&$data)
+    {
+        $defs = self::getDefaults();
+        return array(
+                     'siteKey' => array(Language::Get('userInterface','siteKey'), $data['UI']['siteKey'], $defs['siteKey'][1])                   
+                     );
+    }
+    
     public static function getDefaults()
     {
         return array(
