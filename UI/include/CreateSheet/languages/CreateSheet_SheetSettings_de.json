@@ -8,6 +8,7 @@
         "startDate": "Bearbeitungsanfang",
         "endDate": "Bearbeitungsende",
         "optional": "optional",
+        "optionalFile": "optional, max. $maxFileSize",
         "sheetFile": "Übungsblatt",
         "removeSheetFile": "Aufgabenblatt löschen",
         "sampleSolution": "Musterlösung",

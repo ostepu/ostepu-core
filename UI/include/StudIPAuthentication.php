@@ -401,7 +401,7 @@ class StudIPAuthentication extends AbstractAuthentication
                 }
 
                 if (!isset($this->cid) || $this->cid===null){
-                    set_error("409");
+                    set_error("unbekannte Veranstaltung!!!");
                     exit(); 
                 }
                     

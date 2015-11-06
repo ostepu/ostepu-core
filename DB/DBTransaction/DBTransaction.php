@@ -63,6 +63,7 @@ class DBTransaction
                                             'Content-Type',
                                             'application/json'
                                             );
+
         // POST AddCourse
         $this->_app->post( 
                          '(/:name)/course',
@@ -151,8 +152,26 @@ class DBTransaction
                                $this,
                                'getTransactionShort'
                                )
-                         );   
+                         ); 
+                        
+        // GET GetAmountOfExpiredTransactions
+        $this->_app->get( 
+                         '(/:name)/clean/clean/course/:courseid',
+                         array( 
+                               $this,
+                               'getAmountOfExpiredTransactions'
+                               )
+                         );           
                          
+        // DELETE CleanTransactions
+        $this->_app->delete( 
+                         '(/:name)/clean/clean/course/:courseid',
+                         array( 
+                               $this,
+                               'cleanTransactions'
+                               )
+                         ); 
+
         // run Slim
         $this->_app->run( );
     }
@@ -518,6 +537,83 @@ class DBTransaction
         } else {
             Logger::Log( 
                         'DELETE DeleteCourse failed',
+                        LogLevel::ERROR
+                        );
+            $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+            $this->_app->response->setBody( '' );
+            $this->_app->stop( );
+        }
+    }
+    
+    public function cleanTransactions( $name='' , $courseid )
+    {
+        $this->loadConfig($name);
+        $name = ($name === '' ? '' : '_') . $name;
+        
+        Logger::Log( 
+                    'starts DELETE CleanTransactions',
+                    LogLevel::DEBUG
+                    );
+        $courseid = DBJson::mysql_real_escape_string( $courseid ); 
+        
+        // starts a query, by using a given file
+        $result = DBRequest::getRoutedSqlFile( 
+                                              $this->query,
+                                              dirname(__FILE__) . '/Sql/CleanTransactions.sql',
+                                              array( 'courseid' => $courseid,'name' => $name )
+                                              );
+
+        // checks the correctness of the query
+        if ( $result['status'] >= 200 && 
+             $result['status'] <= 299 ){
+
+            $this->_app->response->setStatus( 201 );
+            $this->_app->response->setBody( '' );
+            
+        } else {
+            Logger::Log( 
+                        'DELETE CleanTransactions failed',
+                        LogLevel::ERROR
+                        );
+            $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );
+            $this->_app->response->setBody( '' );
+            $this->_app->stop( );
+        }  
+    }
+        
+    public function getAmountOfExpiredTransactions( $name='' , $courseid )
+    {
+        $this->loadConfig($name);
+        $name = ($name === '' ? '' : '_') . $name;
+        
+        Logger::Log( 
+                    'starts GET GetAmountOfExpiredTransactions',
+                    LogLevel::DEBUG
+                    );
+        $courseid = DBJson::mysql_real_escape_string( $courseid ); 
+        
+        // starts a query, by using a given file
+        $result = DBRequest::getRoutedSqlFile( 
+                                              $this->query,
+                                              dirname(__FILE__) . '/Sql/procedures/GetAmountOfExpiredTransactions.sql',
+                                              array( 'courseid' => $courseid,'name' => $name )
+                                              );
+
+        // checks the correctness of the query
+        if ( $result['status'] >= 200 && 
+             $result['status'] <= 299 ){
+
+             $query = Query::decodeQuery($result['content']);
+             $result = $query->getResponse();
+             foreach ($result as &$res){
+                $res['component'] = $this->_conf->getName();
+             }
+            $this->_app->response->setStatus( 200 );
+            $this->_app->response->setBody( json_encode($result) );
+            
+        } else {
+            Logger::Log( 
+                        'GET GetAmountOfExpiredTransactions failed',
                         LogLevel::ERROR
                         );
             $this->_app->response->setStatus( isset( $result['status'] ) ? $result['status'] : 409 );

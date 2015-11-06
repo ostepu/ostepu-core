@@ -79,7 +79,10 @@ class FSFile
     public function addFile( $callName, $input, $params = array() )
     {
         $fileObject = $input;
-        $fileObject->setHash( sha1( base64_decode( $fileObject->getBody( ) ) ) );
+        $fileContent = $fileObject->getBody( true );
+        $fileObject->setBody( null );        
+        
+        $fileObject->setHash( sha1( $fileContent ) );
         $filePath = FSFile::generateFilePath( 
                                              FSFile::getBaseDir( ),
                                              $fileObject->getHash( )
@@ -97,7 +100,7 @@ class FSFile
             if ($file){
                 fwrite( 
                        $file,
-                       base64_decode( $fileObject->getBody( ) )
+                       $fileContent
                        );
                 fclose( $file );
                 $fileObject->setStatus(201);
@@ -152,7 +155,9 @@ class FSFile
 
             // the file was found
             Model::header('Content-Type','application/octet-stream');
-            Model::header('Content-Disposition',"attachment; filename=\"".$params['filename']."\"");                                            
+            Model::header('Content-Disposition',"attachment; filename=\"".$params['filename']."\"");
+            Model::header('Content-Length',filesize($this->config['DIR']['files'].'/'.$filePath));
+            Model::header('Accept-Ranges','none');
             readfile( $this->config['DIR']['files'].'/'.$filePath );
             return Model::isOk();
             

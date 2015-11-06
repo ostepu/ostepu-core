@@ -7,6 +7,7 @@
         "errorSaveMarking": "Beim Speichern der Korrektur ist ein Fehler aufgetreten.",
         "successSaveMarking": "Die Korrektur wurde erfolgreich geändert.",
         "errorSaveSubmission": "Beim Speichern der Einsendung ist ein Fehler aufgetreten.",
-        "editedSubmission": "Die Einsendung wurde erfolgreich geändert."
+        "editedSubmission": "Die Einsendung wurde erfolgreich geändert.",
+        "tooManyPoints": "Es wurden zu viele Punkte vergeben (max. $maxPoints)"
     }
 }

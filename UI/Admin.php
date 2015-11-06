@@ -12,6 +12,9 @@ include_once dirname(__FILE__).'/include/Boilerplate.php';
 include_once dirname(__FILE__).'/../Assistants/Structures.php';
 include_once dirname(__FILE__).'/../Assistants/LArraySorter.php';
 
+global $globalUserData;
+Authentication::checkRights(PRIVILEGE_LEVEL::ADMIN, $cid, $uid, $globalUserData);
+
 $langTemplate='Admin_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 $sheetNotifications = array();
@@ -39,7 +42,6 @@ $admin_data['cid'] = $cid;
 
 $user_course_data = $admin_data['user'];
 
-Authentication::checkRights(PRIVILEGE_LEVEL::ADMIN, $cid, $uid, $user_course_data);
 $menu = MakeNavigationElement($user_course_data,
                               PRIVILEGE_LEVEL::ADMIN);
 

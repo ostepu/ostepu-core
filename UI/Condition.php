@@ -11,6 +11,9 @@
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
 
+global $globalUserData;
+Authentication::checkRights(PRIVILEGE_LEVEL::ADMIN, $cid, $uid, $globalUserData);
+
 $langTemplate='Condition_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 $notifications = array();
@@ -78,7 +81,6 @@ $condition_data = json_decode($condition_data, true);
 
 $user_course_data = $condition_data['user'];
 
-Authentication::checkRights(PRIVILEGE_LEVEL::ADMIN, $cid, $uid, $user_course_data);
 $menu = MakeNavigationElement($user_course_data,
                                PRIVILEGE_LEVEL::ADMIN,true);
 

@@ -11,6 +11,9 @@ include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
 include_once dirname(__FILE__) . '/include/FormEvaluator.php';
 
+global $globalUserData;
+Authentication::checkRights(PRIVILEGE_LEVEL::TUTOR, $cid, $uid, $globalUserData);
+
 $langTemplate='MarkingTool_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 $timestamp = time();
@@ -74,7 +77,7 @@ if (isset($_POST['MarkingTool'])) {
                                        FormEvaluator::OPTIONAL,
                                        'warning',
                                        Language::Get('main','invalidPoints', $langTemplate),
-                                       array('min' => 0, 'max' => $maxPoints));
+                                       array('min' => 0));
 
                 $f->checkStringForKey('tutorComment',
                                       FormEvaluator::OPTIONAL,
@@ -99,9 +102,15 @@ if (isset($_POST['MarkingTool'])) {
 
                 if ($f->evaluate(true)) {
                     $foundValues = $f->foundValues;
-                    $changed = false; 
+                    $changed = false;
                     
                     $points = (isset($foundValues['points']) ? $foundValues['points'] : null);
+                    if ($points>$maxPoints){
+                        $msg = Language::Get('main','tooManyPoints', $langTemplate, array('maxPoints'=>$maxPoints));
+                        if (!isset($GroupNotificationElements[$key])) $GroupNotificationElements[$key]=array();
+                        $GroupNotificationElements[$key][] = MakeNotification("warning", $msg);
+                    }
+                    
                     if ((!isset($exercise['oldPoints']) && $points!=null) || (isset($exercise['oldPoints']) && $points!=$exercise['oldPoints'])){
                           $changed=true;///echo "A";
                     }
@@ -113,7 +122,7 @@ if (isset($_POST['MarkingTool'])) {
                     }
                           
                     $status = (isset($foundValues['status']) ? $foundValues['status'] : null);
-                    if ((!isset($exercise['oldStatus']) && isset($foundValues['status'])) || (isset($exercise['oldStatus']) && $status!=$exercise['oldStatus'])){
+                    if ((!isset($exercise['oldStatus']) && isset($foundValues['status']) && $foundValues['status']!=0 ) || (isset($exercise['oldStatus']) && $status!=$exercise['oldStatus'])){
                           $changed=true;///echo "C";
                     }
                           
@@ -284,7 +293,6 @@ $markingTool_data['cid'] = $cid;
 
 $user_course_data = $markingTool_data['user'];
 
-Authentication::checkRights(PRIVILEGE_LEVEL::TUTOR, $cid, $uid, $user_course_data);
 $menu = MakeNavigationElement($user_course_data,
                               PRIVILEGE_LEVEL::TUTOR,true);
                               

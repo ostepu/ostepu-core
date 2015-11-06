@@ -41,7 +41,7 @@ if (isset($_POST['action'])) {
 
             $foundValues = $f->foundValues;
 
-            $oldPassword = $foundValues['oldPassword'];
+            $oldPassword = (isset($foundValues['oldPassword']) ? $foundValues['oldPassword'] : '');
             $newPassword = $foundValues['newPassword'];
             $newPasswordRepeat = $foundValues['newPasswordRepeat'];
 

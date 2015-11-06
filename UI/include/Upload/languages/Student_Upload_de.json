@@ -8,7 +8,7 @@
         "downloadCurrentSubmission": "Herunterladen",
         "currentStudentComment": "Kommentar der bisherigen Einsendung",
         "comment": "Kommentar",
-        "file": "Datei",
+        "file": "Datei (max. $maxFileSize)",
         "exercise": "AUFGABE",
         "currentSubmission": "bisherige Einsendung",
         "points": "P",

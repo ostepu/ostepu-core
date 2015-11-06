@@ -1,7 +1,7 @@
 <?php
 // automatically assigns all unassigned submissions to the selected tutors
 if (isset($_POST['action']) && $_POST['action'] == "AssignAutomatically") {
-
+    set_time_limit(180);
     $f = new FormEvaluator($_POST);
 
     $f->checkArrayOfIntegersForKey('tutorIds',

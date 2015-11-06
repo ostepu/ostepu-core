@@ -180,7 +180,7 @@ class KomponentenErstellen
                                 foreach ($ComponentListInput[$tar] as $target){
                                     // $target -> das Objekt der Zielkomponente
                                     if (!isset($target['dbName'])) continue;
-                                    if ($input['link_type']=='local' || $input['link_type']==''){
+                                    if (!isset($input['link_type']) || $input['link_type']=='local' || $input['link_type']==''){
                                         if ($input['urlExtern'] == $target['urlExtern']){
                                             
                                             $priority = (isset($input['priority']) ? ", CL_priority = {$input['priority']}" : '');
@@ -212,7 +212,7 @@ class KomponentenErstellen
                                     foreach ($ComponentListInput[$tar] as $target){
                                         // $target -> das Objekt der Zielkomponente
                                         if (!isset($target['dbName'])) continue;
-                                        if ($input['link_type']=='local' || $input['link_type']==''){
+                                        if (!isset($input['link_type']) || $input['link_type']=='local' || $input['link_type']==''){
                                             if ($input['urlExtern'] == $target['urlExtern']){
                                                 
                                                 $priority = (isset($link['priority']) ? ", CL_priority = {$link['priority']}" : '');

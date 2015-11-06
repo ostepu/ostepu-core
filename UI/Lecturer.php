@@ -12,6 +12,9 @@ include_once dirname(__FILE__).'/include/Boilerplate.php';
 include_once dirname(__FILE__).'/../Assistants/Structures.php';
 include_once dirname(__FILE__).'/../Assistants/LArraySorter.php';
 
+global $globalUserData;
+Authentication::checkRights(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $globalUserData);
+
 $langTemplate='Lecturer_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 $sheetNotifications = array();
@@ -38,9 +41,6 @@ $lecturer_data['filesystemURI'] = $filesystemURI;
 $lecturer_data['cid'] = $cid;
 
 $user_course_data = $lecturer_data['user'];
-
-// check userrights for course
-Authentication::checkRights(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $user_course_data);
 
 if (is_null($user_course_data)) {
     $user_course_data = array();

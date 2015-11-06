@@ -13,6 +13,9 @@ include_once dirname(__FILE__) . '/include/FormEvaluator.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
 include_once dirname(__FILE__) . '/../Assistants/LArraySorter.php';
 
+global $globalUserData;
+Authentication::checkRights(PRIVILEGE_LEVEL::TUTOR, $cid, $uid, $globalUserData);
+
 $langTemplate='TutorAssign_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 if (!isset($_POST['actionSortUsers'])){
@@ -79,9 +82,6 @@ if (isset($_POST['sortUsers'])) {
     $tutorAssign_data['sortUsers'] = $_POST['sortUsers'];
 }
 
-// check userrights for course
-Authentication::checkRights(1, $cid, $uid, $user_course_data);
-Authentication::checkRights(PRIVILEGE_LEVEL::TUTOR, $cid, $uid, $user_course_data);
 $menu = MakeNavigationElement($user_course_data,
                               PRIVILEGE_LEVEL::TUTOR,true);
 

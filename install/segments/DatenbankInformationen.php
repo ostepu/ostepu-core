@@ -39,8 +39,8 @@ class DatenbankInformationen
         $def = self::getDefaults();
         
         $text = '';
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_passwd'], 'data[DB][db_passwd]', $def['db_passwd'][1]);
-        $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_passwd_operator'], 'data[DB][db_passwd_operator]', $def['db_passwd_operator'][1]);
+        $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_passwd'], 'data[DB][db_passwd]', $def['db_passwd'][1],true);
+        $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_passwd_operator'], 'data[DB][db_passwd_operator]', $def['db_passwd_operator'][1],true);
         $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_user_operator'], 'data[DB][db_user_operator]', $def['db_user_operator'][1],true);
         $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_user'], 'data[DB][db_user]', $def['db_user'][1] ,true);
         $text .= Design::erstelleVersteckteEingabezeile($console, $data['DB']['db_name'], 'data[DB][db_name]', $def['db_name'][1],true);
@@ -64,7 +64,7 @@ class DatenbankInformationen
         if (!$console){
             $text .= "<tr><td colspan='2'>".Language::Get('databaseAdmin','description')."</td></tr>";
             $text .= Design::erstelleZeile($console, Language::Get('databaseAdmin','db_user'), 'e', Design::erstelleEingabezeile($console, $data['DB']['db_user'], 'data[DB][db_user]', 'root', true), 'v');
-            $text .= Design::erstelleZeile($console, Language::Get('databaseAdmin','db_passwd'), 'e', Design::erstellePasswortzeile($console, $data['DB']['db_passwd'], 'data[DB][db_passwd]', ''), 'v');
+            $text .= Design::erstelleZeile($console, Language::Get('databaseAdmin','db_passwd'), 'e', Design::erstellePasswortzeile($console, $data['DB']['db_passwd'], 'data[DB][db_passwd]', '', true), 'v');
         
             echo Design::erstelleBlock($console, Language::Get('databaseAdmin','title'), $text);
         }
@@ -73,7 +73,7 @@ class DatenbankInformationen
         if (!$console){
             $text .= "<tr><td colspan='2'>".Language::Get('databasePlatformUser','description')."</td></tr>";
             $text .= Design::erstelleZeile($console, Language::Get('databasePlatformUser','db_user_operator'), 'e', Design::erstelleEingabezeile($console, $data['DB']['db_user_operator'], 'data[DB][db_user_operator]', 'DBOperator',true), 'v');
-            $text .= Design::erstelleZeile($console, Language::Get('databasePlatformUser','db_passwd_operator'), 'e', Design::erstellePasswortzeile($console, $data['DB']['db_passwd_operator'], 'data[DB][db_passwd_operator]', ''), 'v');
+            $text .= Design::erstelleZeile($console, Language::Get('databasePlatformUser','db_passwd_operator'), 'e', Design::erstellePasswortzeile($console, $data['DB']['db_passwd_operator'], 'data[DB][db_passwd_operator]', '', true), 'v');
 
             echo Design::erstelleBlock($console, Language::Get('databasePlatformUser','title'), $text);
         }

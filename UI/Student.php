@@ -10,6 +10,9 @@
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
 
+global $globalUserData;
+Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $globalUserData);
+
 $langTemplate='Student_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 $sheetNotifications = array();
@@ -53,9 +56,6 @@ $student_data['filesystemURI'] = $filesystemURI;
 $student_data['cid'] = $cid;
 $student_data['uid'] = $uid;
 $user_course_data = $student_data['user'];
-
-// check userrights for course
-Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $user_course_data);
 
 $menu = MakeNavigationElement($user_course_data,
                               PRIVILEGE_LEVEL::STUDENT);

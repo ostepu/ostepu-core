@@ -10,6 +10,9 @@
 
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 
+global $globalUserData;
+Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $globalUserData);
+
 $langTemplate='UploadHistory_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 if (isset($_POST['sheetID']))
@@ -83,7 +86,6 @@ if (isset($user_course_data['courses'][0]['status'])){
 if ($courseStatus==0)
     $_POST['userID'] = $uid;
 
-Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $user_course_data);
 $menu = MakeNavigationElement($user_course_data,
                               PRIVILEGE_LEVEL::STUDENT,
                               true);
