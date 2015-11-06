@@ -976,6 +976,16 @@ class LTutor
         
         // check if csv file exists
         if (file_exists($files.'/Liste.csv')){
+            // UTF8 is required
+            $text = file_get_contents($files.'/Liste.csv');
+            if (mb_detect_encoding($text, 'UTF-8', true)=== false){
+                $errors[] = 'Liste.csv: It is required that you store all your data in Unicode format (UTF-8)';
+                $this->deleteDir($tempDir);
+                $this->app->response->setStatus(409);
+                $this->app->response->setBody(json_encode($errors));
+                $this->app->stop();
+            }
+            
             $csv = fopen($files.'/Liste.csv', "r");
             
             if (($transactionId = fgetcsv($csv,0,';')) === false){
