@@ -54,6 +54,10 @@
     color: #f4ad32;
 }
 
+.warning-color {
+    color: #f4ad32;
+}
+
 .success-simple {
     border: 3px dashed #2DB22D;
     color: #2DB22D;
