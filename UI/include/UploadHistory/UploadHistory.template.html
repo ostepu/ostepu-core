@@ -81,7 +81,7 @@ echo '<span class="content-body-wrapper">';
                             // prints the submission date
                             $selected = (isset($submission['selectedForGroup']) && $submission['selectedForGroup']==1) ? true : false;
                             echo '<div class="form-field left bold new-line '. ($selected ? 'critical-color' : '') .'">';
-                            print date('d.m.Y  -  H:i', $submission['date']);
+                            print date('d.m.Y  -  H:i:s', $submission['date']);
                             if (!$selected){ 
                             $obj=array("id"=>$submission['id'], "leaderId"=>$submission['leaderId'], "exerciseId"=>$submission['exerciseId']);
                                 if (count($groupMember)==1 || $_POST['userID']==$group['leader']['id'] || $courseStatus>=1 /* PRIVILEGE_LEVEL::TUTOR */){
