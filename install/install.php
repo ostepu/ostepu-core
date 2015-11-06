@@ -551,12 +551,32 @@ class Installer
                 echo "<table border='0'>";
                 foreach(Einstellungen::$segments as $segs){
                     if (!is_callable("{$segs}::getSettingsBar")) continue;
+                    
                     $settings = $segs::getSettingsBar($data);
                     if (count($settings)>0){
                         foreach ($settings as $key => $values){
+                            // values entspricht
+                            // [0] = Name/Überschift
+                            // [1] = Wert/Zustand
+                            // [2] = Standardwert mit dem verglichen werden soll (Gleichheit wird zum Warnhinweis) (null = Nein)
+                            // [3] = Fehler soll angezeigt werden (true = Fehler, false = sonst)
+                            
                             if (!isset($values[0]) || !isset($values[1])) continue;
+                            $add='';
+                            $addText='';
+                            if (isset($values[2])){
+                                // Standardwert soll geprüft werden
+                                if ($values[1] == $values[2]){
+                                    $add = 'class="warning"';
+                                    $addText = '&lt;&lt;'.Language::Get('main','warnDefault')."&gt;&gt;<br/>";
+                                }
+                            } elseif (isset($values[3]) && $values[3] == true) {
+                                $add = 'class="error"';
+                                $addText = '&lt;&lt;'.Language::Get('main','errorValue')."&gt;&gt;<br/>";
+                            }
+                            
                             echo "<tr><td class='e'>".$values[0]."</td></tr>";
-                            echo "<tr><td>".$values[1]."</td></tr>";
+                            echo "<tr><td><span {$add}>".$addText."</span>".$values[1]."</td></tr>";
                             echo "<tr><th></th></tr>"; 
                         }
                     }

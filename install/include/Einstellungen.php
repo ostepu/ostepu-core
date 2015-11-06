@@ -459,7 +459,7 @@ class Einstellungen
      */
     public static function Get($varName, $default)
     {
-        if (Einstellungen::$konfiguration != null && isset(Einstellungen::$konfiguration[$varName])){
+        if (Einstellungen::$konfiguration !== null && isset(Einstellungen::$konfiguration[$varName])){
             return Einstellungen::$konfiguration[$varName];
         } else
             return $default;
@@ -475,7 +475,7 @@ class Einstellungen
      */
     public static function GetDirekt($konfiguration, $varName, $default)
     {
-        if ($konfiguration != null && isset($konfiguration[$varName])){
+        if ($konfiguration !== null && isset($konfiguration[$varName])){
             return $konfiguration[$varName];
         } else
             return $default;

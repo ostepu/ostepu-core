@@ -201,10 +201,10 @@ EOF;
 
 function MakeInfoButton($helpPath)
 {
-    global $serverURI;
+    global $externalURI;
     $helpPath = implode('/',func_get_args());
-    $URL = "{$serverURI}/DB/CHelp/help/".Language::$selectedLanguage."/{$helpPath}";
-    return "<a class='plain image-button' target='popup' onclick=\"window.open('{$URL}', 'popup', 'width=700,height=600,scrollbars=no,location=yes,directories=yes,menubar=yes,toolbar=yes,status=no,resizable=yes')\" title='info' target='_blank'><img style='width:17px;height:17px' src='Images/Info.png' /></a>";
+    $URL = "{$externalURI}/DB/CHelp/help/".Language::$selectedLanguage."/{$helpPath}";
+    return "<a href='{$URL}' class='plain image-button exercise-sheet-images' target='popup' onclick=\"window.open('#', 'popup', 'width=700,height=600,scrollbars=no,location=yes,directories=yes,menubar=yes,toolbar=yes,status=no,resizable=yes')\" title='info' target='_blank'><img src='Images/Info.png' /></a>";
 }
 
 /**
