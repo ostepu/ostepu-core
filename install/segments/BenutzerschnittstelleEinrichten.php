@@ -76,7 +76,8 @@ class BenutzerschnittstelleEinrichten
         $text[]='$logicURI = $serverURI . "/logic/LController";';
         $text[]='$filesystemURI = $serverURI . "/FS/FSControl";';
         $text[]='$getSiteURI = $serverURI . "/logic/LGetSite";';
-        $text[]='$globalSiteKey'. " = '{$data['UI']['siteKey']}';";        
+        $text[]='$globalSiteKey'. " = '{$data['UI']['siteKey']}';"; 
+        $text[]='$externalURI'. " = '{$data['PL']['urlExtern']}';";       
         
         $text = implode("\n",$text);
         if (!@file_put_contents(dirname(__FILE__).'/../'.$file,$text)){ $fail = true;$error='UI-Konfigurationsdatei, kein Schreiben möglich!';return null;} 
