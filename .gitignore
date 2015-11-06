@@ -10,3 +10,4 @@ ostepu/
 Assistants/Test/
 .project
 DB/CHelp/cache/
+UI/include/Config.php

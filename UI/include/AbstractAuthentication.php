@@ -7,7 +7,7 @@
  */
 
 include_once dirname(__FILE__) . '/Helpers.php';
-include_once dirname(__FILE__) . '/Config.php';
+if (file_exists(dirname(__FILE__) . '/Config.php')) include_once dirname(__FILE__) . '/Config.php';
 
 /**
  * AbstractAuthentication class.

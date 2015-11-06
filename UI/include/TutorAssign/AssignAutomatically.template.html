@@ -29,7 +29,7 @@ if (isset($AssignAutomaticallyNotificationElements)) {
                     $tutorId = isset($tutorAssignment['tutor']['id']) ? $tutorAssignment['tutor']['id'] : null;
                     
                     if (isset($tutorAssignment['tutor']['id']) && $tutorAssignment['tutor']['userName'] != "unassigned"){
-                        echo "<span style='display:inline-block' class='tutor-assign-element'>";
+                        echo "<div style='display:inline-block;margin-right:10px' class=''>";
                         print '<input type="checkbox" name="tutorIds[]" value="';
                         print $tutorId . '" id="';
                         print $tutorId . '" />';
@@ -43,7 +43,7 @@ if (isset($AssignAutomaticallyNotificationElements)) {
                         echo isset($tutorAssignment['tutor']['userName']) ? '('.$tutorAssignment['tutor']['userName'].$status.')' : '';
                         print "(" . count($tutorAssignment['submissions']) . ")";
                         print '</label>';
-                        echo "</span>";
+                        echo "</div>";
                     }
                 }
                 ?>

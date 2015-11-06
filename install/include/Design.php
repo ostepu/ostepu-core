@@ -341,21 +341,23 @@ class Design
      * @param string $error Der Fehlertext 
      * @return string Der Text der Installationszeile
      */
-    public static function erstelleInstallationszeile($console, $fail, $errno, $error)
+    public static function erstelleInstallationszeile($console, $fail, $errno, $error, $descText = null)
     {
+        $descText = (isset($descText) ? $descText : Language::Get('main','installation'));
+        
         if (!$console){
             if ($fail === true){
                 //$installFail = true;
-                return Design::erstelleZeile($console, Language::Get('main','installation'), 'e', '', 'v', "<div align ='center'><font color='red'>".Language::Get('main','fail'). (($errno!=null && $errno!='') ? " ({$errno})" : '') ."<br> {$error}</font></align>", 'v');
+                return Design::erstelleZeile($console, $descText, 'e', '', 'v', "<div align ='center'><font color='red'>".Language::Get('main','fail'). (($errno!=null && $errno!='') ? " ({$errno})" : '') ."<br> {$error}</font></align>", 'v');
             } else{
-                return Design::erstelleZeile($console, Language::Get('main','installation'), 'e', '', 'v', '<div align ="center">'.Language::Get('main','ok').'</align>', 'v');
+                return Design::erstelleZeile($console, $descText, 'e', '', 'v', '<div align ="center">'.Language::Get('main','ok').'</align>', 'v');
             }
         } else {
             if ($fail === true){
                 //$installFail = true;
-                return Design::erstelleZeile($console, Language::Get('main','installation'), 'e', '', 'v', Language::Get('main','fail'). (($errno!=null && $errno!='') ? " ({$errno})" : '') ." {$error}", 'v');
+                return Design::erstelleZeile($console, $descText, 'e', '', 'v', Language::Get('main','fail'). (($errno!=null && $errno!='') ? " ({$errno})" : '') ." {$error}", 'v');
             } else{
-                return Design::erstelleZeile($console, Language::Get('main','installation'), 'e', '', 'v', Language::Get('main','ok'), 'v');
+                return Design::erstelleZeile($console, $descText, 'e', '', 'v', Language::Get('main','ok'), 'v');
             }
         }
     }

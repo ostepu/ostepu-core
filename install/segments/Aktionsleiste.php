@@ -4,6 +4,7 @@ class Aktionsleiste
 {
     public static $name = 'actionBar';
     public static $enabledShow = true;
+    public static $rank = 150;
     
     public static function showInfoBar(&$data)
     {
