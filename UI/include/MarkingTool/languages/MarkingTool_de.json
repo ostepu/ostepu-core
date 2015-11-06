@@ -4,6 +4,7 @@
         "points": "Punkte",
         "tutorComment": "Ihr Kommentar",
         "studentComment": "Komm.",
-        "additionalMembers": "Weitere Gruppenmitglieder"
+        "additionalMembers": "Weitere Gruppenmitglieder",
+        "invalidSubmission": "fehlerhafte Einsendung"
     }
 }

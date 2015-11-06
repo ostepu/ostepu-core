@@ -123,9 +123,15 @@
                                 <?php $fileAddress = (isset($exercise['submission']['file']['address']) ? $exercise['submission']['file']['address'] : ''); ?>
                                 <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}";/*{$filesystemURI}*/ ?>
 
-                                <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" class="plain" target="_blank">
-                                    <img src="Images/Download.png" />
-                                </a>
+                                <?php if (isset($exercise['submission']['file'])){ ?>
+                                    <a href="<?php echo $fileURL; ?>" title="<?php echo $displayName; ?>" class="plain" target="_blank">
+                                        <img src="Images/Download.png" />
+                                    </a>
+                                <?php } else { ?>
+                                    <span>
+                                        <img src="Images/Error.png" title="<?php echo Language::Get('sheet','invalidSubmission', $langTemplate);?>"/>
+                                    </span>
+                                <?php } ?>
                             <?php if (count($groupMember)>1){
                                     if (isset($exercise['submission']['studentId']) && isset($groupMember[$exercise['submission']['studentId']]['userName'])){
                                         print '('.$groupMember[$exercise['submission']['studentId']]['userName'].')';

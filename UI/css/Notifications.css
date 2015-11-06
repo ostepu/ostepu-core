@@ -45,6 +45,12 @@
     color: #DE3838;
 }
 
+.error-symbol {
+    content:url("../Images/Error.png");
+    width: 17px;
+    height: 17px;
+}
+
 .error-color {
     color: #DE3838;
 }

@@ -77,6 +77,7 @@
                             <?php $date = $sub['date']; ?>
                             <?php $fileURL = "../FS/FSBinder/{$fileAddress}/{$displayName}"; /*{$filesystemURI}*/?>
 
+                            <?php if (isset($file)){ ?>
                             <a href="<?php echo $fileURL; ?>"
                                title="<?php echo $displayName; ?>"
                                class="left body-option-color"
@@ -86,6 +87,15 @@
                                 <?php echo formatBytes($file['fileSize']); ?>
                                 )
                             </a>
+                            <?php } else { ?>
+                            <span class ="left error-color">
+                                <img src="Images/Error.png" class='exercise-sheet-images' title="<?php echo Language::Get('submission','invalidSubmission', $langTemplate);?>"/>
+                                <?php echo Language::Get('submission','invalidSubmission', $langTemplate); ?> (
+                                <?php echo date('d.m.Y  -  H:i', $date); ?>
+                                )
+                            </span>
+                            <?php } ?>
+                            
                             <?php if (count($groupMember)>1){
                                 if (isset($exercise['selectedSubmission']['studentId']) && isset($groupMember[$exercise['selectedSubmission']['studentId']]['userName'])){
                                     print '('.$groupMember[$exercise['selectedSubmission']['studentId']]['userName'].')';
