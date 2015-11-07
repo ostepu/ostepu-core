@@ -771,18 +771,12 @@ class CControl
                 $object = Component::decodeComponent( json_encode( $object ) );
                 
                 // prüfen, welche Komponente auf diesem Server ist
+                // es werden nur "lokale" Komponenten initialisiert
                 if (strpos($object->getAddress().'/', $data['PL']['urlExtern'].'/')===false) continue;
 
-                $object->setAddress($data['PL']['url'].substr($object->getAddress(),strlen($data['PL']['urlExtern'])));
-                $links = $object->getLinks();
-                foreach($links as &$link){
-                    if (strpos($link->getAddress().'/', $data['PL']['urlExtern'].'/')===false) continue;
-                    $link->setAddress($data['PL']['url'].substr($link->getAddress(),strlen($data['PL']['urlExtern'])));
-                }
-                $object->setLinks($links);
-                
+                $URL = $object->getAddress();//$data['PL']['url'].substr($object->getAddress(),strlen($data['PL']['urlExtern']));
                 $result = Request_CreateRequest::createPost( 
-                                                            $object->getAddress( ) . '/control',
+                                                            $URL . '/control',
                                                             array( ),
                                                             Component::encodeComponent( $object )
                                                             );
@@ -1017,8 +1011,19 @@ class CControl
 
                 $this->_app->response->setStatus( 409 );
                 $this->_app->stop();
-            }       
+            }   
+            
+            $file2 = dirname(__FILE__).'/../../Assistants/config.ini';
+            if (!@file_put_contents($file2,$text)){
+                Logger::Log( 
+                            'POST AddPlatform failed, config.ini no access',
+                            LogLevel::ERROR
+                            );
 
+                $this->_app->response->setStatus( 409 );
+                $this->_app->stop();
+            }   
+            
             // starts a query
             ob_start();
             eval("?>" .  file_get_contents( dirname(__FILE__).'/Sql/AddPlatform.sql' ));
