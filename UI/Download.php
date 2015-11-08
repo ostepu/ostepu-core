@@ -46,7 +46,7 @@ foreach ($types as $type){
 }
 if (isset($_GET['downloadCSV'])) {
     checkPermission(PRIVILEGE_LEVEL::TUTOR);
-    $sid = cleanInput($_GET['downloadCSV']);
+    $sid = $_GET['downloadCSV'];
     $location = $logicURI . '/tutor/user/' . $uid . '/exercisesheet/' . $sid.(isset($status) ? '/status/'.$status : '');
     $result = http_get($location, true);
     echo $result;
