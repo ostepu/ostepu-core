@@ -15,6 +15,7 @@ include_once dirname(__FILE__) . '/../../Assistants/Structures/Transaction.php';
 include_once dirname(__FILE__) . '/../../Assistants/Structures/Platform.php';
 include_once dirname(__FILE__) . '/../../Assistants/Structures/File.php';
 include_once dirname(__FILE__) . '/../../Assistants/Language.php';
+include_once dirname(__FILE__) . '/../../Assistants/LArraySorter.php';
 
 \Slim\Slim::registerAutoloader();
 
@@ -951,7 +952,10 @@ class LTutor
                 if (isset($marking['status']) && $marking['status'] == $status)
                     $marks[] = $marking;
             $markings=$marks;
-        }            
+        }
+        
+        // sortiere die Korrekturen innerhalb dieser Liste
+        $markings = LArraySorter::orderby($markings, 'id', SORT_ASC);
 
         $answer = $this->generateTutorArchive($userid, $sheetid, $markings);
         $this->app->response->setStatus($answer['status']);
