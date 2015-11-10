@@ -204,7 +204,7 @@ function MakeInfoButton($helpPath)
     global $externalURI;
     $helpPath = implode('/',func_get_args());
     $URL = "{$externalURI}/DB/CHelp/help/".Language::$selectedLanguage."/{$helpPath}";
-    return "<a href='{$URL}' class='plain image-button exercise-sheet-images' target='popup' onclick=\"window.open('', 'popup', 'width=700,height=600,scrollbars=no,location=no,directories=no,menubar=no,toolbar=no,status=no,resizable=yes')\" title='info' target='_blank'><img src='Images/Info.png' /></a>";
+    return "<a href='{$URL}' class='plain image-button exercise-sheet-images' target='popup' onclick=\"window.open('', 'popup', 'width=700,height=600,scrollbars=yes,location=no,directories=no,menubar=no,toolbar=no,status=no,resizable=yes')\" title='info' target='_blank'><img src='Images/Info.png' /></a>";
 }
 
 /**
