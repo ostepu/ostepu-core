@@ -13,6 +13,7 @@ include_once dirname(__FILE__) . '/../../Assistants/Request.php';
 include_once dirname(__FILE__) . '/../../Assistants/CConfig.php';
 include_once dirname(__FILE__) . '/../../Assistants/Structures/Transaction.php';
 include_once dirname(__FILE__) . '/../../Assistants/Structures/Platform.php';
+include_once dirname(__FILE__) . '/../../Assistants/Structures/File.php';
 
 \Slim\Slim::registerAutoloader();
 
@@ -474,11 +475,11 @@ class LTutor
                         $data.="Kommentar: {$submission['comment']}\n";
                         
                     $data.="<pre>";
-                    $newFileData->setBody(base64_encode($data));
+                    $newFileData->setBody($data, true);
                     $newFileSend[] = $newFileData;
                     $newFileSend[] = $newFile;
                     $newFileData = new File();
-                    $newFileData->setBody(base64_encode("</pre>"));
+                    $newFileData->setBody("</pre>", true);
                     $newFileSend[] = $newFileData;
                     //echo File::encodeFile($newFileSend);
                     $answer = Request::routeRequest(
@@ -716,13 +717,13 @@ class LTutor
                             $data.="Kommentar: {$marking['submission']['comment']}\n";
                             
                         $data.="<pre>";
-                        $newFileData->setBody(base64_encode($data));
+                        $newFileData->setBody($data, true);
                         $newFileSend[] = $newFileData;
                         
                         if (isset($newFile)){
                             $newFileSend[] = $newFile;
                             $newFileData = new File();
-                            $newFileData->setBody(base64_encode("</pre>"));
+                            $newFileData->setBody("</pre>", true);
                             $newFileSend[] = $newFileData;
 //echo File::encodeFile($newFileSend);//return;
                             $answer = Request::routeRequest(
@@ -879,14 +880,13 @@ class LTutor
 
             //push the .csv-file to the array
             $path = $tempDir.'/Liste.csv';//$user['lastName'].'_'.
-            $csvFile = array(
-                        'displayName' => 'Liste.csv', //$user['lastName'].'_'.
-                        'body' => base64_encode(file_get_contents($path))
-                    );
+            $csvFile = new File();
+            $csvFile->setDisplayName('Liste.csv');
+            $csvFile->setBody( Reference::createReference($path) );
             $filesToZip[] = $csvFile;
             
-            unlink($path);
-            $this->deleteDir(dirname($path));
+            ///unlink($path);
+            ///$this->deleteDir(dirname($path));
 
             //request to filesystem to create the Zip-File
             $result = Request::routeRequest( 
@@ -947,9 +947,9 @@ class LTutor
         LTutor::generatepath($this->config['DIR']['temp']);
         $tempDir = $this->tempdir($this->config['DIR']['temp'], 'extractZip', $mode=0775);
 
-        $body = json_decode($this->app->request->getBody(), true); //1 file-Object        
+        $body = File::decodeFile($this->app->request->getBody()); //1 file-Object
         $filename = $tempDir.'/'.$courseid.'.zip';
-        file_put_contents($filename, base64_decode($body['body']));
+        file_put_contents($filename, $body->getBody( true ));
         unset($body);
         
         $zip = new ZipArchive();
@@ -1025,25 +1025,24 @@ class LTutor
                         // checks whether the points are less or equal to the maximum points
                         if ($points > $markingData['maxPoints'] || $points<0){
                             // too much points
-                            fclose($csv);
-                            $this->deleteDir($tempDir);
-                            $this->app->response->setStatus(409);
-                            $errors[] = "incorrect points in marking: {$markingId}";
-                            $this->app->response->setBody(json_encode($errors));
-                            $this->app->stop();
+                            ///fclose($csv);
+                            ///$this->deleteDir($tempDir);
+                            ///$this->app->response->setStatus(409);
+                            ///$errors[] = "incorrect points in marking: {$markingId}";
+                            ///$this->app->response->setBody(json_encode($errors));
+                            ///$this->app->stop();
                         }
                         
                         // checks if file with this markingid exists
-                        if ($markingFile == '' || file_exists($files.'/'.$markingFile)) {
+                        if ($markingFile == null || $markingFile == '' || file_exists($files.'/'.$markingFile)) {
                         
-                            if ($markingFile!=''){
-                                $fileBody = file_get_contents($files.'/'.$markingFile);
+                            if ($markingFile!='' && $markingFile!=null){
+                                $fileAddress = $files.'/'.$markingFile; ///file_get_contents($files.'/'.$markingFile);
                                 // file
                                 $fileInfo = pathinfo($markingFile);
-                                $file = array(
-                                        'displayName' => $fileInfo['basename'],
-                                        'body' => base64_encode($fileBody),
-                                        );
+                                $file = newFile();
+                                $file->setDisplayName($fileInfo['basename']);
+                                $file->setBody( Reference::createReference($fileAddress) );
                             } else {
                                 $file = null;
                             }

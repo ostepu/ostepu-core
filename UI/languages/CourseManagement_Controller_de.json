@@ -10,6 +10,7 @@
         "errorEditExtensions": "Beim Bearbeiten ist ein Fehler aufgetreten!",
         "faultyTransmission": "Fehlerhafte übermittlung!",
         "invalidType": "Unbekannter Typ wurde übermittelt!",
+        "containsUnsupportedChars": "Eine der Eingaben enthält unerlaubte Zeichen!",
         "successCreateType": "Die Punkteart wurde erfolgreich angelegt!",
         "successSetType": "Die Punkteart wurde erfolgreich geändert!",
         "successSaveSettings": "Die Einstellungen wurde bearbeitet!",

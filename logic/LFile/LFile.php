@@ -236,6 +236,7 @@ class LFile
             $result = null;
             
         if ( $result !== null){
+            if (is_array($result)) $result = $result[0];
             $result->setStatus(201);
             $res = $result; 
         } else {

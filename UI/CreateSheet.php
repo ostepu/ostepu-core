@@ -17,6 +17,9 @@ include_once dirname(__FILE__) . '/include/FormEvaluator.php';
 include_once dirname(__FILE__) . '/include/CreateSheet/Processor/Processor.functions.php';
 require_once dirname(__FILE__).'/phplatex.php';
 
+global $globalUserData;
+Authentication::checkRights(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $globalUserData);
+
 $langTemplate='CreateSheet_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 function unmap($map, $id){
@@ -134,13 +137,11 @@ if (isset($_POST['action']))
 if ($correctExercise == true) {
     // get sheetPDF
     if (isset($_FILES['sheetPDF']['error']) && !$_FILES['sheetPDF']['error'] == 4){
-        $filePath = $_FILES['sheetPDF']['tmp_name'];
-        $displayName = $_FILES['sheetPDF']['name'];
-        $data = file_get_contents($filePath);
-        $data = base64_encode($data);
-        $sheetPDFFile = File::createFile(NULL,$displayName,NULL,$timestamp,NULL,NULL,NULL);
-        $sheetPDFFile->setBody($data);
+        // create new exerciseSheet
+        $sheetPDFFile = File::createFile(NULL,$_FILES['sheetPDF']['name'],NULL,$timestamp,NULL,NULL,NULL);
+        $sheetPDFFile->setBody( Reference::createReference($_FILES['sheetPDF']['tmp_name']) );
     } elseif(isset($_POST['sheetPDFId'])) {
+        // update existing exerciseSheet
         $sheetPDFFile = File::createFile(NULL,null,NULL,null,NULL,NULL,NULL);
         $sheetPDFFile->setFileId(isset($_POST['sheetPDFId']) ? $_POST['sheetPDFId'] : null);
         $sheetPDFFile->setAddress(isset($_POST['sheetPDFAddress']) ? $_POST['sheetPDFAddress'] : null);
@@ -162,15 +163,12 @@ if ($correctExercise == true) {
 
     // get sheetSolution if it exists
     if (isset($_FILES['sheetSolution']['error']) && $_FILES['sheetSolution']['error'] != 4) {
-        $filePath = $_FILES['sheetSolution']['tmp_name'];
-        $displayName = $_FILES['sheetSolution']['name'];
-        $data = file_get_contents($filePath);
-        $data = base64_encode($data);
-
-        $sheetSolutionFile = File::createFile(NULL,$displayName,NULL,$timestamp,NULL,NULL,NULL);
-        $sheetSolutionFile->setBody($data);
+        // create new sheetSolution
+        $sheetSolutionFile = File::createFile(NULL,$_FILES['sheetSolution']['name'],NULL,$timestamp,NULL,NULL,NULL);
+        $sheetSolutionFile->setBody( Reference::createReference($_FILES['sheetSolution']['tmp_name']) );
         $myExerciseSheet->setSampleSolution($sheetSolutionFile);
     } elseif(isset($_POST['sheetSolutionId'])) {
+        // update existing sheetSolution
         $sheetSolutionFile = File::createFile(NULL,null,NULL,null,NULL,NULL,NULL);
         $sheetSolutionFile->setFileId(isset($_POST['sheetSolutionId']) ? $_POST['sheetSolutionId'] : null);
         $sheetSolutionFile->setAddress(isset($_POST['sheetSolutionAddress']) ? $_POST['sheetSolutionAddress'] : null);
@@ -225,12 +223,9 @@ if ($correctExercise == true) {
                 $filePath = $_FILES['exercises']['tmp_name'][$key1]['subexercises'][$key2]['attachment'];
                 $displayName = $_FILES['exercises']['name'][$key1]['subexercises'][$key2]['attachment'];
                 $attachments = array();
-                
-                $data = file_get_contents($filePath);
-                $data = base64_encode($data);
 
                 $attachementFile = File::createFile(NULL,$displayName,NULL,$timestamp,NULL,NULL,NULL);
-                $attachementFile->setBody($data);
+                $attachementFile->setBody( Reference::createReference($filePath) );
                 
                 $subexerciseObj->setAttachments(array($attachementFile));
             } elseif(isset($_POST['exercises'][$key1]['subexercises'][$key2]['attachment']['fileId'])) {
@@ -363,15 +358,12 @@ if ($correctExercise == true) {
                         $displayName = $_FILES['exercises']['name'][$key1]['subexercises'][$key2]['processAttachment'][$tempKey];
                         $attachments = array();
                         
-                        foreach ($filePath as $attachKey => $attachPath){
-                        $data = file_get_contents($attachPath);
-                        $data = base64_encode($data);
-                        
-                        $attachment = new Attachment();
-                        $attachementFile = File::createFile(NULL,$displayName[$attachKey],NULL,$timestamp,NULL,NULL,NULL);
-                        $attachementFile->setBody($data);
-                        $attachment->setFile($attachementFile);
-                        $attachments[] = $attachment;
+                        foreach ($filePath as $attachKey => $attachPath){                        
+                            $attachment = new Attachment();
+                            $attachementFile = File::createFile(NULL,$displayName[$attachKey],NULL,$timestamp,NULL,NULL,NULL);
+                            $attachementFile->setBody( Reference::createReference($attachPath) );
+                            $attachment->setFile($attachementFile);
+                            $attachments[] = $attachment;
                         }
                         
                         $processor->setAttachment($attachments);
@@ -790,7 +782,6 @@ if (isset($sid)){
     $sheet_data = json_decode($sheet_data, true);
 }
 
-Authentication::checkRights(PRIVILEGE_LEVEL::LECTURER, $cid, $uid, $createsheetData['user']);
 
 $menu = MakeNavigationElement($createsheetData['user'],
                               PRIVILEGE_LEVEL::LECTURER,true);

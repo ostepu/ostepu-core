@@ -11,6 +11,7 @@ if (isset($CourseSettingsNotificationElements)) {
 <input type="hidden" name="action" value="CourseSettings">
 <div class="content-element">
     <div class="content-header">
+        <?php echo MakeInfoButton('courseManagement','courseSettings.md'); ?>
         <div class="content-title left uppercase"><?php echo Language::Get('main','title', $langTemplate); ?></div>
         <div class="info-color bold right">
             <button class="text-button info-color bold right"><?php echo Language::Get('main','execute', $langTemplate); ?></button>
@@ -94,14 +95,18 @@ if (isset($CourseSettingsNotificationElements)) {
             
             <?php if (isset($course['settings'])){
                     foreach($course['settings'] as $setting){
-                        echo "<div style='display:block;margin-bottom: 0px'>";
+                        if (!isset($setting['name'])) continue;
+                        echo "<div class='' style='display:block;margin-bottom: 0px'>";
                         echo '<label class="form-field label bold" for="">';
                         echo $setting['name'];
+                        if (isset($setting['name'])){
+                            print MakeInfoButton('setting',$setting['name'].'Desc.md');
+                        }
                         echo "</label>";
                         if ($setting['type']==='TIMESTAMP'){
                             $data = ($setting['state']!=0 ? $setting['state'] : null);
                             ?>
-                            <div style='display:inline-block;margin-bottom: 0px'>
+                            <div class="" style='display:inline-block;margin-bottom: 0px'>
                             <span id="datetimepicker<?php echo $setting['id']; ?>" class="dtpicker date input-append">
                                 <input class="form-field text-input" data-format="dd.MM.yyyy - hh:mm"
                                 <?php if (isset($data)) {?> value="<?php echo (ctype_digit($data) ? date('d.m.Y - H:i', $data) : $data); ?>" <?php } ?>
@@ -115,19 +120,29 @@ if (isset($CourseSettingsNotificationElements)) {
                             <?php
                         } elseif ($setting['type']==='BOOL'){
                             ?>
-                            <div style='display:inline-block;margin-bottom: 0px'>
-                              <input type="hidden" name="setting[<?php echo $setting['id']; ?>][type]" value="TEXT">
+                            <div class="" style='display:inline-block;margin-bottom: 0px'>
+                              <input type="hidden" name="setting[<?php echo $setting['id']; ?>][type]" value="BOOL">
                               <select name="setting[<?php echo $setting['id']; ?>][value]" size="1">
                                 <option value="1" <?php echo ($setting['state'] == 1 ?"selected=\"selected\"":''); ?>><?php echo Language::Get('main','yes', $langTemplate); ?></option>
                                 <option value="0" <?php echo ($setting['state'] == 0 ?"selected=\"selected\"":''); ?>><?php echo Language::Get('main','no', $langTemplate); ?></option>
                              </select>
                             </div>
                              <?php
-                        } elseif ($setting['type']==='INT' || $setting['type']==='STRING'){
+                        } elseif ($setting['type']==='STRING'){
                             $data = ($setting['state']!=0 ? $setting['state'] : null);
                             ?>
-                            <div class="content-element" style='display:inline-block;margin-bottom: 0px'>
-                                <input type="hidden" name="setting[<?php echo $setting['id']; ?>][type]" value="TEXT">
+                            <div class="" style='display:inline-block;margin-bottom: 0px'>
+                                <input type="hidden" name="setting[<?php echo $setting['id']; ?>][type]" value="STRING">
+                                <input class="form-field text-input"
+                                    <?php if (isset($data)) {?> value="<?php echo $data; ?>" <?php } ?>
+                                    type="text" id="data; ?>" name="setting[<?php echo $setting['id']; ?>][value]"/>
+                            </div>
+                            <?php
+                        } elseif ($setting['type']==='INT'){
+                            $data = ($setting['state']!=0 ? $setting['state'] : null);
+                            ?>
+                            <div class="" style='display:inline-block;margin-bottom: 0px'>
+                                <input type="hidden" name="setting[<?php echo $setting['id']; ?>][type]" value="INT">
                                 <input class="form-field text-input"
                                     <?php if (isset($data)) {?> value="<?php echo $data; ?>" <?php } ?>
                                     type="text" id="data; ?>" name="setting[<?php echo $setting['id']; ?>][value]"/>

@@ -58,14 +58,15 @@ class LFileHandler2
             }
             
             //request to database file table to check if the file already exists
-            $answer = Request::routeRequest( 
+            /*$answer = Request::routeRequest( 
                                             'GET',
                                            '/file'.$path.'/hash/'.$file->getHash(),
                                             $header,
                                             '',
                                             $database,
                                             'file'
-                                            );
+                                            );*/
+            $answer = array('status'=>404); // überspringt das Abfragen über den Hash der Datei
                                      
             if ($answer['status'] < 200 || $answer['status'] > 299 || !isset($answer['content'])) { //if file does not exists, add it to db file table
                 $answer = Request::routeRequest( 
@@ -128,21 +129,25 @@ class LFileHandler2
             if ($answer['status'] >= 200 && $answer['status'] <= 299 && isset($answer['content']) && !empty($answer['content'])) {
                 $file = File::decodeFile($answer['content']);
             
-                // requests to filesystem
-                $answer = Request::routeRequest( 
-                                                'DELETE',
-                                                '/'.$file->getAddress(),
-                                                $header,
-                                                '',
-                                                $filesystem,
-                                                'file'
-                                                );
-                                                
-                if ($answer['status'] >= 200 && $answer['status'] <= 299) {
-                    return File::decodeFile($answer['content']);
-                }
-                else
+                if (is_object($file) && $file->getAddress() !== null){
+                    // requests to filesystem
+                    $answer = Request::routeRequest( 
+                                                    'DELETE',
+                                                    '/'.$file->getAddress(),
+                                                    $header,
+                                                    '',
+                                                    $filesystem,
+                                                    'file'
+                                                    );
+                                                    
+                    if ($answer['status'] >= 200 && $answer['status'] <= 299) {
+                        return File::decodeFile($answer['content']);
+                    }
+                    else
+                        return null;
+                } else {
                     return null;
+                }
             }
             else
                 return $file;

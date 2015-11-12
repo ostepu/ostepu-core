@@ -19,6 +19,9 @@ include_once dirname(__FILE__) . '/../Assistants/Structures.php';
 include_once dirname(__FILE__) . '/../Assistants/LArraySorter.php';
 include_once dirname(__FILE__) . '/include/FormEvaluator.php';
 
+global $globalUserData;
+Authentication::checkRights(PRIVILEGE_LEVEL::ADMIN, $cid, $uid, $globalUserData);
+
 $langTemplate='CourseManagement_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 // load Plugins data from LogicController
@@ -208,7 +211,20 @@ if (!isset($_POST['actionSortUsers']) && isset($_POST['action'])) {
                         
                     $value = $params['value'];
                     $type = $params['type'];
-                    if (strtoupper($type) === 'TEXT'){
+                    if (strtoupper($type) === 'BOOL'){
+                    	if ($value != '1' && $value != '0'){
+	                        $courseSettingsNotifications[] = MakeNotification("error", Language::Get('main','containsUnsupportedChars', $langTemplate));
+	                        continue;
+                    	}
+                    } elseif (strtoupper($type) === 'INT'){
+                    	if (trim($value) != ''){
+	                    	$pregRes = @preg_match("%^([0-9]+)$%", $value);
+	                        if (!$pregRes){
+		                        $courseSettingsNotifications[] = MakeNotification("error", Language::Get('main','containsUnsupportedChars', $langTemplate));
+		                        continue;
+	                        }
+                    	}
+                    } elseif (strtoupper($type) === 'STRING'){
                         // nothing
                     } elseif (strtoupper($type) === 'DATE'){
                         if (trim($value) == '')
@@ -419,7 +435,6 @@ if (!isset($_POST['actionSortUsers']) && isset($_POST['action'])) {
         if(isset($_POST['userID'])) {
             // clean Input
             $userID = cleanInput($_POST['userID']);
-            $Rights = cleanInput($_POST['Rights']);
 
             // validate POST data
             if (is_numeric($userID) == true) {
@@ -517,7 +532,6 @@ if (isset($_POST['sortUsers'])) {
 
 $user_course_data = $courseManagement_data['user'];
 
-Authentication::checkRights(PRIVILEGE_LEVEL::ADMIN, $cid, $uid, $user_course_data);
 $menu = MakeNavigationElement($user_course_data,
                               PRIVILEGE_LEVEL::ADMIN,
                               true);

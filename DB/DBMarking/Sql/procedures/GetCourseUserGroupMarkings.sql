@@ -42,21 +42,22 @@ select SQL_CACHE
     S.E_id as E_id2,
     S.ES_id as ES_id2
 from
-    Marking M
-        left join
-    Submission S ON ('",sub,"'<>'nosubmission' and M.S_id = S.S_id)
+    `Group` G
+        join
+    `Group` G2 ON (G.U_id_leader = '",userid,"'
+        and G.U_id_member = G2.U_id_member
+        and G.C_id = '",courseid,"'
+        and G2.ES_id = G.ES_id)
+        join
+    Submission S ON (S.ES_id = G2.ES_id and G2.U_id_leader = S.U_id)
+        join
+    Marking M ON (S.S_id = M.S_id)
         left join
     SelectedSubmission SS ON (S.S_id = SS.S_id_selected)
-        join
-    `Group` G ON (G.ES_id = S.ES_id)
         left join
     File F ON (F.F_id = M.F_id_file)
         left join 
-    File F2 ON (F2.F_id = S.F_id_file)
-where
-    G.C_id = '",courseid,"'
-        and G.U_id_leader = '",userid,"'
-        and G.U_id_member = S.U_id;");
+    File F2 ON (F2.F_id = S.F_id_file)");
 PREPARE stmt1 FROM @s;
 EXECUTE stmt1;
 DEALLOCATE PREPARE stmt1;

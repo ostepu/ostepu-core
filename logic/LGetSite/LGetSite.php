@@ -98,7 +98,7 @@ class LGetSite
                         array($this, 'studentSiteInfo'));
 
         //GET AccountSettings
-        $this->app->get('/accountsettings/user/:userid(/)',
+        $this->app->get('/accountsettings/user/:userid(/course/:courseid)(/)',
                         array($this, 'accountsettings'));
 
         //GET CreateSheet
@@ -629,11 +629,17 @@ class LGetSite
         }
     }
 
-    public function accountsettings($userid)
+    public function accountsettings($userid, $courseid=null)
     {
-        $URL = $this->_getUser->getAddress().'/user/user/' . $userid;
-        $answer = Request::custom('GET', $URL, array(), '');
-        $user = json_decode($answer['content'], true);
+        if ($courseid === null){
+            $URL = $this->_getUser->getAddress().'/user/user/' . $userid;
+            $answer = Request::custom('GET', $URL, array(), '');
+            $user = json_decode($answer['content'], true);
+        } else {
+            $URL = $this->_getCourseStatus->getAddress().'/coursestatus/course/'.$courseid.'/user/'.$userid;
+            $answer = Request::custom('GET', $URL, array(), '');
+            $user = json_decode($answer['content'], true);
+        }
 
         $this->app->response->setBody(json_encode($user));
     }
@@ -1019,7 +1025,7 @@ class LGetSite
                     if (isset($submission['exerciseId'])){
                         if (!empty($answer2)){
                             foreach ($answer2 as $key => $marking){
-                                if (isset($marking['submission']['id'])){
+                                if (isset($marking['submission']['id']) && $marking['submission']['id'] == $submission['id']){
                                     unset($marking['submission']);
                                     $submission['marking'] = $marking;
                                     unset($answer2[$key]);
@@ -1027,7 +1033,6 @@ class LGetSite
                                 }
                             }
                         }
-                        
                         $submissions[$submission['exerciseId']][] = $submission;
                     }
                 }
@@ -1644,7 +1649,7 @@ class LGetSite
             if (!isset($studentMarkings[$studentID][$exerciseType]))
                 $studentMarkings[$studentID][$exerciseType] = 0;
 
-            $studentMarkings[$studentID][$exerciseType] += isset($marking['points']) ? $marking['points'] : 0;
+            $studentMarkings[$leaderID][$exerciseType] += isset($marking['points']) ? $marking['points'] : 0;
             
             if (isset($allGroups[$sheetID][$leaderID])){
                 $group = $allGroups[$sheetID][$leaderID];

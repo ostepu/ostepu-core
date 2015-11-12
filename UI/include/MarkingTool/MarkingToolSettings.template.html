@@ -94,11 +94,13 @@
                     </select>
                 </div>
                 
-                <div>
-                    <a href="MarkingTool.php?cid=<?php echo $cid; ?>&downloadCSV=<?php echo $sheetID; ?>&statusID=<?php echo isset($statusID) ? $statusID : 'all'; ?>&tutorID=<?php echo isset($tutorID) ? $tutorID : 'all'; ?>" class="download text-button body-option-color footer-text" style="padding-left:0px">
-                        <?php echo Language::Get('main','createArchive', $langTemplate); ?>
-                    </a>
-                </div>
+            </div>
+            
+            <div class="right">
+                <?php echo MakeInfoButton('markingTool','createArchive.md'); ?>
+                <a href="MarkingTool.php?cid=<?php echo $cid; ?>&downloadCSV=<?php echo $sheetID; ?>&statusID=<?php echo isset($statusID) ? $statusID : 'all'; ?>&tutorID=<?php echo isset($tutorID) ? $tutorID : 'all'; ?>" class="download text-button body-option-color footer-text" style="padding-left:0px">
+                    <?php echo Language::Get('main','createArchive', $langTemplate); ?>
+                </a>
             </div>
         </div>
         

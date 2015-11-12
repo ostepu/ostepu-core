@@ -1,16 +1,20 @@
 {
   "name":"OSTEPU-UI",
-  "version":"0.3",
+  "version":"0.3.7",
   "versionDate":"19.04.2015",
   "author":"",
   "sourceURL":"",
   "updateURL":"",
-  "requirements":[{"type":"plugin","name":"CORE","version":"0.2"}],
+  "requirements":[{"type":"plugin","name":"CORE","version":"0.3.7"}],
   "files":
     [
       {"path":"UI/"},
       {"path":"Plugins/ostepu-ui.json"},
       {"path":".htaccess"},
       {"path":"UI/.htaccess"}
+    ],
+  "components":
+    [
+      {"conf":"DB/CUIHelp/Component.json"}
     ]
 }

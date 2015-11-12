@@ -13,17 +13,13 @@ CREATE TABLE IF NOT EXISTS `File` (
   `F_mimeType` VARCHAR(255) NULL,
   PRIMARY KEY (`F_id`),
   UNIQUE INDEX `F_id_UNIQUE` (`F_id` ASC),
-  UNIQUE INDEX `F_hash_UNIQUE` (`F_hash` ASC),
-  UNIQUE INDEX `F_address_UNIQUE` (`F_address` ASC))
+  UNIQUE INDEX `F_address_displayName_UNIQUE` (`F_address` ASC,`F_displayName` ASC))
 ENGINE = InnoDB
 AUTO_INCREMENT = 1;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
-
-ALTER IGNORE TABLE `File` MODIFY COLUMN F_mimeType VARCHAR(255) NULL;
-ALTER IGNORE TABLE `File` MODIFY COLUMN F_timeStamp INT UNSIGNED NULL DEFAULT 0;
 
 <?php if (is_dir($sqlPath.'/procedures')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/procedures/'.$inp);}},scandir($sqlPath.'/procedures'),array_pad(array(),count(scandir($sqlPath.'/procedures')),$sqlPath));?>
 <?php if (is_dir($sqlPath.'/migrations')) array_map(function ($inp,$sqlPath){if ($inp!='.' && $inp!='..'){include($sqlPath.'/migrations/'.$inp);}},scandir($sqlPath.'/migrations'),array_pad(array(),count(scandir($sqlPath.'/migrations')),$sqlPath));?>

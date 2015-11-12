@@ -13,6 +13,9 @@ include_once dirname(__FILE__) . '/../Assistants/Structures.php';
 include_once dirname(__FILE__) . '/../Assistants/Language.php';
 include_once dirname(__FILE__) . '/../Assistants/MimeReader.php';
 
+global $globalUserData;
+Authentication::checkRights(PRIVILEGE_LEVEL::TUTOR, $cid, $uid, $globalUserData);
+
 $langTemplate='TutorUpload_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 if (isset($_POST['action']) && $_POST['action'] == 'TutorUpload') {
@@ -29,19 +32,16 @@ if (isset($_POST['action']) && $_POST['action'] == 'TutorUpload') {
             if (MimeReader::get_mime($filePath) == "application/zip") {
 
                 // creates the JSON object containing the file
-                $data = file_get_contents($filePath);
+                $file = new File();
+                $file->setBody( Reference::createReference($filePath) );
+                $file->setTimeStamp(time());
+                $file->setDisplayName($displayName);
 
-                $data = base64_encode($data);
-
-                $file = array('timeStamp' => time(),
-                              'displayName' => $displayName,
-                              'body' => $data);
-
-                $file = json_encode($file);
+                $file = File::encodeFile($file);
 
                 // sends the JSON object to the logic
                 $URI = $logicURI . "/tutor/user/{$uid}/course/{$cid}";
-                ///echo $file;echo $URI;return;
+
                 $error = http_post_data($URI, $file, true, $message);
 
                 if ($message == "201" || $message == "200") {
@@ -70,7 +70,6 @@ $tutorUpload_data['cid'] = $cid;
 
 $user_course_data = $tutorUpload_data['user'];
 
-Authentication::checkRights(PRIVILEGE_LEVEL::TUTOR, $cid, $uid, $user_course_data);
 $menu = MakeNavigationElement($user_course_data,
                               PRIVILEGE_LEVEL::TUTOR,
                               true);

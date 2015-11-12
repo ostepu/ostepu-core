@@ -110,6 +110,7 @@ class LExercise
         if (isset($body) == true && empty($body) == false) {
             foreach ($body as $subexercise) {
                 // create exercise in DB
+                $FileTypesArrayTemp = null;
                 if (isset($subexercise['fileTypes'])){
                     $FileTypesArrayTemp = $subexercise['fileTypes'];
                     unset($subexercise['fileTypes']);
