@@ -9,6 +9,12 @@
         "output": "Ausgabe",
         "paramcount": "Parameteranzahl",
         "addtest": "Testdurchgänge hinzufügen",
-        "deletetest": "Testdurchgänge entfernen"
+        "deletetest": "Testdurchgänge entfernen",
+        "text": "Text",
+        "data": "Datei",
+        "regex": "regulärer Ausdruck",
+        "selectFile": "Datei auswählen",
+        "noData": "keine Datei",
+        "addData": "Datei hinzufügen"
     }
 }
