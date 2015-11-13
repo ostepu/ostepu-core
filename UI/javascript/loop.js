@@ -130,7 +130,9 @@ function createTestcases(event) {
                 $('a.deleteRow').unbind('click').on('click',deleteRow);
                 $('a.deleteCol').unbind('click').on('click',deleteCol);
 
+                renameProcessor();
                 renameTestcases();
+
                 //trig.closest("table").find(".testcase-table").hide().fadeIn('fast');
             });
         });
@@ -143,7 +145,7 @@ function switchInputTypes(event) {
     // get col number of the select input
     var i = trig.closest("tr").children().index(trig.closest("td"));
 
-    console.log(i);
+    //console.log(i);
     
     //get all testcases
     var testcases = trig.closest("table.testcase-table").find('tr').slice(2);
@@ -348,7 +350,7 @@ function checkIfUnused(trigger)
 
     var files = trigger.closest("div.content-body-wrapper").find('.hiddenFiles').find('.hiddenFile');
 
-    console.log(files);
+    //console.log(files);
 
     files.each(function() {
 
@@ -726,33 +728,33 @@ function renameTestcases() {
 
     for (var i = 0; i < all.length; i++) {
         // add new select names for datatypes
-        var elem = $(all[i]).closest('.content-body-wrapper').find('.input-parameter-choice').children(".parameter-choice-test");
-        var oldName = elem.prop('name');
+        var regex = /exercises\[(.+?)]\[.+?\]\[(.+?)]\[(.+?)]\[[0-9]+\]\[]/gm;
+        var regex2 = /exercises\[(.+?)]\[.+?\]\[(.+?)]\[(.+?)]\[[0-9]+\]/gm;
 
-        var elem2 = $(all[i]).closest('.content-body-wrapper').find('.output-parameter-choice').children(".parameter-choice-test");
-        var oldName2 = elem2.prop('name');
+        var elem = $(all[i]).closest('.content-body-wrapper').find('.input-parameter-choice').find(".parameter-choice-test");
 
-        var elem3 = $(all[i]).closest('.content-body-wrapper').find('.hiddenFiles');
-        var oldName3 = elem3.prop('id');
-        
-        if (typeof oldName !== 'undefined')
+        if(elem.length > 0)
         {
-            var regex = /exercises\[(.+?)]\[.+?\]\[(.+?)]\[(.+?)]\[[0-9]+\]\[]/gm;
-            var regex2 = /exercises\[(.+?)]\[.+?\]\[(.+?)]\[(.+?)]\[[0-9]+\]/gm;
+            elem.each(function() {
+                var oldName = $(this).prop('name');
+                var nameString = "exercises[$1][subexercises][$2][inputDatatype]["+ (i) +"][]";
+                var newName = oldName.replace(regex, nameString);
 
-            var nameString = "exercises[$1][subexercises][$2][inputDatatype]["+ (i) +"][]";
-            var nameString2 = "exercises[$1][subexercises][$2][outputDatatype]["+ (i) +"]";
-            var nameString3 = "exercises[$1][subexercises][$2][inputFiles]["+ (i) +"]";
+                $(this).prop('name', newName);
+            });
+        }
 
-            // match the regex and replace the numbers
-            var newName = oldName.replace(regex, nameString);
-            var newName2 = oldName2.replace(regex2, nameString2);
-            var newName3 = oldName3.replace(regex2, nameString3);
+        var elem2 = $(all[i]).closest('.content-body-wrapper').find('.output-parameter-choice').find(".parameter-choice-test");
 
-            // set the new name
-            elem.prop('name', newName);
-            elem2.prop('name', newName2);
-            elem3.prop('id', newName3);
+        if(elem2.length > 0)
+        {
+            elem2.each(function() {
+                var oldName = $(this).prop('name');
+                var nameString = "exercises[$1][subexercises][$2][outputDatatype]["+ (i) +"]";
+                var newName = oldName.replace(regex2, nameString);
+
+                $(this).prop('name', newName);
+            });
         }
 
         //get testcaserows
@@ -765,7 +767,7 @@ function renameTestcases() {
             var elem4 = $(testcases[j]).find('.output-parameter').find(".parameter-choice-test");
             
 
-            if (typeof oldName3 !== 'undefined')
+            if (elem3.length > 0 && elem4.length > 0)
             {
                 var regex3 = /exercises\[(.+?)]\[.+?\]\[(.+?)]\[(.+?)]\[[0-9]+\]\[[0-9]+\]\[]/gm;
                 var nameString3 = "exercises[$1][subexercises][$2][$3]["+ (i) +"]["+ (j) +"][]";
