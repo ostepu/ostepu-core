@@ -8,7 +8,7 @@
  */
  header('Content-Type: text/html; charset=utf-8');
  ?>
-<div class="hiddenFiles" style="height: 0px;" id="exercises[0][subexercises][0][inputFiles][0]"></div>
+<div class="hiddenFiles" style="height: 0px;"></div>
 <table border="0" style="width:100%;" class="testcase-table">
     <tr>
         <td style="min-width:20px; max-width:20px;"></td>
@@ -83,7 +83,7 @@
             <input type="text" class="parameter-choice-test" style="min-width:160px; width: 100%; margin-left:-2px;" name="exercises[0][subexercises][0][inputParameter][0][0][]" value=""/>
         </td>
         <td style="width: 30%;border-left-style: solid; border-left-width: 1px; border-left-color: #999; padding:4px;  border-width: 1px 0px 1px 1px; border-style: solid none solid solid;" class="output-parameter">
-            <input type="text" class="parameter-choice-test" style="min-width:160px; width: 100%; margin-left:-2px;" name="exercises[0][subexercises][0][ouputParameter][0][0]" value=""/>                              
+            <input type="text" class="parameter-choice-test" style="min-width:160px; width: 100%; margin-left:-2px;" name="exercises[0][subexercises][0][outputParameter][0][0]" value=""/>                              
         </td>
     </tr>
     <?php } else if (is_array($testcases)) {
@@ -104,7 +104,7 @@
                 <?php }
             } ?>
             <td style="width: 30%;border-left-style: solid; border-left-width: 1px; border-left-color: #999; padding:4px;  border-width: 1px 0px 1px 1px; border-style: solid none solid solid;" class="output-parameter">
-                <input type="text" class="parameter-choice-test" style="min-width:160px; width: 100%; margin-left:-2px;" name="exercises[0][subexercises][0][ouputParameter][0][0]" value="<?php echo(isset($output[1]) ? $output[1] : '' ); ?>"/>                              
+                <input type="text" class="parameter-choice-test" style="min-width:160px; width: 100%; margin-left:-2px;" name="exercises[0][subexercises][0][outputParameter][0][0]" value="<?php echo(isset($output[1]) ? $output[1] : '' ); ?>"/>                              
             </td>
         </tr>
         <?php }
