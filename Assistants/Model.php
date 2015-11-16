@@ -303,8 +303,6 @@ class Model
     
     private function finishRequest($result = array('content'=>'', 'status'=>200, 'statusText'=>null))
     {
-        if (isset( $result['content'])  )
-            echo $result['content'];  
                     
         $code = 0;
         if (isset( $result['status']) ){
@@ -319,6 +317,9 @@ class Model
 
         $protocol = (isset($_SERVER['SERVER_PROTOCOL']) ? $_SERVER['SERVER_PROTOCOL'] : 'HTTP/1.0');
         header($protocol . ' ' . $code . (isset($statusText)?$statusText:''));
+        
+        if (isset( $result['content'])  )
+            echo $result['content'];  
     }
     
     /**
