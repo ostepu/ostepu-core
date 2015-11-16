@@ -18,9 +18,6 @@ $langTemplate='Upload_Controller';Language::loadLanguageFile('de', $langTemplate
 
 if (isset($_POST['action']) && $_POST['action'] == 'submit') {
     // handle uploading files
-    /**
-     * @todo don't automatically accept the submission
-     */
     $timestamp = time();
 
     $URL = $databaseURI . '/group/user/' . $uid . '/exercisesheet/' . $sid;
