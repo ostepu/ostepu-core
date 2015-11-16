@@ -106,4 +106,3 @@ if (!file_exists($path.'/info/de.md')){
 // wir haben es geschafft
 echo "fertig....<br>";
 echo date("d.m.Y H:i:s",time())."<br>";
-?>
