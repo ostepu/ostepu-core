@@ -16,7 +16,7 @@ Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $globalUserDat
 
 $langTemplate='Upload_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
-if (isset($_POST['action']) && $_POST['action'] == 'submit') {
+if (isset($_POST['action']) && $_POST['action'] === 'submit') {
     // handle uploading files
     $timestamp = time();
 
@@ -159,8 +159,8 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
     ///echo Submission::encodeSubmission($uploadSubmission);return;
 
                         $result = http_post_data($URL, Submission::encodeSubmission($uploadSubmission), true, $message);
-    //echo $result;
-                        if ($message != "201") {
+
+                        if ($message !== 201) {
                             $result = Submission::decodeSubmission($result);
                             $exercise = $key + 1;
                             $errormsg = Language::Get('main','errorUploadSubmission', $langTemplate, array('status'=>$message,'exerciseName'=>$exercise['name']));
@@ -192,8 +192,8 @@ if (isset($_POST['action']) && $_POST['action'] == 'submit') {
                                     
                                     $URL = $serverURI.'/DB/DBChoice/formResult/choice';
                                     $result2 = http_post_data($URL, Choice::encodeChoice($choices), true, $message);
-                                    
-                                        if ($message != "201") {
+
+                                        if ($message !== 201) {
                                             $result2 = Choice::decodeChoice($result2);
                                             $exercise = $key + 1;
                                             $errormsg = Language::Get('main','errorUploadSubmission', $langTemplate, array('status'=>$message,'exerciseName'=>$exercise['name']));
