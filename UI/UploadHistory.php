@@ -12,7 +12,7 @@ include_once dirname(__FILE__) . '/include/Boilerplate.php';
 
 global $globalUserData;
 Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $globalUserData);
-
+/// gehört SID zur CID ??? ///
 $langTemplate='UploadHistory_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 if (isset($_POST['sheetID'])){
@@ -28,7 +28,7 @@ if (isset($_GET['action']) && !isset($_POST['action'])){
 
 // updates the selectedSubmissions for the group
 if (isset($_POST['updateSelectedSubmission'])) {
-    $obj = json_decode($_POST['updateSelectedSubmission'],true);
+    $obj = json_decode($_POST['updateSelectedSubmission'],true); /// darf er das ??? ///
     
     // bool which is true if any error occured
     $RequestError = false;
@@ -47,8 +47,7 @@ if (isset($_POST['updateSelectedSubmission'])) {
     // shows notification
     if ($RequestError == false) {
         $uploadHistoryNotifications[] = MakeNotification("success", Language::Get('main','successSelectSubmission', $langTemplate));
-    }
-    else {
+    }else {
         $uploadHistoryNotifications[] = MakeNotification("error", Language::Get('main','errorSelectSubmission', $langTemplate));
     }
 }
