@@ -26,11 +26,11 @@
                     <?php print $percentage['exerciseType'] . " (".Language::Get('main','inPercent', $langTemplate).")"; ?>
                 </label>
 
-                <input class="form-field left text-input short"
-                       name="<?php echo $percentage['approvalConditionId']; ?>"
+                <input class="left"
+                       name="approvalCondition[<?php echo $percentage['approvalConditionId']; ?>]"
                        value="<?php echo $percentage['minimumPercentage']; ?>"
-                       id="<?php echo $percentage['approvalConditionId']; ?>"
-                       maxlength="2"
+                       id="approvalCondition[<?php echo $percentage['approvalConditionId']; ?>]"
+                       min="0" max="100" type="number" size="2"
                 >
             <?php 
                 endforeach; 

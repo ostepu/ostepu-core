@@ -100,7 +100,7 @@ if (isset($GroupNotificationElements)) {
                         
                     <?php
                         print '<span class="very-short left">';
-                        print '<input class="form-field text-input very-very-short" placeholder="'.Language::Get('main','points', $langTemplate).'" name="';
+                        print '<input class="form-field text-input very-very-short" type="number" min="0" size="3" placeholder="'.Language::Get('main','points', $langTemplate).'" name="';
                         print 'exercises[' . $leaderID . '][' . $eid . '][points]" value="';
                         print isset($exercise['submission']['marking']['points']) ? $exercise['submission']['marking']['points'] : '';
                         print '" id="exercisePoints" />';
