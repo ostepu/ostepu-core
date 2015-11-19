@@ -8,8 +8,46 @@
  * @author Ralf Busch
  */
 
-include_once dirname(__FILE__) . '/include/Boilerplate.php';
+include dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
+include_once dirname(__FILE__) . '/../Assistants/Validation/Validation.php';
+
+$f = new Validation($_GET, array('preRules'=>array('clean_input')));
+
+$f->addSet('downloadConditionCsv',
+           array('valid_identifier',
+                 'on_error'=>array('type'=>'error',
+                                   'text'=>'???')));
+                                   
+$f->addSet('downloadConditionPdf',
+           array('valid_identifier',
+                 'on_error'=>array('type'=>'error',
+                                   'text'=>'???')));
+                                   
+$f->addSet('sortby',
+           array('is_alpha',
+                 'on_error'=>array('type'=>'error',
+                                   'text'=>'???')));
+                                   
+$f->addSet('sortId',
+           array('valid_identifier',
+                 'on_error'=>array('type'=>'error',
+                                   'text'=>'???')));
+
+$valResults = $f->validate();
+
+                                   
+if ($f->isValid() && isset($_GET['downloadConditionCsv'])) {
+    $cid = $valResults['downloadConditionCsv'];
+} elseif(isset($_GET['downloadConditionCsv'])) {
+    exit(1);
+}
+
+if ($f->isValid() && isset($_GET['downloadConditionPdf'])) {
+    $cid = $valResults['downloadConditionPdf'];
+} elseif(isset($_GET['downloadConditionPdf'])) {
+    exit(1);
+}
 
 global $globalUserData;
 Authentication::checkRights(PRIVILEGE_LEVEL::ADMIN, $cid, $uid, $globalUserData);
@@ -17,42 +55,48 @@ Authentication::checkRights(PRIVILEGE_LEVEL::ADMIN, $cid, $uid, $globalUserData)
 $langTemplate='Condition_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 $notifications = array();
+$notifications = $f->getPrintableNotifications();
 
 if (isset($_POST['action'])) {
     // creates a new course
     if ($_POST['action'] == "SetCondition") {
         // bool which is true if any error occured
         $RequestError = false;
+        
+        $f = new Validation($_POST, array('preRules'=>array('clean_input')));
+        $f->addSet('approvalCondition',
+                   array('default'=>array(),
+                         'foreach'=>array(
+                                          array('key',
+                                                array('valid_identifier')), 
+                                          array('elem',
+                                                array('integer','min_numeric'=>0,'max_numeric'=>100))),
+                         'on_error'=>array('type'=>'warning',
+                                           'text'=>Language::Get('main','invalidInput', $langTemplate))));
 
-        foreach ($_POST as $key => $value) {
-            // skips the first POST which includes the 'action' type
-            if($key == "action") {
-                continue;
-            }
+        if ($f->isValid()){
+            $foundValues = $f->getResult();
+            
+            foreach ($foundValues['approvalCondition'] as $approvalConditionId => $percentage) {
+                // changes the percentage for each exercise type
 
-            // changes the percentage for each exercise type
-            $approvalConditionId = $key;
-            $percentage = cleanInput($value);
+                if ($percentage >= 0 && $percentage <= 100) {
+                    $percentage = $percentage / 100;
 
-            if (is_numeric($percentage) && $percentage >= 0 && $percentage <= 100) {
-                $percentage = $percentage / 100;
+                    $newApprovalCondition = ApprovalCondition::createApprovalCondition($approvalConditionId, $cid, null, $percentage);
+                    $newApprovalConditionSettings = ApprovalCondition::encodeApprovalCondition($newApprovalCondition);
+                    $URI = $databaseURI . "/approvalcondition/approvalcondition/" . $approvalConditionId;
+                    http_put_data($URI, $newApprovalConditionSettings, true, $message);
 
-                $newApprovalCondition = ApprovalCondition::createApprovalCondition($approvalConditionId, $cid, null, $percentage);
-                $newApprovalConditionSettings = ApprovalCondition::encodeApprovalCondition($newApprovalCondition);
-                $URI = $databaseURI . "/approvalcondition/approvalcondition/" . $approvalConditionId;
-                http_put_data($URI, $newApprovalConditionSettings, true, $message);
-
-                if ($message != "201") {
-                    $notifications[] = MakeNotification("error", Language::Get('main','errorSetCondition', $langTemplate));
-                    $RequestError = true;
+                    if ($message !== 201) {
+                        $notifications[] = MakeNotification("error", Language::Get('main','errorSetCondition', $langTemplate));
+                        $RequestError = true;
+                    }
                 }
             }
-            else {
-                $notifications[] = MakeNotification("warning", Language::Get('main','invalidInput', $langTemplate));
-                $RequestError = true;
-            }
-
-
+        } else {
+            $notifications = $notifications + $f->getPrintableNotifications();
+            $RequestError = true;
         }
 
         // creates a notification depending on RequestError
@@ -64,14 +108,6 @@ if (isset($_POST['action'])) {
         }
 
     }
-}
-
-if (isset($_GET['downloadConditionCsv'])) {
-    $cid = cleanInput($_GET['downloadConditionCsv']);
-}
-
-if (isset($_GET['downloadConditionPdf'])) {
-    $cid = cleanInput($_GET['downloadConditionPdf']);
 }
 
 // load user data from the database
@@ -91,8 +127,8 @@ if (isset($condition_data['users'])){
     usort($condition_data['users'], 'compare_lastName');
 
     // manages table sort
-    if (isset($_GET['sortby'])) {
-        $sortBy = cleanInput($_GET['sortby']);
+    if ($f->isValid() && isset($_GET['sortby'])) {
+        $sortBy = $valResults['sortby'];
 
         switch ($sortBy) {
             case "firstName":
@@ -134,7 +170,8 @@ if (isset($condition_data['users'])){
             case "type":
                 $condition_data['users']=array_reverse($condition_data['users']);
                 function compare_type($a, $b) {
-                    $type=cleanInput($_GET['sortId']);
+                    global $valResults;
+                    $type=$valResults['sortId'];
                     $aId = null;
                     $bId = null;
                     if (isset($a['percentages']))
@@ -243,13 +280,13 @@ if (isset($_GET['downloadConditionCsv']) || isset($_GET['downloadConditionPdf'])
     exit(0);
 }
 
-if (isset($_GET['sortby'])) {
-    $condition_data['sortby'] = $_GET['sortby'];
+if ($f->isValid() && isset($_GET['sortby'])) {
+    $condition_data['sortby'] = $valResults['sortby'];
 }
-if (isset($_GET['sortId'])) {
-    $condition_data['sortId'] = $_GET['sortId'];
+if ($f->isValid() && isset($_GET['sortId'])) {
+    $condition_data['sortId'] = $valResults['sortId'];
 }
-    
+
 // construct a new header
 $h = Template::WithTemplateFile('include/Header/Header.template.html');
 $h->bind($user_course_data);

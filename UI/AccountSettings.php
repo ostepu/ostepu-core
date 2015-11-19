@@ -10,38 +10,42 @@
 
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
-include_once dirname(__FILE__) . '/include/FormEvaluator.php';
+include_once dirname(__FILE__) . '/../Assistants/Validation/Validation.php';
 
 $langTemplate='AccountSettings_Controller';Language::loadLanguageFile('de', $langTemplate, 'json', dirname(__FILE__).'/');
 
 if (isset($_POST['action'])) {
     // changes the user's password
     if ($_POST['action'] == "SetPassword") {
-        $f = new FormEvaluator($_POST);
+        $f = new Validation($_POST, array('preRules'=>array('clean_input')));
 
-        $f->checkStringForKey('oldPassword',
-                              FormEvaluator::OPTIONAL,
-                              'warning',
-                              Language::Get('main','invalidOldPassword', $langTemplate),
-                              array('min' => 1));
+        $f->addSet('oldPassword',
+                   array('min_len'=>1,
+                         'on_error'=>array('type'=>'warning',
+                                           'text'=>Language::Get('main','invalidOldPassword', $langTemplate))));
 
-        $f->checkStringForKey('newPassword',
-                              FormEvaluator::REQUIRED,
-                              'warning',
-                              Language::Get('main','invalidNewPassword', $langTemplate),
-                              array('min' => 3));
+        $f->addSet('newPassword',
+                   array('required',
+                         'min_len'=>6,
+                         'on_error'=>array('type'=>'warning',
+                                           'text'=>Language::Get('main','invalidNewPassword', $langTemplate))));
+                                           
+        $f->addSet('newPasswordRepeat',
+                   array('required',
+                         'min_len'=>6,
+                         'on_error'=>array('type'=>'warning',
+                                           'text'=>Language::Get('main','invalidRepeat', $langTemplate))));
+                                                    
+        $f->addSet('newPasswordRepeat',
+                   array('equalsfield'=>'newPassword',
+                         'on_error'=>array('type'=>'error',
+                                           'text'=>Language::Get('main','differentPasswords', $langTemplate))));
 
-        $f->checkStringForKey('newPasswordRepeat',
-                              FormEvaluator::REQUIRED,
-                              'warning',
-                              Language::Get('main','invalidRepeat', $langTemplate),
-                              array('min' => 3));
+        if($f->isValid()) {
 
-        if($f->evaluate(true)) {
+            $foundValues = $f->getResult();
 
-            $foundValues = $f->foundValues;
-
-            $oldPassword = (isset($foundValues['oldPassword']) ? $foundValues['oldPassword'] : '');
+            $oldPassword = $foundValues['oldPassword'];
             $newPassword = $foundValues['newPassword'];
             $newPasswordRepeat = $foundValues['newPasswordRepeat'];
 
@@ -58,40 +62,35 @@ if (isset($_POST['action'])) {
             $newPasswordHash = $auth->hashPassword($newPassword, $newSalt);
 
             // check if the old password is necessary
-            if ($user_data['password'] == "noPassword" || $oldPasswordHash == $user_data['password']) {
+            if ($user_data['password'] === "noPassword" || $oldPasswordHash === $user_data['password']) {
                 // both passwords are equal
-                if($newPassword == $newPasswordRepeat) {
-                    $newUserSettings = User::encodeUser(User::createUser($uid, null, null, null, null, null, null, 
-                                                        $newPasswordHash, $newSalt));
-                    $URI = $databaseURI . "/user/" . $uid;
-                    http_put_data($URI, $newUserSettings, true, $message);
+                $newUserSettings = User::encodeUser(User::createUser($uid, null, null, null, null, null, null, 
+                                                    $newPasswordHash, $newSalt));
+                $URI = $databaseURI . "/user/" . $uid;
+                http_put_data($URI, $newUserSettings, true, $message);
 
-                    if ($message == "201") {
-                        /// $notifications[] = MakeNotification("success", "Das Passwort wurde geändert!");
-                        Authentication::logoutUser();
-                    }
-                }
-                else {
-                    $notifications[] = MakeNotification("error", Language::Get('main','differentPasswords', $langTemplate));
+                if ($message === 201) {
+                    Authentication::logoutUser();
                 }
             }
             else {
                 $notifications[] = MakeNotification("error", Language::Get('main','incorrectOldPassword', $langTemplate));
             }
         } else {
-            $notifications = $notifications + $f->notifications;
+            $notifications = $notifications + $f->getPrintableNotifications();
         }
     } else if ($_POST['action'] == "SetAccountInfo") {
-        $f = new FormEvaluator($_POST);
+        $f = new Validation($_POST,array('preRules'=>array('clean_input')));
+                              
+        $f->addSet('language',
+                   array('exact_len'=>2,
+                         'required',
+                         'on_error'=>array('type'=>'error',
+                                           'text'=>'???')));
+                                          
+        if($f->isValid()) {
 
-        $f->checkStringForKey('language',
-                              FormEvaluator::OPTIONAL,
-                              'warning',
-                              '???.');
-
-        if($f->evaluate(true)) {
-
-            $foundValues = $f->foundValues;
+            $foundValues = $f->getResult();
             $language = $foundValues['language'];
 
             $newUserSettings = User::encodeUser(User::createUser($uid, null, null, null, null, null, null, 
@@ -104,7 +103,7 @@ if (isset($_POST['action'])) {
                 $notifications[] = MakeNotification("success", Language::Get('main','languageChanged', $langTemplate));
             }
         } else {
-            $notifications = $notifications + $f->notifications;
+            $notifications = $notifications + $f->getPrintableNotifications();
         }
     }
 }

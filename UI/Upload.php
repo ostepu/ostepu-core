@@ -10,6 +10,7 @@
 
 include_once dirname(__FILE__) . '/include/Boilerplate.php';
 include_once dirname(__FILE__) . '/../Assistants/Structures.php';
+include_once dirname(__FILE__) . '/../Assistants/Validation/Validation.php';
 
 global $globalUserData;
 Authentication::checkRights(PRIVILEGE_LEVEL::STUDENT, $cid, $uid, $globalUserData);
